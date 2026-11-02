@@ -93,8 +93,8 @@ or journal why not. New/removed src module ⇒ `npm run catalog`.
 | [1 — style origin, backcolor helper](batch-1/overview.md) | T1a, T1b, close | [x] |
 | [2 — finalizers, producers, klimt carriers](batch-2/overview.md) | T2a, T2b, T2c, T2d (close) | [x] |
 | [2b — chrome gradient, klimt-carrier rect](batch-2b/overview.md) (D7, user ruling) | T2p, T2e, T2f, close | [x] |
-| [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [ ] |
-| [squash](batch-squash/overview.md) | one commit per batch, tag `dbp/pre-squash` | [ ] |
+| [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [x] |
+| [squash](batch-squash/overview.md) | one commit per batch, tag `dbp/pre-squash` | [x] |
 
 ## Documents
 
@@ -111,3 +111,19 @@ or journal why not. New/removed src module ⇒ `npm run catalog`.
 - `.agent-notes/jff-execution.md` (the back-colour rect is painted by `SvgGraphics`, not `addBackcolor`).
 - `src/core/assemble-svg-{sequence,activity}.ts` — the two finalizers that already mirror both branches.
 - Memories: `squash-per-batch-at-end`, `gate-merges-on-full-set-and-typecheck`, `conformance-harness-mirrors-index-ts`, `honour-ignored-styling-extension`, `jff-status`.
+
+## Final status (2026-11-02)
+
+DONE. Tasks: T0a, T0b, T1a, T1b, T2a, T2b, T2c, T2e, T2f + T2p, all merged. Two user
+rulings: T1a's write-set extended (journal 14); batch 2b added (D7, journal 25).
+
+| checkpoint | dbg conformant / total | Σ diffCount | 28-engine losses |
+|---|---|---|---|
+| b0 | 18 / 42 | 346 | — |
+| b1 | 21 / 43 | 340 | 0 |
+| b2 | 37 / 43 | 274 | 0 |
+| final (b2b) | 79 / 85 | 274 | 0 |
+
+The 6 open rows are board/packet/chart (journal 7; follow-on). d.ts identical to b0;
+extended baseline 0 MOVED; jff follow-ons a/b/c struck, wbs family E closed. Follow-ons
+are in `planning/next-missions.md`. Final gates: 1899 collected = on-disk, 0 failed.
