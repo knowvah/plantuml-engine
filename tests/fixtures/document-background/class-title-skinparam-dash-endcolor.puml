@@ -1,0 +1,6 @@
+@startuml
+title T
+skinparam backgroundColor red-blue
+skinparam titleBackgroundColor blue
+class A
+@enduml

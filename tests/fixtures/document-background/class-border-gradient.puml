@@ -1,0 +1,9 @@
+@startuml
+skinparam diagramBorderColor red
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+class A
+@enduml

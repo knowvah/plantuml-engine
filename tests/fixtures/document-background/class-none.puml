@@ -1,0 +1,4 @@
+@startuml
+skinparam backgroundColor none
+class A
+@enduml

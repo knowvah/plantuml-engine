@@ -12,6 +12,10 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "board-black": {
       "conformant": false,
       "diffCount": 18
@@ -32,6 +36,18 @@
       "conformant": true,
       "diffCount": 0
     },
+    "class-border-background": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-border-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-chrome-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "class-gradient": {
       "conformant": true,
       "diffCount": 0
@@ -44,11 +60,67 @@
       "conformant": true,
       "diffCount": 0
     },
+    "class-legend-rule-thick0-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-mainframe-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-mainframe-transparent-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-none": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-dash-endcolor": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-gradient-override": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-other-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-same-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-skinparam-dash-endcolor": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-skinparam-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-solid": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-title-table-thick0-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "component-black": {
       "conformant": true,
       "diffCount": 0
     },
     "component-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component-title-gradient": {
       "conformant": true,
       "diffCount": 0
     },
@@ -60,11 +132,23 @@
       "conformant": true,
       "diffCount": 0
     },
+    "files-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "gantt-black": {
       "conformant": true,
       "diffCount": 0
     },
     "gantt-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "gantt-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "gantt-title-solid": {
       "conformant": true,
       "diffCount": 0
     },
@@ -92,11 +176,27 @@
       "conformant": true,
       "diffCount": 0
     },
+    "json-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "mindmap-black": {
       "conformant": true,
       "diffCount": 0
     },
+    "mindmap-chrome-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "mindmap-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "mindmap-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "mindmap-title-solid": {
       "conformant": true,
       "diffCount": 0
     },
@@ -105,6 +205,10 @@
       "diffCount": 0
     },
     "object-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object-title-gradient": {
       "conformant": true,
       "diffCount": 0
     },
@@ -124,11 +228,35 @@
       "conformant": true,
       "diffCount": 0
     },
+    "salt-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "salt-title-solid": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "sequence-black": {
       "conformant": true,
       "diffCount": 0
     },
+    "sequence-chrome-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-chrome-gradient-dash": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "sequence-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-mainframe-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-mainframe-own-gradient": {
       "conformant": true,
       "diffCount": 0
     },
@@ -140,11 +268,35 @@
       "conformant": true,
       "diffCount": 0
     },
+    "sequence-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-title-skinparam-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-title-solid": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "state-black": {
       "conformant": true,
       "diffCount": 0
     },
     "state-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state-title-solid": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state-transparent": {
       "conformant": true,
       "diffCount": 0
     },
@@ -156,6 +308,10 @@
       "conformant": true,
       "diffCount": 0
     },
+    "usecase-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "wbs-black": {
       "conformant": true,
       "diffCount": 0
@@ -164,11 +320,23 @@
       "conformant": true,
       "diffCount": 0
     },
+    "wbs-title-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "wbs-title-solid": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "yaml-black": {
       "conformant": true,
       "diffCount": 0
     },
     "yaml-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "yaml-title-gradient": {
       "conformant": true,
       "diffCount": 0
     }

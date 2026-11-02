@@ -92,7 +92,7 @@ or journal why not. New/removed src module ⇒ `npm run catalog`.
 | [0 — baseline, fixtures, ratchet](batch-0/overview.md) | T0a, T0b, close | [x] |
 | [1 — style origin, backcolor helper](batch-1/overview.md) | T1a, T1b, close | [x] |
 | [2 — finalizers, producers, klimt carriers](batch-2/overview.md) | T2a, T2b, T2c, T2d (close) | [x] |
-| [2b — chrome gradient, klimt-carrier rect](batch-2b/overview.md) (D7, user ruling) | T2p, T2e, T2f, close | [ ] |
+| [2b — chrome gradient, klimt-carrier rect](batch-2b/overview.md) (D7, user ruling) | T2p, T2e, T2f, close | [x] |
 | [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [ ] |
 | [squash](batch-squash/overview.md) | one commit per batch, tag `dbp/pre-squash` | [ ] |
 

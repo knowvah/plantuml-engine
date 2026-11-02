@@ -47,7 +47,7 @@ describe('listDbgRows', () => {
     expect(rows).toContain('json-gradient-pipe');
     expect(rows).toContain('class-gradient-dash');
     expect(rows).toContain('sequence-skinparam-gradient');
-    expect(rows).toHaveLength(43);
+    expect(rows).toHaveLength(85);
   });
 });
 

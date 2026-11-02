@@ -1,0 +1,16 @@
+@startuml
+title
+foo
+----
+|= a | b |
+end title
+<style>
+document {
+  BackgroundColor red/blue
+  title {
+    LineThickness 0
+  }
+}
+</style>
+class A
+@enduml

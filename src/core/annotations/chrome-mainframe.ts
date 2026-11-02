@@ -20,6 +20,8 @@ import { mergeFragmentDefs } from '../klimt/document-shell.js';
 import { shiftedFold, shiftFragmentBody } from './coord-shift.js';
 import { buildBigFrame, type BigFrameStyle } from '../klimt/shape/big-frame.js';
 import type { InkBox } from './body-ink.js';
+import { paintToSvg, type Gradient } from '../paint.js';
+import { resolveColorPaint } from '../skinparam-key-handlers.js';
 
 interface Dim {
   readonly width: number;
@@ -95,13 +97,28 @@ export function nonNullDisplay(dp: DisplayPositioned): readonly string[] {
  *
  * @see ~/git/plantuml/.../core/DiagramChromeFactory.java:275-336
  */
+/** The `HColorGradient` `value(PName.BackGroundColor).asColor(set)` returns
+ *  (`style/Style.java:273`, `klimt/color/HColorSet.java:107-116`), if any. */
+function mainframeBackGradient(style: AnnotationBoxStyle): Gradient | undefined {
+  if (style.backgroundColor === null) return undefined;
+  const paint = resolveColorPaint(style.backgroundColor);
+  return typeof paint === 'string' ? undefined : paint;
+}
+
 /** `TextBlockBordered#drawU`'s own `color` derivation (`buildAnnotationBlock`'s
  *  identical formula) -- mainframe's `lineThickness` is never 0 by default
  *  (1.5, plantuml.skin:87), so this is `style.lineColor` in every corpus
  *  fixture; the `?? 'none'` guards a future `<style>` override that zeroes
- *  it, mirroring `buildAnnotationBlock`'s own fallback. */
+ *  it, mirroring `buildAnnotationBlock`'s own fallback. T2f: under a gradient
+ *  back it is the `LineColor`, as `BigFrame#drawU` draws the title under
+ *  `symbolContext.apply(ug)` (`klimt/shape/BigFrame.java:96`,
+ *  `klimt/Fashion.java:73-77`), jar-verified; a raw gradient token never
+ *  reaches a stroke. */
 function mainframeTitleColor(style: AnnotationBoxStyle): string {
-  return style.lineThickness === 0 ? (style.backgroundColor ?? 'none') : (style.lineColor ?? 'none');
+  if (style.lineThickness !== 0 || mainframeBackGradient(style) !== undefined) {
+    return style.lineColor ?? 'none';
+  }
+  return style.backgroundColor ?? 'none';
 }
 
 /**
@@ -158,9 +175,25 @@ function dashArrayOf(style: AnnotationBoxStyle): { dashArray?: string } {
   return { dashArray: `${String(dash.dashVisible)},${String(dash.dashSpace)}` };
 }
 
-function bigFrameStyleOf(style: AnnotationBoxStyle): BigFrameStyle {
+/**
+ * `Style#getSymbolContext`'s `backColor` (`style/Style.java:271-273`), which
+ * `BigFrame#drawU` applies with no `equals` skip (`klimt/shape/BigFrame.java:96`):
+ * a gradient is written as `url(#id)` with its def inline, where `rect` would put
+ * it (`DriverRectangleSvg.java:83-92`), for `collectDocumentDefs` to lift. On a
+ * gradient canvas a `null` back can only be an explicit `transparent`
+ * (`style/ValueImpl.java:97-98`): every other path cascades the gradient into
+ * `backgroundColor`, and the jar draws `fill="none"`.
+ */
+function mainframeBack(style: AnnotationBoxStyle): { readonly fill: string; readonly def?: string } {
+  const gradient = mainframeBackGradient(style);
+  if (gradient !== undefined) return paintToSvg(gradient);
+  if (style.backgroundColor === null && style.documentBackgroundGradient !== undefined) return { fill: 'none' };
+  return { fill: style.backgroundColor ?? style.documentBackground };
+}
+
+function bigFrameStyleOf(style: AnnotationBoxStyle, fillColor: string): BigFrameStyle {
   return {
-    fillColor: style.backgroundColor ?? style.documentBackground,
+    fillColor,
     lineColor: style.lineColor ?? '#181818',
     lineThickness: style.lineThickness,
     roundCorner: style.roundCorner,
@@ -176,14 +209,16 @@ function buildFramedBlock(
   ctx: ChromeTextContext,
 ): AnnotationBlock {
   const titleBlock = buildMainframeTitleBlock(mainFrame, style, ctx);
+  const back = mainframeBack(style);
   const layout = buildBigFrame(
     { width: titleBlock.width, height: titleBlock.height },
     frameExtent(original),
-    bigFrameStyleOf(style),
+    bigFrameStyleOf(style, back.fill),
   );
   const delta = inkDelta(original);
 
   const parts = [
+    back.def ?? '',
     layout.body,
     // `BigFrame#drawU` (java:127-131): the title is always drawn at the
     // fixed `(3,1)` offset -- see `big-frame.ts`'s own doc comment for why

@@ -1,0 +1,13 @@
+@startuml
+title T
+mainframe M
+legend
+L
+end legend
+<style>
+document {
+  BackgroundColor red-blue
+}
+</style>
+A -> B
+@enduml

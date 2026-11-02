@@ -189,3 +189,64 @@ describe('mainframe -- sized from ink, not dimension (lgm-T1a)', () => {
     expect(result.width).toBe(5 + (5 + 113 + 5) + 5);
   });
 });
+
+/**
+ * T2f (D7): `BigFrame#drawU` draws under `symbolContext.apply(ug)` (`klimt/shape/BigFrame.java:96`), whose
+ * back and fore are `Style#getSymbolContext`'s `BackGroundColor` and `LineColor` (`style/Style.java:271-276`)
+ * with no `equals` skip; `DriverRectangleSvg#applyFillColor` (`klimt/drawing/svg/DriverRectangleSvg.java:83-92`)
+ * writes a gradient as `url(#id)`.
+ */
+describe('mainframe -- a gradient back (T2f)', () => {
+  const GRADIENT = { color1: 'red', color2: 'blue', policy: '/' } as const;
+
+  function framed(style: Partial<AnnotationBoxStyle>, display = ['demo']): string {
+    const annotations = createAnnotations();
+    setMainFrame(annotations, singleDisplayPositioned(display, null, null, 0));
+    const styles = plainStyles();
+    styles.mainframe = { ...styles.mainframe, ...style };
+    return applyChrome(makeFragment(70, 107), annotations, styles, MEASURER).body;
+  }
+
+  it('jar `sequence-mainframe-gradient`: the frame paints url(#id) with one def, never the raw token', () => {
+    const body = framed({
+      backgroundColor: 'red/blue',
+      documentBackground: 'red/blue',
+      documentBackgroundGradient: GRADIENT,
+    });
+    expect(body.match(/<linearGradient /g)?.length).toBe(1);
+    expect(body).toMatch(/<rect[^>]*fill="url\(#g[a-z0-9]+\)"/);
+    expect(body).not.toContain('red/blue');
+  });
+
+  it('jar probe `mainframe { BackgroundColor red-blue }` on a solid canvas: url(#id) too', () => {
+    const body = framed({ backgroundColor: 'red-blue' });
+    expect(body).toMatch(/<rect[^>]*fill="url\(#g[a-z0-9]+\)"/);
+    expect(body).not.toContain('red-blue');
+  });
+
+  it('jar probe `mainframe { BackgroundColor transparent }` on a gradient canvas: fill none (`ValueImpl.java:97-98`)', () => {
+    const body = framed({
+      backgroundColor: null,
+      documentBackground: 'red/blue',
+      documentBackgroundGradient: GRADIENT,
+    });
+    expect(body).toMatch(/<rect[^>]*fill="none"/);
+    expect(body).not.toContain('red/blue');
+    expect(body).not.toContain('linearGradient');
+  });
+
+  it('jar probe `mainframe { LineThickness 0 }` under a gradient: a rule strokes the LineColor (`Style.java:275-276`)', () => {
+    const body = framed({ backgroundColor: 'red/blue', documentBackground: 'red/blue', lineThickness: 0 }, [
+      'a',
+      '----',
+      'b',
+    ]);
+    expect(body).toMatch(/<line[^>]*stroke:#181818/);
+    expect(body).not.toContain('red/blue');
+  });
+
+  it('a solid frame back is unchanged', () => {
+    expect(framed({ backgroundColor: 'pink' })).toMatch(/<rect[^>]*fill="#FFC0CB"/);
+    expect(framed({ documentBackground: '#ADD8E6' })).toMatch(/<rect[^>]*fill="#ADD8E6"/);
+  });
+});

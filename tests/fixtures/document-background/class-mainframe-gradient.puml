@@ -1,0 +1,9 @@
+@startuml
+mainframe M
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+class A
+@enduml

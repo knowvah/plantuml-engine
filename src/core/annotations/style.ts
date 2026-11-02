@@ -55,6 +55,7 @@
  *   scoped per decisions.md D7)
  */
 
+import type { Gradient } from '../paint.js';
 import type { Theme } from '../theme.js';
 import type { StyleMap } from '../skinparam.js';
 import { resolveColorToSvgHex } from '../klimt/color/HColorSet.js';
@@ -119,6 +120,7 @@ export function resolveAnnotationStyles(
 ): ResolvedAnnotationStyles {
   const ctx: ResolveContext = {
     documentBackgroundHex: resolveColorToSvgHex(theme.colors.background),
+    documentBackgroundGradient: theme.colors.backgroundGradient,
     themeStyleMap: toStyleMap(theme.styleOverrides),
     segments: segmentsOf(declarations, styleMap),
   };
@@ -142,6 +144,7 @@ export function resolveAnnotationStyles(
 /** What every element's resolution reads, computed once per call. */
 interface ResolveContext {
   readonly documentBackgroundHex: string;
+  readonly documentBackgroundGradient: Gradient | undefined;
   readonly themeStyleMap: StyleMap | undefined;
   readonly segments: readonly StyleSkinparamSegment[];
 }
@@ -159,6 +162,7 @@ function resolveElement(
   const style = cloneBoxStyle(BASE_DEFAULTS[element]);
   // G2 N51: see `AnnotationBoxStyle#documentBackground`'s own doc comment.
   style.documentBackground = ctx.documentBackgroundHex;
+  if (ctx.documentBackgroundGradient !== undefined) style.documentBackgroundGradient = ctx.documentBackgroundGradient;
   if (styleName !== undefined) {
     const skinLayer: StyleMap = new Map([[styleName.toLowerCase(), new Map(skinLegendDeclarations(styleName))]]);
     applyStyleOverrides(element, style, skinLayer, ctx.documentBackgroundHex, styleName);

@@ -6,6 +6,7 @@
 
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { LineStyleDash } from '../style-line-style.js';
+import type { Gradient } from '../paint.js';
 
 export interface BoxSides {
   top: number;
@@ -51,6 +52,12 @@ export interface AnnotationBoxStyle {
    *  zuji574`'s document/legend colors DIFFER, so the legend keeps its own
    *  explicit fill). */
   documentBackground: string;
+  /** T2f (D7): `theme.colors.backgroundGradient`, when `ug.getDefaultBackground()`
+   *  (`klimt/drawing/svg/UGraphicSvg.java:91`, the SVG option's backcolor) is an
+   *  `HColorGradient`. {@link documentBackground} is then the gradient's flattened
+   *  stand-in, which no chrome colour can equal: `HColorSimple#equals`
+   *  (`klimt/color/HColorSimple.java:85-90`) rejects a non-simple. */
+  documentBackgroundGradient?: Gradient;
   padding: BoxSides;
   margin: BoxSides;
   /** D8: for `title`/`caption`, `DiagramChromeFactory.addTitle`/`addCaption`

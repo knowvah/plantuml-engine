@@ -6,7 +6,7 @@ today's counts; T2e and T2f then run in parallel (disjoint files).
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| T2p | authored rows + jar oracles, pinned at today's measure; count assertion | orchestrator | `tests/fixtures/document-background/*`, `oracle/goldens/document-background.json`, `tests/unit/oracle/document-background.test.ts` | B2 close | [ ] |
-| [T2e](T2e-klimt-carrier-rect.md) | gantt/mindmap/salt/wbs: the background rect leads the content at the final size | typescript-pro (sonnet, effort high), dbp-T2e | see spec | T2p | [ ] |
-| [T2f](T2f-chrome-gradient.md) | title/header/footer/caption/legend/mainframe paint an inherited gradient | typescript-pro (opus, effort high), dbp-T2f | see spec | T2p | [ ] |
-| close | merge both; gates `b2b`; chain vs `b2-eng`; dbg re-pin; journal every mover | orchestrator | per close-procedure | T2e, T2f | [ ] |
+| T2p | authored rows + jar oracles, pinned at today's measure; count assertion | orchestrator | `tests/fixtures/document-background/*`, `oracle/goldens/document-background.json`, `tests/unit/oracle/document-background.test.ts` | B2 close | [x] |
+| [T2e](T2e-klimt-carrier-rect.md) | gantt/mindmap/salt/wbs: the background rect leads the content at the final size | typescript-pro (sonnet, effort high), dbp-T2e | see spec | T2p | [x] |
+| [T2f](T2f-chrome-gradient.md) | title/header/footer/caption/legend/mainframe paint an inherited gradient | typescript-pro (opus, effort high), dbp-T2f | see spec | T2p | [x] |
+| close | merge both; gates `b2b`; chain vs `b2-eng`; dbg re-pin; journal every mover | orchestrator | per close-procedure | T2e, T2f | [x] |

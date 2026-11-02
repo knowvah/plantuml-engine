@@ -1,0 +1,5 @@
+@startuml
+title T
+skinparam backgroundColor red/blue
+class A
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+title T
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+</style>
+A -> B
+@enduml

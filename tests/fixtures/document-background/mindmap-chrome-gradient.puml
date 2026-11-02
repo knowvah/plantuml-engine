@@ -1,0 +1,15 @@
+@startmindmap
+title T
+header H
+footer F
+caption C
+legend
+L
+end legend
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+* A
+@endmindmap
