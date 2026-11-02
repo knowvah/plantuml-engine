@@ -35,6 +35,27 @@ post-D7 measurements.
 
 ---
 
+## document-background-paint (dbp) — DONE 2026-11-02 (branch `feat/document-background-paint` off `fe794c0a9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S fe794c0a9`; working history on the local tag `dbp/pre-squash`)
+
+A `<style> document { BackgroundColor }` gradient no longer emits invalid SVG in
+any ported engine, and a black one no longer draws a rect the jar omits. **85
+authored rows, 79 conformant** (`tests/fixtures/document-background/`, shrink-only
+pin `oracle/goldens/document-background.json`); the 6 open rows are
+board/packet/chart. 0 verdict movers in 28 engines vs b0, d.ts identical. Beyond
+the brief, by user ruling (D7): chrome blocks paint an inherited gradient, and
+gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
+
+### Follow-ons (mechanism, owner)
+1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
+2. **board / packet / chart root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21, 104/75. Their engines have no fidelity gate yet.
+3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
+4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).
+5. **`sequenceDiagram { document { BackgroundColor } }` is ignored** — `DIAGRAM_TYPE_SELECTOR_NAMES` (`style-map-element.ts:104`) lacks `sequencediagram`. Pre-existing; NOT yet checked against the jar.
+6. **Mainframe, solid canvas** (`.agent-notes/dbp-T2f.md`) — `mainframe { BackgroundColor transparent }` paints the document colour (`null` conflates unset with transparent; jar `none`, `ValueImpl.java:97-98`); `LineThickness 0` title colour has no upstream basis (`BigFrame.java:96`). Mainframe rule `x1`/`x2` and thick-0 table lines: mechanisms not diagnosed.
+7. **`root { BackgroundColor }` stops short of entities** — chrome now matches, entity `rect`/`ellipse` fills do not (3 diffs). Mechanism not diagnosed.
+8. **A json refusal page drops the document gradient** — conformant under the error-page ruling; bytes differ.
+9. **No gate on hcl's extended-mode gradient (D4)** — the `hcl-*` rows' body `a = 1` hits the jar's parse-error page, and `extended-baseline.json` has no hcl gradient row. Verified by direct probe only (journal 26).
+
 ## gantt-divergence-drive (gdd) — DONE 2026-10-28 (branch `feat/gantt-divergence-drive` off `01fe0c79b`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 01fe0c79b`; working history on the local tag `gdd/pre-squash`)
 
 Gantt **263/265 → 265/265 conformant** (0 structural, 0 diverged, 0 errored),
@@ -731,7 +752,7 @@ and 27 are ticked; every other 28–35 entry carries a dated measurement
 - **0 conformant losses** in any of 28 engines at every close; every non-wbs byte change was the bozido embed.
 
 **Open follow-ons (mechanism, owner):**
-1. **Family E — painted background + chrome rect order** (`SvgGraphics.java:189-191`, `:819-821` vs `TextBlockExporter.ts#finalizeTitledDiagramFragment`): authored `background-pink-title`, `gradient-background-title` only; no corpus row. Same as sep follow-on 2 → one shared chrome follow-on for mindmap/salt/wbs.
+1. ~~**Family E — painted background + chrome rect order**~~ — closed by dbp T2e (`87d86d5e3`, 2026-11-02; both rows 0/0, shared by mindmap/salt/wbs/gantt). (`SvgGraphics.java:189-191`, `:819-821` vs `TextBlockExporter.ts#finalizeTitledDiagramFragment`): authored `background-pink-title`, `gradient-background-title` only; no corpus row. Same as sep follow-on 2 → one shared chrome follow-on for mindmap/salt/wbs.
 2. **`ProtectedCommand` unported** (`command/ProtectedCommand.java:54-78`, `core/AbstractDiagram.java:173-180`): a throwing command becomes the jar's "You should send a mail…" line-N error; ours escapes to `src/index.ts:418-419` (`cov-error-smart-level`, conformant by rule, text differs). Affects every engine → core follow-on.
 3. **Creole URL residuals** (T5a): `topurl` (`CommandCreoleUrl.java:79`; port `StripeBuilder` has no skin param), url-label creole scope (`AtomTextUtils.java:79-91` vs `StripeSimple.ts:158`), transparent hyperlink colour typed as string (`UText.ts:195`), string-path `svg.ts:378 linkWrap` lacks `getXlinkTitle` decoding; stale "assumed true" comments (`driver-text-svg-decorations.ts:106-109`, `UText.ts:98-107`).
 4. **Legend residuals** (T5b): fill-equals-background (`TextBlockBordered.java:123-124` vs `theme.colors.background`); same-`<style>`-block declaration order (`DarkString.java:50-66`; also title/caption/header/footer).
@@ -5001,15 +5022,12 @@ supersedes the conclusion in
     `yaml/style-root-fontcolor`, `json/title-handwritten`, `json/title-narrow`,
     `{json,yaml,hcl}/title-scale`, `json/title-scale-max-width`,
     `json/caption-scale` (caption is not json-family chrome: a scaled error page).
-  - **jff follow-ons (2026-10-30)** — (a) `#000000` back colour: the jar paints
-    no rect for it (`SvgGraphics.java:189-190`) but `isSolidNonDefault`
-    (`src/core/assemble-svg.ts`) does; no corpus row reaches it. (b) json/yaml
-    unit tests that call `assembleSvg(renderJson(geo))` without `diagramType`
-    skip `finalizeJsonFragment` and assert an unshifted, unformatted body
-    production never emits (`tests/unit/json/renderer.test.ts`,
-    `tests/unit/yaml/highlight-styleclass.test.ts`); stamp `diagramType: 'JSON'`.
-    (c) gradient json back colours (`SvgGraphics.java:178-183`) are unhandled by
-    either finalize path.
+  - ~~**jff follow-ons (2026-10-30)**~~ — **closed by document-background-paint
+    (dbp, 2026-11-02); hashes resolve through the local tag `dbp/pre-squash`.**
+    (a) `#000000` back colour: `d63a6bf7d` (`isSolidNonDefault` removed; the
+    finalizers call `backcolorPaint`). (b) json/yaml unit tests stamp
+    `diagramType`: `5f6b08358`. (c) gradient json back colours: `d63a6bf7d` +
+    `5f6b08358`.
   - **`tests/visual/data/*.json` refresh** — the committed manifests carry
     hand-authored rows and have drifted from ~/git/pdiff (`.agent-notes/
     ddc-T0c.md`); a regeneration must preserve them.
