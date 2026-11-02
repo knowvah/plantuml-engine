@@ -1,0 +1,9 @@
+@startwbs
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+* root
+** child
+@endwbs

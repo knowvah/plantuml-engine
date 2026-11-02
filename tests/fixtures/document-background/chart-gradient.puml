@@ -1,0 +1,10 @@
+@startchart
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+h-axis [Alpha, Bravo]
+v-axis 0 --> 100
+bar [45, 62]
+@endchart

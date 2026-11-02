@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+actor U
+(Do) as UC
+U --> UC
+@enduml

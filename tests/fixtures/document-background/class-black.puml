@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+class A
+class B
+A --> B
+@enduml

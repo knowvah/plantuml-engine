@@ -1,0 +1,4 @@
+@startuml
+skinparam backgroundColor red/blue
+A -> B : hi
+@enduml

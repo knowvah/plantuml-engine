@@ -1,0 +1,12 @@
+@startpacketdiag
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+packetdiag {
+  colwidth = 16
+  0-15: Alpha
+  16-31: Bravo
+}
+@endpacketdiag
