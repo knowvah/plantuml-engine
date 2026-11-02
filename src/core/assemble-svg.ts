@@ -44,11 +44,11 @@ import { svgRoot, group, rect } from './svg.js';
 import { spliceAsFirstChild, spliceIntoContentGroup } from './assemble-svg-splice.js';
 import { finalizeSequenceFragment } from './assemble-svg-sequence.js';
 import { finalizeActivityFragment } from './assemble-svg-activity.js';
+import { finalizeJsonFragment } from './assemble-svg-json.js';
+import { backcolorMarkup } from './assemble-svg-backcolor.js';
 import { applySeededDefIds } from './svg-defs-seeded.js';
 import { seedOf } from './klimt/drawing/svg/svg-seed.js';
 import { assembleDocumentShell } from './klimt/document-shell.js';
-import { resolveColorToSvgHex } from './klimt/color/HColorSet.js';
-import { shortenColor } from './svg-format.js';
 import { applyCucaDocumentMargin, exportTo, finalizeTitledDiagramFragment } from './TextBlockExporter.js';
 import {
   CUCA_DOCUMENT_MARGIN_TOP,
@@ -105,10 +105,11 @@ function computeBorderRectDims(rawDims: { width: number; height: number }, thick
 /**
  * G2 N66 (near-zero harvest, `vinujo-78-kapo329`): `fragment
  * .diagramBorderColor`'s whole-canvas `<rect fill="none">` border, spliced
- * in as the outer `<g>`'s FIRST child -- BEFORE the background-rect splice
- * (matching jar's `TextBlockExporter#maybeDrawBorder` running OUTSIDE/
- * BEFORE the diagram's own draw, which includes ITS OWN
- * `documentBackgroundRect`, an entirely separate mechanism, N48).
+ * in as the outer `<g>`'s FIRST child, BEFORE the diagram's own draw
+ * (`TextBlockExporter#maybeDrawBorder`, `:170`) -- and then displaced to
+ * second by the document background, which `SvgGraphics`' constructor
+ * painted earlier still, inside `createUGraphic` (`:169`; dbp-T2a, see
+ * {@link finalizeClassBody}).
  *
  * Requires `fragment.width`/`fragment.height` (FINAL, post-chrome) to
  * exactly equal what {@link applyCucaDocumentMargin} computes from
@@ -139,154 +140,70 @@ function withDiagramBorderRect(body: string, fragment: RenderFragment, colorHex:
  * `class/renderer.ts#renderClass`'s per-diagram body finalization: exactly
  * one top-level content `<g>` (part B of G2 N1, mechanism 2 -- class has no
  * `CompleteSvg` escape hatch, so this is the ONE place that must guarantee
- * the shape for both the annotated and unannotated case), then N48's
- * document-background rect, then N66's border rect (drawn first among the
- * two, per {@link withDiagramBorderRect}'s own doc comment).
+ * the shape for both the annotated and unannotated case), then N66's border
+ * rect, then N48's document background spliced AHEAD of it.
+ *
+ * dbp-T2a: the background is `SvgGraphics`' constructor paint
+ * (`SvgGraphics.java:176-192`, `assemble-svg-backcolor.ts#backcolorMarkup`),
+ * which runs inside `createUGraphic` BEFORE `maybeDrawBorder`
+ * (`core/TextBlockExporter.java:169-171`) -- so the background rect is the
+ * first child and the border the second (jar render of `skinparam
+ * backgroundColor #EEEEEE` + `diagramBorderColor red`: `fill="#EEE"` rect, then
+ * the `fill="none"` border). A gradient always paints (def + `url(#…)` rect,
+ * `:178-183`) whatever `documentBackgroundRect` says; otherwise the solid input
+ * is the producer's already colour-mapped `documentBackgroundRect`
+ * (`class/renderer-document.ts#beginClassDocument`), sized to the final canvas
+ * untruncated, as before.
  */
 function finalizeClassBody(fragment: RenderFragment): string {
   const body = fragment.bodyWrapped === true ? fragment.body : group(fragment.body);
-  const withBackground =
-    fragment.documentBackgroundRect !== undefined
-      ? spliceAsFirstChild(
-          body,
-          rect(0, 0, fragment.width, fragment.height, {
-            fill: fragment.documentBackgroundRect,
-            stroke: 'none',
-            strokeWidth: 1,
-          }),
-        )
+  const withBorder =
+    fragment.diagramBorderColor !== undefined
+      ? withDiagramBorderRect(body, fragment, fragment.diagramBorderColor)
       : body;
-  return fragment.diagramBorderColor !== undefined
-    ? withDiagramBorderRect(withBackground, fragment, fragment.diagramBorderColor)
-    : withBackground;
+  const background = backcolorMarkup(
+    fragment.documentBackgroundRect,
+    fragment.backgroundGradient,
+    fragment.width,
+    fragment.height,
+  );
+  return background === '' ? withBorder : spliceAsFirstChild(withBorder, background);
 }
 
 // ---------------------------------------------------------------------------
 // state finalize (formerly state/renderer-shell.ts#assembleStateShell)
 // ---------------------------------------------------------------------------
 
-/** The default (unset) diagram background -- matches `theme.ts`'s own
- *  `colors.background: '#FFFFFF'` default. */
-const STATE_DEFAULT_BACKGROUND = '#FFFFFF';
-
-/** mission G4 S5: the explicit content-level background rect jar draws (the
- *  FIRST child of the content `<g>`) whenever the resolved background is
- *  non-default, on top of (not instead of) the root `style="...background:
- *  ...;"` attribute `assembleDocumentShell` already handles. Deliberately
- *  SIMPLER than class's version: this mission's sampled corpus showed no
- *  `bodyWrapped` (chrome-present) + non-default-background combination, so
- *  unlike json (below) state does not attempt the chrome-present case. */
-function maybeStateBackgroundRect(fragment: RenderFragment): string {
-  const background = fragment.background ?? STATE_DEFAULT_BACKGROUND;
-  if (background === STATE_DEFAULT_BACKGROUND) return '';
-  return rect(0, 0, Math.trunc(fragment.width), Math.trunc(fragment.height), {
-    fill: background,
-    stroke: 'none',
-    strokeWidth: 1,
-  });
-}
-
+/**
+ * mission G4 S5 / dbp-T2a: the content-level document background, the FIRST
+ * child of the content `<g>`, on top of the root `style="...background:...;"`
+ * `assembleDocumentShell` already handles -- `SvgGraphics`' constructor paint
+ * (`SvgGraphics.java:176-192`, `assemble-svg-backcolor.ts#backcolorMarkup`):
+ * a gradient always, a plain colour unless `#00000000`/`#000000`/`#FFFFFF`
+ * (`:187-191`; `tests/fixtures/document-background/state-black.svg` draws no
+ * rect). Sized to the truncated canvas, as before. The constructor runs before
+ * any draw, chrome included (`TextBlockExporter.java:169-177`), so a
+ * chrome-wrapped (`bodyWrapped`) body gets the rect spliced ahead of its title
+ * too (jar render of a titled state with `skinparam backgroundColor #EEEEEE`:
+ * `<rect … fill="#EEE"/>` precedes `<g class="title">`); the former
+ * chrome-present carve-out recorded only that the sampled corpus lacked the case.
+ */
 function finalizeStateBody(fragment: RenderFragment): string {
-  const backgroundRect = fragment.bodyWrapped === true ? '' : maybeStateBackgroundRect(fragment);
-  return fragment.bodyWrapped === true ? fragment.body : group(backgroundRect + fragment.body);
+  const backgroundRect = backcolorMarkup(
+    fragment.background,
+    fragment.backgroundGradient,
+    Math.trunc(fragment.width),
+    Math.trunc(fragment.height),
+  );
+  return fragment.bodyWrapped === true
+    ? spliceIntoContentGroup(fragment.body, backgroundRect)
+    : group(backgroundRect + fragment.body);
 }
 
 // ---------------------------------------------------------------------------
-// json/yaml/hcl finalize (formerly json/renderer-shell.ts#assembleJsonShell)
+// json/yaml/hcl finalize -- moved to `assemble-svg-json.ts` (dbp-T2a,
+// 500-line hook cap).
 // ---------------------------------------------------------------------------
-
-/** The default (unset) diagram background -- matches `theme.ts`'s own
- *  `colors.background: '#FFFFFF'` default. */
-const JSON_DEFAULT_BACKGROUND = '#FFFFFF';
-
-/** A color reduced to the exact form the SVG will carry, so two spellings of
- *  one color compare equal -- `resolveColorToSvgHex` maps a NAMED color to
- *  hex (`!theme plain` leaves the background as the literal `"white"`,
- *  `json/vogeku-38-soxe333`), then `shortenColor` collapses `#FFFFFF` to
- *  `#FFF` (the form a theme may supply directly). Was `json/color-form.ts
- *  #canonicalColor` -- a thin composition of two already-core primitives,
- *  moved here with the rest of the finalize logic (no diagrams/** import). */
-function canonicalColor(color: string): string {
-  return shortenColor(resolveColorToSvgHex(color));
-}
-
-/** Whether the resolved background warrants the explicit content-level rect
- *  below. Two ways a background can fail to warrant one: (1) it is not
- *  solid (`transparent`/`none`/canonical `#00000000` -- jar draws no rect,
- *  `json/sevaji-38-xita618`); (2) it IS the default white, spelled
- *  differently (`json/vogeku-38-soxe333`, `!theme plain` -> `"white"`). */
-function isSolidNonDefault(background: string): boolean {
-  if (background === 'transparent' || background === 'none' || background === '#00000000') return false;
-  return canonicalColor(background) !== canonicalColor(JSON_DEFAULT_BACKGROUND);
-}
-
-/** The identical mechanism {@link maybeStateBackgroundRect} carries for
- *  state diagrams -- jar-verified against all five non-default-background
- *  fixtures in this family's cached corpus. Note the emitted style is
- *  `stroke:none;` ALONE (no `stroke-width`), matching `core/svg.ts
- *  #strokeDecorationOf`'s own `stroke:none` handling. */
-function maybeJsonBackgroundRect(fragment: RenderFragment): string {
-  return jsonBackgroundRect(fragment.background, Math.trunc(fragment.width), Math.trunc(fragment.height));
-}
-
-/** {@link maybeJsonBackgroundRect}'s rect at an explicit size, `''` when the
- *  background does not warrant one ({@link isSolidNonDefault}). */
-function jsonBackgroundRect(color: string | undefined, width: number, height: number): string {
-  const background = color ?? JSON_DEFAULT_BACKGROUND;
-  if (!isSolidNonDefault(background)) return '';
-  return rect(0, 0, width, height, { fill: background, stroke: 'none' });
-}
-
-/**
- * jff-T2a (decisions.md D1): a json/yaml/hcl producer that handed over its
- * RAW chromed block ({@link RenderFragment.exportMargin}) is exported the way
- * `UgDiagram#getExporter` (`UgDiagram.java:123-139`) exports every json
- * diagram: `addChrome` (`:128`), `TextBlockUtils.addBackcolor` (`:130-132`,
- * which only carries the colour, `TextBlockUtils.java:152-174`, into
- * `TextBlockExporter.Builder`, `TextBlockExporter.java:427-428,491`), then
- * {@link exportTo} (`TextBlockExporter.java:159-177`: margin shift, factor
- * over block + margin, canvas `trunc(dim + 1) x factor`).
- *
- * The back-colour rect is NOT part of the shifted, scaled block: `SvgGraphics`'
- * constructor paints it (`SvgGraphics.java:176-192`, `paintBackcolor`
- * `:207-212`) when `createUGraphic` runs (`TextBlockExporter.java:169`,
- * `:285`), before the margin translate (`:173`), as the root `<g>`'s first
- * child at (0,0); `finalizeRootAttributes` then sizes it `format(maxX)` x
- * `format(maxY)` (`SvgGraphics.java:819-821`) -- the same numbers as the root
- * `width`/`height` (`:810-811`), i.e. {@link exportTo}'s scaled canvas. So it
- * is spliced AFTER the export, at the exported size.
- */
-function exportJsonTextBlock(fragment: RenderFragment): RenderFragment {
-  const body = fragment.bodyWrapped === true ? fragment.body : group(fragment.body);
-  const exported = exportTo(fragment, body);
-  const backgroundRect = jsonBackgroundRect(fragment.background, exported.width, exported.height);
-  return { ...exported, body: spliceIntoContentGroup(exported.body, backgroundRect) };
-}
-
-/**
- * json/yaml/hcl's per-diagram body finalization -- also canonicalizes
- * `fragment.background` itself (not just the body), since
- * `assembleDocumentShell` writes it verbatim into the root `style` and a
- * themed `"white"` would otherwise reach the document as
- * `background:white` where the jar writes `background:#FFFFFF`
- * (`json/vogeku-38-soxe333`, `!theme plain`) -- matching class's own
- * resolve-before-shell convention (N4). A fragment carrying `exportMargin`
- * then runs the export tail ({@link exportJsonTextBlock}); without it the
- * producer already exported its block and only the back-colour rect is added.
- */
-function finalizeJsonFragment(fragment: RenderFragment): RenderFragment {
-  const canonical =
-    fragment.background === undefined
-      ? fragment
-      : { ...fragment, background: resolveColorToSvgHex(fragment.background) };
-  if (canonical.exportMargin !== undefined) return exportJsonTextBlock(canonical);
-  const backgroundRect = maybeJsonBackgroundRect(canonical);
-  const body =
-    fragment.bodyWrapped === true
-      ? spliceIntoContentGroup(fragment.body, backgroundRect)
-      : group(backgroundRect + fragment.body);
-  return { ...canonical, body };
-}
 
 // ---------------------------------------------------------------------------
 // sequence finalize -- moved to `assemble-svg-sequence.ts` (sdd2-T7f, 500-line
@@ -315,17 +232,18 @@ function finalizeJsonFragment(fragment: RenderFragment): RenderFragment {
  * A fragment with neither falls through unchanged, as before.
  */
 function finalizeDescriptionFragment(fragment: RenderFragment): RenderFragment {
-  const body =
-    fragment.documentBackgroundRect === undefined
-      ? fragment.body
-      : spliceAsFirstChild(
-          fragment.body,
-          rect(0, 0, Math.trunc(fragment.width), Math.trunc(fragment.height), {
-            fill: fragment.documentBackgroundRect,
-            stroke: 'none',
-            strokeWidth: 1,
-          }),
-        );
+  // dbp-T2a: `SvgGraphics`' constructor paint (`SvgGraphics.java:176-192`). The klimt port already painted it
+  // (`svg-graphics-core.ts#setupBackcolor`, gradient included: its def rides `extraDefs`), and
+  // `description/renderer.ts#splitLeadingBackgroundRect` lifted the rect's fill -- a colour or `url(#…)` -- into
+  // `documentBackgroundRect`, re-spliced here at the final size. A `backgroundGradient` is painted only when no
+  // klimt rect was lifted, so the document never carries two background rects.
+  const background = backcolorMarkup(
+    fragment.documentBackgroundRect,
+    fragment.documentBackgroundRect === undefined ? fragment.backgroundGradient : undefined,
+    Math.trunc(fragment.width),
+    Math.trunc(fragment.height),
+  );
+  const body = background === '' ? fragment.body : spliceAsFirstChild(fragment.body, background);
   // `TextBlockExporter#exportTo` (`:159-177`): `computeScaleFactor` reads the chrome-and-margin dimension before
   // `ensureVisible` (`:204-208`); the tail is shared with every other engine.
   return exportTo(fragment, body);

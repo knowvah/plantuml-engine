@@ -1,0 +1,6 @@
+@startuml
+skinparam backgroundColor red/blue
+start
+:step;
+stop
+@enduml

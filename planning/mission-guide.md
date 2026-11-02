@@ -252,7 +252,10 @@ are the jfp follow-ons in `planning/next-missions.md`.
 json-family-followons (jff, 2026-10-30) closed them: title × scale now scales the
 chromed block through core's `exportTo` (8 authored rows pinned in both gates),
 dead json scale plumbing removed, dot-engine issue 37 filed; only the ruled
-`inches()` 6-dp item and the jff follow-ons in `planning/next-missions.md` remain.
+`inches()` 6-dp item remains.
+document-background-paint (dbp, 2026-11-02) closed the jff follow-ons: a document
+gradient or black now paints through one `SvgGraphics`-constructor port, chrome and
+klimt carriers included; its follow-ons are in `planning/next-missions.md`.
 
 ---
 

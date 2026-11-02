@@ -1,0 +1,12 @@
+@startuml
+mainframe M
+title T
+<style>
+document {
+  mainframe {
+    BackgroundColor red-blue
+  }
+}
+</style>
+A -> B
+@enduml

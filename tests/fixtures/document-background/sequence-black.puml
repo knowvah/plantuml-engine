@@ -1,0 +1,9 @@
+@startuml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+A -> B : hi
+B --> A : ok
+@enduml

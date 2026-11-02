@@ -404,3 +404,72 @@ describe('buildAnnotationBlock — gradient backgroundColor (sdd2-T7l)', () => {
     expect(block.body).not.toContain('linearGradient');
   });
 });
+
+/**
+ * T2f (D7): `TextBlockBordered#drawU`'s redundant-fill test is
+ * `backgroundColor.equals(ug.getDefaultBackground())`
+ * (`klimt/shape/TextBlockBordered.java:122-127`). `HColorGradient` overrides no
+ * `equals` (`klimt/color/HColorGradient.java:43`) and `ValueImpl#asColor`
+ * (`style/ValueImpl.java:103`) builds a new instance per call, so a gradient
+ * never equals anything; `HColorSimple#equals` (`klimt/color/HColorSimple.java:85-90`)
+ * rejects a non-simple, so a solid never equals a gradient canvas.
+ */
+describe('buildAnnotationBlock — document gradient never equals a chrome colour (T2f)', () => {
+  const measurer = new FixedMeasurer(10, 14);
+  /** `HColorSet#parseColor`'s `red-blue` (`klimt/color/HColorSet.java:107-116`). */
+  const DASH_GRADIENT = { color1: 'red', color2: 'blue', policy: '-' } as const;
+
+  it('jar `sequence-chrome-gradient`: an inherited gradient paints url(#id) behind the block, not none', () => {
+    const style = makeStyle({ backgroundColor: 'red/blue', documentBackground: 'red/blue' });
+    const block = buildAnnotationBlock('title', ['T'], style, measurer);
+    expect(block.body).toMatch(/<linearGradient id="g[a-z0-9]+" x1="0%" y1="0%" x2="100%" y2="100%">/); // policy "/"
+    expect(block.body).toMatch(/<rect[^>]*fill="url\(#g[a-z0-9]+\)"/);
+    expect(block.body).not.toContain('red/blue');
+  });
+
+  it('jar probe `document { BackgroundColor red-blue; title { BackgroundColor blue } }`: the title stays #00F', () => {
+    const style = makeStyle({
+      backgroundColor: 'blue',
+      documentBackground: '#0000FF', // `theme.colors.background`'s flattened end colour (skinparam-key-normalize.ts#resolveColor)
+      documentBackgroundGradient: DASH_GRADIENT,
+    });
+    const block = buildAnnotationBlock('title', ['T'], style, measurer);
+    expect(block.body).toMatch(/<rect[^>]*fill="#00F"/);
+    expect(block.body).not.toContain('linearGradient');
+  });
+
+  it('the same solid on a solid canvas still collapses (`TextBlockBordered.java:123`, no rect at all)', () => {
+    const style = makeStyle({ backgroundColor: 'blue', documentBackground: '#0000FF' });
+    const block = buildAnnotationBlock('title', ['T'], style, measurer);
+    expect(block.body).not.toContain('<rect');
+  });
+
+  it('jar probe `title { LineThickness 0 }`: `color = back`, and a ULine under a gradient strokes color1 (`DriverLineSvg.java:76-78`)', () => {
+    const style = makeStyle({ backgroundColor: 'red/blue', documentBackground: 'red/blue', lineThickness: 0 });
+    const block = buildAnnotationBlock('title', ['foo', '----', 'bar'], style, measurer);
+    expect(block.body).toMatch(/<rect[^>]*fill="url\(#g[a-z0-9]+\)"/);
+    expect(block.body).toMatch(/<line[^>]*stroke:#F00;stroke-width:1;/);
+    expect(block.body).not.toContain('red/blue');
+  });
+
+  it('jar `class-title-gradient-override`: a more specific solid wins over the inherited gradient', () => {
+    const style = makeStyle({
+      backgroundColor: 'yellow',
+      documentBackground: 'red/blue',
+      documentBackgroundGradient: { color1: 'red', color2: 'blue', policy: '/' },
+    });
+    const block = buildAnnotationBlock('title', ['T'], style, measurer);
+    expect(block.body).toMatch(/<rect[^>]*fill="#FF0"/);
+    expect(block.body).not.toContain('linearGradient');
+  });
+
+  it('an explicit transparent (null) on a gradient canvas draws no rect (`ValueImpl.java:97-98`, jar probe)', () => {
+    const style = makeStyle({
+      backgroundColor: null,
+      documentBackground: 'red/blue',
+      documentBackgroundGradient: { color1: 'red', color2: 'blue', policy: '/' },
+    });
+    const block = buildAnnotationBlock('title', ['T'], style, measurer);
+    expect(block.body).not.toContain('<rect');
+  });
+});

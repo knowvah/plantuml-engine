@@ -1,0 +1,11 @@
+@startuml
+title T
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+start
+:a;
+stop
+@enduml

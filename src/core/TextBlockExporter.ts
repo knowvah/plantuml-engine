@@ -44,6 +44,8 @@ import {
   CUCA_DOCUMENT_MARGIN_LEFT,
 } from './atmp/CucaDiagram.js';
 import { shiftFragmentBody } from './annotations/coord-shift.js';
+import { backcolorMarkup } from './assemble-svg-backcolor.js';
+import { spliceIntoContentGroup } from './assemble-svg-splice.js';
 import type { RenderFragment } from './dispatcher.js';
 import type { ClockwiseTopRightBottomLeft } from './klimt/geom/ClockwiseTopRightBottomLeft.js';
 import { attrs, group } from './svg.js';
@@ -298,6 +300,24 @@ function scaleMarginedBody(
   };
 }
 
+/**
+ * The rect `SvgGraphics`' constructor paints into a klimt pass of a carrier (mindmap, wbs, salt, gantt): the canvas
+ * origin, a hex or `url(#id)` fill, `stroke:none` (`SvgGraphics.java:207-212`, sized `:819-821`; a scaled canvas
+ * prints decimals).
+ */
+const LEADING_BACKGROUND_RECT_RE =
+  /^<rect x="0" y="0" width="[\d.]+" height="[\d.]+" fill="(?:#[0-9A-Fa-f]{3,8}|url\(#[^)"]+\))" style="stroke:none;"\/>/;
+
+/**
+ * A carrier's `drawBodyAt` draws the block through its own klimt `UGraphic`, whose constructor paints the document
+ * rect at THAT pass' canvas -- after the chrome strings the block is spliced between. The jar paints one rect, first,
+ * at the final canvas (`TextBlockExporter.java:169-171`, `SvgGraphics.java:176-192,819-821`), so the pass' own rect is
+ * dropped here and {@link finalizeTitledDiagramFragment} paints the real one.
+ */
+function liftBackgroundRect(drawn: Pick<RenderFragment, 'body' | 'width' | 'height'>): typeof drawn {
+  return { ...drawn, body: drawn.body.replace(LEADING_BACKGROUND_RECT_RE, '') };
+}
+
 /** A width x height pair: the export's dimension, or its canvas. */
 interface Extent {
   readonly width: number;
@@ -406,5 +426,17 @@ export function finalizeTitledDiagramFragment(fragment: RenderFragment): RenderF
   if (fragment.exportMargin === undefined) {
     throw new Error('finalizeTitledDiagramFragment: chromed fragment without exportMargin');
   }
-  return exportTo(fragment, fragment.body);
+  const { drawBodyAt } = fragment;
+  const carrier =
+    drawBodyAt === undefined
+      ? fragment
+      : {
+          ...fragment,
+          drawBodyAt: (scale: number, dx: number, dy: number) => liftBackgroundRect(drawBodyAt(scale, dx, dy)),
+        };
+  const exported = exportTo(carrier, fragment.body);
+  // dbp-T2e (D7): the constructor's paint, at the exported canvas -- `format(maxX)` x `format(maxY)` are the root's
+  // own `width`/`height` (`SvgGraphics.java:808-811,819-821`), as `assemble-svg-json.ts#exportJsonTextBlock` does.
+  const background = backcolorMarkup(fragment.background, fragment.backgroundGradient, exported.width, exported.height);
+  return { ...exported, body: spliceIntoContentGroup(exported.body, background) };
 }

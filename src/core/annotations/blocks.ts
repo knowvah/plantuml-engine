@@ -48,8 +48,8 @@ import type { StringMeasurer } from '../measurer.js';
 import { buildChromeTextBlock } from './blocks-creole.js';
 import type { SpriteRegistry } from '../sprite-commands.js';
 import { rect } from '../svg.js';
-import { parseColor } from '../paint.js';
 import type { Paint } from '../paint.js';
+import { resolveColorPaint } from '../skinparam-key-handlers.js';
 import { shiftFragmentBody } from './coord-shift.js';
 import type { BoxStyle } from '../svg.js';
 import { resolveColorToSvgHex } from '../klimt/color/HColorSet.js';
@@ -118,7 +118,7 @@ const SVG_ROUND_CORNER_DIVISOR = 2;
  *  jar-verified the SAME `bajula-59-puxi485` fixture (header, roundCorner 0:
  *  no `rx`/`ry` at all) and `mumefa-23-xoxe715` (legend, roundCorner 15: the
  *  oracle's `ry="7.5"` was missing from this port's rx-only output). G2 N51:
- *  `fill` is likewise now ALWAYS explicit (`resolveBoxFill` below), never
+ *  `fill` is likewise now ALWAYS explicit (`resolveBoxPaint` below), never
  *  omitted -- see that function's own doc comment. */
 function borderBoxStyle(style: AnnotationBoxStyle): BoxStyle {
   const box: BoxStyle = {
@@ -152,32 +152,38 @@ function borderBoxStyle(style: AnnotationBoxStyle): BoxStyle {
  * `backgroundColor` may still be a raw CSS/named-color token (`"yellow"`,
  * `resolveChromeColor`'s own doc comment), while `documentBackground` is
  * ALREADY hex-normalized (`resolveAnnotationStyles`'s own doc comment).
- */
-function resolveBoxFill(style: AnnotationBoxStyle): string {
-  if (style.backgroundColor === null) return 'none';
-  if (resolveColorToSvgHex(style.backgroundColor) === style.documentBackground) return 'none';
-  return style.backgroundColor;
-}
-
-/**
- * {@link resolveBoxFill} as a {@link Paint}: a gradient backcolor
- * (`titleBackgroundColor AliceBlue-Bisque`) stays a gradient so `rect` mints
- * its `<linearGradient>` def and writes `fill="url(#...)"`. `TextBlockBordered
- * #drawU` (`klimt/shape/TextBlockBordered.java:122-127`) applies `back`
- * (an `HColorGradient` from `HColorSet#getColorOrWhite`) to `ug`, and
- * `SvgGraphics#setFillColor` (`SvgGraphics.java:367-409`
- * `createSvgGradient`) turns it into `url(#id)`; same path as the document
- * backcolor in `assemble-svg-sequence.ts#sequenceBackgroundRect`. A plain
- * colour is returned verbatim, as before.
+ *
+ * The `back` local as a {@link Paint}: a gradient backcolor stays a gradient so
+ * `rect` mints its `<linearGradient>` def and writes `fill="url(#...)"`.
+ * `TextBlockBordered#drawU` applies `back` to `ug`, and `SvgGraphics#setFillColor`
+ * (`SvgGraphics.java:367-409` `createSvgGradient`) turns it into `url(#id)`; same
+ * path as the document backcolor in `assemble-svg-sequence.ts#sequenceBackgroundRect`.
+ * A plain colour is returned verbatim.
+ *
+ * T2f (D7): the `equals` never holds for a gradient on either side.
+ * `HColorGradient` overrides no `equals` (`klimt/color/HColorGradient.java:43`) and
+ * `ValueImpl#asColor` builds a new instance per call (`style/ValueImpl.java:103`),
+ * so a chrome block inheriting the document gradient paints it (jar
+ * `sequence-chrome-gradient`); `HColorSimple#equals` rejects a non-simple
+ * (`klimt/color/HColorSimple.java:85-90`), so a solid on a gradient canvas paints
+ * too, even the gradient's flattened {@link AnnotationBoxStyle.documentBackground}.
  */
 function resolveBoxPaint(style: AnnotationBoxStyle): Paint {
-  const fill = resolveBoxFill(style);
-  return fill === 'none' ? fill : parseColor(fill);
+  if (style.backgroundColor === null) return 'none';
+  const paint = resolveColorPaint(style.backgroundColor);
+  if (typeof paint !== 'string') return paint;
+  if (
+    style.documentBackgroundGradient === undefined &&
+    resolveColorToSvgHex(style.backgroundColor) === style.documentBackground
+  ) {
+    return 'none';
+  }
+  return style.backgroundColor;
 }
 
 /** Border/background rect at the un-plus-oned padded size (see
  *  {@link BORDERED_DIMENSION_QUIRK}), suppressed when BOTH the RESOLVED
- *  fill (`resolveBoxFill` -- post redundant-fill-collapse, G2 N51) and
+ *  fill (`resolveBoxPaint` -- post redundant-fill-collapse, G2 N51) and
  *  `lineColor` are none/`null` (`TextBlockBordered#drawU`: `back
  *  .isTransparent() == false || color.isTransparent() == false`, collapsed
  *  to this port's `string | null` color model — `null`/`'none'` IS the
@@ -200,7 +206,7 @@ function buildBorderRect(style: AnnotationBoxStyle, textWidth: number, textHeigh
   // (`yaml/tadari-70-nare798`, whose `<g class=\"title\">` holds ONE child).
   const noBorder = style.lineThickness === 0;
   const effectiveLineColor = noBorder ? null : style.lineColor;
-  if (resolveBoxFill(style) === 'none' && effectiveLineColor === null) return '';
+  if (resolveBoxPaint(style) === 'none' && effectiveLineColor === null) return '';
   return rect(0, 0, textWidth, textHeight, borderBoxStyle(style));
 }
 
@@ -247,7 +253,7 @@ export function buildAnnotationBlock(
   // border colour, EXCEPT that a zero-thickness border makes `color = back`
   // (`noBorder()`, java:114-119, the same branch {@link buildBorderRect}
   // reads) and a null one becomes `HColors.none()`.
-  const color = style.lineThickness === 0 ? resolveBoxFill(style) : (style.lineColor ?? 'none');
+  const color = style.lineThickness === 0 ? resolveBoxPaint(style) : (style.lineColor ?? 'none');
   // D3 (cdd6 T2f): forward the resolved chrome HyperlinkColor (currently
   // always `undefined` -- see `AnnotationBoxStyle.hyperlinkColor`'s own doc
   // comment for the unwired producer) into the SAME `ChromeTextPaint` seam

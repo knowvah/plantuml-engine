@@ -1,0 +1,9 @@
+@startgantt
+title T
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+[A] lasts 1 day
+@endgantt

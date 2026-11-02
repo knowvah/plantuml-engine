@@ -1,0 +1,9 @@
+@startfiles
+title T
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+/a
+@endfiles

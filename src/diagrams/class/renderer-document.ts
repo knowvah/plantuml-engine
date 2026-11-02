@@ -99,8 +99,14 @@ export function beginClassDocument(geo: ClassGeometry, rawTheme: Theme): ClassDo
   // `core/assemble-svg.ts`'s class finalize function (which runs AFTER
   // chrome/margin) draws it at the correct final size and position
   // (jar-verified unchanged: `bovuze-89-noja934`).
+  // dbp-T2b: NOT for a gradient -- `SvgGraphics.java:178-183` paints a `url(#id)` rect from the
+  // gradient def instead of the solid branch's colour (`:186-192`); the fragment's
+  // `backgroundGradient` carries it to the finalizer.
   const documentBackgroundRect =
-    canonicalBackground !== '#00000000' && canonicalBackground !== '#000000' && canonicalBackground !== '#FFFFFF'
+    theme.colors.backgroundGradient === undefined &&
+    canonicalBackground !== '#00000000' &&
+    canonicalBackground !== '#000000' &&
+    canonicalBackground !== '#FFFFFF'
       ? canonicalBackground
       : undefined;
   return {
@@ -130,6 +136,8 @@ export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, draw
     width: drawn.width,
     height: drawn.height,
     background: doc.canonicalBackground,
+    // dbp-T2b (D1): see {@link beginClassDocument}'s `documentBackgroundRect`; omitted when unset.
+    ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),
     ...(extraDefs.length > 0 ? { extraDefs } : {}),
     // G2 N46: pre-margin/pre-quirk ink dims, present only when
     // `assembleShiftedGeometry` computed them (`ClassGeometry.rawWidth`'s

@@ -1,0 +1,10 @@
+@startsalt
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+{
+  [OK]
+}
+@endsalt

@@ -1,0 +1,8 @@
+@starthcl
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+a = 1
+@endhcl

@@ -1,0 +1,9 @@
+@startmindmap
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+* root
+** child
+@endmindmap

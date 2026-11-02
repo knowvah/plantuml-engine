@@ -88,6 +88,7 @@ import {
 import { asAtomOpenIconic } from '../klimt/creole/atom/AtomOpenIconic.js';
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
+import type { Paint } from '../paint.js';
 import type { UDrawable } from '../klimt/shape/UDrawable.js';
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
 import type { ISkinSimple } from '../style/ISkinSimple.js';
@@ -112,7 +113,7 @@ import { isCreoleAtomData, atomDim, drawAtom, fontOfAtom } from './blocks-creole
  *  legend filter and a footer filter never collide. */
 export interface ChromeTextPaint {
   readonly uid: string;
-  readonly color: string;
+  readonly color: Paint;
   /** The diagram's own `sprite` registry (`ast.sprites`), so a
    *  `<$name>`/`<img:…>` in chrome text resolves exactly as it does in a
    *  member row or an entity label. `undefined` for a diagram that

@@ -448,6 +448,12 @@ export function renderJson(geo: JsonGeometry, theme: Theme): RenderFragment {
     numbersDeferred: true,
     ...(geo.scale === undefined ? {} : { scaleSpec: geo.scale }),
     ...(drawn.background === undefined ? {} : { background: drawn.background }),
+    // dbp-T2b (D1): a `<style>`/`skinparam` document gradient, for the finalizer to paint as
+    // `SvgGraphics`' constructor does (`SvgGraphics.java:178-183`). Not on the parse-failure page,
+    // which carries no `background` either. Omitted, not `undefined` (`exactOptionalPropertyTypes`).
+    ...(drawn.background === undefined || theme.colors.backgroundGradient === undefined
+      ? {}
+      : { backgroundGradient: theme.colors.backgroundGradient }),
     ...lengthAdjustOf(theme),
   };
 }

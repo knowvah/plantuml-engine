@@ -15,6 +15,7 @@ import type { Theme, ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { deepMergeTheme } from './theme.js';
 import { resolveColor } from './skinparam.js';
+import { resolveColorPaint } from './skinparam-key-handlers.js';
 import {
   collectElementStyleBuckets,
   resolveDocumentBackground,
@@ -78,6 +79,8 @@ function computeGraphOverride(styleMap: StyleMap, base: Theme): Partial<GraphCol
  *  threaded through {@link applyStyleMapHasNoOverrides} and {@link
  *  buildStyleMapPartialTheme}. */
 interface StyleMapExtras {
+  /** The winning `document { BackgroundColor }`, RAW -- see
+   *  {@link documentBackgroundColors}. */
   readonly documentBg: string | undefined;
   readonly elements: Record<string, ElementColors>;
   readonly hasElements: boolean;
@@ -190,6 +193,36 @@ function mergeElementBuckets(
   return merged;
 }
 
+/**
+ * dbp T1a (D1): the `(background, backgroundGradient)` pair for a `<style>`
+ * document BackgroundColor -- computed EXACTLY as `skinparam backgroundColor`
+ * computes it: `applyNormalKey` (`skinparam-key-handlers.ts`) hands the
+ * `backgroundcolor` handler `resolveColor(value)` + `resolveColorPaint(value)`,
+ * and the handler (`skinparam-key-handlers-table-a.ts`) stores the first as
+ * `background` and a non-string second as `backgroundGradient`. Upstream has
+ * one property for both syntaxes (`FromSkinparamToStyle.java:180`) read once
+ * via `asColor` (`TitledDiagram.java:280-289` -> `HColorSet.java:85-119`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
+ */
+function documentBackgroundColors(raw: string): Pick<Theme['colors'], 'background' | 'backgroundGradient'> {
+  const paint = resolveColorPaint(raw);
+  return typeof paint === 'string'
+    ? { background: resolveColor(raw) }
+    : { background: resolveColor(raw), backgroundGradient: paint };
+}
+
+/**
+ * The merge base: a `<style>` document BackgroundColor replaces the WHOLE
+ * pair, so a solid value must not inherit an earlier gradient -- skinparams
+ * and `<style>` blocks mute ONE style storage in declaration order
+ * (`SkinParam.java:232-233,244`), so `calculateBackColor` sees only the last.
+ */
+function styleMapMergeBase(base: Theme, extras: StyleMapExtras): Theme {
+  if (extras.documentBg === undefined || base.colors.backgroundGradient === undefined) return base;
+  const { backgroundGradient: _replaced, ...colors } = base.colors;
+  return { ...base, colors };
+}
+
 /** Assemble the `Partial<Theme>` passed to `deepMergeTheme`. */
 function buildStyleMapPartialTheme(
   base: Theme,
@@ -204,7 +237,7 @@ function buildStyleMapPartialTheme(
     ...extras.cardinalityFont,
     colors: {
       ...base.colors,
-      ...(extras.documentBg !== undefined ? { background: extras.documentBg } : {}),
+      ...(extras.documentBg !== undefined ? documentBackgroundColors(extras.documentBg) : {}),
       ...(extras.rootElementBorderRaw !== undefined ? { border: resolveColor(extras.rootElementBorderRaw) } : {}),
       ...(extras.hasElements ? { elements: mergeElementBuckets(base, extras.elements) } : {}),
       ...(extras.hasNoteTagCascade ? { noteTagCascade: extras.noteTagCascade } : {}),
@@ -227,5 +260,6 @@ export function applyStyleMap(styleMap: StyleMap, base: Theme): Theme {
   const graphOverride = computeGraphOverride(styleMap, base);
   const extras = computeStyleMapExtras(styleMap, base);
   if (styleMapHasNoOverrides(graphOverride, extras)) return base;
-  return deepMergeTheme(base, buildStyleMapPartialTheme(base, graphOverride, extras));
+  const mergeBase = styleMapMergeBase(base, extras);
+  return deepMergeTheme(mergeBase, buildStyleMapPartialTheme(mergeBase, graphOverride, extras));
 }

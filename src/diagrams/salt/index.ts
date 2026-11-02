@@ -162,7 +162,12 @@ function drawFragment(diagram: PSystemSalt, measurer: StringMeasurer, pass: Draw
   const { width, height } = extractViewBoxDims(svg);
   const { body, extraDefs } = extractFlatContent(svg);
   const fragment: RenderFragment = { body, width, height, diagramType: DIAGRAM_TYPE_SALT };
-  const withBackground = typeof backcolor === 'string' ? { ...fragment, background: backcolor } : fragment;
+  // A gradient backcolor leaves `backcolorString` null (SvgGraphics.java:178-183):
+  // no root `background:`, which `RenderFragment.backgroundGradient` carries.
+  const withBackground =
+    typeof backcolor === 'string'
+      ? { ...fragment, background: backcolor }
+      : { ...fragment, backgroundGradient: backcolor };
   const withDefs = extraDefs.length > 0 ? { ...withBackground, extraDefs } : withBackground;
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
   return lengthAdjust === undefined ? withDefs : { ...withDefs, lengthAdjust };

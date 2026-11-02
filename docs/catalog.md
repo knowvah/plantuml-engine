@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2034 modules · 7043 exported names.
+2037 modules · 7047 exported names.
 
 ## `src/`
 
@@ -25,6 +25,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `activity-circle-style.ts` | `ActivityCircleColors`, `ActivityCircleStyle`, `ActivityCircleStyleSource`, `resolveActivityCircleStyle`, `withActivityCircleStyle` | The activity start/stop circles' merged-style colours (mission add4, T3f, `labala-74-juki864`). |
 | `arrow-label-font.ts` | `ARROW_LABEL_DEFAULT_COLOR`, `ArrowLabelFont`, `resolveArrowLabelFont`, `resolveCardinalityFontColor`, `resolveCardinalityFont` | D3: the arrow-label font resolver -- `GraphvizImageBuilder.java:234-235` (`getDefaultStyleDefinitionArrow(stereotype).getMergedStyle(...) .getFontConfiguration(...)`), upstream's `labelFont` argument to `SvekEdge`'s constructor. |
 | `assemble-svg-activity.ts` | `finalizeActivityFragment` | Activity's per-diagram body finalization — split out of `assemble-svg.ts` (T2d-a pass 2, 500-line hook) to make room for the DOCGRAD gradient background branch. |
+| `assemble-svg-backcolor.ts` | `backcolorMarkup` | assemble-svg-backcolor.ts -- the body markup of `SvgGraphics`' constructor paint for the four finalizers that share `svg-backcolor.ts#backcolorPaint` (decisions.md D2: json/yaml/hcl, state, class, description). |
+| `assemble-svg-json.ts` | `finalizeJsonFragment` | assemble-svg-json.ts -- json/yaml/hcl's per-diagram body finalization (formerly `json/renderer-shell.ts#assembleJsonShell`), dispatched from `assemble-svg.ts#finalizeShellFragment`. |
 | `assemble-svg-sequence.ts` | `finalizeSequenceBody`, `finalizeSequenceFragment` | assemble-svg-sequence.ts -- sequence's per-diagram body finalization, dispatched from `assemble-svg.ts#finalizeShellFragment`. |
 | `assemble-svg-splice.ts` | `CONTENT_G_OPEN_RE`, `spliceAsFirstChild`, `spliceIntoContentGroup` | assemble-svg-splice.ts -- the two content-`<g>` splices the per-engine finalize functions of `assemble-svg.ts` share. |
 | `assemble-svg.ts` | `assembleSvg`, `seedOfUmlSource` | The single central document-assembly choke point — extracted from `src/index.ts` (mission A5 / T4), which sits at the repo's 500-line hook cap. |
@@ -157,6 +159,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `svek-dot-together.ts` | `ROOT_TOGETHER_PREFIX`, `togetherClusters` | `together { }` blocks as svek prints them: an unlabelled `subgraph <clusterId>t<k> { ... |
 | `svek-dot-top.ts` | `IsNormalPosition`, `nodesOrderedTop`, `nodesOrderedWithoutTop`, `normalPositionOf`, `topsFirstClusters`, `rootTops` | `Cluster#getNodesOrderedTop` / `getNodesOrderedWithoutTop` — the split `printCluster1` / `printCluster2` make of one cluster's own nodes. |
 | `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
+| `svg-backcolor.ts` | `Backcolor`, `backcolorPaint` | The document background, decided once the way `SvgGraphics`' constructor decides it -- a pure port of its three-way split so every finalizer that has no verified copy of its own (json family, state, class, description) calls ONE implementat |
 | `svg-defs-scale.ts` | `scaleShadowFilterDefs` | svg-defs-scale.ts -- the document scale applied to the shadow `<filter>` def. |
 | `svg-defs-seeded.ts` | `getSeed`, `seededDefIdRenames`, `applySeededDefIds` | svg-defs-seeded.ts — the seeded def-id pass over an assembled document. |
 | `svg-defs.ts` | `nextDef`, `extractGradientDefs`, `extractFilterDefs`, `backColorFilterId`, `backColorFilterDef`, `ANY_ID_RE`, `idOfElement`, `collapseDuplicateFilterDefs`, `DQUOTE`, `collapseDuplicateGradientDefs`, `withContentGradientIds`, `collectDocumentDefs`, `INLINE_DEF_OPENS`, `mapOutsideInlineDefs` | svg-defs.ts — `<defs>` collection for the pure-string SVG assembler. |

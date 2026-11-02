@@ -1,0 +1,11 @@
+@startuml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+state A
+state B
+[*] --> A
+A --> B
+@enduml

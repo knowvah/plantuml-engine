@@ -2,6 +2,8 @@ import { Direction } from '../../core/abel/Direction.js';
 import type { DiagramAnnotations } from '../../core/annotations/index.js';
 import { createAnnotations } from '../../core/annotations/index.js';
 import type { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
+import { HColorGradient } from '../../core/klimt/color/HColorGradient.js';
+import { HColors } from '../../core/klimt/color/HColors.js';
 import { HColorSimple } from '../../core/klimt/color/HColorSimple.js';
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import { Rankdir } from '../../core/klimt/geom/Rankdir.js';
@@ -104,10 +106,13 @@ export class MindMapDiagram extends TitledDiagram {
     const style = StyleSignatureBasic.of('root', 'document', 'mindmapDiagram').getMergedStyle(
       this.skinParam.getCurrentStyleBuilder(),
     );
-    const backgroundColor = style?.value('BackGroundColor').asColor(this.skinParam.getIHtmlColorSet());
-    if (!(backgroundColor instanceof HColorSimple))
-      throw new Error('ClassCastException: backcolor is not an HColorSimple');
-    return backgroundColor.asPaint();
+    // java:284-285: a null answer is `HColors.transparent()`; any other `HColor`
+    // (gradient included) is returned as is, with no cast.
+    const backgroundColor =
+      style?.value('BackGroundColor').asColor(this.skinParam.getIHtmlColorSet()) ?? HColors.transparent();
+    if (backgroundColor instanceof HColorSimple || backgroundColor instanceof HColorGradient)
+      return backgroundColor.asPaint();
+    throw new Error('ClassCastException: a document BackGroundColor is a simple or gradient colour');
   }
 
   /** @see MindMapDiagram.java:66-68 */

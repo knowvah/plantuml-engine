@@ -1,0 +1,16 @@
+@startuml
+legend
+foo
+----
+bar
+end legend
+<style>
+document {
+  BackgroundColor red/blue
+  legend {
+    LineThickness 0
+  }
+}
+</style>
+class A
+@enduml

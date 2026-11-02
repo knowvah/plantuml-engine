@@ -1,0 +1,11 @@
+@startsalt
+title T
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+</style>
+{
+  Hello
+}
+@endsalt

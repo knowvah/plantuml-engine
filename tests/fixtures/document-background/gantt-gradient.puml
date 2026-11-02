@@ -1,0 +1,8 @@
+@startgantt
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+[Task1] lasts 3 days
+@endgantt

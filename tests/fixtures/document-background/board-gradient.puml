@@ -1,0 +1,9 @@
+@startboard
+<style>
+document {
+  BackgroundColor red/blue
+}
+</style>
+Alpha
++Bravo
+@endboard

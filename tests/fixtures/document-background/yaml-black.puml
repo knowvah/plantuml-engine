@@ -1,0 +1,8 @@
+@startyaml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+a: 1
+@endyaml

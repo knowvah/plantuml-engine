@@ -15,11 +15,10 @@
       "slug": "background-pink-title",
       "topic": "T4a probe: painted wbsDiagram background + title (chrome rect order, family E)",
       "status": "baseline",
-      "weightedScore": 32,
-      "diffCount": 2,
-      "reason": "family E (no corpus row): the jar paints the document background <rect> first in the content <g> (klimt/drawing/svg/SvgGraphics.java:189-191 paints in the constructor, :819-821 resizes it to the final maxX/maxY); ours draws it inside drawBodyAt's body after the title <g> (src/core/TextBlockExporter.ts#finalizeTitledDiagramFragment): 2 structural diffs g[1]/g[1] rect vs g. Core, filed by sep-T5a; not a wbs fix.",
-      "measuredAt": "2026-10-13",
-      "measuredAgainstCommit": "c3e65bd29"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-02",
+      "measuredAgainstCommit": "87d86d5e3"
     },
     {
       "type": "wbs",
@@ -426,11 +425,10 @@
       "slug": "gradient-background-title",
       "topic": "T4a probe: gradient wbsDiagram background + title (chrome rect order, family E)",
       "status": "baseline",
-      "weightedScore": 32,
-      "diffCount": 2,
-      "reason": "family E (no corpus row): the jar paints the document background <rect> first in the content <g> (klimt/drawing/svg/SvgGraphics.java:189-191 paints in the constructor, :819-821 resizes it to the final maxX/maxY); ours draws it inside drawBodyAt's body after the title <g> (src/core/TextBlockExporter.ts#finalizeTitledDiagramFragment): 2 structural diffs g[1]/g[1] rect vs g. Core, filed by sep-T5a; not a wbs fix.",
-      "measuredAt": "2026-10-13",
-      "measuredAgainstCommit": "c3e65bd29"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-02",
+      "measuredAgainstCommit": "87d86d5e3"
     },
     {
       "type": "wbs",

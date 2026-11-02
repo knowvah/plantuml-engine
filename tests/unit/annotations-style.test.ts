@@ -484,3 +484,24 @@ describe('getStyleName (DiagramType.java:234-296)', () => {
     expect(getStyleName(type)).toBe(name);
   });
 });
+
+describe('resolveAnnotationStyles -- documentBackgroundGradient (T2f)', () => {
+  it('carries `theme.colors.backgroundGradient` on every element: `ug.getDefaultBackground()` is the backcolor (`UGraphicSvg.java:91`)', () => {
+    const gradient = { color1: 'red', color2: 'blue', policy: '-' } as const;
+    const theme = {
+      ...defaultTheme,
+      colors: { ...defaultTheme.colors, background: 'blue', backgroundGradient: gradient },
+    };
+    const styles = resolveAnnotationStyles(theme, new Map(), new Map());
+    for (const element of ['title', 'header', 'footer', 'caption', 'legend', 'mainframe'] as const) {
+      expect(styles[element].documentBackgroundGradient).toEqual(gradient);
+      expect(styles[element].documentBackground).toBe('#0000FF');
+    }
+  });
+
+  it('a solid canvas carries none', () => {
+    const styles = resolveAnnotationStyles(defaultTheme, new Map(), new Map());
+    expect(styles.title.documentBackgroundGradient).toBeUndefined();
+    expect(styles.title.documentBackground).toBe('#FFFFFF');
+  });
+});

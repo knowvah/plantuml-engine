@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+start
+:step;
+stop
+@enduml

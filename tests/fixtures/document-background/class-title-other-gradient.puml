@@ -1,0 +1,13 @@
+@startuml
+title T
+caption C
+<style>
+document {
+  BackgroundColor red/blue
+  title {
+    BackgroundColor blue/red
+  }
+}
+</style>
+class A
+@enduml

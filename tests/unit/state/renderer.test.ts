@@ -791,3 +791,24 @@ describe('renderState — shadow filter extraDefs', () => {
     expect(result).not.toContain('<filter');
   });
 });
+
+// ---------------------------------------------------------------------------
+// dbp-T2b: the document gradient reaches the fragment, as sequence/activity do
+// (`sequence/renderer-document.ts#documentChromeOf`); the jar paints it in
+// `SvgGraphics`' constructor (`SvgGraphics.java:178-183`).
+// ---------------------------------------------------------------------------
+
+describe('renderState — document gradient (dbp-T2b)', () => {
+  const GRADIENT = { color1: 'red', color2: 'blue', policy: '/' } as const;
+
+  it('carries theme.colors.backgroundGradient on the fragment', () => {
+    const theme = { ...defaultTheme, colors: { ...defaultTheme.colors, backgroundGradient: GRADIENT } };
+    expect(renderState(makeGeo(), theme).backgroundGradient).toEqual(GRADIENT);
+  });
+
+  it('leaves a solid background without the field (omitted, not undefined)', () => {
+    const fragment = renderState(makeGeo(), defaultTheme);
+    expect('backgroundGradient' in fragment).toBe(false);
+    expect(fragment.background).toBe('#FFFFFF');
+  });
+});

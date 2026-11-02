@@ -158,7 +158,12 @@ function drawFragment(diagram: MindMapDiagram, measurer: StringMeasurer, pass: D
     diagramType: DIAGRAM_TYPE_MINDMAP,
     ...(lengthAdjust === undefined ? {} : { lengthAdjust }),
   };
-  const withBackground = typeof backcolor === 'string' ? { ...fragment, background: backcolor } : fragment;
+  // A gradient backcolor leaves `backcolorString` null (SvgGraphics.java:178-183):
+  // no root `background:`, which `RenderFragment.backgroundGradient` carries.
+  const withBackground =
+    typeof backcolor === 'string'
+      ? { ...fragment, background: backcolor }
+      : { ...fragment, backgroundGradient: backcolor };
   return extraDefs.length > 0 ? { ...withBackground, extraDefs } : withBackground;
 }
 

@@ -1,0 +1,9 @@
+@startmindmap
+title T
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+</style>
+* A
+@endmindmap

@@ -1,0 +1,9 @@
+@startfiles
+<style>
+document {
+  BackgroundColor black
+}
+</style>
+/a.txt
+/b.txt
+@endfiles
