@@ -90,7 +90,7 @@ or journal why not. New/removed src module ⇒ `npm run catalog`.
 | batch | tasks | status |
 |---|---|---|
 | [0 — baseline, fixtures, ratchet](batch-0/overview.md) | T0a, T0b, close | [x] |
-| [1 — style origin, backcolor helper](batch-1/overview.md) | T1a, T1b, close | [ ] |
+| [1 — style origin, backcolor helper](batch-1/overview.md) | T1a, T1b, close | [x] |
 | [2 — finalizers, producers, klimt carriers](batch-2/overview.md) | T2a, T2b, T2c, T2d (close) | [ ] |
 | [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [ ] |
 | [squash](batch-squash/overview.md) | one commit per batch, tag `dbp/pre-squash` | [ ] |

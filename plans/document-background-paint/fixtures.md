@@ -43,3 +43,4 @@ Final list journaled by T0b (journal 4): 18 engines × {black, gradient} + json/
 | checkpoint | dbg rows conformant / total | Σ dbg diffCount | 28-engine conformant losses | notes |
 |---|---|---|---|---|
 | main `fe794c0a9` (b0, T0b pin) | 18 / 42 | 346 | — | mindmap-gradient renders an error page (29), not a throw |
+| b1 (T1a + T1b) | 21 / 43 | 340 | 0 (0 movers in 28 engines) | seq/act-gradient 3→0; +row `sequence-style-gradient-then-skinparam-black` (0, user ruling, journal 14) |

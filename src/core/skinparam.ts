@@ -31,6 +31,7 @@
 import { deepMergeTheme } from './theme.js';
 import type { Theme } from './theme.js';
 import { createSkinparamAccumulator } from './skinparam-accumulator.js';
+import type { SkinparamAccumulator } from './skinparam-accumulator.js';
 import { applyStereoOverride } from './skinparam-stereo-keys.js';
 import { applyNormalKey } from './skinparam-key-handlers.js';
 import { buildThemePartial } from './skinparam-theme-builder.js';
@@ -68,6 +69,23 @@ export function resolveSkinparam(skinparams: ReadonlyMap<string, string>, base: 
   }
 
   const partial = buildThemePartial(acc);
-  const theme = deepMergeTheme(base, partial);
+  const theme = deepMergeTheme(solidBackgroundMergeBase(base, acc), partial);
   return { theme, unknown: acc.unknown };
+}
+
+/**
+ * dbp T1a (D1): a solid `backgroundColor` replaces the WHOLE
+ * `(background, backgroundGradient)` pair. `buildThemePartial` can only SET
+ * fields, and `deepMergeTheme` spreads `base.colors` first, so an earlier
+ * gradient (e.g. a `<style> document` one) would survive a later solid.
+ * Upstream mutes every skinparam and `<style>` into ONE style storage in
+ * declaration order (`SkinParam.java:232-233,244`), and `calculateBackColor`
+ * reads only the last `document { BackGroundColor }`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
+ */
+function solidBackgroundMergeBase(base: Theme, acc: SkinparamAccumulator): Theme {
+  if (acc.background === undefined || acc.backgroundGradient !== undefined) return base;
+  if (base.colors.backgroundGradient === undefined) return base;
+  const { backgroundGradient: _replaced, ...colors } = base.colors;
+  return { ...base, colors };
 }

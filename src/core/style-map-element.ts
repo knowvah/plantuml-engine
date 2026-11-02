@@ -475,15 +475,15 @@ const DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE: readonly string[] = [
  * widened the precedence list from `document`/json`/yaml`/hcl only to also
  * cover a bare `root` selector and every DOT-gate diagram type's bare +
  * nested `document` selector (`bikuka-40-pezi068`/`cilaba-36-zogi212`).
+ * dbp T1a (D1): RAW, like `style.value(PName.BackGroundColor)`; the caller
+ * parses it (`.asColor`, `HColorSet.java:109-116` gradients included).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
  */
 export function resolveDocumentBackground(styleMap: StyleMap): string | undefined {
   let documentBg: string | undefined;
   for (const sel of DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE) {
-    const doc = styleMap.get(sel);
-    if (doc !== undefined) {
-      const bg = doc.get('backgroundcolor');
-      if (bg !== undefined) documentBg = resolveColor(bg);
-    }
+    const bg = styleMap.get(sel)?.get('backgroundcolor');
+    if (bg !== undefined) documentBg = bg;
   }
   return documentBg;
 }

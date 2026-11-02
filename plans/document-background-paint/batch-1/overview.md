@@ -8,9 +8,9 @@ moves needs a mechanism.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T1a](T1a-style-origin.md) | style `document BackgroundColor` → `(background, backgroundGradient)` like skinparam (D1) | typescript-pro (opus, effort high), dbp-T1a | `src/core/style-map-element.ts`, `src/core/style-map-theme.ts`, `tests/unit/style-map-theme.test.ts`, `tests/unit/core/style-map-document-background.test.ts` | B0 close | [ ] |
-| [T1b](T1b-backcolor-helper.md) | `src/core/svg-backcolor.ts`: port of `SvgGraphics` constructor branches (D2), no callers | typescript-pro (sonnet, effort high), dbp-T1b | `src/core/svg-backcolor.ts`, `tests/unit/core/svg-backcolor.test.ts`, `docs/catalog.md` | B0 close | [ ] |
-| close | merge both; gates `b1`; chain `b1-eng` vs `b0-eng`; dbg re-measure; re-pin seq/act rows | orchestrator | per close-procedure | T1a, T1b | [ ] |
+| [T1a](T1a-style-origin.md) | style `document BackgroundColor` → `(background, backgroundGradient)` like skinparam (D1) | typescript-pro (opus, effort high), dbp-T1a | `src/core/style-map-element.ts`, `src/core/style-map-theme.ts`, `tests/unit/style-map-theme.test.ts`, `tests/unit/core/style-map-document-background.test.ts` | B0 close | [x] |
+| [T1b](T1b-backcolor-helper.md) | `src/core/svg-backcolor.ts`: port of `SvgGraphics` constructor branches (D2), no callers | typescript-pro (sonnet, effort high), dbp-T1b | `src/core/svg-backcolor.ts`, `tests/unit/core/svg-backcolor.test.ts`, `docs/catalog.md` | B0 close | [x] |
+| close | merge both; gates `b1`; chain `b1-eng` vs `b0-eng`; dbg re-measure; re-pin seq/act rows | orchestrator | per close-procedure | T1a, T1b | [x] |
 
 ## Interfaces (→ batch 2)
 ```ts

@@ -5,8 +5,8 @@
       "diffCount": 0
     },
     "activity-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "activity-skinparam-gradient": {
       "conformant": true,
@@ -129,10 +129,14 @@
       "diffCount": 0
     },
     "sequence-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence-skinparam-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-style-gradient-then-skinparam-black": {
       "conformant": true,
       "diffCount": 0
     },
