@@ -33,24 +33,24 @@
       "diffCount": 0
     },
     "class-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "class-gradient-dash": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "class-gradient-pipe": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "component-black": {
       "conformant": true,
       "diffCount": 0
     },
     "component-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "files-black": {
       "conformant": true,
@@ -77,36 +77,36 @@
       "diffCount": 0
     },
     "json-black": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "json-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "json-gradient-dash": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "json-gradient-pipe": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "mindmap-black": {
       "conformant": true,
       "diffCount": 0
     },
     "mindmap-gradient": {
-      "conformant": false,
-      "diffCount": 29
+      "conformant": true,
+      "diffCount": 0
     },
     "object-black": {
       "conformant": true,
       "diffCount": 0
     },
     "object-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "packet-black": {
       "conformant": false,
@@ -121,8 +121,8 @@
       "diffCount": 0
     },
     "salt-gradient": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence-black": {
       "conformant": true,
@@ -141,20 +141,20 @@
       "diffCount": 0
     },
     "state-black": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "usecase-black": {
       "conformant": true,
       "diffCount": 0
     },
     "usecase-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     },
     "wbs-black": {
       "conformant": true,
@@ -165,12 +165,12 @@
       "diffCount": 0
     },
     "yaml-black": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "yaml-gradient": {
-      "conformant": false,
-      "diffCount": 3
+      "conformant": true,
+      "diffCount": 0
     }
   }
 }

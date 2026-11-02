@@ -209,9 +209,11 @@ describe('assembleSvg — CLASS diagramBorderColor splice (G2 N66)', () => {
     expect(rootGroupChildren(svg)).toBe(borderRect + INNER);
   });
 
-  it('puts the border rect BEFORE the background rect (drawn first)', () => {
+  it('puts the background rect BEFORE the border rect (createUGraphic, then maybeDrawBorder)', () => {
+    // dbp-T2a: `TextBlockExporter.java:169-171` -- `SvgGraphics`' constructor paints the back colour inside
+    // `createUGraphic`, before `maybeDrawBorder` (jar render: `fill="#EEE"` rect, then the `fill="none"` border).
     const svg = assembleSvg(chromedClassFragment({ diagramBorderColor: '#FF0000', documentBackgroundRect: '#EEEEEE' }));
-    expect(rootGroupChildren(svg)).toMatch(/^<rect [^>]*fill="none"[^>]*\/><rect /);
+    expect(rootGroupChildren(svg)).toMatch(/^<rect [^>]*fill="#EEE"[^>]*\/><rect [^>]*fill="none"/);
   });
 
   it('still no-ops when chrome inflated the canvas past the class body', () => {
@@ -234,8 +236,10 @@ describe('assembleSvg — CLASS: a lost <g> wrapper cannot fail quietly', () => 
 // exercises the no-chrome path via renderState directly.
 // ---------------------------------------------------------------------------
 
-describe('assembleSvg — STATE background rect skipped once chrome has wrapped', () => {
-  it('draws no background rect for a bodyWrapped (chrome-present) fragment, even with a non-default background', () => {
+describe('assembleSvg — STATE background rect spliced once chrome has wrapped', () => {
+  it('draws the background rect first for a bodyWrapped (chrome-present) fragment (dbp-T2a)', () => {
+    // `SvgGraphics.java:176-192` paints before any draw, chrome included (jar render of a titled state with
+    // `skinparam backgroundColor #EEEEEE`: the rect precedes `<g class="title">`).
     const svg = assembleSvg({
       body: ROOT_GROUP_OPEN + INNER + '</g>',
       width: 100,
@@ -244,7 +248,9 @@ describe('assembleSvg — STATE background rect skipped once chrome has wrapped'
       bodyWrapped: true,
       diagramType: 'STATE',
     });
-    expect(svg).not.toContain('<rect x="0" y="0"');
+    expect(rootGroupChildren(svg)).toBe(
+      '<rect x="0" y="0" width="100" height="80" fill="#808080" stroke="none"/>' + INNER,
+    );
   });
 });
 
@@ -478,8 +484,8 @@ describe('assembleSvg — AC5: the other diagram types are byte-unchanged', () =
     expect(svg).toBe(
       pinnedPrologue('CLASS', 66, 46, 'width:66px;height:46px;background:#EEEEEE;') +
         ROOT_GROUP_OPEN +
-        '<rect x="0" y="0" width="64" height="44" fill="none" stroke="#F00" stroke-width="1"/>' +
         '<rect x="0" y="0" width="66" height="46" fill="#EEE" stroke="none"/>' +
+        '<rect x="0" y="0" width="64" height="44" fill="none" stroke="#F00" stroke-width="1"/>' +
         INNER +
         '</g></svg>',
     );

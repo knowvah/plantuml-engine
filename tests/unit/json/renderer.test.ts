@@ -4,8 +4,23 @@ import { assembleSvg } from '../../../src/index.js';
 import { defaultTheme } from '../../../src/core/theme.js';
 import type { JsonGeometry, JsonNodeGeo, JsonEdgeGeo, JsonRowGeo } from '../../../src/diagrams/json/layout.js';
 import { jsonStylesOf } from '../../helpers/json-skin.js';
+import type { Theme } from '../../../src/core/theme.js';
+import type { RenderFragment } from '../../../src/core/dispatcher.js';
+
+/** `json/index.ts`'s own `DIAGRAM_TYPE_JSON` (the jar's `data-diagram-type`). */
+const DIAGRAM_TYPE_JSON = 'JSON';
 
 const DEFAULT_STYLES = jsonStylesOf('json');
+
+/**
+ * The fragment `json/index.ts#render` hands `assembleSvg`: `renderJson`'s, stamped with the
+ * plugin's `diagramType` (`json/index.ts:57`). Without the stamp `assembleSvg` skips
+ * `finalizeJsonFragment` and a test asserts an unshifted, unformatted body production never
+ * emits (dbp follow-on (b)).
+ */
+function productionFragment(geo: JsonGeometry, theme: Theme): RenderFragment {
+  return { ...renderJson(geo, theme), diagramType: DIAGRAM_TYPE_JSON };
+}
 
 // ---------------------------------------------------------------------------
 // Geometry factories
@@ -119,7 +134,7 @@ describe('renderJson — AC #1: value text color', () => {
     const geo = makeGeo({
       nodes: [makeNode()],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // `TextBlockJson` has no per-type value styling — every cell takes the
     // node's own FontColor, black for this family (`plantuml.skin:446`).
@@ -134,7 +149,7 @@ describe('renderJson — AC #1: value text color', () => {
     // over the skin's black (`TextBlockJson.java:151`); the key cell, whose
     // `header` style inherits from `node`, follows it.
     const geo = styledGeo(styleBlock('jsonDiagram { node { FontColor #FF00FF } }'), { nodes: [makeNode()] });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body.match(/<text [^>]*fill="#F0F"/g) ?? []).toHaveLength(2);
   });
 });
@@ -151,7 +166,7 @@ describe('renderJson — AC #2: highlight background', () => {
     });
     const node = makeNode({ rows: [highlightedRow] });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // `plantuml.skin:458`'s `node { highlight { BackGroundColor #ccff02 } }`.
     expect(body).toContain('fill="#CCFF02" stroke="#CCFF02"');
@@ -169,7 +184,7 @@ describe('renderJson — AC #3: edge produces a path with d="M"', () => {
       ],
     });
     const geo = makeGeo({ nodes: [nodeA, nodeB], edges: [edge] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     expect(body).toContain('<path');
     expect(body).toContain('d="M');
@@ -187,7 +202,7 @@ describe('renderJson — AC #4: boolean true row shows ☑', () => {
     });
     const node = makeNode({ rows: [boolRow] });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     expect(body).toContain('☑');
   });
@@ -204,7 +219,7 @@ describe('renderJson — AC #5: null row shows ␀', () => {
     });
     const node = makeNode({ rows: [nullRow] });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     expect(body).toContain('␀');
   });
@@ -217,35 +232,37 @@ describe('renderJson — AC #5: null row shows ␀', () => {
 describe('renderJson — structural', () => {
   it('empty geometry returns valid SVG without crashing', () => {
     const geo = makeGeo();
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     expect(svg).toMatch(/^<svg /);
     expect(svg).toContain('</svg>');
   });
 
   it('empty geometry returns svgRoot with 0 dimensions', () => {
     const geo = makeGeo({ nodes: [], edges: [], width: 0, height: 0 });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
-    expect(svg).toContain('width="0"');
-    expect(svg).toContain('height="0"');
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
+    expect(svg).toContain('width="0px"');
+    expect(svg).toContain('height="0px"');
   });
 
   it('each node produces a <g transform="translate( element', () => {
     const nodes = [makeNode({ id: 'n0', x: 10, y: 20 }), makeNode({ id: 'n1', x: 300, y: 50 })];
     const geo = makeGeo({ nodes });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // A5/M2: nodes are drawn FLAT, in absolute coordinates, with no per-node
     // group. `SvgGraphics` resolves upstream's `UTranslate` into the emitted
     // coordinates rather than into a `<g transform>`, so the jar's whole
     // document is `<defs/>` plus ONE content `<g>`.
     expect(body).not.toContain('<g transform=');
-    expect(body).toContain('x="10" y="20"');
-    expect(body).toContain('x="300" y="50"');
+    // `finalizeJsonFragment` -> `exportTo` draws the block at the export margin
+    // (`TextBlockExporter.java:173`, 10 each side): (10, 20) -> (20, 30), (300, 50) -> (310, 60).
+    expect(body).toContain('x="20" y="30"');
+    expect(body).toContain('x="310" y="60"');
   });
 
   it('node rects have rx="5" — RoundCorner 10 halved for SVG', () => {
     const geo = makeGeo({ nodes: [makeNode()] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // `DriverRectangleSvg.java:78` emits `rx/2`, `ry/2`, so the skin's
     // `RoundCorner 10` reaches the SVG as 5 — and `ry` is emitted too.
@@ -255,7 +272,7 @@ describe('renderJson — structural', () => {
 
   it('draws no key-column background — drawU paints no such column', () => {
     const geo = makeGeo({ nodes: [makeNode()] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // `TextBlockJson#drawU` draws the node rect, the rows, and the node rect
     // again. The `header` style contributes FONT, not fill; this port used to
@@ -263,10 +280,7 @@ describe('renderJson — structural', () => {
     // no equivalent of, and the jar emits zero clipPaths in this family.
     expect(body).not.toContain('clipPath');
     // Exactly two POSITIONED rects for a single node: the fill and the border.
-    // (This suite calls `renderJson` directly rather than through the plugin,
-    // so the fragment has no `jsonShell` and `assembleSvg` falls through to
-    // the generic `svgRoot`, which contributes its own unpositioned canvas
-    // background rect. Hence `<rect x=`, not `<rect `.)
+    // (The default white background draws no canvas rect: `SvgGraphics.java:189-191`.)
     expect((body.match(/<rect x=/g) ?? []).length).toBe(2);
   });
 
@@ -278,11 +292,12 @@ describe('renderJson — structural', () => {
     ];
     const node = makeNode({ rows });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
-    // Rows are at node.y (20) + row.y, so separators land at 40 and 60.
-    expect(body).toContain('y1="40" x2="210" y2="40"');
-    expect(body).toContain('y1="60" x2="210" y2="60"');
+    // Rows are at node.y (20) + row.y, so separators land at 40 and 60 in the block;
+    // the export margin (10) moves the whole drawing: 50 and 70, x2 = 10 + 10 + 200.
+    expect(body).toContain('y1="50" x2="220" y2="50"');
+    expect(body).toContain('y1="70" x2="220" y2="70"');
     // Row at y=0 should NOT emit a separator above it.
     const lineCount = (body.match(/<line /g) ?? []).length;
     // A5/M2: upstream draws the column divider INSIDE the per-row loop, one
@@ -302,7 +317,7 @@ describe('renderJson — structural', () => {
     });
     const node = makeNode({ rows: [nestedRow] });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // `StripeSimple#getAtoms` (`StripeSimple.java:124-129`) gives a stripe that
     // collected no atoms a single-space atom, so the cell draws a space --
@@ -328,13 +343,14 @@ describe('renderJson — structural', () => {
       nodes: [makeNode({ id: 'n0' }), makeNode({ id: 'n1', x: 200, y: 0 })],
       edges: [edge],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // A5/T8: the path is now the ported `JsonCurve` -- a 13-unit stub
     // extrapolated along the spline's OWN direction (`supp`), a line to the
     // spline start, then the engine's cubic segments. p0=(0,0) away from
     // p1=(50,0) puts the stub at (-13, 0).
-    expect(body).toContain('d="M -13 0 L 0 0 C 50 0 50 50 100 50"');
+    // The export margin (10) shifts every point of the block.
+    expect(body).toContain('d="M -3 10 L 10 10 C 60 10 60 60 110 60"');
   });
 
   // A5/T8: a 2-point spline yields a stub and a line, and NOTHING else. The
@@ -353,12 +369,13 @@ describe('renderJson — structural', () => {
       nodes: [makeNode({ id: 'n0' }), makeNode({ id: 'n1', x: 200, y: 0 })],
       edges: [edge],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     const d = /d="([^"]*)"/.exec(body.slice(body.indexOf('<path')))?.[1] ?? '';
-    expect(d).toContain('L 10 20');
+    // The spline start (10, 20) after the export margin (10).
+    expect(d).toContain('L 20 30');
     expect(d).not.toContain('C');
     // The stub runs back along the segment's own direction, not horizontally.
-    expect(d.startsWith('M -1.6')).toBe(true);
+    expect(d.startsWith('M 8.372 24.186')).toBe(true);
   });
 
   // The arrowhead's tip is graphviz's own `bezier.ep`, not a point
@@ -379,11 +396,12 @@ describe('renderJson — structural', () => {
       nodes: [makeNode({ id: 'n0' }), makeNode({ id: 'n1', x: 200, y: 0 })],
       edges: [edge],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     const head = /<path d="([^"]*)" fill="#000"/.exec(body)?.[1] ?? '';
     expect(head).not.toBe('');
     // `Arrow#drawArrow` order: p4, p11, p3, p2(tip), p4 — the tip is 4th.
-    expect(head.split('L')[3]?.trim()).toBe('130 0');
+    // ep (130, 0) + the export margin (10).
+    expect(head.split('L')[3]?.trim()).toBe('140 10');
   });
 
   // `JsonCurve.java:72-82` nulls `ep` on the calloc-zero point and
@@ -401,12 +419,12 @@ describe('renderJson — structural', () => {
       nodes: [makeNode({ id: 'n0' }), makeNode({ id: 'n1', x: 200, y: 0 })],
       edges: [edge],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     // Specifically the filled arrowhead PATH — the spline's own spot ellipse
     // and the cell text are also `fill="#000"` and are expected to remain.
     expect(/<path d="[^"]*" fill="#000"/.test(body)).toBe(false);
     // The edge itself still draws; only its head is absent.
-    expect(body).toContain('<path d="M -13 0 L 0 0" fill="none"');
+    expect(body).toContain('<path d="M -3 10 L 10 10" fill="none"');
   });
 
   it('draws every value type in the same color — upstream has no per-type styling', () => {
@@ -423,7 +441,7 @@ describe('renderJson — structural', () => {
     ];
     for (const t of types) {
       const node = makeNode({ rows: [makeRow({ ...t, y: 4, height: 20 })] });
-      const body = contentAfterDefs(assembleSvg(renderJson(makeGeo({ nodes: [node] }), defaultTheme)));
+      const body = contentAfterDefs(assembleSvg(productionFragment(makeGeo({ nodes: [node] }), defaultTheme)));
       // Two texts per row (key + value), both black.
       expect(body.match(/fill="#000"/g) ?? []).toHaveLength(2);
     }
@@ -431,9 +449,11 @@ describe('renderJson — structural', () => {
 
   it('SVG root has correct width and height from geometry', () => {
     const geo = makeGeo({ nodes: [makeNode()], width: 500, height: 350 });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
-    expect(svg).toContain('width="500"');
-    expect(svg).toContain('height="350"');
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
+    // The exported canvas: the block + the margin on both sides + `ensureVisible`'s 1
+    // (`TextBlockExporter.java:204-208`): 500 + 20 + 1, 350 + 20 + 1.
+    expect(svg).toContain('width="521px"');
+    expect(svg).toContain('height="371px"');
   });
 
   it('edge with zero points produces no path element', () => {
@@ -442,7 +462,7 @@ describe('renderJson — structural', () => {
       nodes: [makeNode()],
       edges: [edge],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     expect(body).not.toContain('<path');
   });
@@ -459,13 +479,13 @@ describe('renderJson — branch coverage', () => {
       nodes: [makeNode()],
       edges: [edge],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // A5/T8: with no second point there is no direction to extrapolate along,
     // so `veryFirstPoint` degrades to p0 itself and the path is a zero-length
     // stub. Upstream would index past the end here; a 1-point spline is not
     // something the engine produces, and this guard is documented on `supp`.
-    expect(body).toContain('d="M 50 30 L 50 30"');
+    expect(body).toContain('d="M 60 40 L 60 40"');
   });
 
   it('spline=true with only 2 points falls back to stub+bezier path', () => {
@@ -480,11 +500,12 @@ describe('renderJson — branch coverage', () => {
       nodes: [makeNode()],
       edges: [edge],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // A5/T8: as above -- two points, so a stub and a line, no cubic.
     const d2 = /d="([^"]*)"/.exec(body.slice(body.indexOf('<path')))?.[1] ?? '';
-    expect(d2).toContain('L 10 10');
+    // The spline start (10, 10) after the export margin (10).
+    expect(d2).toContain('L 20 20');
     expect(d2).not.toContain('C');
   });
 
@@ -498,7 +519,7 @@ describe('renderJson — branch coverage', () => {
     });
     const node = makeNode({ rows: [nestedRow] });
     const geo = makeGeo({ nodes: [node] });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // Value text takes the node's FontColor (`skin/plantuml.skin:446`
     // `yamlDiagram,jsonDiagram { FontColor black }`), not the global `#181818`.
@@ -523,7 +544,7 @@ describe('renderJson — branch coverage', () => {
       nodes: [makeNode({ id: 'n0' }), makeNode({ id: 'n1', x: 200, y: 0 })],
       edges: [edge],
     });
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const body = contentAfterDefs(svg);
     // Should contain two C segments
     const cCount = (body.match(/ C /g) ?? []).length;
@@ -539,7 +560,7 @@ describe('renderJson — branch coverage', () => {
       makeRow({ key: 'e', value: '{...}', valueType: 'nested', y: 84, height: 20 }),
     ];
     const geo = makeGeo({ nodes: [makeNode({ rows })], edges: [makeEdge()] });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     // Upstream has no per-type value styling, so all five arms are the skin's
     // black (`plantuml.skin:446`): ten texts, none in any other colour.
     expect(body.match(/<text [^>]*fill="#000"/g) ?? []).toHaveLength(10);
@@ -562,7 +583,7 @@ describe('renderJson — branch coverage', () => {
     const geo = styledGeo(styleBlock('jsonDiagram { .h1 { BackGroundColor #ABCDEF } }'), {
       nodes: [makeNode({ rows: [highlightedRow] })],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body).toContain('fill="#ABCDEF" stroke="#ABCDEF"');
     expect(body).not.toContain('fill="#CCFF02"');
   });
@@ -577,7 +598,7 @@ describe('renderJson — branch coverage', () => {
       height: 20,
     });
     const geo = makeGeo({ nodes: [makeNode({ rows: [highlightedRow] })] });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body).toContain('fill="#CCFF02" stroke="#CCFF02"');
   });
 });
@@ -589,7 +610,7 @@ describe('renderJson — built-in theme colors', () => {
   it('!theme amiga: node background, borders and all text come from the amiga styles', () => {
     const rows: JsonRowGeo[] = [makeRow({ key: 'fruit', value: 'Apple', valueType: 'string', y: 0, height: 20 })];
     const geo = styledGeo('!theme amiga', { nodes: [makeNode({ rows })] });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body).toContain('fill="#0B58A8"');
     expect(body).toContain('stroke="#FFF"');
     expect(body.match(/<text [^>]*fill="#FFF"/g) ?? []).toHaveLength(2);
@@ -604,7 +625,7 @@ describe('renderJson — node-level style cascade', () => {
     const geo = styledGeo(styleBlock('jsonDiagram { node { FontColor #FF7F50 } }'), {
       nodes: [makeNode({ rows: ROWS })],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body.match(/<text [^>]*fill="#FF7F50"/g) ?? []).toHaveLength(2);
   });
 
@@ -612,7 +633,7 @@ describe('renderJson — node-level style cascade', () => {
     const geo = styledGeo(styleBlock('jsonDiagram { node { FontName Helvetica\nFontSize 12 } }'), {
       nodes: [makeNode({ rows: ROWS })],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(body.match(/<text [^>]*font-family="Helvetica"[^>]*font-size="12"/g) ?? []).toHaveLength(2);
   });
 
@@ -620,7 +641,7 @@ describe('renderJson — node-level style cascade', () => {
     const geo = styledGeo(styleBlock('jsonDiagram { node { FontColor #FF7F50\nheader { FontColor #AABBCC } } }'), {
       nodes: [makeNode({ rows: ROWS })],
     });
-    const body = contentAfterDefs(assembleSvg(renderJson(geo, defaultTheme)));
+    const body = contentAfterDefs(assembleSvg(productionFragment(geo, defaultTheme)));
     expect(/<text [^>]*fill="#ABC"[^>]*>myKey</.test(body)).toBe(true);
     expect(/<text [^>]*fill="#FF7F50"[^>]*>val</.test(body)).toBe(true);
   });
@@ -659,5 +680,28 @@ describe('renderJson — skinparam dpi has NO EFFECT (cdd-T30, StyleExtractor.ja
     // -> 10 -> 20; dpi 600 changes nothing.
     expect(withoutDpi).toContain('<rect x="20" y="60"');
     expect(withDpi).toBe(withoutDpi);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// dbp-T2b: the document gradient reaches the fragment, as sequence/activity do
+// (`sequence/renderer-document.ts#documentChromeOf`). The jar paints it in
+// `SvgGraphics`' constructor (`SvgGraphics.java:178-183`); the finalizer needs
+// it on the fragment to do the same.
+// ---------------------------------------------------------------------------
+
+describe('renderJson — document gradient (dbp-T2b)', () => {
+  const GRADIENT = { color1: 'red', color2: 'blue', policy: '/' } as const;
+  const geo = makeGeo({ nodes: [makeNode()] });
+
+  it('carries theme.colors.backgroundGradient on the fragment', () => {
+    const theme = { ...defaultTheme, colors: { ...defaultTheme.colors, backgroundGradient: GRADIENT } };
+    expect(renderJson(geo, theme).backgroundGradient).toEqual(GRADIENT);
+  });
+
+  it('leaves a solid background without the field (omitted, not undefined)', () => {
+    const fragment = renderJson(geo, defaultTheme);
+    expect('backgroundGradient' in fragment).toBe(false);
+    expect(fragment.background).toBe(defaultTheme.colors.background);
   });
 });

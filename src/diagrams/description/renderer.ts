@@ -286,7 +286,10 @@ export function renderDescription(
 
   const option = basicSvgOption({
     minDim: { width, height },
-    backcolor: theme.colors.background,
+    // dbp-T2b: the gradient when there is one -- `calculateBackColor` hands `SvgOption` an `HColorGradient`
+    // and the constructor takes its gradient branch (`SvgGraphics.java:178-183`); `background` is then
+    // the raw `red/blue` spelling, which `toSvgPaint` would read as a (garbage) solid colour.
+    backcolor: theme.colors.backgroundGradient ?? theme.colors.background,
     scale,
     rootAttributes: new Map([['data-diagram-type', DIAGRAM_TYPE_DESCRIPTION]]),
     // lad-T2b: `TextBlockExporter.java:306-307` (`option.withLengthAdjust(skinParam.getlengthAdjust())`);
@@ -354,7 +357,11 @@ export function unwrapKlimtSvg(svg: string, background: string): RenderFragment 
   const { body, documentBackgroundRect } = splitLeadingBackgroundRect(klimtBody);
   // The root `style="...background:"` carries the resolved hex the jar writes
   // (`gray` -> `#808080`), as class's own resolve-before-shell convention (N4).
-  background = resolveColorToSvgHex(background);
+  // A gradient (a `url(#id)` rect, def already in `extraDefs`) has NO root background:
+  // `backcolorString = null` (`SvgGraphics.java:178-183`), the canonical transparent hex
+  // `document-shell.ts#hasBackgroundStyle` omits (`background` is the raw `red/blue` here).
+  background =
+    documentBackgroundRect?.startsWith(URL_PAINT_PREFIX) === true ? '#00000000' : resolveColorToSvgHex(background);
   const fragment: RenderFragment = { body, width, height, background, diagramType: DIAGRAM_TYPE_DESCRIPTION };
   if (extraDefs.length > 0) fragment.extraDefs = extraDefs;
   if (documentBackgroundRect !== undefined) fragment.documentBackgroundRect = documentBackgroundRect;
@@ -363,9 +370,12 @@ export function unwrapKlimtSvg(svg: string, background: string): RenderFragment 
 
 /** The background `<rect>` `SvgGraphicsCore#paintBackcolor` writes as the
  *  klimt body's first child (non-default backgrounds only): the canvas origin,
- *  the fill, and `stroke:none`. */
+ *  the fill (a hex, or `url(#id)` for a gradient), and `stroke:none`. */
 const LEADING_BACKGROUND_RECT_RE =
-  /^<rect x="0" y="0" width="\d+" height="\d+" fill="(#[0-9A-Fa-f]{3,8})" style="stroke:none;"\/>/;
+  /^<rect x="0" y="0" width="\d+" height="\d+" fill="(#[0-9A-Fa-f]{3,8}|url\(#[^)"]+\))" style="stroke:none;"\/>/;
+
+/** A gradient backcolor's rect fill (`SvgGraphics.java:178-183`: `"url(#" + id + ")"`). */
+const URL_PAINT_PREFIX = 'url(#';
 
 /**
  * codd-T4: the jar's background rect belongs to the FINAL canvas, not to the

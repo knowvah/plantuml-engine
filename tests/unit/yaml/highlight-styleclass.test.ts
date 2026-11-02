@@ -4,12 +4,27 @@ import { parseJson } from '../../../src/diagrams/json/parser.js';
 import { layoutJson } from '../../../src/diagrams/json/layout.js';
 import { renderJson } from '../../../src/diagrams/json/renderer.js';
 import { assembleSvg } from '../../../src/index.js';
-import { defaultTheme } from '../../../src/core/theme.js';
+import { defaultTheme, type Theme } from '../../../src/core/theme.js';
+import type { RenderFragment } from '../../../src/core/dispatcher.js';
+import type { JsonGeometry } from '../../../src/diagrams/json/layout.js';
 import { FormulaMeasurer } from '../../../src/core/measurer.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import type { JsonDiagramAST } from '../../../src/diagrams/json/ast.js';
 import { jsonObjectOf } from '../../helpers/json-object.js';
 import { jsonSkinParamOf } from '../../helpers/json-skin.js';
+
+/** `yaml/index.ts`'s own `DIAGRAM_TYPE_YAML` (the jar's `data-diagram-type`). */
+const DIAGRAM_TYPE_YAML = 'YAML';
+
+/**
+ * The fragment `yaml/index.ts#render` hands `assembleSvg` (`yaml/index.ts:63`): `renderJson`'s,
+ * stamped with the plugin's `diagramType`. Without the stamp `assembleSvg` skips
+ * `finalizeJsonFragment` and a test asserts an unshifted, unformatted body production never
+ * emits (dbp follow-on (b)).
+ */
+function productionFragment(geo: JsonGeometry, theme: Theme): RenderFragment {
+  return { ...renderJson(geo, theme), diagramType: DIAGRAM_TYPE_YAML };
+}
 
 /** `plantuml.skin` jsonDiagram highlight BackGroundColor default. */
 const DEFAULT_HIGHLIGHT_BACKGROUND = '#CCFF02';
@@ -129,7 +144,7 @@ describe('renderJson — uses `.h1` style background for named class', () => {
       highlights: [{ path: ['fruit'], styleClass: 'h1' }],
     };
     const geo = layoutJson(ast, theme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, theme));
+    const svg = assembleSvg(productionFragment(geo, theme));
     expect(svg).toContain('#ABCDEF');
     // Default highlight color should not be used
     expect(svg).not.toContain('#CCFF02');
@@ -144,7 +159,7 @@ describe('renderJson — uses `.h1` style background for named class', () => {
       highlights: [{ path: ['fruit'], styleClass: 'h1' }],
     };
     const geo = layoutJson(ast, defaultTheme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const hlBg = DEFAULT_HIGHLIGHT_BACKGROUND;
     expect(svg).toContain(hlBg);
   });
@@ -158,7 +173,7 @@ describe('renderJson — uses `.h1` style background for named class', () => {
       highlights: [{ path: ['fruit'], styleClass: 'h1' }],
     };
     const geo = layoutJson(ast, theme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, theme));
+    const svg = assembleSvg(productionFragment(geo, theme));
     expect(svg).toContain('#F00');
   });
 });
@@ -175,7 +190,7 @@ describe('end-to-end: YAML <<h1>> highlight class in SVG output', () => {
       skinParam: jsonSkinParamOf('yaml', '<style>\n.h1 { BackGroundColor #0F0 }\n</style>'),
     };
     const geo = layoutJson(ast, theme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, theme));
+    const svg = assembleSvg(productionFragment(geo, theme));
     expect(svg).toContain('#0F0');
     expect(svg).not.toContain('#CCFF02');
   });
@@ -183,7 +198,7 @@ describe('end-to-end: YAML <<h1>> highlight class in SVG output', () => {
   it('full pipeline with no class uses default highlight color', () => {
     const ast = parseYaml(makeYamlSource(['#highlight "fruit"', 'fruit: Apple', 'size: Large']));
     const geo = layoutJson(ast, defaultTheme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, defaultTheme));
+    const svg = assembleSvg(productionFragment(geo, defaultTheme));
     const hlBg = DEFAULT_HIGHLIGHT_BACKGROUND;
     expect(svg).toContain(hlBg);
   });
@@ -200,7 +215,7 @@ describe('end-to-end: YAML <<h1>> highlight class in SVG output', () => {
       ),
     };
     const geo = layoutJson(ast, theme, new FormulaMeasurer());
-    const svg = assembleSvg(renderJson(geo, theme));
+    const svg = assembleSvg(productionFragment(geo, theme));
     expect(svg).toContain('#F00');
     expect(svg).toContain('#00F');
   });

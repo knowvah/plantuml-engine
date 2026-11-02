@@ -44,3 +44,4 @@ Final list journaled by T0b (journal 4): 18 engines × {black, gradient} + json/
 |---|---|---|---|---|
 | main `fe794c0a9` (b0, T0b pin) | 18 / 42 | 346 | — | mindmap-gradient renders an error page (29), not a throw |
 | b1 (T1a + T1b) | 21 / 43 | 340 | 0 (0 movers in 28 engines) | seq/act-gradient 3→0; +row `sequence-style-gradient-then-skinparam-black` (0, user ruling, journal 14) |
+| b2 (T2a + T2b + T2c) | 37 / 43 | 274 | 0 (0 verdict movers in 28 engines) | every in-scope row conformant; remaining 6 rows = board/packet/chart (not fixed, journal 7) |

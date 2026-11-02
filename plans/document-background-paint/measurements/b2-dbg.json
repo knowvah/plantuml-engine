@@ -1,0 +1,176 @@
+{
+  "rows": {
+    "activity-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity-skinparam-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "board-black": {
+      "conformant": false,
+      "diffCount": 18
+    },
+    "board-gradient": {
+      "conformant": false,
+      "diffCount": 20
+    },
+    "chart-black": {
+      "conformant": false,
+      "diffCount": 104
+    },
+    "chart-gradient": {
+      "conformant": false,
+      "diffCount": 75
+    },
+    "class-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-gradient-dash": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class-gradient-pipe": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "files-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "files-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "gantt-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "gantt-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "hcl-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "hcl-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "json-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "json-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "json-gradient-dash": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "json-gradient-pipe": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "mindmap-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "mindmap-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "packet-black": {
+      "conformant": false,
+      "diffCount": 36
+    },
+    "packet-gradient": {
+      "conformant": false,
+      "diffCount": 21
+    },
+    "salt-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "salt-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-skinparam-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence-style-gradient-then-skinparam-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "wbs-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "wbs-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "yaml-black": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "yaml-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    }
+  }
+}

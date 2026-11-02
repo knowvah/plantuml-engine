@@ -7,6 +7,7 @@
 | D3 | mindmap/salt mirror the wbs carrier | string → `background`, gradient → `backgroundGradient`; mindmap `calculateBackColor` returns any colour. |
 | D4 | hcl: jar-compatible white, extended valid | `HclDiagramFactory.java:86-92` ignores `<style>`; extended mode honours it (ruling 2026-10-23). |
 | D5 | One authored fixture set + ratchet | `tests/fixtures/document-background/`, per-row verdict + diff count, shrink-only. |
+| D7 | Chrome gradient + klimt-carrier rect (added 2026-11-02, user ruling) | Fixed here as batch 2b, not filed. |
 | D6 | Standing conventions | Worktrees, unsigned commits, squash per batch, the user signs; 0 losses in 28 engines; d.ts identical. |
 
 Out of scope: timing, ebnf, regex (unported engines; `planning/mission-guide.md`
@@ -82,3 +83,16 @@ As jff: per-task worktrees (`mkwt.sh`), unsigned commits, `--no-ff` merges,
 squash per batch at the end (memory `squash-per-batch-at-end`), the user signs
 (`git rebase --force-rebase -S <base>`) and pushes; never dot-engine, the
 fork, the jar, cached oracle bytes.
+
+## D7 — chrome gradient, klimt-carrier rect (amended 2026-11-02, user ruling)
+
+Found by probing past the authored rows at the B2 merge. Both pre-existing, neither
+a regression (every probe at or below its pre-fix count, journal 24).
+
+- **Chrome.** `TextBlockBordered.drawU`'s `equals(ug.getDefaultBackground())` skip
+  never holds for an `HColorGradient`, so the jar paints a `url(#id)` rect behind each
+  chrome block that inherits the document gradient.
+- **Klimt carriers.** gantt/mindmap/salt/wbs + chrome + non-default background: the
+  rect must lead the content at the final canvas, as description's already does.
+
+Sequence/activity remain unmigrated (D2). Files draws no title in the jar (control row only).

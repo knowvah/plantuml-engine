@@ -320,6 +320,9 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
     width: geo.totalWidth,
     height: geo.totalHeight,
     background: resolveColorToSvgHex(theme.colors.background),
+    // dbp-T2b (D1): a `<style>`/`skinparam` document gradient, for the finalizer to paint as
+    // `SvgGraphics`' constructor does (`SvgGraphics.java:178-183`); omitted when unset.
+    ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),
     diagramType: DIAGRAM_TYPE_STATE,
     ...(geo.preChromeWidth !== undefined && geo.preChromeHeight !== undefined
       ? { preChromeWidth: geo.preChromeWidth, preChromeHeight: geo.preChromeHeight }
