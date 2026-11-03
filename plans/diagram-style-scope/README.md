@@ -101,8 +101,8 @@ why not. New/removed src module ⇒ `npm run catalog`.
 | [2 — shared element cascade](batch-2/overview.md) | T2a, close | [x] |
 | [3 — engine readers](batch-3/overview.md) | T3a, T3b, T3c, T3d, T3e, T3f, T3g, close | [x] (chain deferred to b4, journal row 49) |
 | [4 — activity LineColor](batch-4/overview.md) | T4a, close | [x] |
-| [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [ ] |
-| [squash](batch-squash/overview.md) | one commit per batch, tag `dss/pre-squash` | [ ] |
+| [exit](batch-exit/overview.md) | TE1, TE2, final measurement, docs, follow-ons, memory | [x] |
+| [squash](batch-squash/overview.md) | one commit per batch, tag `dss/pre-squash` | [x] |
 
 ## Documents
 
@@ -119,3 +119,25 @@ why not. New/removed src module ⇒ `npm run catalog`.
 - `plans/document-background-paint/` — the tooling and conventions this brief copies.
 - `src/core/style/mindmap-style-builder.ts` — the builder; `src/diagrams/mindmap/MindMapDiagram.ts:105-116` — its `calculateBackColor`.
 - Memories: `squash-per-batch-at-end`, `gate-merges-on-full-set-and-typecheck`, `conformance-harness-mirrors-index-ts`, `census-away-from-jar-catches-hidden-regressions`, `dbp-status`.
+
+## Final status (2026-11-03)
+
+DONE. Tasks: T0a-T0d, T1a, T1b, T2a, T3a-T3g, T4a, TE1, TE2, all merged. T3f, T3g, TE1 and TE2 were added by probes under D8. The user's rulings: D1a-D7, D6a, D8.
+
+| checkpoint | conformant / total | Σ diffCount | 28-engine losses |
+|---|---|---|---|
+| b0 (T0d) | 144 / 446 | 7335 | - |
+| b1 | 196 / 456 | 7395 | 0 |
+| b2 | 272 / 456 | 6569 | 0 |
+| b3 | 489 / 574 | 5263 | deferred to b4 (journal 49) |
+| b4 | 532 / 605 | 4772 | 0 |
+| final | 792 / 865 | 4772 | 0 |
+
+Vs b0, in 28 engines: state 99 -> 114, unknown 565 -> 572, usecase 68 -> 70, component 214 -> 215, object 63 -> 64, no loss. d.ts identical to b0; extended baseline 0 MOVED. Final gates: 1921 collected = on-disk, 38184 passed, 0 failed.
+
+The 73 open rows, each at its baseline or a named residue:
+- **At a baseline unrelated to colour:** `activity__loops-*` 311-313, a floating note after `end split` (journal 61); `json__cascade-*` 49-50, `yaml__cascade-*` 22-23, Smetana (CLAUDE.md ruling); `state__hist-*` 43-47, a border-point cluster 8 px wide; `state__cluster-*` 1, the `__zaent_` link id. A `bg` row's 1-4 extra diffs are its document rect, sized by that same canvas error.
+- **User's out-of-scope list:** `sequence__scope-dark-*`, `component__probe-dark*`, `sequence__scope-media-dark-only` (dark mode's other diffs); `sequence__scope-malformed-*` (jar error page, D6a); `class__d3-skin-rose-element`, `component__probe-skin-rose`, `component__probe-skinparam-after-style` (Shadowing, LineThickness, FontSize).
+- **Named, filed:** `activity__probe-legacy` (no legacy activity engine); `board__selector-activitydiagram` (board's body); `component__probe-cond-root` (conditional root colour). `sequence__scope-single-line-slash` 7: both sides draw an error page, the diffs are our version string and file name, conformant by the error-page rule (journal 17).
+
+Follow-ons: `planning/next-missions.md`. Write-scope ledger: decisions.md, 48 files, flag raised at T2a, not a halt.

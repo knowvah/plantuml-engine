@@ -29,3 +29,15 @@
 - **Finding**: `lizard` was absent in T1a's environment and edits made through Bash do not trigger the Write/Edit hook, so the 500-line and function limits went unchecked for it.
 - **Impact**: Check limits on merge with `~/.claude/hooks/.venv/bin/lizard` rather than relying on the hook.
 - **Confidence**: Medium.
+
+## Observation: the exit probe found two defect families behind 532 conformant rows
+- **Context**: Probing past the rows after batch 4, at 532/605 with every engine's rows green.
+- **Finding**: `fork … end merge` read the wrong signature (24 of 35 probes) and gradient values were dropped, flattened, written raw or left as a `url()` with no def (45 of 90). No row or corpus fixture exercised either: a gradient `LineColor` has 0 corpus sources.
+- **Impact**: Value kinds (gradient, transparent) need their own probe axis, alongside selectors and chrome.
+- **Confidence**: High.
+
+## Observation: the state ratchet harness had no seed
+- **Context**: `state/kujuzo-76` conformant in the survey, 5 diffs through `renderFixtureState`, all gradient ids.
+- **Finding**: `render-fixture-state.ts` called `assembleSvg` with no seed. Activity's and class's harnesses pass it. No pinned state fixture had a def before.
+- **Impact**: A survey-conformant row that fails the pin check by id only points at a harness, not a defect.
+- **Confidence**: High.

@@ -35,6 +35,41 @@ post-D7 measurements.
 
 ---
 
+## diagram-style-scope (dss) — DONE 2026-11-03 (branch `feat/diagram-style-scope` off `4f653cac9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 4f653cac9`; working history on the local tag `dss/pre-squash`)
+
+Document background and element `BackgroundColor`, `LineColor`, `FontColor` read through the ported `StyleBuilder`, precomputed into the existing theme. **865 authored rows, 792 conformant** (`tests/fixtures/diagram-style-scope/`, shrink-only pin `oracle/goldens/diagram-style-scope.json`); the 73 open rows are named in the brief's README. 0 conformant losses in 28 engines vs b0, d.ts identical. dbp follow-ons 5 and 7 and the two bucket leaks are closed (`class__scope-note-objectdiagram`, `state__scope-state-classdiagram` at 0).
+
+### Follow-ons (mechanism, owner)
+Stays filed by the user's ruling (D8 did not reverse it):
+1. **Dark mode's other diffs** — `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
+2. **Monochrome and reverse root background.**
+3. **`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades** — `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`).
+4. **Malformed `<style>`** — the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
+
+Needs a ruling only the user can sign:
+5. **A gradient `LineColor` reaching `partition`** — the jar throws `UnsupportedOperationException` at `HColor.java:126`, from `FtileGroup.java:102`; we draw. Check the latest release jar under the error-page ruling.
+6. **`:a| <<foo>>`** — jar error, ours draws: same check.
+7. **`skinparam Partition*` vs `rectangle*` last-wins** — needs D3 opened or a `Theme` field.
+8. **Stale `withDiagramBorderRect` comment on `RenderFragment`** (`dispatcher-types.ts`) — T3f split the helper to `diagramBorderRect`; the frozen d.ts holds the comment, so correcting it is a public d.ts change.
+
+Layout and parser, not colour reads:
+9. **A floating note after `end split`** — `InstructionSplit.java:155-158` hands it to the last branch's last instruction; `activity__loops-*` 311, `split` + note alone 87. Ours not traced.
+10. **`-> label;` before a merge branch, `end merge`, or a box and note** — 10-19 px off the jar's width.
+11. **Legacy activity `(*) -->`** — no engine (`net/sourceforge/plantuml/activitydiagram/`), separable port (`activity__probe-legacy` 21).
+12. **`CommandActivityLong3`'s leading colour** — `#red:a` / `b;` draws with a deprecation warning, the colour parsed and not applied (`CommandActivityLong3.java:126`); we refuse it.
+13. **`(X)` for letters outside A, B, E, G** — draws `<text>` where the jar draws an outline (`activity-spot-glyph-data.ts:103`, `DriverCenteredCharacterSvg.java:72-81`); needs glyph data through the platform-outline seam.
+14. **State** — border-point cluster with a link 8 px wide (`state__hist-*`); `__zaent_` link id (`Link.java:106-114`, 57 of 273 fixtures); literal `\n` in a one-line note; a note as a link endpoint `B --> N` makes a bogus state; a cluster composite with `--` regions draws a dashed-rect leaf; an implicit second note's link id `__note_0`, jar `GMN2`; our error page cites the previous line.
+15. **Two positional `<style>` blocks in activity** (`dijapi-54`, first diamond `#F00`, jar `#00B`) — D2's stated consequence: a bucket is a snapshot.
+
+Colour reads still open, each small:
+16. **A group whose body starts with an inline colour arrow** — `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
+17. **`note on link` attribute colour** `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`.
+18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
+19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left).
+20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
+21. **chart prints `theme.colors.background` raw** (`src/diagrams/chart/layout.ts:169`); board's body (`board__selector-activitydiagram` 15) and packet/chart residuals (dbp 2).
+22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` remainders undiagnosed; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+
 ## document-background-paint (dbp) — DONE 2026-11-02 (branch `feat/document-background-paint` off `fe794c0a9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S fe794c0a9`; working history on the local tag `dbp/pre-squash`)
 
 A `<style> document { BackgroundColor }` gradient no longer emits invalid SVG in
@@ -50,9 +85,9 @@ gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 2. **board / packet / chart root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21, 104/75. Their engines have no fidelity gate yet.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).
-5. **`sequenceDiagram { document { BackgroundColor } }` is ignored** — `DIAGRAM_TYPE_SELECTOR_NAMES` (`style-map-element.ts:104`) lacks `sequencediagram`. Pre-existing; NOT yet checked against the jar.
+5. ~~**`sequenceDiagram { document { BackgroundColor } }` is ignored**~~ — struck by dss T1a (`9f7cdbaf4`, through `dss/pre-squash`): the document background reads the ported `StyleBuilder`, with the diagram's name in the signature.
 6. **Mainframe, solid canvas** (`.agent-notes/dbp-T2f.md`) — `mainframe { BackgroundColor transparent }` paints the document colour (`null` conflates unset with transparent; jar `none`, `ValueImpl.java:97-98`); `LineThickness 0` title colour has no upstream basis (`BigFrame.java:96`). Mainframe rule `x1`/`x2` and thick-0 table lines: mechanisms not diagnosed.
-7. **`root { BackgroundColor }` stops short of entities** — chrome now matches, entity `rect`/`ellipse` fills do not (3 diffs). Mechanism not diagnosed.
+7. ~~**`root { BackgroundColor }` stops short of entities**~~ — struck by dss T2a (`01a0752b9`) and the readers T3a (`7db9acd4e`), T3b (`dbe6d759d`), T3c (`60d5cdb69`), T3d (`197f11276`), through `dss/pre-squash`.
 8. **A json refusal page drops the document gradient** — conformant under the error-page ruling; bytes differ.
 9. **No gate on hcl's extended-mode gradient (D4)** — the `hcl-*` rows' body `a = 1` hits the jar's parse-error page, and `extended-baseline.json` has no hcl gradient row. Verified by direct probe only (journal 26).
 
