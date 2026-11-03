@@ -117,6 +117,26 @@ describe('preprocessor', () => {
     expect(styles).toEqual([]);
   });
 
+  describe('CommandStyleSingleLineCSS (CommandStyleSingleLineCSS.java:61-67)', () => {
+    it('takes a whole <style> block on one line', () => {
+      const { lines, styles } = preprocess('<style> document { BackgroundColor #AAAAAA } </style>\nAlice -> Bob');
+      expect(lines).toEqual(['Alice -> Bob']);
+      expect(styles).toEqual([' document { BackgroundColor #AAAAAA } ']);
+    });
+
+    it('records the block on the declaration counter, as a multi-line block does', () => {
+      const { declarationOrder, stylePositions } = preprocess('<style>note{FontColor #AAA}</style>');
+      expect(declarationOrder?.styles).toEqual([0]);
+      expect(stylePositions).toHaveLength(1);
+    });
+
+    it('leaves a line the regex refuses in the body: "/" is outside its character class', () => {
+      const { lines, styles } = preprocess('<style>document{BackgroundColor #AAA/#BBB}</style>');
+      expect(styles).toEqual([]);
+      expect(lines).toEqual(['<style>document{BackgroundColor #AAA/#BBB}</style>']);
+    });
+  });
+
   it('extracts a single <style> block and excludes it from lines', () => {
     const { lines, styles } = preprocess('<style>\nbackground: red\n</style>\nAlice -> Bob');
     expect(lines).toEqual(['Alice -> Bob']);

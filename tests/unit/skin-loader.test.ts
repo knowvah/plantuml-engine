@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { documentBackColor } from '../../src/core/document-back-color.js';
+import { preprocess } from '../../src/core/preprocessor.js';
 import { applySkinLayer } from '../../src/core/skin-loader.js';
 import { defaultTheme, resolveElementShadowing } from '../../src/core/theme.js';
 
@@ -48,9 +50,11 @@ describe('applySkinLayer -- skin-file-loading mission Batch 1', () => {
 
   it('resolves rose document { BackgroundColor white } as the canvas background, not the entity default', () => {
     // root's own BackGroundColor is #FEFECE (entity-fill default); document's
-    // is white -- both must resolve to DIFFERENT theme fields.
+    // is white -- both must resolve to DIFFERENT theme fields. `document` is
+    // read by `documentBackColor` (TitledDiagram.java:280-289), not the skin run.
     const result = applySkinLayer({ skin: 'rose' }, defaultTheme);
-    expect(result.colors.background).toBe('white');
+    const pre = preprocess('@startuml\nskin rose\nclass A\n@enduml');
+    expect(documentBackColor(pre, 'class')).toEqual({ background: 'white' });
     expect(result.colors.graph.rootElementBackground).toBe('#FEFECE');
   });
 
@@ -99,7 +103,9 @@ describe('applySkinLayer -- the jar style-grammar sonyxperiadev.skin (unwind2-S8
     // sonyxperiadev.skin's dark section sets `root { BackGroundColor #313139 }`
     // and `document { BackGroundColor #1B1B1B }`; neither reaches a light render.
     const result = applySkinLayer({ skin: 'sonyxperiadev' }, defaultTheme);
-    expect(result.colors.background).not.toBe('#1B1B1B');
+    const pre = preprocess('@startuml\nskin sonyxperiadev\nclass A\n@enduml');
+    expect(documentBackColor(pre, 'class')?.background).not.toBe('#1B1B1B');
+    expect(documentBackColor(pre, 'class')?.background).not.toBe('#313139');
     expect(result.colors.graph.rootElementBackground).toBe('#f1f1f1');
   });
 

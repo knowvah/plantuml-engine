@@ -1,0 +1,10 @@
+@startuml
+<style>
+@media (prefers-color-scheme:dark) {
+ document {
+  BackgroundColor #111111
+ }
+}
+</style>
+A -> B
+@enduml

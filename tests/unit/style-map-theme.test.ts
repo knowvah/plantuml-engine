@@ -50,23 +50,18 @@ describe('applyStyleMap -- root/element universal-selector cascade (D3)', () => 
   });
 
   it('resolves BackgroundColor into the dedicated rootElementBackground field', () => {
-    // A bare root {} BackgroundColor with no document {} override present
-    // ALSO reaches theme.colors.background via the PRE-EXISTING
-    // resolveDocumentBackground precedence tier (root is one of its
-    // tiers) -- that mechanism is unrelated to this batch and unchanged
-    // by it. What THIS batch adds is the SEPARATE rootElementBackground
-    // field, which state (and later, other diagram types) reads as the
-    // entity-fill default -- see the next test for the case where the
-    // two fields genuinely diverge (a document {} override present).
+    // The SEPARATE rootElementBackground field, which state (and later,
+    // other diagram types) reads as the entity-fill default. The canvas is
+    // `document-back-color.ts`, not applyStyleMap (dss T1a, D5).
     const styleMap = parseStyleBlock('root {\n  BackGroundColor #FEFECE\n}');
     const theme = applyStyleMap(styleMap, defaultTheme);
     expect(theme.colors.graph.rootElementBackground).toBe('#FEFECE');
   });
 
-  it('a document {} BackgroundColor still wins the canvas field over a root {} one', () => {
+  it('applyStyleMap leaves the canvas alone: only the root fill reaches the theme (dss T1a, D5)', () => {
     const styleMap = parseStyleBlock('root {\n  BackGroundColor red\n}\ndocument {\n  BackGroundColor white\n}');
     const theme = applyStyleMap(styleMap, defaultTheme);
-    expect(theme.colors.background).toBe('white');
+    expect(theme.colors.background).toBe(defaultTheme.colors.background);
     expect(theme.colors.graph.rootElementBackground).toBe('red');
   });
 

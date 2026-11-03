@@ -5,6 +5,8 @@
  */
 
 import type { RenderOptions } from '../index.js';
+import type { DiagramType } from './block-extractor.js';
+import { documentBackColor, type DocumentBackColor } from './document-back-color.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { resolveTheme, deepMergeTheme } from './theme.js';
 import type { Theme } from './theme.js';
@@ -41,6 +43,10 @@ import { OptionKey } from './tim/EaterOption.js';
  *   exactly the former two stages. Then the merged `root`/`document`
  *   declarations reach `styleOverrides` / `diagramMargin`.
  *
+ * Stage 3c — The document background, `TitledDiagram#calculateBackColor` over
+ *   the style engine (dss T1a, `document-back-color.ts`), for the `diagramType`
+ *   its signature names.
+ *
  * Stage 4 — Caller Partial<Theme> wins over everything.
  *
  * Resolution order confirmed against upstream TContext.java:executeTheme().
@@ -54,7 +60,17 @@ export interface ResolvedThemeAndStyles {
   readonly styleMap: StyleMap;
 }
 
-export function buildTheme(preprocessed: PreprocessorResult, options?: RenderOptions): ResolvedThemeAndStyles {
+/**
+ * The five stages above. `diagramType` is `plugin.type`: the signature of the
+ * document background (Stage 3c) names the diagram.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java
+ */
+export function buildTheme(
+  preprocessed: PreprocessorResult,
+  options: RenderOptions | undefined,
+  diagramType: DiagramType,
+): ResolvedThemeAndStyles {
   // Stage 1: named base theme
   const themeName = typeof options?.theme === 'string' ? options.theme : (preprocessed.theme ?? 'default');
   const base = resolveTheme(themeName);
@@ -104,16 +120,34 @@ export function buildTheme(preprocessed: PreprocessorResult, options?: RenderOpt
   // `TitledDiagram#isHandwritten` -- see `withHandwrittenOption`.
   const withOptions = withHandwrittenOption(withGenerations, preprocessed);
 
+  // Stage 3c: the document background (D1, D3).
+  const callerNamedTheme = typeof options?.theme === 'string';
+  const withBackColor = withDocumentBackColor(
+    withOptions,
+    documentBackColor(preprocessed, diagramType, callerNamedTheme),
+  );
+
   // Stage 4: caller Partial<Theme> wins over everything
   const theme =
     options?.theme !== undefined && typeof options.theme === 'object'
-      ? deepMergeTheme(withOptions, options.theme)
-      : withOptions;
+      ? deepMergeTheme(withBackColor, options.theme)
+      : withBackColor;
   // #lizard forgives -- mechanical extraction of index.ts's own pre-existing
   // `buildTheme` (unchanged five-stage structure); was
   // never flagged in index.ts because that file's 500-line gate short-
   // circuited the per-function check first.
   return { theme, styleMap };
+}
+
+/**
+ * The pair replaces BOTH fields: `calculateBackColor` has one answer, so a
+ * solid value must not keep a gradient the flat path holds.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
+ */
+function withDocumentBackColor(theme: Theme, pair: DocumentBackColor | undefined): Theme {
+  if (pair === undefined) return theme;
+  const { backgroundGradient: _replaced, ...colors } = theme.colors;
+  return { ...theme, colors: { ...colors, ...pair } };
 }
 
 /**

@@ -17,3 +17,15 @@
 - **Finding**: `state-composite-geo.ts:403` materialises `specs` with no note while DOT holds it, so the canvas is 55 px short. Appending `buildFlatNoteGeos` takes `state__cascade-none` from 46 to 0.
 - **Impact**: The "unrelated baseline" of 46 is this one omission, and it hid T3c's real bar. Composite-scoped notes are not covered by that experiment.
 - **Confidence**: High.
+
+## Observation: chart prints the theme background raw
+- **Context**: Reading T1a's document background results across engines.
+- **Finding**: `src/diagrams/chart/layout.ts:169` prints `theme.colors.background` as written, so `skinparam backgroundColor white` gives `background:white` where the jar gives `#FFFFFF`. Pre-existing.
+- **Impact**: File at exit; any row with a named colour on chart keeps this diff.
+- **Confidence**: High.
+
+## Observation: the complexity hook skips Bash edits
+- **Context**: T1a's hand-back.
+- **Finding**: `lizard` was absent in T1a's environment and edits made through Bash do not trigger the Write/Edit hook, so the 500-line and function limits went unchecked for it.
+- **Impact**: Check limits on merge with `~/.claude/hooks/.venv/bin/lizard` rather than relying on the hook.
+- **Confidence**: Medium.

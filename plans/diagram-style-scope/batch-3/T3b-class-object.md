@@ -11,6 +11,13 @@ All audit class sites 1–6 and object sites 1–3, probe-only ones included (us
 inline-colour tiers above it. Mirror the Java at each site; a site whose Java reads a different signature than the audit
 says is a finding. Tests first, citing the row or the Java.
 
+## Added by D8 (orchestrator, b1 close)
+`class__nested-skinparam-note-then-style` and `class__nested-style-then-skinparam` draw our syntax error page (line of `</style>`) where the jar
+renders the embed: a `<style>` inside a class body's `{{ }}`. Without `<style>` the same body is fine, so the `}` closing `note {` looks to end the class
+body early (`class-command-containers.ts:109`). Unconfirmed: read `CommandMultilines2.java:79-...` and how `CommandCreateClassMultilines` finds its END with
+an embed open, then mirror it. `.agent-notes/dss-execution.md` also holds class `skinparam noteBackgroundColor` (`renderer-note-background.ts`), jar `#BBB`, ours
+`#FEFFDD`, with no `<style>`: fix it (D8), stop 5 excepted row by row for that jar-ward move, with its own row. Also `class__x-theme-gradient`.
+
 ## Rows
 `class__cascade-*`, `object__cascade-*`, `class__element-order-*`, `class__{notes,kinds,generic}-*`, `object__kinds-*`, `class__d*`, `object__d5-*`. (the orchestrator tightens this list at the B2 close.)
 

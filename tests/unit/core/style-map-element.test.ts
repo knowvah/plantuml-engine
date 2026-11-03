@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   collectElementStyleBuckets,
-  resolveDocumentBackground,
   resolveStyleCascade,
   cleanStereotypeToken,
   collectStyleTagNames,
@@ -177,26 +176,6 @@ describe('applyStyleMap element-bucket integration (T5)', () => {
   it('returns base unchanged when there are no relevant selectors', () => {
     const theme = applyStyleMap(styleMap({ widget: { backgroundcolor: '#000' } }), defaultTheme);
     expect(theme).toBe(defaultTheme);
-  });
-});
-
-describe('resolveDocumentBackground (relocated from applyStyleMap)', () => {
-  it('reads the bare document selector background', () => {
-    expect(resolveDocumentBackground(styleMap({ document: { backgroundcolor: '#abcdef' } }))).toBe('#abcdef');
-  });
-
-  it('lets a diagram-scoped document variant win over the bare one', () => {
-    const bg = resolveDocumentBackground(
-      styleMap({
-        document: { backgroundcolor: '#111111' },
-        'jsondiagram.document': { backgroundcolor: '#222222' },
-      }),
-    );
-    expect(bg).toBe('#222222');
-  });
-
-  it('returns undefined when no document selector is present', () => {
-    expect(resolveDocumentBackground(styleMap({ database: { backgroundcolor: '#fff' } }))).toBeUndefined();
   });
 });
 

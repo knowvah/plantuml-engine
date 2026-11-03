@@ -2,9 +2,8 @@
  * Element-scoped `<style>` block routing — decision D4.
  *
  * Split out of `style-map-theme.ts` (which is at the module-size limit): this
- * holds the per-element bucket collection (T5) plus the document-background
- * resolver relocated from `applyStyleMap` to make room. Both are pure
- * functions over a {@link StyleMap}.
+ * holds the per-element bucket collection (T5), a pure function over a
+ * {@link StyleMap}. The document background is `document-back-color.ts`.
  */
 
 import type { ElementColors } from './theme.js';
@@ -445,47 +444,6 @@ export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, E
   // bucket-collection branches (bare/nested SName + `.stereotype` suffix +
   // G3/O4's `.header` suffix) push this over the CCN/NLOC threshold.
   return elements;
-}
-
-/**
- * `document { BackgroundColor }` canvas-background selector precedence,
- * broadest first ("last wins" in `resolveDocumentBackground`'s scan) —
- * mirrors upstream's style-cascade specificity rule (a more-scoped selector
- * always outranks a broader one): bare `root` < bare `document` < a
- * diagram-type-scoped `document` variant < a bare diagram-type selector <
- * that diagram type's OWN nested `document` selector (jar-verified:
- * `bikuka-40-pezi068` — `classDiagram { BackGroundColor Green }` beats
- * `root { BackGroundColor Red }`; `cilaba-36-zogi212` — `classDiagram {
- * document { BackGroundColor Yellow } }` beats `classDiagram { BackGroundColor
- * Green }`, G2 N7).
- */
-const DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE: readonly string[] = [
-  'root',
-  'document',
-  'jsondiagram.document',
-  'yamldiagram.document',
-  ...DIAGRAM_TYPE_SELECTOR_NAMES,
-  ...DIAGRAM_TYPE_SELECTOR_NAMES.map((name) => `${name}.document`),
-];
-
-/**
- * Resolve the `document { BackgroundColor }` canvas background from a
- * StyleMap. Checks the bare `document` selector then diagram-type-scoped
- * variants (last wins). Relocated verbatim from `applyStyleMap`; G2 N7
- * widened the precedence list from `document`/json`/yaml`/hcl only to also
- * cover a bare `root` selector and every DOT-gate diagram type's bare +
- * nested `document` selector (`bikuka-40-pezi068`/`cilaba-36-zogi212`).
- * dbp T1a (D1): RAW, like `style.value(PName.BackGroundColor)`; the caller
- * parses it (`.asColor`, `HColorSet.java:109-116` gradients included).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
- */
-export function resolveDocumentBackground(styleMap: StyleMap): string | undefined {
-  let documentBg: string | undefined;
-  for (const sel of DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE) {
-    const bg = styleMap.get(sel)?.get('backgroundcolor');
-    if (bg !== undefined) documentBg = bg;
-  }
-  return documentBg;
 }
 
 // cdd6 T1a: pure file-cap moves -- see `style-map-tag-cascade.ts` and

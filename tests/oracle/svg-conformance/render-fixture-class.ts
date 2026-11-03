@@ -103,7 +103,7 @@ export function layoutFixtureClass(
   // measured a path no shipped code takes once theme styling (declaration-
   // order skinparam/`<style>` interleaving, root/document routing) moved
   // into it.
-  const { theme, styleMap } = buildTheme(preprocessed);
+  const { theme, styleMap } = buildTheme(preprocessed, undefined, 'class');
   const block = { ...first.source, rawStyles: preprocessed.styles, stylePositions: preprocessed.stylePositions };
   // cdd4-T4 (bidusa-22-jutu505): mirrors `classPlugin.parse(block, options)`
   // (`src/diagrams/class/index.ts:47-51`) -- `parseClass` was called with NO

@@ -340,13 +340,30 @@ describe('three-stage theme resolution', () => {
     expect(svg).not.toContain('#ABC');
   });
 
-  it('applies backgroundColor from <style> block', async () => {
+  it('applies backgroundColor from a <style> document block', async () => {
+    const source = [
+      '@startuml',
+      '<style>',
+      'document {',
+      'backgroundcolor: #CDE',
+      '}',
+      '</style>',
+      'Alice -> Bob : hi',
+      '@enduml',
+    ].join('\n');
+    const svg = await render(source);
+    expectNoErrorDiagram(svg);
+    expect(svg).toContain('background:#CCDDEE;');
+  });
+
+  it('a bare top-level <style> backgroundcolor is no selector: the jar keeps #FFFFFF (dss T1a)', async () => {
     const source = ['@startuml', '<style>', 'backgroundcolor: #CDE', '</style>', 'Alice -> Bob : hi', '@enduml'].join(
       '\n',
     );
     const svg = await render(source);
     expectNoErrorDiagram(svg);
-    expect(svg).toContain('#CDE');
+    expect(svg).toContain('background:#FFFFFF;');
+    expect(svg).not.toContain('#CDE');
   });
 
   it('output is unchanged when no skinparam or style blocks are present', async () => {

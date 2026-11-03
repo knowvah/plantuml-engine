@@ -320,7 +320,7 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   // D9 (lad Amendment 1): `styleInput` is the jar-compatible normalisation, applied only when conformance asks for it.
   const styled = isJarCompatibleStyleInput(options) ? plugin.styleInput?.(block.preprocessed, umlSource) : undefined;
   const preprocessed = withPrevious(styled ?? block.preprocessed, previous);
-  const { theme, styleMap } = buildTheme(preprocessed, options);
+  const { theme, styleMap } = buildTheme(preprocessed, options, plugin.type);
   const measurer = resolveMeasurer(plugin.type, options);
   const ast = astOf(resolution, options);
   surfaceSpriteWarnings(ast, options?.onWarning);

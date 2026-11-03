@@ -23,7 +23,7 @@ import {
 } from '../../oracle/svg-conformance/diagram-style-scope.js';
 import { renderDbgMarkup } from '../../oracle/svg-conformance/document-background.js';
 
-const ROW_COUNT = 446;
+const ROW_COUNT = 456;
 const SOLID = '@startuml\nskinparam backgroundColor black\nA -> B : hi\n@enduml\n';
 
 let root: string;
@@ -137,15 +137,15 @@ describe('committed rows and pin', () => {
     expect(Object.keys(pin.rows).sort()).toEqual(listScopeRows());
   });
 
-  it('seeds the known pre-fix verdicts of the first two rows the mission moves', () => {
+  it('pins the two rows no fix in this mission may move', () => {
     const { rows } = readScopePin();
-    expect(rows['sequence__selector-own-doc']).toEqual({ conformant: false, diffCount: 2 });
-    expect(rows['sequence__variant-gradient']).toEqual({ conformant: false, diffCount: 3 });
+    expect(rows['gantt__selector-own-doc']).toEqual({ conformant: true, diffCount: 0 });
+    expect(rows['sequence__scope-malformed-brace']).toEqual({ conformant: false, diffCount: 6 });
   });
 
   it('measures a committed row to its pinned value', () => {
-    const live = measureScopeRow('sequence__selector-own-doc');
-    expect(live).toEqual(readScopePin().rows['sequence__selector-own-doc']);
+    const live = measureScopeRow('sequence__scope-malformed-brace');
+    expect(live).toEqual(readScopePin().rows['sequence__scope-malformed-brace']);
   });
 
   it('roots the fixtures under tests/fixtures/diagram-style-scope', () => {

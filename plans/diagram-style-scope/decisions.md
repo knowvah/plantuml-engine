@@ -135,3 +135,28 @@ Consequences: T2a's `object__cascade-bg-diag` acceptance moves to T3b (leak is
 `renderer-classifier-colors.ts:52`, outside T2a); T4a's "`root` already works" is struck (activity sites
 14, 15). Reader sites total: state 19, activity 17, class 6, object 3, description 3; state crosses
 stop 13's "about 15".
+
+## D8 — standing ruling while the user is away (user, 2026-11-02, after T1a)
+
+The user is unavailable for the rest of the run. In the user's words, the default answer to questions is
+"follow the oracle/Java and yes, do the extra work". Overrides the brief where they differ:
+
+- **Questions.** Do not wait. Answer by the Java and the jar, journal the question and the answer. "Ask the
+  user before growing scope" now reads: grow it, as an authored row with a jar oracle, and journal it.
+- **Write scope.** A task may add files inside `src/` to its write-set, plus the test files that cover them
+  (executor's reading of "the plantuml-ts source code directory"; TDD needs the tests). Count each added file in
+  the ledger below. Raise a flag at the 5th: journal row, end report, push notification. A flag is not a halt.
+- **500 lines.** Over the limit, split the file, in any directory. Split files do not count toward the 5.
+- **Stops that were questions** (3, 12, 13, and 1 inside `src/`): amend `decisions.md` or split the task, journal,
+  continue. A contradiction resolves to what the Java and jar do.
+- **Stops that are measurements** (2, 4, 5, 6, 11): keep diagnosing and fix the cause. A conformant row is
+  identical to the jar, so losing one is a defect, never a judgment call. Halt only with the diagnosis artifact, when
+  the fix budget is spent.
+- **Unchanged, the ruling does not reach them:** stops 7, 8, 9, 10. Never push, never sign, no d.ts change, no new
+  `Theme` field or runtime dependency, no edit to dot-engine, the fork, the jar or oracle bytes, no fitted value.
+  Write-set files outside `src/` still follow the contract. If one of these blocks the work, halt.
+- **Scope of "the extra work".** Defects found on the bg, line and font read path are fixed, with a row each. On a
+  source with no `<style>` or `skin`, stop 5 is excepted row by row, as D7 did, and only for a jar-ward move. The
+  user-approved out-of-scope list above stays filed: this ruling answers questions, it does not reverse a decision.
+
+**Ledger of added files (flag at 5):** none yet.

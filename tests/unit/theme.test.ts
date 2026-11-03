@@ -333,12 +333,12 @@ describe('resolveTheme', () => {
   });
 
   it('an executed !theme amiga reaches the root-cascade colours', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme amiga\n@enduml'));
+    const { theme } = buildTheme(preprocess('@startuml\n!theme amiga\n@enduml'), undefined, 'sequence');
     expect([theme.colors.text, theme.colors.border, theme.colors.arrow]).toEqual(['#FFFFFF', '#FFFFFF', '#FFFFFF']);
   });
 
   it('an executed !theme blueprint carries its dark blue background', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme blueprint\n@enduml'));
+    const { theme } = buildTheme(preprocess('@startuml\n!theme blueprint\n@enduml'), undefined, 'sequence');
     expect(theme.colors.background).toBe('#003153');
   });
 

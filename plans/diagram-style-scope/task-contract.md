@@ -27,7 +27,7 @@ row (at b0: json 49, yaml 22, unrelated to this mission; state 46, which T3c tak
 - Diagnosis mode on every discrepancy (`~/.claude/rules/diagnosis.md`): mechanism, origin `file:line`, causal chain, ruled out — before any edit.
 
 ## Boundaries
-- Write only your write-set. A needed file outside it: stop and report (exception: a 500-line split inside your own directory — say so in the hand-back).
+- Write only your write-set, plus (D8) any file you need inside `src/` and the tests that cover it: name each added file in the hand-back. Over 500 lines, split the file, wherever it lives, and name the split. Anything else outside: stop and report.
 - A signature missing from `src/core/style-element-scope.ts` (T3, T4): report it with its Java `file:line`; the orchestrator adds it between merges.
 - Never dot-engine, the plantuml fork, the oracle jar, cached oracle bytes, `oracle/accepted-divergences.json`, or any pin/golden/baseline/parity file unless your write-set names it. Never a hand-typed `java -jar`; never hand-edit a fixture `.svg`.
 - No Serena edit tools (they write the MAIN checkout); no `git stash`; never push; no background process left running; never `cd` above or outside your worktree.

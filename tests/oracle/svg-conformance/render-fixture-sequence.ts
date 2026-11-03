@@ -154,7 +154,7 @@ export function renderFixtureSequence(
   );
   // cdd4-T7b: the shipped `buildTheme`, not a copy of it -- a copy measured a
   // path no shipped code takes once theme styling moved into it.
-  const { theme, styleMap } = buildTheme(preprocessed);
+  const { theme, styleMap } = buildTheme(preprocessed, undefined, 'sequence');
   // `src/index.ts#prepareBlock` inlines served remote images (`remote-image:<url>`) into the
   // source lines before parse AND seed; this harness bypasses it, so it does the same.
   const blockSource = sequenceBlockSource(first);

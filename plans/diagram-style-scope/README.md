@@ -47,12 +47,15 @@ why not. New/removed src module ⇒ `npm run catalog`.
 
 - `$T` = `plans/diagram-style-scope/tools/`, `$M` = `plans/diagram-style-scope/measurements/`.
 - All engines: `LOAD_MAX=8 SVG_PARITY_TIMEOUT_MS=900000 SVG_PARITY_CONCURRENCY=3 bash $M/chain.sh <bN-eng>`; diff with `node $T/verdict-diff.mjs <prev> <next>` (rerun any timeout at load < 8 before calling it a mover).
+- Corpus bytes: `npx tsx $T/svg-hashes.mts --all <out.json> <prev.json>` (a `<bN>-hashes.json` per close; the verdict diff cannot see a diverged row's bytes).
 - One row: `npx tsx $T/diff-row.mts <engine>__<group>-<case>`; all rows: `npx tsx $T/diff-row.mts --all [--json <out>]`.
 - Extended mode: `npx tsx $T/extended-baseline.mts --check $M/extended-baseline.json`.
 - Oracle renders: `scripts/oracle-render.sh <ABSOLUTE out-dir> <puml>` only.
 - Batch close: [close-procedure.md](close-procedure.md).
 
 ## Stop conditions (halt, journal, report)
+
+**While the user is away, D8 in `decisions.md` decides which of these still halt:** 3, 12, 13 and 1 inside `src/` no longer do; 7, 8, 9, 10 do.
 
 1. A task needs a file outside its write-set, or one a same-batch task owns.
 2. The same gate fails on 2 consecutive fix attempts, or one code location changes 3 times without resolving the same check — halt with the diagnosis artifact (mechanism, origin `file:line`, causal chain, ruled out).
@@ -86,7 +89,7 @@ why not. New/removed src module ⇒ `npm run catalog`.
 - Every agent prompt = the task file + [task-contract.md](task-contract.md). Worktree agents never use Serena edit tools (memory `agents-write-main-via-serena`).
 - Verify every hand-back from the worktree (`git log`, the measured numbers), never from the report alone — an empty or "placeholder" hand-back is common (memory `subagent-handback-single-shot`).
 - Do not merge a task that moves bytes while a chain is measuring the main checkout.
-- Probe past the rows before each close (memory `probe-past-authored-rows`); ask the user before growing scope.
+- Probe past the rows before each close (memory `probe-past-authored-rows`); grow scope with an authored row and journal it (D8).
 - Journal every decision, mover and halt with its commit.
 
 ## Batches
@@ -94,7 +97,7 @@ why not. New/removed src module ⇒ `npm run catalog`.
 | batch | tasks | status |
 |---|---|---|
 | [0 — baseline, rows, audit](batch-0/overview.md) | T0a, T0b, T0c, T0d, close | [x] (stop 3 ruled 2026-11-02: D1a–D7 approved) |
-| [1 — document background](batch-1/overview.md) | T1a, close | [ ] |
+| [1 — document background](batch-1/overview.md) | T1a, T1b, close | [x] |
 | [2 — shared element cascade](batch-2/overview.md) | T2a, close | [ ] |
 | [3 — engine readers](batch-3/overview.md) | T3a, T3b, T3c, T3d, T3e, close | [ ] |
 | [4 — activity LineColor](batch-4/overview.md) | T4a, close | [ ] |

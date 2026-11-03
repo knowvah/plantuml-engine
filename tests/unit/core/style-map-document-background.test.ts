@@ -27,8 +27,9 @@ function pair(theme: Theme): BackgroundPair {
   return { background: theme.colors.background, backgroundGradient: theme.colors.backgroundGradient };
 }
 
-function styleTheme(value: string, base: Theme = defaultTheme): Theme {
-  return applyStyleMap(parseStyleBlock(`document {\n  BackgroundColor ${value}\n}`), base);
+/** The `<style>` read: `buildTheme`'s Stage 3c (`document-back-color.ts`, dss T1a D5). */
+function styleTheme(value: string): Theme {
+  return themeOf(`<style>\ndocument {\n  BackgroundColor ${value}\n}\n</style>`);
 }
 
 function skinparamTheme(value: string, base: Theme = defaultTheme): Theme {
@@ -36,7 +37,7 @@ function skinparamTheme(value: string, base: Theme = defaultTheme): Theme {
 }
 
 function themeOf(body: string): Theme {
-  return buildTheme(preprocess(`@startuml\n${body}\nA -> B\n@enduml`)).theme;
+  return buildTheme(preprocess(`@startuml\n${body}\nA -> B\n@enduml`), undefined, 'sequence').theme;
 }
 
 describe('style document BackgroundColor gradient -> the skinparam theme pair (dbp T1a)', () => {
@@ -65,11 +66,8 @@ describe('style document BackgroundColor gradient -> the skinparam theme pair (d
   });
 
   it('wins through a diagram-scoped document selector exactly as the solid value does', () => {
-    const theme = applyStyleMap(
-      parseStyleBlock(
-        'document {\n  BackgroundColor black\n}\nclassDiagram {\n  document {\n    BackgroundColor red/blue\n  }\n}',
-      ),
-      defaultTheme,
+    const theme = themeOf(
+      '<style>\ndocument {\n  BackgroundColor black\n}\nsequenceDiagram {\n  document {\n    BackgroundColor red/blue\n  }\n}\n</style>',
     );
     expect(pair(theme)).toEqual({
       background: 'red/blue',
@@ -98,6 +96,8 @@ describe('style document BackgroundColor non-gradient values are unchanged (dbp 
       defaultTheme.colors.background,
     );
     expect(applyStyleMap(new Map(), defaultTheme)).toBe(defaultTheme);
+    // dss T1a (D5): the canvas is no longer applyStyleMap's.
+    expect(applyStyleMap(parseStyleBlock('document {\n  BackgroundColor black\n}'), defaultTheme)).toBe(defaultTheme);
   });
 });
 
