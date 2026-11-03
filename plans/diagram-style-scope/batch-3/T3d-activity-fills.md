@@ -11,8 +11,13 @@ Audit sites 1–7, probe-only 5–7 included (user ruling 2026-11-02). Route eac
 inline-colour tiers above it. Mirror the Java at each site; a site whose Java reads a different signature than the audit
 says is a finding. Tests first, citing the row or the Java.
 
+## Measured after T2a (orchestrator, b2 close)
+All `cascade-font-*` and `sdl-font-*` are at 0. Remaining: `cascade-bg` 13, `selector-own-bare` 1 (sites 1-4); `lanes-bg` 6, `lanes-font` 2 (sites 6-7); `sdl-bg` 5; `loops-bg` over its baseline `loops-none` 311. T2a writes `partition`, `goto`, `activity.diamond`, `circle.*`, none yet read.
+
 ## Rows
-`activity__cascade-bg-*`, `activity__cascade-font-*`, `activity__{lanes,loops,sdl}-{bg,font}-*`. (the orchestrator tightens this list at the B2 close.)
+`activity__cascade-bg-*`, `activity__selector-own-bare`, `activity__{lanes,loops,sdl}-{bg,font}-*`, `activity__probe-*` (bg and font only; line is T4a).
+
+Probe rows at b2: `all` 57, `element-note` 24, `groups` 37, `legacy` 21, `swim` 13. Those carrying `LineColor` keep T4a's share.
 
 ## Write-set
 `src/diagrams/activity/*`, `src/core/activity-circle-style.ts`, `tests/unit/activity/*`.

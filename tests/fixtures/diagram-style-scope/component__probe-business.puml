@@ -1,0 +1,12 @@
+@startuml
+<style>
+actor { BackgroundColor #AAAAAA
+LineColor #BBBBBB }
+usecase { BackgroundColor #CCCCCC }
+business { LineColor #DDDDDD }
+</style>
+actor/ A
+actor B
+usecase/ U
+usecase V
+@enduml

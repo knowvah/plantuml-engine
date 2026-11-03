@@ -79350,6 +79350,17 @@
     {
       "tree": "goldens",
       "type": "svg-state",
+      "slug": "lonuti-97-voko521",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "state",
+      "status": "ok",
+      "measuredAt": "2026-11-02",
+      "measuredAgainstCommit": "8018beb85"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-state",
       "slug": "buniva-95-zije634",
       "jarRendered": true,
       "weErrored": false,

@@ -1,0 +1,12 @@
+@startuml
+<style>
+element { BackgroundColor #AAAAAA }
+.t { BackgroundColor #BBBBBB }
+component {
+ .u { LineColor #CCCCCC }
+}
+</style>
+[C] <<t>>
+[D] <<u>>
+[E]
+@enduml

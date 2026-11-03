@@ -1,0 +1,12 @@
+@startuml
+<style>
+element { BackgroundColor #AAAAAA
+LineColor #BBBBBB
+FontColor #CCCCCC }
+</style>
+class A
+class B
+A --> B
+note on link: x
+note left of A: y
+@enduml

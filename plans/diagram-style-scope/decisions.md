@@ -159,4 +159,5 @@ The user is unavailable for the rest of the run. In the user's words, the defaul
   source with no `<style>` or `skin`, stop 5 is excepted row by row, as D7 did, and only for a jar-ward move. The
   user-approved out-of-scope list above stays filed: this ruling answers questions, it does not reverse a decision.
 
-**Ledger of added files (flag at 5):** none yet.
+**Ledger of files added to a write-set (flag at 5; splits uncounted; corrected 2026-11-02: an edited file counts, not only a new one):**
+T1b, a task the probes added: `src/core/preprocessor-collector.ts`, `tests/unit/preprocessor.test.ts` (2). T2a: `src/core/document-back-color.ts`, `src/core/skin-loader.ts`, `src/diagrams/class/class-namespace-usymbol-shape.ts`, and four required-argument test edits, `swimlane-census.ts`, `compress/invariant.test.ts`, `object-kind-style.test.ts`, `transition-label-ink.test.ts` (7). **Total 9. Flag raised at T2a's merge (journal row 27).** T3a's and T3e's scope grew in the spec, inside their own directories, so those add nothing here.

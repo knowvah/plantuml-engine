@@ -1,0 +1,20 @@
+@startuml
+<style>
+activityDiagram { BackgroundColor #AAAAAA
+LineColor #BBBBBB
+FontColor #CCCCCC }
+</style>
+start
+:a;
+if (x) then (y)
+ :b;
+ note right: n
+else (z)
+ fork
+  :c;
+ fork again
+  :d;
+ end fork
+endif
+stop
+@enduml

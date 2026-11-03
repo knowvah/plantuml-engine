@@ -52,3 +52,5 @@ Not yet proven: reader coverage, state's rect width (115 vs 170 on `bg-diag`, `b
 | main `4f653cac9` (b0) | 101 / 256 | 2169 | — | 1 jar error page: `sequence__scope-malformed-brace`; seeded pre-fix |
 | T0d (b0, 446 rows) | 144 / 446 | 7335 | — | 190 probe rows added pre-fix, no src change; the original 256 unmoved |
 | b1 (T1a, T1b; 456 rows) | 196 / 456 | 7395 | 0 | 7 rows added by T1b's probes, seeded pre-fix (4 conformant after the fix); the 449 fell from Σ 7335+40 to 7269 |
+| b2 (T2a; 456 rows) | 272 / 456 | 6569 | 0 | 127 fell, 0 rose; state 99 → 100 (`lonuti-97` pinned, golden 97 → 98 entries) |
+| b2 + 38 probe rows (494) | 287 / 494 | 6901 | 0 | T2a's probes promoted, seeded at the current measure; 2 more were jar error pages, dropped |

@@ -1,0 +1,8 @@
+@startuml
+<style>
+element { FontColor transparent }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

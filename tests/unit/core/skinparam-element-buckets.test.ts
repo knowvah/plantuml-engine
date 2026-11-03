@@ -54,7 +54,7 @@ function themeFor(markup: string): Theme {
     return acc;
   }, new Map());
   const withStyles = resolveSkinparam(styleMap.get('') ?? new Map<string, string>(), withSkinparam).theme;
-  return applyStyleMap(styleMap, withStyles);
+  return applyStyleMap(styleMap, withStyles, 'description');
 }
 
 describe('ELEMENT_BUCKET_SNAMES — activity SNames (T1, D3)', () => {

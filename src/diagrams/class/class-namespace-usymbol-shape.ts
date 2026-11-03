@@ -33,6 +33,7 @@
  * keyword that resolves to no `USymbol` at all.
  */
 import type { Paint } from '../../core/paint.js';
+import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
 import type { ElementColors } from '../../core/theme-graph-colors.js';
@@ -282,7 +283,9 @@ function resolveClusterUSymbolPaint(
   keyword: string,
   fallback: NamespaceUSymbolPaint,
 ): NamespaceUSymbolPaint {
-  const specific = theme.colors.elements?.[keyword];
+  // D2a: `group.<keyword>` is this cluster's own signature (`Cluster.java:290-291`); `keyword`'s bucket is the
+  // leaf's (`EntityImageDescription.java:162-166`), which holds a value this one may never see.
+  const specific = { ...theme.colors.elements?.[keyword], ...theme.colors.elements?.[clusterBucketOf(keyword)] };
   const tags = geo.stereotypeTags ?? [];
   const backColor = clusterUSymbolBackColor(specific, geo, fallback.backColor);
   // cdd6 T2a (D2): the `<usymbol>BorderColor<<label>>` tier (+1000,

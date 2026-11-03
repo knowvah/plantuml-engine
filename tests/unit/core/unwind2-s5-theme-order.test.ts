@@ -17,8 +17,9 @@
  * `.agent-notes/unwind2-S5.md`): `root { Margin }` unread by class/
  * mindmap (usecase reads it since codd-T4: the description exporter margin);
  * every sequence row is exact since sdd1 (T2a/T2f/T3d: participants,
- * lifelines and arrow label fonts read the merged Style); the
- * usecase actor label ignores `root { FontColor }`; class-reddress is the
+ * lifelines and arrow label fonts read the merged Style); the usecase actor
+ * label reads `root { FontColor }` since dss T2a (`style-element-scope.ts`);
+ * class-reddress is the
  * counter rule between two NARROWER selectors (`classAttributeFontColor`
  * after `classFontColor`), which `style-root-shadowing.ts` does not cover.
  */
@@ -61,12 +62,12 @@ const PINS: Readonly<Record<string, readonly [number, number]>> = {
   'sequence-style-before': [0, 0],
   'sequence-style-root': [0, 0],
   'sequence-theme-only': [0, 0],
-  'usecase-skinparam-after': [2, 17],
-  'usecase-skinparam-before': [2, 17],
-  'usecase-style-after': [2, 17],
-  'usecase-style-before': [2, 17],
-  'usecase-style-root': [2, 2],
-  'usecase-theme-only': [2, 17],
+  'usecase-skinparam-after': [0, 15],
+  'usecase-skinparam-before': [0, 15],
+  'usecase-style-after': [0, 15],
+  'usecase-style-before': [0, 15],
+  'usecase-style-root': [0, 0],
+  'usecase-theme-only': [0, 15],
 };
 
 const CASES = readdirSync(DIR)

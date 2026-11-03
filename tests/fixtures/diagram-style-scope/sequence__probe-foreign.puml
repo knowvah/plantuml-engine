@@ -1,0 +1,10 @@
+@startuml
+<style>
+classDiagram {
+ actor { BackgroundColor #AAAAAA }
+}
+element { LineColor #BBBBBB }
+</style>
+actor A
+A -> B
+@enduml

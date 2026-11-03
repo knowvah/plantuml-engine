@@ -1,0 +1,10 @@
+@startuml
+<style>
+interface { BackgroundColor #AAAAAA }
+enum { BackgroundColor #BBBBBB }
+</style>
+interface I
+enum E
+class A
+abstract class B
+@enduml

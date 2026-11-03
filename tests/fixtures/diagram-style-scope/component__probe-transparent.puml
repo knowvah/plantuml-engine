@@ -1,0 +1,12 @@
+@startuml
+<style>
+element { BackgroundColor transparent
+LineColor none }
+</style>
+[C]
+database D
+note left of C: n
+rectangle R {
+ [X]
+}
+@enduml

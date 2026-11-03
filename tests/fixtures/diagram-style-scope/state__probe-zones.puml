@@ -1,0 +1,19 @@
+@startuml
+<style>
+state {
+ name { BackgroundColor #AAAAAA
+FontColor #111111 }
+ description { BackgroundColor #BBBBBB
+FontColor #222222 }
+ body { BackgroundColor #CCCCCC }
+ group { LineColor #DDDDDD
+BackgroundColor #EEEEEE }
+}
+</style>
+state A : d1
+state C {
+ state D
+}
+state G
+
+@enduml

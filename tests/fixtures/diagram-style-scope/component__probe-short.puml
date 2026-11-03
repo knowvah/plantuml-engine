@@ -1,0 +1,11 @@
+@startuml
+<style>
+componentDiagram { BackgroundColor #E
+LineColor #2
+FontColor #5 }
+</style>
+[C]
+database D
+note left of C: n
+C --> D : l
+@enduml

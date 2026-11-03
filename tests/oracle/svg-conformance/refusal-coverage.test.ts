@@ -1020,7 +1020,8 @@ describe('refusal coverage — baseline shape', () => {
     // 8686 -> 8694 at ddc/T0c (2026-10-28): +8 dot-cache/files rows (the pdiff @startfiles bucket, all render).
     // 8694 -> 8707 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml), all render.
     // 8707 -> 8708 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095), renders.
-    expect(manifest.fixtures.length).toBe(8708);
+    // 8708 -> 8709 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
+    expect(manifest.fixtures.length).toBe(8709);
     expect(pinnedJarErrors.length).toBe(86);
     //
     // 242 -> 241 / 4242 -> 4243 at unknown-bucket-routing-repair/T11
@@ -1229,7 +1230,8 @@ describe('refusal coverage — baseline shape', () => {
     // 8469 -> 8477 at ddc/T0c (2026-10-28): 8694 rows - 217 erroring (+8 dot-cache/files rows, all render on both sides).
     // 8477 -> 8490 at ddc/close-b1 (2026-10-28): 8707 rows - 217 erroring (+13 golden clones, all render).
     // 8490 -> 8491 at ddc/close-b2 (2026-10-28): 8708 rows - 217 erroring (+1 svg-json clone).
-    expect(pinnedRendering.length).toBe(8491);
+    // 8491 -> 8492 at dss/close-b2 (2026-11-02): 8709 rows - 217 erroring (+1 svg-state clone).
+    expect(pinnedRendering.length).toBe(8492);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

@@ -1,0 +1,11 @@
+@startuml
+skin rose
+<style>
+database { FontSize 12 }
+</style>
+[C]
+rectangle R {
+ [X]
+}
+note left of C: n
+@enduml

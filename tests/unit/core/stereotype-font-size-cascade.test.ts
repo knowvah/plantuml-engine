@@ -59,7 +59,7 @@ function nodeLeaf(id: string, stereotype: readonly string[]): DescriptiveNode {
 
 describe('<style> front-end: <sname> { stereotype { .tag { FontSize N } } }', () => {
   it('captures BOTH tiers off loroto-06-fano471’s own block', () => {
-    const buckets = collectElementStyleBuckets(parseStyleBlock(LOROTO_STYLE));
+    const buckets = collectElementStyleBuckets(parseStyleBlock(LOROTO_STYLE), 'description');
     expect(buckets.node).toEqual({
       stereotypeFontSize: 20,
       stereotypeFontSizeByStereo: { bar: 10 },
@@ -69,6 +69,7 @@ describe('<style> front-end: <sname> { stereotype { .tag { FontSize N } } }', ()
   it('CLEANS the tag token the way StyleSignatureBasic#clean does (case, `_`, `.`)', () => {
     const buckets = collectElementStyleBuckets(
       parseStyleBlock('node {\n stereotype {\n  .My_Style {\n   FontSize 9\n  }\n }\n}'),
+      'description',
     );
     expect(buckets.node?.stereotypeFontSizeByStereo).toEqual({ mystyle: 9 });
   });
@@ -78,7 +79,7 @@ describe('<style> front-end: <sname> { stereotype { .tag { FontSize N } } }', ()
       ['node.stereotype..bar', new Map([['fontsize', '10']])],
       ['node.stereotype..baz', new Map([['fontsize', '11']])],
     ]);
-    expect(collectElementStyleBuckets(map).node?.stereotypeFontSizeByStereo).toEqual({
+    expect(collectElementStyleBuckets(map, 'description').node?.stereotypeFontSizeByStereo).toEqual({
       bar: 10,
       baz: 11,
     });
@@ -89,12 +90,12 @@ describe('<style> front-end: <sname> { stereotype { .tag { FontSize N } } }', ()
       ['widget.stereotype..bar', new Map([['fontsize', '10']])],
       ['node.stereotype..qux', new Map([['fontsize', 'huge']])],
     ]);
-    expect(collectElementStyleBuckets(map)).toEqual({});
+    expect(collectElementStyleBuckets(map, 'description')).toEqual({});
   });
 
   it('leaves the plain `<sname>.stereotype` selector on its own field', () => {
     const map: StyleMap = new Map([['node.stereotype', new Map([['fontsize', '20']])]]);
-    expect(collectElementStyleBuckets(map).node).toEqual({ stereotypeFontSize: 20 });
+    expect(collectElementStyleBuckets(map, 'description').node).toEqual({ stereotypeFontSize: 20 });
   });
 });
 

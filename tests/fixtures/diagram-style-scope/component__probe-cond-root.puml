@@ -1,0 +1,8 @@
+@startuml
+<style>
+note { FontColor #111111 }
+root { FontColor #?black:white }
+</style>
+[C]
+note left of C: n
+@enduml

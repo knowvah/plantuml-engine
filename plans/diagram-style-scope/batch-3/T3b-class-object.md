@@ -18,8 +18,19 @@ body early (`class-command-containers.ts:109`). Unconfirmed: read `CommandMultil
 an embed open, then mirror it. `.agent-notes/dss-execution.md` also holds class `skinparam noteBackgroundColor` (`renderer-note-background.ts`), jar `#BBB`, ours
 `#FEFFDD`, with no `<style>`: fix it (D8), stop 5 excepted row by row for that jar-ward move, with its own row. Also `class__x-theme-gradient`.
 
+## Measured after T2a (orchestrator, b2 close)
+- `class__cascade-bg-*` ×4: package frame, site 1. Folder-family cluster fill is still `none`, jar `#00F`: read `group.package`, `group.folder` (`class__probe-pkg-cluster`, `-usym-cluster`). T2a fixed `resolveClusterUSymbolPaint` to read `group.<keyword>` first.
+- `class__kinds-*`: baseline 4 on `kinds-none` (`text[3]` x/textLength, undiagnosed), plus site 1, plus site 6 (stereotype text `#00B`).
+- `class__notes-bg-diag` 2, `-font-diag` 1: sites 2, 3, which should read `note.link` (written, no reader).
+- `spotClass { LineColor; FontColor }` reaches `interface`'s spot, jar does not (`class__probe-spot-own`). `graph.spotCascade*` suspected, not instrumented.
+- `class__d3-theme-*` 87-90, `class__x-theme-gradient` 94: canvas height 68 vs 84, 0 colour diffs among the first ones. Suspected `root { Margin }` unread by class: unverified, diagnose it. Colours and gradient come after the height.
+- `class__d3-skin-rose-element` 1: `@filter`, Shadowing: out of scope, name it.
+- `object__cascade-*-diag*`, `object__kinds-*-classdiag`: sites 1-3, the `classCascade*` leak.
+
 ## Rows
-`class__cascade-*`, `object__cascade-*`, `class__element-order-*`, `class__{notes,kinds,generic}-*`, `object__kinds-*`, `class__d*`, `object__d5-*`. (the orchestrator tightens this list at the B2 close.)
+`class__cascade-bg-*`, `class__{notes,kinds,generic}-*`, `class__nested-*`, `class__d3-*`, `class__x-*`, `class__probe-*`, `object__cascade-*`, `object__kinds-*`, `object__d5-*`.
+
+Probe rows at b2: `pkg-cluster` 2, `spot-own` 2, `usym-cluster` 1.
 
 ## Write-set
 `src/diagrams/class/*`, `src/core/style-cascade-class*.ts`, `tests/unit/class/*`.

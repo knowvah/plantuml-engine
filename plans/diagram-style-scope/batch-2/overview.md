@@ -2,8 +2,8 @@
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T2a](T2a-element-scope.md) | signature table, precompute into `elements`, foreign prefix stopped | typescript-pro (opus, effort high), dss-T2a | see spec | B1 close | [ ] |
-| close | merge; gates `b2`; chain vs `b1-eng`; re-pin; update T3/T4 specs from the remaining rows | orchestrator | per close-procedure | T2a | [ ] |
+| [T2a](T2a-element-scope.md) | signature table, precompute into `elements`, foreign prefix stopped | typescript-pro (opus, effort high), dss-T2a | see spec | B1 close | [x] |
+| close | merge; gates `b2`; chain vs `b1-eng`; re-pin; update T3/T4 specs from the remaining rows | orchestrator | per close-procedure | T2a | [x] |
 
 ## Interface (→ batch 3)
 ```ts

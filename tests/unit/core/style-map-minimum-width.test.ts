@@ -35,12 +35,12 @@ function leaf(symbol: DescriptiveNode['symbol'], display = 'x'): DescriptiveNode
 
 describe('scoped <style> MinimumWidth (S1L-b T5)', () => {
   it('parses MinimumWidth into the element bucket', () => {
-    const buckets = collectElementStyleBuckets(styleMap({ package: { minimumwidth: '300' } }));
+    const buckets = collectElementStyleBuckets(styleMap({ package: { minimumwidth: '300' } }), 'description');
     expect(buckets.package?.minimumWidth).toBe(300);
   });
 
   it('resolveElementMinimumWidth returns the scoped floor for the styled element only', () => {
-    const theme = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), defaultTheme);
+    const theme = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), defaultTheme, 'description');
     expect(resolveElementMinimumWidth(theme, 'package')).toBe(300);
     // A sibling with no scoped override and no global floor is unfloored.
     expect(resolveElementMinimumWidth(theme, 'card')).toBeUndefined();
@@ -51,13 +51,13 @@ describe('scoped <style> MinimumWidth (S1L-b T5)', () => {
     // No elements bucket → falls through to the global.
     expect(resolveElementMinimumWidth(theme, 'card')).toBe(200);
     // A scoped value wins over the global for its own element.
-    const scoped = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), theme);
+    const scoped = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), theme, 'description');
     expect(resolveElementMinimumWidth(scoped, 'package')).toBe(300);
     expect(resolveElementMinimumWidth(scoped, 'card')).toBe(200);
   });
 
   it('measureBox floors a package content width at the scoped minimum, not a card', () => {
-    const theme = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), defaultTheme);
+    const theme = applyStyleMap(styleMap({ package: { minimumwidth: '300' } }), defaultTheme, 'description');
     const pkgMin = resolveElementMinimumWidth(theme, 'package');
     const cardMin = resolveElementMinimumWidth(theme, 'card');
     // narrow display ("x") — the package floors at 300 + margin/icon; the card

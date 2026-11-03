@@ -110,8 +110,12 @@ function backColorValue(builder: StyleBuilder, diagramType: DiagramType): Value 
   return signature.getMergedStyle(builder)?.value('BackGroundColor');
 }
 
-/** D6: a `<style>` the parser rejects (`CommandStyleMultilinesCSS.java:92-93`) has no builder; nothing else is caught. */
-function builderOrUndefined(pre: PreprocessorResult): StyleBuilder | undefined {
+/**
+ * The document's one builder, under D3's gate: `undefined` for empty `styles` and no `skin` (D3, D3b), and for a
+ * `<style>` the parser rejects (D6, `CommandStyleMultilinesCSS.java:92-93`). Nothing else is caught.
+ */
+export function documentStyleBuilder(pre: PreprocessorResult): StyleBuilder | undefined {
+  if (pre.styles.length === 0 && pre.skin === undefined) return undefined;
   try {
     return currentStyleBuilderOf(pre);
   } catch (e) {
@@ -133,7 +137,7 @@ function isDefaultSkinValue(value: Value | undefined, diagramType: DiagramType):
 }
 
 /** `SkinParam#isDark`, inherited params included (`getValue` reads `params`). @see SkinParam.java:114-116 */
-function isDark(pre: PreprocessorResult): boolean {
+export function isDark(pre: PreprocessorResult): boolean {
   return pre.skinparam.get(MODE_KEY)?.toLowerCase() === MODE_DARK;
 }
 
@@ -178,9 +182,8 @@ export function documentBackColor(
   pre: PreprocessorResult,
   diagramType: DiagramType,
   callerNamedTheme = false,
+  builder: StyleBuilder | undefined = documentStyleBuilder(pre),
 ): DocumentBackColor | undefined {
-  if (pre.styles.length === 0 && pre.skin === undefined) return undefined;
-  const builder = builderOrUndefined(pre);
   if (builder === undefined) return undefined;
   const value = backColorValue(builder, diagramType);
   if (!isDefaultSkinValue(value, diagramType)) return pairOf(value?.asString() ?? TRANSPARENT);

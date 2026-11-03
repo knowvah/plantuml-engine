@@ -6,7 +6,7 @@
 
 import type { RenderOptions } from '../index.js';
 import type { DiagramType } from './block-extractor.js';
-import { documentBackColor, type DocumentBackColor } from './document-back-color.js';
+import { documentBackColor, documentStyleBuilder, type DocumentBackColor } from './document-back-color.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { resolveTheme, deepMergeTheme } from './theme.js';
 import type { Theme } from './theme.js';
@@ -15,6 +15,7 @@ import type { StyleMap } from './skinparam.js';
 import { applyStyleMap } from './style-map-theme.js';
 import { applySkinRun, skinRunsOf } from './skin-loader.js';
 import { computeClassTagCascadeGenerations } from './style-cascade-class.js';
+import { elementScopeColors, type ElementScopeColors } from './style-element-scope.js';
 import { styleSkinparamSegments, type StyleSkinparamSegment } from './style-skinparam-segments.js';
 import { dropRootShadowed, rootColoursOf } from './style-root-shadowing.js';
 import { cleanForKeySlow } from './style/mindmap-style-builder.js';
@@ -46,6 +47,9 @@ import { OptionKey } from './tim/EaterOption.js';
  * Stage 3c — The document background, `TitledDiagram#calculateBackColor` over
  *   the style engine (dss T1a, `document-back-color.ts`), for the `diagramType`
  *   its signature names.
+ *
+ * Stage 3d — The element colours through the same builder (dss T2a,
+ *   `style-element-scope.ts`), into `theme.colors.elements`.
  *
  * Stage 4 — Caller Partial<Theme> wins over everything.
  *
@@ -82,15 +86,18 @@ export function buildTheme(
   // Stages 2-3: skinparam directives and <style> blocks, in declaration order
   // (cdd4-T7b -- see `style-skinparam-segments.ts`).
   // unwind2-S5: minus what a later `root` colour shadows (`style-root-shadowing.ts`).
+  const builder = documentStyleBuilder(preprocessed);
+  // D6a: a `<style>` the parser rejects keeps the flat colours as they were; no signature applies.
+  const flatType = builder === undefined && preprocessed.styles.length > 0 ? undefined : diagramType;
   const skinRuns = skinRunsOf(preprocessed);
   const ordered = dropRootShadowed([
     ...skinRuns.map((styleMap): StyleSkinparamSegment => ({ kind: 'style', styleMap })),
     ...styleSkinparamSegments(preprocessed),
   ]);
   const skinSegments = ordered.slice(0, skinRuns.length);
-  const withSkin = skinSegments.reduce(applySkinSegment, base);
+  const withSkin = skinSegments.reduce((theme, segment) => applySkinSegment(theme, segment, flatType), base);
   const segments = ordered.slice(skinRuns.length).flatMap(withRootStyleRun);
-  const withDeclarations = segments.reduce(applySegment, withSkin);
+  const withDeclarations = segments.reduce((theme, segment) => applySegment(theme, segment, flatType), withSkin);
   // The skin's root colours reach every style reader at the skin's position,
   // as a skinparam run's do (`withRootStyleRun`); its other values are the
   // flat theme's own defaults, which those readers already start from.
@@ -124,14 +131,20 @@ export function buildTheme(
   const callerNamedTheme = typeof options?.theme === 'string';
   const withBackColor = withDocumentBackColor(
     withOptions,
-    documentBackColor(preprocessed, diagramType, callerNamedTheme),
+    documentBackColor(preprocessed, diagramType, callerNamedTheme, builder),
+  );
+
+  // Stage 3d: the element colours, one builder per document (D2, D3, D3a).
+  const withElements = withElementScope(
+    withBackColor,
+    elementScopeColors(preprocessed, diagramType, withBackColor.colors.elements, { callerNamedTheme, builder }),
   );
 
   // Stage 4: caller Partial<Theme> wins over everything
   const theme =
     options?.theme !== undefined && typeof options.theme === 'object'
-      ? deepMergeTheme(withBackColor, options.theme)
-      : withBackColor;
+      ? deepMergeTheme(withElements, options.theme)
+      : withElements;
   // #lizard forgives -- mechanical extraction of index.ts's own pre-existing
   // `buildTheme` (unchanged five-stage structure); was
   // never flagged in index.ts because that file's 500-line gate short-
@@ -148,6 +161,18 @@ function withDocumentBackColor(theme: Theme, pair: DocumentBackColor | undefined
   if (pair === undefined) return theme;
   const { backgroundGradient: _replaced, ...colors } = theme.colors;
   return { ...theme, colors: { ...colors, ...pair } };
+}
+
+/**
+ * Each bucket field by field: its other fields (font size, stereotype maps) are other signatures' or other tiers'.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleBuilder.java:86-104
+ */
+function withElementScope(theme: Theme, scope: Partial<Record<string, ElementScopeColors>>): Theme {
+  const buckets = Object.entries(scope);
+  if (buckets.length === 0) return theme;
+  const elements = { ...theme.colors.elements };
+  for (const [bucket, colors] of buckets) elements[bucket] = { ...elements[bucket], ...colors };
+  return { ...theme, colors: { ...theme.colors, elements } };
 }
 
 /**
@@ -207,9 +232,9 @@ function rootColourRun(segment: StyleSkinparamSegment): StyleSkinparamSegment {
 const ROOT_COLOUR_KEYS: ReadonlySet<string> = new Set(['fontcolor', 'linecolor']);
 
 /** A skin run onto the theme (`skin-loader.ts#applySkinRun`). */
-function applySkinSegment(theme: Theme, segment: StyleSkinparamSegment): Theme {
+function applySkinSegment(theme: Theme, segment: StyleSkinparamSegment, diagramType: DiagramType | undefined): Theme {
   if (segment.kind !== 'style') return theme;
-  return applySkinRun(theme, segment.styleMap, rootCascadeSkinparams(segment.styleMap.get('root')));
+  return applySkinRun(theme, segment.styleMap, diagramType, rootCascadeSkinparams(segment.styleMap.get('root')));
 }
 
 /**
@@ -218,14 +243,14 @@ function applySkinSegment(theme: Theme, segment: StyleSkinparamSegment): Theme {
  * (the `""` key) through `resolveSkinparam` too, then its element-scoped
  * selectors through `applyStyleMap`.
  */
-function applySegment(theme: Theme, segment: StyleSkinparamSegment): Theme {
+function applySegment(theme: Theme, segment: StyleSkinparamSegment, diagramType: DiagramType | undefined): Theme {
   if (segment.kind === 'skinparam')
     return withoutSupersededArrowCascade(resolveSkinparam(segment.entries, theme).theme, segment.entries);
   const flatRoot = new Map([
     ...rootCascadeSkinparams(segment.styleMap.get('root')),
     ...(segment.styleMap.get('') ?? new Map<string, string>()),
   ]);
-  return applyStyleMap(segment.styleMap, resolveSkinparam(flatRoot, theme).theme);
+  return applyStyleMap(segment.styleMap, resolveSkinparam(flatRoot, theme).theme, diagramType);
 }
 
 /**

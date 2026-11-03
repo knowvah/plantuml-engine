@@ -6,11 +6,13 @@
  * {@link StyleMap}. The document background is `document-back-color.ts`.
  */
 
+import type { DiagramType } from './block-extractor.js';
 import type { ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { resolveColor, ELEMENT_BUCKET_SNAMES } from './skinparam.js';
 import { parseColor } from './paint.js';
 import { lineStyleDash } from './style-line-style.js';
+import { isForeignDiagramPrefix } from './style-element-scope.js';
 import { cleanStereotypeToken } from './style-map-tag-cascade.js';
 import { ANY_ELEMENT_BUCKET } from './theme-element-resolve.js';
 import { parseHorizontalAlignment } from './skinparam-key-handlers-table-b.js';
@@ -320,6 +322,17 @@ function collectStereotypeTagFontSize(
 }
 
 /**
+ * D5, D5a: `<diagram>.<bucket>`, with `<diagram>` missing the signature the
+ * bucket's element reads. Its colours would land on an element the jar's
+ * subset rule never reaches (`StyleSignatureBasic.java:194-220`):
+ * `objectDiagram { note }` on a class note, `classDiagram { state }` on a state.
+ */
+function isForeignColourSelector(selector: string, bucketName: string, diagramType: DiagramType | undefined): boolean {
+  if (diagramType === undefined || selector === bucketName) return false;
+  return isForeignDiagramPrefix(selector.slice(0, -bucketName.length - 1), bucketName, diagramType);
+}
+
+/**
  * Collect per-element (SName) color/font-size buckets from element-scoped
  * style blocks (e.g. `database { BackgroundColor X }`, G1 I4b: `component {
  * FontSize N }` / `component { stereotype { FontSize N } }`). Color values
@@ -328,9 +341,16 @@ function collectStereotypeTagFontSize(
  * skinparam path (T4). Selectors are resolved via {@link
  * resolveElementBucketSelector} (bare bucket name, `<diagramType>.<bucket>`
  * nesting, or `<sname>.stereotype`); all others are left for
- * `applyStyleMap`'s existing generic/class handling.
+ * `applyStyleMap`'s existing generic/class handling. `diagramType` stops a
+ * foreign prefix's three colours ({@link isForeignColourSelector}); its other
+ * properties, font sizes first, keep collapsing (D5). `undefined` is a document
+ * whose `<style>` the parser rejects: no signature is read, its flat colours
+ * stand (D6a).
  */
-export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, ElementColors> {
+export function collectElementStyleBuckets(
+  styleMap: StyleMap,
+  diagramType: DiagramType | undefined,
+): Record<string, ElementColors> {
   const elements: Record<string, ElementColors> = {};
   for (const [selector, props] of styleMap.entries()) {
     if (collectStereotypeTagFontSize(selector, props, elements)) continue;
@@ -338,19 +358,20 @@ export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, E
     const bucketName = resolveElementBucketSelector(selector);
     if (bucketName !== undefined) {
       const bucket: ElementColors = {};
+      const foreign = isForeignColourSelector(selector, bucketName, diagramType);
       const bg = props.get('backgroundcolor');
-      if (bg !== undefined) bucket.background = parseColor(bg);
+      if (bg !== undefined && !foreign) bucket.background = parseColor(bg);
       const bd = props.get('bordercolor');
-      if (bd !== undefined) bucket.border = parseColor(bd);
+      if (bd !== undefined && !foreign) bucket.border = parseColor(bd);
       // `LineColor` is the canonical `<style>`-block border/line color PName
       // (`BorderColor` above is the skinparam-side alias); read last so an
       // explicit LineColor wins. `skin rose`'s `componentDiagram { node,
       // rectangle { LineColor black } }` tints deployment node/rectangle
       // borders black, overriding root's own #A80036 (a more-specific SName).
       const lc = props.get('linecolor');
-      if (lc !== undefined) bucket.border = parseColor(lc);
+      if (lc !== undefined && !foreign) bucket.border = parseColor(lc);
       const fc = props.get('fontcolor');
-      if (fc !== undefined) bucket.font = parseColor(fc);
+      if (fc !== undefined && !foreign) bucket.font = parseColor(fc);
       const lt = props.get('linethickness');
       if (lt !== undefined) {
         const thickness = Number.parseFloat(lt);

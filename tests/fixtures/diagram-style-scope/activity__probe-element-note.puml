@@ -1,0 +1,15 @@
+@startuml
+<style>
+note { BackgroundColor #AAAAAA }
+element { LineColor #BBBBBB }
+activity { FontColor #CCCCCC }
+diamond { FontColor #DDDDDD }
+</style>
+start
+:a;
+note left: n
+if (x) then
+ :b;
+endif
+stop
+@enduml

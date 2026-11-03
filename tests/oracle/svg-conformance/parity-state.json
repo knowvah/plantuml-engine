@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:16:46.819Z",
+  "generatedAt": "2026-11-03T01:55:07.624Z",
   "fixtures": [
     {
       "slug": "bajelo-54-dixe684",
@@ -1083,9 +1083,7 @@
       "type": "state",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[2]/text[1]/@fill"
+      "verdict": "conformant"
     },
     {
       "slug": "lukuma-74-loti931",
@@ -1344,7 +1342,7 @@
       "layoutEqual": true,
       "verdict": "diverged",
       "maxDelta": 18,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@fill",
+      "firstDiff": "svg/g[1][childCount]",
       "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[0]"
     },
     {

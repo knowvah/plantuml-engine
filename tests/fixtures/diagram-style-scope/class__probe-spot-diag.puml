@@ -1,0 +1,13 @@
+@startuml
+<style>
+classDiagram { BackgroundColor #AAAAAA
+FontColor #CCCCCC
+LineColor #BBBBBB }
+</style>
+class A
+interface I
+enum E
+abstract class B
+annotation N
+entity D
+@enduml

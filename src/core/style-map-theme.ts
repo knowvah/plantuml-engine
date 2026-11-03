@@ -11,6 +11,7 @@
  * unchanged from the original single-function version (see .agent-notes).
  */
 
+import type { DiagramType } from './block-extractor.js';
 import type { Theme, ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { deepMergeTheme } from './theme.js';
@@ -105,8 +106,8 @@ interface StyleMapExtras {
  * root/element Shadowing/LineColor cascade (D3); and the D3 cardinality-font
  * cascade (T14).
  */
-function computeStyleMapExtras(styleMap: StyleMap, base: Theme): StyleMapExtras {
-  const elements = collectElementStyleBuckets(styleMap);
+function computeStyleMapExtras(styleMap: StyleMap, base: Theme, diagramType: DiagramType | undefined): StyleMapExtras {
+  const elements = collectElementStyleBuckets(styleMap, diagramType);
   const noteTagCascade = computeNoteStyleTagCascade(styleMap);
   const showStereotypeByTag = computeShowStereotypeByTag(styleMap);
   return {
@@ -219,12 +220,16 @@ function buildStyleMapPartialTheme(
  * The document background is not here: `document-back-color.ts` reads it
  * through the style engine (dss T1a, D5).
  *
+ * `diagramType` decides which prefixed selectors are foreign to a bucket's
+ * signature (D5, D5a, `collectElementStyleBuckets`); `undefined` for a `<style>`
+ * the parser rejects (D6a).
+ *
  * Returns a new Theme — neither `base` nor the StyleMap is mutated.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleBuilder.java:86-104
  */
-export function applyStyleMap(styleMap: StyleMap, base: Theme): Theme {
+export function applyStyleMap(styleMap: StyleMap, base: Theme, diagramType: DiagramType | undefined): Theme {
   const graphOverride = computeGraphOverride(styleMap, base);
-  const extras = computeStyleMapExtras(styleMap, base);
+  const extras = computeStyleMapExtras(styleMap, base, diagramType);
   if (styleMapHasNoOverrides(graphOverride, extras)) return base;
   return deepMergeTheme(base, buildStyleMapPartialTheme(base, graphOverride, extras));
 }

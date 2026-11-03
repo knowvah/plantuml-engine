@@ -11,8 +11,13 @@ Route each bucket-skipping site the audit lists through the resolved element col
 inline-colour tiers above it. Mirror the Java at each site; a site whose Java reads a different signature than the audit
 says is a finding. Tests first, citing the row or the Java.
 
+## Measured after T2a (orchestrator, b2 close)
+T2a writes `state.name|description|body`, `group.state`, `circle.start|stop|end`, `activity.diamond`, none yet read. Start and end ellipses read literals (`#222` vs `#AAA`). `state__d5-activitydiag-{activity,diamond}` 1 each: site 5, which should read `activity.diamond`; `diamond` on state is history.
+
 ## Rows
-`state__cascade-*`, `state__scope-state-classdiagram`, `state__flatnote-*`, `state__d*`. (the orchestrator tightens this list at the B2 close.)
+`state__cascade-*`, `state__d*`, `state__flatnote-*`, `state__probe-*` as far as sites 1-12 reach.
+
+Probe rows at b2, shared with T3e (T3c takes what sites 1-12 reach; a note-on-link row is T3e's): `diag` 2, `note-link` 16, `state-after-element` 2, `zones` 26.
 
 ## Write-set
 `src/diagrams/state/*`, `tests/unit/state/*`.

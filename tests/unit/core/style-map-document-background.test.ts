@@ -92,12 +92,14 @@ describe('style document BackgroundColor non-gradient values are unchanged (dbp 
   });
 
   it('a StyleMap with no document background returns the base theme itself', () => {
-    expect(applyStyleMap(parseStyleBlock('class {\n  FontSize 12\n}'), defaultTheme).colors.background).toBe(
+    expect(applyStyleMap(parseStyleBlock('class {\n  FontSize 12\n}'), defaultTheme, 'class').colors.background).toBe(
       defaultTheme.colors.background,
     );
-    expect(applyStyleMap(new Map(), defaultTheme)).toBe(defaultTheme);
+    expect(applyStyleMap(new Map(), defaultTheme, 'class')).toBe(defaultTheme);
     // dss T1a (D5): the canvas is no longer applyStyleMap's.
-    expect(applyStyleMap(parseStyleBlock('document {\n  BackgroundColor black\n}'), defaultTheme)).toBe(defaultTheme);
+    expect(applyStyleMap(parseStyleBlock('document {\n  BackgroundColor black\n}'), defaultTheme, 'class')).toBe(
+      defaultTheme,
+    );
   });
 });
 

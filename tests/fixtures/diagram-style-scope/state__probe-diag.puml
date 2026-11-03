@@ -1,0 +1,14 @@
+@startuml
+<style>
+stateDiagram { BackgroundColor #AAAAAA
+LineColor #BBBBBB
+FontColor #CCCCCC }
+</style>
+state A
+state C {
+ D --> E
+}
+state F : desc
+state h <<choice>>
+state j <<fork>>
+@enduml

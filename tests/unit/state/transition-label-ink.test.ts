@@ -156,7 +156,7 @@ describe('state engine — <style> arrow { FontSize 20 } reaches both the DOT bo
     return { id, display: id, kind: 'normal', children: [], concurrentRegions: [], transitions: [] };
   }
 
-  const theme = applyStyleMap(parseStyleBlock('arrow {\n  FontSize 20\n}'), defaultTheme);
+  const theme = applyStyleMap(parseStyleBlock('arrow {\n  FontSize 20\n}'), defaultTheme, 'state');
 
   function ast(): StateDiagramAST {
     return {

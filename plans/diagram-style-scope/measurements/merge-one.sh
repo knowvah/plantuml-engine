@@ -20,6 +20,6 @@ ratchets="$C/document-background.ratchet.test.ts"
 for e in json yaml hcl class object state description sequence activity mindmap salt wbs gantt files; do
   ratchets="$ratchets $C/$e.golden.ratchet.test.ts"
 done
-ratchets="$ratchets $C/extensions.ratchet.test.ts tests/architecture tests/unit/oracle"
+ratchets="$ratchets $C/extensions.ratchet.test.ts tests/architecture tests/unit/oracle tests/unit/core tests/unit/skin-loader.test.ts"
 npx vitest run $ratchets "$@" --maxWorkers=2 --coverage.enabled=false 2>&1 \
   | grep -E 'Test Files|Tests |FAIL|✗|×|No test files' | head -20
