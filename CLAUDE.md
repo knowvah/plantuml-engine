@@ -125,6 +125,17 @@ in-place mutation where it mutates, and document the contract.
 `npm test` (vitest + 90/90/90 coverage) · `npm run typecheck` (both tsconfigs)
 · `npm run lint` · `npm run build`
 
+Two narrowings of the local run only; CI always runs everything:
+
+- **Docs-only diff:** when it touches none of `src/`, `tests/`, `demo/`,
+  `scripts/`, `docs/`, `plans/` or test/build config, run `npm run docs:build`
+  instead, plus `npm run test:e2e` if the playground changed. `docs/` and
+  `plans/` count as code here because tests read files in them
+  (`docs/catalog.md`, `docs/parity-report.md`, the s1l ledger).
+- **Signing rebase:** when `git diff <pre-rebase-sha> HEAD` is empty, gate
+  results from the pre-rebase commit stand. A gate that never finished still
+  runs.
+
 ## Architecture
 
 - Pure SVG: no DOM/async/canvas. In `src/`, no Node built-ins, `process.env`,
