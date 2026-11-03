@@ -12,34 +12,63 @@ One row per manifest bucket in `tests/visual/data/*.json` (28, alphabetical — 
 
 | type | engine | corpus | oracle | DOT equal | survey conformant / structural / diverged | layoutEqual | census 0-diff | ratchet pins | diff-baseline (n · ΣweightedScore) | routing agree | refusal ok |
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| activity | activity | 771 | 449 | n/a (no DOT stage (non-svek)) | 448 / 1 / 0 (14 error) | n/a (no DOT stage (non-svek)) | 0 | 434 | 0 · 0 | 439/449 | 445/449 |
-| board | board | 4 | 4 | n/a (no DOT stage (non-svek)) | 0 / 0 / 4 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/4 | 4/4 |
-| c4 | description | 11 | 11 | n/a (no data-diagram-type classification) | 2 / 0 / 9 (1 error) | 3/5 | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 9/11 | 7/11 |
-| chart | chart | 29 | 29 | n/a (no DOT stage (non-svek)) | 0 / 0 / 29 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/29 | 29/29 |
-| chronology | chronology | 1 | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) |
+| activity § | activity | 771 | 449 | n/a (no DOT stage (non-svek)) | 448 / 1 / 0 (14 error) | n/a (no DOT stage (non-svek)) | 0 | 434 | 0 · 0 | 439/449 | 445/449 |
+| board § | board | 4 | 4 | n/a (no DOT stage (non-svek)) | 0 / 0 / 4 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/4 | 4/4 |
+| c4 § | description | 11 | 11 | n/a (no data-diagram-type classification) | 2 / 0 / 9 (1 error) | 3/5 | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 9/11 | 7/11 |
+| chart § | chart | 29 | 29 | n/a (no DOT stage (non-svek)) | 0 / 0 / 29 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/29 | 29/29 |
+| chronology ‖ | chronology | 1 | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) |
 | class | class | 768 | 723 | 712/712 (100%) | 723 / 0 / 0 (3 error) | 547/548 | 1003 | 1003 | n/a (no diff-baseline yet) | 720/723 | 723/723 |
-| component | description | 384 | 266 | 260/263 (99%) | 215 / 13 / 38 | 248/251 | 187 | 214 | 15 · 42 | 266/266 | 266/266 |
-| ditaa | n/a (no engine (D8 todo)) | 2 | 2 | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) |
+| component § | description | 384 | 266 | 260/263 (99%) | 215 / 13 / 38 | 248/251 | 187 | 214 | 15 · 42 | 266/266 | 266/266 |
+| ditaa ‡ | n/a (no engine (D8 todo)) | 2 | 2 | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) |
 | dot | dot | 62 | 5 | n/a (no DOT stage (non-svek)) | 5 / 0 / 0 | n/a (no DOT stage (non-svek)) | 5 | 5 | n/a (no diff-baseline yet) | 5/5 | 5/5 |
-| ebnf | n/a (no engine (D10 todo)) | 44 | 44 | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) |
+| ebnf ‡ | n/a (no engine (D10 todo)) | 44 | 44 | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) |
 | files | files | 8 | 9 | n/a (no DOT stage (non-svek)) | 9 / 0 / 0 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 9/9 | 9/9 |
 | gantt | gantt | 265 | 265 | n/a (no DOT stage (non-svek)) | 265 / 0 / 0 (11 error) | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 257/265 | 255/265 |
-| hcl | hcl | 12 | 3 | n/a (no DOT stage (non-svek)) | 1 / 2 / 0 | n/a (no DOT stage (non-svek)) | 1 | 1 | n/a (no diff-baseline yet) | 3/3 | 3/3 |
-| json | json | 49 | 50 | n/a (no DOT stage (non-svek)) | 14 / 35 / 1 | n/a (no DOT stage (non-svek)) | 12 | 14 | n/a (no diff-baseline yet) | 50/50 | 50/50 |
+| hcl † | hcl | 12 | 3 | n/a (no DOT stage (non-svek)) | 1 / 2 / 0 | n/a (no DOT stage (non-svek)) | 1 | 1 | n/a (no diff-baseline yet) | 3/3 | 3/3 |
+| json † | json | 49 | 50 | n/a (no DOT stage (non-svek)) | 14 / 35 / 1 | n/a (no DOT stage (non-svek)) | 12 | 14 | n/a (no diff-baseline yet) | 50/50 | 50/50 |
 | mindmap | mindmap | 142 | 142 | n/a (no DOT stage (non-svek)) | 142 / 0 / 0 (3 error) | n/a (no DOT stage (non-svek)) | n/a (no census yet) | 137 | 5 · 432 | 139/142 | 139/142 |
-| network | n/a (no engine (D5 todo)) | 3 | 3 | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) |
-| object | class | 84 | 80 | 78/80 (98%) | 64 / 8 / 8 | 59/64 | 49 | 35 | n/a (no diff-baseline yet) | 80/80 | 80/80 |
-| packet | packetdiag | 6 | 6 | n/a (no DOT stage (non-svek)) | 0 / 0 / 6 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/6 | 6/6 |
-| regex | n/a (no engine (D11 todo)) | 46 | 46 | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) |
+| network ‡ | n/a (no engine (D5 todo)) | 3 | 3 | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) | n/a (no engine (D5 todo)) |
+| object § | class | 84 | 80 | 78/80 (98%) | 64 / 8 / 8 | 59/64 | 49 | 35 | n/a (no diff-baseline yet) | 80/80 | 80/80 |
+| packet § | packetdiag | 6 | 6 | n/a (no DOT stage (non-svek)) | 0 / 0 / 6 | n/a (no DOT stage (non-svek)) | n/a (no census yet) | n/a (no ratchet yet) | n/a (no diff-baseline yet) | 0/6 | 6/6 |
+| regex ‡ | n/a (no engine (D11 todo)) | 46 | 46 | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) | n/a (no engine (D11 todo)) |
 | salt | salt | 51 | 51 | n/a (no DOT stage (non-svek)) | 51 / 0 / 0 (1 error) | n/a (no DOT stage (non-svek)) | n/a (no census yet) | 50 | 1 · 337 | 50/51 | 50/51 |
 | sequence | sequence | 1271 | 1143 | n/a (no DOT stage (non-svek)) | 1143 / 0 / 0 | n/a (no DOT stage (non-svek)) | 0 | 1143 | 0 · 0 | 1143/1143 | 1143/1143 |
-| state | state | 278 | 273 | 267/268 (100%) | 114 / 15 / 144 (4 error) | 253/269 | 71 | 110 | n/a (no diff-baseline yet) | 269/273 | 273/273 |
-| timing | n/a (no engine (D1 todo)) | 126 | 126 | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) |
-| unknown | n/a (accounting bucket) | 825 | 825 | n/a (no data-diagram-type classification) | 572 / 19 / 234 (25 error) | 368/376 | n/a (no census yet) | 15 | 0 · 0 | 696/825 | 780/825 |
-| usecase | description | 351 | 94 | 93/93 (100%) | 70 / 8 / 15 | 72/73 | 62 | 70 | 6 · 4 | 94/94 | 94/94 |
+| state § | state | 278 | 273 | 267/268 (100%) | 114 / 15 / 144 (4 error) | 253/269 | 71 | 110 | n/a (no diff-baseline yet) | 269/273 | 273/273 |
+| timing ‡ | n/a (no engine (D1 todo)) | 126 | 126 | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) | n/a (no engine (D1 todo)) |
+| unknown ¶ | n/a (accounting bucket) | 825 | 825 | n/a (no data-diagram-type classification) | 572 / 19 / 234 (25 error) | 368/376 | n/a (no census yet) | 15 | 0 · 0 | 696/825 | 780/825 |
+| usecase § | description | 351 | 94 | 93/93 (100%) | 70 / 8 / 15 | 72/73 | 62 | 70 | 6 · 4 | 94/94 | 94/94 |
 | wbs | wbs | 204 | 204 | n/a (no DOT stage (non-svek)) | 204 / 0 / 0 (28 error) | n/a (no DOT stage (non-svek)) | n/a (no census yet) | 176 | 28 · 1070 | 178/204 | 180/204 |
-| wire | n/a (no engine (D12 todo)) | 18 | 18 | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) |
-| yaml | yaml | 40 | 39 | n/a (no DOT stage (non-svek)) | 7 / 31 / 1 | n/a (no DOT stage (non-svek)) | 7 | 7 | n/a (no diff-baseline yet) | 39/39 | 39/39 |
+| wire ‡ | n/a (no engine (D12 todo)) | 18 | 18 | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) | n/a (no engine (D12 todo)) |
+| yaml † | yaml | 40 | 39 | n/a (no DOT stage (non-svek)) | 7 / 31 / 1 | n/a (no DOT stage (non-svek)) | 7 | 7 | n/a (no diff-baseline yet) | 39/39 | 39/39 |
+
+### Why a row falls short
+
+**†** **Laid out by a different Graphviz.** PlantUML lays these diagrams out with Smetana, its Java translation of Graphviz 2.38. We use dot-engine, which follows current Graphviz. Elements, labels, colours and structure match, but edge routing and node spacing can differ, so most fixtures end as structural matches. This is a settled decision, not a to-do: see [Why no Smetana support?](../docs-site/guide/why-no-smetana.md). Applies to hcl, json, yaml.
+
+**‡** **No engine yet.** We do not draw this diagram type yet, so these fixtures get an error page. Applies to ebnf, regex, timing, wire.
+
+- **ditaa:** It also cannot be compared as SVG: PlantUML writes a PNG for ditaa even when asked for SVG.
+- **network:** This bucket is filled by a keyword match and holds no nwdiag diagrams: one description diagram, which conforms, and two in the legacy `(*) -->` activity syntax, which we do not parse. Real nwdiag fixtures are counted under `unknown`.
+
+**§** **Open defects.** An engine exists, and what remains are bugs still to fix. No library forces them.
+
+- **activity:** The one structural match is an older reading: a survey on 2026-11-02 measures all 449 fixtures conformant.
+- **board:** The SVG has not been aligned with PlantUML yet: card fill (`#D3D3D3` against `#C0C0C0`), text placement and canvas size all differ.
+- **c4:** Drawn by the description engine. The first difference is usually the corner rounding of a boundary box.
+- **chart:** The SVG has not been aligned with PlantUML yet: line styling, text anchoring and canvas size differ.
+- **component:** Mostly stroke, fill and path differences. Four fixtures also contain LaTeX, which we render with KaTeX rather than JLaTeXMath, and that part is permanent.
+- **object:** Mostly small fill and text-width differences, not yet diagnosed row by row.
+- **packet:** The canvas can match, but text is anchored and lines are drawn differently: PlantUML positions text with `textLength` and draws `<path>` where we draw `<line>`.
+- **state:** The layout matches on most fixtures. The largest groups differ in element ids, text widths, path data and classes, not yet diagnosed row by row.
+- **usecase:** Mostly fill, text-size and structure differences. One more fixture cannot be compared at all, because its cached PlantUML output is not well-formed XML.
+
+**¶** **Mixed bucket.** This bucket holds sources the classifier could not assign, so its causes differ.
+
+- **unknown:** Of the 260 fixtures short of conformant on 2026-11-02, by PlantUML's own type: 109 are types we draw imperfectly, mostly description; 96 have no engine yet, mostly nwdiag (64) and timing (13); 49 carry no type tag (creole, math, LaTeX and error pages); 6 are pages PlantUML itself declines.
+
+**‖** **Nothing to compare against.** The pinned PlantUML jar answers "Diagram not supported by this release" while we draw the diagram. Applies to chronology.
+
+A suffix such as `(3 error)` is not a shortfall. PlantUML draws an error page for those fixtures too, and we draw our own, which counts as conformant.
 
 ## Freshness
 

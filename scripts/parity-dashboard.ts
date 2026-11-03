@@ -21,6 +21,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { dotParityMarkdown, type TypeRow, type DotParityJson } from './dot-parity-rows.js';
+import { markedType, notesSection } from './parity-dashboard-notes.js';
 import {
   manifestBuckets,
   corpusCountsOf,
@@ -303,13 +304,15 @@ const MATRIX_SEP = '| --- | --- | ---: | --- | --- | --- | --- | --- | --- | ---
 
 function matrixRowLine(r: MatrixRow): string {
   return (
-    `| ${r.type} | ${r.engine} | ${r.corpus} | ${r.oracle} | ${r.dot} | ${r.survey} | ${r.layout} | ` +
+    `| ${markedType(r.type, r.survey)} | ${r.engine} | ${r.corpus} | ${r.oracle} | ${r.dot} | ${r.survey} | ${r.layout} | ` +
     `${r.census} | ${r.ratchet} | ${r.diffBaseline} | ${r.routing} | ${r.refusal} |`
   );
 }
 
 function matrixSection(matrix: readonly MatrixRow[]): string {
-  return ['## Matrix', '', MATRIX_HEADER, MATRIX_SEP, ...matrix.map(matrixRowLine), ''].join('\n');
+  return ['## Matrix', '', MATRIX_HEADER, MATRIX_SEP, ...matrix.map(matrixRowLine), '', notesSection(matrix)].join(
+    '\n',
+  );
 }
 
 const FRESH_HEADER = '| type | DOT | survey | census | ratchet | diff-baseline | routing | refusal |';
