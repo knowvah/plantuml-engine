@@ -43,8 +43,8 @@ import { DECLARATION_COMMANDS } from './state-commands-declarations.js';
  * (`Command.java:44`) because several state commands (the concurrent-region
  * separator, the multi-line note closers) branch on it; `passes` is
  * required (every state command needs an explicit eligibility list) and
- * typed `Pass[]` (`'one' | 'two'`, `state-parse-state.ts`), not the core
- * 3-value `ParserPass`, since state's own 2-pass architecture predates and
+ * typed `Pass[]` (`'one' | 'two' | 'three'`, `state-parse-state.ts`), not the
+ * core `ParserPass`, since state's own pass architecture predates and
  * is coarser than the shared 3-value model. Verified empirically: aliasing
  * to `CoreCommand<ParseState>` breaks ~40 call sites across this file,
  * `state-commands-declarations.ts`, `state-commands-notes.ts`, and
@@ -222,7 +222,7 @@ export const COMMANDS: readonly Command[] = [
   // -------------------------------------------------------------------------
   {
     pattern: /^(--+|\|\|+)\s*$/,
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const scope = currentScope(ps);
       scope.hasConcurrency = true;
@@ -275,7 +275,7 @@ export const COMMANDS: readonly Command[] = [
   // -------------------------------------------------------------------------
   {
     pattern: /^(?:\}|end\s?state)\s*$/i,
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps) {
       popScope(ps);
     },

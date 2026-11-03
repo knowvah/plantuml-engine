@@ -27,7 +27,8 @@ import { mapColumnDividerEntries } from './renderer-classifier-map-dividers.js';
 import { protectedInnerBox } from './class-dot-graph.js';
 import { hasBadge } from './class-badge.js';
 import { renderBadge, renderGenericTag, renderBadgeSpriteImage } from './renderer-classifier-badge-tag.js';
-import { renderVisibilityIcon, renderVisibilityUrlBackground, VISIBILITY_ICON_SIZE } from './class-visibility-icon.js';
+import { renderMemberVisibilityIcon, renderVisibilityUrlBackground } from './class-visibility-icon.js';
+import { renderHeaderVisibilityIcon } from './renderer-classifier-header-icon.js';
 import { wrapClassifierBody, type UrlTaggedPrimitive } from './renderer-url.js';
 import {} from '../../core/svg.js';
 import {} from '../../core/klimt/shape/UText.js';
@@ -225,25 +226,6 @@ function buildHeaderPrimitive(geo: ClassifierGeo, theme: ScaledTheme): UrlTagged
   return { url: geo.url, body };
 }
 
-/** cdd5-T4b: the header's `VisibilityModifier#getUBlock` icon (METHOD
- *  variant), `iconWidth` = raw `classAttributeIconSize + 1` left of the tagged
- *  name row (`class-header-visibility-geo.ts`). No url: rare, unsurveyed.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageClassHeader.java:109-121 */
-function renderHeaderVisibilityIcon(geo: ClassifierGeo, headerRowCount: number, theme: ScaledTheme): string {
-  const row = geo.rows.slice(0, headerRowCount).find((r) => r.visibilityIcon !== undefined);
-  if (row?.visibilityIcon === undefined) return '';
-  const iconWidth = ((theme.classAttributeIconSize ?? VISIBILITY_ICON_SIZE) + 1) * theme.scaleK;
-  const x = geo.x + row.indent - iconWidth;
-  return renderVisibilityIcon(
-    row.visibilityIcon,
-    false,
-    x,
-    geo.y + row.y + (row.visibilityBlockTopDy ?? 0),
-    undefined,
-    theme,
-  );
-}
-
 /**
  * One section-divider `<line>` -- split out of {@link buildBodyPrimitives}
  * purely to keep that function under the project's NLOC cap (pure
@@ -338,7 +320,12 @@ export function pushIconRowPrimitives(
     interleaved.push(iconEntry(row.y, effectiveUrl, bg));
   }
   const isField = row.visibilityIsField === true;
-  const shape = renderVisibilityIcon(icon, isField, iconOriginX, iconOriginY, effectiveUrl, theme);
+  const shape = renderMemberVisibilityIcon(
+    icon,
+    isField,
+    { x: iconOriginX, y: iconOriginY },
+    { url: effectiveUrl, theme },
+  );
   interleaved.push(iconEntry(row.y, effectiveUrl, shape));
   interleaved.push({ y: row.y, item: { url: effectiveUrl, body: renderRowText(geo, row, theme) } });
 }

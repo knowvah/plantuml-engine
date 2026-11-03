@@ -10,6 +10,7 @@
  */
 
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
+import { compositeBucketOf } from '../../core/style-element-scope.js';
 import type { Theme } from '../../core/theme.js';
 import { noGradient, type Paint } from '../../core/paint.js';
 import type { CompositeUSymbol } from './activity-geometry.types.js';
@@ -24,9 +25,13 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { activityDisplayBlock, activityTextFontConfiguration, drawActivityTextBlock } from './activity-text-sheet.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
-import { activityFontSize, activityLineThickness } from './activity-style-defaults.js';
+import { activityFontSize, activityLineThickness, resolveSolidBucketColor } from './activity-style-defaults.js';
 import { activityMeasurer } from './activity-string-bounder.js';
+import { fontConfigurationColor, scopedBack, stereotypeBack, stereotypeFont } from './activity-scoped-colors.js';
 import { frameTitleWidth } from './tiles/gtile-group.js';
+
+/** The root `FontColor black` a frame's title inherits. @see ~/git/plantuml/src/main/resources/skin/plantuml.skin:9 */
+const COMPOSITE_TITLE_FONT_COLOR = '#000';
 
 /** `USymbolFrame#drawFrame` (`:68-97`): the title-tab underline, an OPEN
  *  (unfilled) 4-point path from the tab's top-right corner down past a
@@ -54,14 +59,13 @@ export function compositeTitleWidth(theme: Theme, title: string): number {
   return frameTitleWidth(title, activityMeasurer(theme), theme);
 }
 
-/** The frame's `<symbol>/composite` style colours (`FtileGroup.java:99-102`):
+/** The frame's `<symbol>/composite` style colours (`FtileGroup.java:101-102`):
  *  `activityDiagram { composite { LineColor black; BackgroundColor transparent } }`
- *  (`plantuml.skin:364-368`), the root `FontColor black`, each overridden by
- *  the `Partition*` skinparams (`FromSkinparamToStyle.java:131-133`). */
+ *  (`plantuml.skin:364-368`), each overridden by the `Partition*` skinparams
+ *  (`FromSkinparamToStyle.java:131-132`). */
 interface CompositeStyle {
   readonly backColor: string;
   readonly borderColor: string;
-  readonly fontColor: string;
 }
 
 function compositeStyle(theme: Theme): CompositeStyle {
@@ -69,8 +73,45 @@ function compositeStyle(theme: Theme): CompositeStyle {
   return {
     backColor: g.partitionBackground ?? 'none',
     borderColor: g.partitionBorder ?? '#000',
-    fontColor: g.partitionFontColor === undefined ? '#000' : resolveColorToSvgHex(g.partitionFontColor),
   };
+}
+
+/** What selects a frame's signature. */
+type CompositeSubject = Pick<ActivityNodeGeo, 'kind' | 'usymbol' | 'stereotype'>;
+
+/** `symbol.getSNames()` of `FtileGroup.java:90`: the node's USymbol, or the frame its kind is. */
+function compositeSymbolOf(node: CompositeSubject): string {
+  return node.usymbol ?? (node.kind === 'group' ? 'group' : 'partition');
+}
+
+/** The key T2a resolved this frame's own signature to (D2, {@link compositeBucketOf}). */
+function compositeBucket(node: CompositeSubject): string {
+  return compositeBucketOf(compositeSymbolOf(node));
+}
+
+/** The signature's back: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
+function compositeBack(node: CompositeSubject, theme: Theme): Paint | undefined {
+  return stereotypeBack(theme, compositeSymbolOf(node), node.stereotype) ?? scopedBack(theme, compositeBucket(node));
+}
+
+/**
+ * The title's colour, `style.getFontConfiguration` of `FtileGroup.java:99`: the stereotype's and merged values (D2);
+ * with no `<style>`, `addConFont("Partition", SName.composite)` (`FromSkinparamToStyle.java:133`), then the symbol's
+ * own `addMagic` font (`:278`, `:129,212,223`), then the root `FontColor black` (`plantuml.skin:9`).
+ */
+function compositeTitleColor(node: CompositeSubject, theme: Theme): string {
+  return (
+    stereotypeFont(theme, compositeSymbolOf(node), node.stereotype) ??
+    resolveSolidBucketColor(theme.colors.elements?.[compositeBucket(node)]?.font) ??
+    flatTitleColor(node, theme) ??
+    COMPOSITE_TITLE_FONT_COLOR
+  );
+}
+
+function flatTitleColor(node: CompositeSubject, theme: Theme): string | undefined {
+  const partition = theme.colors.graph.partitionFontColor;
+  if (partition !== undefined) return resolveColorToSvgHex(partition);
+  return node.usymbol === undefined ? undefined : resolveSolidBucketColor(theme.colors.elements?.[node.usymbol]?.font);
 }
 
 /** The per-symbol ink fields a `skinparam` can set, before the cascade. */
@@ -102,9 +143,10 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
   if (node.usymbol === 'card' || node.usymbol === 'rectangle') {
     const b = theme.colors.elements?.[node.usymbol];
     const strokeWidth = b?.lineThickness;
+    const border = theme.colors.elements?.[compositeBucket(node)]?.border ?? b?.border;
     return {
       ...(b?.background !== undefined ? { fill: asString(b.background)! } : {}),
-      ...(b?.border !== undefined ? { stroke: asString(b.border)! } : {}),
+      ...(border !== undefined ? { stroke: asString(border)! } : {}),
       ...(strokeWidth !== undefined ? { strokeWidth } : {}),
       ...(b?.roundCorner !== undefined ? { roundCorner: b.roundCorner } : {}),
     };
@@ -119,17 +161,23 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
   };
 }
 
+/** `FtileGroup.java:101`: the command's `#color`, else the style's `BackGroundColor`. */
+function compositeFill(node: ActivityNodeGeo, theme: Theme, flatFill: Paint): Paint {
+  return node.color ?? compositeBack(node, theme) ?? theme.colors.graph.partitionBackground ?? flatFill;
+}
+
 /** The resolved ink of one group frame: `Partition*` skinparams (on the
- *  `composite` signature itself, the more specific match -- jar probe: a
- *  `PartitionBackgroundColor` beats `rectangleBackgroundColor`), else the
- *  symbol's own block, else the `plantuml.skin` composite default. */
+ *  `composite` signature itself), else the symbol's own block, else the
+ *  `plantuml.skin` composite default. The jar takes whichever of those two
+ *  skinparams came last (a value's priority, `DarkString.java:54-57`); with
+ *  no `<style>` this flat path has lost the order and always takes `Partition*`
+ *  (`.agent-notes/dss-T3d.md`). */
 function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
   const base = compositeStyle(theme);
   const g = theme.colors.graph;
   const sym = symbolInk(node, theme);
   return {
-    // `FtileGroup.java:101`: the command's `#color`, else the style's `BackGroundColor`.
-    fill: node.color ?? g.partitionBackground ?? sym.fill ?? base.backColor,
+    fill: compositeFill(node, theme, sym.fill ?? base.backColor),
     stroke: g.partitionBorder ?? sym.stroke ?? base.borderColor,
     strokeWidth: sym.strokeWidth ?? activityLineThickness(theme, 'composite'),
     // `FtileGroup.java:103`: `style.value(PName.RoundCorner).asDouble()`.
@@ -176,7 +224,7 @@ export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
 
   if (title === '') return body + tab;
   // `USymbolFrame.java:154`: `title.drawU(ug.apply(new UTranslate(3, 1)))`.
-  const titleEl = drawCompositeTitle(title, { x: node.x + 3, y: node.y + 1 }, theme);
+  const titleEl = drawCompositeTitle(title, { x: node.x + 3, y: node.y + 1 }, compositeTitleColor(node, theme), theme);
   return body + tab + titleEl;
 }
 
@@ -199,7 +247,7 @@ function renderSymbolComposite(
   const frame = drawCompositeSymbol(node, usymbol, dim, ink);
   if (title === '') return frame;
   const origin = compositeSymbolTitleOrigin(node, usymbol, titleWidth);
-  return frame + drawCompositeTitle(title, origin, theme);
+  return frame + drawCompositeTitle(title, origin, compositeTitleColor(node, theme), theme);
 }
 
 /**
@@ -208,10 +256,15 @@ function renderSymbolComposite(
  * composite style's `getFontConfiguration` (`Style.java:259-268`, incl.
  * `HyperLinkColor`), drawn with its top-left at `at`.
  */
-function drawCompositeTitle(title: string, at: { readonly x: number; readonly y: number }, theme: Theme): string {
+function drawCompositeTitle(
+  title: string,
+  at: { readonly x: number; readonly y: number },
+  color: string,
+  theme: Theme,
+): string {
   const fc = {
     ...activityTextFontConfiguration(theme, activityFontSize(theme, 'composite'), 'composite'),
-    color: compositeStyle(theme).fontColor,
+    color: fontConfigurationColor(color),
   };
   const tb = activityDisplayBlock(title, theme, {
     fontConfiguration: fc,

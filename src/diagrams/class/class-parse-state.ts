@@ -77,6 +77,13 @@ export interface ParseState {
    * closing line. `undefined` in the overwhelming majority of parses.
    */
   pendingBodyRefusal?: { readonly message: string } | undefined;
+  /**
+   * dss T3b: how deep inside a `{{ ... }}` embedded diagram the open brace body is. While above 0 no line is the
+   * body's closing `}`: `PSystemCommandFactory.addOneSingleLineManageEmbedded2` (`:288-307`) swallows the whole
+   * region, opener to matching `}}`, before `CommandCreateClassMultilines` tests the `}` end (a `<style> note { }`
+   * inside the embed would otherwise close the class). `undefined` is 0.
+   */
+  pendingBodyEmbedDepth?: number | undefined;
   gatedLeafSeen: boolean;
   /** 0-indexed source line of the FIRST gated descriptive leaf, so a refusal
    *  can be attributed where upstream attributes it rather than to the

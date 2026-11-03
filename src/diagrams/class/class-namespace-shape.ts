@@ -37,6 +37,7 @@
  */
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
+import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import type { NamespaceGeo } from './layout.js';
 import { rect, PAINT_NONE } from '../../core/svg.js';
@@ -58,6 +59,7 @@ import {
   PACKAGE_ROUND_CORNER,
   packageTitleFontColor,
   packageBorderColor,
+  PACKAGE_SYMBOL,
   packageBorderThickness,
 } from './class-package-style.js';
 
@@ -94,6 +96,7 @@ export const PACKAGE_STROKE_WIDTH = 1.5;
  *  see `emptyPackagePaint`'s doc comment for why the leaf must NOT share
  *  this same baked-in default. */
 const PACKAGE_CLUSTER_BACKGROUND_DEFAULT = 'none';
+
 const PACKAGE_CLUSTER_BORDER_DEFAULT = '#000000';
 
 /**
@@ -144,16 +147,21 @@ function packageFillValue(color: Paint): Paint {
  * port previously emitted the unsplit literal `fill="#yellow\gold"`).
  */
 export function namespaceFill(geo: NamespaceGeo, theme: Theme): Paint {
-  return namespaceColorFill(geo.color, theme);
+  return namespaceColorFill(geo.color, theme, geo.usymbol);
 }
 
 /** {@link namespaceFill} from the namespace's own inline colour -- shared
  *  with the cluster header, which tints a stereotype sprite over it
  *  (unwind2-S7, `class-cluster-header.ts#buildStereoSprite`). */
-export function namespaceColorFill(color: string | undefined, theme: Theme): Paint {
-  return packageFillValue(
-    parseColor(color ?? theme.colors.graph.packageBackground ?? PACKAGE_CLUSTER_BACKGROUND_DEFAULT),
-  );
+export function namespaceColorFill(color: string | undefined, theme: Theme, usymbol?: string): Paint {
+  if (color !== undefined) return packageFillValue(parseColor(color));
+  // dss T3b (D2a): `Cluster.getStyle` (`Cluster.java:385-391`) signs the frame `group` + its symbol's SNames,
+  // `USymbols.PACKAGE` (`package_`) for a bare `package` (`:387`), and `Cluster.getBackColor` (`:701-710`) reads
+  // `BackGroundColor` off it. `group.<symbol>` holds that merged value (`style-element-scope.ts#clusterRows`), so
+  // `classDiagram { BackgroundColor }` and `group { BackgroundColor }` reach the frame; the flat tiers stay below.
+  const scoped = theme.colors.elements?.[clusterBucketOf(usymbol ?? PACKAGE_SYMBOL)]?.background;
+  if (scoped !== undefined) return packageFillValue(scoped);
+  return packageFillValue(parseColor(theme.colors.graph.packageBackground ?? PACKAGE_CLUSTER_BACKGROUND_DEFAULT));
 }
 
 // folderPathD / folderPolygonPoints / renderFolderPolygon / FolderTabPaint /
@@ -177,7 +185,7 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
   // a `...package_,group`-signature draw site, so it supplies the
   // cluster's own unstyled default explicitly (see that constant's doc
   // comment).
-  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT);
+  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol);
   // G2 N18: `strictuml` -> sharp-corner `UPolygon` branch (roundCorner=0).
   // G2 N59: `packageFillValue` maps "no paint" to jar's literal `fill="none"`.
   const fill = namespaceFill(geo, theme);
@@ -250,7 +258,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
   const fill = namespaceFill(geo, theme);
   // CDD T18b: `...package_,group`-signature site -- see
   // `PACKAGE_CLUSTER_BORDER_DEFAULT`'s doc comment.
-  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT);
+  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol);
   const corner = ((theme.strictUml === true ? 0 : PACKAGE_ROUND_CORNER) * theme.scaleK) / 2;
   const outline = rect(geo.x, geo.y, geo.width, geo.height, {
     stroke: isTransparentColor(border) ? PAINT_NONE : border, // SvgGraphics.java:539-540 fixColor

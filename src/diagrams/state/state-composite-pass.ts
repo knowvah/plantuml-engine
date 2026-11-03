@@ -57,6 +57,7 @@ import { buildLeafNode } from './state-leaf-node.js';
 import { resolveAllAutonomPasses } from './state-composite-autonom.js';
 import { resolveClusterComposite } from './state-composite-cluster.js';
 import { isTransparentColor } from '../../core/paint.js';
+import { STATE_BODY_BUCKET, stateBucketColor } from './state-bucket-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { buildNoteGraphPartsByScope, sweepOrphanNoteEdges } from './state-note-layout.js';
@@ -202,7 +203,13 @@ function resolveSouthBackColor(s: State, theme: Theme): string | undefined {
       ? theme.colors.graph.stateBackgroundColorByStereo?.[s.stereotype.toLowerCase()]
       : undefined;
   const bucket = theme.colors.elements?.['state']?.background;
-  const raw = byStereo ?? (typeof bucket === 'string' ? bucket : undefined) ?? theme.colors.graph.rootElementBackground;
+  // dss T3c: the `body` zone's own signature (`Cluster.java:469-470`, the
+  // `state.body` bucket) is narrower than `state`, so it is read first --
+  // the same order as `state-render-colors.ts#resolveStateBodyFill`, which
+  // draws the cap this answer reserves ink for.
+  const zone = stateBucketColor(theme, STATE_BODY_BUCKET, 'background');
+  const raw =
+    byStereo ?? zone ?? (typeof bucket === 'string' ? bucket : undefined) ?? theme.colors.graph.rootElementBackground;
   return raw !== undefined ? resolveColorToSvgHex(raw) : undefined;
 }
 
@@ -213,7 +220,7 @@ function resolveSouthBackColor(s: State, theme: Theme): string | undefined {
  *  a group), so it is returned untouched. Only ever ADDS the field, never
  *  sets it `false`, keeping the transparent-south path byte-identical. */
 function withSouthCapInk(spec: GeoSpec, southCap: boolean): GeoSpec {
-  if (!southCap || spec.kind === 'state') return spec;
+  if (!southCap || spec.kind === 'state' || spec.kind === 'note') return spec;
   return { ...spec, southCapInk: true };
 }
 
@@ -226,7 +233,7 @@ export function resolveMember(
   // `hasLocalContent`, not bare children.length -- mission A4 Phase L
   // iter 5, its doc (state-composite-detect.ts) has the full mechanism
   // (GroupMakerState.getImage()'s countChildren()==0 leaf fallback).
-  const isComposite = hasLocalContent(s);
+  const isComposite = hasLocalContent(s, ctx.noteParts);
   if (!isComposite) {
     acc.nodes.push(buildLeafNode(s, ctx));
     return {
@@ -292,7 +299,7 @@ export function buildTopLevelPass(
 ): { acc: PassAccumulator; result: DotLayoutResult; ctx: DiagramCtx; specs: GeoSpec[] } {
   resetEdgeCounter();
   const rankdir: 'TB' | 'LR' = ast.rankdir === 'left-to-right' ? 'LR' : 'TB';
-  const classify = classifyDiagram(ast.states, ast.transitions);
+  const classify = classifyDiagram(ast.states, ast.transitions, ast.notes);
   const pool = collectRegularTransitions(ast);
   const noteParts = buildNoteGraphPartsByScope(ast.notes ?? [], theme, measurer, rankdir);
   const notePool = [...noteParts.values()].flatMap((p) => p.candidates);
@@ -315,7 +322,7 @@ export function buildTopLevelPass(
   const acc = newAccumulator(resolveArrowLabelFont(theme), measurer);
   const specs = ast.states.map((s) => resolveMember(s, acc, ctx, undefined));
   const pseudoSpecs = addLocalPseudoNodes('', ast.transitions, acc, ctx.pseudoCreationIndex);
-  addScopeNotes('', ctx, acc);
+  const noteSpecs = addScopeNotes('', ctx, acc, [...specs, ...pseudoSpecs]);
   addLevelEdges('', ast.transitions, acc, ctx);
   sweepOrphanEdges(acc, ctx);
   sweepOrphanNoteEdges(acc, ctx.notePool, ctx.consumedNotes, (id) => resolveEndpoint(id, ctx.classify));
@@ -362,5 +369,5 @@ export function buildTopLevelPass(
   // own body is byte-identical before/after this task's edit -- confirmed
   // via `git stash`). Sequential top-level assembly steps, not branchy
   // logic; out of T12's write-set scope to restructure.
-  return { acc, result, ctx, specs: sortSpecsByDocumentOrder([...specs, ...pseudoSpecs]) };
+  return { acc, result, ctx, specs: sortSpecsByDocumentOrder([...specs, ...pseudoSpecs, ...noteSpecs]) };
 }

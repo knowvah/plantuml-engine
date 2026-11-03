@@ -26,6 +26,14 @@ import {
   textDescent,
 } from './state-render-colors.js';
 import { historyLabelText } from './state-sizing.js';
+import {
+  STATE_ACTIVITY_BAR_BUCKET,
+  STATE_CHOICE_DIAMOND_BUCKET,
+  STATE_CIRCLE_END_BUCKET,
+  STATE_CIRCLE_START_BUCKET,
+  STATE_HISTORY_BUCKET,
+  stateBucketColor,
+} from './state-bucket-colors.js';
 
 /** `CircleStart`/`CircleEnd`'s own default fill+stroke — distinct from the
  *  general state-box default (`STATE_DEFAULT_BACKGROUND`), jar-verified
@@ -35,6 +43,8 @@ const PSEUDO_ANCHOR_COLOR = '#222222';
 /** `EntityImageSynchroBar`'s own default fill (fork/join/syncBar bars) —
  *  jar-verified cekolo-21-gini183: `stroke="none"`, `stroke-width="1"`. */
 const SYNCHRO_BAR_COLOR = '#555555';
+/** The history label's default `FontColor` (`skin/plantuml.skin` root `FontColor black`). */
+const DEFAULT_HISTORY_TEXT = '#000000';
 
 function pseudoCenter(node: StateNodeGeo): { cx: number; cy: number } {
   return { cx: node.x + node.width / 2, cy: node.y + node.height / 2 };
@@ -51,11 +61,17 @@ function pseudoCenter(node: StateNodeGeo): { cx: number; cy: number } {
  *  override was present -- correct only in the (much more common,
  *  already-pinned) no-override case, where fill and stroke coincidentally
  *  share the SAME `#222222` default value. */
-export function renderInitial(node: StateNodeGeo): string {
+export function renderInitial(node: StateNodeGeo, theme: Theme): string {
   const { cx, cy } = pseudoCenter(node);
   const r = node.width / 2;
-  const fill = resolveStateFill(node, PSEUDO_ANCHOR_COLOR);
-  return ellipse(cx, cy, r, r, { fill, stroke: PSEUDO_ANCHOR_COLOR, 'stroke-width': 1 });
+  // dss T3c: `CircleStart.java:68-69` reads the `circle.start` style's
+  // BackGroundColor and LineColor (`EntityImageCircleStart.java:56-58`).
+  const fill = resolveStateFill(
+    node,
+    stateBucketColor(theme, STATE_CIRCLE_START_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
+  );
+  const stroke = stateBucketColor(theme, STATE_CIRCLE_START_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
+  return ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': 1 });
 }
 
 /** `CircleEnd.java` (SIZE=22, inner `delta=5` inset): an unfilled outer ring
@@ -64,14 +80,21 @@ export function renderInitial(node: StateNodeGeo): string {
  *  {@link renderInitial}'s own doc comment (jar-verified `ceruzi`'s `state
  *  end2 <<end>> #Green`: inner dot `fill="#008000"`, both `stroke:#222222`
  *  unchanged). */
-export function renderFinal(node: StateNodeGeo): string {
+export function renderFinal(node: StateNodeGeo, theme: Theme): string {
   const { cx, cy } = pseudoCenter(node);
   const outerR = node.width / 2;
   const innerR = outerR - 5;
-  const fill = resolveStateFill(node, PSEUDO_ANCHOR_COLOR);
+  // dss T3c: `CircleEnd.java:73-74,86-92` -- ring and dot stroke take LineColor,
+  // the dot fill BackGroundColor, both of the `circle.end` style
+  // (`EntityImageCircleEnd.java:57-59`).
+  const fill = resolveStateFill(
+    node,
+    stateBucketColor(theme, STATE_CIRCLE_END_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
+  );
+  const stroke = stateBucketColor(theme, STATE_CIRCLE_END_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
   return (
-    ellipse(cx, cy, outerR, outerR, { fill: 'none', stroke: PSEUDO_ANCHOR_COLOR, 'stroke-width': 1 }) +
-    ellipse(cx, cy, innerR, innerR, { fill, stroke: PSEUDO_ANCHOR_COLOR, 'stroke-width': 1 })
+    ellipse(cx, cy, outerR, outerR, { fill: 'none', stroke, 'stroke-width': 1 }) +
+    ellipse(cx, cy, innerR, innerR, { fill, stroke, 'stroke-width': 1 })
   );
 }
 
@@ -90,7 +113,13 @@ export function renderForkJoin(node: StateNodeGeo, theme: Theme): string {
       : node.kind === 'join'
         ? resolveActivityBarJoinColor(theme)
         : undefined;
-  const fill = resolveStateFill(node, bucketDefault ?? SYNCHRO_BAR_COLOR);
+  // dss T3e site 14: `EntityImageSynchroBar.java:62-63,81-84` reads BackGroundColor of
+  // `root, element, activityDiagram, activityBar` and no inline colour for the signature; the
+  // `.fork`/`.join` stereotype selectors (priority +1000) stay above it.
+  const fill = resolveStateFill(
+    node,
+    bucketDefault ?? stateBucketColor(theme, STATE_ACTIVITY_BAR_BUCKET, 'background') ?? SYNCHRO_BAR_COLOR,
+  );
   return rect(node.x, node.y, node.width, node.height, { fill, stroke: 'none', strokeWidth: 1 });
 }
 
@@ -98,16 +127,20 @@ export function renderForkJoin(node: StateNodeGeo, theme: Theme): string {
  *  `stroke-linejoin:miter;stroke-miterlimit:10` pair on every sampled
  *  choice diamond — `compareSvg`'s attribute comparator treats a missing
  *  attr as a real diff (union of both sides' attr names), so these are
- *  REQUIRED, not decorative. Shares the plain leaf box's own default fill/
- *  border/stroke-width (`state-render-colors.ts`'s own module doc comment
- *  explains why `EntityImageBranch` shares `EntityImageStateCommon.STYLE`). */
+ *  REQUIRED, not decorative. Its default fill/border/stroke-width are the
+ *  plain leaf box's by value only: `EntityImageBranch.java:62-63` signs
+ *  `activityDiagram, activity, diamond`, not `EntityImageStateCommon.STYLE`. */
 export function renderChoiceJunction(node: StateNodeGeo, theme: Theme): string {
   const { cx, cy } = pseudoCenter(node);
   const size = node.width / 2;
-  const fill = resolveStateFill(node, STATE_DEFAULT_BACKGROUND);
+  // dss T3c: `EntityImageBranch.java:62-63,77-82` reads the `activityDiagram,
+  // activity, diamond` style and no inline colour (jar: `state C <<choice>>
+  // #red` draws `#F1F1F1`), so the `state` bucket and `node.color` are not read.
+  const fill = stateBucketColor(theme, STATE_CHOICE_DIAMOND_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
+  const stroke = stateBucketColor(theme, STATE_CHOICE_DIAMOND_BUCKET, 'border') ?? theme.colors.border;
   const markup = diamond(cx, cy, size, {
     fill,
-    stroke: theme.colors.border,
+    stroke,
     'stroke-width': STATE_BORDER_STROKE_WIDTH,
     'stroke-linejoin': 'miter',
     'stroke-miterlimit': 10,
@@ -155,8 +188,12 @@ function closeDiamondPoints(markup: string): string {
 export function renderHistory(node: StateNodeGeo, theme: Theme): string {
   const { cx, cy } = pseudoCenter(node);
   const r = node.width / 2;
-  const fill = resolveStateFill(node, STATE_DEFAULT_BACKGROUND);
-  const shape = ellipse(cx, cy, r, r, { fill, stroke: theme.colors.border, 'stroke-width': STATE_BORDER_STROKE_WIDTH });
+  // dss T3e sites 15-17: `EntityImagePseudoState.java:70-71,87-97` reads the `root, element,
+  // stateDiagram, diamond` style for fill, stroke and text, and no inline colour.
+  const fill = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
+  const stroke = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'border') ?? theme.colors.border;
+  const textFill = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'font') ?? DEFAULT_HISTORY_TEXT;
+  const shape = ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': STATE_BORDER_STROKE_WIDTH });
   const label = node.headerLines?.[0];
   if (label === undefined) {
     const fallbackText = historyLabelText(node.kind);
@@ -164,7 +201,7 @@ export function renderHistory(node: StateNodeGeo, theme: Theme): string {
       shape +
       text(cx, cy + theme.fontSize / 3, fallbackText, {
         textAnchor: 'middle',
-        fill: '#000000',
+        fill: textFill,
         fontFamily: theme.fontFamily,
         fontSize: theme.fontSize,
       })
@@ -172,7 +209,7 @@ export function renderHistory(node: StateNodeGeo, theme: Theme): string {
   }
   const yOffset = (textAscent(theme.fontSize) - textDescent(theme.fontSize)) / 2;
   const labelMarkup = text(cx - label.width / 2, cy + yOffset, label.text, {
-    fill: '#000000',
+    fill: textFill,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
     lengthAdjust: 'spacing',

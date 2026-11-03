@@ -1,0 +1,6 @@
+@startuml
+skinparam classStereotypeFontColor #00BB00
+class A <<S>> {
+ +name
+}
+@enduml

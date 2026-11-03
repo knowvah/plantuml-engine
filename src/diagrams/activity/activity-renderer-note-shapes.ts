@@ -8,6 +8,7 @@ import { NOTE_CORNER_SIZE, NOTE_SPIKE_DELTA } from './activity-layout-constants.
 import type { ActivityNodeGeo } from './activity-geometry.types.js';
 import type { Theme } from '../../core/theme.js';
 import { parseColor, type Paint } from '../../core/paint.js';
+import { scopedBack } from './activity-scoped-colors.js';
 
 /** add4-T1c: the Opale's own `BackGroundColor` -- the note's `#color` when
  *  its wrap overrode the style with it (`Style#eventuallyOverride(Colors)`,
@@ -17,7 +18,9 @@ import { parseColor, type Paint } from '../../core/paint.js';
  *  `parseColor` keeps a `#a-b` gradient whole, as `HColorSet` splits it
  *  (`core/paint.ts#parseColor`). */
 export function noteFillOf(node: ActivityNodeGeo, theme: Theme): Paint {
-  return node.color !== undefined ? parseColor(node.color) : theme.colors.noteBackground;
+  if (node.color !== undefined) return parseColor(node.color);
+  // `FtileWithNoteOpale.java:89,136-139`: the merged style's `BackGroundColor`, T2a's bucket (D2).
+  return scopedBack(theme, 'note') ?? theme.colors.noteBackground;
 }
 
 /** `Opale#getCorner` (`:134-147`, `roundCorner=0`): the fold triangle,

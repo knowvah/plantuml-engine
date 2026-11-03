@@ -1,0 +1,19 @@
+@startuml
+<style>
+note {
+  BackgroundColor #AAAAAA
+  LineColor #FF0000
+  FontColor #00FF00
+}
+</style>
+state A {
+  state B
+  note left of B : k
+  --
+  state C
+  note right of C : j
+  note as N
+    kk
+  end note
+}
+@enduml

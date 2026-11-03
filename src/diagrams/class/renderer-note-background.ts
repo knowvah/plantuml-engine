@@ -12,18 +12,11 @@ import { splitStereotypeStyleTags } from './class-stereotype.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
 
 /**
- * G2 N34: jar's `EntityImageNote` ctor default (`ColorParam.noteBackground`,
- * `plantuml.skin`) -- the fallback when NEITHER the note's own explicit
- * `#color` NOR a `<style> note { BackgroundColor ... }` bucket applies.
- */
-const NOTE_FILL = '#FEFFDD';
-
-/**
  * G2 N34: a note's own fill color, cascading explicit `#color` override
  * (`ClassNote.color`, highest precedence -- `EntityImageNote.java`'s ctor:
  * `entity.getColors().getColor(BACK)` wins outright) -> the `<style> note
  * { BackgroundColor ... } </style>` bucket default -> the hardcoded
- * `NOTE_FILL`. Reads `theme.colors.elements.note` directly rather than via
+ * `theme.colors.noteBackground` (`ColorParam.noteBackground`, `plantuml.skin`). Reads `theme.colors.elements.note` directly rather than via
  * `resolveElementPaint` (`theme.ts`) -- that helper's own generic "no
  * bucket" fallback is `nodeBackground` (`#F1F1F1`, the class-box default),
  * NOT jar's real note default (`ColorParam.noteBackground`, `#FEFFDD`) --
@@ -46,7 +39,11 @@ export function resolveNoteBackground(
   const tagBackground = resolveNoteTagBackground(theme, stereotype);
   if (tagBackground !== undefined) return tagBackground;
   const bucket = theme.colors.elements?.['note']?.background;
-  if (bucket === undefined) return NOTE_FILL;
+  // dss T3b (D8): `skinparam noteBackgroundColor` converts to `note { BackGroundColor }`
+  // (`FromSkinparamToStyle.java:153`) and `EntityImageNote.java` reads it off the note signature, so a
+  // skinparam-only source (no `<style>`, nothing in the `note` bucket) lands in `colors.noteBackground`,
+  // which is the skin default `#FEFFDD` (`theme.ts` `noteBackground`) until set. Jar: `skinparam noteBackgroundColor #BBBBBB` -> `#BBB`.
+  if (bucket === undefined) return theme.colors.noteBackground;
   // A `<style> note { BackgroundColor red }` bucket value is a raw
   // `parseColor` result (`core/paint.ts`) -- a plain color NAME still needs
   // HColorSet resolution (`resolveColorToSvgHex`, same as the explicit-

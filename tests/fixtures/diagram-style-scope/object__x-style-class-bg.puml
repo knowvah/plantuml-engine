@@ -1,0 +1,19 @@
+@startuml
+<style>
+class { BackgroundColor #AAAAAA
+LineColor #BB0000
+FontColor #0000BB }
+</style>
+object O {
+ a = 1
+}
+map M {
+ k => v
+}
+json J {
+ "a": 1
+}
+class C
+O --> C
+note left of O : n
+@enduml

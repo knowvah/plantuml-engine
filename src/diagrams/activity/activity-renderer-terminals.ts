@@ -16,8 +16,10 @@ import {
   CIRCLE_INK,
   CIRCLE_LINE_THICKNESS,
   ELEMENT_LINE_THICKNESS,
+  resolveSolidBucketColor,
 } from './activity-style-defaults.js';
 import { activityFontColor } from './activity-text-style.js';
+import { scopedBack, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
 
@@ -38,6 +40,14 @@ function circleInk(theme: Theme): string {
 }
 
 /**
+ * A solid through `resolvePaint` (a name to its hex, as `circle()` did); a gradient stays whole, so `ellipse` writes its
+ * `<defs>` too (`svg.ts#resolvePaintAttrs`).
+ */
+function ellipsePaint(paint: Paint): Paint {
+  return typeof paint === 'string' ? (resolvePaint(paint).value ?? paint) : paint;
+}
+
+/**
  * add4-T3f: a circle's merged-style colours (`core/activity-circle-style
  * .ts`) -- priority-ordered, so a later `<style> root` (a theme's) or a
  * `skin` beats plantuml.skin's circle rule exactly as upstream merges
@@ -50,10 +60,10 @@ function circleColors(
   leaf: 'start' | 'stop',
   back: Paint,
   line: string,
-): { back: string | undefined; line: string | undefined } {
+): { back: Paint; line: string | undefined } {
   const merged = theme.colors.graph.activity?.circleStyle?.[leaf];
   return {
-    back: resolvePaint(merged?.back ?? back).value,
+    back: ellipsePaint(svgBack(merged?.back) ?? back),
     line: resolvePaint(merged?.line ?? line).value,
   };
 }
@@ -206,6 +216,17 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
   );
 }
 
+/** `VCompactFactory.java:105`, `FtileCircleSpot.java:102-103`: its own colour, else the merged style's `BackGroundColor`,
+ *  T2a's bucket (D2). */
+function spotBack(node: ActivityNodeGeo, theme: Theme): Paint {
+  return node.color ?? scopedBack(theme, 'circle.spot') ?? theme.colors.nodeBackground;
+}
+
+/** `FtileCircleSpot.java:75`: `fc` off the same merged style. */
+function spotFont(theme: Theme): string {
+  return resolveSolidBucketColor(theme.colors.elements?.['circle.spot']?.font) ?? activityFontColor(theme, 'circle');
+}
+
 /**
  * `(X)` / `#color:(X)` -- the circled-character connector (mission
  * add2-T2g). `FtileCircleSpot#drawU` (`:98-105,108-109`) fills AND
@@ -251,7 +272,7 @@ export function renderSpot(node: ActivityNodeGeo, theme: Theme): string {
   const cx = node.x + node.width / 2;
   const cy = node.y + node.height / 2;
   const r = node.width / 2;
-  const fill = resolvePaint(node.color ?? theme.colors.nodeBackground).value;
+  const fill = ellipsePaint(spotBack(node, theme));
   const circle = ellipse(cx, cy, r, r, {
     fill,
     stroke: theme.colors.border,
@@ -259,7 +280,7 @@ export function renderSpot(node: ActivityNodeGeo, theme: Theme): string {
   });
   const char = node.label ?? '';
   if (char === '') return circle;
-  const glyphFill = activityFontColor(theme, 'circle');
+  const glyphFill = spotFont(theme);
   const d = spotGlyphPath(char, cx, cy);
   const glyph =
     d === undefined

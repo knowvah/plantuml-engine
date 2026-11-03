@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+mainframe M
+[*] --> A
+A --> B : l
+B --> [*]
+@enduml

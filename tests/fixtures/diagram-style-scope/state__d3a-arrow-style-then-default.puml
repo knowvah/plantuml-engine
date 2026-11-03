@@ -1,0 +1,16 @@
+@startuml
+<style>
+stateDiagram {
+  arrow {
+    LineColor #AA0000
+  }
+}
+stateDiagram {
+  arrow {
+    LineColor #181818
+  }
+}
+</style>
+state A
+A --> B : l
+@enduml

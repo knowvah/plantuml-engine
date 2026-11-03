@@ -19,13 +19,13 @@
  * composite check decides the WHOLE diagram's pipeline (`hasAnyComposite`).
  */
 
-import type { StateDiagramAST, State } from './ast.js';
-import { hasLocalContent } from './state-composite-detect.js';
+import type { StateDiagramAST } from './ast.js';
+import { hasLocalContent, noteScopesOf } from './state-composite-detect.js';
 import { filterRemovedEntities } from './state-directives.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { layoutGraph as layout } from '../../core/graph-layout.js';
-import type { DotLayoutResult } from '../../core/graph-layout.js';
+import type { DotInputGraph, DotLayoutResult } from '../../core/graph-layout.js';
 import { buildDotGraph, endpointId, INITIAL_ID, FINAL_ID } from './state-dot-graph.js';
 import { pseudoTickKey } from './state-parse-state.js';
 import { sortSpecsByCreationIndex } from './state-composite-pass.js';
@@ -39,9 +39,12 @@ export type { StateNodeGeo, TransitionGeo, StateGeometry } from './state-geo-typ
 import { computeStateDocumentDims, computeStateInkBox, computeStateInkShift } from './layout-ink-extent.js';
 import { svekDimension } from '../../core/svek/SvekResult.js';
 import { applyCucaDocumentMargin } from '../../core/TextBlockExporter.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import { isDisplayPositionedNull } from '../../core/annotations/index.js';
 import { buildStateGeoTextFields } from './state-sizing.js';
 import { buildFlatNoteGeos, type FlatNoteGeoCtx } from './renderer-note.js';
+import { buildNoteGraphPartsByScope } from './state-note-layout.js';
+import { noteLineGeo, noteLinesOf } from './state-note-lines.js';
 
 /** T7/D3/D4: the transition/edge-label font, resolved through the SAME
  *  shared resolver `description/renderer-edge.ts#arrowLabelFontConfig`
@@ -73,8 +76,9 @@ import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
  *  `buildFlatTransitionGeos` only ever reads `ast.transitions` (the
  *  diagram's own top scope), so a transition trapped in a leaf-fallback
  *  state's OWN `.transitions` array is invisible to it entirely. */
-function hasAnyComposite(states: readonly State[]): boolean {
-  return states.some((s) => hasLocalContent(s) || s.transitions.length > 0);
+function hasAnyComposite(ast: StateDiagramAST): boolean {
+  const noteScopes = noteScopesOf(ast.notes);
+  return ast.states.some((s) => hasLocalContent(s, noteScopes) || s.transitions.length > 0);
 }
 
 // ===========================================================================
@@ -218,6 +222,24 @@ function buildFlatTransitionGeos(
   return geos;
 }
 
+/** dss T3f: the top scope's note links no notch replaces (`noteLinesOf`). The
+ *  flat graph has no cluster, so no spline here needs `clipTransitionSpline`. */
+function flatNoteLineGeos(
+  ast: StateDiagramAST,
+  graph: DotInputGraph,
+  ctx: Pick<FlatNoteGeoCtx, 'edgePosMap' | 'theme' | 'measurer'>,
+): TransitionGeo[] {
+  const rankdir = ast.rankdir === 'left-to-right' ? 'LR' : 'TB';
+  const parts = buildNoteGraphPartsByScope(ast.notes ?? [], ctx.theme, ctx.measurer, rankdir).get('');
+  const ends = new Map(graph.edges.map((e) => [e.id, e]));
+  const lines = noteLinesOf(
+    parts?.candidates ?? [],
+    (id) => ctx.edgePosMap.get(id),
+    (id) => ends.get(id),
+  );
+  return lines.map((l) => noteLineGeo(l, l.points));
+}
+
 /** Flat (composite-free) pipeline: AST → DotInputGraph (state-dot-graph.ts)
  *  → shared dot layout engine → geometry. */
 function layoutFlat(ast: StateDiagramAST, theme: Theme, measurer: StringMeasurer): StateGeometry {
@@ -232,7 +254,10 @@ function layoutFlat(ast: StateDiagramAST, theme: Theme, measurer: StringMeasurer
     totalWidth: result.width,
     totalHeight: result.height,
     states: buildFlatStateGeos(ast, { posMap, edgePosMap, theme, measurer }),
-    transitions: buildFlatTransitionGeos(ast, result, theme, measurer, clusterAnchorRectsOf(dotGraph.clusters, result)),
+    transitions: sortSpecsByCreationIndex([
+      ...buildFlatTransitionGeos(ast, result, theme, measurer, clusterAnchorRectsOf(dotGraph.clusters, result)),
+      ...flatNoteLineGeos(ast, dotGraph, { edgePosMap, theme, measurer }),
+    ]),
     ...(result.originShift !== undefined ? { originShift: result.originShift } : {}),
   };
 }
@@ -327,33 +352,51 @@ function shiftStateTransition(t: TransitionGeo, dx: number, dy: number): Transit
  * .frameInk}. Class mirrors this in `class/layout-ink-extent.ts
  * #mainframePlacement`.
  */
-function applyMainframePlacement(geo: StateGeometry): StateGeometry {
+function applyMainframePlacement(geo: StateGeometry, margin?: DocumentMargin): StateGeometry {
   const m = geo.originShift ?? { x: 0, y: 0 };
-  const states = geo.states.map((n) => shiftStateNode(n, m.x, m.y));
-  const transitions = geo.transitions.map((t) => shiftStateTransition(t, m.x, m.y));
-  const ink = computeStateInkBox(states, transitions);
+  // `frameInk` is the frame's own coordinates; the exporter's `(left, top)`
+  // translate (`TextBlockExporter.java:173`) sits outside the chrome.
+  const ink = computeStateInkBox(
+    geo.states.map((n) => shiftStateNode(n, m.x, m.y)),
+    geo.transitions.map((t) => shiftStateTransition(t, m.x, m.y)),
+  );
+  const dx = m.x + (margin?.left ?? 0);
+  const dy = m.y + (margin?.top ?? 0);
+  const states = geo.states.map((n) => shiftStateNode(n, dx, dy));
+  const transitions = geo.transitions.map((t) => shiftStateTransition(t, dx, dy));
   const block = svekDimension(ink);
-  const canvas = applyCucaDocumentMargin(block);
+  const canvas = applyCucaDocumentMargin(block, margin);
   return {
     totalWidth: canvas.width,
     totalHeight: canvas.height,
     preChromeWidth: block.width,
     preChromeHeight: block.height,
+    ...(margin === undefined ? {} : { documentMargin: margin }),
     frameInk: ink,
     states,
     transitions,
   };
 }
 
-function applyStateDocumentMargin(geo: StateGeometry, framed: boolean): StateGeometry {
-  if (framed) return applyMainframePlacement(geo);
-  const dims = computeStateDocumentDims(geo.states, geo.transitions);
-  const shift = computeStateInkShift(geo.states, geo.transitions);
+/**
+ * dss T3f: `TextBlockExporter.Builder#calculateMargin`
+ * (`core/TextBlockExporter.java:510-516`) takes the merged `{root, document}`
+ * style's `Margin` when it has one (`margin`, `Theme.diagramMargin`), else
+ * `CucaDiagram#getDefaultMargins()` (`CucaDiagram.java:741-745`), which is
+ * `undefined` here. The exporter translates the whole drawing by `(left, top)`
+ * (`TextBlockExporter.java:173`), so every position moves too.
+ */
+function applyStateDocumentMargin(geo: StateGeometry, framed: boolean, margin?: DocumentMargin): StateGeometry {
+  if (framed) return applyMainframePlacement(geo, margin);
+  const dims = computeStateDocumentDims(geo.states, geo.transitions, margin);
+  const ink = computeStateInkShift(geo.states, geo.transitions);
+  const shift = { dx: ink.dx + (margin?.left ?? 0), dy: ink.dy + (margin?.top ?? 0) };
   const block = svekDimension(computeStateInkBox(geo.states, geo.transitions));
   return {
     totalWidth: dims.width,
     totalHeight: dims.height,
     ...(dims.width === 0 && dims.height === 0 ? {} : { preChromeWidth: block.width, preChromeHeight: block.height }),
+    ...(margin === undefined ? {} : { documentMargin: margin }),
     states: geo.states.map((n) => shiftStateNode(n, shift.dx, shift.dy)),
     transitions: geo.transitions.map((t) => shiftStateTransition(t, shift.dx, shift.dy)),
   };
@@ -373,9 +416,7 @@ export function layoutState(ast: StateDiagramAST, skinTheme: Theme, measurer: St
     return { totalWidth: 0, totalHeight: 0, states: [], transitions: [] };
   }
 
-  const raw = !hasAnyComposite(effAst.states)
-    ? layoutFlat(effAst, theme, measurer)
-    : layoutComposite(effAst, theme, measurer);
+  const raw = !hasAnyComposite(effAst) ? layoutFlat(effAst, theme, measurer) : layoutComposite(effAst, theme, measurer);
 
   // mission G4 S14: thread `ast.concurrentGlobalIds` through unchanged --
   // see `StateGeometry.concurrentGlobalIds`'s own doc comment for why this
@@ -385,6 +426,7 @@ export function layoutState(ast: StateDiagramAST, skinTheme: Theme, measurer: St
     ...applyStateDocumentMargin(
       raw,
       ast.annotations !== undefined && !isDisplayPositionedNull(ast.annotations.mainFrame),
+      theme.diagramMargin,
     ),
     concurrentGlobalIds: effAst.concurrentGlobalIds ?? new Map(),
     ...(ast.sprites !== undefined ? { sprites: ast.sprites } : {}),

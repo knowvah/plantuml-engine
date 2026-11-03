@@ -36,7 +36,7 @@
 import { lineTo, moveTo } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
-import { rect, line, text, path, ellipse, linkWrap, image } from '../../core/svg.js';
+import { rect, line, text, path, linkWrap, image } from '../../core/svg.js';
 // G1/G8/G23 (mission state-declared-size-fix): the renderer draws the SAME
 // styled runs / table the sizer measured -- see `state-sizing-creole.ts`.
 import type { StateTableGeo, StateTextRun } from './state-sizing-creole.js';
@@ -54,7 +54,12 @@ import {
   resolveStateBoxRadius,
   textAscent,
 } from './state-render-colors.js';
+import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
+import { renderZonedLeafBox, resolveLeafZoneFills } from './renderer-box-zones.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
+import { isOOSymbolStereotype, renderOOSymbol } from './renderer-box-symbol.js';
+
+export { isOOSymbolStereotype, renderOOSymbol };
 
 const STATE_BOX_RX = 12.5;
 import {
@@ -398,8 +403,9 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
   const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
   const ascent = textAscent(fontSize);
+  // dss T3e site 19: `EntityImageState2.java:80-86,98-99`: the `state` style's FontColor, as a leaf's.
   const label = text(node.x + SDL_MARGIN.x1 + BODY_MARGIN_X, node.y + SDL_MARGIN.y1 + ascent, node.display, {
-    fill: '#000000',
+    fill: resolveStateFontColor(node, theme, '#000000'),
     fontFamily: theme.fontFamily,
     fontSize,
     lengthAdjust: 'spacing',
@@ -407,47 +413,6 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
   });
 
   return box + notch + label;
-}
-
-/** `EntityImageState#drawSymbol` (`EntityImageState.java:174-181`) with
- *  `smallRadius = 3`, `smallLine = 3`, `smallMarginX = 7`, `smallMarginY = 4`
- *  (`:71-74`): the box's bottom-right corner is walked back by
- *  `4*smallRadius + smallLine + smallMarginX` (22) in x and
- *  `2*smallRadius + smallMarginY` (10) in y -- the SAME 10 px
- *  `state-sizing.ts#OO_SYMBOL_DELTA` reserves on both axes -- then two
- *  `2*smallRadius` circles and a `smallLine`-long horizontal connector are
- *  drawn. `ug.apply(borderColor)` sets only the FOREGROUND, so the circles
- *  keep the box's own background fill. jar-verified `resido-15-reza040`'s
- *  `comp3` (box 7,14.611 72x50): ellipses at cx=60/69 cy=57.611 r=3, line
- *  63,57.611 -> 66,57.611, all `stroke:#181818;stroke-width:0.5`.
- * @see ~/git/plantuml/.../svek/image/EntityImageState.java#drawSymbol */
-const OO_SMALL_RADIUS = 3;
-const OO_SMALL_LINE = 3;
-const OO_SMALL_MARGIN_X = 7;
-const OO_SMALL_MARGIN_Y = 4;
-
-/** `Stereotype#isWithOOSymbol` (`Stereotype.java:119-121`) -- the SAME
- *  predicate `state-sizing.ts#isWithOOSymbol` reserves space with. */
-export function isOOSymbolStereotype(stereotype: string | undefined): boolean {
-  return stereotype !== undefined && stereotype.toUpperCase() === 'O-O';
-}
-
-export function renderOOSymbol(right: number, bottom: number, fill: string, stroke: string): string {
-  const x = right - (4 * OO_SMALL_RADIUS + OO_SMALL_LINE + OO_SMALL_MARGIN_X);
-  const y = bottom - (2 * OO_SMALL_RADIUS + OO_SMALL_MARGIN_Y);
-  // `ellipse`'s own paint bag is keyed by the HYPHENATED SVG attribute name
-  // (unlike `rect`/`line`'s camelCase `TextStyle`) -- see
-  // `renderer-border-point.ts`'s identical note.
-  const paint = { fill, stroke, 'stroke-width': STATE_BORDER_STROKE_WIDTH };
-  const cy = y + OO_SMALL_RADIUS;
-  return (
-    ellipse(x + OO_SMALL_RADIUS, cy, OO_SMALL_RADIUS, OO_SMALL_RADIUS, paint) +
-    ellipse(x + OO_SMALL_LINE + 3 * OO_SMALL_RADIUS, cy, OO_SMALL_RADIUS, OO_SMALL_RADIUS, paint) +
-    line(x + 2 * OO_SMALL_RADIUS, cy, x + 2 * OO_SMALL_RADIUS + OO_SMALL_LINE, cy, {
-      stroke,
-      strokeWidth: STATE_BORDER_STROKE_WIDTH,
-    })
-  );
 }
 
 export function renderNormal(node: StateNodeGeo, theme: Theme): string {
@@ -492,10 +457,13 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   const ascent = textAscent(fontSize);
   // mission G4 S15: `StateFontColor<<X>>` cascade -- see
   // `resolveStateFontColor`'s own doc comment.
-  const fontColor = resolveStateFontColor(node, theme, '#000000');
+  // dss T3c: the name and the description are two zones (`EntityImageState.java:89-92`), each with its own FontColor.
+  const nameFont = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
+  const descriptionFont = resolveStateFontColor(node, theme, '#000000', STATE_DESCRIPTION_BUCKET);
   // unwind2-S11: `applyColor` puts the fill on the `ug` both text blocks
   // draw with (`EntityImageState.java` `drawU`), a sprite's tint back.
-  const textOpts = { fill: fontColor, fontSize, back: fill };
+  const textOpts = { fill: nameFont, fontSize, back: fill };
+  const bodyOpts = { ...textOpts, fill: descriptionFont };
   const headerMarkup = renderStateTextLines(
     node.headerLines,
     (ln) => node.x + node.width / 2 - ln.width / 2,
@@ -516,7 +484,7 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
     () => node.x + MARGIN,
     dividerY + MARGIN_LINE + ascent,
     theme,
-    textOpts,
+    bodyOpts,
   );
 
   // G8: `EntityImageState.drawU`'s own order -- shape, divider hline,
@@ -525,5 +493,8 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
     ? renderOOSymbol(node.x + node.width, node.y + node.height, fill, border)
     : '';
 
-  return box + divider + symbol + headerMarkup + bodyMarkup;
+  // dss T3c: zones that differ are drawn by `RoundedContainer`, which replaces the single filled rect.
+  const zones = resolveLeafZoneFills(node, theme);
+  const shape = zones === undefined ? box : renderZonedLeafBox(node, { zones, border, radius, dividerY });
+  return shape + divider + symbol + headerMarkup + bodyMarkup;
 }

@@ -15,6 +15,8 @@ import type { StyleMap } from './skinparam.js';
 import { applyStyleMap } from './style-map-theme.js';
 import { applySkinRun, skinRunsOf } from './skin-loader.js';
 import { computeClassTagCascadeGenerations } from './style-cascade-class.js';
+import { legacyStereotypeFonts } from './legacy-stereotype-font.js';
+import { objectSkinDefaults } from './object-skin-default.js';
 import { elementScopeColors, type ElementScopeColors } from './style-element-scope.js';
 import { styleSkinparamSegments, type StyleSkinparamSegment } from './style-skinparam-segments.js';
 import { dropRootShadowed, rootColoursOf } from './style-root-shadowing.js';
@@ -135,10 +137,19 @@ export function buildTheme(
   );
 
   // Stage 3d: the element colours, one builder per document (D2, D3, D3a).
-  const withElements = withElementScope(
+  const withScope = withElementScope(
     withBackColor,
     elementScopeColors(preprocessed, diagramType, withBackColor.colors.elements, { callerNamedTheme, builder }),
   );
+  // Stage 3e: the class and object stereotype label colours, which upstream reads off the legacy skinparam chain
+  // and no style (dss T3b, `legacy-stereotype-font.ts`).
+  const withElements =
+    diagramType === 'class'
+      ? withElementScope(
+          withElementScope(withScope, legacyStereotypeFonts(preprocessed.skinparam, withScope.colors.text)),
+          objectSkinDefaults(preprocessed.skinparam),
+        )
+      : withScope;
 
   // Stage 4: caller Partial<Theme> wins over everything
   const theme =

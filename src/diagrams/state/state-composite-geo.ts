@@ -17,6 +17,7 @@
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { GeoSpec } from './state-composite-pass.js';
 import { buildTopLevelPass, buildLevelTransitionGeos } from './state-composite-pass.js';
+import { materializeNoteSpec, type NoteEdgePosMap } from './renderer-note.js';
 import type { StateNodeGeo, StateGeometry, StateRegionGeo } from './state-geo-types.js';
 import type { StateDiagramAST } from './ast.js';
 import type { Theme } from '../../core/theme.js';
@@ -41,6 +42,14 @@ export type PosMap = Map<string, DotLayoutResult['nodes'][number]>;
 export type ClusterPosMap = ReadonlyMap<string, NonNullable<DotLayoutResult['clusters']>[number]>;
 
 const EMPTY_CLUSTER_POS_MAP: ClusterPosMap = new Map();
+
+const EMPTY_EDGE_POS_MAP: NoteEdgePosMap = new Map();
+
+/** dss T3f: a pass's own edges by id, where a note finds its `__noteedge_<id>`
+ *  connector -- the {@link clusterPosMapOf} of notes. */
+export function edgePosMapOf(result: DotLayoutResult): NoteEdgePosMap {
+  return new Map(result.edges.map((e) => [e.id, e]));
+}
 
 /** Exported (SI29 F7): the ink-extent seams in
  *  `state-composite-autonom.ts#buildPlainAutonomSpec` and
@@ -88,6 +97,7 @@ function materializeAutonom(
   // `renderer-group.ts`'s doc comment) applies to cluster geometry the SAME
   // way it already applies to node positions above.
   const localClusterPosMap = clusterPosMapOf(spec.localPositions);
+  const localEdgePosMap = edgePosMapOf(spec.localPositions);
   // mission G4 S6, mechanism 13: `spec.regions` (concurrent-region-owning
   // composites ONLY) drives `children`/`transitions` too -- built by
   // CONCATENATING the per-region materialized results, never the reverse,
@@ -99,13 +109,17 @@ function materializeAutonom(
   // autonom composite, which keeps the pre-S6 flat-materialization path
   // unchanged.
   const regionsOut: StateRegionGeo[] | undefined = spec.regions?.map((r) => ({
-    children: materializeSpecs(r.specs, localPosMap, localClusterPosMap, shadowing).map((g) => shiftGeo(g, dx, dy)),
+    children: materializeSpecs(r.specs, localPosMap, localClusterPosMap, shadowing, localEdgePosMap).map((g) =>
+      shiftGeo(g, dx, dy),
+    ),
     transitions: r.transitions.map((t) => shiftTransition(t, dx, dy)),
   }));
   const children =
     regionsOut !== undefined
       ? regionsOut.flatMap((r) => r.children)
-      : materializeSpecs(spec.localStates, localPosMap, localClusterPosMap, shadowing).map((g) => shiftGeo(g, dx, dy));
+      : materializeSpecs(spec.localStates, localPosMap, localClusterPosMap, shadowing, localEdgePosMap).map((g) =>
+          shiftGeo(g, dx, dy),
+        );
   const transitions =
     regionsOut !== undefined
       ? regionsOut.flatMap((r) => r.transitions)
@@ -240,6 +254,7 @@ function materializeCluster(
   posMap: PosMap,
   clusterPosMap: ClusterPosMap,
   shadowing = 0,
+  edgePosMap: NoteEdgePosMap = EMPTY_EDGE_POS_MAP,
 ): StateNodeGeo | undefined {
   // mission skin-file-loading Batch 2: `shadowing` threads DOWN into this
   // cluster's own children (a leaf/autonom nested inside a 'cluster'
@@ -247,7 +262,7 @@ function materializeCluster(
   // own return below -- jar-verified `ClusterDotString.java`/`ClusterHeader
   // .java` (the shape this composite kind draws) carry no shadow at all,
   // see StateNodeGeo.shadowing's own doc comment.
-  const children = materializeSpecs(spec.children, posMap, clusterPosMap, shadowing);
+  const children = materializeSpecs(spec.children, posMap, clusterPosMap, shadowing, edgePosMap);
   if (children.length === 0) return undefined;
   const real = spec.clusterId !== undefined ? clusterPosMap.get(spec.clusterId) : undefined;
   if (real !== undefined && spec.clusterHeaderHeight !== undefined && spec.titleWidth !== undefined) {
@@ -331,10 +346,15 @@ export function materializeSpecs(
   // cascade (StateNodeGeo.shadowing's own doc comment has the full
   // per-node-kind eligibility rule).
   shadowing = 0,
+  // dss T3f: this pass's own edges, for a note's Opale ({@link edgePosMapOf}).
+  edgePosMap: NoteEdgePosMap = EMPTY_EDGE_POS_MAP,
 ): StateNodeGeo[] {
   const out: StateNodeGeo[] = [];
   for (const spec of specs) {
-    if (spec.kind === 'state') {
+    if (spec.kind === 'note') {
+      const g = materializeNoteSpec(spec, posMap, edgePosMap);
+      if (g !== undefined) out.push(g);
+    } else if (spec.kind === 'state') {
       const pos = posMap.get(spec.id);
       if (pos === undefined) continue;
       out.push({
@@ -355,6 +375,7 @@ export function materializeSpecs(
         // occupies outside the symbol (`StateNodeGeo.borderPointLabelHeight`).
         ...(spec.borderPointLabelHeight !== undefined ? { borderPointLabelHeight: spec.borderPointLabelHeight } : {}),
         ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
+        ...(spec.southCapInk === true ? { southCapInk: true } : {}),
         // mission skin-file-loading Batch 2: only `EntityImageState`'s own
         // `'normal'`/`'json'` leaf shape draws jar's shadow -- see
         // StateNodeGeo.shadowing's own doc comment (pseudostates excluded,
@@ -375,7 +396,7 @@ export function materializeSpecs(
       const g =
         spec.kind === 'autonom'
           ? materializeAutonom(spec, posMap, shadowing)
-          : materializeCluster(spec, posMap, clusterPosMap, shadowing);
+          : materializeCluster(spec, posMap, clusterPosMap, shadowing, edgePosMap);
       // SI31 T4 (G5): the south-cap ink bit rides the spec through BOTH
       // composite shapes, so it is folded once here rather than in each
       // shape's own return -- see `StateNodeGeo.southCapInk` (state-geo-types).
@@ -400,7 +421,7 @@ export function layoutComposite(ast: StateDiagramAST, theme: Theme, measurer: St
   // `skin <name>`/`<style>` value) threads through the WHOLE materialized
   // tree from this single top-level entry point -- see `materializeSpecs`'s
   // own doc comment.
-  const states = materializeSpecs(specs, posMap, clusterPosMapOf(result), theme.shadowing ?? 0);
+  const states = materializeSpecs(specs, posMap, clusterPosMapOf(result), theme.shadowing ?? 0, edgePosMapOf(result));
   const transitions = buildLevelTransitionGeos(acc, result);
   // lgm-T1c: a framed diagram draws the raw svek frame (DiagramChromeFactory.java:278-337
   // never runs SvekResult.java:130-135's moveDelta), so layout.ts needs the top pass's shift.

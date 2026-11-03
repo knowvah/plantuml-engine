@@ -57,45 +57,18 @@ describe('buildNoteGraphPartsByScope — LR rotation', () => {
   });
 });
 
-describe('buildNoteGraphPartsByScope — same-scope/same-host/same-side merging', () => {
-  it('two explicit-target notes on the same side of the same host merge into ONE node', () => {
+describe('buildNoteGraphPartsByScope — one node and one link per note', () => {
+  it('two notes on the same side of the same host stay two nodes (jar: `CommandFactoryNoteOnEntity.java:328-360`)', () => {
     const notes: StateNote[] = [
       note({ id: '__note_0', target: 'X', position: 'right', text: 'first', scopeId: '' }),
       note({ id: '__note_1', target: 'X', position: 'right', text: 'second', scopeId: '' }),
     ];
     const parts = buildNoteGraphPartsByScope(notes, defaultTheme, measurer, 'TB').get('')!;
-    expect(parts.nodes).toHaveLength(1);
-    expect(parts.candidates).toHaveLength(1);
-    expect(parts.nodes[0]!.id).toBe('__note_0');
+    expect(parts.nodes.map((n) => n.id)).toEqual(['__note_0', '__note_1']);
+    expect(parts.candidates.map((c) => c.id)).toEqual(['__noteedge___note_0', '__noteedge___note_1']);
   });
 
-  it('an implicit-target note never merges, even onto the same (host, side)', () => {
-    const notes: StateNote[] = [
-      note({ id: '__note_0', target: 'X', position: 'right', text: 'explicit', scopeId: '' }),
-      note({
-        id: '__note_1',
-        target: 'X',
-        position: 'right',
-        implicitTarget: true,
-        text: 'implicit',
-        scopeId: '',
-      }),
-    ];
-    const parts = buildNoteGraphPartsByScope(notes, defaultTheme, measurer, 'TB').get('')!;
-    expect(parts.nodes).toHaveLength(2);
-    expect(parts.candidates).toHaveLength(2);
-  });
-
-  it('notes on the same host but different sides never merge', () => {
-    const notes: StateNote[] = [
-      note({ id: '__note_0', target: 'X', position: 'right', text: 'r', scopeId: '' }),
-      note({ id: '__note_1', target: 'X', position: 'left', text: 'l', scopeId: '' }),
-    ];
-    const parts = buildNoteGraphPartsByScope(notes, defaultTheme, measurer, 'TB').get('')!;
-    expect(parts.nodes).toHaveLength(2);
-  });
-
-  it('notes in different declaring scopes never merge, even matching host+side', () => {
+  it('notes in different declaring scopes land in their own scope', () => {
     const notes: StateNote[] = [
       note({ id: '__note_0', target: 'X', position: 'right', text: 'outer', scopeId: '' }),
       note({ id: '__note_1', target: 'X', position: 'right', text: 'inner', scopeId: 'Composite' }),

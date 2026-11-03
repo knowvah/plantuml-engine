@@ -39,7 +39,8 @@ import {
   activityNoteHorizontalAlignment,
 } from './activity-text-style.js';
 import { activityPadding, activityFontSize, activityLineThickness } from './activity-style-defaults.js';
-import { actColors } from './activity-renderer-shapes.js';
+import { actColors, actionFillOf } from './activity-renderer-shapes.js';
+import { fontConfigurationColor, withStereotypeFont } from './activity-scoped-colors.js';
 import { NOTE_MARGIN_X1, NOTE_MARGIN_X2, NOTE_MARGIN_Y } from './activity-layout-constants.js';
 import { Display } from '../../core/klimt/creole/Display.js';
 import { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
@@ -154,7 +155,7 @@ function activityFontConfiguration(theme: Theme, fontSize: number, sname: Activi
   return {
     family: activityFontFamily(theme, sname),
     size: fontSize,
-    color: activityFontColor(theme, sname),
+    color: fontConfigurationColor(activityFontColor(theme, sname)),
     styles: new Set(),
     ...(hyperlinkColor === undefined ? {} : { hyperlinkColor }),
     ...(theme.hyperlinkUnderline === false ? { hyperlinkUnderlineStroke: null } : {}),
@@ -300,9 +301,16 @@ export function renderActionLabel(
     readonly width: number;
     readonly shield?: number;
     readonly color?: string;
+    readonly stereotype?: string;
   },
 ): string {
-  const tb = buildActionTextBlock(label, theme, fontSize, 'activity', box.shield ?? 0);
+  const tb = buildActionTextBlock(
+    label,
+    withStereotypeFont(theme, box.stereotype),
+    fontSize,
+    'activity',
+    box.shield ?? 0,
+  );
   const font = { family: activityFontFamily(theme, 'activity'), size: fontSize };
   const tbWidth = tb.calculateDimension(klimtStringBounder(activityMeasurer(theme), font)).getWidth();
   const t = actionTextTranslate(theme, box.width, tbWidth, activityPadding('activity'));
@@ -314,7 +322,7 @@ export function renderActionLabel(
   // creole `<$sprite>` tints over (`SpriteMonochrome.java:216`).
   const changes = [
     new Fore(actColors(theme).nodeBorder),
-    new Back(box.color ?? actColors(theme).nodeFill),
+    new Back(actionFillOf(box, theme)),
     UStroke.withThickness(activityLineThickness(theme, 'activity')),
   ];
   return drawActionTextBlock(tb, box.x + t.getDx(), box.y + t.getDy(), { theme, font, changes });

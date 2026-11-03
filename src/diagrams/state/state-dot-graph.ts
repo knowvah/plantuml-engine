@@ -21,6 +21,7 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotInputGraph, DotInputNode, DotInputEdge } from '../../core/graph-layout.js';
 import { measureState, CIRCLE_START_SIZE, CIRCLE_END_SIZE } from './state-sizing.js';
 import { buildNoteGraphPartsByScope } from './state-note-layout.js';
+import { moveNotesToCreationOrder } from './state-note-lines.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
 import { computeReservedLabelBox, computeMergedLabelBox } from '../../core/edge-label-box.js';
 // `EntityImageNoteLink`'s real dimension — shared-seam-extraction T6, D1:
@@ -295,6 +296,12 @@ function addNotes(
   const parts = buildNoteGraphPartsByScope(ast.notes ?? [], theme, measurer, rankdir).get('');
   if (parts === undefined) return;
   nodes.push(...parts.nodes);
+  moveNotesToCreationOrder(
+    nodes,
+    (n) => n.id,
+    parts.specs,
+    ast.states.map((s) => ({ id: s.id, ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}) })),
+  );
   const nodeIds = new Set(nodes.map((n) => n.id));
   for (const cand of parts.candidates) {
     if (!nodeIds.has(cand.target)) continue; // "Nothing to note to" already filtered at parse time

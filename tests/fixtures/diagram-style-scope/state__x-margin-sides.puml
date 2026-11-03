@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { Margin 3 7 11 13 }
+</style>
+[*] --> A
+A --> B : l
+B --> [*]
+@enduml

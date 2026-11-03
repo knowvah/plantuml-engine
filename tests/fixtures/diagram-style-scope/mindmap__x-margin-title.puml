@@ -1,0 +1,9 @@
+@startmindmap
+<style>
+document { Margin 20 }
+</style>
+title T
+* root
+** a
+** b
+@endmindmap

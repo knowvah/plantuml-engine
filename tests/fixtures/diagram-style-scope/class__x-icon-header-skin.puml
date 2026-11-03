@@ -1,0 +1,8 @@
+@startuml
+skinparam iconPublicColor #123456
+skinparam iconPublicBackgroundColor #654321
++class A
++package P {
+  class C
+}
+@enduml

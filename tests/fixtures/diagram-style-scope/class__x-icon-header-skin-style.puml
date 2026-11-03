@@ -1,0 +1,12 @@
+@startuml
+skinparam iconPublicColor #123456
+<style>
+visibilityIcon {
+  public {
+    LineColor #BB0000
+    BackgroundColor #00AA00
+  }
+}
+</style>
++class A
+@enduml

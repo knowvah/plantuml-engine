@@ -248,13 +248,17 @@ describe('theme.colors.elements.{object,map,json}.font (G3/O2)', () => {
   // re-run, not by this test suite in isolation -- backfilled here so the
   // regression can never resurface silently).
   it(
-    'falls through to classCascadeFontColor for a root-level (non-object-specific) ' +
+    'falls through to the root FontColor (colors.text) for a root-level (non-object-specific) ' +
       'style override -- no elements.object bucket set at all',
     () => {
+      // dss T3b: the fallback is the root `FontColor` an object's `{root,element,objectDiagram,object}` signature
+      // holds (`theme.colors.text`, which a `root { FontColor }` style writes); `classCascadeFontColor` is
+      // `classDiagram`/`class_`-signed and no longer reaches an object (`object__cascade-font-diag`).
       const t = {
         ...defaultTheme,
         colors: {
           ...defaultTheme.colors,
+          text: '#FF0000',
           graph: {
             ...defaultTheme.colors.graph,
             classCascadeFontColor: '#FF0000',

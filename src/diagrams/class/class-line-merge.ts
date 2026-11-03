@@ -23,6 +23,7 @@
  * and land outside any cluster).
  */
 import { EmbeddedDiagram, getEmbeddedType } from '../../core/EmbeddedDiagram.js';
+import type { ParseState } from './class-parse-state.js';
 
 export interface MergedLines {
   readonly lines: string[];
@@ -106,4 +107,17 @@ export function mergeStandaloneBraces(
     mergedRaw.push(raw);
   }
   return { lines: merged, positions: mergedPositions, rawLines: mergedRaw };
+}
+
+/**
+ * Whether `line` of an open class brace body sits inside an embedded `{{ ... }}` region, and advances the body's
+ * depth past it (dss T3b). `PSystemCommandFactory.addOneSingleLineManageEmbedded2` (`:288-307`) swallows the whole
+ * region, opener to matching `}}`, before `CommandCreateClassMultilines` tests the `}` end, so a `}` in it (a
+ * `<style> note { ... }` for one) is body text and never the closer. The opener line itself is inside.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:288-307
+ */
+export function advanceBodyEmbed(state: ParseState, line: string): boolean {
+  const depth = state.pendingBodyEmbedDepth ?? 0;
+  state.pendingBodyEmbedDepth = nextEmbedDepth(line, depth);
+  return depth > 0;
 }

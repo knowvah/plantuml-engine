@@ -14,7 +14,8 @@ import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { measureNote } from './note-layout-measure.js';
 import type { NoteGeo } from './note-layout.js';
-import { applyClassDocumentMargin } from './layout-ink-extent.js';
+import { applyClassDocumentMargin, classDocumentMargin } from './layout-ink-extent.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import type { ClassGeometry } from './layout.js';
 
 /**
@@ -44,13 +45,19 @@ function degenerateNoteCopiedFields(note: ClassNote): Pick<NoteGeo, 'target' | '
 /** The degenerate note leaf itself (position + measured text) -- split out
  *  purely to keep {@link degenerateNoteGeo} under the project's
  *  per-function NLOC cap. */
-function buildDegenerateNoteLeaf(note: ClassNote, theme: Theme, measurer: StringMeasurer): NoteGeo {
+function buildDegenerateNoteLeaf(
+  note: ClassNote,
+  theme: Theme,
+  measurer: StringMeasurer,
+  margin: DocumentMargin | undefined,
+): NoteGeo {
   const m = measureNote(note.text, theme, measurer, undefined);
   return {
     id: note.id,
     kind: 'note',
-    x: DEGENERATE_NEAR_MARGIN,
-    y: DEGENERATE_NEAR_MARGIN,
+    // dss T3b: the exporter's translate by `(margin.left, margin.top)` (`TextBlockExporter.java:173`).
+    x: DEGENERATE_NEAR_MARGIN + (margin?.left ?? 0),
+    y: DEGENERATE_NEAR_MARGIN + (margin?.top ?? 0),
     width: m.width,
     height: m.height,
     lines: m.lines,
@@ -86,14 +93,16 @@ function buildDegenerateNoteLeaf(note: ClassNote, theme: Theme, measurer: String
  * convention, `NoteGeo.connector`'s doc comment).
  */
 export function degenerateNoteGeo(note: ClassNote, theme: Theme, measurer: StringMeasurer): ClassGeometry {
-  const geo = buildDegenerateNoteLeaf(note, theme, measurer);
+  const margin = classDocumentMargin(theme);
+  const geo = buildDegenerateNoteLeaf(note, theme, measurer, margin);
   const rawDims = { width: geo.width + DEGENERATE_NEAR_MARGIN * 2, height: geo.height + DEGENERATE_NEAR_MARGIN * 2 };
-  const totalDims = applyClassDocumentMargin(rawDims);
+  const totalDims = applyClassDocumentMargin(rawDims, margin);
   return {
     totalWidth: totalDims.width,
     totalHeight: totalDims.height,
     rawWidth: rawDims.width,
     rawHeight: rawDims.height,
+    ...(margin === undefined ? {} : { documentMargin: margin }),
     leaves: [geo],
     edges: [],
     namespaces: [],

@@ -26,7 +26,7 @@ import type { AutonomOffset } from './state-composite-sizing.js';
 import type { ClassifyResult } from './state-composite-classify.js';
 import type { ConcurrentRegionPassResult } from './state-composite-concurrent.js';
 import type { TransitionGeo, StateTextLine } from './state-geo-types.js';
-import type { NoteEdgeCandidate, ScopeNoteParts } from './state-note-layout.js';
+import type { NoteEdgeCandidate, NoteSpec, ScopeNoteParts } from './state-note-layout.js';
 
 /**
  * One composite cluster of a pass that has border-point (entry/exit/pin)
@@ -67,6 +67,9 @@ export interface PassAccumulator {
    *  `undefined`/falsy for every un-hinted or `-right-`/`-down-` transition
    *  (the pre-existing, un-swapped shape). */
   edgeSources: { t: Transition; edgeId: string; reversed?: boolean }[];
+  /** dss T3f: the note connectors attached to THIS pass
+   *  (`state-note-layout.ts#sweepOrphanNoteEdges`); absent until one is. */
+  noteLinks?: NoteEdgeCandidate[];
   /** G8 T2: the transition/edge-label font (`ARROW_LABEL_FONT_SIZE`, 13pt)
    *  + measurer this pass's own `buildLevelTransitionGeos` call needs to
    *  convert a labeled edge's graphviz-returned centre into a draw anchor
@@ -166,6 +169,7 @@ export interface DiagramCtx {
  *  ./state-composite-geo.ts materializes this into `StateNodeGeo[]` once a
  *  pass's `DotLayoutResult` (real positions) is available. */
 export type GeoSpec =
+  | NoteSpec
   | {
       kind: 'state';
       id: string;
@@ -181,6 +185,8 @@ export type GeoSpec =
       stereotype?: string;
       /** mission G4 S7 -- see `StateNodeGeo.creationIndex`'s own doc comment. */
       creationIndex?: number;
+      /** dss T3c -- see `StateNodeGeo.southCapInk`'s own doc comment (a zoned leaf's south path). */
+      southCapInk?: boolean;
     }
   | {
       kind: 'autonom';

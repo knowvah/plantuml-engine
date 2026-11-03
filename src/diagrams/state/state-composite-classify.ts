@@ -13,7 +13,7 @@
  *                 to its zaent anchor id (mechanisms.md §2/§4).
  */
 
-import type { State } from './ast.js';
+import type { State, StateNote } from './ast.js';
 import {
   isAutarkic,
   collectAllTransitions,
@@ -22,6 +22,8 @@ import {
   hasDirectBorderPointChild,
   hasNonBorderEeContent,
   hasLocalContent,
+  noteFlatLinks,
+  noteScopesOf,
 } from './state-composite-detect.js';
 import { concurrentRegionScopeId } from './state-parse-state.js';
 
@@ -133,20 +135,27 @@ interface DepthEntry {
   depth: number;
 }
 
+/** What {@link walkClassify} accumulates, and the note scopes it reads. */
+interface ClassifyWalk {
+  kindOf: Map<string, CompositeKind>;
+  needsAnchor: Set<string>;
+  needsZaentPoint: Set<string>;
+  depthEntries: DepthEntry[];
+  noteScopes: ReadonlySet<string>;
+}
+
 function walkClassify(
   states: readonly State[],
   allTransitions: readonly { from: string; to: string }[],
-  kindOf: Map<string, CompositeKind>,
-  needsAnchor: Set<string>,
-  needsZaentPoint: Set<string>,
+  walk: ClassifyWalk,
   depth: number,
-  depthEntries: DepthEntry[],
 ): void {
+  const { kindOf, needsAnchor, needsZaentPoint, depthEntries, noteScopes } = walk;
   for (const s of states) {
     // `hasLocalContent`, not bare children.length -- mission A4 Phase L
     // iter 5, its doc (state-composite-detect.ts) has the full mechanism
     // (GroupMakerState.getImage()'s countChildren()==0 leaf fallback).
-    const isComposite = hasLocalContent(s);
+    const isComposite = hasLocalContent(s, noteScopes);
     if (!isComposite) {
       kindOf.set(s.id, 'leaf');
       continue;
@@ -164,7 +173,7 @@ function walkClassify(
     // invisible to `Cluster#printCluster2`'s `added` tracking) -- see that
     // function's doc for the full mechanism (mission A4 Phase L iter 18,
     // temuxi-28-cega322).
-    walkClassify(s.children, allTransitions, kindOf, needsAnchor, needsZaentPoint, depth + 1, depthEntries);
+    walkClassify(s.children, allTransitions, walk, depth + 1);
     // A `--`-delimited concurrent region is itself a distinct synthetic
     // GROUP entity upstream (`GroupType.CONCURRENT_STATE`,
     // StateDiagram.java:204 `gotoGroup(..., GroupType.CONCURRENT_STATE)`),
@@ -181,7 +190,7 @@ function walkClassify(
         unit: { kind: 'region', id: concurrentRegionScopeId(s.id, i + 1), owner: s, regionIndex: i, members: region },
         depth: depth + 1,
       });
-      walkClassify(region, allTransitions, kindOf, needsAnchor, needsZaentPoint, depth + 2, depthEntries);
+      walkClassify(region, allTransitions, walk, depth + 2);
     });
     if (!autonom) {
       const touched = isGroupTouched(s.id, allTransitions);
@@ -222,13 +231,15 @@ function walkClassify(
 export function classifyDiagram(
   states: readonly State[],
   topLevelTransitions: readonly { from: string; to: string }[] = [],
+  notes?: readonly StateNote[],
 ): ClassifyResult {
-  const allTransitions = [...topLevelTransitions, ...collectAllTransitions(states)];
+  const allTransitions = [...topLevelTransitions, ...collectAllTransitions(states), ...noteFlatLinks(notes)];
+  const noteScopes = noteScopesOf(notes);
   const kindOf = new Map<string, CompositeKind>();
   const needsAnchor = new Set<string>();
   const needsZaentPoint = new Set<string>();
   const depthEntries: DepthEntry[] = [];
-  walkClassify(states, allTransitions, kindOf, needsAnchor, needsZaentPoint, 1, depthEntries);
+  walkClassify(states, allTransitions, { kindOf, needsAnchor, needsZaentPoint, depthEntries, noteScopes }, 1);
   // Stable sort (ES2019+) -- deepest first, preorder/declaration order as
   // tie-break within a depth (firingOrder's doc above proves equivalence
   // to getOrdered's BFS-per-level + double-reverse). A region unit is

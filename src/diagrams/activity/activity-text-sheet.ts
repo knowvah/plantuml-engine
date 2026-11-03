@@ -48,6 +48,7 @@ import { lengthAdjustOverride } from '../../core/klimt/drawing/svg/svg-option.js
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { extractFlatContent } from '../../core/klimt/document-shell-fragment.js';
 import { activityMeasurer } from './activity-string-bounder.js';
+import { fontConfigurationColor } from './activity-scoped-colors.js';
 import { backColorFilterDef } from '../../core/svg-defs.js';
 import { getSprite } from '../../core/sprite-registry.js';
 
@@ -110,6 +111,7 @@ export function styleFontConfiguration(
 ): FontConfiguration {
   return {
     ...font,
+    color: fontConfigurationColor(font.color),
     styles: new Set(),
     ...(hyperlinkColor === undefined ? {} : { hyperlinkColor }),
     ...(theme.hyperlinkUnderline === false ? { hyperlinkUnderlineStroke: null } : {}),

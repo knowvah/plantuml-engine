@@ -36,7 +36,7 @@ import { filterRemovedEntities, computeHiddenIds, computeRemovedRanks } from './
 import { buildClassifierGeos } from './class-geo-builders.js';
 import { buildInkBox } from './class-ink-box.js';
 import { shiftClassifierGeo } from './class-layout-shift.js';
-import { applyClassDocumentMargin } from './layout-ink-extent.js';
+import { applyClassDocumentMargin, classDocumentMargin, documentMarginField } from './layout-ink-extent.js';
 import { iconSizeOf } from './class-visibility-icon.js';
 import { LOLLIPOP_SIZE, ASSOC_POINT_SIZE } from './class-lollipop.js';
 import { classUidPlanInputFromAst } from './renderer-uid.js';
@@ -148,7 +148,7 @@ export function layoutClassElk(
   // over `MyElkDrawing#calculateDimension` (`MyElkDrawing.java:339-346`).
   const raw = new MyElkDrawing(adapter, result.minMax, result).calculateDimension(new MeasurerStringBounder(measurer));
   const rawDims = { width: raw.getWidth(), height: raw.getHeight() };
-  const total = applyClassDocumentMargin(rawDims);
+  const total = applyClassDocumentMargin(rawDims, classDocumentMargin(theme));
   const removed = removedRanks.length > 0 ? { removedRanks } : {};
   const uidPlanInput = { ...classUidPlanInputFromAst(effAst), ...removed, ...packedGroupRanksField(effAst) };
   return {
@@ -156,6 +156,7 @@ export function layoutClassElk(
     totalHeight: total.height,
     rawWidth: rawDims.width,
     rawHeight: rawDims.height,
+    ...documentMarginField(classDocumentMargin(theme)),
     leaves: [],
     edges: [],
     namespaces: [],

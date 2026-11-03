@@ -27,7 +27,7 @@
  * order), so the order-blind `graph.rootElementBackground` is not needed
  * here.
  */
-import type { Paint } from './paint.js';
+import { parseColor, type Paint } from './paint.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import type { Theme } from './theme.js';
 import { HColorSet } from './klimt/color/HColorSet.js';
@@ -72,13 +72,14 @@ const MODE_DARK = 'dark';
  */
 function paintOf(style: Style, name: PName, isDark: boolean): Paint | undefined {
   const value = style.value(name);
-  if (value.asString() === null) return undefined;
+  const raw = value.asString();
+  if (raw === null) return undefined;
   const color = value.asColor(HColorSet.instance());
   // `HColor#darkSchemeTheme` is `this` (`HColor.java:117-119`); only
-  // `HColorSimple` overrides it. A non-simple colour (a gradient) keeps its
-  // raw spelling, which `svg.ts#resolvePaint` parses at emission.
+  // `HColorSimple` overrides it. A non-simple colour (a gradient) goes
+  // through `parseColor`, as `HColorSet` splits it (`paint.ts#parseColor`).
   const shown = isDark && color instanceof HColorSimple ? color.darkSchemeTheme() : color;
-  return shown instanceof HColorSimple ? shown.asPaint() : (value.asString() ?? undefined);
+  return shown instanceof HColorSimple ? shown.asPaint() : parseColor(raw);
 }
 
 /** The merged style of `root, element, activityDiagram, circle, <leaf>`.

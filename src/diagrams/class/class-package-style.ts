@@ -24,6 +24,7 @@
  */
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
+import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { ElementColors } from '../../core/theme-graph-colors.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { LineStyleDash } from '../../core/style-line-style.js';
@@ -45,6 +46,9 @@ const MARGIN_TITLE_Y2 = 3;
 /** `FontParam.PACKAGE`'s `defaultColor` (`klimt/font/FontParam.java:67`,
  *  `plantuml.skin:9` `root { FontColor black }`). */
 const DEFAULT_FONT_COLOR = '#000000';
+
+/** The symbol a group with no keyword of its own is signed with: `USymbols.PACKAGE` (`Cluster.java:387`). */
+export const PACKAGE_SYMBOL = 'package';
 
 /** A group's text colour when no element tier applies -- `plantuml.skin:9`
  *  `root { FontColor black }`. */
@@ -197,14 +201,27 @@ export function dashArrayOf(dash: LineStyleDash | undefined): string | undefined
  *  `USymbols.PACKAGE`, `:386-388`, matches the `package` selector -- jar
  *  cevoti-40/guxico-27), then the caller's style default. The relative
  *  rank of the two plain tiers is not jar-verified (no fixture sets both). */
-export function packageBorderColor(theme: Theme, tags: readonly string[], fallback: string): string {
+export function packageBorderColor(
+  theme: Theme,
+  tags: readonly string[],
+  fallback: string,
+  usymbol = PACKAGE_SYMBOL,
+): string {
   const styled = packageBucket(theme)?.border;
   return (
-    byStereo(packageBucket(theme)?.borderByStereo, tags) ??
+    packageTaggedBorder(theme, tags, usymbol) ??
     theme.colors.graph.packageBorder ??
     (typeof styled === 'string' ? styled : undefined) ??
     fallback
   );
+}
+
+/** The two tiers above the flat package border: `packageBorderColor<<label>>`, then (dss T3b, D2a) `group.<symbol>`,
+ *  the frame's own merged `LineColor` (`Cluster.java:312-319` off the `Cluster.java:290-293` signature), which
+ *  `group { LineColor }` and `classDiagram { LineColor }` reach. */
+function packageTaggedBorder(theme: Theme, tags: readonly string[], usymbol: string): string | undefined {
+  const scoped = theme.colors.elements?.[clusterBucketOf(usymbol)]?.border;
+  return byStereo(packageBucket(theme)?.borderByStereo, tags) ?? (typeof scoped === 'string' ? scoped : undefined);
 }
 
 /** Cluster stroke (`Cluster#getStrokeInternal` -> `style.getStroke()`):

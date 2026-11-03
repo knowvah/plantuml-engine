@@ -239,3 +239,68 @@ describe('renderComposite — shadow (mission skin-file-loading Batch 2)', () =>
     expect(out.indexOf('<path')).toBe(0);
   });
 });
+
+/**
+ * dss T3c site 6: `RoundedContainer#drawU` (`RoundedContainer.java:76-95`) draws the north (name),
+ * centre (description) and south (body) zones; `RoundedSouth.java:60-61` skips a transparent one.
+ * Oracle rows `state__cascade-bg-diag` (autonom `A`: `<path d="M69.12,111 L155.12,111 ..." fill="#AAA"/>`
+ * under the header path) and `state__cluster-bg-diag` (cluster `A`: second path from the divider down).
+ */
+describe('renderComposite -- body zone (dss T3c)', () => {
+  const bodied = {
+    ...defaultTheme,
+    colors: {
+      ...defaultTheme.colors,
+      elements: {
+        'state.name': { background: '#AAAAAA' },
+        'state.body': { background: '#CCCCCC' },
+      },
+    },
+  };
+  const autonom = makeComposite({
+    x: 7,
+    y: 7,
+    width: 86,
+    height: 120,
+    headerLines: [{ text: 'A', width: 9.362 }],
+  });
+
+  it('autonom: header in the name colour, then the body from the divider to the bottom in the body colour', () => {
+    const out = renderComposite(autonom, bodied);
+    expect(out).toContain(
+      '<path d="M19.5,7 L80.5,7 A12.5,12.5 0 0 1 93,19.5 L93,31 L7,31 L7,19.5 A12.5,12.5 0 0 1 19.5,7" fill="#AAA"/>',
+    );
+    expect(out).toContain(
+      '<path d="M7,31 L93,31 L93,114.5 A12.5,12.5 0 0 1 80.5,127 L19.5,127 A12.5,12.5 0 0 1 7,114.5 L7,31" fill="#CCC"/>',
+    );
+    expect(out.indexOf('fill="#AAA"')).toBeLessThan(out.indexOf('fill="#CCC"'));
+  });
+
+  it('autonom: no body path at the default (transparent) body', () => {
+    expect(renderComposite(autonom, defaultTheme).split('<path ').length - 1).toBe(1);
+  });
+
+  it('autonom with an action zone: the body starts below the description divider', () => {
+    const out = renderComposite({ ...autonom, bodyLines: [{ text: 'd', width: 7 }] }, bodied);
+    // header 24 + action zone (14 + 5) from y 31: body top y = 31 + 19 = 50
+    expect(out).toContain('<path d="M7,50 L93,50 ');
+  });
+
+  it('cluster shape: the body path comes from the body bucket, not from the header colour', () => {
+    const cluster = makeComposite({
+      x: 7,
+      y: 7,
+      width: 86,
+      height: 120,
+      headerLines: [{ text: 'A', width: 9.362 }],
+      clusterHeaderHeight: 24,
+    });
+    const out = renderComposite(cluster, bodied);
+    expect(out).toContain('fill="#CCC"');
+    const nameOnly = {
+      ...defaultTheme,
+      colors: { ...defaultTheme.colors, elements: { 'state.name': { background: '#AAAAAA' } } },
+    };
+    expect(renderComposite(cluster, nameOnly).split('<path ').length - 1).toBe(1);
+  });
+});

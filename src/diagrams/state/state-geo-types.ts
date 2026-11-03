@@ -6,6 +6,7 @@
  */
 
 import type { StateKind } from './ast.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { InkBox } from '../../core/annotations/body-ink.js';
 
@@ -337,10 +338,26 @@ export interface LabelInkBox {
   readonly height: number;
 }
 
+/**
+ * dss T3e: the inline label of a link that also carries a `note ... on link`, drawn in the same merged
+ * block (`SvekEdge.java:307-325,950-954`). `dx`/`dy` are the `<text>` baseline anchor relative to the
+ * note's top-left (`TransitionGeo.label.x`/`y`), so every pass's shift of that corner moves the label
+ * with it.
+ */
+export interface LinkLabelGeo {
+  readonly text: string;
+  readonly dx: number;
+  readonly dy: number;
+  readonly textLength?: number;
+}
+
 export interface TransitionGeo {
   from: string;
   to: string;
   points: Array<{ x: number; y: number }>;
+  /** dss T3f: set on a note's own `Link` when no Opale notch replaces it
+   *  (`state-note-layout.ts#noteLinesOf`), its `<path id>`. No decor, dashed. */
+  noteLinkId?: string;
   /** `width`/`height` (G8 T2, additive): the jar-verified reserved label
    *  box (`state-transition-label.ts#computeReservedLabelBox`, spec.md §1a
    *  -- margin+floor around the measured text) that both the renderer and
@@ -380,6 +397,13 @@ export interface TransitionGeo {
      *  existing `label.inkBox` fold (unchanged by this task) reserves it
      *  for free once populated. `undefined` for an ordinary inline label. */
     noteLines?: readonly StateTextLine[];
+    /** dss T3e: the inline label drawn beside the note, in the merged block (`SvekEdge.java:307-325`).
+     *  Present only with `noteLines` and a non-empty label; then `x`/`y`/`width`/`height` are the NOTE
+     *  operand's own box and `inkBox` the union of both operands. */
+    linkLabel?: LinkLabelGeo;
+    /** dss T3e: the note operand leads the label (`Position.LEFT`/`TOP`, `SvekEdge.java:318-325`), so it
+     *  is drawn first. */
+    noteFirst?: boolean;
   };
   /** mission G4 S7 -- see `StateNodeGeo.creationIndex`'s own doc comment;
    *  same raw-value contract, sourced from `Transition.creationIndex`. */
@@ -425,6 +449,9 @@ export interface StateGeometry {
    * 15) -- `RenderFragment.preChromeWidth`/`preChromeHeight`. Absent for an
    * empty diagram.
    */
+  /** dss T3f: a `{root, document}` style's `Margin` (`RenderFragment.documentMargin`);
+   *  absent is `CucaDiagram#getDefaultMargins()`. */
+  documentMargin?: DocumentMargin;
   preChromeWidth?: number;
   preChromeHeight?: number;
   /**

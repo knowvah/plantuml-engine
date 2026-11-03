@@ -14,6 +14,7 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { parseColor, type Paint } from '../../core/paint.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { classStereotypeBackground } from './renderer-classifier-colors.js';
+import { classHeaderScopedBackground } from './renderer-classifier-scoped-colors.js';
 
 /** The kinds `EntityImageClass#drawInternal`'s header-background split
  *  applies to: every port kind in `LeafType#LIKE_CLASS`
@@ -51,6 +52,23 @@ function resolveInlineHeaderColor(color: string | undefined): string | undefined
   if (colorToken === undefined || colorToken.startsWith('##')) return undefined;
   const m = /(?:^#|;)header:([^;]+)/i.exec(colorToken);
   return m?.[1];
+}
+
+/**
+ * `getStyleHeader().value(PName.BackGroundColor)` (`EntityImageClass.java:204`) from the tiers above the flat
+ * skinparam bridge: the stereotype tier, then (dss T3b) the style engine's merged `class.header` background
+ * (`style-element-scope.ts#classRows`), then the `<style>` header cascade, then `classHeaderBackgroundColor`. The
+ * engine's value follows declaration order, which the flat cascades cannot: `skinparam classHeaderBackgroundColor G`
+ * then `root { BackgroundColor transparent }` is transparent in the jar (`class__x-order-header-bg`), a header
+ * equal to the body, so no split.
+ */
+function classHeaderStyleBackground(geo: ClassifierGeo, theme: Theme): Paint | undefined {
+  return (
+    classStereotypeBackground(geo, theme) ??
+    classHeaderScopedBackground(theme) ??
+    theme.colors.graph.classCascadeHeaderBackground ??
+    theme.colors.graph.classHeaderBackground
+  );
 }
 
 /**
@@ -117,10 +135,7 @@ export function resolveClassHeaderFill(geo: ClassifierGeo, bodyFill: Paint, them
   // and the `{element, class_, header}` styles, so when it applies it IS
   // `getStyleHeader()`'s merged BackGroundColor -- equal to `backcolor`,
   // hence no split (`tabaxa-70-pomu341`).
-  const styleHeader =
-    classStereotypeBackground(geo, theme) ??
-    theme.colors.graph.classCascadeHeaderBackground ??
-    theme.colors.graph.classHeaderBackground;
+  const styleHeader = classHeaderStyleBackground(geo, theme);
   if (styleHeader !== undefined) {
     if (typeof styleHeader !== 'string' || typeof bodyFill !== 'string') return styleHeader;
     return resolveColorToSvgHex(styleHeader) === resolveColorToSvgHex(bodyFill) ? undefined : styleHeader;

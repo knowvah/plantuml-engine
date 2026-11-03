@@ -28,6 +28,7 @@ import {
   activityRoundCorner,
 } from './activity-style-defaults.js';
 import { renderBar, renderSplitLine } from './activity-renderer-bars.js';
+import { scopedBack, stereotypeBack } from './activity-scoped-colors.js';
 import {
   renderIfMerge,
   renderIfLabel,
@@ -103,20 +104,30 @@ export function centeredFirstBaselineY(cy: number, lineHeight: number, lineCount
 export interface ActivityColors {
   nodeFill: Paint; // add2 T3h (family PAINT): gradients, not solid-only
   nodeBorder: string;
-  barFill: string;
+  barFill: Paint; // `FtileBlackBlock.java:105-106`: a gradient too
   startFill: string;
   endFill: string;
   diamondFill: Paint; // shares activityBackground's fallback tier
   diamondBorder: string;
 }
 
+/** `FtileBox.java:98,165`: the merged style's `BackGroundColor`, T2a's bucket (D2). */
+function activityBack(theme: Theme): Paint {
+  return scopedBack(theme, 'activity') ?? theme.colors.graph.activity?.background ?? theme.colors.nodeBackground;
+}
+
+/** `FtileBlackBlock.java:98,105-106`: the same merged read. */
+function activityBarBack(theme: Theme): Paint {
+  return scopedBack(theme, 'activitybar') ?? theme.colors.graph.activity?.barColor ?? ACTIVITY_BAR_FILL;
+}
+
 export function actColors(theme: Theme): ActivityColors {
   const act = theme.colors.graph.activity;
   return {
-    nodeFill: act?.background ?? theme.colors.nodeBackground,
+    nodeFill: activityBack(theme),
     nodeBorder: act?.border ?? theme.colors.border,
     // `activityBar { BackgroundColor #5 }` (plantuml.skin:387, D4).
-    barFill: act?.barColor ?? ACTIVITY_BAR_FILL,
+    barFill: activityBarBack(theme),
     // `circle { start,stop,end { LineColor #2; BackgroundColor #2 } } }`
     // (plantuml.skin:379-380) -- SAME token for stroke/fill, `#2` resolved
     // through the ported `HColorSet` digit-length parser (D5). A user's
@@ -135,13 +146,19 @@ export function actColors(theme: Theme): ActivityColors {
 // `activity-renderer-terminals.ts` (T1c, 500-line hook) -- re-exported
 // above.
 
+/** A box's back: its own colour (`FtileBox.java:163`, `eventuallyOverride(specBack)`), the stereotype's style
+ *  (`:146`, `withTOBECHANGED`), the merged `BackGroundColor` (`:165`). */
+export function actionFillOf(node: Pick<ActivityNodeGeo, 'color' | 'stereotype'>, theme: Theme): Paint {
+  return node.color ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
+}
+
 export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
   // `activityDiagram { activity { FontSize 12 } }` (plantuml.skin:361) --
   // the SAME value `tiles/gtile-action.ts` measured this box at, so the
   // renderer draws into exactly the space the sizer reserved.
   const actionSize = activityFontSize(theme, 'activity');
   const c = actColors(theme);
-  const fill = node.color ?? c.nodeFill;
+  const fill = actionFillOf(node, theme);
   const box = rect(node.x, node.y, node.width, node.height, {
     fill,
     stroke: c.nodeBorder,

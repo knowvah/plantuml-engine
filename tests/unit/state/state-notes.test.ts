@@ -43,7 +43,9 @@ describe('single-line attached note', () => {
   });
 
   it('note with no "of <State>" falls back to lastEntity', () => {
-    const ast = parse('A --> B\nnote right : trailing note');
+    // Pass THREE replays declarations only (`CucaDiagram.java:160-166`), so a
+    // state only a link made is not `lastEntity`: `B` needs a declaration.
+    const ast = parse('state B\nnote right : trailing note');
     expect(ast.notes?.[0]).toMatchObject({ target: 'B', position: 'right', implicitTarget: true });
   });
 
@@ -277,7 +279,7 @@ describe('note on link', () => {
 describe('multi-line note opener with no "of <State>" clause', () => {
   it('falls back to lastEntity, same as the single-line form', () => {
     const ast = parse(`
-      A --> B
+      state B
       note left
         multi-line, no explicit target
       end note
@@ -292,8 +294,8 @@ describe('multi-line note opener with no "of <State>" clause', () => {
 
 describe('quoted note target text and unresolvable multi-line notes', () => {
   it('a quoted "of" target strips its surrounding quotes', () => {
-    const ast = parse('A --> B\nnote left of "Quoted State" : text');
-    expect(ast.notes?.[0]?.target).toBe('Quoted State');
+    const ast = parse('state "Quoted State" as Q\nnote left of "Q" : text');
+    expect(ast.notes?.[0]?.target).toBe('Q');
   });
 
   it('a multi-line note with no "of" clause and no lastEntity refuses "Nothing to note to" (T9b, was a silent drop)', () => {

@@ -24,7 +24,7 @@ import type { Paint } from '../../core/paint.js';
 import { line, path, polygon, rect } from '../../core/svg.js';
 import { fmt } from '../../core/svg-format.js';
 import { activityFontSize, activityLineThickness } from './activity-style-defaults.js';
-import { actColors } from './activity-renderer-shapes.js';
+import { actColors, actionFillOf } from './activity-renderer-shapes.js';
 import { renderActionLabel } from './activity-creole-sheet.js';
 import { DELTA_INPUT_OUTPUT, boxStyleShield } from './tiles/gtile-action.js';
 
@@ -202,7 +202,7 @@ export function renderBoxStyleAction(node: ActivityNodeGeo, theme: Theme, style:
     w: node.width - shield,
     h: node.height,
     paint: {
-      fill: node.color ?? c.nodeFill,
+      fill: actionFillOf(node, theme),
       stroke: c.nodeBorder,
       strokeWidth: activityLineThickness(theme, 'activity'),
     },

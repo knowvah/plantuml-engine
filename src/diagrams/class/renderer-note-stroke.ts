@@ -44,3 +44,18 @@ export function resolveNoteStroke(theme: ScaledTheme): NoteStroke {
     resolveElementLineThickness(theme, 'note') ?? theme.colors.graph.noteCascadeLineThickness ?? NOTE_STROKE_WIDTH;
   return { stroke: noteBorder(theme), strokeWidth: thickness * theme.scaleK };
 }
+
+/**
+ * dss T3b: the note body's text colour. `EntityImageNote` draws it with the `note` signature's `FontColor`
+ * (`:108` neighbours, `style.getFontConfiguration`): the style engine's merged value in `elements['note']` (a
+ * `skinparam noteFontColor` lands there too, `FromSkinparamToStyle.java:153`'s family), then the flat
+ * `{root,element,classDiagram,note}` cascade, then black. A creole `<color>` run keeps its own colour above all.
+ */
+export function resolveNoteFontColor(theme: ScaledTheme): string {
+  const bucket = theme.colors.elements?.['note']?.font;
+  if (typeof bucket === 'string') return resolveColorToSvgHex(bucket);
+  return theme.colors.graph.noteCascadeFontColor ?? NOTE_DEFAULT_FONT_COLOR;
+}
+
+/** `plantuml.skin:9` `root { FontColor black }`, the `note` signature's text default. */
+const NOTE_DEFAULT_FONT_COLOR = '#000000';

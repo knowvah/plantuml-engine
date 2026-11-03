@@ -1,0 +1,7 @@
+@startuml
+skinparam defaultFontColor #BB0000
+class A <<S>> {
+ +name
+}
+object O <<T>>
+@enduml

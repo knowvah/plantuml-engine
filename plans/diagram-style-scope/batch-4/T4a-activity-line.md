@@ -12,6 +12,11 @@ Arrow signature: `ftile/FtileFactoryDelegator.java:84`.
 Audit sites 8–17, probe-only 13–17 included (user ruling 2026-11-02). Route them through the resolved line colour, inline `-[#color]->` staying above it. An arrowhead's fill follows its
 line. Tests first, citing the row or the Java.
 
+## From T3d (orchestrator)
+T3d moved the activity frame rows to `composite.<symbol>`, because `skinparam rectangleBackgroundColor` fills `elements.rectangle` with no `<style>` and reading that first flips rect-then-Partition away from the jar. Read a frame's line from `elements[compositeBucketOf(symbol)].border` (`src/core/style-element-scope.ts`); `symbolInk` already reads it for rect and card strokes. After T3d every `activity__probe-*` diff left is a line diff (`all` 45, `element-note` 22, `groups` 24, `swim` 13), except `legacy` 21, which needs an engine we do not have. Take these rows; `legacy` stays filed.
+
+Also under D8, from T3d's answers, each with a jar-oracled row: `partition { .foo { } }` and `skinparam activityFontColor<<foo>>`, which the jar applies and ours does not (`ELEMENT_BUCKET_SNAMES` has no `partition`; no `fontByStereo` written: T3d saw this in a theme dump, unconfirmed); `fork <<#red>>` and `note left <<foo>> : n`, which the jar draws and our parser refuses (`CommandFork3.java:87` → `FtileBlackBlock.java:105-106`, `CommandNote3.java:71-80`).
+
 ## Write-set
 `src/diagrams/activity/*`, `tests/unit/activity/*`.
 

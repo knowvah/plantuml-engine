@@ -78,6 +78,8 @@ describe('ELEMENT_SIGNATURES', () => {
       bucket: 'group.rectangle',
       snames: ['root', 'element', 'componentDiagram', 'group', 'rectangle'],
       shadows: 'rectangle',
+      // a `package { }` declaration never reaches a non-package cluster (Cluster.java:387), the flat value may
+      flatPeers: ['package'],
     });
     expect(row('classDiagram', clusterBucketOf('package'))?.snames).toEqual([
       'root',

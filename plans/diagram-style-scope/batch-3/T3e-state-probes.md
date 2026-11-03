@@ -17,6 +17,10 @@ Audit sites 13–19: note on link (signature `sequenceDiagram`, so `stateDiagram
 
 Probe rows at b2, before T3c: `diag` 2, `note-link` 16, `state-after-element` 2, `zones` 26.
 
+## From T3c (orchestrator, measured at its merge)
+Left to you, per row at T3c: `probe-note-link` 3, `flatnote-*` 10-12, `hist-*` 43-49 with `hist-none` 43 (border-point layout, not colour: name it), `pseudo-bg-{element,root}` 2, `cluster-*` 1 (the `__zaent_` path id: diagnose whether it is the colour path; name it if not).
+Also, D8, each with an authored row and a jar oracle: a flat `stateArrowColor` then a last declaration equal to the default keeps the flat value, the D3a hole for arrows (the bucket is not written); and `state C <<choice>> #red`, where T3c mirrored the jar's `#F1F1F1`. `element { HeadColor }` is a property outside bg, line and font: journal it, do not fix. Composite-scoped notes are T3f's.
+
 ## Write-set
 `src/diagrams/state/*`, `tests/unit/state/*`.
 

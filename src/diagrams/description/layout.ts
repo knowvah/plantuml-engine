@@ -16,7 +16,7 @@
  * `layout-dot-tree.ts`'s own import.
  */
 
-import type { DescriptionDiagramAST, DescriptiveLink } from './ast.js';
+import type { DescriptionDiagramAST } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import { resolveElementFontSize, resolveElementLineThickness, resolveElementMinimumWidth } from '../../core/theme.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
@@ -192,41 +192,6 @@ function runLayout(
   return { result, edgeDotBuild, portClusterInfoByAstId, spacing };
 }
 
-/**
- * D2 (mission `edge-label-box-followups`): the DRAWN text for a link
- * carrying a `note on link`. The note is no longer folded into
- * `DescriptiveLink.label` at parse time (D1) -- the DOT reservation now
- * comes from the merged box (`link-edge-attrs.ts#computeNoteMergedDims`),
- * which is the whole point -- but the note text must still reach the SVG:
- * before this mission the description engine was the ONLY engine that showed
- * it at all, and silently dropping it to match class/state would be a
- * regression a long-time user would notice.
- *
- * A DISPLAY-ONLY fold, applied at the layout->geometry boundary so nothing
- * upstream of it (DOT attributes, dzeta, `single`-dedup) sees a synthesized
- * label. Line order mirrors the merge operand order
- * (`SvekEdge.java:318-325`): note first for LEFT/TOP, label first for
- * RIGHT/BOTTOM.
- *
- * NOT the note POLYGON -- `EntityImageNoteLink`'s own drawn shape is a
- * separate mission for all three engines (D2), so the text lands inside the
- * (now correctly sized) label box as plain label lines, exactly as it
- * rendered before this mission.
- */
-function withLinkNoteDrawn(links: readonly DescriptiveLink[]): readonly DescriptiveLink[] {
-  return links.map((link) => {
-    if (link.linkNote === undefined) return link;
-    const noteFirst = link.linkNotePosition === 'left' || link.linkNotePosition === 'top';
-    const parts =
-      link.label === undefined
-        ? [link.linkNote]
-        : noteFirst
-          ? [link.linkNote, link.label]
-          : [link.label, link.linkNote];
-    return { ...link, label: parts.join('\n') };
-  });
-}
-
 /** The `xlabel` table of each dot edge (ortho main labels); see `EdgeMapping.xlabelTableByDotId`. */
 function xlabelTables(dotEdges: readonly DotInputEdge[]): ReadonlyMap<string, { w: number; h: number }> {
   const out = new Map<string, { w: number; h: number }>();
@@ -278,8 +243,7 @@ function buildGeoAndEdges(
     xlabelTableByDotId: xlabelTables(edgeDotBuild.dotEdges),
     namespaceSeparator: ast.namespaceSeparator,
   };
-  const drawLinks = withLinkNoteDrawn(ast.links);
-  const rawEdges = buildEdgeGeos(drawLinks, result.edges, rawMapping, hidden);
+  const rawEdges = buildEdgeGeos(ast.links, result.edges, rawMapping, hidden);
   // lgm-T1c: `placeBody` is `SvekResult#calculateDimension`'s `moveDelta` -- or its absence
   // under a `mainframe`, which draws the raw svek frame.
   const placement = placeBody(
@@ -297,7 +261,7 @@ function buildGeoAndEdges(
     dx === 0 && dy === 0
       ? rawEdges
       : buildEdgeGeos(
-          drawLinks,
+          ast.links,
           result.edges,
           { ...rawMapping, dx, dy, svekMoveDeltaX: dx - (result.originShift?.x ?? 0) },
           hidden,

@@ -122,21 +122,26 @@ function assembleEdgeGeo(
 function addEdgeLabel(geo: DescriptionEdgeGeo, link: DescriptiveLink, re: ResultEdge, m: EdgeMapping): void {
   const { dx, dy } = m;
   const stereotypeLabel = link.stereotypeIsLinkLabel === true && link.stereotype !== undefined;
-  if (link.label === undefined && !stereotypeLabel) return;
+  if (link.label === undefined && !stereotypeLabel && link.linkNote === undefined) return;
   const at = edgeLabelGeo(re, dx, dy);
   if (at === undefined) return;
   // `labelWidth`/`labelHeight` echo the table the engine was given
   // (`link-edge-attrs.ts#applyMainLabel` sets them together with
-  // `labelBoxWidth`/`labelBoxHeight`). A `note on link` label is the merged
-  // `EntityImageNoteLink` block -- a separate mechanism, left at its origin.
+  // `labelBoxWidth`/`labelBoxHeight`); for a `note on link` it is the merged
+  // `EntityImageNoteLink` + label block's table (`SvekEdge.java:307-326`).
   const table =
-    link.linkNote === undefined && re.labelWidth !== undefined && re.labelHeight !== undefined
+    re.labelWidth !== undefined && re.labelHeight !== undefined
       ? { w: re.labelWidth, h: re.labelHeight }
-      : link.linkNote === undefined
-        ? m.xlabelTableByDotId?.get(re.id)
-        : undefined;
+      : m.xlabelTableByDotId?.get(re.id);
   if (link.label === undefined && table === undefined) return;
   geo.label = { text: link.label ?? '', ...at, ...table };
+  if (link.linkNote !== undefined) {
+    geo.linkNote = {
+      text: link.linkNote,
+      position: link.linkNotePosition ?? 'bottom',
+      ...(link.linkNoteColor === undefined ? {} : { color: link.linkNoteColor }),
+    };
+  }
 }
 
 /**

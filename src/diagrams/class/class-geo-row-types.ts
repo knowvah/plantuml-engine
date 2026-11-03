@@ -16,6 +16,10 @@ export interface ClassifierRowGeo {
   y: number;
   indent: number;
   italic?: boolean; // abstract/interface header names — rendered in italic
+  /** dss T3b: an `object`/`map`/`json` stereotype LABEL row (`class-object-map-header.ts#buildStereoHeaderRows`). Their
+   *  header is not split by `headerRowCount` the way a class's is, so the row says what it is: it draws with
+   *  `FontParam.OBJECT_STEREOTYPE`'s legacy colour, as a class's label does (`EntityImageObject.java:105-106`). */
+  stereotypeLabel?: true;
   /** G2 N32: header-only, `skinparam classFontStyle bold` --
    *  `theme.ts#classFontBold`'s doc comment. Absent for every classifier
    *  with no such override (zero behavior change). */

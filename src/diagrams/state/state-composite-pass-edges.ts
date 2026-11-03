@@ -20,6 +20,8 @@ import type { State, StateDiagramAST, Transition, TransitionDirection } from './
 import type { FontSpec } from '../../core/measurer.js';
 import type { DotInputCluster } from '../../core/graph-layout.js';
 import type { DiagramCtx, PassAccumulator } from './state-composite-pass-types.js';
+import type { NoteSpec } from './state-note-layout.js';
+import { moveNotesToCreationOrder, type NoteSibling } from './state-note-lines.js';
 import { resolveEndpoint } from './state-composite-classify.js';
 import { buildEdgeAttrs } from './state-composite-edge-label.js';
 import { levelEndpointId } from './state-composite-pseudo.js';
@@ -63,13 +65,26 @@ export function resetEdgeCounter(): void {
 /** Push scope `scopeId`'s note DOT nodes into `acc` -- and, for a cluster's
  *  own scope, into `cluster.nodeIds` too (mirrors `addLocalPseudoNodes`'s
  *  pattern for the same reason: a note declared inside a non-autonom
- *  composite's scope is a member of that cluster's subgraph). No-op for a
- *  scope with no notes. */
-export function addScopeNotes(scopeId: string, ctx: DiagramCtx, acc: PassAccumulator, cluster?: DotInputCluster): void {
+ *  composite's scope is a member of that cluster's subgraph). Returns their
+ *  specs for the caller's own GeoSpec list (dss T3f: a note is a leaf of its
+ *  pass, `GroupMakerState.java:125-133`, drawn by `SvekResult.java:82-90`);
+ *  empty for a scope with no notes. */
+export function addScopeNotes(
+  scopeId: string,
+  ctx: DiagramCtx,
+  acc: PassAccumulator,
+  siblings: readonly NoteSibling[],
+  cluster?: DotInputCluster,
+): readonly NoteSpec[] {
   const parts = ctx.noteParts.get(scopeId);
-  if (parts === undefined) return;
+  if (parts === undefined) return [];
   acc.nodes.push(...parts.nodes);
-  if (cluster !== undefined) for (const n of parts.nodes) cluster.nodeIds.push(n.id);
+  moveNotesToCreationOrder(acc.nodes, (n) => n.id, parts.specs, siblings);
+  if (cluster !== undefined) {
+    for (const n of parts.nodes) cluster.nodeIds.push(n.id);
+    moveNotesToCreationOrder(cluster.nodeIds, (id) => id, parts.specs, siblings);
+  }
+  return parts.specs;
 }
 
 /**

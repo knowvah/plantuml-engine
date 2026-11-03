@@ -40,6 +40,12 @@ export interface ElementSignature {
   readonly fontSnames?: readonly SName[];
   /** The bucket a reader falls through to when this key is absent; see {@link heldByFlat}. */
   readonly shadows?: string;
+  /**
+   * Other flat buckets the same readers fall through to, whose signature this key's does not hold. A cluster that is
+   * not a `package` is signed `{..., group, <symbol>}` (`Cluster.java:290-291`), so a `package { ... }` declaration
+   * never reaches it; the reader's flat tiers (`graph.packageBorder`, `elements.package`) still carry that value.
+   */
+  readonly flatPeers?: readonly string[];
 }
 
 /** The colours one bucket takes. */
@@ -59,6 +65,54 @@ const RE: readonly SName[] = ['root', 'element'];
 /** The key of a cluster's signature, distinct from its symbol's leaf (D2a). @see svek/Cluster.java:290-291 */
 export function clusterBucketOf(symbol: string): string {
   return `group.${symbol}`;
+}
+
+/**
+ * The key of an activity frame's `<symbol>,composite` signature (D2a), apart from the flat `rectangle`/`card`/`package`
+ * buckets a `skinparam` fills with no `<style>` in the source: a key the gate alone writes lets the frame take the
+ * builder's answer without moving a source the gate leaves on the flat path.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileGroup.java:89-92
+ */
+export function compositeBucketOf(symbol: string): string {
+  return `composite.${symbol}`;
+}
+
+/** The key of a cluster's title signature, distinct from its symbol's leaf and its group (D2a). @see svek/ClusterHeader.java:157-165 */
+export function clusterTitleBucketOf(symbol: string): string {
+  return `cluster-title.${symbol}`;
+}
+
+/** The five kinds a member row's icon is signed with, as a `<style>` author writes them (`VisibilityModifier.java:336-350`). */
+export type VisibilityIconKind = 'public' | 'private' | 'protected' | 'package' | 'iemandatory';
+
+/**
+ * The key of a member row's icon signature, one per kind (D2a): `root,element,visibilityIcon,<kind>` names no diagram,
+ * so `classDiagram { LineColor }` never reaches it, and the last declaration wins.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/VisibilityModifier.java:336-350
+ */
+export function visibilityIconBucketOf(kind: VisibilityIconKind): string {
+  return `visibilityicon.${kind}`;
+}
+
+/** Each kind with its SName: `public_`, `private_`, `protected_`, `package_`, `IEMandatory` (`VisibilityModifier.java:338-350`). */
+const VISIBILITY_ICON_SNAMES: readonly (readonly [VisibilityIconKind, SName])[] = [
+  ['public', 'public_'], // VisibilityModifier.java:341
+  ['private', 'private_'], // VisibilityModifier.java:344
+  ['protected', 'protected_'], // VisibilityModifier.java:347
+  ['package', 'package_'], // VisibilityModifier.java:350
+  ['iemandatory', 'IEMandatory'], // VisibilityModifier.java:338
+];
+
+/**
+ * `MethodsOrFieldsArea.java:360-366` reads `LineColor` for every icon and `BackGroundColor` for a method's. Only a member
+ * row does: a class header, a package title and a link label take `Rose` colours from the skinparams
+ * (`EntityImageClassHeader.java:111-112`, `ClusterHeader.java:132-133`, `SvekEdge.java:366-367`).
+ */
+function visibilityIconRows(): ElementSignature[] {
+  return VISIBILITY_ICON_SNAMES.map(([kind, sname]) => ({
+    bucket: visibilityIconBucketOf(kind),
+    snames: [...RE, 'visibilityIcon', sname],
+  }));
 }
 
 /** A note on a link: `ComponentType.NOTE`'s `sequenceDiagram` signature, not the document's (D2a). */
@@ -124,8 +178,25 @@ function clusterRows(diagram: SName): ElementSignature[] {
       bucket: clusterBucketOf(bucket),
       snames: [...RE, diagram, 'group', ...snames], // Cluster.java:290-291
       shadows: bucket,
+      // `USymbols.PACKAGE` is the signature `package { }` names (`Cluster.java:387`); every other symbol falls through
+      // to the flat `package` value and must override it with its own merged one (D3a).
+      ...(bucket === 'package' ? {} : { flatPeers: ['package'] }),
     })),
   ];
+}
+
+/**
+ * A description cluster's title text: `ClusterHeader#getSignature` signs it `root, element, <diagram>, <uSymbol SNames>,
+ * composite, title` (java:157-165), so a bare `title { FontColor }` reaches it. A group with no USymbol (java:162-165) has
+ * no description keyword. `shadows` is the symbol's leaf key: a stale flat value there counts as held (D3a).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/ClusterHeader.java:157-165
+ */
+function clusterTitleRows(diagram: SName): ElementSignature[] {
+  return USYMBOLS.map(([bucket, snames]) => ({
+    bucket: clusterTitleBucketOf(bucket),
+    snames: [...RE, diagram, ...snames, 'composite', 'title'],
+    shadows: bucket,
+  }));
 }
 
 /** Every svek engine's shared rows, on its own `getStyleName()` (`AbstractEntityImage.java:95-96`). */
@@ -163,6 +234,7 @@ function descriptionRows(): ElementSignature[] {
   return [
     ...leafRows(diagram),
     ...clusterRows(diagram),
+    ...clusterTitleRows(diagram),
     ...svekRows(diagram),
     { bucket: 'port', snames: [...RE, diagram, 'port'] }, // EntityImagePort.java:73
   ];
@@ -184,6 +256,7 @@ function classRows(): ElementSignature[] {
     // GeneralImageBuilder.java:154-155, EntityImageLollipopInterface.java:69-70
     { bucket: 'circle.lollipop', snames: [...RE, diagram, 'circle'] },
     { bucket: 'port', snames: [...RE, diagram, 'port'] }, // EntityImagePort.java:73
+    ...visibilityIconRows(),
   ];
 }
 
@@ -224,10 +297,11 @@ function activityRows(): ElementSignature[] {
     { bucket: 'goto', snames: [...diagram, 'goto_'] }, // ftile/Swimlanes.java:248
     // ftile/vcompact/FtileGroup.java:89-91; command/CommandPartition3.java:89-103; USymbols.java:81,86,87,91
     ...(['partition', 'group', 'rectangle', 'card'] as const).map((sname) => ({
-      bucket: sname,
+      bucket: compositeBucketOf(sname),
       snames: [...diagram, sname, 'composite'] as const,
+      shadows: sname,
     })),
-    { bucket: 'package', snames: [...diagram, 'package_', 'composite'] },
+    { bucket: compositeBucketOf('package'), snames: [...diagram, 'package_', 'composite'], shadows: 'package' },
   ];
 }
 
@@ -279,6 +353,7 @@ function heldByFlat(
   out: Readonly<Partial<Record<string, ElementScopeColors>>>,
 ): boolean {
   if (flat?.[row.bucket]?.[role] !== undefined) return true;
+  if (row.flatPeers?.some((peer) => flat?.[peer]?.[role] !== undefined) === true) return true;
   if (row.shadows === undefined) return false;
   return flat?.[row.shadows]?.[role] !== undefined || out[row.shadows]?.[role] !== undefined;
 }

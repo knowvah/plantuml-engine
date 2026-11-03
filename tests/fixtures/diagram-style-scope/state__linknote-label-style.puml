@@ -1,0 +1,15 @@
+@startuml
+<style>
+element {
+  BackgroundColor #AAAAAA
+  LineColor #BB0000
+  FontColor #0000BB
+}
+</style>
+state A
+A --> B : l
+note top on link
+  multi
+  line
+end note
+@enduml

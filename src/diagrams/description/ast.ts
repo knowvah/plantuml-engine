@@ -346,6 +346,8 @@ export interface DescriptiveLink {
    *  `Position position = Position.BOTTOM;`). Selects the merge operand order
    *  in `SvekEdge.java:318-325`. */
   linkNotePosition?: NotePosition;
+  /** `CucaNote#getColors()` of the `note on link`, the plain `#color` form: the drawn polygon's fill. */
+  linkNoteColor?: string;
 }
 
 // ---------------------------------------------------------------------------

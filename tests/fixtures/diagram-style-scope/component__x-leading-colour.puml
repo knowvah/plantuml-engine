@@ -1,0 +1,6 @@
+@startuml
+rectangle #pink "Both" as b #green
+rectangle #pink "Lead" as l
+rectangle "Trail" as t #green
+hexagon #pink "Hex"
+@enduml

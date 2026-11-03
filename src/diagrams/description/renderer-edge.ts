@@ -6,7 +6,9 @@
  */
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { Theme } from '../../core/theme.js';
-import { SvekEdge, type SvekEdgeInput, type SvekLinkStyle } from '../../core/svek/SvekEdge.js';
+import { SvekEdge, type SvekEdgeInput, type SvekEdgeLabel, type SvekLinkStyle } from '../../core/svek/SvekEdge.js';
+import { paintTextColor } from '../../core/decoration/symbol/usymbol-resolve.js';
+import { buildLinkNoteBlock } from './link-note-block.js';
 import type { DescriptionEdgeGeo } from './layout-helpers.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
 import { bareEntityName } from './namespace-groups.js';
@@ -35,7 +37,11 @@ export function arrowLabelFontConfig(theme: Theme): FontConfiguration {
 
 /** `SvekEdge.java:260-262`: the link's own `Colors` mute the label font (TEXT). */
 function edgeLabelFont(edge: DescriptionEdgeGeo, theme: Theme): FontConfiguration {
-  const font = arrowLabelFontConfig(theme);
+  const resolved = arrowLabelFontConfig(theme);
+  // dss T3a site 1: `{root,element,<diagram>,arrow}`'s `FontColor` as the style engine resolved it (`T2a`,
+  // `style-element-scope.ts`); `graph.arrowFontColor` is the flat path it supersedes (`GraphvizImageBuilder.java:234-235`).
+  const scoped = theme.colors.elements?.arrow?.font;
+  const font = scoped === undefined ? resolved : { ...resolved, color: paintTextColor(scoped) };
   // The link's own `Colors` mute the style-resolved font AFTER it (SvekEdge.java:260-262), so `text:` outranks the
   // stereotype-signed arrow `FontColor` (`SvekEdge.java:816-821`), which outranks the theme's arrow font colour.
   const color = edge.styleTextColor ?? tagStyle(edge, theme)?.fontColor;
@@ -112,6 +118,20 @@ function thicknessField(styleThickness: number | undefined): { styleThickness?: 
   return styleThickness === undefined ? {} : { styleThickness };
 }
 
+/** The label, with its `note on link` block (`SvekEdge.java:312-326`) when the link has one and a table to draw in. */
+function edgeLabel(edge: DescriptionEdgeGeo, theme: Theme, blockText: string | undefined): SvekEdgeLabel {
+  const label = edge.label!;
+  const text = blockText === undefined ? label : { ...label, text: blockText };
+  if (edge.linkNote === undefined || text.w === undefined || text.h === undefined) return text;
+  return {
+    ...text,
+    note: {
+      block: buildLinkNoteBlock(edge.linkNote.text, theme, undefined, edge.linkNote.color),
+      position: edge.linkNote.position,
+    },
+  };
+}
+
 function buildInput(
   edge: DescriptionEdgeGeo,
   theme: Theme,
@@ -159,9 +179,7 @@ function buildInput(
     ...(edge.tailDecor !== undefined ? { tailDecor: edge.tailDecor } : {}),
     ...(headDecor !== undefined ? { headDecor } : {}),
     ...(visibleStereotype !== undefined && blockText === undefined ? { stereotype: visibleStereotype } : {}),
-    ...(edge.label !== undefined
-      ? { label: blockText === undefined ? edge.label : { ...edge.label, text: blockText } }
-      : {}),
+    ...(edge.label !== undefined ? { label: edgeLabel(edge, theme, blockText) } : {}),
     ...(hasLabelText ? { labelFont: edgeLabelFont(edge, theme) } : {}),
     // `SvekEdge.java:376-381`: `skinparam defaultTextAlignment` (the root style bucket, as for a cluster title).
     ...(theme.colors.elements?.root?.horizontalAlignment !== undefined

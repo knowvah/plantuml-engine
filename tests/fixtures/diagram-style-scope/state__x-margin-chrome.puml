@@ -1,0 +1,10 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+title T
+caption C
+[*] --> A
+A --> B : l
+B --> [*]
+@enduml

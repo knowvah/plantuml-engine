@@ -1481,9 +1481,9 @@ describe('A3 — interior blank lines in multiline constructs', () => {
   });
 
   it('still merges a standalone `{` across preceding blank lines', () => {
-    const ast = parseKeepBlanks('class Foo\n\n{\n+a\n}');
+    const ast = parseKeepBlanks('class Foo\n\n{\n+ab\n}');
     expect(ast.classifiers[0]!.members).toHaveLength(1);
-    expect(ast.classifiers[0]!.members[0]!.name).toBe('a');
+    expect(ast.classifiers[0]!.members[0]!.name).toBe('ab');
   });
 
   it('blank lines outside any open note/body are still skipped', () => {

@@ -59,6 +59,22 @@ export interface DocumentDims {
   height: number;
 }
 
+/** The four sides of `ClockwiseTopRightBottomLeft`; `TextBlockExporter#calculateMargin` picks them. */
+export interface DocumentEdges {
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly left: number;
+}
+
+/** `CucaDiagram#getDefaultMargins()` `(0, 5, 5, 0)`, what {@link applyCucaDocumentMargin} adds when no style sets one. */
+const CUCA_EDGES: DocumentEdges = {
+  top: CUCA_DOCUMENT_MARGIN_TOP,
+  right: CUCA_DOCUMENT_MARGIN_RIGHT,
+  bottom: CUCA_DOCUMENT_MARGIN_BOTTOM,
+  left: CUCA_DOCUMENT_MARGIN_LEFT,
+};
+
 /**
  * Step 2 and 3 of the recipe above: add `CucaDiagram`'s default margins to a
  * measured dimension, then apply `SvgGraphics#ensureVisible`'s truncating
@@ -70,9 +86,9 @@ export interface DocumentDims {
  * chrome-adjusted raw dimension (`core/annotations/chrome.ts#applyChrome`),
  * so the raw half has to be observable on its own.
  */
-export function applyCucaDocumentMargin(dims: DocumentDims): DocumentDims {
-  const width = dims.width + CUCA_DOCUMENT_MARGIN_LEFT + CUCA_DOCUMENT_MARGIN_RIGHT;
-  const height = dims.height + CUCA_DOCUMENT_MARGIN_TOP + CUCA_DOCUMENT_MARGIN_BOTTOM;
+export function applyCucaDocumentMargin(dims: DocumentDims, margin: DocumentEdges = CUCA_EDGES): DocumentDims {
+  const width = dims.width + margin.left + margin.right;
+  const height = dims.height + margin.top + margin.bottom;
   return {
     width: Math.floor(width + 1),
     height: Math.floor(height + 1),

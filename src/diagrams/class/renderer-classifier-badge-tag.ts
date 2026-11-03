@@ -8,6 +8,7 @@
  * imports them back, unchanged for its own callers. Pure move, zero
  * behavior change.
  */
+import { CLASS_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
 import type { ClassifierGeo } from './layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import type { Paint } from '../../core/paint.js';
@@ -265,7 +266,8 @@ export function renderGenericTag(
         text(geo.x + line.x, geo.y + line.y, line.text, {
           fontFamily: tag.fontFamily,
           fontSize: tag.fontSize,
-          fill: '#000000',
+          // `FontParam.CLASS_STEREOTYPE`'s chain, as the stereotype label (`EntityImageClassHeader.java:146-147`).
+          fill: theme.colors.elements?.[CLASS_STEREOTYPE_BUCKET]?.font ?? '#000000',
           // G2 N39: `skinparam classStereotypeFontStyle` override -- see
           // `GenericTagGeo`'s own doc comment.
           ...(tag.italic ? { fontStyle: 'italic' as const } : {}),

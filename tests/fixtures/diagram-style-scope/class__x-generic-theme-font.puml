@@ -1,0 +1,7 @@
+@startuml
+!theme crt-amber
+class G<T> {
+  v
+}
+interface M<K,V>
+@enduml
