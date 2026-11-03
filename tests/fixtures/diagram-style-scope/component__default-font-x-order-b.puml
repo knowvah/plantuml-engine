@@ -1,0 +1,6 @@
+@startuml
+skinparam defaultFontColor #0A0
+skinparam componentFontColor #00A
+component A
+actor C
+@enduml

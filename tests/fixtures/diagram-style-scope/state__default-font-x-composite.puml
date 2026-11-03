@@ -1,0 +1,17 @@
+@startuml
+skinparam defaultFontColor #0A0
+state A {
+ state A1
+ A1 : body
+}
+state B
+B : desc
+state C <<choice>>
+state F <<fork>>
+[*] --> A
+A --> B : l
+B --> C
+C --> F
+note on link : m
+note right of B : n
+@enduml

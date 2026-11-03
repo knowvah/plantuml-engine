@@ -1,0 +1,6 @@
+@startuml
+class A #0A0-00A
+class B #0A0|00A
+A --> B : l
+note left of A #0A0|00A : n
+@enduml

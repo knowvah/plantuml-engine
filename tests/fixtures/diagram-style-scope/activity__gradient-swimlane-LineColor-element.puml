@@ -1,0 +1,11 @@
+@startuml
+<style>
+element { LineColor #0A0-#00A }
+</style>
+|S1|
+start
+:A;
+|S2|
+:B;
+detach
+@enduml

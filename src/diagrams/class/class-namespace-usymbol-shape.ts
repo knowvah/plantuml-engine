@@ -51,6 +51,7 @@ import { resolveActorStyle, mapComponentStyle } from '../../core/decoration/symb
 import type { USymbol as UpstreamUSymbol } from '../../core/decoration/symbol/USymbol.js';
 import { ClusterDecoration } from '../../core/svek/ClusterDecoration.js';
 import { renderDrawableToFragment } from '../../core/klimt/document-shell.js';
+import { withContentGradientIds } from '../../core/svg-defs.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import { clusterHeaderStereoTextBlock } from './class-cluster-header.js';
 import { LimitFinder } from '../../core/klimt/drawing/LimitFinder.js';
@@ -394,5 +395,8 @@ export function renderNamespaceUSymbol(
     },
     { width: geo.x + geo.width, height: geo.y + geo.height, measurer, uid: geo.id },
   );
-  return (fragment.extraDefs ?? '') + header.splice(fragment.body);
+  // `SvgGraphics.java:393` numbers per document, and this one draws a frame alone: the def takes its content id, so equal
+  // gradients of two frames are one, and `collectDocumentDefs` lifts it (`SvgGraphics.java:367-371`, the map hit).
+  const content = withContentGradientIds(fragment.extraDefs ?? '', header.splice(fragment.body));
+  return content.defs + content.body;
 }

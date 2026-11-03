@@ -19,7 +19,8 @@ describe('resolveSkinparam — direct key matches', () => {
   // `Gradient` lands on the separate `colors.backgroundGradient` field.
   it('maps a backgroundcolor gradient to BOTH colors.background (flattened) and colors.backgroundGradient', () => {
     const { theme } = resolveSkinparam(new Map([['backgroundcolor', '#AAAAAA-white']]), defaultTheme);
-    expect(theme.colors.background).toBe('white');
+    // `HColorGradient.java:103-105`: the flat value of a gradient is its FIRST colour.
+    expect(theme.colors.background).toBe('#AAAAAA');
     expect(theme.colors.backgroundGradient).toEqual({ color1: '#AAAAAA', color2: 'white', policy: '-' });
   });
 
@@ -1113,17 +1114,15 @@ describe('resolveColor', () => {
     expect(resolveColor('#fff')).toBe('#fff');
   });
 
-  it('strips gradient — returns end color for hex-name gradients', () => {
-    expect(resolveColor('#AAAAAA-white')).toBe('white');
-    expect(resolveColor('#AAAAAA-red')).toBe('red');
-  });
-
-  it('strips gradient — returns end color for name-name gradients', () => {
-    expect(resolveColor('gray-white')).toBe('white');
-  });
-
-  it('strips gradient — returns end color for hex-hex gradients', () => {
-    expect(resolveColor('#AAAAAA-#FF0000')).toBe('#FF0000');
+  // `HColor#toSvg` is `toColor(mapper).toSvg()` (`HColor.java:74-79`), and a gradient's `toColor` is `color1`
+  // (`HColorGradient.java:103-105`): the first colour, whatever the separator.
+  it('flattens a gradient to its first colour', () => {
+    expect(resolveColor('#AAAAAA-white')).toBe('#AAAAAA');
+    expect(resolveColor('gray-white')).toBe('gray');
+    expect(resolveColor('#AAAAAA-#FF0000')).toBe('#AAAAAA');
+    expect(resolveColor('#AAAAAA|#FF0000')).toBe('#AAAAAA');
+    expect(resolveColor('#AAAAAA\\#FF0000')).toBe('#AAAAAA');
+    expect(resolveColor('#AAAAAA/#FF0000')).toBe('#AAAAAA');
   });
 
   // `HColorSet#getColorOrWhite` (klimt/color/HColorSet.java:58-63): every
@@ -1147,7 +1146,7 @@ describe('resolveColor', () => {
   it('applies to backgroundColor skinparam with gradient', () => {
     const params = new Map([['backgroundColor', '#AAAAAA-white']]);
     const { theme } = resolveSkinparam(params, defaultTheme);
-    expect(theme.colors.background).toBe('white');
+    expect(theme.colors.background).toBe('#AAAAAA');
   });
 
   it('add2 T3h (family PAINT): activityBackgroundColor keeps a gradient as a Gradient, not flattened (dakesa-98-mano758)', () => {

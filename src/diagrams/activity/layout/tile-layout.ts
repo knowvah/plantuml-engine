@@ -95,6 +95,7 @@ function outLane(swimlaneOut: string | undefined, swimlane: string | undefined):
  */
 function withKilled<T extends Tile>(tile: T): T {
   tile.hasPointOut = () => false;
+  tile.killed = true;
   return tile;
 }
 

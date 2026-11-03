@@ -17,6 +17,7 @@
 
 import type { ActivityGeometry, ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
+import { parseColor } from '../../core/paint.js';
 import { line, rect } from '../../core/svg.js';
 import { renderNode } from './activity-renderer-shapes.js';
 import { drawActivityTextBlock } from './activity-text-sheet.js';
@@ -60,7 +61,8 @@ function renderSwimlaneBand(geo: ActivityGeometry, theme: Theme): string {
  */
 function renderSwimlaneBackground(lane: ActivityGeometry['swimlanes'][number], y1: number, y2: number): string {
   if (lane.background === undefined) return '';
-  return rect(lane.x, y1, lane.width, y2 - y1, { fill: lane.background, stroke: lane.background, strokeWidth: 1 });
+  const back = parseColor(lane.background); // `HColorSet.java:109-116`: an inline `|#a-b|` is a gradient too.
+  return rect(lane.x, y1, lane.width, y2 - y1, { fill: back, stroke: back, strokeWidth: 1 });
 }
 
 /** Every lane boundary X, INCLUDING both outer edges -- `n + 1` dividers

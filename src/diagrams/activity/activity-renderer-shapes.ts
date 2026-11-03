@@ -8,7 +8,7 @@
 
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
-import { noGradient, type Paint } from '../../core/paint.js';
+import type { Paint } from '../../core/paint.js';
 import type {} from '../../core/dispatcher.js';
 import { rect, path } from '../../core/svg.js';
 import { renderComposite as renderCompositeFrame } from './activity-renderer-composite.js';
@@ -30,8 +30,9 @@ import {
 } from './activity-style-defaults.js';
 import { renderBar, renderSplitLine } from './activity-renderer-bars.js';
 import {
+  activityBoxLine,
+  inlineBack,
   scopedBack,
-  scopedLine,
   stereotypeBack,
   stereotypeLine,
   withStereotypeFont,
@@ -110,12 +111,12 @@ export function centeredFirstBaselineY(cy: number, lineHeight: number, lineCount
 
 export interface ActivityColors {
   nodeFill: Paint; // add2 T3h (family PAINT): gradients, not solid-only
-  nodeBorder: string;
+  nodeBorder: Paint;
   barFill: Paint; // `FtileBlackBlock.java:105-106`: a gradient too
   startFill: string;
   endFill: string;
   diamondFill: Paint; // shares activityBackground's fallback tier
-  diamondBorder: string;
+  diamondBorder: Paint;
 }
 
 /** `FtileBox.java:98,165`: the merged style's `BackGroundColor`, T2a's bucket (D2). */
@@ -133,7 +134,7 @@ export function actColors(theme: Theme): ActivityColors {
   return {
     nodeFill: activityBack(theme),
     // `FtileBox.java:98,164`: the merged `LineColor`, T2a's bucket (D2).
-    nodeBorder: noGradient(scopedLine(theme, 'activity') ?? act?.border ?? theme.colors.border),
+    nodeBorder: activityBoxLine(theme),
     // `activityBar { BackgroundColor #5 }` (plantuml.skin:387, D4).
     barFill: activityBarBack(theme),
     // `circle { start,stop,end { LineColor #2; BackgroundColor #2 } } }`
@@ -157,12 +158,12 @@ export function actColors(theme: Theme): ActivityColors {
 /** A box's back: its own colour (`FtileBox.java:163`, `eventuallyOverride(specBack)`), the stereotype's style
  *  (`:146`, `withTOBECHANGED`), the merged `BackGroundColor` (`:165`). */
 export function actionFillOf(node: Pick<ActivityNodeGeo, 'color' | 'stereotype'>, theme: Theme): Paint {
-  return node.color ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
+  return inlineBack(node) ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
 }
 
 /** A box's line: the stereotype's style (`FtileBox.java:146`, `withTOBECHANGED`), the merged `LineColor` (`:164`). */
-export function actionBorderOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): string {
-  return noGradient(stereotypeLine(theme, 'activity', node.stereotype) ?? actColors(theme).nodeBorder);
+export function actionBorderOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint {
+  return stereotypeLine(theme, 'activity', node.stereotype) ?? actColors(theme).nodeBorder;
 }
 
 export function renderAction(node: ActivityNodeGeo, theme: Theme): string {

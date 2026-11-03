@@ -1,0 +1,8 @@
+@startuml
+skinparam defaultFontColor #0A0
+title T
+caption C
+participant A
+A -> A : l
+note left: n
+@enduml

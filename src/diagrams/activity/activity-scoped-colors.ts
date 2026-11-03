@@ -3,7 +3,7 @@
  * the stereotype tier above it (`withTOBECHANGED`, `FtileBox.java:146`, re-signed at +1000,
  * `StyleLoader.java:178-186`). Split out of `activity-style-defaults.ts`, at the 500-line cap.
  */
-import { isTransparentColor, type Paint } from '../../core/paint.js';
+import { isTransparentColor, parseColor, type Paint } from '../../core/paint.js';
 import { PAINT_NONE } from '../../core/svg.js';
 import type { Theme } from '../../core/theme.js';
 import { stereotypeFontColor, stereotypePaint } from '../../core/theme-element-resolve.js';
@@ -15,6 +15,15 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
  */
 export function svgBack(paint: Paint | undefined): Paint | undefined {
   return typeof paint === 'string' && isTransparentColor(paint) ? PAINT_NONE : paint;
+}
+
+/**
+ * A node's own inline `#color`, as `HColorSet` parses every colour token: `#a-b` is a gradient (`HColorSet.java:109-116`),
+ * which the rect, polygon or ellipse drawn with it keeps (`DriverRectangleSvg.java:82-96`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:109-116
+ */
+export function inlineBack(node: { readonly color?: string | undefined }): Paint | undefined {
+  return node.color === undefined ? undefined : parseColor(node.color);
 }
 
 /** A `FontConfiguration`'s colour: `null` is `isTransparent()` there (`UText.ts`), and `DriverTextSvg.java:92-93` then
@@ -32,6 +41,15 @@ export function scopedBack(theme: Theme, bucket: string): Paint | undefined {
  *  `none`, as {@link svgBack} (`SvgGraphics.java:517-525,540`). */
 export function scopedLine(theme: Theme, bucket: string): Paint | undefined {
   return svgBack(theme.colors.elements?.[bucket]?.border);
+}
+
+/**
+ * The `activity` signature's line (`of(root, element, activityDiagram, activity)`, `FtileBox.java:98,164`): T2a's
+ * merged `LineColor`, else the flat tiers. A box's border, and `fork ... end merge`'s connectors and rhombus
+ * (`ParallelBuilderMerge.java:96-99`).
+ */
+export function activityBoxLine(theme: Theme): Paint {
+  return scopedLine(theme, 'activity') ?? theme.colors.graph.activity?.border ?? theme.colors.border;
 }
 
 /**

@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { LineColor #0A0/#00A
+ FontColor #0A0/#00A }
+</style>
+class A
+A --> A : l
+@enduml

@@ -23,7 +23,7 @@ import {
 } from '../../oracle/svg-conformance/diagram-style-scope.js';
 import { renderDbgMarkup } from '../../oracle/svg-conformance/document-background.js';
 
-const ROW_COUNT = 605;
+const ROW_COUNT = 865;
 const SOLID = '@startuml\nskinparam backgroundColor black\nA -> B : hi\n@enduml\n';
 
 let root: string;

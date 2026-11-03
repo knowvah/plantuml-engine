@@ -1,0 +1,58 @@
+activity: conformant 449 -> 449, movers 0
+board: conformant 0 -> 0, movers 0
+c4: conformant 2 -> 2, movers 0
+chart: conformant 0 -> 0, movers 0
+chronology: conformant 0 -> 0, movers 0
+class: conformant 723 -> 723, movers 0
+component: conformant 214 -> 215, movers 2
+  banatu-09-koce254 diverged -> structural-match
+  dikexa-30-jobu917 diverged -> conformant
+ditaa: conformant 0 -> 0, movers 0
+dot: conformant 5 -> 5, movers 0
+ebnf: conformant 0 -> 0, movers 0
+files: conformant 9 -> 9, movers 0
+gantt: conformant 265 -> 265, movers 0
+hcl: conformant 1 -> 1, movers 0
+json: conformant 14 -> 14, movers 0
+mindmap: conformant 142 -> 142, movers 0
+network: conformant 1 -> 1, movers 0
+object: conformant 63 -> 64, movers 1
+  fonulu-92-libi014 diverged -> conformant
+packet: conformant 0 -> 0, movers 0
+regex: conformant 0 -> 0, movers 0
+salt: conformant 51 -> 51, movers 0
+sequence: conformant 1143 -> 1143, movers 0
+state: conformant 99 -> 114, movers 16
+  beguxu-19-tize774 diverged -> conformant
+  dapuko-98-zuzo096 diverged -> structural-match
+  datodo-22-beci222 diverged -> conformant
+  decede-10-buvu414 diverged -> conformant
+  jaxuxe-73-sije305 diverged -> conformant
+  joleju-94-maru748 diverged -> conformant
+  kujuzo-76-bavi505 diverged -> conformant
+  kupexa-94-dude266 diverged -> conformant
+  lonuti-97-voko521 diverged -> conformant
+  pacami-67-dafe414 diverged -> conformant
+  pebepi-32-cati486 diverged -> conformant
+  rorebi-96-gane144 diverged -> conformant
+  taxile-56-goca422 diverged -> conformant
+  tigibi-80-zidi137 diverged -> conformant
+  tofezi-64-koda860 diverged -> conformant
+  xojudi-20-keco020 diverged -> conformant
+timing: conformant 6 -> 6, movers 0
+unknown: conformant 565 -> 572, movers 7
+  cexoke-68-kici335 diverged -> conformant
+  mulavi-78-faxo108 diverged -> conformant
+  nejuge-86-duve357 diverged -> conformant
+  sogeme-65-kate687 diverged -> conformant
+  vasuka-21-tugo253 diverged -> conformant
+  vujalo-62-paji974 diverged -> conformant
+  xucura-15-fuxu925 diverged -> conformant
+usecase: conformant 68 -> 70, movers 3
+  fogiku-22-gone205 diverged -> conformant
+  jafuke-47-xepe403 diverged -> conformant
+  zavitu-69-cemu013 diverged -> structural-match
+wbs: conformant 204 -> 204, movers 0
+wire: conformant 0 -> 0, movers 0
+yaml: conformant 7 -> 7, movers 0
+losses 0, non-sequence movers 29

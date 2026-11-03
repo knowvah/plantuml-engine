@@ -1,0 +1,13 @@
+@startuml
+skinparam defaultFontColor #0A0
+<style>
+root { FontColor #00A }
+</style>
+start
+:A;
+if (x?) then (y)
+:B;
+endif
+note left: n
+stop
+@enduml

@@ -104,10 +104,9 @@ export function resolveElementFont(theme: Theme, sname: string): string | undefi
  *  `buildHeaderPrimitive`'s own header-background-split gate, NEVER by
  *  `classifierFill` (the body rect's fill stays the bare bucket's
  *  `background`, unaffected). */
-export function resolveElementHeaderBackground(theme: Theme, sname: string): string | undefined {
+export function resolveElementHeaderBackground(theme: Theme, sname: string): Paint | undefined {
   const bucket = theme.colors.elements?.[sname]?.headerBackground;
-  if (typeof bucket === 'string') return resolveColorToSvgHex(bucket);
-  return undefined;
+  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : bucket;
 }
 
 /** G3/O4: `theme.colors.elements[sname].headerFont` -- the SAME nested

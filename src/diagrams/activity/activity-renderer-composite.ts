@@ -12,7 +12,7 @@
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import { compositeBucketOf } from '../../core/style-element-scope.js';
 import type { Theme } from '../../core/theme.js';
-import { noGradient, type Paint } from '../../core/paint.js';
+import type { Paint } from '../../core/paint.js';
 import type { CompositeUSymbol } from './activity-geometry.types.js';
 import {
   compositeSymbolTitleOrigin,
@@ -29,6 +29,7 @@ import { activityFontSize, activityLineThickness, resolveSolidBucketColor } from
 import { activityMeasurer } from './activity-string-bounder.js';
 import {
   fontConfigurationColor,
+  inlineBack,
   scopedBack,
   scopedLine,
   stereotypeBack,
@@ -102,10 +103,8 @@ function compositeBack(node: CompositeSubject, theme: Theme): Paint | undefined 
 }
 
 /** The signature's line: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
-function compositeLine(node: CompositeSubject, theme: Theme): string | undefined {
-  const paint =
-    stereotypeLine(theme, compositeSymbolOf(node), node.stereotype) ?? scopedLine(theme, compositeBucket(node));
-  return paint === undefined ? undefined : noGradient(paint);
+function compositeLine(node: CompositeSubject, theme: Theme): Paint | undefined {
+  return stereotypeLine(theme, compositeSymbolOf(node), node.stereotype) ?? scopedLine(theme, compositeBucket(node));
 }
 
 /**
@@ -130,14 +129,11 @@ function flatTitleColor(node: CompositeSubject, theme: Theme): string | undefine
 
 /** The per-symbol ink fields a `skinparam` can set, before the cascade. */
 interface SymbolInk {
-  readonly fill?: string;
-  readonly stroke?: string;
+  readonly fill?: Paint;
+  readonly stroke?: Paint;
   readonly strokeWidth?: number;
   readonly roundCorner?: number;
 }
-
-const asString = (paint: Paint | undefined): string | undefined =>
-  paint === undefined ? undefined : noGradient(paint);
 
 /**
  * What `FtileGroup.getStyleSignature(symbol)`'s signature
@@ -159,8 +155,8 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
     const strokeWidth = b?.lineThickness;
     const border = theme.colors.elements?.[compositeBucket(node)]?.border ?? b?.border;
     return {
-      ...(b?.background !== undefined ? { fill: asString(b.background)! } : {}),
-      ...(border !== undefined ? { stroke: asString(border)! } : {}),
+      ...(b?.background !== undefined ? { fill: b.background } : {}),
+      ...(border !== undefined ? { stroke: border } : {}),
       ...(strokeWidth !== undefined ? { strokeWidth } : {}),
       ...(b?.roundCorner !== undefined ? { roundCorner: b.roundCorner } : {}),
     };
@@ -177,7 +173,7 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
 
 /** `FtileGroup.java:101`: the command's `#color`, else the style's `BackGroundColor`. */
 function compositeFill(node: ActivityNodeGeo, theme: Theme, flatFill: Paint): Paint {
-  return node.color ?? compositeBack(node, theme) ?? theme.colors.graph.partitionBackground ?? flatFill;
+  return inlineBack(node) ?? compositeBack(node, theme) ?? theme.colors.graph.partitionBackground ?? flatFill;
 }
 
 /** The resolved ink of one group frame: `Partition*` skinparams (on the

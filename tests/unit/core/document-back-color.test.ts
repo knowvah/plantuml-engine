@@ -130,14 +130,14 @@ describe('documentBackColor: no declaration reached the signature', () => {
 describe('documentBackColor: the pair the skinparam handler stores', () => {
   it('a gradient carries the flat text and the Gradient (HColorSet.java:109-116)', () => {
     expect(read(style('document {\n BackgroundColor red/blue\n}'))).toEqual({
-      background: 'red/blue',
+      background: 'red',
       backgroundGradient: { color1: 'red', color2: 'blue', policy: '/' },
     });
   });
 
-  it('a "-" gradient keeps resolveColor\'s flattened end colour', () => {
+  it('a "-" gradient flattens to the first colour, as every separator (HColorGradient.java:103-105)', () => {
     expect(read(style('document {\n BackgroundColor red-blue\n}'))).toEqual({
-      background: 'blue',
+      background: 'red',
       backgroundGradient: { color1: 'red', color2: 'blue', policy: '-' },
     });
   });

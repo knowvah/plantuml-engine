@@ -1,0 +1,8 @@
+@startuml
+state A #0A0-00A
+state B #0A0|00A
+state C
+A --> B
+A --> C
+note left of A #0A0-00A : n
+@enduml

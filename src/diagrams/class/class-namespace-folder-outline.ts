@@ -122,7 +122,7 @@ export function folderPolygonPoints(geo: FolderTabGeo): Array<[number, number]> 
  *  template literal (T7b). */
 export function renderFolderPolygon(
   points: ReadonlyArray<[number, number]>,
-  stroke: string,
+  stroke: Paint,
   strokeWidth: number,
   fill: Paint,
   // cdd6 T3f: `SvgGraphics#styleMe` writes the dash after the width,
@@ -159,7 +159,7 @@ export function renderFolderPolygon(
  * own doc comment). */
 export interface FolderTabPaint {
   readonly strictUml: boolean | undefined;
-  readonly border: string;
+  readonly border: Paint;
   readonly strokeWidth: number;
   readonly fill: Paint;
   readonly roundCorner: number;
@@ -219,7 +219,7 @@ export function renderFolderTabShape(geo: NamespaceGeo, paint: FolderTabPaint): 
  */
 function folderPath(
   d: string,
-  stroke: { stroke: string; strokeWidth: number; strokeDasharray?: string },
+  stroke: { stroke: Paint; strokeWidth: number; strokeDasharray?: string },
   fill: Paint,
 ): string {
   if (typeof fill === 'string' && resolvePaint(fill).value === resolvePaint(stroke.stroke).value)

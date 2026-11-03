@@ -1,0 +1,12 @@
+@startuml
+<style>
+diamond { LineColor #A50 ; BackgroundColor #5AF }
+</style>
+start
+fork
+:a;
+fork again
+:b;
+end merge
+stop
+@enduml

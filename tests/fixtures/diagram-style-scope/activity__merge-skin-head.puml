@@ -1,0 +1,14 @@
+@startuml
+skinparam ArrowColor #A00
+skinparam ActivityBorderColor #0A0
+skinparam ActivityBackgroundColor #EEF
+start
+fork
+:a;
+fork again
+repeat
+:b;
+repeat while (c) is (y)
+end merge
+stop
+@enduml

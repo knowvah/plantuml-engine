@@ -38,6 +38,7 @@ import {
 } from './renderer-edge-extras.js';
 import type { Paint } from '../../core/paint.js';
 import { noGradient } from '../../core/paint.js';
+import { elementGradient } from '../../core/theme-element-resolve.js';
 
 /**
  * G2 N5: `EdgeGeo.points` is a well-formed `1 + 3*n` cubic-bezier spline
@@ -229,7 +230,10 @@ function resolveStrokeAndArrowheads(
   const strokeColor =
     geo.colorOverride !== undefined
       ? resolveColorToSvgHex(geo.colorOverride)
-      : (tagStyle?.color ?? theme.colors.graph.classCascadeArrowColor ?? theme.colors.arrow);
+      : (tagStyle?.color ??
+        elementGradient(theme, 'arrow', 'border') ??
+        theme.colors.graph.classCascadeArrowColor ??
+        theme.colors.arrow);
   const edgeStrokeWidth = resolveEdgeStrokeWidth(geo, tagStyle, theme);
   const arrowheads = buildEdgeArrowheads(geo, strokeColor, theme.colors.background, {
     resolvedStrokeWidth: edgeStrokeWidth,

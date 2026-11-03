@@ -18,6 +18,9 @@ Agent: orchestrator. Commits: `chore(dss-exit): exit bar — <summary>`, then `d
 8. **README:** final status block (per-batch counts from `fixtures.md`).
 9. **PR prep:** PR body in the scratchpad (one line per batch, rows before → after, test plan). Then the [squash batch](../batch-squash/overview.md).
 
+## Added by the exit probe (journal row 56)
+- [TE1](TE1-activity-merge.md) `end merge` reads the activity signature [x]; [TE2](TE2-gradient-values.md) gradient values and `defaultFontColor` [x].
+
 ## Acceptance
 - Given the final diff vs b0, then 0 conformant losses in all 28 engines and the d.ts is byte-identical.
 - Given `planning/next-missions.md`, then the struck follow-ons cite their commits and every new follow-on has a reason.

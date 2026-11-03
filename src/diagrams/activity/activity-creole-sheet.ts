@@ -395,7 +395,7 @@ export function renderNoteLabel(
   text: string,
   theme: Theme,
   box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number },
-  ink: { readonly border: string; readonly fill: Paint },
+  ink: { readonly border: Paint; readonly fill: Paint },
 ): string {
   const font = { family: activityFontFamily(theme, 'note'), size: activityFontSize(theme, 'note') };
   const tb = buildNoteTextBlock(text, theme);

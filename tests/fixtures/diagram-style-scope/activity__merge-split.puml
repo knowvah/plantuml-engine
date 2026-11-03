@@ -1,0 +1,13 @@
+@startuml
+<style>
+root { LineColor #0A0 }
+arrow { LineColor #00A }
+</style>
+start
+split
+:a;
+split again
+:b;
+end split
+stop
+@enduml

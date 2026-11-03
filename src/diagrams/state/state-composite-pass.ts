@@ -56,8 +56,9 @@ import { hasLocalContent } from './state-composite-detect.js';
 import { buildLeafNode } from './state-leaf-node.js';
 import { resolveAllAutonomPasses } from './state-composite-autonom.js';
 import { resolveClusterComposite } from './state-composite-cluster.js';
-import { isTransparentColor } from '../../core/paint.js';
-import { STATE_BODY_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import { isTransparentColor, type Paint } from '../../core/paint.js';
+import { STATE_BODY_BUCKET, STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
+import { inlineBack } from './state-render-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { buildNoteGraphPartsByScope, sweepOrphanNoteEdges } from './state-note-layout.js';
@@ -195,22 +196,21 @@ function resolvesSouthCapInk(s: State, theme: Theme): boolean {
  *  resolution order, `undefined` when NO tier fires (the skin default, i.e.
  *  `body { BackGroundColor transparent }`). Split out to keep
  *  `resolvesSouthCapInk` under the project's per-function complexity cap. */
-function resolveSouthBackColor(s: State, theme: Theme): string | undefined {
+function resolveSouthBackColor(s: State, theme: Theme): Paint | undefined {
   const inline = resolveBareOrBackColor(s.color);
-  if (inline !== undefined) return resolveColorToSvgHex(inline);
+  if (inline !== undefined) return inlineBack(inline);
   const byStereo =
     s.stereotype !== undefined
       ? theme.colors.graph.stateBackgroundColorByStereo?.[s.stereotype.toLowerCase()]
       : undefined;
-  const bucket = theme.colors.elements?.['state']?.background;
+  const bucket = stateBucketPaint(theme, STATE_BUCKET, 'background');
   // dss T3c: the `body` zone's own signature (`Cluster.java:469-470`, the
   // `state.body` bucket) is narrower than `state`, so it is read first --
   // the same order as `state-render-colors.ts#resolveStateBodyFill`, which
   // draws the cap this answer reserves ink for.
-  const zone = stateBucketColor(theme, STATE_BODY_BUCKET, 'background');
-  const raw =
-    byStereo ?? zone ?? (typeof bucket === 'string' ? bucket : undefined) ?? theme.colors.graph.rootElementBackground;
-  return raw !== undefined ? resolveColorToSvgHex(raw) : undefined;
+  const zone = stateBucketPaint(theme, STATE_BODY_BUCKET, 'background');
+  const raw = byStereo ?? zone ?? bucket ?? theme.colors.graph.rootElementBackground;
+  return typeof raw === 'string' ? resolveColorToSvgHex(raw) : raw;
 }
 
 /** Attaches {@link resolvesSouthCapInk}'s verdict to a COMPOSITE GeoSpec

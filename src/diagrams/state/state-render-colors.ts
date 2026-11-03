@@ -16,8 +16,8 @@ import type { StateNodeGeo } from './state-geo-types.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import type { Theme } from '../../core/theme.js';
-import { isTransparentColor } from '../../core/paint.js';
-import { STATE_BODY_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import { isTransparentColor, parseColor, type Paint } from '../../core/paint.js';
+import { STATE_BODY_BUCKET, STATE_BUCKET, stateBucketColor, stateBucketPaint } from './state-bucket-colors.js';
 
 /** Default box fill (`skinparam stateBackgroundColor`'s own terminal
  *  default) — jar-verified jocela-05-niba392 / votoki-67-gufa610 /
@@ -35,9 +35,18 @@ export const STATE_BORDER_STROKE_WIDTH = 0.5;
  * wins over `fallback`. Jar-verified jocela-05-niba392 (`state state1
  * #red` → `fill="#FF0000"`).
  */
-export function resolveStateFill(node: Pick<StateNodeGeo, 'color'>, fallback: string): string {
+export function resolveStateFill(node: Pick<StateNodeGeo, 'color'>, fallback: Paint): Paint {
   const override = resolveBareOrBackColor(node.color);
-  return override !== undefined ? resolveColorToSvgHex(override) : fallback;
+  return override !== undefined ? inlineBack(override) : fallback;
+}
+
+/**
+ * An inline `#a-b` is a gradient, as `HColorSet` splits every colour token (`HColorSet.java:109-116`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:109-116
+ */
+export function inlineBack(token: string): Paint {
+  const paint = parseColor(token);
+  return typeof paint === 'string' ? resolveColorToSvgHex(paint) : paint;
 }
 
 /** mission G4 S10: `theme.colors.elements['state'].background` -- the SAME
@@ -45,13 +54,9 @@ export function resolveStateFill(node: Pick<StateNodeGeo, 'color'>, fallback: st
  *  already reuse for FREE (`core/skinparam.ts`'s own `'state'` entry doc
  *  comment) for the PLAIN `skinparam stateBackgroundColor` form -- a plain
  *  color NAME still needs HColorSet resolution (mirrors `renderer-classifier-
- *  box.ts#resolveElementBackground`'s identical string-only branch; a
- *  Gradient `Paint` bucket value is unsupported here for the SAME reason
- *  that sibling function documents -- no fixture in this corpus's own
- *  `state`-bucket family exercises one, out of scope). */
-function resolveStateBucketBackground(theme: Theme): string | undefined {
-  const bucket = theme.colors.elements?.['state']?.background;
-  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : undefined;
+ *  box.ts#resolveElementBackground`'s identical branch); a gradient stays whole. */
+function resolveStateBucketBackground(theme: Theme): Paint | undefined {
+  return stateBucketPaint(theme, STATE_BUCKET, 'background');
 }
 
 /** mission skin-file-loading Batch 1 (D3): `theme.colors.graph.
@@ -78,11 +83,9 @@ function resolveStateRootElementBackground(theme: Theme): string | undefined {
  *  T4) by `core/skinparam.ts#parseStyleBlock`'s own bare `stateDiagram {
  *  LineColor ... } }` cascade alias (`decede-10-buvu414`, jar-verified --
  *  see `resolveStateBorder`'s own doc comment for the full precedence
- *  tier). A Gradient `Paint` bucket value is unsupported here for the SAME
- *  reason {@link resolveStateBucketBackground} documents. */
-function resolveStateBucketBorder(theme: Theme): string | undefined {
-  const bucket = theme.colors.elements?.['state']?.border;
-  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : undefined;
+ *  tier). A gradient stays whole, as {@link resolveStateBucketBackground}. */
+function resolveStateBucketBorder(theme: Theme): Paint | undefined {
+  return stateBucketPaint(theme, STATE_BUCKET, 'border');
 }
 
 /** mission G6 T4: `theme.colors.elements['state'].font` -- the SAME generic
@@ -128,15 +131,15 @@ export function resolveStateFillBucketed(
   theme: Theme,
   fallback: string,
   zoneBucket?: string,
-): string {
+): Paint {
   const override = resolveBareOrBackColor(node.color);
-  if (override !== undefined) return resolveColorToSvgHex(override);
+  if (override !== undefined) return inlineBack(override);
   return (
     resolveStateBackgroundByStereo(node, theme) ??
     // dss T3c: a zone (`state.name|description|body`) is a narrower signature
     // than `state` (`EntityImageStateCommon.java:75-96`), so its bucket sits
     // above the `state` one and below the stereotype tier (+1000 priority).
-    (zoneBucket !== undefined ? stateBucketColor(theme, zoneBucket, 'background') : undefined) ??
+    (zoneBucket !== undefined ? stateBucketPaint(theme, zoneBucket, 'background') : undefined) ??
     resolveStateBucketBackground(theme) ??
     resolveStateRootElementBackground(theme) ??
     fallback
@@ -158,7 +161,7 @@ const BODY_TRANSPARENT = 'none';
 export function resolveStateBodyFill(
   node: Pick<StateNodeGeo, 'color' | 'stereotype'>,
   theme: Theme,
-): string | undefined {
+): Paint | undefined {
   const fill = resolveStateFillBucketed(node, theme, BODY_TRANSPARENT, STATE_BODY_BUCKET);
   return fill === BODY_TRANSPARENT || isTransparentColor(fill) ? undefined : fill;
 }
@@ -177,7 +180,7 @@ export function resolveStateBodyFill(
  * the plain `theme.colors.border` default, matching {@link
  * resolveStateFillBucketed}'s own precedence shape.
  */
-export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype'>, theme: Theme): string {
+export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype'>, theme: Theme): Paint {
   if (node.stereotype !== undefined) {
     const override = theme.colors.graph.stateBorderColorByStereo?.[node.stereotype.toLowerCase()];
     if (override !== undefined) return resolveColorToSvgHex(override);
@@ -245,7 +248,7 @@ export function resolveStateFontSize(
  * `theme.ts#stateArrowLineColor`'s own doc comment for the full
  * derivation and the `style-map-theme.ts#applyStyleMap` injection point.
  */
-export function resolveStateArrowLineColor(theme: Pick<Theme, 'colors'>, fallback: string): string {
+export function resolveStateArrowLineColor(theme: Pick<Theme, 'colors'>, fallback: Paint): Paint {
   const override = theme.colors.graph.stateArrowLineColor;
   return override !== undefined ? resolveColorToSvgHex(override) : fallback;
 }
@@ -264,7 +267,7 @@ export function resolveStateArrowLineColor(theme: Pick<Theme, 'colors'>, fallbac
  * polygon `fill="#0000FF" stroke="#0000FF"`). `fallback` is reached only
  * when NEITHER HeadColor nor LineColor cascade is set.
  */
-export function resolveStateArrowHeadColor(theme: Pick<Theme, 'colors'>, fallback: string): string {
+export function resolveStateArrowHeadColor(theme: Pick<Theme, 'colors'>, fallback: Paint): Paint {
   const override = theme.colors.graph.stateArrowHeadColor;
   if (override !== undefined) return resolveColorToSvgHex(override);
   const lineOverride = theme.colors.graph.stateArrowLineColor;

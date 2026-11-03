@@ -7,7 +7,7 @@
 import { NOTE_CORNER_SIZE, NOTE_SPIKE_DELTA } from './activity-layout-constants.js';
 import type { ActivityNodeGeo } from './activity-geometry.types.js';
 import type { Theme } from '../../core/theme.js';
-import { noGradient, parseColor, type Paint } from '../../core/paint.js';
+import { parseColor, type Paint } from '../../core/paint.js';
 import { scopedBack, scopedLine, stereotypeBack, stereotypeLine } from './activity-scoped-colors.js';
 
 /** add4-T1c: the Opale's own `BackGroundColor` -- the note's `#color` when
@@ -24,8 +24,8 @@ export function noteFillOf(node: ActivityNodeGeo, theme: Theme): Paint {
 }
 
 /** The Opale's line: the stereotype's style (`FtileWithNoteOpale.java:137`), the merged `LineColor` (`:141`). */
-export function noteLineOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): string {
-  return noGradient(stereotypeLine(theme, 'note', node.stereotype) ?? scopedLine(theme, 'note') ?? theme.colors.border);
+export function noteLineOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint {
+  return stereotypeLine(theme, 'note', node.stereotype) ?? scopedLine(theme, 'note') ?? theme.colors.border;
 }
 
 /** `Opale#getCorner` (`:134-147`, `roundCorner=0`): the fold triangle,

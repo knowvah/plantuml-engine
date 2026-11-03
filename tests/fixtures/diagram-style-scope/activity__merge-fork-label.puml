@@ -1,0 +1,13 @@
+@startuml
+<style>
+root { LineColor #0A0 }
+arrow { LineColor #00A }
+</style>
+start
+fork
+:a;
+fork again
+:b;
+end fork {x}
+stop
+@enduml

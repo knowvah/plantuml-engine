@@ -1,0 +1,7 @@
+@startuml
+skinparam defaultFontColor #0A0
+object A
+object B
+A --> B : l
+note left of A: n
+@enduml

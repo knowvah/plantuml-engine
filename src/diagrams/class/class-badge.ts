@@ -36,7 +36,7 @@
  */
 import type { ClassifierKind } from './ast.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
-import { isTransparentColor, paintToSvg, type Paint } from '../../core/paint.js';
+import { isTransparentColor, noGradient, paintToSvg, type Paint } from '../../core/paint.js';
 import { PAINT_NONE } from '../../core/svg.js';
 import { formatDecimal, DEFAULT_SVG_DECIMALS } from '../../core/svg-format.js';
 import { lookupSizedGlyph } from './class-badge-sized-glyphs.js';
@@ -218,14 +218,13 @@ export function resolveBadgeFill(
   // it -- see `style-cascade-class.ts`'s own doc comment). Sits BELOW the
   // `spot<Kind>` bucket above, ABOVE the hardcoded kind default.
   rootFallback?: string,
-): string {
+): Paint {
   if (colorOverride !== undefined) return resolveColorToSvgHex(colorOverride);
   // dss T3b: `transparent` is the jar's `fill="none"` (`HColors.transparent()`), not `paintToSvg`'s `#00000000`
   // (`ord-hdr`: `root { BackgroundColor transparent }` over every spot).
   if (spotBackground !== undefined) {
-    return typeof spotBackground === 'string' && isTransparentColor(spotBackground)
-      ? PAINT_NONE
-      : paintToSvg(spotBackground).fill;
+    if (typeof spotBackground !== 'string') return spotBackground;
+    return isTransparentColor(spotBackground) ? PAINT_NONE : paintToSvg(spotBackground).fill;
   }
   if (rootFallback !== undefined) return rootFallback;
   return badgeFill(kind);
@@ -247,10 +246,15 @@ export function resolveBadgeBorder(
   // resolveBadgeFill}'s `rootFallback`, for the badge ellipse's OWN stroke
   // (`<style> root { LineColor } }`).
   rootFallback?: string,
-): string {
-  if (spotBorder !== undefined) return paintToSvg(spotBorder).fill;
+): Paint {
+  if (spotBorder !== undefined) return typeof spotBorder === 'string' ? paintToSvg(spotBorder).fill : spotBorder;
   if (rootFallback !== undefined) return rootFallback;
   return defaultBorder;
+}
+
+/** `SvgGraphics#fixColor` (`SvgGraphics.java:539-540`): a transparent glyph colour prints `none`. */
+function fixedGlyphColor(color: string): string {
+  return isTransparentColor(color) ? PAINT_NONE : color;
 }
 
 export function resolveBadgeGlyphColor(
@@ -260,8 +264,9 @@ export function resolveBadgeGlyphColor(
   // `bikuka-40-pezi068`).
   rootFallback?: string,
 ): string {
-  if (spotFont !== undefined) return paintToSvg(spotFont).fill;
-  if (rootFallback !== undefined) return rootFallback;
+  // `DriverCenteredCharacterSvg.java:79`: `textColor.toSvg(mapper)`, a gradient's first colour.
+  if (spotFont !== undefined) return fixedGlyphColor(paintToSvg(noGradient(spotFont)).fill);
+  if (rootFallback !== undefined) return fixedGlyphColor(rootFallback);
   return '#000000';
 }
 

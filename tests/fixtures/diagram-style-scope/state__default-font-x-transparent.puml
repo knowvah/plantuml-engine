@@ -1,0 +1,6 @@
+@startuml
+skinparam defaultFontColor transparent
+state A
+A --> [*] : l
+note left of A : n
+@enduml

@@ -110,6 +110,9 @@ function backColorValue(builder: StyleBuilder, diagramType: DiagramType): Value 
   return signature.getMergedStyle(builder)?.value('BackGroundColor');
 }
 
+/** `SkinParam#getValue`'s lowercased key for `FromSkinparamToStyle.java:157`. */
+const DEFAULT_FONT_COLOR_KEY = 'defaultfontcolor';
+
 /**
  * The document's one builder, under D3's gate: `undefined` for empty `styles` and no `skin` (D3, D3b), and for a
  * `<style>` the parser rejects (D6, `CommandStyleMultilinesCSS.java:92-93`). Nothing else is caught.
@@ -122,6 +125,17 @@ export function documentStyleBuilder(pre: PreprocessorResult): StyleBuilder | un
     if (e instanceof StyleParsingException) return undefined;
     throw e;
   }
+}
+
+/**
+ * The builder for a document D3's gate leaves out that still sets `skinparam defaultFontColor`: it converts to
+ * `root { FontColor }` (`FromSkinparamToStyle.java:157`), which every element's signature merges
+ * (`StyleSignatureBasic.java:194-220`), and most text readers have no flat tier for it. `undefined` otherwise.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/FromSkinparamToStyle.java:157
+ */
+export function defaultFontStyleBuilder(pre: PreprocessorResult): StyleBuilder | undefined {
+  const gated = pre.styles.length === 0 && pre.skin === undefined;
+  return gated && pre.skinparam.has(DEFAULT_FONT_COLOR_KEY) ? currentStyleBuilderOf(pre) : undefined;
 }
 
 /**

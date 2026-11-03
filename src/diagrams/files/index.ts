@@ -25,6 +25,7 @@
  */
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import type { RenderFragment, SyncPlugin } from '../../core/dispatcher.js';
+import type { Gradient } from '../../core/paint.js';
 import { ColorMapper, toSvgPaint } from '../../core/klimt/color/ColorMapper.js';
 import { HColorGradient } from '../../core/klimt/color/HColorGradient.js';
 import { HColorSet } from '../../core/klimt/color/HColorSet.js';
@@ -107,6 +108,11 @@ export function calculateBackColor(diagram: FilesDiagram): HColorSimple | HColor
   throw new Error('ClassCastException: a document BackGroundColor is a simple or gradient colour');
 }
 
+/** A `Gradient` as the token `HColorSet` splits again (`HColorSet.java:109-116`). */
+function gradientToken(gradient: Gradient): string {
+  return `${gradient.color1}${gradient.policy}${gradient.color2}`;
+}
+
 /**
  * The document background: the style's ({@link calculateBackColor}), unless the theme's differs. The theme is
  * built from the same `<style>` cascade and, in extended mode only, the skinparams (`skinparam backgroundColor`,
@@ -114,7 +120,10 @@ export function calculateBackColor(diagram: FilesDiagram): HColorSimple | HColor
  */
 function backColorOf(diagram: FilesDiagram, theme: Theme): HColorSimple | HColorGradient {
   const fromStyle = calculateBackColor(diagram);
-  const fromTheme = HColorSet.instance().getColorOrNull(theme.colors.background);
+  // `colors.background` is the flat half of the pair (`HColorGradient.java:103-105`); a gradient is its other half.
+  const gradient = theme.colors.backgroundGradient;
+  const token = gradient === undefined ? theme.colors.background : gradientToken(gradient);
+  const fromTheme = HColorSet.instance().getColorOrNull(token);
   if (!(fromTheme instanceof HColorSimple || fromTheme instanceof HColorGradient)) return fromStyle;
   const same = toSvgPaint(fromTheme, ColorMapper.IDENTITY) === toSvgPaint(fromStyle, ColorMapper.IDENTITY);
   return same ? fromStyle : fromTheme;

@@ -24,7 +24,7 @@
  * resolver -- see `plans/g1c-hcolorset/ledger.md`).
  */
 
-import { parseSimpleColor, resolveColorToSvgHex } from './klimt/color/HColorSet.js';
+import { resolveColorToSvgHex, splitGradientToken } from './klimt/color/HColorSet.js';
 import { escapeAttribute, shortenColor } from './svg-format.js';
 
 /**
@@ -91,37 +91,6 @@ export function isLinearGradientPaint(value: unknown): value is LinearGradientPa
  */
 export type Paint = string | Gradient;
 
-const GRADIENT_SEPARATORS = new Set(['-', '\\', '|', '/']);
-
-/**
- * True if `s` parses as a plain (solid) color, mirroring upstream's
- * `HColorSet#parseSimpleColor` exactly (delegated to
- * `klimt/color/HColorSet.ts#parseSimpleColor`, G1c): an optional leading `#`
- * followed by 1, 3, 6, or 8 hex digits (the 8-digit form carries alpha), OR
- * a name registered in the {@link import('./klimt/color/ColorTrieNode.js')}
- * table -- NOT any alphabetic-shaped string (a pre-G1c heuristic; a stray
- * word that happens to be all letters but isn't a real color name, e.g.
- * `"banana"`, no longer counts as a plain color, matching upstream's own
- * `parseSimpleColor(s) != null` gate on `HColorSet#parseColor`'s gradient
- * branch). Used only to decide whether a separator split yields two real
- * colors.
- */
-function isPlainColor(s: string): boolean {
-  if (s.length === 0) return false;
-  // Upstream's `HColorSet#parseSimpleColor` strips a leading `#`
-  // UNCONDITIONALLY, before EITHER the hex or the named-trie attempt
-  // (java:122-124) -- not just when the segment turns out to be hex. So a
-  // compound gradient token that puts a NAMED color immediately after the
-  // leading `#` (G1 I5h: `#red|green`, `#yellow\FFFFFF` -- the
-  // description-diagram inline color-override grammar always prefixes the
-  // whole compound token with one `#`, regardless of which half is hex)
-  // resolves correctly here too: `parseSimpleColor` does its own
-  // unconditional `#`-strip internally, so passing `s` straight through
-  // (rather than pre-stripping here) matches upstream's per-segment
-  // stripping exactly.
-  return parseSimpleColor(s) !== undefined;
-}
-
 /**
  * Parse a skinparam color value into a {@link Paint}.
  *
@@ -132,17 +101,8 @@ function isPlainColor(s: string): boolean {
  * split exists, returns `s` unchanged as a plain solid paint. Never throws.
  */
 export function parseColor(s: string): Paint {
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (c !== undefined && GRADIENT_SEPARATORS.has(c)) {
-      const left = s.slice(0, i);
-      const right = s.slice(i + 1);
-      if (isPlainColor(left) && isPlainColor(right)) {
-        return { color1: left, color2: right, policy: c as Gradient['policy'] };
-      }
-    }
-  }
-  return s;
+  const gradient = splitGradientToken(s);
+  return gradient === undefined ? s : { color1: gradient.first, color2: gradient.second, policy: gradient.separator };
 }
 
 /**
@@ -164,9 +124,11 @@ export function parseColor(s: string): Paint {
  * `#00000000`). This is the SAME set of literal shapes
  * `klimt/color/HColorSet.ts#resolveColorToSvgHex` collapses to `#00000000`
  * (G1c) -- kept as a separate function since callers here need a boolean
- * gate (skip drawing), not a resolved hex string.
+ * gate (skip drawing), not a resolved hex string. A gradient is never transparent: `HColorGradient` does not override
+ * `HColor#isTransparent` (`HColor.java`, `HColorGradient.java`).
  */
-export function isTransparentColor(value: string): boolean {
+export function isTransparentColor(value: Paint): boolean {
+  if (typeof value !== 'string') return false;
   const lower = value.toLowerCase();
   if (lower === 'transparent' || lower === 'background') return true;
   return /^#[0-9a-fA-F]{6}00$/.test(value);

@@ -26,7 +26,7 @@
  * imported only by `skinparam.ts`.
  */
 
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 import type { Paint } from './paint.js';
 import type { SkinparamAccumulator } from './skinparam-accumulator.js';
 import {
@@ -68,7 +68,8 @@ function tryElementColorBucket(acc: SkinparamAccumulator, key: string, value: st
   const elem = matchElementColorKey(key) ?? matchStereotypeSpotColorKey(key);
   if (elem === undefined) return false;
   const bucket = (acc.elements[elem.sname] ??= {});
-  bucket[elem.role] = parseColor(value);
+  // `DriverTextSvg.java:178`: text prints a gradient's first colour; the other two roles keep it for their shape's driver.
+  bucket[elem.role] = elem.role === 'font' ? noGradient(parseColor(value)) : parseColor(value);
   return true;
 }
 

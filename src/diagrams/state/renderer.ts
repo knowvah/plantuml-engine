@@ -53,7 +53,7 @@ import { renderBorderPoint } from './renderer-border-point.js';
 import {} from './state-render-colors.js';
 import { renderComposite } from './renderer-composite-box.js';
 import { renderStateNote } from './renderer-note.js';
-import { STATE_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import { STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
 import { buildStateShadowFilterDef } from './state-shadow.js';
 import { renderTransitionWrapped } from './state-renderer-transitions.js';
 
@@ -185,7 +185,7 @@ function renderSeparator(sep: { x1: number; y1: number; x2: number; y2: number }
   return line(sep.x1, sep.y1, sep.x2, sep.y2, {
     // dss T3e site 18: `ConcurrentStates.java:111-120` reads LineColor of `root, element,
     // stateDiagram, state`.
-    stroke: stateBucketColor(theme, STATE_BUCKET, 'border') ?? theme.colors.border,
+    stroke: stateBucketPaint(theme, STATE_BUCKET, 'border') ?? theme.colors.border,
     strokeWidth: 1.5,
     strokeDasharray: '8,10',
   });

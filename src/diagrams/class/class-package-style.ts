@@ -86,7 +86,7 @@ export function byStereo<T>(map: Readonly<Record<string, T>> | undefined, tags: 
 /** A colour that paints nothing (`HColors.transparent()`): upstream emits no
  *  `<text>` for it (`DriverTextSvg.java:92-94`) and `stroke:none` for a
  *  line (`DriverLineSvg` -> `toSvg`). */
-export function isNoPaint(color: string): boolean {
+export function isNoPaint(color: Paint): boolean {
   return isTransparentColor(color);
 }
 
@@ -206,22 +206,26 @@ export function packageBorderColor(
   tags: readonly string[],
   fallback: string,
   usymbol = PACKAGE_SYMBOL,
-): string {
+): Paint {
+  return packageTaggedBorder(theme, tags, usymbol) ?? packageUntaggedBorder(theme) ?? fallback;
+}
+
+/**
+ * `Cluster.java:317-320` hands the frame one colour; a gradient stays whole for its rect and path, and each `ULine`
+ * takes the first colour (`DriverLineSvg.java:76-82`). A solid keeps the flat field above the bucket.
+ */
+function packageUntaggedBorder(theme: Theme): Paint | undefined {
   const styled = packageBucket(theme)?.border;
-  return (
-    packageTaggedBorder(theme, tags, usymbol) ??
-    theme.colors.graph.packageBorder ??
-    (typeof styled === 'string' ? styled : undefined) ??
-    fallback
-  );
+  return typeof styled === 'object' ? styled : (theme.colors.graph.packageBorder ?? styled);
 }
 
 /** The two tiers above the flat package border: `packageBorderColor<<label>>`, then (dss T3b, D2a) `group.<symbol>`,
  *  the frame's own merged `LineColor` (`Cluster.java:312-319` off the `Cluster.java:290-293` signature), which
  *  `group { LineColor }` and `classDiagram { LineColor }` reach. */
-function packageTaggedBorder(theme: Theme, tags: readonly string[], usymbol: string): string | undefined {
-  const scoped = theme.colors.elements?.[clusterBucketOf(usymbol)]?.border;
-  return byStereo(packageBucket(theme)?.borderByStereo, tags) ?? (typeof scoped === 'string' ? scoped : undefined);
+function packageTaggedBorder(theme: Theme, tags: readonly string[], usymbol: string): Paint | undefined {
+  return (
+    byStereo(packageBucket(theme)?.borderByStereo, tags) ?? theme.colors.elements?.[clusterBucketOf(usymbol)]?.border
+  );
 }
 
 /** Cluster stroke (`Cluster#getStrokeInternal` -> `style.getStroke()`):
@@ -242,7 +246,7 @@ export function emptyPackageThickness(theme: Theme, tags: readonly string[], fal
 
 /** Empty-leaf border: the stereotype tier over the leaf's existing cascade
  *  (`class-empty-package.ts#emptyPackagePaint`). */
-export function emptyPackageBorder(theme: Theme, tags: readonly string[], fallback: string): string {
+export function emptyPackageBorder(theme: Theme, tags: readonly string[], fallback: Paint): Paint {
   return byStereo(packageBucket(theme)?.borderByStereo, tags) ?? fallback;
 }
 

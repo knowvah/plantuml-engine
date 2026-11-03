@@ -15,6 +15,7 @@
  * 500-line cap once more -- another pure move, re-exported/imported back
  * here unchanged.
  */
+import type { Paint } from '../../core/paint.js';
 import { isObjectKind } from './object-kind-style.js';
 import { roundedTopRectD } from '../../core/svg-path-builder.js';
 import type { ClassifierGeo, JsonBodyItem } from './layout.js';
@@ -22,7 +23,7 @@ import { ROW_TEXT_LEFT_MARGIN } from './layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import { rect, line, path } from '../../core/svg.js';
 import {} from '../../core/klimt/color/HColorSet.js';
-import {} from '../../core/color-override.js';
+import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { mapColumnDividerEntries } from './renderer-classifier-map-dividers.js';
 import { protectedInnerBox } from './class-dot-graph.js';
 import { hasBadge } from './class-badge.js';
@@ -94,7 +95,7 @@ export { renderRow };
  * combination (no corpus fixture combines `hide fields` with a `.header`
  * BackgroundColor override) and is left undrawn rather than guessed.
  */
-function headerBackgroundPath(geo: ClassifierGeo, theme: ScaledTheme, roundCorner: number, fill: string): string {
+function headerBackgroundPath(geo: ClassifierGeo, theme: ScaledTheme, roundCorner: number, fill: Paint): string {
   const headerHeight = geo.dividerYs[0];
   if (headerHeight === undefined) return '';
   const r = roundCorner / 2;
@@ -194,9 +195,14 @@ function buildHeaderPrimitive(geo: ClassifierGeo, theme: ScaledTheme): UrlTagged
   // when it genuinely differs from the body's own fill (jar's own
   // `backcolor.equals(headerBackcolor) == false` gate).
   if (geo.kind === 'object' || geo.kind === 'map' || geo.kind === 'json') {
-    const headerBg = resolveElementHeaderBackground(theme, geo.kind);
     const bodyBg = classifierFill(geo, theme);
-    if (headerBg !== undefined && headerBg !== bodyBg) {
+    // `backcolor.equals(headerBackcolor)` (`EntityImageObject.java:199`): `HColorGradient` has no `equals`, and the body
+    // and the header each parsed their own (`ValueImpl.java:92-103`), so a gradient body always splits, unless an inline
+    // back colour made the header that same object (`:174-177`).
+    const inheritedBg =
+      typeof bodyBg !== 'string' && resolveBareOrBackColor(geo.color) === undefined ? bodyBg : undefined;
+    const headerBg = resolveElementHeaderBackground(theme, geo.kind) ?? inheritedBg;
+    if (headerBg !== undefined && (headerBg !== bodyBg || typeof headerBg !== 'string')) {
       body += headerBackgroundPath(geo, theme, roundCorner, headerBg);
     }
   }

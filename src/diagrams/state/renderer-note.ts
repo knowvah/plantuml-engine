@@ -77,7 +77,12 @@ import type { DotLayoutResult } from '../../core/graph-layout.types.js';
 import { path } from '../../core/svg.js';
 import { buildNoteGraphPartsByScope, type NoteSpec } from './state-note-layout.js';
 import { resolveStateFill } from './state-render-colors.js';
-import { STATE_LINK_NOTE_BUCKET, STATE_NOTE_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import {
+  STATE_LINK_NOTE_BUCKET,
+  STATE_NOTE_BUCKET,
+  stateBucketColor,
+  stateBucketPaint,
+} from './state-bucket-colors.js';
 // SI30 T5: notes draw the SAME per-run styled sequence the header/body path
 // draws with -- one emitter, one baseline formula (`renderer-box.ts
 // #runBaseline`'s own doc comment), no per-engine-zone duplication.
@@ -232,10 +237,10 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
  *  style's LineColor (`:108`). The `note` bucket holds the builder's merge of
  *  every selector (`EntityImageNote.java:188-189`); the defaults are the
  *  note's own. */
-function noteInk(node: StateNodeGeo, theme: Theme): { fill: string; stroke: string } {
+function noteInk(node: StateNodeGeo, theme: Theme): { fill: Paint; stroke: Paint } {
   return {
-    fill: resolveStateFill(node, stateBucketColor(theme, STATE_NOTE_BUCKET, 'background') ?? NOTE_FILL),
-    stroke: stateBucketColor(theme, STATE_NOTE_BUCKET, 'border') ?? theme.colors.border,
+    fill: resolveStateFill(node, stateBucketPaint(theme, STATE_NOTE_BUCKET, 'background') ?? NOTE_FILL),
+    stroke: stateBucketPaint(theme, STATE_NOTE_BUCKET, 'border') ?? theme.colors.border,
   };
 }
 
@@ -313,10 +318,10 @@ const ROSE_NOTE_PADDING = 5;
 /** dss T3e site 13: `EntityImageNoteLink.java:64` signs `ComponentType.NOTE`'s `root, element,
  *  sequenceDiagram, note` (`ComponentType.java:98-99`), so `stateDiagram { }` never reaches it; the
  *  `note.link` bucket holds the builder's merge of that signature (`style-element-scope.ts`). */
-function linkNoteInk(theme: Theme): { fill: string; stroke: string } {
+function linkNoteInk(theme: Theme): { fill: Paint; stroke: Paint } {
   return {
-    fill: stateBucketColor(theme, STATE_LINK_NOTE_BUCKET, 'background') ?? NOTE_FILL,
-    stroke: stateBucketColor(theme, STATE_LINK_NOTE_BUCKET, 'border') ?? theme.colors.border,
+    fill: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'background') ?? NOTE_FILL,
+    stroke: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'border') ?? theme.colors.border,
   };
 }
 
@@ -383,7 +388,7 @@ function renderNoteOnLinkTextLines(
   py: number,
   lines: readonly StateTextLine[],
   theme: Theme,
-  back: string,
+  back: Paint,
 ): string {
   const styled = styledLines(lines, NOTE_FONT_SIZE);
   const parts: string[] = [];

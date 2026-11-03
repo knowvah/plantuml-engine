@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+object A
+object B
+A --> B : l
+note left of A: n
+@enduml

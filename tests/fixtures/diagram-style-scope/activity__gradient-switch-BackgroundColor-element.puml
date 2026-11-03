@@ -1,0 +1,18 @@
+@startuml
+<style>
+element { BackgroundColor #0A0-#00A }
+</style>
+start
+switch (s?)
+case (a)
+:H;
+case (b)
+:I;
+endswitch
+split
+:J;
+split again
+:K;
+end split
+end
+@enduml

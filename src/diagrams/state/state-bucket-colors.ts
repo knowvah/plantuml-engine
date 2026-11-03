@@ -6,8 +6,8 @@
  * (`core/style-element-scope.ts`); a bucket is present only where the value
  * parts from the default skin's (D3) or the flat path already held it (D3a).
  * A reader therefore takes the bucket when it is there and keeps its own
- * default otherwise. A gradient `Paint` is unsupported here, as in
- * `state-render-colors.ts` (no state fixture exercises one).
+ * default otherwise. {@link stateBucketPaint} keeps a gradient for a shape whose
+ * driver draws one; {@link stateBucketColor} is the solid read.
  *
  * Buckets, with the Java signature each one mirrors:
  *   circle.start  `EntityImageCircleStart.java:56-58`
@@ -26,6 +26,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleSignatureBasic.java:194-220
  */
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
+import type { Paint } from '../../core/paint.js';
 import { LINK_NOTE_BUCKET, STATE_CHOICE_BUCKET } from '../../core/style-element-scope.js';
 import type { Theme } from '../../core/theme.js';
 
@@ -56,6 +57,20 @@ export const STATE_NAME_BUCKET = 'state.name';
 export const STATE_DESCRIPTION_BUCKET = 'state.description';
 /** `EntityImageStateCommon.getStyleStateBody` (`EntityImageStateCommon.java:94-96`). */
 export const STATE_BODY_BUCKET = 'state.body';
+
+/**
+ * What a bucket holds for `role`, a solid resolved to its SVG colour and a gradient whole
+ * (`DriverRectangleSvg.java:97-111`, `DriverPathSvg.java:64-77`), or `undefined` when the bucket is absent.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleStorage.java:102-116
+ */
+export function stateBucketPaint(
+  theme: Pick<Theme, 'colors'>,
+  bucket: string,
+  role: StateBucketRole,
+): Paint | undefined {
+  const value = theme.colors.elements?.[bucket]?.[role];
+  return typeof value === 'string' ? resolveColorToSvgHex(value) : value;
+}
 
 /**
  * The resolved SVG colour a bucket holds for `role`, or `undefined` when the

@@ -34,11 +34,11 @@ export type NoteTerminator = 'endnote' | 'brace';
 // `note left of link : ...` resolves as on-link, not on-entity with CODE
 // "link" (CODE's bare-identifier alternative would otherwise also match).
 const RE_NOTE_ON_LINK_SINGLE = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b(?:\\s+(#\\w+))?[^:]*:\\s*(.+)$',
+  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b(?:\\s+(#\\w+[-\\\\|/]?\\w+))?[^:]*:\\s*(.+)$',
   'i',
 );
 const RE_NOTE_ON_LINK_OPEN = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+(#\\w+))?\\s*$',
+  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+(#\\w+[-\\\\|/]?\\w+))?\\s*$',
   'i',
 );
 
@@ -57,7 +57,8 @@ const RE_NOTE_FLOATING_OPEN = new RegExp('^note\\s+as\\s+([\\w.]+)\\s*(.*)$', 'i
 // as the fill and `getStyleSignature().withTOBECHANGED(getStereo())` selects the
 // `.tag` style, so both reach the drawn note.
 const NOTE_STEREOTYPE_OPT = '(?:\\s+(<<[^>]+>>))?';
-const NOTE_COLOR_OPT = '(?:\\s+(#\\w+))?';
+// `ColorParser.java:43` `COLOR_REGEXP`: the second half of a gradient carries no `#`.
+const NOTE_COLOR_OPT = '(?:\\s+(#\\w+[-\\\\|/]?\\w+))?';
 const RE_NOTE_ON_ENTITY_SINGLE = new RegExp(
   '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+((?:\\(\\)\\s*)?"[^"]+"|\\(\\)[\\w.]+|\\([^)]+\\)|:[^:]+:|\\[[^\\]]+\\]|[\\w.]+))?' +
     NOTE_STEREOTYPE_OPT +

@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { BackgroundColor #0A0-#00A }
+</style>
+state A <<end>>
+state B <<start>>
+B --> A
+@enduml

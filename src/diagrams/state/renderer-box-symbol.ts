@@ -2,6 +2,7 @@
  * The `<<O-O>>` symbol of a state box (G8), split out of `renderer-box.ts` (500-line cap, dss T3c).
  * `renderer-box.ts` re-exports both functions, so every importer is unchanged.
  */
+import type { Paint } from '../../core/paint.js';
 import { ellipse, line } from '../../core/svg.js';
 import { STATE_BORDER_STROKE_WIDTH } from './state-render-colors.js';
 
@@ -28,7 +29,7 @@ export function isOOSymbolStereotype(stereotype: string | undefined): boolean {
   return stereotype !== undefined && stereotype.toUpperCase() === 'O-O';
 }
 
-export function renderOOSymbol(right: number, bottom: number, fill: string, stroke: string): string {
+export function renderOOSymbol(right: number, bottom: number, fill: Paint, stroke: Paint): string {
   const x = right - (4 * OO_SMALL_RADIUS + OO_SMALL_LINE + OO_SMALL_MARGIN_X);
   const y = bottom - (2 * OO_SMALL_RADIUS + OO_SMALL_MARGIN_Y);
   // `ellipse`'s own paint bag is keyed by the HYPHENATED SVG attribute name

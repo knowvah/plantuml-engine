@@ -9,6 +9,7 @@ import type { TransitionGeo } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import type {} from '../../core/dispatcher.js';
 import { path, text } from '../../core/svg.js';
+import { withContentGradientIds } from '../../core/svg-defs.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { INITIAL_ID, FINAL_ID } from './state-dot-graph.js';
 import {} from './renderer-uid.js';
@@ -19,17 +20,17 @@ import {
   applyHeadTrim,
   buildCircleEndMarkup,
   buildCrossStartMarkup,
+  type TransitionArrowhead,
 } from './renderer-arrowhead.js';
 import {} from './renderer-pseudostate.js';
 import {} from './renderer-box.js';
 import { resolveStateArrowLineColor, resolveStateArrowHeadColor } from './state-render-colors.js';
-import { STATE_ARROW_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import { STATE_ARROW_BUCKET, stateBucketColor, stateBucketPaint } from './state-bucket-colors.js';
 import {} from './renderer-composite-box.js';
 import { renderNoteOnLink } from './renderer-note.js';
 import {} from './state-shadow.js';
 
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
-import { noGradient } from '../../core/paint.js';
 
 /**
  * mission G4 S8 (mechanism 19): `TransitionGeo.points` is a well-formed
@@ -224,8 +225,8 @@ function buildTransitionInnerMarkup(
   // falls back to that same LineColor, for the head. The scoped LineColor
   // (`arrow` bucket) comes first, as it is the builder's merge of every
   // selector; the flat `stateArrow*Color` fields keep their own tiers below.
-  const scopedLine = stateBucketColor(theme, STATE_ARROW_BUCKET, 'border');
-  const flatFallback = noGradient(theme.colors.arrow);
+  const scopedLine = stateBucketPaint(theme, STATE_ARROW_BUCKET, 'border');
+  const flatFallback = theme.colors.arrow;
   const arrowLineColor = scopedLine ?? resolveStateArrowLineColor(theme, flatFallback);
   // dss T3f: a note's `Link` is `LinkType(NONE, NONE).goDashed()`
   // (`CommandFactoryNoteOnEntity.java:342`): no decor, the `DotPath` whole.
@@ -274,7 +275,16 @@ function buildTransitionInnerMarkup(
 
   const labelEl = buildTransitionLabelMarkup(transition, theme);
 
-  return pathEl + crossStartEl + arrowhead.markup + circleEndEl + labelEl;
+  return pathEl + crossStartEl + arrowheadWithDefs(arrowhead) + circleEndEl + labelEl;
+}
+
+/**
+ * One `SvgGraphics` draws all of it upstream (`SvekEdge#drawU`); the extremity's throwaway document numbered its own
+ * gradient, so that def rides inline under its content id (`svg-defs.ts#withContentGradientIds`).
+ */
+function arrowheadWithDefs(arrowhead: TransitionArrowhead): string {
+  const head = withContentGradientIds(arrowhead.extraDefs, arrowhead.markup);
+  return head.defs + head.body;
 }
 
 export function renderTransitionWrapped(

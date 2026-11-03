@@ -235,10 +235,9 @@ export function measureEmptyPackageLeafDim(
 function emptyPackagePaint(
   theme: ScaledTheme,
   tags: readonly string[],
-): { strokeWidth: number; border: string; fill: Paint; dash: string | undefined } {
+): { strokeWidth: number; border: Paint; fill: Paint; dash: string | undefined } {
   const pkg = theme.colors.elements?.package;
-  const plainBorder =
-    typeof pkg?.border === 'string' ? pkg.border : (theme.colors.graph.packageBorder ?? theme.colors.border);
+  const plainBorder = pkg?.border ?? theme.colors.graph.packageBorder ?? theme.colors.border;
   // cdd6 T2a (D2): `style.getStroke(colors)` (`EntityImageEmptyPackage
   // .java:108`) carries the LineStyle dash too; cdd-B8FU scales it with the
   // thickness.
@@ -266,7 +265,7 @@ function emptyPackagePaint(
  */
 function emptyPackageFill(theme: ScaledTheme): Paint {
   const pkg = theme.colors.elements?.package;
-  if (typeof pkg?.background === 'string') return pkg.background;
+  if (pkg?.background !== undefined) return pkg.background;
   return pkg?.backgroundGradient ?? theme.colors.graph.packageBackground ?? theme.colors.graph.classBackground;
 }
 

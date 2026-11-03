@@ -1,0 +1,21 @@
+@startuml
+<style>
+root { LineColor #0A0-#00A }
+</style>
+package Empty {
+}
+class G<T> {
+ +a
+ #b
+ ~c
+ -d
+ +m()
+ #n()
+}
+class L
+class Map1
+Map1 [key] --> G
+G <|-- L
+note "free" as N1
+N1 .. G
+@enduml

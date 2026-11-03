@@ -10,7 +10,7 @@ import type { DiagramType } from './block-extractor.js';
 import type { ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { resolveColor, ELEMENT_BUCKET_SNAMES } from './skinparam.js';
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 import { lineStyleDash } from './style-line-style.js';
 import { isForeignDiagramPrefix } from './style-element-scope.js';
 import { cleanStereotypeToken } from './style-map-tag-cascade.js';
@@ -302,7 +302,7 @@ function collectTitleSubSelector(
 ): void {
   const fc = props.get('fontcolor');
   if (!ELEMENT_BUCKET_SNAMES.has(sname) || fc === undefined) return;
-  elements[sname] = { ...elements[sname], titleFont: parseColor(fc) };
+  elements[sname] = { ...elements[sname], titleFont: noGradient(parseColor(fc)) };
 }
 
 /**
@@ -379,7 +379,7 @@ export function collectElementStyleBuckets(
       const lc = props.get('linecolor');
       if (lc !== undefined && !foreign) bucket.border = parseColor(lc);
       const fc = props.get('fontcolor');
-      if (fc !== undefined && !foreign) bucket.font = parseColor(fc);
+      if (fc !== undefined && !foreign) bucket.font = noGradient(parseColor(fc));
       const lt = props.get('linethickness');
       if (lt !== undefined) {
         const thickness = Number.parseFloat(lt);
@@ -457,7 +457,7 @@ export function collectElementStyleBuckets(
       const bg = props.get('backgroundcolor');
       if (bg !== undefined) bucket.headerBackground = parseColor(bg);
       const fc = props.get('fontcolor');
-      if (fc !== undefined) bucket.headerFont = parseColor(fc);
+      if (fc !== undefined) bucket.headerFont = noGradient(parseColor(fc));
       const fs = props.get('fontsize');
       if (fs !== undefined) {
         const size = Number(fs);

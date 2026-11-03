@@ -1,0 +1,7 @@
+@startuml
+object O #0A0-00A
+map M #0A0-00A {
+ k => v
+}
+O --> M
+@enduml

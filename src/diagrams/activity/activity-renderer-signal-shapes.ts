@@ -39,7 +39,7 @@ interface Outline {
   readonly y: number;
   readonly w: number;
   readonly h: number;
-  readonly paint: { readonly fill: Paint; readonly stroke: string; readonly strokeWidth: number };
+  readonly paint: { readonly fill: Paint; readonly stroke: Paint; readonly strokeWidth: number };
 }
 
 type Pt = readonly [number, number];

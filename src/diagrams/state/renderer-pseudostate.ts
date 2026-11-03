@@ -33,6 +33,7 @@ import {
   STATE_CIRCLE_START_BUCKET,
   STATE_HISTORY_BUCKET,
   stateBucketColor,
+  stateBucketPaint,
 } from './state-bucket-colors.js';
 
 /** `CircleStart`/`CircleEnd`'s own default fill+stroke — distinct from the
@@ -68,9 +69,9 @@ export function renderInitial(node: StateNodeGeo, theme: Theme): string {
   // BackGroundColor and LineColor (`EntityImageCircleStart.java:56-58`).
   const fill = resolveStateFill(
     node,
-    stateBucketColor(theme, STATE_CIRCLE_START_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
+    stateBucketPaint(theme, STATE_CIRCLE_START_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
   );
-  const stroke = stateBucketColor(theme, STATE_CIRCLE_START_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
+  const stroke = stateBucketPaint(theme, STATE_CIRCLE_START_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
   return ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': 1 });
 }
 
@@ -89,9 +90,9 @@ export function renderFinal(node: StateNodeGeo, theme: Theme): string {
   // (`EntityImageCircleEnd.java:57-59`).
   const fill = resolveStateFill(
     node,
-    stateBucketColor(theme, STATE_CIRCLE_END_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
+    stateBucketPaint(theme, STATE_CIRCLE_END_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
   );
-  const stroke = stateBucketColor(theme, STATE_CIRCLE_END_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
+  const stroke = stateBucketPaint(theme, STATE_CIRCLE_END_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
   return (
     ellipse(cx, cy, outerR, outerR, { fill: 'none', stroke, 'stroke-width': 1 }) +
     ellipse(cx, cy, innerR, innerR, { fill, stroke, 'stroke-width': 1 })
@@ -118,7 +119,7 @@ export function renderForkJoin(node: StateNodeGeo, theme: Theme): string {
   // `.fork`/`.join` stereotype selectors (priority +1000) stay above it.
   const fill = resolveStateFill(
     node,
-    bucketDefault ?? stateBucketColor(theme, STATE_ACTIVITY_BAR_BUCKET, 'background') ?? SYNCHRO_BAR_COLOR,
+    bucketDefault ?? stateBucketPaint(theme, STATE_ACTIVITY_BAR_BUCKET, 'background') ?? SYNCHRO_BAR_COLOR,
   );
   return rect(node.x, node.y, node.width, node.height, { fill, stroke: 'none', strokeWidth: 1 });
 }
@@ -136,8 +137,8 @@ export function renderChoiceJunction(node: StateNodeGeo, theme: Theme): string {
   // dss T3c: `EntityImageBranch.java:62-63,77-82` reads the `activityDiagram,
   // activity, diamond` style and no inline colour (jar: `state C <<choice>>
   // #red` draws `#F1F1F1`), so the `state` bucket and `node.color` are not read.
-  const fill = stateBucketColor(theme, STATE_CHOICE_DIAMOND_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
-  const stroke = stateBucketColor(theme, STATE_CHOICE_DIAMOND_BUCKET, 'border') ?? theme.colors.border;
+  const fill = stateBucketPaint(theme, STATE_CHOICE_DIAMOND_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
+  const stroke = stateBucketPaint(theme, STATE_CHOICE_DIAMOND_BUCKET, 'border') ?? theme.colors.border;
   const markup = diamond(cx, cy, size, {
     fill,
     stroke,
@@ -190,8 +191,8 @@ export function renderHistory(node: StateNodeGeo, theme: Theme): string {
   const r = node.width / 2;
   // dss T3e sites 15-17: `EntityImagePseudoState.java:70-71,87-97` reads the `root, element,
   // stateDiagram, diamond` style for fill, stroke and text, and no inline colour.
-  const fill = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
-  const stroke = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'border') ?? theme.colors.border;
+  const fill = stateBucketPaint(theme, STATE_HISTORY_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
+  const stroke = stateBucketPaint(theme, STATE_HISTORY_BUCKET, 'border') ?? theme.colors.border;
   const textFill = stateBucketColor(theme, STATE_HISTORY_BUCKET, 'font') ?? DEFAULT_HISTORY_TEXT;
   const shape = ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': STATE_BORDER_STROKE_WIDTH });
   const label = node.headerLines?.[0];

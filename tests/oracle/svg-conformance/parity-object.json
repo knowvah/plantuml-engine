@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T07:38:19.057Z",
+  "generatedAt": "2026-11-03T09:57:04.343Z",
   "fixtures": [
     {
       "slug": "baloca-83-nadu916",
@@ -276,9 +276,9 @@
         "detail": "page 1: jar 0,0,209.40311200000002,345.00009600000004 vs ours 0,0,217.712492,347.99990399999996"
       },
       "verdict": "diverged",
-      "maxDelta": 8.65300000000002,
+      "maxDelta": 8.653999999999996,
       "firstDiff": "svg/g[1]/g[1]/text[1]/@font-size",
-      "maxDeltaPath": "svg/g[1]/g[1]/line[1]/@x2"
+      "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[9]"
     },
     {
       "slug": "majake-62-pero492",

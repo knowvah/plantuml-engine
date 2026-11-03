@@ -5,7 +5,7 @@
  * reason). Pure move, zero behavior change.
  */
 import type { ScaledTheme } from './class-scale-geo.js';
-import type { Paint } from '../../core/paint.js';
+import { parseColor, type Paint } from '../../core/paint.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { splitStereotypeStyleTags } from './class-stereotype.js';
@@ -35,7 +35,11 @@ export function resolveNoteBackground(
   stereotype?: string,
 ): Paint {
   const override = resolveBareOrBackColor(color);
-  if (override !== undefined) return resolveColorToSvgHex(override);
+  if (override !== undefined) {
+    // `EntityImageNote.java:103-106`: `HColorSet` splits an inline `#a-b` too (`HColorSet.java:109-116`).
+    const inline = parseColor(override);
+    return typeof inline === 'string' ? resolveColorToSvgHex(inline) : inline;
+  }
   const tagBackground = resolveNoteTagBackground(theme, stereotype);
   if (tagBackground !== undefined) return tagBackground;
   const bucket = theme.colors.elements?.['note']?.background;

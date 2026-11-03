@@ -8,6 +8,8 @@
  * imports them back, unchanged for its own callers. Pure move, zero
  * behavior change.
  */
+import { CLASS_GENERIC_BUCKET } from '../../core/style-element-scope.js';
+import { elementGradient } from '../../core/theme-element-resolve.js';
 import { CLASS_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
 import type { ClassifierGeo } from './layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
@@ -235,12 +237,20 @@ const GENERIC_TAG_BACKGROUND = '#FFFFFF';
 /** T11 (cdd3, Q-4): {@link renderGenericTag}'s fill/border cascade -- split
  *  out purely to keep that function's own NLOC under this project's cap. */
 function genericTagPaint(theme: ScaledTheme): { fill: Paint; stroke: Paint } {
+  return {
+    fill: elementGradient(theme, CLASS_GENERIC_BUCKET, 'background') ?? genericTagFlatFill(theme),
+    stroke:
+      elementGradient(theme, CLASS_GENERIC_BUCKET, 'border') ??
+      theme.colors.graph.genericCascadeBorder ??
+      theme.colors.border,
+  };
+}
+
+/** {@link genericTagPaint}'s fill below the gradient bucket: the `<style>` cascade, an explicit `classBackgroundColor`, white. */
+function genericTagFlatFill(theme: ScaledTheme): Paint {
   const g = theme.colors.graph;
   const explicitClassBackground = g.classBackgroundExplicit === true ? g.classBackground : undefined;
-  return {
-    fill: g.genericCascadeBackground ?? explicitClassBackground ?? GENERIC_TAG_BACKGROUND,
-    stroke: g.genericCascadeBorder ?? theme.colors.border,
-  };
+  return g.genericCascadeBackground ?? explicitClassBackground ?? GENERIC_TAG_BACKGROUND;
 }
 
 export function renderGenericTag(

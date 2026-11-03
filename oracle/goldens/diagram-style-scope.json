@@ -72,6 +72,250 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__default-font-x-shapes": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__default-font-x-swimlane": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__default-font-x-transparent": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-BackgroundColor-activity": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-FontColor-activity": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-LineColor-activity": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-flow-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-flow-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-flow-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-flow-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-loop-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-merge-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-swimlane-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-switch-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-tiles-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-tiles-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-tiles-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-box-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-font": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-frames-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-note-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-sep-bs": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-sep-pipe": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-sep-slash": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-skin": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__gradient-x-swimlane-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__inline-if-bold": {
       "conformant": true,
       "diffCount": 0
@@ -239,6 +483,122 @@
     "activity__loops-none": {
       "conformant": false,
       "diffCount": 311
+    },
+    "activity__merge-activity": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-activity-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-arrow-font": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-cascade": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-diamond": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-empty": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-group": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-if": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-killed": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-label": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-repeat": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-first-while": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-fork-label": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-kill": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-lanes": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-root-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-activity-back": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-activity-border": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-diamond-back": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-diamond-border": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-skin-head": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-split": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-thickness": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-three": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__merge-transparent": {
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__probe-all": {
       "conformant": true,
@@ -440,6 +800,34 @@
       "conformant": true,
       "diffCount": 0
     },
+    "class__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-x-frames": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-x-order-a": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-x-order-b": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__default-font-x-transparent": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "class__element-order-aba": {
       "conformant": true,
       "diffCount": 0
@@ -501,6 +889,142 @@
       "diffCount": 0
     },
     "class__generic-none": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-BackgroundColor-class": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-FontColor-class": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-LineColor-class": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-frames-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-frames-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-frames-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-kinds-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-members-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-members-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-members-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-font": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-sep-bs": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-sep-pipe": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-sep-slash": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-skin": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__gradient-x-spot": {
       "conformant": true,
       "diffCount": 0
     },
@@ -1004,6 +1528,154 @@
       "conformant": true,
       "diffCount": 0
     },
+    "component__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-x-frames": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-x-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-x-order-a": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-x-order-b": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__default-font-x-transparent": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-BackgroundColor-component": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-FontColor-component": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-LineColor-component": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-frames-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-frames-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-frames-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-kinds-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-symbols-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-symbols-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-symbols-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-x-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__gradient-x-skin": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "component__links-bg-diag": {
       "conformant": true,
       "diffCount": 0
@@ -1464,6 +2136,106 @@
       "conformant": true,
       "diffCount": 0
     },
+    "object__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-BackgroundColor-object": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-FontColor-object": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-LineColor-object": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-kinds-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__gradient-x-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "object__kinds-bg-classdiag": {
       "conformant": true,
       "diffCount": 0
@@ -1637,6 +2409,18 @@
       "diffCount": 0
     },
     "sequence__d3-theme-unrelated": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__default-font-dt": {
       "conformant": true,
       "diffCount": 0
     },
@@ -1988,6 +2772,50 @@
       "conformant": true,
       "diffCount": 0
     },
+    "state__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-composite": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-gradient": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-history": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-order-a": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-order-b": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-stereo": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-transparent": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__default-font-x-transparent-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "state__flatnote-bg-diag": {
       "conformant": true,
       "diffCount": 0
@@ -2025,6 +2853,146 @@
       "diffCount": 0
     },
     "state__flatnote-none": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-BackgroundColor-state": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-FontColor-state": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-LineColor-state": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-concurrent-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-pseudo-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-pseudo-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-pseudo-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-shapes-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-x-inline": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-x-sep-bs": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-x-sep-pipe": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-x-sep-slash": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__gradient-x-skin": {
       "conformant": true,
       "diffCount": 0
     },
@@ -2317,6 +3285,78 @@
       "diffCount": 0
     },
     "usecase__d5-usecasediag": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__default-font-d": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__default-font-ds": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-BackgroundColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-BackgroundColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-BackgroundColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-BackgroundColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-BackgroundColor-usecase": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-FontColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-FontColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-FontColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-FontColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-FontColor-usecase": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-LineColor-arrow": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-LineColor-element": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-LineColor-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-LineColor-root": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__gradient-LineColor-usecase": {
       "conformant": true,
       "diffCount": 0
     },

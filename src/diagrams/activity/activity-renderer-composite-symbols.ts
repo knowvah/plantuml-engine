@@ -38,7 +38,7 @@ const CARD_TOP_EXTRA = 4;
 /** The stroke/fill every symbol draws with (`Fashion`, `FtileGroup.java:213-214`). */
 export interface CompositeInk {
   readonly fill: Paint;
-  readonly stroke: string;
+  readonly stroke: Paint;
   readonly strokeWidth: number;
   /** The style's RAW `RoundCorner` (`FtileGroup.java:103`); `rx`/`ry` are
    *  each half (`URectangle#rounded`). Drawn by `card`/`rectangle` only. */

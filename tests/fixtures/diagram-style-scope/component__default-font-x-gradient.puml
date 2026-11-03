@@ -1,0 +1,6 @@
+@startuml
+skinparam defaultFontColor #0A0-#00A
+component C
+C --> C : l
+note left of C : n
+@enduml

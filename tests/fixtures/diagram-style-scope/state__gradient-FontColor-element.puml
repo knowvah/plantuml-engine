@@ -1,0 +1,9 @@
+@startuml
+<style>
+element { FontColor #0A0-#00A }
+</style>
+state A
+state B
+A --> B : l
+note left of A: n
+@enduml

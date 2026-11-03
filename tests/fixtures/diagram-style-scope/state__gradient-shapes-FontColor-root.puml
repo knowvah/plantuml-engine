@@ -1,0 +1,27 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+state A {
+ state A1
+ A1 : body
+}
+state B
+B : desc
+state C <<choice>>
+state F <<fork>>
+state J <<join>>
+state H {
+ [H] --> H1
+ state H1
+}
+[*] --> A
+A --> B : l
+B --> C
+C --> F
+F --> J
+J --> H
+H --> [*]
+note left of B : n
+note on link : m
+@enduml

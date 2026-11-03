@@ -1,0 +1,12 @@
+@startuml
+skinparam defaultFontColor #0A0
+title T
+caption C
+start
+:A;
+if (x?) then (y)
+:B;
+endif
+note left: n
+stop
+@enduml

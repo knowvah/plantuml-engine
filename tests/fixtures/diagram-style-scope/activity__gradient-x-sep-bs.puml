@@ -1,0 +1,11 @@
+@startuml
+<style>
+root { LineColor #0A0\#00A
+ BackgroundColor #0A0\#00A
+ FontColor #0A0\#00A }
+</style>
+start
+:A;
+note right : n
+stop
+@enduml

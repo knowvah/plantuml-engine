@@ -1168,7 +1168,7 @@ describe('routing conformance — jar-error classification', () => {
     // 8234 -> 8247 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml).
     // 8247 -> 8248 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095).
     // 8248 -> 8249 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
-    expect(pinnedAgree.length).toBe(8273);
+    expect(pinnedAgree.length).toBe(8275);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     expect(pinnedMisroutes.length).toBe(374);
@@ -1218,7 +1218,7 @@ describe('routing conformance — jar-error classification', () => {
     // 8694 -> 8707 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml promoted).
     // 8707 -> 8708 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095 promoted, T2a).
     // 8708 -> 8709 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
-    expect(manifest.fixtures.length).toBe(8733);
+    expect(manifest.fixtures.length).toBe(8735);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

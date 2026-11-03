@@ -18,7 +18,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageState.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/RoundedContainer.java
  */
-import { isTransparentColor } from '../../core/paint.js';
+import { isTransparentColor, type Paint } from '../../core/paint.js';
 import { roundedBottomRectD, roundedTopRectD } from '../../core/svg-path-builder.js';
 import { line, path, rect } from '../../core/svg.js';
 import type { Theme } from '../../core/theme.js';
@@ -34,28 +34,41 @@ import { stateShadowFilterUrl } from './state-shadow.js';
 
 /** The two zone fills of a leaf. */
 export interface LeafZoneFills {
-  readonly north: string;
-  readonly south: string;
+  readonly north: Paint;
+  readonly south: Paint;
 }
 
 /**
  * The `name` and `description` fills, or `undefined` when they are equal (the single-shape branch).
  * No `color`: the zones read the style alone (`EntityImageState.java:131-132`).
+ *
+ * Two gradients are never equal (`EntityImageState.java:141`): `HColorGradient` declares no `equals`
+ * (`HColorSimple.java:85` is the only one), and `ValueImpl#asColor` (`ValueImpl.java:92-103`) parses a new one per read
+ * (`HColorSet.java:109-116`). So a gradient state always takes `RoundedContainer`, identical stops included.
  */
 export function resolveLeafZoneFills(node: Pick<StateNodeGeo, 'stereotype'>, theme: Theme): LeafZoneFills | undefined {
   const styleOnly = node.stereotype === undefined ? {} : { stereotype: node.stereotype };
   const north = resolveStateFillBucketed(styleOnly, theme, STATE_DEFAULT_BACKGROUND, STATE_NAME_BUCKET);
   const south = resolveStateFillBucketed(styleOnly, theme, STATE_DEFAULT_BACKGROUND, STATE_DESCRIPTION_BUCKET);
-  return north === south ? undefined : { north, south };
+  return typeof north === 'string' && north === south ? undefined : { north, south };
 }
 
 /** What {@link renderZonedLeafBox} draws with. */
 export interface ZonedLeafGeometry {
   readonly zones: LeafZoneFills;
-  readonly border: string;
+  readonly border: Paint;
   readonly radius: number;
   /** The y of the name/description divider (`yLine`, `EntityImageState.java:125`). */
   readonly dividerY: number;
+}
+
+/**
+ * `RoundedNorth#drawU` / `RoundedSouth#drawU`: `ug.apply(UStroke.simple()).apply(backColor).apply(backColor.bg())`
+ * (`RoundedNorth.java:84`). A solid strokes nothing (`DriverPathSvg.java:65-69`, equal colours); a gradient strokes itself.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/RoundedNorth.java:84
+ */
+export function roundedZone(d: string, back: Paint): string {
+  return typeof back === 'string' ? path(d, { fill: back }) : path(d, { fill: back, stroke: back, strokeWidth: 1 });
 }
 
 /**
@@ -78,8 +91,8 @@ export function renderZonedLeafBox(node: StateNodeGeo, geometry: ZonedLeafGeomet
       : '';
   return (
     shadow +
-    path(roundedTopRectD(node.x, node.y, x1, dividerY, radius), { fill: zones.north }) +
-    path(roundedBottomRectD(node.x, dividerY, x1, y1, radius), { fill: zones.south }) +
+    roundedZone(roundedTopRectD(node.x, node.y, x1, dividerY, radius), zones.north) +
+    roundedZone(roundedBottomRectD(node.x, dividerY, x1, y1, radius), zones.south) +
     rect(node.x, node.y, node.width, node.height, { fill: 'none', ...outline }) +
     line(node.x, dividerY, x1, dividerY, { stroke: border, strokeWidth: STATE_BORDER_STROKE_WIDTH })
   );

@@ -1,0 +1,28 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+node N {
+ [A]
+}
+folder F {
+ [B]
+}
+frame Fr {
+ [C]
+}
+cloud Cl {
+ [D]
+}
+database Db {
+ [E]
+}
+rectangle Re {
+ [G]
+}
+A --> B
+B --> C
+C --> D
+D --> E
+E --> G
+@enduml

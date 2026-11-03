@@ -1,0 +1,10 @@
+@startuml
+skinparam defaultFontColor #0A0
+<style>
+root { FontColor #00A }
+</style>
+state A
+state B
+A --> B : l
+note left of A: n
+@enduml

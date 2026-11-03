@@ -34,7 +34,7 @@ import { renderState } from '../../../src/diagrams/state/renderer.js';
 import { isEmpty } from '../../../src/core/annotations/index.js';
 import { applyExportedChrome } from '../../../src/core/annotations/chrome-export.js';
 import { resolveAnnotationStyles } from '../../../src/core/annotations/style.js';
-import { assembleSvg } from '../../../src/index.js';
+import { assembleSvg, seedOfUmlSource } from '../../../src/core/assemble-svg.js';
 
 /** `renderFixtureState`'s own options bag: `PreprocessOptions` (forwarded to
  *  `buildBlockUmls`) UNION `ParseOptions` (`assetStore`, forwarded to
@@ -66,12 +66,21 @@ export function renderFixtureState(markup: string, measurer: StringMeasurer, opt
   const geo = layoutState(ast, theme, measurer);
   const fragment = renderState(geo, theme);
 
+  // dss: a state gradient mints ids from `UmlSource#seed()`, so this mirrors
+  // `index.ts#prepareBlock`'s seed as `render-fixture-activity.ts` does
+  // (`SvgGraphics.java:160-162`); without it a jar-identical def differs by id.
+  const seed = seedOfUmlSource({
+    lines: first.source.lines,
+    rawSourceLines: first.rawSource.map((s) => s.getString()),
+    seedSourceLines: first.seedSource,
+  });
+
   const annotations = ast.annotations;
-  if (annotations === undefined || isEmpty(annotations)) return assembleSvg(fragment);
+  if (annotations === undefined || isEmpty(annotations)) return assembleSvg(fragment, seed);
 
   const styles = resolveAnnotationStyles(theme, preprocessed, styleMap);
   // lgm-T1c: the SAME `applyExportedChrome` `src/index.ts` calls -- state now
   // declares its margin-less block, so chrome composes before the margin.
   const chromed = applyExportedChrome(fragment, annotations, styles, measurer, ast.sprites);
-  return assembleSvg(chromed);
+  return assembleSvg(chromed, seed);
 }

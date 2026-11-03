@@ -22,6 +22,8 @@ import { Fore } from '../../core/klimt/Fore.js';
 import { Back } from '../../core/klimt/Back.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 import type { Paint } from '../../core/paint.js';
+import { CLASS_QUALIFIED_BUCKET } from '../../core/style-element-scope.js';
+import { elementGradient } from '../../core/theme-element-resolve.js';
 import { buildDotPathFromSplinePoints } from '../../core/svek/svek-edge-geometry.js';
 import { extractFlatContent } from '../../core/klimt/document-shell.js';
 import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
@@ -302,10 +304,7 @@ export function renderEdgeCardinalityLabels(geo: EdgeGeo, theme: ScaledTheme, me
 export function renderEdgeKalBoxes(geo: EdgeGeo, theme: ScaledTheme): string {
   const k = geo.kalBox;
   if (k === undefined) return '';
-  const g = theme.colors.graph;
-  const fill = g.classCascadeQualifiedBackground ?? g.classCascadeBackground ?? g.classBackground;
-  const stroke = g.classCascadeQualifiedBorder ?? g.classCascadeBorder ?? g.classBorder ?? theme.colors.border;
-  const fontColor = g.classCascadeQualifiedFontColor ?? g.classCascadeFontColor ?? '#000000';
+  const { fill, stroke, fontColor } = kalInk(theme);
   const parts: string[] = [];
   for (const box of [k.start, k.end]) {
     if (box === undefined) continue;
@@ -323,6 +322,40 @@ export function renderEdgeKalBoxes(geo: EdgeGeo, theme: ScaledTheme): string {
     );
   }
   return parts.join('');
+}
+
+/**
+ * `Kal.java:93-99,138-139`: the three colours of one merged `class.qualified` style.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Kal.java:93-99
+ */
+function kalInk(theme: ScaledTheme): { fill: Paint; stroke: Paint; fontColor: string } {
+  const g = theme.colors.graph;
+  return {
+    fill: kalFill(theme),
+    stroke: kalStroke(theme),
+    fontColor: g.classCascadeQualifiedFontColor ?? g.classCascadeFontColor ?? '#000000',
+  };
+}
+
+function kalFill(theme: ScaledTheme): Paint {
+  const g = theme.colors.graph;
+  return (
+    elementGradient(theme, CLASS_QUALIFIED_BUCKET, 'background') ??
+    g.classCascadeQualifiedBackground ??
+    g.classCascadeBackground ??
+    g.classBackground
+  );
+}
+
+function kalStroke(theme: ScaledTheme): Paint {
+  const g = theme.colors.graph;
+  return (
+    elementGradient(theme, CLASS_QUALIFIED_BUCKET, 'border') ??
+    g.classCascadeQualifiedBorder ??
+    g.classCascadeBorder ??
+    g.classBorder ??
+    theme.colors.border
+  );
 }
 
 /** {@link renderEdgeDotPath}'s stroke inputs: the colour and the

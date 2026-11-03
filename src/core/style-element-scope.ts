@@ -19,9 +19,9 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleSignatureBasic.java:194-220
  */
 import type { DiagramType } from './block-extractor.js';
-import { documentStyleBuilder, isDark, styleNameOf } from './document-back-color.js';
+import { defaultFontStyleBuilder, documentStyleBuilder, isDark, styleNameOf } from './document-back-color.js';
 import { parseConditionalColor } from './klimt/color/HColorSet.js';
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { buildMindmapStyleBuilder } from './style/mindmap-style-builder.js';
 import type { PName } from './style/PName.js';
@@ -117,6 +117,12 @@ function visibilityIconRows(): ElementSignature[] {
 
 /** A note on a link: `ComponentType.NOTE`'s `sequenceDiagram` signature, not the document's (D2a). */
 export const LINK_NOTE_BUCKET = 'note.link';
+
+/** A class's `<T>` box: its gradient colours, which the flat `genericCascade*` fields cannot hold (D2a). @see svek/image/EntityImageClassHeader.java:138-139 */
+export const CLASS_GENERIC_BUCKET = 'class.generic';
+
+/** A link's `[key]` box: its gradient colours, which the flat `classCascadeQualified*` fields cannot hold (D2a). @see svek/Kal.java:93-94 */
+export const CLASS_QUALIFIED_BUCKET = 'class.qualified';
 
 /** State's `<<choice>>`: `EntityImageBranch`'s `activityDiagram` signature; `diamond` is its history (D2a). */
 export const STATE_CHOICE_BUCKET = 'activity.diamond';
@@ -250,6 +256,8 @@ function classRows(): ElementSignature[] {
     ...SPOT_ROWS,
     { bucket: 'class', snames: [...RE, diagram, 'class_'] }, // EntityImageClass.java:162-163
     { bucket: 'class.header', snames: [...RE, diagram, 'class_', 'header'], shadows: 'class' }, // EntityImageClassHeader.java:79-80
+    { bucket: CLASS_GENERIC_BUCKET, snames: [...RE, diagram, 'class_', 'generic'] }, // EntityImageClassHeader.java:138-139
+    { bucket: CLASS_QUALIFIED_BUCKET, snames: [...RE, diagram, 'class_', 'qualified'] }, // Kal.java:93-94
     { bucket: 'object', snames: [...RE, 'objectDiagram', 'object'] }, // EntityImageObject.java:123-124
     { bucket: 'map', snames: [...RE, 'objectDiagram', 'map'] }, // EntityImageMap.java:137-138
     { bucket: 'json', snames: [...RE, 'objectDiagram', 'json'] }, // EntityImageJson.java:139-140
@@ -373,6 +381,10 @@ interface ScopeRead {
  *
  * A conditional `#?light:dark` is not written, as `build-theme.ts#rootCascadeSkinparams`: `HColorScheme` answers per
  * drawn element, against what it paints on (`HColorScheme.java:52-63`), and a bucket would print the raw token.
+ *
+ * A gradient `FontColor` is written as its first colour: every reader of `font` draws text or a centred glyph, and both
+ * drivers print `toSvg`, which is `color1` (`DriverTextSvg.java:178`, `DriverCenteredCharacterSvg.java:64-79`,
+ * `HColorGradient.java:103-105`). `BackGroundColor` and `LineColor` stay whole: the driver of each shape decides.
  */
 function roleColor(
   read: ScopeRead,
@@ -387,7 +399,12 @@ function roleColor(
   const untouched = signature.getMergedStyle(read.defaultBuilder)?.value(ROLE_PNAMES[role]);
   const isDefault = value?.toString() === untouched?.toString();
   if (isDefault && (read.keepDefault || !heldByFlat(row, role, read.flat, out))) return undefined;
-  return parseColor(raw);
+  return writtenColor(role, raw);
+}
+
+/** A bucket's colour: a gradient stays whole for its shape's driver, but text prints the first colour (see {@link roleColor}). */
+function writtenColor(role: keyof typeof ROLE_PNAMES, raw: string): ElementColors['background'] {
+  return role === 'font' ? noGradient(parseColor(raw)) : parseColor(raw);
 }
 
 /** The value's string, unless it has none (`ValueNull`, a dark-only value) or is conditional (see {@link roleColor}). */
@@ -402,6 +419,7 @@ const ROLE_PNAMES: Readonly<Record<Exclude<keyof ElementScopeColors, 'titleFont'
   font: 'FontColor',
 };
 const ROLES = Object.keys(ROLE_PNAMES) as readonly (keyof typeof ROLE_PNAMES)[];
+const FONT_ROLE: readonly (keyof typeof ROLE_PNAMES)[] = ['font'];
 
 /**
  * A description leaf's `fcTitle` (`EntityImageDescription.java:172,187-188`), written only where it parts from
@@ -419,7 +437,7 @@ function titleFontOf(read: ScopeRead, row: ElementSignature): ElementColors['tit
   const raw = writableColor(title);
   if (raw === undefined) return undefined;
   const parted = title?.toString() !== plain?.toString();
-  return parted || read.flat?.[row.bucket]?.titleFont !== undefined ? parseColor(raw) : undefined;
+  return parted || read.flat?.[row.bucket]?.titleFont !== undefined ? noGradient(parseColor(raw)) : undefined;
 }
 
 /**
@@ -433,7 +451,9 @@ export function elementScopeColors(
   flat?: Partial<Record<string, ElementColors>>,
   options: ElementScopeOptions = {},
 ): Partial<Record<string, ElementScopeColors>> {
-  const builder = options.builder ?? documentStyleBuilder(pre);
+  const documentBuilder = options.builder ?? documentStyleBuilder(pre);
+  // D3b leaves such a document's two other roles on the flat path; only `root { FontColor }` needs the signatures.
+  const builder = documentBuilder ?? defaultFontStyleBuilder(pre);
   const rows = signaturesOf(diagramType);
   if (builder === undefined || rows.length === 0) return {};
   const read: ScopeRead = {
@@ -442,9 +462,18 @@ export function elementScopeColors(
     keepDefault: options.callerNamedTheme === true || isDark(pre),
     flat,
   };
+  return colorsOfRows(read, rows, documentBuilder === undefined ? FONT_ROLE : ROLES);
+}
+
+/** {@link elementScopeColors}'s walk: `roles`, then the title font, of each row in table order (a later row reads an earlier one, {@link heldByFlat}). */
+function colorsOfRows(
+  read: ScopeRead,
+  rows: readonly ElementSignature[],
+  roles: readonly (keyof typeof ROLE_PNAMES)[],
+): Partial<Record<string, ElementScopeColors>> {
   const out: Partial<Record<string, ElementScopeColors>> = {};
   for (const row of rows) {
-    for (const role of ROLES) {
+    for (const role of roles) {
       const color = roleColor(read, row, role, out);
       if (color !== undefined) out[row.bucket] = { ...out[row.bucket], [role]: color };
     }

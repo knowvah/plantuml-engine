@@ -1,0 +1,15 @@
+@startuml
+start
+fork <<#0A0-00A>>
+:B;
+fork again
+:C;
+end fork
+group G #0A0-00A
+:D;
+end group
+partition P #0A0-00A {
+:E;
+}
+stop
+@enduml

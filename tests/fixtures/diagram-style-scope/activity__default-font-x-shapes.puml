@@ -1,0 +1,17 @@
+@startuml
+skinparam defaultFontColor #0A0
+start
+partition P {
+:A;
+}
+if (x?) then (y)
+:B;
+note left: n
+endif
+fork
+:C;
+fork again
+:D;
+end fork
+stop
+@enduml

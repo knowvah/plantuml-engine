@@ -81,8 +81,9 @@
  */
 import { roundedBottomRectD, roundedTopRectD } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
+import type { Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
-import { rect, line, text, path } from '../../core/svg.js';
+import { rect, line, text } from '../../core/svg.js';
 // G1/G8/G23: one engine, one text/table/symbol emitter -- see
 // `renderer-box.ts`'s own doc comments for each.
 import { renderStateTextLines, renderOOSymbol, isOOSymbolStereotype } from './renderer-box.js';
@@ -97,6 +98,7 @@ import {
   resolveStateBoxRadius,
   textAscent,
 } from './state-render-colors.js';
+import { roundedZone } from './renderer-box-zones.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
 import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
 
@@ -123,13 +125,12 @@ function compositeHeaderPath(
   y0: number,
   width: number,
   headerHeight: number,
-  fill: string,
+  fill: Paint,
   r: number,
 ): string {
   const x1 = x0 + width;
   const y1 = y0 + headerHeight;
-  const d = roundedTopRectD(x0, y0, x1, y1, r);
-  return path(d, { fill });
+  return roundedZone(roundedTopRectD(x0, y0, x1, y1, r), fill);
 }
 
 /** G5 C3, mechanism 16 shape half: the BOTTOM-half mirror of
@@ -151,14 +152,13 @@ function compositeBodyPath(
   width: number,
   height: number,
   headerHeight: number,
-  fill: string,
+  fill: Paint,
   r: number,
 ): string {
   const x1 = x0 + width;
   const yTop = y0 + headerHeight;
   const y1 = y0 + height;
-  const d = roundedBottomRectD(x0, yTop, x1, y1, r);
-  return path(d, { fill });
+  return roundedZone(roundedBottomRectD(x0, yTop, x1, y1, r), fill);
 }
 
 /** G1/G23: the composite box draws the SAME styled runs / creole table the
@@ -226,7 +226,7 @@ function buildCoreLayers(
   title: string;
   dividerY1: number;
   ascent: number;
-  fill: string;
+  fill: Paint;
   fontColor: string;
 } {
   const headerLines = node.headerLines!;

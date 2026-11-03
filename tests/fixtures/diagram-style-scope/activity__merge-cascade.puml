@@ -1,0 +1,12 @@
+@startuml
+<style>
+activityDiagram { activity { LineColor #0AA } arrow { LineColor #AB0 } diamond { LineColor #A50 } }
+</style>
+start
+fork
+:a;
+fork again
+:b;
+end merge
+stop
+@enduml

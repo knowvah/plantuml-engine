@@ -433,13 +433,10 @@ describe('swimlane title & border resolvers (T2, D4)', () => {
     expect(swimlaneTitleFontColor(theme)).toBe('#0000FF');
   });
 
-  it('a Gradient bucket Paint is not a solid colour and falls through to the constant', () => {
-    // No corpus fixture sets a gradient LineColor/FontColor on a swimlane;
-    // the bucket's `border`/`font` roles carry the shared `Paint` type
-    // (string | Gradient), so a Gradient value must not crash the resolver.
+  it('a lane divider is a ULine, so a gradient LineColor draws its first colour (DriverLineSvg.java:76-82)', () => {
     const theme = themeWithBucket('swimlane', {});
     theme.colors.elements!.swimlane = { border: { color1: '#FFF', color2: '#000', policy: '-' } };
-    expect(swimlaneBorderColor(theme)).toBe(SWIMLANE_BORDER_COLOR);
+    expect(swimlaneBorderColor(theme)).toBe('#FFFFFF');
   });
 });
 

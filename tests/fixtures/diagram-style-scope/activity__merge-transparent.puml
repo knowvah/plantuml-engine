@@ -1,0 +1,14 @@
+@startuml
+<style>
+activity { LineColor transparent ; BackgroundColor transparent }
+</style>
+start
+fork
+:a;
+fork again
+while (c)
+:b;
+endwhile
+end merge
+stop
+@enduml

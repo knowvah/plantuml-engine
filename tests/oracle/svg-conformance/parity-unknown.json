@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T07:42:04.929Z",
+  "generatedAt": "2026-11-03T10:01:20.371Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -4653,9 +4653,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@fill"
+      "verdict": "conformant"
     },
     {
       "slug": "somule-10-duci912",

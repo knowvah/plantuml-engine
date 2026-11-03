@@ -1,0 +1,22 @@
+@startuml
+<style>
+element { BackgroundColor #0A0-#00A }
+</style>
+component C
+node D {
+ [E]
+}
+database F
+actor G
+usecase U
+interface I
+package P {
+ [Q]
+}
+cloud R
+queue W
+C --> D : l
+G --> U
+C -( I
+note left of C : n
+@enduml

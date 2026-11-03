@@ -5,12 +5,14 @@
  * explicitly names this as a later task's job) and draws it.
  */
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
+import type { Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
 import { SvekEdge, type SvekEdgeInput, type SvekEdgeLabel, type SvekLinkStyle } from '../../core/svek/SvekEdge.js';
 import { paintTextColor } from '../../core/decoration/symbol/usymbol-resolve.js';
 import { buildLinkNoteBlock } from './link-note-block.js';
 import type { DescriptionEdgeGeo } from './layout-helpers.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
+import { elementGradient } from '../../core/theme-element-resolve.js';
 import { bareEntityName } from './namespace-groups.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
@@ -132,6 +134,17 @@ function edgeLabel(edge: DescriptionEdgeGeo, theme: Theme, blockText: string | u
   };
 }
 
+/** `SvekEdge.java:874-876`, line colour: the bracket's, the link tag's, then the `arrow` signature's merged `LineColor`. */
+function edgeLineColor(edge: DescriptionEdgeGeo, theme: Theme): Paint {
+  return (
+    edge.styleColor ??
+    tagStyle(edge, theme)?.color ??
+    elementGradient(theme, 'arrow', 'border') ??
+    theme.colors.graph.descriptionCascadeArrowColor ??
+    theme.colors.arrow
+  );
+}
+
 function buildInput(
   edge: DescriptionEdgeGeo,
   theme: Theme,
@@ -170,11 +183,7 @@ function buildInput(
     // port's `SvekEdgeInput.color` already serves that dual role (no
     // multi-color Rainbow, see `SvekEdge.ts`'s class doc comment), so the
     // override simply replaces the theme default here.
-    color:
-      edge.styleColor ??
-      tagStyle(edge, theme)?.color ??
-      theme.colors.graph.descriptionCascadeArrowColor ??
-      theme.colors.arrow,
+    color: edgeLineColor(edge, theme),
     backgroundColor: theme.colors.background,
     ...(edge.tailDecor !== undefined ? { tailDecor: edge.tailDecor } : {}),
     ...(headDecor !== undefined ? { headDecor } : {}),

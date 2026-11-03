@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T07:41:00.504Z",
+  "generatedAt": "2026-11-03T09:59:45.560Z",
   "fixtures": [
     {
       "slug": "bajelo-54-dixe684",
@@ -441,7 +441,7 @@
       "layoutEqual": true,
       "verdict": "diverged",
       "maxDelta": 0,
-      "firstDiff": "svg/defs[1][childCount]"
+      "firstDiff": "svg/g[1]/g[1]/rect[1]/@stroke"
     },
     {
       "slug": "filunu-15-losu567",
@@ -966,9 +966,7 @@
       "type": "state",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/defs[1][childCount]"
+      "verdict": "conformant"
     },
     {
       "slug": "kupexa-94-dude266",
