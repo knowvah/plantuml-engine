@@ -1,7 +1,8 @@
 # Playground
 
 Edit the PlantUML source on the left and the SVG updates live. Everything
-runs in your browser — there is no server.
+runs in your browser — there is no server. Use **Export SVG** / **Export PNG**
+to download the current render.
 
 <Playground height="480px" />
 

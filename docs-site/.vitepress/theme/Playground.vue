@@ -52,6 +52,7 @@ const props = defineProps<{
 const source = ref(props.initial ?? DEFAULT_SOURCE);
 const svg = ref('');
 const error = ref('');
+const exportError = ref('');
 const svgHost = ref<HTMLElement | null>(null);
 
 // Zoom-to-fit. The jar-faithful root carries preserveAspectRatio="none",
@@ -127,6 +128,69 @@ onMounted(async () => {
   }
 });
 
+// --- export ---
+// Raster scale for PNG export: 2× the SVG's CSS-pixel size so the image stays
+// crisp on high-DPI displays and when zoomed.
+const PNG_SCALE = 2;
+const EXPORT_BASENAME = 'diagram';
+const SVG_MIME = 'image/svg+xml';
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  // Defer revocation so the browser has started the download.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function exportSvg(): void {
+  exportError.value = '';
+  // svg.value is the library's own output: fitSvg() only touches the live DOM.
+  downloadBlob(new Blob([svg.value], { type: SVG_MIME }), `${EXPORT_BASENAME}.svg`);
+}
+
+function loadSvgImage(markup: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Could not rasterize the SVG'));
+    // A data: URL, not a blob: URL. Math is an <image> whose nested SVG holds a
+    // <foreignObject>, and Chromium taints the canvas for that payload only
+    // when the outer SVG came from a blob: URL; toBlob then throws.
+    img.src = `data:${SVG_MIME};charset=utf-8,${encodeURIComponent(markup)}`;
+  });
+}
+
+async function svgToPng(markup: string): Promise<Blob> {
+  const img = await loadSvgImage(markup);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.ceil(img.naturalWidth * PNG_SCALE);
+  canvas.height = Math.ceil(img.naturalHeight * PNG_SCALE);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas 2D context unavailable');
+  // No background fill: the root's own CSS background paints in the raster, and
+  // `skinparam backgroundColor transparent` omits it, so the PNG stays clear.
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  // Inside the executor so a throwing toBlob (a canvas still tainted, as other
+  // engines may do) rejects instead of escaping as an uncaught error.
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))), 'image/png');
+  });
+}
+
+async function exportPng(): Promise<void> {
+  exportError.value = '';
+  try {
+    downloadBlob(await svgToPng(svg.value), `${EXPORT_BASENAME}.png`);
+  } catch (e) {
+    // Reported beside the buttons, not through `error`: that swaps the preview
+    // out for the message, and a failed export says nothing about the diagram.
+    exportError.value = `PNG export failed: ${e instanceof Error ? e.message : String(e)}`;
+  }
+}
+
 watch(svg, fitSvg, { flush: 'post' });
 
 watch(source, () => {
@@ -137,6 +201,13 @@ watch(source, () => {
 
 <template>
   <div class="pu-playground">
+    <div class="pu-toolbar">
+      <span v-if="exportError" class="pu-export-error" role="alert">{{ exportError }}</span>
+      <div class="pu-export">
+        <button type="button" :disabled="!svg || !!error" @click="exportSvg">Export SVG</button>
+        <button type="button" :disabled="!svg || !!error" @click="exportPng">Export PNG</button>
+      </div>
+    </div>
     <div class="pu-panes" :style="{ height: props.height ?? '480px' }">
       <div class="pu-editor">
         <div ref="highlightEl" class="pu-highlight" aria-hidden="true" v-html="highlighted"></div>
@@ -166,6 +237,39 @@ watch(source, () => {
   border-radius: 8px;
   overflow: hidden;
   margin: 1rem 0;
+}
+.pu-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--vp-c-bg-soft);
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-size: 0.85rem;
+}
+.pu-export {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.pu-export button {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  padding: 0.15rem 0.6rem;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+}
+.pu-export button:hover:not(:disabled) {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+.pu-export button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pu-export-error {
+  color: var(--vp-c-danger-1);
 }
 .pu-panes {
   display: grid;
