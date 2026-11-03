@@ -4,10 +4,11 @@
 They exercise reader sites the `cascade` rows do not reach (reader-audit.md section 2). Writes
 .puml only; oracles come from scripts/oracle-render.sh.
 """
-import sys,os
+import sys
 OUT=sys.argv[1]
 def row(name,text,tag='uml'):
-    open(f'{OUT}/{name}.puml','w').write(f'@start{tag}\n{text}@end{tag}\n')
+    with open(f'{OUT}/{name}.puml','w') as f:
+        f.write(f'@start{tag}\n{text}@end{tag}\n')
 def style(t): return f'<style>\n{t}</style>\n'
 def bare(n,p,c): return f'{n} {{\n  {p} {c}\n}}\n'
 PROPS=[('bg','BackgroundColor','#AAAAAA'),('line','LineColor','#BB0000'),('font','FontColor','#0000BB')]
@@ -28,7 +29,7 @@ BODIES={
    'clusters':('componentDiagram',"node N {\n  [a]\n}\nfolder F {\n  [b]\n}\nframe Fr {\n  [c]\n}\ncloud C {\n  [d]\n}\ndatabase D {\n  [e]\n}\nrectangle R {\n  [f]\n}\ncomponent K {\n  [g]\n  port p1\n}\ncard Ca {\n  [h]\n}\nstorage St {\n  [i]\n}\nqueue Q {\n  [j]\n}\n"),
    'links':('componentDiagram',"[a] --> [b] : lab\nnote on link : k\nnote \"free\" as N\nN .. [a]\nnote top of [b] : t\n() lp\nlp - [a]\n")},
 }
-FORMS={'diag':lambda n,p,c:bare(n,p,c),'element':lambda n,p,c:bare('element',p,c),'root':lambda n,p,c:bare('root',p,c)}
+FORMS={'diag':bare,'element':lambda n,p,c:bare('element',p,c),'root':lambda n,p,c:bare('root',p,c)}
 for e,bs in BODIES.items():
     for bn,(n,b) in bs.items():
         row(f'{e}__{bn}-none',b)
