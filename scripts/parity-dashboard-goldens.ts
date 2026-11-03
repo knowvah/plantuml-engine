@@ -5,41 +5,58 @@
  * complexity cap; both feed `parity-dashboard.ts#loadInputs` (D2: every
  * loader here reads a committed artifact, never renders or invokes the jar).
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** `component`/`usecase` share `svg-description`; every other mapped type
- *  has its own family. Types absent from this map have no ratchet family at
- *  all (D8: `no ratchet yet`). */
-export const RATCHET_FAMILY: Readonly<Record<string, string>> = {
-  component: 'svg-description',
-  usecase: 'svg-description',
-  class: 'svg-class',
-  object: 'svg-object',
-  state: 'svg-state',
-  sequence: 'svg-sequence',
-  json: 'svg-json',
-  yaml: 'svg-yaml',
-  hcl: 'svg-hcl',
-  dot: 'svg-dot',
-  activity: 'svg-activity',
-  mindmap: 'svg-mindmap',
-  salt: 'svg-salt',
-  wbs: 'svg-wbs',
-  // The utility factories' rows live in the `unknown` bucket (ufp D9).
-  unknown: 'svg-utility',
+/** A bucket maps to the LIST of golden families whose pins it shows (D1,
+ *  plans/parity-dashboard-repair). `component`/`usecase` share
+ *  `svg-description`; `unknown` reads the utility factories' own family (ufp
+ *  D9) plus the 145 `type: unknown` rows pinned under `svg-description`.
+ *  Types absent from this map have no ratchet family at all (D8: `no ratchet
+ *  yet`). Every `svg-*` directory must appear here, in
+ *  `DIFF_BASELINE_FAMILY` or in `NON_BUCKET_FAMILIES`, or
+ *  `unmappedGoldenFamilies` names it (D2). */
+export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
+  component: ['svg-description'],
+  usecase: ['svg-description'],
+  class: ['svg-class'],
+  object: ['svg-object'],
+  state: ['svg-state'],
+  sequence: ['svg-sequence'],
+  json: ['svg-json'],
+  yaml: ['svg-yaml'],
+  hcl: ['svg-hcl'],
+  dot: ['svg-dot'],
+  activity: ['svg-activity'],
+  mindmap: ['svg-mindmap'],
+  salt: ['svg-salt'],
+  wbs: ['svg-wbs'],
+  gantt: ['svg-gantt'],
+  files: ['svg-files'],
+  unknown: ['svg-utility', 'svg-description'],
 };
 
-/** Subset of `RATCHET_FAMILY` whose family also carries a `diff-baseline.json`. */
-export const DIFF_BASELINE_FAMILY: Readonly<Record<string, string>> = {
-  component: 'svg-description',
-  usecase: 'svg-description',
-  activity: 'svg-activity',
-  sequence: 'svg-sequence',
-  mindmap: 'svg-mindmap',
-  salt: 'svg-salt',
-  wbs: 'svg-wbs',
-  unknown: 'svg-utility',
+/** Subset of `RATCHET_FAMILY` whose families also carry a `diff-baseline.json`
+ *  (`svg-files` has none). A listed family whose file is absent is skipped. */
+export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> = {
+  component: ['svg-description'],
+  usecase: ['svg-description'],
+  activity: ['svg-activity'],
+  sequence: ['svg-sequence'],
+  mindmap: ['svg-mindmap'],
+  salt: ['svg-salt'],
+  wbs: ['svg-wbs'],
+  gantt: ['svg-gantt'],
+  unknown: ['svg-utility', 'svg-description'],
+};
+
+/** `oracle/goldens/svg-*` families that are NOT one bucket's pins, each with
+ *  the reason it is exempt from the maps above (D2: an explicit allowlist,
+ *  so a family that starts life with only an authored baseline is caught). */
+export const NON_BUCKET_FAMILIES: Readonly<Record<string, string>> = {
+  'svg-conformance': 'cross-bucket routing, refusal, layout-parity and splines baselines (own columns)',
+  'svg-skin': 'skin ratchet (rose) exercised across types, not a manifest bucket',
+  'svg-lengthadjust': 'authored textLength/lengthAdjust baseline, not a manifest bucket',
 };
 
 interface RatchetFixture {
@@ -62,16 +79,35 @@ export function ratchetPinsOf(fixtures: readonly RatchetFixture[], type: string)
   return { count: filtered.length, addedAt: dates.length > 0 ? dates.sort().at(-1) : undefined };
 }
 
+/** Newest of two ISO dates (either may be absent). */
+function newestDate(a: string | undefined, b: string | undefined): string | undefined {
+  if (a === undefined) return b;
+  if (b === undefined) return a;
+  return a > b ? a : b;
+}
+
+/** Reads `<goldens>/<family>/<file>` once per family (memoised in `cache`). */
+function readFamilyFixtures<T>(cache: Map<string, T[]>, goldensDir: string, family: string, file: string): T[] {
+  let fixtures = cache.get(family);
+  if (fixtures === undefined) {
+    const parsed = JSON.parse(readFileSync(join(goldensDir, family, file), 'utf-8')) as { fixtures: T[] };
+    fixtures = parsed.fixtures;
+    cache.set(family, fixtures);
+  }
+  return fixtures;
+}
+
+/** Per bucket: pins summed over its families, date the newest (D1). */
 export function loadRatchetByType(goldensDir: string): Record<string, RatchetSummary> {
   const out: Record<string, RatchetSummary> = {};
   const familiesRead = new Map<string, RatchetFixture[]>();
-  for (const [type, family] of Object.entries(RATCHET_FAMILY)) {
-    if (!familiesRead.has(family)) {
-      const p = join(goldensDir, family, 'ratchet.json');
-      const parsed = JSON.parse(readFileSync(p, 'utf-8')) as { fixtures: RatchetFixture[] };
-      familiesRead.set(family, parsed.fixtures);
+  for (const [type, families] of Object.entries(RATCHET_FAMILY)) {
+    let total: RatchetSummary = { count: 0, addedAt: undefined };
+    for (const family of families) {
+      const s = ratchetPinsOf(readFamilyFixtures(familiesRead, goldensDir, family, 'ratchet.json'), type);
+      total = { count: total.count + s.count, addedAt: newestDate(total.addedAt, s.addedAt) };
     }
-    out[type] = ratchetPinsOf(familiesRead.get(family)!, type);
+    out[type] = total;
   }
   return out;
 }
@@ -104,17 +140,47 @@ export function diffBaselineStatsOf(fixtures: readonly DiffBaselineFixture[], ty
   return { count: baseline.length, sum, measuredAt: dates.length > 0 ? dates.sort().at(-1) : undefined };
 }
 
+/** Per bucket: baseline count and score summed over its families that have a
+ *  `diff-baseline.json`, date the newest (D1). A bucket none of whose
+ *  families has the file is omitted, so its cell stays `no diff-baseline yet`. */
 export function loadDiffBaselineByType(goldensDir: string): Record<string, DiffBaselineSummary> {
   const out: Record<string, DiffBaselineSummary> = {};
   const familiesRead = new Map<string, DiffBaselineFixture[]>();
-  for (const [type, family] of Object.entries(DIFF_BASELINE_FAMILY)) {
-    const p = join(goldensDir, family, 'diff-baseline.json');
-    if (!existsSync(p)) continue;
-    if (!familiesRead.has(family)) {
-      const parsed = JSON.parse(readFileSync(p, 'utf-8')) as { fixtures: DiffBaselineFixture[] };
-      familiesRead.set(family, parsed.fixtures);
+  for (const [type, families] of Object.entries(DIFF_BASELINE_FAMILY)) {
+    let total: DiffBaselineSummary | undefined;
+    for (const family of families) {
+      if (!existsSync(join(goldensDir, family, 'diff-baseline.json'))) continue;
+      const s = diffBaselineStatsOf(readFamilyFixtures(familiesRead, goldensDir, family, 'diff-baseline.json'), type);
+      total =
+        total === undefined
+          ? s
+          : {
+              count: total.count + s.count,
+              sum: total.sum + s.sum,
+              measuredAt: newestDate(total.measuredAt, s.measuredAt),
+            };
     }
-    out[type] = diffBaselineStatsOf(familiesRead.get(family)!, type);
+    if (total !== undefined) out[type] = total;
+  }
+  return out;
+}
+
+/** D2 guard: every `svg-*` directory under `goldensDir` that is in neither
+ *  map nor `NON_BUCKET_FAMILIES`, plus every family holding a `ratchet.json`
+ *  absent from `RATCHET_FAMILY` or a `diff-baseline.json` absent from
+ *  `DIFF_BASELINE_FAMILY` (allowlisted families exempt). Sorted; `[]` means
+ *  the dashboard shows every golden family that exists. */
+export function unmappedGoldenFamilies(goldensDir: string): string[] {
+  const ratchetMapped = new Set(Object.values(RATCHET_FAMILY).flat());
+  const diffMapped = new Set(Object.values(DIFF_BASELINE_FAMILY).flat());
+  const out: string[] = [];
+  for (const name of readdirSync(goldensDir).sort()) {
+    const dir = join(goldensDir, name);
+    if (!name.startsWith('svg-') || name in NON_BUCKET_FAMILIES || !statSync(dir).isDirectory()) continue;
+    const inNoMap = !ratchetMapped.has(name) && !diffMapped.has(name);
+    const ratchetUnmapped = !ratchetMapped.has(name) && existsSync(join(dir, 'ratchet.json'));
+    const diffUnmapped = !diffMapped.has(name) && existsSync(join(dir, 'diff-baseline.json'));
+    if (inNoMap || ratchetUnmapped || diffUnmapped) out.push(name);
   }
   return out;
 }

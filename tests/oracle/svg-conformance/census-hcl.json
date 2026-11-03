@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-20T18:50:18.039Z",
-  "measuredAgainstCommit": "993cc2ae",
-  "type": "hcl+tests/oracle/svg-conformance/census-hcl.json",
+  "generatedAt": "2026-11-03T21:25:41.461Z",
+  "measuredAgainstCommit": "69379cc9f",
+  "type": "hcl",
   "measurer": "deterministic",
   "fixtures": [
     {
@@ -13,13 +13,13 @@
     {
       "slug": "jubete-32-sutu417",
       "status": "ok",
-      "diffCount": 117,
+      "diffCount": 106,
       "bucket": "31+"
     },
     {
       "slug": "vocago-35-xodu446",
       "status": "ok",
-      "diffCount": 40,
+      "diffCount": 42,
       "bucket": "31+"
     }
   ]

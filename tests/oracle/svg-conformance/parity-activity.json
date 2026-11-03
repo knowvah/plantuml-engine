@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:10:22.088Z",
+  "generatedAt": "2026-11-03T21:12:07.578Z",
   "fixtures": [
     {
       "slug": "activity-creole-table",
@@ -188,9 +188,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 25,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "bozuro-33-celo170",

@@ -21,13 +21,14 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { dotParityMarkdown, type TypeRow, type DotParityJson } from './dot-parity-rows.js';
-import { markedType, notesSection } from './parity-dashboard-notes.js';
+import { markedType, notesSection, unknownDetail, type JarTagTally } from './parity-dashboard-notes.js';
 import {
   manifestBuckets,
   corpusCountsOf,
   registeredEngineTypes,
   oracleCountsOf,
   jarUnsupportedCountsOf,
+  unknownShortfallTagsOf,
   loadDotParity,
   loadSurveyByType,
   loadCensusByType,
@@ -87,6 +88,8 @@ export interface RawInputs {
   oracleCounts: Record<string, number>;
   /** Per type, cached goldens that are the jar's unsupported-diagram page. */
   jarUnsupportedCounts: Record<string, number>;
+  /** Jar type tag → count over the `unknown` survey rows short of conformant (D4, parity-dashboard-repair). */
+  unknownJarTags: JarTagTally;
   dotParity: DotParityJson;
   surveyByType: Record<string, SurveySummary>;
   censusByType: Record<string, CensusSummary>;
@@ -106,6 +109,7 @@ export function loadInputs(): RawInputs {
     registeredEngines: registeredEngineTypes(readFileSync(REGISTRATIONS_TS_PATH, 'utf-8')),
     oracleCounts: oracleCountsOf(CACHE_DIR),
     jarUnsupportedCounts: jarUnsupportedCountsOf(CACHE_DIR),
+    unknownJarTags: unknownShortfallTagsOf(SVG_CONFORMANCE_DIR, CACHE_DIR),
     dotParity: loadDotParity(DOT_PARITY_PATH),
     surveyByType: loadSurveyByType(SVG_CONFORMANCE_DIR),
     censusByType: loadCensusByType(SVG_CONFORMANCE_DIR),
@@ -249,6 +253,8 @@ export interface ReportModel {
   matrix: MatrixRow[];
   freshness: FreshnessRow[];
   dotParitySection: string;
+  /** The `unknown` row's generated note sentence (D4), or none when nothing falls short. */
+  unknownDetail: string | undefined;
 }
 
 /** Glues `buildMatrix`/`buildFreshness` to the verbatim DOT-parity section
@@ -261,6 +267,7 @@ export function buildReportModel(inputs: RawInputs): ReportModel {
     matrix: buildMatrix(inputs),
     freshness: buildFreshness(inputs),
     dotParitySection: dotParityMarkdown(inputs.dotParity.rows, inputs.dotParity.generatedAt.slice(0, 10)),
+    unknownDetail: unknownDetail(inputs.unknownJarTags, inputs.registeredEngines),
   };
 }
 
@@ -291,9 +298,15 @@ const PREAMBLE = [
   '**survey** and **census** differ by RENDER PATH, not measurer. Both already measure text ' +
     'through the same system — `WidthTableMeasurer`, re-exported as `DeterministicMeasurer` ' +
     '(`src/core/measurer-deterministic.ts`) — over the SAME cached corpus. Survey renders ' +
-    'through production `renderSync`; the ratchet and census render through the low-level ' +
-    '`renderFixture*` helpers instead. A `diverged` survey verdict beside a passing byte-exact ' +
-    'ratchet is that path difference, never a text-metric mismatch.',
+    'every bucket through production `renderSync`. The ratchet and census helpers ' +
+    '(`tests/oracle/svg-conformance/render-fixture-*.ts`) split: class, component, usecase, ' +
+    'unknown, dot, gantt, mindmap, salt, wbs and files also call `renderSync`; object, state, ' +
+    "sequence, activity, json, yaml and hcl drive their engine's own parse → layout → render " +
+    'pipeline with the measurer injected. A `diverged` survey verdict beside a passing byte-exact ' +
+    'ratchet is that path difference, never a text-metric mismatch. The class ratchet and census ' +
+    'also cover the 287 `unknown` fixtures the port routes to the class engine ' +
+    '(`test-results/dot-cache/unknown/`, `routing-baseline.json` `ourType: CLASS`), which is ' +
+    "why both exceed class's **oracle** count.",
   '',
 ].join('\n');
 
@@ -309,10 +322,17 @@ function matrixRowLine(r: MatrixRow): string {
   );
 }
 
-function matrixSection(matrix: readonly MatrixRow[]): string {
-  return ['## Matrix', '', MATRIX_HEADER, MATRIX_SEP, ...matrix.map(matrixRowLine), '', notesSection(matrix)].join(
-    '\n',
-  );
+function matrixSection(model: ReportModel): string {
+  const generated = model.unknownDetail === undefined ? {} : { unknown: model.unknownDetail };
+  return [
+    '## Matrix',
+    '',
+    MATRIX_HEADER,
+    MATRIX_SEP,
+    ...model.matrix.map(matrixRowLine),
+    '',
+    notesSection(model.matrix, generated),
+  ].join('\n');
 }
 
 const FRESH_HEADER = '| type | DOT | survey | census | ratchet | diff-baseline | routing | refusal |';
@@ -326,8 +346,18 @@ function freshnessRowLine(r: FreshnessRow): string {
   );
 }
 
+/** D5 (plans/parity-dashboard-repair): which columns are measurements and which are pins. */
+const FRESHNESS_NOTE =
+  '**DOT**, **survey** and **census** are measurement dates: the artifact was regenerated from the ' +
+  'cached oracle on that day. **ratchet**, **diff-baseline**, **routing** and **refusal** are pin dates: ' +
+  'the newest `addedAt`/`measuredAt` a golden under `oracle/goldens/` carries, which moves only when ' +
+  'a fixture is pinned or re-pinned; `npm test` re-verifies every pin on each run, so an old pin date ' +
+  'is not a stale number. A no-engine row shows `—` by design.';
+
 function freshnessSection(freshness: readonly FreshnessRow[]): string {
-  return ['## Freshness', '', FRESH_HEADER, FRESH_SEP, ...freshness.map(freshnessRowLine), ''].join('\n');
+  return ['## Freshness', '', FRESHNESS_NOTE, '', FRESH_HEADER, FRESH_SEP, ...freshness.map(freshnessRowLine), ''].join(
+    '\n',
+  );
 }
 
 /** Upstream `DiagramType` members with neither a manifest bucket nor an
@@ -375,7 +405,7 @@ export function renderReport(model: ReportModel): string {
     `Freshest measurement across every source below: ${latestDate(model.freshness) ?? 'unknown'}.`,
     '',
     PREAMBLE,
-    matrixSection(model.matrix),
+    matrixSection(model),
     freshnessSection(model.freshness),
     model.dotParitySection.replace(/\n+$/, ''),
     '',

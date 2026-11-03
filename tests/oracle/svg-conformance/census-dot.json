@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-20T18:50:23.645Z",
-  "measuredAgainstCommit": "993cc2ae",
-  "type": "dot+tests/oracle/svg-conformance/census-dot.json",
+  "generatedAt": "2026-11-03T21:25:33.925Z",
+  "measuredAgainstCommit": "69379cc9f",
+  "type": "dot",
   "measurer": "deterministic",
   "fixtures": [
     {

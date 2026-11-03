@@ -5,8 +5,12 @@
  *
  * A row is marked only while it falls short, so a row that reaches conformant
  * loses its mark and its note at the next regeneration. Every reason below was
- * checked against the cached jar output or `DIVERGENCES.md`; a row's sentence
- * says what was measured, and "not yet diagnosed" where nothing more is known.
+ * checked against the cached jar output, the survey's `firstDiff`, the census
+ * `--families` tally or `DIVERGENCES.md` on 2026-11-03
+ * (`plans/parity-dashboard-repair/measurements/note-audit.md`); a row's
+ * sentence says what was measured, and "not yet diagnosed" where nothing more
+ * is known. A row that reaches conformant has no entry (activity, gantt,
+ * mindmap, sequence, ...): an entry for it would be dead.
  */
 
 type NoteClass = 'smetana' | 'notBuilt' | 'openDefect' | 'mixed' | 'jarDeclines';
@@ -61,11 +65,6 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   regex: { noteClass: 'notBuilt' },
   timing: { noteClass: 'notBuilt' },
   wire: { noteClass: 'notBuilt' },
-  activity: {
-    noteClass: 'openDefect',
-    detail:
-      'The one structural match is an older reading: a survey on 2026-11-02 measures all 449 fixtures conformant.',
-  },
   board: {
     noteClass: 'openDefect',
     detail:
@@ -78,7 +77,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   },
   chart: {
     noteClass: 'openDefect',
-    detail: 'The SVG has not been aligned with PlantUML yet: line styling, text anchoring and canvas size differ.',
+    detail:
+      'The SVG has not been aligned with PlantUML yet: on every fixture the axis and series lines sit at other ' +
+      'coordinates with other stroke styling, text is anchored and sized differently, and the canvas size differs.',
   },
   component: {
     noteClass: 'openDefect',
@@ -88,7 +89,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   },
   object: {
     noteClass: 'openDefect',
-    detail: 'Mostly small fill and text-width differences, not yet diagnosed row by row.',
+    detail:
+      'Mostly geometry on the 16 fixtures short of conformant: canvas size, text y positions, box heights and path ' +
+      'data; not yet diagnosed row by row.',
   },
   packet: {
     noteClass: 'openDefect',
@@ -99,22 +102,18 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   state: {
     noteClass: 'openDefect',
     detail:
-      'The layout matches on most fixtures. The largest groups differ in element ids, text widths, path data and ' +
-      'classes, not yet diagnosed row by row.',
+      'The layout matches on most fixtures (layoutEqual 253 of 269). The largest groups differ in element ids, text ' +
+      'positions and widths, child counts and path data, not yet diagnosed row by row.',
   },
   usecase: {
     noteClass: 'openDefect',
     detail:
-      'Mostly fill, text-size and structure differences. One more fixture cannot be compared at all, because its ' +
-      'cached PlantUML output is not well-formed XML.',
+      'Mostly text position, canvas size, path data and structure differences. One more fixture cannot be compared ' +
+      'at all, because its cached PlantUML output is not well-formed XML.',
   },
-  unknown: {
-    noteClass: 'mixed',
-    detail:
-      "Of the 260 fixtures short of conformant on 2026-11-02, by PlantUML's own type: 109 are types we draw " +
-      'imperfectly, mostly description; 96 have no engine yet, mostly nwdiag (64) and timing (13); 49 carry no type ' +
-      'tag (creole, math, LaTeX and error pages); 6 are pages PlantUML itself declines.',
-  },
+  // The `unknown` sentence is generated from the survey (`unknownDetail`, D4
+  // of plans/parity-dashboard-repair) and passed to `notesSection`.
+  unknown: { noteClass: 'mixed' },
   chronology: { noteClass: 'jarDeclines' },
 };
 
@@ -142,23 +141,85 @@ export function markedType(type: string, survey: string): string {
   return symbol === undefined ? type : `${type} ${symbol}`;
 }
 
-function classBlock(noteClass: NoteClass, types: readonly string[]): string[] {
+/** Jar type tag → count over the `unknown` rows short of conformant
+ *  (`parity-dashboard-inputs.ts#unknownShortfallTagsOf`). `none` is an
+ *  untagged render, `unsupported` the jar's own unsupported-diagram page. */
+export type JarTagTally = Readonly<Record<string, number>>;
+
+const UNTAGGED = 'none';
+const JAR_DECLINED = 'unsupported';
+
+/** `tag (count)` pairs, count-descending then by name, tags lower-cased. */
+function tagList(tally: JarTagTally): string {
+  return Object.entries(tally)
+    .sort(([tagA, a], [tagB, b]) => b - a || tagA.localeCompare(tagB))
+    .map(([tag, count]) => `${tag.toLowerCase()} ${count}`)
+    .join(', ');
+}
+
+function sum(tally: JarTagTally): number {
+  return Object.values(tally).reduce((acc, n) => acc + n, 0);
+}
+
+function pick(tally: JarTagTally, keep: (tag: string) => boolean): JarTagTally {
+  return Object.fromEntries(Object.entries(tally).filter(([tag]) => keep(tag)));
+}
+
+const one = (n: number, singular: string, plural: string): string => `${n} ${n === 1 ? singular : plural}`;
+
+/** Pure (D4): the `unknown` row's sentence from the jar-tag tally. A tag is
+ *  "drawn imperfectly" when its lower-cased form is a registered engine; the
+ *  rest have no engine, except `none` (untagged) and `unsupported` (declined).
+ *  Groups are listed drawn, no engine, untagged, declined; an empty group is
+ *  omitted; an empty tally gives no sentence. */
+export function unknownDetail(tally: JarTagTally, registeredEngines: readonly string[]): string | undefined {
+  const total = sum(tally);
+  if (total === 0) return undefined;
+  const typed = pick(tally, (tag) => tag !== UNTAGGED && tag !== JAR_DECLINED);
+  const drawn = pick(typed, (tag) => registeredEngines.includes(tag.toLowerCase()));
+  const noEngine = pick(typed, (tag) => !registeredEngines.includes(tag.toLowerCase()));
+  const untagged = tally[UNTAGGED] ?? 0;
+  const declined = tally[JAR_DECLINED] ?? 0;
+  const groups = [
+    sum(drawn) > 0 ? `${one(sum(drawn), 'is a type', 'are types')} we draw imperfectly (${tagList(drawn)})` : undefined,
+    sum(noEngine) > 0 ? `${one(sum(noEngine), 'has', 'have')} no engine yet (${tagList(noEngine)})` : undefined,
+    untagged > 0 ? `${one(untagged, 'carries', 'carry')} no type tag (creole, math, LaTeX and error pages)` : undefined,
+    declined > 0 ? `${one(declined, 'is a page', 'are pages')} PlantUML itself declines` : undefined,
+  ].filter((g): g is string => g !== undefined);
+  return `Of the ${total} fixtures short of conformant, by PlantUML's own type: ${groups.join('; ')}.`;
+}
+
+/** A row's sentence: the generated one when the caller supplies it, else the hand-written one. */
+function detailOf(type: string, generated: Readonly<Record<string, string>>): string | undefined {
+  return generated[type] ?? ROW_NOTES[type]?.detail;
+}
+
+function classBlock(
+  noteClass: NoteClass,
+  types: readonly string[],
+  generated: Readonly<Record<string, string>>,
+): string[] {
   const details = types.flatMap((type) => {
-    const detail = ROW_NOTES[type]?.detail;
+    const detail = detailOf(type, generated);
     return detail === undefined ? [] : [`- **${type}:** ${detail}`];
   });
-  const plain = types.filter((type) => ROW_NOTES[type]?.detail === undefined);
+  const plain = types.filter((type) => detailOf(type, generated) === undefined);
   const applies = plain.length > 0 ? ` Applies to ${plain.join(', ')}.` : '';
   const head = `**${SYMBOL[noteClass]}** ${CLASS_TEXT[noteClass]}${applies}`;
   return details.length > 0 ? [head, '', ...details, ''] : [head, ''];
 }
 
-/** The notes that follow the matrix table: one block per class in use. */
-export function notesSection(rows: readonly { readonly type: string; readonly survey: string }[]): string {
+/** The notes that follow the matrix table: one block per class in use.
+ *  `generated` holds the row sentences built from measurements (today only
+ *  `unknown`, D4); every other row keeps its hand-written `ROW_NOTES` detail. */
+export function notesSection(
+  rows: readonly { readonly type: string; readonly survey: string }[],
+  generated: Readonly<Record<string, string>> = {},
+): string {
   const marked = rows.filter((r) => noteSymbolOf(r.type, r.survey) !== undefined).map((r) => r.type);
   const blocks = CLASS_ORDER.flatMap((noteClass) => {
     const types = marked.filter((type) => ROW_NOTES[type]?.noteClass === noteClass);
-    return types.length > 0 ? classBlock(noteClass, types) : [];
+    return types.length > 0 ? classBlock(noteClass, types, generated) : [];
   });
   return ['### Why a row falls short', '', ...blocks, ERROR_SUFFIX_NOTE, ''].join('\n');
 }

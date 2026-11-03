@@ -52,7 +52,8 @@ const REGISTER_RE = /registry\.register\((\w+)Plugin\)/g;
 /** Pure: the plugin `type` values registered in `src/index.ts`, in
  *  registration order, parsed from its own source text rather than imported
  *  as a module. Every registered plugin here follows the `<type>Plugin`
- *  naming convention (verified against all 14 current registrations). */
+ *  naming convention (verified against every current registration in
+ *  `src/registered-plugins.ts`). */
 export function registeredEngineTypes(indexTsSource: string): string[] {
   return [...indexTsSource.matchAll(REGISTER_RE)].map((m) => m[1]!);
 }
@@ -115,6 +116,46 @@ export function jarUnsupportedCountsOf(cacheDir: string): Record<string, number>
     }).length;
   }
   return out;
+}
+
+/** The root `<svg>` attribute the jar stamps with its `DiagramType` name
+ *  (`SvgGraphics.java`, `data-diagram-type`); the dashboard reads it as the
+ *  jar's own answer to "what is this source". */
+const JAR_TAG_RE = /data-diagram-type="([^"]*)"/;
+
+/** Pure (parity-dashboard-repair T3, D4): the jar's type tag in an `in.svg`
+ *  head, `'unsupported'` when the head is the jar's unsupported-diagram page,
+ *  `'none'` when no tag is present (creole, math, LaTeX, error pages). */
+export function jarTagOf(head: string): string {
+  if (isJarUnsupportedPage(head)) return 'unsupported';
+  const tag = JAR_TAG_RE.exec(head)?.[1];
+  return tag === undefined || tag === '' ? 'none' : tag;
+}
+
+/** Tag → count over the `unknown` survey rows whose verdict is not
+ *  `conformant` (D4). Reads `parity-unknown.json` and each row's cached
+ *  `in.svg` head; a row with a missing or unreadable cache entry counts as
+ *  `none`. `{}` when no unknown survey exists. */
+export function unknownShortfallTagsOf(svgConformanceDir: string, cacheDir: string): Record<string, number> {
+  const surveyPath = join(svgConformanceDir, 'parity-unknown.json');
+  if (!existsSync(surveyPath)) return {};
+  const parsed: unknown = JSON.parse(readFileSync(surveyPath, 'utf-8'));
+  assertJsonObjectShape(parsed, surveyPath, ['generatedAt', 'fixtures']);
+  const tally: Record<string, number> = {};
+  for (const row of (parsed as ParityReport).fixtures) {
+    if (row.verdict === 'conformant') continue;
+    const tag = jarTagOfCached(join(cacheDir, 'unknown', row.slug, 'in.svg'));
+    tally[tag] = (tally[tag] ?? 0) + 1;
+  }
+  return tally;
+}
+
+function jarTagOfCached(svgPath: string): string {
+  try {
+    return jarTagOf(readHead(svgPath));
+  } catch {
+    return 'none'; // missing or unreadable cache entry (D4)
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -201,7 +242,7 @@ export function loadSurveyByType(svgConformanceDir: string): Record<string, Surv
 }
 
 // ---------------------------------------------------------------------------
-// Census (census-<type>.json — none committed yet, D5)
+// Census (census-<type>.json, one committed file per censused bucket, D5)
 // ---------------------------------------------------------------------------
 
 export interface CensusSummary {

@@ -15,7 +15,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { helperFor, censusClassFixtureOptions } from '../../../scripts/svg-conformance-census.js';
 import type { CensusResult } from '../../../scripts/svg-conformance-census.js';
-import { toCensusJson, jsonPathArg, runJsonMode, bucketOf } from '../../../scripts/svg-conformance-census-json.js';
+import {
+  toCensusJson,
+  jsonPathArg,
+  censusTypeArgs,
+  runJsonMode,
+  bucketOf,
+} from '../../../scripts/svg-conformance-census-json.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 
 // ---------------------------------------------------------------------------
@@ -25,6 +31,10 @@ import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 describe('helperFor', () => {
   it('dispatches activity to the activity helper (AC1)', () => {
     expect(helperFor('activity')).toBe('activity');
+  });
+
+  it('dispatches gantt to the gantt helper, which carries the recorded clock (pdg-T2, D3)', () => {
+    expect(helperFor('gantt')).toBe('gantt');
   });
 
   it('preserves every pre-existing mapping', () => {
@@ -153,6 +163,27 @@ describe('jsonPathArg', () => {
 
   it('throws when --json has no following path', () => {
     expect(() => jsonPathArg(['activity', '--json'])).toThrow('--json requires a <path> argument');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// censusTypeArgs (pdg-T2, D3: the `--json` value is a path, not a type —
+// every committed census used to read `"type": "yaml+tests/oracle/...json"`)
+// ---------------------------------------------------------------------------
+
+describe('censusTypeArgs', () => {
+  it('returns the positional types, excluding --json and its value', () => {
+    expect(censusTypeArgs(['sequence', '--json', '/x/y.json'])).toEqual(['sequence']);
+    expect(censusTypeArgs(['--json', '/x/y.json', 'gantt'])).toEqual(['gantt']);
+  });
+
+  it('returns [] when only --json and its path are given, so the default types apply', () => {
+    expect(censusTypeArgs(['--json', '/x'])).toEqual([]);
+  });
+
+  it('drops every -- flag and keeps several types in order', () => {
+    expect(censusTypeArgs(['component', 'usecase', '--per-fixture'])).toEqual(['component', 'usecase']);
+    expect(censusTypeArgs([])).toEqual([]);
   });
 });
 

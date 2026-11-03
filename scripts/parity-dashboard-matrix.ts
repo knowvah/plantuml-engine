@@ -29,13 +29,13 @@ const ENGINE_OVERRIDE: Readonly<Record<string, string>> = {
   object: 'class',
 };
 
-/** planning/mission-index.md Phase D rows for the 10 buckets with no engine
- *  at all yet. `unknown` is handled separately (accounting bucket, not a
- *  todo) and is deliberately absent from this map. */
+/** planning/mission-index.md Phase D rows for the buckets with no engine at
+ *  all yet. A bucket leaves this map when its plugin registers (mindmap and
+ *  gantt did; `engineCell` checks the registry first, so a stale entry here
+ *  is dead, never wrong). `unknown` is handled separately (accounting bucket,
+ *  not a todo) and is deliberately absent from this map. */
 const NO_ENGINE_D_ID: Readonly<Record<string, string>> = {
   timing: 'D1',
-  mindmap: 'D2',
-  gantt: 'D4',
   network: 'D5',
   ditaa: 'D8',
   ebnf: 'D10',

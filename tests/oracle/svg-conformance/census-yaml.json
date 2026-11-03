@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-20T18:50:12.452Z",
-  "measuredAgainstCommit": "993cc2ae",
-  "type": "yaml+tests/oracle/svg-conformance/census-yaml.json",
+  "generatedAt": "2026-11-03T21:26:30.688Z",
+  "measuredAgainstCommit": "69379cc9f",
+  "type": "yaml",
   "measurer": "deterministic",
   "fixtures": [
     {
       "slug": "bafemu-96-luji978",
       "status": "ok",
-      "diffCount": 1834,
+      "diffCount": 1905,
       "bucket": "31+"
     },
     {
@@ -31,13 +31,13 @@
     {
       "slug": "gabalo-23-tefe408",
       "status": "ok",
-      "diffCount": 115,
+      "diffCount": 104,
       "bucket": "31+"
     },
     {
       "slug": "gatuva-87-futo104",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 74,
       "bucket": "31+"
     },
     {
@@ -55,31 +55,31 @@
     {
       "slug": "jozapu-14-datu953",
       "status": "ok",
-      "diffCount": 3277,
+      "diffCount": 3541,
       "bucket": "31+"
     },
     {
       "slug": "jukejo-54-pope427",
       "status": "ok",
-      "diffCount": 115,
+      "diffCount": 104,
       "bucket": "31+"
     },
     {
       "slug": "ketunu-15-poli031",
       "status": "ok",
-      "diffCount": 85,
+      "diffCount": 86,
       "bucket": "31+"
     },
     {
       "slug": "kotize-70-nuze855",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 72,
       "bucket": "31+"
     },
     {
       "slug": "lelofi-17-cafo004",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 72,
       "bucket": "31+"
     },
     {
@@ -91,7 +91,7 @@
     {
       "slug": "lipoka-75-rigo326",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 74,
       "bucket": "31+"
     },
     {
@@ -109,7 +109,7 @@
     {
       "slug": "mudeno-46-rado553",
       "status": "ok",
-      "diffCount": 185,
+      "diffCount": 158,
       "bucket": "31+"
     },
     {
@@ -121,25 +121,25 @@
     {
       "slug": "nuzaje-74-kenu009",
       "status": "ok",
-      "diffCount": 30,
+      "diffCount": 22,
       "bucket": "11-30"
     },
     {
       "slug": "polela-38-mopu631",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 72,
       "bucket": "31+"
     },
     {
       "slug": "poxedu-72-bite327",
       "status": "ok",
-      "diffCount": 192,
+      "diffCount": 186,
       "bucket": "31+"
     },
     {
       "slug": "sozafu-05-xeka661",
       "status": "ok",
-      "diffCount": 64,
+      "diffCount": 46,
       "bucket": "31+"
     },
     {
@@ -151,19 +151,19 @@
     {
       "slug": "tadari-70-nare798",
       "status": "ok",
-      "diffCount": 25,
+      "diffCount": 24,
       "bucket": "11-30"
     },
     {
       "slug": "vaceci-80-lezo436",
       "status": "ok",
-      "diffCount": 123,
+      "diffCount": 91,
       "bucket": "31+"
     },
     {
       "slug": "vapoda-87-piku740",
       "status": "ok",
-      "diffCount": 50,
+      "diffCount": 79,
       "bucket": "31+"
     },
     {
@@ -181,7 +181,7 @@
     {
       "slug": "xacali-26-mazu431",
       "status": "ok",
-      "diffCount": 52,
+      "diffCount": 53,
       "bucket": "31+"
     },
     {
@@ -193,19 +193,19 @@
     {
       "slug": "xofilu-53-tazi162",
       "status": "ok",
-      "diffCount": 75,
+      "diffCount": 62,
       "bucket": "31+"
     },
     {
       "slug": "xubife-72-runi076",
       "status": "ok",
-      "diffCount": 206,
+      "diffCount": 195,
       "bucket": "31+"
     },
     {
       "slug": "YAML-attribute-hierarchy",
       "status": "ok",
-      "diffCount": 44,
+      "diffCount": 54,
       "bucket": "31+"
     },
     {
@@ -217,25 +217,25 @@
     {
       "slug": "YAML-space-indent",
       "status": "ok",
-      "diffCount": 75,
+      "diffCount": 62,
       "bucket": "31+"
     },
     {
       "slug": "zebapi-77-zasu051",
       "status": "ok",
-      "diffCount": 48,
+      "diffCount": 47,
       "bucket": "31+"
     },
     {
       "slug": "zeduse-06-fidi174",
       "status": "ok",
-      "diffCount": 44,
+      "diffCount": 54,
       "bucket": "31+"
     },
     {
       "slug": "zomime-61-sase339",
       "status": "ok",
-      "diffCount": 92,
+      "diffCount": 80,
       "bucket": "31+"
     }
   ]

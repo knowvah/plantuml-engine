@@ -92,6 +92,18 @@ export function jsonPathArg(argv: readonly string[]): string | undefined {
 }
 
 /**
+ * Pure: the positional diagram types in `argv` — every token that is not a
+ * `--` flag, excluding the `<path>` that follows `--json` (pdg-T2, D3: the
+ * old `!a.startsWith('--')` filter kept that path as a type, so every
+ * committed `census-<type>.json` read `"type": "yaml+tests/oracle/...json"`).
+ * `[]` means the caller's default types apply.
+ */
+export function censusTypeArgs(argv: readonly string[]): string[] {
+  const jsonIdx = argv.indexOf('--json');
+  return argv.filter((a, i) => !a.startsWith('--') && !(jsonIdx !== -1 && i === jsonIdx + 1));
+}
+
+/**
  * Impure shell (testability.md's "functional core, imperative shell"): reads
  * the current commit and time, builds the `CensusJson` via the pure
  * `toCensusJson`, and writes it to `jsonPath`. `repoDir` is the `cwd` for

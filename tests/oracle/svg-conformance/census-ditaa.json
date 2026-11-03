@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-11-03T21:25:32.543Z",
+  "measuredAgainstCommit": "69379cc9f",
+  "type": "ditaa",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "pibite-04-xiba436",
+      "status": "error",
+      "diffCount": null,
+      "bucket": null,
+      "reason": "malformed jar golden SVG"
+    },
+    {
+      "slug": "xegota-93-tido298",
+      "status": "error",
+      "diffCount": null,
+      "bucket": null,
+      "reason": "malformed jar golden SVG"
+    }
+  ]
+}

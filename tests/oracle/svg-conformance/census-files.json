@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-11-03T21:25:36.685Z",
+  "measuredAgainstCommit": "69379cc9f",
+  "type": "files",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "dobido-76-nugu008",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "files-directory-tree-with-note",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "kibilo-60-fado726",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "nixaro-94-pefo622",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "nojeru-23-tavo641",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "tadabe-21-dovi548",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "tezofo-39-fano197",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "xeseve-00-tipa730",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "zixuta-02-suzo281",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    }
+  ]
+}
