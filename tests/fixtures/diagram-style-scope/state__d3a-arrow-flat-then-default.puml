@@ -1,0 +1,12 @@
+@startuml
+skinparam stateArrowColor #AA0000
+<style>
+stateDiagram {
+  arrow {
+    LineColor #181818
+  }
+}
+</style>
+state A
+A --> B
+@enduml

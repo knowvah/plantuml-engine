@@ -35,6 +35,7 @@ import { tileSimpleLeaf } from './tile-layout-leaves.js';
 import { withInLabel, withOutLabel } from './tile-layout-inlabel.js';
 import { groupInnerInkMaxX } from './canvas-origin-group-ink.js';
 import { nonWhiteTest } from './display-white.js';
+import { stereogroupStereotype } from '../dispatch-stereogroup.js';
 
 /**
  * `FtileFactoryDelegatorAddNote#addNote` (`vcompact/FtileFactoryDelegator
@@ -238,6 +239,7 @@ export function tileFork(
     node.style === 'merge'
       ? new GtileMerge(branches, bounder)
       : new GtileFork(branches, bounder, undefined, theme, node.label);
+  built.barColor = node.color;
   return withSwimlaneOut(withSwimlane(built, node.swimlane), node.swimlaneOut);
 }
 
@@ -384,7 +386,9 @@ function groupOptions(node: ActivityGroup, body: Tile, theme: Theme): GtileGroup
   const usymbol = t === 'package' || t === 'card' || t === 'rectangle' ? t : undefined;
   // add4-T3c: `FtileGroup#getInnerMinMax` (`FtileGroup.java:150-158`).
   const innerInkMaxX = groupInnerInkMaxX(body, theme);
+  const stereotype = stereogroupStereotype(node.stereotype);
   return {
+    ...(stereotype !== undefined ? { stereotype } : {}),
     ...(innerInkMaxX !== undefined ? { innerInkMaxX } : {}),
     ...(node.backColor !== undefined ? { backColor: node.backColor } : {}),
     ...(usymbol !== undefined ? { usymbol } : {}),

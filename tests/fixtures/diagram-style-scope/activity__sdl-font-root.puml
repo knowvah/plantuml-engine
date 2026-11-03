@@ -1,0 +1,20 @@
+@startuml
+<style>
+root {
+  FontColor #0000BB
+}
+</style>
+start
+:a|
+:b<
+:c>
+:d/
+:e]
+:f}
+:g;
+note right
+  m
+end note
+note left: k
+stop
+@enduml

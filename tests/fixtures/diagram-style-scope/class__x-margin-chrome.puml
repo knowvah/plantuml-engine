@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+title T
+class A
+class B
+A --> B
+@enduml

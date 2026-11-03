@@ -1,0 +1,9 @@
+@startuml
+<style>
+group { BackgroundColor #123456
+ LineColor #654321 }
+</style>
+package P {
+ class Q
+}
+@enduml

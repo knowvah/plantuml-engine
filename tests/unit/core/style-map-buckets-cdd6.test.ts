@@ -20,7 +20,7 @@ import type { ElementColors } from '../../../src/core/theme.js';
 import { lineStyleDash, convertBorderStyleValue } from '../../../src/core/style-line-style.js';
 
 function elements(body: string): Readonly<Partial<Record<string, ElementColors>>> {
-  const { theme } = buildTheme(preprocess(`@startuml\n${body}\nclass A\n@enduml`));
+  const { theme } = buildTheme(preprocess(`@startuml\n${body}\nclass A\n@enduml`), undefined, 'class');
   return theme.colors.elements ?? {};
 }
 

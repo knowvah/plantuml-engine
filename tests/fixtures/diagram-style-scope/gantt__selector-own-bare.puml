@@ -1,0 +1,8 @@
+@startgantt
+<style>
+ganttDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+[A] lasts 1 day
+@endgantt

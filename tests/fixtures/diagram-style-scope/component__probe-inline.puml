@@ -1,0 +1,9 @@
+@startuml
+<style>
+element { BackgroundColor #AAAAAA
+LineColor #BBBBBB }
+</style>
+[C] #DDDDDD
+database D #line:EEEEEE
+note left of C #123456: n
+@enduml

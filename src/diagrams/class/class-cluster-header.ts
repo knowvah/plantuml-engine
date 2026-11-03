@@ -148,7 +148,7 @@ function buildStereoSprite(
           // unwind2-S7: `USymbolFolder#asBig` draws the header after
           // `symbolContext.apply(ug)` (`USymbolFolder.java:224,228-229`), so
           // the sprite tints over the cluster fill (`SpriteMonochrome.java:216`).
-          spriteBackColor(namespaceColorFill(ns.color, theme)),
+          spriteBackColor(namespaceColorFill(ns.color, theme, ns.usymbol)),
           deco.spriteScale,
         )
       : color4096 !== undefined

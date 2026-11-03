@@ -1,0 +1,15 @@
+@startuml
+<style>
+element { LineColor #0A0-#00A }
+</style>
+object O {
+ a = 1
+}
+map M {
+ k => v
+}
+json J {
+ "a": 1
+}
+O --> M
+@enduml

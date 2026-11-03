@@ -1,0 +1,22 @@
+@startuml
+<style>
+root { BackgroundColor #0A0-#00A }
+</style>
+actor Ac
+boundary Bo
+control Co
+entity En
+collections Cs
+file Fi
+folder Fo
+frame Fr
+hexagon He
+artifact Ar
+card Ca
+agent Ag
+person Pe
+rectangle Rc
+stack St
+storage Sg
+Ac --> Bo
+@enduml

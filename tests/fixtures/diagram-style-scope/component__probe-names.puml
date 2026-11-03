@@ -1,0 +1,14 @@
+@startuml
+<style>
+element { BackgroundColor red
+LineColor blue
+FontColor green }
+</style>
+[C]
+database D
+note left of C: n
+C --> D : l
+rectangle R {
+ [X]
+}
+@enduml

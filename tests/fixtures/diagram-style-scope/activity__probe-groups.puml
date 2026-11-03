@@ -1,0 +1,26 @@
+@startuml
+<style>
+element { BackgroundColor #AAAAAA
+LineColor #BBBBBB
+FontColor #CCCCCC }
+rectangle { BackgroundColor #DDDDDD }
+card { LineColor #EEEEEE }
+</style>
+start
+partition P {
+ :a;
+}
+rectangle R {
+ :b;
+}
+card K {
+ :c;
+}
+package L {
+ :d;
+}
+group G
+ :e;
+end group
+stop
+@enduml

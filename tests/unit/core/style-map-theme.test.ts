@@ -33,12 +33,12 @@ function styleMap(spec: Record<string, Record<string, string>>): StyleMap {
 
 describe('applyStyleMap — statediagram.arrow (mission G4 S16)', () => {
   it('maps LineColor to colors.graph.stateArrowLineColor', () => {
-    const theme = applyStyleMap(styleMap({ 'statediagram.arrow': { linecolor: 'blue' } }), defaultTheme);
+    const theme = applyStyleMap(styleMap({ 'statediagram.arrow': { linecolor: 'blue' } }), defaultTheme, 'description');
     expect(theme.colors.graph.stateArrowLineColor).toBe('blue');
   });
 
   it('maps HeadColor to colors.graph.stateArrowHeadColor', () => {
-    const theme = applyStyleMap(styleMap({ 'statediagram.arrow': { headcolor: 'red' } }), defaultTheme);
+    const theme = applyStyleMap(styleMap({ 'statediagram.arrow': { headcolor: 'red' } }), defaultTheme, 'description');
     expect(theme.colors.graph.stateArrowHeadColor).toBe('red');
   });
 
@@ -46,13 +46,14 @@ describe('applyStyleMap — statediagram.arrow (mission G4 S16)', () => {
     const theme = applyStyleMap(
       styleMap({ 'statediagram.arrow': { linecolor: 'blue', headcolor: 'red' } }),
       defaultTheme,
+      'description',
     );
     expect(theme.colors.graph.stateArrowLineColor).toBe('blue');
     expect(theme.colors.graph.stateArrowHeadColor).toBe('red');
   });
 
   it('leaves the fields unset when no statediagram.arrow selector is present', () => {
-    const theme = applyStyleMap(styleMap({}), defaultTheme);
+    const theme = applyStyleMap(styleMap({}), defaultTheme, 'description');
     expect(theme.colors.graph.stateArrowLineColor).toBeUndefined();
     expect(theme.colors.graph.stateArrowHeadColor).toBeUndefined();
   });
@@ -60,12 +61,20 @@ describe('applyStyleMap — statediagram.arrow (mission G4 S16)', () => {
 
 describe('applyStyleMap — activitybar..fork/activitybar..join (mission G4 S16)', () => {
   it('maps activitybar..fork BackGroundColor to colors.graph.activityBarForkColor', () => {
-    const theme = applyStyleMap(styleMap({ 'activitybar..fork': { backgroundcolor: 'green' } }), defaultTheme);
+    const theme = applyStyleMap(
+      styleMap({ 'activitybar..fork': { backgroundcolor: 'green' } }),
+      defaultTheme,
+      'description',
+    );
     expect(theme.colors.graph.activityBarForkColor).toBe('green');
   });
 
   it('maps activitybar..join BackGroundColor to colors.graph.activityBarJoinColor', () => {
-    const theme = applyStyleMap(styleMap({ 'activitybar..join': { backgroundcolor: 'orange' } }), defaultTheme);
+    const theme = applyStyleMap(
+      styleMap({ 'activitybar..join': { backgroundcolor: 'orange' } }),
+      defaultTheme,
+      'description',
+    );
     expect(theme.colors.graph.activityBarJoinColor).toBe('orange');
   });
 
@@ -76,6 +85,7 @@ describe('applyStyleMap — activitybar..fork/activitybar..join (mission G4 S16)
         'activitybar..join': { backgroundcolor: 'orange' },
       }),
       defaultTheme,
+      'description',
     );
     expect(theme.colors.graph.activityBarForkColor).toBe('green');
     expect(theme.colors.graph.activityBarJoinColor).toBe('orange');

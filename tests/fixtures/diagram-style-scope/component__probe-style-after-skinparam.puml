@@ -1,0 +1,7 @@
+@startuml
+<style>
+component { BackgroundColor #AAAAAA }
+</style>
+skinparam componentBackgroundColor #BBBBBB
+[C]
+@enduml

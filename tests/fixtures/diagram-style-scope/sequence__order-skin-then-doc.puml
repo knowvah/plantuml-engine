@@ -1,0 +1,9 @@
+@startuml
+skinparam backgroundColor #AAAAAA
+<style>
+document {
+  BackgroundColor #BBBBBB
+}
+</style>
+A -> B
+@enduml

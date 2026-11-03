@@ -1,0 +1,16 @@
+@startuml
+|A|
+start
+while (c) is (y)
+  |B|
+  -[#FF00FF]->
+  :a;
+endwhile (n)
+|A|
+repeat
+  |B|
+  -[#00FFFF]->
+  :b;
+repeat while (d) is (y)
+stop
+@enduml

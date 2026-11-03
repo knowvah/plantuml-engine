@@ -1,0 +1,10 @@
+@startuml
+skinparam defaultFontColor #0A0
+start
+:A;
+if (x?) then (y)
+:B;
+endif
+note left: n
+stop
+@enduml

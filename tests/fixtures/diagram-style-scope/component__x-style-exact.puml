@@ -1,0 +1,11 @@
+@startuml
+<style>
+component {
+  BackgroundColor #AAAAAA
+}
+element {
+  BackgroundColor #f1f1f1
+}
+</style>
+[A]
+@enduml

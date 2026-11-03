@@ -1,0 +1,11 @@
+@startuml
+class G<T> {
+  v
+}
+class Q
+Q::a --> G
+circle ci
+ci -- Q
+() lp
+lp -- Q
+@enduml

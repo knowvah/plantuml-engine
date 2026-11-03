@@ -1,0 +1,9 @@
+@startjson
+skinparam backgroundColor #AAAAAA
+<style>
+document {
+  BackgroundColor #FFFFFF
+}
+</style>
+{"a": 1}
+@endjson

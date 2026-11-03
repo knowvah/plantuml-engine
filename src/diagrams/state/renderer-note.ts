@@ -65,21 +65,24 @@
  *
  * NOT built this iteration (queued in full, `plans/g4-state-svg/ledger.md`
  * S10): `#color` overrides on notes (the grammar's own `NOTE_COLOR` capture
- * group is non-capturing today, `state-notes.ts`'s own doc comment); the
- * composite pipeline's own note materialization (`state-composite-pass.ts`
- * never calls into this module yet — every target fixture this iteration is
- * FLAT, `layout.ts#hasAnyComposite` false for all three).
+ * group is non-capturing today, `state-notes.ts`'s own doc comment).
  */
 import type { Paint } from '../../core/paint.js';
 import { lineTo, moveTo } from '../../core/svg-path-builder.js';
-import type { StateDiagramAST, StateNote } from './ast.js';
+import type { StateDiagramAST } from './ast.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotLayoutResult } from '../../core/graph-layout.types.js';
 import { path } from '../../core/svg.js';
-import { measureNote } from './state-note-layout.js';
+import { buildNoteGraphPartsByScope, type NoteSpec } from './state-note-layout.js';
 import { resolveStateFill } from './state-render-colors.js';
+import {
+  STATE_LINK_NOTE_BUCKET,
+  STATE_NOTE_BUCKET,
+  stateBucketColor,
+  stateBucketPaint,
+} from './state-bucket-colors.js';
 // SI30 T5: notes draw the SAME per-run styled sequence the header/body path
 // draws with -- one emitter, one baseline formula (`renderer-box.ts
 // #runBaseline`'s own doc comment), no per-engine-zone duplication.
@@ -124,21 +127,21 @@ const NOTE_CORNER_DEFAULT_STROKE_WIDTH = 1;
 type DotNode = DotLayoutResult['nodes'][number];
 type DotEdge = DotLayoutResult['edges'][number];
 
+/** A pass's own edges by id, where an attached note finds its connector. */
+export type NoteEdgePosMap = ReadonlyMap<string, DotEdge>;
+
 /** Resolve an attached note's Opale notch direction/anchors from its own
  *  routed connector-edge spline (`state-note-layout.ts#buildNoteGraphPartsByScope`
- *  already contributes a `__noteedge_<id>` DOT edge for every singleton
- *  attached-note group — `mergeKey`'s own doc comment; this mission's target
- *  fixtures never exercise a MULTI-member group, so `group.id === note.id`
- *  always holds here). `undefined` when the connector edge never resolved
+ *  contributes a `__noteedge_<id>` DOT edge for every attached note). `undefined` when the connector edge never resolved
  *  (freestanding note, or an edge id genuinely absent from this pass's own
  *  result set) — the caller falls back to the plain folded-corner box. */
 function resolveNoteOpale(
-  note: StateNote,
+  spec: NoteSpec,
   pos: Pick<DotNode, 'x' | 'y' | 'width' | 'height'>,
-  edgePosMap: ReadonlyMap<string, DotEdge>,
+  edgePosMap: NoteEdgePosMap,
 ): StateNodeGeo['noteOpale'] {
-  if (note.target === undefined) return undefined;
-  const edge = edgePosMap.get(`__noteedge_${note.id}`);
+  if (!spec.opalisable) return undefined;
+  const edge = edgePosMap.get(`__noteedge_${spec.id}`);
   if (edge === undefined) return undefined;
   return resolveOpaleConnector({ width: pos.width, height: pos.height }, { x: pos.x, y: pos.y }, edge.points);
 }
@@ -149,23 +152,23 @@ function resolveNoteOpale(
  *  #WrapLinkInfo`'s own precedent). */
 export interface FlatNoteGeoCtx {
   readonly posMap: ReadonlyMap<string, DotNode>;
-  readonly edgePosMap: ReadonlyMap<string, DotEdge>;
+  readonly edgePosMap: NoteEdgePosMap;
   readonly theme: Theme;
   readonly measurer: StringMeasurer;
 }
 
-/** One note -> a renderable `StateNodeGeo`, or `undefined` when it has no
- *  own DOT-layout position (composite-scoped notes this iteration, or a
- *  genuinely orphaned note — see {@link buildFlatNoteGeos}'s own doc
- *  comment). Split out purely to keep {@link buildFlatNoteGeos} under this
- *  project's per-function NLOC cap. */
-function buildOneNoteGeo(note: StateNote, ctx: FlatNoteGeoCtx): StateNodeGeo | undefined {
-  const pos = ctx.posMap.get(note.id);
+/** One note spec -> a renderable `StateNodeGeo`, read from its own pass's
+ *  layout; `undefined` when that pass laid out no node for it. */
+export function materializeNoteSpec(
+  spec: NoteSpec,
+  posMap: ReadonlyMap<string, DotNode>,
+  edgePosMap: NoteEdgePosMap,
+): StateNodeGeo | undefined {
+  const pos = posMap.get(spec.id);
   if (pos === undefined) return undefined;
-  const m = measureNote(note.text, ctx.theme, ctx.measurer);
-  const opale = resolveNoteOpale(note, pos, ctx.edgePosMap);
+  const opale = resolveNoteOpale(spec, pos, edgePosMap);
   return {
-    id: note.id,
+    id: spec.id,
     kind: 'note',
     display: '',
     x: pos.x,
@@ -174,26 +177,26 @@ function buildOneNoteGeo(note: StateNote, ctx: FlatNoteGeoCtx): StateNodeGeo | u
     height: pos.height,
     children: [],
     transitions: [],
-    noteLines: m.lines,
+    noteLines: spec.lines,
     ...(opale !== undefined ? { noteOpale: opale } : {}),
-    ...(note.creationIndex !== undefined ? { creationIndex: note.creationIndex } : {}),
-    ...(note.color !== undefined ? { color: note.color } : {}),
+    ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
+    ...(spec.color !== undefined ? { color: spec.color } : {}),
   };
 }
 
 /**
- * Map the diagram's OWN top-level notes (`StateNote.scopeId === ''`) into
- * renderable `StateNodeGeo` entries — the flat pipeline's own note
- * materialization (`layout.ts#buildFlatStateGeos`'s missing piece named by
- * S9's own diagnosis). A composite-scoped note (`scopeId !== ''`) is
- * skipped entirely — the composite pipeline's own materialization is a
- * separate, unbuilt piece this iteration (module doc comment).
+ * Map a composite-free diagram's notes into renderable `StateNodeGeo` entries —
+ * the flat pipeline's own note materialization (`layout.ts#buildFlatStateGeos`'s
+ * missing piece named by S9's own diagnosis). The composite pipeline's notes
+ * ride each pass's `GeoSpec` tree instead (`state-composite-geo.ts
+ * #materializeSpecs`); a flat diagram has the top scope only.
  */
 export function buildFlatNoteGeos(ast: StateDiagramAST, ctx: FlatNoteGeoCtx): StateNodeGeo[] {
+  const rankdir = ast.rankdir === 'left-to-right' ? 'LR' : 'TB';
+  const specs = buildNoteGraphPartsByScope(ast.notes ?? [], ctx.theme, ctx.measurer, rankdir).get('')?.specs ?? [];
   const geos: StateNodeGeo[] = [];
-  for (const note of ast.notes ?? []) {
-    if (note.scopeId !== '') continue;
-    const geo = buildOneNoteGeo(note, ctx);
+  for (const spec of specs) {
+    const geo = materializeNoteSpec(spec, ctx.posMap, ctx.edgePosMap);
     if (geo !== undefined) geos.push(geo);
   }
   return geos;
@@ -220,13 +223,25 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
       // (`Opale.java:107`), a sprite's tint back.
       renderStateRuns(ln.runs, node.x + NOTE_MARGIN_X1, lineTop, height, {
         fontFamily: theme.fontFamily,
-        fill: '#000000',
+        fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
         back,
       }),
     );
     lineTop += height;
   }
   return parts.join('');
+}
+
+/** dss T3c sites 10-11: `EntityImageNote.java:100-108` -- the inline `#color`
+ *  wins the fill, else the `note` style's BackGroundColor; the border is that
+ *  style's LineColor (`:108`). The `note` bucket holds the builder's merge of
+ *  every selector (`EntityImageNote.java:188-189`); the defaults are the
+ *  note's own. */
+function noteInk(node: StateNodeGeo, theme: Theme): { fill: Paint; stroke: Paint } {
+  return {
+    fill: resolveStateFill(node, stateBucketPaint(theme, STATE_NOTE_BUCKET, 'background') ?? NOTE_FILL),
+    stroke: stateBucketPaint(theme, STATE_NOTE_BUCKET, 'border') ?? theme.colors.border,
+  };
 }
 
 /** Freestanding note: `Opale.getPolygonNormal`/`getCorner` at `roundCorner
@@ -236,7 +251,7 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
 export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): string {
   const { x, y, width: w, height: h } = node;
   const c = NOTE_FOLD;
-  const fill = resolveStateFill(node, NOTE_FILL);
+  const { fill, stroke } = noteInk(node, theme);
   const outline = [
     moveTo(x, y),
     lineTo(x, y + h),
@@ -247,8 +262,8 @@ export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): s
   ].join(' ');
   const corner = [moveTo(x + w - c, y), lineTo(x + w - c, y + c), lineTo(x + w, y + c), lineTo(x + w - c, y)].join(' ');
   return (
-    path(outline, { fill, stroke: theme.colors.border, strokeWidth: NOTE_STROKE_WIDTH }) +
-    path(corner, { fill, stroke: theme.colors.border, strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH }) +
+    path(outline, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
+    path(corner, { fill, stroke, strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH }) +
     renderNoteTextLines(node, theme, fill)
   );
 }
@@ -270,10 +285,10 @@ export function renderStateNoteOpale(node: StateNodeGeo, theme: Theme): string {
   const connector = { pp1: opale.pp1, pp2: opale.pp2 };
   const outline = OPALE_OUTLINE_FN[opale.direction](box, connector);
   const corner = opaleCorner({ x: node.x, y: node.y }, node.width);
-  const fill = resolveStateFill(node, NOTE_FILL);
+  const { fill, stroke } = noteInk(node, theme);
   return (
-    path(outline, { fill, stroke: theme.colors.border, strokeWidth: NOTE_STROKE_WIDTH }) +
-    path(corner, { fill, stroke: theme.colors.border, strokeWidth: NOTE_STROKE_WIDTH }) +
+    path(outline, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
+    path(corner, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
     renderNoteTextLines(node, theme, fill)
   );
 }
@@ -300,6 +315,16 @@ export function renderStateNote(node: StateNodeGeo, theme: Theme): string {
  *  offset, not just a dimension term. */
 const ROSE_NOTE_PADDING = 5;
 
+/** dss T3e site 13: `EntityImageNoteLink.java:64` signs `ComponentType.NOTE`'s `root, element,
+ *  sequenceDiagram, note` (`ComponentType.java:98-99`), so `stateDiagram { }` never reaches it; the
+ *  `note.link` bucket holds the builder's merge of that signature (`style-element-scope.ts`). */
+function linkNoteInk(theme: Theme): { fill: Paint; stroke: Paint } {
+  return {
+    fill: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'background') ?? NOTE_FILL,
+    stroke: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'border') ?? theme.colors.border,
+  };
+}
+
 /** `ComponentRoseNote#drawInternalU` (`skin/rose/ComponentRoseNote.java`):
  *  `box` is `TransitionGeo.label`'s own `{x,y,width,height}` — already the
  *  FULL preferred box (`core/rose-note-dim.ts#roseNoteDim`'s derivation,
@@ -316,15 +341,12 @@ const ROSE_NOTE_PADDING = 5;
  *  comment) — jar-verified against `vateco-92-pece508`'s own canonical SVG
  *  (both `<path>`s there carry `stroke-width:0.5`).
  *
- *  Scoped to this task's sole target (tumaba-64-tosu281): a single-line note
- *  merged with an EMPTY inline label, where `labelText` reduces to the RAW
- *  `EntityImageNoteLink` block (`TransitionGeo.label`'s own doc comment) and
  *  `drawInternalU`'s `x2` never stretches past `getTextWidth` (`area.width >
- *  getPreferredWidth` never holds). A note merged with a NON-empty inline
- *  label — where the polygon DOES stretch — is out of scope, same residue
- *  `computeMergedLabelBox`'s own doc comment already flags for the merge
- *  term; no note fill/color override either (`Transition.linkNoteColor`
- *  gap, `state-notes.ts`'s own doc comment). */
+ *  getPreferredWidth` never holds: the area is the note operand's own
+ *  preferred box, `EntityImageNoteLink.java:69-73`). A note merged with an
+ *  inline label draws that label beside it (`buildLinkNoteMarkup`, dss T3e);
+ *  no note `#color` override (`Transition.linkNoteColor` gap,
+ *  `state-notes.ts`'s own doc comment). */
 export function renderNoteOnLink(
   box: { x: number; y: number; width: number; height: number },
   lines: readonly StateTextLine[],
@@ -349,10 +371,8 @@ export function renderNoteOnLink(
     lineTo(px + pw, py + c),
     lineTo(px + pw - c, py),
   ].join(' ');
-  const shapeMarkup =
-    path(outline, { fill: NOTE_FILL, stroke: theme.colors.border, strokeWidth: NOTE_STROKE_WIDTH }) +
-    path(corner, { fill: NOTE_FILL, stroke: theme.colors.border, strokeWidth: NOTE_STROKE_WIDTH });
-  return shapeMarkup + renderNoteOnLinkTextLines(px, py, lines, theme);
+  const paint = { ...linkNoteInk(theme), strokeWidth: NOTE_STROKE_WIDTH };
+  return path(outline, paint) + path(corner, paint) + renderNoteOnLinkTextLines(px, py, lines, theme, paint.fill);
 }
 
 /** Split out of {@link renderNoteOnLink} to stay under this project's
@@ -363,7 +383,13 @@ export function renderNoteOnLink(
  *  the SAME way `renderNoteTextLines` does — this label's own producer
  *  (`state-composite-edge-label.ts#measureLinkNoteDim`'s
  *  `state-note-layout.ts#measureNote` reuse) already builds the styled shape. */
-function renderNoteOnLinkTextLines(px: number, py: number, lines: readonly StateTextLine[], theme: Theme): string {
+function renderNoteOnLinkTextLines(
+  px: number,
+  py: number,
+  lines: readonly StateTextLine[],
+  theme: Theme,
+  back: Paint,
+): string {
   const styled = styledLines(lines, NOTE_FONT_SIZE);
   const parts: string[] = [];
   let lineTop = py + NOTE_MARGIN_Y;
@@ -372,8 +398,8 @@ function renderNoteOnLinkTextLines(px: number, py: number, lines: readonly State
     parts.push(
       renderStateRuns(ln.runs, px + NOTE_MARGIN_X1, lineTop, height, {
         fontFamily: theme.fontFamily,
-        fill: '#000000',
-        back: NOTE_FILL,
+        fill: stateBucketColor(theme, STATE_LINK_NOTE_BUCKET, 'font') ?? '#000000',
+        back,
       }),
     );
     lineTop += height;

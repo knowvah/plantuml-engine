@@ -1,0 +1,7 @@
+@startuml
+<style>
+root { Margin 10
+ Padding 6 }
+</style>
+class A
+@enduml

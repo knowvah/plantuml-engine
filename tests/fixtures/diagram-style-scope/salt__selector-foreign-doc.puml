@@ -1,0 +1,12 @@
+@startsalt
+<style>
+classDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+{
+  Hello
+}
+@endsalt

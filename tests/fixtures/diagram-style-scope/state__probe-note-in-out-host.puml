@@ -1,0 +1,7 @@
+@startuml
+state Z
+state A {
+  state B
+  note left of Z : k
+}
+@enduml

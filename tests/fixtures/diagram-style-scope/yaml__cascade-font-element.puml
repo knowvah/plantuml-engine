@@ -1,0 +1,10 @@
+@startyaml
+<style>
+element {
+  FontColor #0000BB
+}
+</style>
+a: 1
+b:
+  c: 2
+@endyaml

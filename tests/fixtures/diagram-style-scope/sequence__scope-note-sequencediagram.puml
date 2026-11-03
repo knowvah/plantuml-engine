@@ -1,0 +1,11 @@
+@startuml
+<style>
+sequenceDiagram {
+  note {
+    BackgroundColor red
+  }
+}
+</style>
+A -> B
+note left: n
+@enduml

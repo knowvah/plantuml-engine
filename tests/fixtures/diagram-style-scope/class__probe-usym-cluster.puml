@@ -1,0 +1,12 @@
+@startuml
+<style>
+element { BackgroundColor #008000 }
+group { BackgroundColor #0000FF }
+</style>
+rectangle R {
+ class A
+}
+folder F {
+ class B
+}
+@enduml

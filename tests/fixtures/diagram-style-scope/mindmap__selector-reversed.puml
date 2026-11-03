@@ -1,0 +1,10 @@
+@startmindmap
+<style>
+document {
+  mindmapDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+* A
+@endmindmap

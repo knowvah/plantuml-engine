@@ -6,7 +6,7 @@
  * and re-exported from `theme.ts` for backward-compatible call sites.
  */
 import type { Theme } from './theme.js';
-import type { Paint } from './paint.js';
+import type { Gradient, Paint } from './paint.js';
 import type { ElementColors } from './theme-graph-colors.js';
 import { resolveColorToSvgHex } from './klimt/color/HColorSet.js';
 import { HorizontalAlignment } from './klimt/geom/HorizontalAlignment.js';
@@ -19,6 +19,21 @@ import { HorizontalAlignment } from './klimt/geom/HorizontalAlignment.js';
  * #matchAllImpl`). Written by `style-map-element.ts#collectTagStyle`.
  */
 export const ANY_ELEMENT_BUCKET = '*';
+
+/**
+ * The gradient `bucket` holds for `role`, else `undefined`: the merged style of the element's signature
+ * (`style-element-scope.ts`) where a flat tier that reader falls through to has only a `string` type and cannot hold one.
+ * A solid value stays on that reader's own tiers.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleStorage.java:102-116
+ */
+export function elementGradient(
+  theme: Pick<Theme, 'colors'>,
+  bucket: string,
+  role: 'background' | 'border',
+): Gradient | undefined {
+  const value = theme.colors.elements?.[bucket]?.[role];
+  return typeof value === 'object' ? value : undefined;
+}
 
 /** The stereotype-keyed twin of each {@link ElementColors} colour role. */
 const STEREOTYPE_PAINT_FIELD = {

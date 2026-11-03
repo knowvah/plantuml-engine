@@ -2,16 +2,17 @@
  * Element-scoped `<style>` block routing — decision D4.
  *
  * Split out of `style-map-theme.ts` (which is at the module-size limit): this
- * holds the per-element bucket collection (T5) plus the document-background
- * resolver relocated from `applyStyleMap` to make room. Both are pure
- * functions over a {@link StyleMap}.
+ * holds the per-element bucket collection (T5), a pure function over a
+ * {@link StyleMap}. The document background is `document-back-color.ts`.
  */
 
+import type { DiagramType } from './block-extractor.js';
 import type { ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { resolveColor, ELEMENT_BUCKET_SNAMES } from './skinparam.js';
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 import { lineStyleDash } from './style-line-style.js';
+import { isForeignDiagramPrefix } from './style-element-scope.js';
 import { cleanStereotypeToken } from './style-map-tag-cascade.js';
 import { ANY_ELEMENT_BUCKET } from './theme-element-resolve.js';
 import { parseHorizontalAlignment } from './skinparam-key-handlers-table-b.js';
@@ -179,8 +180,16 @@ function isDiagramTypeSelector(selector: string): boolean {
 }
 
 function isBucketSName(sname: string): boolean {
-  return ELEMENT_BUCKET_SNAMES.has(sname) || CLUSTER_BUCKET_SNAMES.has(sname);
+  return ELEMENT_BUCKET_SNAMES.has(sname) || CLUSTER_BUCKET_SNAMES.has(sname) || STYLE_ONLY_BUCKET_SNAMES.has(sname);
 }
+
+/**
+ * SNames a `<style>` selector reaches and no flat skinparam key does: an activity `partition` frame's stereotype tier
+ * (`partition { .foo { ... } }`, `FtileGroup.java:89-92`, `CommandPartition3.java:160`). Not in
+ * {@link ELEMENT_BUCKET_SNAMES}, whose `skinparam <sname>BackgroundColor` matchers would otherwise claim
+ * `PartitionBackgroundColor`, which has its own `Partition*` fields (`FromSkinparamToStyle.java:131-133`).
+ */
+const STYLE_ONLY_BUCKET_SNAMES: ReadonlySet<string> = new Set(['partition']);
 
 /**
  * The `(sname bucket, cleaned tag)` a tag sub-selector addresses: `<sname>..
@@ -293,7 +302,7 @@ function collectTitleSubSelector(
 ): void {
   const fc = props.get('fontcolor');
   if (!ELEMENT_BUCKET_SNAMES.has(sname) || fc === undefined) return;
-  elements[sname] = { ...elements[sname], titleFont: parseColor(fc) };
+  elements[sname] = { ...elements[sname], titleFont: noGradient(parseColor(fc)) };
 }
 
 /**
@@ -321,6 +330,17 @@ function collectStereotypeTagFontSize(
 }
 
 /**
+ * D5, D5a: `<diagram>.<bucket>`, with `<diagram>` missing the signature the
+ * bucket's element reads. Its colours would land on an element the jar's
+ * subset rule never reaches (`StyleSignatureBasic.java:194-220`):
+ * `objectDiagram { note }` on a class note, `classDiagram { state }` on a state.
+ */
+function isForeignColourSelector(selector: string, bucketName: string, diagramType: DiagramType | undefined): boolean {
+  if (diagramType === undefined || selector === bucketName) return false;
+  return isForeignDiagramPrefix(selector.slice(0, -bucketName.length - 1), bucketName, diagramType);
+}
+
+/**
  * Collect per-element (SName) color/font-size buckets from element-scoped
  * style blocks (e.g. `database { BackgroundColor X }`, G1 I4b: `component {
  * FontSize N }` / `component { stereotype { FontSize N } }`). Color values
@@ -329,9 +349,16 @@ function collectStereotypeTagFontSize(
  * skinparam path (T4). Selectors are resolved via {@link
  * resolveElementBucketSelector} (bare bucket name, `<diagramType>.<bucket>`
  * nesting, or `<sname>.stereotype`); all others are left for
- * `applyStyleMap`'s existing generic/class handling.
+ * `applyStyleMap`'s existing generic/class handling. `diagramType` stops a
+ * foreign prefix's three colours ({@link isForeignColourSelector}); its other
+ * properties, font sizes first, keep collapsing (D5). `undefined` is a document
+ * whose `<style>` the parser rejects: no signature is read, its flat colours
+ * stand (D6a).
  */
-export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, ElementColors> {
+export function collectElementStyleBuckets(
+  styleMap: StyleMap,
+  diagramType: DiagramType | undefined,
+): Record<string, ElementColors> {
   const elements: Record<string, ElementColors> = {};
   for (const [selector, props] of styleMap.entries()) {
     if (collectStereotypeTagFontSize(selector, props, elements)) continue;
@@ -339,19 +366,20 @@ export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, E
     const bucketName = resolveElementBucketSelector(selector);
     if (bucketName !== undefined) {
       const bucket: ElementColors = {};
+      const foreign = isForeignColourSelector(selector, bucketName, diagramType);
       const bg = props.get('backgroundcolor');
-      if (bg !== undefined) bucket.background = parseColor(bg);
+      if (bg !== undefined && !foreign) bucket.background = parseColor(bg);
       const bd = props.get('bordercolor');
-      if (bd !== undefined) bucket.border = parseColor(bd);
+      if (bd !== undefined && !foreign) bucket.border = parseColor(bd);
       // `LineColor` is the canonical `<style>`-block border/line color PName
       // (`BorderColor` above is the skinparam-side alias); read last so an
       // explicit LineColor wins. `skin rose`'s `componentDiagram { node,
       // rectangle { LineColor black } }` tints deployment node/rectangle
       // borders black, overriding root's own #A80036 (a more-specific SName).
       const lc = props.get('linecolor');
-      if (lc !== undefined) bucket.border = parseColor(lc);
+      if (lc !== undefined && !foreign) bucket.border = parseColor(lc);
       const fc = props.get('fontcolor');
-      if (fc !== undefined) bucket.font = parseColor(fc);
+      if (fc !== undefined && !foreign) bucket.font = noGradient(parseColor(fc));
       const lt = props.get('linethickness');
       if (lt !== undefined) {
         const thickness = Number.parseFloat(lt);
@@ -429,7 +457,7 @@ export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, E
       const bg = props.get('backgroundcolor');
       if (bg !== undefined) bucket.headerBackground = parseColor(bg);
       const fc = props.get('fontcolor');
-      if (fc !== undefined) bucket.headerFont = parseColor(fc);
+      if (fc !== undefined) bucket.headerFont = noGradient(parseColor(fc));
       const fs = props.get('fontsize');
       if (fs !== undefined) {
         const size = Number(fs);
@@ -445,47 +473,6 @@ export function collectElementStyleBuckets(styleMap: StyleMap): Record<string, E
   // bucket-collection branches (bare/nested SName + `.stereotype` suffix +
   // G3/O4's `.header` suffix) push this over the CCN/NLOC threshold.
   return elements;
-}
-
-/**
- * `document { BackgroundColor }` canvas-background selector precedence,
- * broadest first ("last wins" in `resolveDocumentBackground`'s scan) —
- * mirrors upstream's style-cascade specificity rule (a more-scoped selector
- * always outranks a broader one): bare `root` < bare `document` < a
- * diagram-type-scoped `document` variant < a bare diagram-type selector <
- * that diagram type's OWN nested `document` selector (jar-verified:
- * `bikuka-40-pezi068` — `classDiagram { BackGroundColor Green }` beats
- * `root { BackGroundColor Red }`; `cilaba-36-zogi212` — `classDiagram {
- * document { BackGroundColor Yellow } }` beats `classDiagram { BackGroundColor
- * Green }`, G2 N7).
- */
-const DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE: readonly string[] = [
-  'root',
-  'document',
-  'jsondiagram.document',
-  'yamldiagram.document',
-  ...DIAGRAM_TYPE_SELECTOR_NAMES,
-  ...DIAGRAM_TYPE_SELECTOR_NAMES.map((name) => `${name}.document`),
-];
-
-/**
- * Resolve the `document { BackgroundColor }` canvas background from a
- * StyleMap. Checks the bare `document` selector then diagram-type-scoped
- * variants (last wins). Relocated verbatim from `applyStyleMap`; G2 N7
- * widened the precedence list from `document`/json`/yaml`/hcl only to also
- * cover a bare `root` selector and every DOT-gate diagram type's bare +
- * nested `document` selector (`bikuka-40-pezi068`/`cilaba-36-zogi212`).
- * dbp T1a (D1): RAW, like `style.value(PName.BackGroundColor)`; the caller
- * parses it (`.asColor`, `HColorSet.java:109-116` gradients included).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
- */
-export function resolveDocumentBackground(styleMap: StyleMap): string | undefined {
-  let documentBg: string | undefined;
-  for (const sel of DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE) {
-    const bg = styleMap.get(sel)?.get('backgroundcolor');
-    if (bg !== undefined) documentBg = bg;
-  }
-  return documentBg;
 }
 
 // cdd6 T1a: pure file-cap moves -- see `style-map-tag-cascade.ts` and

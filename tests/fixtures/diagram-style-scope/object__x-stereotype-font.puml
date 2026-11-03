@@ -1,0 +1,9 @@
+@startuml
+skinparam objectStereotypeFontColor #00BB00
+<style>
+root { FontColor #BB0000 }
+</style>
+object O <<T>> {
+ a = 1
+}
+@enduml

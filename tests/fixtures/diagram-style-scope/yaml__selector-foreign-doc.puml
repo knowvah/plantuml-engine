@@ -1,0 +1,10 @@
+@startyaml
+<style>
+classDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+a: 1
+@endyaml

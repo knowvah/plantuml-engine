@@ -11,7 +11,7 @@
  */
 
 import { parseSimpleColor, parseConditionalColor } from './klimt/color/HColorSet.js';
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 
 /** `HColors.WHITE`: what `HColorSet#getColorOrWhite` (java:58-63) returns
  *  for a token `parseColor` rejects. */
@@ -56,15 +56,13 @@ export function isColorSpec(value: string): boolean {
  * (CodeQL js/html-constructed-from-input on `svgRoot`; the jar, asked to
  * render `skinparam backgroundColor x"onload="…`, draws `#FFFFFF`).
  *
- * PlantUML supports gradient specs in the form "startColor-endColor"
- * (e.g. "#AAAAAA-white" or "#AAAAAA-red").  SVG does not understand this
- * syntax, so we extract the end color and use it as a solid fallback.
- * The end color is typically the more visually prominent tone.
+ * A gradient (`HColorSet.java:109-116`) collapses to its FIRST colour, whatever its separator: this is the flat field's
+ * one value, and `HColor#toSvg` on an `HColorGradient` prints `color1` (`HColor.java:74-79`, `HColorGradient.java:103-105`;
+ * `HColors#noGradient`, `HColors.java:139-146`). A reader that can draw the gradient reads the {@link Paint} instead.
  */
 export function resolveColor(value: string): string {
   if (!isColorSpec(value)) return UNPARSEABLE_COLOR;
-  const m = /^(.+)-([a-zA-Z]+|#[0-9A-Fa-f]{3,8})$/.exec(value);
-  return m ? (m[2] ?? value) : value;
+  return noGradient(parseColor(value));
 }
 
 /**

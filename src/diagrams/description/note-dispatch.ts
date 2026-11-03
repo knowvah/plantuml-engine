@@ -9,7 +9,8 @@
  */
 import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
 import { classifyNoteOpen, isNoteTerminator } from './note-grammar.js';
-import { closePendingNote, executeNoteOpen, type ParseState } from './parse-state.js';
+import type { ParseState } from './parse-state.js';
+import { closePendingNote, executeNoteOpen } from './parse-state-notes.js';
 
 /** `1` when the line was consumed by this phase, `null` when it doesn't
  *  apply and the next dispatch phase should be tried. */

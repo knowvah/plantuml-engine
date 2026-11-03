@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+object O
+object P
+O --> P
+@enduml

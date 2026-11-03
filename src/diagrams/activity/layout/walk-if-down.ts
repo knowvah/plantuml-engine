@@ -24,6 +24,7 @@ import { pushLaneReservation } from './swimlane-reservation-lane.js';
 import { ifElseHexagonReservation } from './hexagon-reservations.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { applyInColor, applyOutColor } from './tile-layout-inlabel.js';
 import { diamondBackOf } from './diamond-labels.js';
 import { wrappedSpread } from './diamond-wrap.js';
 
@@ -204,6 +205,7 @@ function connectionIn(ctx: IfDownCtx): void {
   const p1 = absolutePoint(t.diamond1.getCoord(SOUTH_HOOK), x + t.offsets.diamond1X, y + t.diamond1Y);
   const p2 = absolutePoint(t.mainTile.getCoord(NORTH_HOOK), x + t.offsets.mainTileX, y + t.offsets.mainTileY);
   pushEdge(out, [p1, p2], laneOut(t.diamond1, myLane), laneIn(t.mainTile, myLane));
+  applyInColor(out, t.mainTile);
 }
 
 /** `ConnectionOut` -- `mainTile.pointOut -> diamond2`'s own point, skipped
@@ -227,6 +229,7 @@ function connectionOut(ctx: IfDownCtx): void {
   // would.
   const lane2 = t.optionalStop !== null ? lane1 : myLane;
   pushEdge(out, [p1, p2], lane1, lane2);
+  applyOutColor(out, t.mainTile);
 }
 
 /** `ConnectionHorizontal` -- `diamond1` east point -> `optionalStop`'s own
@@ -243,6 +246,7 @@ function connectionHorizontal(ctx: IfDownCtx): void {
   const lane2 = laneIn(stop, myLane);
   if (!nonTranslatableConnectionDrawn(ctx.gate, lane1, lane2)) return;
   pushEdge(out, [p1, p2], lane1, lane2);
+  applyElseColor(ctx);
 }
 
 /** The wrapped then-frame's own absolute left/right edge, shared by
@@ -251,6 +255,11 @@ function wrapEdges(ctx: IfDownCtx): { left: number; right: number } {
   const { t, x } = ctx;
   const left = x + t.offsets.wrapX;
   return { left, right: left + t.offsets.wrapWidth };
+}
+
+/** The else-side connectors' colour (`FtileIfDown.java:128`, `elseColor.withDefault(arrowColor)`): colours the edge just pushed. */
+function applyElseColor(ctx: IfDownCtx): void {
+  if (ctx.t.elseColor !== undefined) ctx.out.edges[ctx.out.edges.length - 1]!.color = ctx.t.elseColor;
 }
 
 /** `ConnectionElse1` -- diamond1 WEST to diamond2's D (west) point, routed
@@ -265,6 +274,7 @@ function connectionElse1(ctx: IfDownCtx): void {
   const xmin = Math.min(p1.x - HEXAGON_HALF_SIZE, wrapLeft);
   const points = [p1, { x: xmin, y: p1.y }, { x: xmin, y: p2.y }, p2];
   pushEmphasizedEdge(out, points, [laneOut(t.diamond1, myLane), myLane], 'down');
+  applyElseColor(ctx);
   // `Connection(diamond1, diamond2)`: drawn in diamond1's lane pass (`FtileIfDown.java:308,349,360,402,440`).
   pushLaneReservation(out.reservations, ifElseHexagonReservation(p2.x, p2.y), laneOut(t.diamond1, myLane));
 }
@@ -280,6 +290,7 @@ function connectionElse2(ctx: IfDownCtx): void {
   const xmax = Math.max(p1.x + HEXAGON_HALF_SIZE, wrapRight);
   const points = [p1, { x: xmax, y: p1.y }, { x: xmax, y: p2.y }, p2];
   pushEmphasizedEdge(out, points, [laneOut(t.diamond1, myLane), myLane], 'down');
+  applyElseColor(ctx);
   // `Connection(diamond1, diamond2)`: drawn in diamond1's lane pass (`FtileIfDown.java:308,349,360,402,440`).
   pushLaneReservation(out.reservations, ifElseHexagonReservation(p2.x, p2.y), laneOut(t.diamond1, myLane));
 }
@@ -301,6 +312,7 @@ function connectionElseHline(ctx: IfDownCtx): void {
   const { right: wrapRight } = wrapEdges(ctx);
   const xmax = Math.max(p1.x + HEXAGON_HALF_SIZE, wrapRight);
   pushEdge(out, [p1, { x: xmax, y: p1.y }, { x: xmax, y: p2y }], laneOut(t.diamond1, myLane), myLane);
+  applyElseColor(ctx);
   // `Connection(diamond1, diamond2)`: drawn in diamond1's lane pass (`FtileIfDown.java:308,349,360,402,440`).
   pushLaneReservation(out.reservations, ifElseHexagonReservation(xmax, p2y), laneOut(t.diamond1, myLane));
 }
@@ -324,6 +336,7 @@ function connectionHline(ctx: IfDownCtx): void {
   const edge = out.edges[out.edges.length - 1]!;
   edge.arrowhead = false;
   edge.mergeable = 'NONE';
+  applyElseColor(ctx);
 }
 
 /** `ConnectionElseNoDiamond` -- `Else2`'s own shape, but ending at the
@@ -337,6 +350,7 @@ function connectionElseNoDiamond(ctx: IfDownCtx): void {
   const xmax = Math.max(p1.x + HEXAGON_HALF_SIZE, wrapRight);
   const points = [p1, { x: xmax, y: p1.y }, { x: xmax, y: p2.y }, p2];
   pushEmphasizedEdge(out, points, [laneOut(t.diamond1, myLane), myLane], 'down');
+  applyElseColor(ctx);
   // `Connection(diamond1, diamond2)`: drawn in diamond1's lane pass (`FtileIfDown.java:308,349,360,402,440`).
   pushLaneReservation(out.reservations, ifElseHexagonReservation(p2.x, p2.y), laneOut(t.diamond1, myLane));
 }

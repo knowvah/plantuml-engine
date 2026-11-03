@@ -1,0 +1,6 @@
+@startuml
+component C #0A0-00A
+node D #0A0-00A
+C --> D : l
+note left of C #0A0-00A : n
+@enduml

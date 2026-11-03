@@ -432,7 +432,7 @@ export function resolveClusterComposite(
   });
   const pseudoSpecs = addLocalPseudoNodes(s.id, s.transitions, acc, ctx.pseudoCreationIndex);
   for (const p of pseudoSpecs) cluster.nodeIds.push(p.id);
-  addScopeNotes(s.id, ctx, acc, cluster);
+  const noteSpecs = addScopeNotes(s.id, ctx, acc, [...pseudoSpecs, ...childSpecs, ...regionSpecs], cluster);
   if (ctx.classify.needsAnchor.has(s.id)) {
     // The POINT NODE is strictly narrower than the port-block gate itself
     // (ClassifyResult.needsZaentPoint's doc, state-composite-classify.ts) --
@@ -454,7 +454,7 @@ export function resolveClusterComposite(
     kind: 'cluster',
     id: s.id,
     display: s.display,
-    children: sortSpecsByCreationIndex([...pseudoSpecs, ...childSpecs, ...regionSpecs]),
+    children: sortSpecsByCreationIndex([...pseudoSpecs, ...childSpecs, ...regionSpecs, ...noteSpecs]),
     clusterId,
     titleWidth: title.width,
     clusterHeaderHeight: CLUSTER_HEADER_HEIGHT,

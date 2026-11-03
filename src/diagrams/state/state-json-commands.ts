@@ -176,12 +176,12 @@ function adapt(ps: ParseState, pass: Pass): JsonCommandHost<State> {
 export const JSON_COMMANDS: readonly Command[] = [
   {
     pattern: JSON_MULTILINE_DECL_RE,
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute: (ps, match, pass) => applyJsonMultilineOpen(adapt(ps, pass), match),
   },
   {
     pattern: JSON_SINGLE_LINE_RE,
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute: (ps, match, pass) => applyJsonSingleLine(adapt(ps, pass), match),
   },
 ];

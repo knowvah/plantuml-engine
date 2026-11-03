@@ -118,6 +118,8 @@ import { shiftClassifierGeo, shiftEdgeGeo, shiftNamespaceGeo, shiftNoteGeo } fro
 import { svekDimension, svekInkShift, type InkExtent } from '../../core/svek/SvekResult.js';
 import { applyCucaDocumentMargin } from '../../core/TextBlockExporter.js';
 import type { NoteGeo } from './note-layout.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
+import type { Theme } from '../../core/theme.js';
 
 /** `CucaDiagram#getDefaultMargins()` (net/atmp/CucaDiagram.java:719-722) —
  *  "Strange numbers here for backwards compatibility": top=0, right=5,
@@ -153,6 +155,9 @@ const KAL_DIM_DELTA_Y = 2;
  * `calculateDimension` measures (`svek/SvekResult.java:130-134`).
  */
 export interface ClassInkOptions extends InkBoxOptions {
+  /** dss T3b: the document margin `TextBlockExporter.Builder#calculateMargin` picks (`classDocumentMargin`);
+   *  absent is `CucaDiagram#getDefaultMargins()`. Not applied under a mainframe ({@link mainframePlacement}). */
+  readonly margin?: DocumentMargin | undefined;
   readonly svek?: SvekDrawState | undefined;
   /** cdd6 T3b: the diagram carries a `mainframe`, so `SvekResult
    *  #calculateDimension` (and its `moveDelta`) never runs -- see
@@ -282,8 +287,24 @@ export function computeClassRawInkDims(
  * for the chrome path (`index.ts#applyAnnotationChrome`) — see {@link
  * computeClassRawInkDims}'s doc comment for the full mechanism.
  */
-export function applyClassDocumentMargin(dims: ClassDocumentDims): ClassDocumentDims {
-  return applyCucaDocumentMargin(dims);
+export function applyClassDocumentMargin(dims: ClassDocumentDims, margin?: DocumentMargin): ClassDocumentDims {
+  return applyCucaDocumentMargin(dims, margin);
+}
+
+/**
+ * The margin the exporter applies to a class or object document: the merged `{root, document}` style's `Margin` when
+ * it has one (`theme.diagramMargin`), else `CucaDiagram#getDefaultMargins()` `(0, 5, 5, 0)`.
+ * `undefined` is that default, so every caller keeps today's value when nothing sets a margin.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:510-516
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/atmp/CucaDiagram.java:741-745
+ */
+export function classDocumentMargin(theme: Theme): DocumentMargin | undefined {
+  return theme.diagramMargin;
+}
+
+/** `ClassGeometry.documentMargin` when a style set one, else nothing. */
+export function documentMarginField(margin: DocumentMargin | undefined): { documentMargin?: DocumentMargin } {
+  return margin === undefined ? {} : { documentMargin: margin };
 }
 
 /**
@@ -307,7 +328,7 @@ export function computeClassDocumentDims(
   // sentinel (no ink walked) is indistinguishable in VALUE from "1x1 ink at
   // the origin", but only the former should skip margin/quirk entirely.
   if (raw.width === 0 && raw.height === 0) return raw;
-  return applyClassDocumentMargin(raw);
+  return applyClassDocumentMargin(raw, options?.margin);
 }
 
 export interface InkShift {
@@ -387,7 +408,10 @@ function mainframePlacement(box: InkExtent, m: { readonly x: number; readonly y:
  *  absence under a mainframe ({@link mainframePlacement}). */
 function svekPlacement(box: InkExtent, options: ClassInkOptions): SvekPlacement {
   if (options.mainframe === true) return mainframePlacement(box, options.svek?.m ?? { x: 0, y: 0 });
-  const shift = svekInkShift(box);
+  // `TextBlockExporter#exportTo` translates the whole drawing by `(margin.left, margin.top)` (`:173`), so a style
+  // margin moves every position, the edges' replay frame included.
+  const ink = svekInkShift(box);
+  const shift = { dx: ink.dx + (options.margin?.left ?? 0), dy: ink.dy + (options.margin?.top ?? 0) };
   return { shift, drawFrame: shift };
 }
 
@@ -451,6 +475,7 @@ export function assembleShiftedGeometry(
     totalHeight: documentDims.height,
     rawWidth: placement.raw?.width ?? rawDims.width,
     rawHeight: placement.raw?.height ?? rawDims.height,
+    ...(inkOptions.margin !== undefined && inkOptions.mainframe !== true ? { documentMargin: inkOptions.margin } : {}),
     leaves: [
       ...classifiers.map((c) => shiftClassifierGeo(c, shift.dx, shift.dy)),
       ...notes.map((n) => shiftNoteGeo(n, shift.dx, shift.dy)),

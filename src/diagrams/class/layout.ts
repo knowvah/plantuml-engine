@@ -43,7 +43,7 @@ import { measureCircleInterface } from './class-layout-leaf-shapes.js';
 import { buildDotGraph, inNodeMapOrder } from './class-dot-graph.js';
 import { computeLeafDrawOrder } from './class-leaf-order.js';
 // cdd4-T10: `assembleShiftedGeometry` moved to `layout-ink-extent.ts` (500-line cap, pure move).
-import { assembleShiftedGeometry, applyClassDocumentMargin } from './layout-ink-extent.js';
+import { assembleShiftedGeometry, applyClassDocumentMargin, classDocumentMargin } from './layout-ink-extent.js';
 import { iconSizeOf } from './class-visibility-icon.js';
 import { applyTopUrlToClassifiers } from './class-url.js';
 import { resolveClassScaleFactor } from './class-layout-scale-resolve.js';
@@ -237,12 +237,14 @@ export function layoutSinglePage(ast: ClassDiagramAST, theme: Theme, measurer: S
     ast.notes.length === 0
   ) {
     const rawDims = { width: EMPTY_DIAGRAM_SIMPLE_EMPTY_SIZE, height: EMPTY_DIAGRAM_SIMPLE_EMPTY_SIZE };
-    const totalDims = applyClassDocumentMargin(rawDims);
+    const margin = classDocumentMargin(theme);
+    const totalDims = applyClassDocumentMargin(rawDims, margin);
     return {
       totalWidth: totalDims.width,
       totalHeight: totalDims.height,
       rawWidth: rawDims.width,
       rawHeight: rawDims.height,
+      ...(margin === undefined ? {} : { documentMargin: margin }),
       leaves: [],
       edges: [],
       namespaces: [],
@@ -427,6 +429,7 @@ export function layoutSinglePage(ast: ClassDiagramAST, theme: Theme, measurer: S
   // T11 (cdd3, Q-5): `cardinalityFontSize` rides alongside `iconSize` now (5-param cap on the callee).
   const assembled = assembleShiftedGeometry(classifiers, namespaces, markedEdges, notes, {
     iconSize: iconSizeOf(theme),
+    margin: classDocumentMargin(theme),
     cardinalityFontSize: theme.cardinalityFontSize,
     svek, // cdd4-T10: `SvekResult#drawU`'s pass-0 state (`class-svek-pass0.ts`)
     // cdd6 T3b: no `moveDelta` under a mainframe (`layout-ink-extent.ts#mainframePlacement`).

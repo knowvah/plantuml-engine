@@ -1,0 +1,8 @@
+@startuml
+|#0A0-00A|S1|
+start
+:A;
+|S2|
+:B;
+stop
+@enduml

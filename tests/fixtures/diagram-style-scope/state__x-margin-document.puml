@@ -1,0 +1,8 @@
+@startuml
+<style>
+document { Margin 20 }
+</style>
+[*] --> A
+A --> B : l
+B --> [*]
+@enduml

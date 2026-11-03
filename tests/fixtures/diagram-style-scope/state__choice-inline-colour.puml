@@ -1,0 +1,5 @@
+@startuml
+state C <<choice>> #red
+state A
+A --> C
+@enduml

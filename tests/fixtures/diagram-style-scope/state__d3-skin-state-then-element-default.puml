@@ -1,0 +1,9 @@
+@startuml
+skinparam stateBackgroundColor #AAAAAA
+<style>
+element {
+  BackgroundColor #F1F1F1
+}
+</style>
+state A
+@enduml

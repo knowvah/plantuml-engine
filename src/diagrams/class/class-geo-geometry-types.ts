@@ -7,6 +7,7 @@
  * `JsonBodyItem` splits.
  */
 import type { StringMeasurer } from '../../core/measurer.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { ClassElkGeometry, EdgeGeo } from './class-geo-types.js';
 import type { NamespaceGeo } from './class-geo-namespace-types.js';
@@ -39,6 +40,9 @@ export interface ClassGeometry {
    */
   rawWidth?: number;
   rawHeight?: number;
+  /** dss T3b: the style `Margin` the body was drawn inside (`TextBlockExporter.java:510-516`); becomes
+   *  `RenderFragment.documentMargin`. Absent: `CucaDiagram#getDefaultMargins()`, or a mainframe (not applied). */
+  documentMargin?: DocumentMargin;
   edges: EdgeGeo[];
   namespaces: NamespaceGeo[];
   /** Single leaf collection, replacing `classifiers`/`notes` (T3) -- see `class-leaf-geo.ts`'s doc comment for jar mechanism + draw-order. */

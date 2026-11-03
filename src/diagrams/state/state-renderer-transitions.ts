@@ -9,6 +9,7 @@ import type { TransitionGeo } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import type {} from '../../core/dispatcher.js';
 import { path, text } from '../../core/svg.js';
+import { withContentGradientIds } from '../../core/svg-defs.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { INITIAL_ID, FINAL_ID } from './state-dot-graph.js';
 import {} from './renderer-uid.js';
@@ -19,16 +20,17 @@ import {
   applyHeadTrim,
   buildCircleEndMarkup,
   buildCrossStartMarkup,
+  type TransitionArrowhead,
 } from './renderer-arrowhead.js';
 import {} from './renderer-pseudostate.js';
 import {} from './renderer-box.js';
 import { resolveStateArrowLineColor, resolveStateArrowHeadColor } from './state-render-colors.js';
+import { STATE_ARROW_BUCKET, stateBucketColor, stateBucketPaint } from './state-bucket-colors.js';
 import {} from './renderer-composite-box.js';
 import { renderNoteOnLink } from './renderer-note.js';
 import {} from './state-shadow.js';
 
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
-import { noGradient } from '../../core/paint.js';
 
 /**
  * mission G4 S8 (mechanism 19): `TransitionGeo.points` is a well-formed
@@ -152,17 +154,49 @@ function transitionLabelFontAttrs(theme: Theme): {
  *  (`TransitionGeo.label`'s own doc comment), not a baseline anchor. */
 function buildTransitionLabelMarkup(transition: TransitionGeo, theme: Theme): string {
   if (transition.label === undefined) return '';
-  if (transition.label.noteLines !== undefined) {
-    const { x, y, width = 0, height = 0, noteLines } = transition.label;
-    return renderNoteOnLink({ x, y, width, height }, noteLines, theme);
-  }
+  if (transition.label.noteLines !== undefined) return buildLinkNoteMarkup(transition.label, theme);
+  return buildInlineLabelMarkup(transition.label, theme);
+}
+
+/** An ordinary inline label's `<text>`: the `arrow` signature's font colour, the label's own font. */
+function buildInlineLabelMarkup(
+  label: { text: string; x: number; y: number; textLength?: number | undefined },
+  theme: Theme,
+): string {
   const { color, ...fontAttrs } = transitionLabelFontAttrs(theme);
-  return text(transition.label.x, transition.label.y, transition.label.text, {
+  return text(label.x, label.y, label.text, {
     ...fontAttrs,
-    fill: color,
-    ...(transition.label.textLength !== undefined ? { textLength: transition.label.textLength } : {}),
+    // dss T3c site 9: the label's FontColor is the `arrow` style's
+    // (`SvekEdge.java:817-819`); `core/arrow-label-font.ts` is outside T3c's
+    // write-set, so the scoped colour overrides its answer here.
+    fill: stateBucketColor(theme, STATE_ARROW_BUCKET, 'font') ?? color,
+    ...(label.textLength !== undefined ? { textLength: label.textLength } : {}),
   });
 }
+
+/** A link's note, with its inline label when it has one. dss T3e: `SvekEdge.java:307-325,950-954` draws
+ *  both operands of the merged block, in `TextBlockVertical`/`TextBlockHorizontal` order (the note first
+ *  for `Position.LEFT`/`TOP`, else the label first). */
+function buildLinkNoteMarkup(label: NonNullable<TransitionGeo['label']>, theme: Theme): string {
+  const { x, y, width = 0, height = 0, noteLines = [], linkLabel } = label;
+  const note = renderNoteOnLink({ x, y, width, height }, noteLines, theme);
+  if (linkLabel === undefined) return note;
+  const inline = buildInlineLabelMarkup(
+    {
+      text: linkLabel.text,
+      x: x + linkLabel.dx,
+      y: y + linkLabel.dy,
+      textLength: linkLabel.textLength,
+    },
+    theme,
+  );
+  return label.noteFirst === true ? note + inline : inline + note;
+}
+
+/** `LinkStyle.DASHED`'s `7,7` as the jar writes it on a note's line. */
+const NOTE_LINK_DASH = '7,7';
+/** `data-link-type` of a link with no decor at either end. */
+const NOTE_LINK_TYPE = 'association';
 
 /** Path + inline arrowhead + optional label — the wrapped `<g class=
  *  "link">`'s inner content, split out of {@link renderTransitionWrapped}
@@ -184,8 +218,33 @@ function buildTransitionInnerMarkup(
   // mission G4 S16: <style> stateDiagram { arrow { LineColor HeadColor
   // } } } -- see state-render-colors.ts#resolveStateArrowLineColor's own
   // doc comment.
-  const arrowLineColor = resolveStateArrowLineColor(theme, noGradient(theme.colors.arrow));
-  const arrowHeadColor = resolveStateArrowHeadColor(theme, noGradient(theme.colors.arrow));
+  //
+  // dss T3c sites 7-8: `SvekEdge.java:817-819,857-861` signs `root, element,
+  // stateDiagram, arrow`; `Rainbow.build(Style, HColorSet)`
+  // (`Rainbow.java:84-95`) takes LineColor for the line and HeadColor, which
+  // falls back to that same LineColor, for the head. The scoped LineColor
+  // (`arrow` bucket) comes first, as it is the builder's merge of every
+  // selector; the flat `stateArrow*Color` fields keep their own tiers below.
+  const scopedLine = stateBucketPaint(theme, STATE_ARROW_BUCKET, 'border');
+  const flatFallback = theme.colors.arrow;
+  const arrowLineColor = scopedLine ?? resolveStateArrowLineColor(theme, flatFallback);
+  // dss T3f: a note's `Link` is `LinkType(NONE, NONE).goDashed()`
+  // (`CommandFactoryNoteOnEntity.java:342`): no decor, the `DotPath` whole.
+  if (transition.noteLinkId !== undefined) {
+    return path(buildPathD(transition.points), {
+      stroke: arrowLineColor,
+      strokeWidth: 1,
+      strokeDasharray: NOTE_LINK_DASH,
+      id: transition.noteLinkId,
+    });
+  }
+  const headOverride = theme.colors.graph.stateArrowHeadColor;
+  const arrowHeadColor =
+    scopedLine === undefined
+      ? resolveStateArrowHeadColor(theme, flatFallback)
+      : headOverride !== undefined
+        ? resolveColorToSvgHex(headOverride)
+        : scopedLine;
   const arrowhead = buildTransitionArrowhead(transition, arrowHeadColor, 1);
   const points = applyHeadTrim(transition.points, arrowhead.trim);
   const d = buildPathD(points);
@@ -216,7 +275,16 @@ function buildTransitionInnerMarkup(
 
   const labelEl = buildTransitionLabelMarkup(transition, theme);
 
-  return pathEl + crossStartEl + arrowhead.markup + circleEndEl + labelEl;
+  return pathEl + crossStartEl + arrowheadWithDefs(arrowhead) + circleEndEl + labelEl;
+}
+
+/**
+ * One `SvgGraphics` draws all of it upstream (`SvekEdge#drawU`); the extremity's throwaway document numbered its own
+ * gradient, so that def rides inline under its content id (`svg-defs.ts#withContentGradientIds`).
+ */
+function arrowheadWithDefs(arrowhead: TransitionArrowhead): string {
+  const head = withContentGradientIds(arrowhead.extraDefs, arrowhead.markup);
+  return head.defs + head.body;
 }
 
 export function renderTransitionWrapped(
@@ -235,6 +303,7 @@ export function renderTransitionWrapped(
       uid,
       fromUid: uidPlan.resolveNodeUid(transition.from),
       toUid: uidPlan.resolveNodeUid(transition.to),
+      ...(transition.noteLinkId !== undefined ? { linkType: NOTE_LINK_TYPE } : {}),
     },
     inner,
   );

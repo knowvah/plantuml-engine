@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  componentDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+[A]
+@enduml

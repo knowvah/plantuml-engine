@@ -1,0 +1,14 @@
+@startuml
+<style>
+root {
+  LineColor #BB0000
+}
+</style>
+state S {
+  a --> b
+  --
+  c --> d
+}
+state X : body line
+X --> S
+@enduml

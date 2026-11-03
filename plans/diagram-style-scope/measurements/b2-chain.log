@@ -1,0 +1,268 @@
+wait load 14.16
+wait load 14.29
+wait load 11.64
+wait load 9.77
+wait load 8.42
+wait load 8.04
+== activity 18:16:27 { 7.93 14.52 14.56 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-activity.json — {"conformant":449,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.07
+wait load 8.81
+wait load 8.96
+== board 18:18:29 { 7.90 12.47 13.74 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-board.json — {"conformant":0,"structural-match":0,"diverged":4,"errored":0,"timeout":0,"oracle-error":0}
+wait load 10.72
+wait load 11.44
+wait load 15.63
+wait load 14.19
+wait load 16.28
+wait load 21.39
+wait load 28.51
+wait load 25.64
+wait load 22.28
+wait load 24.54
+wait load 27.14
+wait load 26.29
+wait load 21.81
+wait load 24.73
+wait load 28.55
+wait load 29.83
+wait load 24.91
+wait load 21.44
+wait load 21.35
+wait load 17.25
+wait load 14.66
+wait load 13.33
+wait load 19.28
+wait load 20.25
+wait load 16.86
+wait load 21.65
+wait load 19.99
+wait load 19.19
+wait load 19.57
+wait load 18.12
+wait load 16.86
+wait load 20.71
+wait load 17.58
+wait load 16.00
+wait load 18.69
+wait load 20.15
+wait load 24.18
+wait load 25.04
+wait load 24.81
+wait load 28.72
+wait load 20.87
+wait load 26.96
+wait load 25.27
+wait load 29.89
+wait load 23.34
+wait load 21.31
+wait load 22.61
+wait load 24.50
+wait load 24.73
+wait load 24.21
+wait load 35.33
+wait load 31.94
+wait load 27.82
+wait load 24.82
+wait load 23.25
+wait load 20.33
+wait load 17.41
+wait load 17.82
+wait load 16.29
+wait load 14.77
+wait load 13.77
+wait load 18.03
+wait load 17.77
+wait load 17.55
+wait load 17.33
+wait load 16.55
+wait load 19.53
+wait load 20.74
+wait load 22.97
+wait load 31.39
+wait load 42.43
+wait load 37.73
+wait load 31.65
+wait load 26.26
+wait load 23.68
+wait load 24.63
+wait load 23.43
+wait load 20.20
+wait load 17.33
+wait load 22.63
+wait load 24.68
+wait load 17.80
+wait load 13.27
+wait load 11.45
+wait load 10.09
+wait load 9.34
+wait load 8.18
+== c4 19:02:36 { 7.91 15.72 19.42 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-c4.json — {"conformant":2,"structural-match":0,"diverged":9,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.30
+wait load 8.48
+wait load 8.05
+== chart 19:04:43 { 7.55 13.03 17.85 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-chart.json — {"conformant":0,"structural-match":0,"diverged":29,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.63
+wait load 8.11
+== chronology 19:06:17 { 7.94 11.74 16.84 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-chronology.json — {"conformant":0,"structural-match":0,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.09
+wait load 8.94
+wait load 8.08
+== class 19:08:17 { 7.78 10.59 15.72 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-class.json — {"conformant":723,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.03
+wait load 9.98
+wait load 8.85
+wait load 8.82
+== component 19:10:54 { 7.88 9.81 14.56 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-component.json — {"conformant":214,"structural-match":13,"diverged":39,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.32
+== ditaa 19:11:59 { 7.42 9.34 14.03 }
+[xmldom error]	element parse error: Error: invalid tagName:�GFF���0���^__�wQ`�`�����|�:wvvpXPP�vCC����%$$�|��ouu�|���$y 
+[xmldom fatalError]	Unescaped '<' not allowed in attributes values 
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-ditaa.json — {"conformant":0,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":2}
+== dot 19:12:14 { 7.18 9.19 13.90 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-dot.json — {"conformant":5,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.15
+wait load 8.01
+wait load 8.20
+wait load 8.78
+wait load 8.35
+== ebnf 19:15:16 { 7.81 8.73 12.79 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-ebnf.json — {"conformant":0,"structural-match":0,"diverged":44,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.87
+wait load 9.11
+wait load 8.16
+wait load 8.36
+== files 19:17:50 { 7.35 8.41 12.02 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-files.json — {"conformant":9,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.33
+wait load 8.69
+== gantt 19:19:25 { 7.67 8.38 11.63 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-gantt.json — {"conformant":265,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.41
+wait load 8.92
+wait load 8.59
+wait load 8.15
+wait load 8.34
+wait load 8.17
+== hcl 19:23:02 { 7.48 8.25 10.87 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-hcl.json — {"conformant":1,"structural-match":2,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.36
+== json 19:24:05 { 7.53 8.18 10.65 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-json.json — {"conformant":14,"structural-match":35,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+wait load 12.28
+wait load 10.47
+wait load 9.30
+wait load 8.31
+wait load 8.14
+wait load 8.71
+wait load 9.28
+wait load 9.03
+wait load 8.21
+wait load 8.36
+wait load 8.13
+== mindmap 19:30:09 { 7.87 8.59 10.11 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-mindmap.json — {"conformant":142,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.86
+wait load 10.58
+wait load 9.71
+wait load 9.02
+wait load 9.27
+wait load 9.51
+wait load 9.24
+wait load 8.84
+wait load 9.81
+wait load 8.79
+wait load 8.93
+wait load 8.64
+wait load 9.29
+wait load 9.23
+wait load 8.99
+wait load 8.59
+wait load 8.67
+wait load 8.46
+wait load 8.59
+wait load 8.32
+wait load 9.17
+wait load 8.58
+wait load 9.53
+wait load 10.24
+wait load 12.09
+wait load 11.36
+wait load 9.65
+wait load 9.72
+wait load 9.31
+wait load 9.36
+wait load 8.71
+wait load 8.72
+== network 19:46:44 { 7.96 9.07 9.49 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-network.json — {"conformant":1,"structural-match":0,"diverged":2,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.16
+== object 19:47:48 { 7.86 8.84 9.37 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-object.json — {"conformant":63,"structural-match":8,"diverged":9,"errored":0,"timeout":0,"oracle-error":0}
+== packet 19:48:19 { 7.75 8.71 9.30 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-packet.json — {"conformant":0,"structural-match":0,"diverged":6,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.06
+wait load 9.95
+wait load 8.39
+== regex 19:50:20 { 7.73 8.62 9.20 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-regex.json — {"conformant":0,"structural-match":0,"diverged":46,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.59
+== salt 19:51:21 { 7.52 8.47 9.10 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-salt.json — {"conformant":51,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.57
+wait load 8.47
+== sequence 19:52:52 { 7.64 8.40 9.02 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-sequence.json — {"conformant":1143,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.39
+wait load 8.28
+== state 19:54:35 { 7.95 8.42 8.96 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-state.json — {"conformant":100,"structural-match":14,"diverged":159,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.58
+wait load 8.56
+wait load 8.38
+wait load 8.01
+== timing 19:57:07 { 7.50 8.28 8.83 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-timing.json — {"conformant":6,"structural-match":0,"diverged":120,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.50
+== unknown 19:58:09 { 7.59 8.25 8.79 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-unknown.json — {"conformant":565,"structural-match":19,"diverged":241,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.44
+wait load 8.39
+wait load 12.24
+wait load 16.15
+wait load 13.37
+wait load 11.67
+wait load 9.90
+wait load 8.68
+wait load 8.26
+== usecase 20:03:16 { 7.80 9.36 9.30 }
+[xmldom fatalError]	comment is not well-formed at position 3151 
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-usecase.json — {"conformant":68,"structural-match":7,"diverged":18,"errored":0,"timeout":0,"oracle-error":1}
+wait load 8.31
+wait load 8.63
+wait load 8.12
+wait load 8.38
+wait load 8.02
+wait load 8.05
+wait load 8.04
+== wbs 20:07:21 { 7.43 8.54 8.96 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-wbs.json — {"conformant":204,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+wait load 9.69
+wait load 9.01
+wait load 8.99
+wait load 8.72
+wait load 8.05
+== wire 20:10:23 { 7.62 8.47 8.87 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-wire.json — {"conformant":0,"structural-match":0,"diverged":18,"errored":0,"timeout":0,"oracle-error":0}
+wait load 8.49
+wait load 8.10
+wait load 8.41
+== yaml 20:12:26 { 7.96 8.42 8.80 }
+wrote plans/diagram-style-scope/measurements/b2-eng/parity-yaml.json — {"conformant":7,"structural-match":31,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+DONE 20:13:01

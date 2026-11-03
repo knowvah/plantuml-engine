@@ -62,9 +62,9 @@ export function resolveGlobalShadowing(styleMap: StyleMap): number | undefined {
  * resolveGlobalShadowing}, applied to BackgroundColor instead of
  * Shadowing) -- feeds `theme.colors.graph.rootElementBackground`, a
  * DEDICATED field, NOT `theme.colors.background`. `theme.colors.background`
- * is already claimed by the document/canvas-background cascade
- * ({@link resolveDocumentBackground}), which uses a DIFFERENT precedence
- * rule (a fixed broadest-first tier list, not insertion order) -- and a
+ * is already claimed by the document/canvas background
+ * (`document-back-color.ts#documentBackColor`), which reads the style
+ * engine's `{root, document, <diagram>}` signature -- and a
  * skin can set the two to genuinely DIFFERENT values (`rose.skin`:
  * `document { BackGroundColor white }` (canvas) vs `root { BackGroundColor
  * #FEFECE }` (entity-fill default) -- jar-verified `nimana-36-veco708`:

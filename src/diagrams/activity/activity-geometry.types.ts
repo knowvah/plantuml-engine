@@ -86,6 +86,13 @@ export interface ActivityNodeGeo {
    *  (`CommandPartition3#getUSymbol`, `CommandPartition3.java:89-106`);
    *  absent = `USymbolFrame` (`partition`/`group`). */
   usymbol?: CompositeUSymbol;
+  /**
+   * An `'if-merge'` rhombus drawn by `fork ... end merge`: `ParallelBuilderMerge#doStep2` builds its `FtileDiamond`
+   * from `of(root, element, activityDiagram, activity)`'s `LineColor` and `BackGroundColor` (`:96-99`), not the
+   * `diamond` signature every other rhombus reads (`FtileFactoryDelegator.java:79-80`). Absent: the `diamond` colours.
+   * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/ParallelBuilderMerge.java:96-101
+   */
+  diamondSName?: 'activity';
 }
 
 /** The three container keywords that do NOT draw a `USymbolFrame`:
@@ -112,6 +119,14 @@ export interface ActivityEdgeGeo {
    */
   labelAlign?: SnakeTextAlign;
   color?: string;
+  /**
+   * The edge's default `Rainbow` is `Rainbow.build(of(root, element, activityDiagram, activity))`, not the `arrow`
+   * signature's: `fork ... end merge`'s connection whose branch carries no rainbow of its own
+   * (`getRainbow(def)`, `LinkRendering.java:77-82`). The line and the head take that signature's `LineColor`
+   * (`Rainbow.java:84-95`, no `HeadColor` is set on it). Absent: the `arrow` look. An inline {@link color} replaces it.
+   * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/ParallelBuilderMerge.java:80-82,96-111
+   */
+  lineSName?: 'activity';
   /**
    * `false` = draw no end decoration. `Worm#drawInternalOneColor`'s
    * `if (endDecoration != null)` guard (`ftile/Worm.java:161-168`) never

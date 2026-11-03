@@ -393,6 +393,9 @@ interface GtileIfDownOptions {
  */
 export class GtileIfDown extends TileComposite {
   readonly kind = 'gtile-if-down' as const;
+  /** The side (empty or stop) branch's trailing arrow colour, `FtileIfDown.create`'s `elseColor` (`branch2.getOut()`,
+   *  `ConditionalBuilder.java:166-180`), which every else-side connector draws in. Set by `buildIfDown`. */
+  elseColor: string | undefined = undefined;
   readonly width: number;
   readonly height: number;
   readonly children: readonly Tile[];

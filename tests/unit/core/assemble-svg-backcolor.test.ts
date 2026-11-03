@@ -205,7 +205,7 @@ describe('assembleSvg — CLASS document background (SvgGraphics.java:176-192)',
     // fill="none" style="stroke:#F00;stroke-width:1;"/>`.
     const svg = assembleSvg({
       body: ROOT_GROUP_OPEN + INNER + '</g>',
-      // `applyCucaDocumentMargin(60 x 40)` -- the border guard's own precondition (`withDiagramBorderRect`).
+      // `applyCucaDocumentMargin(60 x 40)` -- the border guard's own precondition (`diagramBorderRect`).
       width: 66,
       height: 46,
       preChromeWidth: 60,

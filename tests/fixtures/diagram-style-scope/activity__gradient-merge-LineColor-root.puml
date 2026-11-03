@@ -1,0 +1,18 @@
+@startuml
+<style>
+root { LineColor #0A0-#00A }
+</style>
+start
+:A;
+fork
+:B;
+fork again
+:C;
+end merge
+goto lbl
+label lbl
+group G
+:D;
+end group
+kill
+@enduml

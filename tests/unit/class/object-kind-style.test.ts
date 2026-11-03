@@ -94,6 +94,7 @@ describe('object-kind font resolution', () => {
 describe('<style> FontName/FontStyle collection', () => {
   const buckets = collectElementStyleBuckets(
     parseStyleBlock('map { FontName Helvetica\nFontStyle bold italic\nheader { FontName Courier\nFontStyle italic } }'),
+    'class',
   );
   it('fills the sname bucket and its header sub-selector', () => {
     expect(buckets['map']?.fontFamily).toBe('Helvetica');
@@ -102,7 +103,7 @@ describe('<style> FontName/FontStyle collection', () => {
     expect(buckets['map']?.headerFontStyle).toEqual({ bold: false, italic: true });
   });
   it('leaves non-object buckets to their skinparam population', () => {
-    const other = collectElementStyleBuckets(parseStyleBlock('package { FontName Helvetica }'));
+    const other = collectElementStyleBuckets(parseStyleBlock('package { FontName Helvetica }'), 'class');
     expect(other['package']?.fontFamily).toBeUndefined();
   });
 });

@@ -1,0 +1,10 @@
+@startgantt
+<style>
+document {
+  ganttDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+[A] lasts 1 day
+@endgantt

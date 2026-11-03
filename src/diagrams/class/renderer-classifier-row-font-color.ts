@@ -7,6 +7,8 @@
  */
 import type { ClassifierGeo } from './layout.js';
 import type { Theme } from '../../core/theme.js';
+import { CLASS_STEREOTYPE_BUCKET, OBJECT_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
+import { isObjectKind } from './object-kind-style.js';
 import { resolveClassTagCascadeEntry } from '../../core/style-cascade-class.js';
 import {
   resolveElementFont,
@@ -14,7 +16,9 @@ import {
   resolveClassFontColorByStereo,
   classifierFill,
 } from './renderer-classifier-colors.js';
+import { CLASS_BUCKET, CLASS_HEADER_BUCKET } from './renderer-classifier-scoped-colors.js';
 import { resolveClassHeaderFill } from './renderer-classifier-header-split.js';
+import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 
 /** The terminal `classCascade(Header)FontColor ?? classCascadeFontColor ??
  *  '#000000'` tier, shared verbatim by both the object/map/json and class
@@ -27,6 +31,40 @@ function terminalCascadeFontColor(theme: Theme, isHeader: boolean): string {
       : theme.colors.graph.classCascadeFontColor) ?? '#000000'
   );
 }
+
+/**
+ * dss T3b: the terminal text colour of an `object`/`map`/`json` row. Their signature holds neither `classDiagram` nor
+ * `class_` (`EntityImageObject.java:123-124`), so `classCascade(Header)FontColor` must not reach it; the skin
+ * default is the root `FontColor` (`theme.colors.text`, which `root`/`element` declarations and `skinparam
+ * defaultFontColor` set).
+ */
+function objectDefaultFontColor(theme: Theme): string {
+  return theme.colors.text;
+}
+
+/**
+ * dss T3b: whether `row` is a stereotype label. A class's are the header rows before its name row, which its caller
+ * flags; an `object`/`map`/`json` header is not split by `headerRowCount`, so its label rows carry the flag
+ * themselves (`class-object-map-header.ts#buildStereoHeaderRows`).
+ */
+export function isStereotypeLabelRow(row: { readonly stereotypeLabel?: true }, flagged: boolean): boolean {
+  return flagged || row.stereotypeLabel === true;
+}
+
+/**
+ * dss T3b: a stereotype LABEL row is drawn with `FontConfiguration.create(skinParam, FontParam.CLASS_STEREOTYPE |
+ * OBJECT_STEREOTYPE, stereotype)` (`EntityImageClassHeader.java:131`, `EntityImageObject.java:105-106`), the legacy
+ * skinparam chain with no style behind it, so no `<style>` cascade tints it (jar: `class__kinds-font-*`, label
+ * `#000`). `legacy-stereotype-font.ts` resolves that chain into the two buckets; absent, the `FontParam` default.
+ */
+function stereotypeLabelFontColor(geo: ClassifierGeo, theme: Theme): string {
+  const bucket = isObjectKind(geo.kind) ? OBJECT_STEREOTYPE_BUCKET : CLASS_STEREOTYPE_BUCKET;
+  const font = theme.colors.elements?.[bucket]?.font;
+  return typeof font === 'string' ? font : DEFAULT_STEREOTYPE_FONT_COLOR;
+}
+
+/** `FontParam.CLASS_STEREOTYPE` / `OBJECT_STEREOTYPE`'s `defaultColor`, black (`klimt/font/FontParam.java:45,59,61`, `FontParamConstant.COLOR`). */
+const DEFAULT_STEREOTYPE_FONT_COLOR = '#000000';
 
 /** G3/O4: the object/map/json branch of {@link classifierCascadeFontColor}
  *  -- own `theme.colors.elements[kind].font` bucket FIRST (`<style>
@@ -50,7 +88,7 @@ function objectFamilyCascadeFontColor(
   return (
     (isHeader && !isStereoLabelRow ? resolveElementHeaderFont(theme, geo.kind) : undefined) ??
     resolveElementFont(theme, geo.kind) ??
-    terminalCascadeFontColor(theme, isHeader)
+    objectDefaultFontColor(theme)
   );
 }
 
@@ -120,12 +158,28 @@ export function classifierCascadeFontColor(
   isHeader: boolean,
   isStereoLabelRow: boolean,
 ): string {
+  if (isStereoLabelRow) return stereotypeLabelFontColor(geo, theme);
   if (geo.kind === 'object' || geo.kind === 'map' || geo.kind === 'json') {
     return objectFamilyCascadeFontColor(geo, theme, isHeader, isStereoLabelRow);
   }
   return (
-    classCascadeFontColorTiers(geo, theme, isHeader, isStereoLabelRow) ?? terminalCascadeFontColor(theme, isHeader)
+    classCascadeFontColorTiers(geo, theme, isHeader, isStereoLabelRow) ??
+    classScopedFontColor(theme, isHeader) ??
+    terminalCascadeFontColor(theme, isHeader)
   );
+}
+
+/**
+ * dss T3b (D2): the style engine's merged `FontColor` for the class signature, `elements['class']` for a member row
+ * and `elements['class.header']` for the name row (`EntityImageClassHeader.java:79-80`; a header bucket the engine
+ * left out had no declaration of its own, so it reads the class's). It follows the declaration order the flat
+ * `classCascade*FontColor` cannot see: `skinparam classFontColor` after `root { FontColor }` is the skinparam's
+ * (`class__x-theme-gradient`, jar `#F8F9FA`).
+ */
+function classScopedFontColor(theme: Theme, isHeader: boolean): string | undefined {
+  const elements = theme.colors.elements;
+  const font = (isHeader ? elements?.[CLASS_HEADER_BUCKET]?.font : undefined) ?? elements?.[CLASS_BUCKET]?.font;
+  return typeof font === 'string' ? resolveColorToSvgHex(font) : undefined;
 }
 
 /**

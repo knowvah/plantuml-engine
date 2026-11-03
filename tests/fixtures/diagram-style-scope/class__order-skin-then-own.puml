@@ -1,0 +1,11 @@
+@startuml
+skinparam backgroundColor #AAAAAA
+<style>
+classDiagram {
+  document {
+    BackgroundColor #BBBBBB
+  }
+}
+</style>
+class A
+@enduml

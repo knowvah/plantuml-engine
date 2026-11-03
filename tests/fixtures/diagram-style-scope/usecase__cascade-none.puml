@@ -1,0 +1,9 @@
+@startuml
+actor U
+(Do)
+rectangle R {
+  (X)
+}
+U --> (Do) : l
+note left of U : n
+@enduml

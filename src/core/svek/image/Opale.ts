@@ -343,12 +343,17 @@ export function getOpaleStrategy(width: number, height: number, pt: OpalePoint):
  */
 const OPALE_MAX_POINTS_FOR_SINGLE_BEZIER = 4;
 
+/** `SvekEdge#isOpalisable` (`SvekEdge.java:804-806`): at most one bezier. */
+export function isOpalisableSpline(rawPoints: ReadonlyArray<{ x: number; y: number }>): boolean {
+  return rawPoints.length >= 2 && rawPoints.length <= OPALE_MAX_POINTS_FOR_SINGLE_BEZIER;
+}
+
 export function resolveOpaleConnector(
   dim: { width: number; height: number },
   origin: { x: number; y: number },
   rawPoints: ReadonlyArray<{ x: number; y: number }>,
 ): { direction: OpaleDirection; pp1: OpalePoint; pp2: OpalePoint } | undefined {
-  if (rawPoints.length < 2 || rawPoints.length > OPALE_MAX_POINTS_FOR_SINGLE_BEZIER) return undefined;
+  if (!isOpalisableSpline(rawPoints)) return undefined;
   const first = rawPoints[0]!;
   const last = rawPoints[rawPoints.length - 1]!;
   const local = (p: { x: number; y: number }): OpalePoint => ({ x: p.x - origin.x, y: p.y - origin.y });

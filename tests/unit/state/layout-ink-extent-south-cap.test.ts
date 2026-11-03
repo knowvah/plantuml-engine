@@ -92,21 +92,27 @@ describe('composite south-cap ink — non-transparent south', () => {
   });
 });
 
-describe('composite south-cap ink — scope', () => {
-  it('is ignored on a LEAF box (no children): jar draws no RoundedContainer there', () => {
-    const leaf: StateNodeGeo = {
-      id: 's1',
-      kind: 'normal',
-      display: 's1',
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 50,
-      children: [],
-      transitions: [],
-      headerLines: [{ text: 's1', width: 20 }],
-      southCapInk: true,
-    };
-    expect(computeStateDocumentDims([leaf], [])).toEqual({ width: 122, height: 71 });
+describe('south-cap ink — leaf scope', () => {
+  const leaf = (southCapInk: boolean): StateNodeGeo => ({
+    id: 's1',
+    kind: 'normal',
+    display: 's1',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 50,
+    children: [],
+    transitions: [],
+    headerLines: [{ text: 's1', width: 20 }],
+    ...(southCapInk ? { southCapInk: true } : {}),
+  });
+
+  it('a plain leaf (flag unset) keeps the rect-only ink: one filled shape, no RoundedContainer', () => {
+    expect(computeStateDocumentDims([leaf(false)], [])).toEqual({ width: 122, height: 71 });
+  });
+
+  it('a zoned leaf (dss T3c: name != description, EntityImageState.java:137-142) folds its RoundedSouth path', () => {
+    // `renderer-box-zones.ts#leafSouthZoneDrawn` sets the flag; the path is uninset, 1 px past the rect.
+    expect(computeStateDocumentDims([leaf(true)], [])).toEqual({ width: 122, height: 72 });
   });
 });

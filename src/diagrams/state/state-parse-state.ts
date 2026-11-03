@@ -21,37 +21,32 @@ import type { PendingJson } from './state-json-commands.js';
 
 /**
  * Mirrors upstream `net.sourceforge.plantuml.command.ParserPass` (`ONE`,
- * `TWO`, `THREE`) — collapsed to two values here. Upstream runs the ENTIRE
- * source three times against ONE persistent entity/group tree: pass ONE
- * structurally creates every declaration
- * (`CommandCreateState`/`CommandCreatePackageState`/`CommandConcurrentState`/
- * `CommandEndState` are all eligible for every pass); pass TWO runs
- * transitions (`CommandLinkStateCommon`, TWO-only) and `note on link`
- * (`CommandFactoryNoteOnLink`, TWO-only). This port merges upstream's TWO
- * and THREE into a single `'two'` pass: nothing in this parser's note
- * handling depends on ALL transitions (across the WHOLE document) having
- * already run before ANY attached note resolves — that stronger ordering
- * guarantee only matters for a note that both (a) omits `of <State>` (falls
- * back to `lastEntity`) AND (b) textually precedes the transition that
- * would auto-create its intended target, which no fixture in the corpus
- * exercises. What DOES matter (and is why ONE is still split out from TWO)
- * is that every DECLARATION exists, in its true nested scope, before any
- * transition resolves an endpoint — that is what makes the global by-name
- * reuse (`state-parse-resolve.ts#resolveExistingState`) safe for forward
- * references.
+ * `TWO`, `THREE`). Upstream runs the ENTIRE source three times against ONE
+ * persistent entity/group tree: pass ONE structurally creates every
+ * declaration (`CommandCreateState`/`CommandCreatePackageState`/
+ * `CommandConcurrentState`/`CommandEndState` are all eligible for every
+ * pass); pass TWO runs transitions (`CommandLinkStateCommon`, TWO-only) and
+ * `note on link` (`CommandFactoryNoteOnLink`, TWO-only); pass THREE runs
+ * attached notes (`CommandFactoryNoteOnEntity`, THREE-only), so an attached
+ * note's entity is created after every link of the document, wherever it was
+ * written (dss T3f; the jar's `state B`, `note left of B : k`, `C --> D` gives
+ * `C` `ent0002` and the note `ent0006`). Every DECLARATION exists, in its true
+ * nested scope, before any transition resolves an endpoint -- that is what
+ * makes the global by-name reuse (`state-parse-resolve.ts#resolveExistingState`)
+ * safe for forward references.
  *
- * `parser.ts` walks the source text TWICE (once per pass) against the SAME
- * persistent scope tree (`ParseState.scopeByOwner`) rather than rebuilding
+ * `parser.ts` walks the source text three times (once per pass) against the
+ * SAME persistent scope tree (`ParseState.scopeByOwner`) rather than rebuilding
  * a fresh tree per pass (mirrors upstream's single-tree-visited-thrice
  * model) and is what lets a state created ONLY during pass ONE (e.g. an
  * implicit create from a standalone `CODE : text` line, `CommandAddField`
  * being ParserPass.ONE-only) survive into the final result even though
- * nothing references it again on pass TWO.
+ * nothing references it again on later passes.
  * @see ~/git/plantuml/.../statediagram/StateDiagram.java#getRequiredPass
  * @see ~/git/plantuml/.../statediagram/command/CommandLinkStateCommon.java#isEligibleFor
  * @see ~/git/plantuml/.../statediagram/StateDiagramFactory.java (CommandFactoryNoteOnEntity/OnLink pass args)
  */
-export type Pass = 'one' | 'two';
+export type Pass = 'one' | 'two' | 'three';
 
 // ---------------------------------------------------------------------------
 // Pseudostate markers + stereotype/compound-id classification (mission G4
@@ -179,11 +174,10 @@ export interface ParseState {
   /**
    * The most recently created entity's id — state OR note (upstream
    * `CucaDiagram#lastEntity`). Used to resolve a `note <pos>` line whose
-   * `of <State>` clause is omitted. NOT reset between passes — upstream's
-   * `lastEntity` is a single running field on the (one, persistent)
-   * diagram object, so it genuinely does carry over from pass ONE's last
-   * write into pass TWO's first read, same as here.
-   * @see ~/git/plantuml/.../net/atmp/CucaDiagram.java:140,218-228
+   * `of <State>` clause is omitted. Reset at the start of every pass
+   * (`CucaDiagram#startingPass`, `CucaDiagram.java:160-166`), so on pass THREE,
+   * where an attached note reads it, a state only a link created is not it.
+   * @see ~/git/plantuml/.../net/atmp/CucaDiagram.java:142,213-230
    */
   lastEntity: string | null;
   /**
@@ -354,6 +348,9 @@ export function currentRegionStates(scope: Scope): State[] {
   return scope.regions[scope.regionCursor]!;
 }
 
+/** What separates a composite's id from its region number in a scope id. */
+export const CONCURRENT_SCOPE_MARK = '::CONC';
+
 /**
  * Synthetic scope id for a `--`-delimited concurrent region's OWN content.
  * Region 0 (before the first separator) is NOT wrapped in a synthetic
@@ -373,7 +370,7 @@ export function currentRegionStates(scope: Scope): State[] {
  * every side agrees on the same key without re-deriving it independently.
  */
 export function concurrentRegionScopeId(ownerId: string, regionNumber: number): string {
-  return `${ownerId}::CONC${regionNumber}`;
+  return `${ownerId}${CONCURRENT_SCOPE_MARK}${regionNumber}`;
 }
 
 /** A note's declaring scope id, region-aware -- see `concurrentRegionScopeId`'s

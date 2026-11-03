@@ -20,7 +20,8 @@ import type { Paint } from '../../core/paint.js';
 import { polygon } from '../../core/svg.js';
 import { activityLineThickness } from './activity-style-defaults.js';
 import { HEXAGON_HALF_SIZE } from './layout/hexagon-reservations.js'; // Hexagon.java:46
-import { actColors } from './activity-renderer-shapes.js';
+import { actColors, type ActivityColors } from './activity-renderer-shapes.js';
+import { inlineBack, scopedBack, scopedLine } from './activity-scoped-colors.js';
 import { ifLabelBlock, renderDiamondTestLabel } from './activity-text-sheet-diamond.js';
 import { drawActivityTextBlock } from './activity-text-sheet.js';
 import type { UChange } from '../../core/klimt/UChange.js';
@@ -60,8 +61,16 @@ export function renderIfMerge(node: ActivityNodeGeo, theme: Theme): string {
       { x: node.x, y: node.y + 12 },
       first,
     ],
-    { fill: c.diamondFill, stroke: c.diamondBorder, strokeWidth: activityLineThickness(theme, 'diamond') },
+    { ...mergeColors(node, c), strokeWidth: activityLineThickness(theme, 'diamond') },
   );
+}
+
+/** A `fork ... end merge` rhombus takes the `activity` signature's colours (`ParallelBuilderMerge.java:96-99`), the
+ *  stroke still `diamond`'s (`FtileDiamond.java:89`); every other merge rhombus takes `diamond`'s. */
+function mergeColors(node: ActivityNodeGeo, c: ActivityColors): { fill: Paint; stroke: Paint } {
+  return node.diamondSName === 'activity'
+    ? { fill: c.nodeFill, stroke: c.nodeBorder }
+    : { fill: c.diamondFill, stroke: c.diamondBorder };
 }
 
 /**
@@ -152,7 +161,7 @@ function diamondSlotChanges(theme: Theme): UChange[] {
 export function renderHexagonPolygon(node: ActivityNodeGeo, theme: Theme): string {
   const { x, y, width: w, height: h } = node;
   const c = actColors(theme);
-  const fill = node.color ?? c.diamondFill;
+  const fill = inlineBack(node) ?? c.diamondFill;
   // I (T3d): fixed dent `HEXAGON_HALF_SIZE` (12), not `height/2`; equal
   // only when h=24 (`Hexagon.java:46,65-74`).
   const dent = HEXAGON_HALF_SIZE;
@@ -183,7 +192,7 @@ export function renderHexagonPolygon(node: ActivityNodeGeo, theme: Theme): strin
 export function renderDiamondSquarePolygon(node: ActivityNodeGeo, theme: Theme): string {
   const { x, y, width: w, height: h } = node;
   const c = actColors(theme);
-  const fill = node.color ?? c.diamondFill;
+  const fill = inlineBack(node) ?? c.diamondFill;
   return polygon(
     [
       { x: x + w / 2, y },
@@ -244,12 +253,11 @@ export function renderHexagonOwnLabel(node: ActivityNodeGeo, theme: Theme): stri
  * (`activity-renderer-shapes.ts`, at the 500-line cap) to keep that
  * function's own CCN from rising.
  */
-export function diamondColors(
-  act: Theme['colors']['graph']['activity'],
-  theme: Theme,
-): { fill: Paint; border: string } {
+export function diamondColors(act: Theme['colors']['graph']['activity'], theme: Theme): { fill: Paint; border: Paint } {
   return {
-    fill: act?.diamondBackground ?? act?.background ?? theme.colors.nodeBackground,
-    border: act?.diamondBorder ?? act?.border ?? theme.colors.border,
+    // `ConditionalBuilder.java:101-103`, `FtileFactoryDelegator.java:79-80`: T2a's bucket (D2).
+    fill: scopedBack(theme, 'diamond') ?? act?.diamondBackground ?? act?.background ?? theme.colors.nodeBackground,
+    // `FtileFactoryDelegator.java:79-80`: T2a's bucket (D2).
+    border: scopedLine(theme, 'diamond') ?? act?.diamondBorder ?? act?.border ?? theme.colors.border,
   };
 }

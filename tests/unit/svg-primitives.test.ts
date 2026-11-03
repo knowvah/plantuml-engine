@@ -802,11 +802,10 @@ describe('Paint gradient support', () => {
     expect(out).toContain('stroke="#111"');
   });
 
-  it('threads a Gradient stroke through line and prepends its def', () => {
+  it('draws a line in the first colour of a Gradient stroke, with no def (DriverLineSvg.java:76-82)', () => {
     const out = line(0, 0, 10, 10, { stroke: grad });
-    // '<line ' (trailing space) avoids matching the '<linearGradient' prefix.
-    expect(out.indexOf('<linearGradient')).toBeLessThan(out.indexOf('<line '));
-    expect(out).toMatch(/stroke="url\(#g[0-9a-z]+\)"/);
+    expect(out).not.toContain('<linearGradient');
+    expect(out).toMatch(/^<line [^>]*stroke="#[0-9A-Fa-f]+"/);
   });
 });
 

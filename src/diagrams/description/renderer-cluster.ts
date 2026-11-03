@@ -35,9 +35,11 @@ import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-comm
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import { buildStereo, resolveStereotypeSprite } from '../../core/svek/image/EntityImageDescriptionDelegates.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
+import { clusterBucketOf, clusterTitleBucketOf } from '../../core/style-element-scope.js';
 import { rawStereotypeLabels } from './parse-helpers.js';
 import type { DescriptionNodeGeo } from './layout-helpers.js';
 import {
+  paintTextColor,
   resolvePackageStyle,
   resolveSymbol,
   stereotypeTextFont,
@@ -140,7 +142,11 @@ export function buildHeader(node: DescriptionNodeGeo, theme: Theme, options?: He
   // `<sname>FontColor<<label>>` re-signs the group's style (+1000, `Cluster.java:384-390` signs the stereotype); the
   // group's own inline `text:` is applied last.
   const styleLabels = node.styleStereotype ?? node.stereotype ?? [];
-  const baseFont = textFont(theme, node.symbol, 0, TITLE_STYLES);
+  const symbolFont = textFont(theme, node.symbol, 0, TITLE_STYLES);
+  // dss T3a: `ClusterHeader.java:157-165` signs the title `..., <uSymbol>, composite, title`; the style engine's value
+  // for it (`style-element-scope.ts#clusterTitleRows`) replaces the symbol bucket's `font`.
+  const scoped = theme.colors.elements?.[clusterTitleBucketOf(node.symbol)]?.font;
+  const baseFont = scoped === undefined ? symbolFont : { ...symbolFont, color: paintTextColor(scoped) };
   const tagged = stereotypeFontColor(theme, node.symbol, 'title', styleLabels);
   const titleFont = text === undefined && tagged === undefined ? baseFont : { ...baseFont, color: text ?? tagged! };
   // `ClusterHeader.java:117-119` builds the title with the full `Display#create`, so a `<$sprite>` in a
@@ -177,11 +183,13 @@ function rootBackground(theme: Theme): string | undefined {
  * `StyleStorage.java:102-116`, OVERWRITE_EXISTING_VALUE), over `plantuml.skin:102-103`'s `group { BackGroundColor
  * transparent }`. The theme keeps no declaration order, so the tiers run most-specific first (the container's own
  * USymbol bucket, the `group` bucket, the `package` bucket, then `root`), which agrees with source order whenever the
- * style is written general-to-specific.
+ * style is written general-to-specific. Under D3's gate `group.<symbol>` holds that merged value itself and is read
+ * first (D2a): the symbol's own bucket is the leaf's signature (`EntityImageDescription.java:162-166`).
  */
 function clusterBackground(theme: Theme, symbol: USymbol, stereotypes: readonly string[]): Paint {
   return (
     stereotypePaint(theme, symbol, 'background', stereotypes) ??
+    theme.colors.elements?.[clusterBucketOf(symbol)]?.background ??
     theme.colors.elements?.[symbol]?.background ??
     theme.colors.elements?.[GROUP_SNAME]?.background ??
     theme.colors.graph.packageBackground ??
@@ -199,6 +207,7 @@ function clusterBackground(theme: Theme, symbol: USymbol, stereotypes: readonly 
 function clusterBorder(theme: Theme, symbol: USymbol, fallback: string, stereotypes: readonly string[]): Paint {
   return (
     stereotypePaint(theme, symbol, 'border', stereotypes) ??
+    theme.colors.elements?.[clusterBucketOf(symbol)]?.border ??
     theme.colors.elements?.[symbol]?.border ??
     theme.colors.elements?.[GROUP_SNAME]?.border ??
     rootLineColor(theme) ??

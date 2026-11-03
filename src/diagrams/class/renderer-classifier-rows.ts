@@ -15,7 +15,7 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import {} from '../../core/color-override.js';
 import {} from './class-map-sizing.js';
 import {} from './class-badge.js';
-import { renderVisibilityIcon, visibilityIconOriginY, rowIconTopOriginY } from './class-visibility-icon.js';
+import { renderMemberVisibilityIcon, visibilityIconOriginY, rowIconTopOriginY } from './class-visibility-icon.js';
 import {} from './renderer-url.js';
 import { linkWrap } from '../../core/svg.js';
 import { renderBulletAtom } from './renderer-note.js';
@@ -26,7 +26,7 @@ import { renderRowOpenIconicAtom } from './renderer-openiconic.js';
 import { renderMemberRowDrawable } from './class-member-sprite-render.js';
 import {} from './renderer-body-enhanced.js';
 import {} from './class-shadow.js';
-import { classifierCascadeFontColor } from './renderer-classifier-row-font-color.js';
+import { classifierCascadeFontColor, isStereotypeLabelRow } from './renderer-classifier-row-font-color.js';
 import { parseDeclarationColors } from './class-declaration-extractors.js';
 import { atomsOverBack, classifierRowBack } from './class-sprite-back.js';
 
@@ -121,17 +121,18 @@ export function wrappedVisibilityIconOriginY(
 export function renderRow(geo: ClassifierGeo, row: ClassifierGeo['rows'][number], theme: ScaledTheme): string {
   const icon =
     row.visibilityIcon !== undefined
-      ? renderVisibilityIcon(
+      ? renderMemberVisibilityIcon(
           row.visibilityIcon,
           row.visibilityIsField === true,
-          // cdd3-T34 (E1-8): `ROW_TEXT_LEFT_MARGIN` is a render-time
-          // numeral (like `VisibilityModifier`'s own local offsets --
-          // see `class-visibility-icon.ts#drawSquare`'s doc comment),
-          // scaled by `theme.scaleK` the same way `geo.x` already is.
-          geo.x + ROW_TEXT_LEFT_MARGIN * theme.scaleK,
-          wrappedVisibilityIconOriginY(geo, row, theme),
-          undefined,
-          theme,
+          {
+            // cdd3-T34 (E1-8): `ROW_TEXT_LEFT_MARGIN` is a render-time
+            // numeral (like `VisibilityModifier`'s own local offsets --
+            // see `class-visibility-icon.ts#drawSquare`'s doc comment),
+            // scaled by `theme.scaleK` the same way `geo.x` already is.
+            x: geo.x + ROW_TEXT_LEFT_MARGIN * theme.scaleK,
+            y: wrappedVisibilityIconOriginY(geo, row, theme),
+          },
+          { theme },
         )
       : '';
   return icon + renderRowText(geo, row, theme);
@@ -213,7 +214,9 @@ export function renderRowText(
   // comment documents (`resolveColorToSvgHex`, the M5 precedent).
   const inlineTextColor = parseDeclarationColors(geo.color).text;
   const resolvedInlineTextColor = inlineTextColor !== undefined ? resolveColorToSvgHex(inlineTextColor) : undefined;
-  const fontColor = resolvedInlineTextColor ?? classifierCascadeFontColor(geo, theme, isHeader, isStereoLabelRow);
+  const fontColor =
+    resolvedInlineTextColor ??
+    classifierCascadeFontColor(geo, theme, isHeader, isStereotypeLabelRow(row, isStereoLabelRow));
   if (row.atoms !== undefined) {
     // unwind2-S7: a sprite atom tints over the row's back (`class-sprite-back.ts`).
     const atoms = atomsOverBack(row.atoms, classifierRowBack(geo, theme, isHeader));

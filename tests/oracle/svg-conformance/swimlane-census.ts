@@ -110,7 +110,7 @@ export function hasSwimlaneLine(markup: string): boolean {
 
 function buildThemeForFixture(preprocessed: PreprocessorResult): Theme {
   const base = resolveTheme(preprocessed.theme ?? 'default');
-  const withSkin = applySkinLayer(preprocessed, base);
+  const withSkin = applySkinLayer(preprocessed, base, 'activity');
   const withSkinparam = resolveSkinparam(preprocessed.skinparam, withSkin).theme;
   const styleMap = preprocessed.styles.map(parseStyleBlock).reduce<StyleMap>((acc, m) => {
     m.forEach((props, selector) => {
@@ -122,7 +122,7 @@ function buildThemeForFixture(preprocessed: PreprocessorResult): Theme {
   }, new Map());
   const flatRoot = styleMap.get('') ?? new Map<string, string>();
   const withStyles = resolveSkinparam(flatRoot, withSkinparam).theme;
-  return applyStyleMap(styleMap, withStyles);
+  return applyStyleMap(styleMap, withStyles, 'activity');
 }
 
 export interface LaneGeometry {

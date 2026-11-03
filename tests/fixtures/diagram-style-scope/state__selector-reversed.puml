@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  stateDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+[*] --> A
+@enduml

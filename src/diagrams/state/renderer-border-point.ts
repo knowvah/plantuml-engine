@@ -34,6 +34,7 @@
  */
 
 import type { StateNodeGeo } from './state-geo-types.js';
+import type { Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
 import { ellipse, line, rect, text } from '../../core/svg.js';
 import { positionFromStereotype, type EntityPositionKind } from './state-entity-position.js';
@@ -65,7 +66,7 @@ function pointOnCircle(xc: number, yc: number, angle: number, radius: number): [
 /** EXIT_POINT's cross (`EntityPosition.java:88-96`) — two chords at ±PI/4
  *  about a centre offset half a pixel from the symbol's own, at a radius half
  *  a pixel inside it. Both offsets are upstream's, not a nudge. */
-function exitCross(node: StateNodeGeo, stroke: string): string {
+function exitCross(node: StateNodeGeo, stroke: Paint): string {
   const xc = node.x + RADIUS + 0.5;
   const yc = node.y + RADIUS + 0.5;
   const r = RADIUS - 0.5;
@@ -82,7 +83,7 @@ function exitCross(node: StateNodeGeo, stroke: string): string {
  *  exercises them and `state-leaf-node.ts` already sizes them as the plain
  *  `RADIUS*2` square, so they keep that square here rather than acquire an
  *  unverified shape. */
-function drawSymbol(node: StateNodeGeo, pos: EntityPositionKind, fill: string, stroke: string): string {
+function drawSymbol(node: StateNodeGeo, pos: EntityPositionKind, fill: Paint, stroke: Paint): string {
   if (!CIRCLE_POSITIONS.has(pos)) {
     // `rect` names the SVG attribute in camelCase; `ellipse`/`line` take the
     // paint bag, which is keyed by the attribute's own hyphenated name.

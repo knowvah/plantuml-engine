@@ -1,0 +1,8 @@
+@startuml
+start
+repeat
+  -[#FF00FF]->
+  :a;
+repeat while (d) is (y)
+stop
+@enduml

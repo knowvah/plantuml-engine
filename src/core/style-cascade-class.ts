@@ -14,6 +14,7 @@ import type { StyleMap } from './skinparam.js';
 import { parseStyleBlock } from './skinparam.js';
 import { resolveStyleCascade, collectStyleTagNames, cleanStereotypeToken } from './style-map-element.js';
 import { resolveColorToSvgHex, parseSimpleColor, resolveConditionalColor } from './klimt/color/HColorSet.js';
+import { noGradient, parseColor } from './paint.js';
 import { applyFontCascadeOverrides } from './style-cascade-class-font.js';
 import { applyVisibilityIconCascadeOverrides } from './style-cascade-visibility-icon.js';
 import { applyGenericCascadeOverrides } from './style-cascade-class-generic.js';
@@ -79,15 +80,23 @@ export type GraphCascadeOverride = Pick<
  * `#?light:dark[:transparent]` (`HColorScheme`, `xalaco-64-vuzu312`/
  * `dipune-93-sare489`) is a FontColor-only grammar upstream -- handled by
  * the sibling {@link cascadeFontColorHex}, NOT here.
+ *
+ * A gradient colour is undefined here too: these are flat fields, and a reader that can draw one takes it from
+ * `theme.colors.elements`. A gradient `FontColor` is its first colour: text prints `toSvg`, which is `color1`
+ * (`DriverTextSvg.java:178`, `HColorGradient.java:103-105`).
  */
+/** The `<style>` key of `PName.FontColor`, lowercased as a `StyleMap` holds it. */
+const FONT_COLOR_PROPERTY = 'fontcolor';
+
 export function cascadeHex(
   styleMap: StyleMap,
   snames: readonly string[],
   property: string,
   stereotypeTags: readonly string[] = [],
 ): string | undefined {
-  const raw = resolveStyleCascade(styleMap, snames, property, stereotypeTags);
-  if (raw === undefined) return undefined;
+  const declared = resolveStyleCascade(styleMap, snames, property, stereotypeTags);
+  if (declared === undefined) return undefined;
+  const raw = property === FONT_COLOR_PROPERTY ? noGradient(parseColor(declared)) : declared;
   const lower = raw.toLowerCase();
   if (lower !== 'transparent' && lower !== 'background' && parseSimpleColor(raw) === undefined) {
     return undefined;
@@ -133,10 +142,11 @@ export function cascadeFontColorHex(
   localBackgroundHex: string,
   stereotypeTags: readonly string[] = [],
 ): string | undefined {
-  const raw = resolveStyleCascade(styleMap, snames, 'fontcolor', stereotypeTags);
-  if (raw === undefined) return undefined;
-  const conditional = resolveConditionalColor(raw, localBackgroundHex);
+  const declared = resolveStyleCascade(styleMap, snames, FONT_COLOR_PROPERTY, stereotypeTags);
+  if (declared === undefined) return undefined;
+  const conditional = resolveConditionalColor(declared, localBackgroundHex);
   if (conditional !== undefined) return conditional;
+  const raw = noGradient(parseColor(declared));
   const lower = raw.toLowerCase();
   if (lower !== 'transparent' && lower !== 'background' && parseSimpleColor(raw) === undefined) {
     return undefined;

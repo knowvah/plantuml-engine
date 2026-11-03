@@ -1,0 +1,15 @@
+@startuml
+<style>
+element {
+  BackgroundColor #AAAAAA
+}
+</style>
+[*] --> A
+state A {
+  [*] --> B
+}
+A --> [*] : l
+state C <<choice>>
+A --> C
+note left of A : n
+@enduml

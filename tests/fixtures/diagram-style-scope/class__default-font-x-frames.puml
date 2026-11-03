@@ -1,0 +1,16 @@
+@startuml
+skinparam defaultFontColor #0A0
+package P {
+ class A<T> {
+ +f()
+ }
+}
+interface I
+enum E <<s>>
+I <|-- A : l
+A "1" --> "2" E
+note left of A : n
+object O {
+ a = 1
+}
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+<style>
+root {
+  FontColor #0000BB
+}
+</style>
+[a] --> [b] : lab
+note on link : k
+note "free" as N
+N .. [a]
+note top of [b] : t
+() lp
+lp - [a]
+@enduml

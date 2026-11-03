@@ -14,7 +14,7 @@ import { ANY_ELEMENT_BUCKET, resolveElementPaint } from '../../../src/core/theme
 import type { Theme } from '../../../src/core/theme.js';
 
 function themeOf(body: string): Theme {
-  return buildTheme(preprocess(`@startuml\n${body}\nclass A\n@enduml`)).theme;
+  return buildTheme(preprocess(`@startuml\n${body}\nclass A\n@enduml`), undefined, 'class').theme;
 }
 
 describe('<style> tag sub-selectors', () => {

@@ -18,6 +18,7 @@ import {
   parseNonZeroInt,
   parseFontStyleFlags,
   ROOT_LINE_COLOR_KEY,
+  carryGradient,
 } from './skinparam-key-handlers-shared.js';
 import { ActorStyle } from './skin/ActorStyle.js';
 import { ADD_MAGIC_HANDLERS } from './skinparam-key-handlers-add-magic.js';
@@ -155,8 +156,9 @@ export const KEY_HANDLERS_A: ReadonlyArray<readonly [keys: readonly string[], ha
   ],
   [
     ['notebackgroundcolor'],
-    (acc, _v, color) => {
+    (acc, _v, color, paint) => {
       acc.noteBackground = color;
+      carryGradient(acc, 'note', 'background', paint);
     },
   ],
   [
@@ -473,8 +475,8 @@ export const KEY_HANDLERS_A: ReadonlyArray<readonly [keys: readonly string[], ha
   ],
   [
     ['activitydiamondfontcolor'],
-    (acc, _v, _color, paint) => {
-      (acc.elements['diamond'] ??= {}).font = paint;
+    (acc, _v, color) => {
+      (acc.elements['diamond'] ??= {}).font = color;
     },
   ],
   [

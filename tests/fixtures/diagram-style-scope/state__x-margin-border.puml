@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+skinparam diagramBorderColor #FF0000
+[*] --> A
+A --> B : l
+B --> [*]
+@enduml

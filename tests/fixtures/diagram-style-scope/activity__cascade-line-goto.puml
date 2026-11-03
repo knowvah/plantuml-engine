@@ -1,0 +1,15 @@
+@startuml
+<style>
+activityDiagram {
+  goto {
+    LineColor #BB0000
+  }
+}
+</style>
+start
+label L1
+:a;
+:b;
+goto L1
+stop
+@enduml

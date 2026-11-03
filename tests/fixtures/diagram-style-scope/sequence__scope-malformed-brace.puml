@@ -1,0 +1,9 @@
+@startuml
+<style>
+document {
+  BackgroundColor
+}
+}
+</style>
+A -> B
+@enduml

@@ -24,7 +24,7 @@ import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
 import type { HlineCandidate } from './swimlane-hline.js';
 import { compositeLaneGate, nonTranslatableConnectionDrawn } from './swimlane-connection-gate.js';
-import { applyOutLabel } from './tile-layout-inlabel.js';
+import { applyInColor, applyOutLabel } from './tile-layout-inlabel.js';
 import { wrappedSpread } from './diamond-wrap.js';
 
 /** `arrowHorizontalAlignment()`'s own resolved default (`AbstractFtile
@@ -54,9 +54,10 @@ function pushNonTranslatableEdge(
   points: GPoint[],
   lane1: string | undefined,
   lane2: string | undefined,
-): void {
-  if (!nonTranslatableConnectionDrawn(ctx.gate, lane1, lane2)) return;
+): boolean {
+  if (!nonTranslatableConnectionDrawn(ctx.gate, lane1, lane2)) return false;
   pushEdge(ctx.out, points, lane1, lane2);
+  return true;
 }
 
 function absolutePoint(local: GPoint, originX: number, originY: number): GPoint {
@@ -195,6 +196,7 @@ function connectionVerticalIn(ctx: LhCtx, i: number): void {
   const hook = t.tiles[i]!.getCoord(NORTH_HOOK);
   const p2 = { x: x + (b.tileX + hook.x), y: tileOrigin.y + hook.y };
   pushEdge(out, [p1, p2], laneOut(diamond, myLane), laneIn(t.tiles[i]!, myLane), 'if-vertical-in');
+  applyInColor(out, t.tiles[i]!); // `thens.get(i).getInColor(arrowColor)`, FtileIfLongHorizontal.java:211,226
 }
 
 /** `ConnectionVerticalOut` -- `tile_i.pointOut -> (x, H)`, skipped when the
@@ -259,7 +261,9 @@ function connectionLastElseIn(ctx: LhCtx): void {
   const origin = tile2Origin(ctx);
   const p2 = absolutePoint(t.tile2.getCoord(NORTH_HOOK), origin.x, origin.y);
   const lane1 = laneOut(t.diamonds[last]!, myLane);
-  pushNonTranslatableEdge(ctx, [p1, { x: p2.x, y: p1.y }, p2], lane1, laneIn(t.tile2, myLane));
+  if (pushNonTranslatableEdge(ctx, [p1, { x: p2.x, y: p1.y }, p2], lane1, laneIn(t.tile2, myLane))) {
+    applyInColor(ctx.out, t.tile2); // `branch2.getInColor(arrowColor)`, FtileIfLongHorizontal.java:245-249
+  }
 }
 
 /** `ConnectionLastElseOut` -- `tile2.pointOut -> (x, H)`; a third point

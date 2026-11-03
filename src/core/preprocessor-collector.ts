@@ -11,6 +11,10 @@ import type { StringLocated } from './tim/StringLocated.js';
 import { getInputStreamForStyle } from './style/StyleLoader.js';
 
 const RE_STYLE_OPEN = /^<style>$/i;
+/** `CommandStyleSingleLineCSS.getRegexConcat` (java:61-67), `%s` being
+ *  `\s\u00A0` (`Pattern2.java:57`). Tried before the multi-line opener, as
+ *  `CommonCommands.java:91-92` orders them; the caller tests the trimmed line. */
+const RE_STYLE_SINGLE_LINE = /^<style>([-#.\w\s\u00A0;:{}]+)<\/style>$/i;
 /** `CommandStyleMultilinesCSS.END`, `^[%s]*\<\/?style\>[%s]*$` (java:58): a
  *  second `<style>` closes the open block exactly as `</style>` does. The
  *  caller tests the trimmed line, which absorbs `[%s]*`. */
@@ -223,6 +227,11 @@ export class StyleAndSkinparamCollector {
       return false;
     }
 
+    const singleLine = RE_STYLE_SINGLE_LINE.exec(trimmed);
+    if (singleLine !== null) {
+      this.pushStyle(singleLine[1]!, position);
+      return true;
+    }
     if (RE_STYLE_OPEN.test(trimmed)) {
       this.inStyleBlock = true;
       this.stylePositions.push(position);
@@ -252,10 +261,15 @@ export class StyleAndSkinparamCollector {
     if (match === null) return false;
     const sheet = getInputStreamForStyle(match[1]!);
     if (sheet === undefined || sheet.length === 0) return false;
+    this.pushStyle(sheet, position);
+    return true;
+  }
+
+  /** One complete sheet, at this line's place on the declaration counter. */
+  private pushStyle(sheet: string, position: number | undefined): void {
     this.styles.push(sheet);
     this.stylePositions.push(position);
     this.styleOrder.push(this.sequence++);
-    return true;
   }
 
   private collectStyleLine(raw: string, trimmed: string): boolean {

@@ -1,0 +1,10 @@
+@startyaml
+<style>
+root {
+  BackgroundColor #AAAAAA
+}
+</style>
+a: 1
+b:
+  c: 2
+@endyaml

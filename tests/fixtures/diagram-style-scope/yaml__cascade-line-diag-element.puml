@@ -1,0 +1,12 @@
+@startyaml
+<style>
+yamlDiagram {
+  element {
+    LineColor #BB0000
+  }
+}
+</style>
+a: 1
+b:
+  c: 2
+@endyaml

@@ -2047,39 +2047,41 @@ describe('layoutDescription — scale directive passthrough', () => {
 });
 
 /**
- * D2 (mission `edge-label-box-followups`): the note text stays visible.
- * `note on link` no longer lands in `DescriptiveLink.label` (D1), so the
- * layout->geometry boundary folds it back into the DRAWN label lines,
- * ordered by the merge operand order (`SvekEdge.java:318-325`).
+ * `note on link` stays out of `DescriptiveLink.label` (D1) and, since dss T3a, out of the drawn label text too:
+ * the geometry carries it as `linkNote` and `renderer-edge.ts` merges the `EntityImageNoteLink` block with the label
+ * in the operand order of `SvekEdge.java:318-325` (drawn values: `dss-t3a-readers.test.ts`).
  */
-describe('note on link — drawn label lines (D2)', () => {
+describe('note on link — carried beside the label (dss T3a)', () => {
   const layoutOf = (src: string) => {
     const source: UmlSource = { lines: src.split('\n'), type: 'description' };
     return layoutDescription(descriptionAst(parseDescription(source)), defaultTheme, new FormulaMeasurer());
   };
 
-  it('draws the note text when the link has no label of its own', () => {
+  it('carries the note with no label text when the link has no label of its own', () => {
     const geo = layoutOf('component a\ncomponent b\na --> b\nnote on link: hi');
-    expect(geo.edges[0]!.label?.text).toBe('hi');
+    expect(geo.edges[0]!.label?.text).toBe('');
+    expect(geo.edges[0]!.linkNote).toEqual({ text: 'hi', position: 'bottom' });
   });
 
-  it('draws the note BELOW the label for the bottom position', () => {
+  it('keeps the label text apart from the note for the bottom position', () => {
     const geo = layoutOf('component a\ncomponent b\na --> b : rel\nnote on link: hi');
-    expect(geo.edges[0]!.label?.text).toBe('rel\nhi');
+    expect(geo.edges[0]!.label?.text).toBe('rel');
+    expect(geo.edges[0]!.linkNote).toEqual({ text: 'hi', position: 'bottom' });
   });
 
-  it('draws the note ABOVE the label for the top position — mergeTB(note, label)', () => {
+  it('carries the top position', () => {
     const geo = layoutOf('component a\ncomponent b\na --> b : rel\nnote top on link: hi');
-    expect(geo.edges[0]!.label?.text).toBe('hi\nrel');
+    expect(geo.edges[0]!.linkNote).toEqual({ text: 'hi', position: 'top' });
   });
 
-  it('draws the note FIRST for the left position — mergeLR(note, label)', () => {
-    const geo = layoutOf('component a\ncomponent b\na --> b : rel\nnote left on link: hi');
-    expect(geo.edges[0]!.label?.text).toBe('hi\nrel');
+  it('carries the left position and the note colour', () => {
+    const geo = layoutOf('component a\ncomponent b\na --> b : rel\nnote left on link #red: hi');
+    expect(geo.edges[0]!.linkNote).toEqual({ text: 'hi', position: 'left', color: '#red' });
   });
 
   it('leaves a link without a note untouched', () => {
     const geo = layoutOf('component a\ncomponent b\na --> b : rel');
     expect(geo.edges[0]!.label?.text).toBe('rel');
+    expect(geo.edges[0]!.linkNote).toBeUndefined();
   });
 });

@@ -18,6 +18,7 @@ import {
   noteBodySpikeRight,
   noteBodySpikeLeft,
   noteFillOf,
+  noteLineOf,
 } from './activity-renderer-note-shapes.js';
 import {
   ACTIVITY_BAR_FILL,
@@ -28,6 +29,14 @@ import {
   activityRoundCorner,
 } from './activity-style-defaults.js';
 import { renderBar, renderSplitLine } from './activity-renderer-bars.js';
+import {
+  activityBoxLine,
+  inlineBack,
+  scopedBack,
+  stereotypeBack,
+  stereotypeLine,
+  withStereotypeFont,
+} from './activity-scoped-colors.js';
 import {
   renderIfMerge,
   renderIfLabel,
@@ -102,21 +111,32 @@ export function centeredFirstBaselineY(cy: number, lineHeight: number, lineCount
 
 export interface ActivityColors {
   nodeFill: Paint; // add2 T3h (family PAINT): gradients, not solid-only
-  nodeBorder: string;
-  barFill: string;
+  nodeBorder: Paint;
+  barFill: Paint; // `FtileBlackBlock.java:105-106`: a gradient too
   startFill: string;
   endFill: string;
   diamondFill: Paint; // shares activityBackground's fallback tier
-  diamondBorder: string;
+  diamondBorder: Paint;
+}
+
+/** `FtileBox.java:98,165`: the merged style's `BackGroundColor`, T2a's bucket (D2). */
+function activityBack(theme: Theme): Paint {
+  return scopedBack(theme, 'activity') ?? theme.colors.graph.activity?.background ?? theme.colors.nodeBackground;
+}
+
+/** `FtileBlackBlock.java:98,105-106`: the same merged read. */
+function activityBarBack(theme: Theme): Paint {
+  return scopedBack(theme, 'activitybar') ?? theme.colors.graph.activity?.barColor ?? ACTIVITY_BAR_FILL;
 }
 
 export function actColors(theme: Theme): ActivityColors {
   const act = theme.colors.graph.activity;
   return {
-    nodeFill: act?.background ?? theme.colors.nodeBackground,
-    nodeBorder: act?.border ?? theme.colors.border,
+    nodeFill: activityBack(theme),
+    // `FtileBox.java:98,164`: the merged `LineColor`, T2a's bucket (D2).
+    nodeBorder: activityBoxLine(theme),
     // `activityBar { BackgroundColor #5 }` (plantuml.skin:387, D4).
-    barFill: act?.barColor ?? ACTIVITY_BAR_FILL,
+    barFill: activityBarBack(theme),
     // `circle { start,stop,end { LineColor #2; BackgroundColor #2 } } }`
     // (plantuml.skin:379-380) -- SAME token for stroke/fill, `#2` resolved
     // through the ported `HColorSet` digit-length parser (D5). A user's
@@ -135,16 +155,26 @@ export function actColors(theme: Theme): ActivityColors {
 // `activity-renderer-terminals.ts` (T1c, 500-line hook) -- re-exported
 // above.
 
+/** A box's back: its own colour (`FtileBox.java:163`, `eventuallyOverride(specBack)`), the stereotype's style
+ *  (`:146`, `withTOBECHANGED`), the merged `BackGroundColor` (`:165`). */
+export function actionFillOf(node: Pick<ActivityNodeGeo, 'color' | 'stereotype'>, theme: Theme): Paint {
+  return inlineBack(node) ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
+}
+
+/** A box's line: the stereotype's style (`FtileBox.java:146`, `withTOBECHANGED`), the merged `LineColor` (`:164`). */
+export function actionBorderOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint {
+  return stereotypeLine(theme, 'activity', node.stereotype) ?? actColors(theme).nodeBorder;
+}
+
 export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
   // `activityDiagram { activity { FontSize 12 } }` (plantuml.skin:361) --
   // the SAME value `tiles/gtile-action.ts` measured this box at, so the
   // renderer draws into exactly the space the sizer reserved.
   const actionSize = activityFontSize(theme, 'activity');
-  const c = actColors(theme);
-  const fill = node.color ?? c.nodeFill;
+  const fill = actionFillOf(node, theme);
   const box = rect(node.x, node.y, node.width, node.height, {
     fill,
-    stroke: c.nodeBorder,
+    stroke: actionBorderOf(node, theme),
     strokeWidth: activityLineThickness(theme, 'activity'),
     rx: actionCornerRadius(theme),
     ry: actionCornerRadius(theme),
@@ -165,7 +195,8 @@ function renderActionBox(node: ActivityNodeGeo, theme: Theme): string {
 export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   const { x, y, width: w, height: h } = node;
   const noteFill = noteFillOf(node, theme); // add4-T1c: a note's own `#color`
-  const stroke = theme.colors.border;
+  const stroke = noteLineOf(node, theme); // `FtileWithNoteOpale.java:89,141`
+
   const spike = node.spikeTip;
   const paint = { fill: noteFill, stroke, strokeWidth: NOTE_LINE_THICKNESS };
   // `node.notePosition === 'left'` means the NOTE sits left of its target,
@@ -187,7 +218,8 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
 
   // add3-T3d: `FtileWithNoteOpale.java:147-150` draws via the real creole
   // Sheet -- `renderNoteLabel`'s own doc.
-  return body + renderNoteLabel(label, theme, { x, y, width: w, height: h }, { border: stroke, fill: noteFill });
+  const labelTheme = withStereotypeFont(theme, node.stereotype, 'note'); // `FtileWithNoteOpale.java:137,142`
+  return body + renderNoteLabel(label, labelTheme, { x, y, width: w, height: h }, { border: stroke, fill: noteFill });
 }
 
 /** The root `composite { LineColor black; BackgroundColor transparent;

@@ -311,15 +311,11 @@ describe('two-pass parsing -- ParserPass ONE/TWO port', () => {
     expect(s?.concurrentRegions[0]?.map((st) => st.id)).toEqual(['C', 'D']);
   });
 
-  it("a note attached with no explicit `of <State>` falls back to `lastEntity` as of pass TWO's OWN walk position, not pass ONE's", () => {
-    // `lastEntity` is a diagram-level running field that is NOT reset
-    // between passes (matches upstream's single persistent diagram
-    // object) -- but a note's REAL resolution only happens when it is
-    // finalized, which for an attached note is pass TWO (merged with
-    // upstream's ParserPass.THREE -- see state-parse-state.ts's `Pass`
-    // doc). The captured target must reflect pass TWO's own walk (the
-    // transition just above the note), not whatever pass ONE's
-    // declaration-only walk last touched.
+  it("a note attached with no explicit `of <State>` falls back to `lastEntity` as of pass THREE's OWN walk position", () => {
+    // `CucaDiagram#startingPass` resets `lastEntity` (`CucaDiagram.java:160-166`),
+    // and an attached note runs on pass THREE (`StateDiagramFactory.java:97-100`),
+    // where a link does not run (`CommandLinkStateCommon.java:71`). So the target
+    // is the last DECLARATION replayed above the note, not the link's state.
     const ast = parse(`
       state Zeta {
         state Alpha
@@ -329,7 +325,7 @@ describe('two-pass parsing -- ParserPass ONE/TWO port', () => {
     `);
 
     expect(ast.notes).toHaveLength(1);
-    expect(ast.notes?.[0]?.target).toBe('Beta');
+    expect(ast.notes?.[0]?.target).toBe('Alpha');
     expect(ast.notes?.[0]?.implicitTarget).toBe(true);
   });
 });

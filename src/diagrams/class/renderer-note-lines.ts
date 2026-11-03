@@ -31,6 +31,7 @@ import type { NoteGeo } from './note-layout-types.js';
 import type { NoteDividerDraw, NoteDividerTitle, NoteTableDraw } from './note-layout-measure-rows.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import type { ScaledTheme } from './class-scale-geo.js';
+import { resolveNoteFontColor } from './renderer-note-stroke.js';
 import { line, text, linkWrap, attrs } from '../../core/svg.js';
 import { getFont, FontStyle } from '../../core/klimt/shape/UText.js';
 import { OPALE_MARGIN_X1 as NOTE_MARGIN_X1 } from '../../core/svek/image/Opale.js';
@@ -167,7 +168,7 @@ function renderTableCellAtom(
   const rendered = text(x + (atom.renderDx ?? 0), y, atom.renderText ?? atom.text, {
     fontFamily: atom.font.family,
     fontSize: getFont(atom.font).size,
-    fill: atom.font.color ?? theme.colors.graph.noteCascadeFontColor ?? '#000000',
+    fill: atom.font.color ?? resolveNoteFontColor(theme),
     lengthAdjust: 'spacing',
     textLength: atom.renderWidth ?? atom.width,
     ...tableCellAtomStyleExtras(atom),

@@ -15,6 +15,7 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { noGradient, parseColor } from '../../core/paint.js';
 import type { Paint } from '../../core/paint.js';
 import { isObjectKind } from './object-kind-style.js';
+import { CLASS_BUCKET, classScopedColor, objectDefaultBackground } from './renderer-classifier-scoped-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
 import {} from './class-map-sizing.js';
@@ -57,13 +58,8 @@ export function classDefaultBackground(theme: Theme): Paint {
  *  populates for every other element kind (`note`, `spot<Kind>`). A plain
  *  color NAME still needs HColorSet resolution (`resolveColorToSvgHex`,
  *  mirroring `renderer-note.ts#resolveNoteBackground`'s identical branch).
- *  Gradient `Paint`s are NOT supported here (unlike that note precedent) --
- *  `classifierFill`'s return type is `string`, shared with two other
- *  callers (`renderEnhancedBody`/`renderVisibilityUrlBackground`) that
- *  don't accept a `Paint`; widening all three for a feature no fixture in
- *  the corpus exercises is out of this iteration's scope -- falls through
- *  to the class default in that (currently unencountered) case, same as
- *  "unset". */
+ *  A gradient `Paint` passes through (dss T3b), as that note precedent does:
+ *  `classifierFill` returns a `Paint` now. */
 export function resolveElementBackground(
   theme: Theme,
   sname: string,
@@ -74,7 +70,7 @@ export function resolveElementBackground(
   // `addPriorityForStereotype`). Optional so every existing caller keeps its
   // pre-B13 behavior.
   stereotypeLabels?: readonly string[],
-): string | undefined {
+): Paint | undefined {
   const byStereo = theme.colors.elements?.[sname]?.backgroundColorByStereo;
   if (byStereo !== undefined && stereotypeLabels !== undefined) {
     // First label wins: a priority tie keeps the earlier label's value (DarkString.java:50-57).
@@ -84,8 +80,9 @@ export function resolveElementBackground(
     }
   }
   const bucket = theme.colors.elements?.[sname]?.background;
-  if (typeof bucket === 'string') return resolveColorToSvgHex(bucket);
-  return undefined;
+  // dss T3b: a gradient bucket (`skinparam object { BackgroundColor A-B }`, `!theme aws-orange`) is a `Paint` the
+  // caller (`classifierFill`) already returns; it used to fall through to the class cascade's identical gradient.
+  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : bucket;
 }
 
 /** G3/O2: `theme.colors.elements[sname].font` -- the SAME generic
@@ -107,10 +104,9 @@ export function resolveElementFont(theme: Theme, sname: string): string | undefi
  *  `buildHeaderPrimitive`'s own header-background-split gate, NEVER by
  *  `classifierFill` (the body rect's fill stays the bare bucket's
  *  `background`, unaffected). */
-export function resolveElementHeaderBackground(theme: Theme, sname: string): string | undefined {
+export function resolveElementHeaderBackground(theme: Theme, sname: string): Paint | undefined {
   const bucket = theme.colors.elements?.[sname]?.headerBackground;
-  if (typeof bucket === 'string') return resolveColorToSvgHex(bucket);
-  return undefined;
+  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : bucket;
 }
 
 /** G3/O4: `theme.colors.elements[sname].headerFont` -- the SAME nested
@@ -259,14 +255,12 @@ export function classifierFill(geo: ClassifierGeo, theme: Theme): Paint {
   // for FontSize, and is retired. (The GENERIC rewrite -- upstream needs no
   // per-key matcher at all -- remains tracked; see the ledger's M22 row.)
   if (geo.kind === 'object' || geo.kind === 'map' || geo.kind === 'json') {
-    return resolveElementBackground(theme, geo.kind, geo.stereotypeLabels) ?? classDefaultBackground(theme);
+    return resolveElementBackground(theme, geo.kind, geo.stereotypeLabels) ?? objectDefaultBackground(theme);
   }
   // G2 N37: the `.tagname` sub-selector cascade (`class { .mystyle {
   // BackgroundColor cyan } } }`) wins over the plain ancestor cascade below
   // when the classifier carries a matching stereotype -- see
   // `style-cascade-class.ts#resolveClassTagCascadeEntry`'s own doc comment.
-  const tagBackground = resolveClassTagCascadeEntry(theme, geo.stereotypeLabels, geo.styleGeneration)?.background;
-  if (tagBackground !== undefined) return tagBackground;
   // CDD T6FU: `skinparam classBackgroundColor<<stereo>>` -- the SAME
   // stereotype-tagged-style tier as the `.tagname` cascade above
   // (`FromSkinparamToStyle#addStyle`'s `sig.addStereotype(s)` +
@@ -274,14 +268,25 @@ export function classifierFill(geo: ClassifierGeo, theme: Theme): Paint {
   // instead of a `<style>` block; placed immediately below it because a
   // `<style>` block is the later-registered of the two upstream. See
   // `theme-graph-colors-b.ts#classBackgroundColorByStereo`.
-  const byStereo = resolveClassBackgroundByStereo(theme, geo.stereotypeLabels);
-  if (byStereo !== undefined) return byStereo;
+  // dss T3b: then the style engine's merged `class` background, above the flat (order-blind) cascade below.
+  const tier = classStereotypeBackground(geo, theme) ?? classScopedColor(theme, CLASS_BUCKET, 'background');
+  if (tier !== undefined) return tier;
   // G2 N36: `classCascadeBackground` is a STRICT SUPERSET of what the
   // pre-existing bare `class {}` bucket (`classBackground`, `style-map-
   // theme.ts`) could ever populate from the SAME StyleMap -- it additionally
   // covers the `classDiagram`/`root` ancestor layer and nested `classDiagram
   // .class {}` -- see `theme.ts`'s own field doc comment.
   return classDefaultBackground(theme);
+}
+
+/** The tiers of {@link classBorder} above the flat cascade: `.tagname`, `classBorderColor<<stereo>>`, then (dss T3b)
+ *  the style engine's merged `class` LineColor. */
+function classBorderTier(geo: ClassifierGeo, theme: Theme): Paint | undefined {
+  return (
+    resolveClassTagCascadeEntry(theme, geo.stereotypeLabels, geo.styleGeneration)?.border ??
+    resolveClassBorderByStereo(theme, geo.stereotypeLabels) ??
+    classScopedColor(theme, CLASS_BUCKET, 'border')
+  );
 }
 
 /**
@@ -313,20 +318,24 @@ export function classBorder(geo: ClassifierGeo, theme: Theme): Paint {
   // `EntityImageObject.java:149` / `EntityImageMap.java:155`: object/map/json
   // draw `style.value(PName.LineColor)` of their OWN signature, never the
   // class cascade below.
-  const kindBorder = isObjectKind(geo.kind) ? theme.colors.elements?.[geo.kind]?.border : undefined;
-  if (kindBorder !== undefined) return typeof kindBorder === 'string' ? resolveColorToSvgHex(kindBorder) : kindBorder;
+  if (isObjectKind(geo.kind)) {
+    // dss T3b: no class tier below a kind with no `classDiagram`/`class_` in its signature; the skin default is the
+    // root `LineColor` (`theme.colors.border`), which `root`/`element` declarations reach.
+    const kindBorder = theme.colors.elements?.[geo.kind]?.border;
+    if (kindBorder === undefined) return theme.colors.border;
+    return typeof kindBorder === 'string' ? resolveColorToSvgHex(kindBorder) : kindBorder;
+  }
   // G2 N37: the `.tagname` sub-selector cascade wins over the plain
   // ancestor cascade -- see `classifierFill`'s identical precedent above.
-  const tagBorder = resolveClassTagCascadeEntry(theme, geo.stereotypeLabels, geo.styleGeneration)?.border;
-  if (tagBorder !== undefined) return tagBorder;
   // cdd2-T8 (S-3): `skinparam classBorderColor<<stereo>>` -- the SAME
   // stereotype-tagged-style tier as the `.tagname` cascade above, just
   // spelled as a skinparam instead of a `<style>` block; placed
   // immediately below it, mirroring `classifierFill`'s identical
   // `resolveClassBackgroundByStereo` placement. See `theme-graph-colors-a
   // .ts#classBorderColorByStereo`.
-  const byStereo = resolveClassBorderByStereo(theme, geo.stereotypeLabels);
-  if (byStereo !== undefined) return byStereo;
+  // dss T3b: then the style engine's merged `class` LineColor, above the flat (order-blind) cascade below.
+  const tier = classBorderTier(geo, theme);
+  if (tier !== undefined) return tier;
   // G2 N51: `skinparam classBorderColor #X` -- the bare (non-`<style>`,
   // non-tag) fallback tier, mirroring `classifierFill`'s identical
   // `classCascadeBackground ?? classBackground` two-tier precedent -- see

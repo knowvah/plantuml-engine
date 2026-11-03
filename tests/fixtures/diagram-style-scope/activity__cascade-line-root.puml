@@ -1,0 +1,21 @@
+@startuml
+<style>
+root {
+  LineColor #BB0000
+}
+</style>
+start
+:a;
+if (c) then (y)
+  :b;
+else (n)
+  :d;
+endif
+fork
+  :e;
+fork again
+  :f;
+end fork
+note left: n
+stop
+@enduml

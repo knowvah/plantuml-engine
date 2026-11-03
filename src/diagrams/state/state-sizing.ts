@@ -49,6 +49,7 @@ import type { DotInputNodeShape } from '../../core/graph-layout.js';
 import type { StateTextLine } from './state-geo-types.js';
 import { measureJsonState } from './state-json-sizing.js';
 import { resolveStateFontSize } from './state-render-colors.js';
+import { leafSouthZoneDrawn } from './renderer-box-zones.js';
 import { isBorderPoint } from './state-entity-position.js';
 // G1/G23 (mission state-declared-size-fix, D1): the ONE creole seam. Every
 // `measurer.measure` this file used to run on display/description/field
@@ -398,6 +399,8 @@ export interface StateGeoTextFields {
   stereotype?: string;
   /** G9/T7 -- see `StateNodeGeo.borderPointLabelHeight`'s own doc comment. */
   borderPointLabelHeight?: number;
+  /** dss T3c -- a zoned leaf's `RoundedSouth` path; see `StateNodeGeo.southCapInk`. */
+  southCapInk?: true;
 }
 
 /**
@@ -438,6 +441,11 @@ export function buildStateGeoTextFields(
   }
   if (state.color !== undefined) fields.color = state.color;
   if (state.stereotype !== undefined) fields.stereotype = state.stereotype;
+  // dss T3c: a leaf drawn through `RoundedContainer` ends in a `RoundedSouth` `UPath`
+  // (`renderer-box-zones.ts`), whose ink `LimitFinder` takes uninset (`StateNodeGeo.southCapInk`).
+  if (fields.bodyLines !== undefined && isLeafState(state) && leafSouthZoneDrawn(state, theme)) {
+    fields.southCapInk = true;
+  }
   // G9/T7: a border point's label is drawn OUTSIDE its symbol, so the ink
   // extent has to reserve it — see `StateNodeGeo.borderPointLabelHeight`.
   if (isBorderPoint(state) && fields.headerLines !== undefined) {

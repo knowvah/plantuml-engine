@@ -202,7 +202,42 @@ export function toSvgHex(c: ResolvedColor): string {
  */
 export function resolveColorToSvgHex(raw: string): string {
   const parsed = parseColor(raw);
-  return parsed === undefined ? raw : toSvgHex(parsed);
+  if (parsed !== undefined) return toSvgHex(parsed);
+  // `HColor#toSvg` on an `HColorGradient` is `toColor(mapper).toSvg()` (`HColor.java:74-79`), and its `toColor` is
+  // `color1.toColor(mapper)` (`HColorGradient.java:103-105`): a token that splits as a gradient prints its first colour.
+  const gradient = splitGradientToken(raw);
+  return gradient === undefined ? raw : resolveColorToSvgHex(gradient.first);
+}
+
+/** The two colours and the separator of a gradient token. */
+export interface GradientToken {
+  readonly first: string;
+  readonly second: string;
+  readonly separator: GradientPolicy;
+}
+
+const GRADIENT_SEPARATORS: ReadonlySet<string> = new Set(['-', '\\', '|', '/']);
+
+/**
+ * `HColorSet#parseColor`'s gradient scan (`HColorSet.java:109-116`): the first separator with a simple colour on both
+ * sides, in position order. `undefined` for any other token.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:109-116
+ */
+export function splitGradientToken(s: string): GradientToken | undefined {
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charAt(i);
+    if (!GRADIENT_SEPARATORS.has(c)) continue;
+    const first = s.slice(0, i);
+    const second = s.slice(i + 1);
+    if (
+      first !== '' &&
+      second !== '' &&
+      parseSimpleColor(first) !== undefined &&
+      parseSimpleColor(second) !== undefined
+    )
+      return { first, second, separator: c as GradientPolicy };
+  }
+  return undefined;
 }
 
 /**

@@ -1,0 +1,10 @@
+@startyaml
+<style>
+element {
+  BackgroundColor #AAAAAA
+}
+</style>
+a: 1
+b:
+  c: 2
+@endyaml

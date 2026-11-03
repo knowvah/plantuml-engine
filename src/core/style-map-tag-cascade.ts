@@ -79,8 +79,7 @@ export function collectStyleTagNames(styleMap: StyleMap): ReadonlySet<string> {
  * `.tagname` sub-selector) the caller's `stereotypeTags`.
  *
  * Mirrors upstream's real style-matching algorithm far more faithfully than
- * a fixed precedence array ({@link resolveDocumentBackground}'s own
- * `DOCUMENT_BACKGROUND_SELECTOR_PRECEDENCE`, G2 N7): `StyleSignatureBasic
+ * a fixed precedence array: `StyleSignatureBasic
  * #matchAllImpl` runs TWO independent subset tests -- SName
  * (`element.key.snames.containsAll(declaration.key.snames)`) AND
  * stereotype (`element.stereotypes.containsAll(declaration.stereotypes)`,

@@ -22,6 +22,7 @@ import {
   addNote,
   addFreestandingNote,
   applyNoteOnLink,
+  stripQuotes,
 } from './state-notes.js';
 
 /** Parse an optional `left|right|top|bottom` capture, defaulting to BOTTOM
@@ -52,6 +53,32 @@ function needsNothingToNoteTo(ps: ParseState, target: string | undefined): boole
   return target === undefined && ps.lastEntity === null;
 }
 
+/** `CommandFactoryNoteOnEntity.java:304-307`: `quarkInContext(true, idShort)`
+ *  then `Not known` on a quark holding no entity. A bare name resolves through
+ *  `countByName(full) == 1` unless that one entity is the current group, whose
+ *  own `child(full)` is empty (`CucaDiagram.java:267-274`); a name no entity has
+ *  fails the same way. Dotted names and a name several entities share take paths
+ *  the by-name index cannot answer, so they stay accepted: under-refusing keeps
+ *  today's output, over-refusing would lose a diagram the jar draws. */
+function noteTargetError(ps: ParseState, target: string): string | undefined {
+  const name = stripQuotes(target);
+  if (ps.separator !== null && name.includes(ps.separator)) return undefined;
+  return isKnownNoteHost(ps, name) ? undefined : `Not known: ${name}`;
+}
+
+/** {@link noteTargetError}'s bare-name test. */
+function isKnownNoteHost(ps: ParseState, name: string): boolean {
+  const states = ps.globalByName.get(name) ?? [];
+  if (states.length === 1 && states[0] === currentScope(ps).owner) return false;
+  return states.length > 0 || (ps.ast.notes ?? []).some((n) => n.id === name);
+}
+
+/** Upstream's refusal for a note's target on pass THREE, or `undefined`. */
+function attachedNoteError(ps: ParseState, target: string | undefined): string | undefined {
+  if (needsNothingToNoteTo(ps, target)) return NOTHING_TO_NOTE_TO;
+  return target === undefined ? undefined : noteTargetError(ps, target);
+}
+
 export const NOTE_COMMANDS: readonly Command[] = [
   // -------------------------------------------------------------------------
   // 10. Multi-line attached note opener: note <pos> [of <State>] [<<s>>]
@@ -66,15 +93,15 @@ export const NOTE_COMMANDS: readonly Command[] = [
   //     brace-closer capture shifts from match[3] to match[4] accordingly.
   //     T9b: shares upstream's `executeInternal` with rule 11 -- the SAME
   //     "Nothing to note to" guard applies (`needsNothingToNoteTo`'s doc
-  //     above), but checked ONLY on pass 'two': pass 'one' still opens
-  //     `pendingNote` unconditionally so the body keeps being swallowed on
-  //     BOTH passes (`parser.ts#handlePendingNoteLine`) -- a pass-'one'
+  //     above), but checked ONLY on pass 'three': the earlier passes still
+  //     open `pendingNote` unconditionally so the body keeps being swallowed
+  //     on EVERY pass (`parser.ts#handlePendingNoteLine`) -- an earlier
   //     check would read `ps.lastEntity` before pass-'two'-only commands
   //     (e.g. a transition's implicit state creation) earlier on this SAME
   //     line position have run, which could refuse a source upstream's
-  //     real merged pass ('two', matching ParserPass.THREE) would accept.
-  //     Refusing on pass 'two' aborts the whole parse before that pass's
-  //     walk needs `pendingNote` again, so skipping the open there is safe.
+  //     ParserPass.THREE would accept. Refusing on pass 'three' aborts the
+  //     whole parse before that pass's walk needs `pendingNote` again, so
+  //     skipping the open there is safe.
   // @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnEntity.java
   // -------------------------------------------------------------------------
   {
@@ -88,13 +115,13 @@ export const NOTE_COMMANDS: readonly Command[] = [
         String.raw`\s*(\{)?\s*$`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const position = match[1]!.toLowerCase() as NotePosition;
       const target = match[2];
-      if (pass === 'two' && needsNothingToNoteTo(ps, target)) {
-        ps.executionError = NOTHING_TO_NOTE_TO;
-        return;
+      if (pass === 'three') {
+        ps.executionError = attachedNoteError(ps, target);
+        if (ps.executionError !== undefined) return;
       }
       ps.pendingNote = {
         kind: 'attached',
@@ -112,7 +139,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
   // 11. Single-line attached note: note <pos> [of <State>] [<<s>>][#c][[u]] : text
   //     `of <State>` absent -> attaches to the last created entity.
   //     Upstream CommandFactoryNoteOnEntity is ParserPass.THREE for state
-  //     diagrams -- merged into our single 'two' pass (see Pass's doc).
+  //     diagrams (`StateDiagramFactory.java:97-100`).
   //     mission G4 S12: `#color` is now CAPTURED (match[3]) -- the trailing
   //     text capture shifts from match[3] to match[4] accordingly.
   // @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnEntity.java:92-116 (regex)
@@ -130,13 +157,11 @@ export const NOTE_COMMANDS: readonly Command[] = [
         String.raw`\s*:\s*(.+)$`,
       'i',
     ),
-    passes: ['two'],
+    passes: ['three'],
     execute(ps, match) {
-      const target = match[2] ?? ps.lastEntity ?? undefined;
-      if (target === undefined) {
-        ps.executionError = NOTHING_TO_NOTE_TO;
-        return;
-      }
+      ps.executionError = attachedNoteError(ps, match[2]);
+      if (ps.executionError !== undefined) return;
+      const target = match[2] ?? ps.lastEntity!;
       // mission G4 S10: burned GMN quark-name tick -- see
       // `StateNote.creationIndex`'s own doc comment.
       nextCreationIndex(ps);
@@ -146,6 +171,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
         creationIndex: nextCreationIndex(ps),
         ...(match[3] !== undefined ? { color: match[3] } : {}),
       });
+      nextCreationIndex(ps); // the note's `Link` -- see `finalizePendingNote`'s doc
       ps.lastEntity = id;
     },
   },
@@ -163,7 +189,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
     pattern: NOTE_ON_LINK_RE,
     passes: ['two'],
     execute(ps, match) {
-      applyNoteOnLink(currentScope(ps).transitions, match[2]!, linkNotePosition(match[1]));
+      applyNoteOnLink(currentScope(ps).transitions, match[2]!.trim(), linkNotePosition(match[1]));
     },
   },
 
@@ -177,7 +203,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
   // -------------------------------------------------------------------------
   {
     pattern: NOTE_ON_LINK_MULTI_RE,
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match) {
       ps.pendingNote = {
         kind: 'link',
@@ -202,7 +228,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
       String.raw`^note\s+as\s+` + NOTE_TARGET + NOTE_STEREO + NOTE_COLOR_CAPTURE + String.raw`\s*$`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match) {
       ps.pendingNote = {
         kind: 'freestanding',

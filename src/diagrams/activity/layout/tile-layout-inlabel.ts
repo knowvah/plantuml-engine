@@ -136,6 +136,40 @@ export function applyInLabel(out: Out, tile: { readonly inLabel?: PendingInLabel
 }
 
 /**
+ * The colour half of {@link applyInLabel} alone: the branch's first arrow, `-[#color]->` before its first element,
+ * colours the edge from the condition's diamond to that branch. `Branch#getInColor` (`Branch.java:163-178`) answers the
+ * first tile's in-link rainbow (`getFtile().getInLinkRendering().getRainbow(arrowColor)`), `FtileIfDown`'s `ConnectionIn`
+ * the same off its `thenBlock` (`FtileIfDown.java:135`). The label half stays out: a branch label is the `then (y)` text
+ * that `Branch#getDisplayPositive` (`Branch.java:228-236`) replaces, laid out by each `if` builder.
+ * Call it right after the edge was pushed; a gated, unpushed edge must not call it.
+ */
+export function applyInColor(out: Out, tile: { readonly inLabel?: PendingInLabel }): void {
+  const color = tile.inLabel?.color;
+  if (color !== undefined) out.edges[out.edges.length - 1]!.color = color;
+}
+
+/**
+ * The colour half of {@link applyOutLabel} alone, for the `if` builders that never draw a branch's trailing label: the
+ * arrow before `else`/`endif` still colours the edge from the branch to the merge (`Branch#getOut`, `Branch.java:150-161`;
+ * `ConnectionVerticalThenHorizontal`, `FtileIfWithLinks.java:176-182`; `ConnectionOut`, `FtileIfDown.java:157`).
+ * Call it right after the edge was pushed.
+ */
+export function applyOutColor(out: Out, tile: { readonly outLabel?: PendingInLabel }): void {
+  const color = tile.outLabel?.color;
+  if (color !== undefined) out.edges[out.edges.length - 1]!.color = color;
+}
+
+/** {@link withOutLabel} for those builders: the trailing arrow's colour only, its label dropped. */
+export function withOutColor<T extends { outLabel?: PendingInLabel | undefined }>(
+  tile: T,
+  outLabel: PendingInLabel | undefined,
+): T {
+  const color = outLabel?.color;
+  if (color !== undefined) tile.outLabel = { label: '', color };
+  return tile;
+}
+
+/**
  * {@link applyInLabel}'s OUT-side mirror, for {@link Tile.outLabel} --
  * attaches a branch/case's own trailing label (`Branch#special`/
  * `InstructionList#outlinkRendering`, {@link withOutLabel}'s own

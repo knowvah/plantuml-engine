@@ -167,7 +167,7 @@ function replaceBackslashT(line: string): string {
  *  common to every non-empty line, one column at a time, as long as one
  *  remains. Title/Caption/Legend multiline bodies (not Header/Footer).
  * @see ~/git/plantuml/.../utils/BlocLines.java:234-263 */
-function removeEmptyColumns(bodyLines: readonly string[]): string[] {
+export function removeEmptyColumns(bodyLines: readonly string[]): string[] {
   let lines: string[] = [...bodyLines];
   while (isFirstColumnRemovable(lines)) {
     lines = lines.map((l) => (l.length > 0 ? l.slice(1) : l));

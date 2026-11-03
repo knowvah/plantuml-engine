@@ -1,0 +1,12 @@
+@startuml
+<style>
+arrow { LineColor #00A ; FontColor #A00 }
+</style>
+start
+fork
+:a;
+fork again
+:b;
+end merge
+stop
+@enduml

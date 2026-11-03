@@ -1,0 +1,18 @@
+@startuml
+skinparam activity {
+ BackgroundColor #0A0-#00A
+ BorderColor #0A0-#00A
+ FontColor #0A0-#00A
+ DiamondBackgroundColor #0A0-#00A
+ DiamondBorderColor #0A0-#00A
+}
+skinparam arrowColor #0A0-#00A
+skinparam noteBackgroundColor #0A0-#00A
+start
+:A;
+if (x?) then (y)
+:B;
+endif
+note right: n
+stop
+@enduml

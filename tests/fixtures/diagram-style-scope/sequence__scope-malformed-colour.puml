@@ -1,0 +1,12 @@
+@startuml
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+note {
+  FontSize
+}
+}
+</style>
+A -> B
+@enduml

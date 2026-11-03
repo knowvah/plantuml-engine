@@ -50,12 +50,7 @@ import { applySeededDefIds } from './svg-defs-seeded.js';
 import { seedOf } from './klimt/drawing/svg/svg-seed.js';
 import { assembleDocumentShell } from './klimt/document-shell.js';
 import { applyCucaDocumentMargin, exportTo, finalizeTitledDiagramFragment } from './TextBlockExporter.js';
-import {
-  CUCA_DOCUMENT_MARGIN_TOP,
-  CUCA_DOCUMENT_MARGIN_RIGHT,
-  CUCA_DOCUMENT_MARGIN_BOTTOM,
-  CUCA_DOCUMENT_MARGIN_LEFT,
-} from './atmp/CucaDiagram.js';
+import { CUCA_DOCUMENT_MARGIN, documentMarginOf, type DocumentMargin } from './document-margin.js';
 
 /** `DiagramType` values this module dispatches on (`DiagramType.java:45`, every cached jar fixture's
  *  root `data-diagram-type`). Each engine declares its own copy to SET `RenderFragment.diagramType`
@@ -95,10 +90,10 @@ const DIAGRAM_BORDER_THICKNESS = 1;
  *  `(0,0)`, the border is the OUTERMOST draw, at no prior translate.
  *  Jar-verified byte-exact against `vinujo-78-kapo329` (`rawWidth=109.7875`
  *  -> rect width `113.7875`; `rawHeight=62` -> rect height `66`). */
-function computeBorderRectDims(rawDims: { width: number; height: number }, thickness: number) {
+function computeBorderRectDims(rawDims: { width: number; height: number }, thickness: number, margin: DocumentMargin) {
   return {
-    width: rawDims.width + CUCA_DOCUMENT_MARGIN_LEFT + CUCA_DOCUMENT_MARGIN_RIGHT - thickness,
-    height: rawDims.height + CUCA_DOCUMENT_MARGIN_TOP + CUCA_DOCUMENT_MARGIN_BOTTOM - thickness,
+    width: rawDims.width + margin.left + margin.right - thickness,
+    height: rawDims.height + margin.top + margin.bottom - thickness,
   };
 }
 
@@ -122,18 +117,21 @@ function computeBorderRectDims(rawDims: { width: number; height: number }, thick
  * formula correctly -- rather than draw a possibly-wrong-sized rect, this
  * guard silently no-ops for that case.
  */
-function withDiagramBorderRect(body: string, fragment: RenderFragment, colorHex: string): string {
-  if (fragment.preChromeWidth === undefined || fragment.preChromeHeight === undefined) return body;
+function diagramBorderRect(fragment: RenderFragment): string {
+  const colorHex = fragment.diagramBorderColor;
+  if (colorHex === undefined) return '';
+  if (fragment.preChromeWidth === undefined || fragment.preChromeHeight === undefined) return '';
   const rawDims = { width: fragment.preChromeWidth, height: fragment.preChromeHeight };
-  const expectedFinal = applyCucaDocumentMargin(rawDims);
-  if (expectedFinal.width !== fragment.width || expectedFinal.height !== fragment.height) return body;
-  const rectDims = computeBorderRectDims(rawDims, DIAGRAM_BORDER_THICKNESS);
-  const borderRect = rect(0, 0, rectDims.width, rectDims.height, {
+  // dss T3b: the margin the exporter applied (`TextBlockExporter.java:510-516`): a style `Margin`, else the cuca default.
+  const margin = documentMarginOf(fragment) ?? CUCA_DOCUMENT_MARGIN;
+  const expectedFinal = applyCucaDocumentMargin(rawDims, margin);
+  if (expectedFinal.width !== fragment.width || expectedFinal.height !== fragment.height) return '';
+  const rectDims = computeBorderRectDims(rawDims, DIAGRAM_BORDER_THICKNESS, margin);
+  return rect(0, 0, rectDims.width, rectDims.height, {
     fill: 'none',
     stroke: colorHex,
     strokeWidth: DIAGRAM_BORDER_THICKNESS,
   });
-  return spliceAsFirstChild(body, borderRect);
 }
 
 /**
@@ -157,10 +155,8 @@ function withDiagramBorderRect(body: string, fragment: RenderFragment, colorHex:
  */
 function finalizeClassBody(fragment: RenderFragment): string {
   const body = fragment.bodyWrapped === true ? fragment.body : group(fragment.body);
-  const withBorder =
-    fragment.diagramBorderColor !== undefined
-      ? withDiagramBorderRect(body, fragment, fragment.diagramBorderColor)
-      : body;
+  const border = diagramBorderRect(fragment);
+  const withBorder = border === '' ? body : spliceAsFirstChild(body, border);
   const background = backcolorMarkup(
     fragment.documentBackgroundRect,
     fragment.backgroundGradient,
@@ -189,12 +185,14 @@ function finalizeClassBody(fragment: RenderFragment): string {
  * chrome-present carve-out recorded only that the sampled corpus lacked the case.
  */
 function finalizeStateBody(fragment: RenderFragment): string {
-  const backgroundRect = backcolorMarkup(
-    fragment.background,
-    fragment.backgroundGradient,
-    Math.trunc(fragment.width),
-    Math.trunc(fragment.height),
-  );
+  // dss T3f: the constructor's paint, then `maybeDrawBorder` (`TextBlockExporter.java:169-171`).
+  const backgroundRect =
+    backcolorMarkup(
+      fragment.background,
+      fragment.backgroundGradient,
+      Math.trunc(fragment.width),
+      Math.trunc(fragment.height),
+    ) + diagramBorderRect(fragment);
   return fragment.bodyWrapped === true
     ? spliceIntoContentGroup(fragment.body, backgroundRect)
     : group(backgroundRect + fragment.body);

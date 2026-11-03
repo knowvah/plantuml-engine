@@ -1,0 +1,10 @@
+@startfiles
+<style>
+filesDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+/a
+@endfiles

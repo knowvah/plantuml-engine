@@ -81,8 +81,9 @@
  */
 import { roundedBottomRectD, roundedTopRectD } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
+import type { Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
-import { rect, line, text, path } from '../../core/svg.js';
+import { rect, line, text } from '../../core/svg.js';
 // G1/G8/G23: one engine, one text/table/symbol emitter -- see
 // `renderer-box.ts`'s own doc comments for each.
 import { renderStateTextLines, renderOOSymbol, isOOSymbolStereotype } from './renderer-box.js';
@@ -91,12 +92,15 @@ import {
   STATE_DEFAULT_BACKGROUND,
   STATE_BORDER_STROKE_WIDTH,
   resolveStateFillBucketed,
+  resolveStateBodyFill,
   resolveStateBorder,
   resolveStateFontColor,
   resolveStateBoxRadius,
   textAscent,
 } from './state-render-colors.js';
+import { roundedZone } from './renderer-box-zones.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
+import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
 
 /** `URectangle.halfRounded`'s own `roundCorner/2` — SAME `rx`/`ry` value as
  *  a leaf box's own outline (`renderer-box.ts#STATE_BOX_RX`), duplicated
@@ -121,13 +125,12 @@ function compositeHeaderPath(
   y0: number,
   width: number,
   headerHeight: number,
-  fill: string,
+  fill: Paint,
   r: number,
 ): string {
   const x1 = x0 + width;
   const y1 = y0 + headerHeight;
-  const d = roundedTopRectD(x0, y0, x1, y1, r);
-  return path(d, { fill });
+  return roundedZone(roundedTopRectD(x0, y0, x1, y1, r), fill);
 }
 
 /** G5 C3, mechanism 16 shape half: the BOTTOM-half mirror of
@@ -149,14 +152,13 @@ function compositeBodyPath(
   width: number,
   height: number,
   headerHeight: number,
-  fill: string,
+  fill: Paint,
   r: number,
 ): string {
   const x1 = x0 + width;
   const yTop = y0 + headerHeight;
   const y1 = y0 + height;
-  const d = roundedBottomRectD(x0, yTop, x1, y1, r);
-  return path(d, { fill });
+  return roundedZone(roundedBottomRectD(x0, yTop, x1, y1, r), fill);
 }
 
 /** G1/G23: the composite box draws the SAME styled runs / creole table the
@@ -224,12 +226,13 @@ function buildCoreLayers(
   title: string;
   dividerY1: number;
   ascent: number;
-  fill: string;
+  fill: Paint;
   fontColor: string;
 } {
   const headerLines = node.headerLines!;
   // mission G4 S10: `state`-element bucket tier -- see `resolveStateFillBucketed`'s own doc comment.
-  const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND);
+  // dss T3c: the header is the `name` zone (`InnerStateAutonom.java:107-109`).
+  const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND, STATE_NAME_BUCKET);
   // G4 S9: `StateBorderColor<<X>>` cascade -- see `resolveStateBorder`'s own
   // doc comment. Jar-verified `semala-31-joji042`'s own composite `a`.
   const border = resolveStateBorder(node, theme);
@@ -238,7 +241,8 @@ function buildCoreLayers(
   const radius = resolveStateBoxRadius(theme, STATE_BOX_RX);
   // mission G6 T4: `StateFontColor<<X>>`/the `stateDiagram { FontColor } }`
   // cascade -- see `resolveStateFontColor`'s own doc comment.
-  const fontColor = resolveStateFontColor(node, theme, '#000000');
+  // dss T3c: the title is the `name` zone (`InnerStateAutonom.java:102`, `ClusterHeader.java:156-157`).
+  const fontColor = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
   const ascent = textAscent(theme.fontSize);
   const headerHeight = MARGIN + headerLines.length * theme.fontSize + MARGIN_LINE;
   const dividerY1 = node.y + headerHeight;
@@ -288,12 +292,14 @@ function buildCoreLayers(
 }
 
 interface ActionZone {
+  /** The y below the description zone: where the `body` zone starts (`InnerStateAutonom.java`'s `RoundedContainer`, `RoundedContainer.java:84-85`). */
+  bottomY: number;
   bg: string;
   divider2: string;
   text: string;
 }
 
-const EMPTY_ACTION_ZONE: ActionZone = { bg: '', divider2: '', text: '' };
+const EMPTY_ACTION_ZONE: ActionZone = { bottomY: 0, bg: '', divider2: '', text: '' };
 
 /** Layers 2/4b/6 (action-zone background, second divider, action text) —
  *  ONLY drawn when `bodyLines.length > 0`. Returned as three SEPARATE
@@ -301,35 +307,36 @@ const EMPTY_ACTION_ZONE: ActionZone = { bg: '', divider2: '', text: '' };
  *  with the core layers' own 3/4a/5 in the jar's real draw order — see this
  *  module's top doc comment (layer 6 for the jar-verified `dividerY1 +
  *  ascent` offset). */
-function buildActionZone(
-  node: StateNodeGeo,
-  theme: Theme,
-  dividerY1: number,
-  ascent: number,
-  fill: string,
-  // mission G6 T4: same `resolveStateFontColor` cascade `buildCoreLayers`'s
-  // own title text already threads -- the action-zone text shares the SAME
-  // `EntityImageStateCommon` style signature as the title (module doc
-  // comment), so it cascades identically.
-  fontColor: string,
-): ActionZone {
+function buildActionZone(node: StateNodeGeo, theme: Theme, dividerY1: number, ascent: number): ActionZone {
   const bodyLines = node.bodyLines ?? [];
-  if (bodyLines.length === 0) return EMPTY_ACTION_ZONE;
+  if (bodyLines.length === 0) return { ...EMPTY_ACTION_ZONE, bottomY: dividerY1 };
   const border = resolveStateBorder(node, theme);
   const actionZoneHeight = textBlockHeight(bodyLines, theme) + MARGIN;
   const dividerY2 = dividerY1 + actionZoneHeight;
-  const bg = rect(node.x, dividerY1, node.width, actionZoneHeight, { fill, stroke: fill, strokeWidth: 1 });
+  // dss T3c: the action zone is the `description` zone (`InnerStateAutonom.java:110-112`).
+  const zoneFill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND, STATE_DESCRIPTION_BUCKET);
+  const bg = rect(node.x, dividerY1, node.width, actionZoneHeight, {
+    fill: zoneFill,
+    stroke: zoneFill,
+    strokeWidth: 1,
+  });
   const divider2 = line(node.x, dividerY2, node.x + node.width, dividerY2, {
     stroke: border,
     strokeWidth: STATE_BORDER_STROKE_WIDTH,
   });
-  const text_ = renderCompositeTextLines(bodyLines, () => node.x + MARGIN, dividerY1 + ascent, theme, fontColor);
-  return { bg, divider2, text: text_ };
+  const text_ = renderCompositeTextLines(
+    bodyLines,
+    () => node.x + MARGIN,
+    dividerY1 + ascent,
+    theme,
+    resolveStateFontColor(node, theme, '#000000', STATE_DESCRIPTION_BUCKET),
+  );
+  return { bottomY: dividerY2, bg, divider2, text: text_ };
 }
 
 function renderCompositeMeasured(node: StateNodeGeo, theme: Theme): string {
   const core = buildCoreLayers(node, theme);
-  const action = buildActionZone(node, theme, core.dividerY1, core.ascent, core.fill, core.fontColor);
+  const action = buildActionZone(node, theme, core.dividerY1, core.ascent);
   // mission skin-file-loading Batch 2: `core.shadowRect` (empty string when
   // `node.shadowing` is unset/0 -- byte-identical to the pre-Batch-2 return
   // for every shadow-off fixture) is drawn FIRST, matching jar's own
@@ -343,10 +350,26 @@ function renderCompositeMeasured(node: StateNodeGeo, theme: Theme): string {
   const symbol = isOOSymbolStereotype(node.stereotype)
     ? renderOOSymbol(node.x + node.width, node.y + node.height, core.fill, resolveStateBorder(node, theme))
     : '';
+  // dss T3c site 6: `RoundedContainer.drawU` (`RoundedContainer.java:84-85`) draws the
+  // south zone after the centre one; `RoundedSouth` skips a transparent colour.
+  const bodyFill = resolveStateBodyFill(node, theme);
+  const body =
+    bodyFill === undefined
+      ? ''
+      : compositeBodyPath(
+          node.x,
+          node.y,
+          node.width,
+          node.height,
+          action.bottomY - node.y,
+          bodyFill,
+          resolveStateBoxRadius(theme, STATE_BOX_RX),
+        );
   return (
     core.shadowRect +
     core.header +
     action.bg +
+    body +
     core.outline +
     core.divider1 +
     action.divider2 +
@@ -400,43 +423,31 @@ function renderClusterMeasured(node: StateNodeGeo, theme: Theme): string {
   const headerLines = node.headerLines!;
   const headerHeight = node.clusterHeaderHeight!;
   const titleMargin = node.clusterTitleBaselineMargin ?? MARGIN;
-  const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND);
+  // dss T3c: `Cluster.java:464-470` -- the header is the `name` zone.
+  const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND, STATE_NAME_BUCKET);
   const border = resolveStateBorder(node, theme);
   // mission G6 T4: `<style> stateDiagram { RoundCorner N } }` cascade --
   // see `resolveStateBoxRadius`'s own doc comment.
   const radius = resolveStateBoxRadius(theme, STATE_BOX_RX);
   // mission G6 T4: `StateFontColor<<X>>`/the `stateDiagram { FontColor } }`
   // cascade -- see `resolveStateFontColor`'s own doc comment.
-  const fontColor = resolveStateFontColor(node, theme, '#000000');
+  // dss T3c: the title is the `name` zone (`InnerStateAutonom.java:102`, `ClusterHeader.java:156-157`).
+  const fontColor = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
   const ascent = textAscent(theme.fontSize);
   const dividerY = node.y + headerHeight;
 
   const header = compositeHeaderPath(node.x, node.y, node.width, headerHeight, fill, radius);
-  // G5 C5 (ledger \u00a7C3's item 2, "conditional body-fill"): jar's real
-  // `RoundedSouth#drawU` (`~/git/plantuml/.../svek/RoundedSouth.java`)
-  // returns WITHOUT drawing anything when its OWN `backColor.isTransparent
-  // ()` -- the body-zone `body` style selector's DEFAULT (un-overridden)
-  // resolution is transparent, unlike the header/description selectors'
-  // own visible default -- so a cluster styled with the plain, untouched
-  // theme default draws ONLY the header path (jar-verified `gojuja-90-
-  // pune699`'s `A`: 1 `<path>`, `childCount` 4, no body fill at all) while
-  // one with ANY resolved background override (a per-node `#color`, a
-  // stereotype-qualified `stateBackgroundColor<<X>>`, or a bare `state`-
-  // element `<style>`/`skinparam stateBackgroundColor` bucket -- every tier
-  // `resolveStateFillBucketed` already implements) draws BOTH (jar-verified
-  // `rufosi-58-kegi649`'s `#red`-overridden `Inner1`, `vekoja-22-made430`'s
-  // `skinparam StateBackgroundColor green`). This port has no per-zone
-  // (header/description/body) style bucket of its own -- `fill !==
-  // STATE_DEFAULT_BACKGROUND` is the closest available signal for "some
-  // override tier actually fired" without building that whole 3-zone
-  // system; a diagram-level `<style> stateDiagram { BackgroundColor .. } }`
-  // cascade (`decede-10-buvu414`'s own, jar-verified 2-path) is NOT covered
-  // by this signal -- that selector tier is a separate, already-named,
-  // pre-existing gap (this port does not apply diagram-level `<style>`
-  // cascades to state diagrams at all yet), not a defect in this rule.
+  // G5 C5 (ledger §C3's item 2, "conditional body-fill"): jar's real
+  // `RoundedSouth#drawU` (`~/git/plantuml/.../svek/RoundedSouth.java:60-61`)
+  // draws nothing when its back colour is transparent, the `body` zone's
+  // default (`plantuml.skin:279-281`): jar-verified `gojuja-90-pune699`'s `A`
+  // (1 `<path>`, `childCount` 4). dss T3c: the zone's colour is read from the
+  // `state.body` bucket and the `state` tiers (`resolveStateBodyFill`), not
+  // inferred from the header fill.
+  const bodyFill = resolveStateBodyFill(node, theme);
   const body =
-    fill !== STATE_DEFAULT_BACKGROUND
-      ? compositeBodyPath(node.x, node.y, node.width, node.height, headerHeight, fill, radius)
+    bodyFill !== undefined
+      ? compositeBodyPath(node.x, node.y, node.width, node.height, headerHeight, bodyFill, radius)
       : '';
   const outline = rect(node.x, node.y, node.width, node.height, {
     fill: 'none',

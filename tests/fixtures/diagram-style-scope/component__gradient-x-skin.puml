@@ -1,0 +1,11 @@
+@startuml
+skinparam component {
+ BackgroundColor #0A0-#00A
+ BorderColor #0A0-#00A
+ FontColor #0A0-#00A
+ ArrowColor #0A0-#00A
+}
+component C
+component D
+C --> D : l
+@enduml

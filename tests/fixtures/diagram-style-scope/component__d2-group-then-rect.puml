@@ -1,0 +1,13 @@
+@startuml
+<style>
+group {
+  BackgroundColor #BBBBBB
+}
+rectangle {
+  BackgroundColor #AAAAAA
+}
+</style>
+rectangle R {
+  rectangle S
+}
+@enduml

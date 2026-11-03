@@ -21,6 +21,7 @@ import {
   type StopKeywords,
 } from './dispatch-support.js';
 import { parseNodes } from './node-dispatch.js';
+import { stereogroupBackColor } from './dispatch-stereogroup.js';
 import { unescapeLabelNewlines } from './if-dispatch.js';
 
 // ---------------------------------------------------------------------------
@@ -42,6 +43,9 @@ import { unescapeLabelNewlines } from './if-dispatch.js';
 // pre-existing D12 note below.
 // ---------------------------------------------------------------------------
 /** @see net/sourceforge/plantuml/activitydiagram3/command/CommandForkEnd3.java:57-81 */
+/** `fork;? <<stereogroup>>?` (`CommandFork3.java:60-64`); group 1 is the stereogroup (`Stereogroup.java:77-79`). */
+const RE_FORK = /^fork;?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
+
 const RE_FORK_END = /^end\s*(fork|merge)\s*(\{[^}]*\})?\s*;?\s*$/i;
 /** @see net/sourceforge/plantuml/activitydiagram3/command/CommandForkAgain3.java:56-62 */
 const RE_FORK_AGAIN = /^fork\s*again\s*;?\s*$/i;
@@ -136,13 +140,11 @@ function collectForkBranches(ctx: ParseContext, startIdx: number): ForkBranches 
  *   -- `new InstructionFork(swimlanes.getCurrentSwimlane(), ...)`, taken
  *   when the `fork` line itself is parsed, before the first branch.
  */
-export function tryFork(
-  ctx: ParseContext,
-  idx: number,
-  _line: string,
-  lc: string,
-): DispatchResult | ParseRefusal | null {
-  if (lc !== 'fork') return null;
+export function tryFork(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
+  const forkMatch = RE_FORK.exec(line);
+  if (forkMatch === null) return null;
+  // `Stereogroup#getInnerColors` (`Stereogroup.java:151-153`): the BACK colour both bars draw in (`FtileBlackBlock.java:105-106`).
+  const forkColor = stereogroupBackColor(forkMatch[1]);
   // Mission `activity-lane-capture` D1/T6: read BEFORE the first branch
   // parses, so a lane switch inside a branch never leaks into this node's
   // own `swimlane`.
@@ -152,6 +154,7 @@ export function tryFork(
   const node: ActivityFork = {
     kind: 'fork',
     branches: result.branches,
+    ...(forkColor !== undefined ? { color: forkColor } : {}),
     ...openerSwimlane,
     ...(result.swimlaneOut !== undefined ? { swimlaneOut: result.swimlaneOut } : {}),
     ...(result.style !== undefined ? { style: result.style } : {}),

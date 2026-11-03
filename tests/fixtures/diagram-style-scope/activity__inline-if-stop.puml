@@ -1,0 +1,18 @@
+@startuml
+start
+if (c) then (y)
+  -[#FF00FF]->
+  :d;
+  stop
+else (n)
+  :e;
+endif
+if (c2) then (y2)
+  :f;
+else (n2)
+  -[#00FFFF]->
+  :g;
+  stop
+endif
+stop
+@enduml

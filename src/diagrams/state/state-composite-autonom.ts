@@ -16,7 +16,7 @@ import type { DotLayoutResult } from '../../core/graph-layout.js';
 import { buildStateGeoTextFields } from './state-sizing.js';
 import { measureAutonomWrapper } from './state-composite-sizing.js';
 import { computeSvekResultGeometry } from './layout-ink-extent.js';
-import { materializeSpecs, clusterPosMapOf, type PosMap } from './state-composite-geo.js';
+import { materializeSpecs, clusterPosMapOf, edgePosMapOf, type PosMap } from './state-composite-geo.js';
 import { buildConcurrentAutonomSpec, buildConcurrentRegionPass } from './state-composite-concurrent.js';
 import {
   type DiagramCtx,
@@ -223,14 +223,14 @@ export function buildPlainAutonomSpec(s: State, ctx: DiagramCtx): ExtractAutonom
     (c: State) => resolveMember(c, acc, childCtx, undefined),
     { id: s.id, transitions: s.transitions, pseudoCreationIndex: ctx.pseudoCreationIndex },
   );
-  addScopeNotes(s.id, childCtx, acc);
+  const noteSpecs = addScopeNotes(s.id, childCtx, acc, [...memberSpecs, ...pseudoSpecs]);
   const localTransitions = s.transitions.filter((t) => t.from !== s.id && t.to !== s.id);
   addLevelEdges(s.id, localTransitions, acc, childCtx);
   sweepOrphanEdges(acc, childCtx);
   sweepOrphanNoteEdges(acc, ctx.notePool, ctx.consumedNotes, (id) => resolveEndpoint(id, ctx.classify));
   const result = runPass(acc, childCtx);
 
-  const localSpecs = sortSpecsByCreationIndex([...pseudoSpecs, ...memberSpecs]);
+  const localSpecs = sortSpecsByCreationIndex([...pseudoSpecs, ...memberSpecs, ...noteSpecs]);
   const rawPosMap: PosMap = new Map(result.nodes.map((n) => [n.id, n]));
   // mission G4 S5: `materializeSpecs` no longer takes an `outTransitions`
   // accumulator -- every nested pass's own edges attach directly to its
@@ -263,7 +263,13 @@ export function buildPlainAutonomSpec(s: State, ctx: DiagramCtx): ExtractAutonom
   // to `boundingBox(children)`, dropping the nested cluster's title bar and
   // frontier margin from `childImg` -- worth up to 300 px (giniti-22-fexo000
   // scope 5 height).
-  const inkStates = materializeSpecs(localSpecs, rawPosMap, clusterPosMapOf(result), ctx.theme.shadowing ?? 0);
+  const inkStates = materializeSpecs(
+    localSpecs,
+    rawPosMap,
+    clusterPosMapOf(result),
+    ctx.theme.shadowing ?? 0,
+    edgePosMapOf(result),
+  );
   const inkTransitions = buildLevelTransitionGeos(acc, result);
   const geometry = computeSvekResultGeometry(inkStates, inkTransitions);
   const childImg = {

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  renderMemberVisibilityIcon,
   renderVisibilityIcon,
   visibilityIconOriginY,
   visibilityModifierName,
@@ -199,7 +200,7 @@ describe('renderVisibilityIcon — theme icon-color overrides (G2 N54)', () => {
 // (`DarkGoldenRod` -> `#B8860B`, both LineColor and BackgroundColor, on a
 // PROTECTED method icon).
 // @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/VisibilityModifier.java:336-350
-describe('renderVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)', () => {
+describe('renderMemberVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)', () => {
   const themeWithStyleCascade = scaleClassTheme(
     deepMergeTheme(defaultTheme, {
       colors: {
@@ -213,12 +214,12 @@ describe('renderVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)
   );
 
   it('protected method: the <style> cascade wins over the hardcoded default', () => {
-    const svg = renderVisibilityIcon('#', false, 13, 88.5, undefined, themeWithStyleCascade);
+    const svg = renderMemberVisibilityIcon('#', false, { x: 13, y: 88.5 }, { theme: themeWithStyleCascade });
     expect(svg).toContain('fill="#B8860B" style="stroke:#B8860B;');
   });
 
   it('public method: untouched by a protected-only cascade entry', () => {
-    const svg = renderVisibilityIcon('+', false, 13, 88.5, undefined, themeWithStyleCascade);
+    const svg = renderMemberVisibilityIcon('+', false, { x: 13, y: 88.5 }, { theme: themeWithStyleCascade });
     expect(svg).toContain('fill="#84BE84" style="stroke:#038048;');
   });
 
@@ -242,7 +243,7 @@ describe('renderVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)
       }),
       1,
     );
-    const svg = renderVisibilityIcon('#', false, 13, 88.5, undefined, theme);
+    const svg = renderMemberVisibilityIcon('#', false, { x: 13, y: 88.5 }, { theme: theme });
     expect(svg).toContain('fill="#B8860B" style="stroke:#B8860B;');
   });
 
@@ -258,7 +259,7 @@ describe('renderVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)
       }),
       1,
     );
-    const svg = renderVisibilityIcon('#', false, 13, 88.5, undefined, theme);
+    const svg = renderMemberVisibilityIcon('#', false, { x: 13, y: 88.5 }, { theme: theme });
     expect(svg).toContain('fill="#B8860B" style="stroke:#B8860B;');
   });
 
@@ -274,7 +275,7 @@ describe('renderVisibilityIcon — <style> visibilityIcon cascade (cdd2-T8, S-7)
       }),
       1,
     );
-    const svg = renderVisibilityIcon('*', true, 13, 102.5, undefined, theme);
+    const svg = renderMemberVisibilityIcon('*', true, { x: 13, y: 102.5 }, { theme: theme });
     expect(svg).toContain('fill="#B8860B" style="stroke:#B8860B;');
   });
 });

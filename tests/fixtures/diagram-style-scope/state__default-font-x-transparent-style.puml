@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { FontColor transparent }
+</style>
+state A
+A --> [*] : l
+note left of A : n
+@enduml

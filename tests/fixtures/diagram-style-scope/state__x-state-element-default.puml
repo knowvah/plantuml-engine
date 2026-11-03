@@ -1,0 +1,11 @@
+@startuml
+<style>
+state {
+  LineColor #AAAAAA
+}
+element {
+  LineColor #181818
+}
+</style>
+state A
+@enduml

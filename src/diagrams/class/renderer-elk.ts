@@ -15,18 +15,16 @@
  */
 import type { ClassGeometry, ClassifierGeo } from './class-geo-types.js';
 import type { Theme } from '../../core/theme.js';
+import type { StringMeasurer } from '../../core/measurer.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { XPoint2D } from '../../core/klimt/geom/XPoint2D.js';
 import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
 import { MyElkDrawing } from '../../core/elk/MyElkDrawing.js';
 import { mergeFragmentDefs, renderDrawableToFragment, type DrawableFragment } from '../../core/klimt/document-shell.js';
-import {
-  CUCA_DOCUMENT_MARGIN_BOTTOM,
-  CUCA_DOCUMENT_MARGIN_LEFT,
-  CUCA_DOCUMENT_MARGIN_RIGHT,
-  CUCA_DOCUMENT_MARGIN_TOP,
-} from '../../core/atmp/CucaDiagram.js';
+import { CUCA_DOCUMENT_MARGIN, type DocumentMargin } from '../../core/document-margin.js';
+import { UTranslate } from '../../core/klimt/UTranslate.js';
+import type { UDrawable } from '../../core/klimt/shape/UDrawable.js';
 import { beginClassDocument, finishClassDocument } from './renderer-document.js';
 import { renderClassLeaf, type ClassLeafRenderContext, type ClassLeafSink } from './renderer-leaf.js';
 import { buildClassUidPlan } from './renderer-uid.js';
@@ -72,6 +70,26 @@ function svgLeafDrawer(pass: ElkLeafPass, leafGeos: ReadonlyMap<string, Classifi
   };
 }
 
+/** The drawing translated by the style margin (`TextBlockExporter.java:173`); untouched when no style sets one. */
+function marginedDrawing(drawing: MyElkDrawing, margin: DocumentMargin | undefined): UDrawable {
+  if (margin === undefined) return drawing;
+  return { drawU: (ug) => drawing.drawU(ug.apply(new UTranslate(margin.left, margin.top))) };
+}
+
+/**
+ * The drawing as a fragment: translated by the style margin (`TextBlockExporter.java:173`) and seeded with
+ * `calculateFinalDimension` over the same margin as `ensureVisible`'s `minDim` (`:199-203`).
+ */
+function drawElk(drawing: MyElkDrawing, geo: ClassGeometry, measurer: StringMeasurer): DrawableFragment {
+  const margin = geo.documentMargin ?? CUCA_DOCUMENT_MARGIN;
+  return renderDrawableToFragment(marginedDrawing(drawing, geo.documentMargin), {
+    width: (geo.rawWidth ?? 0) + margin.left + margin.right,
+    height: (geo.rawHeight ?? 0) + margin.top + margin.bottom,
+    measurer,
+    uid: 'class-elk',
+  });
+}
+
 /**
  * Renders `geo` (which must carry `elk`) as `renderClass` would.
  *
@@ -95,13 +113,7 @@ export function renderClassElk(geo: ClassGeometry, rawTheme: Theme): RenderFragm
   const adapter = withClassElkLeafDrawer(elk.adapter, svgLeafDrawer(pass, elk.leafGeos));
   const measurer = geo.measurer;
   if (measurer === undefined) throw new Error('renderClassElk: the geometry carries no measurer');
-  // `calculateFinalDimension` (`TextBlockExporter.java:199-203`) seeds `ensureVisible` as `minDim`.
-  const drawn = renderDrawableToFragment(new MyElkDrawing(adapter, elk.result.minMax, elk.result), {
-    width: (geo.rawWidth ?? 0) + CUCA_DOCUMENT_MARGIN_LEFT + CUCA_DOCUMENT_MARGIN_RIGHT,
-    height: (geo.rawHeight ?? 0) + CUCA_DOCUMENT_MARGIN_TOP + CUCA_DOCUMENT_MARGIN_BOTTOM,
-    measurer,
-    uid: 'class-elk',
-  });
+  const drawn = drawElk(new MyElkDrawing(adapter, elk.result.minMax, elk.result), geo, measurer);
   return finishClassDocument(doc, geo, {
     body: drawn.body,
     width: Math.max(drawn.width, pass.maxX, ...pass.fragments.map((f) => f.width)),

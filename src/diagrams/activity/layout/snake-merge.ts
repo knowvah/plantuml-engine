@@ -91,6 +91,8 @@ function joinOrdered(a: ActivityEdgeGeo, b: ActivityEdgeGeo, strategy: MergeStra
     // `mergeTexts` keeps each `Text` with its own alignment (`Snake.java:316-319`).
     ...(a.labelAlign !== undefined ? { labelAlign: a.labelAlign } : {}),
     ...(a.color !== undefined ? { color: a.color } : {}),
+    // The `Rainbow` is `this.color`'s as a whole (`Snake.java:318`), including the signature it defaulted from.
+    ...(a.lineSName !== undefined ? { lineSName: a.lineSName } : {}),
     ...(emphasize !== undefined ? { emphasize } : {}),
     ...(midArrowAt !== undefined ? { midArrowAt } : {}),
     ...(arrowhead === false ? { arrowhead: false as const } : {}),

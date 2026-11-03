@@ -30,6 +30,8 @@ import { UStroke } from '../../core/klimt/UStroke.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { URectangle } from '../../core/klimt/shape/URectangle.js';
 import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
+import { UPolygon } from '../../core/klimt/shape/UPolygon.js';
+import { hexagonPolygonPoints } from '../../core/svek/hexagon-polygon.js';
 import { Fore } from '../../core/klimt/Fore.js';
 import { Back } from '../../core/klimt/Back.js';
 import type { DescriptionNodeGeo } from './layout-helpers.js';
@@ -51,6 +53,7 @@ import {
   textFont,
   stereotypeTextFont,
   entityTitleStyles,
+  paintTextColor,
   resolveActorStyle,
 } from '../../core/decoration/symbol/usymbol-resolve.js';
 import { type SpriteRegistry, spriteDimsLookupFor } from '../../core/sprite-commands.js';
@@ -88,19 +91,6 @@ function requireGroups(ug: UGraphic): UGraphicWithGroups {
     throw new Error('renderer-entity: ug does not support startGroup/closeGroup (see UGraphicSvg)');
   }
   return ug as UGraphicWithGroups;
-}
-
-/** Business actor/use-case fill: upstream draws these two symbols with a
- *  dedicated `businessActorFill`/`businessUsecaseFill` skinparam (the legacy
- *  `renderer-helpers.ts` read the same `theme.colors.graph.*` fields, and the
- *  `<style> actor { business { BackGroundColor } }` block writes there), NOT
- *  the generic element background `resolveElementPaint` resolves. Returns
- *  `undefined` for every other symbol so the caller falls back to the generic
- *  path. */
-function businessBackcolor(theme: Theme, symbol: DescriptionNodeGeo['symbol']): string | undefined {
-  if (symbol === 'actor-business') return theme.colors.graph.businessActorFill;
-  if (symbol === 'usecase-business') return theme.colors.graph.businessUsecaseFill;
-  return undefined;
 }
 
 /** `LinkStyle.getStroke3()` (decoration/LinkStyle.java:97-107) — the
@@ -148,7 +138,14 @@ export function buildEntityParams(
   const stereoColor = stereotypeFontColor(theme, node.symbol, 'stereotype', styleLabels);
   const recolor = (font: FontConfiguration, color: string | undefined): FontConfiguration =>
     color === undefined ? font : { ...font, color };
-  const fontTitle = recolor(textFont(theme, node.symbol, 0, entityTitleStyles(node.symbol)), titleColor);
+  const titleFont = textFont(theme, node.symbol, 0, entityTitleStyles(node.symbol));
+  // dss T3a: `fcTitle` reads `styleTitle`'s own `FontColor` (`EntityImageDescription.java:152-153,172`), which
+  // `style-element-scope.ts` writes to `titleFont` where a `title` declaration parts it from `font` (`fc`, :173).
+  const ownTitle = theme.colors.elements?.[node.symbol]?.titleFont;
+  const fontTitle = recolor(
+    ownTitle === undefined ? titleFont : { ...titleFont, color: paintTextColor(ownTitle) },
+    titleColor,
+  );
   const fontBody = recolor(textFont(theme, node.symbol), titleColor);
   const fontStereo = recolor(stereotypeTextFont(theme, node.symbol, styleLabels, STEREOTYPE_STYLES), stereoColor);
   // D3 (cdd6 T1b/T2f): this entity's own resolved LineThickness -- the SAME
@@ -184,10 +181,11 @@ export function buildEntityParams(
     paint: {
       // EntityImageDescription.java:152-166: `<<labels>>` re-sign the style.
       forecolor: override.line ?? resolveElementPaint(theme, node.symbol, 'border', styleLabels),
-      backcolor:
-        override.back ??
-        businessBackcolor(theme, node.symbol) ??
-        resolveElementPaint(theme, node.symbol, 'background', styleLabels),
+      // dss T3a: a business actor/use case reads its own signature's `BackGroundColor` like every other symbol
+      // (`EntityImageDescription.java:162-166`, `{..., actor, business, title}`); `style-element-scope.ts` writes it to
+      // the `actor-business`/`usecase-business` buckets. The `businessActorFill`/`businessUsecaseFill` defaults it
+      // replaces (`none`, `#FFFFFF`) are not the jar's: `actor/`, `usecase/` draw `#F1F1F1` (jar: `unknown/xisora-84-faca166`).
+      backcolor: override.back ?? resolveElementPaint(theme, node.symbol, 'background', styleLabels),
       roundCorner: resolveElementRoundCorner(theme, node.symbol) ?? ENTITY_ROUND_CORNER,
       diagonalCorner: 0,
       // mission skin-file-loading (deferred D3 item): was hardcoded 0 --
@@ -230,7 +228,11 @@ export function buildEntityParams(
     ...(sprites?.emoji === undefined
       ? {}
       : { emojiArtwork: (unicode: string): string | undefined => sprites.emoji?.get(unicode) }),
-    ...(node.symbol === 'hexagon' ? { hexagonPolygon: null } : {}),
+    // `EntityImageDescription#drawHexagon` draws the node polygon `DotStringFactory.java:414-420` read back off
+    // graphviz (`EntityImageDescription.java:307-341`); derived from the node box as class does (`class-hexagon-leaf.ts`).
+    ...(node.symbol === 'hexagon'
+      ? { hexagonPolygon: new UPolygon(hexagonPolygonPoints(node.width, node.height)) }
+      : {}),
   };
   // #lizard forgives -- pre-existing entity-params assembly (one object
   // literal, no branching); porting discipline forbids restructuring

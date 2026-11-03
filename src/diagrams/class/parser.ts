@@ -34,7 +34,7 @@ import { finalizeJsonBody } from '../../core/command/CommandCreateJson.js';
 import { isPendingJsonBodyComplete } from './class-json-commands.js';
 import { dedentRawLines } from './class-body-enhanced.js';
 import { COMMANDS } from './class-commands.js';
-import { mergeStandaloneBraces } from './class-line-merge.js';
+import { advanceBodyEmbed, mergeStandaloneBraces } from './class-line-merge.js';
 import { filterPendingBodyBlanks } from './class-body-blank-filter.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import { refuse } from '../../core/parse-refusal.js';
@@ -196,7 +196,7 @@ function handlePendingBodyLine(state: ParseState, line: string): boolean {
     return true;
   }
   if (state.pendingBodyId === null) return false;
-  if (/^\}\s*$/.test(line) && !isUnclosedJsonBody(state)) {
+  if (!advanceBodyEmbed(state, line) && /^\}\s*$/.test(line) && !isUnclosedJsonBody(state)) {
     closeJsonBodyIfPending(state);
     dedentPendingRawBodyLines(state);
     filterPendingBodyBlanks(state);

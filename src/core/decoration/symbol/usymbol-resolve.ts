@@ -15,7 +15,7 @@
  */
 import type { Theme, PackageStyleSetting } from '../../theme.js';
 import { resolveElementFontSize } from '../../theme.js';
-import { isTransparentColor } from '../../paint.js';
+import { isTransparentColor, type Paint } from '../../paint.js';
 import { FontStyle, type FontConfiguration } from '../../klimt/shape/UText.js';
 import { ActorStyle } from '../../skin/ActorStyle.js';
 import { ComponentStyle, PackageStyle, packageStyleToUSymbol } from './USymbols.js';
@@ -128,26 +128,27 @@ export function resolveSymbol(symbol: USymbol, theme: Theme): UpstreamUSymbol | 
 }
 
 /** Title/body text color: an explicit per-element skinparam/style override
- *  (`theme.colors.elements[sname].font`, decision D4) wins ONLY when it is
- *  a plain solid color — `FontConfiguration.color` is `string | null`
- *  (klimt's text driver has no gradient-fill text path), so a `Gradient`
- *  override falls back to the jar default rather than producing an
- *  unrenderable value. Otherwise the jar's true default (`#000000`), NOT
- *  `theme.colors.text` (see this module's `JAR_DEFAULT_TEXT_COLOR` doc
- *  comment — `theme.colors.text` is a pre-existing generic default this
- *  port's other renderers already use for a different role, out of this
- *  task's write-set to change). */
+ *  (`theme.colors.elements[sname].font`, decision D4) wins, through {@link paintTextColor}; otherwise the jar's true
+ *  default (`#000000`), NOT `theme.colors.text` (see this module's `JAR_DEFAULT_TEXT_COLOR` doc comment --
+ *  `theme.colors.text` is a pre-existing generic default this port's other renderers already use for a different
+ *  role, out of this task's write-set to change). */
 export function textFontColor(theme: Theme, symbol: string): string | null {
   const override = theme.colors.elements?.[symbol]?.font;
-  if (typeof override !== 'string') return JAR_DEFAULT_TEXT_COLOR;
-  // G1 I5d: `DriverTextSvg#draw` returns before emitting ANY `<text>` when
-  // `fontConfiguration.getColor().isTransparent()` (klimt/drawing/svg/
-  // DriverTextSvg.java:92-94) -- a `FontColor transparent`/`#00000000`
-  // override elides the text entirely, it does not merely paint it
-  // invisibly. `FontConfiguration.color` is already `string | null` for
-  // exactly this case (see `driver-text-svg.ts`'s own `font.color === null`
-  // guard); this was the one caller that never produced `null`.
-  return isTransparentColor(override) ? null : override;
+  if (override === undefined) return JAR_DEFAULT_TEXT_COLOR;
+  return paintTextColor(override);
+}
+
+/**
+ * The colour a text paints with when its `FontColor` is a {@link Paint}. A solid colour is itself; a gradient
+ * (`FontColor #CCC/#DDD`) paints its first colour, since `HColorGradient#toColor` is `color1.toColor(mapper)` and
+ * `DriverTextSvg.java:178` fills with `textColor.toSvg(mapper)` (jar: `component__probe-gradient-line` paints `#CCC`).
+ * `null` when that colour is transparent: `DriverTextSvg#draw` returns before emitting any `<text>` (G1 I5d).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorGradient.java:103-105
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverTextSvg.java:92-94,178
+ */
+export function paintTextColor(paint: Paint): string | null {
+  const color = typeof paint === 'string' ? paint : paint.color1;
+  return isTransparentColor(color) ? null : color;
 }
 
 /**

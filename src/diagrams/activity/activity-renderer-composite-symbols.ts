@@ -16,6 +16,7 @@
  */
 
 import type { ActivityNodeGeo, CompositeUSymbol } from './activity-geometry.types.js';
+import type { Paint } from '../../core/paint.js';
 import { rect, polygon, line } from '../../core/svg.js';
 
 /** `USymbolFolder`'s title margins (`USymbolFolder.java:60-65`). */
@@ -36,8 +37,8 @@ const CARD_TOP_EXTRA = 4;
 
 /** The stroke/fill every symbol draws with (`Fashion`, `FtileGroup.java:213-214`). */
 export interface CompositeInk {
-  readonly fill: string;
-  readonly stroke: string;
+  readonly fill: Paint;
+  readonly stroke: Paint;
   readonly strokeWidth: number;
   /** The style's RAW `RoundCorner` (`FtileGroup.java:103`); `rx`/`ry` are
    *  each half (`URectangle#rounded`). Drawn by `card`/`rectangle` only. */

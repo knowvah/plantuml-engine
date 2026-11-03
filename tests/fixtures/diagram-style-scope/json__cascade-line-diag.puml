@@ -1,0 +1,8 @@
+@startjson
+<style>
+jsonDiagram {
+  LineColor #BB0000
+}
+</style>
+{"a": 1, "b": [1, 2], "c": {"d": true}}
+@endjson

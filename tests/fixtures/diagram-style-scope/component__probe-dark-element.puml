@@ -1,0 +1,8 @@
+@startuml
+<style>
+element { BackgroundColor #AAAAAA }
+</style>
+skinparam mode dark
+[C]
+note left of C: n
+@enduml

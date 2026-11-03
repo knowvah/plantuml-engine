@@ -1,0 +1,12 @@
+@startuml
+<style>
+activity { BackgroundColor #0A0-#00A }
+</style>
+start
+:A;
+if (x?) then (y)
+:B;
+endif
+note left: n
+stop
+@enduml

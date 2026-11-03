@@ -1,0 +1,17 @@
+@startuml
+skinparam classBorderColor #2FA4E7
+skinparam classFontColor #F8F9FA
+skinparam classBackgroundColor #59B6EC-#2FA4E7
+<style>
+root {
+ BackgroundColor transparent
+ FontColor #FFFFFF
+ LineColor #2683B9
+}
+</style>
+class A
+interface I
+() lp
+A --> I
+lp -- A
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+!theme cyborg
+<style>
+note {
+  BackgroundColor #AAAAAA
+}
+</style>
+class A
+@enduml

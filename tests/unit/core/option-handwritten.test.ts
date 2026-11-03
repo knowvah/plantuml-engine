@@ -15,7 +15,7 @@ import { buildTheme } from '../../../src/core/build-theme.js';
 import { preprocess } from '../../../src/core/preprocessor.js';
 
 const handwrittenOf = (body: string): boolean | undefined =>
-  buildTheme(preprocess(`@startuml\n${body}\nAlice -> Bob: hi\n@enduml`)).theme.handwritten;
+  buildTheme(preprocess(`@startuml\n${body}\nAlice -> Bob: hi\n@enduml`), undefined, 'sequence').theme.handwritten;
 
 describe('PreprocessorResult.options (EaterOption.java:61-70)', () => {
   it('records the defined option under its OptionKey name', () => {
@@ -70,6 +70,6 @@ describe('buildTheme honours !option handwritten (TitledDiagram.java:115-118)', 
 
   it('a caller Partial<Theme> still wins (Stage 4)', () => {
     const pre = preprocess('@startuml\n!option handwritten true\nAlice -> Bob\n@enduml');
-    expect(buildTheme(pre, { theme: { handwritten: false } }).theme.handwritten).toBe(false);
+    expect(buildTheme(pre, { theme: { handwritten: false } }, 'sequence').theme.handwritten).toBe(false);
   });
 });

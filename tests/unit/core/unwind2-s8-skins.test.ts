@@ -49,10 +49,10 @@ const PINS: Readonly<Record<string, number>> = {
   // HorizontalAlignment (sdd2 T4c, `Rose.java:299-342`).
   'skin-sequence-sonyxperiadev': 0,
   'skin-state-reddress': 5,
-  'skin-state-sonyxperiadev': 2,
+  'skin-state-sonyxperiadev': 1,
   'skin-strictuml': 5,
   'skin-usecase-reddress': 5,
-  'skin-usecase-sonyxperiadev': 4,
+  'skin-usecase-sonyxperiadev': 2,
 };
 
 const CASES = readdirSync(DIR)

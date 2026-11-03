@@ -1,0 +1,15 @@
+@startuml
+<style>
+objectDiagram { BackgroundColor #AAAAAA
+FontColor #CCCCCC
+LineColor #BBBBBB }
+</style>
+object O
+map M {
+ a => b
+}
+json J {
+ "a": 1
+}
+note left of O: n
+@enduml

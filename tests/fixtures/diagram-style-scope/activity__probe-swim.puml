@@ -1,0 +1,12 @@
+@startuml
+<style>
+swimlane { FontColor #AAAAAA }
+activityDiagram { LineColor #BBBBBB }
+</style>
+|A|
+start
+:a;
+|B|
+:b;
+stop
+@enduml

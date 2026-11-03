@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:15:00.575Z",
+  "generatedAt": "2026-11-03T09:57:04.343Z",
   "fixtures": [
     {
       "slug": "baloca-83-nadu916",
@@ -83,10 +83,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 5.000000000000028,
-      "firstDiff": "svg/g[1]/g[1]/text[2]/@fill",
-      "maxDeltaPath": "svg/g[1]/g[2]/path[1]/@d[53]"
+      "verdict": "conformant"
     },
     {
       "slug": "fusopu-05-loxo960",
@@ -279,9 +276,9 @@
         "detail": "page 1: jar 0,0,209.40311200000002,345.00009600000004 vs ours 0,0,217.712492,347.99990399999996"
       },
       "verdict": "diverged",
-      "maxDelta": 8.65300000000002,
+      "maxDelta": 8.653999999999996,
       "firstDiff": "svg/g[1]/g[1]/text[1]/@font-size",
-      "maxDeltaPath": "svg/g[1]/g[1]/line[1]/@x2"
+      "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[9]"
     },
     {
       "slug": "majake-62-pero492",

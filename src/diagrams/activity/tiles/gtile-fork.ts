@@ -76,6 +76,9 @@ export class GtileFork extends TileComposite {
    *  `doStep1`'s IN bar) -- read by `walk-fork-branches.ts` when it pushes
    *  the `join-bar` node. */
   readonly joinLabel: string | undefined;
+  /** `fork <<#red>>`'s BACK colour, which both bars (and a merge's top bar) draw in: `FtileBlackBlock`'s `colors`
+   *  (`ParallelBuilderFork.java:87,111`, `ParallelBuilderMerge.java:76`). Set once by `tileFork`. */
+  barColor: string | undefined = undefined;
   /**
    * The top/bottom bar band's height -- `6` for fork
    * (`AbstractParallelFtilesBuilder.java:64`), `THIN_SPLIT_HEIGHT` (1.5,

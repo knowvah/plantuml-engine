@@ -10,9 +10,16 @@
  * @see ~/git/plantuml/.../statediagram/StateDiagramFactory.java
  */
 
-import type { StateKind } from './ast.js';
+import type { State, StateKind } from './ast.js';
 import type { Command } from './state-commands.js';
-import { makeState, addDescriptionLine, pushScope, stereotypeToKind } from './state-parse-state.js';
+import {
+  makeState,
+  addDescriptionLine,
+  pushScope,
+  stereotypeToKind,
+  type ParseState,
+  type Pass,
+} from './state-parse-state.js';
 import { declareState } from './state-parse-resolve.js';
 import { extractDisplayAndId } from './state-parse-helpers.js';
 
@@ -149,6 +156,17 @@ function parseTags(raw: string | undefined): string[] | undefined {
 // Order matters within this array — spread into COMMANDS at rules 6-9's slot.
 // ---------------------------------------------------------------------------
 
+/** A `{`/`begin` opener: `gotoGroup` creates a group, never a leaf
+ *  (`CucaDiagram.java:349-365`), so the last entity a note may attach to stays
+ *  whatever it was (`CommandFactoryNoteOnEntity.java:299`; `reallyCreateLeaf`,
+ *  `CucaDiagram.java:230`, is the only other writer). */
+function declareGroup(ps: ParseState, state: State, pass: Pass): State {
+  const last = ps.lastEntity;
+  const declared = declareState(ps, state, pass, { phantomAncestors: true });
+  ps.lastEntity = last;
+  return declared;
+}
+
 export const DECLARATION_COMMANDS: readonly Command[] = [
   // -------------------------------------------------------------------------
   // 6. State declaration with open brace/begin — composite state.
@@ -164,7 +182,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       `^state\\s+${ID_ALT}${TAGS_OPT}\\s*${STEREO_OPT}${URL_OPT}\\s*${COLOR_OPT}\\s*${LINECOLOR_OPT}${BRACE_OR_BEGIN}`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const tags = parseTags(match[5]);
@@ -188,7 +206,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       // ANCESTOR segments (`state S.I { ... }`'s phantom `S`) get upstream's
       // GroupType.PACKAGE treatment, never autonom (declareState's doc,
       // mission A4 Phase L iter 10).
-      pushScope(ps, declareState(ps, s, pass, { phantomAncestors: true }));
+      pushScope(ps, declareGroup(ps, s, pass));
     },
   },
 
@@ -203,7 +221,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       `^frame\\s+${ID_ALT}\\s*${STEREO_OPT}${URL_OPT}\\s*${COLOR_OPT}\\s*${LINECOLOR_OPT}${BRACE_OR_BEGIN}`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const colorRaw = match[6];
@@ -216,7 +234,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       });
       // See rule 6's comment: push the CANONICAL declareState() return, not
       // `s` -- and mark auto-created ancestors phantom for the same reason.
-      pushScope(ps, declareState(ps, s, pass, { phantomAncestors: true }));
+      pushScope(ps, declareGroup(ps, s, pass));
     },
   },
 
@@ -232,7 +250,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       `^state\\s+${ID_ALT}\\s*<<([^<>]+)>>${TAGS_OPT}${URL_OPT}\\s*${COLOR_OPT}\\s*${LINECOLOR_OPT}\\s*$`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const stereotypeRaw = match[5]!;
@@ -269,7 +287,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       `^state\\s+${ID_ALT}${TAGS_OPT}${URL_OPT}\\s*${COLOR_OPT}\\s*${LINECOLOR_OPT}\\s*(?::\\s*(.*))?$`,
       'i',
     ),
-    passes: ['one', 'two'],
+    passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const tags = parseTags(match[5]);

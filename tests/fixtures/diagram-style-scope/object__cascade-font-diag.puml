@@ -1,0 +1,14 @@
+@startuml
+<style>
+classDiagram {
+  FontColor #0000BB
+}
+</style>
+object O
+O : a = 1
+map M {
+ k => v
+}
+O --> M
+note left of O : n
+@enduml

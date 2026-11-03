@@ -1,0 +1,13 @@
+@startuml
+<style>
+root { BackgroundColor #0A0-#00A }
+</style>
+start
+while (w?)
+:F;
+endwhile
+repeat
+:G;
+repeat while (r?)
+stop
+@enduml

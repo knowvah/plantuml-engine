@@ -1,0 +1,7 @@
+MOVED object/lunike-70-xipi897 ratchet:true sync:false
+MOVED state/fikuga-98-tagu554 ratchet:true sync:false
+MOVED state/kujuzo-76-bavi505 ratchet:true sync:false
+MOVED unknown/sacupe-57-dejo730 ratchet:true sync:false
+MOVED unknown/sogeme-65-kate687 ratchet:true sync:false
+MOVED unknown/zonamu-61-kocu599 ratchet:true sync:false
+4911 fixtures, 6 moved

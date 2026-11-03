@@ -1,0 +1,6 @@
+@startuml
+<style>
+document { Margin 10 }
+</style>
+class A
+@enduml

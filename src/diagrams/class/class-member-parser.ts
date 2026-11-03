@@ -7,6 +7,7 @@
 
 import type { Member, Visibility } from './ast.js';
 import { parseUrlBracket, type UrlInfo } from './class-url.js';
+import { VisibilityModifier } from '../../core/skin/VisibilityModifier.js';
 
 // ---------------------------------------------------------------------------
 // Member parsing helpers
@@ -170,10 +171,11 @@ function stripModifiers(rawLine: string): { line: string; isStatic: boolean; isA
  *  reach among the class ratchet's own zero-diff-pinned fixtures (verified
  *  via a full grep before landing this fix), so this is additive-safe. */
 function stripVisibility(line: string): { line: string; visibility: Visibility; visibilityExplicit: boolean } {
-  const c = line.charAt(0);
-  const isVisibilityChar = c === '+' || c === '-' || c === '#' || c === '~' || c === '*';
-  if (isVisibilityChar && line.charAt(1) !== c) {
-    return { line: line.slice(1).trimStart(), visibility: c, visibilityExplicit: true };
+  // dss T3b: the ported predicate, not a local glyph test -- it also rejects a line of two characters or fewer
+  // (`Member.java:133`, `VisibilityModifier.java:211-214`), so `+x` is the text "+x" with no icon (jar:
+  // `class__kinds-none`'s `+x` field, the baseline its `text[3]` diffs came from).
+  if (VisibilityModifier.isVisibilityCharacter(line)) {
+    return { line: line.slice(1).trimStart(), visibility: line.charAt(0) as Visibility, visibilityExplicit: true };
   }
   return { line, visibility: '+', visibilityExplicit: false };
 }

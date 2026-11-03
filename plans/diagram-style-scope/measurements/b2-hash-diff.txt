@@ -1,0 +1,7 @@
+MOVED c4/rosoga-84-vari641 ratchet:true sync:false
+MOVED component/banatu-09-koce254 ratchet:true sync:false
+MOVED state/lonuti-97-voko521 ratchet:true sync:false
+MOVED state/nijugi-19-jazi166 ratchet:true sync:false
+MOVED state/niveno-60-tiro789 ratchet:true sync:false
+MOVED state/sumiri-68-suvo696 ratchet:true sync:false
+4911 fixtures, 6 moved

@@ -10,6 +10,7 @@
  */
 
 import type { StateDiagramAST, NotePosition, Transition } from './ast.js';
+import { removeEmptyColumns } from '../../core/annotations/commands.js';
 
 /**
  * Optional note decoration segments shared by every note command shape.
@@ -80,7 +81,7 @@ export function isNoteCloser(note: PendingNote, line: string): boolean {
   return /^end\s*note\s*$/i.test(line);
 }
 
-function stripQuotes(s: string): string {
+export function stripQuotes(s: string): string {
   if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) return s.slice(1, -1);
   return s;
 }
@@ -164,17 +165,21 @@ export function finalizePendingNote(
   scopeId: string,
   nextTick?: () => number,
 ): string | undefined {
-  const text = note.textLines.join('\n');
+  const text = removeEmptyColumns(note.textLines).join('\n');
   if (note.kind === 'attached') {
     if (note.target === undefined) return undefined;
     nextTick?.(); // burned GMN quark-name tick -- see StateNote.creationIndex's doc
     const creationIndex = nextTick?.();
-    return addNote(ast, note.position, note.target, text, {
+    const id = addNote(ast, note.position, note.target, text, {
       implicitTarget: note.implicitTarget,
       scopeId,
       ...(creationIndex !== undefined ? { creationIndex } : {}),
       ...(note.color !== undefined ? { color: note.color } : {}),
     });
+    // The note's `Link` ctor ticks too (`CommandFactoryNoteOnEntity.java:344-355`,
+    // `Link.java:135`); the next entity skips that slot.
+    nextTick?.();
+    return id;
   }
   if (note.kind === 'link') {
     applyNoteOnLink(note.transitions, text, note.position);
@@ -230,6 +235,6 @@ export const NOTE_ON_LINK_MULTI_RE = new RegExp(
 export function applyNoteOnLink(transitions: readonly Transition[], text: string, position: NotePosition): void {
   const last = transitions.at(-1);
   if (last === undefined) return;
-  last.linkNote = text.trim();
+  last.linkNote = text;
   last.linkNotePosition = position;
 }

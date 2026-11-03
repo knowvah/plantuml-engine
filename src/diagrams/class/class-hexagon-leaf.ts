@@ -21,11 +21,10 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/DotStringFactory.java
  * @see ~/git/graphviz/lib/common/shapes.c
  */
-import type { Point2D } from '../../core/klimt/UTranslate.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import { KEYWORD_TO_SYMBOL } from '../../core/descriptive-keywords.js';
-import { svgDouble } from '../../core/graph-layout-svek-read.js';
+import { hexagonPolygonPoints } from '../../core/svek/hexagon-polygon.js';
 import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
 import { LimitFinder } from '../../core/klimt/drawing/LimitFinder.js';
 import { EntityImageDescription } from '../../core/svek/image/EntityImageDescription.js';
@@ -65,19 +64,7 @@ export function isHexagonLeaf(c: { readonly kind: ClassifierKind; readonly usymb
  * Each coordinate is read at graphviz's printed precision (`svgDouble`,
  * `gvprintdouble`'s `%.02f`), as `DotStringFactory` parses it.
  */
-export function hexagonPolygonPoints(width: number, height: number): Point2D[] {
-  const pt = (x: number, y: number): Point2D => ({ x: svgDouble(x), y: svgDouble(y) });
-  const midY = height / 2;
-  return [
-    pt(width, midY),
-    pt((width * 3) / 4, 0),
-    pt(width / 4, 0),
-    pt(0, midY),
-    pt(width / 4, height),
-    pt((width * 3) / 4, height),
-    pt(width, midY),
-  ];
-}
+export { hexagonPolygonPoints };
 
 /**
  * Stamp `hexagonPolygon` on every hexagon leaf drawn through

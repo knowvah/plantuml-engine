@@ -1,0 +1,22 @@
+@startuml
+<style>
+root { LineColor #0A0 }
+arrow { LineColor #00A }
+</style>
+start
+fork
+:a;
+fork again
+-[#F0F]->
+if (c) then (y)
+:b;
+endif
+-[#0FF]->
+fork again
+partition p {
+:c;
+}
+end merge
+:d;
+stop
+@enduml

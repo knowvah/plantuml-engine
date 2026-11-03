@@ -6,6 +6,9 @@ import type { DiagramAnnotations } from '../../core/annotations/index.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { Pragma } from '../../core/skin/Pragma.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
+import type { ActivityNote } from './ast-note.js';
+
+export type { ActivityNote } from './ast-note.js';
 
 // ---------------------------------------------------------------------------
 // Leaf node types
@@ -322,6 +325,12 @@ export interface ActivityFork {
   branches: ActivityNode[][];
   swimlane?: string;
   /**
+   * `fork <<#red>>`: the BACK colour of the stereogroup, `#` kept, which both bars draw in
+   * (`Stereogroup#getInnerColors`, `Stereogroup.java:151-153`; `FtileBlackBlock.java:105-106`).
+   * @see net/sourceforge/plantuml/activitydiagram3/command/CommandFork3.java:60-64,87
+   */
+  color?: string;
+  /**
    * The lane current at the most recent `fork again` or at `end fork`, when it differs from {@link swimlane}.
    * @see net/sourceforge/plantuml/activitydiagram3/InstructionFork.java:138-141
    *   -- `forkAgain` re-reads `swimlaneOut` at each `fork again`.
@@ -369,16 +378,6 @@ export interface ActivitySplit {
    *   -- `endSplit` reads `swimlanes.getCurrentSwimlane()` once, at `end split`.
    */
   swimlaneOut?: string;
-}
-
-export interface ActivityNote {
-  kind: 'note';
-  text: string;
-  position: 'left' | 'right';
-  swimlane?: string;
-  /** add4-T1c: `#color` (BACK, `#` kept) / `floating` (NoteType.FLOATING_NOTE); absent = omitted. @see CommandNote3.java:121-123 */
-  color?: string;
-  floating?: true;
 }
 
 /**

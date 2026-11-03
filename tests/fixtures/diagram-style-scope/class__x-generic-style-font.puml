@@ -1,0 +1,8 @@
+@startuml
+<style>
+root { FontColor #AA0000 }
+</style>
+class G<T> {
+  v
+}
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+<style>document{BackgroundColor #AAAAAA;}note{BackgroundColor #BBBBBB;FontColor #BB0000}</style>
+A -> B
+note left: n
+@enduml
