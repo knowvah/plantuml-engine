@@ -24,6 +24,7 @@ const REPORTS = [
     rewrites: [
       [/\]\(\.\.\/DIVERGENCES\.md\)/g, '](/divergences)'],
       [/\]\(DIVERGENCES\.md\)/g, '](/divergences)'],
+      [/\]\(\.\.\/docs-site\/guide\/why-no-smetana\.md\)/g, '](/guide/why-no-smetana)'],
     ],
   },
   {
@@ -34,6 +35,7 @@ const REPORTS = [
     rewrites: [
       [/\]\(\.\/docs\/parity-report\.md\)/g, '](/parity)'],
       [/\]\(docs\/parity-report\.md\)/g, '](/parity)'],
+      [/\]\(docs-site\/guide\/why-no-smetana\.md\)/g, '](/guide/why-no-smetana)'],
     ],
   },
 ];

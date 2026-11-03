@@ -32,6 +32,7 @@ import {
   surveyColumn,
   layoutEqualColumn,
 } from '../../../scripts/parity-dashboard-matrix.js';
+import { noteSymbolOf, notesSection, markedType } from '../../../scripts/parity-dashboard-notes.js';
 import type { TypeRow } from '../../../scripts/dot-parity-rows.js';
 import type { FixtureRow } from '../../../scripts/svg-parity-survey.js';
 
@@ -553,5 +554,62 @@ describe('D9 drift gate', () => {
     const second = renderReport(buildReportModel(loadInputs()));
     expect(first).toBe(committed);
     expect(second).toBe(committed);
+  });
+});
+
+describe('matrix notes: why a row falls short', () => {
+  it('marks a row with a recorded reason when the survey shows a shortfall', () => {
+    expect(noteSymbolOf('json', '14 / 35 / 1')).toBe('†');
+    expect(noteSymbolOf('timing', 'n/a (no engine (D1 todo))')).toBe('‡');
+    expect(noteSymbolOf('state', '99 / 14 / 160 (4 error)')).toBe('§');
+    expect(noteSymbolOf('unknown', '557 / 19 / 249 (25 error)')).toBe('¶');
+    expect(noteSymbolOf('chronology', 'n/a (plantuml-ts only)')).toBe('‖');
+  });
+
+  it('drops the mark once the row is fully conformant, an error suffix included', () => {
+    expect(noteSymbolOf('activity', '449 / 0 / 0 (14 error)')).toBeUndefined();
+    expect(noteSymbolOf('json', '50 / 0 / 0')).toBeUndefined();
+  });
+
+  it('never marks a row with no recorded reason', () => {
+    expect(noteSymbolOf('class', '412 / 50 / 261')).toBeUndefined();
+  });
+
+  it('puts the mark in the type cell', () => {
+    expect(markedType('json', '14 / 35 / 1')).toBe('json †');
+    expect(markedType('class', '723 / 0 / 0 (3 error)')).toBe('class');
+  });
+
+  it('writes a note only for the rows it marked', () => {
+    const notes = notesSection([
+      { type: 'json', survey: '14 / 35 / 1' },
+      { type: 'class', survey: '723 / 0 / 0' },
+      { type: 'activity', survey: '449 / 0 / 0' },
+    ]);
+    expect(notes).toContain('**†');
+    expect(notes).toContain('json');
+    expect(notes).not.toContain('**‡');
+    expect(notes).not.toContain('activity');
+  });
+
+  it('explains the error suffix even when no row is marked', () => {
+    expect(notesSection([{ type: 'class', survey: '723 / 0 / 0 (3 error)' }])).toContain('(3 error)');
+  });
+
+  it('the committed report: every row short of conformant carries a reason', () => {
+    const { matrix } = buildReportModel(loadInputs());
+    const unexplained = matrix.filter((r) => {
+      const counts = /^\d+ \/ (\d+) \/ (\d+)/.exec(r.survey);
+      const short = counts !== null && Number(counts[1]) + Number(counts[2]) > 0;
+      return short && noteSymbolOf(r.type, r.survey) === undefined;
+    });
+    expect(unexplained.map((r) => r.type)).toEqual([]);
+  });
+
+  it('places the notes straight after the matrix table, before Freshness', () => {
+    const out = renderReport(buildReportModel(baseInputs()));
+    const notes = out.indexOf('### Why a row falls short');
+    expect(notes).toBeGreaterThan(out.indexOf('## Matrix'));
+    expect(notes).toBeLessThan(out.indexOf('## Freshness'));
   });
 });

@@ -47,10 +47,12 @@ PlantUML Java source.
 - Source: <https://github.com/plantuml/plantuml>
 - License: MIT (per the MIT license option in upstream PlantUML's LICENSES.md)
 
-The `dot` layout engine (`src/core/dot/`) and the `sfdp`, `fdp`,
-`neato`, `twopi`, `circo`, `osage`, and `patchwork` engines are ported
-from **Smetana** — PlantUML's auto-generated Java translation of the
-Graphviz 2.38.0 C source — and from the original Graphviz algorithms.
+Graph layout comes from `@knowvah/dot-engine`, a separately published
+TypeScript port of the Graphviz C source (EPL-2.0). Until June 2026 this
+repository carried in-house `dot`, `sfdp`, `fdp`, `neato`, `twopi`, `circo`,
+`osage` and `patchwork` engines, ported from **Smetana** — PlantUML's Java
+translation of the Graphviz 2.38.0 C source — and from the original Graphviz
+algorithms. See [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
 
 **Graphviz**
 - Authors: Emden R. Gansner, John C. Ellson, Yifan Hu, and the AT&T

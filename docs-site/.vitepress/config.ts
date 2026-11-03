@@ -91,6 +91,7 @@ export default defineConfig({
         text: 'Guide',
         items: [
           { text: 'Getting started', link: '/guide/getting-started' },
+          { text: 'Why no Smetana support?', link: '/guide/why-no-smetana' },
           { text: 'API reference', link: '/guide/api' },
           { text: 'Remote images', link: '/guide/image-providers' },
           { text: 'Styling data diagrams', link: '/guide/styling-data-diagrams' },

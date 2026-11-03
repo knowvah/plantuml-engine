@@ -17,7 +17,8 @@ Categories:
 ### Smetana-backed diagram types — laid out by dot-engine, geometry differs (measured: graphviz 2.38 vs modern arithmetic)
 
 **Standing decision (maintainer, 2026-08-09), not a per-case exception.** See
-the project README, "Layout: one engine, always", and CLAUDE.md.
+the project README, "Layout: one engine, always", and CLAUDE.md. For the history,
+see [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
 
 **Upstream:** uses two layout implementations. Most diagram types shell out to a
 real graphviz binary; `@startjson`, `@startyaml`, `@starthcl` (all three via

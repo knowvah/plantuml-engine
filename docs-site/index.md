@@ -40,6 +40,8 @@ one set of behaviours to reason about, test and fix, rather than two that must
 be kept in agreement. dot-engine is a port of the graphviz C source, which we
 maintain and publish separately.
 
+[Why no Smetana support?](/guide/why-no-smetana) has the history behind this.
+
 ### What this means for your diagrams
 
 PlantUML's value is in **what** it draws — the diagram types, the syntax, the
