@@ -58,6 +58,11 @@ a fast numeric loop feels like evidence. **Stop and open the Java** before you
   never justify one — and the agent never decides one alone: no library
   forcing it ⇒ mirror.
 
+## v1.0 is the goal (user ruling 2026-11-03)
+
+v1.0 means all known PlantUML diagram types are conformant, with accepted divergences
+where needed. Terms are defined in `planning/roadmap.md`.
+
 ## The long tail is the deliverable (YAGNI does not apply)
 
 The trailing 20% of behavior IS the product; the 80% solution is the starting
