@@ -1,0 +1,10 @@
+@startjson
+<style>
+classDiagram {
+  sequenceDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+{"a": 1}
+@endjson

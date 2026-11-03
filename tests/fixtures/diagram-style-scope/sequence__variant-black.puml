@@ -1,0 +1,10 @@
+@startuml
+<style>
+sequenceDiagram {
+  document {
+    BackgroundColor black
+  }
+}
+</style>
+A -> B
+@enduml

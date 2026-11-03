@@ -1,0 +1,8 @@
+@startjson
+<style>
+root {
+  BackgroundColor #AAAAAA
+}
+</style>
+{"a": 1}
+@endjson

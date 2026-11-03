@@ -1,0 +1,14 @@
+@startuml
+<style>
+stateDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+state S {
+  a --> b
+  --
+  c --> d
+}
+state X : body line
+X --> S
+@enduml

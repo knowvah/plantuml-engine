@@ -1,0 +1,10 @@
+@startuml
+<style>
+classDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+(A)
+@enduml

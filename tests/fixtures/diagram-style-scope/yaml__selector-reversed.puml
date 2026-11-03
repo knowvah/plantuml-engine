@@ -1,0 +1,10 @@
+@startyaml
+<style>
+document {
+  yamlDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+a: 1
+@endyaml

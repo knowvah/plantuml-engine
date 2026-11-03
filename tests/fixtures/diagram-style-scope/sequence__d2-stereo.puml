@@ -1,0 +1,13 @@
+@startuml
+<style>
+note {
+  BackgroundColor #AAAAAA
+  .t {
+    BackgroundColor #BBBBBB
+  }
+}
+</style>
+A -> B
+note left <<t>> : n
+note right: m
+@enduml

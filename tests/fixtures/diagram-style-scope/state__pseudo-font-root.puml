@@ -1,0 +1,16 @@
+@startuml
+<style>
+root {
+  FontColor #0000BB
+}
+</style>
+state f <<fork>>
+state j <<join>>
+state c <<choice>>
+state r <<sdlreceive>>
+f --> j
+j --> c
+c --> r
+[*] --> f
+r --> [*]
+@enduml

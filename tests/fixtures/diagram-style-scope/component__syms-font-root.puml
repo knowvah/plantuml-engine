@@ -1,0 +1,31 @@
+@startuml
+<style>
+root {
+  FontColor #0000BB
+}
+</style>
+agent a
+artifact b
+boundary c
+card d
+collections e
+control f
+entity g
+file h
+folder i
+frame j
+hexagon k
+node l
+person m
+queue n
+rectangle o
+stack p
+storage q
+usecase r
+actor s
+component t
+interface u
+database v
+cloud w
+label x
+@enduml

@@ -1,0 +1,10 @@
+@startyaml
+<style>
+yamlDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+a: 1
+b:
+  c: 2
+@endyaml

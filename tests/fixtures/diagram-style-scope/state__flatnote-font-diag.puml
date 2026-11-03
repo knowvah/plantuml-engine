@@ -1,0 +1,12 @@
+@startuml
+<style>
+stateDiagram {
+  FontColor #0000BB
+}
+</style>
+state A
+A --> B : l
+note left of A : n
+note "free" as F
+note on link : k
+@enduml

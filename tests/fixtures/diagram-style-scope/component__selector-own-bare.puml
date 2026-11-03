@@ -1,0 +1,8 @@
+@startuml
+<style>
+componentDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+[A]
+@enduml

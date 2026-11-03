@@ -1,0 +1,16 @@
+@startuml
+<style>
+componentDiagram {
+  element {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+actor U
+(Do)
+rectangle R {
+  (X)
+}
+U --> (Do) : l
+note left of U : n
+@enduml

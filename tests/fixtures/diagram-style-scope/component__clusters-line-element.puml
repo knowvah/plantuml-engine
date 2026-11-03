@@ -1,0 +1,38 @@
+@startuml
+<style>
+element {
+  LineColor #BB0000
+}
+</style>
+node N {
+  [a]
+}
+folder F {
+  [b]
+}
+frame Fr {
+  [c]
+}
+cloud C {
+  [d]
+}
+database D {
+  [e]
+}
+rectangle R {
+  [f]
+}
+component K {
+  [g]
+  port p1
+}
+card Ca {
+  [h]
+}
+storage St {
+  [i]
+}
+queue Q {
+  [j]
+}
+@enduml

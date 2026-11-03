@@ -1,0 +1,9 @@
+@startuml
+!theme cerulean
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+</style>
+A -> B
+@enduml

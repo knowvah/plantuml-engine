@@ -1,0 +1,8 @@
+@startuml
+<style>
+element {
+  BackgroundColor #AAAAAA
+}
+</style>
+class A
+@enduml

@@ -1,0 +1,4 @@
+@startuml
+!theme cyborg
+class A
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+<style>
+element {
+  FontColor #0000BB
+}
+</style>
+state A {
+  state B {
+    c --> d
+  }
+  e --> B
+}
+A --> z
+z --> B
+@enduml

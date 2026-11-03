@@ -1,0 +1,10 @@
+@startuml
+<style>
+objectDiagram {
+  class {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+class C
+@enduml

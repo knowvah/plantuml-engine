@@ -1,0 +1,16 @@
+@startuml
+<style>
+element {
+  LineColor #BB0000
+}
+</style>
+[C]
+interface I
+package P {
+  [D]
+}
+database DB
+cloud X
+C --> I : l
+note left of C : n
+@enduml
