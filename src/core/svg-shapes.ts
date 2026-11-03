@@ -4,8 +4,7 @@
  * from svg.ts. Re-exported from svg.ts so existing import sites are unchanged.
  */
 
-import {} from './paint.js';
-import type {} from './paint.js';
+import { noGradient } from './paint.js';
 import {
   attrs,
   resolvePaint,
@@ -108,10 +107,12 @@ export function rect(x: number, y: number, w: number, h: number, style: BoxStyle
 }
 
 /**
- * `<line>` element.
+ * `<line>` element. A gradient stroke draws its first colour, whatever the caller holds: the shape kind decides, not the
+ * colour (`DriverLineSvg.java:76-82`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverLineSvg.java:76-82
  */
 export function line(x1: number, y1: number, x2: number, y2: number, style: LineStyle = {}): string {
-  const strokeR = resolvePaint(style.stroke);
+  const strokeR = resolvePaint(noGradient(style.stroke));
   const sd = strokeAttrsOf(strokeR.value, style);
   const a = attrs([
     ['x1', x1],

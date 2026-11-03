@@ -13,6 +13,7 @@
  * @see ./activity-style-defaults.ts for the module's own cascade contract
  *      (D2's two-tier "user override, else this module's constant").
  */
+import { noGradient, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { resolveSolidBucketColor, swimlaneFontSize, swimlaneLineThickness } from './activity-style-defaults.js';
@@ -51,7 +52,8 @@ export const SWIMLANE_TITLE_FONT_COLOR = resolveColorToSvgHex('black');
 export function swimlaneBorderColor(theme: Theme): string {
   const override = theme.colors.graph.activity?.swimlaneBorder;
   if (override !== undefined) return resolveColorToSvgHex(override);
-  return resolveSolidBucketColor(theme.colors.elements?.['swimlane']?.border) ?? SWIMLANE_BORDER_COLOR;
+  // Every lane divider is a `ULine`, which draws a gradient's first colour (`DriverLineSvg.java:76-82`).
+  return resolveSolidBucketColor(noGradient(theme.colors.elements?.['swimlane']?.border)) ?? SWIMLANE_BORDER_COLOR;
 }
 
 /**
@@ -104,8 +106,9 @@ export function swimlaneTitleFontSize(theme: Theme): number {
  * nothing" convention rather than resolving `resolveColorToSvgHex
  * ('transparent')`'s `#00000000`, which the jar never emits for this rect.
  */
-export function swimlaneHeaderBackground(theme: Theme): string {
+export function swimlaneHeaderBackground(theme: Theme): Paint {
   const override = theme.colors.graph.activity?.swimlaneHeaderBackground;
   if (override !== undefined) return resolveColorToSvgHex(override);
-  return resolveSolidBucketColor(theme.colors.elements?.['swimlane']?.background) ?? 'none';
+  const bucket = theme.colors.elements?.['swimlane']?.background;
+  return typeof bucket === 'object' ? bucket : (resolveSolidBucketColor(bucket) ?? 'none');
 }

@@ -91,6 +91,8 @@ export interface WrapLinkInfo {
   readonly uid: string;
   readonly fromUid: string;
   readonly toUid: string;
+  /** `data-link-type`; a transition's is `dependency`, its one decor. */
+  readonly linkType?: string;
 }
 
 /** Wraps a transition's rendered body in the jar's `<g class="link"
@@ -110,7 +112,7 @@ export function wrapLink(info: WrapLinkInfo, inner: string): string {
       'data-entity-1': fromUid,
       'data-entity-2': toUid,
       id: uid,
-      'data-link-type': 'dependency',
+      'data-link-type': info.linkType ?? 'dependency',
     })
   );
 }

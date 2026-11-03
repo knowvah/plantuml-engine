@@ -1,0 +1,7 @@
+@startuml
+skinparam defaultFontColor transparent
+component A
+component B
+A --> B : l
+note left of A : n
+@enduml

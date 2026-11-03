@@ -33,6 +33,8 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import { resolveScaleFactor } from '../../core/scale-command.js';
 import { BODY_ANCHOR } from '../../core/TextBlockExporter.js';
 import { TextBlockUtils } from '../../core/klimt/shape/TextBlockUtils.js';
+import type { ClockwiseTopRightBottomLeft } from '../../core/klimt/geom/ClockwiseTopRightBottomLeft.js';
+import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import type { InkBox } from '../../core/annotations/body-ink.js';
 import { createMindMapDiagram } from './MindMapDiagramFactory.js';
 import type { MindMapDiagram } from './MindMapDiagram.js';
@@ -168,6 +170,20 @@ function drawFragment(diagram: MindMapDiagram, measurer: StringMeasurer, pass: D
 }
 
 /**
+ * `TextBlockExporter.Builder#calculateMargin`: the merged `{root, document}` style's `Margin` when it has one, else
+ * `getDefaultMargins()` (`same(10)`, TitledDiagram.java:274-277). `root,document` is the signature, so `root { Margin }`
+ * reaches the document as well as the root node.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:510-516
+ */
+export function calculateMargin(diagram: MindMapDiagram): ClockwiseTopRightBottomLeft {
+  const style = StyleSignatureBasic.of('root', 'document').getMergedStyle(
+    diagram.getSkinParam().getCurrentStyleBuilder(),
+  );
+  if (style?.hasValue('Margin') === true) return style.getMargin();
+  return diagram.getDefaultMargins();
+}
+
+/**
  * `TextBlockExporter#exportTo` for SVG, no chrome: `calculateFinalDimension`
  * (the text block plus the margins, java:198-202) as `minDim`, the scale
  * resolved against it (`computeScaleFactor`, java:205-209), the margin
@@ -176,7 +192,7 @@ function drawFragment(diagram: MindMapDiagram, measurer: StringMeasurer, pass: D
  */
 function exportTextBlock(diagram: MindMapDiagram, measurer: StringMeasurer): RenderFragment {
   const dim = textBlockDimension(diagram, measurer);
-  const margin = diagram.getDefaultMargins();
+  const margin = calculateMargin(diagram);
   const minDim = new XDimension2D(
     dim.getWidth() + margin.getLeft() + margin.getRight(),
     dim.getHeight() + margin.getTop() + margin.getBottom(),
@@ -221,9 +237,8 @@ function rawTextBlock(diagram: MindMapDiagram, measurer: StringMeasurer): Render
     width: dim.getWidth(),
     height: dim.getHeight(),
     dpi: diagram.getSkinParam().getDpi(),
-    // `TextBlockExporter.Builder#calculateMargin`'s fallback, `TitledDiagram
-    // #getDefaultMargins()` = same(10) (TitledDiagram.java:274-277).
-    exportMargin: diagram.getDefaultMargins(),
+    // `TextBlockExporter.Builder#calculateMargin` (TextBlockExporter.java:510-516).
+    exportMargin: calculateMargin(diagram),
     drawBodyAt,
     ...(isDisplayPositionedNull(diagram.annotations.mainFrame) ? {} : { frameInk: textBlockInk(diagram, measurer) }),
   };

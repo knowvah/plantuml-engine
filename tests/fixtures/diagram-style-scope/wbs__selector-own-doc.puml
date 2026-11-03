@@ -1,0 +1,10 @@
+@startwbs
+<style>
+wbsDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+* A
+@endwbs

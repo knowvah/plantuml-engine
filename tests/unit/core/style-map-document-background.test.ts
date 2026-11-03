@@ -27,8 +27,9 @@ function pair(theme: Theme): BackgroundPair {
   return { background: theme.colors.background, backgroundGradient: theme.colors.backgroundGradient };
 }
 
-function styleTheme(value: string, base: Theme = defaultTheme): Theme {
-  return applyStyleMap(parseStyleBlock(`document {\n  BackgroundColor ${value}\n}`), base);
+/** The `<style>` read: `buildTheme`'s Stage 3c (`document-back-color.ts`, dss T1a D5). */
+function styleTheme(value: string): Theme {
+  return themeOf(`<style>\ndocument {\n  BackgroundColor ${value}\n}\n</style>`);
 }
 
 function skinparamTheme(value: string, base: Theme = defaultTheme): Theme {
@@ -36,7 +37,7 @@ function skinparamTheme(value: string, base: Theme = defaultTheme): Theme {
 }
 
 function themeOf(body: string): Theme {
-  return buildTheme(preprocess(`@startuml\n${body}\nA -> B\n@enduml`)).theme;
+  return buildTheme(preprocess(`@startuml\n${body}\nA -> B\n@enduml`), undefined, 'sequence').theme;
 }
 
 describe('style document BackgroundColor gradient -> the skinparam theme pair (dbp T1a)', () => {
@@ -56,23 +57,17 @@ describe('style document BackgroundColor gradient -> the skinparam theme pair (d
     },
   );
 
-  it('keeps the flattened background the skinparam handler stores (resolveColor)', () => {
-    // `skinparam-key-normalize.ts#resolveColor`: only a `-` gradient is
-    // flattened to its end colour; `/` and `|` keep the raw text.
-    expect(styleTheme('red-blue').colors.background).toBe('blue');
-    expect(styleTheme('red/blue').colors.background).toBe('red/blue');
-    expect(styleTheme('red|blue').colors.background).toBe('red|blue');
+  it('keeps the flattened background the skinparam handler stores: the first colour (HColorGradient.java:103-105)', () => {
+    expect(styleTheme('red-blue').colors.background).toBe('red');
+    expect(styleTheme('red/blue').colors.background).toBe('red');
   });
 
   it('wins through a diagram-scoped document selector exactly as the solid value does', () => {
-    const theme = applyStyleMap(
-      parseStyleBlock(
-        'document {\n  BackgroundColor black\n}\nclassDiagram {\n  document {\n    BackgroundColor red/blue\n  }\n}',
-      ),
-      defaultTheme,
+    const theme = themeOf(
+      '<style>\ndocument {\n  BackgroundColor black\n}\nsequenceDiagram {\n  document {\n    BackgroundColor red/blue\n  }\n}\n</style>',
     );
     expect(pair(theme)).toEqual({
-      background: 'red/blue',
+      background: 'red',
       backgroundGradient: { color1: 'red', color2: 'blue', policy: '/' },
     });
   });
@@ -94,10 +89,14 @@ describe('style document BackgroundColor non-gradient values are unchanged (dbp 
   });
 
   it('a StyleMap with no document background returns the base theme itself', () => {
-    expect(applyStyleMap(parseStyleBlock('class {\n  FontSize 12\n}'), defaultTheme).colors.background).toBe(
+    expect(applyStyleMap(parseStyleBlock('class {\n  FontSize 12\n}'), defaultTheme, 'class').colors.background).toBe(
       defaultTheme.colors.background,
     );
-    expect(applyStyleMap(new Map(), defaultTheme)).toBe(defaultTheme);
+    expect(applyStyleMap(new Map(), defaultTheme, 'class')).toBe(defaultTheme);
+    // dss T1a (D5): the canvas is no longer applyStyleMap's.
+    expect(applyStyleMap(parseStyleBlock('document {\n  BackgroundColor black\n}'), defaultTheme, 'class')).toBe(
+      defaultTheme,
+    );
   });
 });
 
@@ -119,7 +118,7 @@ describe('style vs skinparam document background: the later declaration wins bot
     const theme = themeOf(
       'skinparam backgroundColor black\n<style>\ndocument {\n  BackgroundColor red/blue\n}\n</style>',
     );
-    expect(pair(theme)).toEqual({ background: 'red/blue', backgroundGradient: GRADIENT });
+    expect(pair(theme)).toEqual({ background: 'red', backgroundGradient: GRADIENT });
   });
 
   it('style gradient then skinparam solid: the skinparam solid wins', () => {
@@ -133,14 +132,14 @@ describe('style vs skinparam document background: the later declaration wins bot
     const theme = themeOf(
       '<style>\ndocument {\n  BackgroundColor black\n}\n</style>\nskinparam backgroundColor red/blue',
     );
-    expect(pair(theme)).toEqual({ background: 'red/blue', backgroundGradient: GRADIENT });
+    expect(pair(theme)).toEqual({ background: 'red', backgroundGradient: GRADIENT });
   });
 
   it('style-only and skinparam-only gradients build the same pair through buildTheme', () => {
     const viaStyle = themeOf('<style>\ndocument {\n  BackgroundColor red/blue\n}\n</style>');
     const viaSkinparam = themeOf('skinparam backgroundColor red/blue');
     expect(pair(viaStyle)).toEqual(pair(viaSkinparam));
-    expect(pair(viaStyle)).toEqual({ background: 'red/blue', backgroundGradient: GRADIENT });
+    expect(pair(viaStyle)).toEqual({ background: 'red', backgroundGradient: GRADIENT });
   });
 });
 
@@ -155,7 +154,7 @@ describe('resolveSkinparam: a solid backgroundColor replaces the base pair (dbp 
 
   it('a gradient backgroundColor replaces the base gradient', () => {
     expect(pair(skinparamTheme('green|yellow', gradientBase))).toEqual({
-      background: 'green|yellow',
+      background: 'green',
       backgroundGradient: { color1: 'green', color2: 'yellow', policy: '|' },
     });
   });

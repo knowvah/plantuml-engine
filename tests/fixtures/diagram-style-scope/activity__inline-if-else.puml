@@ -1,0 +1,11 @@
+@startuml
+start
+:a;
+if (c) then (y)
+  :d;
+else (n)
+  -[#00FFFF]->
+  :e;
+endif
+stop
+@enduml

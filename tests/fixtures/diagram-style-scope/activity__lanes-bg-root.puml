@@ -1,0 +1,19 @@
+@startuml
+<style>
+root {
+  BackgroundColor #AAAAAA
+}
+</style>
+|L1|
+start
+:a;
+|L2|
+:b;
+partition P {
+  :c;
+}
+group G
+  :d;
+end group
+stop
+@enduml

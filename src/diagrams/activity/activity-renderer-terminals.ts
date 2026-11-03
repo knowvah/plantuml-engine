@@ -16,8 +16,10 @@ import {
   CIRCLE_INK,
   CIRCLE_LINE_THICKNESS,
   ELEMENT_LINE_THICKNESS,
+  resolveSolidBucketColor,
 } from './activity-style-defaults.js';
 import { activityFontColor } from './activity-text-style.js';
+import { inlineBack, scopedBack, scopedLine, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
 
@@ -38,6 +40,14 @@ function circleInk(theme: Theme): string {
 }
 
 /**
+ * A solid through `resolvePaint` (a name to its hex, as `circle()` did); a gradient stays whole, so `ellipse` writes its
+ * `<defs>` too (`svg.ts#resolvePaintAttrs`).
+ */
+function ellipsePaint(paint: Paint): Paint {
+  return typeof paint === 'string' ? (resolvePaint(paint).value ?? paint) : paint;
+}
+
+/**
  * add4-T3f: a circle's merged-style colours (`core/activity-circle-style
  * .ts`) -- priority-ordered, so a later `<style> root` (a theme's) or a
  * `skin` beats plantuml.skin's circle rule exactly as upstream merges
@@ -45,16 +55,11 @@ function circleInk(theme: Theme): string {
  * falls back to the pre-existing default only when absent (a hand-built
  * `Theme`, or an unparsable `<style>` block).
  */
-function circleColors(
-  theme: Theme,
-  leaf: 'start' | 'stop',
-  back: Paint,
-  line: string,
-): { back: string | undefined; line: string | undefined } {
+function circleColors(theme: Theme, leaf: 'start' | 'stop', back: Paint, line: string): { back: Paint; line: Paint } {
   const merged = theme.colors.graph.activity?.circleStyle?.[leaf];
   return {
-    back: resolvePaint(merged?.back ?? back).value,
-    line: resolvePaint(merged?.line ?? line).value,
+    back: ellipsePaint(svgBack(merged?.back) ?? back),
+    line: ellipsePaint(merged?.line ?? line),
   };
 }
 
@@ -187,12 +192,12 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
   const size = node.height;
   const size2 = (size - END_CROSS_THICKNESS) / Math.SQRT2;
   const delta = (size - size2) / 2;
-  const endFill = actColors(theme).endFill;
+  const endFill = endLine(theme);
   const crossStyle = { stroke: endFill, strokeWidth: END_CROSS_THICKNESS };
   return (
     ellipse(cx, cy, r, r, {
       fill: 'none',
-      stroke: resolvePaint(endFill).value,
+      stroke: ellipsePaint(endFill),
       'stroke-width': CIRCLE_END_LINE_THICKNESS,
     }) +
     orderedLine(node.x + delta, node.y + delta, node.x + delta + size2, node.y + delta + size2, crossStyle) +
@@ -204,6 +209,26 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
       crossStyle,
     )
   );
+}
+
+/**
+ * `FtileCircleEndCross.java:79,105,109-114`: the ring and both cross lines are `LineColor`, the merged style of
+ * `circle, end` (`VCompactFactory.java:97`), T2a's bucket (D2); `ActivityEndColor` is that `LineColor`
+ * (`FromSkinparamToStyle.java:138`), the flat tier below it.
+ */
+function endLine(theme: Theme): Paint {
+  return scopedLine(theme, 'circle.end') ?? actColors(theme).endFill;
+}
+
+/** `VCompactFactory.java:105`, `FtileCircleSpot.java:102-103`: its own colour, else the merged style's `BackGroundColor`,
+ *  T2a's bucket (D2). */
+function spotBack(node: ActivityNodeGeo, theme: Theme): Paint {
+  return inlineBack(node) ?? scopedBack(theme, 'circle.spot') ?? theme.colors.nodeBackground;
+}
+
+/** `FtileCircleSpot.java:75`: `fc` off the same merged style. */
+function spotFont(theme: Theme): string {
+  return resolveSolidBucketColor(theme.colors.elements?.['circle.spot']?.font) ?? activityFontColor(theme, 'circle');
 }
 
 /**
@@ -251,15 +276,15 @@ export function renderSpot(node: ActivityNodeGeo, theme: Theme): string {
   const cx = node.x + node.width / 2;
   const cy = node.y + node.height / 2;
   const r = node.width / 2;
-  const fill = resolvePaint(node.color ?? theme.colors.nodeBackground).value;
+  const fill = ellipsePaint(spotBack(node, theme));
   const circle = ellipse(cx, cy, r, r, {
     fill,
-    stroke: theme.colors.border,
+    stroke: scopedLine(theme, 'circle.spot') ?? theme.colors.border, // `FtileCircleSpot.java:102-103`
     'stroke-width': ELEMENT_LINE_THICKNESS,
   });
   const char = node.label ?? '';
   if (char === '') return circle;
-  const glyphFill = activityFontColor(theme, 'circle');
+  const glyphFill = spotFont(theme);
   const d = spotGlyphPath(char, cx, cy);
   const glyph =
     d === undefined
@@ -290,7 +315,10 @@ const GOTO_STROKE_WIDTH = 1;
  */
 function renderGoto(node: ActivityNodeGeo, dest: { x: number; y: number } | undefined, theme: Theme): string {
   if (dest === undefined) return '';
-  const style = { stroke: theme.colors.border, strokeWidth: GOTO_STROKE_WIDTH };
+  const style = {
+    stroke: scopedLine(theme, 'goto') ?? theme.colors.border,
+    strokeWidth: GOTO_STROKE_WIDTH,
+  };
   return orderedLine(node.x, node.y, dest.x, node.y, style) + orderedLine(dest.x, node.y, dest.x, dest.y, style);
 }
 

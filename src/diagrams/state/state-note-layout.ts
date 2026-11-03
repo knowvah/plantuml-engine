@@ -12,25 +12,14 @@
  * branch) with two state-specific additions:
  *  (1) placement is PER SCOPE (`StateNote.scopeId`) — a state diagram's
  *      notes route into whichever svek pass owns their declaring scope,
- *      unlike class's single flat pass. Same-side/same-host merging
- *      (mirrors class's `NoteGroup`) is scoped too: merge keys include
- *      `scopeId`, so two notes can only merge when they share the same
- *      declaring scope (conservative — no fixture in this corpus exercises
- *      a genuine cross-scope merge, so this is the safer default).
+ *      unlike class's single flat pass.
  *  (2) note-position rotation under `left to right direction`
  *      (`Position.withRankdir`, utils/Position.java:49-66): RIGHT->BOTTOM,
  *      LEFT->TOP, BOTTOM->RIGHT, TOP->LEFT.
  *
- * NOT wired into `classifyDiagram`'s autarkic/zaent predicates this
- * iteration: `Entity.isAutarkic` (abel/Entity.java:702) iterates
- * `this.diagram.getLinks()` unconditionally — a note-to-host `Link` IS a
- * real diagram link upstream and CAN affect autonom/cluster classification
- * (e.g. a note declared INSIDE a composite's own scope, targeting a sibling
- * also inside that scope). No fixture in the corpus exercises this
- * interaction (the observed fixtures' notes are declared at the SAME scope
- * as their host or outside it entirely, which the "notes never disqualify"
- * simplification below already gets right); left as a named follow-up
- * (see state-composite-pass.ts's wiring comment).
+ * `Entity.isAutarkic` (abel/Entity.java:706-708) iterates
+ * `this.diagram.getLinks()` unconditionally, and a note-to-host `Link` is one
+ * of them: `classifyDiagram` takes the notes (dss T3f).
  *
  * @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnEntity.java
  *      (leaf + Link creation: dashed decor, `LinkArg.noDisplay`, no arrowheads)
@@ -186,7 +175,11 @@ const NOTE_TAB_SIZE_NB = 8;
  * `StateTextLine` cannot carry without a `state-geo-types.ts` change outside
  * this task's write-set.
  */
-function buildRenderLines(text: string, theme: Theme, measurer: StringMeasurer): readonly StateStyledTextLine[] {
+export function buildRenderLines(
+  text: string,
+  theme: Pick<Theme, 'fontFamily' | 'sprites'>,
+  measurer: StringMeasurer,
+): readonly StateStyledTextLine[] {
   const font: FontSpec = { family: theme.fontFamily, size: NOTE_FONT_SIZE };
   const opts = theme.sprites === undefined ? undefined : { spriteRegistry: theme.sprites };
   return creoleTextLines(text, font, measurer, opts).map((ln) =>
@@ -260,71 +253,7 @@ const NOTE_EDGE: Record<NotePosition, { fromNote: boolean; minLen: number }> = {
   bottom: { fromNote: false, minLen: 1 },
 };
 
-/** A run of one or more `StateNote`s attached to the SAME scope + host +
- *  side that collapse into a single svek node — mirrors class engine's
- *  `NoteGroup` (see this module's doc for the scoping addition). */
-interface NoteGroup {
-  /** Dot node id — the first member note's id. */
-  id: string;
-  target?: string;
-  position?: NotePosition;
-  /** Indices into the SAME per-scope note array passed to `groupNotes`. */
-  memberIndices: number[];
-}
-
-function newGroup(note: StateNote, i: number): NoteGroup {
-  return {
-    id: note.id,
-    ...(note.target !== undefined ? { target: note.target } : {}),
-    ...(note.position !== undefined ? { position: note.position } : {}),
-    memberIndices: [i],
-  };
-}
-
-/** Only an EXPLICIT `of <State>` note is merge-eligible — mirrors class
- *  engine's `mergeKey` (zepeki-75-pifo352 precedent: an implicit-target note
- *  never merges, even onto the same (host, side) as an explicit one). */
-function mergeKey(note: StateNote): string | undefined {
-  if (note.target === undefined || note.position === undefined) return undefined;
-  if (note.implicitTarget === true) return undefined;
-  return `${note.target}|${note.position}`;
-}
-
-function groupNotes(notes: readonly StateNote[]): NoteGroup[] {
-  const groups: NoteGroup[] = [];
-  const bySameSideHost = new Map<string, NoteGroup>();
-  for (const [i, note] of notes.entries()) {
-    const key = mergeKey(note);
-    const existing = key === undefined ? undefined : bySameSideHost.get(key);
-    if (existing !== undefined) {
-      existing.memberIndices.push(i);
-      continue;
-    }
-    const group = newGroup(note, i);
-    if (key !== undefined) bySameSideHost.set(key, group);
-    groups.push(group);
-  }
-  return groups;
-}
-
-/** Merged box for a group: as wide as its widest member, tall enough to
- *  stack all of them (mirrors class engine's `groupNodeSize` — the renderer
- *  side of this, one folded-corner box per member, is a follow-up: this
- *  iteration is DOT-node/edge parity only, per `dot-parity-before-visual-
- *  qa` convention). */
-function groupNodeSize(
-  group: NoteGroup,
-  notes: readonly StateNote[],
-  measurements: Map<string, NoteMeasurement>,
-): { width: number; height: number } {
-  const sizes = group.memberIndices.map((i) => measurements.get(notes[i]!.id)!);
-  return {
-    width: Math.max(...sizes.map((m) => m.width)),
-    height: sizes.reduce((sum, m) => sum + m.height, 0),
-  };
-}
-
-/** An attached note group's not-yet-resolved connector edge — `target` is
+/** An attached note's not-yet-resolved connector edge — `target` is
  *  the RAW host id (a composite target may need `resolveEndpoint` at the
  *  caller, e.g. redirected to a `zaent` anchor); `noteId`/`target` are
  *  resolved against whichever pass's node set actually contains them (see
@@ -338,11 +267,47 @@ export interface NoteEdgeCandidate {
   target: string;
   fromNote: boolean;
   minLen: number;
+  /** {@link NoteSpec.opalisable}, for the line drawn in the notch's stead. */
+  opalisable: boolean;
+  /** The note's `GMN<n>` quark name (`CommandFactoryNoteOnEntity.java:327`), in the line's id. */
+  gmnName: string;
+  /** The `Link` ctor's tick, right after the note's (`Link.java:135`). */
+  creationIndex?: number;
+}
+
+/** A note's place in a pass's `GeoSpec` tree: upstream's note is a leaf like any
+ *  other (`GroupMakerState.java:125-133` hands `group.leafs()` to the pass), and
+ *  `SvekResult.java:82-90` draws every node of that pass. */
+export interface NoteSpec {
+  kind: 'note';
+  id: string;
+  /** `StateNodeGeo.noteLines`. */
+  lines: readonly StateStyledTextLine[];
+  /** `GraphvizImageBuilder#isOpalisable`: the `__noteedge_<id>` connector may become its notch. */
+  opalisable: boolean;
+  creationIndex?: number;
+  color?: string;
 }
 
 export interface ScopeNoteParts {
   nodes: DotInputNode[];
   candidates: NoteEdgeCandidate[];
+  specs: NoteSpec[];
+}
+
+/** `diagram.getUniqueSequence("GMN")`'s prefix (`CommandFactoryNoteOnEntity.java:327`). */
+const GMN_PREFIX = 'GMN';
+
+/** {@link NoteSpec} of `note`, from its own {@link measureNote}. */
+function noteSpecOf(note: StateNote, lines: readonly StateStyledTextLine[], opalisable: boolean): NoteSpec {
+  return {
+    kind: 'note',
+    id: note.id,
+    lines,
+    opalisable,
+    ...(note.creationIndex !== undefined ? { creationIndex: note.creationIndex } : {}),
+    ...(note.color !== undefined ? { color: note.color } : {}),
+  };
 }
 
 function measureAllNotes(
@@ -365,28 +330,48 @@ function partitionByScope(notes: readonly StateNote[]): Map<string, StateNote[]>
   return byScope;
 }
 
-/** One scope's note groups -> DOT nodes + connector-edge candidates
- *  (freestanding groups contribute a node only, no candidate). */
+/** One scope's notes -> DOT nodes + connector-edge candidates (a freestanding
+ *  note contributes a node only, no candidate). Each note is its own node and
+ *  its own `Link`: `CommandFactoryNoteOnEntity.java:328-360` creates both per
+ *  command, whatever else targets the same host and side. */
 function buildScopeParts(
   scopeNotes: readonly StateNote[],
   measurements: Map<string, NoteMeasurement>,
   rankdir: 'TB' | 'LR',
+  isOpalisable: (note: StateNote) => boolean,
 ): ScopeNoteParts {
-  const groups = groupNotes(scopeNotes);
-  const nodes: DotInputNode[] = groups.map((g) => ({ id: g.id, ...groupNodeSize(g, scopeNotes, measurements) }));
+  const nodes: DotInputNode[] = [];
   const candidates: NoteEdgeCandidate[] = [];
-  for (const group of groups) {
-    if (group.target === undefined || group.position === undefined) continue; // freestanding — no connector
-    const dir = NOTE_EDGE[rotateForRankdir(group.position, rankdir)];
+  const specs: NoteSpec[] = [];
+  for (const note of scopeNotes) {
+    const m = measurements.get(note.id)!;
+    nodes.push({ id: note.id, width: m.width, height: m.height });
+    const opalisable = isOpalisable(note);
+    specs.push(noteSpecOf(note, m.lines, opalisable));
+    if (note.target === undefined || note.position === undefined) continue; // freestanding — no connector
+    const dir = NOTE_EDGE[rotateForRankdir(note.position, rankdir)];
     candidates.push({
-      id: `__noteedge_${group.id}`,
-      noteId: group.id,
-      target: group.target,
+      id: `__noteedge_${note.id}`,
+      noteId: note.id,
+      target: note.target,
       fromNote: dir.fromNote,
       minLen: dir.minLen,
+      opalisable,
+      gmnName: `${GMN_PREFIX}${(note.creationIndex ?? 1) - 1}`,
+      ...(note.creationIndex !== undefined ? { creationIndex: note.creationIndex + 1 } : {}),
     });
   }
-  return { nodes, candidates };
+  return { nodes, candidates, specs };
+}
+
+/** `GraphvizImageBuilder#isOpalisable` (`GraphvizImageBuilder.java:133-148`):
+ *  not under `strictUml`, the note's only link, and that link's other end no
+ *  note. A note another note targets holds a second link. */
+function noteOpalisable(notes: readonly StateNote[], theme: Theme): (note: StateNote) => boolean {
+  const ids = new Set(notes.map((n) => n.id));
+  const targets = new Set(notes.map((n) => n.target));
+  return (note) =>
+    theme.strictUml !== true && note.target !== undefined && !ids.has(note.target) && !targets.has(note.id);
 }
 
 /**
@@ -403,8 +388,11 @@ export function buildNoteGraphPartsByScope(
 ): Map<string, ScopeNoteParts> {
   const measurements = measureAllNotes(notes, theme, measurer);
   const byScope = partitionByScope(notes);
+  const isOpalisable = noteOpalisable(notes, theme);
   const out = new Map<string, ScopeNoteParts>();
-  for (const [scopeId, scopeNotes] of byScope) out.set(scopeId, buildScopeParts(scopeNotes, measurements, rankdir));
+  for (const [scopeId, scopeNotes] of byScope) {
+    out.set(scopeId, buildScopeParts(scopeNotes, measurements, rankdir, isOpalisable));
+  }
   return out;
 }
 
@@ -416,6 +404,8 @@ export function buildNoteGraphPartsByScope(
 export interface NoteEdgeSweepTarget {
   nodes: readonly { id: string }[];
   edges: { id: string; from: string; to: string; attributes?: { minLen?: number } }[];
+  /** The candidates this pass attached (`state-note-lines.ts#noteLinesOf`). */
+  noteLinks?: NoteEdgeCandidate[];
 }
 
 /**
@@ -447,6 +437,9 @@ export function sweepOrphanNoteEdges(
       to: cand.fromNote ? hostId : cand.noteId,
       attributes: { minLen: cand.minLen },
     });
+    // `GraphvizImageBuilder.java:245-259`: a group has no `SvekNode`, so a note on a
+    // cluster composite (its zaent point here) keeps its line.
+    (acc.noteLinks ??= []).push(hostId === cand.target ? cand : { ...cand, opalisable: false });
     consumed.add(cand);
   }
 }

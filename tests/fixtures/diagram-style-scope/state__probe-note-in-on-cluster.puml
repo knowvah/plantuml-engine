@@ -1,0 +1,7 @@
+@startuml
+state A {
+  state B
+}
+note left of A : k
+C --> B
+@enduml

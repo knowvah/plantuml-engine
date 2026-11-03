@@ -63,8 +63,7 @@ import type { TransitionGeo } from './state-geo-types.js';
 import { buildStateGeoTextFields } from './state-sizing.js';
 import { measureAutonomWrapper, stackConcurrentRegions, type AutonomWrapper } from './state-composite-sizing.js';
 import { computeSvekResultGeometry } from './layout-ink-extent.js';
-import { materializeSpecs, clusterPosMapOf, type PosMap } from './state-composite-geo.js';
-import { svekDimension, type InkExtent } from '../../core/svek/SvekResult.js';
+import { materializeSpecs, clusterPosMapOf, edgePosMapOf, type PosMap } from './state-composite-geo.js';
 import {
   type DiagramCtx,
   type PassAccumulator,
@@ -83,6 +82,8 @@ import { pushLocalNodesInCreationOrder } from './state-composite-pseudo.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import { concurrentRegionScopeId } from './state-parse-state.js';
 import { shiftDotLayoutResult } from './state-composite-autonom.js';
+import { sweepOrphanNoteEdges } from './state-note-layout.js';
+import { resolveEndpoint } from './state-composite-classify.js';
 
 /** One region's (or region-0's) resolved pass — the raw laid-out content
  *  BEFORE any composite-level title/border wrapping (a region has none of
@@ -115,55 +116,6 @@ export interface ConcurrentRegionPassResult {
  *  asymmetry — `layout-ink-extent.ts#addNodeInk` — folded into `JAR_INK_
  *  MARGIN(6) - (-1) = 7`). Renamed from `regionInkDim` to `regionInkGeometry`
  *  since it's no longer JUST a dimension. */
-/**
- * SI31 T2 (G17, `plans/state-declared-size-fix/findings/G17-note-only-
- * region.md`): a `--`-delimited region with NO materialized `State` members
- * (a note-only trailing region -- `s.concurrentRegions[i]` is `[]`, its
- * content reaches this pass exclusively via `addScopeNotes`'s raw-DOT-node
- * push) never populates `computeSvekResultGeometry`'s ink walk, so `ink`
- * stays the degenerate `{0,0}` sentinel and `regionInkGeometry`'s pre-fix
- * `Math.max(ink.width, p.result.width)` fell through to `p.result.width` --
- * dot-engine's OWN raw graph canvas (`graph-layout.ts#canvasSize`'s flat
- * `CANVAS_MARGIN=12` on both axes). Jar never uses a raw canvas here: a
- * note-only `CONCURRENT_STATE` sub-group gets its own real `SvekResult`
- * (`GroupMakerState.java:110-129`'s `containsSomeConcurrentStates()==false`
- * branch), and `ConcurrentStates#calculateDimensionSlow`
- * (`ConcurrentStates.java:133-141`) sums every region's `inner.
- * calculateDimension()` unconditionally -- no note-only special case, so
- * this region's term is `SvekResult#calculateDimension()`'s real formula:
- *
- * ```java
- * // SvekResult.java:130-135
- * public XDimension2D calculateDimension(StringBounder stringBounder) {
- *     if (minMax == null) {
- *         minMax = TextBlockUtils.getMinMax(this, stringBounder, false);
- *         clusterManager.moveDelta(6 - minMax.getMinX(), 6 - minMax.getMinY());
- *     }
- *     return minMax.getDimension().delta(15, 15);
- * }
- * ```
- *
- * `{@link svekDimension}` already ports line 135's `.delta(15, 15)` (as
- * `INK_DELTA`, `core/svek/SvekResult.ts`) for the non-degenerate ink walk
- * above -- reused here, not re-declared, seeded from the region's own RAW
- * declared node boxes (`p.result.nodes`, pre-canvas-margin) instead of a
- * materialized-state ink walk, since a note-only region has no `StateNodeGeo`
- * to walk. Per D3 (`plans/state-residual-fix-batch/decisions.md`): the `3px`
- * gap between the old `+12` canvas margin and the real `+15` SvekResult
- * margin is an ARITHMETIC CONSEQUENCE of this substitution, not a separate
- * tuned constant -- no bare `3` appears in this file.
- */
-function rawNodeBoxDimension(nodes: DotLayoutResult['nodes']): { width: number; height: number } {
-  const box: InkExtent = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
-  for (const n of nodes) {
-    box.minX = Math.min(box.minX, n.x);
-    box.minY = Math.min(box.minY, n.y);
-    box.maxX = Math.max(box.maxX, n.x + n.width);
-    box.maxY = Math.max(box.maxY, n.y + n.height);
-  }
-  return svekDimension(box);
-}
-
 function regionInkGeometry(
   p: ConcurrentRegionPassResult,
   // mission skin-file-loading Batch 2: the diagram's own resolved
@@ -185,18 +137,12 @@ function regionInkGeometry(
   // each region's `inner.calculateDimension()` (`ConcurrentStates.java:
   // 133-141`), and jar's `inner` is the REAL laid-out SvekResult with every
   // cluster's header-inclusive `rectangleArea` already painted into it.
-  const states = materializeSpecs(p.specs, posMap, clusterPosMapOf(p.result), shadowing);
+  const states = materializeSpecs(p.specs, posMap, clusterPosMapOf(p.result), shadowing, edgePosMapOf(p.result));
   const transitions = buildLevelTransitionGeos(p.acc, p.result);
   const ink = computeSvekResultGeometry(states, transitions);
-  // SI31 T2 (G17): no materialized `State` members -- see
-  // `rawNodeBoxDimension`'s own doc comment above. Gated on `states.length
-  // === 0` so the non-degenerate path (materialized states present) is
-  // untouched: `ink` already dominates `p.result` there in every fixture
-  // this port has re-measured (D3's non-degenerate invariance).
-  const canvasFloor = states.length === 0 ? rawNodeBoxDimension(p.result.nodes) : p.result;
   return {
-    width: Math.max(ink.width, canvasFloor.width),
-    height: Math.max(ink.height, canvasFloor.height),
+    width: Math.max(ink.width, p.result.width),
+    height: Math.max(ink.height, p.result.height),
     dx: ink.dx,
     dy: ink.dy,
   };
@@ -234,8 +180,12 @@ export function buildConcurrentAutonomSpec(s: State, ctx: DiagramCtx): Extract<G
   const transitionsFor = (ids: ReadonlySet<string>): Transition[] =>
     s.transitions.filter((t) => ids.has(t.from) || ids.has(t.to));
 
+  // dss T3f: a note is a leaf of region 0 too (`GroupMakerState.java:125`,
+  // `filter(group.leafs())`).
   const ownBuild =
-    s.children.length > 0 ? buildConcurrentBranchAcc(s.children, transitionsFor(ownIds), s.id, s.id, ctx) : undefined;
+    s.children.length > 0 || ctx.noteParts.has(s.id)
+      ? buildConcurrentBranchAcc(s.children, transitionsFor(ownIds), s.id, s.id, ctx)
+      : undefined;
   const ownPass: ConcurrentRegionPassResult | undefined =
     ownBuild !== undefined
       ? { acc: ownBuild.acc, result: runPass(ownBuild.acc, ctx), specs: ownBuild.specs }
@@ -314,9 +264,12 @@ function buildConcurrentBranchAcc(
     (c: State) => resolveMember(c, acc, childCtx, undefined),
     { id: scopeId, transitions, pseudoCreationIndex: ctx.pseudoCreationIndex },
   );
-  addScopeNotes(noteScopeId, childCtx, acc);
+  const noteSpecs = addScopeNotes(noteScopeId, childCtx, acc, [...memberSpecs, ...pseudoSpecs]);
   addLevelEdges(scopeId, transitions, acc, childCtx);
-  return { acc, specs: sortSpecsByCreationIndex([...pseudoSpecs, ...memberSpecs]) };
+  // dss T3f: `state-composite-autonom.ts#buildPlainAutonomSpec`'s sweep; a note's
+  // `Link` is attempted at this pass too (`GroupMakerState.java:101-108`).
+  sweepOrphanNoteEdges(acc, ctx.notePool, ctx.consumedNotes, (id) => resolveEndpoint(id, ctx.classify));
+  return { acc, specs: sortSpecsByCreationIndex([...pseudoSpecs, ...memberSpecs, ...noteSpecs]) };
 }
 
 function runOneConcurrentBranch(
@@ -422,6 +375,7 @@ function combineConcurrentPasses(
   const separators: { x1: number; y1: number; x2: number; y2: number }[] = [];
   let shift = 0;
   const allNodes: DotLayoutResult['nodes'] = [];
+  const allEdges: DotLayoutResult['edges'] = [];
   for (let i = 0; i < passes.length; i++) {
     const p = passes[i]!;
     // mission G4 S6: apply THIS region's own ink-extent `moveDelta`
@@ -433,6 +387,9 @@ function combineConcurrentPasses(
     for (const n of shiftedResult.nodes) {
       allNodes.push(vertical ? { ...n, x: n.x + shift } : { ...n, y: n.y + shift });
     }
+    // dss T3f: a note's Opale reads its connector from these
+    // (`state-composite-geo.ts#materializeAutonom`), in the nodes' own frame.
+    allEdges.push(...shiftDotLayoutResult(shiftedResult, vertical ? shift : 0, vertical ? 0 : shift).edges);
     const regionTransitions = buildLevelTransitionGeos(p.acc, shiftedResult).map((t) =>
       vertical ? shiftTransitionX(t, shift) : shiftTransitionY(t, shift),
     );
@@ -458,7 +415,7 @@ function combineConcurrentPasses(
     regions,
     separators,
     localStates,
-    localPositions: { nodes: allNodes, edges: [], width: wrapper.width, height: wrapper.height },
+    localPositions: { nodes: allNodes, edges: allEdges, width: wrapper.width, height: wrapper.height },
     localTransitions,
     ...buildStateGeoTextFields(s, ctx.theme, ctx.measurer),
     ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),

@@ -1,0 +1,14 @@
+@startuml
+state S {
+  [*] --> a
+  a --> [H]
+  a --> [H*]
+}
+state T {
+  state en <<entryPoint>>
+  state ex <<exitPoint>>
+  en --> b
+  b --> ex
+}
+S --> T
+@enduml

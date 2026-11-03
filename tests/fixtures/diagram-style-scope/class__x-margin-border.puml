@@ -1,0 +1,9 @@
+@startuml
+skinparam diagramBorderColor red
+<style>
+root { Margin 10 }
+</style>
+class A
+class B
+A --> B
+@enduml

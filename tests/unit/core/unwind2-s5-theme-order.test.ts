@@ -14,11 +14,12 @@
  *
  * Pins are `[colour diffs, all diffs]`. Non-zero entries are OTHER, theme-
  * independent gaps (each reproduces with no `!theme`; see
- * `.agent-notes/unwind2-S5.md`): `root { Margin }` unread by class/
- * mindmap (usecase reads it since codd-T4: the description exporter margin);
+ * `.agent-notes/unwind2-S5.md`): `root { Margin }` (mindmap
+ * reads it since dss T3g; usecase since codd-T4: the description exporter margin; class since dss T3b);
  * every sequence row is exact since sdd1 (T2a/T2f/T3d: participants,
- * lifelines and arrow label fonts read the merged Style); the
- * usecase actor label ignores `root { FontColor }`; class-reddress is the
+ * lifelines and arrow label fonts read the merged Style); the usecase actor
+ * label reads `root { FontColor }` since dss T2a (`style-element-scope.ts`);
+ * class-reddress is the
  * counter rule between two NARROWER selectors (`classAttributeFontColor`
  * after `classFontColor`), which `style-root-shadowing.ts` does not cover.
  */
@@ -41,18 +42,18 @@ const PINS: Readonly<Record<string, readonly [number, number]>> = {
   'activity-style-root': [0, 0],
   'activity-theme-only': [0, 0],
   'class-reddress': [2, 4],
-  'class-skinparam-after': [0, 190],
-  'class-skinparam-before': [0, 190],
-  'class-style-after': [0, 190],
-  'class-style-before': [0, 190],
+  'class-skinparam-after': [0, 0],
+  'class-skinparam-before': [0, 0],
+  'class-style-after': [0, 0],
+  'class-style-before': [0, 0],
   'class-style-root': [0, 0],
-  'class-theme-only': [0, 190],
-  'mindmap-skinparam-after': [0, 42],
-  'mindmap-skinparam-before': [0, 42],
-  'mindmap-style-after': [0, 42],
-  'mindmap-style-before': [0, 42],
+  'class-theme-only': [0, 0],
+  'mindmap-skinparam-after': [0, 0],
+  'mindmap-skinparam-before': [0, 0],
+  'mindmap-style-after': [0, 0],
+  'mindmap-style-before': [0, 0],
   'mindmap-style-root': [0, 0],
-  'mindmap-theme-only': [0, 42],
+  'mindmap-theme-only': [0, 0],
   'sequence-mars': [0, 0],
   'sequence-reddress': [0, 0],
   'sequence-skinparam-after': [0, 0],
@@ -61,12 +62,12 @@ const PINS: Readonly<Record<string, readonly [number, number]>> = {
   'sequence-style-before': [0, 0],
   'sequence-style-root': [0, 0],
   'sequence-theme-only': [0, 0],
-  'usecase-skinparam-after': [2, 17],
-  'usecase-skinparam-before': [2, 17],
-  'usecase-style-after': [2, 17],
-  'usecase-style-before': [2, 17],
-  'usecase-style-root': [2, 2],
-  'usecase-theme-only': [2, 17],
+  'usecase-skinparam-after': [0, 15],
+  'usecase-skinparam-before': [0, 15],
+  'usecase-style-after': [0, 15],
+  'usecase-style-before': [0, 15],
+  'usecase-style-root': [0, 0],
+  'usecase-theme-only': [0, 15],
 };
 
 const CASES = readdirSync(DIR)

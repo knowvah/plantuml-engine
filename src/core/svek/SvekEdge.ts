@@ -1,5 +1,8 @@
 import type { UGraphic } from '../klimt/UGraphic.js';
 import type { UDrawable } from '../klimt/shape/UDrawable.js';
+import type { TextBlock } from '../klimt/shape/TextBlock.js';
+import { TextBlockUtils } from '../klimt/shape/TextBlockUtils.js';
+import { VerticalAlignment } from '../klimt/geom/VerticalAlignment.js';
 import type { Point2D } from '../klimt/UTranslate.js';
 import type { Paint } from '../paint.js';
 import type { FontConfiguration } from '../klimt/shape/UText.js';
@@ -76,8 +79,20 @@ export const EDGE_LABEL_MARGIN = 1;
 /** `SvekEdge.java:372-373`: the same margin for a self-loop. */
 export const SELF_LOOP_EDGE_LABEL_MARGIN = 6;
 
+/** `CucaNote#getPosition()` of a `note on link` (`SvekEdge.java:318-325`). */
+export type SvekLinkNotePosition = 'left' | 'right' | 'top' | 'bottom';
+
+/** The `EntityImageNoteLink` block `SvekEdge.java:312-326` merges with the label text. */
+export interface SvekEdgeLabelNote {
+  readonly block: TextBlock;
+  readonly position: SvekLinkNotePosition;
+}
+
 export interface SvekEdgeLabel {
   readonly text: string;
+  /** A `note on link`: the label block becomes `mergeLR/TB(labelOnly, note)` by `position`, drawn at the table
+   *  corner (`SvekEdge.java:951-954`). Needs `w`/`h`. */
+  readonly note?: SvekEdgeLabelNote;
   /** With `w`/`h`: the CENTRE of the DOT label table the engine placed
    *  (the jar's corner is `SvekEdge#getXY`, the table polygon's min). */
   readonly x: number;
@@ -346,7 +361,7 @@ export class SvekEdge implements UDrawable {
    *  position arrives as the table centre, so the corner is `centre -
    *  trunc(size) / 2`. `labelShield` is 0: the description port parses no
    *  middle decor (`link-edge-attrs.ts#computeNoteMergedDims`). */
-  private drawLabelBlock(ug: UGraphic, label: Required<SvekEdgeLabel>, font: FontConfiguration): void {
+  private drawLabelBlock(ug: UGraphic, label: LabelWithTable, font: FontConfiguration): void {
     const margin = this.input.fromUid === this.input.toUid ? SELF_LOOP_EDGE_LABEL_MARGIN : EDGE_LABEL_MARGIN;
     const x = label.x - Math.trunc(label.w) / 2 + margin;
     const y = label.y - Math.trunc(label.h) / 2 + margin;
@@ -354,11 +369,47 @@ export class SvekEdge implements UDrawable {
     const parsed = parseWithNewlines(Pragma.createEmpty(), label.text)!;
     const alignment = parsed.naturalHorizontalAlignment ?? this.input.labelAlignment ?? HorizontalAlignment.CENTER;
     const block = buildTextBlock(parsed.lines.join('\n'), font, alignment);
+    if (label.note !== undefined) {
+      this.drawNotedLabel(ug, label, label.text === '' ? undefined : block, { x, y }, margin);
+      return;
+    }
     // `TextBlockMarged#drawU` (`TextBlockMarged.java:81-87`): the marged block first draws `UEmpty.create(dim)` over
     // text + 2 x margin (drawn only when that width is > 0), which `LimitFinder#drawEmpty` folds into the ink extent.
     const text = block.calculateDimension(ug.getStringBounder());
     const marged = new XDimension2D(text.getWidth() + 2 * margin, text.getHeight() + 2 * margin);
     if (marged.getWidth() > 0) ug.apply(new UTranslate(x - margin, y - margin)).draw(UEmpty.create(marged));
     block.drawU(ug.apply(new UTranslate(x, y)));
+  }
+
+  /** `SvekEdge.java:307-326`: `labelText = merge(labelOnly, noteOnly)`; `labelOnly` is `addVisibilityModifier`'s
+   *  `withMargin(block, marginLabel, marginLabel)` (`:372-373`), `EMPTY_TEXT_BLOCK` without a label (`:281-283`). */
+  private drawNotedLabel(
+    ug: UGraphic,
+    label: LabelWithTable,
+    text: TextBlock | undefined,
+    at: Point2D,
+    margin: number,
+  ): void {
+    const { block: note, position } = label.note!;
+    const labelOnly =
+      text === undefined ? TextBlockUtils.EMPTY_TEXT_BLOCK : TextBlockUtils.withMargin(text, margin, margin);
+    const merged = mergeNote(labelOnly, note, position);
+    merged.drawU(ug.apply(new UTranslate(at.x - margin, at.y - margin)));
+  }
+}
+
+type LabelWithTable = SvekEdgeLabel & { readonly w: number; readonly h: number };
+
+/** `SvekEdge.java:318-325`. */
+function mergeNote(labelOnly: TextBlock, note: TextBlock, position: SvekLinkNotePosition): TextBlock {
+  switch (position) {
+    case 'left':
+      return TextBlockUtils.mergeLR(note, labelOnly, VerticalAlignment.CENTER);
+    case 'right':
+      return TextBlockUtils.mergeLR(labelOnly, note, VerticalAlignment.CENTER);
+    case 'top':
+      return TextBlockUtils.mergeTB(note, labelOnly, HorizontalAlignment.CENTER);
+    case 'bottom':
+      return TextBlockUtils.mergeTB(labelOnly, note, HorizontalAlignment.CENTER);
   }
 }

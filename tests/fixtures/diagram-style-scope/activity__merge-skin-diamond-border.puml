@@ -1,0 +1,10 @@
+@startuml
+skinparam ActivityDiamondBorderColor #F00
+start
+fork
+:a;
+fork again
+:b;
+end merge
+stop
+@enduml

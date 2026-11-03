@@ -1,0 +1,17 @@
+@startuml
+skinparam classBackgroundColor #AAAAAA
+skinparam classBorderColor #BB0000
+skinparam classFontColor #0000BB
+object O {
+ a = 1
+}
+map M {
+ k => v
+}
+json J {
+ "a": 1
+}
+class C
+O --> C
+note left of O : n
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+<style>
+classDiagram {
+  sequenceDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+class A
+@enduml

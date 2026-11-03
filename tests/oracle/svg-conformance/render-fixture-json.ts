@@ -112,7 +112,7 @@ export function renderFixtureJson(markup: string, measurer: StringMeasurer, opti
   const preprocessed = styleInput(first.preprocessed, block);
   // cdd4-T7b: the shipped `buildTheme`, not a copy of it -- a copy measured a
   // path no shipped code takes once theme styling moved into it.
-  const { theme, styleMap } = buildTheme(preprocessed);
+  const { theme, styleMap } = buildTheme(preprocessed, undefined, block.type);
 
   const ast = parseForType(block, { assetStore: options?.assetStore });
   const geo = layoutJson(ast, theme, measurer);

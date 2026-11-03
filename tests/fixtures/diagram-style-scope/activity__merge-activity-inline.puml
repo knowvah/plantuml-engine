@@ -1,0 +1,14 @@
+@startuml
+<style>
+activity { LineColor #0AA ; BackgroundColor #FEE }
+</style>
+start
+fork
+:a;
+fork again
+-[#F0F]->
+:b;
+-[#0FF]->
+end merge
+stop
+@enduml

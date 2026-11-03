@@ -63,6 +63,7 @@ export function walkNoteOpale(t: GtileNoteOpale, x: number, y: number, myLane: s
   // add4-T1c: `FtileWithNoteOpale.java:137-139` -- `eventuallyOverride(note
   // .getColors())` makes the note's own `#color` the Opale's background.
   if (note.color !== undefined) noteNode.color = note.color;
+  if (note.stereotype !== undefined) noteNode.stereotype = note.stereotype;
   // add4-T2c: `FtileWithNoteOpale.java:217` draws the Opale only in its
   // `swimlaneNote`'s pass (`Swimlanes.java:342`'s one-lane interceptor),
   // at that lane's translate -- the note tile's own lane, not the wrapped

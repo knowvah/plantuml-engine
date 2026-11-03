@@ -1,0 +1,10 @@
+@startuml
+<style>
+state { BackgroundColor #AAAAAA }
+element { BackgroundColor #F1F1F1 }
+</style>
+state A
+state C {
+ state D
+}
+@enduml

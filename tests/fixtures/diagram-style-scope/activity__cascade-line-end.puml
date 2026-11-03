@@ -1,0 +1,14 @@
+@startuml
+<style>
+activityDiagram {
+  circle {
+    end {
+      LineColor #BB0000
+    }
+  }
+}
+</style>
+start
+:a;
+end
+@enduml

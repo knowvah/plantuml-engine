@@ -1,0 +1,10 @@
+@startuml
+<style>
+usecaseDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+class A
+@enduml

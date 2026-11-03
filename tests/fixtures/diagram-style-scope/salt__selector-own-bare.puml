@@ -1,0 +1,10 @@
+@startsalt
+<style>
+saltDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+{
+  Hello
+}
+@endsalt

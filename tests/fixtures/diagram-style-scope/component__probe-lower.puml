@@ -1,0 +1,8 @@
+@startuml
+<style>
+element { BackgroundColor #aabbcc
+LineColor #ddeeff }
+</style>
+[C]
+note left of C: n
+@enduml

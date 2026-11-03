@@ -73,12 +73,12 @@ import { checkFinalError } from './state-check-final.js';
  * kind. Freestanding notes mirror upstream's `CommandFactoryNote` (default
  * `ParserPass.ONE`, no override); attached notes mirror
  * `CommandFactoryNoteOnEntity` (`ParserPass.THREE` for state diagrams,
- * merged into our single `'two'` pass alongside transitions/note-on-link —
- * see `Pass`'s doc in state-parse-state.ts for why merging THREE into TWO
- * is a safe, documented simplification for this corpus).
+ * `StateDiagramFactory.java:97-100`); a link note `CommandFactoryNoteOnLink`
+ * (`ParserPass.TWO`, `StateDiagramFactory.java:105`).
  */
 function noteFinalizePass(kind: PendingNote['kind']): Pass {
-  return kind === 'freestanding' ? 'one' : 'two';
+  if (kind === 'freestanding') return 'one';
+  return kind === 'link' ? 'two' : 'three';
 }
 
 /**
@@ -90,7 +90,7 @@ function noteFinalizePass(kind: PendingNote['kind']): Pass {
  * block is still fully swallowed (so its `}`/`end note` closer never
  * reaches `dispatchCommand`), just discarded instead of built.
  */
-function handlePendingNoteLine(ps: ParseState, line: string, pass: Pass): boolean {
+function handlePendingNoteLine(ps: ParseState, line: string, raw: string, pass: Pass): boolean {
   if (ps.pendingNote === null) return false;
   if (isNoteCloser(ps.pendingNote, line)) {
     if (pass === noteFinalizePass(ps.pendingNote.kind)) {
@@ -100,9 +100,20 @@ function handlePendingNoteLine(ps: ParseState, line: string, pass: Pass): boolea
     }
     ps.pendingNote = null;
   } else {
-    ps.pendingNote.textLines.push(line);
+    // dss T3f: the body line as written. `CommandFactoryNote.java:157-158` and
+    // `CommandFactoryNoteOnEntity.java:236-237` strip only the columns common to
+    // the block (`BlocLines#removeEmptyColumns`), so `finalizePendingNote` does.
+    ps.pendingNote.textLines.push(raw);
   }
   return true;
+}
+
+/** dss T3f: a blank line inside a note body is a line of the note (`BlocLines`
+ *  holds every line); `runPass` walks the non-blank ones, so the gap before
+ *  `next` is added here. No-op outside a note. */
+function pushBlankNoteLines(ps: ParseState, block: UmlSource, previous: number, next: number): void {
+  if (ps.pendingNote === null) return;
+  for (let k = previous + 1; k < next; k++) ps.pendingNote.textLines.push(block.lines[k]!);
 }
 
 /**
@@ -252,6 +263,8 @@ function fallbackOrRefuse(
 function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | null {
   ps.pendingNote = null;
   ps.pendingJson = null;
+  // `CucaDiagram#startingPass` (`CucaDiagram.java:160-166`).
+  ps.lastEntity = null;
   ps.scopeStack = [ps.scopeStack[0]];
   ps.scopeStack[0].regionCursor = 0;
 
@@ -284,7 +297,8 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
-    if (handlePendingNoteLine(ps, line, pass)) continue;
+    pushBlankNoteLines(ps, block, origIndex[i - 1]!, origIndex[i]!);
+    if (handlePendingNoteLine(ps, line, block.lines[origIndex[i]!]!, pass)) continue;
     if (handlePendingJsonLine(ps, line, pass)) continue;
     const dispatched = dispatchCommand(ps, line, pass, origIndex[i]!);
     if (dispatched === true) continue;
@@ -365,15 +379,18 @@ export function parseState(block: UmlSource, options?: ParseOptions): StateDiagr
   if (refusalOne !== null) return refusalOne;
 
   // PASS TWO: structural commands REOPEN the same scopes (identical
-  // nesting, enriched in place) plus transitions/note-on-link/attached
-  // notes now fire. Line-pattern matching is pass-independent (`runPass`'s
-  // doc), so this can only refuse here if pass ONE's own walk somehow
-  // missed a line pass TWO's walk reaches -- it does not, but the check is
-  // kept for the same reason upstream's own per-pass loop re-checks on
-  // every pass rather than assuming the first pass's clean run predicts the
-  // rest.
+  // nesting, enriched in place) plus transitions/note-on-link now fire.
+  // PASS THREE: the same replay, for attached notes alone. Line-pattern
+  // matching is pass-independent (`runPass`'s doc), so these can only refuse
+  // if pass ONE's own walk somehow missed a line a later walk reaches -- it
+  // does not, but the check is kept for the same reason upstream's own
+  // per-pass loop re-checks on every pass rather than assuming the first
+  // pass's clean run predicts the rest; a "Nothing to note to" refuses on
+  // THREE (`state-commands-notes.ts`).
   const refusalTwo = runPass(ps, block, 'two');
   if (refusalTwo !== null) return refusalTwo;
+  const refusalThree = runPass(ps, block, 'three');
+  if (refusalThree !== null) return refusalThree;
 
   // End-of-parse sweep (mission A4 Phase L iter 10, upstream
   // `eventuallyBuildPhantomGroups`): materializes `children` for any

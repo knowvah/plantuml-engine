@@ -1,0 +1,16 @@
+@startuml
+<style>
+root {
+  LineColor #BB0000
+}
+</style>
+class G<T> {
+  v
+}
+class Q
+Q::a --> G
+circle ci
+ci -- Q
+() lp
+lp -- Q
+@enduml

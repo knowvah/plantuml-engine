@@ -1,0 +1,8 @@
+@startuml
+skinparam mode dark
+skinparam classBackgroundColor #AA0000
+object O {
+ a = 1
+}
+class C
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+<style>
+classDiagram {
+ note {
+  BackgroundColor #123456
+  LineColor #654321
+  FontColor #00FF00
+ }
+}
+</style>
+class A
+class B
+A --> B
+note on link : k
+note top of B : t
+@enduml

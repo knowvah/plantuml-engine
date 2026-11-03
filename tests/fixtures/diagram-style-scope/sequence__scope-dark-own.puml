@@ -1,0 +1,11 @@
+@startuml
+skinparam mode dark
+<style>
+sequenceDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+A -> B
+@enduml

@@ -14,6 +14,7 @@ import type { TransitionGeo } from './state-geo-types.js';
 import { sortSpecsByCreationIndex } from './state-composite-pseudo.js';
 import { attachTransitionLabel } from './state-transition-label.js';
 import { clipLinesInSolveOrder } from './state-transition-clip.js';
+import { noteLineGeo, noteLinesOf } from './state-note-lines.js';
 
 /** Fully-labeled TransitionGeo for one pass's own edges — in that pass's OWN
  *  (possibly locally-rooted, pre-shift) coordinate space. Exported for reuse
@@ -159,8 +160,16 @@ export function buildLevelTransitionGeos(acc: PassAccumulator, result: DotLayout
     const geo = resolveTransitionGeometry(reversed, edgeResult.points, edgeEndpoints.get(edgeId));
     prepared.push({ t, edgeId, edgeResult, points: geo.points, from: geo.from ?? t.from, to: geo.to ?? t.to });
   }
-  const lines = prepared.map((p) => ({ key: p.edgeId, from: p.from, to: p.to, points: p.points, ...creationOf(p.t) }));
+  const noteLines = noteLinesOf(
+    acc.noteLinks ?? [],
+    (id) => edgePosMap.get(id),
+    (link) => edgeEndpoints.get(link),
+  );
+  const lines = [
+    ...prepared.map((p) => ({ key: p.edgeId, from: p.from, to: p.to, points: p.points, ...creationOf(p.t) })),
+    ...noteLines,
+  ];
   const clipped = clipLinesInSolveOrder(acc, result, lines);
   const geos = prepared.map((p) => buildTransitionGeo(acc, p, clipped.get(p.edgeId)!));
-  return sortSpecsByCreationIndex(geos);
+  return sortSpecsByCreationIndex([...geos, ...noteLines.map((l) => noteLineGeo(l, clipped.get(l.key)!))]);
 }

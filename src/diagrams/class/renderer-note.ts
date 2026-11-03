@@ -60,7 +60,7 @@ import { NOTE_FONT_SIZE } from '../../core/klimt/font/FontParam.js';
  *  resolves from the note style -- `renderer-note-stroke.ts`. cdd-T9b: the
  *  dashed host connector is NOT this stroke (a separate `Link`,
  *  `renderer-note-connector.ts#renderNoteConnectorPath`). */
-import { NOTE_STROKE_WIDTH, resolveNoteStroke } from './renderer-note-stroke.js';
+import { NOTE_STROKE_WIDTH, resolveNoteFontColor, resolveNoteStroke } from './renderer-note-stroke.js';
 import { atomsOverBack } from './class-sprite-back.js';
 export { NOTE_STROKE_WIDTH };
 
@@ -180,7 +180,7 @@ function renderNoteLineAtoms(
       const rendered = text(x + (atom.renderDx ?? 0), y, atom.renderText ?? atom.text, {
         fontFamily: atom.font.family,
         fontSize: getFont(atom.font).size,
-        fill: atom.font.color ?? theme.colors.graph.noteCascadeFontColor ?? '#000000',
+        fill: atom.font.color ?? resolveNoteFontColor(theme),
         lengthAdjust: 'spacing',
         textLength: atom.renderWidth ?? atom.width,
         ...(deco.fontWeight !== null ? { fontWeight: deco.fontWeight as '700' } : {}),
@@ -289,7 +289,7 @@ function renderNoteLineContent(note: NoteGeo, ln: string, row: NoteLineRowCtx, t
     // G2 N67 item 49: SAME cascade fallback tier renderNoteLineAtoms
     // consults (this branch has no per-atom color to check first, since
     // it draws the note's own single, un-decomposed source line).
-    fill: theme.colors.graph.noteCascadeFontColor ?? '#000000',
+    fill: resolveNoteFontColor(theme),
     lengthAdjust: 'spacing',
     textLength: note.lineWidths[i]!,
   });

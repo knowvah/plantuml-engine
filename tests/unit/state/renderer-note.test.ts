@@ -255,3 +255,43 @@ describe('renderStateNote — dispatch', () => {
     expect(renderStateNote(geo, defaultTheme)).toBe(renderStateNoteFreestanding(geo, defaultTheme));
   });
 });
+
+/**
+ * dss T3c sites 10-12: `EntityImageNote.java:100-108` -- fill (inline colour, else the style's
+ * BackGroundColor), border (LineColor) and text (FontColor) all come from the `note` signature.
+ * Oracle rows `state__flatnote-{bg,line,font}-diag`: `#AAA` fill, `#B00` stroke, `#00B` text.
+ */
+describe('renderStateNote -- note bucket (dss T3c)', () => {
+  const theme = {
+    ...defaultTheme,
+    colors: {
+      ...defaultTheme.colors,
+      elements: { note: { background: '#AAAAAA', border: '#BB0000', font: '#0000BB' } },
+    },
+  };
+  const opale = { direction: 'right', pp1: { x: 0, y: 15 }, pp2: { x: 120, y: 15 } } as const;
+
+  it.each([
+    ['freestanding', baseNoteGeo()],
+    ['opale', baseNoteGeo({ noteOpale: opale })],
+  ])('%s: both paths take the bucket fill and stroke, the text its font colour', (_name, geo) => {
+    const out = renderStateNote(geo, theme);
+    expect(out.split('fill="#AAA"').length - 1).toBeGreaterThanOrEqual(2);
+    expect(out.split('stroke="#B00"').length - 1).toBe(2);
+    expect(out).toContain('fill="#00B"');
+    expect(out).not.toContain('#FEFFDD');
+  });
+
+  it('the inline #color still wins the fill, the bucket keeps stroke and text', () => {
+    const out = renderStateNote(baseNoteGeo({ color: '#Red' }), theme);
+    expect(out).toContain('fill="#F00"');
+    expect(out).not.toContain('fill="#AAA"');
+    expect(out).toContain('stroke="#B00"');
+  });
+
+  it('defaults hold with no bucket: #FEFFDD fill, theme border, black text', () => {
+    const out = renderStateNote(baseNoteGeo(), defaultTheme);
+    expect(out).toContain('fill="#FEFFDD"');
+    expect(out).toContain(`stroke="${defaultTheme.colors.border}"`);
+  });
+});

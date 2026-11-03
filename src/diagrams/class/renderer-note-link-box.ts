@@ -30,20 +30,14 @@
  */
 import type { NoteGeo } from './note-layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
+import type { ElementColors } from '../../core/theme.js';
+import { LINK_NOTE_BUCKET } from '../../core/style-element-scope.js';
 import { parseColor, paintToSvg, type Paint } from '../../core/paint.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { path } from '../../core/svg.js';
 import { opaleCorner } from './note-opale.js';
 import { OPALE_CORNERSIZE as NOTE_FOLD } from '../../core/svek/image/Opale.js';
 import { NOTE_STROKE_WIDTH, noteBodyPathData, renderNoteText } from './renderer-note.js';
-
-/** G2 N34's `NOTE_FILL` default (`renderer-note.ts`'s own copy) — a
- *  note-on-link with no `#color` AND no `<style> note {}` bucket falls
- *  back to the SAME jar default every other note kind uses
- *  (`ColorParam.noteBackground`). Duplicated rather than imported: that
- *  constant is `renderer-note.ts`-private, and re-deriving one string
- *  literal is cheaper than widening its visibility for a single reader. */
-const NOTE_FILL: Paint = '#FEFFDD';
 
 /** {@link renderLinkNoteBox}'s colour input — the two slots
  *  `class-notes.ts#parseNoteOnLinkColors` extracts from a note-on-link's
@@ -67,8 +61,41 @@ export interface LinkNoteColors {
  */
 function resolveLinkNoteFill(back: string | undefined, theme: ScaledTheme): { fill: string; def?: string } {
   if (back !== undefined) return paintToSvg(parseColor(back));
-  const bucket = theme.colors.elements?.['note']?.background;
-  return paintToSvg(bucket ?? NOTE_FILL);
+  const bucket = linkNoteBucket(theme)?.background ?? theme.colors.elements?.['note']?.background;
+  return paintToSvg(bucket ?? theme.colors.noteBackground);
+}
+
+/**
+ * dss T3b (D2a): a note on a link is `ComponentRoseNote`, whose style is `ComponentType.NOTE`'s own signature
+ * `{root, element, sequenceDiagram, note}` (`EntityImageNoteLink.java:64` -> `skin/ComponentType.java:98-99`), not
+ * the document's `{..., classDiagram, note}` a class note reads. `note.link` holds that merged value
+ * (`style-element-scope.ts#LINK_NOTE_BUCKET`), written whenever the document's note differs from it, so
+ * `classDiagram { note { ... } }` never reaches here and `sequenceDiagram { note { ... } }` does. Absent, the
+ * flat `note` bucket stays: it is the same signature when no `<style>` scopes by diagram.
+ */
+function linkNoteBucket(theme: ScaledTheme): ElementColors | undefined {
+  return theme.colors.elements?.[LINK_NOTE_BUCKET];
+}
+
+/**
+ * The theme the link note's text draws with: `FontColor` off the same `note.link` signature as the fill
+ * (`ComponentRoseNote` text, `AbstractComponent.java:129-130`). `renderNoteText` reads the class note's `note` bucket
+ * (`renderer-note-stroke.ts#resolveNoteFontColor`), which is `classDiagram`-signed, so the link's own value replaces it.
+ */
+function linkNoteTextTheme(theme: ScaledTheme): ScaledTheme {
+  const font = linkNoteBucket(theme)?.font;
+  if (typeof font !== 'string') return theme;
+  const hex = resolveColorToSvgHex(font);
+  const elements = { ...theme.colors.elements, note: { ...theme.colors.elements?.['note'], font: hex } };
+  return { ...theme, colors: { ...theme.colors, elements } };
+}
+
+/** The outline: the note's own `#line`, else `note.link`'s `LineColor`, else the flat `note` bucket's, else the border. */
+function resolveLinkNoteStroke(line: string | undefined, theme: ScaledTheme): Paint {
+  if (line !== undefined) return resolveColorToSvgHex(line);
+  const bucket = linkNoteBucket(theme)?.border ?? theme.colors.elements?.['note']?.border;
+  if (bucket === undefined) return theme.colors.border;
+  return typeof bucket === 'string' ? resolveColorToSvgHex(bucket) : bucket;
 }
 
 /**
@@ -89,7 +116,7 @@ export function renderLinkNoteBox(
   // ONE jar driver (`DriverLineSvg`) that cannot paint one; a note's own
   // outline is a `<path>`, whose rectangle-sibling driver CAN, but nothing
   // here exercises it yet.
-  const stroke = colors.line !== undefined ? resolveColorToSvgHex(colors.line) : theme.colors.border;
+  const stroke = resolveLinkNoteStroke(colors.line, theme);
   const { x, y, width: w, height: h } = note;
   const f = NOTE_FOLD * theme.scaleK;
   const strokeWidth = NOTE_STROKE_WIDTH * theme.scaleK;
@@ -98,6 +125,6 @@ export function renderLinkNoteBox(
     // cdd3-T34 (E1-8): `theme.scaleK` -- `Opale.ts#opalePolygonLeft`'s own
     // doc comment (`cornersize` is a RAW, ambient-scaled upstream numeral).
     path(opaleCorner({ x, y }, w, theme.scaleK), { fill, stroke, strokeWidth }) +
-    renderNoteText(note, theme);
+    renderNoteText(note, linkNoteTextTheme(theme));
   return { body, extraDefs: def ?? '' };
 }

@@ -1,0 +1,9 @@
+@startmindmap
+<style>
+document { Margin 5 12 }
+</style>
+mainframe F
+* root
+** a
+** b
+@endmindmap

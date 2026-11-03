@@ -22,10 +22,11 @@ export const ARROW_SNAMES = ['root', 'element', 'classdiagram', 'arrow'] as cons
  *  lookup or explicit fallback branch, just this longer signature queried
  *  against the SAME StyleMap. */
 export const CARDINALITY_SNAMES = [...ARROW_SNAMES, 'cardinality'] as const;
-/** `EntityImageClassHeader#spotStyleSignature`: `{root,element,spot,spot
- *  <Kind>}` -- generalized across every badge kind (only `root` matches in
- *  practice; kept general so a bare `spot {}`/`spotClass {}` slots in). */
-export const SPOT_SNAMES = ['root', 'element', 'spot', 'spotclass'] as const;
+/** `EntityImageClassHeader#spotStyleSignature` (`:197-226`): `{root,element,spot,spot<Kind>}`. Every kind names its
+ *  own `spot<Kind>`, so the ancestor cascade shared by all of them is `{root,element,spot}` alone (dss T3b): the
+ *  kind's own declaration is read from its `elements['spot<kind>']` bucket. This used to name `spotclass`, which
+ *  made `spotClass { LineColor; FontColor }` tint an interface's spot (`class__probe-spot-own`). */
+export const SPOT_SNAMES = ['root', 'element', 'spot'] as const;
 /** G2 N66: `EntityImageNote.getStyleSignature()`: `{root,element,
  *  classDiagram,note}` -- `getStyleName()` is `SName.classDiagram` for a
  *  class-diagram note (`AbstractEntityImage.java:96`), so this differs from

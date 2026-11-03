@@ -1846,7 +1846,7 @@ describe('renderClass — non-default background (G2 N4)', () => {
 
 // ---------------------------------------------------------------------------
 // G2 N66 (near-zero harvest, `vinujo-78-kapo329`): `skinparam
-// diagramBorderColor` -- see `renderer-shell.ts#withDiagramBorderRect`'s
+// diagramBorderColor` -- see `renderer-shell.ts#diagramBorderRect`'s
 // own doc comment for the full mechanism + chrome-scope guard.
 // ---------------------------------------------------------------------------
 describe('renderClass — diagramBorderColor (G2 N66)', () => {

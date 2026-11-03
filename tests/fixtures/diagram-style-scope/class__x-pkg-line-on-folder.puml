@@ -1,0 +1,12 @@
+@startuml
+<style>
+classDiagram { package { BackgroundColor #123456
+ LineColor #654321 } }
+</style>
+package P {
+ class Q
+}
+folder F {
+ class Z
+}
+@enduml

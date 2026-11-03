@@ -1,0 +1,16 @@
+@startuml
+<style>
+arrow { LineThickness 3 }
+activity { LineThickness 2 ; LineColor #0AA }
+diamond { LineThickness 4 }
+</style>
+start
+fork
+:a;
+fork again
+if (c) then (y)
+:b;
+endif
+end merge
+stop
+@enduml

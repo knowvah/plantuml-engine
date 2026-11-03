@@ -8,10 +8,32 @@
  *      the same dump order structurally, see that file's module doc)
  */
 
-import type { State } from './ast.js';
+import type { State, StateNote } from './ast.js';
 import type { DotInputCluster } from '../../core/graph-layout.js';
 import type { PassAccumulator } from './state-composite-pass-types.js';
 import { isBorderPoint } from './state-entity-position.js';
+import { CONCURRENT_SCOPE_MARK } from './state-parse-state.js';
+
+const NO_NOTE_SCOPES: ReadonlySet<string> = new Set();
+
+/** Every scope a note was declared in -- what {@link hasLocalContent} reads. */
+export function noteScopesOf(notes: readonly StateNote[] | undefined): ReadonlySet<string> {
+  return new Set((notes ?? []).map((n) => n.scopeId));
+}
+
+/** An attached note's `Link` for `Entity.isAutarkic`, which reads every link
+ *  (`Entity.java:706-708`). The note's container is the scope that declared it,
+ *  exactly what a `'[*]'` endpoint's `scopeId` says ({@link isAutarkic}); a region
+ *  scope sits inside its owner, so the owner stands for it. */
+export function noteFlatLinks(notes: readonly StateNote[] | undefined): FlatLink[] {
+  const out: FlatLink[] = [];
+  for (const note of notes ?? []) {
+    if (note.target === undefined) continue;
+    const scope = note.scopeId.split(CONCURRENT_SCOPE_MARK)[0]!;
+    out.push({ from: '[*]', to: note.target, ...(scope !== '' ? { scopeId: scope } : {}) });
+  }
+  return out;
+}
 
 /** All descendant ids of `state` (children recursively + concurrent-region
  *  members recursively) — NOT including `state.id` itself (isPureInnerLink3
@@ -58,10 +80,13 @@ export function subtreeIds(state: State): Set<string> {
  * produce no local entity at all -- flat leaf boxes, no cluster/wrapper).
  * @see ~/git/plantuml/.../svek/GroupMakerState.java#getImage (:110-113)
  */
-export function hasLocalContent(state: State): boolean {
+export function hasLocalContent(state: State, noteScopes: Pick<ReadonlySet<string>, 'has'> = NO_NOTE_SCOPES): boolean {
   return (
     state.children.length > 0 ||
     state.concurrentRegions.length > 0 ||
+    // dss T3f: a note is a leaf of the group (`countChildren() == 0` is false,
+    // `GroupMakerState.java:113`; jar `state A { note as N ... }` draws the box).
+    noteScopes.has(state.id) ||
     state.transitions.some((t) => t.from === '[*]' || t.to === '[*]')
   );
 }

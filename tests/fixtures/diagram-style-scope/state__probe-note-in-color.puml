@@ -1,0 +1,9 @@
+@startuml
+state A {
+  state B
+  note left of B #FF0000 : k
+  note as N #0000FF
+    kk
+  end note
+}
+@enduml

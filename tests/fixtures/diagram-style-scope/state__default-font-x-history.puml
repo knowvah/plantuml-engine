@@ -1,0 +1,9 @@
+@startuml
+skinparam defaultFontColor #0A0
+state H {
+ [H] --> H1
+ state H1
+ --
+ state H2
+}
+@enduml

@@ -13,7 +13,7 @@ import { defaultTheme } from '../../../src/core/theme.js';
 import type { Theme } from '../../../src/core/theme.js';
 
 function buckets(src: string) {
-  return collectElementStyleBuckets(parseStyleBlock(src));
+  return collectElementStyleBuckets(parseStyleBlock(src), 'activity');
 }
 
 describe('collectElementStyleBuckets — T3g fields', () => {

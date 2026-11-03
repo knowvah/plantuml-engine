@@ -1,0 +1,9 @@
+@startuml
+skin rose
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+</style>
+A -> B
+@enduml

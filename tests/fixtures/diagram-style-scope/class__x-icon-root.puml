@@ -1,0 +1,15 @@
+@startuml
+<style>
+root { LineColor #0000BB }
+</style>
+class A {
+  +ab
+  -cd
+  #ef
+  ~gh
+  +m1()
+  -m2()
+  #m3()
+  ~m4()
+}
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+<style>
+activityDiagram {
+  LineColor #BB0000
+}
+</style>
+start
+:a|
+:b<
+:c>
+:d/
+:e]
+:f}
+:g;
+note right
+  m
+end note
+note left: k
+stop
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+<style>
+component { BackgroundColor #AAAAAA }
+note { FontSize 12 }
+</style>
+[C]
+skinparam componentBackgroundColor #BBBBBB
+skinparam noteBackgroundColor #CCCCCC
+note left of C: n
+@enduml

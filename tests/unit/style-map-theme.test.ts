@@ -15,64 +15,59 @@ import { defaultTheme } from '../../src/core/theme.js';
 describe('applyStyleMap -- root/element universal-selector cascade (D3)', () => {
   it('resolves Shadowing from a bare element {} selector', () => {
     const styleMap = parseStyleBlock('element {\n  Shadowing 4.0\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBe(4);
   });
 
   it('resolves Shadowing from a bare root {} selector', () => {
     const styleMap = parseStyleBlock('root {\n  Shadowing 2.5\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBe(2.5);
   });
 
   it('a LATER element {} Shadowing declaration overrides an EARLIER root {} one', () => {
     const styleMap = parseStyleBlock('root {\n  Shadowing 0.0\n}\nelement {\n  Shadowing 4.0\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBe(4);
   });
 
   it('an EARLIER element {} Shadowing declaration is overridden by a LATER root {} one', () => {
     const styleMap = parseStyleBlock('element {\n  Shadowing 4.0\n}\nroot {\n  Shadowing 0.0\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBe(0);
   });
 
   it('is undefined (falls through unchanged) when neither bare selector sets Shadowing', () => {
     const styleMap = parseStyleBlock('state {\n  Shadowing 4.0\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBeUndefined();
   });
 
   it('resolves LineColor into theme.colors.border directly', () => {
     const styleMap = parseStyleBlock('root {\n  LineColor #A80036\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.border).toBe('#A80036');
   });
 
   it('resolves BackgroundColor into the dedicated rootElementBackground field', () => {
-    // A bare root {} BackgroundColor with no document {} override present
-    // ALSO reaches theme.colors.background via the PRE-EXISTING
-    // resolveDocumentBackground precedence tier (root is one of its
-    // tiers) -- that mechanism is unrelated to this batch and unchanged
-    // by it. What THIS batch adds is the SEPARATE rootElementBackground
-    // field, which state (and later, other diagram types) reads as the
-    // entity-fill default -- see the next test for the case where the
-    // two fields genuinely diverge (a document {} override present).
+    // The SEPARATE rootElementBackground field, which state (and later,
+    // other diagram types) reads as the entity-fill default. The canvas is
+    // `document-back-color.ts`, not applyStyleMap (dss T1a, D5).
     const styleMap = parseStyleBlock('root {\n  BackGroundColor #FEFECE\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.rootElementBackground).toBe('#FEFECE');
   });
 
-  it('a document {} BackgroundColor still wins the canvas field over a root {} one', () => {
+  it('applyStyleMap leaves the canvas alone: only the root fill reaches the theme (dss T1a, D5)', () => {
     const styleMap = parseStyleBlock('root {\n  BackGroundColor red\n}\ndocument {\n  BackGroundColor white\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
-    expect(theme.colors.background).toBe('white');
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
+    expect(theme.colors.background).toBe(defaultTheme.colors.background);
     expect(theme.colors.graph.rootElementBackground).toBe('red');
   });
 
   it('a StyleMap with no root/element/document content returns base unchanged', () => {
     const styleMap = parseStyleBlock('actor {\n  BackgroundColor blue\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.shadowing).toBeUndefined();
     expect(theme.colors.graph.rootElementBackground).toBeUndefined();
     expect(theme.colors.border).toBe(defaultTheme.colors.border);
@@ -104,7 +99,7 @@ describe('applyStyleMap -- per-signature element-bucket merge (F4-e / M1)', () =
     // `<style> file { … }` block arrives.
     const base = withElements({ rectangle: { stereotypeFontSize: 12 } });
     const styleMap = parseStyleBlock('file {\n  FontColor blue\n}');
-    const theme = applyStyleMap(styleMap, base);
+    const theme = applyStyleMap(styleMap, base, 'description');
     expect(theme.colors.elements?.rectangle?.stereotypeFontSize).toBe(12);
     expect(theme.colors.elements?.file?.font).toBe('blue');
   });
@@ -114,14 +109,14 @@ describe('applyStyleMap -- per-signature element-bucket merge (F4-e / M1)', () =
     // "last writer loses" inversion.
     const base = withElements({ rectangle: { fontSize: 20, background: 'red' } });
     const styleMap = parseStyleBlock('rectangle {\n  FontSize 12\n}');
-    const theme = applyStyleMap(styleMap, base);
+    const theme = applyStyleMap(styleMap, base, 'description');
     expect(theme.colors.elements?.rectangle?.fontSize).toBe(12);
   });
 
   it('within one sname the base fields the <style> block omits survive', () => {
     const base = withElements({ rectangle: { fontSize: 20, background: 'red' } });
     const styleMap = parseStyleBlock('rectangle {\n  FontSize 12\n}');
-    const theme = applyStyleMap(styleMap, base);
+    const theme = applyStyleMap(styleMap, base, 'description');
     expect(theme.colors.elements?.rectangle?.background).toBe('red');
   });
 
@@ -131,14 +126,14 @@ describe('applyStyleMap -- per-signature element-bucket merge (F4-e / M1)', () =
     // level deeper.
     const base = withElements({ rectangle: { stereotypeFontSizeByStereo: { alpha: 9 } } });
     const styleMap = parseStyleBlock('rectangle {\n  stereotype {\n    .beta {\n      FontSize 11\n    }\n  }\n}');
-    const theme = applyStyleMap(styleMap, base);
+    const theme = applyStyleMap(styleMap, base, 'description');
     expect(theme.colors.elements?.rectangle?.stereotypeFontSizeByStereo).toEqual({ alpha: 9, beta: 11 });
   });
 
   it('leaves base buckets untouched when the StyleMap has no element selector', () => {
     const base = withElements({ rectangle: { stereotypeFontSize: 12 } });
     const styleMap = parseStyleBlock('root {\n  Shadowing 4.0\n}');
-    const theme = applyStyleMap(styleMap, base);
+    const theme = applyStyleMap(styleMap, base, 'description');
     expect(theme.colors.elements?.rectangle?.stereotypeFontSize).toBe(12);
   });
 });
@@ -154,19 +149,19 @@ describe('applyStyleMap -- per-signature element-bucket merge (F4-e / M1)', () =
 describe('applyStyleMap -- cardinality font fold (T14, D3)', () => {
   it("camuna-58-veca254's arrow { cardinality { FontSize 10 } } resolves theme.cardinalityFontSize to 10", () => {
     const styleMap = parseStyleBlock('arrow {\n  FontSize 14\n  cardinality {\n    FontSize 10\n  }\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.cardinalityFontSize).toBe(10);
   });
 
   it('a <style> block setting only arrow { FontSize 14 } (no cardinality block) falls through to 14 -- through arrow, not the skin default', () => {
     const styleMap = parseStyleBlock('arrow {\n  FontSize 14\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.cardinalityFontSize).toBe(14);
   });
 
   it('a StyleMap that never touches arrow leaves the base Theme cardinality font unchanged -- no fixture moves', () => {
     const styleMap = parseStyleBlock('class {\n  BackgroundColor yellow\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.cardinalityFontSize).toBe(defaultTheme.cardinalityFontSize);
     expect(theme.cardinalityFontFamily).toBe(defaultTheme.cardinalityFontFamily);
   });
@@ -184,26 +179,26 @@ describe('applyStyleMap -- cardinality font fold (T14, D3)', () => {
 describe('applyStyleMap -- arrow-label font fold (T2, T6, D3, D4)', () => {
   it('camuna shape: arrow { FontSize 14  FontStyle bold } resolves BOTH FontSize and FontStyle', () => {
     const styleMap = parseStyleBlock('arrow {\n  FontSize 14\n  FontStyle bold\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontStyle).toBe('bold');
     expect(theme.colors.graph.arrowFontSize).toBe(14);
   });
 
   it('ticuxa shape: arrow { FontName Courier } resolves arrowFontFamily', () => {
     const styleMap = parseStyleBlock('arrow {\n  FontName Courier\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontFamily).toBe('Courier');
   });
 
   it('arrow { cardinality { FontStyle italic } } alone does NOT set the arrow-level font', () => {
     const styleMap = parseStyleBlock('arrow {\n  cardinality {\n    FontStyle italic\n  }\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontStyle).toBeUndefined();
   });
 
   it('a StyleMap that never touches arrow leaves the base Theme arrow font unchanged -- no fixture moves', () => {
     const styleMap = parseStyleBlock('class {\n  BackgroundColor yellow\n}');
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontSize).toBe(defaultTheme.colors.graph.arrowFontSize);
     expect(theme.colors.graph.arrowFontFamily).toBe(defaultTheme.colors.graph.arrowFontFamily);
   });
@@ -219,38 +214,38 @@ describe('applyStyleMap -- arrow-label font fold (T2, T6, D3, D4)', () => {
 // ---------------------------------------------------------------------------
 describe('applyStyleMap -- arrow / arrow.cardinality FontColor fold (SI26 T2)', () => {
   it('f/e: arrow { FontColor blue } -> arrowFontColor #0000FF; cardinalityFontColor #0000FF (superset match)', () => {
-    const theme = applyStyleMap(parseStyleBlock('arrow {\n  FontColor blue\n}'), defaultTheme);
+    const theme = applyStyleMap(parseStyleBlock('arrow {\n  FontColor blue\n}'), defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontColor).toBe('#0000FF');
     expect(theme.cardinalityFontColor).toBe('#0000FF');
   });
 
   it('i/k: root { FontColor red } arrow { FontColor green } -> #008000; reversed -> #FF0000', () => {
     const ik = 'root {\n  FontColor red\n}\narrow {\n  FontColor green\n}';
-    expect(applyStyleMap(parseStyleBlock(ik), defaultTheme).colors.graph.arrowFontColor).toBe('#008000');
+    expect(applyStyleMap(parseStyleBlock(ik), defaultTheme, 'description').colors.graph.arrowFontColor).toBe('#008000');
     const ki = 'arrow {\n  FontColor green\n}\nroot {\n  FontColor red\n}';
-    expect(applyStyleMap(parseStyleBlock(ki), defaultTheme).colors.graph.arrowFontColor).toBe('#FF0000');
+    expect(applyStyleMap(parseStyleBlock(ki), defaultTheme, 'description').colors.graph.arrowFontColor).toBe('#FF0000');
   });
 
   it('l/m: classDiagram { arrow { FontColor green } } arrow { FontColor red } -> #FF0000; reversed -> #008000', () => {
     const lm = 'classDiagram {\n  arrow {\n    FontColor green\n  }\n}\narrow {\n  FontColor red\n}';
-    expect(applyStyleMap(parseStyleBlock(lm), defaultTheme).colors.graph.arrowFontColor).toBe('#FF0000');
+    expect(applyStyleMap(parseStyleBlock(lm), defaultTheme, 'description').colors.graph.arrowFontColor).toBe('#FF0000');
     const ml = 'arrow {\n  FontColor red\n}\nclassDiagram {\n  arrow {\n    FontColor green\n  }\n}';
-    expect(applyStyleMap(parseStyleBlock(ml), defaultTheme).colors.graph.arrowFontColor).toBe('#008000');
+    expect(applyStyleMap(parseStyleBlock(ml), defaultTheme, 'description').colors.graph.arrowFontColor).toBe('#008000');
   });
 
   it("camuna-58-veca254's block: arrowFontColor #0000FF AND cardinalityFontColor #FF0000", () => {
     const styleMap = parseStyleBlock(
       'arrow {\n  FontColor Blue\n  FontSize 14\n  FontStyle bold\n  cardinality {\n  \tFontColor red\n\tFontSize 10\n\tFontStyle italic\n  }\n}',
     );
-    const theme = applyStyleMap(styleMap, defaultTheme);
+    const theme = applyStyleMap(styleMap, defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontColor).toBe('#0000FF');
     expect(theme.cardinalityFontColor).toBe('#FF0000');
   });
 
   it('a StyleMap with no arrow declarations leaves both fields absent and returns the base Theme unchanged', () => {
-    const theme = applyStyleMap(parseStyleBlock('class {\n  BackgroundColor yellow\n}'), defaultTheme);
+    const theme = applyStyleMap(parseStyleBlock('class {\n  BackgroundColor yellow\n}'), defaultTheme, 'description');
     expect(theme.colors.graph.arrowFontColor).toBeUndefined();
     expect(theme.cardinalityFontColor).toBeUndefined();
-    expect(applyStyleMap(parseStyleBlock(''), defaultTheme)).toBe(defaultTheme);
+    expect(applyStyleMap(parseStyleBlock(''), defaultTheme, 'description')).toBe(defaultTheme);
   });
 });

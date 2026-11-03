@@ -1,0 +1,11 @@
+@startuml
+<style>
+activityDiagram {
+  activity {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+state c <<choice>>
+c --> d
+@enduml

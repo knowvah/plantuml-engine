@@ -1,0 +1,10 @@
+@startuml
+<style>
+activityDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+start
+:a;
+stop
+@enduml

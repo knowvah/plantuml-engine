@@ -287,6 +287,7 @@ function buildStereoHeaderRows(
       y: i * STEREO_FONT_SIZE + stereoBaselineOffset,
       indent: (boxWidth - width) / 2,
       italic: true,
+      stereotypeLabel: true,
       width,
       fontSize: STEREO_FONT_SIZE,
     };

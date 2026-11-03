@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { LineColor #0A0\#00A
+ FontColor #0A0\#00A }
+</style>
+state A
+A --> [*] : l
+note left of A : n
+@enduml

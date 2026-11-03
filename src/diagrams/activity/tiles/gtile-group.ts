@@ -39,6 +39,8 @@ export function frameTitleWidth(title: string, measurer: StringMeasurer, theme: 
  *  (`FtileGroup.java:94`: `backColor`). */
 export interface GtileGroupOptions {
   readonly backColor?: string;
+  /** `withTOBECHANGED(stereotype)`'s label (`CommandPartition3.java:160`), read at draw time. */
+  readonly stereotype?: string;
   /** `CommandPartition3#getUSymbol(type)` (`:89-106`) for the three
    *  non-frame keywords; it changes only `drawU`, never the geometry. */
   readonly usymbol?: CompositeUSymbol;
@@ -83,6 +85,7 @@ export class GtileGroup extends TileComposite {
    *  `#color` (`CommandPartition3.java:145-147`), `#` kept; `undefined`
    *  falls through to the style's `BackGroundColor` at draw time. */
   readonly backColor: string | undefined;
+  readonly stereotype: string | undefined;
   readonly usymbol: CompositeUSymbol | undefined;
 
   constructor(title: string, body: Tile, bounder: StringBounder, theme: Theme, opts: GtileGroupOptions = {}) {
@@ -90,6 +93,7 @@ export class GtileGroup extends TileComposite {
     this.children = [body];
     this.title = title;
     this.backColor = opts.backColor;
+    this.stereotype = opts.stereotype;
     this.usymbol = opts.usymbol;
     // A group/partition frame resolves `of(root, element, activityDiagram,
     // <symbol>, composite)` (`ftile/vcompact/FtileGroup.java:89-92`), and

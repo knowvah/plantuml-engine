@@ -1,0 +1,29 @@
+@startuml
+<style>
+activityDiagram {
+  FontColor #0000BB
+}
+</style>
+start
+while (c) is (y)
+:a;
+endwhile (n)
+repeat
+:b;
+repeat while (d) is (y) not (n)
+switch (x)
+case (1)
+:e;
+case (2)
+:f;
+endswitch
+split
+:g;
+split again
+:h;
+end split
+floating note left: fl
+(A)
+:i;
+end
+@enduml

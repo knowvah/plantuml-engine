@@ -48,7 +48,22 @@ function paintsEqual(a: HColorOrPaint, b: HColorOrPaint): boolean {
   // colour, as upstream's transparent-vs-transparent comparison does.
   if (typeof a === 'string' && a === 'none' && b instanceof HColorSimple) return b.isTransparent();
   if (typeof b === 'string' && b === 'none' && a instanceof HColorSimple) return a.isTransparent();
-  return typeof a === 'string' && typeof b === 'string' && a === b;
+  if (typeof a === 'string' && typeof b === 'string')
+    return a === b || (isTransparentSpelling(a) && isTransparentSpelling(b));
+  return false;
+}
+
+/**
+ * Whether a plain-string paint spells `HColors.none()`, the one transparent `HColorSimple` (`XColor(0, 0, 0, 0)`,
+ * `HColors.java:123,133-135`): `HColorSet#parseColor` answers it for `transparent` and `background`
+ * (`HColorSet.java:82-83`), and `#00000000` parses to the same XColor. `HColorSimple#equals` is that XColor's
+ * (`HColorSimple.java:84-90`, `XColor.java:91-98`), so `LineColor none` against `BackgroundColor transparent` is
+ * equal upstream and takes the no-stroke fast path (jar: `component__probe-transparent`). A transparent
+ * colour with other rgb (`#FF000000`) is not equal to it.
+ */
+function isTransparentSpelling(paint: string): boolean {
+  const lower = paint.toLowerCase();
+  return lower === 'none' || lower === 'transparent' || lower === 'background' || lower === '#00000000';
 }
 
 /** Upstream: `DriverPathSvg`. Ported in full — see the module doc

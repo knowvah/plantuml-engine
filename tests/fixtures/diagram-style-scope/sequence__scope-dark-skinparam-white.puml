@@ -1,0 +1,10 @@
+@startuml
+skinparam mode dark
+skinparam backgroundColor white
+<style>
+note {
+  BackgroundColor #AAAAAA
+}
+</style>
+A -> B
+@enduml

@@ -14,10 +14,11 @@ import { orderedLine, renderNodesDispatchingGotos } from './activity-renderer-te
 import { activityTextFontConfiguration, drawActivityTextBlock } from './activity-text-sheet.js';
 import { ASCENT_FRACTION } from './activity-renderer-shapes.js';
 import { renderSwimlaneChrome, renderSwimlaneTitles } from './activity-renderer-swimlanes.js';
-import { activityArrowHeadColor, activityLineThickness } from './activity-style-defaults.js';
+import { activityArrowHeadColor } from './activity-scoped-colors.js';
+import { defaultEdgeLook, type EdgeLook, type LineStroke } from './activity-edge-look.js';
 import { edgeLabelBlock, edgeLabelLayout } from './layout/compress/edge-label-anchor.js';
 import { arrowDirection, arrowHeadPointsFor, type ArrowDir } from './arrows-regular.js';
-import { noGradient } from '../../core/paint.js';
+import type { Paint } from '../../core/paint.js';
 import { LinkStyle } from '../../core/decoration/LinkStyle.js';
 import { edgeColorTokens, edgeLinkStyle } from './layout/edge-link-style.js';
 import { parseColor, toSvgHex } from '../../core/klimt/color/HColorSet.js';
@@ -64,7 +65,7 @@ const SNAKE_STROKE_VALUE = 1.5;
 function arrowTip(
   tip: { x: number; y: number },
   vector: { dx: number; dy: number },
-  color: string,
+  color: Paint,
   theme: Theme,
   strokeWidth = SIMPLE_STROKE_WIDTH,
 ): string {
@@ -80,7 +81,7 @@ function arrowTip(
     // (`klimt/UStroke.java:75-77`) -- NOT the `UStroke.withThickness(1.5)`
     // applied to `ug` two lines earlier, which those `.apply` calls
     // override before the draw. Upstream applies `arrowHeadColor` to both
-    // the foreground and the background (`Worm.java:152-153`), so the
+    // the foreground and the background (`Worm.java:153-154`), so the
     // decoration is filled AND stroked in the same colour; this port drew a
     // fill alone.
     { fill: color, stroke: color, strokeWidth },
@@ -178,7 +179,7 @@ function renderEdgeLabel(edge: ActivityEdgeGeo, theme: Theme): string {
  */
 function renderEdgeSegments(
   pts: ReadonlyArray<{ x: number; y: number }>,
-  colors: { line: string; head: string },
+  colors: { line: Paint; head: Paint },
   stroke: LineStroke,
   emphasis: { dir: ArrowDir; at: { x: number; y: number } | undefined } | undefined,
   theme: Theme,
@@ -222,36 +223,9 @@ const DIR_VECTOR: Record<ArrowDir, { dx: number; dy: number }> = {
  *  NLOC limit. Draws in the decoration's own `HeadColor` (T2c), never the
  *  line's `LineColor` -- there is no line segment at a mid-arrow point to
  *  draw in the other color. */
-function renderMidArrow(midArrowAt: { x: number; y: number; dir: ArrowDir }, headColor: string, theme: Theme): string {
+function renderMidArrow(midArrowAt: { x: number; y: number; dir: ArrowDir }, headColor: Paint, theme: Theme): string {
   const { x, y, dir } = midArrowAt;
   return arrowTip({ x, y }, DIR_VECTOR[dir], headColor, theme);
-}
-
-type LineStroke = { readonly width: number; readonly dash?: string };
-
-/** One worm's colours and stroke (`Worm#drawInternalOneColor`). */
-interface EdgeLook {
-  readonly line: string;
-  readonly head: string;
-  readonly stroke: LineStroke;
-  readonly invisible: boolean;
-}
-
-/**
- * The default look. cdd7-T1a (D3): `colors.arrow` is a Paint; this renderer
- * draws flat. T2c: `skinparam ArrowHeadColor` reaches the decoration only
- * (`ftile/Worm.java:146-154`; absent -> `activityArrowHeadColor` tracks the
- * line colour). The line stroke is `style.getStroke()` (`:128-129`, the
- * `linkStyle.isNormal()` branch, `plantuml.skin:374`); the `withThickness
- * (1.5)` at `:157,165` is overridden by `UStroke.simple()` (`:162,170`).
- */
-function defaultEdgeLook(theme: Theme): EdgeLook {
-  return {
-    line: noGradient(theme.colors.arrow),
-    head: noGradient(activityArrowHeadColor(theme)),
-    stroke: { width: activityLineThickness(theme, 'arrow') },
-    invisible: false,
-  };
 }
 
 /**
@@ -266,7 +240,7 @@ function defaultEdgeLook(theme: Theme): EdgeLook {
  * is not ported.
  */
 function edgeLook(edge: ActivityEdgeGeo, theme: Theme): EdgeLook {
-  const base = defaultEdgeLook(theme);
+  const base = defaultEdgeLook(theme, edge);
   if (edge.color === undefined) return base;
   const style = edgeLinkStyle(edge);
   let line = base.line;
@@ -370,7 +344,7 @@ function renderEdge(edge: ActivityEdgeGeo, theme: Theme): string {
  * reachable through swimlane-translate routing).
  */
 function renderCrossLaneDecorations(geo: ActivityGeometry, theme: Theme): string {
-  const headColor = noGradient(activityArrowHeadColor(theme));
+  const headColor = activityArrowHeadColor(theme);
   let out = '';
   for (const edge of geo.edges) {
     if (edge.midArrowAt !== undefined) {

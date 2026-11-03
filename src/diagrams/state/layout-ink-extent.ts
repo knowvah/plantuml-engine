@@ -88,6 +88,7 @@
 import type { StateNodeGeo, TransitionGeo } from './state-geo-types.js';
 import { svekDimension, svekInkShift } from '../../core/svek/SvekResult.js';
 import { applyCucaDocumentMargin } from '../../core/TextBlockExporter.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import { type InkBox, newInkBox, addPoint, addTransitionInk } from './layout-ink-transition.js';
 import { positionFromStereotype, usesPortShape } from './state-entity-position.js';
 import { textAscent } from './state-render-colors.js';
@@ -304,6 +305,13 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean, arrowhea
       addPoint(box, node.x + node.width + over.right, node.y + node.height + over.bottom - 1);
     }
     addSouthCapInk(box, node);
+    // `ConcurrentStates.java:75-89` draws each separator as a `ULine` a `DASH`
+    // past the content, past the composite's own box on a `||` stack;
+    // `LimitFinder#drawULine` folds both ends with no inset.
+    for (const sep of node.separators ?? []) {
+      addPoint(box, sep.x1, sep.y1);
+      addPoint(box, sep.x2, sep.y2);
+    }
     for (const child of node.children) addNodeInk(box, child, labelInk, arrowheadInk);
     for (const t of node.transitions) addTransitionInk(box, t, labelInk, arrowheadInk);
     return;
@@ -336,6 +344,7 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean, arrowhea
     case 'normal':
     case 'json':
       addStateBoxInk(box, node, rendersDivider(node));
+      addSouthCapInk(box, node);
       return;
     case 'note':
       addNoteInk(box, node.x, node.y, node.width, node.height);
@@ -384,6 +393,7 @@ export interface StateDocumentDims {
 export function computeStateDocumentDims(
   states: readonly StateNodeGeo[],
   transitions: readonly TransitionGeo[],
+  margin?: DocumentMargin,
 ): StateDocumentDims {
   // `labelInk: true` -- the label's `TextBlockMarged` draws its whole-block
   // `UEmpty` (`TextBlockMarged.java:79-87`, `SvekEdge.java:950-953`), which
@@ -398,7 +408,7 @@ export function computeStateDocumentDims(
   // a `{0, 0}` raw is the "no ink walked" sentinel, indistinguishable in
   // VALUE from 1x1 ink at the origin, and only the former skips the margin.
   if (raw.width === 0 && raw.height === 0) return raw;
-  return applyCucaDocumentMargin(raw);
+  return applyCucaDocumentMargin(raw, margin);
 }
 
 export interface StateInkShift {

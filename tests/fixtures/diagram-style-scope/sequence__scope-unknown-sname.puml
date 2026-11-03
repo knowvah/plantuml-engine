@@ -1,0 +1,8 @@
+@startuml
+<style>
+notAnSName {
+  BackgroundColor red
+}
+</style>
+A -> B
+@enduml

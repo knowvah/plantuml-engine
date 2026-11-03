@@ -22,6 +22,7 @@ import { laneAt, laneIn, laneOut } from './swimlane-placement.js';
 import { pushLaneReservation } from './swimlane-reservation-lane.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { applyInColor } from './tile-layout-inlabel.js';
 import { HEXAGON_HALF_SIZE, whileHexagonReservation } from './hexagon-reservations.js';
 import { emitDiamondLabels, emitDiamondOwnLabel } from './diamond-labels.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
@@ -232,6 +233,7 @@ function pushWhileBackNonEmpty(frame: WhileFrame): void {
   const { out, header, body, hX, hY, headerEast, headerSouth, bodyBottomY, xx, dimTotalWidth } = frame;
   const { headerOutLane, headerInLane, bodyInLane, bodyOutLane } = frame;
   pushEdge(out, new GConnectionVerticalDown().getPoints(headerSouth, frame.bodyNorth), headerOutLane, bodyInLane);
+  applyInColor(out, body); // `whileBlock.getInLinkRendering().getRainbow(arrowColor)`, FtileWhile.java:153
 
   if (frame.backward !== undefined) {
     pushWhileBackwardConnections(frame);

@@ -1,0 +1,10 @@
+@startjson
+<style>
+document {
+  jsonDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+{"a": 1}
+@endjson

@@ -42,7 +42,13 @@
  * coverage gap for a later batch), never over-refuse.
  */
 import type { State, StateDiagramAST, Transition } from './ast.js';
-import { concurrentRegionScopeId, rootScope, type ParseState, type Scope } from './state-parse-state.js';
+import {
+  CONCURRENT_SCOPE_MARK,
+  concurrentRegionScopeId,
+  rootScope,
+  type ParseState,
+  type Scope,
+} from './state-parse-state.js';
 
 /** Upstream's initial/final pseudostate token; excluded from this check —
  *  see the file header's LIMITATION note. */
@@ -111,6 +117,28 @@ function isCompatible(k1: string | undefined, k2: string | undefined): boolean {
   return k1 === k2;
 }
 
+/** Nearest concurrent region of a note's own container: its scope id names the
+ *  region itself, else the owning composite whose chain is walked. */
+function noteConcurrentAncestor(ps: ParseState, scopeId: string): string | undefined {
+  if (scopeId.includes(CONCURRENT_SCOPE_MARK)) return scopeId;
+  const owner = resolveUniqueState(ps, scopeId);
+  return owner === undefined ? undefined : nearestConcurrentAncestor(ps, owner);
+}
+
+/** dss T3f: an attached note's `Link` is one of `getLinks()` too
+ *  (`CommandFactoryNoteOnEntity.java:342-360`, `StateDiagram.java:232-241`). */
+function checkNoteLinks(ps: ParseState, ast: StateDiagramAST): string | undefined {
+  for (const note of ast.notes ?? []) {
+    if (note.target === undefined) continue;
+    const host = resolveUniqueState(ps, note.target);
+    if (host === undefined) continue;
+    if (!isCompatible(noteConcurrentAncestor(ps, note.scopeId), nearestConcurrentAncestor(ps, host))) {
+      return `State within concurrent state cannot be linked out of this concurrent state (between ${note.id} and ${note.target})`;
+    }
+  }
+  return undefined;
+}
+
 /**
  * Port of `StateDiagram#checkFinalError`. Returns the upstream message
  * verbatim (StateDiagram.java:237-238) for the first incompatible link
@@ -122,6 +150,8 @@ function isCompatible(k1: string | undefined, k2: string | undefined): boolean {
  * (`state-parse-helpers.ts`) consults.
  */
 export function checkFinalError(ps: ParseState, ast: StateDiagramAST): string | undefined {
+  const noteError = checkNoteLinks(ps, ast);
+  if (noteError !== undefined) return noteError;
   const all = [...ast.transitions, ...collectAllTransitions(ast.states)];
   for (const t of all) {
     if (t.from === PSEUDO_ENDPOINT || t.to === PSEUDO_ENDPOINT) continue;

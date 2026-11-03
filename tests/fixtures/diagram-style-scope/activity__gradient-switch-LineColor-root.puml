@@ -1,0 +1,18 @@
+@startuml
+<style>
+root { LineColor #0A0-#00A }
+</style>
+start
+switch (s?)
+case (a)
+:H;
+case (b)
+:I;
+endswitch
+split
+:J;
+split again
+:K;
+end split
+end
+@enduml

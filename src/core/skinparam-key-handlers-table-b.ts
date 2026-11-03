@@ -16,6 +16,7 @@ import {
   parseFiniteNumber,
   parseFontStyleFlags,
   applyGuillemet,
+  flatWithGradient,
 } from './skinparam-key-handlers-shared.js';
 import { parseShadowingValue } from './skinparam-element-buckets.js';
 import { resolveColorToSvgHex } from './klimt/color/HColorSet.js';
@@ -386,29 +387,12 @@ export const KEY_HANDLERS_B: ReadonlyArray<readonly [keys: readonly string[], ha
   [['guillemet'], (acc, value) => applyGuillemet(acc, value)],
   // add2 T3h (PAINT): Paint (4th arg), mirrors `arrowcolor` (table-a).
   [['activitybackgroundcolor'], (acc, _v, _color, paint) => (acc.activityBackground = paint)],
-  [
-    ['activitybordercolor'],
-    (acc, _v, color) => {
-      acc.activityBorder = color;
-    },
-  ],
-  [
-    ['activitybarcolor'],
-    (acc, _v, color) => {
-      acc.activityBarColor = color;
-    },
-  ],
-  [
-    ['activitydiamondbackgroundcolor'],
-    (acc, _v, color) => {
-      acc.activityDiamondBackground = color;
-    },
-  ],
+  [['activitybordercolor'], flatWithGradient('activityBorder', 'activity', 'border')],
+  [['activitybarcolor'], flatWithGradient('activityBarColor', 'activitybar', 'background')],
+  [['activitydiamondbackgroundcolor'], flatWithGradient('activityDiamondBackground', 'diamond', 'background')],
   [
     ['activitydiamondforegroundcolor', 'activitydiamondbordercolor'],
-    (acc, _v, color) => {
-      acc.activityDiamondBorder = color;
-    },
+    flatWithGradient('activityDiamondBorder', 'diamond', 'border'),
   ],
   [
     ['activitystartcolor'],

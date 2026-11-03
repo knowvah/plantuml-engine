@@ -1,0 +1,9 @@
+@startuml
+skin rose
+<style>
+element {
+  FontColor #0000BB
+}
+</style>
+class A
+@enduml

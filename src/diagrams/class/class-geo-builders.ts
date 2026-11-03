@@ -12,11 +12,13 @@ import type { ClassDiagramAST, Classifier } from './ast.js';
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { MeasuredClassifier } from './class-layout-helpers.js';
 import type { Theme } from '../../core/theme.js';
+import { shiftClassifierGeo } from './class-layout-shift.js';
+import type { DocumentMargin } from '../../core/document-margin.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { namespaceFolderTitle } from './class-namespace-title-table.js';
 import { buildClusterHeaderStereo } from './class-cluster-header.js';
 import { stereotypeLabelFields, splitStereotypeStyleTags } from './class-stereotype.js';
-import { applyClassDocumentMargin } from './layout-ink-extent.js';
+import { applyClassDocumentMargin, classDocumentMargin } from './layout-ink-extent.js';
 import { namespaceDrawnInk } from './class-namespace-title-ink.js';
 import { degenerateNoteGeo, DEGENERATE_NEAR_MARGIN } from './class-geo-builders-degenerate-note.js';
 import { degenerateEnsureVisibleInk } from './class-geo-builders-degenerate-ink.js';
@@ -363,12 +365,16 @@ function buildDegenerateClassifierLeaf(classifier: Classifier, measured: Measure
  * stay box-only: no fixture combines a title/chrome with a symbolInk
  * overflow, so extending them the same way would be unverified.
  */
-function degenerateClassifierDims(geo: ClassifierGeo, measured: MeasuredClassifier): ClassGeometry {
+function degenerateClassifierDims(
+  geo: ClassifierGeo,
+  measured: MeasuredClassifier,
+  margin?: DocumentMargin,
+): ClassGeometry {
   const rawDims = {
     width: measured.width + DEGENERATE_NEAR_MARGIN * 2,
     height: measured.height + DEGENERATE_NEAR_MARGIN * 2,
   };
-  const totalDims = applyClassDocumentMargin(rawDims);
+  const totalDims = applyClassDocumentMargin(rawDims, margin);
   const ensureVisible = degenerateEnsureVisibleInk(measured);
   const inkRight = ensureVisible !== undefined ? geo.x + ensureVisible.maxX : 0;
   const inkBottom = ensureVisible !== undefined ? geo.y + ensureVisible.maxY : 0;
@@ -377,6 +383,7 @@ function degenerateClassifierDims(geo: ClassifierGeo, measured: MeasuredClassifi
     totalHeight: Math.max(totalDims.height, Math.floor(inkBottom) + 1),
     rawWidth: rawDims.width,
     rawHeight: rawDims.height,
+    ...(margin === undefined ? {} : { documentMargin: margin }),
     leaves: [geo],
     edges: [],
     namespaces: [],
@@ -438,8 +445,11 @@ export function degenerateSingleClassifier(
   const classifier = ast.classifiers[0]!;
   if (classifier.kind === 'descriptive' && classifier.usymbol === 'hexagon') return undefined;
   const measured = measuredMap.get(classifier.id)!;
-  const geo = buildDegenerateClassifierLeaf(classifier, measured);
-  return degenerateClassifierDims(geo, measured);
+  const margin = classDocumentMargin(theme);
+  // dss T3b: the exporter's translate by `(margin.left, margin.top)` (`TextBlockExporter.java:173`).
+  const leaf = buildDegenerateClassifierLeaf(classifier, measured);
+  const geo = margin === undefined ? leaf : shiftClassifierGeo(leaf, margin.left, margin.top);
+  return degenerateClassifierDims(geo, measured, margin);
   // #lizard forgives — flat chain of early-return guards encoding upstream's
   // single conjunctive predicate (isDegeneratedWithFewEntities) plus the
   // hexagon exclusion, mirroring description's degenerateSingleLeaf; not

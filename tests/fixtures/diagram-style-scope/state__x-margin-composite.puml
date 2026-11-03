@@ -1,0 +1,10 @@
+@startuml
+<style>
+root { Margin 10 }
+</style>
+state S {
+  state A
+  note left of A : k
+}
+C --> A
+@enduml

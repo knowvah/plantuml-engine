@@ -1,0 +1,4 @@
+@startuml
+<style>document{BackgroundColor #AAAAAA/#BBBBBB}</style>
+A -> B
+@enduml

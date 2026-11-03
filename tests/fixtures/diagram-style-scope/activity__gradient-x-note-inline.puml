@@ -1,0 +1,8 @@
+@startuml
+start
+:A;
+note right #0A0-00A
+n
+end note
+stop
+@enduml

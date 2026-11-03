@@ -10,6 +10,7 @@
  */
 
 import type { DescriptiveLinkStyle, StereotypeSpriteRef } from './ast.js';
+import type { NotePosition } from './note-grammar.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
@@ -183,6 +184,9 @@ export interface DescriptionEdgeGeo {
    *  separate mechanism and keeps `x`/`y` as the draw origin. `text` is
    *  empty for a stereotype-only link label. */
   label?: { text: string; x: number; y: number; w?: number; h?: number };
+  /** `note [pos] on link`: `DescriptiveLink.linkNote`/`linkNotePosition`, drawn merged with `label` as one block
+   *  (`SvekEdge.java:307-326`, 951-954) by `renderer-edge.ts`. */
+  linkNote?: { text: string; position: NotePosition; color?: string };
   stereotype?: string;
   /** G1 I5e: true ONLY for the post-colon-embedded stereotype form (the
    *  one shape upstream actually draws as a visible edge label) -- see

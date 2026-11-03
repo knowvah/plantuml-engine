@@ -256,6 +256,9 @@ dead json scale plumbing removed, dot-engine issue 37 filed; only the ruled
 document-background-paint (dbp, 2026-11-02) closed the jff follow-ons: a document
 gradient or black now paints through one `SvgGraphics`-constructor port, chrome and
 klimt carriers included; its follow-ons are in `planning/next-missions.md`.
+diagram-style-scope (dss, 2026-11-03) read document and element colours through
+the ported `StyleBuilder`: 792 of 865 authored rows, 0 losses in 28 engines; open
+items are the dss follow-ons in `planning/next-missions.md`.
 
 ---
 

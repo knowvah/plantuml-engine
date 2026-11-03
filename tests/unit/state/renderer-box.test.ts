@@ -90,3 +90,65 @@ describe('renderNormal — shadow (mission skin-file-loading Batch 2)', () => {
     expect(svg).not.toContain('filter=');
   });
 });
+
+/**
+ * dss T3c: `EntityImageState.java:131-153` -- a leaf whose `name` and `description` zones
+ * differ is drawn by `RoundedContainer` (`RoundedContainer.java:76-95`): a north path, a south
+ * path, the transparent outline rect and the zone divider, followed by `drawU`'s own divider.
+ * Oracle: the jar rendering of `tests/fixtures/diagram-style-scope/state__probe-zones.puml`,
+ * leaf `A`: two paths (`#AAA`, `#BBB`), `rect fill="none"`, two identical `<line>`s, name text
+ * `#111`, description text `#222`.
+ */
+describe('renderNormal -- name/description zones (dss T3c)', () => {
+  const zoned = deepMergeTheme(defaultTheme, {
+    colors: {
+      elements: {
+        'state.name': { background: '#AAAAAA', font: '#111111' },
+        'state.description': { background: '#BBBBBB', font: '#222222' },
+      },
+    },
+  });
+  const node = makeNode({
+    x: 7,
+    y: 32,
+    width: 50,
+    height: 50,
+    headerLines: [{ text: 'A', width: 9.362 }],
+    bodyLines: [{ text: 'd1', width: 15.575 }],
+  });
+
+  it('draws the north and south zone paths with their own fills, an unfilled outline, and both dividers', () => {
+    const svg = renderNormal(node, zoned);
+    expect(svg).toContain(
+      '<path d="M19.5,32 L44.5,32 A12.5,12.5 0 0 1 57,44.5 L57,56 L7,56 L7,44.5 A12.5,12.5 0 0 1 19.5,32" fill="#AAA"/>',
+    );
+    expect(svg).toContain(
+      '<path d="M7,56 L57,56 L57,69.5 A12.5,12.5 0 0 1 44.5,82 L19.5,82 A12.5,12.5 0 0 1 7,69.5 L7,56" fill="#BBB"/>',
+    );
+    expect(svg).toContain('fill="none"');
+    expect(svg.split('<line ').length - 1).toBe(2);
+  });
+
+  it('colours the name and description text from their own zones', () => {
+    const svg = renderNormal(node, zoned);
+    expect(svg).toContain('fill="#111"');
+    expect(svg).toContain('fill="#222"');
+  });
+
+  it('keeps one filled rect when both zones resolve to the same colour', () => {
+    const same = deepMergeTheme(defaultTheme, {
+      colors: { elements: { 'state.name': { background: '#AAAAAA' }, 'state.description': { background: '#AAAAAA' } } },
+    });
+    const svg = renderNormal(node, same);
+    // `applyColor` fills the one shape with the `state` style (EntityImageState.java:134-135), not the zone's.
+    expect(svg).toContain('fill="#F1F1F1"');
+    expect(svg.split('<path ').length - 1).toBe(0);
+    expect(svg.split('<line ').length - 1).toBe(1);
+  });
+
+  it('ignores an inline colour for the zones when they differ (EntityImageState.java:131-133)', () => {
+    const svg = renderNormal({ ...node, color: '#Red' }, zoned);
+    expect(svg).toContain('fill="#AAA"');
+    expect(svg).not.toContain('#F00');
+  });
+});

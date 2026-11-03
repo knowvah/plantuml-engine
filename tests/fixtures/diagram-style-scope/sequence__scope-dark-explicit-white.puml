@@ -1,0 +1,9 @@
+@startuml
+skinparam mode dark
+<style>
+document {
+  BackgroundColor white
+}
+</style>
+A -> B
+@enduml

@@ -24,6 +24,7 @@
  */
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
+import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { ElementColors } from '../../core/theme-graph-colors.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { LineStyleDash } from '../../core/style-line-style.js';
@@ -45,6 +46,9 @@ const MARGIN_TITLE_Y2 = 3;
 /** `FontParam.PACKAGE`'s `defaultColor` (`klimt/font/FontParam.java:67`,
  *  `plantuml.skin:9` `root { FontColor black }`). */
 const DEFAULT_FONT_COLOR = '#000000';
+
+/** The symbol a group with no keyword of its own is signed with: `USymbols.PACKAGE` (`Cluster.java:387`). */
+export const PACKAGE_SYMBOL = 'package';
 
 /** A group's text colour when no element tier applies -- `plantuml.skin:9`
  *  `root { FontColor black }`. */
@@ -82,7 +86,7 @@ export function byStereo<T>(map: Readonly<Record<string, T>> | undefined, tags: 
 /** A colour that paints nothing (`HColors.transparent()`): upstream emits no
  *  `<text>` for it (`DriverTextSvg.java:92-94`) and `stroke:none` for a
  *  line (`DriverLineSvg` -> `toSvg`). */
-export function isNoPaint(color: string): boolean {
+export function isNoPaint(color: Paint): boolean {
   return isTransparentColor(color);
 }
 
@@ -197,13 +201,30 @@ export function dashArrayOf(dash: LineStyleDash | undefined): string | undefined
  *  `USymbols.PACKAGE`, `:386-388`, matches the `package` selector -- jar
  *  cevoti-40/guxico-27), then the caller's style default. The relative
  *  rank of the two plain tiers is not jar-verified (no fixture sets both). */
-export function packageBorderColor(theme: Theme, tags: readonly string[], fallback: string): string {
+export function packageBorderColor(
+  theme: Theme,
+  tags: readonly string[],
+  fallback: string,
+  usymbol = PACKAGE_SYMBOL,
+): Paint {
+  return packageTaggedBorder(theme, tags, usymbol) ?? packageUntaggedBorder(theme) ?? fallback;
+}
+
+/**
+ * `Cluster.java:317-320` hands the frame one colour; a gradient stays whole for its rect and path, and each `ULine`
+ * takes the first colour (`DriverLineSvg.java:76-82`). A solid keeps the flat field above the bucket.
+ */
+function packageUntaggedBorder(theme: Theme): Paint | undefined {
   const styled = packageBucket(theme)?.border;
+  return typeof styled === 'object' ? styled : (theme.colors.graph.packageBorder ?? styled);
+}
+
+/** The two tiers above the flat package border: `packageBorderColor<<label>>`, then (dss T3b, D2a) `group.<symbol>`,
+ *  the frame's own merged `LineColor` (`Cluster.java:312-319` off the `Cluster.java:290-293` signature), which
+ *  `group { LineColor }` and `classDiagram { LineColor }` reach. */
+function packageTaggedBorder(theme: Theme, tags: readonly string[], usymbol: string): Paint | undefined {
   return (
-    byStereo(packageBucket(theme)?.borderByStereo, tags) ??
-    theme.colors.graph.packageBorder ??
-    (typeof styled === 'string' ? styled : undefined) ??
-    fallback
+    byStereo(packageBucket(theme)?.borderByStereo, tags) ?? theme.colors.elements?.[clusterBucketOf(usymbol)]?.border
   );
 }
 
@@ -225,7 +246,7 @@ export function emptyPackageThickness(theme: Theme, tags: readonly string[], fal
 
 /** Empty-leaf border: the stereotype tier over the leaf's existing cascade
  *  (`class-empty-package.ts#emptyPackagePaint`). */
-export function emptyPackageBorder(theme: Theme, tags: readonly string[], fallback: string): string {
+export function emptyPackageBorder(theme: Theme, tags: readonly string[], fallback: Paint): Paint {
   return byStereo(packageBucket(theme)?.borderByStereo, tags) ?? fallback;
 }
 

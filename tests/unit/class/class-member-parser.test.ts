@@ -90,8 +90,13 @@ describe('parseMemberLine — structured shapes', () => {
     expect(parseMemberLine('   ')).toBeNull();
   });
 
-  it('returns null when only a visibility char remains', () => {
-    expect(parseMemberLine('+')).toBeNull();
+  // `Member.java:133` asks `VisibilityModifier.isVisibilityCharacter`, which is false for a line of two characters or
+  // fewer (`VisibilityModifier.java:211-214`): a lone `+` is the text "+", not a visibility marker with nothing after
+  // it (jar: `class__kinds-none`'s `+x` field draws "+x" and no icon).
+  it('keeps a lone visibility char as the member text, not a visibility marker', () => {
+    const member = parseMemberLine('+');
+    expect(member?.name).toBe('+');
+    expect(member?.visibilityExplicit).toBeUndefined();
   });
 });
 

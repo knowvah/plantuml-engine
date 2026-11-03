@@ -1,0 +1,8 @@
+@startuml
+<style>
+spotClass { LineColor #0A0-#00A
+ FontColor #0A0-#00A
+ BackgroundColor #0A0-#00A }
+</style>
+class A
+@enduml

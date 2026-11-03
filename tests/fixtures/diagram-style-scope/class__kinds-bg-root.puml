@@ -1,0 +1,28 @@
+@startuml
+<style>
+root {
+  BackgroundColor #AAAAAA
+}
+</style>
+class A <<S>> {
+  +x
+  {method} y()
+}
+annotation An
+entity En
+exception Ex
+A "1" --> "2" An : lab
+namespace N {
+  class C
+}
+package P2 <<Cloud>> {
+  class D
+}
+package P3 <<Rectangle>> {
+  class D2
+}
+A o-- En
+<> dia
+A -- dia
+Ex -- dia
+@enduml

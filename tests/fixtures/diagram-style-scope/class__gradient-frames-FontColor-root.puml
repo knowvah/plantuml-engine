@@ -1,0 +1,28 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+namespace ns {
+ class A
+}
+folder F {
+ class B
+}
+frame Fr {
+ class C
+}
+rectangle Re {
+ class D
+}
+cloud Cl {
+ class E
+}
+database Db {
+ class H
+}
+A --> B
+B o-- C
+C *-- D
+D ..> E
+E --> H
+@enduml

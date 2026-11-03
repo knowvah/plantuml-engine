@@ -1,0 +1,10 @@
+@startfiles
+<style>
+activityDiagram {
+  document {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+/a
+@endfiles

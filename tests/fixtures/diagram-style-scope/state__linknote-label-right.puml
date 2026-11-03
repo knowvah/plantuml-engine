@@ -1,0 +1,5 @@
+@startuml
+state A
+A --> B : transition label
+note right on link : k
+@enduml

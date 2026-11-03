@@ -20,7 +20,7 @@
 import type { Transition } from './ast.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
-import type { LabelInkBox, StateTextLine } from './state-geo-types.js';
+import type { LabelInkBox, LinkLabelGeo, StateTextLine } from './state-geo-types.js';
 import { transitionLabelText } from './state-dot-graph.js';
 import { computeReservedLabelBox, computeMergedLabelBox } from '../../core/edge-label-box.js';
 // T4 (`note-on-link`, `state-declared-size-fix`): the SAME `EntityImageNoteLink`
@@ -28,7 +28,8 @@ import { computeReservedLabelBox, computeMergedLabelBox } from '../../core/edge-
 // label.ts#computeEdgeLabelBox` already feed the DOT graph -- reused here so
 // the DRAWN box (this file) and the RESERVED box (DOT) never disagree.
 import { measureLinkNoteDim } from '../../core/svek/image/EntityImageNoteLink.js';
-import { NOTE_FONT_SIZE } from '../../core/klimt/font/FontParam.js';
+import { buildRenderLines } from './state-note-layout.js';
+import { noteDrawnFirst, placeMergedOperands, unionInk, type MergedPlacement } from './state-link-note-merge.js';
 
 /** Label offset perpendicular to the edge direction -- legacy fallback only
  *  (D1): still used verbatim when the layout result carries no label
@@ -204,6 +205,8 @@ type TransitionLabelResult = {
   height?: number;
   inkBox?: LabelInkBox;
   noteLines?: readonly StateTextLine[];
+  linkLabel?: LinkLabelGeo;
+  noteFirst?: boolean;
 };
 
 /** `font`+`measurer` as a single optional pair -- collapses both label arms'
@@ -220,20 +223,6 @@ interface LabelMeasureCtx {
 // ---------------------------------------------------------------------------
 // `note ... on link` (T4, `note-on-link`/`state-declared-size-fix`)
 // ---------------------------------------------------------------------------
-
-/** Per-line text+width for a `note ... on link`'s body -- the SAME naive
- *  split `core/svek/image/EntityImageNoteLink.ts#naivePureTextDim` measures
- *  for the DOT box (that function returns only the aggregate max width; the
- *  renderer additionally needs each line's own text/width, mirroring
- *  `StateNodeGeo.noteLines`'s shape, to draw the note body) -- duplicated
- *  rather than exported cross-file (D1, avoids a new public seam for one
- *  caller). */
-function noteLinesOf(text: string, font: FontSpec, measurer: StringMeasurer): StateTextLine[] {
-  return text.split('\n').map((line) => ({
-    text: line,
-    width: measurer.measure(line, { family: font.family, size: NOTE_FONT_SIZE }).width,
-  }));
-}
 
 /** The `note on link` box: the SAME `computeMergedLabelBox` formula
  *  `state-dot-graph.ts#computeEdgeLabelBox`/`state-composite-edge-label.ts
@@ -267,10 +256,8 @@ function measureNoteBox(
  *  extra `addVisibilityModifier`/`TextBlockMarged` wrap, so `labelXY`'s own
  *  dimension IS the note's preferred box, positioned at the graphviz-read
  *  centre with no further inset. A non-empty inline label merged with a note
- *  (`mergeLR`/`mergeTB` over two REAL blocks) is a wider case this task's
- *  sole target fixture (tumaba-64-tosu281) never exercises -- out of scope,
- *  same `DIVERGENCES.md`-worthy residue `computeMergedLabelBox`'s own doc
- *  comment already flags for the merge-order term. */
+ *  (`mergeLR`/`mergeTB` over two REAL blocks) is {@link attachMergedLinkLabel}
+ *  (dss T3e): this anchor is then the MERGED block's corner. */
 function noteAnchorFromCentre(centre: { x: number; y: number }, box: ReservedLabelBox): { x: number; y: number } {
   return { x: centre.x - box.reservedWidth / 2, y: centre.y - box.reservedHeight / 2 };
 }
@@ -316,7 +303,9 @@ function noteBoxFields(
       width: box.reservedWidth - 2 * ROSE_NOTE_PADDING,
       height: box.reservedHeight - 2 * ROSE_NOTE_PADDING,
     },
-    noteLines: noteLinesOf(noteText, ctx.font, ctx.measurer),
+    // dss T3f: the same lines an entity note draws (`Display`, `AtomText`), so a
+    // leading space is an `x` shift (`DriverTextSvg.java:114-126`).
+    noteLines: buildRenderLines(noteText, { fontFamily: ctx.font.family }, ctx.measurer),
   };
 }
 
@@ -335,6 +324,57 @@ function resolveNoteAnchor(
   return perpendicularOffsetLabel(points);
 }
 
+/** dss T3e: the merged block of a note and a NON-empty inline label, placed (`SvekEdge.java:307-325`,
+ *  see `state-link-note-merge.ts`). */
+function placeLinkOperands(
+  t: Transition,
+  anchor: { x: number; y: number },
+  merged: ReservedLabelBox,
+  label: MeasuredLabel,
+  ctx: LabelMeasureCtx,
+): MergedPlacement {
+  return placeMergedOperands({
+    position: t.linkNotePosition ?? 'bottom',
+    anchor,
+    note: measureLinkNoteDim(t.linkNote!, { family: ctx.font.family }, ctx.measurer),
+    label: { width: label.box.measuredWidth + 2 * label.box.marginLabel, height: label.box.reservedHeight },
+    merged: { width: merged.measuredWidth, height: merged.measuredHeight },
+    marginLabel: label.box.marginLabel,
+    ascent: label.ascent,
+  });
+}
+
+/** dss T3e: a note merged with a NON-empty inline label -- both operands drawn in the merged block
+ *  (`SvekEdge.java:307-325,950-954`). `x`/`y` stay the NOTE's top-left, the label rides in `linkLabel`,
+ *  `inkBox` is the union of the note polygon and the label's marged `UEmpty`. */
+function attachMergedLinkLabel(
+  t: Transition,
+  labelText: string,
+  anchor: { x: number; y: number },
+  merged: ReservedLabelBox,
+  ctx: LabelMeasureCtx,
+): TransitionLabelResult {
+  const label = measureLabel(labelText, ctx.font, ctx.measurer, false);
+  const placed = placeLinkOperands(t, anchor, merged, label, ctx);
+  const noteBox = measureNoteBox(t, undefined, ctx.font, ctx.measurer);
+  const note = noteBoxFields(placed.note, noteBox, t.linkNote!, ctx);
+  const { x, y, width, height } = placed.labelBlock;
+  return {
+    text: labelText,
+    x: placed.note.x,
+    y: placed.note.y,
+    ...note,
+    inkBox: unionInk(note.inkBox, { x: svgPrecision(x), y: svgPrecision(y), width, height }),
+    linkLabel: {
+      text: labelText,
+      dx: placed.labelBaseline.x - placed.note.x,
+      dy: placed.labelBaseline.y - placed.note.y,
+      ...drawnTextLength(labelText, label, ctx),
+    },
+    noteFirst: noteDrawnFirst(t.linkNotePosition ?? 'bottom'),
+  };
+}
+
 /** {@link attachTransitionLabel}'s `t.linkNote !== undefined` arm -- same
  *  measured/anchor/boxFields shape as the inline-label arm below, so a
  *  reviewer can read the two side by side. */
@@ -349,9 +389,9 @@ function attachNoteOnLinkLabel(
   const measured = ctx !== undefined ? measureNoteBox(t, labelText, ctx.font, ctx.measurer) : undefined;
   const anchor = resolveNoteAnchor(points, edgeResult, measured);
   if (anchor === undefined) return undefined;
-  const boxFields =
-    measured !== undefined && ctx !== undefined ? noteBoxFields(anchor, measured, t.linkNote!, ctx) : {};
-  return { text, x: anchor.x, y: anchor.y, ...boxFields };
+  if (measured === undefined || ctx === undefined) return { text, x: anchor.x, y: anchor.y };
+  if (labelText !== undefined) return attachMergedLinkLabel(t, labelText, anchor, measured, ctx);
+  return { text, x: anchor.x, y: anchor.y, ...noteBoxFields(anchor, measured, t.linkNote!, ctx) };
 }
 
 // ---------------------------------------------------------------------------

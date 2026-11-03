@@ -32,6 +32,7 @@ import type { Tile } from '../tiles/tile.js';
 import { laneAt, laneIn, laneOut } from './swimlane-placement.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { applyInColor } from './tile-layout-inlabel.js';
 import { emitDiamondLabels, emitDiamondOwnLabel } from './diamond-labels.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
 import { pushRepeatBackwardConnections } from './walk-repeat-backward.js';
@@ -263,6 +264,7 @@ function pushRepeatIn(frame: RepeatFrame): void {
   const p1 = { x: tileX + (entryOffsetX + entry.getCoord(SOUTH_HOOK).x), y: entryY + entry.getCoord(SOUTH_HOOK).y };
   const p2 = { x: tileX + (bodyOffsetX + body.getCoord(NORTH_HOOK).x), y: bodyY + body.getCoord(NORTH_HOOK).y };
   pushEdge(out, connectionInPoints(p1, p2), entryOutLane, bodyInLane);
+  applyInColor(out, body); // `repeat.getInLinkRendering().getRainbow(arrowColor)`, FtileRepeat.java:172
 }
 
 /**

@@ -26,6 +26,7 @@
  * possible for a hand-built `PreprocessorResult` (or `skin plantuml`, which
  * IS the baked-in default), where there are no runs.
  */
+import type { DiagramType } from './block-extractor.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import type { Theme } from './theme.js';
 import { resolveSkinparam, parseStyleBlock } from './skinparam.js';
@@ -83,13 +84,18 @@ export function skinRunsOf(preprocessed: Pick<PreprocessorResult, 'skin'>): Styl
 export function applySkinRun(
   base: Theme,
   styleMap: StyleMap,
+  diagramType: DiagramType | undefined,
   rootCascade: ReadonlyMap<string, string> = new Map(),
 ): Theme {
   const rootDeclarations = new Map([...(styleMap.get('root') ?? []), ...rootCascade]);
-  return applyStyleMap(styleMap, resolveSkinparam(rootDeclarations, base).theme);
+  return applyStyleMap(styleMap, resolveSkinparam(rootDeclarations, base).theme, diagramType);
 }
 
 /** Every run of `preprocessed.skin` onto `base`, in order. */
-export function applySkinLayer(preprocessed: Pick<PreprocessorResult, 'skin'>, base: Theme): Theme {
-  return skinRunsOf(preprocessed).reduce((theme, run) => applySkinRun(theme, run), base);
+export function applySkinLayer(
+  preprocessed: Pick<PreprocessorResult, 'skin'>,
+  base: Theme,
+  diagramType: DiagramType | undefined,
+): Theme {
+  return skinRunsOf(preprocessed).reduce((theme, run) => applySkinRun(theme, run, diagramType), base);
 }

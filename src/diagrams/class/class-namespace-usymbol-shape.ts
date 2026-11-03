@@ -33,6 +33,7 @@
  * keyword that resolves to no `USymbol` at all.
  */
 import type { Paint } from '../../core/paint.js';
+import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
 import type { ElementColors } from '../../core/theme-graph-colors.js';
@@ -50,6 +51,7 @@ import { resolveActorStyle, mapComponentStyle } from '../../core/decoration/symb
 import type { USymbol as UpstreamUSymbol } from '../../core/decoration/symbol/USymbol.js';
 import { ClusterDecoration } from '../../core/svek/ClusterDecoration.js';
 import { renderDrawableToFragment } from '../../core/klimt/document-shell.js';
+import { withContentGradientIds } from '../../core/svg-defs.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import { clusterHeaderStereoTextBlock } from './class-cluster-header.js';
 import { LimitFinder } from '../../core/klimt/drawing/LimitFinder.js';
@@ -282,7 +284,9 @@ function resolveClusterUSymbolPaint(
   keyword: string,
   fallback: NamespaceUSymbolPaint,
 ): NamespaceUSymbolPaint {
-  const specific = theme.colors.elements?.[keyword];
+  // D2a: `group.<keyword>` is this cluster's own signature (`Cluster.java:290-291`); `keyword`'s bucket is the
+  // leaf's (`EntityImageDescription.java:162-166`), which holds a value this one may never see.
+  const specific = { ...theme.colors.elements?.[keyword], ...theme.colors.elements?.[clusterBucketOf(keyword)] };
   const tags = geo.stereotypeTags ?? [];
   const backColor = clusterUSymbolBackColor(specific, geo, fallback.backColor);
   // cdd6 T2a (D2): the `<usymbol>BorderColor<<label>>` tier (+1000,
@@ -391,5 +395,8 @@ export function renderNamespaceUSymbol(
     },
     { width: geo.x + geo.width, height: geo.y + geo.height, measurer, uid: geo.id },
   );
-  return (fragment.extraDefs ?? '') + header.splice(fragment.body);
+  // `SvgGraphics.java:393` numbers per document, and this one draws a frame alone: the def takes its content id, so equal
+  // gradients of two frames are one, and `collectDocumentDefs` lifts it (`SvgGraphics.java:367-371`, the map hit).
+  const content = withContentGradientIds(fragment.extraDefs ?? '', header.splice(fragment.body));
+  return content.defs + content.body;
 }

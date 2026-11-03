@@ -1,0 +1,14 @@
+@startuml
+skinparam noteBackgroundColor #BBBBBB
+<style>
+classDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+class A {
+  {{
+    A -> B
+    note left: n
+  }}
+}
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+skinparam defaultFontColor #112233
+class G<T> {
+  v
+}
+@enduml

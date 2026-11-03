@@ -12,7 +12,7 @@
 import type { KeyHandler } from './skinparam-key-handlers-shared.js';
 import { parseFiniteInt } from './skinparam-key-handlers-shared.js';
 import type { ElementColors } from './theme-graph-colors.js';
-import { parseColor } from './paint.js';
+import { noGradient, parseColor } from './paint.js';
 import { convertBorderStyleValue, lineStyleDash } from './style-line-style.js';
 
 /**
@@ -60,7 +60,7 @@ const ADD_MAGIC_CLEAN_NAMES = [
 function applyBorderStyle(bucket: ElementColors, value: string): void {
   const converted = convertBorderStyleValue(value.trim());
   if (converted.lineThickness !== undefined) bucket.lineThickness = converted.lineThickness;
-  if (converted.fontColor !== undefined) bucket.font = parseColor(converted.fontColor);
+  if (converted.fontColor !== undefined) bucket.font = noGradient(parseColor(converted.fontColor));
   if (converted.lineStyle !== undefined) bucket.lineStyle = lineStyleDash(converted.lineStyle);
 }
 

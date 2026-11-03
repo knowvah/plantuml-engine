@@ -73,11 +73,18 @@ describe('resolveStateFillBucketed', () => {
     expect(resolveStateFillBucketed({}, theme, '#F1F1F1')).toBe('#FFFF00');
   });
 
-  it('a non-string bucket value (unsupported gradient) falls through to the default', () => {
-    const theme = deepMergeTheme(defaultTheme, {
-      colors: { elements: { state: { background: { color1: '#FF0000', color2: '#FFFF00', policy: '/' } } } },
+  it('a gradient bucket value stays whole, for the shape whose driver draws it (DriverRectangleSvg.java:82-96)', () => {
+    const gradient = { color1: '#FF0000', color2: '#FFFF00', policy: '/' } as const;
+    const theme = deepMergeTheme(defaultTheme, { colors: { elements: { state: { background: gradient } } } });
+    expect(resolveStateFillBucketed({}, theme, '#F1F1F1')).toEqual(gradient);
+  });
+
+  it('an inline gradient is parsed, as HColorSet.java:109-116 parses every token', () => {
+    expect(resolveStateFillBucketed({ color: '#red-green' }, defaultTheme, '#F1F1F1')).toEqual({
+      color1: '#red',
+      color2: 'green',
+      policy: '-',
     });
-    expect(resolveStateFillBucketed({}, theme, '#F1F1F1')).toBe('#F1F1F1');
   });
 
   // mission G4 S15: `skinparam stateBackgroundColor<<X>> #color` --
@@ -244,11 +251,10 @@ describe('resolveStateBorder — state-element bucket tier (mission G6 T4)', () 
     expect(resolveStateBorder({ stereotype: 'Foo' }, theme)).toBe('#0000FF');
   });
 
-  it('a non-string bucket value (unsupported gradient) falls through to theme.colors.border', () => {
-    const theme = deepMergeTheme(defaultTheme, {
-      colors: { elements: { state: { border: { color1: '#FF0000', color2: '#FFFF00', policy: '/' } } } },
-    });
-    expect(resolveStateBorder({}, theme)).toBe(defaultTheme.colors.border);
+  it('a gradient bucket value stays whole (DriverRectangleSvg.java:97-111)', () => {
+    const gradient = { color1: '#FF0000', color2: '#FFFF00', policy: '/' } as const;
+    const theme = deepMergeTheme(defaultTheme, { colors: { elements: { state: { border: gradient } } } });
+    expect(resolveStateBorder({}, theme)).toEqual(gradient);
   });
 });
 

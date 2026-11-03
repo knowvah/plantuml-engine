@@ -1,0 +1,21 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+abstract class A {
+ +f()
+ -g
+}
+interface I
+enum E
+annotation N
+package P {
+ class Q
+}
+A <|-- I : l
+E *-- Q
+N o-- Q
+A .. E
+note on link : m
+note top of A : n
+@enduml

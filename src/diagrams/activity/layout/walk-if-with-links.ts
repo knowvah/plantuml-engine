@@ -24,6 +24,7 @@ import { laneIn, laneOut } from './swimlane-placement.js';
 import { collectTouchedLanes } from './tile-coordinates-group.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { applyInColor, applyOutColor } from './tile-layout-inlabel.js';
 import { diamondBackOf } from './diamond-labels.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
 import { wrappedSpread } from './diamond-wrap.js';
@@ -235,10 +236,12 @@ function pushInConnectors(ctx: IfLinksCtx): void {
     ...(t.thenIsEmpty ? { arrowhead: false as const } : {}),
     loop: hThenVLoop(t, p1, in1To),
   });
+  applyInColor(out, t.tile1);
   pushDecoratedEdge(out, horizontalThenVertical(p2, in2To), [diamondLane, laneIn(t.tile2, myLane)], {
     ...(t.elseIsEmpty ? { arrowhead: false as const } : {}),
     loop: hThenVLoop(t, p2, in2To),
   });
+  applyInColor(out, t.tile2);
 }
 
 /** `out1`/`out2` -- `ConnectionVerticalThenHorizontal`, both branches have
@@ -260,10 +263,12 @@ function pushOutConnectorsBoth(ctx: IfLinksCtx): void {
     ...(t.thenIsEmpty ? { emphasize: 'down' as const } : {}),
     loop: { kind: 'if-links-v-then-h', p1: out1From, p2: mergeD },
   });
+  applyOutColor(out, t.tile1);
   pushDecoratedEdge(out, verticalThenHorizontal(out2From, mergeB), [laneOut(t.tile2, myLane), myLane], {
     ...(t.elseIsEmpty ? { emphasize: 'down' as const } : {}),
     loop: { kind: 'if-links-v-then-h', p1: out2From, p2: mergeB },
   });
+  applyOutColor(out, t.tile2);
 }
 
 /**
@@ -394,6 +399,7 @@ function pushDirectConnector(ctx: IfLinksCtx, useTile1: boolean): void {
     ...(isEmpty ? { emphasize: 'down' as const } : {}),
     loop: { kind: 'if-links-v-then-h-direct', p1, p2 },
   });
+  applyOutColor(out, tile);
 }
 
 /** `hasPointOut1 && hasPointOut2` splits by `conditionEndStyle`

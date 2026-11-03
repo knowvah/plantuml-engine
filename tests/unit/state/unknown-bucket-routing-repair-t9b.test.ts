@@ -61,15 +61,20 @@ describe('T9b -- state note with no target and no prior entity', () => {
     expect((result as ParseRefusal).message).toBe('Nothing to note to');
   });
 
-  it('regression control: an explicit "of <State>" target is unaffected (no refusal)', () => {
+  it('an explicit "of <State>" naming no entity refuses "Not known" (`CommandFactoryNoteOnEntity.java:304-307`)', () => {
     const result = parseState(block('note right of A: text'));
-    expect('refused' in result).toBe(false);
-    if ('refused' in result) throw new Error('unreachable');
-    expect(result.notes?.[0]).toMatchObject({ target: 'A', position: 'right' });
+    expect((result as ParseRefusal).refused).toBe(true);
+    expect((result as ParseRefusal).kind).toBe('execution');
+    expect((result as ParseRefusal).message).toBe('Not known: A');
   });
 
-  it('regression control: a note with a prior entity still attaches (no refusal)', () => {
+  it('a state only a link created is no last entity on pass THREE (`CucaDiagram.java:160-166`)', () => {
     const result = parseState(block('A --> B', 'note right: trailing note'));
+    expect((result as ParseRefusal).message).toBe('Nothing to note to');
+  });
+
+  it('regression control: a note with a declared prior entity still attaches (no refusal)', () => {
+    const result = parseState(block('state B', 'note right: trailing note'));
     expect('refused' in result).toBe(false);
     if ('refused' in result) throw new Error('unreachable');
     expect(result.notes?.[0]).toMatchObject({ target: 'B', position: 'right', implicitTarget: true });

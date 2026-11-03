@@ -34,11 +34,11 @@ export type NoteTerminator = 'endnote' | 'brace';
 // `note left of link : ...` resolves as on-link, not on-entity with CODE
 // "link" (CODE's bare-identifier alternative would otherwise also match).
 const RE_NOTE_ON_LINK_SINGLE = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b[^:]*:\\s*(.+)$',
+  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b(?:\\s+(#\\w+[-\\\\|/]?\\w+))?[^:]*:\\s*(.+)$',
   'i',
 );
 const RE_NOTE_ON_LINK_OPEN = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+#\\w+)?\\s*$',
+  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+(#\\w+[-\\\\|/]?\\w+))?\\s*$',
   'i',
 );
 
@@ -57,7 +57,8 @@ const RE_NOTE_FLOATING_OPEN = new RegExp('^note\\s+as\\s+([\\w.]+)\\s*(.*)$', 'i
 // as the fill and `getStyleSignature().withTOBECHANGED(getStereo())` selects the
 // `.tag` style, so both reach the drawn note.
 const NOTE_STEREOTYPE_OPT = '(?:\\s+(<<[^>]+>>))?';
-const NOTE_COLOR_OPT = '(?:\\s+(#\\w+))?';
+// `ColorParser.java:43` `COLOR_REGEXP`: the second half of a gradient carries no `#`.
+const NOTE_COLOR_OPT = '(?:\\s+(#\\w+[-\\\\|/]?\\w+))?';
 const RE_NOTE_ON_ENTITY_SINGLE = new RegExp(
   '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+((?:\\(\\)\\s*)?"[^"]+"|\\(\\)[\\w.]+|\\([^)]+\\)|:[^:]+:|\\[[^\\]]+\\]|[\\w.]+))?' +
     NOTE_STEREOTYPE_OPT +
@@ -152,8 +153,8 @@ function noteDecor(stereotype: string | undefined, color: string | undefined): N
 }
 
 export type NoteOpenMatch =
-  | { kind: 'on-link-single'; position: NotePosition | undefined; text: string }
-  | { kind: 'on-link-open'; position: NotePosition | undefined }
+  | { kind: 'on-link-single'; position: NotePosition | undefined; color: string | undefined; text: string }
+  | { kind: 'on-link-open'; position: NotePosition | undefined; color: string | undefined }
   | { kind: 'floating-single'; id: string; text: string }
   | { kind: 'floating-open'; id: string }
   | {
@@ -181,19 +182,17 @@ export type NoteOpenMatch =
  *  the BOTTOM default is applied by the EXECUTOR, not the grammar, exactly
  *  as upstream splits it (`CommandFactoryNoteOnLink#executeInternal`).
  *
- *  The `COLOR` group upstream also captures (`ColorParser.simpleColor
- *  (ColorType.BACK)`, reaching `CucaNote#getColors()`) is deliberately NOT
- *  returned: its only upstream consumer is `EntityImageNoteLink`'s note
- *  POLYGON fill, and this port draws no note polygon on a link (mission
- *  `edge-label-box-followups` D2 -- the polygon is a separate mission).
- *  Adding an unread field now would be speculative. */
+ *  The `COLOR` group (`ColorParser.simpleColor(ColorType.BACK)`) reaches `CucaNote#getColors()`, which
+ *  `EntityImageNoteLink` hands to `ComponentRoseNote`'s `symbolContext` (`ComponentRoseNote.java:73`): the note
+ *  polygon's fill, now that `renderer-edge.ts` draws it (dss T3a). Only the plain `#name` / `#hex` form is
+ *  captured; the attribute form (`#blue;line:red`) is not parsed. */
 function matchOnLink(line: string): NoteOpenMatch | undefined {
   const single = RE_NOTE_ON_LINK_SINGLE.exec(line);
   if (single !== null) {
-    return { kind: 'on-link-single', position: onLinkPosition(single[1]), text: single[2]! };
+    return { kind: 'on-link-single', position: onLinkPosition(single[1]), color: single[2], text: single[3]! };
   }
   const open = RE_NOTE_ON_LINK_OPEN.exec(line);
-  if (open !== null) return { kind: 'on-link-open', position: onLinkPosition(open[1]) };
+  if (open !== null) return { kind: 'on-link-open', position: onLinkPosition(open[1]), color: open[2] };
   return undefined;
 }
 

@@ -1,0 +1,14 @@
+@startuml
+<style>
+classDiagram {
+  LineColor #BB0000
+}
+</style>
+class A
+class B
+A --> B
+note on link : k
+note "free" as N
+N .. A
+note top of B : t
+@enduml

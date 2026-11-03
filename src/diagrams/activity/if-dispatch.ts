@@ -35,11 +35,26 @@ import { parseNodes } from './node-dispatch.js';
  *  the same as a bare one. */
 const RE_ELSEIF_STOP = /^(?:\([^)]*\)\s*)?else\s*if\b/i;
 
+/**
+ * `endif` with no `else`: `InstructionIf#endif` makes the empty `else` branch and gives it the pending arrow as its
+ * `special` (`InstructionIf.java:192-196`), the same arrow `current` (the last `then`/`elseif`) takes as its in-link
+ * rendering. The arrow parsed as that branch's last node, so the `else` branch repeats it; it is no instruction, so the
+ * branch stays empty (`Branch#isEmpty`, `Branch.java:205-207`).
+ */
+function endifArrowBranch(thenBranch: ActivityNode[], elseIfBranches: readonly ActivityElseIf[]): ActivityNode[] {
+  const last = elseIfBranches.at(-1)?.body ?? thenBranch;
+  const arrow = last.at(-1);
+  // Only the rendering: the `else` branch keeps its own label (`Branch#getDisplayPositive`).
+  return arrow?.kind === 'arrow-label' && arrow.style !== undefined ? [{ ...arrow, label: '' }] : [];
+}
+
 interface IfClauses {
   cursor: number;
   elseIfBranches: ActivityElseIf[];
   elseBranch: ActivityNode[];
   elseLabel: string | undefined;
+  /** The `else` keyword was written; `endif` alone creates the empty `else` branch (`InstructionIf.java:192-196`). */
+  hadElse: boolean;
 }
 
 /** Strips the same optional trailing `;` the main dispatch loop applies to
@@ -235,6 +250,7 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
   const elseIfBranches: ActivityElseIf[] = [];
   let elseBranch: ActivityNode[] = [];
   let elseLabel: string | undefined;
+  let hadElse = false;
 
   while (cursor < ctx.lines.length) {
     const step = classifyClauseLine(ctx, cursor, ifInnerStops);
@@ -248,12 +264,13 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
     if (step.kind === 'else') {
       elseBranch = step.branch;
       elseLabel = step.label;
+      hadElse = true;
       break;
     }
     // 'unexpected' -- see this function's doc comment above.
   }
 
-  return { cursor, elseIfBranches, elseBranch, elseLabel };
+  return { cursor, elseIfBranches, elseBranch, elseLabel, hadElse };
 }
 
 interface IfHeader {
@@ -295,9 +312,12 @@ interface LeadingNoteSplit {
  *  happens at `pushParsedNode` (`list-backward-dispatch.ts`), well after
  *  {@link extractIfOwnNotes} returns. */
 function extractLeadingNote(body: ActivityNode[]): LeadingNoteSplit {
-  const first = body[0];
+  // `current.isEmpty()` holds while only arrows precede the note: they are no instruction (`CommandArrow3.java:96-110`)
+  // and their pending rendering outlives the note.
+  const at = body.findIndex((n) => n.kind !== 'arrow-label');
+  const first = body[at];
   if (first === undefined || first.kind !== 'note') return { body };
-  return { body: body.slice(1), note: first };
+  return { body: [...body.slice(0, at), ...body.slice(at + 1)], note: first };
 }
 
 interface IfNotesExtraction {
@@ -365,7 +385,8 @@ export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchRes
 
   const clauses = consumeIfClauses(ctx, thenResult.nextIdx, IF_INNER_STOPS);
   if (isRefusal(clauses)) return clauses;
-  const { cursor, elseIfBranches, elseBranch, elseLabel } = clauses;
+  const { cursor, elseIfBranches, elseLabel } = clauses;
+  const elseBranch = clauses.hadElse ? clauses.elseBranch : endifArrowBranch(thenBranch, elseIfBranches);
   const extracted = extractIfOwnNotes(thenBranch, elseIfBranches, elseBranch);
 
   // Always push exactly one if node per `if (...)` opener

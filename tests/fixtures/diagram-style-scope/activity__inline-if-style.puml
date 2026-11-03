@@ -1,0 +1,15 @@
+@startuml
+<style>
+activityDiagram {
+  LineColor #BB0000
+}
+</style>
+start
+if (c) then (y)
+  -[#FF00FF]->
+  :d;
+else (n)
+  :e;
+endif
+stop
+@enduml

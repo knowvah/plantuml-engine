@@ -1,0 +1,13 @@
+@startuml
+class C {
+  a
+}
+interface I
+enum E
+abstract A
+C --> I : l
+note left of C : n
+package P {
+  class Q
+}
+@enduml

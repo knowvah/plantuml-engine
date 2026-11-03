@@ -43,7 +43,7 @@ function bareClass(name: string): ReturnType<typeof parseClass>['classifiers'][n
 
 /** The theme `!theme aws-orange` produces, executed. */
 function awsOrange(): ReturnType<typeof buildTheme>['theme'] {
-  return buildTheme(preprocess('@startuml\n!theme aws-orange\n@enduml')).theme;
+  return buildTheme(preprocess('@startuml\n!theme aws-orange\n@enduml'), undefined, 'class').theme;
 }
 
 describe('R2j: skinparam defaultFontSize explicit-set marker plumbing', () => {

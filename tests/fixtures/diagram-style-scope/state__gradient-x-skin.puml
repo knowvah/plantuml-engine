@@ -1,0 +1,13 @@
+@startuml
+skinparam state {
+ BackgroundColor #0A0-#00A
+ BorderColor #0A0-#00A
+ FontColor #0A0-#00A
+}
+skinparam arrowColor #0A0-#00A
+skinparam noteBackgroundColor #0A0-#00A
+state A
+state B
+A --> B : l
+note left of A : n
+@enduml

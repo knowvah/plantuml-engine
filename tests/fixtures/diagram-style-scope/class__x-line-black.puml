@@ -1,0 +1,12 @@
+@startuml
+<style>
+note {
+  FontColor #AAAAAA
+}
+element {
+  FontColor black
+}
+</style>
+class A
+note left of A : n
+@enduml

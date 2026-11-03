@@ -7,6 +7,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverTextSvg.java
  */
 
+import { isTransparentColor } from './paint.js';
 import { attrs, escapeXmlText, resolvePaint, type TextStyle } from './svg.js';
 import { textFontFamily, emittedTextForm } from './svg-text-font.js';
 import { backColorFilterDef } from './svg-defs.js';
@@ -69,6 +70,8 @@ function withSvgAttributes(
 }
 
 export function text(x: number, y: number, rawContent: string, style: TextStyle = {}): string {
+  // `DriverTextSvg.java:92-94`: `if (fontConfiguration.getColor().isTransparent()) return;`.
+  if (style.fill !== undefined && isTransparentColor(style.fill)) return '';
   const content = emittedTextForm(rawContent, style.fontFamily);
   const fillR = resolvePaint(style.fill);
   // `SvgGraphics#text`'s `textBackColor` arm (`SvgGraphics.java:733-736`):

@@ -1,0 +1,17 @@
+@startuml
+<style>
+element {
+  BackgroundColor #AAAAAA
+}
+</style>
+object O
+O : a = 1
+map M {
+ k => v
+}
+json J {
+ "a": 1
+}
+O --> M
+note top of O : n
+@enduml

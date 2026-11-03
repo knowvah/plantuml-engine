@@ -1,0 +1,18 @@
+@startuml
+<style>
+.foo {
+  LineColor #00BB00
+}
+activity {
+  LineColor #BB0000
+}
+</style>
+start
+:a; <<foo>>
+:b;
+note left: n
+partition P <<foo>> {
+  :c;
+}
+stop
+@enduml

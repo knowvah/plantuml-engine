@@ -1,0 +1,19 @@
+@startuml
+<style>
+activityDiagram {
+  FontColor #0000BB
+}
+</style>
+|L1|
+start
+:a;
+|L2|
+:b;
+partition P {
+  :c;
+}
+group G
+  :d;
+end group
+stop
+@enduml

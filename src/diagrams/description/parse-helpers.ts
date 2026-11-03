@@ -241,6 +241,22 @@ interface NameDecoration {
 }
 
 /**
+ * `ColorParser.simpleColor(ColorType.BACK, "COLOR2")` between the symbol and the name
+ * (`CommandCreateElementFull.java:84-85`): `ColorParser.java:43-46`'s `COLORS_REGEXP`, then at least one more
+ * character, since the name that follows cannot start with `#`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/ColorParser.java:62,76-78
+ */
+const RE_LEADING_COLOR = new RegExp(
+  String.raw`^(#(?:\w+[-\\|/]?\w+;)?(?:(?:text|back|header|line|line\.dashed|line\.dotted|line\.bold|shadowing)` +
+    String.raw`(?::\w+[-\\|/]?\w+)?(?:;|(?![\w;:.])))+|#\w+[-\\|/]?\w+)\s+(?=\S)`,
+);
+
+function splitLeadingColor(rest: string): { color: string | undefined; rest: string } {
+  const m = RE_LEADING_COLOR.exec(rest);
+  return m === null ? { color: undefined, rest } : { color: m[1], rest: rest.slice(m[0].length) };
+}
+
+/**
  * Parse the name/alias/color/stereotype section of a keyword declaration.
  * Delegates alias matching to parseAliasForms to stay under 30 NLOC.
  *
@@ -251,7 +267,8 @@ interface NameDecoration {
  * matched.
  */
 export function parseNameSection(rest: string): NameSection {
-  const trimmedRest = rest.trim();
+  const lead = splitLeadingColor(rest.trim());
+  const trimmedRest = lead.rest;
   const leading = splitLeadingQuote(trimmedRest);
   // Decoration is scanned only OUTSIDE a leading quoted display. Guillemets
   // INSIDE the quotes are literal display text, not a stereotype: upstream's
@@ -284,6 +301,10 @@ export function parseNameSection(rest: string): NameSection {
     color = cr.color;
     remainder = cr.remainder.trim();
   }
+
+  // `COLOR2` (leading) and `COLOR` (trailing) both feed `ColorParser#getColor`'s `getLazzy("COLOR", 0)`; with both
+  // present the jar paints the trailing one (oracle: `rectangle #pink "Both" as b #green` fills `#008000`).
+  color ??= lead.color;
 
   // Re-attach the quoted display the extractors were kept away from. The
   // separator space must survive: `stripTrailingUrl` deliberately preserves

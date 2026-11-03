@@ -25,7 +25,7 @@ export function stereogroupStereotype(group: string | undefined): string | undef
  *  (`Stereogroup.java:184-185`, `new Colors(label, set, ColorType.BACK)`)
  *  this port reads. `##`/`###` (line/text colour) and `name:value;` style
  *  labels (`:150-190`) are not ported. */
-const BACK_COLOR_LABEL = /^#\w+$/;
+const BACK_COLOR_LABEL = /^#\w+(?:[-\\|/]\w+)?$/;
 
 /** The BACK colour of the stereogroup's `<<#color>>` labels -- the LAST one
  *  wins, `Colors#mergeWith`'s `putAll` (`klimt/color/Colors.java:80-90`). */

@@ -1,0 +1,9 @@
+@startuml
+<style>
+arrow { LineColor #0A0-#00A }
+</style>
+class A
+class B
+A --> B : l
+note left of A: n
+@enduml

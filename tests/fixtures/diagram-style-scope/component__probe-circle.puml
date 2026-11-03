@@ -1,0 +1,10 @@
+@startuml
+<style>
+interface { BackgroundColor #AAAAAA
+LineColor #BBBBBB }
+circle { BackgroundColor #CCCCCC }
+</style>
+() I
+interface J
+circle K
+@enduml

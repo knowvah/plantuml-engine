@@ -53,6 +53,7 @@ import { renderBorderPoint } from './renderer-border-point.js';
 import {} from './state-render-colors.js';
 import { renderComposite } from './renderer-composite-box.js';
 import { renderStateNote } from './renderer-note.js';
+import { STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
 import { buildStateShadowFilterDef } from './state-shadow.js';
 import { renderTransitionWrapped } from './state-renderer-transitions.js';
 
@@ -90,9 +91,9 @@ function renderShape(node: StateNodeGeo, theme: Theme): string {
 
   switch (node.kind) {
     case 'initial':
-      return renderInitial(node);
+      return renderInitial(node, theme);
     case 'final':
-      return renderFinal(node);
+      return renderFinal(node, theme);
     case 'fork':
     case 'join':
     // syncBar (T2 addition, `=name=` transition endpoints -- see
@@ -182,7 +183,9 @@ function wrapClassFor(node: StateNodeGeo): 'entity' | 'start_entity' | 'end_enti
  *  stroke-dasharray:8,10;`. */
 function renderSeparator(sep: { x1: number; y1: number; x2: number; y2: number }, theme: Theme): string {
   return line(sep.x1, sep.y1, sep.x2, sep.y2, {
-    stroke: theme.colors.border,
+    // dss T3e site 18: `ConcurrentStates.java:111-120` reads LineColor of `root, element,
+    // stateDiagram, state`.
+    stroke: stateBucketPaint(theme, STATE_BUCKET, 'border') ?? theme.colors.border,
     strokeWidth: 1.5,
     strokeDasharray: '8,10',
   });
@@ -328,6 +331,14 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
       ? { preChromeWidth: geo.preChromeWidth, preChromeHeight: geo.preChromeHeight }
       : {}),
     ...(geo.frameInk !== undefined ? { frameInk: geo.frameInk } : {}),
+    // dss T3f: the margin the layout folded (`layout.ts#applyStateDocumentMargin`), for
+    // chrome to re-apply (`document-margin.ts#documentMarginOf`).
+    ...(geo.documentMargin !== undefined ? { documentMargin: geo.documentMargin } : {}),
+    // dss T3f: `TextBlockExporter#maybeDrawBorder` (`TextBlockExporter.java:171`) has no
+    // diagram-type branch, so `class/renderer-document.ts`'s read holds here.
+    ...(theme.colors.graph.diagramBorderColor !== undefined
+      ? { diagramBorderColor: resolveColorToSvgHex(theme.colors.graph.diagramBorderColor) }
+      : {}),
     ...(extraDefs !== undefined ? { extraDefs } : {}),
     // lad-T1c: `TextBlockExporter.java:306-307` -- `skinparam lengthAdjust` is the document's
     // `SvgOption`, read by `SvgGraphics.java:155-158,699-705`. Unset stays unset (D4).

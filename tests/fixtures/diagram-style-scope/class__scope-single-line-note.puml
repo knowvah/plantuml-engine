@@ -1,0 +1,5 @@
+@startuml
+<style>classDiagram{note{BackgroundColor #AAAAAA}}</style>
+class A
+note left of A: n
+@enduml

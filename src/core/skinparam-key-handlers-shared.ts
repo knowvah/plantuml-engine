@@ -50,6 +50,37 @@ export function arrowFontColorValue(value: string, color: string): string | unde
 export const ROOT_LINE_COLOR_KEY = 'root linecolor';
 
 /**
+ * A flat `string` field holds a gradient's first colour; the element bucket its reader consults first holds the gradient
+ * for the shapes whose driver draws one (`DriverRectangleSvg.java:97-111`). `skinparam` converts to that same signature
+ * upstream (`FromSkinparamToStyle.java`). A solid value writes nothing, and a later solid clears an earlier gradient.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverRectangleSvg.java:97-111
+ */
+export function carryGradient(
+  acc: SkinparamAccumulator,
+  bucket: string,
+  role: 'background' | 'border',
+  paint: Paint,
+): void {
+  if (typeof paint !== 'string') (acc.elements[bucket] ??= {})[role] = paint;
+  else if (typeof acc.elements[bucket]?.[role] === 'object') delete acc.elements[bucket][role];
+}
+
+/**
+ * The key whose flat `field` is one colour: a handler writing it and {@link carryGradient}.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorGradient.java:103-105
+ */
+export function flatWithGradient(
+  field: 'activityBorder' | 'activityBarColor' | 'activityDiamondBackground' | 'activityDiamondBorder',
+  bucket: string,
+  role: 'background' | 'border',
+): KeyHandler {
+  return (acc, _value, color, paint) => {
+    acc[field] = color;
+    carryGradient(acc, bucket, role, paint);
+  };
+}
+
+/**
  * One `case` arm of upstream `SkinParam.java`'s key switch.
  *
  * @param value the RAW skinparam token, exactly as written

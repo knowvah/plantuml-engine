@@ -1,0 +1,15 @@
+@startuml
+<style>
+root { LineColor #0A0 }
+arrow { LineColor #00A }
+</style>
+start
+fork
+if (c) then (y)
+:x;
+endif
+fork again
+:b;
+end merge
+stop
+@enduml

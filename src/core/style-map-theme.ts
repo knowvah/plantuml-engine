@@ -11,14 +11,13 @@
  * unchanged from the original single-function version (see .agent-notes).
  */
 
+import type { DiagramType } from './block-extractor.js';
 import type { Theme, ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { deepMergeTheme } from './theme.js';
 import { resolveColor } from './skinparam.js';
-import { resolveColorPaint } from './skinparam-key-handlers.js';
 import {
   collectElementStyleBuckets,
-  resolveDocumentBackground,
   computeNoteStyleTagCascade,
   computeShowStereotypeByTag,
   resolveGlobalShadowing,
@@ -79,9 +78,6 @@ function computeGraphOverride(styleMap: StyleMap, base: Theme): Partial<GraphCol
  *  threaded through {@link applyStyleMapHasNoOverrides} and {@link
  *  buildStyleMapPartialTheme}. */
 interface StyleMapExtras {
-  /** The winning `document { BackgroundColor }`, RAW -- see
-   *  {@link documentBackgroundColors}. */
-  readonly documentBg: string | undefined;
   readonly elements: Record<string, ElementColors>;
   readonly hasElements: boolean;
   readonly noteTagCascade: Readonly<Record<string, ElementColors>>;
@@ -105,17 +101,16 @@ interface StyleMapExtras {
 }
 
 /**
- * document { BackgroundColor } canvas bg; database { … } → per-element
+ * database { … } → per-element
  * buckets (D4); the `.tagname` note-bucket cascade (G2 N37); the bare
  * root/element Shadowing/LineColor cascade (D3); and the D3 cardinality-font
  * cascade (T14).
  */
-function computeStyleMapExtras(styleMap: StyleMap, base: Theme): StyleMapExtras {
-  const elements = collectElementStyleBuckets(styleMap);
+function computeStyleMapExtras(styleMap: StyleMap, base: Theme, diagramType: DiagramType | undefined): StyleMapExtras {
+  const elements = collectElementStyleBuckets(styleMap, diagramType);
   const noteTagCascade = computeNoteStyleTagCascade(styleMap);
   const showStereotypeByTag = computeShowStereotypeByTag(styleMap);
   return {
-    documentBg: resolveDocumentBackground(styleMap),
     elements,
     hasElements: Object.keys(elements).length > 0,
     noteTagCascade,
@@ -135,7 +130,6 @@ function computeStyleMapExtras(styleMap: StyleMap, base: Theme): StyleMapExtras 
 function styleMapHasNoOverrides(graphOverride: Partial<GraphColors>, extras: StyleMapExtras): boolean {
   return (
     Object.keys(graphOverride).length === 0 &&
-    extras.documentBg === undefined &&
     !extras.hasElements &&
     !extras.hasNoteTagCascade &&
     !extras.hasShowStereotypeByTag &&
@@ -193,36 +187,6 @@ function mergeElementBuckets(
   return merged;
 }
 
-/**
- * dbp T1a (D1): the `(background, backgroundGradient)` pair for a `<style>`
- * document BackgroundColor -- computed EXACTLY as `skinparam backgroundColor`
- * computes it: `applyNormalKey` (`skinparam-key-handlers.ts`) hands the
- * `backgroundcolor` handler `resolveColor(value)` + `resolveColorPaint(value)`,
- * and the handler (`skinparam-key-handlers-table-a.ts`) stores the first as
- * `background` and a non-string second as `backgroundGradient`. Upstream has
- * one property for both syntaxes (`FromSkinparamToStyle.java:180`) read once
- * via `asColor` (`TitledDiagram.java:280-289` -> `HColorSet.java:85-119`).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:280-289
- */
-function documentBackgroundColors(raw: string): Pick<Theme['colors'], 'background' | 'backgroundGradient'> {
-  const paint = resolveColorPaint(raw);
-  return typeof paint === 'string'
-    ? { background: resolveColor(raw) }
-    : { background: resolveColor(raw), backgroundGradient: paint };
-}
-
-/**
- * The merge base: a `<style>` document BackgroundColor replaces the WHOLE
- * pair, so a solid value must not inherit an earlier gradient -- skinparams
- * and `<style>` blocks mute ONE style storage in declaration order
- * (`SkinParam.java:232-233,244`), so `calculateBackColor` sees only the last.
- */
-function styleMapMergeBase(base: Theme, extras: StyleMapExtras): Theme {
-  if (extras.documentBg === undefined || base.colors.backgroundGradient === undefined) return base;
-  const { backgroundGradient: _replaced, ...colors } = base.colors;
-  return { ...base, colors };
-}
-
 /** Assemble the `Partial<Theme>` passed to `deepMergeTheme`. */
 function buildStyleMapPartialTheme(
   base: Theme,
@@ -237,7 +201,6 @@ function buildStyleMapPartialTheme(
     ...extras.cardinalityFont,
     colors: {
       ...base.colors,
-      ...(extras.documentBg !== undefined ? documentBackgroundColors(extras.documentBg) : {}),
       ...(extras.rootElementBorderRaw !== undefined ? { border: resolveColor(extras.rootElementBorderRaw) } : {}),
       ...(extras.hasElements ? { elements: mergeElementBuckets(base, extras.elements) } : {}),
       ...(extras.hasNoteTagCascade ? { noteTagCascade: extras.noteTagCascade } : {}),
@@ -254,12 +217,19 @@ function buildStyleMapPartialTheme(
  * their corresponding Theme fields. The top-level bare key ("") is handled
  * separately via resolveSkinparam and is not processed here.
  *
+ * The document background is not here: `document-back-color.ts` reads it
+ * through the style engine (dss T1a, D5).
+ *
+ * `diagramType` decides which prefixed selectors are foreign to a bucket's
+ * signature (D5, D5a, `collectElementStyleBuckets`); `undefined` for a `<style>`
+ * the parser rejects (D6a).
+ *
  * Returns a new Theme — neither `base` nor the StyleMap is mutated.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleBuilder.java:86-104
  */
-export function applyStyleMap(styleMap: StyleMap, base: Theme): Theme {
+export function applyStyleMap(styleMap: StyleMap, base: Theme, diagramType: DiagramType | undefined): Theme {
   const graphOverride = computeGraphOverride(styleMap, base);
-  const extras = computeStyleMapExtras(styleMap, base);
+  const extras = computeStyleMapExtras(styleMap, base, diagramType);
   if (styleMapHasNoOverrides(graphOverride, extras)) return base;
-  const mergeBase = styleMapMergeBase(base, extras);
-  return deepMergeTheme(mergeBase, buildStyleMapPartialTheme(mergeBase, graphOverride, extras));
+  return deepMergeTheme(base, buildStyleMapPartialTheme(base, graphOverride, extras));
 }

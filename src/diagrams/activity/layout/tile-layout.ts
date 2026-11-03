@@ -95,6 +95,7 @@ function outLane(swimlaneOut: string | undefined, swimlane: string | undefined):
  */
 function withKilled<T extends Tile>(tile: T): T {
   tile.hasPointOut = () => false;
+  tile.killed = true;
   return tile;
 }
 
@@ -262,7 +263,7 @@ function tileWhile(
   const header = buildWhileHeader(node, labels, bounder, theme);
   const { rest, backward } = extractBackward(node.body);
   const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
-  const body = new GtileTopDown(bodyTiles, bounder, theme);
+  const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
   const backwardTile = backward !== undefined ? tileBackwardActivity(backward, bounder, theme) : undefined;
   const specialOutTile = node.specialOut !== undefined ? tileSimpleLeaf(node.specialOut, bounder, theme) : undefined;
   const ctx = withBackLabels({ bounder, theme, backward: backwardTile, specialOut: specialOutTile }, backward);
@@ -371,7 +372,7 @@ function tileRepeat(
   const entry = tileRepeatEntry(node, bounder, theme, laneOrder, pragma);
   const { rest, backward } = extractBackward(node.body);
   const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
-  const body = new GtileTopDown(bodyTiles, bounder, theme);
+  const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
   const backwardTile = backward !== undefined ? tileBackwardActivity(backward, bounder, theme) : undefined;
   const labels = selectRepeatConditionLabels(theme.conditionStyle, node, backward, laneOrder);
   const condition = withSwimlane(

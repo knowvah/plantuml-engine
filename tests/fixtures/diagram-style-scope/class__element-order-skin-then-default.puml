@@ -1,0 +1,10 @@
+@startuml
+skinparam classBackgroundColor #AAAAAA
+<style>
+class {
+  BackgroundColor #F1F1F1
+}
+</style>
+class A
+note left of A : n
+@enduml

@@ -1,0 +1,10 @@
+@startwbs
+<style>
+document {
+  wbsDiagram {
+    BackgroundColor #AAAAAA
+  }
+}
+</style>
+* A
+@endwbs

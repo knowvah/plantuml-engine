@@ -1,0 +1,15 @@
+@startuml
+skinparam defaultFontColor #0A0
+package P {
+ [A]
+}
+node N {
+ [B]
+}
+actor C
+database D
+interface I
+usecase U
+component E <<s>>
+A --> B : l
+@enduml

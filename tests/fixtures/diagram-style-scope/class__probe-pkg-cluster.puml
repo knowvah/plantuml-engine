@@ -1,0 +1,13 @@
+@startuml
+<style>
+element { BackgroundColor #008000
+LineColor #800000 }
+group { BackgroundColor #0000FF }
+</style>
+package P {
+ class A
+}
+namespace N {
+ class Z
+}
+@enduml

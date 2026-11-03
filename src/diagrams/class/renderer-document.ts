@@ -148,6 +148,9 @@ export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, draw
     ...(geo.rawWidth !== undefined && geo.rawHeight !== undefined
       ? { preChromeWidth: geo.rawWidth, preChromeHeight: geo.rawHeight }
       : {}),
+    // dss T3b: the style `Margin` the body was drawn inside (`TextBlockExporter.java:510-516`); chrome removes and
+    // re-applies exactly this (`document-margin.ts#documentMarginOf`).
+    ...(geo.documentMargin === undefined ? {} : { documentMargin: geo.documentMargin }),
     // G2 N48: see {@link beginClassDocument} -- drawn by
     // `core/assemble-svg.ts`'s class finalize function at the FINAL
     // (post-chrome) canvas size, not here.

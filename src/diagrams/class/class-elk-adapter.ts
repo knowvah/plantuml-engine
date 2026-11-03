@@ -22,6 +22,7 @@
 import type { ClassDiagramAST, Classifier, Namespace, Relationship } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
+import { elementGradient } from '../../core/theme-element-resolve.js';
 import type { ClassifierGeo } from './class-geo-types.js';
 import type { ElkDiagramAdapter, ElkClusterHeader, ElkColors } from '../../core/elk/ElkDiagramAdapter.js';
 import { GroupType } from '../../core/abel/GroupType.js';
@@ -323,7 +324,8 @@ function linkMembers(index: ClassElkIndex, ends: ReturnType<typeof linkEndMember
     getType: (id: string) => linkType(link(id)),
     // `{root, element, classDiagram, arrow}` (`MyElkEdge.java:140-145`).
     getArrowStyle: () => ({
-      lineColor: theme.colors.graph.classCascadeArrowColor ?? theme.colors.arrow,
+      lineColor:
+        elementGradient(theme, 'arrow', 'border') ?? theme.colors.graph.classCascadeArrowColor ?? theme.colors.arrow,
       stroke: UStroke.simple(),
     }),
     getLinkColors: () => null,

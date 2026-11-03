@@ -1,0 +1,9 @@
+@startuml
+start
+while (c) is (y)
+  -[#FF00FF]->
+  :a;
+backward:b;
+endwhile (n)
+stop
+@enduml

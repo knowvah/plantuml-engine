@@ -1,0 +1,13 @@
+@startuml
+<style>
+title { BackgroundColor #AAAAAA
+LineColor #BBBBBB
+FontColor #CCCCCC }
+</style>
+[C]
+component D as "dd d"
+database E
+rectangle R {
+ [X]
+}
+@enduml

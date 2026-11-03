@@ -1,0 +1,21 @@
+@startuml
+<style>
+root { FontColor #0A0-#00A }
+</style>
+start
+partition P {
+:A;
+}
+fork
+:B;
+fork again
+:C;
+end fork
+if (x?) then (y)
+:D;
+note left: n
+else (n)
+:E;
+endif
+stop
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+skinparam classBackgroundColor #AAAAAA
+<style>
+element {
+  BackgroundColor #F1F1F1
+}
+</style>
+class A
+@enduml

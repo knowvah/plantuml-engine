@@ -1,0 +1,9 @@
+@startuml
+<style>
+arrow { FontColor #0A0-#00A }
+</style>
+usecase A
+usecase B
+A --> B : l
+note left of A: n
+@enduml

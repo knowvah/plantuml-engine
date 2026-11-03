@@ -73,6 +73,13 @@ export interface Tile {
    *   (`InstructionFork.java:183-191`, `InstructionSplit.java:128-142`).
    */
   readonly outLabel?: { label: string; color?: string };
+  /**
+   * `kill`/`detach` marked this tile: `InstructionSimple#createFtile` wraps it in `FtileKilled`
+   * (`InstructionSimple.java:111-113`), an `AbstractFtile` that does not forward `getInLinkRendering()`
+   * (`FtileKilled.java:44`), so the wrapped box's own `arrow` rainbow (`FtileBox.java:158`) is no longer seen.
+   * Set by `withKilled` (`layout/tile-layout.ts`), next to the `hasPointOut()` override it accompanies.
+   */
+  killed?: true;
   getCoord(hook: HookName): GPoint;
   /**
    * Whether this tile has an outgoing connection point that a later
@@ -100,6 +107,7 @@ export abstract class TileLeaf implements Tile {
   swimlaneOut?: string;
   inLabel?: { label: string; color?: string };
   outLabel?: { label: string; color?: string };
+  killed?: true;
 
   /**
    * Default `true` rather than `abstract`: every production `gtile-*.ts`
@@ -126,6 +134,7 @@ export abstract class TileComposite implements Tile {
   swimlaneOut?: string;
   inLabel?: { label: string; color?: string };
   outLabel?: { label: string; color?: string };
+  killed?: true;
 
   /**
    * Default `true` for the same reason as `TileLeaf.hasPointOut` above:

@@ -1,0 +1,16 @@
+@startuml
+<style>
+componentDiagram {
+  BackgroundColor #AAAAAA
+}
+</style>
+[C]
+interface I
+package P {
+  [D]
+}
+database DB
+cloud X
+C --> I : l
+note left of C : n
+@enduml

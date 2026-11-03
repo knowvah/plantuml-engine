@@ -65,6 +65,7 @@ import type { ScaledTheme } from './class-scale-geo.js';
 import { linkWrap, attrs, resolvePaint } from '../../core/svg.js';
 import type { Paint } from '../../core/paint.js';
 import { STROKE_WIDTH, drawIconShape, type IconShapeCtx } from './class-visibility-icon-shapes.js';
+import { visibilityIconBucketOf, type VisibilityIconKind } from '../../core/style-element-scope.js';
 
 /** `SkinParam#classAttributeIconSize()`'s own default (skin/SkinParam.java
  *  :554-556). `skinparam classAttributeIconSize N` overrides it -- resolved
@@ -125,7 +126,7 @@ const IE_MANDATORY_COLOR = { line: '#000000', background: '#000000' };
  *  keyed by this port's own `Visibility` char -- the SAME cleaned kind
  *  strings `style-cascade-visibility-icon.ts#VISIBILITY_ICON_KINDS` uses
  *  as `<style>` selector text. */
-const VISIBILITY_ICON_KIND: Record<Visibility, string> = {
+const VISIBILITY_ICON_KIND: Record<Visibility, VisibilityIconKind> = {
   '+': 'public',
   '-': 'private',
   '#': 'protected',
@@ -173,13 +174,33 @@ const VISIBILITY_ICON_KIND: Record<Visibility, string> = {
 // LineColor through the SAME theme-override-aware table (`iconPrivateColor`
 // etc) member rows already use, rather than re-deriving it against the
 // unthemed `core/skin/ColorParam.ts` defaults only.
-export function colorsFor(icon: Visibility, theme?: Theme): { line: Paint; background: Paint } {
+export function colorsFor(icon: Visibility, theme?: Theme, member = false): { line: Paint; background: Paint } {
   const fallback = icon === '*' ? IE_MANDATORY_COLOR : VISIBILITY_COLORS[icon];
   const g = theme?.colors.graph;
   if (g === undefined) return fallback;
   const kind = VISIBILITY_ICON_KIND[icon];
-  const cascadeLine = g.visibilityIconLineCascade?.[kind];
-  const cascadeBackground = g.visibilityIconBackgroundCascade?.[kind];
+  const scoped = member ? theme?.colors.elements?.[visibilityIconBucketOf(kind)] : undefined;
+  if (scoped?.border !== undefined || scoped?.background !== undefined) {
+    const rest = tierColors(icon, g, kind, true);
+    return { line: scoped.border ?? rest.line, background: scoped.background ?? rest.background };
+  }
+  return tierColors(icon, g, kind, member);
+}
+
+/**
+ * The tiers below the style engine's bucket. The `visibilityIcon*Cascade` tier is the member row's alone: the header's,
+ * a package title's and a link label's colours are `Rose`'s, from skinparams only
+ * (`EntityImageClassHeader.java:111-112`, `ClusterHeader.java:132-133`, `SvekEdge.java:366-367`).
+ */
+function tierColors(
+  icon: Visibility,
+  g: Theme['colors']['graph'],
+  kind: VisibilityIconKind,
+  member: boolean,
+): { line: Paint; background: Paint } {
+  const fallback = icon === '*' ? IE_MANDATORY_COLOR : VISIBILITY_COLORS[icon];
+  const cascadeLine = member ? g.visibilityIconLineCascade?.[kind] : undefined;
+  const cascadeBackground = member ? g.visibilityIconBackgroundCascade?.[kind] : undefined;
   if (icon === '*') {
     return { line: cascadeLine ?? fallback.line, background: cascadeBackground ?? fallback.background };
   }
@@ -232,6 +253,21 @@ export function renderVisibilityIcon(
   // originX/originY/url?/theme?); see renderVisibilityIconAt.
 }
 
+/**
+ * {@link renderVisibilityIcon} for a member row, whose colours are the style engine's:
+ * `StyleSignatureBasic.of(root, element, visibilityIcon, <kind>)` through the document's builder
+ * (`MethodsOrFieldsArea.java:360-366`), where the header's, a package title's and a link label's are `Rose`'s.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/cucadiagram/MethodsOrFieldsArea.java:360-366
+ */
+export function renderMemberVisibilityIcon(
+  icon: Visibility,
+  isField: boolean,
+  origin: { readonly x: number; readonly y: number },
+  ambient: Pick<VisibilityIconAmbient, 'url' | 'theme'>,
+): string {
+  return renderVisibilityIconAt(icon, isField, origin, { ...ambient, member: true });
+}
+
 /** The ambient drawing context a {@link renderVisibilityIconAt} caller
  *  supplies: the row's url, the (scaled) theme, and the ug's current stroke
  *  thickness (UNSCALED; default {@link STROKE_WIDTH}, a member row's). */
@@ -239,6 +275,8 @@ export interface VisibilityIconAmbient {
   readonly url?: UrlInfo | undefined;
   readonly theme?: ScaledTheme | undefined;
   readonly strokeWidth?: number;
+  /** A member row's icon, whose colours are the style engine's (`MethodsOrFieldsArea.java:360-366`). */
+  readonly member?: boolean;
 }
 
 /**
@@ -254,8 +292,9 @@ function iconPaints(
   icon: Visibility,
   isField: boolean,
   theme: ScaledTheme | undefined,
+  member: boolean,
 ): { line: string; fill: string; paintDefs: string } {
-  const paints = colorsFor(icon, theme);
+  const paints = colorsFor(icon, theme, member);
   const linePaint = resolvePaint(paints.line);
   const backgroundPaint = resolvePaint(paints.background);
   const line = linePaint.value ?? '';
@@ -284,7 +323,7 @@ function iconShapeCtx(
   // value -- and carry any `<linearGradient>` def out with the shape
   // (`svg.ts#extractGradientDefs` lifts it into the document `<defs>`).
   // The `draw*` helpers below keep their plain-string signatures.
-  const { line, fill, paintDefs } = iconPaints(icon, isField, theme);
+  const { line, fill, paintDefs } = iconPaints(icon, isField, theme, ambient.member === true);
   const k = theme?.scaleK ?? 1;
   const ctx: IconShapeCtx = {
     fill,

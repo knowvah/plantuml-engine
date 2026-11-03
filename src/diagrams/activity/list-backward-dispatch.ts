@@ -143,7 +143,8 @@ function redirectNoteOntoIf(nodes: ActivityNode[], node: ActivityNote): boolean 
  * `killLastOf`'s own no-op on an empty branch.
  */
 function killLastOf(branch: readonly ActivityNode[], killer: ActivityNode): ActivityNode[] {
-  if (branch.length === 0) return [...branch];
+  // `getLast() != null` (`InstructionIf.java:204`): an arrow is no instruction (`CommandArrow3.java:96-110`).
+  if (branch.every((n) => n.kind === 'arrow-label')) return [...branch];
   return [...branch, killer];
 }
 
