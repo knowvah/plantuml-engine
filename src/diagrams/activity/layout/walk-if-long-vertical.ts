@@ -29,6 +29,7 @@ import { EAST_HOOK, NORTH_HOOK, SOUTH_HOOK } from '../tiles/points.js';
 import { laneAt, laneIn, laneOut } from './swimlane-lanes.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { applyInColor } from './tile-layout-inlabel.js';
 import { childDrawnInLanes, compositeLaneGate, nonTranslatableConnectionDrawn } from './swimlane-connection-gate.js';
 import { wrappedSpread } from './diamond-wrap.js';
 
@@ -230,7 +231,9 @@ function connectionVerticalIn(ctx: LvCtx, i: number): void {
   const p1 = absolutePoint(diamond.getCoord(EAST_HOOK), dOrigin.x, dOrigin.y);
   const tOrigin = tileOrigin(ctx, i);
   const p2 = absolutePoint(t.tiles[i]!.getCoord(NORTH_HOOK), tOrigin.x, tOrigin.y);
-  pushGatedEdge(ctx, [p1, { x: p2.x, y: p1.y }, p2], laneOut(diamond, myLane), laneIn(t.tiles[i]!, myLane));
+  if (pushGatedEdge(ctx, [p1, { x: p2.x, y: p1.y }, p2], laneOut(diamond, myLane), laneIn(t.tiles[i]!, myLane))) {
+    applyInColor(ctx.out, t.tiles[i]!); // `thens.get(i).getInColor(arrowColor)`, FtileIfLongVertical.java:178-180
+  }
 }
 
 /**

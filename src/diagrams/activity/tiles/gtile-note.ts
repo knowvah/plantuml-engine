@@ -105,6 +105,9 @@ export class GtileNote extends TileLeaf {
    *  calls `eventuallyOverride`), so `tile-coordinates.ts`'s own
    *  `'gtile-note'` walker deliberately does not read it. */
   readonly color: string | undefined;
+  /** The note's `<<stereotype>>`, which re-signs the Opale's style in the wraps above only
+   *  (`FtileWithNoteOpale.java:137`, `FtileWithNotes.java:109`, `withTOBECHANGED`). */
+  readonly stereotype: string | undefined;
   /** `FtileNoteAlone#withOutPoint` (`FtileNoteAlone.java:103,129-132`), set by
    *  `FtileFactoryDelegatorAddNote.java:67-68` to `note.getType() ==
    *  NoteType.NOTE` -- `false` for a `FLOATING_NOTE` alone (add4-T2c). */
@@ -116,6 +119,7 @@ export class GtileNote extends TileLeaf {
     this.text = node.text;
     this.side = node.position;
     this.color = node.color;
+    this.stereotype = node.stereotype;
     // The ROOT `note { FontSize 13 }` block (plantuml.skin:323): an activity
     // note resolves `SName.note` under `activityDiagram`
     // (`ftile/vcompact/FtileWithNoteOpale.java:89`,

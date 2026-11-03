@@ -7,8 +7,8 @@
 import { NOTE_CORNER_SIZE, NOTE_SPIKE_DELTA } from './activity-layout-constants.js';
 import type { ActivityNodeGeo } from './activity-geometry.types.js';
 import type { Theme } from '../../core/theme.js';
-import { parseColor, type Paint } from '../../core/paint.js';
-import { scopedBack } from './activity-scoped-colors.js';
+import { noGradient, parseColor, type Paint } from '../../core/paint.js';
+import { scopedBack, scopedLine, stereotypeBack, stereotypeLine } from './activity-scoped-colors.js';
 
 /** add4-T1c: the Opale's own `BackGroundColor` -- the note's `#color` when
  *  its wrap overrode the style with it (`Style#eventuallyOverride(Colors)`,
@@ -20,7 +20,12 @@ import { scopedBack } from './activity-scoped-colors.js';
 export function noteFillOf(node: ActivityNodeGeo, theme: Theme): Paint {
   if (node.color !== undefined) return parseColor(node.color);
   // `FtileWithNoteOpale.java:89,136-139`: the merged style's `BackGroundColor`, T2a's bucket (D2).
-  return scopedBack(theme, 'note') ?? theme.colors.noteBackground;
+  return stereotypeBack(theme, 'note', node.stereotype) ?? scopedBack(theme, 'note') ?? theme.colors.noteBackground;
+}
+
+/** The Opale's line: the stereotype's style (`FtileWithNoteOpale.java:137`), the merged `LineColor` (`:141`). */
+export function noteLineOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): string {
+  return noGradient(stereotypeLine(theme, 'note', node.stereotype) ?? scopedLine(theme, 'note') ?? theme.colors.border);
 }
 
 /** `Opale#getCorner` (`:134-147`, `roundCorner=0`): the fold triangle,

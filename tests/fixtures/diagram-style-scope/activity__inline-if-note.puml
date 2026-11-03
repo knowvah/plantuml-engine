@@ -1,0 +1,13 @@
+@startuml
+start
+if (c) then (y)
+  -[#FF00FF]->
+  note left: n
+  :d;
+else (n)
+  -[#00FFFF]->
+  floating note right: n
+  :e;
+endif
+stop
+@enduml

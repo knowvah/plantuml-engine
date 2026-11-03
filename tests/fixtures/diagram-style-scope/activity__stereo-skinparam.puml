@@ -1,0 +1,9 @@
+@startuml
+skinparam activityFontColor<<foo>> #BBBBBB
+skinparam activityBorderColor<<foo>> #00BB00
+skinparam activityBackgroundColor<<foo>> #DDDDDD
+start
+:a; <<foo>>
+:b;
+stop
+@enduml

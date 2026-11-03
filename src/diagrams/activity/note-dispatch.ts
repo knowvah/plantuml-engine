@@ -15,21 +15,22 @@
 
 import { removeEmptyColumns } from './dispatch-multiline-body.js';
 import type { ActivityNode, ActivityNote } from './ast.js';
-import {
-  RE_NOTE_END,
-  RE_NOTE_MULTI,
-  RE_NOTE_SINGLE,
-  defaultLeftPosition,
-  swimlaneSpread,
-  type DispatchResult,
-  type ParseContext,
-} from './dispatch-support.js';
+import { RE_NOTE_END, RE_NOTE_MULTI, RE_NOTE_SINGLE, defaultLeftPosition } from './dispatch-note-patterns.js';
+import { swimlaneSpread, type DispatchResult, type ParseContext } from './dispatch-support.js';
+import { stereogroupStereotype } from './dispatch-stereogroup.js';
 import { unescapeLabelNewlines } from './if-dispatch.js';
 
 /** The note's own `#color` group, spread only when present (an absent
  *  colour omits the field, never `color: undefined`). */
 function noteColorSpread(color: string | undefined): { color?: string } {
   return color === undefined ? {} : { color };
+}
+
+/** `Stereotype.build(arg.get("STEREO", 0))` (`CommandNote3.java:76-79`, `CommandNoteLong3.java:125-128`): the label that
+ *  re-signs the note's style (`FtileWithNoteOpale.java:137`, `withTOBECHANGED`). */
+function noteStereotypeSpread(stereo: string | undefined): { stereotype?: string } {
+  const stereotype = stereogroupStereotype(stereo);
+  return stereotype === undefined ? {} : { stereotype };
 }
 
 /** `NoteType.defaultType` (`sequencediagram/NoteType.java:43-48`): the `floating`
@@ -50,9 +51,10 @@ export function tryNoteSingle(ctx: ParseContext, idx: number, line: string): Dis
   const position = defaultLeftPosition(direction);
   const node: ActivityNote = {
     kind: 'note',
-    text: unescapeLabelNewlines(noteSingleMatch[4]!.trim()),
+    text: unescapeLabelNewlines(noteSingleMatch.groups!['text']!.trim()),
     position,
     ...noteColorSpread(noteSingleMatch[3]),
+    ...noteStereotypeSpread(noteSingleMatch.groups!['stereo']),
     ...noteFloatingSpread(noteSingleMatch[1]),
     ...swimlaneSpread(ctx),
   };
@@ -87,7 +89,8 @@ export function tryNoteMulti(ctx: ParseContext, idx: number, line: string): Disp
     kind: 'note',
     text: removeEmptyColumns(textLines).join('\n'),
     position,
-    ...noteColorSpread(noteMultiMatch[3]),
+    ...noteColorSpread(noteMultiMatch.groups!['color']),
+    ...noteStereotypeSpread(noteMultiMatch.groups!['stereo']),
     ...noteFloatingSpread(noteMultiMatch[1]),
     ...swimlaneSpread(ctx),
   };

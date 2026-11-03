@@ -1,0 +1,15 @@
+@startuml
+!pragma useVerticalIf on
+start
+if (c) then (y)
+  -[#FF00FF]->
+  :d;
+elseif (c2) then (y2)
+  -[#00FFFF]->
+  :e;
+else (n)
+  -[#FFFF00]->
+  :f;
+endif
+stop
+@enduml

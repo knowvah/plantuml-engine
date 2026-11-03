@@ -8,7 +8,7 @@
  */
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
-import type { Paint } from '../../core/paint.js';
+import { noGradient, type Paint } from '../../core/paint.js';
 import { ellipse, line, path, resolvePaint, text, type LineStyle } from '../../core/svg.js';
 import { END_CROSS_THICKNESS, STOP_INNER_DELTA } from './activity-layout-constants.js';
 import {
@@ -19,7 +19,7 @@ import {
   resolveSolidBucketColor,
 } from './activity-style-defaults.js';
 import { activityFontColor } from './activity-text-style.js';
-import { scopedBack, svgBack } from './activity-scoped-colors.js';
+import { scopedBack, scopedLine, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
 
@@ -197,7 +197,7 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
   const size = node.height;
   const size2 = (size - END_CROSS_THICKNESS) / Math.SQRT2;
   const delta = (size - size2) / 2;
-  const endFill = actColors(theme).endFill;
+  const endFill = endLine(theme);
   const crossStyle = { stroke: endFill, strokeWidth: END_CROSS_THICKNESS };
   return (
     ellipse(cx, cy, r, r, {
@@ -214,6 +214,15 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
       crossStyle,
     )
   );
+}
+
+/**
+ * `FtileCircleEndCross.java:79,105,109-114`: the ring and both cross lines are `LineColor`, the merged style of
+ * `circle, end` (`VCompactFactory.java:97`), T2a's bucket (D2); `ActivityEndColor` is that `LineColor`
+ * (`FromSkinparamToStyle.java:138`), the flat tier below it.
+ */
+function endLine(theme: Theme): string {
+  return noGradient(scopedLine(theme, 'circle.end') ?? actColors(theme).endFill);
 }
 
 /** `VCompactFactory.java:105`, `FtileCircleSpot.java:102-103`: its own colour, else the merged style's `BackGroundColor`,
@@ -275,7 +284,7 @@ export function renderSpot(node: ActivityNodeGeo, theme: Theme): string {
   const fill = ellipsePaint(spotBack(node, theme));
   const circle = ellipse(cx, cy, r, r, {
     fill,
-    stroke: theme.colors.border,
+    stroke: noGradient(scopedLine(theme, 'circle.spot') ?? theme.colors.border), // `FtileCircleSpot.java:102-103`
     'stroke-width': ELEMENT_LINE_THICKNESS,
   });
   const char = node.label ?? '';
@@ -311,7 +320,10 @@ const GOTO_STROKE_WIDTH = 1;
  */
 function renderGoto(node: ActivityNodeGeo, dest: { x: number; y: number } | undefined, theme: Theme): string {
   if (dest === undefined) return '';
-  const style = { stroke: theme.colors.border, strokeWidth: GOTO_STROKE_WIDTH };
+  const style = {
+    stroke: noGradient(scopedLine(theme, 'goto') ?? theme.colors.border),
+    strokeWidth: GOTO_STROKE_WIDTH,
+  };
   return orderedLine(node.x, node.y, dest.x, node.y, style) + orderedLine(dest.x, node.y, dest.x, dest.y, style);
 }
 

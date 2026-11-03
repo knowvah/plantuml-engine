@@ -1,0 +1,61 @@
+wait load 8.48
+== activity 01:30:07 { 5.92 10.25 15.64 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-activity.json — {"conformant":449,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== board 01:30:39 { 4.61 9.51 15.18 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-board.json — {"conformant":0,"structural-match":0,"diverged":4,"errored":0,"timeout":0,"oracle-error":0}
+== c4 01:31:08 { 4.07 8.90 14.76 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-c4.json — {"conformant":2,"structural-match":0,"diverged":9,"errored":0,"timeout":0,"oracle-error":0}
+== chart 01:31:39 { 4.04 8.43 14.39 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-chart.json — {"conformant":0,"structural-match":0,"diverged":29,"errored":0,"timeout":0,"oracle-error":0}
+== chronology 01:32:08 { 3.66 7.91 13.99 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-chronology.json — {"conformant":0,"structural-match":0,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+== class 01:32:34 { 3.21 7.47 13.66 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-class.json — {"conformant":723,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== component 01:33:06 { 3.25 6.99 13.23 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-component.json — {"conformant":215,"structural-match":13,"diverged":38,"errored":0,"timeout":0,"oracle-error":0}
+== ditaa 01:33:38 { 3.20 6.61 12.88 }
+[xmldom error]	element parse error: Error: invalid tagName:�GFF���0���^__�wQ`�`�����|�:wvvpXPP�vCC����%$$�|��ouu�|���$y 
+[xmldom fatalError]	Unescaped '<' not allowed in attributes values 
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-ditaa.json — {"conformant":0,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":2}
+== dot 01:33:51 { 3.01 6.40 12.69 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-dot.json — {"conformant":5,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== ebnf 01:34:20 { 3.11 6.09 12.36 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-ebnf.json — {"conformant":0,"structural-match":0,"diverged":44,"errored":0,"timeout":0,"oracle-error":0}
+== files 01:34:50 { 3.15 5.86 12.09 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-files.json — {"conformant":9,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== gantt 01:35:19 { 3.26 5.62 11.79 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-gantt.json — {"conformant":265,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== hcl 01:35:50 { 2.99 5.28 11.42 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-hcl.json — {"conformant":1,"structural-match":2,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== json 01:36:19 { 2.99 5.10 11.17 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-json.json — {"conformant":14,"structural-match":35,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+== mindmap 01:36:49 { 3.49 5.01 10.93 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-mindmap.json — {"conformant":142,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== network 01:37:19 { 3.54 4.87 10.67 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-network.json — {"conformant":1,"structural-match":0,"diverged":2,"errored":0,"timeout":0,"oracle-error":0}
+== object 01:37:49 { 3.35 4.69 10.40 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-object.json — {"conformant":64,"structural-match":8,"diverged":8,"errored":0,"timeout":0,"oracle-error":0}
+== packet 01:38:19 { 3.18 4.51 10.14 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-packet.json — {"conformant":0,"structural-match":0,"diverged":6,"errored":0,"timeout":0,"oracle-error":0}
+== regex 01:38:48 { 3.90 4.53 9.95 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-regex.json — {"conformant":0,"structural-match":0,"diverged":46,"errored":0,"timeout":0,"oracle-error":0}
+== salt 01:39:17 { 3.71 4.42 9.72 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-salt.json — {"conformant":51,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== sequence 01:39:48 { 4.05 4.41 9.53 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-sequence.json — {"conformant":1143,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== state 01:40:30 { 4.70 4.53 9.34 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-state.json — {"conformant":113,"structural-match":15,"diverged":145,"errored":0,"timeout":0,"oracle-error":0}
+== timing 01:41:00 { 4.40 4.45 9.14 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-timing.json — {"conformant":6,"structural-match":0,"diverged":120,"errored":0,"timeout":0,"oracle-error":0}
+== unknown 01:41:30 { 3.84 4.31 8.93 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-unknown.json — {"conformant":571,"structural-match":19,"diverged":235,"errored":0,"timeout":0,"oracle-error":0}
+== usecase 01:42:04 { 3.90 4.25 8.71 }
+[xmldom fatalError]	comment is not well-formed at position 3151 
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-usecase.json — {"conformant":70,"structural-match":8,"diverged":15,"errored":0,"timeout":0,"oracle-error":1}
+== wbs 01:42:36 { 3.57 4.13 8.52 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-wbs.json — {"conformant":204,"structural-match":0,"diverged":0,"errored":0,"timeout":0,"oracle-error":0}
+== wire 01:43:06 { 5.12 4.39 8.45 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-wire.json — {"conformant":0,"structural-match":0,"diverged":18,"errored":0,"timeout":0,"oracle-error":0}
+== yaml 01:43:35 { 4.54 4.30 8.28 }
+wrote plans/diagram-style-scope/measurements/b4-eng/parity-yaml.json — {"conformant":7,"structural-match":31,"diverged":1,"errored":0,"timeout":0,"oracle-error":0}
+DONE 01:44:05

@@ -100,7 +100,7 @@ why not. New/removed src module ⇒ `npm run catalog`.
 | [1 — document background](batch-1/overview.md) | T1a, T1b, close | [x] |
 | [2 — shared element cascade](batch-2/overview.md) | T2a, close | [x] |
 | [3 — engine readers](batch-3/overview.md) | T3a, T3b, T3c, T3d, T3e, T3f, T3g, close | [x] (chain deferred to b4, journal row 49) |
-| [4 — activity LineColor](batch-4/overview.md) | T4a, close | [ ] |
+| [4 — activity LineColor](batch-4/overview.md) | T4a, close | [x] |
 | [exit](batch-exit/overview.md) | final measurement, docs, follow-ons, memory | [ ] |
 | [squash](batch-squash/overview.md) | one commit per batch, tag `dss/pre-squash` | [ ] |
 

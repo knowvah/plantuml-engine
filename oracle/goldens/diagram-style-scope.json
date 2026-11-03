@@ -33,22 +33,130 @@
       "diffCount": 0
     },
     "activity__cascade-line-diag": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__cascade-line-diag-element": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__cascade-line-element": {
-      "conformant": false,
-      "diffCount": 40
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__cascade-line-end": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__cascade-line-goto": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__cascade-line-head": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__cascade-line-inline": {
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__cascade-line-root": {
       "conformant": true,
       "diffCount": 0
     },
+    "activity__cascade-line-stereo": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__cascade-none": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-bold": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-else": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-elseif": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-empty": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-label": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-lanes": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-nested": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-out": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-out-elseif": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-out-endif": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-out-stop": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-stop": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-then": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-thenonly": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-vertical": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-if-vertical-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-loop-lanes": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-repeat": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-while": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__inline-while-backward": {
       "conformant": true,
       "diffCount": 0
     },
@@ -77,16 +185,16 @@
       "diffCount": 0
     },
     "activity__lanes-line-diag": {
-      "conformant": false,
-      "diffCount": 25
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__lanes-line-element": {
-      "conformant": false,
-      "diffCount": 21
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__lanes-line-root": {
-      "conformant": false,
-      "diffCount": 4
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__lanes-none": {
       "conformant": true,
@@ -118,39 +226,39 @@
     },
     "activity__loops-line-diag": {
       "conformant": false,
-      "diffCount": 407
+      "diffCount": 311
     },
     "activity__loops-line-element": {
       "conformant": false,
-      "diffCount": 394
+      "diffCount": 311
     },
     "activity__loops-line-root": {
       "conformant": false,
-      "diffCount": 314
+      "diffCount": 311
     },
     "activity__loops-none": {
       "conformant": false,
       "diffCount": 311
     },
     "activity__probe-all": {
-      "conformant": false,
-      "diffCount": 45
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__probe-element-note": {
-      "conformant": false,
-      "diffCount": 22
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__probe-groups": {
-      "conformant": false,
-      "diffCount": 24
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__probe-legacy": {
       "conformant": false,
       "diffCount": 21
     },
     "activity__probe-swim": {
-      "conformant": false,
-      "diffCount": 13
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__sdl-bg-diag": {
       "conformant": true,
@@ -177,12 +285,12 @@
       "diffCount": 0
     },
     "activity__sdl-line-diag": {
-      "conformant": false,
-      "diffCount": 11
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__sdl-line-element": {
-      "conformant": false,
-      "diffCount": 6
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__sdl-line-root": {
       "conformant": true,
@@ -205,6 +313,22 @@
       "diffCount": 0
     },
     "activity__selector-reversed": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__stereo-fork": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__stereo-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__stereo-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__stereo-skinparam": {
       "conformant": true,
       "diffCount": 0
     },

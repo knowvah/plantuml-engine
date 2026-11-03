@@ -1,0 +1,11 @@
+@startuml
+start
+if (c) then (y)
+  -[#FF00FF]-> labelA;
+  :d;
+else (n)
+  -> labelB;
+  :e;
+endif
+stop
+@enduml

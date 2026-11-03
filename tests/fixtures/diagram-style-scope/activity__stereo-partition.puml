@@ -1,0 +1,19 @@
+@startuml
+<style>
+partition {
+  .foo {
+    BackgroundColor #AAAAAA
+    LineColor #00BB00
+    FontColor #BBBBBB
+  }
+}
+</style>
+start
+partition P <<foo>> {
+  :c;
+}
+partition Q {
+  :d;
+}
+stop
+@enduml

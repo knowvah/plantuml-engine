@@ -21,7 +21,7 @@ import { measureSide } from '../tiles/gtile-diamond-inside.js';
 import { CreoleMode } from '../../../core/klimt/creole/CreoleMode.js';
 import { GtileTopDown } from '../tiles/gtile-top-down.js';
 import { tileNodes } from './tile-layout.js';
-import { withOutLabel } from './tile-layout-inlabel.js';
+import { withInLabel, withOutLabel } from './tile-layout-inlabel.js';
 import type { IfLayoutCtx } from './conditional-builder.js';
 
 interface LongHorizontalBranch {
@@ -116,7 +116,7 @@ function branchBodyWithOutLabel(
   ctx: IfLayoutCtx,
 ): Tile {
   const { tiles, trailing } = tileNodes([...body], bounder, theme, ctx.laneOrder, ctx.pragma);
-  return withOutLabel(new GtileTopDown(tiles, bounder, theme), trailing);
+  return withOutLabel(withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel), trailing);
 }
 
 export function buildIfLongHorizontal(node: ActivityIf, bounder: StringBounder, theme: Theme, ctx: IfLayoutCtx): Tile {
@@ -188,15 +188,12 @@ function measureVerticalInlabel(
  */
 export function buildIfLongVertical(node: ActivityIf, bounder: StringBounder, theme: Theme, ctx: IfLayoutCtx): Tile {
   const branches = longHorizontalBranches(node);
-  const tiles = branches.map(
-    (b): Tile =>
-      new GtileTopDown(tileNodes([...b.body], bounder, theme, ctx.laneOrder, ctx.pragma).tiles, bounder, theme),
-  );
-  const tile2 = new GtileTopDown(
-    tileNodes([...node.elseBranch], bounder, theme, ctx.laneOrder, ctx.pragma).tiles,
-    bounder,
-    theme,
-  );
+  const topDown = (body: readonly ActivityNode[]): Tile => {
+    const { tiles: leaves } = tileNodes([...body], bounder, theme, ctx.laneOrder, ctx.pragma);
+    return withInLabel(new GtileTopDown(leaves, bounder, theme), leaves[0]?.inLabel);
+  };
+  const tiles = branches.map((b): Tile => topDown(b.body));
+  const tile2 = topDown(node.elseBranch);
   const diamonds = buildLongVerticalDiamonds(branches, bounder, theme);
   const inlabels = branches.map((b) => measureVerticalInlabel(b.incomingLabel, bounder, theme));
   return new GtileIfLongVertical(diamonds, tiles, tile2, node.elseLabel, inlabels);

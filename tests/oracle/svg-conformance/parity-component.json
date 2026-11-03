@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T01:11:29.756Z",
+  "generatedAt": "2026-11-03T07:33:38.351Z",
   "fixtures": [
     {
       "slug": "babafi-51-dixi026",
@@ -350,10 +350,7 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 90,
-      "firstDiff": "svg/g[1]/g[6]/text[1]/@textLength",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "dinejo-36-mite007",

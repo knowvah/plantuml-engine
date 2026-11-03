@@ -24,7 +24,7 @@ import type { Paint } from '../../core/paint.js';
 import { line, path, polygon, rect } from '../../core/svg.js';
 import { fmt } from '../../core/svg-format.js';
 import { activityFontSize, activityLineThickness } from './activity-style-defaults.js';
-import { actColors, actionFillOf } from './activity-renderer-shapes.js';
+import { actionBorderOf, actionFillOf } from './activity-renderer-shapes.js';
 import { renderActionLabel } from './activity-creole-sheet.js';
 import { DELTA_INPUT_OUTPUT, boxStyleShield } from './tiles/gtile-action.js';
 
@@ -194,7 +194,6 @@ const BOX_STYLE_OUTLINES: Readonly<Record<string, (o: Outline) => string>> = {
  * `dimTotal` width (shield included, `:224-233`).
  */
 export function renderBoxStyleAction(node: ActivityNodeGeo, theme: Theme, style: string): string {
-  const c = actColors(theme);
   const shield = boxStyleShield(style);
   const outline: Outline = {
     x: node.x,
@@ -203,7 +202,7 @@ export function renderBoxStyleAction(node: ActivityNodeGeo, theme: Theme, style:
     h: node.height,
     paint: {
       fill: actionFillOf(node, theme),
-      stroke: c.nodeBorder,
+      stroke: actionBorderOf(node, theme),
       strokeWidth: activityLineThickness(theme, 'activity'),
     },
   };

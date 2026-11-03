@@ -188,7 +188,7 @@ const ELEMENT_BACKGROUND_COLOR_STEREO_RE = new RegExp('^(\\w+)backgroundcolor<<(
  */
 const GROUP_BY_STEREO_RE = new RegExp(
   '^(package|rectangle|hexagon|node|artifact|folder|file|frame|cloud|database|storage|component|card|queue|stack|' +
-    'agent|interface|person|usecase|actor)' +
+    'agent|interface|person|usecase|actor|activity)' +
     '(bordercolor|fontcolor|borderthickness|stereotypefontcolor|borderstyle|roundcorner|diagonalcorner|shadowing)<<(.+)>>$',
 );
 

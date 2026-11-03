@@ -1,3 +1,4 @@
+import type { ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { GtileFork } from '../tiles/gtile-fork.js';
 import { GtileMerge, MERGE_DIAMOND_SIZE } from '../tiles/gtile-merge.js';
 import type { GPoint, HookName } from '../tiles/points.js';
@@ -213,6 +214,19 @@ export function walkForkBranches(t: GtileFork, ctx: ForkBranchContext, out: Out)
   for (const p of placed) pushBranchOut(p.branch, p.bX, p.bY, ctx, out);
 }
 
+/** One bar of a fork: its box, and `fork <<#red>>`'s colour (`FtileBlackBlock.java:105-106`) when it has one. */
+function forkBarGeo(t: GtileFork, kind: 'fork-bar' | 'join-bar', id: string, x: number, y: number): ActivityNodeGeo {
+  return {
+    id,
+    kind,
+    x,
+    y,
+    width: t.barWidth,
+    height: t.barHeight,
+    ...(t.barColor !== undefined ? { color: t.barColor } : {}),
+  };
+}
+
 /** The fork's top bar is a full-`barWidth` rect in `myLane` (D4,
  *  unconditional). The split's top line is `computeSplitExtent` over
  *  EVERY branch (D4/D3, `ParallelBuilderSplit.java:87-113`), in the
@@ -220,11 +234,7 @@ export function walkForkBranches(t: GtileFork, ctx: ForkBranchContext, out: Out)
  *  `ParallelBuilderSplit.java:83`). */
 function pushTopBarOrLine(t: GtileFork, x: number, y: number, myLane: string | undefined, out: Out): void {
   if (t.kind === 'gtile-fork') {
-    pushNode(
-      out,
-      { id: out.nextId('fork-bar'), kind: 'fork-bar', x, y, width: t.barWidth, height: t.barHeight },
-      myLane,
-    );
+    pushNode(out, forkBarGeo(t, 'fork-bar', out.nextId('fork-bar'), x, y), myLane);
     return;
   }
   const { first, last } = computeSplitExtent(t, NORTH_HOOK, false);
@@ -265,12 +275,7 @@ function pushForkJoinBar(t: GtileFork, x: number, joinBarY: number, myLaneOut: s
   pushNode(
     out,
     {
-      id: out.nextId('join-bar'),
-      kind: 'join-bar',
-      x,
-      y: joinBarY,
-      width: t.barWidth,
-      height: t.barHeight,
+      ...forkBarGeo(t, 'join-bar', out.nextId('join-bar'), x, joinBarY),
       ...(t.joinLabel !== undefined ? { label: t.joinLabel } : {}),
     },
     myLaneOut,
@@ -449,7 +454,7 @@ function pushMergeDiamondNode(diamond: MergeDiamondGeo, out: Out): void {
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/ParallelBuilderMerge.java:71-119
  */
 export function walkMerge(t: GtileFork, x: number, y: number, myLane: string | undefined, out: Out): void {
-  pushNode(out, { id: out.nextId('fork-bar'), kind: 'fork-bar', x, y, width: t.barWidth, height: t.barHeight }, myLane);
+  pushNode(out, forkBarGeo(t, 'fork-bar', out.nextId('fork-bar'), x, y), myLane);
 
   const placed = t.children.map((branch, i) => ({
     branch,

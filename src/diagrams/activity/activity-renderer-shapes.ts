@@ -8,7 +8,7 @@
 
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
-import type { Paint } from '../../core/paint.js';
+import { noGradient, type Paint } from '../../core/paint.js';
 import type {} from '../../core/dispatcher.js';
 import { rect, path } from '../../core/svg.js';
 import { renderComposite as renderCompositeFrame } from './activity-renderer-composite.js';
@@ -18,6 +18,7 @@ import {
   noteBodySpikeRight,
   noteBodySpikeLeft,
   noteFillOf,
+  noteLineOf,
 } from './activity-renderer-note-shapes.js';
 import {
   ACTIVITY_BAR_FILL,
@@ -28,7 +29,13 @@ import {
   activityRoundCorner,
 } from './activity-style-defaults.js';
 import { renderBar, renderSplitLine } from './activity-renderer-bars.js';
-import { scopedBack, stereotypeBack } from './activity-scoped-colors.js';
+import {
+  scopedBack,
+  scopedLine,
+  stereotypeBack,
+  stereotypeLine,
+  withStereotypeFont,
+} from './activity-scoped-colors.js';
 import {
   renderIfMerge,
   renderIfLabel,
@@ -125,7 +132,8 @@ export function actColors(theme: Theme): ActivityColors {
   const act = theme.colors.graph.activity;
   return {
     nodeFill: activityBack(theme),
-    nodeBorder: act?.border ?? theme.colors.border,
+    // `FtileBox.java:98,164`: the merged `LineColor`, T2a's bucket (D2).
+    nodeBorder: noGradient(scopedLine(theme, 'activity') ?? act?.border ?? theme.colors.border),
     // `activityBar { BackgroundColor #5 }` (plantuml.skin:387, D4).
     barFill: activityBarBack(theme),
     // `circle { start,stop,end { LineColor #2; BackgroundColor #2 } } }`
@@ -152,16 +160,20 @@ export function actionFillOf(node: Pick<ActivityNodeGeo, 'color' | 'stereotype'>
   return node.color ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
 }
 
+/** A box's line: the stereotype's style (`FtileBox.java:146`, `withTOBECHANGED`), the merged `LineColor` (`:164`). */
+export function actionBorderOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): string {
+  return noGradient(stereotypeLine(theme, 'activity', node.stereotype) ?? actColors(theme).nodeBorder);
+}
+
 export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
   // `activityDiagram { activity { FontSize 12 } }` (plantuml.skin:361) --
   // the SAME value `tiles/gtile-action.ts` measured this box at, so the
   // renderer draws into exactly the space the sizer reserved.
   const actionSize = activityFontSize(theme, 'activity');
-  const c = actColors(theme);
   const fill = actionFillOf(node, theme);
   const box = rect(node.x, node.y, node.width, node.height, {
     fill,
-    stroke: c.nodeBorder,
+    stroke: actionBorderOf(node, theme),
     strokeWidth: activityLineThickness(theme, 'activity'),
     rx: actionCornerRadius(theme),
     ry: actionCornerRadius(theme),
@@ -182,7 +194,8 @@ function renderActionBox(node: ActivityNodeGeo, theme: Theme): string {
 export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   const { x, y, width: w, height: h } = node;
   const noteFill = noteFillOf(node, theme); // add4-T1c: a note's own `#color`
-  const stroke = theme.colors.border;
+  const stroke = noteLineOf(node, theme); // `FtileWithNoteOpale.java:89,141`
+
   const spike = node.spikeTip;
   const paint = { fill: noteFill, stroke, strokeWidth: NOTE_LINE_THICKNESS };
   // `node.notePosition === 'left'` means the NOTE sits left of its target,
@@ -204,7 +217,8 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
 
   // add3-T3d: `FtileWithNoteOpale.java:147-150` draws via the real creole
   // Sheet -- `renderNoteLabel`'s own doc.
-  return body + renderNoteLabel(label, theme, { x, y, width: w, height: h }, { border: stroke, fill: noteFill });
+  const labelTheme = withStereotypeFont(theme, node.stereotype, 'note'); // `FtileWithNoteOpale.java:137,142`
+  return body + renderNoteLabel(label, labelTheme, { x, y, width: w, height: h }, { border: stroke, fill: noteFill });
 }
 
 /** The root `composite { LineColor black; BackgroundColor transparent;

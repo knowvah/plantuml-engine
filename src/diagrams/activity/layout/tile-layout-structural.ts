@@ -239,6 +239,7 @@ export function tileFork(
     node.style === 'merge'
       ? new GtileMerge(branches, bounder)
       : new GtileFork(branches, bounder, undefined, theme, node.label);
+  built.barColor = node.color;
   return withSwimlaneOut(withSwimlane(built, node.swimlane), node.swimlaneOut);
 }
 

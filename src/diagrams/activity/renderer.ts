@@ -14,7 +14,8 @@ import { orderedLine, renderNodesDispatchingGotos } from './activity-renderer-te
 import { activityTextFontConfiguration, drawActivityTextBlock } from './activity-text-sheet.js';
 import { ASCENT_FRACTION } from './activity-renderer-shapes.js';
 import { renderSwimlaneChrome, renderSwimlaneTitles } from './activity-renderer-swimlanes.js';
-import { activityArrowHeadColor, activityLineThickness } from './activity-style-defaults.js';
+import { activityLineThickness } from './activity-style-defaults.js';
+import { activityArrowHeadColor, arrowLineColor } from './activity-scoped-colors.js';
 import { edgeLabelBlock, edgeLabelLayout } from './layout/compress/edge-label-anchor.js';
 import { arrowDirection, arrowHeadPointsFor, type ArrowDir } from './arrows-regular.js';
 import { noGradient } from '../../core/paint.js';
@@ -238,16 +239,15 @@ interface EdgeLook {
 }
 
 /**
- * The default look. cdd7-T1a (D3): `colors.arrow` is a Paint; this renderer
- * draws flat. T2c: `skinparam ArrowHeadColor` reaches the decoration only
- * (`ftile/Worm.java:146-154`; absent -> `activityArrowHeadColor` tracks the
- * line colour). The line stroke is `style.getStroke()` (`:128-129`, the
- * `linkStyle.isNormal()` branch, `plantuml.skin:374`); the `withThickness
- * (1.5)` at `:157,165` is overridden by `UStroke.simple()` (`:162,170`).
+ * The default look. cdd7-T1a (D3): the arrow's Paint is drawn flat. T2c:
+ * `skinparam ArrowHeadColor` reaches the decoration only (`ftile/Worm.java:146-154`;
+ * absent -> `activityArrowHeadColor` tracks the line). T4a: the line is the
+ * merged `LineColor` (`arrowLineColor`). The line stroke is `style.getStroke()` (`:128-129`, the `linkStyle.isNormal()`
+ * branch, `plantuml.skin:374`); the `withThickness(1.5)` at `:157,165` is overridden by `UStroke.simple()` (`:162,170`).
  */
 function defaultEdgeLook(theme: Theme): EdgeLook {
   return {
-    line: noGradient(theme.colors.arrow),
+    line: noGradient(arrowLineColor(theme)),
     head: noGradient(activityArrowHeadColor(theme)),
     stroke: { width: activityLineThickness(theme, 'arrow') },
     invisible: false,

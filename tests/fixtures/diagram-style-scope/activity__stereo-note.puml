@@ -1,0 +1,21 @@
+@startuml
+<style>
+.foo {
+    BackgroundColor #AAAAAA
+    LineColor #00BB00
+    FontColor #BBBBBB
+}
+</style>
+start
+:a;
+note left <<foo>> : n
+:b;
+note right <<foo>> #red
+  multi
+end note
+:c;
+note left #lime <<foo>> : m
+:d;
+note right <<foo>> : both
+stop
+@enduml

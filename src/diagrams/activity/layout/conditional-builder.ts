@@ -29,6 +29,8 @@ import { GtileTopDown } from '../tiles/gtile-top-down.js';
 import { markDecoratedSoleChild } from '../tiles/gtile-goto.js';
 import { measureIfOwnNote } from '../tiles/gtile-note.js';
 import { tileNodes } from './tile-layout.js';
+import { instructionsOf, withBranchArrowLabels } from './conditional-builder-arrows.js';
+import { withInLabel, withOutColor } from './tile-layout-inlabel.js';
 import { laneOut } from './swimlane-lanes.js';
 import { buildIfLongHorizontal, buildIfLongVertical } from './conditional-builder-long.js';
 
@@ -136,8 +138,8 @@ function chainBuilderOf(pragma: Pragma): IfBuilderResult {
 export function ifBuilderOf(node: ActivityIf, pragma: Pragma = Pragma.createEmpty()): IfBuilderResult {
   if (node.elseIfBranches.length > 0) return chainBuilderOf(pragma);
 
-  const thenNodes = node.thenBranch;
-  const elseNodes = node.elseBranch;
+  const thenNodes = instructionsOf(node.thenBranch);
+  const elseNodes = instructionsOf(node.elseBranch);
   const thenSOS = isEmptyOrStopOrSpot(thenNodes);
   const elseSOS = isEmptyOrStopOrSpot(elseNodes);
 
@@ -213,9 +215,10 @@ function toBranchTile(
   theme: Theme,
   ctx: IfLayoutCtx,
 ): IfWithLinksBranch {
-  const { tiles } = tileNodes([...nodes], bounder, theme, ctx.laneOrder, ctx.pragma);
+  const { tiles, trailing } = tileNodes([...nodes], bounder, theme, ctx.laneOrder, ctx.pragma);
   markDecoratedSoleChild(tiles);
-  return { tile: new GtileTopDown(tiles, bounder, theme), isEmpty: nodes.length === 0 };
+  const body = withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel);
+  return { tile: withOutColor(body, trailing), isEmpty: instructionsOf(nodes).length === 0 };
 }
 
 /**
@@ -398,9 +401,9 @@ function applyIfDownSwimlaneOut(result: GtileIfDown, optionalStop: Tile | null, 
  *  reason as {@link toBranchTile}: `FtileIfDown.java` never reads
  *  `Branch#special` either. */
 function branchBodyTile(nodes: readonly ActivityNode[], bounder: StringBounder, theme: Theme, ctx: IfLayoutCtx): Tile {
-  const { tiles } = tileNodes([...nodes], bounder, theme, ctx.laneOrder, ctx.pragma);
+  const { tiles, trailing } = tileNodes([...nodes], bounder, theme, ctx.laneOrder, ctx.pragma);
   markDecoratedSoleChild(tiles);
-  return new GtileTopDown(tiles, bounder, theme);
+  return withOutColor(withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel), trailing);
 }
 
 function buildIfDown(
@@ -437,6 +440,7 @@ function buildIfDown(
     opale,
     padding: theme.padding,
   });
+  result.elseColor = parts.sideTile.outLabel?.color;
   applyIfDownSwimlaneOut(result, optionalStop, parts.mainTile);
   return result;
 }
@@ -451,12 +455,13 @@ function buildIfDown(
  * fixtures need not pass either.
  */
 export function buildIf(
-  node: ActivityIf,
+  source: ActivityIf,
   bounder: StringBounder,
   theme: Theme,
   laneOrder: readonly string[] = [],
   pragma: Pragma = Pragma.createEmpty(),
 ): Tile {
+  const node = withBranchArrowLabels(source);
   const dispatch = ifBuilderOf(node, pragma);
   const ctx: IfLayoutCtx = { laneOrder, pragma };
   if (dispatch.builder === 'with-links') return buildIfWithLinks(node, bounder, theme, ctx);

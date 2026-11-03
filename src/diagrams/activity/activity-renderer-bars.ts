@@ -15,8 +15,10 @@
 
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
+import { parseColor } from '../../core/paint.js';
 import { line, rect } from '../../core/svg.js';
 import { actColors } from './activity-renderer-shapes.js';
+import { arrowLineColor } from './activity-scoped-colors.js';
 import { JOIN_LABEL_MARGIN } from './activity-layout-constants.js';
 import { activityFontSize } from './activity-style-defaults.js';
 import { activityDisplayBlock, activityTextFontConfiguration, drawActivityTextBlock } from './activity-text-sheet.js';
@@ -62,7 +64,8 @@ const FORK_BAR_STROKE_WIDTH = 1;
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vertical/FtileBlackBlock.java:110
  */
 export function renderBar(node: ActivityNodeGeo, theme: Theme): string {
-  const fill = actColors(theme).barFill;
+  // `FtileBlackBlock.java:105-106`: the fork's own `<<#color>>` over the merged `BackGroundColor`.
+  const fill = node.color === undefined ? actColors(theme).barFill : parseColor(node.color);
   const bar = rect(node.x, node.y, node.width, node.height, {
     fill,
     stroke: fill,
@@ -116,7 +119,7 @@ function renderJoinBarLabel(node: ActivityNodeGeo, theme: Theme): string {
  */
 export function renderSplitLine(node: ActivityNodeGeo, theme: Theme): string {
   return line(node.x, node.y, node.x + node.width, node.y, {
-    stroke: theme.colors.arrow,
+    stroke: arrowLineColor(theme),
     strokeWidth: SPLIT_LINE_THICKNESS,
   });
 }

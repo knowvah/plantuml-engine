@@ -1,0 +1,29 @@
+@startuml
+<style>
+activityBar {
+  .foo { BackgroundColor #AAAAAA }
+}
+</style>
+start
+fork <<#red>>
+  :a;
+fork again
+  :b;
+end fork
+fork <<foo>>
+  :c;
+fork again
+  :d;
+end fork
+fork <<#0000FF>> <<x>>
+  :e;
+fork again
+  :f;
+end merge
+fork;
+  :g;
+fork again
+  :h;
+end fork
+stop
+@enduml

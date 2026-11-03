@@ -27,7 +27,14 @@ import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.j
 import { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
 import { activityFontSize, activityLineThickness, resolveSolidBucketColor } from './activity-style-defaults.js';
 import { activityMeasurer } from './activity-string-bounder.js';
-import { fontConfigurationColor, scopedBack, stereotypeBack, stereotypeFont } from './activity-scoped-colors.js';
+import {
+  fontConfigurationColor,
+  scopedBack,
+  scopedLine,
+  stereotypeBack,
+  stereotypeLine,
+  stereotypeFont,
+} from './activity-scoped-colors.js';
 import { frameTitleWidth } from './tiles/gtile-group.js';
 
 /** The root `FontColor black` a frame's title inherits. @see ~/git/plantuml/src/main/resources/skin/plantuml.skin:9 */
@@ -92,6 +99,13 @@ function compositeBucket(node: CompositeSubject): string {
 /** The signature's back: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
 function compositeBack(node: CompositeSubject, theme: Theme): Paint | undefined {
   return stereotypeBack(theme, compositeSymbolOf(node), node.stereotype) ?? scopedBack(theme, compositeBucket(node));
+}
+
+/** The signature's line: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
+function compositeLine(node: CompositeSubject, theme: Theme): string | undefined {
+  const paint =
+    stereotypeLine(theme, compositeSymbolOf(node), node.stereotype) ?? scopedLine(theme, compositeBucket(node));
+  return paint === undefined ? undefined : noGradient(paint);
 }
 
 /**
@@ -178,7 +192,8 @@ function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
   const sym = symbolInk(node, theme);
   return {
     fill: compositeFill(node, theme, sym.fill ?? base.backColor),
-    stroke: g.partitionBorder ?? sym.stroke ?? base.borderColor,
+    // `FtileGroup.java:102`: the merged `LineColor`, T2a's bucket (D2), over the flat tiers.
+    stroke: compositeLine(node, theme) ?? g.partitionBorder ?? sym.stroke ?? base.borderColor,
     strokeWidth: sym.strokeWidth ?? activityLineThickness(theme, 'composite'),
     // `FtileGroup.java:103`: `style.value(PName.RoundCorner).asDouble()`.
     roundCorner: sym.roundCorner ?? 0,

@@ -180,8 +180,16 @@ function isDiagramTypeSelector(selector: string): boolean {
 }
 
 function isBucketSName(sname: string): boolean {
-  return ELEMENT_BUCKET_SNAMES.has(sname) || CLUSTER_BUCKET_SNAMES.has(sname);
+  return ELEMENT_BUCKET_SNAMES.has(sname) || CLUSTER_BUCKET_SNAMES.has(sname) || STYLE_ONLY_BUCKET_SNAMES.has(sname);
 }
+
+/**
+ * SNames a `<style>` selector reaches and no flat skinparam key does: an activity `partition` frame's stereotype tier
+ * (`partition { .foo { ... } }`, `FtileGroup.java:89-92`, `CommandPartition3.java:160`). Not in
+ * {@link ELEMENT_BUCKET_SNAMES}, whose `skinparam <sname>BackgroundColor` matchers would otherwise claim
+ * `PartitionBackgroundColor`, which has its own `Partition*` fields (`FromSkinparamToStyle.java:131-133`).
+ */
+const STYLE_ONLY_BUCKET_SNAMES: ReadonlySet<string> = new Set(['partition']);
 
 /**
  * The `(sname bucket, cleaned tag)` a tag sub-selector addresses: `<sname>..

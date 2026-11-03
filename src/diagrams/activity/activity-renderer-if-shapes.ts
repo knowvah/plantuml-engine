@@ -16,12 +16,12 @@
 
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
-import type { Paint } from '../../core/paint.js';
+import { noGradient, type Paint } from '../../core/paint.js';
 import { polygon } from '../../core/svg.js';
 import { activityLineThickness } from './activity-style-defaults.js';
 import { HEXAGON_HALF_SIZE } from './layout/hexagon-reservations.js'; // Hexagon.java:46
 import { actColors } from './activity-renderer-shapes.js';
-import { scopedBack } from './activity-scoped-colors.js';
+import { scopedBack, scopedLine } from './activity-scoped-colors.js';
 import { ifLabelBlock, renderDiamondTestLabel } from './activity-text-sheet-diamond.js';
 import { drawActivityTextBlock } from './activity-text-sheet.js';
 import type { UChange } from '../../core/klimt/UChange.js';
@@ -252,6 +252,7 @@ export function diamondColors(
   return {
     // `ConditionalBuilder.java:101-103`, `FtileFactoryDelegator.java:79-80`: T2a's bucket (D2).
     fill: scopedBack(theme, 'diamond') ?? act?.diamondBackground ?? act?.background ?? theme.colors.nodeBackground,
-    border: act?.diamondBorder ?? act?.border ?? theme.colors.border,
+    // `FtileFactoryDelegator.java:79-80`: T2a's bucket (D2).
+    border: noGradient(scopedLine(theme, 'diamond') ?? act?.diamondBorder ?? act?.border ?? theme.colors.border),
   };
 }

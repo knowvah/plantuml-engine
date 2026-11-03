@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:17:50.329Z",
+  "generatedAt": "2026-11-03T07:42:36.781Z",
   "fixtures": [
     {
       "slug": "baxodi-80-doto381",
@@ -158,10 +158,7 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 30.5,
-      "firstDiff": "svg/g[1]/g[3][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[3]/text[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "fosito-02-fegi991",
@@ -229,10 +226,7 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 30.5,
-      "firstDiff": "svg/g[1]/g[3][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[3]/text[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "jecici-56-bimu826",
@@ -691,10 +685,9 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 201.5,
-      "firstDiff": "svg/g[1]/g[14]/ellipse[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/g[23]/text[1]/@x"
+      "verdict": "structural-match",
+      "maxDelta": 20,
+      "maxDeltaPath": "svg/g[1]/g[17]/path[1]/@d[23]"
     },
     {
       "slug": "zidebi-71-nocu387",

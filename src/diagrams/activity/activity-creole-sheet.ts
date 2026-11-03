@@ -39,7 +39,7 @@ import {
   activityNoteHorizontalAlignment,
 } from './activity-text-style.js';
 import { activityPadding, activityFontSize, activityLineThickness } from './activity-style-defaults.js';
-import { actColors, actionFillOf } from './activity-renderer-shapes.js';
+import { actionBorderOf, actionFillOf } from './activity-renderer-shapes.js';
 import { fontConfigurationColor, withStereotypeFont } from './activity-scoped-colors.js';
 import { NOTE_MARGIN_X1, NOTE_MARGIN_X2, NOTE_MARGIN_Y } from './activity-layout-constants.js';
 import { Display } from '../../core/klimt/creole/Display.js';
@@ -321,7 +321,7 @@ export function renderActionLabel(
   // unwind2-S11: `ug.apply(backColor.bg())` (`:215-218`) -- the back a
   // creole `<$sprite>` tints over (`SpriteMonochrome.java:216`).
   const changes = [
-    new Fore(actColors(theme).nodeBorder),
+    new Fore(actionBorderOf(box, theme)),
     new Back(actionFillOf(box, theme)),
     UStroke.withThickness(activityLineThickness(theme, 'activity')),
   ];

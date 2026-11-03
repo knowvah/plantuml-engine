@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:15:00.575Z",
+  "generatedAt": "2026-11-03T07:38:19.057Z",
   "fixtures": [
     {
       "slug": "baloca-83-nadu916",
@@ -83,10 +83,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 5.000000000000028,
-      "firstDiff": "svg/g[1]/g[1]/text[2]/@fill",
-      "maxDeltaPath": "svg/g[1]/g[2]/path[1]/@d[53]"
+      "verdict": "conformant"
     },
     {
       "slug": "fusopu-05-loxo960",

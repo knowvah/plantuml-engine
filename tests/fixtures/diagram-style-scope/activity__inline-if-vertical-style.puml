@@ -1,0 +1,17 @@
+@startuml
+!pragma useVerticalIf on
+<style>
+activityDiagram { LineColor #BB0000 }
+</style>
+start
+if (c) then (y)
+  -[#FF00FF]->
+  :d;
+elseif (c2) then (y2)
+  :e;
+else (n)
+  -[#FFFF00]->
+  :f;
+endif
+stop
+@enduml

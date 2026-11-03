@@ -55,3 +55,4 @@ Not yet proven: reader coverage, state's rect width (115 vs 170 on `bg-diag`, `b
 | b2 (T2a; 456 rows) | 272 / 456 | 6569 | 0 | 127 fell, 0 rose; state 99 → 100 (`lonuti-97` pinned, golden 97 → 98 entries) |
 | b2 + 38 probe rows (494) | 287 / 494 | 6901 | 0 | T2a's probes promoted, seeded at the current measure; 2 more were jar error pages, dropped |
 | b3 (T3a-T3g; 574 rows) | 489 / 574 | 5263 | deferred to the b4 chain | 80 rows added by the tasks, all conformant; 49 corpus fixtures moved, Σ 2753 → 1608, 23 reach 0, 2 rise with element counts now equal to the jar's (journal row 35); chain deferred, journal row 49 |
+| b4 (T4a; 605 rows) | 532 / 605 | 4772 | 0 | 31 rows added by T4a, all conformant; 0 rose. 28 engines vs `b2-eng`, covering b3's deferred chain: state 100 → 113, unknown 565 → 571, usecase 68 → 70, component 214 → 215, object 63 → 64. 49 corpus fixtures moved, Σ 2753 → 1599, 23 reach 0, the same 2 rise |
