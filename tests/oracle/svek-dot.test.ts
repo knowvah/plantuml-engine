@@ -292,6 +292,7 @@ describe('compareStructural — cluster nesting and title TABLE (D4)', () => {
       memberCount: 2,
       wrapperChain: { a: false, p0: true, i: false, p1: true },
       titleTable: { w: 17, h: 23 },
+      eeDeclarations: 0,
     });
   });
 
@@ -304,7 +305,11 @@ describe('compareStructural — cluster nesting and title TABLE (D4)', () => {
       '}',
       '}',
     ].join('\n');
-    expect(parseSvekDot(dotText).clusters[0]).toEqual({ memberCount: 1, wrapperChain: NO_WRAPPER_CHAIN });
+    expect(parseSvekDot(dotText).clusters[0]).toEqual({
+      memberCount: 1,
+      wrapperChain: NO_WRAPPER_CHAIN,
+      eeDeclarations: 0,
+    });
   });
 
   it('parses a border-point cluster: a/i wrap, no p0/p1, title taken from ee', () => {
@@ -315,6 +320,7 @@ describe('compareStructural — cluster nesting and title TABLE (D4)', () => {
       memberCount: 0,
       wrapperChain: { a: true, p0: false, i: true, p1: false },
       titleTable: { w: 42, h: 9 },
+      eeDeclarations: 1,
     });
   });
 
@@ -393,5 +399,33 @@ describe('compareStructural — cluster nesting and title TABLE (D4)', () => {
     expect(candidateCluster.wrapperChain).toEqual({ a: true, p0: false, i: true, p1: false });
     expect(candidateCluster.wrapperChain).toEqual(oracleCluster.wrapperChain);
     expect(candidateCluster.titleTable).toEqual(oracleCluster.titleTable);
+  });
+
+  /** `ClusterDotString.java:148-152`: the special point is declared in `ee`,
+   *  then `i` opens. Only where the anchor sits differs between these two. */
+  const anchorIn = (where: 'ee' | 'i'): string => {
+    const anchor = 'zaent0001 [shape=point,width=.01,label=""];';
+    return [
+      'digraph unix {',
+      'subgraph cluster6a {label="";subgraph cluster6 {style=solid;{rank=sink;sh0010;}',
+      'sh0010 [shape=rect,label="",width=0.166667,height=0.166667];',
+      `subgraph cluster6ee {label="";${where === 'ee' ? anchor : ''}subgraph cluster6i {label="";`,
+      `${where === 'i' ? anchor : ''}sh0011 [shape=circle,label="",width=0.277778,height=0.277778];`,
+      '}}}}',
+      '}',
+    ].join('\n');
+  };
+
+  it('counts the node declarations directly in ee, not those inside i or a rank group', () => {
+    expect(parseSvekDot(VIROXO_JAR_DOT).clusters[0]!.eeDeclarations).toBe(1);
+    expect(parseSvekDot(anchorIn('ee')).clusters[0]!.eeDeclarations).toBe(1);
+    expect(parseSvekDot(anchorIn('i')).clusters[0]!.eeDeclarations).toBe(0);
+  });
+
+  it('fails clusterNesting when the anchor is in i where the jar has it in ee', () => {
+    const diff = compareStructural(parseSvekDot(anchorIn('ee')), parseSvekDot(anchorIn('i')));
+    expect(diff.clusterOk).toBe(true);
+    expect(diff.clusterNestingOk).toBe(false);
+    expect(diff.structurallyEqual).toBe(false);
   });
 });

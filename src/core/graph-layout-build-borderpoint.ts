@@ -28,6 +28,7 @@
 
 import type { GvGraphBuilder } from '@knowvah/dot-engine';
 import type { DotInputCluster } from './graph-layout.types.js';
+import { borderPointAnchorDecl } from './svek-dot-wrappers.js';
 
 /** The two @knowvah/dot-engine subgraph handles a border-point `DotInputCluster`
  *  resolves to — see `graph-layout-build.ts`'s own (non-border-point)
@@ -38,9 +39,9 @@ import type { DotInputCluster } from './graph-layout.types.js';
 export interface ClusterHandles {
   main: GvGraphBuilder;
   innermost: GvGraphBuilder;
-  /** T4b: the `${outerName}ee` subgraph, set only for a hasPort cluster whose
-   *  `i` wrapper makes `innermost` a descendant of it -- the special point is
-   *  declared here, before `i` opens (`ClusterDotString.java:146-152`). */
+  /** T4b: the `${outerName}ee` subgraph, set when the special point can be
+   *  declared there, before `i` opens (`ClusterDotString.java:148-152`): on
+   *  every border-point cluster, and on a hasPort cluster with an `i` wrapper. */
   ee?: GvGraphBuilder;
 }
 
@@ -139,8 +140,23 @@ export function buildBorderPointClusterHandles(
   }
   // `${outerName}i` (`ClusterDotString.java:151-152`) -- SAME boolean as the
   // outer "a" wrap above (`thereALinkFromOrToGroup1`); wraps `ee`'s own
-  // non-port content (the anchor point + any real non-border member or
-  // nested child cluster) from the INSIDE.
+  // non-port content (any real non-border member or nested child cluster, and
+  // the anchor only as `placeBorderPointMembers` says) from the INSIDE.
   const innermost = c.borderPointAncestorWrap === true ? ee.addSubgraph(`${outerName}i`, {}) : ee;
-  return { main, innermost };
+  return { main, innermost, ee };
+}
+
+/** Where `addClusters` declares a border-point composite's non-port members:
+ *  the anchor per {@link borderPointAnchorDecl}, everything else in the
+ *  innermost level (`printCluster2`, `ClusterDotString.java:176`). Port ids are
+ *  already placed by the rank groups in {@link buildBorderPointClusterHandles}. */
+export function placeBorderPointMembers(c: DotInputCluster, handles: ClusterHandles): void {
+  const anchor = borderPointAnchorDecl(c);
+  const ports = new Set((c.portRanks ?? []).flatMap((rg) => rg.nodeIds));
+  // `buildBorderPointClusterHandles` always sets `ee`.
+  if (anchor?.beforeInner === true) handles.ee!.addNode(anchor.id);
+  for (const id of c.nodeIds) {
+    if (!ports.has(id) && id !== anchor?.id) handles.innermost.addNode(id);
+  }
+  if (anchor?.afterMembers === true) handles.innermost.addNode(anchor.id);
 }

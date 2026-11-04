@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2074 modules · 7257 exported names.
+2074 modules · 7260 exported names.
 
 ## `src/`
 
@@ -58,7 +58,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `edge-label-box-note-merge.ts` | `NoteOnLinkPosition`, `MergedLabelBoxInput`, `computeMergedLabelBox` | The `note on link` merge half of `edge-label-box.ts` — the note operand, the four `Position` merges and the shield. |
 | `edge-label-box.ts` | `stripCreoleMarkup`, `resolveLineFont`, `ReservedLabelBox`, `CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT`, `VisibilityIconAdjustment`, `applyVisibilityIcon`, `applyGuillemet`, `MagicArrowDirection`, `MagicArrowLabel`, `parseMagicArrowLabel`, `ReservedLabelBoxOptions`, `computeReservedLabelBox`, `QuantifierBox`, `computeQuantifierBox`, `computeMergedLabelBox`, `MergedLabelBoxInput`, `NoteOnLinkPosition` | The reserved box an edge label occupies in the DOT handed to graphviz. |
 | `EmbeddedDiagram.ts` | `Line`, `NestedDiagramRenderer`, `getEmbeddedType`, `EmbeddedDiagram` | EmbeddedDiagram — a creole `{{ ... |
-| `graph-layout-build-borderpoint.ts` | `ClusterHandles`, `inheritedEeLabel`, `buildBorderPointClusterHandles` | G7 T14b border-point (`<<entrypoint>>`/`<<exitpoint>>`-child, `portRanksLabelOnEe`) cluster nesting — split out of ./graph-layout-build.ts#addClusters (500-line file-cap compliance; pure extraction, no behavior change). |
+| `graph-layout-build-borderpoint.ts` | `ClusterHandles`, `inheritedEeLabel`, `buildBorderPointClusterHandles`, `placeBorderPointMembers` | G7 T14b border-point (`<<entrypoint>>`/`<<exitpoint>>`-child, `portRanksLabelOnEe`) cluster nesting — split out of ./graph-layout-build.ts#addClusters (500-line file-cap compliance; pure extraction, no behavior change). |
 | `graph-layout-build-constraint.ts` | `withSameContainerConstraints` | The two graph-level paths to `constraint=false`. |
 | `graph-layout-build-edges.ts` | `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `edgeKey`, `addEdges` | `addEdges` — split out of ./graph-layout-build.ts (500-line file-cap compliance, forced by G7 T14b's border-point wiring additions; pure move, no behavior change). |
 | `graph-layout-build-kermor.ts` | `kermorHasAlpha`, `KermorNoteSlot`, `kermorNoteClusterId`, `registerKermorClusterIds`, `buildKermorClusterHandles`, `placeKermorMembers`, `addNodesWithKermorRootEmpty`, `KERMOR_ROOT_EMPTY_ID` | `!pragma kermor on` cluster nesting for the layout builder -- the `ClusterDotStringKermor.printInternal` shape (`svek/ClusterDotStringKermor.java:67-165`): [alpha {label=<note TOP table or "">] only if the group has a TOP or BOTTOM note (:8 |
@@ -163,7 +163,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `svek-dot-sequence.ts` | `Seq`, `NodeRec`, `ClusterColors`, `EdgeColors`, `ClusterTree`, `buildClusterTree`, `SeqAssignment`, `assignSequence` |  |
 | `svek-dot-together.ts` | `ROOT_TOGETHER_PREFIX`, `togetherClusters` | `together { }` blocks as svek prints them: an unlabelled `subgraph <clusterId>t<k> { ... |
 | `svek-dot-top.ts` | `IsNormalPosition`, `nodesOrderedTop`, `nodesOrderedWithoutTop`, `normalPositionOf`, `topsFirstClusters`, `rootTops` | `Cluster#getNodesOrderedTop` / `getNodesOrderedWithoutTop` — the split `printCluster1` / `printCluster2` make of one cluster's own nodes. |
-| `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
+| `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `BorderPointAnchorDecl`, `borderPointAnchorDecl`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
 | `svg-backcolor.ts` | `Backcolor`, `backcolorPaint` | The document background, decided once the way `SvgGraphics`' constructor decides it -- a pure port of its three-way split so every finalizer that has no verified copy of its own (json family, state, class, description) calls ONE implementat |
 | `svg-defs-scale.ts` | `scaleShadowFilterDefs` | svg-defs-scale.ts -- the document scale applied to the shadow `<filter>` def. |
 | `svg-defs-seeded.ts` | `getSeed`, `seededDefIdRenames`, `applySeededDefIds` | svg-defs-seeded.ts — the seeded def-id pass over an assembled document. |

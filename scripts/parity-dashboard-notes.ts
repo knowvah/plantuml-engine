@@ -130,10 +130,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   state: {
     noteClass: 'openDefect',
     detail:
-      'state-divergence-drive (#112, 2026-11-04) took the 174 open rows to 2: 297 of 299 conformant, 293 pinned. ' +
-      '`viroxo-69-fito663` is a dot-engine placement delta on a border-point cluster (graphviz issue 39, ' +
-      'DIVERGENCES.md "State diagrams"); `xetase-70-zaza808` is a `{{ }}` edge label the flat creole seam cannot ' +
-      'embed (#144, chained on #136).',
+      'state-divergence-drive (#112, 2026-11-04) took the 174 open rows to 2, and the border-point anchor fix ' +
+      '(graphviz issue 39, reclassified as ours) closed `viroxo-69-fito663`: 298 of 299 conformant. ' +
+      '`xetase-70-zaza808` is a `{{ }}` edge label the flat creole seam cannot embed (#144, chained on #136).',
   },
   usecase: {
     noteClass: 'openDefect',

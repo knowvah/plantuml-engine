@@ -41,7 +41,7 @@ The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-matc
 
 ### Follow-ons (mechanism, owner)
 1. **`xetase-70-zaza808`** — a `{{ }}` edge label is an `EmbeddedDiagram` atom upstream, drawn as an `<image>` of the nested diagram; every engine measures edge labels through the flat creole seam (`core/edge-label-box.ts`). Issue #144 (`parity`, `queue:ready`, blocked by #136).
-2. **`viroxo-69-fito663`** and the ten `state__hist-*` dss rows — identical DOT, real `dot` matches the jar, dot-engine places a border-point cluster's `rank=sink` port node, `ee` anchor and inner nodes 2-17 px off. `docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`; `DIVERGENCES.md` "State diagrams".
+2. ~~**`viroxo-69-fito663`** and the ten `state__hist-*` dss rows~~ — DONE 2026-11-04. Not a dot-engine delta: our anchor sat in `i` where the jar declares it in `ee` (`ClusterDotString.java:148-152`), and `dotEqual` could not see it. State is 298 of 299. `docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`.
 3. **`LIST_WITH_NUMBER` creole headers** (`AtomTextUtils.createListNumber`, a `CreoleContext` counter) are still not carried by the flat creole seam; `LIST_WITHOUT_NUMBER` is (T6d). No state row exercises it.
 4. **`data-entity-1`/`data-entity-2` on a link into a composite** print this port's `__zaent_<id>` anchor where the jar prints the cluster's `entNNNN` uid (`jijuze-43`, `lumamo-63`); `compareSvg` ignores `data-*`, so no row moves. `renderer-group.ts#wrapLink`.
 5. **`CommandLinkStateCommon`'s `node` edge-label style** (`statediagramedgelabelstyle node`, `createTransitionWithIntermediateNode`) is unported; no corpus row.

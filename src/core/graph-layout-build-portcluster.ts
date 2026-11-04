@@ -137,7 +137,7 @@ export function buildHasPortClusterHandles(
  *  anchor and any NORMAL member -- in `ee` (`printCluster1`, `:174`). */
 export function placeHasPortMembers(c: DotInputCluster, handles: ClusterHandles, portIds: ReadonlySet<string>): void {
   const ranked = new Set(c.portRanks!.flatMap((r) => r.nodeIds));
-  // The special point is declared in `ee` before `i` opens, then the `empty()`
+  // `:148-152`: the special point is declared in `ee` before `i` opens, then the `empty()`
   // rect re-declares it inside `i`: dot assigns the node to the innermost.
   if (handles.ee !== undefined && c.portAnchorId !== undefined) handles.ee.addNode(c.portAnchorId);
   for (const id of c.nodeIds) {

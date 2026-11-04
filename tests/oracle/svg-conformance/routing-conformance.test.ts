@@ -1183,8 +1183,9 @@ describe('routing conformance — jar-error classification', () => {
     // 9318 -> 9334 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones (batch 4: scale/dpi, text).
     // 9334 -> 9341 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones (batch 5: hidden, skin, notes).
     // 9341 -> 9370 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones (batch 6: layout inputs, residue).
-    // Derivation: 9341 + 29 = 9370.
-    expect(pinnedAgree.length).toBe(9370);
+    // 9370 -> 9371 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
+    // Derivation: 9341 + 29 + 1 = 9371.
+    expect(pinnedAgree.length).toBe(9371);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1251,7 +1252,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones. Derivation: 9334 + 546 + 162 = 10042.
     // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones. Derivation: 9341 + 546 + 162 = 10049.
     // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones. Derivation: 9370 + 546 + 162 = 10078.
-    expect(manifest.fixtures.length).toBe(10078);
+    // 10078 -> 10079 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
+    expect(manifest.fixtures.length).toBe(10079);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

@@ -1,0 +1,15 @@
+@startuml
+state comp1 {
+  state ex <<exitpoint>>
+  state chk
+  state inner {
+    state x
+  }
+  chk --> x
+  x --> ex
+}
+state comp2
+comp2 --> comp1
+comp2 --> x
+ex --> comp2
+@enduml

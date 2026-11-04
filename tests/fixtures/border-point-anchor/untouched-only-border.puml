@@ -1,0 +1,7 @@
+@startuml
+state comp1 {
+  state ex <<exitpoint>>
+}
+state comp2
+ex --> comp2
+@enduml

@@ -41,13 +41,16 @@
 >   the jar's `rect/@width`. The other nine `state__hist-*` rows were not run.
 >
 > **Ruled out.** The `:P` port and `rank=sink` handling: both graphs have them
-> and they lay out as native once the anchor moves. Not yet checked: a full
-> re-measure of `viroxo-69` with the fix, and the `added == null` case.
+> and they lay out as native once the anchor moves.
 >
-> **Fix belongs here:** place the anchor in `ee` in both the builder and the text
-> emitter, re-declare it in `i` when `added == null`, make `scanNesting` see the
-> difference, then retire the `DIVERGENCES.md` entry, which still calls this
-> library-forced.
+> **Fixed 2026-11-04 in plantuml-ts.** `svek-dot-wrappers.ts#borderPointAnchorDecl`
+> is the one definition the builder, the text emitter and the node order share;
+> `scanNesting` now counts `ee`'s own declarations. `viroxo-69` is conformant, as
+> are all ten `state__hist-*` rows (the other nine were not run before the fix)
+> and the ten `state__cluster-*` rows of the style-scope pin. The `added == null`
+> shapes have jar fixtures in `tests/fixtures/border-point-anchor/`; a note counts
+> as `added`, which `hasNonBorderEeContent` had missed. The `DIVERGENCES.md` entry
+> is retired. No dot-engine change was needed.
 
 **Impact:** `state/viroxo-69-fito663` (93 attribute diffs, every one a 2-3 px
 x shift of the `comp1` cluster's content and a 17 px shift of its `[*]` start;

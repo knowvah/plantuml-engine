@@ -42,6 +42,7 @@ import { buildClusterTree } from './svek-dot-sequence.js';
 import { rootTops, topsFirstClusters } from './svek-dot-top.js';
 import { togetherClusters } from './svek-dot-together.js';
 import { orderLines0Edges } from './svek-dot-lines0.js';
+import { borderPointAnchorDecl } from './svek-dot-wrappers.js';
 
 /** Collector: appends an id the first time it is seen, ignoring ids that are
  *  not real nodes (a dangling edge endpoint, or a `portAnchorId` naming a
@@ -105,8 +106,12 @@ function pushPortCluster(c: DotInputCluster, ctx: WalkCtx): void {
   // FIRST group's chain, between the two (`gurive-62-ricu497`'s oracle).
   for (const id of rankBlockIds(c)) ctx.enc.push(id);
   const ports = c.nodeIds.filter((id) => ctx.enc.isPort(id));
-  for (const id of [...ports, ...c.nodeIds]) ctx.enc.push(id);
+  for (const id of ports) ctx.enc.push(id);
+  const anchor = borderPointAnchorDecl(c);
+  if (anchor?.beforeInner === true) ctx.enc.push(anchor.id);
+  for (const id of c.nodeIds) if (id !== anchor?.id) ctx.enc.push(id);
   for (const child of ctx.childrenOf.get(c.id) ?? []) pushCluster(child, ctx);
+  if (anchor !== undefined) ctx.enc.push(anchor.id);
 }
 
 /** One cluster's own declarations, in `ClusterDotString.printInternal` order.

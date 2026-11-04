@@ -118,6 +118,11 @@ export interface StructuralCluster {
    *  `ClusterDotString.java:138-141`), or on the `empty()` port anchor node
    *  (`:178-181`). Undefined when the cluster carries no title table. */
   titleTable?: { w: number; h: number };
+  /** Node declarations directly in `clusterNee`, not in its `i` wrapper or a
+   *  rank group: the wrapper chain alone cannot see that the jar holds a linked
+   *  composite's special point in `ee`, before `i` opens
+   *  (`ClusterDotString.java:148-152`). */
+  eeDeclarations: number;
 }
 export interface StructuralGraph {
   nodes: StructuralNode[];
@@ -228,6 +233,7 @@ interface ClusterFrame {
 /** `clusterN` + the suffix of one of Svek's own sub-subgraphs. */
 const CLUSTER_PART_RE = /^(cluster\d+)(a|p0|i|p1|ee)$/;
 const BASE_CLUSTER_RE = /^cluster\d+$/;
+const NODE_DECL_RE = /\w+\s*\[shape=/g;
 const TITLE_TABLE_RE = /label=<<TABLE[^>]*?WIDTH="(\d+)"\s+HEIGHT="(\d+)"/;
 
 /** One `subgraph NAME {` open (attributes up to the next brace, newline or
@@ -243,6 +249,7 @@ const CLUSTER_TOKEN_RE =
 interface ClusterRecord {
   chain: WrapperChain;
   titleTable: { w: number; h: number } | undefined;
+  eeDeclarations: number;
 }
 
 const baseOf = (name: string): string | undefined => {
@@ -253,7 +260,7 @@ const baseOf = (name: string): string | undefined => {
 function recordFor(records: Map<string, ClusterRecord>, base: string): ClusterRecord {
   let rec = records.get(base);
   if (rec === undefined) {
-    rec = { chain: { a: false, p0: false, i: false, p1: false }, titleTable: undefined };
+    rec = { chain: { a: false, p0: false, i: false, p1: false }, titleTable: undefined, eeDeclarations: 0 };
     records.set(base, rec);
   }
   return rec;
@@ -264,7 +271,13 @@ function noteTitle(rec: ClusterRecord, attrs: string): void {
   if (t !== null && rec.titleTable === undefined) rec.titleTable = { w: Number(t[1]), h: Number(t[2]) };
 }
 
-/** Wrapper chain and title TABLE per base cluster, from a brace-balanced scan:
+/** Counts one node declaration when the innermost open frame is a `clusterNee`. */
+function noteEeDeclaration(records: Map<string, ClusterRecord>, open: readonly string[]): void {
+  const part = CLUSTER_PART_RE.exec(open[open.length - 1] ?? '');
+  if (part?.[2] === 'ee') recordFor(records, part[1]!).eeDeclarations++;
+}
+
+/** Wrapper chain, title TABLE and `ee` declarations per base cluster, from a brace-balanced scan:
  *  a bare `{` (a `{rank=source;…;}` group) opens an anonymous frame, so its `}`
  *  closes that group and not the cluster around it. Svek's `clusterNa|p0|i|p1`
  *  wrappers and `clusterNee` are attributed to the base cluster they wrap; a
@@ -281,15 +294,21 @@ function scanNesting(dot: string): Map<string, ClusterRecord> {
       const rec = recordFor(records, base);
       const part = CLUSTER_PART_RE.exec(m[1])?.[2];
       if (part === 'a' || part === 'p0' || part === 'i' || part === 'p1') rec.chain[part] = true;
+      // The open token runs up to the next `subgraph`, so a point declared on
+      // `ee`'s own line (`ClusterDotString.java:148-149`) is inside its capture.
+      if (part === 'ee') rec.eeDeclarations += (m[2]?.match(NODE_DECL_RE) ?? []).length;
       noteTitle(rec, m[2] ?? '');
     } else if (m[3] !== undefined) {
       open.pop();
     } else if (m[4] !== undefined) {
+      noteEeDeclaration(records, open);
       const base = open
         .map(baseOf)
         .reverse()
         .find((b) => b !== undefined);
       if (base !== undefined) noteTitle(recordFor(records, base), m[5] ?? '');
+    } else if (m[6] !== undefined) {
+      noteEeDeclaration(records, open);
     } else if (m[7] !== undefined) {
       open.push('');
     }
@@ -326,6 +345,7 @@ function parseClusters(dot: string): StructuralCluster[] {
       out.push({
         memberCount: f.members.size,
         wrapperChain: rec.chain,
+        eeDeclarations: rec.eeDeclarations,
         ...(rec.titleTable === undefined ? {} : { titleTable: rec.titleTable }),
       });
     } else if (m[4] !== undefined) {
@@ -449,13 +469,14 @@ const sortedSametails = (g: StructuralGraph): string[] =>
 const sortedClusterSizes = (g: StructuralGraph): number[] => g.clusters.map((c) => c.memberCount).sort((a, b) => a - b);
 
 /** Id-agnostic signature of one cluster's nesting: membership count, which of
- *  `a|p0|i|p1` wrap it, and its title TABLE size (`-` when it has none). The
+ *  `a|p0|i|p1` wrap it, its title TABLE size (`-` when it has none) and how many
+ *  nodes `ee` itself declares. The
  *  member count stays in so two clusters' parts cannot be cross-paired. */
 const clusterSignature = (c: StructuralCluster): string => {
   const { a, p0, i, p1 } = c.wrapperChain;
   const chain = [a ? 'a' : '', p0 ? 'p0' : '', i ? 'i' : '', p1 ? 'p1' : ''].join('.');
   const title = c.titleTable === undefined ? '-' : `${c.titleTable.w}x${c.titleTable.h}`;
-  return `${c.memberCount}|${chain}|${title}`;
+  return `${c.memberCount}|${chain}|${title}|${c.eeDeclarations}`;
 };
 
 /** Sorted multiset of {@link clusterSignature}s. D4 (description-svek-wrappers):

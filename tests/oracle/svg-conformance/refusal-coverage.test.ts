@@ -1031,7 +1031,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all render.
     // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all render.
     // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all render.
-    expect(manifest.fixtures.length).toBe(10078);
+    // 10078 -> 10079 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
+    expect(manifest.fixtures.length).toBe(10079);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1255,8 +1256,9 @@ describe('refusal coverage — baseline shape', () => {
     // 9534 -> 9580 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones, all rendering. Derivation: 10026 - 446 = 9580.
     // 9580 -> 9596 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all rendering. Derivation: 10042 - 446 = 9596.
     // 9596 -> 9603 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all rendering. Derivation: 10049 - 446 = 9603.
-    // 9603 -> 9632 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all rendering. Derivation: 10078 - 446 = 9632.
-    expect(pinnedRendering.length).toBe(9632);
+    // 9603 -> 9632 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all rendering.
+    // 9632 -> 9633 (2026-11-04): +1, viroxo-69. Derivation: 10079 - 446 = 9633.
+    expect(pinnedRendering.length).toBe(9633);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

@@ -18,7 +18,13 @@ import type { DotInputCluster, DotInputNode } from './graph-layout.types.js';
 import type { ClusterColors, ClusterTree, NodeRec } from './svek-dot-sequence.js';
 import { kermorHasAlpha } from './graph-layout-build-kermor.js';
 import { hex, labelTable, portTable, rowPortTable, shieldTable } from './svek-dot-emit-labels.js';
-import { closeCount, innerWrapperLines, outerWrapperLines, wrapperLevels } from './svek-dot-wrappers.js';
+import {
+  borderPointAnchorDecl,
+  closeCount,
+  innerWrapperLines,
+  outerWrapperLines,
+  wrapperLevels,
+} from './svek-dot-wrappers.js';
 
 import { PX_PER_INCH } from './graph-layout-build.js';
 
@@ -182,13 +188,17 @@ function portClusterEeBlock(
 ): string[] {
   const w = wrapperLevels(cluster);
   const out = [`subgraph ${cluster.id}ee {${eeLabelAttr(cluster, colors.get(cluster.id)!)}`];
-  // `ClusterDotString.java:146-147,151-152`: when the group is a link endpoint
-  // the special point is declared BEFORE `i` opens (so it sits in `ee`); the
-  // `empty()` rect re-declares it last inside `i` (`:175-181`).
+  // `ClusterDotString.java:148-149,151-152`: when the group is a link endpoint
+  // the special point is declared BEFORE `i` opens (so it sits in `ee`). A
+  // hasPort cluster's `empty()` rect re-declares it last inside `i` (`:178-181`);
+  // a border-point composite does so only under `added == null` (`:182-183`).
   const anchor = nodeById.get(cluster.portAnchorId ?? '');
+  const borderAnchor = borderPointAnchorDecl(cluster);
   const pointInEe = w.i && cluster.portRanksLabelOnEe !== true && anchor?.groupAnchorAlsoPoint === true;
   const anchorRec = anchor === undefined ? undefined : recs.get(anchor.id);
-  if (pointInEe && anchorRec !== undefined) out.push(`${anchorRec.sh} [shape=point,width=.01,label=""];`);
+  if ((pointInEe || borderAnchor?.beforeInner === true) && anchorRec !== undefined) {
+    out.push(`${anchorRec.sh} [shape=point,width=.01,label=""];`);
+  }
   out.push(...innerWrapperLines(cluster.id, w));
   // Ranked members are declared by `printRanks` in the OUTER cluster, so `ee`
   // carries only what is left: the anchor/placeholder and any real member.
@@ -196,7 +206,9 @@ function portClusterEeBlock(
   for (const id of cluster.nodeIds) {
     const node = nodeById.get(id);
     const rec = recs.get(id);
-    if (outer.has(id) || node?.isPort === true || node === undefined || rec === undefined) continue;
+    if (outer.has(id) || id === borderAnchor?.id || node?.isPort === true || node === undefined || rec === undefined) {
+      continue;
+    }
     out.push(nodeLine(node, rec, pointInEe && id === anchor?.id));
   }
   for (const child of childrenOf.get(cluster.id) ?? []) {
@@ -205,6 +217,9 @@ function portClusterEeBlock(
     // true, before this function can be reached) — `false` is not a stand-in
     // default, it is the only value this call site can ever mean.
     out.push(...clusterBlock(child, childrenOf, recs, nodeById, colors, false));
+  }
+  if (borderAnchor?.afterMembers === true && anchor !== undefined && anchorRec !== undefined) {
+    out.push(nodeLine(anchor, anchorRec));
   }
   if (w.i) out.push('}');
   out.push('}');

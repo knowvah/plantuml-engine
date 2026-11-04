@@ -792,19 +792,17 @@ Upstream fixed the crash (11ed6720, #2797): `sonyxperiadev.skin` is the jar's st
 
 ## State diagrams
 
-### Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz (library-forced: `@knowvah/dot-engine`)
+### ~~Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz~~ — RETIRED (2026-11-04)
 
-`state/viroxo-69-fito663` (`state comp1 { state ex <<exitpoint>> ... }` with
-links in and out of `comp1`): our DOT equals the jar's `svek-1.dot` byte for
-byte, and real `dot -Tdot` 16.1.0 reproduces the jar's SVG to the pixel
-(start 52, `chk` 56, `ex` 119, `comp1` 7..119). `@knowvah/dot-engine` 2.4.0
-places the cluster's `[*]` start 17 px left of `chk` where graphviz puts it
-4 px left, the exit point 58 px right of `chk` against 63, and the cluster
-109 px wide against 112; the same mechanism is the 8 px on the ten
-`state__hist-*` rows of `oracle/goldens/diagram-style-scope.json`. Filed as
-`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`
-(stdd-T6c, 2026-11-04); not chased in this port (CLAUDE.md: a verified
-dot-engine finding is filed, never patched around).
+Filed as library-forced in error. The defect was ours: the builder and the text
+emitter held a linked composite's special point in `i`, where the jar declares
+it in `ee`, before `i` opens (`ClusterDotString.java:148-152`), and re-declares
+it inside only under `added == null` (`:182-183`). `dotEqual` folded the two
+wrappers, so it could not see the difference; it now counts `ee`'s own
+declarations. `viroxo-69-fito663` and the `state__hist-*`/`state__cluster-*` rows
+of `oracle/goldens/diagram-style-scope.json` are conformant.
+`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md` has the
+trace.
 
 ### ~~Composite-anchor transitions: clip-rect family unported for border-point children~~ — RETIRED (lgm-T1b/T1d, 2026-10-08)
 

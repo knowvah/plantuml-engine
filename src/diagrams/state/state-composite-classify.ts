@@ -207,7 +207,7 @@ function walkClassify(
       }
       // The POINT NODE itself is strictly narrower -- see needsZaentPoint's
       // doc above: only when there is no other content for `ee` to hold.
-      if (touched || (hasDirectBorderPointChild(s) && !hasNonBorderEeContent(s, kindOf))) {
+      if (touched || (hasDirectBorderPointChild(s) && !hasNonBorderEeContent(s, kindOf, noteScopes))) {
         needsZaentPoint.add(s.id);
       }
     }

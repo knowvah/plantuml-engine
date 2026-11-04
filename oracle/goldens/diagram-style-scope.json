@@ -2669,44 +2669,44 @@
       "diffCount": 0
     },
     "state__cluster-bg-diag": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-bg-element": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-bg-root": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-font-diag": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-font-element": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-font-root": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-line-diag": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-line-element": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-line-root": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__cluster-none": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "state__conc-bg-diag": {
       "conformant": true,
@@ -2997,44 +2997,44 @@
       "diffCount": 0
     },
     "state__hist-bg-diag": {
-      "conformant": false,
-      "diffCount": 53
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-bg-element": {
-      "conformant": false,
-      "diffCount": 52
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-bg-root": {
-      "conformant": false,
-      "diffCount": 53
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-font-diag": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-font-element": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-font-root": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-line-diag": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-line-element": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-line-root": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__hist-none": {
-      "conformant": false,
-      "diffCount": 49
+      "conformant": true,
+      "diffCount": 0
     },
     "state__linknote-label-bottom": {
       "conformant": true,

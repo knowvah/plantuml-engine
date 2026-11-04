@@ -139,10 +139,14 @@ export function hasDirectBorderPointChild(state: State): boolean {
 export function hasNonBorderEeContent(
   state: State,
   kindOf: ReadonlyMap<string, 'leaf' | 'autonom' | 'cluster'>,
+  noteScopes: Pick<ReadonlySet<string>, 'has'> = NO_NOTE_SCOPES,
 ): boolean {
   return (
     state.children.some((c) => !isBorderPoint(c) && kindOf.get(c.id) !== 'cluster') ||
     state.concurrentRegions.length > 0 ||
+    // A note is a NORMAL-position node of the cluster, so `printCluster2`'s
+    // node loop sets `added` for it (`svek/Cluster.java`, `:176`).
+    noteScopes.has(state.id) ||
     state.transitions.some((t) => t.from === '[*]' || t.to === '[*]')
   );
 }
