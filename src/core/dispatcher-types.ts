@@ -165,7 +165,7 @@ export interface RenderFragment {
    * `preChromeHeight` are set AND chrome did not inflate the canvas beyond
    * them (a chrome-present + diagramBorderColor combination has zero
    * corpus reach and is declared out of this item's verified scope -- see
-   * `core/assemble-svg.ts`'s own `withDiagramBorderRect` doc comment).
+   * `core/assemble-svg.ts`'s own `diagramBorderRect` doc comment).
    * `undefined` for every other engine (unread, harmless) and for class
    * diagrams with no such skinparam.
    */

@@ -1,5 +1,10 @@
 # Mission Index — the executable grind queue
 
+> **The live queue is on GitHub, since 2026-11-03.** Parity work runs from issues
+> labelled `queue:ready`, on `feature/parity-queue`, through
+> `.claude/mission-driver.sh`; `planning/roadmap.md` defines v1.0. The protocol
+> below is the older grind loop, kept as a record.
+
 The `roadmap.md` is the *why*. This is the *what-next, executably*: a work
 queue a loop can pull from. Each mission has a **status**, a **blocked-by**
 list, an **exit bar** (how you know it's done), and a **measurement** (the

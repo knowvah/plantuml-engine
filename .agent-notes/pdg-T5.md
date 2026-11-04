@@ -14,9 +14,9 @@
 
 ## Observation: c4 `gikaju-64-bari602` is a jar error page we draw
 - **Context**: c4 survey `firstDiff: 'error-page'`, verdict `diverged`.
-- **Finding**: the cached jar SVG is an error page and the port renders a diagram, so the row cannot conform (CLAUDE.md: "we draw where it errors = accepted divergence once the latest release jar also errors", signed per row). It is not in `oracle/accepted-divergences.json`.
-- **Impact**: a candidate for a signed accepted-divergence row, a user decision (stop condition 5 forbids editing that file here).
-- **Confidence**: High on the facts; the ruling is the user's.
+- **Finding**: the cached jar SVG is an error page and the port renders a diagram, so the row cannot conform (CLAUDE.md: "we draw where it errors = accepted divergence once the latest release jar also errors", signed per row). Corrected 2026-11-03: it IS in `oracle/accepted-divergences.json`, signed 2026-10-10; this note first said it was not.
+- **Impact**: none; the row is already accepted.
+- **Confidence**: High.
 
 ## Observation: PARITY-SVG.md's preamble carries the same stale render-path sentence
 - **Context**: T5 corrected `docs/parity-report.md`'s preamble ("the ratchets and the DOT-conformance census render through the low-level `renderFixture` helpers").

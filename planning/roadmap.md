@@ -18,7 +18,7 @@ narrower reading elsewhere in this file.
 - **Known diagram type:** every factory upstream registers in
   `PSystemBuilder.java:133-200`. A factory commented out there, or removed by the
   `__MIT__` markers we mirror, is not known unless a signed ruling keeps it (ditaa,
-  2026-10-14).
+  2026-10-14; chronology, 2026-11-03).
 - **Conformant:** every fixture of that type reads `conformant` in the SVG survey. A
   fixture where the jar draws an error page and we draw our own counts
   (`docs/svg-conformance.md`).

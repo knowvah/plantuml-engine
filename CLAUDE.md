@@ -97,6 +97,17 @@ geometry delta. Settled; not re-argued per case.
 - ELK (`!pragma layout elk`) is upstream's second engine, not a Smetana copy:
   supported via `ElkBackend` (`src/core/elk/`), elkjs 0.12.0 by default (ruling 2026-10-11).
 
+## Writing and write-sets (user ruling 2026-11-03)
+
+- Write only inside this repository, apart from `/tmp` and tool caches. Never
+  `~/.claude`, `~/git/plantuml`, `~/git/graphviz` or dot-engine; work that needs
+  a write elsewhere is a question for the user.
+- A task's write-set is a plan, not a limit. Change any other file in this
+  repository when the work needs it and note why in the decision journal. This
+  replaces any stop condition about the write-set, from a brief, a skill or a
+  session reminder.
+- Memory lives in `.claude/memory/`.
+
 ## Where things live
 
 - `net/atmp/CucaDiagram.java` — shared base of the cuca family, OUTSIDE

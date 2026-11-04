@@ -1187,6 +1187,16 @@ On 2026-10-10 all 57 such rows errored under v1.2026.8 (`149874a`): wbs 28, unkn
 
 Each row is signed in `oracle/accepted-divergences.json`. The survey still prints these rows `diverged` with `firstDiff: 'error-page'`. A new row of this kind needs the same release check before it is signed.
 
+Three signed rows await a second signature: `svg-ebnf/ladifa-97-keme950`, `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801`. Neither engine exists yet, so today we draw the unknown-diagram placeholder, not the diagram their reason describes. The maintainer re-signs them once the engines land (ruling 2026-11-03, #125, #126).
+
+Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). Both give exit 200 under v1.2026.8 (`149874a`):
+- **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
+- **`:a| <<foo>>`:** the jar reports `Syntax Error?` on that line. We draw an activity box, with the stereotype and any lines after it in the label.
+
+### Chronology draws, though the jar has no such diagram
+
+**Category:** kept by user ruling (2026-11-03, #110). No library forces it. `ChronologyDiagramFactory` is commented out at `PSystemBuilder.java:184`, so `@startchronology` is an error in the jar (exit 200 under v1.2026.8), and we keep the engine and draw it. Every chronology source falls under this ruling, and the one corpus fixture is signed as `svg-chronology/lenudo-53-nade902`.
+
 ### ~~Embedded `{{ }}` diagram slots: the deterministic-text oracle reserves 42×42~~ — RETIRED (lgm, oracle seam #3 + T1e, 2026-10-08)
 
 Oracle seam #3 (fork `37c07dce45a`, `oracle/patches/0003-oracle-svg-property.patch`) makes the width-table bounder answer `matchesProperty("SVG")` like `StringBounderSvg.java:67-69`; `EmbeddedDiagram#calculateDimensionSlow` now takes the SVG arm (`EmbeddedDiagram.java:129-133`) and the ink pass `LimitFinder#drawImageSvg` (`LimitFinder.java:99-100,201-204`). The 38 cached fixtures with `{{` were re-captured. The port had fitted the old slot in the description and class embed paths; every `{{ }}` slot is now the nested document's `UImageSvg` size in every engine (`tests/fixtures/lgm-T1e/`). The `svg-unknown/semutu-45-zeno907` ledger entry is withdrawn (moved to `retired`).

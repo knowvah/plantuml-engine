@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-03T21:25:17.148Z",
-  "measuredAgainstCommit": "69379cc9f",
+  "generatedAt": "2026-11-04T01:05:19.975Z",
+  "measuredAgainstCommit": "f31b2eac9",
   "type": "c4",
   "measurer": "deterministic",
   "fixtures": [

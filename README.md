@@ -58,7 +58,7 @@ algorithms. See [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
 - Authors: Emden R. Gansner, John C. Ellson, Yifan Hu, and the AT&T
   Research / Lucent Technologies Graphviz team
 - Source: <https://gitlab.com/graphviz/graphviz>
-- Graphviz 2.38.0 License: Common Public License 1.0 (CPL-1.0)
+- License: Eclipse Public License 2.0 (EPL-2.0)
 
 The algorithms implemented here follow the methods described in:
 

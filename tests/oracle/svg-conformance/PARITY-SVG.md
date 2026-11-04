@@ -9,11 +9,14 @@ gate. Regenerate: `npm run svg:survey && npm run svg:dashboard`.
 Both sides already measure text through the same system —
 `WidthTableMeasurer`, re-exported as `DeterministicMeasurer`
 (`src/core/measurer-deterministic.ts`) — so a `diverged` verdict here is
-never a text-metric mismatch. What differs between this survey and the
-byte-exact golden ratchets (e.g. `description.golden.ratchet.test.ts`)
-is the RENDER PATH: this script renders through production `renderSync`,
-while the ratchets and the DOT-conformance census render through the
-low-level `renderFixture` helpers instead. `dotEqual` — DOT-emission
+never a text-metric mismatch. This survey renders every bucket through
+production `renderSync`. The ratchet and census helpers
+(`tests/oracle/svg-conformance/render-fixture-*.ts`) split: class,
+component, usecase, unknown, dot, gantt, mindmap, salt, wbs and files also
+call `renderSync`; object, state, sequence, activity, json, yaml and hcl
+drive their engine's own parse, layout and render pipeline with the
+measurer injected. A `diverged` verdict beside a passing byte-exact ratchet
+is that RENDER PATH difference. `dotEqual` — DOT-emission
 parity, independent of render path — remains the ratchet-eligibility
 signal; read it here, not `verdict`, to see which fixtures the
 byte-exact ratchets can cover.
