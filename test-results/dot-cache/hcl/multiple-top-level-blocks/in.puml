@@ -1,0 +1,10 @@
+@starthcl
+resource "aws_s3_bucket" "logs" {
+  bucket = "my-logs-bucket"
+  acl    = "log-delivery-write"
+}
+resource "aws_s3_bucket" "data" {
+  bucket = "my-data-bucket"
+  acl    = "private"
+}
+@endhcl

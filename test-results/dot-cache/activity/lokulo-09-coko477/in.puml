@@ -1,0 +1,13 @@
+@startuml
+
+start
+-[#green;#maroon,dashed]->
+partition dummy {
+note right
+foo
+end note
+':some activity;
+}
+end
+
+@enduml

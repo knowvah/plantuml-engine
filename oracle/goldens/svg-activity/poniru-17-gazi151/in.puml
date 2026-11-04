@@ -1,0 +1,12 @@
+@startuml
+title a
+switch (decision)
+case (a)
+    :a;
+case (b)
+    :b;
+case (c)
+    :c;
+    ->Z;
+endswitch
+@enduml

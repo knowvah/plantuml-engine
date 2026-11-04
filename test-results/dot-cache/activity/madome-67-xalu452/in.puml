@@ -1,0 +1,7 @@
+@startuml
+start
+:er; <<output>>
+:<< Automobile >>
+Pinto;
+stop
+@enduml

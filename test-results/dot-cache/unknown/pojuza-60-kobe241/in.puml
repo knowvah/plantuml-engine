@@ -1,0 +1,5 @@
+@startuml
+Title This is the title\nOn several Lines
+Footer Footer
+User --> (Start the application)
+@enduml

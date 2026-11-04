@@ -1,0 +1,10 @@
+@startuml
+(*) --> activity1
+--> switch "count"
+  -> "go right"
+break:
+  --> "go left"
+break:
+  -> "go right"
+  
+@enduml

@@ -18,6 +18,13 @@ OUT_ROOT = os.path.join(os.path.dirname(__file__), "..", "tests", "corpus")
 TYPE_PATTERNS = [
     ("sequence",  [r"^\s*\w[\w ]*->[\w ]", r"^\s*participant ", r"^\s*actor\s+\w",
                    r"autonumber", r"^\s*activate ", r"^\s*deactivate "]),
+    # `r"--|>"` is an unescaped alternation: it matches any line holding `--`
+    # OR `>`, so a sequence `A --> B` (and most arrows) lands in `class/`.
+    # Left as is on purpose (oracle-gap-capture D1, 2026-11-03): tests/corpus
+    # is NOT the population of record -- the coverage gate
+    # (tests/oracle/svg-conformance/oracle-coverage.test.ts over
+    # tests/visual/data/*.json) is -- and correcting it would reclassify a
+    # local tree that many test comments cite by path (tests/corpus/class/...).
     ("class",     [r"^\s*class ", r"^\s*interface ", r"^\s*abstract\s+class",
                    r"^\s*abstract\s+\w", r"^\s*enum ", r"<\|--", r"--|>",
                    r"\*--", r"o--", r"^\s*annotation "]),

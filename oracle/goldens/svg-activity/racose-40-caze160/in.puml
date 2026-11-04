@@ -1,0 +1,5 @@
+@startuml
+:<latex>P(y|\mathbf{x}) \mbox{ or } f(\mathbf{x})+\epsilon</latex>; <<load>>
+:<latex>P(y|\mathbf{x}) \mbox{ or } f(\mathbf{x})+\epsilon</latex>; <<load>>
+:<color:red>KO;
+@enduml

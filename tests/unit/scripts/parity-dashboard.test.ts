@@ -57,6 +57,7 @@ function baseInputs(): RawInputs {
     corpusCounts: { class: 768, component: 384, ditaa: 2, sequence: 1271, unknown: 825 },
     registeredEngines: ['class', 'description', 'sequence'],
     oracleCounts: { class: 723, component: 266, sequence: 1141 },
+    oracleCoverage: { rows: 3250, oracled: 2130, reasoned: 2 },
     jarUnsupportedCounts: {},
     unknownJarTags: {},
     dotParity: {
@@ -270,9 +271,22 @@ describe('renderReport', () => {
     expect(out).toContain('Freshest measurement across every source below: 2026-09-20T14:44:15.369Z.');
   });
 
+  it('states that corpus counts manifest rows and oracle counts cached rows placed by the jar (ogc D2)', () => {
+    expect(out).toContain('**corpus** counts manifest rows, which `scripts/classify-corpus.ts` guessed by keyword');
+    expect(out).toContain("placed by the jar's own `data-diagram-type`");
+  });
+
+  it('prints the oracle coverage line from the inputs, never the clock or the disk', () => {
+    expect(out).toContain(
+      'Oracle coverage: 2130 of 3250 manifest rows have a jar oracle under some bucket and 2 a recorded reason in ' +
+        '`oracle/no-oracle-reasons.json`; `tests/oracle/svg-conformance/oracle-coverage.test.ts` fails on a row with neither.',
+    );
+  });
+
   it('renders the matrix header and a class row', () => {
     expect(out).toContain('| type | engine | corpus | oracle | DOT equal |');
-    expect(out).toContain('| class | class | 768 | 723 | 710/711 (100%) |');
+    // class carries the openDefect mark here because the synthetic survey (412 / 50 / 261) falls short (ogc-T8).
+    expect(out).toContain('| class § | class | 768 | 723 | 710/711 (100%) |');
   });
 
   it('renders the freshness table', () => {
@@ -575,7 +589,8 @@ describe('matrix notes: why a row falls short', () => {
   });
 
   it('never marks a row with no recorded reason', () => {
-    expect(noteSymbolOf('class', '412 / 50 / 261')).toBeUndefined();
+    // gantt has no ROW_NOTES entry (ogc-T8: class, activity, sequence and dot gained one on 2026-11-04).
+    expect(noteSymbolOf('gantt', '200 / 50 / 15')).toBeUndefined();
   });
 
   it('puts the mark in the type cell', () => {

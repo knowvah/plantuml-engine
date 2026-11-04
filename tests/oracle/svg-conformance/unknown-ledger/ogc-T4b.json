@@ -1,0 +1,131 @@
+{
+  "$comment": "ogc-T4b fragment (mission oracle-gap-capture): the 20 activity3/class/object/sequence rows where the jar's data-diagram-type and ours disagree or we error on a source the jar renders. Each reason quotes the upstream command that accepts the row's first refused line (File.java:line) and the port's file:line that refuses or misroutes it; nothing here is fixed. One row per slug, sorted; consumed by scripts/pin-corpus-tree.ts. (xugipu-29-fobo006 and robitu-34-vupe367 were adjudicated and then dropped: both measure clean once the pin tool passes the ELK backend, journal row 9.)",
+  "rows": [
+    {
+      "slug": "dadelu-44-xuvu530",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command; our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121."
+    },
+    {
+      "slug": "fuficu-36-caga441",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts '#green:Activity 1;' via CommandActivityLong3.java:78-84 (registered ActivityDiagramFactory3.java:159): CommandActivity3 (CommandActivity3.java:66-77) has no colour leaf, so the line starts CommandActivityLong3, whose start regex is color().getRegex() + `:` + DATA `(.*)`; CommandMultilines3.isValid returns OK_PARTIAL on a single line without testing the END pattern (CommandMultilines3.java:78-79), so the block runs to the next line ending `;` + stereogroup, ':Activity 2; <<redactivity>>' (END, CommandActivityLong3.java:61-68), and executeNow emits the deprecation warning for the leading colour (:125-127) -- the jar draws one two-line box 'Activity 1;' / ':Activity 2'; our activity engine refuses that line (node-dispatch.ts:155-156 tryMultilineAction returns null unless the line starts with ':', and RE_ACTION (dispatch-support.ts:50) has no colour prefix), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'partition \"My Partition\" <<bluepartition>> {'). Open -> #121."
+    },
+    {
+      "slug": "gigefo-15-cami497",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'while (data available?) <<#AliceBlue>>' via CommandWhile3.java:63-80 (registered ActivityDiagramFactory3.java:137): the regex ends `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:76-78), so a <<#AliceBlue>> tail is accepted; our activity engine refuses that line (dispatch-support.ts:247 RE_WHILE ends `\\s*$` after the optional is/equals label, with no stereogroup), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':foo1;'). Open -> #121."
+    },
+    {
+      "slug": "kizofi-56-mibi017",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'repeat:B; <<MyGreen>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121."
+    },
+    {
+      "slug": "kofogo-67-jiju461",
+      "cohort": "ogc-class",
+      "disposition": "known-misroute",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts '(ns1.classB, ns1.classA) .. ns1.Exception : Exception' via CommandLinkClass.java:108-171 (registered ClassDiagramFactory.java:143): COUPLE1 `\\([%s]*(SINGLE2)[%s]*,[%s]*(SINGLE2)[%s]*\\)` (CommandLinkClass.java:102, :116) as the first endpoint, then the optional `:` LABEL_LINK `(.+)` tail (:165-170); executeArg routes ENT1==null to executeArgSpecial1 (:301-302), which reads LABEL_LINK into the association-class label (:414) and calls diagram.associationClass; our class engine refuses it because class-assoc-couple.ts:65-66 ASSOC_COUPLE_RE ends `\\s*$` right after the third entity, with no `: label` tail (a probe '(A, B) .. C' is accepted, '(A, B) .. C : x' is refused), so class refuses and the description engine registered after it (registered-plugins.ts:61) accepts the source: we draw DESCRIPTION where the jar draws CLASS. Open -> new class parity issue (ogc-T9)."
+    },
+    {
+      "slug": "mivipi-10-lebe104",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts '[[http://plantuml.com/sequence]] if (?) then (x) <<#ff8822>>' via CommandIf2.java:68-89 (registered ActivityDiagramFactory3.java:119): the regex opens with UrlBuilder.OPTIONAL (:70) before `if`, and executeArg reads that URL_KEY into the diamond's url (:140-145); our activity engine refuses that line (dispatch-support.ts:118 RE_IF is anchored `^if` with no URL leaf (a probe of the same if without the [[...]] prefix and with the <<#ff8822>> tail is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine 'else (2)'). Open -> #121."
+    },
+    {
+      "slug": "munovo-17-voji978",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine '-> Comment for the line before the forkend;'). Open -> #121."
+    },
+    {
+      "slug": "nabako-16-gefo071",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121."
+    },
+    {
+      "slug": "nadata-32-ruma325",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'A1 -> A2 A3 -> A2 A3 -> A2 : b }' via the LEGACY CommandLinkActivity.java:79-119 (registered ActivityDiagramFactory.java:96, a factory at PSystemBuilder.java:137, ahead of ActivityDiagramFactory3 at :140): FIRST CODE `A1` (:84), ARROW `->` (:92-97), then FIRST2's QUOTED_INVISIBLE2 `(\\w.*?)` (:108) takes the whole rest as one activity (the jar's svek-1.dot has 2 nodes, texts 'A1' and 'A2 A3 -> A2 A3 -> A2 : b }'), after ClassDiagramFactory fails it because CommandLinkClass's ENT2 (CommandLinkClass.java:156-158) stops at 'A2' and only colour/url/stereotype/`: label` may follow (:159-171); this port registers no legacy ActivityDiagramFactory (registered-plugins.ts:59-63 skips java:137), our activity3 engine refuses line 1, and the dispatcher draws class's error page (trial firstLine the same line). Open -> #123 (legacy engine)."
+    },
+    {
+      "slug": "radute-87-nize199",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-misroute",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts '-down[hidden]-> Describe' via the LEGACY CommandLinkActivity.java:79-119 (registered ActivityDiagramFactory.java:96, factory PSystemBuilder.java:137): FIRST is optional (:81-86), ARROW_BODY1 `-` (:92), ARROW_DIRECTION `down` (:94), ARROW_STYLE2 `[hidden]` (:95), CODE2 `Describe` (:105) -- the jar's svek-1.dot draws Plan..Analyse as activities; ClassDiagramFactory (PSystemBuilder.java:136) refuses that line first, because CommandLinkClass's ENT1 `-down` (getClassIdentifier, CommandLinkClass.java:177-178, leading separator `-` allowed) must be followed by ARROW_BODY1 `[-=.]+` (:134), and a QUALIFIER1 bracket needs spaceOneOrMore on both sides (:120-126); our class engine accepts it because class-relationship-parser.ts:191 reads `\\s*(?:\\[([^[\\]]+)\\])?` with zero spaces, so `[hidden]` becomes QUALIFIER1 of entity '-down', and we draw CLASS where the jar draws ACTIVITY (this port registers no legacy ActivityDiagramFactory, registered-plugins.ts:59-63). Open -> #123 (legacy engine); the class-parser bracket spacing goes to the class parity issue (ogc-T9)."
+    },
+    {
+      "slug": "rikegu-37-maze985",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Empty;'). Open -> #121."
+    },
+    {
+      "slug": "suxeji-23-soro189",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'repeat:Entering a password; <<input>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Entering your username; <<input>>'). Open -> #121."
+    },
+    {
+      "slug": "teoz-ng-001-11",
+      "cohort": "ogc-sequence",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'partition p' via CommandGrouping.java:64-74 (registered SequenceDiagramFactory.java:126): TYPE `(opt|alt|loop|par|par2|break|critical|else|end|also|group|partition)` (:67) plus the optional spaceOneOrMore COMMENT (:69-73), and GroupingType.java:55-56 maps `partition` to START_PARTITION; our sequence engine refuses it because command-grouping.ts:156 groupingCommand's TYPE alternation `(loop|alt|opt|par2|par|break|critical|group)` has no `partition`, every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'partition p'). Open -> new sequence parity issue (ogc-T9)."
+    },
+    {
+      "slug": "tusaxu-17-rasi651",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command (and CommandEnd3.java:58-65, registered :153, carries the same stereogroup leaf at :63 for 'end <<#blue>>'); our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121."
+    },
+    {
+      "slug": "votigi-61-nite269",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'repeat:B; <<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121."
+    },
+    {
+      "slug": "zemeco-27-kaje686",
+      "cohort": "ogc-class",
+      "disposition": "known-misroute",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts '(A_Driver, A_Car) -> A_Contract : under Contract >' via CommandLinkClass.java:108-171 (registered ClassDiagramFactory.java:143): COUPLE1 `\\([%s]*(SINGLE2)[%s]*,[%s]*(SINGLE2)[%s]*\\)` (CommandLinkClass.java:102, :116) as the first endpoint, then the optional `:` LABEL_LINK `(.+)` tail (:165-170); executeArg routes ENT1==null to executeArgSpecial1 (:301-302), which reads LABEL_LINK into the association-class label (:414) and calls diagram.associationClass; our class engine refuses it because class-assoc-couple.ts:65-66 ASSOC_COUPLE_RE ends `\\s*$` right after the third entity, with no `: label` tail (a probe '(A, B) .. C' is accepted, '(A, B) .. C : x' is refused), so class refuses and the description engine registered after it (registered-plugins.ts:61) accepts the source: we draw DESCRIPTION where the jar draws CLASS. Open -> new class parity issue (ogc-T9)."
+    },
+    {
+      "slug": "zesoto-64-xeda685",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'repeat:B;<<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121."
+    },
+    {
+      "slug": "zugoco-10-pexu073",
+      "cohort": "ogc-activity3",
+      "disposition": "known-gap",
+      "task": "ogc-T4b",
+      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121."
+    }
+  ]
+}

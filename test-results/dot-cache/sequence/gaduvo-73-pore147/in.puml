@@ -1,0 +1,12 @@
+@startuml
+'this works
+A<->B: One
+->A: Two
+[<-A: Two-1
+<-A: Three
+[->A: Three-1
+'this breaks
+<->A
+[<->A
+B<->] : foo
+@enduml

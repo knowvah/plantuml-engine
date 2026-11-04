@@ -1,0 +1,6 @@
+@startuml
+start
+:single line; <<output>>
+:demo
+multi line; <<input>>
+@enduml

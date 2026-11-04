@@ -1,0 +1,8 @@
+@startuml
+class CopierTXTEnCSV <<(F, zzgrey)>>
+class log
+
+class conf <<(F, grey)>>
+conf : FICHIER_CONF = oravoscoms.properties
+conf : chargerConfiguration()
+@enduml

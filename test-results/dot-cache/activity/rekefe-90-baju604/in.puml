@@ -1,0 +1,16 @@
+@startuml
+skinparam Backgroundcolor transparent
+legend
+<size:8> Rendered with Plantuml Version %version() </size>
+end legend
+
+if (Is there a Space?) then (yes)
+:"With space, correct parsing";
+:<latex>P(y|\mathbf{x}) \mbox{ or } f(\mathbf{x})+\epsilon</latex>;<<output>>
+:"this is NOT added to the item above";
+else (no)
+:"No space, incorrect parsing:";
+:<latex>P(y|\mathbf{x}) \mbox{ or } f(\mathbf{x})+\epsilon</latex>;<<output>><<#pink>>
+:<color:red>"this IS added to the item above";
+endif
+@enduml

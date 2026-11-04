@@ -1,0 +1,12 @@
+@startuml
+repeat
+    :Hello world!;
+repeatwhile(a==1
+and b ==2)is(The condition
+is True)
+-> The condition is False;
+repeat
+    :Hello world!;
+repeatwhile(a==1and b ==2)is(The condition is True)
+-> The condition is False;
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+!pragma svek_trace on
+[Angular] --> [Provider]
+
+component [Provider] {
+(setMember1)
+}
+
+[Provider]
+
+@enduml

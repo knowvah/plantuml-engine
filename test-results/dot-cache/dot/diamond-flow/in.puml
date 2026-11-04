@@ -1,0 +1,9 @@
+@startdot
+digraph flow {
+  start -> decision
+  decision -> yes [label=yes]
+  decision -> no [label=no]
+  yes -> end
+  no -> end
+}
+@enddot

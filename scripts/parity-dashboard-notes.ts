@@ -9,8 +9,10 @@
  * `--families` tally or `DIVERGENCES.md` on 2026-11-03
  * (`plans/parity-dashboard-repair/measurements/note-audit.md`); a row's
  * sentence says what was measured, and "not yet diagnosed" where nothing more
- * is known. A row that reaches conformant has no entry (activity, gantt,
- * mindmap, sequence, ...): an entry for it would be dead.
+ * is known. A row that reaches conformant has no entry (gantt, mindmap,
+ * ...): an entry for it would be dead. Rows re-audited against the
+ * 2026-11-04 numbers after #109's capture:
+ * `plans/oracle-gap-capture/measurements/note-audit.md`.
  */
 
 type NoteClass = 'smetana' | 'notBuilt' | 'openDefect' | 'mixed' | 'jarDeclines';
@@ -65,6 +67,32 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   regex: { noteClass: 'notBuilt' },
   timing: { noteClass: 'notBuilt' },
   wire: { noteClass: 'notBuilt' },
+  activity: {
+    noteClass: 'openDefect',
+    detail:
+      'Not a regression: every row short of conformant is one of the 429 fixtures #109 captured on 2026-11-04 ' +
+      '(the 449 measured before all still conform). 127 of them draw our error page where PlantUML draws a ' +
+      'diagram: 114 use the legacy `(*) -->` activity syntax, which we do not parse, and 13 use activity3 ' +
+      'constructs our parser refuses. The rest differ mostly in stroke, fill, child counts and text widths.',
+  },
+  class: {
+    noteClass: 'openDefect',
+    detail:
+      'Not a regression: all 43 rows short of conformant are fixtures #109 captured on 2026-11-04. The layout ' +
+      'matches on most of them (layoutEqual 641 of 664); the first differences are element ids, strokes, font ' +
+      'sizes and fills, not yet diagnosed row by row.',
+  },
+  dot: {
+    noteClass: 'openDefect',
+    detail: 'The two structural matches are fixtures #109 captured on 2026-11-04; their geometry is not yet diagnosed.',
+  },
+  sequence: {
+    noteClass: 'openDefect',
+    detail:
+      'Not a regression: all 9 rows short of conformant are fixtures #109 captured on 2026-11-04. One draws our ' +
+      'error page where PlantUML draws a diagram (`partition` as a grouping keyword, which we do not parse); the ' +
+      'rest differ in a title child count, a dash pattern and path data.',
+  },
   board: {
     noteClass: 'openDefect',
     detail:
@@ -102,8 +130,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   state: {
     noteClass: 'openDefect',
     detail:
-      'The layout matches on most fixtures (layoutEqual 253 of 269). The largest groups differ in element ids, text ' +
-      'positions and widths, child counts and path data, not yet diagnosed row by row.',
+      'The layout matches on most fixtures (layoutEqual 272 of 293). The largest groups differ in element ids, ' +
+      'classes, text widths, stroke widths and child counts, not yet diagnosed row by row. 15 of the 159 diverged ' +
+      'rows are fixtures #109 captured on 2026-11-04.',
   },
   usecase: {
     noteClass: 'openDefect',

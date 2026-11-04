@@ -1,0 +1,19 @@
+@startuml
+!$data={"partlen": "2", "game": "GamePlantuml", "participants": [
+{"name": "XYZ" ,"as": "xyz", "team": "A"},
+{"name": "RST" ,"as": "rst", "team": "B"},
+{"name": "UVW" ,"as": "uvw", "team": "B"}],
+"color": {"A": "red", "B": "blue"},
+"red": { "pure": "red", "paler": "pink"},
+"blue": { "pure": "blue", "paler": "skyblue"}
+}
+
+:a;
+!foreach $part in $data.participants
+  :$part.name as $part.as;
+  :1 access to json: [$data.color.A, $data.color.B] $part.team -> $data.color of $part.team;
+  :2 access to json: [$data.color.A, $data.color.B] $part.team -> $data.color[$part.team];
+  :3 access to json, **with multiple indirection**: $part.team -> $data[$data.color[$part.team]][paler];
+!endfor
+:b;
+@enduml

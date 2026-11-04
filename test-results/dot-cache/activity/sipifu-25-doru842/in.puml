@@ -1,0 +1,11 @@
+@startuml
+skinparam monochrome true
+:<math>int_0^1f(x)dx</math>;
+:<math>x^2+y_1+z_12^34</math>;
+note right
+Essayer aussi:
+<math>d/dxf(x)=lim_(h->0)(f(x+h)-f(x))/h</math>
+<latex>P(y|\mathbf{x}) \mbox{ ou } f(\mathbf{x})+\epsilon</latex>
+end note
+
+@enduml

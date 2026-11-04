@@ -1,0 +1,6 @@
+@startdot
+digraph G {
+  node [shape=diamond]
+  p -> q -> r
+}
+@enddot

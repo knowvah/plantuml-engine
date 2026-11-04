@@ -28,6 +28,7 @@ import {
   classifyOutput,
   planEntries,
   captureOracleCache,
+  renderFixture,
   type Fixture,
 } from '../../../scripts/capture-oracle-cache.js';
 
@@ -80,6 +81,29 @@ describe('classifyOutput', () => {
     writeFileSync(join(dir, 'in.puml'), '@startuml\n@enduml\n', 'utf-8');
 
     expect(classifyOutput(dir)).toEqual({ kind: 'none' });
+  });
+
+  it('adopts `<name>.svg` plus `<name>_NNN.svg` pages as in.svg and in_NNN.svg (ogc D4: xobebi-29-jilu859)', () => {
+    const dir = join(tmp, 'classify-paged');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'file4.svg'), '<svg id="p0"/>', 'utf-8');
+    writeFileSync(join(dir, 'file4_001.svg'), '<svg id="p1"/>', 'utf-8');
+
+    expect(classifyOutput(dir)).toEqual({ kind: 'renamed', file: 'file4.svg' });
+    expect(readFileSync(join(dir, 'in.svg'), 'utf-8')).toBe('<svg id="p0"/>');
+    expect(readFileSync(join(dir, 'in_001.svg'), 'utf-8')).toBe('<svg id="p1"/>');
+    expect(existsSync(join(dir, 'file4.svg'))).toBe(false);
+    expect(existsSync(join(dir, 'file4_001.svg'))).toBe(false);
+  });
+
+  it('stays ambiguous when the pages belong to two different stems', () => {
+    const dir = join(tmp, 'classify-two-stems');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'a.svg'), '<svg/>', 'utf-8');
+    writeFileSync(join(dir, 'a_001.svg'), '<svg/>', 'utf-8');
+    writeFileSync(join(dir, 'b_001.svg'), '<svg/>', 'utf-8');
+
+    expect(classifyOutput(dir)).toEqual({ kind: 'ambiguous' });
   });
 
   it('reports ambiguous when more than one svg was produced', () => {
@@ -288,5 +312,30 @@ describe('captureOracleCache', () => {
     expect(sleep).toHaveBeenCalledTimes(1);
     expect(execFileSync).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ type: 'activity', captured: ['echo'], jarFailed: [], renamed: [] });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// renderFixture -- exported for capture-missing-oracles.ts (ogc T2, D4): the
+// JVM's cwd is injectable so `!pragma svek_trace on` writes `svek.svg` into
+// a scratch directory instead of the repo root.
+// ---------------------------------------------------------------------------
+
+describe('renderFixture', () => {
+  it('passes the scratch cwd to execFileSync and reports the start instant from the guard clock', async () => {
+    const dir = join(tmp, 'render-cwd', 'out');
+    const cwd = join(tmp, 'render-cwd');
+    mkdirSync(cwd, { recursive: true });
+    vi.mocked(execFileSync).mockImplementation(() => {
+      writeFileSync(join(dir, 'in.svg'), '<svg/>', 'utf-8');
+      return '';
+    });
+
+    const result = await renderFixture(dir, '@startuml\nA -> B\n@enduml\n', PLAIN_MINUTE_GUARD, cwd);
+
+    expect(result).toEqual({ kind: 'in-svg', file: 'in.svg', startedAt: 10 * 60_000 });
+    expect(readFileSync(join(dir, 'in.puml'), 'utf-8')).toBe('@startuml\nA -> B\n@enduml\n');
+    const call = vi.mocked(execFileSync).mock.calls[0]!;
+    expect((call[2] as { cwd?: string }).cwd).toBe(cwd);
   });
 });

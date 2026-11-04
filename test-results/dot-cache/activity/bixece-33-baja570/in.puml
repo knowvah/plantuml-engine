@@ -1,0 +1,16 @@
+@startuml
+skinparam arrow {
+    MessageAlign left
+}
+
+|Customer|
+|Sales|
+:**SEND** report
+to customer;
+->in big envelop;
+|Customer|
+:**RECEIVE** report;
+-> by mail;
+|Sales|
+:**RECEIVE** ack;
+@enduml

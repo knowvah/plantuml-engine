@@ -1,0 +1,9 @@
+@startuml
+
+participant "Bob on\nseveral lines" as Bob
+actor Alice
+
+Bob -> Alice : hello
+A big error
+
+@enduml

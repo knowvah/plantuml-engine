@@ -1,0 +1,14 @@
+@startuml
+robust "Main Switch" as MainSwitch
+MainSwitch is Off
+
+@0  as :On
+@5  as :Off
+
+@:On
+MainSwitch is On
+@:Off
+MainSwitch is Off
+
+MainSwitch@:On <-> @:OffBad : tOn
+@enduml

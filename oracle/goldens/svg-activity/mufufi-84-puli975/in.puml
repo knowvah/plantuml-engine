@@ -1,0 +1,20 @@
+@startuml
+<style>
+activityDiagram
+{
+ arrow {
+     LineColor green
+ }
+ .x {
+     BackgroundColor #00ff00  
+ }
+ .y {
+     BackgroundColor #00ffff  
+ }
+}
+</style>
+start
+:hello; << x >>
+:world; << y >>
+stop
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+start
+    if (test1) then
+      while (while2)
+        :ins1;
+      endwhile
+      -[#Black]->
+      :ins2;
+    endif
+stop
+@enduml

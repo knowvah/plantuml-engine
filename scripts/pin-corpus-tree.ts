@@ -36,6 +36,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
+import { loadElk, type ElkBackend } from '../src/index.js';
 import { measureTree, type MeasuredFixture } from './pin-corpus-tree-measure.js';
 import { assertJsonObjectShape } from './lib/assert-json-shape.js';
 
@@ -320,6 +321,9 @@ export interface PinOptions {
   readonly refusalBaselinePath: string;
   readonly today: string;
   readonly commit: string;
+  /** One ELK backend per process, as the gates hold it (cdd8 D2d); absent
+   *  only in tests that measure no `!pragma layout elk` fixture. */
+  readonly elk?: ElkBackend;
 }
 
 export interface PinResult {
@@ -405,7 +409,7 @@ function writeBaselines(
  */
 export function runPinCorpusTree(opts: PinOptions): PinResult {
   const ledger = loadLedger(opts.ledgerDir);
-  const measured = measureTree(opts.treeDir);
+  const measured = measureTree(opts.treeDir, opts.elk);
   const derived = deriveAll(measured, ledger);
 
   const malformed = findMalformedReason(measured, derived);
@@ -480,7 +484,7 @@ function commitShort(): string {
   return execFileSync('git', ['rev-parse', '--short=8', 'HEAD']).toString().trim();
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2));
   const opts: PinOptions = {
     ...parsed,
@@ -488,6 +492,7 @@ function main(): void {
     refusalBaselinePath: REFUSAL_BASELINE_PATH,
     today: today(),
     commit: commitShort(),
+    elk: await loadElk(),
   };
   const result = runPinCorpusTree(opts);
   printTally(result.tally, opts.treeDir, result.total);
@@ -499,11 +504,9 @@ function main(): void {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  try {
-    main();
-  } catch (err) {
+  main().catch((err: unknown) => {
     console.error(err instanceof Error ? err.message : String(err));
     process.exit(1);
-  }
+  });
 }
 /* v8 ignore stop */

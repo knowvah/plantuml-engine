@@ -1,0 +1,12 @@
+@startuml	 
+repeat
+  :Test something;
+    if (Something went wrong?) then (yes)
+      :Alert "Error";
+    else
+      break
+    endif
+repeat while (Something went wrong?) is (yes)
+->no;
+:Alert "Sucess";
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class com.Toto
+class com.Toto.Internal
+
+com.Toto --> com.Toto.Internal
+@enduml

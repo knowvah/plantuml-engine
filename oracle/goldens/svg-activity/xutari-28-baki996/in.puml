@@ -1,0 +1,19 @@
+@startuml
+start
+   repeat 
+   if(condition A) then (yes)
+    split
+   :a1;
+    split again
+   :a2;
+   end split
+   elseif(condition B) then (yes)    
+    :b1;  
+    :b2; 
+   elseif(condition C) then (yes)
+   -[#blue]->
+   break   
+   endif
+   repeat while(test) is (No) not (Yes)
+ end
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+start
+   repeat 
+   if(condition A) then (yes)
+    fork
+   :a1;
+    fork again
+   :a2;
+   end fork
+   elseif(condition B) then (yes)
+    :b1;
+    :b2;
+   elseif(condition C) then (yes)
+   -[#blue]->
+   break   
+   endif
+   repeat while(test) is (No) not (Yes)
+ end
+@enduml

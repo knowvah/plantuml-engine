@@ -1,0 +1,8 @@
+@startuml
+title example
+start
+:add further values into <color:DarkViolet>selectedContribs</color>:
+   • journalistAssimDays <&plus>= <color:ForestGreen>assimDays</color>             <color:grey>// only if > 0</color>
+   • specialContributionRemainder <&minus>= <color:ForestGreen>salary</color>    <color:grey>&#47;/ //subtract// !!!</color>;
+   
+@enduml

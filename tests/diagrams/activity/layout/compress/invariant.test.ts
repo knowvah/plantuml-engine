@@ -747,6 +747,17 @@ describe('compress invariant -- no new shape overlap (stop 11)', () => {
     // retired rows above.
     'juleki-83-xusi470 [7,8] text×text',
     'mijoso-20-sato362 [7,8] text×text',
+    // ogc/T6 (2026-11-04): zaroce-40-xeta280 entered the population with
+    // #109's capture (status `pinned`, diffCount 0). The pair is the two
+    // stacked lines of the first repeat-while's multi-line condition
+    // (`a==1` / `and b ==2`) inside its hexagon -- the `tobajo` class
+    // above. Dumped from this test's own `shapesFor`: `before`, line 3
+    // y 176.55555555555554 + height 11 === 187.55555555555554 === line 4's
+    // y (touching, no overlap); `after`, both lines moved up with the
+    // compression (hexagon y 167 -> 111.94444444444446) and line 3's bottom
+    // re-derives as 121.50000000000001 + 11 = 132.50000000000001 against
+    // line 4's 132.5 -- a 1e-14 overlap, not a geometry defect.
+    'zaroce-40-xeta280 [3,4] text×text',
   ].sort();
 
   it('never introduces a HARD shape-pair overlap (both shapes occupying both axes) that was not already present before compression', () => {

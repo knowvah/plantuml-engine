@@ -1,0 +1,10 @@
+@startuml
+digraph toto {
+compound=true;
+toto;
+subgraph cluster001 { 
+titi;
+}
+titi->toto; {titi;toto;rank=same}
+}
+@enduml

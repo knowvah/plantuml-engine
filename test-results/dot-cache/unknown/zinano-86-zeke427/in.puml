@@ -1,0 +1,4 @@
+@startuml
+!pragma svek_trace on
+state myExit <<exitpoint>>
+@enduml

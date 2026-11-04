@@ -1,0 +1,32 @@
+@startuml
+
+' Local style for the diamonds of the first if;
+<style>
+activityDiagram {
+  diamond {
+    FontColor red
+  }
+}
+</style>
+:On the diamonds of the first if;
+
+if (decision) then (yes)
+    :C1;
+else (no)
+endif
+
+
+' Local style for the diamonds of the second if;
+<style>
+activityDiagram {
+  diamond {
+    FontColor blue
+  }
+}
+</style>
+:On the diamonds of the second if;
+if (decision) then (yes)
+    :C2;
+else (no)
+endif
+@enduml

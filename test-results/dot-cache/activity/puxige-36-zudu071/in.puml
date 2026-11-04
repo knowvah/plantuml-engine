@@ -1,0 +1,6 @@
+@startuml
+!$quote= "<U+0022>"
+!$json = { "quote1" : "\"", "quote2" : "\u0022" } 
+
+:The four different quotes: $quote $json.quote1 $json.quote2 %chr(34);
+@enduml

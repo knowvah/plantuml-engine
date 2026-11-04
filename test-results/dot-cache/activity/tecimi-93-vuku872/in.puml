@@ -1,0 +1,4 @@
+@startuml
+:This is a test with <math>y^2</math>and math <math>a*x^2+b*x+c</math>inside text;
+:Let the formula: <math>int_0^1f(x)dx</math>;
+@enduml

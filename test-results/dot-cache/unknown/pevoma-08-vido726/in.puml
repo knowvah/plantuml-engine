@@ -1,0 +1,7 @@
+@startuml
+!procedure $msg($source, $destination)
+  $source --> $destination
+endprocedure
+
+$msg("a", "b")
+@enduml

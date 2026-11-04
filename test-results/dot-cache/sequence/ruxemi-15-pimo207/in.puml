@@ -1,0 +1,6 @@
+@startuml
+A-->B:foo()
+loop
+A-->B: boo()
+end
+@enduml

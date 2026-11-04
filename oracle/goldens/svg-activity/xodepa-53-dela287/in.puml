@@ -1,0 +1,6 @@
+@startuml
+start
+:ins1;
+-> label;
+:ins2;
+@enduml

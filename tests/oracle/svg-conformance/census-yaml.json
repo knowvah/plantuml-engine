@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-04T01:06:41.808Z",
-  "measuredAgainstCommit": "f31b2eac9",
+  "generatedAt": "2026-11-04T03:57:37.912Z",
+  "measuredAgainstCommit": "35faffdad",
   "type": "yaml",
   "measurer": "deterministic",
   "fixtures": [
@@ -209,13 +209,37 @@
       "bucket": "31+"
     },
     {
+      "slug": "YAML-attribute-hierarchy-0",
+      "status": "ok",
+      "diffCount": 54,
+      "bucket": "31+"
+    },
+    {
+      "slug": "YAML-attribute-hierarchy-1",
+      "status": "ok",
+      "diffCount": 91,
+      "bucket": "31+"
+    },
+    {
       "slug": "YAML-list-key-value-pair",
       "status": "ok",
       "diffCount": 22,
       "bucket": "11-30"
     },
     {
+      "slug": "YAML-list-key-value-pair-0",
+      "status": "ok",
+      "diffCount": 22,
+      "bucket": "11-30"
+    },
+    {
       "slug": "YAML-space-indent",
+      "status": "ok",
+      "diffCount": 62,
+      "bucket": "31+"
+    },
+    {
+      "slug": "YAML-space-indent-0",
       "status": "ok",
       "diffCount": 62,
       "bucket": "31+"

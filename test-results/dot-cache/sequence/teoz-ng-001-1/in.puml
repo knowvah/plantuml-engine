@@ -1,0 +1,17 @@
+@startuml
+mainframe **sd** Test
+
+participant A
+
+box
+    participant B
+    participant C
+end box
+
+activate A
+A -> B ++:M1
+B -> C ++:M2
+C -> C ++--:A1
+B <-- C --:R2
+A <<-- B --:R1
+@enduml

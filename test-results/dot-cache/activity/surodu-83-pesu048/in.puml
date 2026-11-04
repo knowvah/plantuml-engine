@@ -1,0 +1,17 @@
+@startuml
+
+start
+
+if (Cookie Policy cookie set?) then (yes)
+else (no)
+    repeat
+        :Show Cookie Policy dialog;
+    repeat while (User clicks on accept?) is (no)
+    ->yes;
+        :Store acceptance of Cookie Policy in a cookie;
+        :Refresh page;
+endif
+    
+stop
+
+@enduml

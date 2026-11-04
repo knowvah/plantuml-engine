@@ -1,0 +1,3 @@
+@startuml
+:a:-->(b\n - c)
+@enduml

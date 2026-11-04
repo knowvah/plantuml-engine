@@ -1,0 +1,16 @@
+@startuml
+start
+fork
+	:foo1;
+fork again
+	stop
+endfork
+:this is on
+several <b>lines
+and very interesting;
+
+:on two
+lines;
+
+stop
+@enduml

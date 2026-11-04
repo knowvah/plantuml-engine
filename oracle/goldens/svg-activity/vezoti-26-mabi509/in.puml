@@ -1,0 +1,17 @@
+@startuml
+'!theme cerulean
+<style>
+.continuous {
+  FontColor red
+}
+.input {
+  FontColor blue
+}
+</style>
+:action1; <<continuous>>
+:action2; <<continuous>>
+:action3; <<continuous>>
+:foo1; <<input>>
+:foo2; <<input>>
+:foo3; <<ouput>>
+@enduml

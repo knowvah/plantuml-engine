@@ -1,0 +1,4 @@
+@startuml
+(*) --> "activity" #red-yellow
+
+@enduml

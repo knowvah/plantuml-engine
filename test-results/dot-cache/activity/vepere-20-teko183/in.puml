@@ -1,0 +1,10 @@
+@startuml
+skinparam Backgroundcolor transparent
+start
+  repeat
+    :Listen user;<<input>>
+    :Prepare
+    answer;<<load>>
+    :Reply user;<<output>>
+  repeat while (forever)
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+<style>
+activityDiagram {
+  MaximumWidth 100
+  diamond {
+    FontColor red
+    MaximumWidth 100
+  }
+}
+</style>
+if (Long long long long long long long long long condition?) then (Long long long long long long long long long yes)
+  :Action yes;
+else (Long long long long long long long long long no)
+  :Action no;
+endif
+
+@enduml

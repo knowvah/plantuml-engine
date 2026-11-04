@@ -1,0 +1,13 @@
+@startuml
+<style>
+rectangle {
+    RoundCorner 25
+    BackgroundColor red
+    LineColor blue
+}
+</style>
+hide stereotype
+rectangle outerAction {
+:innerAction;
+}
+@enduml

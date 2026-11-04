@@ -1,0 +1,8 @@
+@startuml
+fork
+-> 5showing more text that is\ntoo long once again\nin this\nparticular\nscenario\nwhere this happens;
+:6final state of\nthis fork;
+-> 7Have something that is long\nwritten here as an\nexample;
+endfork
+
+@enduml

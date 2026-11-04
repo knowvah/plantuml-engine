@@ -1,0 +1,13 @@
+@startuml
+<style>
+activityDiagram {
+  activity {
+    Padding 5
+    Margin 30
+  }
+}
+</style>
+:a a a a a a;
+:b b b b b b;
+:a a a a a a;
+@enduml

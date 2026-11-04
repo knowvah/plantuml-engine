@@ -1,0 +1,9 @@
+@startdot
+graph star {
+  center -- a
+  center -- b
+  center -- c
+  center -- d
+  center -- e
+}
+@enddot

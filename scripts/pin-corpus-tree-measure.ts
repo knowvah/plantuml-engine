@@ -17,7 +17,7 @@
 import { readFileSync, readdirSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { renderSync } from '../src/index.js';
+import { renderSync, type ElkBackend } from '../src/index.js';
 import { withJarCompatibleStyleInput } from '../src/core/internal-render-options.js';
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
 import { fullDescription } from '../src/core/version.js';
@@ -112,12 +112,17 @@ export function measureFixture(
   treeDir: string,
   slug: string,
   store: ReturnType<typeof fixtureIncludeStore>,
+  elk?: ElkBackend,
 ): MeasuredFixture {
   const dir = join(treeDir, slug);
   const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
+  // `elk` as the gates pass it (routing-conformance.test.ts:258-273,
+  // refusal-coverage.test.ts:287-301): without it `renderSync` refuses a
+  // `!pragma layout elk` source (ELK_RENDER_SYNC_UNSUPPORTED) and this tool
+  // would pin a refusal the gates never measure (ogc T4b finding).
   const ours = renderSync(
     markup,
-    withJarCompatibleStyleInput({ includeStore: store, measurer: new DeterministicMeasurer() }),
+    withJarCompatibleStyleInput({ includeStore: store, measurer: new DeterministicMeasurer(), elk }),
   );
   const golden = readHead(join(dir, 'in.svg'));
   const jarErrored = isJarErrorPage(golden);
@@ -139,7 +144,7 @@ export function measureFixture(
  *  is the whole reason the tree this tool was built for stays parked
  *  instead of being re-rendered per task (`.agent-notes/
  *  unknown-bucket-mapping.md`). */
-export function measureTree(treeDir: string): MeasuredFixture[] {
+export function measureTree(treeDir: string, elk?: ElkBackend): MeasuredFixture[] {
   const store = fixtureIncludeStore();
-  return listFixtureSlugs(treeDir).map((slug) => measureFixture(treeDir, slug, store));
+  return listFixtureSlugs(treeDir).map((slug) => measureFixture(treeDir, slug, store, elk));
 }

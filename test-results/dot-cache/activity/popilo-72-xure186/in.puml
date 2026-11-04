@@ -1,0 +1,7 @@
+@startuml
+sta\
+rt
+:foo; <<load>>
+:bar; <<save>>
+end
+@enduml

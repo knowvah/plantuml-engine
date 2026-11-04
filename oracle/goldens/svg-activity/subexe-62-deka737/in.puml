@@ -1,0 +1,10 @@
+@startuml
+
+start
+
+:*Item 1 <&x>
+*Item 2;
+
+stop
+
+@enduml

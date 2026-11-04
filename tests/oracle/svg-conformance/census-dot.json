@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-04T01:05:38.585Z",
-  "measuredAgainstCommit": "f31b2eac9",
+  "generatedAt": "2026-11-04T03:56:32.392Z",
+  "measuredAgainstCommit": "35faffdad",
   "type": "dot",
   "measurer": "deterministic",
   "fixtures": [
@@ -30,6 +30,348 @@
     },
     {
       "slug": "cluster-nested",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "comment-stripping",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "constraint-false",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "deep-cycle",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "diamond-flow",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "dir-back",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "dir-both",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "dir-none",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "disconnected-components",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "edge-labels-workflow",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "edge-style-bold",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "edge-style-dashed",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "edge-style-dotted",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "edge-weight",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "fan-in",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "fan-out",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "lr-sm-labeled",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "lr-sm-nolabel",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "lr-sm-one-label",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "lr-with-edge-labels",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "mixed-dir-styles",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "mixed-shapes-all",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "multi-edge-labels",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "node-color",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "node-defaults-diamond",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "node-defaults-shape",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "node-fillcolor",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "numeric-node-ids",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "parallel-edges",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "plaintext-nodes-annotation",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "quoted-labels",
+      "status": "ok",
+      "diffCount": 18,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rank-source-sink",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "rankdir-bt",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "rankdir-lr-pipeline",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "rankdir-rl",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "self-loop",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "shapes-box-ellipse-diamond",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "shapes-circle",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "single-node-shapes",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "skinparam-arrow-color",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "skinparam-background-color",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "skinparam-border-color",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "skinparam-font-color",
+      "status": "ok",
+      "diffCount": 17,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "skinparam-node-background",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "strict-dedup",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "style-combined-node-edge",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "style-diagram-background",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "style-edge-color",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "style-node-background",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "style-node-border",
+      "status": "ok",
+      "diffCount": 10,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "subgraph-same-rank",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "title-only",
+      "status": "ok",
+      "diffCount": 9,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "two-subgraphs-same-rank",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "undirected-chain-long",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "undirected-k4",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "undirected-star",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "undirected-triangle",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "wide-label-box",
       "status": "ok",
       "diffCount": 0,
       "bucket": "0"

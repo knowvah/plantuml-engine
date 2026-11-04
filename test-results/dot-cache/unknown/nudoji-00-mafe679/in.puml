@@ -1,0 +1,6 @@
+@startuml
+interface toto1 ()
+toto1 - dummy2
+class dummy <<other>>
+interface toto2 <<stereotyped>> ()
+@enduml

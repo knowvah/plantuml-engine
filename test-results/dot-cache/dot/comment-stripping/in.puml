@@ -1,0 +1,8 @@
+@startdot
+// this is a comment
+digraph G {
+  /* block comment */
+  a -> b // inline
+  b -> c
+}
+@enddot

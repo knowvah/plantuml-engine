@@ -160,8 +160,11 @@ describe('svg-activity text census — corpus presence', () => {
     // aepp/T1e (2026-10-10): the two misfiled SEQUENCE sources (jetigu,
     // nuzise) moved to dot-cache/sequence (aepp D3); romuru (CLASS) stays.
     // Derivation: 434 / 3 - 2 = 1 / 14.
-    expect(baselineFixtures.length).toBe(434);
-    expect(errorFixtures.length).toBe(1);
+    // ogc/T6 (2026-11-04): #109's 429 new activity rows seeded `error` and promoted by
+    // scripts/repin-activity-baselines.ts --write: +301 render, +128 stay `error` with their ledger
+    // reason (ogc-T4a/T4b). Derivation: 434 + 301 = 735 / 1 + 128 = 129 / 14.
+    expect(baselineFixtures.length).toBe(735);
+    expect(errorFixtures.length).toBe(129);
     expect(jarErrorFixtures.length).toBe(14);
   });
 });

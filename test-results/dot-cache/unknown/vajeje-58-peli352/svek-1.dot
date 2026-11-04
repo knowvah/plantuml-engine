@@ -1,0 +1,26 @@
+digraph unix {
+nodesep=0.486111;
+ranksep=0.833333;
+remincross=true;
+searchsize=500;
+rankdir=LR;
+sh0012->sh0007[arrowtail=none,arrowhead=none,minlen=0,color="#000023"];
+sh0007->sh0013[arrowtail=none,arrowhead=none,minlen=0,color="#000027"];
+sh0006 [shape=rect,label="",width=1.026910,height=1.027778,color="#000006"];
+sh0007 [shape=ellipse,label="",width=2.001903,height=0.467047,color="#000007"];
+sh0008 [shape=rect,label="",width=0.410764,height=1.027778,color="#000008"];
+sh0009 [shape=ellipse,label="",width=0.662523,height=0.358319,color="#000009"];
+sh0010 [shape=rect,label="",width=1.846701,height=0.319444,color="#00000A"];
+sh0011 [shape=rect,label="",width=0.642622,height=0.319444,color="#00000B"];
+sh0012 [shape=rect,label="",width=1.797049,height=0.500000,color="#00000C"];
+sh0013 [shape=rect,label="",width=0.842361,height=0.319444,color="#00000D"];
+sh0014 [shape=rect,label="",width=2.097222,height=0.500000,color="#00000E"];
+sh0008->sh0009[arrowtail=none,arrowhead=none,minlen=1,color="#00000F"];
+sh0008->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#000013"];
+sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=2,color="#000017"];
+sh0010->sh0006[arrowtail=none,arrowhead=none,minlen=1,color="#00001B"];
+sh0006->sh0011[arrowtail=none,arrowhead=none,minlen=1,color="#00001F"];
+sh0009->sh0014[arrowtail=none,arrowhead=none,minlen=1,color="#00002B"];
+sh0014->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#00002F"];
+
+}

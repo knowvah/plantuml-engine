@@ -1,0 +1,7 @@
+@startuml
+package Toto {
+  class Titi
+}
+class Toto
+class Toto.internal
+@enduml

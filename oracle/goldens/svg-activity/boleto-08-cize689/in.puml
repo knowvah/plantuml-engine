@@ -1,0 +1,24 @@
+@startuml
+skinparam monochrome true
+start
+:Text ;
+repeat
+:Text 0;
+   if (condition A) then (yes)
+      :Text 1;
+   elseif (condition B) then (yes)
+       :Text 2;
+   else (no)
+:Text 3;
+   endif
+:Text 5;
+if (condition B ? ) then (yes)
+  :Text 6;
+else (no)
+  break
+endif
+repeat while (condition C ? )is (yes) not (no)
+->
+ :Text 8;
+stop
+@enduml

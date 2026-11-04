@@ -1,0 +1,5 @@
+@startuml
+Alive --\ Bob : ok1
+Alive <-- Bob : ok2
+Alive <--> Bob : ok3
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+start
+->dsc_1;
+repeat :foo;
+ ->dsc_2;
+ :Submit;
+ ->dsc_3;
+(incoming1) backward :Warning; (incoming2)
+repeat while (Valid?) is (No) not (Yes)
+->dsc_5;
+stop
+@enduml

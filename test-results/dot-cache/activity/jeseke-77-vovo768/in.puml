@@ -1,0 +1,12 @@
+@startuml
+start
+:state1;
+partition use_case {
+repeat
+:state0;
+repeat while(wait for call) -> callback failed
+->callback ok;
+}
+:state2;
+end
+@enduml

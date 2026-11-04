@@ -1,0 +1,5 @@
+@starthcl
+locals {
+  ids = [for r in var.resources : r.id]
+}
+@endhcl

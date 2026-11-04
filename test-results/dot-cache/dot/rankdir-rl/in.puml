@@ -1,0 +1,6 @@
+@startdot
+digraph rl {
+  graph [rankdir=RL]
+  source -> middle -> dest
+}
+@enddot

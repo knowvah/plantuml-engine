@@ -180,7 +180,9 @@ describe('svg-activity swimlane census — population', () => {
     // error rows do. Derivation: 83 + 9 = 92.
     // isw/close (2026-10-09): oracle seam #4 gives U+0020 width, so 18 activity goldens stopped being SlotFinder crash pages; promoted jar-error -> baseline from a fresh measurement (scripts/repin-activity-baselines.ts).
     // 6 of the 18 carry a swimlane line. Derivation: 92 + 6 = 98 / 8 - 6 = 2.
-    expect(baselineFixtures.length).toBe(98);
+    // ogc/T6 (2026-11-04): 31 of #109's 429 new activity rows pass hasSwimlaneLine; all 31 render and
+    // were promoted (scripts/repin-activity-baselines.ts --write). Derivation: 98 + 31 = 129 / 0 / 2.
+    expect(baselineFixtures.length).toBe(129);
     expect(errorFixtures.length).toBe(0);
     expect(jarErrorFixtures.length).toBe(2);
   });

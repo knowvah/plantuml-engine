@@ -1,0 +1,5 @@
+@startuml
+start <<#green;line:red>>
+:foo;
+stop <<#blue;line:red>>
+@enduml

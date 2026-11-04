@@ -1,0 +1,19 @@
+@startuml
+start
+:Bind;
+fork
+  repeat
+    :Listen admin; <<input>>
+    :Execute;
+    :Reply admin; <<output>>
+  repeat while (shutdown>) is (no)
+fork again
+  repeat
+    :Listen user; <<input>>
+    :Reply user; <<output>>
+  repeat while (forever)
+  detach
+endfork
+:Release;
+
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+|Developer|
+start
+repeat :Step1;
+|Owner|
+repeat while (Step 2)
+->yes;
+|Developer|
+:Step 3;
+stop
+@enduml

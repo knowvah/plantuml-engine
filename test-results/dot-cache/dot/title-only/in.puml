@@ -1,0 +1,6 @@
+@startdot
+title Just A Title
+digraph G {
+  x -> y
+}
+@enddot

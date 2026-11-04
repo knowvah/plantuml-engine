@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T21:14:34.990Z",
+  "generatedAt": "2026-11-04T03:50:25.638Z",
   "fixtures": [
     {
       "slug": "bemepi-16-kuzo249",
@@ -31,6 +31,417 @@
     },
     {
       "slug": "cluster-nested",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "comment-stripping",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "constraint-false",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "deep-cycle",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "diamond-flow",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dir-back",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dir-both",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dir-none",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "disconnected-components",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "edge-labels-workflow",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "edge-style-bold",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "edge-style-dashed",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "edge-style-dotted",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "edge-weight",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "fan-in",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "fan-out",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "lr-sm-labeled",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "lr-sm-nolabel",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "lr-sm-one-label",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "lr-with-edge-labels",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "mixed-dir-styles",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "mixed-shapes-all",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "multi-edge-labels",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "node-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "node-defaults-diamond",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "node-defaults-shape",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "node-fillcolor",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "numeric-node-ids",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "parallel-edges",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "plaintext-nodes-annotation",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "quoted-labels",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1,
+      "maxDeltaPath": "svg/@viewBox[2]"
+    },
+    {
+      "slug": "rank-source-sink",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "rankdir-bt",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "rankdir-lr-pipeline",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "rankdir-rl",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "self-loop",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "shapes-box-ellipse-diamond",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "shapes-circle",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "single-node-shapes",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "skinparam-arrow-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "skinparam-background-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "skinparam-border-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "skinparam-font-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.0200000000000102,
+      "maxDeltaPath": "svg/g[1]/polygon[1]/@points[4]"
+    },
+    {
+      "slug": "skinparam-node-background",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "strict-dedup",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "style-combined-node-edge",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "style-diagram-background",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "style-edge-color",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "style-node-background",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "style-node-border",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "subgraph-same-rank",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "title-only",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "errorPage": true
+    },
+    {
+      "slug": "two-subgraphs-same-rank",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "undirected-chain-long",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "undirected-k4",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "undirected-star",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "undirected-triangle",
+      "type": "dot",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "wide-label-box",
       "type": "dot",
       "dotEqual": true,
       "layoutEqual": "n/a",

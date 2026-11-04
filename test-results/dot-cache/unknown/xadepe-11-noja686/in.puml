@@ -1,0 +1,6 @@
+@startuml
+class Toto
+class Toto.Internal
+
+Toto --> Toto.Internal
+@enduml

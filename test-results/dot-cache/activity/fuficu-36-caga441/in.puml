@@ -1,0 +1,16 @@
+@startuml
+skinparam  partition {
+  BackgroundColor<<bluepartition>> blue
+}
+
+skinparam  activity {
+  BackgroundColor<<redactivity>> red
+}
+
+partition "My Partition" <<bluepartition>> {
+start
+#green:Activity 1;
+:Activity 2; <<redactivity>>
+stop
+}
+@enduml

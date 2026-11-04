@@ -1,0 +1,12 @@
+@startuml
+<style>
+.mystyle {
+  linecolor: blue
+  linethickness: 3
+}
+</style>
+
+json n0 42
+json n1 true
+n0 -> n1 <<mystyle>> : label
+@enduml

@@ -460,6 +460,34 @@
       "dw": 1,
       "dh": 0
     },
+    "yaml/YAML-attribute-hierarchy-0": {
+      "aligned": true,
+      "nodeMax": 0.654,
+      "pathMax": 1.742,
+      "dw": 1,
+      "dh": 0
+    },
+    "yaml/YAML-attribute-hierarchy-1": {
+      "aligned": true,
+      "nodeMax": 1.1,
+      "pathMax": 2.583,
+      "dw": 1,
+      "dh": 0
+    },
+    "yaml/YAML-list-key-value-pair-0": {
+      "aligned": true,
+      "nodeMax": 0.451,
+      "pathMax": 1.011,
+      "dw": 1,
+      "dh": 0
+    },
+    "yaml/YAML-space-indent-0": {
+      "aligned": true,
+      "nodeMax": 0.75,
+      "pathMax": 2.146,
+      "dw": 1,
+      "dh": 0
+    },
     "hcl/jubete-32-sutu417": {
       "aligned": true,
       "nodeMax": 0.8,
@@ -472,6 +500,90 @@
       "nodeMax": 0.525,
       "pathMax": 1.476,
       "dw": 1,
+      "dh": 0
+    },
+    "hcl/array-values": {
+      "aligned": true,
+      "nodeMax": 0.15,
+      "pathMax": 1.555,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/comments-stripped": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/flat-key-value": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/for-expression-empty-array": {
+      "aligned": true,
+      "nodeMax": 1.5,
+      "pathMax": 1.401,
+      "dw": 1,
+      "dh": 0
+    },
+    "hcl/function-call": {
+      "aligned": true,
+      "nodeMax": 2.375,
+      "pathMax": 1.025,
+      "dw": 1,
+      "dh": 0
+    },
+    "hcl/multiple-top-level-blocks": {
+      "aligned": true,
+      "nodeMax": 0.619,
+      "pathMax": 1.068,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/nested-object-value": {
+      "aligned": true,
+      "nodeMax": 0.425,
+      "pathMax": 1.834,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/nested-resource-block": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/style-element-header": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/style-node-background": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/variable-block": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
+    },
+    "hcl/variable-reference-verbatim": {
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
       "dh": 0
     },
     "authored:json/title-scale": {

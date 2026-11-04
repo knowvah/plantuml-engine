@@ -1,0 +1,7 @@
+@startuml
+repeat :Text 1;
+-> visible;
+
+:Text 2;
+-> not visible;
+@enduml

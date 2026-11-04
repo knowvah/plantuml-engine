@@ -1,0 +1,8 @@
+@startdot
+digraph annotated {
+  a [shape=box, label=Process]
+  note [shape=plaintext, label="* required step"]
+  a -> b [label=output]
+  note -> a
+}
+@enddot

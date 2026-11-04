@@ -1,0 +1,16 @@
+@startuml
+
+entity G {
+    ID
+    --
+    C0
+    I1
+}
+
+
+C0 --> G::C0
+
+G::I1 --> I1
+
+
+@enduml

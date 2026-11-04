@@ -1,12 +1,53 @@
 {
-  "generatedAt": "2026-11-03T21:16:03.689Z",
+  "generatedAt": "2026-11-04T03:51:10.995Z",
   "fixtures": [
+    {
+      "slug": "array-values",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.5549999999999926,
+      "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
+    },
     {
       "slug": "citoda-80-dimi195",
       "type": "hcl",
       "dotEqual": false,
       "layoutEqual": "n/a",
       "verdict": "conformant"
+    },
+    {
+      "slug": "comments-stripped",
+      "type": "hcl",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "flat-key-value",
+      "type": "hcl",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "for-expression-empty-array",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.5,
+      "maxDeltaPath": "svg/g[1]/rect[3]/@y"
+    },
+    {
+      "slug": "function-call",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 2.375,
+      "maxDeltaPath": "svg/g[1]/rect[7]/@y"
     },
     {
       "slug": "jubete-32-sutu417",
@@ -16,6 +57,59 @@
       "verdict": "structural-match",
       "maxDelta": 1.9230000000000018,
       "maxDeltaPath": "svg/g[1]/path[8]/@d[0]"
+    },
+    {
+      "slug": "multiple-top-level-blocks",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.0679999999999836,
+      "maxDeltaPath": "svg/g[1]/path[2]/@d[4]"
+    },
+    {
+      "slug": "nested-object-value",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.8340000000000032,
+      "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
+    },
+    {
+      "slug": "nested-resource-block",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "style-element-header",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "style-node-background",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "variable-block",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "variable-reference-verbatim",
+      "type": "hcl",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
     },
     {
       "slug": "vocago-35-xodu446",

@@ -106,6 +106,30 @@ and builds the `dot-output` branch. On a machine without the fork, clone
 `forkRepo`, `git checkout dot-output` (or apply the patch onto `upstreamSha`),
 then run gradle.
 
+## Capturing a fixture with no oracle
+
+Every row of `tests/visual/data/*.json` must have a jar oracle under
+`test-results/dot-cache/<bucket>/<slug>/` (`.done` + `in.puml` + `in.svg`) in
+**any** bucket, or an entry in `no-oracle-reasons.json` naming what the jar did.
+`tests/oracle/svg-conformance/oracle-coverage.test.ts` fails on a row with
+neither, and on a stale reason. To close a gap, stage the capture, then install
+it (`scripts/capture-missing-oracles.ts`):
+
+```sh
+npx jiti scripts/capture-missing-oracles.ts --stage /tmp/ogc-stage   # resumable; [--limit N]
+npx jiti scripts/pin-corpus-tree.ts <bucket> --tree /tmp/ogc-stage/<bucket> --ledger ... --dry
+npx jiti scripts/capture-missing-oracles.ts --install /tmp/ogc-stage
+```
+
+A staged row lands by the **jar's** `data-diagram-type`, not its manifest file
+(`scripts/lib/oracle-route.ts`, oracle-gap-capture D2): `dot`, `hcl` and `yaml`
+rows keep their keyword bucket; an `object` row the jar stamps CLASS stays
+`object`; a jar error page goes to `unknown`; SEQUENCE, ACTIVITY, CLASS, STATE
+and TIMING go to their engine's bucket; anything else (DESCRIPTION, no type)
+goes to `unknown`. `--install` refuses to overwrite an existing oracle and
+records the capture clock for clock-dependent sources, which the staged render
+(outside `dot-cache`) could not.
+
 ## Maintenance
 
 `master` tracks upstream and stays pristine. The seam lives only on `dot-output`.

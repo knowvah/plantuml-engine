@@ -1,0 +1,9 @@
+@startuml
+Alice <-> Alice : text
+Alice <->o Alice : text
+Alice o<->o Alice : text
+
+Bob <-> Alice
+Bob <->o Alice
+Bob o<->o Alice
+@enduml

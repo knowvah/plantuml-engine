@@ -1,0 +1,13 @@
+@startuml
+<style>
+.color {
+  FontColor red
+}
+</style>
+
+
+:other action1; <<save>>
+:other action2; <<save>>
+:other action3; <<save>> <<color>>
+
+@enduml

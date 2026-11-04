@@ -1,0 +1,9 @@
+@startuml
+
+(*) -> "Proposed" as p1
+->[toto] "Scheduled" as s1
+
+->[toto2] "This
+is on several lines"
+
+@enduml

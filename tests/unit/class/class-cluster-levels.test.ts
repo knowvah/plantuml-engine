@@ -126,13 +126,40 @@ function oracleClusterLevels(dot: string): Array<1 | 2> {
   return ids.map((id) => (dot.includes(`subgraph cluster${id}a`) ? 2 : 1));
 }
 
-const fixtures = [...loadFixtures('class'), ...loadFixtures('object')];
+/**
+ * Fixtures this comparison cannot read, each with its mechanism (ogc/T5,
+ * 2026-11-04, when #109's capture brought 46 more clustered class rows):
+ *
+ * - `kofogo-67-jiju461`: line 3, `(ns1.classB, ns1.classA) .. ns1.Exception
+ *   : Exception`, is an association-class link the jar accepts through
+ *   `CommandLinkClass`'s COUPLE1 alternative (`CommandLinkClass.java:116`,
+ *   `executeArgSpecial1` at :414) and this port's class parser refuses
+ *   (`class-assoc-couple.ts` has no `: label` tail), so `parseFixture`
+ *   throws before any level can be derived. Counted on the class parity
+ *   issue; a parser gap, not a cluster-level question.
+ * - `potatu-55-pave291`: three `card X [{{ ... }}]` leaves each embed a
+ *   component diagram. `-DPLANTUML_DUMP_DOT` numbers every
+ *   `DotStringFactory.getSvg` call, and the embedded diagrams render
+ *   first, so `svek-1.dot` and `svek-2.dot` are the nested component
+ *   graphs (3 clusters each) and the outer class graph is `svek-3.dot`
+ *   (no cluster). This loader reads `svek-1.dot` as the class graph, which
+ *   it is not for a fixture with nested diagrams.
+ */
+const UNREADABLE: ReadonlyMap<string, string> = new Map([
+  ['kofogo-67-jiju461', 'class parser refuses the association-class link on line 3'],
+  ['potatu-55-pave291', 'svek-1.dot is an embedded {{ }} component diagram, not the class graph'],
+]);
 
-describe('clusterWrapperLevel — 125-fixture oracle agreement', () => {
+const fixtures = [...loadFixtures('class'), ...loadFixtures('object')].filter((f) => !UNREADABLE.has(f.slug));
+
+describe('clusterWrapperLevel — 169-fixture oracle agreement', () => {
   // 122, not 123: `sokevu-87-toce485` lives under `class/` but its golden
   // says DESCRIPTION, so it is not a class fixture and the loader drops it.
-  it('covers 122 class + 3 object fixtures', () => {
-    expect(fixtures.filter((f) => f.engine === 'class')).toHaveLength(122);
+  // 122 -> 166 at ogc/T5 (2026-11-04): #109's capture added 151 class rows,
+  // 46 of them with a jar cluster, 2 of those unreadable here (`UNREADABLE`
+  // above). Derivation: 122 + 46 = 168, minus 2 = 166.
+  it('covers 166 class + 3 object fixtures', () => {
+    expect(fixtures.filter((f) => f.engine === 'class')).toHaveLength(166);
     expect(fixtures.filter((f) => f.engine === 'object')).toHaveLength(3);
   });
 

@@ -1,0 +1,22 @@
+@startuml
+<style>
+.action {
+    RoundCorner 25
+    BackgroundColor blue
+    LineColor red
+}
+rectangle {
+    RoundCorner 0
+    BackgroundColor yellow
+    LineColor green
+}
+</style>
+
+rectangle outerAction1 <<action>> {
+:innerAction1;
+}
+rectangle outerAction2 {
+:innerAction2;
+}
+
+@enduml

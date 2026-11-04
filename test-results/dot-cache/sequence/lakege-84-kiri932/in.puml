@@ -1,0 +1,5 @@
+@startuml
+Alive -[#red]-> Bob : ok1
+Alive -[#yellow]> Bob : ok2
+Alive <[#green]- Bob : ok3
+@enduml

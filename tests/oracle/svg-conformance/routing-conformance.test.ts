@@ -1168,11 +1168,21 @@ describe('routing conformance — jar-error classification', () => {
     // 8234 -> 8247 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml).
     // 8247 -> 8248 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095).
     // 8248 -> 8249 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
-    expect(pinnedAgree.length).toBe(8275);
+    // 8275 -> 9043 at ogc/T5 (2026-11-04): #109's 1016 uncaptured manifest fixtures captured by jar type (D2) and pinned additively from the stage: +768 agree (activity 301, class 149, dot 49, hcl 12, object 1,
+    // sequence 93, state 26, unknown 133, yaml 4). Derivation: 8275 + 768 = 9043.
+    // 9043 -> 9187 at ogc/T6: +144 svg-activity golden clones (the new activity rows that render
+    // zero-diff, frozen by pin-goldens.mts as ogc-b2). Derivation: 9043 + 144 = 9187.
+    expect(pinnedAgree.length).toBe(9187);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
-    expect(pinnedMisroutes.length).toBe(374);
-    expect(pinnedJarErrors.length).toBe(86);
+    // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
+    // activity 128 (114 legacy `(*) -->` + 13 activity3 + 1 legacy we draw as CLASS), class 2,
+    // sequence 1, timing 19, unknown 22 (16 DESCRIPTION + 6 head-window error pages we draw).
+    // Derivation: 374 + 172 = 546.
+    expect(pinnedMisroutes.length).toBe(546);
+    // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
+    // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
+    expect(pinnedJarErrors.length).toBe(162);
     // 7202 -> 7203 at gtc T1 (see the agree derivation above).
     // 7203 -> 7214 at gtc T2 (see the agree derivation above).
     // 7214 -> 7249 at gtc S (state lane close) (see the agree derivation above).
@@ -1218,7 +1228,11 @@ describe('routing conformance — jar-error classification', () => {
     // 8694 -> 8707 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml promoted).
     // 8707 -> 8708 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095 promoted, T2a).
     // 8708 -> 8709 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
-    expect(manifest.fixtures.length).toBe(8735);
+    // 8735 -> 9751 at ogc/T5: +1016 dot-cache rows (activity 429, unknown 223, class 151,
+    // sequence 94, dot 57, state 26, timing 19, hcl 12, yaml 4, object 1).
+    // Derivation: 8735 + 1016 = 9751 = 9043 + 546 + 162.
+    // 9751 -> 9895 at ogc/T6: +144 svg-activity golden clones. Derivation: 9187 + 546 + 162 = 9895.
+    expect(manifest.fixtures.length).toBe(9895);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1290,7 +1304,9 @@ describe('routing conformance — jar-error classification', () => {
     // now EMPTY: censused === pinnedMisroutes.
     // 629 -> 375 at gep/close-b7: 254 gantt rows now agree.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): files/files-directory-tree-with-note now agrees.
-    expect(censused.length).toBe(374);
+    // 374 -> 546 at ogc/T5: the 172 new misroutes all carry a ledger reason (the pin tool
+    // refuses one without), so censused still equals pinnedMisroutes.
+    expect(censused.length).toBe(546);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

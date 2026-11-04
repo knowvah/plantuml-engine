@@ -1,0 +1,9 @@
+@startuml
+:<code>
+"data": {
+    "item": {
+        "field1": "test response"
+    }
+}
+</code>;
+@enduml

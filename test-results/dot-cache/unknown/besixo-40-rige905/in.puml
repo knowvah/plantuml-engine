@@ -1,0 +1,10 @@
+@startuml
+salt
+{
+[X] checkbox|[] checkbox
+() radio
+(X) radio
+This is a text|[This is my button]|This is another text
+"A field"|"Another long Field"|[A button]
+}
+@enduml

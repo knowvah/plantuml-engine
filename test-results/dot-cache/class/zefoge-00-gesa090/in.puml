@@ -1,0 +1,7 @@
+@startuml
+ 
+usecase xx1 as "c
+--xx2--"
+ 
+ 
+@enduml

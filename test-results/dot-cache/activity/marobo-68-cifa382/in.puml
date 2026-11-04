@@ -1,0 +1,13 @@
+@startuml
+|Admin|
+repeat :Generate Again;
+:Generate Foo;
+|#AntiqueWhite|System|
+:Bar;
+backward: Do bar;
+repeat while (Is foo?)  is (yes)
+->no;
+:finish foo;
+stop
+
+@enduml

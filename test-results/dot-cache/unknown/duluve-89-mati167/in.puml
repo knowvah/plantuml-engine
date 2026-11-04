@@ -1,0 +1,10 @@
+@startuml
+skinparam BackGroundColor pink
+scale 1.5
+:a;
+-[#toto]-> OK, opacity min: that is transparent;
+:b;
+-[#titi]-> KO, it's white not transparent!;
+:c;
+footer Observed on    : 1.2021.01beta3\n(current version: %version())
+@enduml

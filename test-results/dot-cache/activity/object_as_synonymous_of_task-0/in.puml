@@ -1,0 +1,5 @@
+@startuml
+:begin;
+:object2; <<object>>
+:end;
+@enduml

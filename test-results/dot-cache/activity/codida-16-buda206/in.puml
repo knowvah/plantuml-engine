@@ -1,0 +1,6 @@
+@startuml
+
+note top : my note
+(*) --> "toto"
+
+@enduml

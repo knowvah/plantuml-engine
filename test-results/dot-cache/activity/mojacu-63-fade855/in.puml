@@ -1,0 +1,7 @@
+@startuml
+      while (w)
+      :foo1;
+      endwhile ([iteration done1])
+      -> match found in loop?;
+      stop
+@enduml

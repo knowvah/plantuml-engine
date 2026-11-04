@@ -1,0 +1,10 @@
+digraph unix {
+remincross=true;
+searchsize=500;
+sh0006 [shape=rect,style=rounded,label="",width=2.159028,height=0.861111,color="#000006"];
+sh0007 [shape=rect,style=rounded,label="",width=0.694444,height=0.694444,color="#000007"];
+sh0008 [shape=circle,label="",width=0.305556,height=0.305556,color="#000008"];
+sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#000009",label=<<TABLE BGCOLOR="#00000A" FIXEDSIZE="TRUE" WIDTH="138" HEIGHT="15"><TR><TD></TD></TR></TABLE>>];
+sh0007->sh0008[arrowtail=none,arrowhead=none,minlen=1,color="#00000D"];
+
+}

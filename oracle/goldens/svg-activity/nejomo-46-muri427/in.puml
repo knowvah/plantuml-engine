@@ -1,0 +1,22 @@
+@startuml
+start
+if (isForwarded?) then (when no)
+    if (continue processing?) then (when yes)
+       :foo;
+       note left
+         --titre--
+         foo
+         __titre2__
+         * foo1
+         * foo2
+         * foo3
+         ====
+         This //is// creole
+       end note
+    endif
+    :A;
+endif
+:==bareB1==;
+:FIN;
+stop
+@enduml

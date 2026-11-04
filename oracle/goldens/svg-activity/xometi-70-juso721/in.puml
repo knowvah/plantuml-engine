@@ -1,0 +1,5 @@
+@startuml
+:2ex;<<output>>
+:3ex;<<output>> <<#pink>>
+:4end;
+@enduml

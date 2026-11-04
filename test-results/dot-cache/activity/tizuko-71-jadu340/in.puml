@@ -1,0 +1,16 @@
+@startuml
+start
+split
+	:foo1;
+split again
+  :this is on
+  several <b>lines
+  and very interesting;
+'	stop
+endsplit
+
+:on two
+lines;
+
+stop
+@enduml

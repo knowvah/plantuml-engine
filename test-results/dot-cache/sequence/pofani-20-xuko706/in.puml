@@ -1,0 +1,7 @@
+@startuml
+[-> B ++
+return foo1
+
+B->] ++
+return foo2
+@enduml

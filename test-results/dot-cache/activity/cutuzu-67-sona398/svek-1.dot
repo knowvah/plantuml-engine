@@ -1,0 +1,71 @@
+digraph unix {
+nodesep=0.277778;
+ranksep=0.555556;
+remincross=true;
+searchsize=500;
+{rank=min;minPoint6 [shape=point,width=.01,label=""];minPoint13 [shape=point,width=.01,label=""];minPoint20 [shape=point,width=.01,label=""];minPoint34 [shape=point,width=.01,label=""];}
+{rank=max;maxPoint6 [shape=point,width=.01,label=""];maxPoint13 [shape=point,width=.01,label=""];maxPoint20 [shape=point,width=.01,label=""];maxPoint34 [shape=point,width=.01,label=""];}
+sh0011->sh0019[arrowtail=none,arrowhead=none,minlen=0,color="#00003C"];
+sh0039->sh0024[arrowtail=none,arrowhead=none,minlen=0,color="#000044",label=<<TABLE BGCOLOR="#000045" FIXEDSIZE="TRUE" WIDTH="14" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0024->sh0025[arrowtail=none,arrowhead=none,minlen=0,color="#000048"];
+sh0026->sh0027[arrowtail=none,arrowhead=none,minlen=0,color="#000050",label=<<TABLE BGCOLOR="#000051" FIXEDSIZE="TRUE" WIDTH="14" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0027->sh0028[arrowtail=none,arrowhead=none,minlen=0,color="#000054"];
+sh0029->sh0033[arrowtail=none,arrowhead=none,minlen=0,color="#00006C",label=<<TABLE BGCOLOR="#00006D" FIXEDSIZE="TRUE" WIDTH="14" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0039->sh0038[arrowtail=none,arrowhead=none,minlen=0,color="#000070",label=<<TABLE BGCOLOR="#000071" FIXEDSIZE="TRUE" WIDTH="20" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0038->sh0025[arrowtail=none,arrowhead=none,minlen=0,color="#000074"];
+sh0039 [shape=diamond,label="",width=0.333333,height=0.333333,color="#000027"];
+subgraph cluster6 {style=solid;color="#000006";labeljust="c";label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="60" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn6 [shape=point,width=.01,label=""];minPoint6->sourceIn6  [weight=999];}
+{rank = sink; sinkIn6 [shape=point,width=.01,label=""];}sinkIn6->maxPoint6  [weight=999];
+
+sh0010 [shape=circle,label="",width=0.277778,height=0.277778,color="#00000A"];
+sh0011 [shape=rect,style=rounded,label="",width=1.018403,height=0.444444,color="#00000B"];
+sh0012 [shape=rect,style=rounded,label="",width=0.991319,height=0.444444,color="#00000C"];
+
+}
+subgraph cluster13 {style=solid;color="#00000D";labeljust="c";label=<<TABLE BGCOLOR="#00000E" FIXEDSIZE="TRUE" WIDTH="56" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn13 [shape=point,width=.01,label=""];minPoint13->sourceIn13  [weight=999];}
+{rank = sink; sinkIn13 [shape=point,width=.01,label=""];}sinkIn13->maxPoint13  [weight=999];
+
+sh0017 [shape=diamond,label="",width=0.333333,height=0.333333,color="#000011"];
+sh0018 [shape=rect,style=rounded,label="",width=1.878819,height=0.611111,color="#000012"];
+sh0019 [shape=rect,style=rounded,label="",width=1.970486,height=0.611111,color="#000013"];
+
+}
+subgraph cluster20 {style=solid;color="#000014";labeljust="c";label=<<TABLE BGCOLOR="#000015" FIXEDSIZE="TRUE" WIDTH="85" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn20 [shape=point,width=.01,label=""];minPoint20->sourceIn20  [weight=999];}
+{rank = sink; sinkIn20 [shape=point,width=.01,label=""];}sinkIn20->maxPoint20  [weight=999];
+
+sh0024 [shape=rect,style=rounded,label="",width=0.991319,height=0.444444,color="#000018"];
+sh0025 [shape=rect,style=rounded,label="",width=4.275695,height=0.444444,color="#000019"];
+sh0026 [shape=diamond,label="",width=0.333333,height=0.333333,color="#00001A"];
+sh0027 [shape=rect,style=rounded,label="",width=1.507986,height=0.444444,color="#00001B"];
+sh0028 [shape=rect,style=rounded,label="",width=1.850694,height=0.444444,color="#00001C"];
+sh0029 [shape=diamond,label="",width=0.333333,height=0.333333,color="#00001D"];
+sh0030 [shape=rect,style=rounded,label="",width=1.507986,height=1.444444,color="#00001E"];
+sh0031 [shape=diamond,label="",width=0.333333,height=0.333333,color="#00001F"];
+sh0032 [shape=rect,style=rounded,label="",width=1.296528,height=0.611111,color="#000020"];
+sh0033 [shape=rect,style=rounded,label="",width=1.953819,height=0.444444,color="#000021"];
+
+}
+subgraph cluster34 {style=solid;color="#000022";labeljust="c";label=<<TABLE BGCOLOR="#000023" FIXEDSIZE="TRUE" WIDTH="89" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn34 [shape=point,width=.01,label=""];minPoint34->sourceIn34  [weight=999];}
+{rank = sink; sinkIn34 [shape=point,width=.01,label=""];}sinkIn34->maxPoint34  [weight=999];
+
+sh0038 [shape=rect,style=rounded,label="",width=1.638194,height=0.444444,color="#000026"];
+
+}
+sh0010->sh0011[arrowtail=none,arrowhead=none,minlen=1,color="#000028",label=<<TABLE BGCOLOR="#000029" FIXEDSIZE="TRUE" WIDTH="88" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0010->sh0012[arrowtail=none,arrowhead=none,minlen=1,color="#00002C"];
+sh0012->sh0017[arrowtail=none,arrowhead=none,minlen=1,color="#000030",headlabel=<<TABLE BGCOLOR="#000033" FIXEDSIZE="TRUE" WIDTH="288" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0017->sh0018[arrowtail=none,arrowhead=none,minlen=1,color="#000034",label=<<TABLE BGCOLOR="#000035" FIXEDSIZE="TRUE" WIDTH="109" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0017->sh0019[arrowtail=none,arrowhead=none,minlen=1,color="#000038",label=<<TABLE BGCOLOR="#000039" FIXEDSIZE="TRUE" WIDTH="157" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0019->sh0039[arrowtail=none,arrowhead=none,minlen=1,color="#000040",headlabel=<<TABLE BGCOLOR="#000043" FIXEDSIZE="TRUE" WIDTH="114" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0025->sh0026[arrowtail=none,arrowhead=none,minlen=1,color="#00004C",headlabel=<<TABLE BGCOLOR="#00004F" FIXEDSIZE="TRUE" WIDTH="62" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0026->sh0029[arrowtail=none,arrowhead=none,minlen=1,color="#000058",headlabel=<<TABLE BGCOLOR="#00005B" FIXEDSIZE="TRUE" WIDTH="130" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0029->sh0030[arrowtail=none,arrowhead=none,minlen=1,color="#00005C",label=<<TABLE BGCOLOR="#00005D" FIXEDSIZE="TRUE" WIDTH="19" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0030->sh0031[arrowtail=none,arrowhead=none,minlen=1,color="#000060",headlabel=<<TABLE BGCOLOR="#000063" FIXEDSIZE="TRUE" WIDTH="76" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0031->sh0030[arrowtail=none,arrowhead=none,minlen=1,color="#000064",label=<<TABLE BGCOLOR="#000065" FIXEDSIZE="TRUE" WIDTH="14" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0031->sh0032[arrowtail=none,arrowhead=none,minlen=1,color="#000068",label=<<TABLE BGCOLOR="#000069" FIXEDSIZE="TRUE" WIDTH="19" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+
+}

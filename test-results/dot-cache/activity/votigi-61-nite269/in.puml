@@ -1,0 +1,6 @@
+@startuml
+:A;
+repeat:B; <<task>>
+repeat while (C)
+:D; <<task>>
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+(*) --> "ClickServlet.handleRequest()"
+if "Page.onSecurityCheck which is very very long" then
+  -> "Page.onInit()"
+endif
+@enduml

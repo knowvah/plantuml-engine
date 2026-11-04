@@ -1,0 +1,17 @@
+@startuml
+
+!define tsLabel(backColor,anchor,ts_id) \n [[anchor{JUMP_TO} ts_id]] <color:backColor><size:14><&arrow-thick-bottom></size></color><back:backColor><color:white>&#160;&#160;backColor&#160;&#160;</color></back>
+
+    start
+-[#red;#blue]->   
+    partition "SOME FLOW" {
+            if(Condition?)then(yes:tsLabel(red,anchor1,id1))
+-[#red]->           
+            else(no:tsLabel(blue,anchor2,id2))
+-[#blue]->
+            endif
+-[#red;#blue]->
+    }
+
+    stop
+@enduml

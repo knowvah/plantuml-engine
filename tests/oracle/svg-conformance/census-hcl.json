@@ -1,9 +1,15 @@
 {
-  "generatedAt": "2026-11-04T01:05:47.425Z",
-  "measuredAgainstCommit": "f31b2eac9",
+  "generatedAt": "2026-11-04T03:56:33.926Z",
+  "measuredAgainstCommit": "35faffdad",
   "type": "hcl",
   "measurer": "deterministic",
   "fixtures": [
+    {
+      "slug": "array-values",
+      "status": "ok",
+      "diffCount": 23,
+      "bucket": "11-30"
+    },
     {
       "slug": "citoda-80-dimi195",
       "status": "ok",
@@ -11,10 +17,76 @@
       "bucket": "0"
     },
     {
+      "slug": "comments-stripped",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "flat-key-value",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "for-expression-empty-array",
+      "status": "ok",
+      "diffCount": 34,
+      "bucket": "31+"
+    },
+    {
+      "slug": "function-call",
+      "status": "ok",
+      "diffCount": 59,
+      "bucket": "31+"
+    },
+    {
       "slug": "jubete-32-sutu417",
       "status": "ok",
       "diffCount": 106,
       "bucket": "31+"
+    },
+    {
+      "slug": "multiple-top-level-blocks",
+      "status": "ok",
+      "diffCount": 59,
+      "bucket": "31+"
+    },
+    {
+      "slug": "nested-object-value",
+      "status": "ok",
+      "diffCount": 26,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "nested-resource-block",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "style-element-header",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "style-node-background",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "variable-block",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "variable-reference-verbatim",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "vocago-35-xodu446",

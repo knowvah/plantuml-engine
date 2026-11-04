@@ -1,0 +1,11 @@
+@startuml
+
+!pragma teoz true
+mainFrame A
+{start1} A -> B
+|||
+{end1} B -> A
+{start1} <-> {end1} : {d..3*d}
+
+
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+opt some condition
+Other --> Alice : ok again
+ref over Alice, Other : this is a reference over Alice and Other
+end opt
+Other --> Alice : ok again
+@enduml

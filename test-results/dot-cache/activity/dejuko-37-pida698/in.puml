@@ -1,0 +1,4 @@
+@startuml
+- link [[https://plantuml.com/1]]
+- <:link:><<icon>>[[https://plantuml.com/2]]
+@enduml

@@ -1,0 +1,38 @@
+digraph unix {
+nodesep=0.277778;
+ranksep=0.555556;
+remincross=true;
+searchsize=500;
+{rank=min;minPoint6 [shape=point,width=.01,label=""];minPoint14 [shape=point,width=.01,label=""];minPoint19 [shape=point,width=.01,label=""];}
+{rank=max;maxPoint6 [shape=point,width=.01,label=""];maxPoint14 [shape=point,width=.01,label=""];maxPoint19 [shape=point,width=.01,label=""];}
+sh0010->sh0011[arrowtail=none,arrowhead=none,minlen=0,color="#000018"];
+subgraph cluster6 {style=solid;color="#000006";labeljust="c";label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="28" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn6 [shape=point,width=.01,label=""];minPoint6->sourceIn6  [weight=999];}
+{rank = sink; sinkIn6 [shape=point,width=.01,label=""];}sinkIn6->maxPoint6  [weight=999];
+
+sh0010 [shape=circle,label="",width=0.277778,height=0.277778,color="#00000A"];
+sh0011 [shape=rect,style=rounded,label="",width=0.704861,height=0.444444,color="#00000B"];
+sh0012 [shape=rect,style=rounded,label="",width=0.704861,height=0.444444,color="#00000C"];
+sh0013 [shape=rect,style=rounded,label="",width=0.704861,height=0.444444,color="#00000D"];
+
+}
+subgraph cluster14 {style=solid;color="#00000E";labeljust="c";label=<<TABLE BGCOLOR="#00000F" FIXEDSIZE="TRUE" WIDTH="28" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn14 [shape=point,width=.01,label=""];minPoint14->sourceIn14  [weight=999];}
+{rank = sink; sinkIn14 [shape=point,width=.01,label=""];}sinkIn14->maxPoint14  [weight=999];
+
+sh0018 [shape=rect,style=rounded,label="",width=0.704861,height=0.444444,color="#000012"];
+
+}
+subgraph cluster19 {style=solid;color="#000013";labeljust="c";label=<<TABLE BGCOLOR="#000014" FIXEDSIZE="TRUE" WIDTH="28" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn19 [shape=point,width=.01,label=""];minPoint19->sourceIn19  [weight=999];}
+{rank = sink; sinkIn19 [shape=point,width=.01,label=""];}sinkIn19->maxPoint19  [weight=999];
+
+sh0023 [shape=rect,style=rounded,label="",width=0.704861,height=0.444444,color="#000017"];
+
+}
+sh0011->sh0012[arrowtail=none,arrowhead=none,minlen=1,color="#00001C"];
+sh0012->sh0018[arrowtail=none,arrowhead=none,minlen=1,color="#000020"];
+sh0018->sh0013[arrowtail=none,arrowhead=none,minlen=1,color="#000024"];
+sh0013->sh0023[arrowtail=none,arrowhead=none,minlen=1,color="#000028"];
+
+}

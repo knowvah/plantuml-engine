@@ -1,0 +1,8 @@
+@startuml
+ (*) --> {
+ -- toto1
+ (*) --> D
+ -- toto2
+ (*) --> F
+ }
+@enduml

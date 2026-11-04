@@ -1,0 +1,27 @@
+@startuml
+title <color:red> Missing arrow after 'case20', 'case22'  and 'diamond'
+
+start
+switch (source)
+
+case ( a )
+:case1;
+end
+
+case ( b0 )
+:case20;
+
+case ( b1 )
+:case21;
+
+case ( b2 )
+:case22;
+
+case ( c )
+:case3;
+stop
+
+endswitch
+:...;
+
+@enduml

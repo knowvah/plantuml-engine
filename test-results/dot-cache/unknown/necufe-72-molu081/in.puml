@@ -1,0 +1,33 @@
+@startuml
+digraph unix {
+
+subgraph cluster4alpha {label="NOTEUP";labelloc="t";
+	
+subgraph cluster4 {label="NOTEDOWN"; style=solid;color="#FF0004";labelloc="b";
+
+{rank=source;sh0007;sh0008;}
+
+sh0007 [shape=plaintext,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0"><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR><TR><TD></TD><TD FIXEDSIZE="TRUE" PORT="P"  BORDER="1" COLOR="#000007" WIDTH="12" HEIGHT="12"></TD><TD></TD></TR><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR></TABLE>>];
+sh0008 [shape=plaintext,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0"><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR><TR><TD></TD><TD FIXEDSIZE="TRUE" PORT="P"  BORDER="1" COLOR="#000007" WIDTH="12" HEIGHT="12"></TD><TD></TD></TR><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR></TABLE>>];
+sh0007->sh0008 [arrowhead=none];
+
+
+subgraph cluster4gamma {label="TITRE";labelloc="t";color="#00FF00";
+
+
+data;
+
+{rank=sink;sh0009;sh0010;}
+sh0009 [shape=plaintext,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0"><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR><TR><TD></TD><TD FIXEDSIZE="TRUE" PORT="P"  BORDER="1" COLOR="#000007" WIDTH="12" HEIGHT="12"></TD><TD></TD></TR><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR></TABLE>>];
+sh0010 [shape=plaintext,label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0"><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR><TR><TD></TD><TD FIXEDSIZE="TRUE" PORT="P"  BORDER="1" COLOR="#000007" WIDTH="12" HEIGHT="12"></TD><TD></TD></TR><TR><TD WIDTH="86" HEIGHT="1" COLSPAN="3"></TD></TR></TABLE>>];
+sh0009->sh0010 [arrowhead=none];
+}
+
+}
+
+}
+
+
+
+}
+@enduml

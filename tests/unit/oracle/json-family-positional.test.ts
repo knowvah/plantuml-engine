@@ -222,8 +222,10 @@ describe('toPinRow / readPin', () => {
 describe('corpus rows (acceptance, needs test-results/dot-cache)', () => {
   const TIMEOUT_MS = 60_000;
 
-  it('lists 92 cached rows, 22 of them conformant', () => {
-    expect(listCachedRows()).toHaveLength(92);
+  // 92 -> 108 at ogc/T7 (2026-11-04): #109 captured 12 hcl and 4 yaml manifest rows that had no
+  // oracle (json 50 + yaml 39 + 4 + hcl 3 + 12). Conformant stays 22: the ratchets gained no row (D7).
+  it('lists 108 cached rows, 22 of them conformant', () => {
+    expect(listCachedRows()).toHaveLength(108);
     expect(conformantRows().size).toBe(22);
   });
 

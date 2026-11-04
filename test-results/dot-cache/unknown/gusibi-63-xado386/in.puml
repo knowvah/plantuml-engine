@@ -1,0 +1,27 @@
+@startuml
+skinparam packageStyle rect
+
+:Visitor:
+:AdsManager:
+
+package "Company" {
+   :ProjectOwner:
+   (OrderAds)
+
+   package "Project" {
+     :ProjectUser:
+     :Personel:
+     :Newbie:
+
+     package "System" {
+       (useService)
+       (ServSys)
+       (PassTutorial)
+       (SeeReports)
+     }
+
+   }
+
+}
+
+@enduml
