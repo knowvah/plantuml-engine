@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-11-04T01:05:19.975Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "c4",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "biluko-70-licu481",
+      "status": "ok",
+      "diffCount": 35,
+      "bucket": "31+"
+    },
+    {
+      "slug": "favasu-27-fesa452",
+      "status": "ok",
+      "diffCount": 6,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "gepuco-34-pira620",
+      "status": "ok",
+      "diffCount": 6,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "gikaju-64-bari602",
+      "status": "ok",
+      "diffCount": 6,
+      "bucket": "4-10"
+    },
+    {
+      "slug": "josimu-04-silu988",
+      "status": "ok",
+      "diffCount": 2,
+      "bucket": "1-3"
+    },
+    {
+      "slug": "kipive-74-lele070",
+      "status": "ok",
+      "diffCount": 32,
+      "bucket": "31+"
+    },
+    {
+      "slug": "ropexu-72-jecu171",
+      "status": "ok",
+      "diffCount": 709,
+      "bucket": "31+"
+    },
+    {
+      "slug": "rosoga-84-vari641",
+      "status": "ok",
+      "diffCount": 22,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "vakasu-51-xiza794",
+      "status": "ok",
+      "diffCount": 67,
+      "bucket": "31+"
+    },
+    {
+      "slug": "xetego-25-dinu652",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "xizifu-87-siti076",
+      "status": "ok",
+      "diffCount": 14,
+      "bucket": "11-30"
+    }
+  ]
+}

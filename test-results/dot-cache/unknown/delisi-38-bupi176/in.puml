@@ -1,0 +1,5 @@
+@startuml
+object "Kannada : bambu" as ಬಮ್ಬು
+object bamboo
+bamboo <-- ಬಮ್ಬು
+@enduml

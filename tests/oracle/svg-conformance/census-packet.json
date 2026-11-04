@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-11-04T01:05:56.224Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "packet",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "packet-auto-position",
+      "status": "ok",
+      "diffCount": 47,
+      "bucket": "31+"
+    },
+    {
+      "slug": "packet-colwidth-8",
+      "status": "ok",
+      "diffCount": 30,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "packet-rtl",
+      "status": "ok",
+      "diffCount": 39,
+      "bucket": "31+"
+    },
+    {
+      "slug": "packet-spanning-field",
+      "status": "ok",
+      "diffCount": 47,
+      "bucket": "31+"
+    },
+    {
+      "slug": "packet-tall-field",
+      "status": "ok",
+      "diffCount": 45,
+      "bucket": "31+"
+    },
+    {
+      "slug": "packet-tcp-header",
+      "status": "ok",
+      "diffCount": 87,
+      "bucket": "31+"
+    }
+  ]
+}

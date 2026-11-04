@@ -1,0 +1,13 @@
+@startuml
+start
+repeat
+    if (Something went wrong?) then
+      :OK;
+      break
+    endif
+    :Alert;
+repeat while
+-><back:red> no3 ;
+stop
+
+@enduml

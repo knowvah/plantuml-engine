@@ -1,0 +1,13 @@
+@startuml
+!pragma svek_trace on
+package pack {
+	class ClassA {
+	    a
+	}
+	class ClassC
+}
+
+ClassB <-- ClassA
+ClassC <-- ClassB
+ClassC <-- ClassA::a
+@enduml

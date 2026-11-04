@@ -236,6 +236,14 @@ export const KEY_HANDLERS_B: ReadonlyArray<readonly [keys: readonly string[], ha
   // cdd7 T2b defaulttextalignment -> SName.root (`:155`).
   [['notetextalignment'], (acc, value) => setAlignment(acc, 'note', value)],
   [['defaulttextalignment'], (acc, value) => setAlignment(acc, 'root', value)],
+  // stdd T2c: `stateMessageAlignment` is read raw by `SkinParam#getHorizontalAlignment` (`:671-723`), no style.
+  [
+    ['statemessagealignment'],
+    (acc, value) => {
+      const alignment = parseHorizontalAlignment(value);
+      if (alignment !== undefined) acc.stateMessageAlignment = alignment;
+    },
+  ],
   [
     ['packagefontname'],
     (acc, value) => {

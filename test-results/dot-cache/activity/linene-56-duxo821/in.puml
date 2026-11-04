@@ -1,0 +1,11 @@
+@startuml
+start
+->dsc_1;
+repeat :foo;
+ ->dsc_2;
+ :Submit;
+ ->dsc_3;
+repeat while (Valid?) is (No) not (Yes) -> back to foo
+->dsc_4;
+stop
+@enduml

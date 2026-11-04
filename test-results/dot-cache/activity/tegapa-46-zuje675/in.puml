@@ -1,0 +1,10 @@
+@startuml
+
+repeat  
+:Review Activity; <<task>> <<#LightGreen>>
+
+backward  :Rework; <<task>>
+
+repeat while (active Remarks) is (Yes) not (No)
+
+@enduml

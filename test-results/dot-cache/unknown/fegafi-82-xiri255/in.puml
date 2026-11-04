@@ -1,0 +1,4 @@
+@startuml
+class javax.sound.sampled.AudioFormat.Encoding
+class javax.sound.sampled.AudioFormat
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+[*] -l-> left
+[*] -r-> right
+[*] -u-> up
+[*] -d-> down
+@enduml

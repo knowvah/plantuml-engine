@@ -16,14 +16,16 @@
  */
 
 import type { State, StateDiagramAST, Transition } from './ast.js';
+import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotInputGraph, DotInputNode, DotInputEdge } from '../../core/graph-layout.js';
-import { measureState, CIRCLE_START_SIZE, CIRCLE_END_SIZE } from './state-sizing.js';
+import { measureState, CIRCLE_START_SIZE, CIRCLE_END_SIZE, hidesEmptyDescription } from './state-sizing.js';
 import { buildNoteGraphPartsByScope } from './state-note-layout.js';
 import { moveNotesToCreationOrder } from './state-note-lines.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
-import { computeReservedLabelBox, computeMergedLabelBox } from '../../core/edge-label-box.js';
+import { computeMergedLabelBox } from '../../core/edge-label-box.js';
+import { measureStateLabelBox } from './state-transition-label.js';
 // `EntityImageNoteLink`'s real dimension — shared-seam-extraction T6, D1:
 // ONE port, `core/svek/image/EntityImageNoteLink.ts`, replacing this file's
 // former private copy. See that module's doc comment for the full
@@ -84,7 +86,7 @@ function buildStateNode(
   measurer: StringMeasurer,
   rankdir: 'TB' | 'LR',
 ): DotInputNode {
-  const measured = measureState(state, hideEmptyDescription, theme, measurer, rankdir);
+  const measured = measureState(state, hidesEmptyDescription(state, hideEmptyDescription), theme, measurer, rankdir);
   return { id: state.id, width: measured.width, height: measured.height, shape: measured.shape };
 }
 
@@ -172,14 +174,22 @@ export function transitionLabelText(t: Transition): string | undefined {
  *  note-attached arms both route through a single `ReservedLabelBox`. Split
  *  out of `edgeLabelAttrs` to keep that function's own branching (text vs.
  *  note presence, both optional) separate from this one's (which formula). */
+/** `SvekEdge.java:291-294`'s wrap width and the diagram's sprites, for the label's creole block. */
+interface LabelWrap {
+  readonly maxWidth: number | undefined;
+  readonly sprites: SpriteRegistry | undefined;
+}
+
 function computeEdgeLabelBox(
   t: Transition,
   text: string | undefined,
   font: { family: string; size: number },
   measurer: StringMeasurer,
-  maxWidth: number | undefined,
+  wrap: LabelWrap,
 ): ReservedLabelBox {
-  if (t.linkNote === undefined) return computeReservedLabelBox(text!, font, measurer, t.from === t.to, { maxWidth });
+  // stdd T2c/T3a: the box is the creole block's (`measureStateLabelBox`), sprites included.
+  if (t.linkNote === undefined) return measureStateLabelBox(text!, font, measurer, t.from === t.to, wrap);
+  const { maxWidth } = wrap;
   return computeMergedLabelBox({
     label: text ?? '',
     noteDim: measureLinkNoteDim(t.linkNote, { family: font.family }, measurer),
@@ -196,11 +206,11 @@ function edgeLabelAttrs(
   t: Transition,
   font: { family: string; size: number },
   measurer: StringMeasurer,
-  maxWidth: number | undefined,
+  wrap: LabelWrap,
 ): NonNullable<DotInputEdge['attributes']> {
   const text = transitionLabelText(t);
   if (text === undefined && t.linkNote === undefined) return {};
-  const box = computeEdgeLabelBox(t, text, font, measurer, maxWidth);
+  const box = computeEdgeLabelBox(t, text, font, measurer, wrap);
   return {
     label: text ?? t.linkNote ?? '',
     labelWidth: box.reservedWidth,
@@ -236,7 +246,7 @@ function buildDotEdges(ast: StateDiagramAST, theme: Theme, measurer: StringMeasu
       // G20: the SAME expression the label half above reads elsewhere
       // (`theme.linetype`'s own D3 precedent) -- `SvekEdge.java:288-300`'s
       // inline-label `wrapWidth` (`skin/SkinParam.java:971-978`).
-      ...edgeLabelAttrs(t, font, measurer, theme.maxMessageSize),
+      ...edgeLabelAttrs(t, font, measurer, { maxWidth: theme.maxMessageSize, sprites: theme.sprites }),
     };
     if (theme.linetype === 'ortho') moveLabelToXlabel(attributes);
     // T2/B33: upstream inverts the Link when the arrow carries a `left`/`up`
@@ -249,10 +259,19 @@ function buildDotEdges(ast: StateDiagramAST, theme: Theme, measurer: StringMeasu
     // endpoints are already swapped at parse time, which is this port's
     // equivalent of `CommandLinkStateReverse#getDefaultDirection`'s LEFT
     // default (`CommandLinkStateReverse.java:77-79`).
+    // stdd T2b: `getEntity` resolves `[*]` by its written side (`*start*` for the source,
+    // `*end*` for the target) BEFORE `getInv()` swaps the two (`CommandLinkStateCommon.java:175-206`).
     const inverted = t.direction === 'left' || t.direction === 'up';
-    const tail = inverted ? t.to : t.from;
-    const head = inverted ? t.from : t.to;
-    return { id: `edge-${i}`, from: endpointId(tail, true), to: endpointId(head, false), attributes };
+    const source = endpointId(t.from, true);
+    const target = endpointId(t.to, false);
+    // stdd T6b: `Link.java:145-147` flags the swapped link; `svek-dot-top.ts` orders by it.
+    return {
+      id: `edge-${i}`,
+      from: inverted ? target : source,
+      to: inverted ? source : target,
+      attributes,
+      ...(inverted ? { inverted: true as const } : {}),
+    };
   });
 }
 

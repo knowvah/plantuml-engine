@@ -1,0 +1,12 @@
+@starthcl
+<style>
+hclDiagram {
+  element {
+    BackgroundColor #ffdd99
+  }
+}
+</style>
+variable "region" {
+  default = "us-east-1"
+}
+@endhcl

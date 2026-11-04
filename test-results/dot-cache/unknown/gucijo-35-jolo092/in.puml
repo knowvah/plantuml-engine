@@ -1,0 +1,4 @@
+@startuml
+scale 0
+Bob -> Alice : hello
+@enduml

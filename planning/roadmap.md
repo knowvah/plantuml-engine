@@ -9,6 +9,34 @@ PlantUML renders, to SVG. No Java, no server round-trip, no raster output.
 
 ---
 
+## v1.0 — the definition of done (user ruling 2026-11-03)
+
+**v1.0 means all known PlantUML diagram types are conformant, with accepted
+divergences where needed.** Nothing less is v1.0, and this section overrides any
+narrower reading elsewhere in this file.
+
+- **Known diagram type:** every factory upstream registers in
+  `PSystemBuilder.java:133-200`. A factory commented out there, or removed by the
+  `__MIT__` markers we mirror, is not known unless a signed ruling keeps it (chronology,
+  2026-11-03). Ditaa is not known: the 2026-10-14 ruling to keep it was reversed on
+  2026-11-04 (#111).
+- **Conformant:** every fixture of that type reads `conformant` in the SVG survey. A
+  fixture where the jar draws an error page and we draw our own counts
+  (`docs/svg-conformance.md`).
+- **Accepted divergence:** named in `DIVERGENCES.md`, and signed in
+  `oracle/accepted-divergences.json` where a row needs it. It is forced by a library or
+  signed by the maintainer, never decided by the agent. On the closed Smetana set in
+  [Why no Smetana support?](../docs-site/guide/why-no-smetana.md), a fixture with the
+  same elements, labels, colours and structure, where only edge routing and node
+  spacing differ, is accepted under the 2026-08-09 ruling.
+- **Measured:** a fixture with no jar oracle counts as open until it has one or a
+  recorded reason. A known type with no fixtures gets authored ones.
+
+`docs/parity-report.md` is the measurement. The work queue is the `parity`-labelled
+GitHub issues.
+
+---
+
 ## 1. The two axes of "done" — the lesson of the DOT grind
 
 Progress has two independent dimensions, and we have been measuring only one:
@@ -90,7 +118,7 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 10. **Network / nwdiag / rackdiag** (`@startnwdiag`) — row-based layout.
 11. **Git graph** (`@startgitgraph`) — lane layout.
 12. **Salt** (`@startsalt`) — grid layout (evaluate golem reuse).
-13. **DITAA** (`@startditaa`) — ASCII-art grid → SVG; highest complexity in P5.
+13. ~~**DITAA** (`@startditaa`)~~ — dropped by ruling 2026-11-04 (#111, `DIVERGENCES.md`).
 14. **Chen EER** (`@startchen`) — dot layout + EER shapes.
 15. **EBNF** (`@startebnf`) — railroad renderer (Track SI-3).
 16. **Regex** (`@startregex`) — regex → railroad IR (after EBNF).

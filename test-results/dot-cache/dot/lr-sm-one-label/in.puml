@@ -1,0 +1,9 @@
+@startdot
+digraph stateMachine {
+  graph [rankdir=LR]
+  idle -> running
+  running -> idle [label=stop]
+  running -> error
+  error -> idle
+}
+@enddot

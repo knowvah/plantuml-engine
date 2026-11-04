@@ -1,0 +1,18 @@
+@startuml
+binary "enable" as EN
+
+@0 as :start
+@5 as :en_high 
+@10 as :en_low
+@:en_high-2 as :en_highMinus2
+
+@:start
+EN is low
+
+@:en_high+1.5
+EN is high
+
+@10.5
+EN is low
+
+@enduml

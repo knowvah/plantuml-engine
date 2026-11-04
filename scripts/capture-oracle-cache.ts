@@ -62,17 +62,43 @@ export interface GuardDeps {
   sleep?: GuardSleep;
 }
 
+/** `<name>_NNN.svg`: the pages PlantUML writes after `newpage` under
+ *  `@startuml <name>` (`SuggestedFile.java`'s `_%03d` suffix). */
+const PAGE_SUFFIX_RE = /_\d+\.svg$/;
+
+/** Renames `<name>.svg` and its `<name>_NNN.svg` pages to `in.svg` and
+ *  `in_NNN.svg`; the pages are the jar's real output (ogc D4,
+ *  `xobebi-29-jilu859`: `@startuml file4` + `newpage`). */
+function adoptPages(dir: string, svgs: string[], stem: string): ClassifyResult {
+  for (const f of svgs) renameSync(join(dir, f), join(dir, `in${f.slice(stem.length)}`));
+  return { kind: 'renamed', file: `${stem}.svg` };
+}
+
+/** The `<name>` of the one `<name>.svg` whose only siblings are its own
+ *  `<name>_NNN.svg` pages; undefined when the files belong to two stems. */
+function pagedStem(svgs: string[]): string | undefined {
+  const stems = svgs.filter((f) => !PAGE_SUFFIX_RE.test(f));
+  if (stems.length !== 1) return undefined;
+  const stem = stems[0]!.slice(0, -'.svg'.length);
+  return svgs.every((f) => f === `${stem}.svg` || f.startsWith(`${stem}_`)) ? stem : undefined;
+}
+
 /** Judges render success from the output directory's contents, never from
  *  the jar's exit code (aoh-T0.md Finding 1). Adopts a lone differently-
- *  named `.svg` as the block-0 capture (aoh-T0.md Finding 2). */
+ *  named `.svg` as the block-0 capture (aoh-T0.md Finding 2), and a named
+ *  block's `newpage` pages beside it (ogc D4). Two different stems stay
+ *  `ambiguous`. */
 export function classifyOutput(dir: string): ClassifyResult {
   if (existsSync(join(dir, 'in.svg'))) return { kind: 'in-svg', file: 'in.svg' };
   const svgs = readdirSync(dir).filter((f) => f.endsWith('.svg'));
   if (svgs.length === 0) return { kind: 'none' };
-  if (svgs.length > 1) return { kind: 'ambiguous' };
-  const file = svgs[0]!;
-  renameSync(join(dir, file), join(dir, 'in.svg'));
-  return { kind: 'renamed', file };
+  if (svgs.length === 1) {
+    const file = svgs[0]!;
+    renameSync(join(dir, file), join(dir, 'in.svg'));
+    return { kind: 'renamed', file };
+  }
+  const stem = pagedStem(svgs);
+  return stem === undefined ? { kind: 'ambiguous' } : adoptPages(dir, svgs, stem);
 }
 
 /** Which manifest entries still need rendering. Pure — no filesystem access.
@@ -95,25 +121,39 @@ function doneSlugs(typeDir: string, manifest: Fixture[]): Set<string> {
   return done;
 }
 
+/** `classifyOutput`'s verdict plus the instant just before the JVM started
+ *  (`oracle-render.sh`'s `START_MS`), for `recordCaptureClock`. */
+export interface RenderResult extends ClassifyResult {
+  startedAt: number;
+}
+
 /** Writes `in.puml` and renders through the pinned oracle jar, guarded
  *  against PSystemError.java's time-based error-page decorations (D9) --
  *  see scripts/lib/oracle-minute-guard.ts. The jar's exit code is ignored
  *  on purpose (aoh-T0.md Finding 1) — the catch is not an error swallow,
- *  it is the documented success signal. */
-function renderFixture(dir: string, markup: string, guard: GuardDeps): Promise<ClassifyResult> {
+ *  it is the documented success signal. `cwd` is the JVM's working
+ *  directory: `!pragma svek_trace on` writes `svek.svg` there, so a staged
+ *  capture passes a scratch directory instead of the repo root (ogc D4). */
+export function renderFixture(dir: string, markup: string, guard: GuardDeps, cwd?: string): Promise<RenderResult> {
   mkdirSync(dir, { recursive: true });
   // smetana/vizjs pragmas are stripped so the jar shells out to real graphviz
   // and dumps svek-N.dot (DIVERGENCES.md "`!pragma layout smetana|vizjs`",
   // G0 policy; cdd8 D7). `!pragma layout elk` is kept.
   writeFileSync(join(dir, 'in.puml'), stripLayoutPragma(markup), 'utf-8');
+  const now = guard.now ?? Date.now;
   return runInPlainMinute(
     () => {
+      const startedAt = now();
       try {
-        execFileSync(ORACLE_RENDER, [dir, join(dir, 'in.puml')], { stdio: 'ignore', timeout: ORACLE_JAR_TIMEOUT_MS });
+        execFileSync(ORACLE_RENDER, [dir, join(dir, 'in.puml')], {
+          stdio: 'ignore',
+          timeout: ORACLE_JAR_TIMEOUT_MS,
+          ...(cwd === undefined ? {} : { cwd }),
+        });
       } catch {
         /* non-zero exit does not mean render failure; classifyOutput decides */
       }
-      return classifyOutput(dir);
+      return { ...classifyOutput(dir), startedAt };
     },
     guard.now,
     guard.sleep,

@@ -48,3 +48,6 @@ export const GENERIC_SNAMES = [...CLASS_SNAMES, 'generic'] as const;
  *  is `componentDiagram` (`DiagramType.java:250-251`, `DESCRIPTION` -> `SName.componentDiagram`) -- usecase and
  *  deployment diagrams included -- so a `classDiagram { arrow }` selector never reaches its links. */
 export const DESCRIPTION_ARROW_SNAMES = ['root', 'element', 'componentdiagram', 'arrow'] as const;
+
+/** `SvekEdge#getDefaultStyleDefinition` for a state diagram (`SvekEdge.java:816-821`, `DiagramType.java`). */
+export const STATE_ARROW_SNAMES = ['root', 'element', 'statediagram', 'arrow'] as const;

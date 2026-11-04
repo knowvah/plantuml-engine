@@ -7,7 +7,7 @@ import { isTransparentColor, parseColor, type Paint } from '../../core/paint.js'
 import { PAINT_NONE } from '../../core/svg.js';
 import type { Theme } from '../../core/theme.js';
 import { stereotypeFontColor, stereotypePaint } from '../../core/theme-element-resolve.js';
-import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
+import { colorOrNeutral, resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 
 /**
  * `HColor#toSvg` collapses a transparent colour to `#00000000` (`HColor.java:74-76`) and `SvgGraphics#fixColor` prints
@@ -23,7 +23,8 @@ export function svgBack(paint: Paint | undefined): Paint | undefined {
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:109-116
  */
 export function inlineBack(node: { readonly color?: string | undefined }): Paint | undefined {
-  return node.color === undefined ? undefined : parseColor(node.color);
+  // `color().getColor(...)` throws on an unknown one (`CommandPartition3.java`): `colorOrNeutral`'s doc.
+  return node.color === undefined ? undefined : parseColor(colorOrNeutral(node.color));
 }
 
 /** A `FontConfiguration`'s colour: `null` is `isTransparent()` there (`UText.ts`), and `DriverTextSvg.java:92-93` then

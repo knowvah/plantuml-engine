@@ -1,0 +1,14 @@
+@startuml
+<style>
+.procedure {
+  BackgroundColor #lightblue
+}
+</style>
+start
+: foo; <<procedure>>
+: bar
+  bar
+  bar; <<procedure>>
+: xox\nxox\nxox; <<procedure>>
+stop
+@enduml

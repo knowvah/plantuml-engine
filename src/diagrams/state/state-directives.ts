@@ -79,7 +79,7 @@ function foldDirectives(
   let removed = false;
   for (const d of dirs) {
     if (!includeUnlinked && isAboutUnlinked(d.what)) continue;
-    if (isApplyable(e, d.what, unlinked)) removed = d.action === 'remove';
+    if (isApplyable(e, d.what, unlinked)) removed = d.action === 'remove' || d.action === 'hide';
   }
   return removed;
 }
@@ -174,7 +174,17 @@ function markRemoved(
  * transition set).
  */
 export function computeRemovedIds(ast: StateDiagramAST): Set<string> {
-  const dirs = ast.removeDirectives ?? [];
+  return applyingIds(ast, ast.removeDirectives ?? []);
+}
+
+/** stdd T5a: `CucaDiagram#isHidden` (`CucaDiagram.java:769-781`) over the `hide`/`show` directives
+ *  (`hides2`), the same `HideOrShow#apply` fold as {@link computeRemovedIds}; a hidden composite hides
+ *  its descendants (`Entity.java:433-438`), which `markHidden` (layout) applies on the geometry. */
+export function computeHiddenIds(ast: StateDiagramAST): Set<string> {
+  return applyingIds(ast, ast.hideDirectives ?? []);
+}
+
+function applyingIds(ast: StateDiagramAST, dirs: readonly RemoveRestoreDirective[]): Set<string> {
   const removed = new Set<string>();
   if (dirs.length === 0) return removed;
 

@@ -293,7 +293,11 @@ describe('svg-activity weighted-score baseline ratchet — corpus presence', () 
     // aepp/T1e (2026-10-10): jetigu-21-zaje860 + nuzise-60-temi305 moved to
     // dot-cache/sequence -- the jar draws both as SEQUENCE (teoz;
     // core/TextBlockExporter.java:292-294, aepp D3). Derivation: 451 - 2 = 449.
-    expect(manifest.fixtures.length).toBe(449);
+    // ogc/T6 (2026-11-04): the 429 activity rows #109 captured by jar type (D2) seeded `error` and promoted
+    // by scripts/repin-activity-baselines.ts --write: 301 render, 128 stay `error` with their ledger reason
+    // (113 legacy `(*) -->` + 1 legacy misfiled + 14 activity3 gaps, ogc-T4a/T4b), 0 jar-error (D2 sends
+    // error pages to unknown). Derivation: 449 + 429 = 878.
+    expect(manifest.fixtures.length).toBe(878);
   });
 
   // add1-T0b: the three-status arithmetic (D8's README note) extends to a
@@ -302,7 +306,7 @@ describe('svg-activity weighted-score baseline ratchet — corpus presence', () 
   // than only checking `manifest.fixtures.length` above -- also catches an
   // unrecognized fifth status silently falling through every filter below
   // unexamined (at b0: 311 + 39 + 23 + 0 = 373; T0b pins no real row).
-  it('jar-error + error + baseline + pinned accounts for every one of the 449 fixtures', () => {
+  it('jar-error + error + baseline + pinned accounts for every one of the 878 fixtures', () => {
     expect(jarErrorFixtures.length + errorFixtures.length + baselineFixtures.length + pinnedFixtures.length).toBe(
       manifest.fixtures.length,
     );

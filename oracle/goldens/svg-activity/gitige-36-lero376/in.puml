@@ -1,0 +1,24 @@
+@startuml
+:Ready;
+:next(o); <<procedure>>
+:Receiving;
+split
+ :nak(i); <<input>>
+ :ack(o); <<output>>
+split again
+ :ack(i); <<input>>
+ :next(o)
+ on several line; <<procedure>>
+ :i := i + 1; <<task>>
+ :ack(o); <<input>>
+split again
+ :err(i); <<output>>
+ :nak(o); <<input>>
+split again
+ :foo; <<save>>
+split again
+ :i > 5; <<continuous>>
+stop
+end split
+:-;
+@enduml

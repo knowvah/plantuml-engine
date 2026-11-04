@@ -1,0 +1,7 @@
+@startuml
+state B
+note as N
+  hello
+end note
+B --> N
+@enduml

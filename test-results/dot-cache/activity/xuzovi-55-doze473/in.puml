@@ -1,0 +1,5 @@
+@startuml
+scale 4
+:Planck;
+:<latex>{\small \mathsf{\epsilon_0=\frac{c_1}{\lambda^5 (e^{c_2 / \lambda T}-1)}}}</latex>;
+@enduml

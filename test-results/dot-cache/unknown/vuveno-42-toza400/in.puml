@@ -1,0 +1,11 @@
+@startuml
+class Foo {
+method()
+}
+class Bar
+class Qux
+
+Foo::method --> Bar:
+Foo::method --> Bar: drawing
+(Foo, Bar) --> Qux
+@enduml

@@ -1021,8 +1021,21 @@ describe('refusal coverage — baseline shape', () => {
     // 8694 -> 8707 at ddc/close-b1 (2026-10-28): +13 golden clones (9 svg-files, 3 svg-json, 1 svg-yaml), all render.
     // 8707 -> 8708 at ddc/close-b2 (2026-10-28): +1 svg-json golden clone (babico-87-soxo095), renders.
     // 8708 -> 8709 at dss/close-b2 (2026-11-02): +1 svg-state golden clone (lonuti-97-voko521), renders.
-    expect(manifest.fixtures.length).toBe(8735);
-    expect(pinnedJarErrors.length).toBe(86);
+    // 8735 -> 9751 at ogc/T5 (2026-11-04): #109's 1016 uncaptured manifest fixtures captured by jar type (D2) and pinned additively from the stage: +1016 dot-cache rows (activity 429, unknown 223, class 151,
+    // sequence 94, dot 57, state 26, timing 19, hcl 12, yaml 4, object 1).
+    // 9751 -> 9895 at ogc/T6: +144 svg-activity golden clones (zero-diff new rows, pin-goldens.mts ogc-b2).
+    // 9895 -> 9906 at stdd/T0b (2026-11-04): +11 svg-state golden clones (census-zero rows, pin-state.mjs), all render.
+    // 9906 -> 9965 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones, all render.
+    // 9965 -> 9980 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones, all render.
+    // 9980 -> 10026 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones, all render.
+    // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all render.
+    // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all render.
+    // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all render.
+    expect(manifest.fixtures.length).toBe(10078);
+    // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
+    // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
+    // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
+    expect(pinnedJarErrors.length).toBe(162);
     //
     // 242 -> 241 / 4242 -> 4243 at unknown-bucket-routing-repair/T11
     // (2026-09-20): `sequence/recani-60-licu962` renders now that the
@@ -1067,7 +1080,9 @@ describe('refusal coverage — baseline shape', () => {
     // and nuvoja-46 (missing `!includedef`, T8b; honest record) render.
     // 214 -> 217 at gep/close-b7 (2026-10-26): gantt turned on; its 3 known-gap rows (jar Welcome
     // page past the 4096-byte head, PSystemError.java:217-218) now count as erroring here.
-    expect(pinnedErroring.length).toBe(217);
+    // 217 -> 446 at ogc/T5: +229 erroring = 173 known-gap rows (activity 127, sequence 1, timing 19,
+    // unknown 26) + 56 of the 76 new jar-error rows where we error too. Derivation: 217 + 229 = 446.
+    expect(pinnedErroring.length).toBe(446);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1231,7 +1246,17 @@ describe('refusal coverage — baseline shape', () => {
     // 8477 -> 8490 at ddc/close-b1 (2026-10-28): 8707 rows - 217 erroring (+13 golden clones, all render).
     // 8490 -> 8491 at ddc/close-b2 (2026-10-28): 8708 rows - 217 erroring (+1 svg-json clone).
     // 8491 -> 8492 at dss/close-b2 (2026-11-02): 8709 rows - 217 erroring (+1 svg-state clone).
-    expect(pinnedRendering.length).toBe(8518);
+    // 8518 -> 9305 at ogc/T5: 9751 rows - 446 erroring (+767 ok rows that render on both sides,
+    // +20 jar-error rows we draw). Derivation: 8518 + 787 = 9305.
+    // 9305 -> 9449 at ogc/T6: +144 svg-activity golden clones, all rendering. Derivation: 9895 - 446 = 9449.
+    // 9449 -> 9460 at stdd/T0b (2026-11-04): +11 svg-state golden clones, all rendering. Derivation: 9906 - 446 = 9460.
+    // 9460 -> 9519 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones, all rendering. Derivation: 9965 - 446 = 9519.
+    // 9519 -> 9534 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones, all rendering. Derivation: 9980 - 446 = 9534.
+    // 9534 -> 9580 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones, all rendering. Derivation: 10026 - 446 = 9580.
+    // 9580 -> 9596 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all rendering. Derivation: 10042 - 446 = 9596.
+    // 9596 -> 9603 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all rendering. Derivation: 10049 - 446 = 9603.
+    // 9603 -> 9632 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all rendering. Derivation: 10078 - 446 = 9632.
+    expect(pinnedRendering.length).toBe(9632);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1307,7 +1332,10 @@ describe('refusal coverage — baseline shape', () => {
     // (sdd2 T2e, CommandLinkAnchor).
     // 178 -> 177 at sdd2/close-b8: bomino-39's `<style src=>` gap is fixed (T8c).
     // 177 -> 179 at gep/close-b7: two more gantt known-gap rows (nakude-77, papava-92).
-    expect(gaps.length).toBe(179);
+    // 179 -> 352 at ogc/T5: +173 known-gap rows, each citing the upstream command that accepts its
+    // first refused line (ogc-T4a: 113 legacy activity + 19 timing; T4b: 14 activity3/legacy + 1
+    // sequence; T4c: 8 DESCRIPTION + 18 head-window error pages). Derivation: 179 + 173 = 352.
+    expect(gaps.length).toBe(352);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

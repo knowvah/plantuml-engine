@@ -1,0 +1,6 @@
+@startuml
+start
+while(15s timeout?) is (no)
+    -[#green]->
+endwhile (yes)
+@enduml

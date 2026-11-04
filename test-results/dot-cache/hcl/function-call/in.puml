@@ -1,0 +1,6 @@
+@starthcl
+locals {
+  rendered = templatefile("templates/init.tpl", {})
+  noop     = tostring()
+}
+@endhcl

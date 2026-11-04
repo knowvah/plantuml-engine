@@ -106,6 +106,14 @@ export const KEY_HANDLERS_C: ReadonlyArray<readonly [keys: readonly string[], ha
       (acc.elements['activity'] ??= {}).fontFamily = value;
     },
   ],
+  // stdd T3d: `addConFont("state", SName.state)` (`FromSkinparamToStyle.java:206`) -- the flat
+  // `stateFontName` key -> `PName.FontName` on `SName.state`, the `state` bucket (D3).
+  [
+    ['statefontname'],
+    (acc, value) => {
+      (acc.elements['state'] ??= {}).fontFamily = value;
+    },
+  ],
   // add3-T3f (PADDING): `SkinParam#getPadding()` (`skin/SkinParam.java
   // :1147-1150`): `getAsDouble("padding")` -- `isIntOrDecimal` guard, a
   // non-numeric value is left unset rather than poisoning the tier (same

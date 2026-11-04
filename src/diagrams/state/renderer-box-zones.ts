@@ -24,11 +24,12 @@ import { line, path, rect } from '../../core/svg.js';
 import type { Theme } from '../../core/theme.js';
 import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
 import type { State } from './ast.js';
-import type { StateNodeGeo } from './state-geo-types.js';
+import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
 import {
-  STATE_BORDER_STROKE_WIDTH,
   resolveStateFillBucketed,
   STATE_DEFAULT_BACKGROUND,
+  stateBorderStrokeAttrs,
+  stateRoundCornerOf,
 } from './state-render-colors.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
 
@@ -60,6 +61,8 @@ export interface ZonedLeafGeometry {
   readonly radius: number;
   /** The y of the name/description divider (`yLine`, `EntityImageState.java:125`). */
   readonly dividerY: number;
+  /** stdd T3b: for the state style's `LineThickness` (`stateBorderStrokeAttrs`). */
+  readonly theme: Pick<Theme, 'colors'>;
 }
 
 /**
@@ -81,7 +84,7 @@ export function renderZonedLeafBox(node: StateNodeGeo, geometry: ZonedLeafGeomet
   const y1 = node.y + node.height;
   const outline = {
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, geometry.theme),
     rx: radius,
     ry: radius,
   };
@@ -94,12 +97,24 @@ export function renderZonedLeafBox(node: StateNodeGeo, geometry: ZonedLeafGeomet
     roundedZone(roundedTopRectD(node.x, node.y, x1, dividerY, radius), zones.north) +
     roundedZone(roundedBottomRectD(node.x, dividerY, x1, y1, radius), zones.south) +
     rect(node.x, node.y, node.width, node.height, { fill: 'none', ...outline }) +
-    line(node.x, dividerY, x1, dividerY, { stroke: border, strokeWidth: STATE_BORDER_STROKE_WIDTH })
+    line(node.x, dividerY, x1, dividerY, { stroke: border, ...stateBorderStrokeAttrs(node, geometry.theme) })
   );
 }
 
 /** `skinparam`-less default of the radius the south path rounds with (`plantuml.skin:277-278`, `RoundCorner 25`). */
 const STATE_DEFAULT_ROUND_CORNER = 25;
+
+/**
+ * stdd T3c: a leaf's name block is created with the `state` style's `HorizontalAlignment`
+ * (`EntityImageStateCommon.java:75-78`), `root { HorizontalAlignment left }` (`plantuml.skin:12`),
+ * so its lines start at the block's left edge, and the block is centred in the box
+ * (`EntityImageState.java:150-152`, `EntityImageStateEmptyDescription.java:88-90`): one x for every line.
+ */
+export function nameBlockLeft(node: Pick<StateNodeGeo, 'x' | 'width'>, lines: readonly StateTextLine[]): number {
+  let blockWidth = 0;
+  for (const ln of lines) if (ln.width > blockWidth) blockWidth = ln.width;
+  return node.x + (node.width - blockWidth) / 2;
+}
 
 /**
  * Whether the leaf's `RoundedSouth` is drawn as a path: the zones differ
@@ -112,7 +127,5 @@ export function leafSouthZoneDrawn(state: Pick<State, 'stereotype'>, theme: Them
   if (state.stereotype?.toLowerCase() === 'sdlreceive') return false;
   const zones = resolveLeafZoneFills(state, theme);
   if (zones === undefined || isTransparentColor(zones.south)) return false;
-  return (
-    (theme.strictUml === true ? 0 : (theme.colors.graph.stateCascadeRoundCorner ?? STATE_DEFAULT_ROUND_CORNER)) !== 0
-  );
+  return (theme.strictUml === true ? 0 : (stateRoundCornerOf(theme) ?? STATE_DEFAULT_ROUND_CORNER)) !== 0;
 }

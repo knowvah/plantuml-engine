@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:19:27.698Z",
+  "generatedAt": "2026-11-04T13:36:06.468Z",
   "fixtures": [
     {
       "slug": "babafi-51-dixi026",
@@ -52,9 +52,8 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
+      "verdict": "structural-match",
       "maxDelta": 0.125,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@fill",
       "maxDeltaPath": "svg/g[1]/g[1]/polygon[1]/@points[0]"
     },
     {
@@ -351,10 +350,7 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 90,
-      "firstDiff": "svg/g[1]/g[6]/text[1]/@textLength",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "dinejo-36-mite007",
@@ -2149,10 +2145,7 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 30.5,
-      "firstDiff": "svg/g[1]/g[3][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[3]/text[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "fosito-02-fegi991",
@@ -2220,10 +2213,7 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 30.5,
-      "firstDiff": "svg/g[1]/g[3][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[3]/text[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "jecici-56-bimu826",
@@ -2682,10 +2672,9 @@
       "type": "usecase",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 201.5,
-      "firstDiff": "svg/g[1]/g[14]/ellipse[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/g[23]/text[1]/@x"
+      "verdict": "structural-match",
+      "maxDelta": 20,
+      "maxDeltaPath": "svg/g[1]/g[17]/path[1]/@d[23]"
     },
     {
       "slug": "zidebi-71-nocu387",

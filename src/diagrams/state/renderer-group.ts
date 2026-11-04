@@ -45,7 +45,8 @@
  * @see plans/g4-state-svg/ledger.md (S1, mechanism 2)
  * @see plans/g6-cluster-geometry/decisions.md (D3)
  */
-import { group } from '../../core/svg.js';
+import type { StateUrl } from './state-geo-types.js';
+import { group, linkWrap } from '../../core/svg.js';
 import { escapeComment } from '../../core/svg-format.js';
 
 /** Wraps a state/pseudostate's rendered body in the jar's `<g
@@ -93,6 +94,14 @@ export interface WrapLinkInfo {
   readonly toUid: string;
   /** `data-link-type`; a transition's is `dependency`, its one decor. */
   readonly linkType?: string;
+  /** stdd T2b: `Link#commentForSvg` (`Link.java:117-119`) writes `reverse link` for `looksLikeRevertedForSvg`. */
+  readonly reverse?: boolean;
+  /** stdd T3d: the enclosing entity's open link -- `UComment` is drawn outside the line's group, so
+   *  `SvgGraphics` writes it inside its own `<a>` (`SvgGraphics.java#addTopOpenedLinkIfNeeded`). */
+  readonly activeUrl?: StateUrl;
+  /** stdd T5a: `SvekResult.java:98` draws a hidden link through `UHidden`: the `UComment` is written
+   *  (`AbstractUGraphic.java:128-129`, before the hidden check at `:141`), nothing else. */
+  readonly hidden?: boolean;
 }
 
 /** Wraps a transition's rendered body in the jar's `<g class="link"
@@ -104,9 +113,12 @@ export function wrapLink(info: WrapLinkInfo, inner: string): string {
   const { from, to, uid, fromUid, toUid } = info;
   // SI-saea T3c/D8: `escapeComment` defangs `--`, matching class's wrapLink
   // (`class/renderer-group.ts`) and the jar's `XmlWriter.comment`.
-  const comment = '<!--link ' + escapeComment(from) + ' to ' + escapeComment(to) + '-->';
+  const word = info.reverse === true ? 'reverse link ' : 'link ';
+  const comment = '<!--' + word + escapeComment(from) + ' to ' + escapeComment(to) + '-->';
+  const commentMarkup = info.activeUrl === undefined ? comment : linkWrap(comment, info.activeUrl);
+  if (info.hidden === true) return commentMarkup;
   return (
-    comment +
+    commentMarkup +
     group(inner, {
       class: 'link',
       'data-entity-1': fromUid,

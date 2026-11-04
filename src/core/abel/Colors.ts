@@ -29,7 +29,6 @@ export type HColor = object;
  * unported machinery (journaled; revisit when the blockers land):
  *  - the private `add(ColorType, Colors)` overload — its only callers
  *    are the omitted `applyStereotype*` members below
- *  - `getSpecificLineStroke` — needs `LinkStyle#getStroke3` (unported)
  *  - `mute(ISkinParam)`, `applyStroke(UGraphic,...)`,
  *    `applyStereotype(...)`, `applyStereotypeForNote(...)`,
  *    `applyStyle(...)`, `getColor(Style,PName,HColorSet)` — the
@@ -143,6 +142,13 @@ export class Colors {
   /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/Colors.java:163-165 */
   getLineStyle(): LinkStyle | undefined {
     return this.lineStyle;
+  }
+
+  /** stdd T3a: `Style#getStroke(Colors)` reads this first (`Style.java:322-328`).
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/Colors.java:138-143 */
+  getSpecificLineStroke(): UStroke | undefined {
+    if (this.lineStyle === undefined) return undefined;
+    return this.lineStyle.getStroke3();
   }
 
   /** `addLegacyStroke(String)` — copy with `lineStyle` parsed via

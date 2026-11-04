@@ -1,0 +1,13 @@
+@startuml
+
+:start1 on
+several line;
+:start2 on
+several line; <<#AAAAAA>>
+if (some test) then (yes)
+  :do this;
+else (no)
+  :do other thing;
+endif
+:end of process; <<#red>>
+@enduml

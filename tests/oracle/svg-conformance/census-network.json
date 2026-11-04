@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-11-04T01:05:52.695Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "network",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "denevo-18-toza672",
+      "status": "ok",
+      "diffCount": 0,
+      "bucket": "0"
+    },
+    {
+      "slug": "janezo-95-zale345",
+      "status": "ok",
+      "diffCount": 46,
+      "bucket": "31+"
+    },
+    {
+      "slug": "rozemi-46-vuli505",
+      "status": "ok",
+      "diffCount": 46,
+      "bucket": "31+"
+    }
+  ]
+}

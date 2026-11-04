@@ -1,0 +1,5 @@
+@startuml
+(*) -[bold,#FFFF00]-> "this is
+on several line"
+-[#red]-> ok
+@enduml

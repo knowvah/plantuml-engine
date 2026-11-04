@@ -17,7 +17,13 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import type { Theme } from '../../core/theme.js';
 import { isTransparentColor, parseColor, type Paint } from '../../core/paint.js';
-import { STATE_BODY_BUCKET, STATE_BUCKET, stateBucketColor, stateBucketPaint } from './state-bucket-colors.js';
+import {
+  STATE_BODY_BUCKET,
+  STATE_BUCKET,
+  stateBucketColor,
+  stateBucketPaint,
+  STATE_NAME_BUCKET,
+} from './state-bucket-colors.js';
 
 /** Default box fill (`skinparam stateBackgroundColor`'s own terminal
  *  default) — jar-verified jocela-05-niba392 / votoki-67-gufa610 /
@@ -47,6 +53,13 @@ export function resolveStateFill(node: Pick<StateNodeGeo, 'color'>, fallback: Pa
 export function inlineBack(token: string): Paint {
   const paint = parseColor(token);
   return typeof paint === 'string' ? resolveColorToSvgHex(paint) : paint;
+}
+
+/** stdd T3d: `Style#getUFont` of the `state` style (`EntityImageStateCommon.java:72-80`, `InnerStateAutonom.java:92`,
+ *  `ClusterHeader.java:156`): `state { FontName }` (`skinparam state { FontName }`, `FromSkinparamToStyle.java:206`),
+ *  else the root's. `SvgGraphics#text` prints it only when it is not the root's (`SvgGraphics.java:726-727`). */
+export function stateFontFamily(theme: Pick<Theme, 'colors' | 'fontFamily'>): string {
+  return theme.colors.elements?.['state']?.fontFamily ?? theme.fontFamily;
 }
 
 /** mission G4 S10: `theme.colors.elements['state'].background` -- the SAME
@@ -180,7 +193,30 @@ export function resolveStateBodyFill(
  * the plain `theme.colors.border` default, matching {@link
  * resolveStateFillBucketed}'s own precedence shape.
  */
-export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype'>, theme: Theme): Paint {
+/**
+ * stdd T3a: the box's stroke attributes -- `Style.getStroke(colors)` (`Style.java:322-328`): the state's
+ * own `Colors` line stroke (`LinkStyle.java:98-108`), else the style's `LineThickness` (`width`).
+ */
+export function stateBorderStrokeAttrs(
+  node: Pick<StateNodeGeo, 'stateColors'>,
+  theme: Pick<Theme, 'colors'>,
+): { strokeWidth: number; strokeDasharray?: string } {
+  const own = node.stateColors?.lineStroke;
+  if (own === undefined) return { strokeWidth: stateLineThickness(theme) };
+  return {
+    strokeWidth: own.thickness,
+    ...(own.dash !== undefined ? { strokeDasharray: `${own.dash[0]},${own.dash[1]}` } : {}),
+  };
+}
+
+/** stdd T3b: the state style's `LineThickness` (`style-cascade-state.ts`), else the skin's `element` 0.5. */
+export function stateLineThickness(theme: Pick<Theme, 'colors'>): number {
+  return theme.colors.graph.stateLineThickness ?? STATE_BORDER_STROKE_WIDTH;
+}
+
+export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype' | 'stateColors'>, theme: Theme): Paint {
+  // stdd T3a: `EntityImageStateCommon.java:144-150` -- the state's own LINE colour first.
+  if (node.stateColors?.lineColor !== undefined) return node.stateColors.lineColor;
   if (node.stereotype !== undefined) {
     const override = theme.colors.graph.stateBorderColorByStereo?.[node.stereotype.toLowerCase()];
     if (override !== undefined) return resolveColorToSvgHex(override);
@@ -199,11 +235,16 @@ export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype'>, theme
  * matching {@link resolveStateFillBucketed}'s own precedence shape.
  */
 export function resolveStateFontColor(
-  node: Pick<StateNodeGeo, 'stereotype'>,
+  node: Pick<StateNodeGeo, 'stereotype' | 'stateColors'>,
   theme: Theme,
   fallback: string,
   zoneBucket?: string,
 ): string {
+  // stdd T3a: `Style.getFontConfiguration(set, colors)` (`Style.java:259-264`) takes the state's TEXT
+  // colour for the name (`EntityImageStateCommon.java:73-76`), never for the description.
+  if (zoneBucket === STATE_NAME_BUCKET && typeof node.stateColors?.textColor === 'string') {
+    return node.stateColors.textColor;
+  }
   if (node.stereotype !== undefined) {
     const override = theme.colors.graph.stateFontColorByStereo?.[node.stereotype.toLowerCase()];
     if (override !== undefined) return resolveColorToSvgHex(override);
@@ -290,8 +331,13 @@ export function resolveStateArrowHeadColor(theme: Pick<Theme, 'colors'>, fallbac
  * so the DEFAULT (no `<style>` RoundCorner) render stays byte-identical.
  */
 export function resolveStateBoxRadius(theme: Pick<Theme, 'colors'>, fallback: number): number {
-  const raw = theme.colors.graph.stateCascadeRoundCorner;
+  const raw = stateRoundCornerOf(theme);
   return raw !== undefined ? raw / 2 : fallback;
+}
+
+/** stdd T5a: the state style's `RoundCorner` (`style-cascade-state.ts`), else the bare `stateDiagram` read. */
+export function stateRoundCornerOf(theme: Pick<Theme, 'colors'>): number | undefined {
+  return theme.colors.graph.stateRoundCorner ?? theme.colors.graph.stateCascadeRoundCorner;
 }
 
 /**

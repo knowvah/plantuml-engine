@@ -1,0 +1,8 @@
+@startuml
+:This is **bold**
+This is //italics//
+This is ""monospaced""
+This is --stroked--
+This is __underlined__
+This is ~~waved~~;
+@enduml

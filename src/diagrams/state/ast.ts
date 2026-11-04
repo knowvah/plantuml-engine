@@ -7,6 +7,7 @@
 // core/command/JsonNode.ts (mission shared-seam-extraction D7).
 // ---------------------------------------------------------------------------
 
+import type { ScaleSpec } from '../../core/scale-command.js';
 import type { JsonNode } from '../../core/command/JsonNode.js';
 export type { JsonNode };
 
@@ -82,6 +83,12 @@ export interface State {
    * Each sub-array is one region. Empty unless `--` was present.
    */
   concurrentRegions: State[][];
+  /** stdd T6a: the `cpt1` tick each `--`/`||` burnt on pass ONE, parallel to `concurrentRegions`
+   *  (`StateDiagram#concurrentState` -> `gotoGroup` -> `new Entity`, `StateDiagram.java:194-208`).
+   *  `Entity#leafs()` walks a composite's quark children in that order (`Entity.java:649-657`), so a
+   *  region that became a leaf (`overrideImage`, `Entity.java:395-405`) is sorted among its siblings
+   *  by this tick in the cluster's DOT (`state-composite-cluster.ts#resolveLeafsInCreationOrder`). */
+  concurrentRegionCreationIndexes?: readonly number[];
   /** Orientation of the `--`/`||` line(s) that produced `concurrentRegions`
    *  (undefined until one is seen). Last-write-wins, mirroring upstream
    *  `Entity#setConcurrentSeparator`, called on every eligible visit.
@@ -94,6 +101,10 @@ export interface State {
    */
   transitions: Transition[];
   color?: string;
+  /** stdd T3d: the raw `[[...]]` token of the declaration (`CommandCreateState.java` / `CommandCreatePackageState
+   *  .java:181-186`, `arg.get(UrlBuilder.URL_KEY, 0)`); built into a `Url` with the theme's `topurl` at layout
+   *  (`state-sizing.ts#stateUrlOf`), as upstream reads `skinParam.getValue("topurl")` there. */
+  url?: string;
   /**
    * Raw `##[dotted|dashed|bold]colorname` line-color spec, stored
    * unparsed (matches `color`'s own precedent — neither field is
@@ -126,6 +137,12 @@ export interface State {
    * @see ~/git/plantuml/.../statediagram/command/CommandCreatePackage2.java
    */
   container?: 'frame';
+  /** stdd T6c: declared with a `{ }`/`begin` block (`state X {`, `frame X {`), a GROUP upstream even when
+   *  empty: `GroupMakerState#getImage` gives a childless group a plain `EntityImageState`
+   *  (`GroupMakerState.java:113-114`), while a childless LEAF under `hide empty description` is
+   *  `EntityImageStateEmptyDescription` (`GeneralImageBuilder.java:135-136`) -- bitaxo-18's `state A` against
+   *  `state B {}`. Read through `state-sizing.ts#hidesEmptyDescription`. */
+  explicitComposite?: true;
   /**
    * `true` when this composite exists ONLY as an auto-created, never
    * explicitly declared, ANCESTOR segment of a dotted id opened as a
@@ -269,6 +286,9 @@ export interface Transition {
    * @see ~/git/plantuml/.../svek/SvekEdge.java (SvekEdge.java:308-326, mergeLR/mergeTB)
    */
   linkNotePosition?: NotePosition;
+  /** stdd T5b: the `note on link #colour` BACK colour (`CucaNote#getColors`, `CommandFactoryNoteOnLink.java:217`),
+   *  `Style#getSymbolContext`'s override of the rose note's fill (`Style.java:371-373`). */
+  linkNoteColor?: string;
   /**
    * mission G4 S7 (mechanism 10, id-numbering creation-index gap): the
    * parse-time tick this transition's `lnkN` uid slot was assigned --
@@ -288,91 +308,9 @@ export interface Transition {
   creationIndex?: number;
 }
 
-// ---------------------------------------------------------------------------
-// Notes
-// ---------------------------------------------------------------------------
+import type { NotePosition, StateNote } from './ast-notes.js';
 
-export type NotePosition = 'left' | 'right' | 'top' | 'bottom';
-
-/**
- * A note attached to a state (`note <pos> of <State> : text`, or the
- * bracketed/`end note` multi-line forms) or freestanding (`note as N1 ...
- * end note`). State diagrams have no relationship syntax, so a freestanding
- * note's alias has no later reference site — it exists purely so the note
- * text is captured under a stable id.
- * @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnEntity.java
- * @see ~/git/plantuml/.../command/note/CommandFactoryNote.java
- */
-export interface StateNote {
-  /** Generated layout id (e.g. `__note_0`) for attached notes; the
-   *  user-declared alias for freestanding notes. */
-  id: string;
-  /** Host state id the note is attached to (attached notes only). */
-  target?: string;
-  /**
-   * True when `target` came from falling back to the last-created state
-   * rather than an explicit `of <State>` clause — mirrors the
-   * `CommandFactoryNote`(bare)/`CommandFactoryNoteOnEntity`(`of`) split in
-   * the class engine's note handling (see class ast.ts's `ClassNote`).
-   */
-  implicitTarget?: true;
-  position?: NotePosition;
-  /** Note body (may contain newlines for multi-line notes). */
-  text: string;
-  /**
-   * The composite scope active when the `note` command was parsed (`''` at
-   * the diagram's top level, else the owning composite's `State.id`) --
-   * mission A4 Phase L iter 9. Mirrors upstream's leaf placement: a note is
-   * `diagram.reallyCreateLeaf`d under `quarkInContext(...)`, which resolves
-   * relative to `getCurrentGroup()` -- the SAME "current parsing scope"
-   * convention `FlatLink.scopeId` (state-composite-detect.ts) already uses
-   * for `'[*]'` pseudostates. Drives which svek pass
-   * (state-composite-pass.ts) the note's own DOT node is emitted into.
-   * @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnEntity.java:329-330
-   * @see ~/git/plantuml/.../command/note/CommandFactoryNote.java:192
-   */
-  scopeId: string;
-  /**
-   * mission G4 S10 (notes never render): the parse-time creation tick
-   * (`nextCreationIndex`) this note's own entity was stamped with -- same
-   * raw-value contract as `State.creationIndex`/`Transition.creationIndex`
-   * (see those fields' own doc comments). For an ATTACHED note (`target !==
-   * undefined`), upstream burns an EXTRA tick immediately before this one
-   * (`CommandFactoryNoteOnEntity.java:327`'s `diagram.getUniqueSequence("GMN")`
-   * -- generates the note's internal quark name, `reallyCreateLeaf` then
-   * ticks AGAIN for the entity's own id) -- the burned tick's result is
-   * discarded (the `GMN<n>` string only ever reaches `data-qualified-name`,
-   * which `tests/oracle/svg-conformance/normalize.ts` strips before
-   * comparison entirely, so this port never threads the string itself, only
-   * the tick-count it consumes) -- jar-verified `gedude-95-subi666`/
-   * `xodazu-26-cube992` (`id="ent0005"` after 4 prior ticks: start-pseudo,
-   * state1, the `[*]-->state1` transition, the burned GMN tick). A
-   * freestanding note (`CommandFactoryNote`, has an explicit `as <alias>`)
-   * never generates a GMN name (`quarkInContext` uses the alias directly),
-   * so it consumes exactly ONE tick. `undefined` only for a hand-built test
-   * literal predating this mission.
-   * @see ~/git/plantuml/.../net/atmp/CucaDiagram.java#cpt1
-   */
-  creationIndex?: number;
-  /**
-   * mission G4 S12: the note's own raw `#color`/`#back:color;...` inline
-   * override -- the SAME raw grammar shape `State.color` uses (see that
-   * field's own doc comment), resolved to a hex fill at RENDER time via
-   * `renderer-note.ts`'s note-fill resolver (mirrors `state-render-
-   * colors.ts#resolveStateFill`'s exact FILL-only precedent -- a note's
-   * border/stroke is never overridden by this token, matching jar's
-   * `EntityImageNote` ctor, which only reads `getColors().getColor(BACK)`).
-   * A GRADIENT token (`#color1|color2`, `#color1-color2`, …) is NOT resolved
-   * this iteration -- `resolveColorToSvgHex` (the SAME limitation
-   * `state-render-colors.ts#resolveStateBucketBackground`'s own doc comment
-   * already names for the `skinparam`-bucket path) passes it through
-   * unresolved; full `Paint`/gradient threading for state notes AND state
-   * boxes is a separate, larger, not-yet-built mechanism (`plans/g4-state-
-   * svg/ledger.md` S12 queue).
-   * @see ~/git/plantuml/.../klimt/image/EntityImageNote.java (ctor)
-   */
-  color?: string;
-}
+export type { NotePosition, StateNote } from './ast-notes.js';
 
 // ---------------------------------------------------------------------------
 // Remove/restore directives
@@ -390,7 +328,9 @@ export interface StateNote {
  */
 export interface RemoveRestoreDirective {
   kind: 'removerestore';
-  action: 'remove' | 'restore';
+  /** stdd T5a: `hide`/`show` (`CommandHideShow2`, `CucaDiagram#hideOrShow2`) share the matcher but
+   *  keep the entity in the layout (`Entity#isHidden`, drawn through `UHidden`). */
+  action: 'remove' | 'restore' | 'hide' | 'show';
   /**
    * Raw target expression, interpreted by
    * state-directives.ts#computeRemovedIds (mirrors `HideOrShow#isApplyable`):
@@ -430,6 +370,12 @@ export interface StateDiagramAST {
    * @see ~/git/plantuml/.../statediagram/command/CommandHideEmptyDescription.java
    */
   hideEmptyDescription?: boolean;
+  /** stdd T5a: `hide X`/`show X` directives (`CucaDiagram.java:628-631` `hides2`), evaluated at
+   *  export like {@link removeDirectives} (`CucaDiagram.java:769-781`). */
+  hideDirectives?: RemoveRestoreDirective[];
+  /** stdd T4a: the `scale` directive (`core/scale-command.ts`), resolved at export against the
+   *  chrome-and-margin dimension (`TextBlockExporter.java:205-209`). */
+  scale?: ScaleSpec;
   /**
    * `left to right direction` / `top to bottom direction` (default is
    * top-to-bottom when absent) — global graphviz rankdir override.

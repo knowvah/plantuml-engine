@@ -1,0 +1,4 @@
+@startuml
+'!preprocessorV2
+Alice -> Bob : error expected %dirpath("foo")
+@enduml

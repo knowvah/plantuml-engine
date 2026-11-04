@@ -1,0 +1,11 @@
+@startuml
+skinparam colorArrowSeparationSpace 1
+start
+if(a?)then
+    :activity1;
+elseif(f?)then
+    :activity2;
+    -[#orange]->
+else
+endif
+@enduml

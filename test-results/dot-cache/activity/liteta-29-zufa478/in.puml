@@ -1,0 +1,11 @@
+@startuml
+
+!t1="this is t1\nthis is t2\nthis is t3\n"
+
+while (data available?)
+  :read data;
+  :generate diagrams;
+->t1;
+endwhile
+:foo;
+@enduml

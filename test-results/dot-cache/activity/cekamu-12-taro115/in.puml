@@ -1,0 +1,4 @@
+@startuml
+start
+:foo[1024];<<task>>
+@enduml

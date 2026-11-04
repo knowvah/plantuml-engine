@@ -1,0 +1,14 @@
+@startuml
+start
+repeat
+  :Test something;
+    if (Something went wrong?) then (no)
+      :OK;
+      break
+    endif
+    :Alert "Error with long text";
+repeat while (Something went wrong?) is (yes)
+->no;
+:Alert "Sucess";
+stop
+@enduml

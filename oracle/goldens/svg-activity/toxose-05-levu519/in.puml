@@ -1,0 +1,8 @@
+@startuml
+skinparam {
+   dpi 300
+}
+
+:eMail PDF to customer<sup>2</sup>;
+:Print PDF in BW<sup>3</sup>;
+@enduml

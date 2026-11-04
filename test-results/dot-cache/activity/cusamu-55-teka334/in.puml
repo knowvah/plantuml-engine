@@ -1,0 +1,7 @@
+@startuml
+start
+:AIS a;<<input>>
+note left : foo
+note right : bar
+stop 
+@enduml

@@ -1,0 +1,5 @@
+@startdot
+graph path {
+  a -- b -- c -- d -- e
+}
+@enddot

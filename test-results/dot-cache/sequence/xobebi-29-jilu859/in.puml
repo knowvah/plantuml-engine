@@ -1,0 +1,5 @@
+@startuml file4
+alice->bob:hello1
+newpage
+alice->bob:hello1
+@enduml

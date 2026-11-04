@@ -1,0 +1,35 @@
+digraph unix {
+nodesep=0.486111;
+ranksep=0.833333;
+remincross=true;
+searchsize=500;
+sh0016->sh0017[arrowtail=none,arrowhead=none,minlen=0,color="#00001D",style=invis];
+sh0023->sh0024[arrowtail=none,arrowhead=none,minlen=0,color="#000025",style=invis];
+sh0025->sh0026[arrowtail=none,arrowhead=none,minlen=0,color="#00002D",style=invis];
+sh0027 [shape=rect,label="",width=0.540799,height=1.027778,color="#00001B"];
+sh0028 [shape=rect,label="",width=1.102257,height=1.027778,color="#00001C"];
+subgraph cluster6p0 {label="";subgraph cluster6 {style=solid;color="#000006";labeljust="c";label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="59" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+subgraph cluster6p1 {label="";
+sh0010 [shape=rect,label="",width=1.177604,height=1.027778,color="#00000A"];
+sh0011 [shape=ellipse,label="",width=1.258898,height=0.358319,color="#00000B"];
+subgraph cluster12p0 {label="";subgraph cluster12 {style=solid;color="#00000C";labeljust="c";label=<<TABLE BGCOLOR="#00000D" FIXEDSIZE="TRUE" WIDTH="43" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+subgraph cluster12p1 {label="";
+sh0016 [shape=rect,label="",width=1.015972,height=1.027778,color="#000010"];
+sh0017 [shape=rect,label="",width=0.768056,height=1.027778,color="#000011"];
+sh0018 [shape=rect,label="",width=0.650174,height=1.027778,color="#000012"];
+subgraph cluster19p0 {label="";subgraph cluster19 {style=solid;color="#000013";labeljust="c";label=<<TABLE BGCOLOR="#000014" FIXEDSIZE="TRUE" WIDTH="46" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+subgraph cluster19p1 {label="";
+sh0023 [shape=ellipse,label="",width=1.444514,height=0.358319,color="#000017"];
+sh0024 [shape=ellipse,label="",width=1.107656,height=0.358319,color="#000018"];
+sh0025 [shape=ellipse,label="",width=1.537661,height=0.374199,color="#000019"];
+sh0026 [shape=ellipse,label="",width=1.497462,height=0.366159,color="#00001A"];
+
+}}}
+
+}}}
+
+}}}
+sh0016->sh0018[arrowtail=none,arrowhead=none,minlen=1,color="#000021",style=invis];
+sh0023->sh0025[arrowtail=none,arrowhead=none,minlen=1,color="#000029",style=invis];
+
+}

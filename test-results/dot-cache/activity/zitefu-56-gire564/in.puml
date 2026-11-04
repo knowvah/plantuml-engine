@@ -1,0 +1,21 @@
+@startuml
+fork
+-> Have something that is long\nwritten here as an\nexample;
+fork
+-> This is more\ntext that is\ntoo long for the arrow;
+:something;
+fork again
+:something else;
+endfork
+-> showing more text that is\ntoo long once again\nin this\nparticular\nscenario\nwhere this happens;
+:final state of\nthis fork;
+-> Have something that is long\nwritten here as an\nexample;
+fork
+-> This is more\ntext that is\ntoo long for the arrow;
+:something;
+fork again
+:something else;
+endfork
+-> This is more\nlong\ntext but notice\nhow it fits\nbecause it's after the\nendfork;
+endfork
+@enduml

@@ -115,37 +115,59 @@ export function sortSpecsByDocumentOrder<T extends { creationIndex?: number; kin
   return [...sortSpecsByCreationIndex(clusters), ...sortSpecsByCreationIndex(rest)];
 }
 
+/** stdd T6b: one sibling of a scope, to be pushed onto the pass in creation order.
+ *  `Entity#leafs()` returns a group's quark children in creation order (`Entity.java:649-657`) and
+ *  `GraphvizImageBuilder#printEntities` walks that list (`GraphvizImageBuilder.java:348-354`), so a `[*]`
+ *  made by a pass-TWO link (`CommandLinkStateCommon.java:70-72`) sits among the real leafs by its own
+ *  tick -- butigu-57's `Comp` start (tick 2) prints before its history (tick 11) and lands on the left. */
+export interface CreationOrdered {
+  readonly creationIndex?: number;
+  readonly run: () => void;
+}
+
+/** Runs `items` by ascending `creationIndex`; an item without one (a hand-built test state) keeps its
+ *  place after the ticked ones, in call order. */
+export function runInCreationOrder(items: readonly CreationOrdered[]): void {
+  const key = (i: CreationOrdered): number => i.creationIndex ?? Number.MAX_SAFE_INTEGER;
+  for (const item of [...items].sort((a, b) => key(a) - key(b))) item.run();
+}
+
+/** The scope's `[*]` pseudostates as {@link CreationOrdered} items: each pushes its node and hands its
+ *  spec to `onSpec` when run. */
+export function pseudoNodeItems(
+  scopeId: string,
+  transitions: readonly Transition[],
+  acc: PassAccumulator,
+  pseudoCreationIndex: ReadonlyMap<string, number>,
+  onSpec: (spec: GeoSpec) => void,
+): CreationOrdered[] {
+  const { start, end } = usesPseudo(transitions);
+  const { initialId, finalId } = scopedPseudoIds(scopeId);
+  const items: CreationOrdered[] = [];
+  const item = (id: string, kind: 'start' | 'end', size: number, stateKind: 'initial' | 'final'): CreationOrdered => {
+    const ci = pseudoCreationIndex.get(pseudoTickKey(scopeId, kind));
+    return {
+      ...(ci !== undefined ? { creationIndex: ci } : {}),
+      run: () => {
+        acc.nodes.push({ id, width: size, height: size, shape: 'circle' });
+        onSpec({ kind: 'state', id, stateKind, display: '', ...(ci !== undefined ? { creationIndex: ci } : {}) });
+      },
+    };
+  };
+  if (start) items.push(item(initialId, 'start', CIRCLE_START_SIZE, 'initial'));
+  if (end) items.push(item(finalId, 'end', CIRCLE_END_SIZE, 'final'));
+  return items;
+}
+
 export function addLocalPseudoNodes(
   scopeId: string,
   transitions: readonly Transition[],
   acc: PassAccumulator,
   pseudoCreationIndex: ReadonlyMap<string, number> = new Map(),
 ): GeoSpec[] {
-  const { start, end } = usesPseudo(transitions);
-  if (!start && !end) return [];
-  const { initialId, finalId } = scopedPseudoIds(scopeId);
   const specs: GeoSpec[] = [];
-  if (start) {
-    acc.nodes.push({ id: initialId, width: CIRCLE_START_SIZE, height: CIRCLE_START_SIZE, shape: 'circle' });
-    const ci = pseudoCreationIndex.get(pseudoTickKey(scopeId, 'start'));
-    specs.push({
-      kind: 'state',
-      id: initialId,
-      stateKind: 'initial',
-      display: '',
-      ...(ci !== undefined ? { creationIndex: ci } : {}),
-    });
-  }
-  if (end) {
-    acc.nodes.push({ id: finalId, width: CIRCLE_END_SIZE, height: CIRCLE_END_SIZE, shape: 'circle' });
-    const ci = pseudoCreationIndex.get(pseudoTickKey(scopeId, 'end'));
-    specs.push({
-      kind: 'state',
-      id: finalId,
-      stateKind: 'final',
-      display: '',
-      ...(ci !== undefined ? { creationIndex: ci } : {}),
-    });
+  for (const item of pseudoNodeItems(scopeId, transitions, acc, pseudoCreationIndex, (sp) => specs.push(sp))) {
+    item.run();
   }
   return specs;
 }

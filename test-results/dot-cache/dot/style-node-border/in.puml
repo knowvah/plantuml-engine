@@ -1,0 +1,12 @@
+@startdot
+<style>
+node {
+  BorderColor: #880000
+}
+</style>
+digraph G {
+  x [shape=box, label=Process]
+  y [shape=box, label=Result]
+  x -> y
+}
+@enddot

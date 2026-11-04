@@ -1,0 +1,12 @@
+@startuml
+|test|
+    :A;
+    note right
+        -s <start> range:[1, 14]
+        -e <end> range:[1, 14]
+        -d (debug). debug implies start > 13
+    end note
+    :B;
+|test2|
+    :C;
+@enduml

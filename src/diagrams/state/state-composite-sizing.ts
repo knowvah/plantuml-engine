@@ -20,6 +20,7 @@ import { splitStateDisplayLines } from './state-sizing.js';
 // `Display.create` (`Display.java:614`, `LineBreakStrategy.NONE`), so NO
 // `wrapWidth` here, unlike the leaf `create8` path.
 import { stateCreoleBlock, stateCreoleOpts } from './state-sizing-creole.js';
+import { stateFontFamily } from './state-render-colors.js';
 
 interface Dim {
   width: number;
@@ -69,7 +70,7 @@ export function measureAutonomWrapper(
   theme: Theme,
   measurer: StringMeasurer,
 ): AutonomWrapper {
-  const font: FontSpec = { family: theme.fontFamily, size: theme.fontSize };
+  const font: FontSpec = { family: stateFontFamily(theme), size: theme.fontSize };
   const text = measureLines(splitStateDisplayLines(state.display), font, measurer, theme);
   const bodyLines = (state.description ?? []).flatMap(splitStateDisplayLines);
   const attr = measureLines(bodyLines, font, measurer, theme);

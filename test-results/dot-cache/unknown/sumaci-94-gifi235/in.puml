@@ -1,0 +1,8 @@
+@startuml
+set separator .
+rectangle "hello" as a.hello
+
+rectangle "world" as a.world
+
+a.hello -> a.world
+@enduml

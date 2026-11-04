@@ -1,0 +1,8 @@
+@startuml
+digraph toto {
+compound=true;
+toto;
+titi;
+toto->titi; {titi;toto;rank=same}
+}
+@enduml

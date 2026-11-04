@@ -504,6 +504,9 @@ Phase 5m adds only a regex-to-railroad-IR translation layer on top.
 
 ## Phase 5g — DITAA
 
+> **Dropped by ruling 2026-11-04 (#111).** The library is LGPL-3.0, so it can't be ported into
+> this MIT package; see `DIVERGENCES.md`, "Ditaa is not included". Kept as a record.
+
 See **`planning/ditaa-deepdive.md`** for the full brief. This is the
 highest-complexity phase in Phase 5.
 

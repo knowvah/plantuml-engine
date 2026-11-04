@@ -1,0 +1,7 @@
+@startuml
+class toto1
+class toto2
+class toto3
+class toto4
+this is a strange line <b>bold</b>
+@enduml

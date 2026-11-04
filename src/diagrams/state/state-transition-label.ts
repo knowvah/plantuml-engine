@@ -20,9 +20,14 @@
 import type { Transition } from './ast.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
-import type { LabelInkBox, LinkLabelGeo, StateTextLine } from './state-geo-types.js';
+import type { LabelInkBox, StateTextLine, TransitionGeo } from './state-geo-types.js';
+import { labelDisplayBlock, measureStateLabelBox, type LabelStyle } from './state-label-style.js';
 import { transitionLabelText } from './state-dot-graph.js';
-import { computeReservedLabelBox, computeMergedLabelBox } from '../../core/edge-label-box.js';
+import {
+  CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT,
+  computeReservedLabelBox,
+  computeMergedLabelBox,
+} from '../../core/edge-label-box.js';
 // T4 (`note-on-link`, `state-declared-size-fix`): the SAME `EntityImageNoteLink`
 // dimension `state-dot-graph.ts#computeEdgeLabelBox`/`state-composite-edge-
 // label.ts#computeEdgeLabelBox` already feed the DOT graph -- reused here so
@@ -40,6 +45,7 @@ const LABEL_PERP = 12;
 // engine, per that module's header. Re-exported so `state-composite-edge-
 // label.ts` and any other state caller is unchanged.
 export { computeReservedLabelBox };
+export { labelStyleOf, measureStateLabelBox, type LabelStyle } from './state-label-style.js';
 
 /**
  * Closed-form centre->anchor conversion (spec.md §2, no fixture-conditional
@@ -65,7 +71,7 @@ export function transitionLabelAnchor(
   measurer: StringMeasurer,
   isSelfLoop: boolean,
 ): { x: number; y: number } {
-  return anchorFromCentre(centre, measureLabel(text, font, measurer, isSelfLoop));
+  return anchorFromCentre(centre, measureLabel(text, { font, measurer }, isSelfLoop));
 }
 
 /** The reserved box plus the first line's ascent -- everything both the
@@ -73,11 +79,25 @@ export function transitionLabelAnchor(
 interface MeasuredLabel {
   readonly box: ReservedLabelBox;
   readonly ascent: number;
+  /** stdd T4b: the first line's measured text height (`LimitFinder#drawText`'s `dim.getHeight()`). */
+  readonly firstLineHeight: number;
 }
 
-function measureLabel(text: string, font: FontSpec, measurer: StringMeasurer, isSelfLoop: boolean): MeasuredLabel {
-  const box = computeReservedLabelBox(text, font, measurer, isSelfLoop);
-  return { box, ascent: font.size - measurer.getDescent(font, box.lines[0]!) };
+function measureLabel(text: string, ctx: LabelMeasureCtx, isSelfLoop: boolean): MeasuredLabel {
+  const { font, measurer, style } = ctx;
+  // stdd T2c: `wrapWidth` is `skinParam.maxMessageSize()` (`SvekEdge.java:291-294`); the icon size is
+  // `classAttributeIconSize()` (`:202`).
+  const options = {
+    maxWidth: style?.maxWidth ?? 0,
+    classAttributeIconSize: style?.classAttributeIconSize ?? CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT,
+    ...(style?.sprites !== undefined ? { sprites: style.sprites } : {}),
+  };
+  const box = measureStateLabelBox(text, font, measurer, isSelfLoop, options);
+  return {
+    box,
+    ascent: font.size - measurer.getDescent(font, box.lines[0]!),
+    firstLineHeight: measurer.measure(box.lines[0]!, font).height,
+  };
 }
 
 /** `SvgGraphics.java:700-706`: the drawn `<text>`'s `textLength` is the
@@ -139,18 +159,26 @@ function svgPrecision(v: number): number {
  *  unfloored, box-anchored ink extent ({@link LabelInkBox}). */
 function labelBoxFields(
   anchor: { x: number; y: number },
-  { box, ascent }: MeasuredLabel,
+  { box, ascent, firstLineHeight }: MeasuredLabel,
 ): { width: number; height: number; inkBox: LabelInkBox } {
+  // `LimitFinder#drawEmpty` over `TextBlockMarged`'s own `UEmpty`: the
+  // marged block's top-left corner, and its UNfloored dimension.
+  const boxTop = anchor.y - ascent - box.marginLabel;
+  // stdd T4b: `TextBlockMarged#drawU` (`TextBlockMarged.java:79-87`) then draws the text, and
+  // `LimitFinder#drawText` (`LimitFinder.java:217-224`) reaches `baseline - (height - 1.5)`: above
+  // the marged box for a 13px label (11.5 over an ascent of 10.111 plus 1), lurage-50's 0.389.
+  // The text term is plain double arithmetic on the quantized anchor (jar: 17.5 - 11.5 = 6, then 38.389
+  // for the node), so only the box corner keeps `svgPrecision`.
+  const textTop = anchor.y - (firstLineHeight - 1.5);
+  const top = Math.min(svgPrecision(boxTop), textTop);
   return {
     width: box.reservedWidth,
     height: box.reservedHeight,
-    // `LimitFinder#drawEmpty` over `TextBlockMarged`'s own `UEmpty`: the
-    // marged block's top-left corner, and its UNfloored dimension.
     inkBox: {
       x: svgPrecision(anchor.x - box.marginLabel),
-      y: svgPrecision(anchor.y - ascent - box.marginLabel),
+      y: top,
       width: box.measuredWidth + 2 * box.marginLabel,
-      height: box.measuredHeight + 2 * box.marginLabel,
+      height: box.measuredHeight + 2 * box.marginLabel + (svgPrecision(boxTop) - top),
     },
   };
 }
@@ -196,18 +224,7 @@ interface LabelEdgeResult {
 
 /** {@link attachTransitionLabel}'s return shape -- shared by the inline-label
  *  and note-on-link arms (T4). */
-type TransitionLabelResult = {
-  text: string;
-  x: number;
-  y: number;
-  textLength?: number;
-  width?: number;
-  height?: number;
-  inkBox?: LabelInkBox;
-  noteLines?: readonly StateTextLine[];
-  linkLabel?: LinkLabelGeo;
-  noteFirst?: boolean;
-};
+type TransitionLabelResult = NonNullable<TransitionGeo['label']>;
 
 /** `font`+`measurer` as a single optional pair -- collapses both label arms'
  *  param count under this project's 5-param cap (mirrors `FlatNoteGeoCtx`'s
@@ -218,6 +235,20 @@ type TransitionLabelResult = {
 interface LabelMeasureCtx {
   readonly font: FontSpec;
   readonly measurer: StringMeasurer;
+  /** stdd T2c: absent on a hand-built call; the label then keeps its pre-T2c single `text`. */
+  readonly style?: LabelStyle;
+}
+
+/** `attachTransitionLabel`'s fourth argument: the font alone (older callers) or the whole context. */
+export type LabelFontOrCtx = FontSpec | LabelMeasureCtx;
+
+function labelCtxOf(
+  fontOrCtx: LabelFontOrCtx | undefined,
+  measurer: StringMeasurer | undefined,
+): LabelMeasureCtx | undefined {
+  if (fontOrCtx === undefined) return undefined;
+  if ('measurer' in fontOrCtx) return fontOrCtx;
+  return measurer === undefined ? undefined : { font: fontOrCtx, measurer };
 }
 
 // ---------------------------------------------------------------------------
@@ -293,8 +324,10 @@ function noteBoxFields(
   box: ReservedLabelBox,
   noteText: string,
   ctx: LabelMeasureCtx,
-): { width: number; height: number; inkBox: LabelInkBox; noteLines: readonly StateTextLine[] } {
+  noteColor?: string,
+): { width: number; height: number; inkBox: LabelInkBox; noteLines: readonly StateTextLine[]; noteColor?: string } {
   return {
+    ...(noteColor !== undefined ? { noteColor } : {}),
     width: box.reservedWidth,
     height: box.reservedHeight,
     inkBox: {
@@ -354,10 +387,10 @@ function attachMergedLinkLabel(
   merged: ReservedLabelBox,
   ctx: LabelMeasureCtx,
 ): TransitionLabelResult {
-  const label = measureLabel(labelText, ctx.font, ctx.measurer, false);
+  const label = measureLabel(labelText, ctx, false);
   const placed = placeLinkOperands(t, anchor, merged, label, ctx);
   const noteBox = measureNoteBox(t, undefined, ctx.font, ctx.measurer);
-  const note = noteBoxFields(placed.note, noteBox, t.linkNote!, ctx);
+  const note = noteBoxFields(placed.note, noteBox, t.linkNote!, ctx, t.linkNoteColor);
   const { x, y, width, height } = placed.labelBlock;
   return {
     text: labelText,
@@ -391,7 +424,7 @@ function attachNoteOnLinkLabel(
   if (anchor === undefined) return undefined;
   if (measured === undefined || ctx === undefined) return { text, x: anchor.x, y: anchor.y };
   if (labelText !== undefined) return attachMergedLinkLabel(t, labelText, anchor, measured, ctx);
-  return { text, x: anchor.x, y: anchor.y, ...noteBoxFields(anchor, measured, t.linkNote!, ctx) };
+  return { text, x: anchor.x, y: anchor.y, ...noteBoxFields(anchor, measured, t.linkNote!, ctx, t.linkNoteColor) };
 }
 
 // ---------------------------------------------------------------------------
@@ -417,7 +450,9 @@ function attachInlineTransitionLabel(
   // pre-existing perpendicular-only, no-box shape (D1's own "absent falls
   // back unchanged" spirit, generalized to a missing measurer rather than
   // just a missing layout position).
-  const measured = ctx !== undefined ? measureLabel(labelText, ctx.font, ctx.measurer, isSelfLoop) : undefined;
+  const measured = ctx !== undefined ? measureLabel(labelText, ctx, isSelfLoop) : undefined;
+  // stdd T2c: the drawn lines, only where a style is known (the two real pipelines).
+  const display = ctx?.style !== undefined ? labelDisplayBlock(labelText, ctx, ctx.style) : {};
 
   // D1: gate on `labelX !== undefined` specifically, never truthiness (0 is
   // a valid coordinate) -- `labelY` is present together with `labelX`
@@ -431,6 +466,8 @@ function attachInlineTransitionLabel(
       y: anchor.y,
       ...drawnTextLength(labelText, measured, ctx!),
       ...labelBoxFields(anchor, measured),
+      ...display,
+      ascent: measured.ascent,
     };
   }
 
@@ -441,7 +478,8 @@ function attachInlineTransitionLabel(
   // convention rather than a second one.
   const boxFields = measured !== undefined ? labelBoxFields(legacy, measured) : {};
   const lengthField = measured !== undefined ? drawnTextLength(labelText, measured, ctx!) : {};
-  return { text: labelText, x: legacy.x, y: legacy.y, ...lengthField, ...boxFields };
+  const ascentField = measured !== undefined ? { ascent: measured.ascent } : {};
+  return { text: labelText, x: legacy.x, y: legacy.y, ...lengthField, ...boxFields, ...display, ...ascentField };
 }
 
 /** Attach a transition's label. D1: when the layout result placed the label
@@ -463,12 +501,12 @@ export function attachTransitionLabel(
   t: Transition,
   points: ReadonlyArray<{ x: number; y: number }>,
   edgeResult: LabelEdgeResult | undefined,
-  font: FontSpec | undefined,
-  measurer: StringMeasurer | undefined,
+  fontOrCtx: LabelFontOrCtx | undefined,
+  measurer?: StringMeasurer,
 ): TransitionLabelResult | undefined {
   const labelText = transitionLabelText(t);
   if (labelText === undefined && t.linkNote === undefined) return undefined;
-  const ctx = font !== undefined && measurer !== undefined ? { font, measurer } : undefined;
+  const ctx = labelCtxOf(fontOrCtx, measurer);
   if (t.linkNote !== undefined) return attachNoteOnLinkLabel(t, labelText, points, edgeResult, ctx);
   return attachInlineTransitionLabel(t, labelText!, points, edgeResult, ctx);
 }

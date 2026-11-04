@@ -133,11 +133,15 @@ describe('addLevelEdges — "-up->" transition (direction: "up")', () => {
     expect(findEdge(graph, 'B', 'A')!.attributes?.minLen).toBe(findEdge(unreversedGraph, 'A', 'B')!.attributes?.minLen);
   });
 
-  it('TransitionGeo.from/to stay semantic source->target despite the DOT swap', () => {
+  it('TransitionGeo runs target -> source and is inverted (stdd T2b: `Link#getInv`, Link.java:145-151)', () => {
+    // `CommandLinkStateCommon.java:205-206` replaces the link by `getInv()`: `cl1` is B, `cl2` is A,
+    // the decors are swapped (`LinkType.java:131-133`) and the path keeps DOT order, so the renderer
+    // draws the head at the start (`SvekEdge.java:680-684`) and names it `B-backto-A`.
     const geo = layoutState(ast, theme, measurer);
-    const t = geo.transitions.find((tr) => tr.from === 'A' && tr.to === 'B');
-    expect(t, 'TransitionGeo must still report from=A (source) to=B (target)').toBeDefined();
-    expect(geo.transitions.find((tr) => tr.from === 'B' && tr.to === 'A')).toBeUndefined();
+    const t = geo.transitions.find((tr) => tr.from === 'B' && tr.to === 'A');
+    expect(t, 'TransitionGeo must report from=B (cl1, the target) to=A (cl2)').toBeDefined();
+    expect(t?.inverted).toBe(true);
+    expect(geo.transitions.find((tr) => tr.from === 'A' && tr.to === 'B')).toBeUndefined();
   });
 
   it('the target (B) is ranked above the source (A) — B.y < A.y', () => {
@@ -149,11 +153,11 @@ describe('addLevelEdges — "-up->" transition (direction: "up")', () => {
     expect(b!.y).toBeLessThan(a!.y);
   });
 
-  it('the arrowhead-side endpoint (points[length-1]) still lands at the semantic target (B)', () => {
+  it('the head-side endpoint (points[0] of an inverted link, SvekEdge.java:680-684) lands at the target (B)', () => {
     const geo = layoutState(ast, theme, measurer);
-    const t = geo.transitions.find((tr) => tr.from === 'A' && tr.to === 'B')!;
+    const t = geo.transitions.find((tr) => tr.from === 'B' && tr.to === 'A')!;
     const b = geo.states.find((s) => s.id === 'B')!;
-    const last = t.points[t.points.length - 1]!;
+    const last = t.points[0]!;
     const bCenterY = b.y + b.height / 2;
     // The trimmed spline endpoint sits on B's boundary, not its center --
     // assert proximity (within B's own bounding box), not exact equality.
@@ -239,8 +243,11 @@ describe('buildLevelTransitionGeos — crossStart/circleEnd survive the swap unc
       transitions: [makeTransition('A', 'B', { direction: 'up', length: 2, crossStart: true, circleEnd: true })],
     };
     const geo = layoutState(ast, theme, measurer);
-    const t = geo.transitions.find((tr) => tr.from === 'A' && tr.to === 'B');
+    // stdd T2b: the geo is the inverted link (`B` first); the flags stay as written, and the renderer
+    // reads the decor sides off `LinkType#getInversed` (`state-link-style.ts`).
+    const t = geo.transitions.find((tr) => tr.from === 'B' && tr.to === 'A');
     expect(t).toBeDefined();
+    expect(t!.inverted).toBe(true);
     expect(t!.crossStart).toBe(true);
     expect(t!.circleEnd).toBe(true);
   });
@@ -288,7 +295,7 @@ describe('addLevelEdges — "[*] -up-> Composite" (kotagu-43-miza629 shape)', ()
     expect(reversedEdge!.attributes?.minLen).toBe(1);
   });
 
-  it('TransitionGeo still reports from=[*]-anchor (semantic source) to=SubComposite (semantic target)', () => {
+  it('TransitionGeo is the inverted link: from=SubComposite (cl1 after getInv) to the [*] anchor', () => {
     const geo = layoutState(ast, theme, measurer);
     const sub = geo.states.find((s) => s.id === 'CompositeState')?.children.find((c) => c.id === 'SubComposite');
     expect(sub).toBeDefined();
@@ -297,7 +304,8 @@ describe('addLevelEdges — "[*] -up-> Composite" (kotagu-43-miza629 shape)', ()
     // transition-nesting field, StateNodeGeo).
     const composite = geo.states.find((s) => s.id === 'CompositeState');
     expect(composite).toBeDefined();
-    const t = composite!.transitions?.find((tr) => tr.to === 'SubComposite');
-    expect(t, 'expected the [*]->SubComposite transition, semantic order preserved').toBeDefined();
+    const t = composite!.transitions?.find((tr) => tr.from === 'SubComposite');
+    expect(t, 'expected the inverted [*]->SubComposite transition, SubComposite first').toBeDefined();
+    expect(t?.inverted).toBe(true);
   });
 });

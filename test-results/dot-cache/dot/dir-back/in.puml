@@ -1,0 +1,7 @@
+@startdot
+digraph G {
+  a -> b [dir=back]
+  b -> c
+  c -> d [dir=back]
+}
+@enddot

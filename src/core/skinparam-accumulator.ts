@@ -11,6 +11,7 @@
  */
 
 import type { Paint, Gradient } from './paint.js';
+import type { HorizontalAlignment } from './klimt/geom/HorizontalAlignment.js';
 import type { RootLengthAdjust } from './svg.js';
 import type { ElementColors, PackageStyleSetting } from './theme.js';
 import type { ActorStyle } from './skin/ActorStyle.js';
@@ -134,6 +135,10 @@ export interface SkinparamAccumulator {
   classBorderThicknessByStereo: Record<string, number> | undefined;
   /** gtc T3: `skinparam arrow<<tag>> { Color X;line.Bold() }` -- see `skinparam-arrow-stereo.ts`. */
   descriptionArrowTagCascade: Record<string, { color?: string; thickness?: number; fontColor?: string }> | undefined;
+  /** stdd T2a: the same `skinparam arrow<<tag>>` writes, as a state link reads them. */
+  stateArrowTagCascade: Record<string, { color?: string; thickness?: number; fontColor?: string }> | undefined;
+  /** stdd T2c: `skinparam stateMessageAlignment` -- see `theme-graph-colors-a.ts#stateMessageAlignment`. */
+  stateMessageAlignment: HorizontalAlignment | undefined;
   /** CDD T6FU: `skinparam classBackgroundColor<<stereo>>` (and the nested
    *  `skinparam class { <<stereo>> { BackgroundColor X } }` form -- one
    *  normalised key, `SkinParam#cleanForKeySlow` java:285-300). Stored RAW
@@ -182,6 +187,8 @@ export interface SkinparamAccumulator {
   classFontColorByStereo: Record<string, string> | undefined;
   stateBorderColorByStereo: Record<string, string> | undefined;
   stateBackgroundColorByStereo: Record<string, string> | undefined;
+  /** stdd T3d: `ActivityBarColor<<stereo>>` (`skinparam-stereo-keys.ts`). */
+  activityBarColorByStereo: Record<string, string> | undefined;
   stateFontColorByStereo: Record<string, string> | undefined;
   stateFontSizeByStereo: Record<string, number> | undefined;
   arrowThickness: number | undefined;
@@ -350,6 +357,8 @@ const SCALAR_FIELD_NAMES = [
   'classBorderThickness',
   'classBorderThicknessByStereo',
   'descriptionArrowTagCascade',
+  'stateArrowTagCascade',
+  'stateMessageAlignment',
   'classBackgroundColorByStereo',
   'classBorderColorByStereo',
   'classFontColorByStereo',
@@ -364,6 +373,7 @@ const SCALAR_FIELD_NAMES = [
   'classFontSizeByStereo',
   'stateBorderColorByStereo',
   'stateBackgroundColorByStereo',
+  'activityBarColorByStereo',
   'stateFontColorByStereo',
   'stateFontSizeByStereo',
   'arrowThickness',

@@ -1,0 +1,7 @@
+@startuml
+:A;
+repeat :foo; <<#red>>
+:D; <<#blue>>
+repeat while (C)
+:D;
+@enduml

@@ -1,0 +1,4 @@
+{
+  "$comment": "Manifest fixtures (tests/visual/data/*.json) that have NO jar oracle under test-results/dot-cache/<any bucket>/<slug>/, with the reason. Keys are `<manifest bucket>/<slug>`. A reason must name what the jar did (no SVG written, two pages, timed out, ...) -- not what we think of the fixture. Gated by tests/oracle/svg-conformance/oracle-coverage.test.ts: a manifest row with neither an oracle nor an entry here fails it, and so does an entry whose row has gained an oracle or no longer exists (plans/oracle-gap-capture/decisions.md D3).",
+  "reasons": {}
+}

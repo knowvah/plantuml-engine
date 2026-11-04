@@ -1,0 +1,116 @@
+{
+  "generatedAt": "2026-11-04T01:06:40.099Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "wire",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "bexone-92-bebe715",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "canabi-52-socu972",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "cumilu-38-baki326",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "dogoso-52-labe953",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "fasuke-91-bape114",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "kipila-12-loko421",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "losoli-66-kuse559",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "lubino-17-vito891",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "lucitu-35-moge613",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "migaki-17-jori275",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "mugaxe-80-biva973",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rabale-11-xaki272",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "savuza-21-jezi832",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "sekuju-09-xuca586",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "siladi-93-zovu930",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "tixeta-94-gopu131",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "turemi-03-luso996",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "xecane-35-sojo379",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    }
+  ]
+}

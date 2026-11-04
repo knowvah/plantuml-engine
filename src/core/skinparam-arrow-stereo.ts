@@ -29,6 +29,10 @@ export function applyArrowColorByStereo(acc: SkinparamAccumulator, key: string, 
       ...acc.descriptionArrowTagCascade,
       [tag]: { ...acc.descriptionArrowTagCascade?.[tag], fontColor },
     };
+    acc.stateArrowTagCascade = {
+      ...acc.stateArrowTagCascade,
+      [tag]: { ...acc.stateArrowTagCascade?.[tag], fontColor },
+    };
     return true;
   }
   const m = ARROW_COLOR_STEREO_RE.exec(key);
@@ -43,6 +47,8 @@ export function applyArrowColorByStereo(acc: SkinparamAccumulator, key: string, 
       ...acc.descriptionArrowTagCascade,
       [tag]: { ...acc.descriptionArrowTagCascade?.[tag], ...entry },
     };
+    // stdd T2a: a `skinparam arrow<<tag>>` has no diagram scope; a state link reads it too.
+    acc.stateArrowTagCascade = { ...acc.stateArrowTagCascade, [tag]: { ...acc.stateArrowTagCascade?.[tag], ...entry } };
   }
   return true;
 }

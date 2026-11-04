@@ -316,8 +316,9 @@ describe('SI30 D2/D3 — <sup>/<sub> per-run size+dy (T5)', () => {
     const svg = renderNormal(geo, theme);
     // jar draws the sup at x=42.8 (12 + the 30.8px tab stop, in.svg) -- unaffected by
     // this task, already jar-exact since T6. The `<text>` now carries the
-    // RUN's own font-size (11), not the line's shared 14.
-    expect(svg).toContain('<text x="42.8" y="45.222" font-size="11" fill="#000">1</text>');
+    // RUN's own font-size (11), not the line's shared 14. stdd T4b: the baseline is
+    // jar's 123.556 - 79 (the `leafGeo` shift): the descent term uses the UNMUTED 14.
+    expect(svg).toContain('<text x="42.8" y="44.556" font-size="11" fill="#000">1</text>');
   });
 
   it('exposant-03-state: H<sub>2</sub>O draws the SUB run at its own muted size/width, and the flanking NORMAL runs stay jar-exact (dy=-3)', () => {
@@ -347,13 +348,12 @@ describe('SI30 D2/D3 — <sup>/<sub> per-run size+dy (T5)', () => {
     // baseline below, so only the y values differ from the cited jar ones.
     expect(svg).toContain('<text x="12" y="46.889" font-size="14" fill="#000">H</text>');
     expect(svg).toContain('<text x="28.269" y="46.889" font-size="14" fill="#000">O</text>');
-    expect(svg).toContain('<text x="22.15" y="51.222" font-size="11" fill="#000">2</text>');
-    // The SUB run's OWN baseline (51.222) is jar's 129.556-79=50.556 PLUS a
-    // documented, bounded ~0.667px residual (`renderer-box.ts#runBaseline`'s
-    // own doc comment: `run.size` is MUTED where Sea's true reference
-    // descent is unmuted, a fixed mute-delta/4.5 this seam cannot close
-    // without a field the locked `CreoleTextRun` contract doesn't expose).
-    expect(svg).toContain('y="51.222"');
+    // stdd T4b: jar's 129.556 - 79 -- the descent term of the baseline is the UNMUTED 14/4.5.
+    expect(svg).toContain('<text x="22.15" y="50.556" font-size="11" fill="#000">2</text>');
+    // The SUB run's OWN baseline is jar's 129.556-79=50.556 exactly: the seam
+    // now carries `CreoleTextRun.unmutedSize` (stdd T4b), so `renderer-box.ts
+    // #runBaseline`'s descent term is Sea's unmuted 14/4.5, not the muted 11/4.5.
+    expect(svg).not.toContain('y="51.222"');
   });
 
   it('exposant-03-state: a nested <size:20><sup> draws at the CASCADED-then-muted size (20 -> 17), not the line font', () => {
@@ -369,6 +369,7 @@ describe('SI30 D2/D3 — <sup>/<sub> per-run size+dy (T5)', () => {
     expect(line.runs[0]!.width).toBeCloseTo(8.5, 5);
 
     const svg = renderNormal(geo, theme);
-    expect(svg).toContain('<text x="12" y="49.889" font-size="17" fill="#000">x</text>');
+    // stdd T4b: the unmuted 20/4.5 descent term, 3/4.5 above the muted reconstruction.
+    expect(svg).toContain('<text x="12" y="49.222" font-size="17" fill="#000">x</text>');
   });
 });

@@ -19,6 +19,10 @@
  */
 
 import type { StateKind, Transition } from './ast.js';
+import type { StateColors } from './state-colors.js';
+import type { JsonLeafLayout } from './state-json-layout.js';
+import type { StateUrl } from './state-geo-types.js';
+import type { LabelStyle } from './state-transition-label.js';
 import type { Theme } from '../../core/theme.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { DotLayoutResult, DotInputNode, DotInputEdge, DotInputCluster } from '../../core/graph-layout.js';
@@ -80,6 +84,8 @@ export interface PassAccumulator {
    *  pre-existing perpendicular-only, no-box formula when they're absent. */
   labelFont?: FontSpec;
   measurer?: StringMeasurer;
+  /** stdd T2c: `labelStyleOf(theme)`, the label block's alignment, wrap width and icon size. */
+  labelStyle?: LabelStyle;
 }
 
 export interface DiagramCtx {
@@ -179,8 +185,16 @@ export type GeoSpec =
       headerLines?: readonly StateTextLine[];
       /** G9/T7 -- see `StateNodeGeo.borderPointLabelHeight`'s own doc comment. */
       borderPointLabelHeight?: number;
+      /** mission G4 S5 -- see `StateNodeGeo.emptyDescription`; carried into the pass geometry since stdd T6c. */
+      emptyDescription?: true;
       bodyLines?: readonly StateTextLine[];
       color?: string;
+      /** stdd T3a -- see `StateNodeGeo.stateColors`. */
+      stateColors?: StateColors;
+      /** stdd T3d -- see `StateNodeGeo.url`. */
+      url?: StateUrl;
+      /** stdd T5a -- see `StateNodeGeo.jsonLayout`. */
+      jsonLayout?: JsonLeafLayout;
       /** mission G4 S9 -- see `StateNodeGeo.stereotype`'s own doc comment. */
       stereotype?: string;
       /** mission G4 S7 -- see `StateNodeGeo.creationIndex`'s own doc comment. */
@@ -208,14 +222,19 @@ export type GeoSpec =
        *  composite-cluster.ts#buildConcurrentRegionLeaf`), which upstream
        *  never wraps in `InnerStateAutonom`'s own title/border box at all
        *  (`GroupMakerState.getImage()` returns a region's raw graph image
-       *  DIRECTLY) -- `renderer-composite-box.ts` falls back to the
-       *  pre-mechanism-6 dashed-rect shape whenever `headerLines` is
-       *  `undefined`, which is also correct for THIS case by construction
-       *  (a named, deliberately-unchanged pre-existing approximation, not a
-       *  new gap -- see that module's own doc comment). */
+       *  DIRECTLY) -- see `regionLeaf`. */
       headerLines?: readonly StateTextLine[];
+      /** stdd T6a: a `--` region re-entering a cluster's pass as a leaf. Its image is the raw
+       *  `SvekResult` (`GroupMakerState.java:116-117`), whose `drawU` opens no group and draws no
+       *  box of its own (`SvekResult.java:69-95`): `renderer.ts#renderNodeWrapped` draws the
+       *  content alone. */
+      regionLeaf?: true;
       bodyLines?: readonly StateTextLine[];
       color?: string;
+      /** stdd T3d -- see `StateNodeGeo.url`. */
+      url?: StateUrl;
+      /** stdd T3a -- see `StateNodeGeo.stateColors`. */
+      stateColors?: StateColors;
       /** mission G4 S9 -- see `StateNodeGeo.stereotype`'s own doc comment. */
       stereotype?: string;
       /** mission G4 S6, mechanism 13: for a CONCURRENT-region-owning
@@ -247,6 +266,13 @@ export type GeoSpec =
       display: string;
       children: readonly GeoSpec[];
       creationIndex?: number;
+      /** stdd T3a -- `Cluster.java:452-456,480-484` reads the group's `Colors`. */
+      stateColors?: StateColors;
+      /** stdd T1d: a `GroupType.PACKAGE` group (`State.autoPhantom`), whose title
+       *  `ClusterHeader.java:161-162` styles `package { title }` -- bold. */
+      packageTitle?: true;
+      /** stdd T6c -- see `StateNodeGeo.usymbol`: `frame X {` draws through `ClusterDecoration`. */
+      usymbol?: 'frame';
       /** G5 C3, mechanism 16 shape half: `DotInputCluster.id` this
        *  composite's own subgraph was assigned (`state-composite-cluster.ts
        *  #resolveClusterComposite`'s `clusterId`) -- lets `state-composite-
@@ -258,21 +284,24 @@ export type GeoSpec =
        *  `resolveClusterComposite`); optional only for a hand-built test
        *  geometry predating this mission. */
       clusterId?: string;
-      /** G5 C3: this composite's own measured single-line title width
-       *  (`measureClusterTitle`) -- present ONLY when `clusterHeaderHeight`
-       *  is (see its own doc comment); `undefined` otherwise (pre-existing
-       *  dashed-rect fallback, unchanged). */
-      titleWidth?: number;
-      /** G5 C3, mechanism 16 shape half: jar-verified single-line-title
-       *  header-to-divider height (`CLUSTER_HEADER_HEIGHT`,
-       *  state-composite-cluster.ts's own doc comment) -- present ONLY when
-       *  this iteration's eligibility gate held (single-line title, default
-       *  font-size, no border-point children). `state-composite-geo.ts
-       *  #materializeCluster` reads the pass's real `DotLayoutResult
-       *  .clusters` bbox and renders the jar-native cluster shape
-       *  (`renderer-composite-box.ts#renderClusterMeasured`) when this is
-       *  set, instead of the pre-C3 `boundingBox(children)` approximation +
-       *  dashed-rect fallback. */
+      /** stdd T3c: `ClusterHeader#getTitleBlock` (`ClusterHeader.java:151-170`), the title's
+       *  creole lines; set together with `clusterHeaderHeight`. */
+      headerLines?: readonly StateTextLine[];
+      /** stdd T3c: `Entity#getStateDescription` (`Entity.java:610-632`), the group's own
+       *  `comp1: text` lines -- the `RoundedContainer`'s centre zone (`Cluster.java:486-487`). */
+      bodyLines?: readonly StateTextLine[];
+      /** stdd T3c: the group's `ColorType.BACK` (`Cluster.java:459-461`): north, centre and south. */
+      color?: string;
+      /** stdd T3d: `group.getUrl99()` (`Cluster.java:338-342`). */
+      url?: StateUrl;
+      /** stdd T3c: `group.getStereotype()` -- `withTOBECHANGED` on every zone style and `isWithOOSymbol`
+       *  (`Cluster.java:464-470,505-507`). */
+      stereotype?: string;
+      /** stdd T3c: `Cluster.java:489-490` `nameHeight` = the title block's height + `MARGIN`.
+       *  `state-composite-geo.ts#materializeCluster` reads the pass's real `DotLayoutResult.clusters`
+       *  bbox and renders the jar-native cluster shape (`renderer-composite-box.ts
+       *  #renderClusterMeasured`) when this is set, instead of the `boundingBox(children)`
+       *  approximation + dashed-rect fallback. */
       clusterHeaderHeight?: number;
       /** G5 C3: title baseline vertical margin for the border-point
        *  family ONLY (`BORDER_POINT_TITLE_BASELINE_MARGIN`); plain clusters

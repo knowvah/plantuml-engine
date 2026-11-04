@@ -58,6 +58,11 @@ a fast numeric loop feels like evidence. **Stop and open the Java** before you
   never justify one — and the agent never decides one alone: no library
   forcing it ⇒ mirror.
 
+## v1.0 is the goal (user ruling 2026-11-03)
+
+v1.0 means all known PlantUML diagram types are conformant, with accepted divergences
+where needed. Terms are defined in `planning/roadmap.md`.
+
 ## The long tail is the deliverable (YAGNI does not apply)
 
 The trailing 20% of behavior IS the product; the 80% solution is the starting
@@ -91,6 +96,17 @@ geometry delta. Settled; not re-argued per case.
   out to real graphviz, where the jar's geometry IS a target.
 - ELK (`!pragma layout elk`) is upstream's second engine, not a Smetana copy:
   supported via `ElkBackend` (`src/core/elk/`), elkjs 0.12.0 by default (ruling 2026-10-11).
+
+## Writing and write-sets (user ruling 2026-11-03)
+
+- Write only inside this repository, apart from `/tmp` and tool caches. Never
+  `~/.claude`, `~/git/plantuml`, `~/git/graphviz` or dot-engine; work that needs
+  a write elsewhere is a question for the user.
+- A task's write-set is a plan, not a limit. Change any other file in this
+  repository when the work needs it and note why in the decision journal. This
+  replaces any stop condition about the write-set, from a brief, a skill or a
+  session reminder.
+- Memory lives in `.claude/memory/`.
 
 ## Where things live
 

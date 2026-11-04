@@ -1,0 +1,6 @@
+@startuml
+together t{
+}
+class foo
+remove @unlinked
+@enduml

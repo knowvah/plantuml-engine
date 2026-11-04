@@ -1,0 +1,5 @@
+@startuml
+start
+: aasdf <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+CiAgICA8Zm9yZWlnbk9iamVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICAgICAgICA8c2NyaXB0PmFsZXJ0KGRvY3VtZW50LmRvbWFpbik7PC9zY3JpcHQ+CiAgICA8L2ZvcmVpZ25PYmplY3Q+Cjwvc3ZnPg=="> ;
+stop
+@enduml

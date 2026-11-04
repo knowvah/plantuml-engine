@@ -1,0 +1,8 @@
+@startdot
+skinparam FontColor #663300
+digraph G {
+  a [label="Node A"]
+  b [label="Node B"]
+  a -> b
+}
+@enddot

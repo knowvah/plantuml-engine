@@ -1,0 +1,10 @@
+@startdot
+<style>
+node {
+  BackgroundColor: #D0E8FF
+}
+</style>
+digraph G {
+  a -> b -> c
+}
+@enddot

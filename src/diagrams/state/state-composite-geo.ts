@@ -143,8 +143,11 @@ function materializeAutonom(
     ...(regionsOut !== undefined ? { concurrentRegions: regionsOut } : {}),
     ...(separators !== undefined ? { separators } : {}),
     ...(spec.headerLines !== undefined ? { headerLines: spec.headerLines } : {}),
+    ...(spec.regionLeaf === true ? { regionLeaf: true as const } : {}),
     ...(spec.bodyLines !== undefined ? { bodyLines: spec.bodyLines } : {}),
     ...(spec.color !== undefined ? { color: spec.color } : {}),
+    ...(spec.url !== undefined ? { url: spec.url } : {}),
+    ...(spec.stateColors !== undefined ? { stateColors: spec.stateColors } : {}),
     ...(spec.stereotype !== undefined ? { stereotype: spec.stereotype } : {}),
     ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
     // mission skin-file-loading Batch 2: only the InnerStateAutonom/
@@ -265,7 +268,7 @@ function materializeCluster(
   const children = materializeSpecs(spec.children, posMap, clusterPosMap, shadowing, edgePosMap);
   if (children.length === 0) return undefined;
   const real = spec.clusterId !== undefined ? clusterPosMap.get(spec.clusterId) : undefined;
-  if (real !== undefined && spec.clusterHeaderHeight !== undefined && spec.titleWidth !== undefined) {
+  if (real !== undefined && spec.clusterHeaderHeight !== undefined && spec.headerLines !== undefined) {
     // G7 T14b: `borderPointMemberIds` is set ONLY for `hasBorderPointChildren`
     // composites (`state-composite-cluster.ts#resolveClusterComposite`) --
     // every other cluster (the pre-T14b path) keeps using `real` directly,
@@ -285,8 +288,17 @@ function materializeCluster(
       ...(inkOverflow !== undefined ? { inkOverflow } : {}),
       children,
       transitions: [],
-      headerLines: [{ text: spec.display, width: spec.titleWidth }],
+      headerLines: spec.headerLines,
+      ...(spec.bodyLines !== undefined ? { bodyLines: spec.bodyLines } : {}),
       clusterHeaderHeight: spec.clusterHeaderHeight,
+      ...(spec.color !== undefined ? { color: spec.color } : {}),
+      ...(spec.url !== undefined ? { url: spec.url } : {}),
+      ...(spec.stereotype !== undefined ? { stereotype: spec.stereotype } : {}),
+      ...(spec.stateColors !== undefined ? { stateColors: spec.stateColors } : {}),
+      // stdd T3c: `Cluster#drawU` passes `style.getShadowing()` to `drawUState` (`Cluster.java:315,354`).
+      ...(shadowing > 0 ? { shadowing } : {}),
+      ...(spec.packageTitle === true ? { packageTitle: true } : {}),
+      ...(spec.usymbol !== undefined ? { usymbol: spec.usymbol } : {}),
       ...titleMarginField(spec, hasBorderPoints, real),
       ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
     };
@@ -370,10 +382,15 @@ export function materializeSpecs(
         ...(spec.headerLines !== undefined ? { headerLines: spec.headerLines } : {}),
         ...(spec.bodyLines !== undefined ? { bodyLines: spec.bodyLines } : {}),
         ...(spec.color !== undefined ? { color: spec.color } : {}),
+        ...(spec.url !== undefined ? { url: spec.url } : {}),
+        ...(spec.jsonLayout !== undefined ? { jsonLayout: spec.jsonLayout } : {}),
+        ...(spec.stateColors !== undefined ? { stateColors: spec.stateColors } : {}),
         ...(spec.stereotype !== undefined ? { stereotype: spec.stereotype } : {}),
         // G9/T7: a border point's label height, for the ink band its label
         // occupies outside the symbol (`StateNodeGeo.borderPointLabelHeight`).
         ...(spec.borderPointLabelHeight !== undefined ? { borderPointLabelHeight: spec.borderPointLabelHeight } : {}),
+        // stdd T6c: `EntityImageStateEmptyDescription` opens no group (`renderer.ts#wrapClassFor`).
+        ...(spec.emptyDescription === true ? { emptyDescription: true as const } : {}),
         ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
         ...(spec.southCapInk === true ? { southCapInk: true } : {}),
         // mission skin-file-loading Batch 2: only `EntityImageState`'s own

@@ -1,0 +1,285 @@
+{
+  "$comment": "ogc-T4c fragment (mission oracle-gap-capture, D5): the unknown-bucket rows T3 captured that need an excuse -- 16 the jar draws as DESCRIPTION that we misroute or refuse (a 17th, xoviku-63-jici084, measured clean once the pin tool passed the ELK backend, journal row 9), and 24 jar error pages whose signature the 4096-byte head window misses because of the Welcome preamble (PSystemError.java:217-218). One row per slug, sorted; consumed by scripts/pin-corpus-tree.ts.",
+  "rows": [
+    {
+      "slug": "corevo-13-cega392",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':joe:/ <<xxx>> #green -[#blue]-> (action)/ <<yyy>> #orange'. The jar accepts it as ONE element via CommandCreateElementFull (CommandCreateElementFull.java:83-115, registered DescriptionDiagramFactory.java:121): CODE1 ':joe:/' (CODE_CORE ':[^:]+:/?', CommandCreateElementFull.java:126), then STEREOTYPE (CommandCreateElementFull.java:110) whose lazy '(\\<\\<.+?\\>\\>)' (StereotypePattern.java:67) extends to the last '>>' so it spans '<<xxx>> #green -[#blue]-> (action)/ <<yyy>>', then color '#orange' (CommandCreateElementFull.java:115); CommandLinkElement (DescriptionDiagramFactory.java:92) does not match because after ENT1 its HEAD1 takes '<<' and BODY1 '[-=.~]+' meets 'xxx' (CommandLinkElement.java:99-100). Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity FIRST alternatives cannot start with ':' and ARROW_BODY1 '[-.]+' fails at it (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. We refuse the line in description (no single-element rule lets a stereotype span the arrow text: business-actor shorthand + SHORTHAND_TRAILER, src/diagrams/description/command-table-shorthand.ts:28, command-table-helpers.ts:18; refusal at src/diagrams/description/parser.ts:340) and fall through to activity3 (src/registered-plugins.ts:63), which accepts it; upstream ActivityDiagramFactory3 sits after Description (PSystemBuilder.java:138, :140). Open -> #113."
+    },
+    {
+      "slug": "dativu-03-fiba342",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6280, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Cannot use local variable here'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "fegafi-82-xiri255",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6363, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Bad name (Assumed diagram type: class)'. We draw CLASS where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "fepopu-85-pida073",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6370, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'No such color'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "fubuja-64-vane162",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'package {' (anonymous package). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180); '() item10' is CommandCreateElementFull's '\\(\\)' SYMBOL (CommandCreateElementFull.java:84). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
+    },
+    {
+      "slug": "gepuko-44-gizi401",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The class factory (PSystemBuilder.java:136) rejects line 3, 'Person \"1\" *-- \"*\" Person : \"parent\" contains \"children\"', before CommandLinkClass sees it: the line starts with 'Person', a keyword of CommandCreateElementFull.ALL_TYPES (CommandCreateElementFull.java:76, regexes compile CASE_INSENSITIVE, Pattern2.java:114), and ends with a quote, so CommandCreateElementFull2's regex (CommandCreateElementFull2.java:109-131, registered ClassDiagramFactory.java:133, ahead of CommandLinkClass at :143) matches it with SYMBOL 'person' and CODE1 = CODE_WITH_QUOTE's '[%g].+?[%g]' (CommandCreateElementFull.java:128) stretched over '\"1\" *-- \"*\" Person : \"parent\" contains \"children\"'; its executeArg returns the error 'Use allowmixing if you want to mix classes and other UML elements.' (CommandCreateElementFull2.java:197-198). Jar probes 2026-11-04: the line alone -> DESCRIPTION; the same line with a 'class Dummy' line forcing the class factory -> that error at line 3; without the cardinality quotes ('Person *-- Other : \"parent\" contains \"children\"') or without the trailing quote ('Person \"1\" *-- \"*\" Person : parent') -> CLASS. So DescriptionDiagramFactory (PSystemBuilder.java:138) wins and accepts every link line via CommandLinkElement (CommandLinkElement.java:89-121, registered DescriptionDiagramFactory.java:92). We route CLASS: our class engine has no ALL_TYPES keyword command ahead of its link parser, so it accepts the link and draws CLASS where the jar draws DESCRIPTION. Open -> #113."
+    },
+    {
+      "slug": "gogumi-05-lare595",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6774, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'This function is already defined'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "gucijo-35-jolo092",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6179, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Scale cannot be zero (Assumed diagram type: sequence)'. We draw SEQUENCE where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "gugapu-35-kama674",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity cannot start with ':' (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); the source then falls through to activity3 (src/registered-plugins.ts:63), which accepts it, while upstream's ActivityDiagramFactory3 comes after Description (PSystemBuilder.java:138, :140). Open -> #113."
+    },
+    {
+      "slug": "kisaze-31-tumo454",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6897, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Missing expression'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "leseku-63-ruda113",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6285, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'No such color (Assumed diagram type: activity)'. We draw ACTIVITY where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "lofipa-95-gere133",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6357, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: class)'. We also error (engine class), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "luzida-92-gebi610",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'package {' (anonymous package; 'circle test' before it is a class 'circle', CommandCreateClass TYPE, CommandCreateClass.java:87, ClassDiagramFactory.java:120). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
+    },
+    {
+      "slug": "maxeme-36-rale224",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'note left of toto [[http://note]] {'. The jar accepts it via CommandFactoryNoteOnEntity.createMultiLine(true) (registered DescriptionDiagramFactory.java:125): the bracket regex is 'note' POSITION 'of' entity, stereotype, color, UrlBuilder.OPTIONAL, then '\\{' (CommandFactoryNoteOnEntity.java:122-146, URL slot :142). Class refuses earlier at 'actor toto [[http://toto]]': CommandCreateElementFull2 NORMAL_KEYWORD returns 'Use allowmixing...' (CommandCreateElementFull2.java:197-198). We refuse: our RE_NOTE_ON_ENTITY_OPEN_BRACE has no URL slot before '{' (src/diagrams/description/note-grammar.ts:69-75), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "mideva-42-fumu406",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':Main Database: as MySql << Application >>'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121, with the trailing '<< Application >>' taken by STEREOTYPE (CommandCreateElementFull.java:110). our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "minece-51-xape147",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'package #green {' (anonymous package with a color). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180); the color is CommandPackageWithUSymbol's color slot (CommandPackageWithUSymbol.java:127). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
+    },
+    {
+      "slug": "mizoso-04-susi104",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6552, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Assertion error : This always fail'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "moragi-03-luto111",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6343, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Function not found %dirpath'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "nekote-79-pori818",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6313, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'This element (sameid) is already defined (Assumed diagram type: component)'. We draw DESCRIPTION where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "ninimo-77-buda609",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 7770, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'No return directive found in your function'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "nisifi-61-nela571",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6142, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Cannot load theme foo'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "pevoma-08-vido726",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5352 of 6129, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Empty description (Assumed diagram type: sequence)'. We also error (engine sequence), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "popufa-55-goci799",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':Main Database: as MySql << Application >>'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121, with the trailing '<< Application >>' taken by STEREOTYPE (CommandCreateElementFull.java:110). our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "rajuku-54-tobi199",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6243, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: sequence)'. We also error (engine sequence), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "revosa-68-goci965",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6259, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Not a package: b (Assumed diagram type: class)'. We draw CLASS where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "rukitu-26-seme622",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'domain \"Monitor\" as M <<Machine>> {'. The jar accepts it via CommandCreateDomain (registered DescriptionDiagramFactory.java:137): TYPE '(requirement|domain)', DISPLAY, 'as', CODE '[a-zA-Z0-9]+', STEREO, optional '\\{' (CommandCreateDomain.java:74-85); 'requirement \"Requirements\" as R {' takes the same command. We have no CommandCreateDomain port in src/diagrams/description, so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "sadadi-28-xago848",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6480, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Assertion error'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "sifagi-73-kexu776",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line 'title Домашняя библиотека - диаграмма прецедентов'. The jar accepts it via CommandTitle (CommandTitle.java:59-67; TITLE2 '(.*[%pLN_.].*)' at :66, %pLN admits Cyrillic letters), registered CommonCommands.java:113 from addCommonCommands1 (CommonCommands.java:56) at DescriptionDiagramFactory.java:90. We refuse it: our TITLE_RE's unquoted VALUE is '(.*[\\w.].*)' (src/core/annotations/commands.ts:78, :97), ASCII \\w, so a title with no ASCII letter, digit, '_' or '.' matches no command and every engine answers 'Syntax Error?' (description: src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "sirimo-08-ceju218",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6278, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: sequence)'. We also error (engine class), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "sisufo-96-bigi507",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6397, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: component)'. We also error (engine description), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "tipado-10-jave498",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':actor 1: as act1'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121; the later ':actor 2 -tech: << tech >> as act2' takes STEREOTYPE2 before 'as' (CommandCreateElementFull.java:91). Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity cannot start with ':' (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); the source then falls through to activity3 (src/registered-plugins.ts:63), which accepts it, while upstream's ActivityDiagramFactory3 comes after Description (PSystemBuilder.java:138, :140). Open -> #113."
+    },
+    {
+      "slug": "vajeje-58-peli352",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); activity3 also refuses the source, so we draw an error page. Open -> #113."
+    },
+    {
+      "slug": "virobu-13-gufo770",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line '(Another Business usecase)/ as (BUC2)'. The jar accepts it via CommandCreateElementFull's DISPLAY2 branch (CommandCreateElementFull.java:89-94): DISPLAY '\\([^()]+\\)/?' (CommandCreateElementFull.java:130), 'as', CODE2 '\\([^()]+\\)/?' (CODE_CORE, CommandCreateElementFull.java:126), registered DescriptionDiagramFactory.java:121. We refuse it: the business-usecase shorthand takes only decorations after '(Name)/' (src/diagrams/description/command-table-shorthand.ts:44, SHORTHAND_TRAILER command-table-helpers.ts:18) and the use-case alias rule has no '/' before 'as' (src/diagrams/description/command-table-containers.ts:72), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+    },
+    {
+      "slug": "xatele-45-gato016",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6270, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: sequence)'. We also error (engine class), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "xirine-12-zife795",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6206, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Fatal parsing error'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "xozabi-32-tagi234",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6328, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: class)'. We also error (engine class), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "zinano-86-zeke427",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6337, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'Syntax Error? (Assumed diagram type: sequence)'. We draw STATE where the jar errors: a draws-where-the-jar-errors row for the release-jar check and a signature (ruling 2026-10-10), listed on the ogc-T9 needs-ruling issue; never decided here."
+    },
+    {
+      "slug": "zisuvu-18-goja196",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); activity3 also refuses the source, so we draw an error page. Open -> #113."
+    },
+    {
+      "slug": "zonidi-66-buge014",
+      "cohort": "ogc-unknown-head-window",
+      "disposition": "known-gap",
+      "task": "ogc-T4c",
+      "reason": "The jar's cached in.svg IS an error page, but its signature (PSystemError#header, PSystemError.java:148-155 / ReportLog.java:103-108) sits at byte 5353 of 6803, past the 4096-byte head window the gates and the pin tool read (routing-conformance.test.ts:116-119, pin-corpus-tree-measure.ts HEAD_BYTES), because the page carries the Welcome preamble: PSystemError.java:217-218 calls addWelcome (:260-263) when getTotalLineCountLessThan5 (UmlSource.java:243-244) holds for the error's source. The add4-T0b precedent. Jar message: 'This function is already defined'. We also error (engine unknown), so routing reads jar NONE against our NONE and refusal reads a gap the jar shares; no excuse of ours is owed beyond the head-window mechanism. Open -> #119 (unknown, jar error)."
+    },
+    {
+      "slug": "zuzura-28-telu962",
+      "cohort": "ogc-unknown-description",
+      "disposition": "known-misroute",
+      "task": "ogc-T4c",
+      "reason": "Same source as gepuko-44-gizi401 plus 'skinparam flashcode 1' (CommandSkinParam, CommonCommands.java:67). The class factory (PSystemBuilder.java:136) rejects line 3, 'Person \"1\" *-- \"*\" Person : \"parent\" contains \"children\"', before CommandLinkClass sees it: the line starts with 'Person', a keyword of CommandCreateElementFull.ALL_TYPES (CommandCreateElementFull.java:76, regexes compile CASE_INSENSITIVE, Pattern2.java:114), and ends with a quote, so CommandCreateElementFull2's regex (CommandCreateElementFull2.java:109-131, registered ClassDiagramFactory.java:133, ahead of CommandLinkClass at :143) matches it with SYMBOL 'person' and CODE1 = CODE_WITH_QUOTE's '[%g].+?[%g]' (CommandCreateElementFull.java:128) stretched over '\"1\" *-- \"*\" Person : \"parent\" contains \"children\"'; its executeArg returns the error 'Use allowmixing if you want to mix classes and other UML elements.' (CommandCreateElementFull2.java:197-198). Jar probes 2026-11-04: the line alone -> DESCRIPTION; the same line with a 'class Dummy' line forcing the class factory -> that error at line 3; without the cardinality quotes ('Person *-- Other : \"parent\" contains \"children\"') or without the trailing quote ('Person \"1\" *-- \"*\" Person : parent') -> CLASS. So DescriptionDiagramFactory (PSystemBuilder.java:138) wins and accepts every link line via CommandLinkElement (CommandLinkElement.java:89-121, registered DescriptionDiagramFactory.java:92). We route CLASS: our class engine has no ALL_TYPES keyword command ahead of its link parser, so it accepts the link and draws CLASS where the jar draws DESCRIPTION. Open -> #113."
+    }
+  ]
+}

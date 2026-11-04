@@ -21,7 +21,9 @@
 
 import type { StateDiagramAST } from './ast.js';
 import { hasLocalContent, noteScopesOf } from './state-composite-detect.js';
-import { filterRemovedEntities } from './state-directives.js';
+import { computeHiddenIds, filterRemovedEntities } from './state-directives.js';
+import { markHidden } from './state-hidden.js';
+import { attachLinkedNotes } from './state-note-attach.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { layoutGraph as layout } from '../../core/graph-layout.js';
@@ -30,8 +32,9 @@ import { buildDotGraph, endpointId, INITIAL_ID, FINAL_ID } from './state-dot-gra
 import { pseudoTickKey } from './state-parse-state.js';
 import { sortSpecsByCreationIndex } from './state-composite-pass.js';
 import { layoutComposite } from './state-composite-geo.js';
-import { attachTransitionLabel } from './state-transition-label.js';
+import { attachTransitionLabel, labelStyleOf } from './state-transition-label.js';
 import { clusterAnchorRectsOf, clipTransitionSpline } from './state-transition-clip.js';
+import { undoGraphvizInversion, shiftGroupAutoLinks } from './state-composite-transition-geo.js';
 import type { ClipRect } from '../../core/spline-clip.js';
 import type { StateNodeGeo, TransitionGeo, StateGeometry, StateRegionGeo } from './state-geo-types.js';
 
@@ -41,7 +44,7 @@ import { svekDimension } from '../../core/svek/SvekResult.js';
 import { applyCucaDocumentMargin } from '../../core/TextBlockExporter.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import { isDisplayPositionedNull } from '../../core/annotations/index.js';
-import { buildStateGeoTextFields } from './state-sizing.js';
+import { buildStateGeoTextFields, hidesEmptyDescription } from './state-sizing.js';
 import { buildFlatNoteGeos, type FlatNoteGeoCtx } from './renderer-note.js';
 import { buildNoteGraphPartsByScope } from './state-note-layout.js';
 import { noteLineGeo, noteLinesOf } from './state-note-lines.js';
@@ -152,7 +155,7 @@ function buildFlatStateGeos(ast: StateDiagramAST, ctx: FlatNoteGeoCtx): StateNod
       height: pos.height,
       children: [],
       transitions: [],
-      ...buildStateGeoTextFields(s, theme, measurer, hideEmptyDescription),
+      ...buildStateGeoTextFields(s, theme, measurer, hidesEmptyDescription(s, hideEmptyDescription)),
       ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),
       // see state-composite-geo.ts#materializeSpecs's identical gate/doc
       // comment for why `<<sdlreceive>>` is excluded despite kind==='normal'.
@@ -192,6 +195,7 @@ function buildFlatTransitionGeos(
   anchorRects: ReadonlyMap<string, ClipRect>,
 ): TransitionGeo[] {
   const edgePosMap = new Map(result.edges.map((e) => [e.id, e]));
+  const nodeRects = new Map(result.nodes.map((n) => [n.id, n]));
   // T7/D3/D4: shared resolver, not `theme.fontSize` (state body/entity-name
   // text) -- see the import's own doc comment above.
   const font = resolveArrowLabelFont(theme);
@@ -202,19 +206,33 @@ function buildFlatTransitionGeos(
     if (edgeResult === undefined) continue;
     // D1'a: label from the UNCLIPPED points, exactly as before -- see
     // `state-composite-pass.ts#buildLevelTransitionGeos`'s own note.
-    const label = attachTransitionLabel(t, edgeResult.points, edgeResult, font, measurer);
+    const label = attachTransitionLabel(t, edgeResult.points, edgeResult, {
+      font,
+      measurer,
+      style: labelStyleOf(theme),
+    });
     // mission G4 S2: resolve `'[*]'` through the SAME shared start/end
     // anchor id `buildDotEdges` (state-dot-graph.ts) already uses for the
     // DOT graph itself -- see `endpointId`'s own doc comment for the bug
     // this replaces (the raw AST token leaking into the SVG `<path id>`).
-    const from = endpointId(t.from, true);
-    const to = endpointId(t.to, false);
+    // stdd T2b: a LEFT/UP link is `link.getInv()` (`CommandLinkStateCommon.java:205-206`): the DOT
+    // edge (`state-dot-graph.ts#buildDotEdges`) and this geometry run target -> source, as the jar's
+    // `dotPath` does, and the renderer puts the head at the start.
+    const inverted = t.direction === 'left' || t.direction === 'up';
+    const source = endpointId(t.from, true);
+    const target = endpointId(t.to, false);
+    const from = inverted ? target : source;
+    const to = inverted ? source : target;
+    const routed = undoGraphvizInversion(edgeResult.points, nodeRects.get(from), nodeRects.get(to));
     geos.push({
       from,
       to,
-      points: clipTransitionSpline(edgeResult.points, from, to, anchorRects),
+      points: clipTransitionSpline(routed, from, to, anchorRects),
       ...(label !== undefined ? { label } : {}),
       ...(t.creationIndex !== undefined ? { creationIndex: t.creationIndex } : {}),
+      ...(t.arrowStyle !== undefined ? { arrowStyle: t.arrowStyle } : {}),
+      ...(t.stereotype !== undefined ? { stereotype: t.stereotype } : {}),
+      ...(inverted ? { inverted: true as const } : {}),
       ...(t.crossStart !== undefined ? { crossStart: t.crossStart } : {}),
       ...(t.circleEnd !== undefined ? { circleEnd: t.circleEnd } : {}),
     });
@@ -398,7 +416,11 @@ function applyStateDocumentMargin(geo: StateGeometry, framed: boolean, margin?: 
     ...(dims.width === 0 && dims.height === 0 ? {} : { preChromeWidth: block.width, preChromeHeight: block.height }),
     ...(margin === undefined ? {} : { documentMargin: margin }),
     states: geo.states.map((n) => shiftStateNode(n, shift.dx, shift.dy)),
-    transitions: geo.transitions.map((t) => shiftStateTransition(t, shift.dx, shift.dy)),
+    // stdd T6b: a composite's self-link takes the `moveDelta` a second time (`SvekEdge.java:863-869`); under a
+    // mainframe no `moveDelta` runs (`applyMainframePlacement`), so nothing is added there.
+    transitions: shiftGroupAutoLinks(geo.transitions, ink.dx, geo.originShift?.x ?? 0).map((t) =>
+      shiftStateTransition(t, shift.dx, shift.dy),
+    ),
   };
 }
 
@@ -410,7 +432,8 @@ export function layoutState(ast: StateDiagramAST, skinTheme: Theme, measurer: St
   // equivalent of upstream's export-time isRemoved() skips. Same object
   // back when no remove directives exist (the common path); everything
   // below sees only the surviving entities.
-  const effAst = filterRemovedEntities(ast);
+  // stdd T5b: a single link to a `note as N` is that note's attachment (`state-note-attach.ts`).
+  const effAst = attachLinkedNotes(filterRemovedEntities(ast));
 
   if (effAst.states.length === 0 && effAst.transitions.length === 0) {
     return { totalWidth: 0, totalHeight: 0, states: [], transitions: [] };
@@ -422,13 +445,19 @@ export function layoutState(ast: StateDiagramAST, skinTheme: Theme, measurer: St
   // see `StateGeometry.concurrentGlobalIds`'s own doc comment for why this
   // is a single end-of-pipeline merge rather than plumbing through every
   // intermediate flat/composite/margin-shift helper.
-  return {
-    ...applyStateDocumentMargin(
-      raw,
-      ast.annotations !== undefined && !isDisplayPositionedNull(ast.annotations.mainFrame),
-      theme.diagramMargin,
-    ),
-    concurrentGlobalIds: effAst.concurrentGlobalIds ?? new Map(),
-    ...(ast.sprites !== undefined ? { sprites: ast.sprites } : {}),
-  };
+  // stdd T5a: `hide X` keeps the entity in the layout and marks it for `UHidden` (`state-hidden.ts`).
+  return markHidden(
+    {
+      ...applyStateDocumentMargin(
+        raw,
+        ast.annotations !== undefined && !isDisplayPositionedNull(ast.annotations.mainFrame),
+        theme.diagramMargin,
+      ),
+      concurrentGlobalIds: effAst.concurrentGlobalIds ?? new Map(),
+      measurer,
+      ...(ast.sprites !== undefined ? { sprites: ast.sprites } : {}),
+      ...(ast.scale !== undefined ? { scale: ast.scale } : {}),
+    },
+    computeHiddenIds(effAst),
+  );
 }

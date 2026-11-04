@@ -1,0 +1,6 @@
+@startuml
+!pragma svek_trace on
+rectangle Rect {
+A -> B
+}
+@enduml

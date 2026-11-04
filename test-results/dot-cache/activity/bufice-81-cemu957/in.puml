@@ -1,0 +1,26 @@
+@startuml
+<style>
+.color {
+  FontColor red
+}
+</style>
+
+
+title <<save>> SDL + <<color>>
+:other action1; <<save>>
+:other action2; <<save>>
+:other action3; <<save>> <<color>>
+while (check filesize ?) is (not empty)
+  :read file1; <<save>> <<color>>
+  backward:log context2; <<save>> <<color>>
+endwhile (empty)
+:close file;
+
+
+while (check filesize ?) is (not empty)
+  :read file3; <<save>> <<color>>
+  backward:log
+context4; <<save>> <<color>>
+endwhile (empty)
+:close file;
+@enduml

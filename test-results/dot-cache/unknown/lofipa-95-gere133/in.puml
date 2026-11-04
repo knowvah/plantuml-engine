@@ -1,0 +1,4 @@
+@startuml
+class Short
+Short: this is a very long text for testing the size
+@enduml

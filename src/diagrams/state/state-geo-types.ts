@@ -6,6 +6,10 @@
  */
 
 import type { StateKind } from './ast.js';
+import type { JsonLeafLayout } from './state-json-layout.js';
+import type { ScaleSpec } from '../../core/scale-command.js';
+import type { StringMeasurer } from '../../core/measurer.js';
+import type { StateColors } from './state-colors.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { InkBox } from '../../core/annotations/body-ink.js';
@@ -13,6 +17,13 @@ import type { InkBox } from '../../core/annotations/body-ink.js';
 /** One measured text line (`state-sizing.ts#measureTextLines`/
  *  `measureBodyTextLines`) — `width` is the line's own measured advance
  *  width at the diagram's theme font, feeding `<text textLength="...">`. */
+/** stdd T3d: a state's `Url` (`Entity#getUrl99`), drawn as `ug.startUrl(url)` inside the entity group
+ *  (`EntityImageState.java:118-120`, `InnerStateAutonom.java:141-142`, `Cluster.java:338-342`). */
+export interface StateUrl {
+  readonly url: string;
+  readonly tooltip: string;
+}
+
 export interface StateTextLine {
   readonly text: string;
   readonly width: number;
@@ -22,6 +33,16 @@ export interface StateNodeGeo {
   id: string;
   kind: StateKind | 'note';
   display: string;
+  /** stdd T3d -- see {@link StateUrl}. */
+  url?: StateUrl;
+  /** stdd T5a: a `kind:'json'` leaf's parsed value (`State.jsonValue`), drawn by `renderer-json.ts`: its measured grid (`state-json-layout.ts`). */
+  jsonLayout?: JsonLeafLayout;
+  /** stdd T5a: `Entity#isHidden` (`Entity.java:429-441`): laid out and uid-numbered, drawn through
+   *  `UHidden` (`SvekResult.java:85`), which emits nothing. */
+  hidden?: true;
+  /** stdd T6a -- see the `'autonom'` `GeoSpec`'s `regionLeaf` (state-composite-pass-types.ts): drawn as
+   *  its content alone, no group and no box (`SvekResult.java:69-95`). */
+  regionLeaf?: true;
   x: number;
   y: number;
   width: number;
@@ -85,6 +106,9 @@ export interface StateNodeGeo {
    *  mechanism upstream, `Colors#getColor(BackGroundColor)`) can share one
    *  resolution function. */
   color?: string;
+  /** stdd T3a: the `Colors` a state or group carries (`CommandCreateState.java:216-228`): its LINE
+   *  colour, specific line stroke and TEXT colour, read before the style (`state-colors.ts`). */
+  stateColors?: StateColors;
   /**
    * mission G4 S6, mechanism 13: for a CONCURRENT-region-owning composite
    * ONLY (`state X { region1 -- region2 -- ... }`) -- the SAME content as
@@ -225,6 +249,12 @@ export interface StateNodeGeo {
    * pre-existing dashed-rect shape unchanged).
    */
   clusterHeaderHeight?: number;
+  /** stdd T1d: a `GroupType.PACKAGE` cluster; its title is `package { title { FontStyle bold } }`
+   *  (`ClusterHeader.java:161-162`, `plantuml.skin:72-76`). */
+  packageTitle?: true;
+  /** stdd T6c: a group with a `USymbol` (`frame X {`, `State.container`) skips `drawUState` and draws
+   *  `ClusterDecoration` with `USymbols.FRAME` (`Cluster.java:353-374`) -- `renderer-frame-cluster.ts`. */
+  usymbol?: 'frame';
   /** G5 C3: title baseline vertical margin for the cluster shape above --
    *  plain clusters: the title table's min Y relative
    *  to the cluster top (`state-composite-geo.ts#clusterTitleBaselineMargin`,
@@ -237,13 +267,9 @@ export interface StateNodeGeo {
    * box draws WITH -- upstream `EntityImageState`/`InnerStateAutonom`'s
    * shared `getStyleState().getShadowing()` read. Populated ONLY for the
    * node kinds jar actually draws a shadow for (`kind:'normal'`/`'json'`
-   * leaf boxes via `EntityImageStateCommon#getShape`, and a composite whose
-   * `headerLines` is set AND `clusterHeaderHeight` is NOT set -- the
-   * `InnerStateAutonom`/`RoundedContainer` shape `renderer-composite-
-   * box.ts#renderCompositeMeasured` draws, NOT the `ClusterDotString`/
-   * `ClusterHeader` shape `renderClusterMeasured` draws, which jar-verified
-   * carries no shadow at all, `~/git/plantuml/.../svek/ClusterDotString
-   * .java`/`ClusterHeader.java` grepped clean of `Shadow`) -- every OTHER
+   * leaf boxes via `EntityImageStateCommon#getShape`, and both composite shapes:
+   * `InnerStateAutonom` and, since stdd T3c, the cluster (`Cluster.java:315,354` passes
+   * `style.getShadowing()` to `drawUState`; `RoundedContainer.java:81-84` draws it) -- every OTHER
    * kind (pseudostates: initial/final/history/deepHistory/fork/join/
    * syncBar/choice) is left `undefined` even when `theme.shadowing > 0`,
    * a deliberate, named scope limit (no corpus fixture combines a bundled
@@ -309,124 +335,18 @@ export interface StateSeparatorGeo {
   readonly y2: number;
 }
 
-/**
- * A transition label's own INK contribution — the `UEmpty` upstream's
- * `TextBlockMarged#drawU` emits for the whole marged block before drawing
- * the glyphs inset by `marginLabel`
- * (`klimt/shape/TextBlockMarged.java:79-87`, dimension at `:74-77`), which
- * `LimitFinder#drawEmpty` then folds at full size with no inset
- * (`klimt/drawing/LimitFinder.java:159-162`).
- *
- * Distinct from `TransitionGeo.label`'s `width`/`height` in BOTH terms, and
- * that is the whole point:
- *
- * - **Size.** `width` here is `measuredWidth + 2*marginLabel`, UNfloored.
- *   `label.width` is the DOT reservation, floored by upstream's `(int)`
- *   cast (`svek/SvekEdge.java:504-507`) and correct for that use only.
- * - **Anchor.** `x`/`y` are the reserved box's own top-left corner —
- *   `labelXY.getPosition()`, which is where upstream draws the marged block
- *   (`SvekEdge.java:951-954`). `label.x`/`label.y` are the drawn TEXT
- *   anchor, one `marginLabel` (plus the ascent, on y) further in.
- *
- * `x`/`y` carry graphviz's own 2-decimal SVG print precision; `width`/
- * `height` do not. See `state-transition-label.ts#svgPrecision`.
- */
-export interface LabelInkBox {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
+import type { TransitionGeo } from './state-transition-geo-types.js';
 
-/**
- * dss T3e: the inline label of a link that also carries a `note ... on link`, drawn in the same merged
- * block (`SvekEdge.java:307-325,950-954`). `dx`/`dy` are the `<text>` baseline anchor relative to the
- * note's top-left (`TransitionGeo.label.x`/`y`), so every pass's shift of that corner moves the label
- * with it.
- */
-export interface LinkLabelGeo {
-  readonly text: string;
-  readonly dx: number;
-  readonly dy: number;
-  readonly textLength?: number;
-}
-
-export interface TransitionGeo {
-  from: string;
-  to: string;
-  points: Array<{ x: number; y: number }>;
-  /** dss T3f: set on a note's own `Link` when no Opale notch replaces it
-   *  (`state-note-layout.ts#noteLinesOf`), its `<path id>`. No decor, dashed. */
-  noteLinkId?: string;
-  /** `width`/`height` (G8 T2, additive): the jar-verified reserved label
-   *  box (`state-transition-label.ts#computeReservedLabelBox`, spec.md §1a
-   *  -- margin+floor around the measured text) that both the renderer and
-   *  the ink walk (`layout-ink-extent.ts`'s `labelInk` param) need. Absent
-   *  for a label built without a font/measurer available (concurrent-region
-   *  passes, `state-composite-concurrent.ts`, out of this task's write-set)
-   *  -- both consumers already treat absence as "fold the point only",
-   *  the pre-existing behavior.
-   *
-   *  `inkBox` (mission `transition-label-ink`, T3) is what the ink walk
-   *  reads instead; see {@link LabelInkBox} for why the two differ. Present
-   *  exactly when `width`/`height` are. */
-  label?: {
-    text: string;
-    x: number;
-    y: number;
-    /** The drawn string's measured width (`SvgGraphics.java:700-706`
-     *  `textLength`); absent when the drawn text is not one measured line. */
-    textLength?: number;
-    width?: number;
-    height?: number;
-    inkBox?: LabelInkBox;
-    /** T4 (`note-on-link`, `state-declared-size-fix`): present exactly when
-     *  this label carries a `note ... on link` (`Transition.linkNote`) --
-     *  the note's own per-line text/width (mirrors `StateNodeGeo.noteLines`'s
-     *  shape/naive-measurement convention, `state-note-layout.ts#measureNote`)
-     *  so the renderer draws the real `EntityImageNoteLink`/`ComponentRoseNote`
-     *  folded-corner box instead of a plain `<text>` glyph
-     *  (`state-renderer-transitions.ts#buildTransitionLabelMarkup`). `x`/`y`
-     *  are then the box's own TOP-LEFT corner (no `marginLabel`/ascent
-     *  inset -- `SvekEdge.java:741-747`'s `labelText` is the RAW
-     *  `EntityImageNoteLink` block when the inline label is empty, `Display
-     *  .isNull` -> `EMPTY_TEXT_BLOCK` -> `TextBlockUtils.mergeTB`'s
-     *  short-circuit, `:302,318-325`), and `width`/`height`/`inkBox` are the
-     *  SAME reserved box `state-dot-graph.ts#computeEdgeLabelBox` already
-     *  feeds the DOT graph, so `layout-ink-extent.ts#addTransitionInk`'s
-     *  existing `label.inkBox` fold (unchanged by this task) reserves it
-     *  for free once populated. `undefined` for an ordinary inline label. */
-    noteLines?: readonly StateTextLine[];
-    /** dss T3e: the inline label drawn beside the note, in the merged block (`SvekEdge.java:307-325`).
-     *  Present only with `noteLines` and a non-empty label; then `x`/`y`/`width`/`height` are the NOTE
-     *  operand's own box and `inkBox` the union of both operands. */
-    linkLabel?: LinkLabelGeo;
-    /** dss T3e: the note operand leads the label (`Position.LEFT`/`TOP`, `SvekEdge.java:318-325`), so it
-     *  is drawn first. */
-    noteFirst?: boolean;
-  };
-  /** mission G4 S7 -- see `StateNodeGeo.creationIndex`'s own doc comment;
-   *  same raw-value contract, sourced from `Transition.creationIndex`. */
-  creationIndex?: number;
-  /**
-   * mission G4 S15: `Transition.crossStart`/`.circleEnd` (`x-->`/`-->o`
-   * arrow decorations, `LinkDecor.CIRCLE_CROSS`/`ARROW_AND_CIRCLE`),
-   * threaded through unchanged from the AST -- both pipelines
-   * (`layout.ts#buildFlatTransitionGeos`, `state-composite-pass.ts
-   * #buildLevelTransitionGeos`) already have the source `Transition` in
-   * scope where `TransitionGeo` is built, so this is a pure pass-through,
-   * consumed only by `renderer-arrowhead.ts#buildCircleEndMarkup`/
-   * `#buildCrossStartMarkup`. `undefined` for every ordinary transition
-   * (the overwhelming majority) and for a hand-built test geometry.
-   * @see plans/g4-state-svg/ledger.md (S15)
-   */
-  crossStart?: boolean;
-  circleEnd?: boolean;
-}
+export type { LabelInkBox, LinkLabelGeo, TransitionGeo } from './state-transition-geo-types.js';
 
 export interface StateGeometry {
   totalWidth: number;
   totalHeight: number;
+  /** stdd T6c: the layout's measurer, for the one shape the renderer draws through a `UGraphic` at render
+   *  time (`renderer-frame-cluster.ts`'s `ClusterDecoration`, whose title is a `TextBlock`). */
+  measurer?: StringMeasurer;
+  /** stdd T4a -- `StateDiagramAST.scale`, for the fragment's `scaleSpec`. */
+  scale?: ScaleSpec;
   states: StateNodeGeo[];
   transitions: TransitionGeo[];
   /**

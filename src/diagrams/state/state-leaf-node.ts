@@ -14,7 +14,8 @@ import type { State } from './ast.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
 import type { DotInputNode } from '../../core/graph-layout.js';
-import { measureState } from './state-sizing.js';
+import { measureState, hidesEmptyDescription } from './state-sizing.js';
+import { stateFontFamily } from './state-render-colors.js';
 import {
   getEntityPosition,
   usesPortShape,
@@ -34,6 +35,8 @@ export interface LeafNodeCtx {
   theme: Theme;
   measurer: StringMeasurer;
   rankdir: 'TB' | 'LR';
+  /** `ast.hideEmptyDescription` (`DiagramCtx.hideEmptyDescription`). */
+  hideEmptyDescription: boolean;
 }
 
 /** A leaf node's DOT sizing — normal-kind measurement or the fixed
@@ -60,7 +63,7 @@ export function buildLeafNode(s: State, ctx: LeafNodeCtx): DotInputNode {
     // SvekNode#appendLabelHtmlSpecialForPort (EntityImageStateBorder
     // #getMaxWidthFromLabelForEntryExit): the entity's OWN display-text
     // width picks plaintext HTML port table (>40px) vs a plain small rect.
-    const font: FontSpec = { family: ctx.theme.fontFamily, size: ctx.theme.fontSize };
+    const font: FontSpec = { family: stateFontFamily(ctx.theme), size: ctx.theme.fontSize };
     const labelWidth = ctx.measurer.measure(s.display, font).width;
     const node: DotInputNode = {
       id: s.id,
@@ -85,6 +88,23 @@ export function buildLeafNode(s: State, ctx: LeafNodeCtx): DotInputNode {
   // so this function cannot tell A from B; passing the flag would move
   // bitaxo's 10 px from A to B rather than remove it. Needs an
   // explicit-composite marker on `State` — SI29 decision-journal T2.
-  const measured = measureState(s, false, ctx.theme, ctx.measurer, ctx.rankdir);
-  return { id: s.id, width: measured.width, height: measured.height, shape: measured.shape };
+  // stdd T6c closes G9: `State.explicitComposite` tells `state A` from `state B {}`
+  // (`GeneralImageBuilder.java:135-136` against `GroupMakerState.java:113-114`).
+  const measured = measureState(
+    s,
+    hidesEmptyDescription(s, ctx.hideEmptyDescription),
+    ctx.theme,
+    ctx.measurer,
+    ctx.rankdir,
+  );
+  // stdd T5a: `EntityImageJson#getShapeType` is `RECTANGLE_HTML_FOR_PORTS` (`EntityImageJson.java:240-242`), which
+  // `SvekNode#appendShape` (`SvekNode.java:133-136`) emits as the one-cell `shape=plaintext` HTML table
+  // (`appendLabelHtmlSpecialForLink`): `rowPortTable` with no rows (maruju-55: 9px of graphviz margin).
+  return {
+    id: s.id,
+    width: measured.width,
+    height: measured.height,
+    shape: measured.shape,
+    ...(s.kind === 'json' ? { portRows: [] } : {}),
+  };
 }

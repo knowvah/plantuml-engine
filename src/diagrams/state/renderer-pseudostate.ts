@@ -15,6 +15,8 @@
  */
 import type { StateNodeGeo } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
+import type { Paint } from '../../core/paint.js';
+import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { ellipse, rect, diamond, text, attrs } from '../../core/svg.js';
 import {
   STATE_DEFAULT_BACKGROUND,
@@ -72,7 +74,8 @@ export function renderInitial(node: StateNodeGeo, theme: Theme): string {
     stateBucketPaint(theme, STATE_CIRCLE_START_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
   );
   const stroke = stateBucketPaint(theme, STATE_CIRCLE_START_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
-  return ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': 1 });
+  // stdd T3b: `CircleStart.java:82` applies `style.getStroke()`; the skin's circle default is 1.
+  return ellipse(cx, cy, r, r, { fill, stroke, 'stroke-width': theme.colors.graph.stateCircleStartLineThickness ?? 1 });
 }
 
 /** `CircleEnd.java` (SIZE=22, inner `delta=5` inset): an unfilled outer ring
@@ -93,8 +96,11 @@ export function renderFinal(node: StateNodeGeo, theme: Theme): string {
     stateBucketPaint(theme, STATE_CIRCLE_END_BUCKET, 'background') ?? PSEUDO_ANCHOR_COLOR,
   );
   const stroke = stateBucketPaint(theme, STATE_CIRCLE_END_BUCKET, 'border') ?? PSEUDO_ANCHOR_COLOR;
+  // stdd T3b: `CircleEnd.java:86` applies `style.getStroke()` to the outer circle only; the inner
+  // one (`:89-100`) draws on the unstroked `ug`, so it keeps `UStroke` 1. The skin default is 1.
+  const strokeWidth = theme.colors.graph.stateCircleEndLineThickness ?? 1;
   return (
-    ellipse(cx, cy, outerR, outerR, { fill: 'none', stroke, 'stroke-width': 1 }) +
+    ellipse(cx, cy, outerR, outerR, { fill: 'none', stroke, 'stroke-width': strokeWidth }) +
     ellipse(cx, cy, innerR, innerR, { fill, stroke, 'stroke-width': 1 })
   );
 }
@@ -117,9 +123,18 @@ export function renderForkJoin(node: StateNodeGeo, theme: Theme): string {
   // dss T3e site 14: `EntityImageSynchroBar.java:62-63,81-84` reads BackGroundColor of
   // `root, element, activityDiagram, activityBar` and no inline colour for the signature; the
   // `.fork`/`.join` stereotype selectors (priority +1000) stay above it.
+  // stdd T3d: `skinparam ActivityBarColor<<fork>> green` -- the `withTOBECHANGED(stereotype)` tier
+  // (`EntityImageSynchroBar.java:81-84`), above the bare `activityBar` bucket.
+  const byStereo =
+    node.stereotype === undefined
+      ? undefined
+      : theme.colors.graph.activityBarColorByStereo?.[node.stereotype.toLowerCase()];
   const fill = resolveStateFill(
     node,
-    bucketDefault ?? stateBucketPaint(theme, STATE_ACTIVITY_BAR_BUCKET, 'background') ?? SYNCHRO_BAR_COLOR,
+    bucketDefault ??
+      (byStereo === undefined ? undefined : resolveColorToSvgHex(byStereo)) ??
+      stateBucketPaint(theme, STATE_ACTIVITY_BAR_BUCKET, 'background') ??
+      SYNCHRO_BAR_COLOR,
   );
   return rect(node.x, node.y, node.width, node.height, { fill, stroke: 'none', strokeWidth: 1 });
 }
@@ -131,13 +146,27 @@ export function renderForkJoin(node: StateNodeGeo, theme: Theme): string {
  *  REQUIRED, not decorative. Its default fill/border/stroke-width are the
  *  plain leaf box's by value only: `EntityImageBranch.java:62-63` signs
  *  `activityDiagram, activity, diamond`, not `EntityImageStateCommon.STYLE`. */
+/** `skinparam activityBackgroundColor`'s raw token (`theme.colors.graph.activity.background`), resolved as
+ *  `HColorSet#getColorOrWhite` does (`stateBucketPaint`'s own convention). */
+function activityBackground(theme: Theme): Paint | undefined {
+  const raw = theme.colors.graph.activity?.background;
+  return typeof raw === 'string' ? resolveColorToSvgHex(raw) : raw;
+}
+
 export function renderChoiceJunction(node: StateNodeGeo, theme: Theme): string {
   const { cx, cy } = pseudoCenter(node);
   const size = node.width / 2;
   // dss T3c: `EntityImageBranch.java:62-63,77-82` reads the `activityDiagram,
   // activity, diamond` style and no inline colour (jar: `state C <<choice>>
   // #red` draws `#F1F1F1`), so the `state` bucket and `node.color` are not read.
-  const fill = stateBucketPaint(theme, STATE_CHOICE_DIAMOND_BUCKET, 'background') ?? STATE_DEFAULT_BACKGROUND;
+  // stdd T3d: `EntityImageBranch.java:62-63,79-81` merges `{root, element, activityDiagram, activity, diamond}`,
+  // so `skinparam activityBackgroundColor` (`activity { BackGroundColor }`) is the tier under the diamond's
+  // own (fakali-52: `#98FB98`).
+  const fill =
+    stateBucketPaint(theme, STATE_CHOICE_DIAMOND_BUCKET, 'background') ??
+    stateBucketPaint(theme, 'activity', 'background') ??
+    activityBackground(theme) ??
+    STATE_DEFAULT_BACKGROUND;
   const stroke = stateBucketPaint(theme, STATE_CHOICE_DIAMOND_BUCKET, 'border') ?? theme.colors.border;
   const markup = diamond(cx, cy, size, {
     fill,

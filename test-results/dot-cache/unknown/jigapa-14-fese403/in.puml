@@ -1,0 +1,9 @@
+@startuml
+participant ashly
+participant blake
+
+!define interact( task, src, msg, trg )  src [color_##task##_arw]-> trg: msg
+!define color_blob_arw        #202020
+
+interact( blob, ashly, HELLO, blake )
+@enduml

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T09:57:04.343Z",
+  "generatedAt": "2026-11-04T13:30:47.852Z",
   "fixtures": [
     {
       "slug": "baloca-83-nadu916",
@@ -372,6 +372,14 @@
       "maxDelta": 338.788,
       "firstDiff": "svg/g[1]/g[2]/text[2]/@textLength",
       "maxDeltaPath": "svg/g[1]/g[2]/line[2]/@x1"
+    },
+    {
+      "slug": "robitu-34-vupe367",
+      "type": "object",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "conformant",
+      "oracleBlind": true
     },
     {
       "slug": "rocepa-35-gepo708",

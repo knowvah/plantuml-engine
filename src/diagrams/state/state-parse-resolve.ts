@@ -27,6 +27,7 @@ import {
   noteScopeId,
 } from './state-parse-state.js';
 import { stripSyncBarEquals } from './state-transitions.js';
+import { ensureParentState } from './state-parse-phantom.js';
 import { assertConcurrentStateOk, assertDottedParentHasData } from './state-parse-helpers.js';
 
 /** True iff `id` should be resolved via the dotted hierarchical-split
@@ -80,7 +81,9 @@ function registerStateInto(ps: ParseState, scope: Scope, state: State): void {
   // compound-history graft, transition-endpoint auto-create) funnels through
   // here exactly once per state, in true parse-time order. See `State
   // .creationIndex`'s own doc comment (ast.ts) for the full mechanism.
-  state.creationIndex = nextCreationIndex(ps);
+  // stdd T1d: a phantom ancestor has no entity yet; `state-parse-phantom.ts` ticks it.
+  if (state.autoPhantom === true) ps.phantoms.push(state);
+  else state.creationIndex = nextCreationIndex(ps);
   scope.stateIndex.set(state.id, state);
   scope.states.push(state);
   currentRegionStates(scope).push(state);
@@ -164,21 +167,25 @@ function resolveOrCreateDottedPath(
   // was manufactured brand-new by THIS walk -- see `assertDottedParentHasData`'s
   // doc for why only the direct parent (not any earlier ancestor) matters.
   let directParentWasFreshlyCreated = false;
+  const ancestors: State[] = [];
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i]!;
     const isLast = i === segments.length - 1;
     const existing = scope.stateIndex.get(seg);
     if (existing !== undefined) {
-      if (!isLast && mode === 'promote') delete existing.autoPhantom;
       state = existing;
       if (!isLast) directParentWasFreshlyCreated = false;
     } else {
-      state = makeState(seg, seg, 'normal', !isLast && mode === 'phantom' ? { autoPhantom: true } : undefined);
+      // stdd T1d: `quarkInContext` makes every missing segment a quark; only the
+      // last gets an entity now. The others stay data-less, whatever the caller.
+      state = makeState(seg, seg, 'normal', isLast ? undefined : { autoPhantom: true });
       registerStateInto(ps, scope, state);
       if (!isLast) directParentWasFreshlyCreated = true;
     }
+    if (!isLast) ancestors.push(state);
     scope = scopeOf(ps, state);
   }
+  if (mode === 'promote') ensureParentState(ps, ancestors);
   assertDottedParentHasData(mode === 'neutral', directParentWasFreshlyCreated, fullId);
   return state!;
 }
@@ -376,10 +383,14 @@ export function ensureState(
     return existing;
   }
 
+  // stdd T5b: `getOrCreateLeaf` finds a `note as N` leaf by its alias (`CucaDiagram#getOrCreateLeaf`,
+  // `quarkInContext`), so `B --> N` never makes a state; the link attaches the note (`state-note-attach.ts`).
+  if ((ps.ast.notes ?? []).some((n) => n.id === canonicalId && n.target === undefined)) return undefined;
+
   const s = makeState(canonicalId, canonicalId, pseudoKind ?? kind);
   registerNewState(ps, s);
   ps.lastEntity = canonicalId;
-  // #lizard forgives -- CCN 11: faithful port of CommandLinkStateCommon#getEntity's
+  // #lizard forgives -- CCN 12: faithful port of CommandLinkStateCommon#getEntity's
   // real branch count (self-loop / history / dotted / sync-bar canonicalization /
   // existing / create), not incidental complexity.
   return s;
@@ -412,6 +423,8 @@ function applyDeclaredContent(target: State, source: State, pass: Pass): void {
   target.kind = source.kind;
   if (source.color !== undefined) target.color = source.color;
   if (source.stereotype !== undefined) target.stereotype = source.stereotype;
+  // stdd T3d: `CommandCreateState.java` / `CommandCreatePackageState.java:181-186` `addUrl` when the line has one.
+  if (source.url !== undefined) target.url = source.url;
   if (source.container !== undefined) target.container = source.container;
   // Tags ACCUMULATE (upstream `Entity#addStereotag` adds into a `Set`, so a
   // re-declaration's tags join the earlier ones instead of replacing them —

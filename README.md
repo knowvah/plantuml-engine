@@ -58,7 +58,7 @@ algorithms. See [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
 - Authors: Emden R. Gansner, John C. Ellson, Yifan Hu, and the AT&T
   Research / Lucent Technologies Graphviz team
 - Source: <https://gitlab.com/graphviz/graphviz>
-- Graphviz 2.38.0 License: Common Public License 1.0 (CPL-1.0)
+- License: Eclipse Public License 2.0 (EPL-2.0)
 
 The algorithms implemented here follow the methods described in:
 
@@ -88,9 +88,10 @@ registration is commented out for MIT in `PSystemBuilder.java`), so a
 The default (GPL) PlantUML jar draws a puzzle there; that difference is
 deliberate, not a missing feature.
 
-One exception is kept on purpose: upstream's MIT edition also disables
-`@startditaa` (the factory registration is commented out for MIT in
-`PSystemBuilder.java`), but this port keeps its ditaa engine.
+`@startditaa` is not included either. Upstream's MIT edition disables it (the
+factory registration is commented out for MIT in `PSystemBuilder.java`), and
+the library it calls is LGPL-3.0, so a port of it could not ship in this MIT
+package.
 
 ## License
 

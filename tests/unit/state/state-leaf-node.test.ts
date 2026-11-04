@@ -39,7 +39,7 @@ function makeState(overrides: Partial<State> = {}): State {
 }
 
 function makeCtx(overrides: Partial<LeafNodeCtx> = {}): LeafNodeCtx {
-  return { theme: defaultTheme, measurer, rankdir: 'TB', ...overrides };
+  return { theme: defaultTheme, measurer, rankdir: 'TB', hideEmptyDescription: false, ...overrides };
 }
 
 function captureFirst(puml: string): DotInputGraph {

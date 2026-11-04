@@ -1,0 +1,14 @@
+@startuml          
+                   
+package "output" {
+  object foo      
+    foo : bar      
+}                  
+                   
+package "thing" {  
+  map getfoobar {  
+    makeit *--> output.foo
+  }                
+}                  
+                   
+@enduml

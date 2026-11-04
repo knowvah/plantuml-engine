@@ -17,6 +17,7 @@
 
 import { RE_ASSUME_TRANSPARENT } from '../../core/assume-transparent.js';
 import type { Transition } from './ast.js';
+import { matchScaleCommand } from '../../core/scale-command.js';
 import {
   type ParseState,
   type Pass,
@@ -122,7 +123,7 @@ export const COMMANDS: readonly Command[] = [
   },
 
   // -------------------------------------------------------------------------
-  // 3. Ignore lines: skinparam, scale, hide, show, comment ('). `title` is
+  // 3. Ignore lines: skinparam, scale, comment ('). `title` is
   //    NOT in this list -- it is claimed by the shared annotation matcher
   //    (matchAnnotationCommand, consulted before COMMANDS in parser.ts) so
   //    `title ...`/`title\n...\nend title` lands in `ps.ast.annotations.title`
@@ -132,8 +133,19 @@ export const COMMANDS: readonly Command[] = [
   //    no observable effect — PASS ONE picked for consistency with the
   //    other simple/single commands above.
   // -------------------------------------------------------------------------
+  // stdd T4a: `scale ...` (`CommandScale*`, `core/scale-command.ts`) -- the exporter's input
+  // (`TextBlockExporter.java:205-209`); a rejected line (e.g. `scale 0`) leaves `ast.scale` unset, as class does.
   {
-    pattern: /^(?:skinparam|scale|hide|show)\b/i,
+    pattern: /^scale\s/i,
+    passes: ['one'],
+    execute(ps, match) {
+      const spec = matchScaleCommand(match.input);
+      if (spec !== undefined) ps.ast.scale = spec;
+    },
+  },
+  {
+    // stdd T5a: `hide`/`show` left this list -- they are `CommandHideShow2` (rule 3c below).
+    pattern: /^(?:skinparam|scale)\b/i,
     passes: ['one'],
     execute() {
       /* ignored */
@@ -207,6 +219,21 @@ export const COMMANDS: readonly Command[] = [
       });
     },
   },
+  // stdd T5a: `hide X`/`show X` -- `CommandHideShow2` (`StateDiagramFactory.java:119`), `WHAT` is
+  // `([^%s]+|<<.*>>)` (`CommandHideShow2.java:56-60`) into `CucaDiagram#hideOrShow2` (`:628-631`).
+  // `hide empty description` is its own command above; the entity stays in the layout and is drawn
+  // through `UHidden` (`SvekResult.java:85,98`), unlike `remove`.
+  {
+    pattern: /^(hide|show)\s+(\S.*)$/i,
+    passes: ['one'],
+    execute(ps, match) {
+      (ps.ast.hideDirectives ??= []).push({
+        kind: 'removerestore',
+        action: match[1]!.toLowerCase() === 'show' ? 'show' : 'hide',
+        what: match[2]!.trim(),
+      });
+    },
+  },
 
   // -------------------------------------------------------------------------
   // 4. Concurrent region separator `--`/`||` (one or more repeats).
@@ -247,7 +274,9 @@ export const COMMANDS: readonly Command[] = [
         // -- pass TWO just re-navigates the already-built region tree, no
         // new jar tick fires on the replay). See `ParseState
         // .creationCounter`'s own doc comment (state-parse-state.ts).
-        nextCreationIndex(ps);
+        // stdd T6a: the tick is kept -- it orders the region among the owner's leafs
+        // (`State.concurrentRegionCreationIndexes`).
+        scope.regionCreationIndexes.push(nextCreationIndex(ps));
         // mission G4 S14 (CONC-region bare-name global numbering): burn a
         // SEPARATE global `cpt2` tick too, mirroring jar's own
         // `concurrentState()` (`getUniqueSequence2(CONCURRENT_PREFIX)`) --

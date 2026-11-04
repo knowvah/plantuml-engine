@@ -1,0 +1,13 @@
+@startuml
+node n [
+{{yaml
+!theme amiga
+title hello
+fruit: Apple
+size: Large
+color:
+ - Red
+ - Green
+}}
+]
+@enduml

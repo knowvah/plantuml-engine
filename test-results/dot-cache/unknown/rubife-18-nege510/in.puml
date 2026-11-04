@@ -1,0 +1,6 @@
+@startuml
+title toto
+package com.oracle.xmvc.error
+class ErrorManager
+note right of ErrorManager : toto
+@enduml

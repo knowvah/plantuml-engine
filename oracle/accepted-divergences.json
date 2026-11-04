@@ -200,6 +200,258 @@
       "acceptedAt": "2026-10-10",
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), no line or label; stdrpt prints only \"Some diagram description contains errors\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/cazace-10-nebi625"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Diagram source: (Use http://zxing.org/w/decode.jspx to decode the qrcode)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/dulone-62-neri182"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Map already exists: CapitalCity (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/duluve-89-mati167"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"No such color (Assumed diagram type: activity)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/fegafi-82-xiri255"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Bad name (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/foxufo-19-nuco936"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Bad name (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/gucijo-35-jolo092"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Scale cannot be zero (Assumed diagram type: sequence)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/jicogu-02-cani636"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Cannot create Order because it already exists (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/kepife-84-jigi755"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"No such color (Assumed diagram type: class)\". An unknown colour paints neutral grey here (ruling 2026-11-04), never a raw invalid value. The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/leseku-63-ruda113"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"No such color (Assumed diagram type: activity)\". An unknown colour paints neutral grey here (ruling 2026-11-04), never a raw invalid value. The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/losote-76-beki147"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Object already exists: user (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/mucajo-31-lifo004"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"This element (Provider) is already defined (Assumed diagram type: component)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/nekote-79-pori818"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"This element (sameid) is already defined (Assumed diagram type: component)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/notevi-43-sita948"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Cannot create Order because it already exists (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/nudoji-00-mafe679"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Syntax Error? (Assumed diagram type: sequence)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/pedoze-30-xoxo765"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Bad hierarchy for class javax.sound.sampled.AudioFormat.Encoding (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/rakidu-53-mopu785"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Diagram source: (Use http://zxing.org/w/decode.jspx to decode the qrcode)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/revosa-68-goci965"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Not a package: b (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/rogoxa-80-mori838"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Bad name (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/sabafe-32-viju467"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Syntax Error? (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/selopi-16-sizu607"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Missing starting box (Assumed diagram type: sequence)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/sunuli-13-geju490"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Bad hierarchy for class com.Toto.Internal (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/xabipu-35-kece197"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"No inner state defined (Assumed diagram type: state)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/xadepe-11-noja686"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Not a package: Toto (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/xexuza-21-kifa053"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Not known: compo (Assumed diagram type: component)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/zalulo-78-voma912"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException (Assumed diagram\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/zinano-86-zeke427"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Syntax Error? (Assumed diagram type: sequence)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
+    },
+    {
+      "match": {
+        "id": "svg-ditaa/pibite-04-xiba436"
+      },
+      "scope": "svg-conformance ditaa ledger (MIT edition has no ditaa -- ruling 2026-11-04)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#111): ditaa is dropped. Upstream comments out PSystemDitaaFactory for MIT (PSystemBuilder.java:165-167), and the library it calls, org.stathissideris.ascii2image, is LGPL-3.0-or-later in 26 of its 28 files. The oracle is the GPL build, which writes a PNG even when asked for SVG, so the survey prints oracle-error. We draw the unknown-diagram sentinel."
+    },
+    {
+      "match": {
+        "id": "svg-ditaa/xegota-93-tido298"
+      },
+      "scope": "svg-conformance ditaa ledger (MIT edition has no ditaa -- ruling 2026-11-04)",
+      "acceptedAt": "2026-11-04",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-04 (#111): ditaa is dropped. Upstream comments out PSystemDitaaFactory for MIT (PSystemBuilder.java:165-167), and the library it calls, org.stathissideris.ascii2image, is LGPL-3.0-or-later in 26 of its 28 files. The oracle is the GPL build, which writes a PNG even when asked for SVG, so the survey prints oracle-error. We draw the unknown-diagram sentinel."
     }
   ],
   "retired": [

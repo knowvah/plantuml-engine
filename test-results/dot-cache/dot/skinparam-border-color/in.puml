@@ -1,0 +1,8 @@
+@startdot
+skinparam BorderColor #CC0000
+digraph G {
+  a [shape=box]
+  b [shape=ellipse]
+  a -> b
+}
+@enddot

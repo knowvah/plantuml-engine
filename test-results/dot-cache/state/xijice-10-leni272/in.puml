@@ -1,0 +1,7 @@
+@startuml
+scale 400 x 800
+[*] -l-> left
+[*] -r-> right
+[*] -u-> up
+[*] -d-> down
+@enduml

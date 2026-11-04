@@ -9,6 +9,7 @@
  * field, so it carries that label when there is one, else the first label
  * (the pre-existing single-stereotype behaviour), lowercased.
  */
+import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import { boxStyleName } from './tiles/gtile-action.js';
 
 /** `Stereogroup.java:70`'s `pattern`. */
@@ -32,5 +33,7 @@ const BACK_COLOR_LABEL = /^#\w+(?:[-\\|/]\w+)?$/;
 export function stereogroupBackColor(group: string | undefined): string | undefined {
   if (group === undefined) return undefined;
   const colors = [...group.matchAll(STEREO_LABEL)].map((m) => m[1]!.trim()).filter((l) => BACK_COLOR_LABEL.test(l));
-  return colors.at(-1);
+  const last = colors.at(-1);
+  // `new Colors(label, set, ColorType.BACK)` throws on an unknown one: `colorOrNeutral`'s doc.
+  return last === undefined ? undefined : colorOrNeutral(last);
 }

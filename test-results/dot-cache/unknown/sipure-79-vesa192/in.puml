@@ -1,0 +1,31 @@
+@startuml
+digraph unix {
+
+subgraph cluster1_alpha {
+label="cluster_alpha";
+
+subgraph cluster1_beta {
+label="cluster_beta";
+{ rank=source; a; }
+
+subgraph cluster1_gamma {
+label="cluster_gamma";
+  { rank=source; b1;b2;b3;b4;b5; b1->b2->b3->b4->b5}
+  c -> d;
+data;
+  { rank=sink; y1;y2;y3;y4 ; y1->y2->y3->y4}
+}
+}
+
+  { rank=sink; z [label="ddddddddddddddddddddddddddddddddddddddddddddddd"] ;}
+y1->z;
+y2->z;
+y3->z;
+y4->z;
+
+
+}
+
+
+}
+@enduml

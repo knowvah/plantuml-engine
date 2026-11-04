@@ -1,0 +1,272 @@
+{
+  "generatedAt": "2026-11-04T01:05:40.249Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "ebnf",
+  "measurer": "deterministic",
+  "fixtures": [
+    {
+      "slug": "bajika-11-levo224",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "bicuko-51-voso723",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "butiti-18-tava797",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "caruma-16-kepo348",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "cijome-77-desu236",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "cizici-33-joru358",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "cukoka-73-ziba432",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "dalize-70-keri526",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "derixi-63-jemi851",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "dibazi-59-cena179",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "futoba-53-loto960",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "gameza-62-domu542",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "gegapo-29-xibu746",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "gipesi-09-lage677",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "jecuju-35-nagu625",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "jufupa-29-cuge382",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "kecaba-08-goda572",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "kunuco-05-vifo244",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "ladifa-97-keme950",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "lelulo-71-lida220",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "likaki-72-cegu468",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "nakupi-96-xute398",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "nenuti-93-lode629",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "nilibi-99-fasi125",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "nirime-95-kovi713",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "panacu-44-lube224",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "pigari-92-kune095",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "recaja-58-jera008",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rexara-73-jupi969",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rivato-06-zaxe166",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rizupo-24-gomi662",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rocuco-26-moza618",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "rukupo-54-tomu177",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "sonamo-91-cune759",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "sotule-00-toco195",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "sucuju-90-zabi310",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "sumomo-26-nija644",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "vecece-08-zuxe140",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "vevico-54-poxi237",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "xatala-84-jalu735",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "xujeje-84-difo095",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "zesesu-64-gogu273",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "zokone-20-xuja185",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    },
+    {
+      "slug": "zosozi-62-sodi563",
+      "status": "ok",
+      "diffCount": 11,
+      "bucket": "11-30"
+    }
+  ]
+}

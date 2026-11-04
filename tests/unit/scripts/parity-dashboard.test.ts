@@ -24,6 +24,8 @@ import {
   zeroDiffCount,
   registeredEngineTypes,
   loadSurveyByType,
+  jarTagOf,
+  unknownShortfallTagsOf,
 } from '../../../scripts/parity-dashboard-inputs.js';
 import { ratchetPinsOf, diffBaselineStatsOf, groupBaselineByType } from '../../../scripts/parity-dashboard-goldens.js';
 import {
@@ -32,7 +34,7 @@ import {
   surveyColumn,
   layoutEqualColumn,
 } from '../../../scripts/parity-dashboard-matrix.js';
-import { noteSymbolOf, notesSection, markedType } from '../../../scripts/parity-dashboard-notes.js';
+import { noteSymbolOf, notesSection, markedType, unknownDetail } from '../../../scripts/parity-dashboard-notes.js';
 import type { TypeRow } from '../../../scripts/dot-parity-rows.js';
 import type { FixtureRow } from '../../../scripts/svg-parity-survey.js';
 
@@ -55,7 +57,9 @@ function baseInputs(): RawInputs {
     corpusCounts: { class: 768, component: 384, ditaa: 2, sequence: 1271, unknown: 825 },
     registeredEngines: ['class', 'description', 'sequence'],
     oracleCounts: { class: 723, component: 266, sequence: 1141 },
+    oracleCoverage: { rows: 3250, oracled: 2130, reasoned: 2 },
     jarUnsupportedCounts: {},
+    unknownJarTags: {},
     dotParity: {
       generatedAt: '2026-09-20T14:44:15.369Z',
       measuredAgainstCommit: 'bdd3344e',
@@ -159,17 +163,21 @@ describe('buildMatrix', () => {
     inputs.surveyByType['ditaa'] = { conformant: 0, structural: 0, diverged: 2, generatedAt: '2026-09-20' };
     inputs.routingByType['ditaa'] = { counts: { agree: 2 }, total: 2, measuredAt: '2026-09-20' };
     const r = buildMatrix(inputs).find((x) => x.type === 'ditaa')!;
-    expect(r.engine).toBe('n/a (no engine (D8 todo))');
+    expect(r.engine).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     expect(r.oracle).toBe('2');
     for (const cell of [r.dot, r.survey, r.census, r.ratchet, r.diffBaseline, r.routing, r.refusal]) {
-      expect(cell).toBe('n/a (no engine (D8 todo))');
+      expect(cell).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     }
     const f = buildFreshness(inputs).find((x) => x.type === 'ditaa')!;
     expect([f.survey, f.routing]).toEqual([undefined, undefined]);
   });
 
-  it('gives ditaa a D-row "no engine" reason, not a bare n/a', () => {
-    expect(row('ditaa').engine).toBe('n/a (no engine (D8 todo))');
+  it('gives ebnf a D-row "no engine" reason, not a bare n/a', () => {
+    expect(engineCell('ebnf', [])).toBe('n/a (no engine (D10 todo))');
+  });
+
+  it('says ditaa is dropped, not owed', () => {
+    expect(row('ditaa').engine).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     expect(row('ditaa').oracle).toBe('n/a (no oracle captured)');
   });
 
@@ -267,9 +275,22 @@ describe('renderReport', () => {
     expect(out).toContain('Freshest measurement across every source below: 2026-09-20T14:44:15.369Z.');
   });
 
+  it('states that corpus counts manifest rows and oracle counts cached rows placed by the jar (ogc D2)', () => {
+    expect(out).toContain('**corpus** counts manifest rows, which `scripts/classify-corpus.ts` guessed by keyword');
+    expect(out).toContain("placed by the jar's own `data-diagram-type`");
+  });
+
+  it('prints the oracle coverage line from the inputs, never the clock or the disk', () => {
+    expect(out).toContain(
+      'Oracle coverage: 2130 of 3250 manifest rows have a jar oracle under some bucket and 2 a recorded reason in ' +
+        '`oracle/no-oracle-reasons.json`; `tests/oracle/svg-conformance/oracle-coverage.test.ts` fails on a row with neither.',
+    );
+  });
+
   it('renders the matrix header and a class row', () => {
     expect(out).toContain('| type | engine | corpus | oracle | DOT equal |');
-    expect(out).toContain('| class | class | 768 | 723 | 710/711 (100%) |');
+    // class carries the openDefect mark here because the synthetic survey (412 / 50 / 261) falls short (ogc-T8).
+    expect(out).toContain('| class § | class | 768 | 723 | 710/711 (100%) |');
   });
 
   it('renders the freshness table', () => {
@@ -284,7 +305,7 @@ describe('renderReport', () => {
   it('AC2: every n/a in the Matrix table matches the D8 vocabulary, no bare n/a', () => {
     const tableBlock = out.slice(out.indexOf('## Matrix'), out.indexOf('## Freshness'));
     const vocab =
-      /^n\/a \((no engine \(D\d+ todo\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-ts only|engine, unclassifiable corpus|accounting bucket)\)$/;
+      /^n\/a \((no engine \((?:D\d+ todo|dropped by ruling \d{4}-\d{2}-\d{2})\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-ts only|engine, unclassifiable corpus|accounting bucket)\)$/;
     for (const line of tableBlock.split('\n').filter((l) => l.startsWith('| '))) {
       for (const cell of line.split('|').map((c) => c.trim())) {
         if (cell.startsWith('n/a')) expect(cell).toMatch(vocab);
@@ -523,8 +544,8 @@ describe('engineCell', () => {
 
 describe('noEngineColumn', () => {
   it('fires for a no engine (Dn todo) cell', () => {
-    expect(noEngineColumn('n/a (no engine (D8 todo))')).toEqual({
-      cell: 'n/a (no engine (D8 todo))',
+    expect(noEngineColumn('n/a (no engine (dropped by ruling 2026-11-04))')).toEqual({
+      cell: 'n/a (no engine (dropped by ruling 2026-11-04))',
       freshness: undefined,
     });
   });
@@ -572,7 +593,8 @@ describe('matrix notes: why a row falls short', () => {
   });
 
   it('never marks a row with no recorded reason', () => {
-    expect(noteSymbolOf('class', '412 / 50 / 261')).toBeUndefined();
+    // gantt has no ROW_NOTES entry (ogc-T8: class, activity, sequence and dot gained one on 2026-11-04).
+    expect(noteSymbolOf('gantt', '200 / 50 / 15')).toBeUndefined();
   });
 
   it('puts the mark in the type cell', () => {
@@ -611,5 +633,123 @@ describe('matrix notes: why a row falls short', () => {
     const notes = out.indexOf('### Why a row falls short');
     expect(notes).toBeGreaterThan(out.indexOf('## Matrix'));
     expect(notes).toBeLessThan(out.indexOf('## Freshness'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The generated `unknown` note (parity-dashboard-repair T3, D4): the shortfall
+// sentence is built from the survey rows and each row's cached jar type tag,
+// never hand-written, so a re-survey cannot leave it stale.
+// ---------------------------------------------------------------------------
+
+const UNSUPPORTED_HEAD =
+  '<svg xmlns="http://www.w3.org/2000/svg"><g><text x="5" y="14.333" fill="#000" font-size="12" ' +
+  'textLength="248.775" font-weight="700">Diagram not supported by this release of PlantUML</text></g></svg>';
+
+describe('jarTagOf', () => {
+  it('returns the data-diagram-type value', () => {
+    expect(jarTagOf('<svg xmlns="http://www.w3.org/2000/svg" data-diagram-type="NWDIAG" width="1"><g/>')).toBe(
+      'NWDIAG',
+    );
+  });
+
+  it("returns 'unsupported' for the jar's unsupported-diagram page, never 'none'", () => {
+    expect(jarTagOf(UNSUPPORTED_HEAD)).toBe('unsupported');
+  });
+
+  it("returns 'none' for an untagged render", () => {
+    expect(jarTagOf('<svg xmlns="http://www.w3.org/2000/svg" width="1"><g/></svg>')).toBe('none');
+    expect(jarTagOf('<svg data-diagram-type=""><g/></svg>')).toBe('none');
+  });
+});
+
+describe('unknownShortfallTagsOf', () => {
+  const tempDirs: string[] = [];
+  afterEach(() => {
+    for (const d of tempDirs.splice(0)) rmSync(d, { recursive: true, force: true });
+  });
+  function writeUnknownRow(cache: string, slug: string, svg: string): void {
+    const dir = join(cache, 'unknown', slug);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'in.svg'), svg);
+  }
+
+  it('tallies the jar tag of every unknown row short of conformant; a missing cache entry counts as none', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pdg-unknown-'));
+    tempDirs.push(root);
+    const conformance = join(root, 'svg-conformance');
+    const cache = join(root, 'dot-cache');
+    mkdirSync(conformance, { recursive: true });
+    const row = (slug: string, verdict: string): object => ({ slug, type: 'unknown', verdict, dotEqual: false });
+    writeFileSync(
+      join(conformance, 'parity-unknown.json'),
+      JSON.stringify({
+        generatedAt: '2026-11-03T10:01:20.371Z',
+        fixtures: [
+          row('ok', 'conformant'),
+          row('nw', 'diverged'),
+          row('nw2', 'structural-match'),
+          row('desc', 'diverged'),
+          row('declined', 'diverged'),
+          row('nocache', 'diverged'),
+        ],
+      }),
+    );
+    writeUnknownRow(cache, 'ok', '<svg data-diagram-type="CLASS"/>');
+    writeUnknownRow(cache, 'nw', '<svg data-diagram-type="NWDIAG"/>');
+    writeUnknownRow(cache, 'nw2', '<svg data-diagram-type="NWDIAG"/>');
+    writeUnknownRow(cache, 'desc', '<svg data-diagram-type="DESCRIPTION"/>');
+    writeUnknownRow(cache, 'declined', UNSUPPORTED_HEAD);
+    expect(unknownShortfallTagsOf(conformance, cache)).toEqual({ NWDIAG: 2, DESCRIPTION: 1, unsupported: 1, none: 1 });
+  });
+
+  it('returns an empty tally when no unknown survey exists', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pdg-unknown-'));
+    tempDirs.push(root);
+    expect(unknownShortfallTagsOf(root, join(root, 'dot-cache'))).toEqual({});
+  });
+});
+
+describe('unknownDetail', () => {
+  it('states the four groups exactly, tags lower-cased with counts', () => {
+    expect(unknownDetail({ DESCRIPTION: 2, NWDIAG: 3, none: 1, unsupported: 1 }, ['description'])).toBe(
+      "Of the 7 fixtures short of conformant, by PlantUML's own type: 2 are types we draw imperfectly " +
+        '(description 2); 3 have no engine yet (nwdiag 3); 1 carries no type tag (creole, math, LaTeX and error ' +
+        'pages); 1 is a page PlantUML itself declines.',
+    );
+  });
+
+  it('lists tags count-descending, then by name, and omits an empty group', () => {
+    expect(unknownDetail({ TIMING: 2, BPM: 2, NWDIAG: 5, ACTIVITY: 1 }, ['activity'])).toBe(
+      "Of the 10 fixtures short of conformant, by PlantUML's own type: 1 is a type we draw imperfectly " +
+        '(activity 1); 9 have no engine yet (nwdiag 5, bpm 2, timing 2).',
+    );
+  });
+
+  it('produces no sentence for an empty tally, and the class text still renders for the row', () => {
+    expect(unknownDetail({}, ['description'])).toBeUndefined();
+    const notes = notesSection([{ type: 'unknown', survey: '557 / 19 / 249 (25 error)' }]);
+    expect(notes).toContain('**¶** **Mixed bucket.**');
+    expect(notes).toContain('Applies to unknown.');
+    expect(notes).not.toContain('- **unknown:**');
+  });
+
+  it('notesSection prints a generated detail as the row sentence', () => {
+    const notes = notesSection([{ type: 'unknown', survey: '557 / 19 / 249 (25 error)' }], {
+      unknown: 'Of the 268 fixtures short of conformant.',
+    });
+    expect(notes).toContain('- **unknown:** Of the 268 fixtures short of conformant.');
+    expect(notes).not.toContain('Applies to unknown.');
+  });
+
+  it('the committed survey: the generated total equals the unknown row’s structural + diverged count', () => {
+    const inputs = loadInputs();
+    const model = buildReportModel(inputs);
+    const row = model.matrix.find((r) => r.type === 'unknown')!;
+    const counts = /^\d+ \/ (\d+) \/ (\d+)/.exec(row.survey)!;
+    const short = Number(counts[1]) + Number(counts[2]);
+    const total = /^Of the (\d+) fixtures/.exec(model.unknownDetail ?? '')!;
+    expect(Number(total[1])).toBe(short);
+    expect(renderReport(model)).toContain(`- **unknown:** Of the ${short} fixtures`);
   });
 });

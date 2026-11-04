@@ -46,11 +46,12 @@
  */
 
 import type { State, StateDiagramAST } from './ast.js';
+import { labelStyleOf, type LabelStyle } from './state-transition-label.js';
 import type { Theme } from '../../core/theme.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import { layoutGraph } from '../../core/graph-layout.js';
 import type { DotInputGraph, DotLayoutResult } from '../../core/graph-layout.js';
-import { buildStateGeoTextFields } from './state-sizing.js';
+import { buildStateGeoTextFields, hidesEmptyDescription } from './state-sizing.js';
 import { classifyDiagram, resolveEndpoint } from './state-composite-classify.js';
 import { hasLocalContent } from './state-composite-detect.js';
 import { buildLeafNode } from './state-leaf-node.js';
@@ -58,7 +59,7 @@ import { resolveAllAutonomPasses } from './state-composite-autonom.js';
 import { resolveClusterComposite } from './state-composite-cluster.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import { STATE_BODY_BUCKET, STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
-import { inlineBack } from './state-render-colors.js';
+import { inlineBack, stateRoundCornerOf } from './state-render-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { buildNoteGraphPartsByScope, sweepOrphanNoteEdges } from './state-note-layout.js';
@@ -71,6 +72,8 @@ import {
   sortSpecsByCreationIndex,
   sortSpecsByDocumentOrder,
   addLocalPseudoNodes,
+  pseudoNodeItems,
+  runInCreationOrder,
   levelEndpointId,
 } from './state-composite-pseudo.js';
 export { scopedPseudoIds, sortSpecsByCreationIndex, sortSpecsByDocumentOrder, addLocalPseudoNodes, levelEndpointId };
@@ -110,7 +113,11 @@ export const ANCHOR_SIZE = 0.72;
  *  measurement site. */
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 
-export function newAccumulator(labelFont?: FontSpec, measurer?: StringMeasurer): PassAccumulator {
+export function newAccumulator(
+  labelFont?: FontSpec,
+  measurer?: StringMeasurer,
+  labelStyle?: LabelStyle,
+): PassAccumulator {
   return {
     nodes: [],
     edges: [],
@@ -119,6 +126,7 @@ export function newAccumulator(labelFont?: FontSpec, measurer?: StringMeasurer):
     edgeSources: [],
     ...(labelFont !== undefined ? { labelFont } : {}),
     ...(measurer !== undefined ? { measurer } : {}),
+    ...(labelStyle !== undefined ? { labelStyle } : {}),
   };
 }
 
@@ -185,8 +193,7 @@ function resolvesSouthCapInk(s: State, theme: Theme): boolean {
   // not a `UPath`, so `drawRectangle`'s `-1` inset applies and there is no
   // extra px. `Cluster.java:321` reads the radius off `PName.RoundCorner`
   // and `Cluster.java:323-324` forces it to 0 under `strictUmlStyle()`.
-  const rounded =
-    theme.strictUml === true ? 0 : (theme.colors.graph.stateCascadeRoundCorner ?? STATE_DEFAULT_ROUND_CORNER);
+  const rounded = theme.strictUml === true ? 0 : (stateRoundCornerOf(theme) ?? STATE_DEFAULT_ROUND_CORNER);
   if (rounded === 0) return false;
   const resolved = resolveSouthBackColor(s, theme);
   return resolved !== undefined && !isTransparentColor(resolved);
@@ -241,7 +248,7 @@ export function resolveMember(
       id: s.id,
       stateKind: s.kind,
       display: s.display,
-      ...buildStateGeoTextFields(s, ctx.theme, ctx.measurer, ctx.hideEmptyDescription),
+      ...buildStateGeoTextFields(s, ctx.theme, ctx.measurer, hidesEmptyDescription(s, ctx.hideEmptyDescription)),
       ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),
     };
   }
@@ -319,9 +326,19 @@ export function buildTopLevelPass(
     pseudoCreationIndex: ast.pseudoCreationIndex ?? new Map(),
   };
   resolveAllAutonomPasses(ctx);
-  const acc = newAccumulator(resolveArrowLabelFont(theme), measurer);
-  const specs = ast.states.map((s) => resolveMember(s, acc, ctx, undefined));
-  const pseudoSpecs = addLocalPseudoNodes('', ast.transitions, acc, ctx.pseudoCreationIndex);
+  const acc = newAccumulator(resolveArrowLabelFont(theme), measurer, labelStyleOf(theme));
+  // stdd T6b: root leafs and the root `[*]` in creation order (`Entity.java:649-657`,
+  // `GraphvizImageBuilder.java:348-354`), as `resolveClusterComposite` does for a cluster.
+  const specById = new Map<string, GeoSpec>();
+  const pseudoSpecs: GeoSpec[] = [];
+  runInCreationOrder([
+    ...ast.states.map((s) => ({
+      ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),
+      run: () => specById.set(s.id, resolveMember(s, acc, ctx, undefined)),
+    })),
+    ...pseudoNodeItems('', ast.transitions, acc, ctx.pseudoCreationIndex, (spec) => pseudoSpecs.push(spec)),
+  ]);
+  const specs = ast.states.map((s) => specById.get(s.id)!);
   const noteSpecs = addScopeNotes('', ctx, acc, [...specs, ...pseudoSpecs]);
   addLevelEdges('', ast.transitions, acc, ctx);
   sweepOrphanEdges(acc, ctx);

@@ -83,6 +83,38 @@
       "message": "",
       "provenance": "oracle-widths"
     },
+    "dot/comment-stripping": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/rankdir-lr-pipeline": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/style-combined-node-edge": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/style-diagram-background": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/style-edge-color": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/style-node-background": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/style-node-border": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
+    "dot/title-only": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: dot)"
+    },
     "ebnf/ladifa-97-keme950": {
       "line": 5,
       "message": "Syntax Error? (Assumed diagram type: ebnf)"
@@ -207,9 +239,21 @@
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
     },
+    "unknown/besixo-40-rige905": {
+      "line": 10,
+      "message": "This looks like a salt diagram. Please use @startsalt instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/bisava-80-gefo968": {
+      "line": 22,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
     "unknown/bupexo-79-sijo243": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/cazace-10-nebi625": {
+      "line": null,
+      "message": ""
     },
     "unknown/dagugu-60-zuli109": {
       "line": 6,
@@ -219,17 +263,69 @@
       "line": 10,
       "message": "Unknown \"line\" (Assumed diagram type: timing)"
     },
+    "unknown/dativu-03-fiba342": {
+      "line": 3,
+      "message": "Cannot use local variable here"
+    },
+    "unknown/delisi-38-bupi176": {
+      "line": 4,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/dirude-48-zufe697": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: activity)"
+    },
     "unknown/dobujo-29-rifo090": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/dulone-62-neri182": {
+      "line": 7,
+      "message": "Map already exists: CapitalCity (Assumed diagram type: class)"
+    },
+    "unknown/duluve-89-mati167": {
+      "line": 5,
+      "message": "No such color (Assumed diagram type: activity)"
+    },
+    "unknown/fajesi-79-pode068": {
+      "line": 4,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/fegafi-82-xiri255": {
+      "line": 3,
+      "message": "Bad name (Assumed diagram type: class)"
+    },
+    "unknown/fepopu-85-pida073": {
+      "line": 4,
+      "message": "No such color"
     },
     "unknown/fikaka-55-jeva969": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
     },
+    "unknown/foxufo-19-nuco936": {
+      "line": 4,
+      "message": "Bad name (Assumed diagram type: class)"
+    },
+    "unknown/furita-76-voka334": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/gefoci-23-kato465": {
+      "line": 25,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
     "unknown/gibapi-78-fote878": {
       "line": null,
       "message": ""
+    },
+    "unknown/gogumi-05-lare595": {
+      "line": 8,
+      "message": "This function is already defined"
+    },
+    "unknown/gucijo-35-jolo092": {
+      "line": 2,
+      "message": "Scale cannot be zero (Assumed diagram type: sequence)"
     },
     "unknown/gujeku-90-jisa609": {
       "line": 5,
@@ -243,13 +339,37 @@
       "line": 6,
       "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
     },
+    "unknown/jicogu-02-cani636": {
+      "line": 49,
+      "message": "Cannot create Order because it already exists (Assumed diagram type: class)"
+    },
     "unknown/jifoke-84-jude859": {
       "line": 40,
       "message": "Syntax Error? (Assumed diagram type: nwdiag)"
     },
+    "unknown/jigapa-14-fese403": {
+      "line": 8,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/kelaca-68-goju321": {
+      "line": 5,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/kepife-84-jigi755": {
+      "line": 2,
+      "message": "No such color (Assumed diagram type: class)"
+    },
+    "unknown/kesogi-76-keco873": {
+      "line": 8,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
     "unknown/kijaro-77-vomi552": {
       "line": null,
       "message": ""
+    },
+    "unknown/kisaze-31-tumo454": {
+      "line": 8,
+      "message": "Missing expression"
     },
     "unknown/kokofa-47-deni140": {
       "line": 7,
@@ -263,66 +383,338 @@
       "line": 2,
       "message": "Empty description (Assumed diagram type: sequence)"
     },
+    "unknown/kozaju-75-xote548": {
+      "line": 20,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/kucije-25-rizo578": {
+      "line": 7,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
     "unknown/kutazo-93-vumu267": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/lefili-64-cedu574": {
+      "line": 16,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/legapu-10-bibe924": {
+      "line": 4,
+      "message": "Syntax Error? (Assumed diagram type: timing)"
+    },
+    "unknown/leseku-63-ruda113": {
+      "line": 3,
+      "message": "No such color (Assumed diagram type: activity)"
     },
     "unknown/ligalo-62-suvu444": {
       "line": 3,
       "message": "Syntax Error? (Assumed diagram type: nwdiag)"
     },
+    "unknown/livoso-58-cada325": {
+      "line": 10,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/lofipa-95-gere133": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/lokuxi-74-daje287": {
+      "line": 6,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
     "unknown/lonome-59-lego635": {
       "line": null,
       "message": ""
+    },
+    "unknown/losote-76-beki147": {
+      "line": 6,
+      "message": "Object already exists: user (Assumed diagram type: class)"
     },
     "unknown/lulanu-89-tase004": {
       "line": null,
       "message": ""
     },
+    "unknown/lutogi-41-jada237": {
+      "line": 8,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/malime-00-veja596": {
+      "line": 21,
+      "message": "No if for this else (Assumed diagram type: activity)"
+    },
     "unknown/micono-65-juka195": {
       "line": null,
       "message": ""
+    },
+    "unknown/mizoso-04-susi104": {
+      "line": 4,
+      "message": "Assertion error : This always fail"
+    },
+    "unknown/moragi-03-luto111": {
+      "line": 3,
+      "message": "Function not found %dirpath"
+    },
+    "unknown/mucajo-31-lifo004": {
+      "line": 9,
+      "message": "This element (Provider) is already defined (Assumed diagram type: component)"
+    },
+    "unknown/mufepu-87-vuje381": {
+      "line": 9,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
     },
     "unknown/nakavu-98-pela661": {
       "line": 5,
       "message": "This swimlane must be defined at the start of the diagram. (Assumed diagram type: activity)"
     },
+    "unknown/necufe-72-molu081": {
+      "line": 33,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/nekote-79-pori818": {
+      "line": 3,
+      "message": "This element (sameid) is already defined (Assumed diagram type: component)"
+    },
     "unknown/nifosu-42-gubi213": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/ninimo-77-buda609": {
+      "line": 7,
+      "message": "No return directive found in your function"
+    },
+    "unknown/nisifi-61-nela571": {
+      "line": 2,
+      "message": "Cannot load theme foo"
     },
     "unknown/nixuje-20-bobu879": {
       "line": 2,
       "message": "No such internal sprite: archimate/strategy-value-stream (Assumed diagram type: sequence)"
     },
+    "unknown/notevi-43-sita948": {
+      "line": 23,
+      "message": "Cannot create Order because it already exists (Assumed diagram type: class)"
+    },
+    "unknown/nubuge-50-cunu533": {
+      "line": 9,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/nudoji-00-mafe679": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
     "unknown/pajojo-12-kixi425": {
       "line": 6,
       "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/pajude-35-jisu021": {
+      "line": 18,
+      "message": "Syntax Error? (Assumed diagram type: component)"
+    },
+    "unknown/patome-78-sedo776": {
+      "line": 9,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/pavapo-86-juni007": {
+      "line": 27,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/paxeme-29-roma826": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/pedoze-30-xoxo765": {
+      "line": 3,
+      "message": "Bad hierarchy for class javax.sound.sampled.AudioFormat.Encoding (Assumed diagram type: class)"
     },
     "unknown/petiku-70-fogu777": {
       "line": 9,
       "message": "Cannot create bar because it already exists (Assumed diagram type: class)"
     },
+    "unknown/pevoma-08-vido726": {
+      "line": 1,
+      "message": "Empty description (Assumed diagram type: sequence)"
+    },
     "unknown/pizegi-06-jiro383": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/rajuku-54-tobi199": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/rakidu-53-mopu785": {
+      "line": null,
+      "message": ""
+    },
+    "unknown/rapeba-21-jonu784": {
+      "line": 25,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/rapepo-10-gena461": {
+      "line": 5,
+      "message": "Syntax Error? (Assumed diagram type: activity)"
+    },
+    "unknown/revosa-68-goci965": {
+      "line": 3,
+      "message": "Not a package: b (Assumed diagram type: class)"
+    },
+    "unknown/riceki-05-kaga613": {
+      "line": 26,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/riguga-63-mujo058": {
+      "line": 26,
+      "message": "After create command, you have to send a message to \"Node C\" (Assumed diagram type: sequence)"
+    },
+    "unknown/rogoxa-80-mori838": {
+      "line": 5,
+      "message": "Bad name (Assumed diagram type: class)"
     },
     "unknown/rubebe-45-sura795": {
       "line": null,
       "message": "",
       "provenance": "oracle-widths"
     },
+    "unknown/rubife-18-nege510": {
+      "line": 4,
+      "message": "Syntax Error? (Assumed diagram type: component)"
+    },
+    "unknown/sabafe-32-viju467": {
+      "line": 13,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/sabini-14-zeto228": {
+      "line": 12,
+      "message": "Syntax Error? (Assumed diagram type: activity)"
+    },
+    "unknown/sadadi-28-xago848": {
+      "line": 4,
+      "message": "Assertion error"
+    },
+    "unknown/selopi-16-sizu607": {
+      "line": 3,
+      "message": "Missing starting box (Assumed diagram type: sequence)"
+    },
+    "unknown/sipure-79-vesa192": {
+      "line": 31,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/sirimo-08-ceju218": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/sisufo-96-bigi507": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: component)"
+    },
+    "unknown/sosudi-70-jape391": {
+      "line": 5,
+      "message": "You cannot Activate/Deactivate just after a ... (Assumed diagram type: sequence)"
+    },
+    "unknown/sunuli-13-geju490": {
+      "line": 3,
+      "message": "Bad hierarchy for class com.Toto.Internal (Assumed diagram type: class)"
+    },
+    "unknown/sutisu-89-kapa227": {
+      "line": 32,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/tejode-58-robi567": {
+      "line": 8,
+      "message": "Syntax Error? (Assumed diagram type: state)"
+    },
+    "unknown/teoz-ng-001-10": {
+      "line": null,
+      "message": ""
+    },
+    "unknown/teoz-ng-001-9": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/teruzi-64-mitu401": {
+      "line": 19,
+      "message": "Fatal parsing error"
+    },
     "unknown/tmp1-1": {
       "line": 5,
       "message": "This swimlane must be defined at the start of the diagram. (Assumed diagram type: activity)"
+    },
+    "unknown/tobafo-52-libo419": {
+      "line": 13,
+      "message": "Unknown time label (Assumed diagram type: timing)"
     },
     "unknown/torazi-09-gago377": {
       "line": 13,
       "message": "Element already in another group. (Assumed diagram type: nwdiag)"
     },
+    "unknown/tukepa-96-mizo038": {
+      "line": 28,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
     "unknown/tumepe-28-zuma441": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/vebete-87-cise861": {
+      "line": 8,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/veseli-80-setu168": {
+      "line": 8,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/vevatu-41-xixo630": {
+      "line": 43,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/vikinu-17-dano008": {
+      "line": 6,
+      "message": "Fatal parsing error"
+    },
+    "unknown/vofumu-22-juge103": {
+      "line": 13,
+      "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/vuveno-42-toza400": {
+      "line": 8,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/xabipu-35-kece197": {
+      "line": 14,
+      "message": "No inner state defined (Assumed diagram type: state)"
+    },
+    "unknown/xadepe-11-noja686": {
+      "line": 3,
+      "message": "Not a package: Toto (Assumed diagram type: class)"
+    },
+    "unknown/xatele-45-gato016": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/xexuza-21-kifa053": {
+      "line": 5,
+      "message": "Not known: compo (Assumed diagram type: component)"
+    },
+    "unknown/xifefo-08-gubu704": {
+      "line": 12,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/xirine-12-zife795": {
+      "line": 2,
+      "message": "Fatal parsing error"
+    },
+    "unknown/xirupa-50-dedu497": {
+      "line": 4,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/xozabi-32-tagi234": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: class)"
+    },
+    "unknown/zalulo-78-voma912": {
+      "line": 13,
+      "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException (Assumed diagram type: class)"
     },
     "unknown/zeceme-22-rade890": {
       "line": 6,
@@ -340,9 +732,17 @@
       "line": 3,
       "message": "Syntax Error? (Assumed diagram type: activity)"
     },
+    "unknown/zinano-86-zeke427": {
+      "line": 3,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
     "unknown/zodude-13-tito074": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: sequence)"
+    },
+    "unknown/zonidi-66-buge014": {
+      "line": 8,
+      "message": "This function is already defined"
     },
     "unknown/zugazo-84-raju675": {
       "line": null,

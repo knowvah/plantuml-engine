@@ -1,0 +1,9 @@
+@startuml
+start
+repeat :foo as starting label;
+  :read data;
+  :generate diagrams; <<ouput>>
+  backward :This is backward; <<ouput>>
+repeat while (more data?)
+end
+@enduml

@@ -1,0 +1,15 @@
+@startuml
+start
+
+if (A) then
+        :AA;
+        -[#black]-> out1;
+    elseif (B) then
+        :BB;
+    else
+    :EE;
+        -[#black]-> out2;
+    endif
+
+stop
+@enduml

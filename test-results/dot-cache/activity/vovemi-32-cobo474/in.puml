@@ -1,0 +1,17 @@
+@startuml
+
+:text 1;
+
+switch ()
+case (case 1)
+    :text 2;
+    ->this is invisible1;
+case (case 2)
+    :text 3;
+    ->this is invisible2;
+case (this is invisible as well3)
+endswitch
+
+stop
+
+@enduml

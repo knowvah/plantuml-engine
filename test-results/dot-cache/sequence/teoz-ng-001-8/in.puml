@@ -1,0 +1,33 @@
+@startuml
+participant A
+participant C
+participant B
+
+activate A #FireBrick
+activate B #FireBrick
+
+A -> B
+activate B #Yellow
+
+activate C #FireBrick
+
+A -> C
+C --> A
+
+deactivate B
+deactivate C
+A -> C
+
+activate A #LightBlue
+activate C #Green
+C ->> B
+C --> A
+deactivate C
+
+A -> C : need to send\nmessage otherwise\nerror
+activate C #Green
+C ->> B
+C --> A
+deactivate C
+
+@enduml

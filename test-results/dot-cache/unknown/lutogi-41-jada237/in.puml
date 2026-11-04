@@ -1,0 +1,8 @@
+@startuml
+digraph unix {
+cl6;cl1 ;cl3 ;
+cl1 -> cl3;
+cl1 -> cl6;
+cl6 -> cl3;
+}
+@enduml

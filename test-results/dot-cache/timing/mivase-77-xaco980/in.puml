@@ -1,0 +1,15 @@
+@startuml
+analog "Vcore" as VDD
+analog "VCC" as VCC
+
+@0
+VDD is 0
+VCC is 0
+@2
+VDD is 0
+@3
+VDD is 6
+VCC is 5
+'this does not
+VDD@1 -> VCC@2 : "test"
+@enduml

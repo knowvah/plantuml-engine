@@ -1,0 +1,11 @@
+@startuml
+participant A
+participant B
+participant C
+participant D
+participant E
+group
+A->? : M1
+?->E : M2
+end
+@enduml

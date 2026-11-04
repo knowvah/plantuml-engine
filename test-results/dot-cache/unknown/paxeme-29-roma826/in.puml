@@ -1,0 +1,7 @@
+@startuml
+participant aaa
+bouboub bbbbbbb
+
+create aaa
+bbbbbbb->aaa
+@enduml

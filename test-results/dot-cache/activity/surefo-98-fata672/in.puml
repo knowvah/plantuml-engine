@@ -1,0 +1,10 @@
+@startuml
+title foo
+split
+     -[#red]->
+     :goo;
+split again
+     :goo;
+     -[#green;#red]->
+end split
+@enduml

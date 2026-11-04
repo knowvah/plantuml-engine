@@ -1,0 +1,13 @@
+@startuml
+clock "c0" as C with period 50
+binary "Enable" as EN
+
+@0
+EN is low
+@10
+EN is high
+@60
+EN is low
+
+EN@50 <-> @70 : <color:red>Clock0\nis missing\nfrom 50 to 70
+@enduml

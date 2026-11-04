@@ -128,8 +128,15 @@ const UNUSED_STRING_BOUNDER: StringBounder = { calculateDimension: () => new XDi
  * - `'vertical'`: `AtomVerticalTexts.java:67-69`, the first stacked line's
  *   (`AtomHorizontalTexts.java:64-69`) first piece's.
  */
+/** `Bullet#calculateDimensionSlow` (`Bullet.java:57-62`): (12, 5) at order 0, else (8 + 8 * order, 3). */
+export function bulletDimension(order: number): { width: number; height: number } {
+  return order === 0 ? { width: 12, height: 5 } : { width: 8 + 8 * order, height: 3 };
+}
+
 export function creoleAtomStartingAltitude(atom: CreoleAtom): number {
   if (atom.kind === 'text') return atomTextStartingAltitude(atom.font);
+  // `Bullet#getStartingAltitude` (`Bullet.java:72-75`).
+  if (atom.kind === 'bullet') return atom.order === 0 ? -5 : -7;
   if (atom.kind === 'emoji') return emojiStartingAltitude(atom.factor);
   if (atom.kind === 'vertical') {
     return verticalTextsStartingAltitude(

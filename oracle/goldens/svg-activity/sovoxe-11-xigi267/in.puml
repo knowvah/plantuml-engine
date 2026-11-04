@@ -1,0 +1,13 @@
+@startuml
+skinparam colorArrowSeparationSpace 3
+start
+:do a;
+if (test) then
+-[dashed]->
+:do b;
+else
+-[dotted]->
+:do c;
+-[bold]->
+endif
+@enduml

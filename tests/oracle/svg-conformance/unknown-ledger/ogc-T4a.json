@@ -1,0 +1,929 @@
+{
+  "$comment": "ogc-T4a fragment (mission oracle-gap-capture, D5): the 113 legacy-activity and 19 timing rows captured by T3 that this port refuses. Two unported engines: ActivityDiagramFactory (PSystemBuilder.java:137, the arrow-based '(*) -->' syntax) and TimingDiagramFactory (PSystemBuilder.java:187). Each row names its own first refused line and the upstream command that accepts it. One row per slug, sorted; consumed by scripts/pin-corpus-tree.ts.",
+  "rows": [
+    {
+      "slug": "beteta-16-robe105",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"[[http://google.com]]' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "bokuba-91-poda774",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> VerifyReservation' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "bosaxo-35-tobo876",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Получение uid на вход\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "bukusu-11-xapi848",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"Some Test\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "cibara-51-tene699",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"Do redirect?\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "citese-33-tabu420",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"ClickServlet.handleRequest()\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "civuso-06-doni058",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 1\" <<Foo>>' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "cocuva-81-sovo188",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -->\"GoogleNode [[http://google.com]]\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "codida-16-buda206",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "Our page refuses line 3, 'note top : my note', with 'Nothing to note to (Assumed diagram type: class)'. The jar accepts it via CommandFactoryNoteActivity.createSingleLine (command/note/CommandFactoryNoteActivity.java:84-90 regex, :161-168 executeArg creates the note entity before any activity exists), registered at ActivityDiagramFactory.java:85, and then '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "comucu-92-moxi625",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Entering ValidateConnection state\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "cozepi-30-jenu085",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition P1' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "cudare-43-gosa466",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"A\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "cutuzu-67-sona398",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition Customer {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "dabogi-07-pexi463",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"this <u>is underline</u> end\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "dexedo-39-koto322",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '\"onStart()\" --> if \"In foreground?\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to description and refuse.)"
+    },
+    {
+      "slug": "difogo-94-zazu045",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "dobelu-17-gifo898",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"Do redirect?\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "dotixe-32-gifu411",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -> \"First Activity\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "dupoge-67-gimu324",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "duvosu-61-loza092",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fadeva-27-neda130",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fagure-30-giza830",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition Conductor {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "famone-77-xizo615",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"To Demonstrate Bug\" as ToDemonstrateBug' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fidaxo-55-fine838",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'clock \"c0\" as C with period 50' via CommandClock (timingdiagram/command/CommandClock.java:60-95: TYPE 'clock' at :66, optional FULL at :69-71, CODE at :73, 'with period' at :75-77), registered at TimingDiagramFactory.java:88. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fidure-04-kido928",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> ac1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fifazo-21-bafu398",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fifexu-39-defa194",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"ClickServlet.handleRequest()\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fofixo-43-doda382",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)  --> \"check input\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fojero-66-lise371",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"this activity' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fosaco-36-fazu678",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) [[http://www.yahoo.com]]--> \"activity1\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fosuge-64-jufe627",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition \"My Partition\" <<bluepartition>> {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fovafu-10-pome613",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "fozoxu-26-fibu076",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> {' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "furaka-10-cidi951",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"activity\" #red-yellow' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "futifo-20-peje131",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "gacepi-07-kuca121",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"this is' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "gegaza-72-runi183",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Web Browser\" as WB' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "geloda-84-raju269",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -down-> \"Start\" as Start' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "givuku-93-tecu624",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*top) -> \"Refresh Browser\" as refreshBrowser' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "gixacu-61-zeku163",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -> \"Proposed\" as p1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "goroju-38-cipu013",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "guliro-58-tuco434",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> ACT1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "gurise-23-nalu937",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'analog \"Vcore\" as VDD' via CommandAnalog (timingdiagram/command/CommandAnalog.java:60-84: 'analog' at :66, FULL at :68, optional 'between/from ... and/to' range at :72-78), registered at TimingDiagramFactory.java:89. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "gutapu-62-pifi954",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "guzecu-01-didu313",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> Hello' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "japasi-25-pomo480",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*top) -> \"Refresh Browser\" as refreshBrowser' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "jefico-13-caga406",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -up-> \"First Activity\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "jiribi-93-malo539",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -> \"' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "jixaxu-14-fomi163",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \" Arret de l'application \"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "jofuma-99-veta173",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Climbs on Platform\" << Begin >>' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "kadufo-68-rani515",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'analog \"Vcore\" as VDD' via CommandAnalog (timingdiagram/command/CommandAnalog.java:60-84: 'analog' at :66, FULL at :68, optional 'between/from ... and/to' range at :72-78), registered at TimingDiagramFactory.java:89. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "kagopu-40-buki320",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'clock clk with period 1' via CommandClock (timingdiagram/command/CommandClock.java:60-95: TYPE 'clock' at :66, optional FULL at :69-71, CODE at :73, 'with period' at :75-77), registered at TimingDiagramFactory.java:88. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "ketibo-86-lici933",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> test1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "kidora-88-toma064",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"A\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "kukodi-87-bigu186",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -left-> \"this activity is' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "kuxelu-50-raki710",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition Conductor' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "lepate-15-cepe800",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Web Browser\" as WB' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "letunu-28-nece533",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Datensendung stornieren\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "levima-67-gaku582",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)--> \"test1 <img:notfoundfile.png>\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "lituci-09-xino323",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "lixoju-48-gula098",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -right-> beginDay' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "lobosa-57-gozi031",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Entering ValidateConnection state\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "losulu-79-doju147",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> activity' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "lotavu-70-midu627",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)-->\"lol\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "ludovo-60-lube052",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "majabe-98-zixu304",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Something\" as A1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "malocu-14-dagu357",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'binary \"enable\" as EN' via CommandBinary (timingdiagram/command/CommandBinary.java:58-74: 'binary' at :64, optional FULL '\"...\" as' at :68-70, CODE at :72), registered at TimingDiagramFactory.java:90. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mipeci-32-toru851",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mirine-00-cedo512",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 1\" <<Foo>>' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "miruvo-57-kaco346",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -right-> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mivase-77-xaco980",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'analog \"Vcore\" as VDD' via CommandAnalog (timingdiagram/command/CommandAnalog.java:60-84: 'analog' at :66, FULL at :68, optional 'between/from ... and/to' range at :72-78), registered at TimingDiagramFactory.java:89. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "modegi-83-fava794",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> VerifyReservation' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mofipo-17-kefu403",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "moveli-39-mimi545",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mucade-49-zavo164",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mufusu-17-xobe555",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)--> \"test1 <img:HelloWorld.png>\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mulaka-88-tixo981",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"this activity' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mulogu-72-kexa206",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"this activity\" as A1' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "munada-22-suge684",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"ClickServlet.handleRequest()\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "muruce-46-suzo053",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition Conductor {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "mutivu-74-muvu199",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 1\" #red' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "nameku-73-xodi703",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -down-> === T2D ===' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "nikezu-09-lovu442",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)-->A<< stereo >>' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "nipata-68-xoke122",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -[bold,#FFFF00]-> \"this is' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "nipoji-37-dane337",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> StartingActivity in \"First partition\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "patiki-96-xici925",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'A is \"\"' via CommandChangeStateByPlayerCode (timingdiagram/command/CommandChangeStateByPlayerCode.java:59-76: PLAYER_CODE at :61, 'is' at :63, getStateOrHidden at :65), registered at TimingDiagramFactory.java:93; its first line 'rectangle \"A\" as A' is CommandRobustConcise's TYPE 'rectangle' (CommandRobustConcise.java:70) which this port's description engine also accepts, so we commit to description and refuse here. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to description and refuse.)"
+    },
+    {
+      "slug": "petora-44-nafe514",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition \"X\"{' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pigube-65-kiru260",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pileje-51-zubu880",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition \"Iteration (Over each day of the week)\"' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pisulo-14-jeda198",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)  --> \"check input\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pocupu-43-lofo559",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pomura-42-gala518",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> beginDay' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "poremu-85-ruxu670",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)->(*)' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pudixe-16-deki169",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -r-> \"DEV check-in code\"  #aliceblue' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "pumime-12-lupa500",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "putada-40-solo208",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> (*)' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "radedu-29-cisi040",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> A' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "rejodo-37-fuxi138",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -->[message] \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to sequence and refuse.)"
+    },
+    {
+      "slug": "rezoli-47-jizu153",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "After !definelong expansion the source line is '(*) --> \"{{salt', the opening line of a multi-line quoted activity that ends at '\" as x': the jar accepts it via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: STAR at :91, arrow at :100-105, an opening quote and DESC at :110-111; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "rirogi-77-suze993",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -left-> \"this <size:20>activity</size>' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "robezu-51-zoja177",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "sadape-74-fiba424",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to sequence and refuse.)"
+    },
+    {
+      "slug": "sareso-96-buxi140",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "sibipe-68-nagu501",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '\"02onStart()\" --> if \"\" then' via UBrexCommandIf (activitydiagram/command/UBrexCommandIf.java:69-98: a quoted or (*)/code source, an arrow, then 'if \"...\" then', QUOTED1 branch at :94), registered at ActivityDiagramFactory.java:92. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to description and refuse.)"
+    },
+    {
+      "slug": "terupo-52-xixo563",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "tixutu-13-toko141",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition accentué' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "tosexe-55-vuno347",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Robust\" as RobustOn' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "tusufu-28-funi785",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -left-> toLeft' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vepixu-66-biti555",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Verify the reservation\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vevocu-48-xajo750",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Web Browser\" as WB' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vinara-33-pixu038",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "After !definelong expansion the source line is '(*) --> \"{{salt', the opening line of a multi-line quoted activity that ends at '\" as x': the jar accepts it via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: STAR at :91, arrow at :100-105, an opening quote and DESC at :110-111; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vojina-60-rula163",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'clock clk with period 1' via CommandClock (timingdiagram/command/CommandClock.java:60-95: TYPE 'clock' at :66, optional FULL at :69-71, CODE at :73, 'with period' at :75-77), registered at TimingDiagramFactory.java:88. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vovoje-12-pive634",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '\"07onStop()\" -*->  \"01onCreate()\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: QUOTED at :86, arrow body at :92-97 (ARROW_DIRECTION '*' at :94 is the '-*->' form), target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to description and refuse.)"
+    },
+    {
+      "slug": "voxapu-64-koro080",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> A' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "vunuxi-56-segi377",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Pre On Signal\" as PreOnIn' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xebadi-93-kolu815",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Web Browser\" as WB' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xekuri-56-sobe352",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'analog \"Vcore\" as VDD' via CommandAnalog (timingdiagram/command/CommandAnalog.java:60-84: 'analog' at :66, FULL at :68, optional 'between/from ... and/to' range at :72-78), registered at TimingDiagramFactory.java:89. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xexare-46-vora976",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'concise \"Bas\" as bas' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xigocu-24-cora180",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> VerifyReservation' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xijige-28-midu398",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) -left->[text] \"activity1\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xizeco-49-luko430",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 1\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xopemi-43-sizu772",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition Conductor #red/white {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xopepu-31-zale208",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*)  --> \"check input\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xovupa-32-xipu787",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "After !definelong expansion the source line is '(*) --> \"{{salt', the opening line of a multi-line quoted activity that ends at '\" as x': the jar accepts it via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: STAR at :91, arrow at :100-105, an opening quote and DESC at :110-111; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xoxite-49-maje588",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'partition \"GR1\" {' via UBrexCommandPartition (activitydiagram/command/UBrexCommandPartition.java:68-84: 'partition' + name + optional colour/stereotype/'{'), registered at ActivityDiagramFactory.java:80. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "xudulo-43-modo554",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"toto\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zajexa-03-pezu069",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'robust \"Web Browser\" as WB' via CommandRobustConcise (timingdiagram/command/CommandRobustConcise.java:64-82: TYPE '(robust|concise|rectangle)' at :70, optional FULL '\"...\" as' at :74-76, CODE at :78), registered at TimingDiagramFactory.java:87. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zarame-51-lini849",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"init\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zeroju-67-dipo383",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 1\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zifefi-76-buse805",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"[[http://www.google.com/note1]]' via CommandLinkLongActivity (activitydiagram/command/CommandLinkLongActivity.java:87-113: an unterminated quote opens a multi-line activity; executeNow at :179), registered at ActivityDiagramFactory.java:82. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zozeva-38-bapo242",
+      "cohort": "ogc-timing",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts 'binary \"enable\" as EN' via CommandBinary (timingdiagram/command/CommandBinary.java:58-74: 'binary' at :64, optional FULL '\"...\" as' at :68-70, CODE at :72), registered at TimingDiagramFactory.java:90. This port registers no TimingDiagramFactory (PSystemBuilder.java:187 has no entry in src/registered-plugins.ts: the list jumps from dedication, java:186 at :91, to json, java:190 at :92), so no engine accepts the line, dispatch falls through, and we draw an error page where the jar draws a TIMING diagram. Open -> #127. (We route to class and refuse.)"
+    },
+    {
+      "slug": "zumepu-07-jimu446",
+      "cohort": "ogc-legacy-activity",
+      "disposition": "known-gap",
+      "task": "ogc-T4a",
+      "reason": "The jar accepts '(*) --> \"Activity 0\"' via CommandLinkActivity (activitydiagram/command/CommandLinkActivity.java:79-118: STAR '(\\\\(\\\\*(top)?\\\\))' at :83, arrow body at :92-97, target at :103-108; executeArg at :246), registered at ActivityDiagramFactory.java:96. This port registers ActivityDiagramFactory3's engine at PSystemBuilder.java:140 only (src/registered-plugins.ts:63) and has no counterpart for the legacy ActivityDiagramFactory at PSystemBuilder.java:137 (src/registered-plugins.ts:110-121 says so), so the arrow-based legacy commands match nothing here, dispatch falls through, and we draw an error page where the jar draws an ACTIVITY diagram. Open -> #123. (We route to class and refuse.)"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+@startdot
+digraph fanin {
+  a -> sink
+  b -> sink
+  c -> sink
+  d -> sink
+}
+@enddot

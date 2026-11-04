@@ -1,0 +1,9 @@
+@startuml
+<style>
+element {
+  MaximumWidth 100
+}
+</style>
+
+:this is a very long long long long long activity description;
+@enduml

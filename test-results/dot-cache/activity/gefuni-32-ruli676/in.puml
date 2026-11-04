@@ -1,0 +1,4 @@
+@startuml
+start
+:start2 on; <<#AAAAAA;line:blue;text:red>>
+@enduml

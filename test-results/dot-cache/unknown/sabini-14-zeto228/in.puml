@@ -1,0 +1,24 @@
+@startuml
+
+partition P1 {
+  (*) --> X
+  --> == B1 ==
+  --> Y
+  ---> == B2 ==
+  --> Z
+}
+
+partition P2 {
+  == B1 ==  
+  -->  if C then
+    --> [yes] M
+    --> N
+  else
+    --> N
+  endif
+
+  --> O
+  --> == B2 ==
+}
+
+@enduml

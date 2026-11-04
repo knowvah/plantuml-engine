@@ -1,0 +1,9 @@
+@startdot
+digraph workflow {
+  A -> B [label="step 1"]
+  B -> C [label="step 2"]
+  B -> D [label="alt path"]
+  C -> E [label="merge"]
+  D -> E [label="merge"]
+}
+@enddot

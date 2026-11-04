@@ -1,0 +1,25 @@
+@startuml
+<style>
+activityDiagram {
+  arrow {
+    LineColor red;
+  }
+}
+</style>
+
+start
+  -[#DeepSkyBlue]->
+  split
+    -[#DeepSkyBlue]->
+    :1;
+    -[#DeepSkyBlue]->
+  split again
+    -[#DeepSkyBlue]->
+    :3;
+    -[#Orange]->
+    :4;
+    -[#DeepSkyBlue]->
+  endsplit
+  -[#DeepSkyBlue]->
+end
+@enduml

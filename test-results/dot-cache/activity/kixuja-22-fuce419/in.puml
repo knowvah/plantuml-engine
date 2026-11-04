@@ -1,0 +1,24 @@
+@startuml
+'!pragma useVerticalIf on
+|LaneA|
+start
+:Activity1;
+|LaneB|
+if (Conditional) then (yes)
+ label l
+ |Lane C|
+ :Activity2;
+(No) elseif (Conditional)
+ label l
+ |Lane D|
+ :Activity3;
+else (No)
+ label l
+ |Lane E|
+ -[#red]->;
+ :Activity4;
+endif
+|LaneA|
+-[#red]->;
+stop
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+:foo1;
+-[#gold]->
+if (test) then
+  -[#orchid]->
+  :foo2;
+  :foo3;
+  -[#green]->
+else
+  -[#black]->
+  :foo4;
+  -[#greenyellow]->
+endif
+-[#hotpink]->
+:foo5;
+@enduml

@@ -90,15 +90,17 @@ describe('attachTransitionLabel — the marged-box ink extent', () => {
     expect(l.x).toBeCloseTo(244.86168, 5); // the DRAW anchor stays unquantized (D5)
   });
 
-  it('puts the ink box top an ascent + marginLabel above the glyph baseline', () => {
-    // Jar cross-check: bemena draws this baseline at y=258.111, and its box
-    // top is 247 — a graphviz label centre of 247 + 15/2 = 254.5, which only
-    // comes out a clean half-integer for the BOX, never for the glyphs.
+  it('puts the ink box top at the text ink, 1.5 under the ascent above the glyph baseline (stdd T4b)', () => {
+    // Jar cross-check: bemena draws this baseline at y=258.111, and its marged
+    // box top is 247 — a graphviz label centre of 247 + 15/2 = 254.5. The
+    // LimitFinder walk also sees the text (`TextBlockMarged.java:79-87`,
+    // `LimitFinder.java:217-224`: `baseline - (13 - 1.5)` = 246.611), 0.389
+    // above the box (lurage-50's document shift); the bottom stays the box's.
     const l = label(300.36168, 254.5)!;
     expect(l.y).toBeCloseTo(258.111111, 5);
-    expect(l.inkBox!.y).toBe(247);
-    expect(l.inkBox!.height).toBe(15);
-    expect(l.inkBox!.y + l.inkBox!.height).toBe(262);
+    expect(l.inkBox!.y).toBeCloseTo(246.611111, 5);
+    expect(l.inkBox!.height).toBeCloseTo(15.388889, 5);
+    expect(l.inkBox!.y + l.inkBox!.height).toBeCloseTo(262, 5);
   });
 });
 

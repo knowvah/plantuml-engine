@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T01:05:17.486Z",
+  "generatedAt": "2026-11-04T13:35:20.137Z",
   "fixtures": [
     {
       "slug": "bafemu-96-luji978",
@@ -295,6 +295,24 @@
       "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
     },
     {
+      "slug": "YAML-attribute-hierarchy-0",
+      "type": "yaml",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.7419999999999902,
+      "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
+    },
+    {
+      "slug": "YAML-attribute-hierarchy-1",
+      "type": "yaml",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 2.583000000000027,
+      "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
+    },
+    {
       "slug": "YAML-list-key-value-pair",
       "type": "yaml",
       "dotEqual": false,
@@ -304,7 +322,25 @@
       "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
     },
     {
+      "slug": "YAML-list-key-value-pair-0",
+      "type": "yaml",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 1.0109999999999957,
+      "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
+    },
+    {
       "slug": "YAML-space-indent",
+      "type": "yaml",
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "structural-match",
+      "maxDelta": 2.1459999999999866,
+      "maxDeltaPath": "svg/g[1]/path[3]/@d[8]"
+    },
+    {
+      "slug": "YAML-space-indent-0",
       "type": "yaml",
       "dotEqual": false,
       "layoutEqual": "n/a",

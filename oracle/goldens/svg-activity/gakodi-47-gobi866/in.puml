@@ -1,0 +1,13 @@
+@startuml
+start
+:<latex> \int_{0}^{\infty} \left( \sum_{i = 0}^{n} \right) {\rm d}x </latex>;
+
+:then
+now
+<latex>
+    \int_{0}^{\infty} \left( 
+        \sum_{i = 0}^{n}  
+    \right) {\rm d}x 
+</latex>
+end;
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+split
+:CONTINUE; <<input>>
+
+split again
+:ABORT; <<input>>
+if (x) then (doit)
+:doA; <<ouput>>
+else
+:doB; <<output>>
+endif
+detach
+
+end split
+stop
+@enduml

@@ -34,7 +34,7 @@
  */
 
 import type { StateNodeGeo } from './state-geo-types.js';
-import type { Paint } from '../../core/paint.js';
+import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
 import { ellipse, line, rect, text } from '../../core/svg.js';
 import { positionFromStereotype, type EntityPositionKind } from './state-entity-position.js';
@@ -49,6 +49,7 @@ import {
 
 /** `EntityPosition.RADIUS` (`:56`). */
 import { RADIUS } from '../../core/abel/EntityPosition.js';
+import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 
 /** `EntityImageStateBorder#getUStroke` (`:106-108`) — 1.5 for the symbol,
  *  where an ordinary state box uses 0.5. */
@@ -57,6 +58,24 @@ const BORDER_POINT_STROKE_WIDTH = 1.5;
 /** The two positions `EntityPosition#drawSymbol` gives a circle; every other
  *  border point gets the square. */
 const CIRCLE_POSITIONS: ReadonlySet<EntityPositionKind> = new Set(['entrypoint', 'exitpoint']);
+const EXPANSION_POSITIONS: ReadonlySet<EntityPositionKind> = new Set(['expansioninput', 'expansionoutput']);
+
+/** `EntityPosition#drawSymbol` for EXPANSION_INPUT/EXPANSION_OUTPUT (`EntityPosition.java:100-116`): a
+ *  `RADIUS*2*4` by `RADIUS*2` bar split by three lines under `TOP_TO_BOTTOM`, its transpose otherwise; the
+ *  node already carries that dimension (`getBorderPointDimension`, `EntityPosition.java:120-127`).
+ *  stdd T6c, bujuta-44's `<<expansionInput>>` under `left to right direction`. */
+function expansionSymbol(node: StateNodeGeo, fill: Paint, stroke: Paint): string {
+  const lineOpts = { stroke, strokeWidth: BORDER_POINT_STROKE_WIDTH };
+  let out = rect(node.x, node.y, node.width, node.height, { fill, ...lineOpts });
+  for (let i = 1; i <= 3; i++) {
+    const d = RADIUS * 2 * i;
+    out +=
+      node.width > node.height
+        ? line(node.x + d, node.y, node.x + d, node.y + RADIUS * 2, lineOpts)
+        : line(node.x, node.y + d, node.x + RADIUS * 2, node.y + d, lineOpts);
+  }
+  return out;
+}
 
 /** `getPointOnCircle` (`EntityPosition.java:130-134`). */
 function pointOnCircle(xc: number, yc: number, angle: number, radius: number): [number, number] {
@@ -84,6 +103,7 @@ function exitCross(node: StateNodeGeo, stroke: Paint): string {
  *  `RADIUS*2` square, so they keep that square here rather than acquire an
  *  unverified shape. */
 function drawSymbol(node: StateNodeGeo, pos: EntityPositionKind, fill: Paint, stroke: Paint): string {
+  if (EXPANSION_POSITIONS.has(pos)) return expansionSymbol(node, fill, stroke);
   if (!CIRCLE_POSITIONS.has(pos)) {
     // `rect` names the SVG attribute in camelCase; `ellipse`/`line` take the
     // paint bag, which is keyed by the attribute's own hyphenated name.
@@ -113,16 +133,21 @@ function drawSymbol(node: StateNodeGeo, pos: EntityPositionKind, fill: Paint, st
  */
 export function renderBorderPoint(node: StateNodeGeo, theme: Theme): string {
   const pos = positionFromStereotype(node.stereotype);
-  const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND);
+  // `EntityImageStateBorder.java:94-98`: a transparent back colour is replaced by the diagram's own
+  // background (`skinParam.getBackgroundColor()`); stdd T6c, xipela-98's `StateBackgroundColor transparent`.
+  const styled = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND);
+  const fill = isTransparentColor(styled) ? resolveColorToSvgHex(theme.colors.background) : styled;
   const stroke = resolveStateBorder(node, theme);
   const symbol = drawSymbol(node, pos, fill, stroke);
   const lines = node.headerLines ?? [];
   if (lines.length === 0) return symbol;
+  // stdd T1b: `EntityImageStateBorder.java:89` draws `desc` before `:103`'s
+  // `entityPosition.drawSymbol`, so the label precedes the symbol.
   const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
   const descHeight = lines.length * fontSize;
   const labelTop = node.borderPointLabelAbove === true ? node.y - 2 * RADIUS - descHeight : node.y + 2 * RADIUS;
   const fontColor = resolveStateFontColor(node, theme, '#000000');
-  let out = symbol;
+  let out = '';
   lines.forEach((ln, i) => {
     out += text(
       // `x = 0 - (dimDesc.getWidth() - 2 * RADIUS) / 2`, relative to the
@@ -139,5 +164,5 @@ export function renderBorderPoint(node: StateNodeGeo, theme: Theme): string {
       },
     );
   });
-  return out;
+  return out + symbol;
 }

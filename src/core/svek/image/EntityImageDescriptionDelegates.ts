@@ -19,6 +19,7 @@
  * `EntityImageDescriptionShield.ts` (cdd5-T4d, same reason).
  */
 import type { UGraphic } from '../../klimt/UGraphic.js';
+import { bulletDimension } from './creole-sea-line.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
 import { XDimension2D } from '../../klimt/geom/XDimension2D.js';
 import { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
@@ -221,6 +222,8 @@ export function descAtomOps(
     if (atom.kind === 'emoji') return emojiSquareDim(atom.factor);
     // `AtomSpace#calculateDimensionSlow` (AtomSpace.java:~52): (width, 1).
     if (atom.kind === 'space') return { width: atom.width, height: SPACE_ATOM_HEIGHT };
+    // stdd T6d: `Bullet#calculateDimensionSlow` (`Bullet.java:57-62`); only the flat seam builds this atom.
+    if (atom.kind === 'bullet') return bulletDimension(atom.order);
     // `AtomVerticalTexts#calculateDimensionSlow` (`AtomVerticalTexts.java:54-64`).
     if (atom.kind === 'vertical') {
       const dim = verticalTextsDimension(atom.lines, ops, stringBounder);
@@ -285,6 +288,8 @@ export function descAtomOps(
       }
       // `AtomSpace#drawU` is empty.
       if (atom.kind === 'space') return;
+      // stdd T6d: a `Bullet` never reaches this sheet (the flat seam alone builds it); `renderer-box-runs.ts` draws it.
+      if (atom.kind === 'bullet') return;
       const resolved: ResolvedAtomImageWithRaster | undefined = resolveAtomImage?.(atom.atom, () =>
         ug.getStringBounder(),
       );

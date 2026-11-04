@@ -1,0 +1,13 @@
+@startuml
+
+start
+repeat :foo as starting label;
+  :read data;
+  :generate diagrams;
+-> dsc_5;
+(-[#blue]->inc) backward:This is backward; (-[#green,dashed]->out)
+-> dsc_6;
+repeat while (more data?)
+
+stop
+@enduml

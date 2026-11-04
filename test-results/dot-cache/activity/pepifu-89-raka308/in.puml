@@ -1,0 +1,17 @@
+@startuml
+
+start
+
+if (true) then (YES)
+    	:do something;
+endif
+
+note right
+    title
+    ----
+    content
+end note
+
+stop
+
+@enduml

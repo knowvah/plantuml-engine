@@ -1,0 +1,16 @@
+@startuml
+
+<style>
+  circle {
+   start, stop, end {
+	    LineColor red
+	    BackgroundColor green
+    }
+  }
+</style>
+
+start
+end
+stop
+
+@enduml

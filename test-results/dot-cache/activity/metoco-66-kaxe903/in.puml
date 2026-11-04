@@ -1,0 +1,13 @@
+@startuml
+:foo5;
+-[#hotpink]->
+while (some test) is (true)
+  -[#gold]->
+  :foo6;
+  -[#green]->
+  :foo7;
+  -[#black]->
+endwhile (false)
+-[#greenyellow]->
+:foo8;
+@enduml

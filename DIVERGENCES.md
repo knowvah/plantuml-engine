@@ -792,9 +792,23 @@ Upstream fixed the crash (11ed6720, #2797): `sonyxperiadev.skin` is the jar's st
 
 ## State diagrams
 
+### Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz (library-forced: `@knowvah/dot-engine`)
+
+`state/viroxo-69-fito663` (`state comp1 { state ex <<exitpoint>> ... }` with
+links in and out of `comp1`): our DOT equals the jar's `svek-1.dot` byte for
+byte, and real `dot -Tdot` 16.1.0 reproduces the jar's SVG to the pixel
+(start 52, `chk` 56, `ex` 119, `comp1` 7..119). `@knowvah/dot-engine` 2.4.0
+places the cluster's `[*]` start 17 px left of `chk` where graphviz puts it
+4 px left, the exit point 58 px right of `chk` against 63, and the cluster
+109 px wide against 112; the same mechanism is the 8 px on the ten
+`state__hist-*` rows of `oracle/goldens/diagram-style-scope.json`. Filed as
+`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`
+(stdd-T6c, 2026-11-04); not chased in this port (CLAUDE.md: a verified
+dot-engine finding is filed, never patched around).
+
 ### ~~Composite-anchor transitions: clip-rect family unported for border-point children~~ — RETIRED (lgm-T1b/T1d, 2026-10-08)
 
-`SvekEdge.java:660-663` runs `projectionCluster.manageEntryExitPoint` before each line's `simulateCompound` (`:671-672`), and `Cluster.java:430` reassigns the shared `rectangleArea`, so the Nth line through a border-point composite clips against the result of N calls, and the composite is drawn after L solve-loop calls plus two draw passes (`Cluster.java:344-345`, `SvekResult.java:130-136`). Ported once in `src/core/svek/FrontierCalculator.ts` (`ClusterRectangles`, `entryExitPointRect`, `projectionClusterOf`), driven in `allLines()` order by `state/state-transition-clip.ts#clipLinesInSolveOrder` and `description/layout-geo-post.ts#buildEdgeGeos`, and drawn by `state/state-composite-drawn-rects.ts#drawnClusterRects`. Clipped link ends and the drawn box equal the jar's on `pesita-10-dene726` and eight authored state fixtures (`tests/fixtures/lgm-T1b/`, `lgm-T1d/`). Not this entry: `viroxo-69-fito663` differs before any clip (DOT member order inside a state cluster), and the description port-cluster DOT lacks the jar's `a`/`i` wrapper subgraphs (`ClusterDotString.java:91-96`) — both in `planning/next-missions.md`.
+`SvekEdge.java:660-663` runs `projectionCluster.manageEntryExitPoint` before each line's `simulateCompound` (`:671-672`), and `Cluster.java:430` reassigns the shared `rectangleArea`, so the Nth line through a border-point composite clips against the result of N calls, and the composite is drawn after L solve-loop calls plus two draw passes (`Cluster.java:344-345`, `SvekResult.java:130-136`). Ported once in `src/core/svek/FrontierCalculator.ts` (`ClusterRectangles`, `entryExitPointRect`, `projectionClusterOf`), driven in `allLines()` order by `state/state-transition-clip.ts#clipLinesInSolveOrder` and `description/layout-geo-post.ts#buildEdgeGeos`, and drawn by `state/state-composite-drawn-rects.ts#drawnClusterRects`. Clipped link ends and the drawn box equal the jar's on `pesita-10-dene726` and eight authored state fixtures (`tests/fixtures/lgm-T1b/`, `lgm-T1d/`). Not this entry: `viroxo-69-fito663` differs before any clip (its DOT equals the jar's; dot-engine places the cluster's nodes off graphviz, see the entry below), and the description port-cluster DOT lacks the jar's `a`/`i` wrapper subgraphs (`ClusterDotString.java:91-96`) — both in `planning/next-missions.md`.
 
 ---
 
@@ -1186,6 +1200,24 @@ On 2026-10-10 all 57 such rows errored under v1.2026.8 (`149874a`): wbs 28, unkn
 - **1 row (`wbs/link-URL-tooltip-0`):** the jar crashes writing the SVG (`IllegalArgumentException` at `SvgGraphics.java:1156`).
 
 Each row is signed in `oracle/accepted-divergences.json`. The survey still prints these rows `diverged` with `firstDiff: 'error-page'`. A new row of this kind needs the same release check before it is signed.
+
+Three signed rows await a second signature: `svg-ebnf/ladifa-97-keme950`, `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801`. Neither engine exists yet, so today we draw the unknown-diagram placeholder, not the diagram their reason describes. The maintainer re-signs them once the engines land (ruling 2026-11-03, #125, #126).
+
+Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). Both give exit 200 under v1.2026.8 (`149874a`):
+- **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
+- **`:a| <<foo>>`:** the jar reports `Syntax Error?` on that line. We draw an activity box, with the stereotype and any lines after it in the label.
+
+On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and each is signed in the ledger.
+
+An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
+
+### Ditaa is not included
+
+**Category:** edition mirrored by user ruling (2026-11-04, #111), reversing the 2026-10-14 ruling to keep it. Upstream comments out `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-167`), and the library it calls, `org.stathissideris.ascii2image`, is LGPL-3.0-or-later in 26 of its 28 files. Translating it into this MIT package would look like a derived work. No engine was ever ported. `@startditaa` draws the unknown-diagram sentinel, where upstream's MIT edition would return `PSystemUnsupported` (`PSystemBuilder.java:283`), the same sentinel gap every tag with no engine has (`src/core/dispatcher.ts`). The oracle is the GPL build, which writes a PNG even when asked for SVG, so both rows read `oracle-error` and are signed in the ledger.
+
+### Chronology draws, though the jar has no such diagram
+
+**Category:** kept by user ruling (2026-11-03, #110). No library forces it. `ChronologyDiagramFactory` is commented out at `PSystemBuilder.java:184`, so `@startchronology` is an error in the jar (exit 200 under v1.2026.8), and we keep the engine and draw it. Every chronology source falls under this ruling, and the one corpus fixture is signed as `svg-chronology/lenudo-53-nade902`.
 
 ### ~~Embedded `{{ }}` diagram slots: the deterministic-text oracle reserves 42×42~~ — RETIRED (lgm, oracle seam #3 + T1e, 2026-10-08)
 

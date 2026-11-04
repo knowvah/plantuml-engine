@@ -1,0 +1,12 @@
+@startuml
+start
+:Help us to choose the right keyword for stereotype!;
+
+:input; <<input>>
+:output; <<output>>
+:procedure; <<procedure>>
+:load; <<load>>
+:save; <<save>>
+:continuous; <<continuous>>
+:task; <<task>>
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+!include <foo/examplenotexists.puml>
+
+Alice -> Bob
+@enduml

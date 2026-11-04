@@ -1,0 +1,17 @@
+@startuml
+skin plantuml
+start
+fork
+	:foo1;
+fork again
+	end
+endfork
+:this is on
+several <b>lines
+and very interesting;
+
+:on two
+lines;
+
+stop
+@enduml

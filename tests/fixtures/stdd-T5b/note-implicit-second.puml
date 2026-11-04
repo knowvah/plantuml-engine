@@ -1,0 +1,5 @@
+@startuml
+state A
+note left of A : n1
+note right of A : n2
+@enduml

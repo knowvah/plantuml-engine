@@ -6,6 +6,7 @@
  */
 
 import type { Paint } from './paint.js';
+import type { HorizontalAlignment } from './klimt/geom/HorizontalAlignment.js';
 
 export interface ThemeGraphColorsA {
   /** CDD T18/D8: `Paint`, not `string` -- `skinparam classBackgroundColor
@@ -159,6 +160,9 @@ export interface ThemeGraphColorsA {
    */
   stateBackgroundColorByStereo?: Readonly<Record<string, string>>;
   stateFontColorByStereo?: Readonly<Record<string, string>>;
+  /** stdd T3d: `skinparam ActivityBarColor<<stereo>>` -- `EntityImageSynchroBar.java:81-84`'s `activityBar`
+   *  signature `withTOBECHANGED(stereotype)`; keyed by the lowercased stereotype like its siblings. */
+  activityBarColorByStereo?: Readonly<Record<string, string>>;
   /**
    * mission G4 S16: `skinparam stateFontSize<<stereo>> N` -- the SAME
    * direct-value-lookup mechanism as {@link stateBorderColorByStereo}
@@ -201,6 +205,10 @@ export interface ThemeGraphColorsA {
    * #resolveStateArrowHeadColor`.
    */
   stateArrowHeadColor?: string;
+  /** stdd T2c: `skinparam stateMessageAlignment`, `getMessageTextAlignment` (`SvekEdge.java:376-381`,
+   *  `SkinParam.java:671-723`): the state link label's line alignment; `defaultTextAlignment`
+   *  (`elements.root.horizontalAlignment`) below it, CENTER below that. */
+  stateMessageAlignment?: HorizontalAlignment;
   /**
    * mission skin-file-loading Batch 1 (D3): the GLOBAL root/element
    * universal-selector BackgroundColor cascade -- see `style-map-

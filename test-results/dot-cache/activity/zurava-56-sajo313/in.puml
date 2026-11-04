@@ -1,0 +1,9 @@
+@startuml
+START
+REPEAT
+:hello world!;
+repeatwhile(condition
+on several lines)is(TRUE)
+->[FALSE];
+STOP
+@enduml

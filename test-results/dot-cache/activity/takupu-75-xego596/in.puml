@@ -1,0 +1,20 @@
+@startuml
+start
+
+if (A) then (yes)
+    :AA;
+(-[#blue]->inc) elseif (B) then (-[#green,dashed]->out)
+    :BB;
+-[#green]->
+elseif (C) then (yes)
+    :CC;
+-[#green]->
+end
+elseif (D) then (yes)
+    :DD;
+else (-[#red,dashed]->no)
+	:EE;
+endif
+-[#green]->
+stop
+@enduml

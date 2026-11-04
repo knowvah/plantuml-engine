@@ -202,8 +202,9 @@ describe('resolveScaleFactor — maxWidthAndHeight (ScaleMaxWidthAndHeight)', ()
   });
 
   it('shrinks to the smaller of the two ratios when both are < 1', () => {
-    // width ratio 40/100=0.4, height ratio 60/100=0.6 -> min = 0.4
-    expect(resolveScaleFactor({ kind: 'maxWidthAndHeight', width: 40, height: 60 }, 100, 100)).toBe(0.4);
+    // width ratio 40/100=0.4, height ratio 60/100=0.6 -> min = 0.4; then `fromScale * dpi / 96.0`
+    // left to right (`TextBlockExporter.java:207`, stdd T4a), one ulp off 0.4 as the jar's own double is.
+    expect(resolveScaleFactor({ kind: 'maxWidthAndHeight', width: 40, height: 60 }, 100, 100)).toBe((0.4 * 96) / 96);
   });
 });
 

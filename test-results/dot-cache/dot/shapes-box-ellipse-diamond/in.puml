@@ -1,0 +1,9 @@
+@startdot
+digraph shapes {
+  start [shape=diamond, label=Start]
+  process [shape=box, label=Process]
+  note [shape=plaintext, label="(note)"]
+  done [shape=ellipse, label=Done]
+  start -> process -> note -> done
+}
+@enddot

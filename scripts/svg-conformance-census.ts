@@ -48,10 +48,16 @@
  * exact 4-stage algorithm (see that function's own doc comment) using the
  * same already-exported building blocks.
  *
- * Usage: npx tsx scripts/svg-conformance-census.ts [component] [usecase] [class]
- *          [object] [state] [sequence] [dot] [json] [yaml] [hcl]
- *   (defaults to component + usecase; every other type must be requested
- *   explicitly)
+ * Usage: npx tsx scripts/svg-conformance-census.ts [<type> ...] [--json <path>]
+ *          [--per-fixture | --families]
+ *   `<type>` is any `test-results/dot-cache/<type>/` bucket. Dedicated
+ *   helpers: class/object, state, sequence, activity, json/yaml/hcl, dot,
+ *   gantt (recorded capture clock); every other type renders through the
+ *   survey-style `renderSync` path (`helperFor`). Defaults to component +
+ *   usecase; every other type must be requested explicitly.
+ *
+ *   --json <path>  write `census-<type>.json` (`{ type, fixtures, ... }`,
+ *                  `type` is the requested bucket name) and SKIP the jar pass.
  *
  * Two triage flags, each of which prints and then SKIPS the jar pass:
  *   --per-fixture  one line per fixture with its diff count, name-sorted, so
@@ -92,10 +98,14 @@ import {
 } from '../tests/oracle/svg-conformance/render-fixture-class.js';
 import { renderFixtureSurveyStyle } from '../tests/oracle/svg-conformance/render-fixture.js';
 import { renderFixtureState } from '../tests/oracle/svg-conformance/render-fixture-state.js';
-import { renderFixtureSequence } from '../tests/oracle/svg-conformance/render-fixture-sequence.js';
+import {
+  renderFixtureSequence,
+  sequenceFixtureOptions,
+} from '../tests/oracle/svg-conformance/render-fixture-sequence.js';
+import { ganttRenderOptions, renderFixtureGantt } from '../tests/oracle/svg-conformance/render-fixture-gantt.js';
 import { renderFixtureActivity } from '../tests/oracle/svg-conformance/render-fixture-activity.js';
 import { renderFixtureJson } from '../tests/oracle/svg-conformance/render-fixture-json.js';
-import { bucketOf, type Bucket, jsonPathArg, runJsonMode } from './svg-conformance-census-json.js';
+import { bucketOf, type Bucket, censusTypeArgs, jsonPathArg, runJsonMode } from './svg-conformance-census-json.js';
 import type { RoutingBaselineRow } from './pin-corpus-tree.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -165,7 +175,21 @@ function renderFixtureDescription(markup: string, measurer: StringMeasurer): str
 
 /** The name of the render helper `renderFixtureFor` dispatches to for a given
  * fixture `type`. */
-type FixtureHelperName = 'class' | 'state' | 'sequence' | 'activity' | 'json' | 'dot' | 'description';
+type FixtureHelperName = 'class' | 'state' | 'sequence' | 'activity' | 'json' | 'dot' | 'gantt' | 'description';
+
+/** `helperFor`'s table: a type absent here renders through `description`. */
+const HELPER_BY_TYPE: Readonly<Record<string, FixtureHelperName>> = {
+  class: 'class',
+  object: 'class',
+  state: 'state',
+  sequence: 'sequence',
+  activity: 'activity',
+  json: 'json',
+  yaml: 'json',
+  hcl: 'json',
+  dot: 'dot',
+  gantt: 'gantt',
+};
 
 /**
  * Pure dispatch table underlying `renderFixtureFor`, extracted so the
@@ -174,17 +198,13 @@ type FixtureHelperName = 'class' | 'state' | 'sequence' | 'activity' | 'json' | 
  * `activity` -> `activity` (own dedicated engine, `render-fixture-
  * activity.ts#renderFixtureActivity` — see that file's own doc comment for
  * why it takes the same `{ includeStore }` shape as sequence/state/class),
- * `json`/`yaml`/`hcl` -> `json`, `dot` -> `dot`, else -> `description`
- * (component/usecase).
+ * `json`/`yaml`/`hcl` -> `json`, `dot` -> `dot`, `gantt` -> `gantt` (pdg-T2,
+ * D3: the ratchet renders with the slug's recorded capture clock,
+ * `gantt.golden.ratchet.test.ts`, which the description path cannot carry),
+ * else -> `description` (component/usecase and every other bucket).
  */
 export function helperFor(type: string): FixtureHelperName {
-  if (type === 'class' || type === 'object') return 'class';
-  if (type === 'state') return 'state';
-  if (type === 'sequence') return 'sequence';
-  if (type === 'activity') return 'activity';
-  if (type === 'json' || type === 'yaml' || type === 'hcl') return 'json';
-  if (type === 'dot') return 'dot';
-  return 'description';
+  return HELPER_BY_TYPE[type] ?? 'description';
 }
 
 /**
@@ -225,10 +245,11 @@ export function censusClassFixtureOptions(): { includeStore: IncludeStore; asset
   };
 }
 
-function renderFixtureFor(type: string, markup: string, measurer: StringMeasurer, clock?: Clock): string {
+function renderFixtureFor(type: string, slug: string, markup: string, measurer: StringMeasurer, clock?: Clock): string {
+  const clockOption = clock === undefined ? {} : { clock };
   const classOptions = (): ReturnType<typeof censusClassFixtureOptions> & { clock?: Clock } => ({
     ...censusClassFixtureOptions(),
-    ...(clock === undefined ? {} : { clock }),
+    ...clockOption,
   });
   switch (helperFor(type)) {
     case 'class':
@@ -242,7 +263,11 @@ function renderFixtureFor(type: string, markup: string, measurer: StringMeasurer
       // `censusClassFixtureOptions`'s own doc comment used to name.
       return renderFixtureState(markup, measurer, classOptions());
     case 'sequence':
-      return renderFixtureSequence(markup, measurer, classOptions());
+      // pdg-T2 (D3): the SAME bag the sequence ratchet renders with
+      // (`sequence.golden.ratchet.test.ts`): `filename: 'in.puml'` for
+      // `%filename()` and the remote-image store for `<img:http://...>`.
+      // The class bag read 21 diffs on tifube-59 and 44 on fifasu-62.
+      return renderFixtureSequence(markup, measurer, { ...sequenceFixtureOptions(), ...clockOption });
     case 'activity':
       return renderFixtureActivity(markup, measurer, classOptions());
     case 'json':
@@ -260,6 +285,12 @@ function renderFixtureFor(type: string, markup: string, measurer: StringMeasurer
       // by construction -- that is the type's nature, not a wiring miss.
       // See `oracle/goldens/svg-dot/README.md`.
       return renderSync(markup, withClock(JAR_COMPATIBLE_OPTIONS, clock));
+    case 'gantt':
+      // pdg-T2 (D3): mirrors `gantt.golden.ratchet.test.ts#renderPinned` --
+      // `ganttRenderOptions(slug)` carries the slug's recorded capture clock
+      // (`oracle/capture-clock.json`), which sakibi-88 needs (640 diffs
+      // through the description path).
+      return renderFixtureGantt(markup, measurer, ganttRenderOptions(slug));
     case 'description':
       return renderFixtureDescription(markup, measurer);
   }
@@ -295,7 +326,7 @@ function census(fixtures: readonly FixtureDir[], measurer: StringMeasurer): Cens
         results.push({ ...base, diffCount: 'error', reason: 'malformed jar golden SVG' });
         continue;
       }
-      const oursSvg = renderFixtureFor(f.type, markup, measurer, clockForPath(join(f.dir, 'in.puml')));
+      const oursSvg = renderFixtureFor(f.type, f.slug, markup, measurer, clockForPath(join(f.dir, 'in.puml')));
       const { diffs } = compareSvg(oursSvg, jarSvg, 'deterministic');
       results.push({ ...base, diffCount: diffs.length, paths: diffs.map((d) => d.path) });
     } catch (err) {
@@ -396,7 +427,7 @@ async function main(): Promise<void> {
   // cdd8-T2e (D2d): one elkjs load per process; `renderClassFixture` then
   // passes the backend to `renderSync` (ELK class fixtures).
   await prepareElkOnce();
-  const types = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+  const types = censusTypeArgs(process.argv.slice(2));
   const requested = types.length > 0 ? types : DEFAULT_TYPES;
   const fixtures = requested.flatMap((t) =>
     t === 'class' ? [...listFixtureDirs(t), ...listUnknownClassFixtureDirs()] : listFixtureDirs(t),

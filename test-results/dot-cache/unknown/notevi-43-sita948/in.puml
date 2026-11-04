@@ -1,0 +1,35 @@
+@startuml
+package Customer {
+    Customer --{ Order
+}
+
+package WarehouseItems {
+    Shipment }-- Warehouse
+}
+
+ 
+
+package Order {
+    Order *-- Shipment
+}
+ 
+
+class Order {
+    {field} Buyer
+    {field} Payment
+    {field} TotalPrice
+    {field} Mall
+
+}
+
+class Shipment {
+    {field} Consignee
+    {field} Date
+    {field} DeliveryNo
+    {field} DeliveryMethod
+    {field} TotalPrice
+    {field} Status : ShipmentStatus
+}
+
+
+@enduml

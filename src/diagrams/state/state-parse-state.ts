@@ -85,6 +85,9 @@ export interface Scope {
    * (the synthetic `CONC1`, `CONC2`, ... groups).
    */
   regions: State[][];
+  /** stdd T6a: the creation tick of each separator-made region, parallel to `regions[1..]`
+   *  (`State.concurrentRegionCreationIndexes`). */
+  regionCreationIndexes: number[];
   /**
    * Index into `regions` that new states/content currently append to.
    * Reset to `0` every time this scope is (re)entered via `pushScope`
@@ -111,6 +114,7 @@ export function makeScope(owner: State | null): Scope {
     states: [],
     transitions: [],
     regions: [[]],
+    regionCreationIndexes: [],
     regionCursor: 0,
     hasConcurrency: false,
     stateIndex: new Map(),
@@ -128,6 +132,7 @@ export function makeState(
     container?: 'frame';
     autoPhantom?: true;
     tags?: string[];
+    url?: string;
   },
 ): State {
   return {
@@ -143,6 +148,7 @@ export function makeState(
     ...(opts?.container !== undefined ? { container: opts.container } : {}),
     ...(opts?.autoPhantom !== undefined ? { autoPhantom: opts.autoPhantom } : {}),
     ...(opts?.tags !== undefined ? { tags: opts.tags } : {}),
+    ...(opts?.url !== undefined ? { url: opts.url } : {}),
   };
 }
 
@@ -229,6 +235,9 @@ export interface ParseState {
    * pass TWO).
    */
   linkConnections: (readonly [string, string])[];
+  /** stdd T1d: every data-less dotted-id ancestor, in quark creation order, for
+   *  `state-parse-phantom.ts#buildPhantomGroups`. */
+  phantoms: State[];
   /**
    * Active namespace separator (`quarkInContextSafe`'s `sep`) — `'.'` by
    * default (`StateDiagram.java:62`), `null` after `set separator
@@ -454,6 +463,7 @@ function applyScopeToOwner(owner: State, scope: Scope): void {
     // `S.CONC1.a`.
     owner.children = [...scope.regions[0]!];
     owner.concurrentRegions = scope.regions.slice(1).map((r) => [...r]);
+    owner.concurrentRegionCreationIndexes = [...scope.regionCreationIndexes];
   } else {
     owner.children = [...scope.states];
   }

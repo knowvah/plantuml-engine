@@ -1,0 +1,35 @@
+@startuml
+<style>
+activityDiagram {
+  diamond {
+    LineColor blue
+    BackgroundColor lightCyan
+    FontColor blue
+    FontSize 20
+  }
+}
+</style>
+
+repeat
+  :read data;
+  :generate diagrams;
+repeat while (more data?) is (yes)
+->no;
+
+<style>
+activityDiagram {
+  diamond {
+    LineColor red
+    BackgroundColor pink
+    FontColor red
+    FontSize 7
+  }
+}
+</style>
+repeat
+  :read data;
+  :generate diagrams;
+repeat while (more data?) is (yes)
+->no;
+stop
+@enduml

@@ -48,6 +48,7 @@
  * construction: one `renderLatexAsImage` call answers both.
  */
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
+import type { CreoleRunBullet } from '../../core/svek/image/creole-text-run-types.js';
 import type { CreoleRunImage, CreoleTextLine, CreoleTextRun } from '../../core/svek/image/creole-text-lines.js';
 import { creoleTextLines } from '../../core/svek/image/creole-text-lines.js';
 import {
@@ -58,13 +59,11 @@ import {
   tokenizeOnTabs,
 } from '../../core/klimt/creole/legacy/AtomText.js';
 import { JAR_DEFAULT_TEXT_COLOR } from '../../core/decoration/symbol/usymbol-resolve.js';
-import type { Theme } from '../../core/theme.js';
-import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { StateTextLine } from './state-geo-types.js';
 import { placeToken, type RunPlacement } from './state-run-placement.js';
+import { DEFAULT_TAB_SIZE, type StateCreoleOpts } from './state-creole-opts.js';
 
 /** `FontConfiguration.create`'s fixed tab size (`FontConfiguration.java:229-231`). */
-const DEFAULT_TAB_SIZE = 8;
 
 /**
  * One drawable styled run of a state text line: the seam's own
@@ -102,6 +101,10 @@ export interface StateTextRun {
    *  font size, muted by 3 for `<sup>`/`<sub>` (`FontPosition.java:51-60`),
    *  else the cascaded size. Drawn as this run's own `<text font-size>`. */
   readonly size: number;
+  /** stdd T6d -- `CreoleTextRun.bullet`, drawn by `renderer-box-runs.ts#bulletMarkup`. */
+  readonly bullet?: CreoleRunBullet;
+  /** stdd T4b -- `CreoleTextRun.unmutedSize`; the baseline's descent term reads it (`renderer-box.ts#runBaseline`). */
+  readonly unmutedSize?: number;
   /** The seam's own `CreoleTextRun.dy` (`decisions.md#D2`): baseline offset
    *  from the line's NORMAL baseline. Rendered via `renderer-box.ts
    *  #runBaseline`, which also names the one bounded divergence this
@@ -167,34 +170,7 @@ export interface StateCreoleBlock {
   readonly lines: readonly StateStyledTextLine[];
 }
 
-export interface StateCreoleOpts {
-  readonly wrapWidth?: number;
-  readonly tabSize?: number;
-  /** unwind2-S11: `SkinParam#getSprite`'s map (`Theme#sprites`), so a
-   *  `<$sprite>` atom is drawn (`creole-run-sprite.ts`). */
-  readonly spriteRegistry?: SpriteRegistry;
-}
-
-/**
- * `skinparam tabSize` does NOT apply to state text: `Style#getFontConfiguration`
- * (`Style.java:259-268`) -> `FontConfiguration.create(..)` fixes tabSize 8
- * (`FontConfiguration.java:229-231`); jar-verified `lokija-02-dipe348`.
- * `skinparam wrapWidth` applies ONLY where upstream threads
- * `getStyleState().wrapWidth()` into the text block — the leaf
- * `EntityImageState`/`EntityImageStateEmptyDescription` name and fields
- * (`create8`, `EntityImageStateCommon.java:80-81`,
- * `EntityImageState.java:98-99`). A composite's own title and attribute
- * block go through `Display.create` (`InnerStateAutonom.java:97`,
- * `Entity.java:631`), which is `create7`/`create0` with
- * `LineBreakStrategy.NONE` (`Display.java:614-623`) — no wrap.
- */
-export function stateCreoleOpts(theme: Theme, wrap: boolean): StateCreoleOpts {
-  return {
-    ...(wrap && theme.wrapWidth !== undefined ? { wrapWidth: theme.wrapWidth } : {}),
-    tabSize: DEFAULT_TAB_SIZE,
-    ...(theme.sprites !== undefined ? { spriteRegistry: theme.sprites } : {}),
-  };
-}
+export { stateCreoleOpts, stateHyperlinkStyle, type StateCreoleOpts } from './state-creole-opts.js';
 
 function toRun(run: CreoleTextRun, text: string, width: number, dx: number, place: RunPlacement = {}): StateTextRun {
   return {
@@ -212,8 +188,10 @@ function toRun(run: CreoleTextRun, text: string, width: number, dx: number, plac
     // piece {@link expandRun} fans one seam run out into carries that run's
     // OWN size/dy unchanged (tabs never cross an atom boundary).
     size: run.size,
+    ...(run.unmutedSize !== undefined ? { unmutedSize: run.unmutedSize } : {}),
     dy: run.dy,
     ...(run.image !== undefined ? { image: run.image } : {}),
+    ...(run.bullet !== undefined ? { bullet: run.bullet } : {}),
   };
 }
 
@@ -239,6 +217,8 @@ function expandRun(run: CreoleTextRun, font: FontSpec, measurer: StringMeasurer,
   // (empty) text — `AtomMath#calculateDimensionSlow` is the image's own box
   // (`AtomMath.java:64-71`). It carries no text, so it can carry no tab.
   if (run.image !== undefined) return [toRun(run, '', run.image.width, 0)];
+  // stdd T6d: a list stripe's `Bullet` header -- no text, the atom's own advance (`Bullet.java:57-62`).
+  if (run.bullet !== undefined) return [toRun(run, '', run.bullet.width, 0)];
   const whole = measure(run.text);
   if (!hasTabulation(run.text)) return [toRun(run, run.text, whole, 0, placeToken(run.text, whole, measure))];
   const tabStop = tabStopWidth(measure(tabStringFor(tabSizeNb)), runFont.size);

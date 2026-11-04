@@ -2998,43 +2998,43 @@
     },
     "state__hist-bg-diag": {
       "conformant": false,
-      "diffCount": 47
+      "diffCount": 53
     },
     "state__hist-bg-element": {
       "conformant": false,
-      "diffCount": 46
+      "diffCount": 52
     },
     "state__hist-bg-root": {
       "conformant": false,
-      "diffCount": 47
+      "diffCount": 53
     },
     "state__hist-font-diag": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-font-element": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-font-root": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-line-diag": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-line-element": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-line-root": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__hist-none": {
       "conformant": false,
-      "diffCount": 43
+      "diffCount": 49
     },
     "state__linknote-label-bottom": {
       "conformant": true,

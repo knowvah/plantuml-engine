@@ -1,0 +1,14 @@
+@starthcl
+<style>
+hclDiagram {
+  node {
+    BackgroundColor #ddeeff
+    LineColor #336699
+  }
+}
+</style>
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns = "true"
+}
+@endhcl

@@ -10,11 +10,12 @@
  */
 
 import type { Transition } from './ast.js';
+import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { DotInputEdge } from '../../core/graph-layout.js';
 import type { DiagramCtx } from './state-composite-pass.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
-import { computeReservedLabelBox } from './state-transition-label.js';
+import { measureStateLabelBox } from './state-transition-label.js';
 import { computeMergedLabelBox } from '../../core/edge-label-box.js';
 // `EntityImageNoteLink`'s real dimension — shared-seam-extraction T6, D1:
 // ONE port, `core/svek/image/EntityImageNoteLink.ts`, replacing this file's
@@ -41,14 +42,22 @@ type EdgeAttrs = NonNullable<DotInputEdge['attributes']>;
  *  this one's which-formula branching). `halfWidth`/`hasMiddleDecor` are
  *  always false for state — see `core/svek/image/EntityImageNoteLink.ts`'s
  *  doc comment for the `measureLinkNoteDim` citations. */
+/** `SvekEdge.java:291-294`'s wrap width and the diagram's sprites, for the label's creole block. */
+interface LabelWrap {
+  readonly maxWidth: number | undefined;
+  readonly sprites: SpriteRegistry | undefined;
+}
+
 function computeEdgeLabelBox(
   t: Transition,
   text: string | undefined,
   font: FontSpec,
   measurer: StringMeasurer,
-  maxWidth: number | undefined,
+  wrap: LabelWrap,
 ): ReservedLabelBox {
-  if (t.linkNote === undefined) return computeReservedLabelBox(text!, font, measurer, t.from === t.to, { maxWidth });
+  // stdd T2c/T3a: the box is the creole block's (`measureStateLabelBox`), sprites included.
+  if (t.linkNote === undefined) return measureStateLabelBox(text!, font, measurer, t.from === t.to, wrap);
+  const { maxWidth } = wrap;
   return computeMergedLabelBox({
     label: text ?? '',
     noteDim: measureLinkNoteDim(t.linkNote, { family: font.family }, measurer),
@@ -66,15 +75,10 @@ function computeEdgeLabelBox(
  *  together from the same box, including when a `note on link` is attached
  *  — T9 closes the gap the prior "merged label+note margin story is still
  *  unverified" comment named; see `computeEdgeLabelBox`. */
-function edgeLabelAttrs(
-  t: Transition,
-  font: FontSpec,
-  measurer: StringMeasurer,
-  maxWidth: number | undefined,
-): EdgeAttrs {
+function edgeLabelAttrs(t: Transition, font: FontSpec, measurer: StringMeasurer, wrap: LabelWrap): EdgeAttrs {
   const text = transitionLabelOf(t);
   if (text === undefined && t.linkNote === undefined) return {};
-  const box = computeEdgeLabelBox(t, text, font, measurer, maxWidth);
+  const box = computeEdgeLabelBox(t, text, font, measurer, wrap);
   return {
     label: text ?? t.linkNote ?? '',
     labelWidth: box.reservedWidth,
@@ -101,7 +105,7 @@ export function buildEdgeAttrs(t: Transition, font: FontSpec, ctx: DiagramCtx): 
   const attrs: EdgeAttrs = {
     minLen: (t.length ?? 2) - 1,
     // G20: same expression as `ctx.theme.linetype` below (D3 precedent).
-    ...edgeLabelAttrs(t, font, ctx.measurer, ctx.theme.maxMessageSize),
+    ...edgeLabelAttrs(t, font, ctx.measurer, { maxWidth: ctx.theme.maxMessageSize, sprites: ctx.theme.sprites }),
   };
   if (ctx.theme.linetype === 'ortho') moveLabelToXlabel(attrs);
   return attrs;

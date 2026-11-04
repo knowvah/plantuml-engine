@@ -1,0 +1,4 @@
+@startuml
+:foo;
+:<html>...~<img src="..."></img>...</html>;
+@enduml

@@ -94,6 +94,8 @@ encoder. Oracle rows that render the GPL behaviour differ from the port by this 
 `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-166`, `::comment when __MIT__ __EPL__
 __BSD__ __ASL__`); the port **keeps** its ported ditaa engine. Other edition markers are ruled
 case by case, not by extension of D13.
+**Reversed (maintainer ruling 2026-11-04, #111):** ditaa is dropped, because its library is
+LGPL-3.0. No ditaa engine was ever ported, whatever this entry says; `DIVERGENCES.md`.
 
 ## D14 — `version` renders the port's own values (maintainer ruling 2026-10-13, b1 close)
 `PSystemVersion#createShowVersion` (java:172-202) prints host state after its first four lines

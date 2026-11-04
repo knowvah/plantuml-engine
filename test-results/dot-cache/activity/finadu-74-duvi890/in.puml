@@ -1,0 +1,14 @@
+@startuml
+!theme cerulean
+<style>
+.continuous {
+  FontColor red
+}
+</style>
+
+:test;
+:action1; <<continuous>>
+:action2; <<continuous>>
+:action3; <<continuous>>
+
+@enduml

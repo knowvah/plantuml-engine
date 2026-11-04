@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-09-20T18:50:06.680Z",
-  "measuredAgainstCommit": "993cc2ae",
-  "type": "json+tests/oracle/svg-conformance/census-json.json",
+  "generatedAt": "2026-11-04T01:05:49.241Z",
+  "measuredAgainstCommit": "f31b2eac9",
+  "type": "json",
   "measurer": "deterministic",
   "fixtures": [
     {
       "slug": "babico-87-soxo095",
       "status": "ok",
-      "diffCount": 10,
-      "bucket": "4-10"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "bavize-88-jumu158",
@@ -25,13 +25,13 @@
     {
       "slug": "bitepo-72-vija933",
       "status": "ok",
-      "diffCount": 53,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "bogiku-88-nano204",
       "status": "ok",
-      "diffCount": 502,
+      "diffCount": 525,
       "bucket": "31+"
     },
     {
@@ -43,13 +43,13 @@
     {
       "slug": "cilemo-38-fafi313",
       "status": "ok",
-      "diffCount": 789,
+      "diffCount": 749,
       "bucket": "31+"
     },
     {
       "slug": "civofu-04-loku952",
       "status": "ok",
-      "diffCount": 1665,
+      "diffCount": 1781,
       "bucket": "31+"
     },
     {
@@ -67,7 +67,7 @@
     {
       "slug": "debako-68-sice023",
       "status": "ok",
-      "diffCount": 169,
+      "diffCount": 150,
       "bucket": "31+"
     },
     {
@@ -79,19 +79,19 @@
     {
       "slug": "devime-19-toze896",
       "status": "ok",
-      "diffCount": 1617,
+      "diffCount": 1544,
       "bucket": "31+"
     },
     {
       "slug": "dometa-86-jepe218",
       "status": "ok",
-      "diffCount": 168,
+      "diffCount": 149,
       "bucket": "31+"
     },
     {
       "slug": "gagebi-92-vere937",
       "status": "ok",
-      "diffCount": 172,
+      "diffCount": 154,
       "bucket": "31+"
     },
     {
@@ -103,13 +103,13 @@
     {
       "slug": "gejena-99-veme626",
       "status": "ok",
-      "diffCount": 488,
+      "diffCount": 482,
       "bucket": "31+"
     },
     {
       "slug": "gibego-39-pelu609",
       "status": "ok",
-      "diffCount": 494,
+      "diffCount": 488,
       "bucket": "31+"
     },
     {
@@ -121,7 +121,7 @@
     {
       "slug": "jaramo-16-doxa994",
       "status": "ok",
-      "diffCount": 11,
+      "diffCount": 23,
       "bucket": "11-30"
     },
     {
@@ -133,7 +133,7 @@
     {
       "slug": "jidata-48-kire666",
       "status": "ok",
-      "diffCount": 107,
+      "diffCount": 117,
       "bucket": "31+"
     },
     {
@@ -151,13 +151,13 @@
     {
       "slug": "kicati-76-guvi771",
       "status": "ok",
-      "diffCount": 170,
+      "diffCount": 151,
       "bucket": "31+"
     },
     {
       "slug": "kidoki-70-fala224",
       "status": "ok",
-      "diffCount": 1073,
+      "diffCount": 1080,
       "bucket": "31+"
     },
     {
@@ -169,7 +169,7 @@
     {
       "slug": "letada-23-sisi815",
       "status": "ok",
-      "diffCount": 170,
+      "diffCount": 151,
       "bucket": "31+"
     },
     {
@@ -187,13 +187,13 @@
     {
       "slug": "moseba-10-naza079",
       "status": "ok",
-      "diffCount": 98,
+      "diffCount": 100,
       "bucket": "31+"
     },
     {
       "slug": "mudumo-73-foli040",
       "status": "ok",
-      "diffCount": 323,
+      "diffCount": 300,
       "bucket": "31+"
     },
     {
@@ -205,7 +205,7 @@
     {
       "slug": "nanegu-88-boba399",
       "status": "ok",
-      "diffCount": 11,
+      "diffCount": 23,
       "bucket": "11-30"
     },
     {
@@ -217,19 +217,19 @@
     {
       "slug": "nofuvo-36-muxe040",
       "status": "ok",
-      "diffCount": 751,
+      "diffCount": 784,
       "bucket": "31+"
     },
     {
       "slug": "noleta-28-nutu456",
       "status": "ok",
-      "diffCount": 232,
+      "diffCount": 214,
       "bucket": "31+"
     },
     {
       "slug": "nopoku-31-cisi925",
       "status": "ok",
-      "diffCount": 1251,
+      "diffCount": 1192,
       "bucket": "31+"
     },
     {
@@ -247,7 +247,7 @@
     {
       "slug": "pijume-87-gufu868",
       "status": "ok",
-      "diffCount": 100,
+      "diffCount": 98,
       "bucket": "31+"
     },
     {
@@ -259,7 +259,7 @@
     {
       "slug": "sevaji-38-xita618",
       "status": "ok",
-      "diffCount": 171,
+      "diffCount": 151,
       "bucket": "31+"
     },
     {
@@ -271,19 +271,19 @@
     {
       "slug": "timafu-94-bixe774",
       "status": "ok",
-      "diffCount": 99,
+      "diffCount": 96,
       "bucket": "31+"
     },
     {
       "slug": "tivuru-65-vezu313",
       "status": "ok",
-      "diffCount": 137,
+      "diffCount": 132,
       "bucket": "31+"
     },
     {
       "slug": "vogeku-38-soxe333",
       "status": "ok",
-      "diffCount": 180,
+      "diffCount": 161,
       "bucket": "31+"
     },
     {
@@ -295,13 +295,13 @@
     {
       "slug": "zasitu-09-lise302",
       "status": "ok",
-      "diffCount": 503,
+      "diffCount": 526,
       "bucket": "31+"
     },
     {
       "slug": "zevaka-35-zova441",
       "status": "ok",
-      "diffCount": 324,
+      "diffCount": 297,
       "bucket": "31+"
     }
   ]

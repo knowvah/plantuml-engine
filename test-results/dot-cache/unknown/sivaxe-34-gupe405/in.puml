@@ -1,0 +1,8 @@
+@startuml
+(Alice) -> Bob : ok1
+newpage
+(Alice) -> Bob : ok2
+skinparam hand {
+    written true
+}
+@enduml

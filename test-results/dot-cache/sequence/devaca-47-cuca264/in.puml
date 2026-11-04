@@ -1,0 +1,13 @@
+@startuml
+Test -->> Test: OK
+Test <<-- Test: OK
+Test <<-->> Test: the arrow is KO
+Test <<->> Test: the arrow is KO
+Test <<--> Test: the arrow is KO
+Test <->> Test: the arrow is KO
+Test <-> Test: the arrow is KO
+Test <<-> a: the arrow is KO
+Test <->> a: the arrow is KO
+Test <<--> a: the arrow is KO
+Test <-->> a: the arrow is KO
+@enduml

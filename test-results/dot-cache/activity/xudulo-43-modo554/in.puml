@@ -1,0 +1,12 @@
+@startuml
+
+(*) --> "toto"
+note left
+  this is
+  a long
+  <b>note</b>
+ end note
+--> "titi"
+note on link: this is a note
+
+@enduml

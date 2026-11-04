@@ -1,0 +1,6 @@
+@startuml
+:A;
+-[#blue]->
+start
+:B;
+@enduml

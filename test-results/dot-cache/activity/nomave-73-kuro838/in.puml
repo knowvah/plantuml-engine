@@ -1,0 +1,9 @@
+@startuml
+title
+You can have qrcode
+<qrcode:abcdef> or <qrcode:abcdef{scale=3}>
+end title
+start
+:foo4<qrcode:abcdef>;
+stop
+@enduml

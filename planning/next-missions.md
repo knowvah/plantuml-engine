@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## state-divergence-drive (stdd) — DONE 2026-11-04 (branch `feature/parity-queue` off `4258f6c97`, collapsed to one unsigned commit per the queue ruling, not pushed; working history on the local tag `stdd/pre-squash`; issue #112)
+
+The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-match of 299) went to **297 of 299 conformant**, 293 pinned in `state.golden.ratchet.test.ts` (110 at the start), 0 conformant losses in every engine against `4258f6c97`. Every mechanism carries its Java `file:line` in `plans/state-divergence-drive/decision-journal.md` (rows 1-46). The two rows left are named in `plans/state-divergence-drive/measurements/final-rows.md`.
+
+### Follow-ons (mechanism, owner)
+1. **`xetase-70-zaza808`** — a `{{ }}` edge label is an `EmbeddedDiagram` atom upstream, drawn as an `<image>` of the nested diagram; every engine measures edge labels through the flat creole seam (`core/edge-label-box.ts`). Issue #144 (`parity`, `queue:ready`, blocked by #136).
+2. **`viroxo-69-fito663`** and the ten `state__hist-*` dss rows — identical DOT, real `dot` matches the jar, dot-engine places a border-point cluster's `rank=sink` port node, `ee` anchor and inner nodes 2-17 px off. `docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`; `DIVERGENCES.md` "State diagrams".
+3. **`LIST_WITH_NUMBER` creole headers** (`AtomTextUtils.createListNumber`, a `CreoleContext` counter) are still not carried by the flat creole seam; `LIST_WITHOUT_NUMBER` is (T6d). No state row exercises it.
+4. **`data-entity-1`/`data-entity-2` on a link into a composite** print this port's `__zaent_<id>` anchor where the jar prints the cluster's `entNNNN` uid (`jijuze-43`, `lumamo-63`); `compareSvg` ignores `data-*`, so no row moves. `renderer-group.ts#wrapLink`.
+5. **`CommandLinkStateCommon`'s `node` edge-label style** (`statediagramedgelabelstyle node`, `createTransitionWithIntermediateNode`) is unported; no corpus row.
+6. **A `frame` composite's gradient back colour** — `renderer-frame-cluster.ts` returns the fragment body and drops `extraDefs`; the default frame has no gradient (`group { BackGroundColor transparent }`), so nothing moves today.
+
 ## diagram-style-scope (dss) — DONE 2026-11-03 (branch `feat/diagram-style-scope` off `4f653cac9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 4f653cac9`; working history on the local tag `dss/pre-squash`)
 
 Document background and element `BackgroundColor`, `LineColor`, `FontColor` read through the ported `StyleBuilder`, precomputed into the existing theme. **865 authored rows, 792 conformant** (`tests/fixtures/diagram-style-scope/`, shrink-only pin `oracle/goldens/diagram-style-scope.json`); the 73 open rows are named in the brief's README. 0 conformant losses in 28 engines vs b0, d.ts identical. dbp follow-ons 5 and 7 and the two bucket leaks are closed (`class__scope-note-objectdiagram`, `state__scope-state-classdiagram` at 0).
@@ -43,7 +55,7 @@ Document background and element `BackgroundColor`, `LineColor`, `FontColor` read
 Stays filed by the user's ruling (D8 did not reverse it):
 1. **Dark mode's other diffs** — `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
 2. **Monochrome and reverse root background.**
-3. **`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades** — `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`).
+3. **`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades** — `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`). — **state part struck by stdd T3b/T5a (2026-11-04, `stdd/pre-squash`):** `LineThickness` reads through `stateArrowLineThickness`/`stateBorderStrokeAttrs`, `somuke-94` and `sugico-41` conformant; `xefuma-94` is an `unknown`-bucket row (#119). The component/skin items stay.
 4. **Malformed `<style>`** — the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
 
 Needs a ruling only the user can sign:
@@ -58,14 +70,14 @@ Layout and parser, not colour reads:
 11. **Legacy activity `(*) -->`** — no engine (`net/sourceforge/plantuml/activitydiagram/`), separable port (`activity__probe-legacy` 21).
 12. **`CommandActivityLong3`'s leading colour** — `#red:a` / `b;` draws with a deprecation warning, the colour parsed and not applied (`CommandActivityLong3.java:126`); we refuse it.
 13. **`(X)` for letters outside A, B, E, G** — draws `<text>` where the jar draws an outline (`activity-spot-glyph-data.ts:103`, `DriverCenteredCharacterSvg.java:72-81`); needs glyph data through the platform-outline seam.
-14. **State** — border-point cluster with a link 8 px wide (`state__hist-*`); `__zaent_` link id (`Link.java:106-114`, 57 of 273 fixtures); literal `\n` in a one-line note; a note as a link endpoint `B --> N` makes a bogus state; a cluster composite with `--` regions draws a dashed-rect leaf; an implicit second note's link id `__note_0`, jar `GMN2`; our error page cites the previous line.
+14. **State** — border-point cluster with a link 8 px wide (`state__hist-*`); `__zaent_` link id (`Link.java:106-114`, 57 of 273 fixtures); literal `\n` in a one-line note; a note as a link endpoint `B --> N` makes a bogus state; a cluster composite with `--` regions draws a dashed-rect leaf; an implicit second note's link id `__note_0`, jar `GMN2`; our error page cites the previous line. — **struck by stdd (2026-11-04):** `__zaent_` id (T1a), the one-line `\n` note, the note endpoint and the implicit second note id (T5b), the `--` region leaf (T6a); the `state__hist-*` 8 px is dot-engine placement on a border-point cluster, graphviz issue 39.
 15. **Two positional `<style>` blocks in activity** (`dijapi-54`, first diamond `#F00`, jar `#00B`) — D2's stated consequence: a bucket is a snapshot.
 
 Colour reads still open, each small:
 16. **A group whose body starts with an inline colour arrow** — `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
-17. **`note on link` attribute colour** `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`.
+17. **`note on link` attribute colour** `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
-19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left).
+19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
 20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
 21. **chart prints `theme.colors.background` raw** (`src/diagrams/chart/layout.ts:169`); board's body (`board__selector-activitydiagram` 15) and packet/chart residuals (dbp 2).
 22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` remainders undiagnosed; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.

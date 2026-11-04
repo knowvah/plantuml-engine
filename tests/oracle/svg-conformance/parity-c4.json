@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T01:03:13.741Z",
+  "generatedAt": "2026-11-04T13:26:16.959Z",
   "fixtures": [
     {
       "slug": "biluko-70-licu481",
@@ -79,9 +79,9 @@
       "dotEqual": true,
       "layoutEqual": true,
       "verdict": "diverged",
-      "maxDelta": 16,
-      "firstDiff": "svg/g[1]/g[2]/rect[1]/@fill",
-      "maxDeltaPath": "svg/@height"
+      "maxDelta": 2.344,
+      "firstDiff": "svg/g[1]/g[4]/path[1]/@stroke-dasharray",
+      "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[4]"
     },
     {
       "slug": "vakasu-51-xiza794",

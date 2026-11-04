@@ -65,6 +65,7 @@ import {
   syncAutoScopes,
   DEFAULT_SEPARATOR,
 } from './state-parse-state.js';
+import { buildPhantomGroups } from './state-parse-phantom.js';
 import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
 import { checkFinalError } from './state-check-final.js';
 
@@ -158,7 +159,13 @@ function handlePendingJsonLine(ps: ParseState, line: string, pass: Pass): boolea
  *  is the line's real (untrimmed-array) index, for the refusal's `line`/
  *  `consumed` fields -- same convention `fallbackOrRefuse`'s `offending`
  *  uses. */
-function dispatchCommand(ps: ParseState, line: string, pass: Pass, origLine: number): boolean | ParseRefusal {
+function dispatchCommand(
+  ps: ParseState,
+  line: string,
+  pass: Pass,
+  origLine: number,
+  position: number = origLine,
+): boolean | ParseRefusal {
   for (const cmd of COMMANDS) {
     const match = cmd.pattern.exec(line);
     if (match === null) continue;
@@ -168,7 +175,8 @@ function dispatchCommand(ps: ParseState, line: string, pass: Pass, origLine: num
       if (ps.executionError !== undefined) {
         const message = ps.executionError;
         ps.executionError = undefined;
-        return refuse('execution', origLine, origLine + 1, message);
+        // stdd T5b: the document position for the page, the block index for `consumed`.
+        return refuse('execution', position, origLine + 1, message);
       }
     }
     return true;
@@ -203,6 +211,23 @@ function nonBlankLines(block: UmlSource): { lines: string[]; origIndex: number[]
 }
 
 /**
+ * stdd T4b: the annotation matchers' view of the block -- the matched line `i` trimmed (the single-line
+ * matchers test `^title...$`), every OTHER surviving line RAW. `CommandMultilinesTitle.java:75-77` takes the
+ * body as `subExtract(1, 1).removeEmptyColumns()`, which keeps the lines' relative indentation, and
+ * `StripeTree#computeLevel` (`StripeTree.java:68-82`) reads a `|_` item's level from exactly that
+ * (guligu-53: `  \t|_ prop1` is level 3). The class and sequence parsers already hand over raw lines
+ * (`class/parser.ts#annotationLines`).
+ */
+function annotationView(
+  lines: readonly string[],
+  origIndex: readonly number[],
+  raw: readonly string[],
+  i: number,
+): readonly string[] {
+  return lines.map((trimmed, k) => (k === i ? trimmed : (raw[origIndex[k]!] ?? trimmed)));
+}
+
+/**
  * `dispatchCommand` declined line `i` (in `lines`, matched pairwise with
  * `origIndex`); try the shared annotation/sprite fallback matchers, and
  * refuse if neither claims it either (T8, mission dispatch-by-parse-attempt)
@@ -212,12 +237,19 @@ function nonBlankLines(block: UmlSource): { lines: string[]; origIndex: number[]
  * refusal to return. Split out of `runPass` to stay under the complexity
  * hook's 30-NLOC cap.
  */
+/** stdd T5b: the fallback matchers' targets plus the line's DOCUMENT position (`UmlSource.linePositions`), the
+ *  frame `errorSvg` highlights in (`PSystemError.java:239` prints the `StringLocated`'s own location). */
+interface FallbackCtx {
+  readonly annotationTarget: DiagramAnnotations;
+  readonly spriteTarget: SpriteRegistry;
+  readonly position: number;
+}
+
 function fallbackOrRefuse(
   lines: readonly string[],
   origIndex: readonly number[],
   i: number,
-  annotationTarget: DiagramAnnotations,
-  spriteTarget: SpriteRegistry,
+  { annotationTarget, spriteTarget, position }: FallbackCtx,
 ): number | ParseRefusal {
   const annotationMatch = matchAnnotationCommand(lines, i, annotationTarget);
   if (annotationMatch !== null) return annotationMatch.consumed - 1;
@@ -233,8 +265,9 @@ function fallbackOrRefuse(
   // `it.getTrace()` is read) advances the trace past the offending line
   // itself, so `trace.size()` includes it, not just the lines before it.
   // @see ~/git/plantuml/.../command/PSystemCommandFactory.java:169-175
+  // stdd T5b: `line` is the document position (the block starts after `@startuml`), `consumed` block-relative.
   const offending = origIndex[i]!;
-  return refuse('syntax', offending, offending + 1, 'Syntax Error?');
+  return refuse('syntax', position, offending + 1, 'Syntax Error?');
 }
 
 /**
@@ -300,10 +333,15 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
     pushBlankNoteLines(ps, block, origIndex[i - 1]!, origIndex[i]!);
     if (handlePendingNoteLine(ps, line, block.lines[origIndex[i]!]!, pass)) continue;
     if (handlePendingJsonLine(ps, line, pass)) continue;
-    const dispatched = dispatchCommand(ps, line, pass, origIndex[i]!);
+    const position = block.linePositions?.[origIndex[i]!] ?? origIndex[i]!;
+    const dispatched = dispatchCommand(ps, line, pass, origIndex[i]!, position);
     if (dispatched === true) continue;
     if (dispatched !== false) return dispatched;
-    const result = fallbackOrRefuse(lines, origIndex, i, annotationTarget, spriteTarget);
+    const result = fallbackOrRefuse(annotationView(lines, origIndex, block.lines, i), origIndex, i, {
+      annotationTarget,
+      spriteTarget,
+      position,
+    });
     if (typeof result !== 'number') return result;
     i += result;
   }
@@ -348,6 +386,7 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
     globalByName: new Map(),
     scopeByOwner: new Map(),
     linkConnections: [],
+    phantoms: [],
     separator: DEFAULT_SEPARATOR,
     creationCounter: 0,
     pseudoCreationIndex: new Map(),
@@ -397,6 +436,7 @@ export function parseState(block: UmlSource, options?: ParseOptions): StateDiagr
   // composite that exists ONLY as a byproduct of dotted-hierarchy
   // auto-creation (state-parse-resolve.ts#resolveOrCreateDottedPath) and
   // therefore never went through pushScope/popScope.
+  buildPhantomGroups(ps);
   syncAutoScopes(ps);
 
   ast.states = topScope.states;

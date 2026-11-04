@@ -201,23 +201,30 @@ export function resolveScaleFactor(
   height: number,
   dpi: number = 96,
 ): number {
-  const dpiFactor = dpi / 96;
-  if (spec === undefined) return dpiFactor;
+  // stdd T4a: `TextBlockExporter#computeScaleFactor` (`core/TextBlockExporter.java:204-208`) is
+  // `fromScale * dpi / 96.0`, left to right: `1.4 * 96 / 96` is 1.3999999999999997, and the root's
+  // `(int)(maxY * scale)` (`SvgGraphics.java:801-802`) truncates `610 * that` to 853 (zoriza-41).
+  return (scaleOf(spec, width, height) * dpi) / 96;
+}
+
+/** `scale == null ? 1 : scale.getScale(dim.getWidth(), dim.getHeight())` (`TextBlockExporter.java:206`). */
+function scaleOf(spec: ScaleSpec | undefined, width: number, height: number): number {
+  if (spec === undefined) return 1;
   switch (spec.kind) {
     case 'simple':
-      return clampScale(spec.factor) * dpiFactor;
+      return clampScale(spec.factor);
     case 'width':
-      return clampScale(spec.target / width) * dpiFactor;
+      return clampScale(spec.target / width);
     case 'height':
-      return clampScale(spec.target / height) * dpiFactor;
+      return clampScale(spec.target / height);
     case 'widthAndHeight':
-      return clampScale(Math.min(spec.width / width, spec.height / height)) * dpiFactor;
+      return clampScale(Math.min(spec.width / width, spec.height / height));
     case 'maxWidth':
-      return clampScale(Math.min(1, spec.target / width)) * dpiFactor;
+      return clampScale(Math.min(1, spec.target / width));
     case 'maxHeight':
-      return clampScale(Math.min(1, spec.target / height)) * dpiFactor;
+      return clampScale(Math.min(1, spec.target / height));
     case 'maxWidthAndHeight':
-      return clampScale(Math.min(1, Math.min(spec.width / width, spec.height / height))) * dpiFactor;
+      return clampScale(Math.min(1, Math.min(spec.width / width, spec.height / height)));
   }
 }
 

@@ -1,0 +1,25 @@
+@startuml
+<style>
+activityDiagram {
+    diamond {
+        MaximumWidth 200
+    }
+}
+</style>
+
+start
+  if (LONG LONG LONG LONG LONG LONG LONG TEXT) then
+      :YES;
+  else
+      :NO;
+  endif
+end
+
+start
+  if (LONG LONG LONG LONG LONG LONG LONG TEXT) then
+      :YES;
+  elseif (ELSEIF)
+      :NO;
+  endif
+end
+@enduml

@@ -1,0 +1,6 @@
+@startdot
+digraph bt {
+  graph [rankdir=BT]
+  a -> b -> c
+}
+@enddot

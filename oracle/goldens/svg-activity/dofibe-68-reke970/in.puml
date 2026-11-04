@@ -1,0 +1,6 @@
+@startuml
+!$var = 5
+!if $var > -1
+: var is $var ;
+!endif
+@enduml

@@ -58,6 +58,7 @@
  */
 
 import type { State, Transition } from './ast.js';
+import { labelStyleOf } from './state-transition-label.js';
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { TransitionGeo } from './state-geo-types.js';
 import { buildStateGeoTextFields } from './state-sizing.js';
@@ -82,6 +83,7 @@ import { pushLocalNodesInCreationOrder } from './state-composite-pseudo.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import { concurrentRegionScopeId } from './state-parse-state.js';
 import { shiftDotLayoutResult } from './state-composite-autonom.js';
+import { shiftGroupAutoLinks } from './state-composite-transition-geo.js';
 import { sweepOrphanNoteEdges } from './state-note-layout.js';
 import { resolveEndpoint } from './state-composite-classify.js';
 
@@ -115,8 +117,13 @@ export interface ConcurrentRegionPassResult {
  *  every fixture sampled, the leaf-state-box ink rule's own `-1` min-corner
  *  asymmetry — `layout-ink-extent.ts#addNodeInk` — folded into `JAR_INK_
  *  MARGIN(6) - (-1) = 7`). Renamed from `regionInkDim` to `regionInkGeometry`
- *  since it's no longer JUST a dimension. */
-function regionInkGeometry(
+ *  since it's no longer JUST a dimension.
+ *
+ *  stdd T6a: exported -- a region re-entering a CLUSTER composite's pass as a
+ *  leaf (`state-composite-cluster.ts#buildConcurrentRegionLeaf`) is the same
+ *  `SvekResult` image (`GroupMakerState.java:116-117`), sized and shifted by
+ *  the same `SvekResult.java:130-135` recipe. */
+export function regionInkGeometry(
   p: ConcurrentRegionPassResult,
   // mission skin-file-loading Batch 2: the diagram's own resolved
   // `theme.shadowing` -- see `materializeSpecs`'s own doc comment
@@ -247,7 +254,7 @@ function buildConcurrentBranchAcc(
   // `attachTransitionLabel` so a region-local labeled transition reads
   // graphviz's real `labelX`/`labelY` instead of falling back to
   // `perpendicularOffsetLabel` (state-transition-label.ts:377-388).
-  const acc = newAccumulator(resolveArrowLabelFont(ctx.theme), ctx.measurer);
+  const acc = newAccumulator(resolveArrowLabelFont(ctx.theme), ctx.measurer, labelStyleOf(ctx.theme));
   // G5 C3, mechanism 16 shape half: `insideAutonomPass` -- a concurrent
   // region/branch is its OWN separately-fired pass (mirrors
   // `buildPlainAutonomSpec`'s identical scoping, state-composite-
@@ -376,6 +383,7 @@ function combineConcurrentPasses(
   let shift = 0;
   const allNodes: DotLayoutResult['nodes'] = [];
   const allEdges: DotLayoutResult['edges'] = [];
+  const allClusters: NonNullable<DotLayoutResult['clusters']> = [];
   for (let i = 0; i < passes.length; i++) {
     const p = passes[i]!;
     // mission G4 S6: apply THIS region's own ink-extent `moveDelta`
@@ -384,15 +392,22 @@ function combineConcurrentPasses(
     // pre-S6 (a consistent +7,+7 absolute-position gap, jar-verified).
     const geom = regionInkGeometry(p, ctx.theme.shadowing ?? 0);
     const shiftedResult = shiftDotLayoutResult(p.result, geom.dx, geom.dy);
-    for (const n of shiftedResult.nodes) {
-      allNodes.push(vertical ? { ...n, x: n.x + shift } : { ...n, y: n.y + shift });
-    }
-    // dss T3f: a note's Opale reads its connector from these
+    // dss T3f: a note's Opale reads its connector from these edges
     // (`state-composite-geo.ts#materializeAutonom`), in the nodes' own frame.
-    allEdges.push(...shiftDotLayoutResult(shiftedResult, vertical ? shift : 0, vertical ? 0 : shift).edges);
-    const regionTransitions = buildLevelTransitionGeos(p.acc, shiftedResult).map((t) =>
-      vertical ? shiftTransitionX(t, shift) : shiftTransitionY(t, shift),
-    );
+    // stdd T6a: the region's clusters travel too -- a non-autarkic group inside a
+    // region (`state b { state c }` with `c -> d`, darime-88) is a `Cluster` of
+    // that region's own svek pass (`GroupMakerState.java:139-149`, `svek-2.dot`'s
+    // `cluster6`), and `materializeCluster` reads its box from this result
+    // (`state-composite-geo.ts`); without it the cluster fell to the dashed box.
+    const placed = shiftDotLayoutResult(shiftedResult, vertical ? shift : 0, vertical ? 0 : shift);
+    allNodes.push(...placed.nodes);
+    allEdges.push(...placed.edges);
+    if (placed.clusters !== undefined) allClusters.push(...placed.clusters);
+    const regionTransitions = shiftGroupAutoLinks(
+      buildLevelTransitionGeos(p.acc, shiftedResult),
+      geom.dx,
+      p.result.originShift?.x ?? 0,
+    ).map((t) => (vertical ? shiftTransitionX(t, shift) : shiftTransitionY(t, shift)));
     localStates.push(...p.specs);
     localTransitions.push(...regionTransitions);
     regions.push({ specs: p.specs, transitions: regionTransitions });
@@ -415,7 +430,13 @@ function combineConcurrentPasses(
     regions,
     separators,
     localStates,
-    localPositions: { nodes: allNodes, edges: allEdges, width: wrapper.width, height: wrapper.height },
+    localPositions: {
+      nodes: allNodes,
+      edges: allEdges,
+      clusters: allClusters,
+      width: wrapper.width,
+      height: wrapper.height,
+    },
     localTransitions,
     ...buildStateGeoTextFields(s, ctx.theme, ctx.measurer),
     ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),

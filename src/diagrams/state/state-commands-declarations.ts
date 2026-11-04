@@ -86,7 +86,8 @@ const STEREO_OPT = String.raw`(?:<<([^<>]+)>>)?`;
  *  `UrlBuilder.OPTIONAL`'s position in `CommandCreateState`/
  *  `CommandCreatePackageState`/`CommandCreatePackage2`'s regex concat.
  * @see ~/git/plantuml/.../url/UrlBuilder.java:48-49 (MANDATORY/OPTIONAL) */
-const URL_OPT = String.raw`(?:\s*\[\[[^\]]*\]\])?`;
+/** stdd T3d: captures the `[[...]]` token whole, as `UrlBuilder.getRegexp()` hands it to `UrlBuilder#getUrl`. */
+const URL_OPT = String.raw`(?:\s*(\[\[[^\]]*\]\]))?`;
 /** Trailing background/border-color spec — `ColorParser.simpleColor
  *  (ColorType.BACK)`'s COLORS_REGEXP (`PART2 | COLOR_REGEXP`): either a bare
  *  `#colorname` (with an optional `-`/`\`/`|`/`/`-separated two-color
@@ -164,6 +165,13 @@ function declareGroup(ps: ParseState, state: State, pass: Pass): State {
   const last = ps.lastEntity;
   const declared = declareState(ps, state, pass, { phantomAncestors: true });
   ps.lastEntity = last;
+  // stdd T3c: `CommandCreatePackageState.java:178-179` `p.setStereotype(stereogroup.buildStereotype())`
+  // -- `null` when the `{` line has none (`Stereogroup.java:94-97`), so `State AA <<O-O>>` then
+  // `state AA {` has no stereotype (pesita-10: the jar draws no symbol). Pass one only, as the
+  // content side effects (`applyDeclaredContent`).
+  if (pass === 'one' && state.stereotype === undefined) delete declared.stereotype;
+  // stdd T6c: a `{ }` block makes a GROUP even when it stays empty (`State.explicitComposite`).
+  declared.explicitComposite = true;
   return declared;
 }
 
@@ -187,8 +195,9 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const tags = parseTags(match[5]);
       const stereotypeRaw = match[6];
-      const colorRaw = match[7];
-      const lineColorRaw = match[8];
+      const urlRaw = match[7];
+      const colorRaw = match[8];
+      const lineColorRaw = match[9];
       const kind: StateKind = stereotypeRaw !== undefined ? stereotypeToKind(stereotypeRaw) : 'normal';
 
       const s = makeState(id, display, kind, {
@@ -196,6 +205,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
         ...(lineColorRaw !== undefined ? { lineColor: lineColorRaw } : {}),
         ...(stereotypeRaw !== undefined ? { stereotype: stereotypeRaw } : {}),
         ...(tags !== undefined ? { tags } : {}),
+        ...(urlRaw !== undefined ? { url: urlRaw } : {}),
       });
       // pushScope the CANONICAL object declareState returns, not `s` --
       // `s` is discarded (merged in-place) when this id was already
@@ -224,13 +234,15 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
     passes: ['one', 'two', 'three'],
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
-      const colorRaw = match[6];
-      const lineColorRaw = match[7];
+      const urlRaw = match[6];
+      const colorRaw = match[7];
+      const lineColorRaw = match[8];
 
       const s = makeState(id, display, 'normal', {
         ...(colorRaw !== undefined ? { color: colorRaw } : {}),
         ...(lineColorRaw !== undefined ? { lineColor: lineColorRaw } : {}),
         container: 'frame',
+        ...(urlRaw !== undefined ? { url: urlRaw } : {}),
       });
       // See rule 6's comment: push the CANONICAL declareState() return, not
       // `s` -- and mark auto-created ancestors phantom for the same reason.
@@ -255,8 +267,9 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const stereotypeRaw = match[5]!;
       const tags = parseTags(match[6]);
-      const colorRaw = match[7];
-      const lineColorRaw = match[8];
+      const urlRaw = match[7];
+      const colorRaw = match[8];
+      const lineColorRaw = match[9];
       const kind = stereotypeToKind(stereotypeRaw);
 
       const s = makeState(id, display, kind, {
@@ -264,6 +277,7 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
         ...(colorRaw !== undefined ? { color: colorRaw } : {}),
         ...(lineColorRaw !== undefined ? { lineColor: lineColorRaw } : {}),
         ...(tags !== undefined ? { tags } : {}),
+        ...(urlRaw !== undefined ? { url: urlRaw } : {}),
       });
       declareState(ps, s, pass);
     },
@@ -291,14 +305,16 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
     execute(ps, match, pass) {
       const { display, id } = extractDisplayAndId(match, 1, 2, 3, 4);
       const tags = parseTags(match[5]);
-      const colorRaw = match[6];
-      const lineColorRaw = match[7];
-      const addField = match[8];
+      const urlRaw = match[6];
+      const colorRaw = match[7];
+      const lineColorRaw = match[8];
+      const addField = match[9];
 
       const s = makeState(id, display, 'normal', {
         ...(colorRaw !== undefined ? { color: colorRaw } : {}),
         ...(lineColorRaw !== undefined ? { lineColor: lineColorRaw } : {}),
         ...(tags !== undefined ? { tags } : {}),
+        ...(urlRaw !== undefined ? { url: urlRaw } : {}),
       });
       // Use the CANONICAL object (not the throwaway `s`) for the inline
       // description -- `s` is discarded whenever this id already resolved

@@ -1,0 +1,12 @@
+@startuml
+!ijk = 'foo'
+Alice -> Bob : You should see foo and not bar
+!if ijk == 'foo1'
+Alice -> Bob : foo1
+!elseif ijk == 'bar'
+Alice -> Bob : bar
+!elseif
+Alice -> Bob : foo
+!endif
+Alice -> Bob : B
+@enduml

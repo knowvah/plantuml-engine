@@ -1,0 +1,6 @@
+@starthcl
+# Provider configuration
+region = "us-east-1"
+# Environment tag
+environment = "staging"
+@endhcl

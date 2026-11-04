@@ -1,0 +1,5 @@
+@startuml
+Actor --> Participant: Message1 [[http://www.google.com this <&link-intact> is]]
+Actor --> Participant: Message2 [[http://www.google.com <&link-intact>]]
+Actor --> Participant: Message3 <&link-intact>
+@enduml

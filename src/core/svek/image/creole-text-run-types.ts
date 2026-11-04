@@ -84,16 +84,32 @@ export interface CreoleTextRun {
    *  cascaded size for every NORMAL run (SI30 `decisions.md#D1/#D3`). The
    *  size this seam MEASURED with, so a renderer must draw with it too. */
   readonly size: number;
+  /** stdd T4b: the atom's UNMUTED font size (`atom.font.size`, before `FontPosition#mute`,
+   *  `FontConfiguration.java:98-104`), present only when it differs from {@link size}: `Sea`
+   *  positions the atom from the unmuted metrics, so a renderer's descent term is this size over
+   *  4.5 (`creole-sea-line.ts`'s `dy` contract), not the muted one. */
+  readonly unmutedSize?: number;
   /** Baseline offset from the line's NORMAL baseline, from `Sea`
    *  (`decisions.md#D2`): a renderer draws this run at
    *  `lineTop + line.height - atom-unmuted-size/4.5 + dy`. 0 for every run
    *  of an all-NORMAL line — see `creole-sea-line.ts`'s doc comment for the
    *  two cases where a NORMAL run's `dy` is legitimately non-zero. */
   readonly dy: number;
+  /** stdd T6d: set ONLY on a `'bullet'` atom's run -- see {@link CreoleRunBullet}. */
+  readonly bullet?: CreoleRunBullet;
   /** Set ONLY on a `'latex'` atom's run, which carries an image and no text
    *  at all (`AtomMath#drawU` draws one `UImage`/`UImageSvg` and nothing
    *  else, `AtomMath.java:78-97`). Absent on every text run. */
   readonly image?: CreoleRunImage;
+}
+
+/** A `'bullet'` atom's run (`Bullet.java`): its box TOP within the line (as {@link CreoleRunImage.top}) and
+ *  height; the run's `text` is `''` and its `width` the atom's. */
+export interface CreoleRunBullet {
+  readonly order: number;
+  readonly width: number;
+  readonly height: number;
+  readonly top: number;
 }
 
 export interface CreoleTextLine {
