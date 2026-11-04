@@ -35,12 +35,13 @@ import type { DotInputNode } from '../../core/graph-layout.js';
 import type { FontConfiguration, FontStyle } from '../../core/klimt/shape/UText.js';
 import { buildNoteBody } from '../../core/svek/image/leaf-sizing.js';
 import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
-import { creoleTextLines, type CreoleTextLine } from '../../core/svek/image/creole-text-lines.js';
 import type { PureNoteTextDim } from '../../core/svek/image/EntityImageNoteLink.js';
 // SI30 T5: the SAME per-run size/dy/tab-stop conversion the header/body
 // path uses -- one core-vs-state-local seam, not a second one for notes
 // (`state-sizing-creole.ts#toStyledLine`'s own doc comment).
-import { toStyledLine, type StateStyledTextLine } from './state-sizing-creole.js';
+import { stateCreoleBlock, type StateStyledTextLine } from './state-sizing-creole.js';
+import type { StateUrl } from './state-geo-types.js';
+import { stateUrlOf } from './state-sizing.js';
 
 /**
  * mission G4 S10: `Opale.java`'s real `EntityImageNote`/`Opale` margin
@@ -77,6 +78,8 @@ interface NoteMeasurement {
   readonly lines: readonly StateStyledTextLine[];
   readonly width: number;
   readonly height: number;
+  /** stdd T3d -- see {@link NoteSpec.url}; built with the theme's `topurl` where the theme is at hand. */
+  readonly url?: StateUrl;
 }
 
 /** `note { FontSize 13 }`'s plain style set (`plantuml.skin` default,
@@ -181,54 +184,13 @@ export function buildRenderLines(
   measurer: StringMeasurer,
 ): readonly StateStyledTextLine[] {
   const font: FontSpec = { family: theme.fontFamily, size: NOTE_FONT_SIZE };
-  const opts = theme.sprites === undefined ? undefined : { spriteRegistry: theme.sprites };
-  return creoleTextLines(text, font, measurer, opts).map((ln) =>
-    ln.kind === 'table-row'
-      ? tableRowRenderLine(ln, font, measurer)
-      : toStyledLine(ln, font, measurer, NOTE_TAB_SIZE_NB),
-  );
-}
-
-/** `StringTokenizer(line, "|")` (`StripeTable.java:139`, ported once already
- *  as `StripeTable.ts`'s own private `tokenizeByPipe` — duplicated here, not
- *  imported, since that helper is module-private and this is a SEPARATE,
- *  render-only per-cell join, not the real grid `StripeTable`/`AtomTable`
- *  builds (module doc comment)). Never produces an empty token, matching
- *  Java `StringTokenizer`'s own no-empty-token contract. */
-function tokenizeByPipe(line: string): string[] {
-  return line.split('|').filter((t) => t.length > 0);
-}
-
-/** One raw `|cell|cell|` line -> its cells' markup-stripped visible text
- *  (`= `-header marker stripped per `StripeTable.java:150-151`, width-inert
- *  per this module's doc comment — header BOLD styling is not drawn, same
- *  named gap), joined with two spaces standing in for jar's real column
- *  rules, wrapped as ONE run at the note's own font size (`dy: 0` — a table
- *  row line is never a `<sup>`/`<sub>` in this corpus). */
-function tableRowRenderLine(ln: CreoleTextLine, font: FontSpec, measurer: StringMeasurer): StateStyledTextLine {
-  const raw = ln.runs[0]?.text ?? '';
-  const cells = tokenizeByPipe(raw).map((cell) => (cell.startsWith('=') ? cell.slice(1) : cell));
-  const visible = cells.map(
-    (cell) =>
-      toStyledLine(creoleTextLines(cell, font, measurer)[0] ?? emptyLine(), font, measurer, NOTE_TAB_SIZE_NB).text,
-  );
-  const joined = visible.join('  ');
-  const width = measurer.measure(joined, font).width;
-  return {
-    text: joined,
-    width,
-    height: font.size,
-    runs: [
-      { text: joined, width, bold: false, italic: false, underline: false, strike: false, size: font.size, dy: 0 },
-    ],
-  };
-}
-
-/** `creoleTextLines('')` reports NO lines (module doc comment: "an empty
- *  `display` reports NO lines") — an empty table CELL still needs one, so
- *  this stands in for that case in {@link tableRowRenderLine}'s per-cell map. */
-function emptyLine(): CreoleTextLine {
-  return { runs: [], width: 0, height: 0, kind: 'text' };
+  // stdd T5a: the state creole block, whose `|= a | b |` rows are the real `StripeTable` grid
+  // (`state-sizing-creole.ts#tableLine`, drawn by `renderer-box.ts#renderStateTable`), as a state body's
+  // (fatupo-62); `EntityImageNote.java` builds the body through the same `Display#create` pipeline.
+  return stateCreoleBlock(text.split('\n'), font, measurer, {
+    tabSize: NOTE_TAB_SIZE_NB,
+    ...(theme.sprites !== undefined ? { spriteRegistry: theme.sprites } : {}),
+  }).lines;
 }
 
 /** `Position.withRankdir` (utils/Position.java:49-66) — under `left to right
@@ -287,6 +249,8 @@ export interface NoteSpec {
   opalisable: boolean;
   creationIndex?: number;
   color?: string;
+  /** stdd T3d: `EntityImageNote.java:194,204-205` `ug.startUrl(getEntity().getUrl99())`. */
+  url?: StateUrl;
 }
 
 export interface ScopeNoteParts {
@@ -299,14 +263,15 @@ export interface ScopeNoteParts {
 const GMN_PREFIX = 'GMN';
 
 /** {@link NoteSpec} of `note`, from its own {@link measureNote}. */
-function noteSpecOf(note: StateNote, lines: readonly StateStyledTextLine[], opalisable: boolean): NoteSpec {
+function noteSpecOf(note: StateNote, m: NoteMeasurement, opalisable: boolean): NoteSpec {
   return {
     kind: 'note',
     id: note.id,
-    lines,
+    lines: m.lines,
     opalisable,
     ...(note.creationIndex !== undefined ? { creationIndex: note.creationIndex } : {}),
     ...(note.color !== undefined ? { color: note.color } : {}),
+    ...(m.url !== undefined ? { url: m.url } : {}),
   };
 }
 
@@ -316,7 +281,11 @@ function measureAllNotes(
   measurer: StringMeasurer,
 ): Map<string, NoteMeasurement> {
   const measurements = new Map<string, NoteMeasurement>();
-  for (const note of notes) measurements.set(note.id, measureNote(note.text, theme, measurer));
+  for (const note of notes) {
+    const m = measureNote(note.text, theme, measurer);
+    const url = stateUrlOf(note, theme);
+    measurements.set(note.id, url === undefined ? m : { ...m, url });
+  }
   return measurements;
 }
 
@@ -347,7 +316,7 @@ function buildScopeParts(
     const m = measurements.get(note.id)!;
     nodes.push({ id: note.id, width: m.width, height: m.height });
     const opalisable = isOpalisable(note);
-    specs.push(noteSpecOf(note, m.lines, opalisable));
+    specs.push(noteSpecOf(note, m, opalisable));
     if (note.target === undefined || note.position === undefined) continue; // freestanding — no connector
     const dir = NOTE_EDGE[rotateForRankdir(note.position, rankdir)];
     candidates.push({

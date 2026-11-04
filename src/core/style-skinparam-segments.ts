@@ -28,7 +28,8 @@ export type StyleSkinparamSegment =
 type Declaration = { readonly at: number; readonly key: string } | { readonly at: number; readonly style: string };
 
 /** What the segments are read from: a `PreprocessorResult` suffices. */
-export type StyleSkinparamSource = Pick<PreprocessorResult, 'skinparam' | 'styles' | 'declarationOrder'>;
+export type StyleSkinparamSource = Pick<PreprocessorResult, 'skinparam' | 'styles' | 'declarationOrder'> &
+  Partial<Pick<PreprocessorResult, 'skin'>>;
 
 /** Every skinparam key and style block, placed on the declaration counter. */
 function declarationsOf(source: StyleSkinparamSource): Declaration[] {

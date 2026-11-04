@@ -69,7 +69,13 @@ import { emojiSquareDim } from '../../klimt/creole/atom/AtomEmoji.js';
 import type { CreoleAtom } from '../../klimt/creole/atom/Atom.js';
 import { SPACE_ATOM_HEIGHT } from '../../klimt/creole/atom/AtomSpace.js';
 import { FontStyle, getFont } from '../../klimt/shape/UText.js';
-import { ATOM_TEXT_MIN_HEIGHT, layoutLineThroughSea, measurerSeaLineOps, verticalAtomBox } from './creole-sea-line.js';
+import {
+  ATOM_TEXT_MIN_HEIGHT,
+  layoutLineThroughSea,
+  measurerSeaLineOps,
+  verticalAtomBox,
+  bulletDimension,
+} from './creole-sea-line.js';
 import { buildLineAtoms } from '../../klimt/creole/legacy/StripeSimple.js';
 import { CreoleMode } from '../../klimt/creole/CreoleMode.js';
 import {
@@ -83,6 +89,7 @@ import { getSplitted } from '../../klimt/creole/Fission.js';
 import { JAR_DEFAULT_TEXT_COLOR } from '../../decoration/symbol/usymbol-resolve.js';
 import { renderLatexAsImage } from '../../latex.js';
 import { baseFontConfiguration, CREOLE_HR_HEIGHT } from './leaf-sizing-text.js';
+import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import type { CreoleRunImage, CreoleTextLine, CreoleTextRun, FontStyleFlags } from './creole-text-run-types.js';
 export type { CreoleRunImage, CreoleTextLine, CreoleTextRun, FontStyleFlags } from './creole-text-run-types.js';
 
@@ -118,6 +125,30 @@ interface MeasureCtx {
    *  `CommandCreoleBuilder.java:85-86` registers `__underline__` only under
    *  `FULL`; `Branch.java:255-256` (switch case labels) asks `SIMPLE_LINE`. */
   readonly mode: CreoleMode;
+  /** stdd T3d -- see {@link CreoleHyperlinkStyle}. */
+  readonly hyperlink: CreoleHyperlinkStyle | undefined;
+}
+
+/**
+ * stdd T3d: the two hyperlink fields `FontConfiguration.create` takes (`FontConfiguration.java:57-60,213-219`):
+ * `HyperLinkColor` and the underline stroke. `FontConfiguration#hyperlink` (`:335-340`) adds `UNDERLINE` only
+ * for a stroke, and `DriverTextSvg.java:134-135` draws it only for a thickness > 0, so a thickness of 0 is the
+ * `null` stroke here. `color` `undefined` keeps `CommandCreoleUrl.ts`'s blue default.
+ */
+export interface CreoleHyperlinkStyle {
+  readonly color?: string;
+  readonly underlineThickness: number;
+}
+
+/** `FontConfiguration.create(font, color, hyperlinkColor, hyperlinkUnderlineStroke)` for one line. */
+function lineFontConfiguration(ctx: MeasureCtx): FontConfiguration {
+  const base = baseFontConfiguration(ctx.font);
+  if (ctx.hyperlink === undefined) return base;
+  return {
+    ...base,
+    ...(ctx.hyperlink.color !== undefined ? { hyperlinkColor: ctx.hyperlink.color } : {}),
+    ...(ctx.hyperlink.underlineThickness > 0 ? {} : { hyperlinkUnderlineStroke: null }),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -230,6 +261,7 @@ function textAtomMeasured(atom: Extract<CreoleAtom, { kind: 'text' }>, ctx: Meas
     ...(atom.font.color !== null ? { color: atom.font.color } : {}),
     ...(atom.url !== undefined ? { url: atom.url.url, tooltip: atom.url.tooltip } : {}),
     size,
+    ...(atom.font.size !== size ? { unmutedSize: atom.font.size } : {}),
   };
   return { run, width, height };
 }
@@ -306,6 +338,18 @@ function atomMeasured(atom: CreoleAtom, ctx: MeasureCtx): AtomMeasured {
   }
   // `AtomSpace#calculateDimensionSlow`: (width, 1); no run (empty drawU).
   if (atom.kind === 'space') return { run: null, width: atom.width, height: SPACE_ATOM_HEIGHT };
+  if (atom.kind === 'bullet') {
+    const dim = bulletDimension(atom.order);
+    const run: CreoleTextRun = {
+      text: '',
+      style: styleFlagsFromSet(new Set()),
+      ...(atom.color !== null ? { color: atom.color } : {}),
+      size: ctx.font.size,
+      dy: 0,
+      bullet: { order: atom.order, width: dim.width, height: dim.height, top: 0 },
+    };
+    return { run, ...dim };
+  }
   // `AtomVerticalTexts` (`AtomVerticalTexts.java:54-64`): the stack's box. Its
   // lines overlap in x, which this flat-run seam (a run carries no x) cannot
   // draw, so it reserves the box and emits no run, as `'space'` does.
@@ -336,7 +380,8 @@ function atomsToLine(atoms: readonly CreoleAtom[], ctx: MeasureCtx): CreoleTextL
     // `SheetBlock1#drawU` draws an image atom at its own `Position`
     // (`SheetBlock1.java:212-217`); only `Sea` knows it, and only now.
     const placed = m.run.image === undefined ? {} : { image: { ...m.run.image, top: layout.top[i] as number } };
-    runs.push({ ...m.run, ...placed, dy: layout.dy[i] as number });
+    const bullet = m.run.bullet === undefined ? {} : { bullet: { ...m.run.bullet, top: layout.top[i] as number } };
+    runs.push({ ...m.run, ...placed, ...bullet, dy: layout.dy[i] as number });
   });
   return { runs, width: layout.width, height: layout.height, kind: 'text' };
 }
@@ -350,7 +395,7 @@ function buildPhysicalLine(raw: string, ctx: MeasureCtx, wrapWidth: number): rea
 
   // ADR-1 (creole-lexer-unification): the SAME lexer the description
   // renderer draws with — sizer<->renderer lock-step by construction (D1).
-  const built = buildLineAtoms(raw, baseFontConfiguration(ctx.font), ctx.mode);
+  const built = buildLineAtoms(raw, lineFontConfiguration(ctx), ctx.mode);
   if (built.classification.type === 'HORIZONTAL_LINE') {
     return [{ runs: [], width: 0, height: CREOLE_HR_HEIGHT, kind: 'hr' }];
   }
@@ -359,6 +404,14 @@ function buildPhysicalLine(raw: string, ctx: MeasureCtx, wrapWidth: number): rea
   // classification wraps identically (`leaf-sizing-text.ts#measureTextBlock`
   // precedent — LITERAL/HEADING/NORMAL all reach this same call).
   const groups = wrapWidth > 0 ? getSplitted(built.atoms, wrapWidth, (a) => atomMeasured(a, ctx).width) : [built.atoms];
+  // stdd T6d: a `* item` stripe's header is its FIRST atom (`StripeStyle.java:60-61`, `StripeSimple.java:118-121`);
+  // `Fission#getSplitted` keeps it on the first wrapped line and gives the others a blank of the same width
+  // (`Fission.java:69,87`). Only the flat seam adds it: the leaf sizers that share `buildLineAtoms` do not draw one.
+  if (built.classification.type === 'LIST_WITHOUT_NUMBER') {
+    const header: CreoleAtom = { kind: 'bullet', order: built.classification.order, color: built.lineFont.color };
+    const blank: CreoleAtom = { kind: 'space', width: bulletDimension(header.order).width };
+    return groups.map((atoms, i) => atomsToLine([i === 0 ? header : blank, ...atoms], ctx));
+  }
   return groups.map((atoms) => atomsToLine(atoms, ctx));
 }
 
@@ -393,6 +446,8 @@ export function creoleTextLines(
     readonly spriteRegistry?: SpriteRegistry;
     /** Defaults to `CreoleMode.FULL` (`Display.create8`, every prior caller). */
     readonly mode?: CreoleMode;
+    /** stdd T3d -- see {@link CreoleHyperlinkStyle}. */
+    readonly hyperlink?: CreoleHyperlinkStyle;
   },
 ): readonly CreoleTextLine[] {
   if (display === '') return [];
@@ -405,6 +460,7 @@ export function creoleTextLines(
       opts?.sprites ?? (opts?.spriteRegistry !== undefined ? spriteDimsLookupFor(opts.spriteRegistry) : undefined),
     registry: opts?.spriteRegistry,
     mode: opts?.mode ?? CreoleMode.FULL,
+    hyperlink: opts?.hyperlink,
   };
   const wrapWidth = opts?.wrapWidth ?? 0;
 

@@ -63,6 +63,7 @@
  */
 
 import type { Point2D } from '../../core/klimt/UTranslate.js';
+import { DotPath, type Bezier } from '../../core/klimt/shape/DotPath.js';
 import type { Paint } from '../../core/paint.js';
 import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
 import { basicSvgOption } from '../../core/klimt/drawing/svg/svg-graphics.js';
@@ -70,6 +71,7 @@ import { Fore } from '../../core/klimt/Fore.js';
 import { Back } from '../../core/klimt/Back.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 import { place } from '../../core/svek/svek-edge-extremity.js';
+import type { ExtremityArrow } from '../../core/svek/extremity/ExtremityArrow.js';
 import { extractFlatContent } from '../../core/klimt/document-shell.js';
 import { LimitFinder } from '../../core/klimt/drawing/LimitFinder.js';
 import type { TransitionGeo } from './state-geo-types.js';
@@ -93,17 +95,27 @@ function segmentAngle(from: Point2D, to: Point2D): number {
  *  `SvekEdge#drawExtremity`'s draw-context construction (`Fore` then a
  *  thickness-only `solid` stroke then `Back`) — see `class/renderer-
  *  arrowhead.ts#drawExtremityMarkup`'s identical doc comment. */
+/**
+ * `SvekEdge#drawRainbow` (`SvekEdge.java:1113-1140`): the head is stroked in the head colour at
+ * `stroke.onlyThickness()` and, for a `isFill` decor, filled with the LINE colour (`color.bg()`);
+ * a transparent head colour draws `ExtremityArrow#drawLineIfTransparent` in the line colour instead.
+ */
 function drawArrowMarkup(
   point: Point2D,
   angle: number,
-  color: Paint,
+  paint: { readonly color: Paint; readonly headColor: Paint | undefined },
   strokeWidth: number,
 ): { body: string; extraDefs: string; trim: Point2D } {
   const placed = place('ARROW', point, angle, 'none');
   const ug = UGraphicSvg.build(0, basicSvgOption(), '$version$', NO_TEXT_BOUNDER);
   const thicknessOnlyStroke = UStroke.withThickness(strokeWidth);
-  const context = ug.apply(new Fore(color)).apply(thicknessOnlyStroke).apply(new Back(color));
-  placed.drawable.drawU(context);
+  if (paint.headColor === undefined) {
+    const context = ug.apply(new Fore(paint.color)).apply(thicknessOnlyStroke);
+    (placed.drawable as ExtremityArrow).drawLineIfTransparent(context);
+  } else {
+    const context = ug.apply(new Fore(paint.headColor)).apply(thicknessOnlyStroke).apply(new Back(paint.color));
+    placed.drawable.drawU(context);
+  }
   const drawn = extractFlatContent(ug.getSvgString());
   return { ...drawn, trim: placed.trim };
 }
@@ -125,17 +137,27 @@ const EMPTY_ARROWHEAD: TransitionArrowhead = { markup: '', extraDefs: '' };
 /** Builds the head-side inline-polygon arrowhead markup for one transition
  *  — the replacement for `renderer.ts`'s old `markerEnd: 'url(#arrow-
  *  dependency)'` path attribute. */
+/** Which end of the path a decor sits at: `SvekEdge.java:680-684` draws `decor2` at the start, `decor1` at the end. */
+export type DecorSide = 'start' | 'end';
+
+/** The decor's anchor point and the direction it points (`dotPath.getStartAngle() + PI` / `getEndAngle()`). */
+function decorPlacement(points: TransitionGeo['points'], side: DecorSide): { point: Point2D; angle: number } {
+  if (side === 'start') return { point: points[0]!, angle: segmentAngle(points[1]!, points[0]!) };
+  const last = points[points.length - 1]!;
+  return { point: last, angle: segmentAngle(points[points.length - 2]!, last) };
+}
+
 export function buildTransitionArrowhead(
   transition: TransitionGeo,
-  color: Paint,
+  paint: Paint | { readonly color: Paint; readonly headColor: Paint | undefined },
   strokeWidth: number,
+  side: DecorSide = 'end',
 ): TransitionArrowhead {
   const points = transition.points;
   if (points.length < 2) return EMPTY_ARROWHEAD;
-  const last = points[points.length - 1]!;
-  const secondToLast = points[points.length - 2]!;
-  const angle = segmentAngle(secondToLast, last);
-  const drawn = drawArrowMarkup(last, angle, color, strokeWidth);
+  const { point, angle } = decorPlacement(points, side);
+  const colors = typeof paint === 'object' && 'color' in paint ? paint : { color: paint, headColor: paint };
+  const drawn = drawArrowMarkup(point, angle, colors, strokeWidth);
   return { markup: drawn.body, extraDefs: drawn.extraDefs, trim: drawn.trim };
 }
 
@@ -145,17 +167,81 @@ export function buildTransitionArrowhead(
  *  list `buildPathD` consumes. Mirrors `class/renderer-arrowhead.ts
  *  #applyDecorTrim`'s head-side branch exactly (state has no tail decor to
  *  mirror the tail branch for). */
-export function applyHeadTrim(points: TransitionGeo['points'], trim: Point2D | undefined): TransitionGeo['points'] {
+export function applyHeadTrim(
+  points: TransitionGeo['points'],
+  trim: Point2D | undefined,
+  side: DecorSide = 'end',
+): TransitionGeo['points'] {
   if (trim === undefined || points.length < 2) return points;
+  // stdd T6c: the move is `DotPath#moveStartPoint`/`#moveEndPoint` itself (`SvekEdge.java:559-562`):
+  // the start move drops the first bezier when it is at least that bezier's length and carries the
+  // difference over (`DotPath.java:206-216`); the end move only shifts the last anchor and its control
+  // (`:229-234`). kotagu-43's `SubComposite-backto-*start*CompositeState` starts on a 4.6 px bezier.
+  const path = dotPathOf(points);
+  if (path !== undefined) {
+    if (side === 'end') path.moveEndPoint(trim.x, trim.y);
+    else path.moveStartPoint(trim.x, trim.y);
+    return pointsOf(path);
+  }
   const out = points.map((p) => ({ ...p }));
-  const last = out.length - 1;
-  out[last] = { x: out[last]!.x + trim.x, y: out[last]!.y + trim.y };
-  if (out.length >= 4) out[last - 1] = { x: out[last - 1]!.x + trim.x, y: out[last - 1]!.y + trim.y };
+  // stdd T2b: `dotPath.moveStartPoint` for a start-side decor (`SvekEdge.java:921-931`), the mirror of the end.
+  const tip = side === 'end' ? out.length - 1 : 0;
+  const control = side === 'end' ? tip - 1 : 1;
+  out[tip] = { x: out[tip]!.x + trim.x, y: out[tip]!.y + trim.y };
+  if (out.length >= 4) out[control] = { x: out[control]!.x + trim.x, y: out[control]!.y + trim.y };
+  return out;
+}
+
+/** A cubic point list (`1 + 3n` points) as a `DotPath`; `undefined` for any other shape (a two-point line). */
+function dotPathOf(points: TransitionGeo['points']): DotPath | undefined {
+  if (points.length < 4 || (points.length - 1) % 3 !== 0) return undefined;
+  const beziers: Bezier[] = [];
+  for (let i = 0; i + 3 < points.length; i += 3) {
+    const [p0, c1, c2, p1] = [points[i]!, points[i + 1]!, points[i + 2]!, points[i + 3]!];
+    beziers.push({ x1: p0.x, y1: p0.y, ctrlx1: c1.x, ctrly1: c1.y, ctrlx2: c2.x, ctrly2: c2.y, x2: p1.x, y2: p1.y });
+  }
+  return DotPath.fromBeziers(beziers);
+}
+
+function pointsOf(path: DotPath): TransitionGeo['points'] {
+  const beziers = path.getBeziers();
+  const out: { x: number; y: number }[] = [{ x: beziers[0]!.x1, y: beziers[0]!.y1 }];
+  for (const b of beziers) {
+    out.push({ x: b.ctrlx1, y: b.ctrly1 }, { x: b.ctrlx2, y: b.ctrly2 }, { x: b.x2, y: b.y2 });
+  }
   return out;
 }
 
 /** Extremities never draw text — this stub is never actually invoked
  *  (mirrors `class/renderer-arrowhead.ts#INK_STRING_BOUNDER`). */
+/** `Extremity#getDecorationLength` (`Extremity.java:83-85`): 8 for every extremity that does not override it --
+ *  `ExtremityCircleCross` and `ExtremityArrowAndCircle` among them (`ExtremityArrow` says 5). */
+export const DEFAULT_DECORATION_LENGTH = 8;
+
+/** `new UTranslate(decorationLength, 0).rotate(angle - Math.PI)` (`SvekEdge.java:559-562`): the path's move at
+ *  `side` for a decoration of `length`, in `decorPlacement`'s own angle. stdd T6c, viguto-81's `X-->`/`-->O`. */
+export function decorationTrim(points: TransitionGeo['points'], side: DecorSide, length: number): Point2D | undefined {
+  if (points.length < 2) return undefined;
+  const theta = decorPlacement(points, side).angle - Math.PI;
+  return { x: length * Math.cos(theta), y: length * Math.sin(theta) };
+}
+
+/** `ExtremityArrowAndCircle`'s polygon sits `radius` behind the path end (`polygon.translate(p1.x + radius *
+ *  sin(angle), p1.y - radius * cos(angle))`, `ExtremityArrowAndCircle.java`), the circle on the end itself: the
+ *  same arrow drawn on a tip pulled back by `distance` along the last segment. */
+export function pullTipBack(
+  points: TransitionGeo['points'],
+  side: DecorSide,
+  distance: number,
+): TransitionGeo['points'] {
+  if (points.length < 2) return points;
+  const { angle } = decorPlacement(points, side);
+  const tip = side === 'end' ? points.length - 1 : 0;
+  const out = [...points];
+  out[tip] = { x: out[tip]!.x - distance * Math.cos(angle), y: out[tip]!.y - distance * Math.sin(angle) };
+  return out;
+}
+
 const INK_STRING_BOUNDER: StringBounder = {
   calculateDimension: () => new XDimension2D(0, 0),
 };
@@ -175,11 +261,10 @@ export interface TransitionArrowheadInk {
 export function transitionArrowheadInk(transition: TransitionGeo): TransitionArrowheadInk | undefined {
   const points = transition.points;
   if (points.length < 2) return undefined;
-  const last = points[points.length - 1]!;
-  const secondToLast = points[points.length - 2]!;
-  const angle = segmentAngle(secondToLast, last);
+  // stdd T2b: an inverted link's head is `decor2`, at the path start.
+  const { point, angle } = decorPlacement(points, transition.inverted === true ? 'start' : 'end');
   const finder = LimitFinder.create(INK_STRING_BOUNDER, false);
-  place('ARROW', last, angle, 'none').drawable.drawU(finder);
+  place('ARROW', point, angle, 'none').drawable.drawU(finder);
   return { minX: finder.getMinX(), minY: finder.getMinY(), maxX: finder.getMaxX(), maxY: finder.getMaxY() };
 }
 
@@ -188,7 +273,7 @@ export function transitionArrowheadInk(transition: TransitionGeo): TransitionArr
 // ---------------------------------------------------------------------------
 
 /** `ExtremityArrowAndCircle`'s own `radius` field. */
-const CIRCLE_END_RADIUS = 5;
+export const CIRCLE_END_RADIUS = 5;
 /** Both decors' own `UStroke.withThickness(1.5)` circle stroke. */
 const DECOR_CIRCLE_STROKE_WIDTH = 1.5;
 /** `ExtremityCircleCross`'s own `radius` field. */
@@ -203,10 +288,15 @@ const CROSS_START_RADIUS = 7;
  * `''` when the transition has no points to anchor on, mirroring
  * `buildTransitionArrowhead`'s own empty-points guard.
  */
-export function buildCircleEndMarkup(transition: TransitionGeo, color: Paint, background: Paint): string {
+export function buildCircleEndMarkup(
+  transition: TransitionGeo,
+  color: Paint,
+  background: Paint,
+  side: DecorSide = 'end',
+): string {
   const points = transition.points;
   if (points.length === 0) return '';
-  const last = points[points.length - 1]!;
+  const last = side === 'end' ? points[points.length - 1]! : points[0]!;
   return ellipse(last.x, last.y, CIRCLE_END_RADIUS, CIRCLE_END_RADIUS, {
     fill: background,
     stroke: color,
@@ -224,10 +314,15 @@ export function buildCircleEndMarkup(transition: TransitionGeo, color: Paint, ba
  * calls, so this decoration never rotates with the line direction, unlike
  * every other extremity this module draws.
  */
-export function buildCrossStartMarkup(transition: TransitionGeo, color: Paint, background: Paint): string {
+export function buildCrossStartMarkup(
+  transition: TransitionGeo,
+  color: Paint,
+  background: Paint,
+  side: DecorSide = 'start',
+): string {
   const points = transition.points;
   if (points.length === 0) return '';
-  const p = points[0]!;
+  const p = side === 'start' ? points[0]! : points[points.length - 1]!;
   const circle = ellipse(p.x, p.y, CROSS_START_RADIUS, CROSS_START_RADIUS, {
     fill: background,
     stroke: color,

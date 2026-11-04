@@ -122,10 +122,13 @@ describe('unwind2-S3: tabs in link labels', () => {
   // as one raw `UText` by `core/svek/SvekEdge.ts#drawLabels`; a state
   // transition label keeps its raw text for drawing. `it.fails` turns red the
   // day a consumer is fixed -- move it up then.
-  it.fails.each(['usecase-link-tab', 'state-transition-tab', 'class-map-tab'])(
-    '%s: consumer does not decode the \\t escape yet',
-    (name) => {
-      expectConformant(name);
-    },
-  );
+  it.fails.each(['usecase-link-tab', 'class-map-tab'])('%s: consumer does not decode the \\t escape yet', (name) => {
+    expectConformant(name);
+  });
+
+  // stdd T2c: a state transition label goes through `Display.getWithNewlines` and the creole block
+  // (`state-transition-label.ts#labelDisplayBlock`), so the `\t` escape is a tab stop.
+  it('state-transition-tab: the state link label decodes the \\t escape', () => {
+    expectConformant('state-transition-tab');
+  });
 });

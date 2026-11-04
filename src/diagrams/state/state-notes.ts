@@ -20,7 +20,9 @@ import { removeEmptyColumns } from '../../core/annotations/commands.js';
  */
 export const NOTE_STEREO = '(?:\\s*<<[^<>]+>>)?';
 export const NOTE_COLOR = '(?:\\s*#[-\\w./|\\\\;:]+)?';
-export const NOTE_URL = '(?:\\s*\\[\\[[^\\]]*\\]\\])?';
+/** stdd T3d: captures the `[[...]]` token; the multi-line opener applies it (`CommandFactoryNoteOnEntity.java:241-244,336`),
+ *  the single-line form parses and ignores it (`:180-183`). */
+export const NOTE_URL = '(?:\\s*(\\[\\[[^\\]]*\\]\\]))?';
 
 /**
  * CAPTURING variant of {@link NOTE_COLOR} (mission G4 S12) -- used ONLY by
@@ -65,6 +67,8 @@ export type PendingNote =
       textLines: string[];
       /** mission G4 S12 -- see `StateNote.color`'s own doc comment. */
       color?: string;
+      /** stdd T3d: the opener's raw `[[...]]` token (`CommandFactoryNoteOnEntity.java:241-244`). */
+      url?: string;
       /**
        * `'brace'` for the `note <pos> [of X] {` opener, closed by a bare
        * `}` instead of `end note`.
@@ -73,7 +77,7 @@ export type PendingNote =
       closer?: 'brace';
     }
   | { kind: 'freestanding'; alias: string; textLines: string[]; color?: string }
-  | { kind: 'link'; transitions: readonly Transition[]; position: NotePosition; textLines: string[] };
+  | { kind: 'link'; transitions: readonly Transition[]; position: NotePosition; textLines: string[]; color?: string };
 
 /** True if `line` is the closer for `note` (`}` for a brace note, else `end note`). */
 export function isNoteCloser(note: PendingNote, line: string): boolean {
@@ -104,7 +108,7 @@ export function addNote(
   position: NotePosition,
   target: string,
   text: string,
-  opts: { implicitTarget: boolean; scopeId: string; creationIndex?: number; color?: string },
+  opts: { implicitTarget: boolean; scopeId: string; creationIndex?: number; color?: string; url?: string },
 ): string {
   const notes = (ast.notes ??= []);
   const id = `__note_${notes.length}`;
@@ -117,6 +121,7 @@ export function addNote(
     scopeId: opts.scopeId,
     ...(opts.creationIndex !== undefined ? { creationIndex: opts.creationIndex } : {}),
     ...(opts.color !== undefined ? { color: opts.color } : {}),
+    ...(opts.url !== undefined ? { url: opts.url } : {}),
   });
   return id;
 }
@@ -175,6 +180,7 @@ export function finalizePendingNote(
       scopeId,
       ...(creationIndex !== undefined ? { creationIndex } : {}),
       ...(note.color !== undefined ? { color: note.color } : {}),
+      ...(note.url !== undefined ? { url: note.url } : {}),
     });
     // The note's `Link` ctor ticks too (`CommandFactoryNoteOnEntity.java:344-355`,
     // `Link.java:135`); the next entity skips that slot.
@@ -182,7 +188,7 @@ export function finalizePendingNote(
     return id;
   }
   if (note.kind === 'link') {
-    applyNoteOnLink(note.transitions, text, note.position);
+    applyNoteOnLink(note.transitions, text, note.position, note.color);
     return undefined;
   }
   const creationIndex = nextTick?.();
@@ -205,7 +211,8 @@ export function finalizePendingNote(
  * @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnLink.java:76-91
  */
 export const NOTE_ON_LINK_RE = new RegExp(
-  String.raw`^note\s+(left|right|top|bottom)?\s*(?:on|of)\s+link` + NOTE_COLOR + String.raw`\s*:\s*(.+)$`,
+  // stdd T5b: the colour is captured (`ColorParser.simpleColor(ColorType.BACK)`, `CommandFactoryNoteOnLink.java:106-108`).
+  String.raw`^note\s+(left|right|top|bottom)?\s*(?:on|of)\s+link` + NOTE_COLOR_CAPTURE + String.raw`\s*:\s*(.+)$`,
   'i',
 );
 
@@ -217,7 +224,7 @@ export const NOTE_ON_LINK_RE = new RegExp(
  * @see ~/git/plantuml/.../command/note/CommandFactoryNoteOnLink.java:93-102
  */
 export const NOTE_ON_LINK_MULTI_RE = new RegExp(
-  String.raw`^note\s+(left|right|top|bottom)?\s*(?:on|of)\s+link` + NOTE_COLOR + String.raw`\s*$`,
+  String.raw`^note\s+(left|right|top|bottom)?\s*(?:on|of)\s+link` + NOTE_COLOR_CAPTURE + String.raw`\s*$`,
   'i',
 );
 
@@ -232,9 +239,16 @@ export const NOTE_ON_LINK_MULTI_RE = new RegExp(
  * AST — a `note on link` line inside a composite state must attach to the
  * last transition parsed WITHIN that composite's scope, not a top-level one.
  */
-export function applyNoteOnLink(transitions: readonly Transition[], text: string, position: NotePosition): void {
+export function applyNoteOnLink(
+  transitions: readonly Transition[],
+  text: string,
+  position: NotePosition,
+  color?: string,
+): void {
   const last = transitions.at(-1);
   if (last === undefined) return;
   last.linkNote = text;
   last.linkNotePosition = position;
+  // stdd T5b: `link.addNote(CucaNote.build(display, position, colors))` (`CommandFactoryNoteOnLink.java:217-218`).
+  if (color !== undefined) last.linkNoteColor = color;
 }

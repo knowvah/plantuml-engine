@@ -13,7 +13,8 @@ import type { PassAccumulator } from './state-composite-pass-types.js';
 import type { TransitionGeo } from './state-geo-types.js';
 import { sortSpecsByCreationIndex } from './state-composite-pseudo.js';
 import { attachTransitionLabel } from './state-transition-label.js';
-import { clipLinesInSolveOrder } from './state-transition-clip.js';
+import { clipLinesInSolveOrder, clusterAnchorRectsOf } from './state-transition-clip.js';
+import { shiftTransition } from './state-composite-geo-shift.js';
 import { noteLineGeo, noteLinesOf } from './state-note-lines.js';
 
 /** Fully-labeled TransitionGeo for one pass's own edges — in that pass's OWN
@@ -87,14 +88,42 @@ function resolveTransitionGeometry(
   reversed: boolean | undefined,
   points: EdgePoints,
   resolved: { from: string; to: string } | undefined,
-): { points: EdgePoints; from: string | undefined; to: string | undefined } {
-  if (reversed !== true) return { points, from: resolved?.from, to: resolved?.to };
-  return { points: [...points].reverse(), from: resolved?.to, to: resolved?.from };
+  nodeRects: ReadonlyMap<string, { x: number; y: number; width: number; height: number }>,
+): { points: EdgePoints; from: string | undefined; to: string | undefined; inverted: boolean } {
+  // stdd T2b: no un-swap. `Link#getInv` (`Link.java:145-151`) made the target `cl1`; the DOT edge and
+  // the `dotPath` run `cl1 -> cl2`, and the renderer draws the head at the start from the inversed
+  // decors (`SvekEdge.java:680-684`). Only graphviz's own inversion is undone (`SvekEdge.java:640-655`).
+  const node1 = resolved === undefined ? undefined : nodeRects.get(resolved.from);
+  const node2 = resolved === undefined ? undefined : nodeRects.get(resolved.to);
+  return {
+    points: undoGraphvizInversion(points, node1, node2),
+    from: resolved?.from,
+    to: resolved?.to,
+    inverted: reversed === true,
+  };
 }
 
-/** One routed transition of a pass, endpoints already un-swapped to
- *  semantic order — what `buildLevelTransitionGeos` clips and then turns into
- *  a `TransitionGeo`. */
+/**
+ * `SvekEdge#solveLine` (`SvekEdge.java:640-655`): "Sometime, GraphViz inverses the result line" -- when both
+ * ends are nodes and the path's start lies nearer node 2's centre than node 1's, the path is reversed.
+ */
+export function undoGraphvizInversion(
+  points: EdgePoints,
+  node1: { x: number; y: number; width: number; height: number } | undefined,
+  node2: { x: number; y: number; width: number; height: number } | undefined,
+): EdgePoints {
+  if (node1 === undefined || node2 === undefined || points.length < 2) return points;
+  const start = points[0]!;
+  const end = points[points.length - 1]!;
+  const c1 = { x: node1.x + node1.width / 2, y: node1.y + node1.height / 2 };
+  const c2 = { x: node2.x + node2.width / 2, y: node2.y + node2.height / 2 };
+  const normal = Math.hypot(start.x - c1.x, start.y - c1.y) + Math.hypot(end.x - c2.x, end.y - c2.y);
+  const inversed = Math.hypot(start.x - c2.x, start.y - c2.y) + Math.hypot(end.x - c1.x, end.y - c1.y);
+  return inversed < normal ? [...points].reverse() : points;
+}
+
+/** One routed transition of a pass, endpoints in DOT (`cl1 -> cl2`) order —
+ *  what `buildLevelTransitionGeos` clips and then turns into a `TransitionGeo`. */
 interface PreparedTransition {
   t: Transition;
   edgeId: string;
@@ -102,6 +131,7 @@ interface PreparedTransition {
   points: EdgePoints;
   from: string;
   to: string;
+  inverted: boolean;
 }
 
 const creationOf = (t: Transition): { creationIndex?: number } =>
@@ -119,13 +149,27 @@ function buildTransitionGeo(acc: PassAccumulator, p: PreparedTransition, clipped
   // (`state-transition-label.ts:386-394`), and that arm is real (the
   // concurrent-region passes build their accumulator without one), so
   // feeding it the clipped path would invent a dependency upstream has not.
-  const label = attachTransitionLabel(t, p.points, edgeResult, acc.labelFont, acc.measurer);
+  const label = attachTransitionLabel(
+    t,
+    p.points,
+    edgeResult,
+    acc.labelFont !== undefined && acc.measurer !== undefined
+      ? {
+          font: acc.labelFont,
+          measurer: acc.measurer,
+          ...(acc.labelStyle !== undefined ? { style: acc.labelStyle } : {}),
+        }
+      : undefined,
+  );
   return {
     from,
     to,
     points: clippedPoints,
     ...(label !== undefined ? { label } : {}),
     ...(t.creationIndex !== undefined ? { creationIndex: t.creationIndex } : {}),
+    ...(t.arrowStyle !== undefined ? { arrowStyle: t.arrowStyle } : {}),
+    ...(t.stereotype !== undefined ? { stereotype: t.stereotype } : {}),
+    ...(p.inverted ? { inverted: true as const } : {}),
     ...(t.crossStart !== undefined ? { crossStart: t.crossStart } : {}),
     ...(t.circleEnd !== undefined ? { circleEnd: t.circleEnd } : {}),
   };
@@ -153,12 +197,21 @@ export function buildLevelTransitionGeos(acc: PassAccumulator, result: DotLayout
   // The clip is `SvekEdge#solveLine`'s `simulateCompound` reassignment; see
   // `state-transition-clip.ts` for the per-nesting-level derivation and the
   // two sibling passes (`alignEdgesAtLabelNodes`, `manageCollision`).
+  const nodeRects = new Map(result.nodes.map((n) => [n.id, n]));
   const prepared: PreparedTransition[] = [];
   for (const { t, edgeId, reversed } of acc.edgeSources) {
     const edgeResult = edgePosMap.get(edgeId);
     if (edgeResult === undefined) continue;
-    const geo = resolveTransitionGeometry(reversed, edgeResult.points, edgeEndpoints.get(edgeId));
-    prepared.push({ t, edgeId, edgeResult, points: geo.points, from: geo.from ?? t.from, to: geo.to ?? t.to });
+    const geo = resolveTransitionGeometry(reversed, edgeResult.points, edgeEndpoints.get(edgeId), nodeRects);
+    prepared.push({
+      t,
+      edgeId,
+      edgeResult,
+      points: geo.points,
+      from: geo.from ?? t.from,
+      to: geo.to ?? t.to,
+      inverted: geo.inverted,
+    });
   }
   const noteLines = noteLinesOf(
     acc.noteLinks ?? [],
@@ -170,6 +223,37 @@ export function buildLevelTransitionGeos(acc: PassAccumulator, result: DotLayout
     ...noteLines,
   ];
   const clipped = clipLinesInSolveOrder(acc, result, lines);
-  const geos = prepared.map((p) => buildTransitionGeo(acc, p, clipped.get(p.edgeId)!));
+  const anchorRects = clusterAnchorRectsOf(acc.clusters, result);
+  const geos = prepared.map((p) => placeGroupAutoLink(buildTransitionGeo(acc, p, clipped.get(p.edgeId)!), anchorRects));
   return sortSpecsByCreationIndex([...geos, ...noteLines.map((l) => noteLineGeo(l, clipped.get(l.key)!))]);
+}
+
+/** stdd T6b: `Link#isAutoLinkOfAGroup` (`Link.java:341-348`). `SvekEdge#drawU` translates the link by
+ *  `cl.getRectangleArea().getWidth() - (dotPath.getStartPoint().getX() - cl.getRectangleArea().getMinX())`
+ *  (`SvekEdge.java:863-868`): while `SvekResult#calculateDimension` measures, `dx` is 0 and the cluster
+ *  unmoved, so the start lands on the cluster's right edge -- that is this pass-frame placement, which the
+ *  ink walks see. The draw reads the MOVED cluster against the RAW start, adding the pass's `moveDelta`
+ *  once more: {@link shiftGroupAutoLinks}, applied where that delta is known. polodo-05's `Failed`. */
+function placeGroupAutoLink(
+  geo: TransitionGeo,
+  anchorRects: ReadonlyMap<string, { readonly x: number; readonly width: number }>,
+): TransitionGeo {
+  if (geo.from !== geo.to) return geo;
+  const rect = anchorRects.get(geo.from);
+  const start = geo.points[0];
+  if (rect === undefined || start === undefined) return geo;
+  return { ...shiftTransition(geo, rect.x + rect.width - start.x, 0), groupAutoLink: true };
+}
+
+/** The second `dx` of `SvekEdge.java:863-869` for every {@link TransitionGeo.groupAutoLink}: `passDx` is the
+ *  pass's `moveDelta` in this port's frame, and the jar's own is `passDx - originShiftX`, the raw svek frame
+ *  being this frame plus `DotLayoutResult.originShift` (`StateGeometry.originShift`'s doc). */
+export function shiftGroupAutoLinks(
+  transitions: readonly TransitionGeo[],
+  passDx: number,
+  originShiftX: number,
+): TransitionGeo[] {
+  const extra = passDx - originShiftX;
+  if (extra === 0) return [...transitions];
+  return transitions.map((t) => (t.groupAutoLink === true ? shiftTransition(t, extra, 0) : t));
 }

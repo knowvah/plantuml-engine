@@ -1024,7 +1024,14 @@ describe('refusal coverage — baseline shape', () => {
     // 8735 -> 9751 at ogc/T5 (2026-11-04): #109's 1016 uncaptured manifest fixtures captured by jar type (D2) and pinned additively from the stage: +1016 dot-cache rows (activity 429, unknown 223, class 151,
     // sequence 94, dot 57, state 26, timing 19, hcl 12, yaml 4, object 1).
     // 9751 -> 9895 at ogc/T6: +144 svg-activity golden clones (zero-diff new rows, pin-goldens.mts ogc-b2).
-    expect(manifest.fixtures.length).toBe(9895);
+    // 9895 -> 9906 at stdd/T0b (2026-11-04): +11 svg-state golden clones (census-zero rows, pin-state.mjs), all render.
+    // 9906 -> 9965 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones, all render.
+    // 9965 -> 9980 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones, all render.
+    // 9980 -> 10026 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones, all render.
+    // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all render.
+    // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all render.
+    // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all render.
+    expect(manifest.fixtures.length).toBe(10078);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1242,7 +1249,14 @@ describe('refusal coverage — baseline shape', () => {
     // 8518 -> 9305 at ogc/T5: 9751 rows - 446 erroring (+767 ok rows that render on both sides,
     // +20 jar-error rows we draw). Derivation: 8518 + 787 = 9305.
     // 9305 -> 9449 at ogc/T6: +144 svg-activity golden clones, all rendering. Derivation: 9895 - 446 = 9449.
-    expect(pinnedRendering.length).toBe(9449);
+    // 9449 -> 9460 at stdd/T0b (2026-11-04): +11 svg-state golden clones, all rendering. Derivation: 9906 - 446 = 9460.
+    // 9460 -> 9519 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones, all rendering. Derivation: 9965 - 446 = 9519.
+    // 9519 -> 9534 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones, all rendering. Derivation: 9980 - 446 = 9534.
+    // 9534 -> 9580 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones, all rendering. Derivation: 10026 - 446 = 9580.
+    // 9580 -> 9596 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones, all rendering. Derivation: 10042 - 446 = 9596.
+    // 9596 -> 9603 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all rendering. Derivation: 10049 - 446 = 9603.
+    // 9603 -> 9632 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all rendering. Derivation: 10078 - 446 = 9632.
+    expect(pinnedRendering.length).toBe(9632);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

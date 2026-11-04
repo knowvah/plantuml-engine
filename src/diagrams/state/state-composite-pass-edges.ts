@@ -125,11 +125,15 @@ export function addLevelEdges(
     const from = levelEndpointId(t.from, true, scopeId, ctx);
     const to = levelEndpointId(t.to, false, scopeId, ctx);
     const reversed = isReversedDirection(t.direction);
+    // stdd T6b: `Link#getInv` sets `inverted` (`Link.java:145-147`); `Cluster#getNodesOrderedTop`
+    // (`Cluster.java:195-209`) then declares the inverted link's start node first in its cluster, which
+    // is also graphviz's first encounter -- `svek-dot-top.ts` reads this flag (zaloga-87's `action2`).
     acc.edges.push({
       id: edgeId,
       from: reversed ? to : from,
       to: reversed ? from : to,
       attributes: buildEdgeAttrs(t, font, ctx),
+      ...(reversed ? { inverted: true as const } : {}),
     });
     acc.edgeSources.push({ t, edgeId, ...(reversed ? { reversed: true } : {}) });
     ctx.consumed.add(t);
@@ -220,11 +224,15 @@ export function sweepOrphanEdges(acc: PassAccumulator, ctx: DiagramCtx): void {
     if (!nodeIds.has(from) || !nodeIds.has(to)) continue;
     const edgeId = nextEdgeId();
     const reversed = isReversedDirection(t.direction);
+    // stdd T6b: `Link#getInv` sets `inverted` (`Link.java:145-147`); `Cluster#getNodesOrderedTop`
+    // (`Cluster.java:195-209`) then declares the inverted link's start node first in its cluster, which
+    // is also graphviz's first encounter -- `svek-dot-top.ts` reads this flag (zaloga-87's `action2`).
     acc.edges.push({
       id: edgeId,
       from: reversed ? to : from,
       to: reversed ? from : to,
       attributes: buildEdgeAttrs(t, font, ctx),
+      ...(reversed ? { inverted: true as const } : {}),
     });
     acc.edgeSources.push({ t, edgeId, ...(reversed ? { reversed: true } : {}) });
     ctx.consumed.add(t);

@@ -29,20 +29,28 @@ export function isOOSymbolStereotype(stereotype: string | undefined): boolean {
   return stereotype !== undefined && stereotype.toUpperCase() === 'O-O';
 }
 
-export function renderOOSymbol(right: number, bottom: number, fill: Paint, stroke: Paint): string {
+/** stdd T3c: a leaf's `ug` carries the state stroke (`EntityImageState.java:129-133`), a cluster's the
+ *  default `UStroke` (`Cluster.java:505-507`, width 1) -- `strokeWidth` is the caller's. */
+export function renderOOSymbol(
+  right: number,
+  bottom: number,
+  fill: Paint,
+  stroke: Paint,
+  strokeWidth: number = STATE_BORDER_STROKE_WIDTH,
+): string {
   const x = right - (4 * OO_SMALL_RADIUS + OO_SMALL_LINE + OO_SMALL_MARGIN_X);
   const y = bottom - (2 * OO_SMALL_RADIUS + OO_SMALL_MARGIN_Y);
   // `ellipse`'s own paint bag is keyed by the HYPHENATED SVG attribute name
   // (unlike `rect`/`line`'s camelCase `TextStyle`) -- see
   // `renderer-border-point.ts`'s identical note.
-  const paint = { fill, stroke, 'stroke-width': STATE_BORDER_STROKE_WIDTH };
+  const paint = { fill, stroke, 'stroke-width': strokeWidth };
   const cy = y + OO_SMALL_RADIUS;
   return (
     ellipse(x + OO_SMALL_RADIUS, cy, OO_SMALL_RADIUS, OO_SMALL_RADIUS, paint) +
     ellipse(x + OO_SMALL_LINE + 3 * OO_SMALL_RADIUS, cy, OO_SMALL_RADIUS, OO_SMALL_RADIUS, paint) +
     line(x + 2 * OO_SMALL_RADIUS, cy, x + 2 * OO_SMALL_RADIUS + OO_SMALL_LINE, cy, {
       stroke,
-      strokeWidth: STATE_BORDER_STROKE_WIDTH,
+      strokeWidth,
     })
   );
 }

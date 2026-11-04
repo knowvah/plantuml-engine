@@ -9,7 +9,7 @@ import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import type { AtomImageResolver } from '../../creole-atoms.js';
 import type { CreoleAtom } from '../../klimt/creole/atom/Atom.js';
 import { SPACE_ATOM_HEIGHT } from '../../klimt/creole/atom/AtomSpace.js';
-import { verticalAtomBox } from './creole-sea-line.js';
+import { verticalAtomBox, bulletDimension } from './creole-sea-line.js';
 import { buildLineAtoms, type LineBuildAtoms } from '../../klimt/creole/legacy/StripeSimple.js';
 import { getSplitted } from '../../klimt/creole/Fission.js';
 import { atomTextWidth } from '../../klimt/creole/legacy/AtomText.js';
@@ -213,6 +213,13 @@ export function measureAtomsWidthHeight(
       grow(SPACE_ATOM_HEIGHT);
       continue;
     }
+    // stdd T6d: `Bullet#calculateDimensionSlow` (`Bullet.java:57-62`).
+    if (atom.kind === 'bullet') {
+      const box = bulletDimension(atom.order);
+      width += box.width;
+      grow(box.height);
+      continue;
+    }
     // `AtomVerticalTexts#calculateDimensionSlow` (`AtomVerticalTexts.java:54-64`).
     if (atom.kind === 'vertical') {
       const box = verticalAtomBox(atom.lines, (sub) => measureAtomsWidthHeight(stringBounder, [sub], resolveAtomImage));
@@ -259,6 +266,7 @@ export function measureSingleAtomWidth(
   // A2s R2i: emoji x-advance is the 36*factor box (see measureAtomsWidthHeight).
   if (atom.kind === 'emoji') return emojiBoxDim(atom.factor).width;
   if (atom.kind === 'space') return atom.width;
+  if (atom.kind === 'bullet') return bulletDimension(atom.order).width;
   if (atom.kind === 'vertical') return measureAtomsWidthHeight(stringBounder, [atom], resolveAtomImage).width;
   const resolved = resolveAtomImage?.(atom.atom, () => stringBounder);
   return resolved === undefined ? 0 : resolved.width;

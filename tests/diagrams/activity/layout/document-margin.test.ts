@@ -202,8 +202,9 @@ describe('applyActivityScale / applyActivityChrome scale', () => {
     const fragment = makeActivityFragment(20, 50);
     const doc = input({ scale: { kind: 'width', target: 300 } });
     const result = applyActivityChrome(fragment, withTitle('AAAAAAAAAAAAAA'), plainStyles(), MEASURER, doc);
-    // the title (141 wide) dominates the raw body (20): dim.width = 141 + 20.
-    expect(result.scaleSpec).toEqual({ kind: 'simple', factor: 300 / 161 });
+    // the title (141 wide) dominates the raw body (20): dim.width = 141 + 20; then `fromScale * dpi / 96.0`
+    // left to right (`TextBlockExporter.java:207`, stdd T4a), one ulp under 300/161 as the jar's double is.
+    expect(result.scaleSpec).toEqual({ kind: 'simple', factor: ((300 / 161) * 96) / 96 });
   });
 });
 

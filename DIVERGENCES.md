@@ -792,9 +792,23 @@ Upstream fixed the crash (11ed6720, #2797): `sonyxperiadev.skin` is the jar's st
 
 ## State diagrams
 
+### Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz (library-forced: `@knowvah/dot-engine`)
+
+`state/viroxo-69-fito663` (`state comp1 { state ex <<exitpoint>> ... }` with
+links in and out of `comp1`): our DOT equals the jar's `svek-1.dot` byte for
+byte, and real `dot -Tdot` 16.1.0 reproduces the jar's SVG to the pixel
+(start 52, `chk` 56, `ex` 119, `comp1` 7..119). `@knowvah/dot-engine` 2.4.0
+places the cluster's `[*]` start 17 px left of `chk` where graphviz puts it
+4 px left, the exit point 58 px right of `chk` against 63, and the cluster
+109 px wide against 112; the same mechanism is the 8 px on the ten
+`state__hist-*` rows of `oracle/goldens/diagram-style-scope.json`. Filed as
+`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`
+(stdd-T6c, 2026-11-04); not chased in this port (CLAUDE.md: a verified
+dot-engine finding is filed, never patched around).
+
 ### ~~Composite-anchor transitions: clip-rect family unported for border-point children~~ — RETIRED (lgm-T1b/T1d, 2026-10-08)
 
-`SvekEdge.java:660-663` runs `projectionCluster.manageEntryExitPoint` before each line's `simulateCompound` (`:671-672`), and `Cluster.java:430` reassigns the shared `rectangleArea`, so the Nth line through a border-point composite clips against the result of N calls, and the composite is drawn after L solve-loop calls plus two draw passes (`Cluster.java:344-345`, `SvekResult.java:130-136`). Ported once in `src/core/svek/FrontierCalculator.ts` (`ClusterRectangles`, `entryExitPointRect`, `projectionClusterOf`), driven in `allLines()` order by `state/state-transition-clip.ts#clipLinesInSolveOrder` and `description/layout-geo-post.ts#buildEdgeGeos`, and drawn by `state/state-composite-drawn-rects.ts#drawnClusterRects`. Clipped link ends and the drawn box equal the jar's on `pesita-10-dene726` and eight authored state fixtures (`tests/fixtures/lgm-T1b/`, `lgm-T1d/`). Not this entry: `viroxo-69-fito663` differs before any clip (DOT member order inside a state cluster), and the description port-cluster DOT lacks the jar's `a`/`i` wrapper subgraphs (`ClusterDotString.java:91-96`) — both in `planning/next-missions.md`.
+`SvekEdge.java:660-663` runs `projectionCluster.manageEntryExitPoint` before each line's `simulateCompound` (`:671-672`), and `Cluster.java:430` reassigns the shared `rectangleArea`, so the Nth line through a border-point composite clips against the result of N calls, and the composite is drawn after L solve-loop calls plus two draw passes (`Cluster.java:344-345`, `SvekResult.java:130-136`). Ported once in `src/core/svek/FrontierCalculator.ts` (`ClusterRectangles`, `entryExitPointRect`, `projectionClusterOf`), driven in `allLines()` order by `state/state-transition-clip.ts#clipLinesInSolveOrder` and `description/layout-geo-post.ts#buildEdgeGeos`, and drawn by `state/state-composite-drawn-rects.ts#drawnClusterRects`. Clipped link ends and the drawn box equal the jar's on `pesita-10-dene726` and eight authored state fixtures (`tests/fixtures/lgm-T1b/`, `lgm-T1d/`). Not this entry: `viroxo-69-fito663` differs before any clip (its DOT equals the jar's; dot-engine places the cluster's nodes off graphviz, see the entry below), and the description port-cluster DOT lacks the jar's `a`/`i` wrapper subgraphs (`ClusterDotString.java:91-96`) — both in `planning/next-missions.md`.
 
 ---
 

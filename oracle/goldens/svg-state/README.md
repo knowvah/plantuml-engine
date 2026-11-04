@@ -47,7 +47,12 @@ committed copies so the ratchet test runs fully offline — no dependency
 on the gitignored, regenerable `test-results/dot-cache/` tree at test
 time.
 
-## Current state (G4/S0, 2026-07-20)
+## Current state (stdd T0b, 2026-11-04)
+
+**121 fixtures pinned** (`ratchet.json`), every one at census zero with
+`dotEqual` true. The section below is the historical baseline.
+
+## Baseline (G4/S0, 2026-07-20)
 
 **0 fixtures pinned — TRUE baseline is 0/271 zero-diff.** State DOT sits
 at 267/267 STRUCTURALLY EQUAL among the fixtures the jar itself classifies

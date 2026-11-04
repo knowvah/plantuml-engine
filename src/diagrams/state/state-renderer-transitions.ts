@@ -5,27 +5,32 @@
  */
 
 import { splinePathD } from '../../core/svg-path-builder.js';
+import type { StateUrl } from './state-geo-types.js';
 import type { TransitionGeo } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import type {} from '../../core/dispatcher.js';
-import { path, text } from '../../core/svg.js';
+import { path, text, linkWrap } from '../../core/svg.js';
 import { withContentGradientIds } from '../../core/svg-defs.js';
-import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { INITIAL_ID, FINAL_ID } from './state-dot-graph.js';
+import { zaentId } from './state-composite-classify.js';
 import {} from './renderer-uid.js';
 import type { StateUidPlan } from './renderer-uid.js';
 import { wrapLink } from './renderer-group.js';
-import {
-  buildTransitionArrowhead,
-  applyHeadTrim,
-  buildCircleEndMarkup,
-  buildCrossStartMarkup,
-  type TransitionArrowhead,
-} from './renderer-arrowhead.js';
+import { applyHeadTrim, type TransitionArrowhead } from './renderer-arrowhead.js';
+import { buildTransitionDecors } from './state-transition-decors.js';
 import {} from './renderer-pseudostate.js';
 import {} from './renderer-box.js';
-import { resolveStateArrowLineColor, resolveStateArrowHeadColor } from './state-render-colors.js';
-import { STATE_ARROW_BUCKET, stateBucketColor, stateBucketPaint } from './state-bucket-colors.js';
+import { STATE_ARROW_BUCKET, stateBucketColor } from './state-bucket-colors.js';
+import { TransitionLink, resolveTransitionPaint } from './state-link-style.js';
+import { renderStateRuns } from './renderer-box.js';
+import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
+import { VisibilityModifier } from '../../core/skin/VisibilityModifier.js';
+import { CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT } from '../../core/edge-label-box.js';
+import type { Paint } from '../../core/paint.js';
+import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
+import { basicSvgOption } from '../../core/klimt/drawing/svg/svg-graphics.js';
+import { UTranslate } from '../../core/klimt/UTranslate.js';
+import { extractFlatContent } from '../../core/klimt/document-shell.js';
 import {} from './renderer-composite-box.js';
 import { renderNoteOnLink } from './renderer-note.js';
 import {} from './state-shadow.js';
@@ -56,6 +61,9 @@ export function buildPathD(points: ReadonlyArray<{ x: number; y: number }>): str
   return splinePathD(points);
 }
 
+/** `'__zaent_'`, derived from {@link zaentId} rather than re-spelled. */
+const ZAENT_PREFIX = zaentId('');
+
 /** `Link#idCommentForSvg`-ish `<path id="...">` value — jar names the
  *  pseudo-start/end endpoints `*start*`/`*end*` in this attribute (byte-
  *  compared, unlike `data-qualified-name`) regardless of this port's own
@@ -83,6 +91,11 @@ export function buildPathD(points: ReadonlyArray<{ x: number; y: number }>): str
 function svgEndpointId(nodeId: string, concurrentGlobalIds: ReadonlyMap<string, number>): string {
   if (nodeId === INITIAL_ID) return '*start*';
   if (nodeId === FINAL_ID) return '*end*';
+  // stdd T1a: `Link#idCommentForSvg` (`abel/Link.java:106-114`) prints
+  // `Entity#getName`; the zaent anchor is this port's DOT stand-in for the
+  // cluster's special point (`Cluster.getSpecialPointId`) and never names an
+  // entity, so a cluster endpoint prints the cluster's own name.
+  if (nodeId.startsWith(ZAENT_PREFIX)) return nodeId.slice(ZAENT_PREFIX.length);
   const scopedInit = /^__init_(.*)$/.exec(nodeId);
   if (scopedInit !== null) return `*start*${localScopeName(scopedInit[1]!, concurrentGlobalIds)}`;
   const scopedFinal = /^__final_(.*)$/.exec(nodeId);
@@ -158,35 +171,121 @@ function buildTransitionLabelMarkup(transition: TransitionGeo, theme: Theme): st
   return buildInlineLabelMarkup(transition.label, theme);
 }
 
-/** An ordinary inline label's `<text>`: the `arrow` signature's font colour, the label's own font. */
-function buildInlineLabelMarkup(
-  label: { text: string; x: number; y: number; textLength?: number | undefined },
-  theme: Theme,
-): string {
+/** An ordinary inline label: the `arrow` signature's font colour, the label's own font. */
+function buildInlineLabelMarkup(label: InlineLabel, theme: Theme): string {
   const { color, ...fontAttrs } = transitionLabelFontAttrs(theme);
+  // dss T3c site 9: the label's FontColor is the `arrow` style's
+  // (`SvekEdge.java:817-819`); `core/arrow-label-font.ts` is outside T3c's
+  // write-set, so the scoped colour overrides its answer here.
+  const fill = stateBucketColor(theme, STATE_ARROW_BUCKET, 'font') ?? color;
+  if (label.lines !== undefined && label.ascent !== undefined) return buildLabelBlockMarkup(label, theme, fill);
   return text(label.x, label.y, label.text, {
     ...fontAttrs,
-    // dss T3c site 9: the label's FontColor is the `arrow` style's
-    // (`SvekEdge.java:817-819`); `core/arrow-label-font.ts` is outside T3c's
-    // write-set, so the scoped colour overrides its answer here.
-    fill: stateBucketColor(theme, STATE_ARROW_BUCKET, 'font') ?? color,
+    fill,
     ...(label.textLength !== undefined ? { textLength: label.textLength } : {}),
   });
 }
+
+type InlineLabel = Pick<
+  NonNullable<TransitionGeo['label']>,
+  'text' | 'x' | 'y' | 'textLength' | 'lines' | 'align' | 'blockWidth' | 'ascent' | 'visibility'
+>;
+
+/**
+ * stdd T2c: the label as a `TextBlock` (`SvekEdge.java:287-300`, `Display#create0`): one line after
+ * another at the block's alignment, each run drawn by the state creole renderer (tab stops, leading
+ * spaces, `textLength` per run), after `addVisibilityModifier`'s icon (`:363-374`) when the first line
+ * carried a visibility character. `y` is the first line's baseline, so the block top is `y - ascent`.
+ */
+function buildLabelBlockMarkup(label: InlineLabel, theme: Theme, fill: string): string {
+  const font = resolveArrowLabelFont(theme);
+  const lines = label.lines!;
+  const blockWidth = label.blockWidth ?? Math.max(0, ...lines.map((l) => l.width));
+  const iconWidth = label.visibility?.iconWidth ?? 0;
+  const textLeft = label.x + iconWidth;
+  const top = label.y - label.ascent!;
+  const style = {
+    fontFamily: font.family,
+    fill,
+    ...(font.weight === 'bold' ? { fontWeight: '700' as const } : {}),
+  };
+  let out = label.visibility === undefined ? '' : buildLabelVisibilityIcon(label, theme, top);
+  let lineTop = top;
+  for (const line of lines) {
+    const height = line.height === 0 ? font.size : line.height;
+    const x = textLeft + alignedLineOffset(label.align, blockWidth, line.width);
+    out += renderStateRuns(line.runs, x, lineTop, height, style);
+    lineTop += height;
+  }
+  return out;
+}
+
+/** `TextBlockSimple`'s per-line x for the block's `HorizontalAlignment` (`TextBlockSimple.java`). */
+function alignedLineOffset(align: HorizontalAlignment | undefined, blockWidth: number, lineWidth: number): number {
+  if (align === HorizontalAlignment.LEFT) return 0;
+  if (align === HorizontalAlignment.RIGHT) return blockWidth - lineWidth;
+  return (blockWidth - lineWidth) / 2;
+}
+
+/**
+ * `addVisibilityModifier` (`SvekEdge.java:363-374`): `getUBlock(classAttributeIconSize, fore)` with
+ * `withMargin(0, 1, 2, 0)`, merged LR with the text block, `VerticalAlignment.CENTER`: the icon's own
+ * `size + 1` box sits 2 below the merged block's top, centred against the text height.
+ */
+function buildLabelVisibilityIcon(label: InlineLabel, theme: Theme, blockTop: number): string {
+  const vis = label.visibility!;
+  const modifier = VISIBILITY_BY_NAME[vis.modifier];
+  const icon = ICON_SKINPARAM_COLOR[vis.modifier];
+  if (modifier === undefined || icon === undefined) return '';
+  const font = resolveArrowLabelFont(theme);
+  const textHeight = label.lines!.reduce((sum, l) => sum + (l.height === 0 ? font.size : l.height), 0);
+  const mergedHeight = Math.max(textHeight, vis.iconHeight);
+  const y = blockTop + (mergedHeight - vis.iconHeight) / 2 + VISIBILITY_ICON_MARGIN_TOP;
+  const ug = UGraphicSvg.build(0, basicSvgOption(), '$version$', NO_LABEL_TEXT_BOUNDER);
+  const context = ug.apply(new UTranslate(label.x, y));
+  // `rose.getHtmlColor(skinParam, visibilityModifier.getForeground())` (`SvekEdge.java:366-367`): the
+  // `iconPublic` family skinparam, else `ColorParam`'s default.
+  const fore = modifier.getForeground();
+  const color = icon(theme) ?? fore.defaultValue;
+  const size = theme.classAttributeIconSize ?? CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT;
+  modifier.getUDrawable(size, color, null).drawU(context);
+  // `VisibilityModifier#drawWithGroup` opens the `<g data-visibility-modifier>` itself (`:113`).
+  return extractFlatContent(ug.getSvgString()).body;
+}
+
+/** `TextBlockUtils.withMargin(visibility, 0, 1, 2, 0)`'s `marginY1`. */
+const VISIBILITY_ICON_MARGIN_TOP = 2;
+const NO_LABEL_TEXT_BOUNDER = { calculateDimension: (): { width: number } => ({ width: 0 }) };
+/** `VisibilityModifier#name()` to the instance and to the icon character (`class/renderer-edge-extras.ts`). */
+const VISIBILITY_BY_NAME: Record<string, VisibilityModifier> = {
+  PRIVATE_METHOD: VisibilityModifier.PRIVATE_METHOD,
+  PROTECTED_METHOD: VisibilityModifier.PROTECTED_METHOD,
+  PACKAGE_PRIVATE_METHOD: VisibilityModifier.PACKAGE_PRIVATE_METHOD,
+  PUBLIC_METHOD: VisibilityModifier.PUBLIC_METHOD,
+  IE_MANDATORY: VisibilityModifier.IE_MANDATORY,
+};
+/** The `skinparam icon<Kind>Color` each modifier's foreground `ColorParam` reads (`Rose#getHtmlColor`). */
+const ICON_SKINPARAM_COLOR: Record<string, (theme: Theme) => Paint | undefined> = {
+  PRIVATE_METHOD: (theme) => theme.colors.graph.iconPrivateColor,
+  PROTECTED_METHOD: (theme) => theme.colors.graph.iconProtectedColor,
+  PACKAGE_PRIVATE_METHOD: (theme) => theme.colors.graph.iconPackageColor,
+  PUBLIC_METHOD: (theme) => theme.colors.graph.iconPublicColor,
+  IE_MANDATORY: () => undefined,
+};
 
 /** A link's note, with its inline label when it has one. dss T3e: `SvekEdge.java:307-325,950-954` draws
  *  both operands of the merged block, in `TextBlockVertical`/`TextBlockHorizontal` order (the note first
  *  for `Position.LEFT`/`TOP`, else the label first). */
 function buildLinkNoteMarkup(label: NonNullable<TransitionGeo['label']>, theme: Theme): string {
   const { x, y, width = 0, height = 0, noteLines = [], linkLabel } = label;
-  const note = renderNoteOnLink({ x, y, width, height }, noteLines, theme);
+  const note = renderNoteOnLink({ x, y, width, height }, noteLines, theme, label.noteColor);
   if (linkLabel === undefined) return note;
   const inline = buildInlineLabelMarkup(
     {
       text: linkLabel.text,
       x: x + linkLabel.dx,
       y: y + linkLabel.dy,
-      textLength: linkLabel.textLength,
+      ...(linkLabel.textLength !== undefined ? { textLength: linkLabel.textLength } : {}),
     },
     theme,
   );
@@ -214,6 +313,7 @@ function buildTransitionInnerMarkup(
   transition: TransitionGeo,
   theme: Theme,
   concurrentGlobalIds: ReadonlyMap<string, number>,
+  sharedIds: Set<string>,
 ): string {
   // mission G4 S16: <style> stateDiagram { arrow { LineColor HeadColor
   // } } } -- see state-render-colors.ts#resolveStateArrowLineColor's own
@@ -225,28 +325,27 @@ function buildTransitionInnerMarkup(
   // falls back to that same LineColor, for the head. The scoped LineColor
   // (`arrow` bucket) comes first, as it is the builder's merge of every
   // selector; the flat `stateArrow*Color` fields keep their own tiers below.
-  const scopedLine = stateBucketPaint(theme, STATE_ARROW_BUCKET, 'border');
-  const flatFallback = theme.colors.arrow;
-  const arrowLineColor = scopedLine ?? resolveStateArrowLineColor(theme, flatFallback);
+  // stdd T2a: the link's `applyStyle` result and `SvekEdge.java:874-905`'s reads
+  // (`state-link-style.ts`). A hidden link (`SvekResult.java:95`, `UHidden`) emits nothing.
+  const link = new TransitionLink(transition);
+  if (link.isHidden()) return '';
+  const paint = resolveTransitionPaint(transition, link, theme);
   // dss T3f: a note's `Link` is `LinkType(NONE, NONE).goDashed()`
   // (`CommandFactoryNoteOnEntity.java:342`): no decor, the `DotPath` whole.
   if (transition.noteLinkId !== undefined) {
     return path(buildPathD(transition.points), {
-      stroke: arrowLineColor,
+      stroke: paint.color,
       strokeWidth: 1,
       strokeDasharray: NOTE_LINK_DASH,
-      id: transition.noteLinkId,
+      id: uniq(sharedIds, transition.noteLinkId),
     });
   }
-  const headOverride = theme.colors.graph.stateArrowHeadColor;
-  const arrowHeadColor =
-    scopedLine === undefined
-      ? resolveStateArrowHeadColor(theme, flatFallback)
-      : headOverride !== undefined
-        ? resolveColorToSvgHex(headOverride)
-        : scopedLine;
-  const arrowhead = buildTransitionArrowhead(transition, arrowHeadColor, 1);
-  const points = applyHeadTrim(transition.points, arrowhead.trim);
+  const strokeWidth = paint.stroke.getThickness();
+  const decors = buildTransitionDecors(transition, link, paint, theme);
+  // `SvekEdge#getExtremitySimplier` moves the path at BOTH ends by each extremity's own decoration length
+  // (`SvekEdge.java:559-562`): the head's (an arrow 5, an arrow-and-circle 8) and, for `x-->`, the tail's 8.
+  const headTrimmed = applyHeadTrim(transition.points, decors.headTrim, decors.headSide);
+  const points = applyHeadTrim(headTrimmed, decors.tailTrim, decors.tailSide);
   const d = buildPathD(points);
   if (d === '') return '';
 
@@ -260,22 +359,25 @@ function buildTransitionInnerMarkup(
   // `id="foo-foo"`, not `"foo-to-foo"`). `circleEnd` alone does not
   // trigger this (the head side was already non-NONE) -- jar-verified
   // `id="*start*-to-foo"` on the SAME fixture's other edge.
-  const idSep = transition.crossStart === true ? '-' : '-to-';
+  // stdd T2b: `Link#idCommentForSvg` (`Link.java:106-114`) over the link's own decors, which
+  // `TransitionLink` carries inversed for a LEFT/UP link.
+  const dash = paint.stroke.getDasharraySvg();
   const pathEl = path(d, {
-    stroke: arrowLineColor,
-    strokeWidth: 1,
-    id: `${svgEndpointId(transition.from, concurrentGlobalIds)}${idSep}${svgEndpointId(transition.to, concurrentGlobalIds)}`,
+    stroke: paint.color,
+    strokeWidth,
+    ...(dash !== undefined ? { strokeDasharray: `${dash[0]},${dash[1]}` } : {}),
+    id: uniq(
+      sharedIds,
+      link.idCommentForSvg(
+        svgEndpointId(transition.from, concurrentGlobalIds),
+        svgEndpointId(transition.to, concurrentGlobalIds),
+      ),
+    ),
   });
-
-  const decorBackground = resolveColorToSvgHex(theme.colors.background);
-  const circleEndEl =
-    transition.circleEnd === true ? buildCircleEndMarkup(transition, arrowHeadColor, decorBackground) : '';
-  const crossStartEl =
-    transition.crossStart === true ? buildCrossStartMarkup(transition, arrowHeadColor, decorBackground) : '';
 
   const labelEl = buildTransitionLabelMarkup(transition, theme);
 
-  return pathEl + crossStartEl + arrowheadWithDefs(arrowhead) + circleEndEl + labelEl;
+  return pathEl + decors.crossStart + arrowheadWithDefs(decors.arrowhead) + decors.circleEnd + labelEl;
 }
 
 /**
@@ -287,23 +389,63 @@ function arrowheadWithDefs(arrowhead: TransitionArrowhead): string {
   return head.defs + head.body;
 }
 
+/**
+ * `SvekEdge#uniq` (`svek/SvekEdge.java:1093-1106`): the first link to claim a
+ * comment keeps it; every later one appends `-1`, `-2`, ... until the set
+ * accepts it. `sharedIds` is the set `SvekResult#drawU` creates once per
+ * result and hands every line (`SvekResult.java:93-99`).
+ */
+function uniq(ids: Set<string>, comment: string): string {
+  if (!ids.has(comment)) {
+    ids.add(comment);
+    return comment;
+  }
+  for (let i = 1; ; i++) {
+    const candidate = `${comment}-${i}`;
+    if (!ids.has(candidate)) {
+      ids.add(candidate);
+      return candidate;
+    }
+  }
+}
+
+/** The per-result identity inputs: `sharedIds` is one set per svek result (`SvekResult#drawU`'s `ids`, {@link uniq}). */
+export interface TransitionIds {
+  readonly uidPlan: StateUidPlan;
+  readonly concurrentGlobalIds: ReadonlyMap<string, number>;
+  readonly sharedIds: Set<string>;
+}
+
+/** stdd T3d: `activeUrl` is the enclosing entity's open link, re-opened inside the line's group
+ *  (`SvgGraphics#startGroup`, `addTopOpenedLinkIfNeeded`). */
 export function renderTransitionWrapped(
   transition: TransitionGeo,
   theme: Theme,
-  uidPlan: StateUidPlan,
-  concurrentGlobalIds: ReadonlyMap<string, number>,
+  ids: TransitionIds,
+  activeUrl?: StateUrl,
 ): string {
-  const inner = buildTransitionInnerMarkup(transition, theme, concurrentGlobalIds);
-  if (inner === '') return '';
+  const { uidPlan, concurrentGlobalIds, sharedIds } = ids;
+  // stdd T5a: `Link#isHidden` (`Link.java:458-460`): `-[hidden]->` or a hidden end; `SvekResult.java:98`
+  // keeps the `UComment` only.
+  const hidden = transition.hidden === true || new TransitionLink(transition).isHidden();
+  const built = hidden ? '' : buildTransitionInnerMarkup(transition, theme, concurrentGlobalIds, sharedIds);
+  if (built === '' && !hidden) return '';
+  const inner = activeUrl === undefined ? built : linkWrap(built, activeUrl);
   const uid = uidPlan.edgeUid.get(transition) ?? '';
+  // stdd T2b: `Link#commentForSvg` (`Link.java:117-119`) -- `reverse link` for an inverted link.
+  const reverse = transition.noteLinkId === undefined && new TransitionLink(transition).looksLikeRevertedForSvg();
+  // `Link#commentForSvg` prints `Entity#getName` (`Link.java:117-121`), as the path id does.
   return wrapLink(
     {
-      from: transition.from,
-      to: transition.to,
+      from: svgEndpointId(transition.from, concurrentGlobalIds),
+      to: svgEndpointId(transition.to, concurrentGlobalIds),
       uid,
       fromUid: uidPlan.resolveNodeUid(transition.from),
       toUid: uidPlan.resolveNodeUid(transition.to),
       ...(transition.noteLinkId !== undefined ? { linkType: NOTE_LINK_TYPE } : {}),
+      ...(reverse ? { reverse: true } : {}),
+      ...(activeUrl !== undefined ? { activeUrl } : {}),
+      ...(hidden ? { hidden: true } : {}),
     },
     inner,
   );

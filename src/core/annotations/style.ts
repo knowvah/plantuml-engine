@@ -66,8 +66,9 @@ import type { SName } from '../style/SName.js';
 import { PNAMES } from '../style/PName.js';
 import { StyleSignatureBasic } from '../style/StyleSignatureBasic.js';
 import { loadSkin } from '../style/StyleLoader.js';
+import { skinRunsOf } from '../skin-loader.js';
 import { DEFAULT_SKIN } from '../style/mindmap-style-builder.js';
-import { BASE_DEFAULTS, cloneBoxStyle } from './annotation-defaults.js';
+import { BASE_DEFAULTS, cloneBoxStyle, SKIN_NULL_BASELINE } from './annotation-defaults.js';
 import { applySkinparamOverrides } from './annotation-skinparam.js';
 import { applyStyleOverrides } from './annotation-style-overrides.js';
 import {
@@ -119,6 +120,7 @@ export function resolveAnnotationStyles(
   styleMap: StyleMap,
 ): ResolvedAnnotationStyles {
   const ctx: ResolveContext = {
+    skinBased: 'styles' in declarations && skinRunsOf(declarations).length > 0,
     documentBackgroundHex: resolveColorToSvgHex(theme.colors.background),
     documentBackgroundGradient: theme.colors.backgroundGradient,
     themeStyleMap: toStyleMap(theme.styleOverrides),
@@ -143,6 +145,8 @@ export function resolveAnnotationStyles(
 
 /** What every element's resolution reads, computed once per call. */
 interface ResolveContext {
+  /** stdd T5a: a `skin <name>` sheet is in play -- see `annotation-defaults.ts#SKIN_NULL_BASELINE`. */
+  readonly skinBased: boolean;
   readonly documentBackgroundHex: string;
   readonly documentBackgroundGradient: Gradient | undefined;
   readonly themeStyleMap: StyleMap | undefined;
@@ -159,7 +163,7 @@ function resolveElement(
   ctx: ResolveContext,
   styleName: SName | undefined,
 ): AnnotationBoxStyle {
-  const style = cloneBoxStyle(BASE_DEFAULTS[element]);
+  const style = cloneBoxStyle(ctx.skinBased ? SKIN_NULL_BASELINE : BASE_DEFAULTS[element]);
   // G2 N51: see `AnnotationBoxStyle#documentBackground`'s own doc comment.
   style.documentBackground = ctx.documentBackgroundHex;
   if (ctx.documentBackgroundGradient !== undefined) style.documentBackgroundGradient = ctx.documentBackgroundGradient;
@@ -287,7 +291,13 @@ function segmentsOf(
   declarations: ReadonlyMap<string, string> | StyleSkinparamSource,
   styleMap: StyleMap,
 ): readonly StyleSkinparamSegment[] {
-  if ('styles' in declarations) return styleSkinparamSegments(declarations);
+  // stdd T5a: a `skin <name>` sheet is the document's base style (`TitledDiagram.java:161`), so its
+  // `title`/`header`/`legend` blocks and its `root` reach the chrome first, before the document's own
+  // skinparams and `<style>` runs (sumiri-68: `skin debug`'s `title { FontSize 24 }`, root `RoundCorner 15`).
+  if ('styles' in declarations) {
+    const skin = skinRunsOf(declarations).map((map): StyleSkinparamSegment => ({ kind: 'style', styleMap: map }));
+    return [...skin, ...styleSkinparamSegments(declarations)];
+  }
   return [
     { kind: 'skinparam', entries: declarations },
     { kind: 'style', styleMap },

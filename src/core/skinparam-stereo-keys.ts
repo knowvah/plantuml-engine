@@ -49,6 +49,9 @@ const STATE_BORDER_COLOR_STEREO_RE = new RegExp('^statebordercolor<<(.+)>>$');
 // and the FontSize<<X>> exclusion rationale.
 const STATE_BACKGROUND_COLOR_STEREO_RE = new RegExp('^statebackgroundcolor<<(.+)>>$');
 const STATE_FONT_COLOR_STEREO_RE = new RegExp('^statefontcolor<<(.+)>>$');
+/** stdd T3d: `skinparam ActivityBarColor<<fork>> green` -- `EntityImageSynchroBar.java:62-63,81-84` signs
+ *  `activityBar` `withTOBECHANGED(stereotype)` and reads its `BackGroundColor`. */
+const ACTIVITY_BAR_COLOR_STEREO_RE = new RegExp('^activitybarcolor<<(.+)>>$');
 // mission G4 S16: `skinparam stateFontSize<<stereo>> N` -- the FontSize<<X>>
 // field S9/S14/S15's own queue notes deferred (jar-verified via
 // `FromSkinparamToStyle.java`'s `addConFont("state", SName.state)`, which
@@ -297,6 +300,13 @@ const STEREO_KEY_MATCHERS: ReadonlyArray<readonly [RegExp, StereoHandler]> = [
     (acc, stereo, value) => {
       acc.stateBackgroundColorByStereo ??= {};
       acc.stateBackgroundColorByStereo[stereo] = resolveColor(value);
+    },
+  ],
+  [
+    ACTIVITY_BAR_COLOR_STEREO_RE,
+    (acc, stereo, value) => {
+      acc.activityBarColorByStereo ??= {};
+      acc.activityBarColorByStereo[stereo] = resolveColor(value);
     },
   ],
   [

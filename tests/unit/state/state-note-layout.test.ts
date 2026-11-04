@@ -130,11 +130,19 @@ end note
     // oracle/goldens/state/fatupo-62-bemu777/svek-1.dot sh0007 (re-captured, seam #4 v2): width=2.725781in, height=0.736111in (*72 = px).
     expect(m.width).toBeCloseTo(2.725781 * 72, 3);
     expect(m.height).toBeCloseTo(0.736111 * 72, 3);
-    // Render side: no raw pipe/header markup leaks into the drawn lines (was
-    // "|= header 1 |= header 2 |= header 3 |" verbatim before this task).
-    for (const line of m.lines) expect(line.text).not.toMatch(/[|=]/);
-    expect(m.lines[0]!.text).toContain('header 1');
-    expect(m.lines[1]!.text).toContain('abc');
+    // Render side (stdd T5a): the three rows fold into ONE `StripeTable` stripe (`CreoleParser.java:91-94`),
+    // whose cells carry the visible text -- no raw pipe/header markup anywhere.
+    expect(m.lines).toHaveLength(1);
+    // (`StripeTable.java:139` tokenizes on `|`, so a cell keeps its padding spaces.)
+    const cells = m.lines[0]!.table!.cells.map((c) =>
+      c.runs
+        .map((r) => r.text)
+        .join('')
+        .trim(),
+    );
+    expect(cells).toContain('header 1');
+    expect(cells).toContain('abc');
+    for (const c of cells) expect(c).not.toMatch(/[|=]/);
   });
 
   it('xeziki-47-zomo866#a: <color:...> tags strip to visible text for both sizing and drawing', () => {

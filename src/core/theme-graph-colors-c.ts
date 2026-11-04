@@ -29,6 +29,33 @@ export interface ThemeGraphColorsC {
    *  .tag { LineColor; LineThickness } }` (`style-cascade-description.ts`) and by `skinparam arrow<<tag>> { Color
    *  X;line.Bold() }` (`skinparam-arrow-stereo.ts`). `fontColor` (gtc T6h): the same signature's `FontColor`, the link label colour (`skinparam arrow<<tag>> { FontColor X }`, `<style> arrow { .tag { FontColor } }`). Absent = no tagged declaration. */
   descriptionArrowTagCascade?: Readonly<Record<string, { color?: string; thickness?: number; fontColor?: string }>>;
+  /** stdd T2a: the state twin of `descriptionArrowTagCascade` -- `{root, element, stateDiagram,
+   *  arrow}.withTOBECHANGED(stereotype)` (`SvekEdge.java:816-821`), keyed by cleaned tag. Written by
+   *  `<style> arrow { .tag { ... } }` (`style-cascade-state.ts`) and `skinparam arrow<<tag>>`
+   *  (`skinparam-arrow-stereo.ts`). Read by `state/state-link-style.ts`. */
+  stateArrowTagCascade?: Readonly<Record<string, { color?: string; thickness?: number; fontColor?: string }>>;
+  /** stdd T3b: `LineThickness` of `{root, element, stateDiagram, state}` (`Style.java:299-305`, declaration
+   *  order), a state box's and a cluster's stroke (`EntityImageState.java:130`, `Cluster.java:480-484`).
+   *  Absent = the skin's `element { LineThickness 0.5 }`. `style-cascade-state.ts`. */
+  stateLineThickness?: number;
+  /** stdd T3b: the start circle's `{..., circle, start}` LineThickness (`CircleStart.java:82`); absent = 1. */
+  stateCircleStartLineThickness?: number;
+  /** stdd T3b: the end circle's `{..., circle, end}` LineThickness (`CircleEnd.java:86`); absent = 1. */
+  stateCircleEndLineThickness?: number;
+  /** stdd T3d: `HyperLinkColor` of `{root, element, stateDiagram, state, name}` (`Style.java:265`). */
+  stateNameHyperlinkColor?: string;
+  /** stdd T3d: `HyperlinkUnderlineThickness` of the same signature (`Style.java:266`); absent = the skin's 1. */
+  stateNameHyperlinkUnderlineThickness?: number;
+  /** stdd T3d: `HyperLinkColor` of `{..., state, description}` (`Entity.java:614,623`). */
+  stateDescriptionHyperlinkColor?: string;
+  /** stdd T5a: `RoundCorner` merged over `{root, element, stateDiagram, state}`; wins over the bare
+   *  `stateDiagram { RoundCorner }` read ({@link stateCascadeRoundCorner}), which it subsumes. */
+  stateRoundCorner?: number;
+  /** stdd T5a: `HorizontalAlignment` of `{root, element, stateDiagram, state, name}` -- a composite title's
+   *  (`ClusterHeader.java:181-183`, `InnerStateAutonom.java:91`); absent = the skin's `center` (`plantuml.skin:284`). */
+  stateNameHorizontalAlignment?: 'left' | 'center' | 'right';
+  /** stdd T5a: `LineThickness` of `{root, element, stateDiagram, arrow}` (`SvekEdge.java:874-905`). */
+  stateArrowLineThickness?: number;
   monospacedFontName?: string;
   /** cdd2-T8 (S-13): `skinparam classFontColor automatic` -- see
    *  `skinparam-accumulator.ts#classFontColorAutomatic`'s own doc comment.

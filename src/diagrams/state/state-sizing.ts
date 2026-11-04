@@ -37,6 +37,7 @@
  */
 
 import type { State, StateKind } from './ast.js';
+import { stateColorsOf, type StateColors } from './state-colors.js';
 // T1: the ONE `Display#getWithNewlines` port -- upstream builds a state's
 // display/description text via the SAME method (`CommandCreateState.java
 // :195,204`, `BodierSimple.java:61`'s `getWithNewlines2`), not the former
@@ -46,9 +47,12 @@ import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
 import type { Theme } from '../../core/theme.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { DotInputNodeShape } from '../../core/graph-layout.js';
-import type { StateTextLine } from './state-geo-types.js';
+import type { StateTextLine, StateUrl } from './state-geo-types.js';
+import { layoutJsonLeaf, type JsonLeafLayout } from './state-json-layout.js';
+import { UrlBuilder } from '../../core/url/UrlBuilder.js';
+import { UrlMode } from '../../core/url/UrlMode.js';
 import { measureJsonState } from './state-json-sizing.js';
-import { resolveStateFontSize } from './state-render-colors.js';
+import { resolveStateFontSize, stateFontFamily } from './state-render-colors.js';
 import { leafSouthZoneDrawn } from './renderer-box-zones.js';
 import { isBorderPoint } from './state-entity-position.js';
 // G1/G23 (mission state-declared-size-fix, D1): the ONE creole seam. Every
@@ -313,7 +317,7 @@ export function measureState(
   // width/height), unlike its `stateBackgroundColor<<X>>`/`stateFontColor
   // <<X>>` siblings, which are render-time-only.
   const fontSize = resolveStateFontSize(state, theme, theme.fontSize);
-  const font: FontSpec = { family: theme.fontFamily, size: fontSize };
+  const font: FontSpec = { family: stateFontFamily(theme), size: fontSize };
   const ctx: TextCtx = { font, measurer, opts: stateCreoleOpts(theme, true) };
   const { dim, shape } = measureNormalKind(state, hideEmptyDescription, ctx);
   return { ...dim, shape };
@@ -382,6 +386,15 @@ export function historyLabelText(kind: StateKind | 'note'): string {
   return kind === 'deepHistory' ? 'H*' : 'H';
 }
 
+/** stdd T3d: `new UrlBuilder(skinParam.getValue("topurl"), UrlMode.STRICT).getUrl(urlString)`
+ *  (`CommandCreatePackageState.java:181-186`, `CommandCreateState.java`) over the declaration's raw
+ *  `[[...]]` token. `undefined` when the state has none or the token does not parse. */
+export function stateUrlOf(state: Pick<State, 'url'>, theme: Pick<Theme, 'topurl'>): StateUrl | undefined {
+  if (state.url === undefined) return undefined;
+  const url = new UrlBuilder(theme.topurl ?? null, UrlMode.STRICT).getUrl(state.url);
+  return url === null ? undefined : { url: url.getUrl(), tooltip: url.getTooltip() };
+}
+
 /** Optional `StateNodeGeo` fields a leaf `state` spec/geo carries for
  *  render-time text layout (mission G4 S2) — `headerLines`/`bodyLines` for
  *  `kind:'normal'`, the single "H"/"H*" label for `kind:'history'`/
@@ -393,6 +406,12 @@ export interface StateGeoTextFields {
   headerLines?: readonly StateTextLine[];
   bodyLines?: readonly StateTextLine[];
   color?: string;
+  /** stdd T3d -- see `StateNodeGeo.url`. */
+  url?: StateUrl;
+  /** stdd T5a: a `kind:'json'` leaf's parsed value, for `renderer-json.ts` (`EntityImageJson#drawU`): its measured grid. */
+  jsonLayout?: JsonLeafLayout;
+  /** stdd T3a: the state's `Colors` reads (`state-colors.ts`). */
+  stateColors?: StateColors;
   /** mission G4 S5 -- see `StateNodeGeo.emptyDescription`'s own doc comment. */
   emptyDescription?: true;
   /** mission G4 S9 -- see `StateNodeGeo.stereotype`'s own doc comment. */
@@ -413,6 +432,12 @@ export interface StateGeoTextFields {
  * (`state-composite-autonom.ts`/`state-composite-concurrent.ts`), since a
  * composite's own title never takes this leaf-only upstream branch.
  */
+/** stdd T6c: `hide empty description` reaches a LEAF (`GeneralImageBuilder.java:135-136`), never a group
+ *  declared with `{ }` -- a childless one is `GroupMakerState.java:113-114`'s plain `EntityImageState`. */
+export function hidesEmptyDescription(state: State, hideEmptyDescription: boolean): boolean {
+  return hideEmptyDescription && state.explicitComposite !== true;
+}
+
 export function buildStateGeoTextFields(
   state: State,
   theme: Theme,
@@ -424,7 +449,7 @@ export function buildStateGeoTextFields(
   // measures `StateTextLine.width` here so the renderer's `textLength`
   // attribute matches jar's own larger/smaller glyph metrics.
   const fontSize = resolveStateFontSize(state, theme, theme.fontSize);
-  const font: FontSpec = { family: theme.fontFamily, size: fontSize };
+  const font: FontSpec = { family: stateFontFamily(theme), size: fontSize };
   // G1: `wrapWidth` only on the LEAF `EntityImageState*` branch, matching
   // the SIZER's own `measureState` call above -- see `isLeafState`.
   const opts = stateCreoleOpts(theme, isLeafState(state));
@@ -435,11 +460,26 @@ export function buildStateGeoTextFields(
     fields.emptyDescription = true;
   } else if (state.kind === 'normal') {
     fields.headerLines = measureTextLines(state.display, font, measurer, opts);
-    fields.bodyLines = measureBodyTextLines(state.description, font, measurer, opts);
+    // stdd T3d: the fields are `FontConfiguration.create(skinParam, styleDescription)` (`EntityImageState.java:89-96`).
+    fields.bodyLines = measureBodyTextLines(
+      state.description,
+      font,
+      measurer,
+      stateCreoleOpts(theme, true, 'description'),
+    );
   } else if (state.kind === 'history' || state.kind === 'deepHistory') {
     fields.headerLines = measureTextLines(historyLabelText(state.kind), font, measurer, opts);
   }
   if (state.color !== undefined) fields.color = state.color;
+  if (state.kind === 'json') {
+    // `EntityImageJson#drawU` lays the grid out over the box's own width (`setTotalWidth(dimTotal.getWidth())`).
+    const dim = measureJsonState(state, theme, measurer);
+    fields.jsonLayout = layoutJsonLeaf(state.display, state.jsonValue, dim.width, font, measurer);
+  }
+  const url = stateUrlOf(state, theme);
+  if (url !== undefined) fields.url = url;
+  const stateColors = stateColorsOf(state);
+  if (stateColors !== undefined) fields.stateColors = stateColors;
   if (state.stereotype !== undefined) fields.stereotype = state.stereotype;
   // dss T3c: a leaf drawn through `RoundedContainer` ends in a `RoundedSouth` `UPath`
   // (`renderer-box-zones.ts`), whose ink `LimitFinder` takes uninset (`StateNodeGeo.southCapInk`).

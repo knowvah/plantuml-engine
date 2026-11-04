@@ -19,10 +19,14 @@
  * approximation for autonom composites.
  */
 
-import type { StateGeometry, StateNodeGeo } from './layout.js';
+import type { StateGeometry, StateNodeGeo, TransitionGeo } from './layout.js';
+import type { StateUrl } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
+import type { StringMeasurer } from '../../core/measurer.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
-import { line } from '../../core/svg.js';
+import { isExportScaled } from '../../core/scale-command.js';
+import { withDeferredFormat } from '../../core/svg-format.js';
+import { line, linkWrap } from '../../core/svg.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import {} from './state-dot-graph.js';
 
@@ -49,6 +53,7 @@ import {
   renderHistory,
 } from './renderer-pseudostate.js';
 import { renderNormal, renderSdlReceive } from './renderer-box.js';
+import { renderJsonLeaf } from './renderer-json.js';
 import { renderBorderPoint } from './renderer-border-point.js';
 import {} from './state-render-colors.js';
 import { renderComposite } from './renderer-composite-box.js';
@@ -56,6 +61,7 @@ import { renderStateNote } from './renderer-note.js';
 import { STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
 import { buildStateShadowFilterDef } from './state-shadow.js';
 import { renderTransitionWrapped } from './state-renderer-transitions.js';
+import { allCluster, allLines, allNodes } from './state-svek-draw-order.js';
 
 // ---------------------------------------------------------------------------
 // Node shape renderers
@@ -73,14 +79,16 @@ import { renderTransitionWrapped } from './state-renderer-transitions.js';
  * the syncBar case's own documented no-dedicated-renderer-yet gap below.
  */
 function renderJson(node: StateNodeGeo, theme: Theme): string {
+  // stdd T5a: `EntityImageJson#drawU` (`renderer-json.ts`) once the layout measured the grid.
+  if (node.jsonLayout !== undefined) return renderJsonLeaf(node, theme, node.jsonLayout);
   return renderNormal(node, theme);
 }
 
 /** One node's own shape markup — children NOT recursed (see {@link
  *  renderComposite}'s doc comment, renderer-composite-box.ts). */
-function renderShape(node: StateNodeGeo, theme: Theme): string {
+function renderShape(node: StateNodeGeo, theme: Theme, measurer?: StringMeasurer): string {
   if (node.children.length > 0) {
-    return renderComposite(node, theme);
+    return renderComposite(node, theme, measurer);
   }
   // G9/T7: a border point is a DIFFERENT image class upstream
   // (`EntityImageStateBorder`, chosen in `GeneralImageBuilder
@@ -145,6 +153,9 @@ function renderShape(node: StateNodeGeo, theme: Theme): string {
 function wrapClassFor(node: StateNodeGeo): 'entity' | 'start_entity' | 'end_entity' | undefined {
   if (node.children.length > 0) return 'entity';
   if (node.emptyDescription === true) return undefined;
+  // stdd T1b: `EntityImageStateBorder#drawU` (`EntityImageStateBorder.java:79-104`)
+  // opens no group, unlike `EntityImageState.java:117`.
+  if (node.borderPointLabelAbove !== undefined) return undefined;
   // mission G4 S14: `<<sdlreceive>>` (EntityImageState2) draws UNWRAPPED --
   // see `renderSdlReceive`'s own doc comment (renderer-box.ts).
   if (node.kind === 'normal' && node.stereotype?.toLowerCase() === 'sdlreceive') return undefined;
@@ -200,85 +211,98 @@ function renderSeparator(sep: { x1: number; y1: number; x2: number; y2: number }
  *  own image). Every other node (`node.concurrentRegions === undefined`)
  *  keeps the pre-S6 "all children, then this node's own transitions"
  *  layout unchanged. */
-function renderNodeWrapped(
-  node: StateNodeGeo,
-  theme: Theme,
-  uidPlan: StateUidPlan,
-  concurrentGlobalIds: ReadonlyMap<string, number>,
-): string {
-  const ownShape = renderShape(node, theme);
-  let inner: string;
-  if (node.concurrentRegions !== undefined) {
-    const separators = node.separators ?? [];
-    const blocks = node.concurrentRegions.map((region, i) => {
-      const stateMarkup = region.children.map((c) => renderChildNode(c, theme, uidPlan, concurrentGlobalIds)).join('');
-      const transitionMarkup = region.transitions
-        .map((t) => renderTransitionWrapped(t, theme, uidPlan, concurrentGlobalIds))
-        .join('');
-      const sepMarkup = i < separators.length ? renderSeparator(separators[i]!, theme) : '';
-      return stateMarkup + transitionMarkup + sepMarkup;
-    });
-    inner = ownShape + blocks.join('');
-  } else {
-    const childrenMarkup = node.children.map((c) => renderChildNode(c, theme, uidPlan, concurrentGlobalIds)).join('');
-    const ownTransitionsMarkup = node.transitions
-      .map((t) => renderTransitionWrapped(t, theme, uidPlan, concurrentGlobalIds))
-      .join('');
-    inner = ownShape + childrenMarkup + ownTransitionsMarkup;
-  }
-  const wrapClass = wrapClassFor(node);
-  if (wrapClass === undefined) return inner;
-  const uid = uidPlan.nodeUid.get(node.id) ?? '';
-  if (wrapClass === 'start_entity') return wrapStartEntity(node.id, uid, inner);
-  if (wrapClass === 'end_entity') return wrapEndEntity(node.id, uid, inner);
-  return wrapEntity(node.id, uid, inner);
+interface StateRenderCtx {
+  readonly theme: Theme;
+  readonly uidPlan: StateUidPlan;
+  readonly concurrentGlobalIds: ReadonlyMap<string, number>;
+  /** stdd T6c -- `StateGeometry.measurer`. */
+  readonly measurer?: StringMeasurer;
+  /** stdd T3d: the enclosing entity's open link (`SvgGraphics#startGroup` re-opens the active link inside
+   *  every nested group, `addTopOpenedLinkIfNeeded`), so a child's shape and lines sit in its own `<a>`. */
+  readonly activeUrl?: StateUrl;
 }
 
 /**
- * G5 C3, mechanism 16 shape half: jar's real document structure for a
- * `'cluster'`-classified composite's children does NOT nest them inside the
- * composite's own `<g>` wrap (unlike every OTHER composite kind, which
- * nests via `renderNodeWrapped`'s own `childrenMarkup` above) -- they render
- * as FLAT SIBLINGS at the SAME level, immediately after it. jar-verified
- * `decede-10-buvu414`: `<g class="cluster" id="ent0005">`(E's own shape
- * only)`</g><g class="entity" data-qualified-name="E.F">`(F, a SIBLING, NOT
- * nested)`</g>` — the DOT-native cluster/subgraph model has no coordinate-
- * space CONTAINMENT the way `InnerStateAutonom`'s own wrapper does; the
- * cluster's rendered rect/paths (`renderClusterMeasured`, renderer-
- * composite-box.ts) are purely a background decoration UNDER already-
- * absolutely-positioned siblings.
- *
- * Dispatches a node's own child list uniformly (used by both `renderState`'s
- * top-level loop and `renderNodeWrapped`'s own recursion) — a cluster child
- * flattens via `renderClusterSiblingMarkup` (which recurses the SAME way for
- * a nested cluster reachable through its OWN children); every other kind
- * still nests via the normal `renderNodeWrapped`, unaffected.
+ * One svek result (stdd T1c, D2): `SvekResult#drawU` (`svek/SvekResult.java:70-100`)
+ * draws every cluster of the pass, then every node, then every line, each list in
+ * `Bibliotekon` order (`state-svek-draw-order.ts`). A cluster's own `<g>` wraps only
+ * its shape; its members and lines are flat siblings in this same result. The
+ * root pass and each `InnerStateAutonom`/`ConcurrentStates` inner are each one
+ * result, and each gets its own `ids` set for `SvekEdge#uniq` (`SvekResult.java:93`).
  */
-function renderChildNode(
-  node: StateNodeGeo,
-  theme: Theme,
-  uidPlan: StateUidPlan,
-  concurrentGlobalIds: ReadonlyMap<string, number>,
+function renderSvekResult(
+  nodes: readonly StateNodeGeo[],
+  transitions: readonly TransitionGeo[],
+  ctx: StateRenderCtx,
+  atRoot: boolean,
 ): string {
-  return node.clusterHeaderHeight !== undefined
-    ? renderClusterSiblingMarkup(node, theme, uidPlan, concurrentGlobalIds)
-    : renderNodeWrapped(node, theme, uidPlan, concurrentGlobalIds);
+  const { theme, uidPlan, concurrentGlobalIds } = ctx;
+  const sharedIds = new Set<string>();
+  // stdd T5a: a hidden node draws through `UHidden` (`SvekResult.java:85`): nothing, uid kept.
+  const clusters = allCluster(nodes)
+    .filter((c) => c.hidden !== true)
+    .map((c) =>
+      wrapCluster(c.id, uidPlan.nodeUid.get(c.id) ?? '', renderShapeLinked(c, theme, ctx.activeUrl, ctx.measurer)),
+    )
+    .join('');
+  const nodeMarkup = allNodes(nodes)
+    .map((n) => renderNodeWrapped(n, ctx))
+    .join('');
+  const lines = allLines(nodes, transitions, atRoot)
+    .map((t) => renderTransitionWrapped(t, theme, { uidPlan, concurrentGlobalIds, sharedIds }, ctx.activeUrl))
+    .join('');
+  return clusters + nodeMarkup + lines;
 }
 
-function renderClusterSiblingMarkup(
+/** `InnerStateAutonom#drawU` (`svek/InnerStateAutonom.java:130-161`): the rounded
+ *  box and its name, then the inner result; `ConcurrentStates#drawU`
+ *  (`ConcurrentStates.java:122-133`) draws each inner result, then the separator
+ *  between two regions, in one flat sequence. A leaf has neither. */
+/** stdd T3d: `ug.startUrl(url)` right after the group opens, around the entity's own shape
+ *  (`EntityImageState.java:118-120`, `InnerStateAutonom.java:141-142`, `Cluster.java:338-342`); a nested
+ *  group closes the link first (`SvgGraphics#startGroup`, `closeTopActiveLinkIfNeeded`), so the children
+ *  follow the `<a>` as siblings. */
+function renderShapeLinked(
   node: StateNodeGeo,
   theme: Theme,
-  uidPlan: StateUidPlan,
-  concurrentGlobalIds: ReadonlyMap<string, number>,
+  activeUrl: StateUrl | undefined,
+  measurer?: StringMeasurer,
 ): string {
-  const ownShape = renderShape(node, theme);
-  const uid = uidPlan.nodeUid.get(node.id) ?? '';
-  const ownWrap = wrapCluster(node.id, uid, ownShape);
-  const childrenMarkup = node.children.map((c) => renderChildNode(c, theme, uidPlan, concurrentGlobalIds)).join('');
-  const ownTransitionsMarkup = node.transitions
-    .map((t) => renderTransitionWrapped(t, theme, uidPlan, concurrentGlobalIds))
-    .join('');
-  return ownWrap + childrenMarkup + ownTransitionsMarkup;
+  const shape = renderShape(node, theme, measurer);
+  const url = node.url ?? activeUrl;
+  return url === undefined ? shape : linkWrap(shape, url);
+}
+
+/** The node's inner result: stacked regions with their separators (`ConcurrentStates.java:122-133`), or
+ *  one child pass (`InnerStateAutonom.java:149`). */
+function renderInnerContent(node: StateNodeGeo, ctx: StateRenderCtx): string {
+  if (node.concurrentRegions === undefined) return renderSvekResult(node.children, node.transitions, ctx, false);
+  const separators = node.separators ?? [];
+  const blocks = node.concurrentRegions.map((region, i) => {
+    const regionMarkup = renderSvekResult(region.children, region.transitions, ctx, false);
+    const sepMarkup = i < separators.length ? renderSeparator(separators[i]!, ctx.theme) : '';
+    return regionMarkup + sepMarkup;
+  });
+  return blocks.join('');
+}
+
+function renderNodeWrapped(node: StateNodeGeo, outer: StateRenderCtx): string {
+  if (node.hidden === true) return '';
+  // stdd T6a: a region leaf's image is the raw `SvekResult` (`GroupMakerState.java:116-117`); its `drawU`
+  // paints clusters, nodes and lines with no group and no box of its own (`SvekResult.java:69-95`).
+  if (node.regionLeaf === true) return renderSvekResult(node.children, node.transitions, outer, false);
+  const ownShape = renderShapeLinked(node, outer.theme, outer.activeUrl, outer.measurer);
+  // The inner result (`InnerStateAutonom.java:149`, `ConcurrentStates.java:122-133`) draws while this
+  // entity's url is open (`InnerStateAutonom.java:141-157`); a cluster closes it first (`Cluster.java:380`).
+  const url = node.url ?? outer.activeUrl;
+  const ctx: StateRenderCtx = url === undefined ? outer : { ...outer, activeUrl: url };
+  const inner = ownShape + renderInnerContent(node, ctx);
+  const wrapClass = wrapClassFor(node);
+  if (wrapClass === undefined) return inner;
+  const uid = ctx.uidPlan.nodeUid.get(node.id) ?? '';
+  if (wrapClass === 'start_entity') return wrapStartEntity(node.id, uid, inner);
+  if (wrapClass === 'end_entity') return wrapEndEntity(node.id, uid, inner);
+  return wrapEntity(node.id, uid, inner);
 }
 
 // ---------------------------------------------------------------------------
@@ -294,13 +318,17 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
   const uidPlan = buildStateUidPlan(geo);
   const concurrentGlobalIds = geo.concurrentGlobalIds ?? new Map<string, number>();
 
-  const children: string[] = [];
-  for (const node of geo.states) {
-    children.push(renderChildNode(node, theme, uidPlan, concurrentGlobalIds));
-  }
-  geo.transitions.forEach((transition) => {
-    children.push(renderTransitionWrapped(transition, theme, uidPlan, concurrentGlobalIds));
-  });
+  // stdd T4a: a scaled document is formatted ONCE by the export's scale pass, as `SvgGraphics#format` multiplies
+  // then rounds (`SvgGraphics.java:468-475`, `TextBlockExporter.java:165-177`); see `withDeferredFormat`.
+  const deferred = isExportScaled(geo.scale, theme.dpi);
+  const body = withDeferredFormat(deferred, () =>
+    renderSvekResult(
+      geo.states,
+      geo.transitions,
+      { theme, uidPlan, concurrentGlobalIds, ...(geo.measurer !== undefined ? { measurer: geo.measurer } : {}) },
+      true,
+    ),
+  );
 
   // mission G4 S1 mechanism 1: background is communicated via the shell's
   // own root `style="...background:...;"` attribute (T8: `core/assemble-
@@ -319,7 +347,7 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
   // default empty extraDefs) for every pre-Batch-2/shadow-off fixture.
   const extraDefs = theme.shadowing !== undefined && theme.shadowing > 0 ? buildStateShadowFilterDef() : undefined;
   return {
-    body: children.join(''),
+    body,
     width: geo.totalWidth,
     height: geo.totalHeight,
     background: resolveColorToSvgHex(theme.colors.background),
@@ -327,6 +355,10 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
     // `SvgGraphics`' constructor does (`SvgGraphics.java:178-183`); omitted when unset.
     ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),
     diagramType: DIAGRAM_TYPE_STATE,
+    // stdd T4a: the exporter's inputs (`TextBlockExporter.java:205-209`), resolved by `exportTo`.
+    ...(geo.scale === undefined ? {} : { scaleSpec: geo.scale }),
+    ...(theme.dpi === undefined ? {} : { dpi: theme.dpi }),
+    ...(deferred ? { numbersDeferred: true as const } : {}),
     ...(geo.preChromeWidth !== undefined && geo.preChromeHeight !== undefined
       ? { preChromeWidth: geo.preChromeWidth, preChromeHeight: geo.preChromeHeight }
       : {}),

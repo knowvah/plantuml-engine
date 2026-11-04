@@ -207,9 +207,11 @@ describe('the ink walk no longer clips (SI31 T5’s clipTransitionPoints is gone
     // If the clip still lived here it would run a SECOND time. Handing
     // `addTransitionInk` an unclipped spline whose tail id addresses a
     // cluster must now fold the raw x=160 control point.
-    const t: TransitionGeo = { from: zaentId('A'), to: 'Y', points: spline() };
+    // `noteLinkId` keeps the arrowhead out of the box (stdd T6a folds every
+    // extremity, `LimitFinder.java:171-177`), so the point alone sets maxX.
+    const t: TransitionGeo = { from: zaentId('A'), to: 'Y', points: spline(), noteLinkId: 'n' };
     const box = newInkBox();
-    addTransitionInk(box, t, false, 'self-loop');
+    addTransitionInk(box, t, false);
     expect(box.maxX).toBe(160);
   });
 });

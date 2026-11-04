@@ -2,6 +2,8 @@ import type { UGraphic } from '../../klimt/UGraphic.js';
 import type { Point2D } from '../../klimt/UTranslate.js';
 import { Back } from '../../klimt/Back.js';
 import { UPolygon } from '../../klimt/shape/UPolygon.js';
+import { ULine } from '../../klimt/shape/ULine.js';
+import { UTranslate } from '../../klimt/UTranslate.js';
 import { Extremity } from './Extremity.js';
 import type { ExtremityFactory } from './ExtremityFactory.js';
 import type { Side } from './Side.js';
@@ -56,6 +58,16 @@ export class ExtremityArrow extends Extremity {
 
   override getDecorationLength(): number {
     return 5;
+  }
+
+  /** `SvekEdge#drawRainbow` draws this instead of the polygon when the head colour is
+   *  transparent: the line from the tip to the contact point.
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/extremity/ExtremityArrow.java:106-112 */
+  drawLineIfTransparent(ug: UGraphic): void {
+    const pt1 = this.polygon.getPoint(0);
+    const pt2 = this.polygon.getPoint(2);
+    const line = ULine.create(pt1, pt2);
+    ug.apply(new UTranslate(pt1.x, pt1.y)).draw(line);
   }
 }
 

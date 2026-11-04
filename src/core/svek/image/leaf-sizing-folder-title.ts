@@ -59,6 +59,7 @@
  *   adaptation seam `EntityImageDescription.ts`'s params document).
  */
 import type { StringMeasurer, FontSpec } from '../../measurer.js';
+import { bulletDimension } from './creole-sea-line.js';
 import { MeasurerStringBounder } from '../../measurer-bounder.js';
 import type { SpriteDimsLookup, AtomImageResolver } from '../../creole-atoms.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
@@ -117,6 +118,7 @@ function titleAtomOps(resolveAtomImage: AtomImageResolver | undefined): AtomOps 
     if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000');
     if (atom.kind === 'emoji') return emojiBoxDim(atom.factor);
     if (atom.kind === 'space') return { width: atom.width, height: SPACE_ATOM_HEIGHT };
+    if (atom.kind === 'bullet') return bulletDimension(atom.order);
     // `AtomVerticalTexts#calculateDimensionSlow` (`AtomVerticalTexts.java:54-64`).
     if (atom.kind === 'vertical') {
       const dim = verticalTextsDimension(atom.lines, ops, stringBounder);

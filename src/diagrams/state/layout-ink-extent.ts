@@ -62,15 +62,16 @@
  * Mission G4 S4 (mechanism 7) excluded ALL arrowhead ink from a composite's
  * childImg pass over a suspected `transitionArrowheadInk` over-reach.
  * Mission state-declared-size-fix T9 (SI28 T2's `findings/composite-b.md`)
- * found the over-reach real but NOT self-loop-specific: unioning arrowhead
- * ink unconditionally closes `pebepi-32-cati486`/`taxile-56-goca422`/
- * `tigibi-80-zidi137` (self-loops) to float-noise precision, but GROWS
- * `fovafu-44-mifu394` (`A-->Y`) and `kejabo-83-vinu490` (`Idle-->
- * Configuring`) — plain transitions (full-corpus `harness-diff.py`
- * evidence). {@link addTransitionInk}'s `arrowheadInk` param narrows the
- * fold to `from===to` for a composite pass, matching what T2 jar-verified,
- * while the document-level functions keep the pre-existing unconditional
- * fold.
+ * found the over-reach real but NOT self-loop-specific, and scoped the fold
+ * to `from===to` because unioning every arrowhead GREW `fovafu-44-mifu394`
+ * (`A-->Y`) and `kejabo-83-vinu490` (`Idle-->Configuring`) -- its journal
+ * names dot-engine endpoint geometry (graphviz issue 15) as the cause.
+ * stdd T6a: with that geometry since fixed, the jar's rule is mirrored
+ * unconditionally -- `SvekEdge#drawRainbow` draws every extremity into the
+ * SAME `LimitFinder` (`SvekEdge.java:1108-1142`), whose `drawUPolygon`
+ * pads x by `HACK_X_FOR_POLYGON` (`LimitFinder.java:169-177`); jetuse-93's
+ * `[*] --> A1` arrowhead beside the cluster is the 5 px the scoped fold
+ * dropped, and fovafu/kejabo/pebepi/taxile/tigibi stay at zero diffs.
  *
  * Mechanism 8 (the composite south cap) was diagnosed by T9 and deferred:
  * an UNCONDITIONAL +1 regressed 9 exact, default-styled fixtures
@@ -86,6 +87,7 @@
  * @see class/layout-ink-extent.ts (the class-engine precedent this mirrors)
  */
 import type { StateNodeGeo, TransitionGeo } from './state-geo-types.js';
+import { RADIUS } from '../../core/abel/EntityPosition.js';
 import { svekDimension, svekInkShift } from '../../core/svek/SvekResult.js';
 import { applyCucaDocumentMargin } from '../../core/TextBlockExporter.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
@@ -237,8 +239,11 @@ function addBorderPointInk(box: InkBox, node: StateNodeGeo): void {
   const lineHeight = labelHeight / lines.length;
   const firstBaseline = top + textAscent(lineHeight);
   const lastBaseline = firstBaseline + (lines.length - 1) * lineHeight;
-  addPoint(box, node.x - (labelWidth - node.width) / 2, firstBaseline - lineHeight + TEXT_INK_BASELINE_DROP);
-  addPoint(box, node.x + (labelWidth + node.width) / 2, lastBaseline + TEXT_INK_BASELINE_DROP);
+  // `x = -(dimDesc.getWidth() - 2 * EntityPosition.RADIUS) / 2` (`EntityImageStateBorder.java:83`): the label
+  // is centred on a `2 * RADIUS` symbol whatever the pin's own width -- stdd T6c, nijugi-19's 48 px expansion bar.
+  const left = node.x - (labelWidth - 2 * RADIUS) / 2;
+  addPoint(box, left, firstBaseline - lineHeight + TEXT_INK_BASELINE_DROP);
+  addPoint(box, left + labelWidth, lastBaseline + TEXT_INK_BASELINE_DROP);
 }
 
 /** `choice` diamond (`core/svg.ts#diamond`'s own 4-point layout) —
@@ -289,13 +294,15 @@ function addSouthCapInk(box: InkBox, node: StateNodeGeo): void {
  *  covered before the restructuring (previously via a flat
  *  `outTransitions` accumulator merged into the top-level `transitions`
  *  array by the caller). */
-function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean, arrowheadInk: 'always' | 'self-loop'): void {
+function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean): void {
   if (node.children.length > 0) {
     // A composite's own outer box draws no divider line, but this call is
     // deliberately left at the pre-existing `hasDivider: true` ink: the
     // composite reuse is flagged NOT-jar-verified in this module's own doc
     // comment, and flipping it is a separate, separately-evidenced change.
-    addStateBoxInk(box, node, true);
+    // stdd T6c: a `frame` cluster is one `URectangle` (`USymbolFrame`, through `ClusterDecoration`), whose
+    // ink is `x - 1 .. x + w - 1` (`LimitFinder.java:184-188`) with no uninset line -- tucotu-42's canvas 128.
+    addStateBoxInk(box, node, node.usymbol === undefined);
     // G9/T8: a border-point composite reserves ink OUTSIDE the frame it draws
     // -- jar's ink/draw passes frontier it against different child rectangles.
     // Same `-1`/`+0` insets as the rect ink above. See `StateNodeGeo.inkOverflow`.
@@ -312,8 +319,8 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean, arrowhea
       addPoint(box, sep.x1, sep.y1);
       addPoint(box, sep.x2, sep.y2);
     }
-    for (const child of node.children) addNodeInk(box, child, labelInk, arrowheadInk);
-    for (const t of node.transitions) addTransitionInk(box, t, labelInk, arrowheadInk);
+    for (const child of node.children) addNodeInk(box, child, labelInk);
+    for (const t of node.transitions) addTransitionInk(box, t, labelInk);
     return;
   }
   // G9/T7: a border point is a different image class upstream, not a state
@@ -342,9 +349,13 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean, arrowhea
       return;
     }
     case 'normal':
-    case 'json':
       addStateBoxInk(box, node, rendersDivider(node));
       addSouthCapInk(box, node);
+      return;
+    case 'json':
+      // stdd T5a: `TextBlockJson#drawU`'s `ULine.hline(jsonTotalWidth)` (`TextBlockCucaJSon.java:168,174`) reaches
+      // the box's full width uninset (`LimitFinder#drawULine`), as a divider does (maruju-55: canvas 310).
+      addStateBoxInk(box, node, (node.jsonLayout?.rules.length ?? 0) > 0);
       return;
     case 'note':
       addNoteInk(box, node.x, node.y, node.width, node.height);
@@ -360,11 +371,10 @@ function buildInkBox(
   states: readonly StateNodeGeo[],
   transitions: readonly TransitionGeo[],
   labelInk: boolean,
-  arrowheadInk: 'always' | 'self-loop',
 ): InkBox {
   const box = newInkBox();
-  for (const n of states) addNodeInk(box, n, labelInk, arrowheadInk);
-  for (const t of transitions) addTransitionInk(box, t, labelInk, arrowheadInk);
+  for (const n of states) addNodeInk(box, n, labelInk);
+  for (const t of transitions) addTransitionInk(box, t, labelInk);
   return box;
 }
 
@@ -375,7 +385,7 @@ function buildInkBox(
  * `labelInk: true` fold as the two document-level functions.
  */
 export function computeStateInkBox(states: readonly StateNodeGeo[], transitions: readonly TransitionGeo[]): InkBox {
-  return buildInkBox(states, transitions, true, 'always');
+  return buildInkBox(states, transitions, true);
 }
 
 export interface StateDocumentDims {
@@ -399,7 +409,7 @@ export function computeStateDocumentDims(
   // `UEmpty` (`TextBlockMarged.java:79-87`, `SvekEdge.java:950-953`), which
   // `LimitFinder#drawEmpty` folds (`LimitFinder.java:159-162`); gtc T7b
   // (pavuzo-79-zodu430: ortho xlabel box at x=0 -> shift 6, canvas 219).
-  const raw = svekDimension(buildInkBox(states, transitions, true, 'always'));
+  const raw = svekDimension(buildInkBox(states, transitions, true));
   // Empty diagram (no ink at all): stay {0, 0} rather than applying the
   // margin to nothing, which would yield 6x6. The pre-refactor code got this
   // from an early `return {width: 0, height: 0}` before the margin
@@ -430,7 +440,7 @@ export function computeStateInkShift(
 ): StateInkShift {
   // `labelInk: true` -- same box fold as `computeStateDocumentDims` above
   // (shares its own ink-extent bbox mechanism, must stay consistent with it).
-  return svekInkShift(buildInkBox(states, transitions, true, 'always'));
+  return svekInkShift(buildInkBox(states, transitions, true));
 }
 
 export interface SvekResultGeometry {
@@ -483,6 +493,6 @@ export function computeSvekResultGeometry(
   // The SAME `SvekResult#calculateDimension` recipe the document-level
   // functions above use — dimension and moveDelta together, which is what
   // that one upstream method returns. This was a third inline copy.
-  const box = buildInkBox(states, transitions, true, 'self-loop');
+  const box = buildInkBox(states, transitions, true);
   return { ...svekDimension(box), ...svekInkShift(box) };
 }

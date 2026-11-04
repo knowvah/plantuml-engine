@@ -12,6 +12,7 @@
  */
 
 import type { State } from './ast.js';
+import { labelStyleOf } from './state-transition-label.js';
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import { buildStateGeoTextFields } from './state-sizing.js';
 import { measureAutonomWrapper } from './state-composite-sizing.js';
@@ -30,6 +31,7 @@ import {
   buildLevelTransitionGeos,
   sortSpecsByCreationIndex,
 } from './state-composite-pass.js';
+import { shiftGroupAutoLinks } from './state-composite-transition-geo.js';
 // SI31 T6 (G20a): imported DIRECTLY, not through `state-composite-pass.ts`'s
 // re-export barrel -- that file is outside this task's write-set.
 import { pushLocalNodesInCreationOrder } from './state-composite-pseudo.js';
@@ -194,7 +196,7 @@ export function shiftDotLayoutResult(result: DotLayoutResult, dx: number, dy: nu
  * @see ~/git/plantuml/.../svek/GraphvizImageBuilder.java#buildImage (attempts
  *      EVERY diagram link; a missing SvekNode drops it at THIS pass only) */
 export function buildPlainAutonomSpec(s: State, ctx: DiagramCtx): ExtractAutonomSpec {
-  const acc = newAccumulator(resolveArrowLabelFont(ctx.theme), ctx.measurer);
+  const acc = newAccumulator(resolveArrowLabelFont(ctx.theme), ctx.measurer, labelStyleOf(ctx.theme));
   // `insideAutonomPass` marks this as a FIRED pass boundary -- see that
   // field's own doc comment (state-composite-pass-types.ts). It no longer
   // gates title-table eligibility: G8 T2 removed the
@@ -288,7 +290,11 @@ export function buildPlainAutonomSpec(s: State, ctx: DiagramCtx): ExtractAutonom
     height: wrapper.height,
     localStates: localSpecs,
     localPositions: shiftedResult,
-    localTransitions: buildLevelTransitionGeos(acc, shiftedResult),
+    localTransitions: shiftGroupAutoLinks(
+      buildLevelTransitionGeos(acc, shiftedResult),
+      geometry.dx,
+      result.originShift?.x ?? 0,
+    ),
     ...buildStateGeoTextFields(s, ctx.theme, ctx.measurer),
     ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),
   };

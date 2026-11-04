@@ -1,0 +1,5 @@
+## Observation: the flat creole seam dropped every stripe header
+- **Context**: stdd T6d, gopudo-91's `A : * a list` drew the text without its bullet, 12 px too far left.
+- **Finding**: `creole-text-lines.ts` builds a line from `buildLineAtoms` (classification + flat atoms) and never added the stripe's header atom, which upstream makes the stripe's FIRST atom (`StripeStyle.java:60-61`, `StripeSimple.java:118-121`) and which `Fission` keeps on the first wrapped line only (`Fission.java:69,87`). `buildLineAtoms` is shared with the description/class leaf sizers (`leaf-sizing-text.ts`, `StripeTable.ts`), whose renderers draw through the full `Sheet`; the header is therefore added in the flat seam only, as a `'bullet'` atom, and every exhaustive atom switch in `svek/image/` got a neutral `bulletDimension` branch so the union stays total.
+- **Impact**: `LIST_WITH_NUMBER` (`AtomTextUtils.createListNumber`, a `CreoleContext` counter) is still not carried by the flat seam -- the corpus has no state row for it; adding it means a text header atom, not a bullet.
+- **Confidence**: High

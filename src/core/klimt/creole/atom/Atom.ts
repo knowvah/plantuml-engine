@@ -76,6 +76,11 @@ export type CreoleAtom =
   /** `AtomSpace` (`<space:N>`): `calculateDimensionSlow` = (width, 1), `getStartingAltitude` 0, empty `drawU`
    *  (AtomSpace.java; see `atom/AtomSpace.ts`). */
   | { readonly kind: 'space'; readonly width: number }
+  /** `Bullet` (`StripeStyle#getHeader` for `LIST_WITHOUT_NUMBER`, `StripeStyle.java:60-61`), the list stripe's
+   *  first atom (`StripeSimple.java:118-121`): `calculateDimensionSlow` is (12, 5) at order 0, else
+   *  (8 + 8 * order, 3); `getStartingAltitude` -5 / -7; `drawU` a 5x5 ellipse 3 px in, or a 3.5 square at
+   *  `1 + 8 * order` (`Bullet.java:57-75`), in the font colour. stdd T6d (gopudo-91). */
+  | { readonly kind: 'bullet'; readonly order: number; readonly color: string | null }
   /** `AtomVerticalTexts` (`AtomTextUtils#createUrl`, a multi-line `[[url label]]`):
    *  one stacked line per display line, each the atoms `createAtomTextForUrl`
    *  produced (`atom/AtomVerticalTexts.ts`). */

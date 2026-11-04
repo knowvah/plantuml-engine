@@ -106,7 +106,8 @@ export function hasBorderPointDescendant(state: State): boolean {
 /** True iff `state` has at least one DIRECT child that is itself an
  *  entry/exit/pin border point -- narrower than `hasBorderPointDescendant`
  *  (which also counts border points nested inside descendant composites,
- *  relevant only to the autonom-disqualification predicate above). This is
+ *  the `needsAnchor` question in state-composite-classify.ts). This is also
+ *  `Entity#isAutarkic`'s own leaf walk (`Entity.java:706-708`, stdd T6a). This is
  *  the `ClusterDotString`/`GroupMakerState` question "does THIS group's own
  *  `ee` rank-port block have anything to wrap?", which only ever looks at
  *  `state`'s immediate children (`Cluster.printRanks` iterates the group's
@@ -226,7 +227,11 @@ export function collectAllTransitions(states: readonly State[]): FlatLink[] {
  * `concurrentRegions` composite node represents).
  */
 export function isAutarkic(state: State, allTransitions: readonly FlatLink[]): boolean {
-  if (hasBorderPointDescendant(state)) return false;
+  // stdd T6a: `for (Entity leaf : leafs()) if (leaf.getEntityPosition() != NORMAL) return false`
+  // (`Entity.java:706-708`) reads the group's DIRECT leafs only; a border point nested in a child
+  // group disqualifies that child, not this group (fejuja-91: `Foo { Bar { xuq3 <<exitPoint>> } }`
+  // -- Bar is a cluster of Foo's own svek pass, Foo an autonom leaf of the root, `svek-2.dot`).
+  if (hasDirectBorderPointChild(state)) return false;
   const subtree = subtreeIds(state);
   // A `[*]` endpoint's container is the scope that wrote it: inside iff
   // that scope IS `state` itself or a descendant of `state` (top-level

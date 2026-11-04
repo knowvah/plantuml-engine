@@ -184,18 +184,41 @@ function finalizeClassBody(fragment: RenderFragment): string {
  * `<rect … fill="#EEE"/>` precedes `<g class="title">`); the former
  * chrome-present carve-out recorded only that the sampled corpus lacked the case.
  */
-function finalizeStateBody(fragment: RenderFragment): string {
-  // dss T3f: the constructor's paint, then `maybeDrawBorder` (`TextBlockExporter.java:169-171`).
-  const backgroundRect =
-    backcolorMarkup(
-      fragment.background,
-      fragment.backgroundGradient,
-      Math.trunc(fragment.width),
-      Math.trunc(fragment.height),
-    ) + diagramBorderRect(fragment);
-  return fragment.bodyWrapped === true
-    ? spliceIntoContentGroup(fragment.body, backgroundRect)
-    : group(backgroundRect + fragment.body);
+/**
+ * stdd T4a: `TextBlockExporter#exportTo` (`TextBlockExporter.java:160-177`) for state: the scale resolves over
+ * the chrome-and-margin dimension and the body (border included, `maybeDrawBorder`, `:171`) is drawn at it;
+ * the constructor's paint is at the exported canvas (`SvgGraphics.java:808-811`). Unscaled, `exportTo` hands
+ * the body back untouched and this is dss T3f's `finalizeStateBody` byte for byte.
+ */
+function finalizeStateFragment(fragment: RenderFragment): RenderFragment {
+  const border = diagramBorderRect(fragment);
+  const content =
+    fragment.bodyWrapped === true ? spliceIntoContentGroup(fragment.body, border) : group(border + fragment.body);
+  // `calculateFinalDimension` (`:198-203`) is the svek block plus the margin, before `ensureVisible`'s bump
+  // (`SvgGraphics.java:129-135`): the layout folded the margin (`layout.ts#applyStateDocumentMargin`) and kept
+  // the block as `preChromeWidth`/`preChromeHeight`; the chromed path already set `exportedDimension`.
+  const margin = documentMarginOf(fragment);
+  const carrier =
+    fragment.exportedDimension === undefined &&
+    fragment.preChromeWidth !== undefined &&
+    fragment.preChromeHeight !== undefined &&
+    margin !== undefined
+      ? {
+          ...fragment,
+          exportedDimension: {
+            width: fragment.preChromeWidth + margin.left + margin.right,
+            height: fragment.preChromeHeight + margin.top + margin.bottom,
+          },
+        }
+      : fragment;
+  const exported = exportTo(carrier, content);
+  const backgroundRect = backcolorMarkup(
+    fragment.background,
+    fragment.backgroundGradient,
+    Math.trunc(exported.width),
+    Math.trunc(exported.height),
+  );
+  return { ...exported, body: spliceIntoContentGroup(exported.body, backgroundRect) };
 }
 
 // ---------------------------------------------------------------------------
@@ -276,7 +299,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_DESCRIPTION:
       return finalizeDescriptionFragment(fragment);
     case DIAGRAM_TYPE_STATE:
-      return { ...fragment, body: finalizeStateBody(fragment) };
+      return finalizeStateFragment(fragment);
     case DIAGRAM_TYPE_SEQUENCE:
       return finalizeSequenceFragment(fragment);
     case DIAGRAM_TYPE_ACTIVITY:

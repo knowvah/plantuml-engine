@@ -50,7 +50,7 @@ const ALPHA_HEX_FILL = /^#[0-9A-Fa-f]{8}$/;
  * An opacity the caller passes explicitly wins over the alpha byte -- the
  * jar has no second source, so this only keeps existing callers' output.
  */
-function fillAttrsOf(
+export function fillAttrsOf(
   fill: string | undefined,
   explicitOpacity: number | undefined,
 ): { fill: string | undefined; fillOpacity: string | undefined } {

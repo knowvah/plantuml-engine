@@ -14,9 +14,14 @@
  */
 
 import type { State } from './ast.js';
+import type { TransitionGeo } from './state-geo-types.js';
+import { stateColorsOf } from './state-colors.js';
+import { stateFontFamily } from './state-render-colors.js';
 import type { FontSpec } from '../../core/measurer.js';
-import type { DotInputNode, DotInputCluster, DotLayoutResult } from '../../core/graph-layout.js';
-import { splitStateDisplayLines } from './state-sizing.js';
+import type { DotInputNode, DotInputCluster } from '../../core/graph-layout.js';
+import { splitStateDisplayLines, stateUrlOf } from './state-sizing.js';
+import { stateCreoleBlock, stateCreoleOpts } from './state-sizing-creole.js';
+import { ENTITY_IMAGE_MARGIN as MARGIN } from '../../core/svek/IEntityImage.js';
 import { stateDescriptionBlockWidth } from './state-composite-description-block.js';
 import { measureClusterTitle, titleAndAttributeWidth } from './state-composite-header.js';
 import { computeTitleTableHeight } from '../../core/cluster-title-table.js';
@@ -24,6 +29,9 @@ import { zaentId } from './state-composite-classify.js';
 import { isGroupTouched, recordBorderPointCluster } from './state-composite-detect.js';
 import { getEntityPosition, isInputPosition, isOutputPosition } from './state-entity-position.js';
 import { concurrentRegionScopeId } from './state-parse-state.js';
+import { regionInkGeometry, type ConcurrentRegionPassResult } from './state-composite-concurrent.js';
+import { pseudoNodeItems, runInCreationOrder, type CreationOrdered } from './state-composite-pseudo.js';
+import { shiftGroupAutoLinks } from './state-composite-transition-geo.js';
 import {
   type DiagramCtx,
   type PassAccumulator,
@@ -31,82 +39,12 @@ import {
   ANCHOR_SIZE,
   nextClusterId,
   resolveMember,
-  addLocalPseudoNodes,
   addScopeNotes,
   addLevelEdges,
   buildLevelTransitionGeos,
   sortSpecsByCreationIndex,
 } from './state-composite-pass.js';
 
-/**
- * G5 C3, mechanism 16 shape half — jar-calibrated constants for a genuine
- * `'cluster'`-classified composite's single-line title reservation, verified
- * against the REAL PlantUML jar (not derived from `ClusterHeader.java`'s own
- * `getTitleAndAttributeHeight() - 5` Java-internal value, which this port's
- * own text-height convention — `height = font.size` per line, `measureCluster
- * Title` above — does not reproduce bit-for-bit; ledger.md §C2's own "C3+
- * queue" sub-item 3, resolved here by DECOUPLING the graphviz layout-space
- * RESERVATION from this port's text-height convention entirely, since the
- * FIXEDSIZE table's only role is telling graphviz how much space to reserve
- * -- the visible title text is drawn separately, by `renderer-composite-
- * box.ts`, using its OWN measured line width).
- *
- * `CLUSTER_TITLE_TABLE_HEIGHT` (fed to `DotInputCluster.titleTableHeight`,
- * consumed by `graph-layout-build.ts#addClusters`'s `setHtmlAttr` seam) was
- * ORIGINALLY set to 3 by G5 C2's own 15-point marker sweep, on the theory
- * that @knowvah/dot-engine's `gap = HEIGHT + 16` (`3 + 16 = 19`, matching
- * `CLUSTER_HEADER_HEIGHT` below) reproduced jar's real header gap —
- * WRONG: mission G6 T1 (`plans/g6-cluster-geometry/decision-journal.md`,
- * "T1 mechanism artifact") found the jar's REAL svek DOT emission is
- * `HEIGHT="9"`, a content-independent constant verified across 70+ cached
- * `test-results/dot-cache/state` (nested per-fixture) `svek-N.dot`
- * samples — feeding `HEIGHT=3` starved @knowvah/dot-engine's cluster-label
- * TOP-border formula
- * (`border[TOP_IX] = label.dimen.y + 2*GAP`, GAP=4, @knowvah/dot-engine's own
- * `graph-label.ts:113`, a faithful port of `lib/common/input.c:885-892`)
- * by exactly 6pt per composite cluster, compounding by nesting
- * depth. `9` is the jar-verified value; the `3 + 16 = 19` coincidence above
- * only ever matched `CLUSTER_HEADER_HEIGHT` (a SEPARATE, unchanged,
- * renderer-side constant, its own paragraph below) — it was never a
- * correct derivation of the DOT-layout-input value here.
- *
- * `CLUSTER_HEADER_HEIGHT` (the real header-to-divider gap `renderer-
- * composite-box.ts`'s new cluster shape draws at) was re-confirmed this
- * iteration on the FULL corpus (not just the 18/19-fixture sample C2 hand-
- * picked): a disposable probe (`scripts/_tmp-c3-cluster-probe.ts`, deleted
- * before finishing) walked every cached `test-results/dot-cache/state`
- * fixture's own `in.svg`'s `<g class="cluster">` element and found 132/134
- * real single-line-title font-size-14 samples at EXACTLY 19.0000px (the 2
- * exceptions,
- * `sosoxe-55-demi451`/`teseci-80-sivi292`, are BOTH multi-line titles
- * (`state A as "line1\nline2"`, a literal creole line break) — correctly
- * excluded by the `lineCount === 1` gate below, not a counterexample).
- *
- * That same probe found the title's own VERTICAL BASELINE offset from the
- * cluster top is BIMODAL — 14.8889px for 98 samples, 15.8889px for 36 —
- * which splits EXACTLY along `ClusterDotString`'s own WithLabel/hasPort
- * branch (`portRanksLabelOnEe`, `applyBorderPointRanks` below): every
- * 15.8889-offset sample belongs to a fixture in the mission's own 20-fixture
- * `<<entrypoint>>`/`<<exitpoint>>` family (`bitaxo-18-tamo974`, `fukexa-85-
- * cuvi894`, `jucori-40-cevo136`, `kotagu-43-miza629`, `lulozu-10-bopu547`,
- * ...), whose title moves onto the `${id}ee` subgraph's own `label=`
- * (`DotInputCluster.portRanksLabelOnEe`'s own doc comment) — a DIFFERENT
- * jar code path with its own (verified-but-unimplemented-this-iteration)
- * baseline offset. The plain case's 4 (14.8889 = 4 + `textAscent(14)`) is now read from graphviz's title table (gtc T8); G7 T14b applies it uniformly to border-point
- * composites too, since the WithLabel family's own `=5` correction
- * (withlabel-derivation.md §2b) is OUT of the confirmed ten-item edit list
- * (render-position-only, doesn't affect box width/height) — named residual,
- * not tuned in here.
- */
-// G6 T7: `CLUSTER_TITLE_TABLE_HEIGHT` (flat 9px, jar-verified ONLY for the
-// single-line/no-attribute case) is SUPERSEDED by the jar-real
-// `computeTitleTableHeight` formula above — the title table no
-// longer requires `lineCount === 1`, so a fixed per-cluster constant can no
-// longer represent every eligible cluster's reservation. The formula
-// reduces to exactly 9 for the single-line/no-attribute case (see its own
-// doc comment), so this supersession is behavior-preserving for every
-// fixture the doc block above verified.
-const CLUSTER_HEADER_HEIGHT = 19;
 /** The BORDER-POINT family's own title offset — `IEntityImage.MARGIN`,
  *  literally (`svek/IEntityImage.java:45`). A composite whose title moved onto
  *  the `${id}ee` subgraph never gets its title position from graphviz's own
@@ -122,22 +60,6 @@ const CLUSTER_HEADER_HEIGHT = 19;
  *  composite titles were the last thing in that fixture not matching jar. */
 const BORDER_POINT_TITLE_BASELINE_MARGIN = 5;
 
-/** `SvekResult.calculateDimension`'s `delta(15,15)` -- a CONCURRENT_STATE
- *  region's raw graph image (`GroupMakerState.getImage():116-117` returns
- *  it DIRECTLY, never wrapped by `InnerStateAutonom`) adds a flat 15px to
- *  both width and height when the region re-enters its container's own
- *  pass as a flattened leaf; drawn content shifts so its own top-left
- *  sits at (6,6) inside that padded box (`moveDelta(6-minX,6-minY)`).
- *  Mission G4 S3: `im` in `InnerStateAutonom.calculateDimensionSlow`
- *  (`state-composite-autonom.ts#buildPlainAutonomSpec`'s own wrapped-
- *  child-pass dimension, a PLAIN autonom composite's child content) is the
- *  SAME `SvekResult` type as a concurrent region leaf's own `im` -- the
- *  SAME `delta(15,15)` applies there too, exported for that module's reuse
- *  (see its own doc comment).
- * @see ~/git/plantuml/.../svek/SvekResult.java:130-134
- */
-const REGION_LEAF_MARGIN = 15;
-const REGION_LEAF_OFFSET = 6;
 /** `GroupMakerState.getImage()`'s degenerate-empty-group branch
  *  (`countChildren()==0 && groups().size()==0`, checked BEFORE the
  *  CONCURRENT_STATE branch) -- a region with ZERO content (no states, no
@@ -150,82 +72,26 @@ const REGION_LEAF_OFFSET = 6;
  */
 const EMPTY_REGION_MIN_SIZE = 50;
 
-/** Tight bounding box of a pass's DRAWN content (all node/edge extents,
- *  nodes already shifted so the leftmost/topmost point sits at 0 --
- *  `shiftToOrigin`, graph-layout.ts) -- upstream's `TextBlockUtils.getMinMax`
- *  equivalent, WITHOUT `runPass`/`layoutGraph`'s own generic per-graph
- *  canvas margin (`MARGIN = 12`, graph-layout.ts's `canvasSize`) baked into
- *  `result.width`/`result.height`. That generic margin has no upstream
- *  counterpart in `SvekResult.calculateDimension()`'s OWN `delta(15, 15)`
- *  computation (SvekResult.java:130-135), which pads the TIGHT drawn
- *  bbox directly -- reusing `result.width`/`height` as-is here would
- *  double-count a margin upstream never applies at this step (mission A4
- *  Phase L iter 16: jijuze-43-ceva131's region-leaf size drift, verified
- *  via oracle DOT: `EMPTY_REGION_MIN_SIZE`-guarded single-state region's
- *  raw content is exactly its one node's own width/height, not
- *  `result.width`/`height`).
- *
- *  Exported (mission G4 S3): `state-composite-autonom.ts
- *  #buildPlainAutonomSpec` has the SAME bug for a PLAIN autonom composite's
- *  wrapped-child-pass dimension (`InnerStateAutonom.calculateDimensionSlow`'s
- *  own `im.calculateDimension(...)`, the SAME `SvekResult#calculateDimension`
- *  this function reproduces) -- jar-verified `coteta-47-mare883`/`lonuti-97-
- *  voko521` (composite outer box off by a constant few px, unmasked once
- *  mechanism 6's own box-shape fix made `childCount` match so `compareSvg`
- *  could finally descend into the composite's own attributes). A trial fix
- *  using THIS function was diagnosed, verified to help those two fixtures,
- *  but ALSO verified to regress two already-pinned `size-backlog.json`
- *  entries past their own tighten-only allowance -- NOT landed this
- *  iteration (see that module's own doc comment for the full writeup).
- *  Exported so S4 can reuse it once combined with the still-unresolved
- *  child position-offset residual, rather than re-derived a second time.
- * @see ~/git/plantuml/.../svek/SvekResult.java:130-135
- */
-export function tightContentDimension(result: DotLayoutResult): { width: number; height: number } {
-  let width = 0;
-  let height = 0;
-  for (const n of result.nodes) {
-    width = Math.max(width, n.x + n.width);
-    height = Math.max(height, n.y + n.height);
-  }
-  for (const e of result.edges) {
-    if (e.labelX !== undefined && e.labelWidth !== undefined) {
-      width = Math.max(width, e.labelX + e.labelWidth / 2);
-    }
-    for (const p of e.points) {
-      width = Math.max(width, p.x);
-      height = Math.max(height, p.y);
-    }
-  }
-  return { width, height };
-}
-
 /**
  * Build the flattened leaf that re-enters the CALLING (cluster) pass in
- * place of one `--`-delimited concurrent region — mission A4 Phase L iter
- * 16 (jijuze-43-ceva131: a self-referencing composite correctly classified
- * 'cluster' was flattening its regions straight into the parent cluster
- * with no pass boundary at all, losing graph-count parity), REWRITTEN
- * iteration 19 to a pure LOOKUP. Every CONC region is unconditionally
- * autarkic regardless of the ENCLOSING composite's own autonom/cluster
- * classification (`GroupType.CONCURRENT_STATE` short-circuits
- * `isAutarkic()` true, mechanisms.md §3) — so a region's own dedicated svek
- * pass is now ALWAYS built at the region's OWN globally-ordered
- * firing-order turn (`ctx.classify.firingOrder`,
- * state-composite-classify.ts's doc), by `buildConcurrentRegionPass`
- * (./state-composite-concurrent.ts), regardless of whether the OWNER ends
- * up 'autonom' or 'cluster'. Building it AGAIN here (the iter-16 original)
- * double-fired the region's pass — once via firing order, once inline —
- * producing an extra, oracle-mismatched graph (jijuze-43-ceva131 regressed
- * graphs=3 vs oracle's 2 until this rewrite).
+ * place of one `--`-delimited concurrent region -- mission A4 Phase L iter
+ * 16 (jijuze-43-ceva131), rewritten iteration 19 to a pure LOOKUP: every
+ * CONC region is unconditionally autarkic (`GroupType.CONCURRENT_STATE`
+ * short-circuits `isAutarkic()` true, `Entity.java:700-701`), so its own
+ * svek pass is always built at the region's OWN firing-order turn
+ * (`buildConcurrentRegionPass`, ./state-composite-concurrent.ts) whether
+ * the OWNER ends up 'autonom' or 'cluster'.
+ *
+ * stdd T6a: the region's image is the raw `SvekResult`
+ * (`GroupMakerState.java:116-117`), never wrapped by `InnerStateAutonom`,
+ * so the leaf is sized `minMax + (15, 15)` and its content moved to
+ * `(6 - minX, 6 - minY)` (`SvekResult.java:130-135`) through the SAME
+ * `regionInkGeometry` the stacked (autonom) case uses, and it renders as
+ * its content alone (`regionLeaf`, `renderer.ts#renderNodeWrapped`:
+ * `SvekResult#drawU` opens no group and draws no box, `SvekResult.java:69-95`).
  * @see ~/git/plantuml/.../svek/GroupMakerState.java:116-117
  */
-function buildConcurrentRegionLeaf(
-  s: State,
-  regionNumber: number,
-  ctx: DiagramCtx,
-): { node: DotInputNode; spec: GeoSpec } {
-  const regionId = concurrentRegionScopeId(s.id, regionNumber);
+function resolvedRegionOf(regionId: string, ctx: DiagramCtx): ConcurrentRegionPassResult {
   const resolved = ctx.resolvedRegions.get(regionId);
   if (resolved === undefined) {
     // Cannot occur given firingOrder's depth-descending guarantee -- a
@@ -235,31 +101,96 @@ function buildConcurrentRegionLeaf(
     // state-composite-concurrent.ts).
     throw new Error(`concurrent region "${regionId}" resolved out of firing order`);
   }
+  return resolved;
+}
+
+/** The region's own transitions, a composite self-link among them taking the region's `moveDelta` again
+ *  (`shiftGroupAutoLinks`). */
+function regionLeafTransitions(resolved: ConcurrentRegionPassResult, passDx: number): TransitionGeo[] {
+  const geos = buildLevelTransitionGeos(resolved.acc, resolved.result);
+  return shiftGroupAutoLinks(geos, passDx, resolved.result.originShift?.x ?? 0);
+}
+
+function buildConcurrentRegionLeaf(
+  s: State,
+  regionNumber: number,
+  ctx: DiagramCtx,
+): { node: DotInputNode; spec: GeoSpec } {
+  const regionId = concurrentRegionScopeId(s.id, regionNumber);
+  const resolved = resolvedRegionOf(regionId, ctx);
+  const creationIndex = s.concurrentRegionCreationIndexes?.[regionNumber - 1];
+  const tick = creationIndex !== undefined ? { creationIndex } : {};
   if (resolved.result.nodes.length === 0) {
     return {
       node: { id: regionId, width: EMPTY_REGION_MIN_SIZE, height: EMPTY_REGION_MIN_SIZE, shape: 'rounded' },
-      spec: { kind: 'state', id: regionId, stateKind: 'normal', display: '' },
+      spec: { kind: 'state', id: regionId, stateKind: 'normal', display: '', ...tick },
     };
   }
-  const content = tightContentDimension(resolved.result);
-  const width = content.width + REGION_LEAF_MARGIN;
-  const height = content.height + REGION_LEAF_MARGIN;
+  const geom = regionInkGeometry(resolved, ctx.theme.shadowing ?? 0);
   return {
-    node: { id: regionId, width, height, shape: 'rect' },
+    node: { id: regionId, width: geom.width, height: geom.height, shape: 'rect' },
     spec: {
       kind: 'autonom',
       id: regionId,
       display: '',
-      offset: { x: REGION_LEAF_OFFSET, y: REGION_LEAF_OFFSET },
-      width,
-      height,
+      offset: { x: geom.dx, y: geom.dy },
+      width: geom.width,
+      height: geom.height,
       localStates: resolved.specs,
       localPositions: resolved.result,
-      localTransitions: buildLevelTransitionGeos(resolved.acc, resolved.result),
+      localTransitions: regionLeafTransitions(resolved, geom.dx),
+      regionLeaf: true,
+      ...tick,
     },
   };
   // #lizard forgives -- faithful port of GroupMakerState's region-leaf
   // dimension formula; a guard clause plus one straight-line construction.
+}
+
+/** stdd T6a/T6b: resolve a cluster's direct leafs, its region leafs and its `[*]` pseudostates in ONE
+ *  creation-ordered walk. `Entity#leafs()` returns the quark's children in creation order
+ *  (`Entity.java:649-657`); a CONCURRENT_STATE region is one of them once `overrideImage` made it a leaf
+ *  (`Entity.java:395-405`), and so is a `[*]` the scope's links made. `--` fires on pass ONE
+ *  (`CommandConcurrentState.java:57-59`), a link and its endpoints on pass TWO
+ *  (`CommandLinkStateCommon.java:70-72`): `CONC1` precedes `XA1` in jijuze-43's `svek-2.dot`, and
+ *  butigu-57's start precedes its history. A member without a tick keeps the old order, last. */
+function resolveLeafsInCreationOrder(
+  s: State,
+  directMembers: readonly State[],
+  acc: PassAccumulator,
+  ctx: DiagramCtx,
+  cluster: DotInputCluster,
+): { childSpecs: GeoSpec[]; regionSpecs: GeoSpec[]; pseudoSpecs: GeoSpec[] } {
+  const childSpecs: GeoSpec[] = [];
+  const regionSpecs: GeoSpec[] = [];
+  const pseudoSpecs: GeoSpec[] = [];
+  const items: CreationOrdered[] = directMembers.map((c) => ({
+    ...(c.creationIndex !== undefined ? { creationIndex: c.creationIndex } : {}),
+    run: () => {
+      childSpecs.push(resolveMember(c, acc, ctx, cluster.id));
+      if (ctx.classify.kindOf.get(c.id) !== 'cluster') cluster.nodeIds.push(c.id);
+    },
+  }));
+  s.concurrentRegions.forEach((_region, i) => {
+    const creationIndex = s.concurrentRegionCreationIndexes?.[i];
+    items.push({
+      ...(creationIndex !== undefined ? { creationIndex } : {}),
+      run: () => {
+        const { node, spec } = buildConcurrentRegionLeaf(s, i + 1, ctx);
+        acc.nodes.push(node);
+        cluster.nodeIds.push(node.id);
+        regionSpecs.push(spec);
+      },
+    });
+  });
+  items.push(
+    ...pseudoNodeItems(s.id, s.transitions, acc, ctx.pseudoCreationIndex, (spec) => {
+      pseudoSpecs.push(spec);
+      cluster.nodeIds.push(spec.id);
+    }),
+  );
+  runInCreationOrder(items);
+  return { childSpecs, regionSpecs, pseudoSpecs };
 }
 
 /** Resolve one composite as a non-autonom `Cluster`: recurse its own
@@ -313,7 +244,7 @@ export function resolveClusterComposite(
   // unconditional for state, so no separate exclusion branch is needed.
   const stereoLines = 0;
   const stereoWidth = 0;
-  const headerFont: FontSpec = { family: ctx.theme.fontFamily, size: ctx.theme.fontSize };
+  const headerFont: FontSpec = { family: stateFontFamily(ctx.theme), size: ctx.theme.fontSize };
   // `ClusterHeader.java:78`: the jar's creole sheet width (Bullet header
   // included), not the raw glyph width -- gopudo-91-bego999 jar 40 vs raw 38.
   const attrWidth = stateDescriptionBlockWidth(attrTextLines, headerFont, ctx.measurer, ctx.theme);
@@ -325,6 +256,21 @@ export function resolveClusterComposite(
   // carry the IDENTICAL formula output.
   const headerWidth = titleAndAttributeWidth(title.width, stereoWidth, attrWidth);
   const headerHeight = computeTitleTableHeight(title.lineCount, stereoLines, attrLines, ctx.theme.fontSize);
+  // stdd T3c: the drawn blocks -- `ClusterHeader#getTitleBlock` (`ClusterHeader.java:151-170`,
+  // `Display#create`, no wrap) and `Entity#getStateDescription` (`Entity.java:610-632`); the creole
+  // block is what `RoundedContainer` measures (`Cluster.java:473-474,489-490`).
+  const titleBlock = stateCreoleBlock(
+    splitStateDisplayLines(s.display),
+    headerFont,
+    ctx.measurer,
+    stateCreoleOpts(ctx.theme, false),
+  );
+  const bodyBlock = stateCreoleBlock(
+    attrTextLines,
+    headerFont,
+    ctx.measurer,
+    stateCreoleOpts(ctx.theme, false, 'description'),
+  );
   const directMembers = s.children;
   // G5 C3, mechanism 16 shape half: `applyBorderPointRanks`'s own real
   // eligibility test (below) -- NOT the broader `ctx.classify.needsAnchor`
@@ -420,18 +366,7 @@ export function resolveClusterComposite(
   acc.clusters.push(cluster);
   if (hasBorderPointChildren) recordBorderPointCluster(acc, ctx.rankdir, s.id, cluster, borderPointMemberIds);
 
-  const childSpecs = directMembers.map((c) => resolveMember(c, acc, ctx, clusterId));
-  for (const c of directMembers) {
-    if (ctx.classify.kindOf.get(c.id) !== 'cluster') cluster.nodeIds.push(c.id);
-  }
-  const regionSpecs = s.concurrentRegions.map((_region, i) => {
-    const { node, spec } = buildConcurrentRegionLeaf(s, i + 1, ctx);
-    acc.nodes.push(node);
-    cluster.nodeIds.push(node.id);
-    return spec;
-  });
-  const pseudoSpecs = addLocalPseudoNodes(s.id, s.transitions, acc, ctx.pseudoCreationIndex);
-  for (const p of pseudoSpecs) cluster.nodeIds.push(p.id);
+  const { childSpecs, regionSpecs, pseudoSpecs } = resolveLeafsInCreationOrder(s, directMembers, acc, ctx, cluster);
   const noteSpecs = addScopeNotes(s.id, ctx, acc, [...pseudoSpecs, ...childSpecs, ...regionSpecs], cluster);
   if (ctx.classify.needsAnchor.has(s.id)) {
     // The POINT NODE is strictly narrower than the port-block gate itself
@@ -450,14 +385,21 @@ export function resolveClusterComposite(
   }
   addLevelEdges(s.id, s.transitions, acc, ctx);
 
+  const clusterColors = stateColorsOf(s);
+  const clusterUrl = stateUrlOf(s, ctx.theme);
   return {
     kind: 'cluster',
     id: s.id,
     display: s.display,
     children: sortSpecsByCreationIndex([...pseudoSpecs, ...childSpecs, ...regionSpecs, ...noteSpecs]),
     clusterId,
-    titleWidth: title.width,
-    clusterHeaderHeight: CLUSTER_HEADER_HEIGHT,
+    headerLines: titleBlock.lines,
+    bodyLines: bodyBlock.lines,
+    // `Cluster.java:489-490`: `nameHeight = title.height + MARGIN`.
+    clusterHeaderHeight: titleBlock.height + MARGIN,
+    ...(s.color !== undefined ? { color: s.color } : {}),
+    ...(clusterUrl !== undefined ? { url: clusterUrl } : {}),
+    ...(s.stereotype !== undefined ? { stereotype: s.stereotype } : {}),
     // Plain family: no margin here -- `state-composite-geo.ts#clusterTitleBaselineMargin`
     // reads graphviz's title table (`Cluster#setTitlePosition`, gtc T8/D3).
     ...(hasBorderPointChildren ? { titleBaselineMargin: BORDER_POINT_TITLE_BASELINE_MARGIN } : {}),
@@ -465,6 +407,9 @@ export function resolveClusterComposite(
     // `Cluster#manageEntryExitPoint` calls (`state-composite-drawn-rects.ts`).
     ...(hasBorderPointChildren ? { borderPointMemberIds, solveAcc: acc } : {}),
     ...(s.creationIndex !== undefined ? { creationIndex: s.creationIndex } : {}),
+    ...(s.autoPhantom === true ? { packageTitle: true } : {}),
+    ...(s.container === 'frame' ? { usymbol: 'frame' as const } : {}),
+    ...(clusterColors !== undefined ? { stateColors: clusterColors } : {}),
   };
   // #lizard forgives -- faithful port of ClusterDotString's envelope assembly;
   // each block is one independently-conditional layer (mechanisms.md §2).

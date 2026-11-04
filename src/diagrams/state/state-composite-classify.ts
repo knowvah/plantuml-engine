@@ -163,7 +163,9 @@ function walkClassify(
     // `autoPhantom` (mission A4 Phase L iter 10) mirrors upstream's
     // GroupType.PACKAGE -- Entity.isAutarkic's very first line
     // unconditionally disqualifies it, before any link analysis runs.
-    const autonom = !s.autoPhantom && isAutarkic(s, allTransitions);
+    // stdd T6c: `frame X {` is `CommandCreatePackage2`'s `GroupType.PACKAGE` with `USymbols.FRAME`, and
+    // `isAutarkic()` refuses a PACKAGE outright (`Entity.java:691-692`) -- tucotu-42's `svek-1.dot` cluster.
+    const autonom = !s.autoPhantom && s.container !== 'frame' && isAutarkic(s, allTransitions);
     kindOf.set(s.id, autonom ? 'autonom' : 'cluster');
     depthEntries.push({ unit: { kind: 'composite', id: s.id, state: s }, depth });
     // Children (and concurrent regions) MUST be classified before `s`'s own

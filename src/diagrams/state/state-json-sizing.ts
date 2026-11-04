@@ -38,7 +38,7 @@ import {
   JSON_X_MARGIN_CIRCLE,
 } from '../../core/svek/image/EntityImageJson.js';
 
-interface Dim {
+export interface Dim {
   width: number;
   height: number;
 }
@@ -62,12 +62,12 @@ function wrapGuillemet(label: string): string {
 // Recursive dimension measurement (TextBlockCucaJSon#calculateDimension)
 // ---------------------------------------------------------------------------
 
-interface JsonDimNode {
+export interface JsonDimNode {
   width: number;
   height: number;
 }
 
-function measureJsonCell(text: string, fontSpec: FontSpec, measurer: StringMeasurer): Dim {
+export function measureJsonCell(text: string, fontSpec: FontSpec, measurer: StringMeasurer): Dim {
   const m = measurer.measure(text, fontSpec);
   return { width: m.width + JSON_CELL_MARGIN_X * 2, height: m.height + JSON_CELL_MARGIN_Y * 2 };
 }
@@ -75,7 +75,7 @@ function measureJsonCell(text: string, fontSpec: FontSpec, measurer: StringMeasu
 /** `getTextBlockValue`'s scalar display text: a JSON string shows unquoted
  *  (`value.asString()`); every other scalar shows its literal form
  *  (`value.toString()`). */
-function scalarText(node: { kind: 'scalar'; value: string | number | boolean | null }): string {
+export function scalarText(node: { kind: 'scalar'; value: string | number | boolean | null }): string {
   const v = node.value;
   if (v === null) return 'null';
   if (typeof v === 'boolean') return v ? 'true' : 'false';
@@ -113,7 +113,7 @@ function measureObjectNode(
   return { width: width1 + width2, height };
 }
 
-function measureJsonNode(node: JsonNode, fontSpec: FontSpec, measurer: StringMeasurer): JsonDimNode {
+export function measureJsonNode(node: JsonNode, fontSpec: FontSpec, measurer: StringMeasurer): JsonDimNode {
   if (node.kind === 'scalar') return measureJsonCell(scalarText(node), fontSpec, measurer);
   if (node.kind === 'array') return measureArrayNode(node, fontSpec, measurer);
   return measureObjectNode(node, fontSpec, measurer);

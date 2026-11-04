@@ -1,0 +1,4 @@
+@startuml
+state A
+note right of A : first\nsecond
+@enduml

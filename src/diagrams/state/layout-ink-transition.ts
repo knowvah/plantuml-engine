@@ -47,22 +47,16 @@ export function addPoint(box: InkBox, x: number, y: number): void {
 }
 
 /** One transition's own ink contribution — plain points
- *  (`LimitFinder#drawDotPath`-equivalent: no inset), its label box, and,
- *  gated by `arrowheadInk`, the head-side arrowhead's own ink
- *  (`renderer-arrowhead.ts#transitionArrowheadInk`, `HACK_X_FOR_POLYGON`-
- *  padded internally via its own `LimitFinder` walk). `'always'` (document-
- *  level, pre-existing, unchanged) vs `'self-loop'` (`from===to` only,
- *  composite-level, mission T9) — see `layout-ink-extent.ts`'s module doc
- *  comment's mechanism-7 paragraph for why the latter is scoped, not
- *  unconditional. `transition.points` arrives ALREADY compound-clipped
- *  (`state-transition-clip.ts`, `SvekEdge.java:671-672`) — see this module's
- *  own doc comment. */
-export function addTransitionInk(
-  box: InkBox,
-  transition: TransitionGeo,
-  labelInk: boolean,
-  arrowheadInk: 'always' | 'self-loop',
-): void {
+ *  (`LimitFinder#drawDotPath`-equivalent: no inset), its label box, and the
+ *  head-side arrowhead's own ink (`renderer-arrowhead.ts#transitionArrowheadInk`,
+ *  `HACK_X_FOR_POLYGON`-padded internally via its own `LimitFinder` walk).
+ *  stdd T6a: the arrowhead is folded for EVERY transition, as `SvekEdge#drawRainbow`
+ *  draws each extremity into the same `LimitFinder` (`SvekEdge.java:1108-1142`,
+ *  `LimitFinder.java:171-177`); mission T9's `from===to` scoping is retired, see
+ *  `layout-ink-extent.ts`'s module doc. `transition.points` arrives ALREADY
+ *  compound-clipped (`state-transition-clip.ts`, `SvekEdge.java:671-672`) — see
+ *  this module's own doc comment. */
+export function addTransitionInk(box: InkBox, transition: TransitionGeo, labelInk: boolean): void {
   for (const p of transition.points) addPoint(box, p.x, p.y);
   // G8 T2: fold the label's own BOX at the RETURNED (graphviz) position, not
   // just its anchor POINT -- only when present AND opted in (`labelInk`);
@@ -80,7 +74,6 @@ export function addTransitionInk(
     }
   }
   if (transition.noteLinkId !== undefined) return; // no decor to ink
-  if (arrowheadInk === 'self-loop' && transition.from !== transition.to) return;
   const arrowInk = transitionArrowheadInk(transition);
   if (arrowInk !== undefined) {
     addPoint(box, arrowInk.minX, arrowInk.minY);

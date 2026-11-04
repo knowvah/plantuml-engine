@@ -76,7 +76,8 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotLayoutResult } from '../../core/graph-layout.types.js';
 import { path } from '../../core/svg.js';
 import { buildNoteGraphPartsByScope, type NoteSpec } from './state-note-layout.js';
-import { resolveStateFill } from './state-render-colors.js';
+import { inlineBack, resolveStateFill, textAscent } from './state-render-colors.js';
+import { resolveBareOrBackColor } from '../../core/color-override.js';
 import {
   STATE_LINK_NOTE_BUCKET,
   STATE_NOTE_BUCKET,
@@ -86,7 +87,7 @@ import {
 // SI30 T5: notes draw the SAME per-run styled sequence the header/body path
 // draws with -- one emitter, one baseline formula (`renderer-box.ts
 // #runBaseline`'s own doc comment), no per-engine-zone duplication.
-import { renderStateRuns } from './renderer-box.js';
+import { renderStateRuns, renderStateTextLines } from './renderer-box.js';
 import { styledLines } from './state-sizing-creole.js';
 import {
   opalePolygonLeft,
@@ -181,6 +182,7 @@ export function materializeNoteSpec(
     ...(opale !== undefined ? { noteOpale: opale } : {}),
     ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
     ...(spec.color !== undefined ? { color: spec.color } : {}),
+    ...(spec.url !== undefined ? { url: spec.url } : {}),
   };
 }
 
@@ -213,23 +215,22 @@ export function buildFlatNoteGeos(ast: StateDiagramAST, ctx: FlatNoteGeoCtx): St
  *  note body now draws at its own size/baseline/decoration instead of one
  *  flat `<text>` of the markup-stripped-and-joined line (pre-T5 shape). */
 function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): string {
-  const lines = styledLines(node.noteLines ?? [], NOTE_FONT_SIZE);
-  const parts: string[] = [];
-  let lineTop = node.y + NOTE_MARGIN_Y;
-  for (const ln of lines) {
-    const height = ln.height === 0 ? NOTE_FONT_SIZE : ln.height;
-    parts.push(
-      // unwind2-S11: `Opale#drawU` applies the note fill before the text
-      // (`Opale.java:107`), a sprite's tint back.
-      renderStateRuns(ln.runs, node.x + NOTE_MARGIN_X1, lineTop, height, {
-        fontFamily: theme.fontFamily,
-        fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
-        back,
-      }),
-    );
-    lineTop += height;
-  }
-  return parts.join('');
+  // stdd T5a: the shared state text emitter, table stripes included (`renderStateTable`); its
+  // `startY` is the first baseline. unwind2-S11: `Opale#drawU` applies the note fill before the
+  // text (`Opale.java:107`), a sprite's tint back.
+  return renderStateTextLines(
+    node.noteLines ?? [],
+    () => node.x + NOTE_MARGIN_X1,
+    node.y + NOTE_MARGIN_Y + textAscent(NOTE_FONT_SIZE),
+    theme,
+    {
+      fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
+      fontSize: NOTE_FONT_SIZE,
+      back,
+      // `AtomTable#drawU` rules take the ambient stroke, the note's `style.getStroke()` (`EntityImageNote.java:292-297`).
+      tableRuleWidth: NOTE_STROKE_WIDTH,
+    },
+  );
 }
 
 /** dss T3c sites 10-11: `EntityImageNote.java:100-108` -- the inline `#color`
@@ -351,6 +352,7 @@ export function renderNoteOnLink(
   box: { x: number; y: number; width: number; height: number },
   lines: readonly StateTextLine[],
   theme: Theme,
+  noteColor?: string,
 ): string {
   const px = box.x + ROSE_NOTE_PADDING;
   const py = box.y + ROSE_NOTE_PADDING;
@@ -371,7 +373,14 @@ export function renderNoteOnLink(
     lineTo(px + pw, py + c),
     lineTo(px + pw - c, py),
   ].join(' ');
-  const paint = { ...linkNoteInk(theme), strokeWidth: NOTE_STROKE_WIDTH };
+  // stdd T5b: `Style#getSymbolContext(set, colors)` (`Style.java:371-373`): the note's BACK colour wins the fill.
+  const override = noteColor === undefined ? undefined : resolveBareOrBackColor(noteColor);
+  const ink = linkNoteInk(theme);
+  const paint = {
+    ...ink,
+    ...(override !== undefined ? { fill: inlineBack(override) } : {}),
+    strokeWidth: NOTE_STROKE_WIDTH,
+  };
   return path(outline, paint) + path(corner, paint) + renderNoteOnLinkTextLines(px, py, lines, theme, paint.fill);
 }
 

@@ -39,6 +39,29 @@ const ROOT_LINE_COLOR = '#181818';
 /** `plantuml.skin:15` (`root{}`'s own `LineThickness 1.0`). */
 const ROOT_LINE_THICKNESS = 1;
 
+/**
+ * stdd T5a: the baseline under a `skin <name>` sheet, which REPLACES `plantuml.skin` as the style source
+ * (`TitledDiagram.java:161`): every property the sheet does not declare is `ValueNull`'s --
+ * `asInt()`/`asDouble()` 0, `asColor()` black, `asHorizontalAlignment()` LEFT, `asString()` empty
+ * (`style/ValueNull.java:52-94`), so no padding, no margin, no corner, a 0 stroke. The sheet's `root`
+ * run (every built-in skin declares font, colours and thickness there) and its element blocks are
+ * applied on top by `style.ts#resolveElement`. sumiri-68: `skin debug`'s title frame hugs the text.
+ */
+export const SKIN_NULL_BASELINE: AnnotationBoxStyle = {
+  horizontalAlignment: HorizontalAlignment.LEFT,
+  fontSize: 0,
+  fontStyle: ROOT_FONT_STYLE,
+  fontColor: ROOT_FONT_COLOR,
+  fontFamily: ROOT_FONT_FAMILY,
+  backgroundColor: null,
+  lineColor: null,
+  roundCorner: 0,
+  lineThickness: 0,
+  documentBackground: '',
+  padding: ZERO_SIDES,
+  margin: ZERO_SIDES,
+};
+
 export const BASE_DEFAULTS: Record<AnnotationElement, AnnotationBoxStyle> = {
   // plantuml.skin:30-38
   title: {

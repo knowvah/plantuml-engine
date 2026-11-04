@@ -53,11 +53,11 @@ describe('[[url]] on state declarations (UrlBuilder.OPTIONAL)', () => {
     expect(foo?.children.map((c) => c.id)).toEqual(['A', 'B']);
   });
 
-  it('the url itself is discarded -- State carries no url field', () => {
+  it('the url token is kept raw (stdd T3d) -- `CommandCreatePackageState.java:181-186` builds the `Url` at layout', () => {
     const ast = parse('state Foo [[{tip}]] {\n}');
     const foo = findState(ast, 'Foo');
     expect(foo).toBeDefined();
-    expect(foo).not.toHaveProperty('url');
+    expect(foo?.url).toBe('[[{tip}]]');
   });
 
   it('url on a flat (non-composite) state leaves a normal leaf state', () => {

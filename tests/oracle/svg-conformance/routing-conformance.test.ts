@@ -1172,7 +1172,19 @@ describe('routing conformance — jar-error classification', () => {
     // sequence 93, state 26, unknown 133, yaml 4). Derivation: 8275 + 768 = 9043.
     // 9043 -> 9187 at ogc/T6: +144 svg-activity golden clones (the new activity rows that render
     // zero-diff, frozen by pin-goldens.mts as ogc-b2). Derivation: 9043 + 144 = 9187.
-    expect(pinnedAgree.length).toBe(9187);
+    // 9187 -> 9198 at stdd/T0b (2026-11-04): +11 svg-state golden clones (the rows #109 captured that
+    // the census reads at zero, pin-state.mjs). Derivation: 9187 + 11 = 9198.
+    // 9198 -> 9257 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones (batch 1: link ids, border
+    // points, SvekResult draw order, dotted parents). Derivation: 9198 + 59 = 9257.
+    // 9257 -> 9272 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones (batch 2: link style,
+    // inverted links, link labels). Derivation: 9257 + 15 = 9272.
+    // 9272 -> 9318 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones (batch 3: state colours,
+    // line thickness, composite zones, small reads). Derivation: 9272 + 46 = 9318.
+    // 9318 -> 9334 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones (batch 4: scale/dpi, text).
+    // 9334 -> 9341 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones (batch 5: hidden, skin, notes).
+    // 9341 -> 9370 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones (batch 6: layout inputs, residue).
+    // Derivation: 9341 + 29 = 9370.
+    expect(pinnedAgree.length).toBe(9370);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1232,7 +1244,14 @@ describe('routing conformance — jar-error classification', () => {
     // sequence 94, dot 57, state 26, timing 19, hcl 12, yaml 4, object 1).
     // Derivation: 8735 + 1016 = 9751 = 9043 + 546 + 162.
     // 9751 -> 9895 at ogc/T6: +144 svg-activity golden clones. Derivation: 9187 + 546 + 162 = 9895.
-    expect(manifest.fixtures.length).toBe(9895);
+    // 9895 -> 9906 at stdd/T0b (2026-11-04): +11 svg-state golden clones. Derivation: 9198 + 546 + 162 = 9906.
+    // 9906 -> 9965 at stdd/close-b1 (2026-11-04): +59 svg-state golden clones. Derivation: 9257 + 546 + 162 = 9965.
+    // 9965 -> 9980 at stdd/close-b2 (2026-11-04): +15 svg-state golden clones. Derivation: 9272 + 546 + 162 = 9980.
+    // 9980 -> 10026 at stdd/close-b3 (2026-11-04): +46 svg-state golden clones. Derivation: 9318 + 546 + 162 = 10026.
+    // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones. Derivation: 9334 + 546 + 162 = 10042.
+    // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones. Derivation: 9341 + 546 + 162 = 10049.
+    // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones. Derivation: 9370 + 546 + 162 = 10078.
+    expect(manifest.fixtures.length).toBe(10078);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

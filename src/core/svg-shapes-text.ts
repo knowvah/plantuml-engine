@@ -11,6 +11,7 @@ import { isTransparentColor } from './paint.js';
 import { attrs, escapeXmlText, resolvePaint, type TextStyle } from './svg.js';
 import { textFontFamily, emittedTextForm } from './svg-text-font.js';
 import { backColorFilterDef } from './svg-defs.js';
+import { fillAttrsOf } from './svg-shapes.js';
 
 /**
  * `<text>` element with plain (un-tspan-wrapped) text content.
@@ -74,6 +75,9 @@ export function text(x: number, y: number, rawContent: string, style: TextStyle 
   if (style.fill !== undefined && isTransparentColor(style.fill)) return '';
   const content = emittedTextForm(rawContent, style.fontFamily);
   const fillR = resolvePaint(style.fill);
+  // stdd T3d: `SvgGraphics#text` fills through `fillMe` (`SvgGraphics.java:687,880-885`): an
+  // `#RRGGBBAA` colour is `fill` + `fill-opacity`, as for every shape.
+  const fillA = fillAttrsOf(fillR.value, undefined);
   // `SvgGraphics#text`'s `textBackColor` arm (`SvgGraphics.java:733-736`):
   // register the `feFlood` filter for the colour and reference it. The def
   // rides inline next to the element, like `resolvePaint`'s gradient def;
@@ -86,7 +90,8 @@ export function text(x: number, y: number, rawContent: string, style: TextStyle 
     ['font-size', style.fontSize],
     ['font-weight', style.fontWeight],
     ['font-style', style.fontStyle],
-    ['fill', fillR.value],
+    ['fill', fillA.fill],
+    ['fill-opacity', fillA.fillOpacity],
     ['text-anchor', style.textAnchor],
     ['transform', style.transform],
     ['dominant-baseline', style.dominantBaseline],

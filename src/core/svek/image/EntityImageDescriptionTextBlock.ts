@@ -18,6 +18,7 @@
  * heading font cascade — plus SI5b+E2r T6/T7's `<img>`/`<$sprite>` atoms.
  */
 import type { UGraphic } from '../../klimt/UGraphic.js';
+import { bulletDimension } from './creole-sea-line.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
 import { XDimension2D } from '../../klimt/geom/XDimension2D.js';
 import { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
@@ -195,6 +196,11 @@ function drawAtoms(
         rowY += rowM.height;
       }
       x += measureAtomsWidthHeight(stringBounder, [atom], resolveAtomImage).width;
+      continue;
+    }
+    // stdd T6d: a `Bullet` advances by its own box (`Bullet.java:57-62`); only the flat seam builds one.
+    if (atom.kind === 'bullet') {
+      x += bulletDimension(atom.order).width;
       continue;
     }
     // ADR-2: cursor advances by DECLARED width, never ink.

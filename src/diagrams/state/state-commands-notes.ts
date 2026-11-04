@@ -9,6 +9,7 @@
  * @see ~/git/plantuml/.../statediagram/StateDiagramFactory.java
  */
 
+import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
 import type { NotePosition } from './ast.js';
 import type { Command } from './state-commands.js';
 import { currentScope, noteScopeId, nextCreationIndex, type ParseState } from './state-parse-state.js';
@@ -130,7 +131,8 @@ export const NOTE_COMMANDS: readonly Command[] = [
         position,
         textLines: [],
         ...(match[3] !== undefined ? { color: match[3] } : {}),
-        ...(match[4] !== undefined ? { closer: 'brace' } : {}),
+        ...(match[4] !== undefined ? { url: match[4] } : {}),
+        ...(match[5] !== undefined ? { closer: 'brace' } : {}),
       };
     },
   },
@@ -165,7 +167,11 @@ export const NOTE_COMMANDS: readonly Command[] = [
       // mission G4 S10: burned GMN quark-name tick -- see
       // `StateNote.creationIndex`'s own doc comment.
       nextCreationIndex(ps);
-      const id = addNote(ps.ast, match[1]!.toLowerCase() as NotePosition, target, match[4]!.trim(), {
+      // `match[4]` is the url, which the single-line form ignores (`CommandFactoryNoteOnEntity.java:180-183`).
+      // stdd T5b: the one-line form is `Display.getWithNewlines(pragma, note)` (`CommandFactoryNoteOnEntity.java:
+      // 300-303`), so a literal `\n` breaks the line; the multi-line form's `BlocLines#toDisplay` does not.
+      const text = splitDisplayLines(match[5]!.trim()).lines.join('\n');
+      const id = addNote(ps.ast, match[1]!.toLowerCase() as NotePosition, target, text, {
         implicitTarget: match[2] === undefined,
         scopeId: noteScopeId(ps),
         creationIndex: nextCreationIndex(ps),
@@ -189,7 +195,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
     pattern: NOTE_ON_LINK_RE,
     passes: ['two'],
     execute(ps, match) {
-      applyNoteOnLink(currentScope(ps).transitions, match[2]!.trim(), linkNotePosition(match[1]));
+      applyNoteOnLink(currentScope(ps).transitions, match[3]!.trim(), linkNotePosition(match[1]), match[2]);
     },
   },
 
@@ -210,6 +216,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
         transitions: currentScope(ps).transitions,
         position: linkNotePosition(match[1]),
         textLines: [],
+        ...(match[2] !== undefined ? { color: match[2] } : {}),
       };
     },
   },

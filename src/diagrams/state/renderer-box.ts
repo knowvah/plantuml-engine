@@ -35,27 +35,28 @@
  */
 import { lineTo, moveTo } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
+import { renderStateRuns, renderStateTable } from './renderer-box-runs.js';
+// stdd T5a: the run/table emitters moved to `renderer-box-runs.ts`; every importer is unchanged.
+export { renderStateRuns, renderStateTable } from './renderer-box-runs.js';
 import type { Theme } from '../../core/theme.js';
-import { rect, line, text, path, linkWrap, image } from '../../core/svg.js';
+import { rect, line, text, path } from '../../core/svg.js';
 // G1/G8/G23 (mission state-declared-size-fix): the renderer draws the SAME
 // styled runs / table the sizer measured -- see `state-sizing-creole.ts`.
-import type { StateTableGeo, StateTextRun } from './state-sizing-creole.js';
-import type { CreoleRunImage } from '../../core/svek/image/creole-text-lines.js';
-import { creoleRunImageHref } from '../../core/svek/image/creole-run-sprite.js';
 import type { Paint } from '../../core/paint.js';
 import { styledLines } from './state-sizing-creole.js';
 import {
   STATE_DEFAULT_BACKGROUND,
-  STATE_BORDER_STROKE_WIDTH,
   resolveStateFillBucketed,
   resolveStateBorder,
   resolveStateFontColor,
   resolveStateFontSize,
   resolveStateBoxRadius,
   textAscent,
+  stateBorderStrokeAttrs,
+  stateFontFamily,
 } from './state-render-colors.js';
 import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
-import { renderZonedLeafBox, resolveLeafZoneFills } from './renderer-box-zones.js';
+import { nameBlockLeft, renderZonedLeafBox, resolveLeafZoneFills } from './renderer-box-zones.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
 import { isOOSymbolStereotype, renderOOSymbol } from './renderer-box-symbol.js';
 
@@ -72,169 +73,6 @@ import {
  *  precedent above/`renderer-composite-box.ts`'s identical duplication). */
 const SDL_MARGIN = { x1: 15, x2: 25, y1: 20, y2: 10 };
 const BODY_MARGIN_X = 6;
-
-/** `FontStyle` set -> the SVG `text-decoration` attribute value -- mirrors
- *  `core/klimt/drawing/svg/driver-text-svg.ts#textDecorationOf` (same
- *  keywords, same join order), duplicated for the same reason
- *  `class/renderer-classifier-rows.ts#memberAtomDecoration` documents: the
- *  state renderer has no `UDriver`/`UGraphic` seam to share one from. */
-function runDecoration(run: StateTextRun): string | undefined {
-  const parts: string[] = [];
-  if (run.underline) parts.push('underline');
-  if (run.strike) parts.push('line-through');
-  return parts.length > 0 ? parts.join(' ') : undefined;
-}
-
-/**
- * SI30 D2/D3: `Sea`'s own baseline reconstruction (`creole-sea-line.ts`'s
- * own doc comment) -- `lineTop + lineHeight - run.size/4.5 + run.dy`. Uses
- * the run's own (possibly MUTED, `<sup>`/`<sub>`) `size` for the descent
- * term rather than the TRUE unmuted `atom.font.size` Sea itself measured
- * with: `StateTextRun` carries no unmuted-size field to recover, since the
- * locked seam contract it consumes (`CreoleTextRun`, `decisions.md#D3`)
- * doesn't expose one either -- only the effective (post-mute) `size` and the
- * already-`Sea`-computed `dy`.
- *
- * Exact for every NORMAL run (muted === unmuted there, D1) -- algebraically
- * confirmed against `juvagu-33-dupa212`'s own jar SVG (`H`/`O` both at
- * `font-size="14"`, `y="125.889"`, matching `lineTop + lineHeight -
- * 14/4.5 + (-3)` exactly for the `<sub>`-adjacent NORMAL runs). For the
- * `<sub>` run itself (`"2"`, muted 11 from 14) this formula's own
- * `run.size`-for-descent substitution differs from the jar's true
- * `129.556` by a FIXED (mute delta 3) / 4.5 ~= 0.667px -- a bounded,
- * documented residual, not a fitted constant: 3 is `FontPosition.java
- * :51-60`'s own mute amount, and 4.5 is `StringMeasurer.getDescent`'s
- * documented fallback divisor (`core/measurer.ts:19-22`), so the whole
- * expression is two already-cited upstream numbers, never adjusted to
- * shrink this residual.
- */
-function runBaseline(lineTop: number, lineHeight: number, run: StateTextRun): number {
-  return lineTop + lineHeight - run.size / 4.5 + run.dy;
-}
-
-/**
- * A `<math>`/`<latex>` run's image -- `AtomMath#drawU`'s own
- * `ug.draw(svg)`/`ug.draw(image)` (`AtomMath.java:78-97`), drawn at the
- * atom's own `Position`, which `SheetBlock1#drawU` translates to before
- * calling it (`SheetBlock1.java:212-217`). `image.top` is that position's
- * own y inside the line, so `lineTop + top` is the box corner; there is no
- * baseline term, because an image has no baseline (`AtomMath
- * #getStartingAltitude` returns 0, `AtomMath.java:73-75`).
- *
- * `svg-shapes.ts#image` is the repo's ONE `<image>` emitter, and its
- * attribute order is `SvgGraphics#svgImageDataUri`'s.
- */
-function runImage(img: CreoleRunImage, x: number, lineTop: number, style: RunStyle): string {
-  // unwind2-S11: a `<$sprite>` draws its raster box, tinted over the
-  // element's back (`creole-run-sprite.ts`).
-  const href = creoleRunImageHref(img, style.fill, style.back);
-  return image(x, lineTop + img.top, img.rasterWidth ?? img.width, img.rasterHeight ?? img.height, href);
-}
-
-/** What a run is drawn with: the font family/colour and, for a sprite's
- *  tint, the `Back` the owner applied (`EntityImageStateCommon#applyColor`,
- *  `EntityImageStateCommon.java:131-140`). */
-interface RunStyle {
-  readonly fontFamily: string;
-  readonly fill: string;
-  readonly back?: Paint;
-}
-
-/**
- * One creole line's styled runs, left to right, x-advancing by each run's
- * OWN measured width -- the SAME per-`<text>`-element sequence the jar
- * emits (`AtomText#drawU` once per atom; jar-verified `xasoka-58-temi462`
- * and `papifi-44-caxo706`). A `[[url]]` run wraps in its own `<a href>`
- * (`class/renderer-classifier-rows.ts#renderRowAtoms`'s identical rule).
- * `run.color` is set only when the creole resolved one, so the caller's
- * `StateFontColor` cascade still supplies the default.
- *
- * SI30 D3: each run now draws at its OWN `font-size` (`run.size`) and its
- * own `<sup>`/`<sub>`-adjusted baseline ({@link runBaseline}) instead of one
- * shared `style.fontSize`/`y` for the whole line -- the per-run `<size:N>`
- * fix this task's own report names (a `<size:20>` NORMAL run inside an
- * otherwise-14pt line now draws at 20, not the line's shared size).
- * `lineTop`/`lineHeight` are the line's own top edge and `Sea`-computed
- * height (`state-sizing-creole.ts#StateStyledTextLine.height`).
- */
-export function renderStateRuns(
-  runs: readonly StateTextRun[],
-  startX: number,
-  lineTop: number,
-  lineHeight: number,
-  style: RunStyle,
-): string {
-  let x = startX;
-  let out = '';
-  for (const run of runs) {
-    // `AtomText#drawU`'s tab-stop skip (`AtomText.java:216-221`) -- see
-    // `StateTextRun.dx`'s own doc comment.
-    x += run.dx ?? 0;
-    if (run.image !== undefined) {
-      out += runImage(run.image, x, lineTop, style);
-      x += run.image.width;
-      continue;
-    }
-    if (run.text === '') continue;
-    const decoration = runDecoration(run);
-    const y = runBaseline(lineTop, lineHeight, run);
-    const drawn = text(x + (run.drawDx ?? 0), y, run.text, {
-      fill: run.color ?? style.fill,
-      fontFamily: style.fontFamily,
-      fontSize: run.size,
-      lengthAdjust: 'spacing',
-      textLength: run.drawWidth ?? run.width,
-      ...(run.bold ? { fontWeight: '700' as const } : {}),
-      ...(run.italic ? { fontStyle: 'italic' as const } : {}),
-      ...(decoration !== undefined ? { textDecoration: decoration } : {}),
-    });
-    out += run.url !== undefined ? linkWrap(drawn, { url: run.url, tooltip: run.url }) : drawn;
-    x += run.width;
-  }
-  return out;
-}
-
-/**
- * A creole TABLE stripe (`AtomTable#drawU`, `AtomTable.java:106-158`):
- * every cell's own runs at its `Position` (LEFT-aligned, no padding), then
- * the grid -- one horizontal rule per row boundary spanning the full table
- * width, one vertical rule per column boundary spanning the full height.
- * `x`/`y` are the table's own origin, i.e. the block's top-left PLUS
- * `AtomWithMargin`'s own `marginY1` (`AtomWithMargin.java:65`).
- * jar-verified `kinuca-03-nice683` byte-for-byte (cells at x=12/63.363/
- * 114.725, baselines 43.889/57.889/71.889, rules at y=33/47/61/75 and
- * x=12/63.363/114.725/166.087, `stroke:#000;stroke-width:1`).
- */
-export function renderStateTable(
-  table: StateTableGeo,
-  x: number,
-  y: number,
-  style: { readonly fontFamily: string; readonly fontSize: number; readonly fill: string; readonly ascent: number },
-): string {
-  let out = '';
-  for (const cell of table.cells) {
-    // `lineTop = y + cell.y`, `lineHeight = style.fontSize` reproduces the
-    // pre-SI30 `y + cell.y + style.ascent` baseline byte-for-byte for every
-    // NORMAL cell run (`runBaseline`'s own doc comment) -- a table cell
-    // carries no `<sup>`/`<sub>` in this corpus, so this is the SAME number,
-    // not a new one.
-    out += renderStateRuns(cell.runs, x + cell.x, y + cell.y, style.fontSize, {
-      fontFamily: style.fontFamily,
-      fill: style.fill,
-    });
-  }
-  const lastX = x + (table.colX[table.colX.length - 1] as number);
-  const lastY = y + (table.rowY[table.rowY.length - 1] as number);
-  const stroke = { stroke: style.fill, strokeWidth: TABLE_RULE_WIDTH };
-  for (const ry of table.rowY) out += line(x, y + ry, lastX, y + ry, stroke);
-  for (const cx of table.colX) out += line(x + cx, y, x + cx, lastY, stroke);
-  return out;
-}
-
-/** `AtomTable#drawU`'s grid rules are drawn with the ambient `UStroke`,
- *  which for a creole block is the 1px default (`UStroke.simple()`) --
- *  jar-verified `kinuca-03-nice683`'s `stroke-width:1`. */
-const TABLE_RULE_WIDTH = 1;
 
 /**
  * Draws a measured text block: one line per entry, each line's own styled
@@ -260,15 +98,23 @@ export function renderStateTextLines(
   // `state-render-colors.ts#resolveStateFontColor`'s own doc comment.
   // Defaults to jar's own hardcoded `#000000` label-text default (every
   // pre-S15 call site's unchanged behavior).
-  opts: { readonly fill?: string; readonly fontSize?: number; readonly back?: Paint } = {},
+  opts: {
+    readonly fill?: string;
+    readonly fontSize?: number;
+    readonly back?: Paint;
+    readonly fontWeight?: '700';
+    /** stdd T5a -- see `renderStateTable`'s `ruleWidth`. */
+    readonly tableRuleWidth?: number;
+  } = {},
 ): string {
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
   const fontSize = opts.fontSize ?? theme.fontSize;
   const style = {
-    fontFamily: theme.fontFamily,
+    fontFamily: stateFontFamily(theme),
     fill: opts.fill ?? '#000000',
     ...(opts.back !== undefined ? { back: opts.back } : {}),
+    ...(opts.fontWeight !== undefined ? { fontWeight: opts.fontWeight } : {}),
   };
   const ascent = textAscent(fontSize);
   let out = '';
@@ -277,10 +123,11 @@ export function renderStateTextLines(
     const height = ln.height === 0 ? fontSize : ln.height;
     if (ln.table !== undefined) {
       out += renderStateTable(ln.table, xForLine(ln), lineTop + TABLE_STRIPE_MARGIN_Y, {
-        fontFamily: theme.fontFamily,
+        fontFamily: stateFontFamily(theme),
         fontSize,
         fill: style.fill,
         ascent,
+        ...(opts.tableRuleWidth !== undefined ? { ruleWidth: opts.tableRuleWidth } : {}),
       });
       lineTop += height;
       continue;
@@ -311,7 +158,7 @@ function renderUnmeasuredFallback(node: StateNodeGeo, theme: Theme, box: string)
     text(node.x + node.width / 2, node.y + node.height / 2 + theme.fontSize / 2, node.display, {
       textAnchor: 'middle',
       fill: theme.colors.text,
-      fontFamily: theme.fontFamily,
+      fontFamily: stateFontFamily(theme),
       fontSize: theme.fontSize,
     })
   );
@@ -342,7 +189,7 @@ function renderEmptyDescription(node: StateNodeGeo, theme: Theme, box: string, f
   // puts the fill on the `ug` the name draws with -- a sprite's tint back.
   const headerMarkup = renderStateTextLines(
     headerLines,
-    (ln) => node.x + node.width / 2 - ln.width / 2,
+    () => nameBlockLeft(node, headerLines),
     node.y + yDesc + ascent,
     theme,
     { fill: '#000000', fontSize, back: fill },
@@ -381,7 +228,7 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
   const box = rect(node.x, node.y, node.width, node.height, {
     fill,
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
     rx: radius,
     ry: radius,
   });
@@ -397,7 +244,7 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
     lineTo(x0 + textWidth - cornerSize, y0 + textHeight),
     lineTo(x0, y0 + textHeight),
   ].join(' ');
-  const notch = path(d, { stroke: border, strokeWidth: STATE_BORDER_STROKE_WIDTH });
+  const notch = path(d, { stroke: border, ...stateBorderStrokeAttrs(node, theme) });
 
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
@@ -406,7 +253,7 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
   // dss T3e site 19: `EntityImageState2.java:80-86,98-99`: the `state` style's FontColor, as a leaf's.
   const label = text(node.x + SDL_MARGIN.x1 + BODY_MARGIN_X, node.y + SDL_MARGIN.y1 + ascent, node.display, {
     fill: resolveStateFontColor(node, theme, '#000000'),
-    fontFamily: theme.fontFamily,
+    fontFamily: stateFontFamily(theme),
     fontSize,
     lengthAdjust: 'spacing',
     textLength: node.headerLines?.[0]?.width ?? 0,
@@ -434,7 +281,7 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   const box = rect(node.x, node.y, node.width, node.height, {
     fill,
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
     rx: radius,
     ry: radius,
     ...(node.shadowing !== undefined && node.shadowing > 0 ? { filter: stateShadowFilterUrl() } : {}),
@@ -466,7 +313,7 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   const bodyOpts = { ...textOpts, fill: descriptionFont };
   const headerMarkup = renderStateTextLines(
     node.headerLines,
-    (ln) => node.x + node.width / 2 - ln.width / 2,
+    () => nameBlockLeft(node, node.headerLines!),
     node.y + MARGIN + ascent,
     theme,
     textOpts,
@@ -475,7 +322,7 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   const dividerY = node.y + MARGIN + node.headerLines.length * fontSize + MARGIN_LINE;
   const divider = line(node.x, dividerY, node.x + node.width, dividerY, {
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
   });
 
   const bodyLines = node.bodyLines ?? [];
@@ -495,6 +342,6 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
 
   // dss T3c: zones that differ are drawn by `RoundedContainer`, which replaces the single filled rect.
   const zones = resolveLeafZoneFills(node, theme);
-  const shape = zones === undefined ? box : renderZonedLeafBox(node, { zones, border, radius, dividerY });
+  const shape = zones === undefined ? box : renderZonedLeafBox(node, { zones, border, radius, dividerY, theme });
   return shape + divider + symbol + headerMarkup + bodyMarkup;
 }

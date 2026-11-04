@@ -338,8 +338,9 @@ describe('layoutState -- composite headerLines/bodyLines (mechanism 6)', () => {
     // this path for the eligibility-gated majority case (single-line
     // title, default font-size, no border points) -- see
     // state-composite-cluster.ts#resolveClusterComposite's own doc comment
-    // for the full derivation. clusterHeaderHeight=19 is the jar-verified
-    // constant (CLUSTER_HEADER_HEIGHT, same module).
+    // for the full derivation. stdd T3c: clusterHeaderHeight is the title
+    // block's height + MARGIN (`Cluster.java:489-490`), 14 + 5 for one line;
+    // headerLines are the creole block's styled lines.
     const a = makeState('A');
     const composite = makeState('Composite', { children: [a] });
     const b = makeState('B');
@@ -349,7 +350,7 @@ describe('layoutState -- composite headerLines/bodyLines (mechanism 6)', () => {
     };
     const result = layoutState(ast, theme, measurer);
     const comp = result.states.find((s) => s.id === 'Composite');
-    expect(comp?.headerLines).toEqual([
+    expect(comp?.headerLines).toMatchObject([
       {
         text: 'Composite',
         width: measurer.measure('Composite', { family: theme.fontFamily, size: theme.fontSize }).width,

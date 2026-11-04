@@ -60,9 +60,10 @@
  *      baseline at y=349.8889 = 339 + textAscent(14) exactly, NOT
  *      339 + MARGIN_LINE + textAscent(14)).
  *
- * `node.headerLines === undefined` (a hand-built test geometry, OR a
- * concurrent-region LEAF spec — see `GeoSpec`'s `'autonom'` variant doc
- * comment, state-composite-pass.ts) falls back to the PRE-mechanism-6 shape
+ * `node.headerLines === undefined` (a hand-built test geometry; a
+ * concurrent-region LEAF never reaches this module since stdd T6a --
+ * `renderer.ts#renderNodeWrapped` draws its content alone, `SvekResult.java:69-95`)
+ * falls back to the PRE-mechanism-6 shape
  * (dashed outer rect + a single centered, unmeasured label) verbatim —
  * mirrors `renderer-box.ts#renderUnmeasuredFallback`'s identical precedent
  * for the leaf box. A non-autonom `cluster` composite (DOT-native cluster
@@ -81,8 +82,10 @@
  */
 import { roundedBottomRectD, roundedTopRectD } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
-import type { Paint } from '../../core/paint.js';
+import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
+import type { StringMeasurer } from '../../core/measurer.js';
+import { renderFrameCluster } from './renderer-frame-cluster.js';
 import { rect, line, text } from '../../core/svg.js';
 // G1/G8/G23: one engine, one text/table/symbol emitter -- see
 // `renderer-box.ts`'s own doc comments for each.
@@ -90,16 +93,21 @@ import { renderStateTextLines, renderOOSymbol, isOOSymbolStereotype } from './re
 import { styledLines } from './state-sizing-creole.js';
 import {
   STATE_DEFAULT_BACKGROUND,
-  STATE_BORDER_STROKE_WIDTH,
   resolveStateFillBucketed,
   resolveStateBodyFill,
   resolveStateBorder,
   resolveStateFontColor,
   resolveStateBoxRadius,
   textAscent,
+  stateBorderStrokeAttrs,
 } from './state-render-colors.js';
 import { roundedZone } from './renderer-box-zones.js';
+import { clusterTitleBlockX, stateNameAlignment, textBlockWidth, titleLineX } from './renderer-composite-title.js';
 import { stateShadowFilterUrl } from './state-shadow.js';
+
+/** `UStroke.simple()` (`UStroke.java:75-77`), the thickness of a `ug` no style stroke was applied to: `Cluster#drawUState`
+ *  draws the symbol on the raw `ug` (`Cluster.java:505-507`), unlike the leaf (`EntityImageState.java:129-133`). */
+const DEFAULT_STROKE_WIDTH = 1;
 import { STATE_DESCRIPTION_BUCKET, STATE_NAME_BUCKET } from './state-bucket-colors.js';
 
 /** `URectangle.halfRounded`'s own `roundCorner/2` — SAME `rx`/`ry` value as
@@ -174,9 +182,9 @@ function renderCompositeTextLines(
   // `state-render-colors.ts#resolveStateFontColor`'s own doc comment.
   // Defaults to jar's own hardcoded `#000000` title-text default (every
   // pre-T4 call site's unchanged behavior).
-  fill: string = '#000000',
+  style: { readonly fill?: string; readonly fontWeight?: '700' } = {},
 ): string {
-  return renderStateTextLines(lines, xForLine, startY, theme, { fill });
+  return renderStateTextLines(lines, xForLine, startY, theme, { fill: style.fill ?? '#000000', ...style });
 }
 
 /** `InnerStateAutonom.drawU`'s own attribute-zone height -- the summed
@@ -251,7 +259,7 @@ function buildCoreLayers(
   const outline = rect(node.x, node.y, node.width, node.height, {
     fill: 'none',
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
     rx: radius,
     ry: radius,
   });
@@ -270,7 +278,7 @@ function buildCoreLayers(
       ? rect(node.x, node.y, node.width, node.height, {
           fill: 'none',
           stroke: border,
-          strokeWidth: STATE_BORDER_STROKE_WIDTH,
+          ...stateBorderStrokeAttrs(node, theme),
           rx: radius,
           ry: radius,
           filter: stateShadowFilterUrl(),
@@ -278,14 +286,16 @@ function buildCoreLayers(
       : '';
   const divider1 = line(node.x, dividerY1, node.x + node.width, dividerY1, {
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
   });
+  // `name.drawU(translate((total.width - text.width) / 2, MARGIN))` (`InnerStateAutonom.java:150`): the block is
+  // centred; its lines follow the `name` style's alignment (`:91`, stdd T5a).
   const title = renderCompositeTextLines(
     headerLines,
-    (ln) => node.x + node.width / 2 - ln.width / 2,
+    titleLineX(node, headerLines, (node.width - textBlockWidth(headerLines)) / 2, theme),
     node.y + MARGIN + ascent,
     theme,
-    fontColor,
+    { fill: fontColor },
   );
 
   return { header, outline, shadowRect, divider1, title, dividerY1, ascent, fill, fontColor };
@@ -322,15 +332,11 @@ function buildActionZone(node: StateNodeGeo, theme: Theme, dividerY1: number, as
   });
   const divider2 = line(node.x, dividerY2, node.x + node.width, dividerY2, {
     stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
+    ...stateBorderStrokeAttrs(node, theme),
   });
-  const text_ = renderCompositeTextLines(
-    bodyLines,
-    () => node.x + MARGIN,
-    dividerY1 + ascent,
-    theme,
-    resolveStateFontColor(node, theme, '#000000', STATE_DESCRIPTION_BUCKET),
-  );
+  const text_ = renderCompositeTextLines(bodyLines, () => node.x + MARGIN, dividerY1 + ascent, theme, {
+    fill: resolveStateFontColor(node, theme, '#000000', STATE_DESCRIPTION_BUCKET),
+  });
   return { bottomY: dividerY2, bg, divider2, text: text_ };
 }
 
@@ -380,98 +386,87 @@ function renderCompositeMeasured(node: StateNodeGeo, theme: Theme): string {
 }
 
 /**
- * G5 C3, mechanism 16 shape half — the REAL `'cluster'`-classified
- * composite shape (`ClusterDotString`/`ClusterHeader.java`), distinct from
- * `renderCompositeMeasured`'s own `InnerStateAutonom` shape above. Anatomy
- * (jar-verified byte-for-byte against `decede-10-buvu414`'s cluster `E`,
- * `bajelo-54-dixe684`'s `Track_FSM.Run` — DRAW ORDER matches jar's own
- * document order, header path first):
- *   1. HEADER background — same half-rounded-top `<path>` as the autonom
- *      shape (`compositeHeaderPath`), spanning the box's own top edge down
- *      to `node.clusterHeaderHeight` (a JAR-CALIBRATED constant, NOT the
- *      autonom shape's own `MARGIN + lines*fontSize + MARGIN_LINE` formula
- *      — see `CLUSTER_HEADER_HEIGHT`'s own doc comment, state-composite-
- *      cluster.ts).
- *   2. BODY background — `compositeBodyPath` (this module's own doc
- *      comment) — the jar-verified DIFFERENCE from the autonom shape: the
- *      ENTIRE body (not just the header) is filled with the resolved
- *      background color; nested children (drawn afterward, as siblings in
- *      the SVG document, matching jar's own DOM structure — NOT nested
- *      inside this composite's own `<g>`) visually cover their own area,
- *      but the MARGIN gaps around them show the composite's own fill
- *      rather than the autonom shape's transparent-body canvas.
- *   3. OUTLINE — same solid, full-box `<rect>` as the autonom shape.
- *   4. DIVIDER — ONE divider at `clusterHeaderHeight` (never a second —
- *      the 'cluster' GeoSpec carries no action-zone/body-lines concept
- *      this iteration, `GeoSpec`'s own `'cluster'` variant doc comment,
- *      state-composite-pass.ts).
- *   5. TITLE text — centered, jar-verified baseline offset
- *      `node.clusterTitleBaselineMargin + textAscent(fontSize)` — a
- *      DIFFERENT margin than the autonom shape's own `MARGIN` (see that
- *      field's own doc comment, state-geo-types.ts, for the jar-verified
- *      14.8889 vs 15.8889 split this iteration traced to
- *      `portRanksLabelOnEe`).
- *
- * Only reachable when `node.clusterHeaderHeight` is set (`renderComposite`'s
- * own dispatch below) — every OTHER 'cluster' composite (this iteration's
- * eligibility gate excluded it) still takes `renderCompositeFallback`,
- * unchanged.
- * @see ~/git/plantuml/.../svek/ClusterDotString.java
- * @see ~/git/plantuml/.../svek/ClusterHeader.java
+ * stdd T3c: the non-autonom composite, `Cluster#drawUState` (`Cluster.java:450-510`) over a
+ * `RoundedContainer` (`RoundedContainer.java:78-100`), in its draw order: the shadow rect
+ * (`:81-84`), north (`:86`), centre (`drawCenter`, `:95-100`: a rect stroked `UStroke.simple()`
+ * in its own colour), south (`:88-89`, `RoundedSouth` skips a transparent colour), the outline
+ * (`:91`), the hline under the name (`:93`), the hline under the description (`:95-96`); then the
+ * title (`Cluster.java:495-497`, `state.name { HorizontalAlignment center }` per line and for the
+ * block) at graphviz's title-table top (`clusterTitleBaselineMargin`), the description at
+ * `(minX + MARGIN, minY + nameHeight + MARGIN/2)` (`:499-501`) and the `<<O-O>>` symbol on the
+ * default stroke (`:503-507`). `nameHeight` is `node.clusterHeaderHeight` (`:489-490`);
+ * `descriptionHeight` is the block's height + `MARGIN` when there is one (`:487`).
  */
 function renderClusterMeasured(node: StateNodeGeo, theme: Theme): string {
   const headerLines = node.headerLines!;
-  const headerHeight = node.clusterHeaderHeight!;
+  const bodyLines = node.bodyLines ?? [];
+  const nameHeight = node.clusterHeaderHeight!;
+  const descriptionHeight = bodyLines.length === 0 ? 0 : textBlockHeight(bodyLines, theme) + MARGIN;
   const titleMargin = node.clusterTitleBaselineMargin ?? MARGIN;
-  // dss T3c: `Cluster.java:464-470` -- the header is the `name` zone.
+  // `Cluster.java:459-470`: the group's BACK colour for every zone, else `name`/`description`/`body`.
   const fill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND, STATE_NAME_BUCKET);
+  const centerFill = resolveStateFillBucketed(node, theme, STATE_DEFAULT_BACKGROUND, STATE_DESCRIPTION_BUCKET);
+  const bodyFill = resolveStateBodyFill(node, theme);
   const border = resolveStateBorder(node, theme);
-  // mission G6 T4: `<style> stateDiagram { RoundCorner N } }` cascade --
-  // see `resolveStateBoxRadius`'s own doc comment.
   const radius = resolveStateBoxRadius(theme, STATE_BOX_RX);
-  // mission G6 T4: `StateFontColor<<X>>`/the `stateDiagram { FontColor } }`
-  // cascade -- see `resolveStateFontColor`'s own doc comment.
-  // dss T3c: the title is the `name` zone (`InnerStateAutonom.java:102`, `ClusterHeader.java:156-157`).
   const fontColor = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
   const ascent = textAscent(theme.fontSize);
-  const dividerY = node.y + headerHeight;
+  const outlineAttrs = { fill: 'none', stroke: border, ...stateBorderStrokeAttrs(node, theme), rx: radius, ry: radius };
+  const strokeAttrs = { stroke: border, ...stateBorderStrokeAttrs(node, theme) };
+  const hline = (dy: number): string => line(node.x, node.y + dy, node.x + node.width, node.y + dy, strokeAttrs);
 
-  const header = compositeHeaderPath(node.x, node.y, node.width, headerHeight, fill, radius);
-  // G5 C5 (ledger §C3's item 2, "conditional body-fill"): jar's real
-  // `RoundedSouth#drawU` (`~/git/plantuml/.../svek/RoundedSouth.java:60-61`)
-  // draws nothing when its back colour is transparent, the `body` zone's
-  // default (`plantuml.skin:279-281`): jar-verified `gojuja-90-pune699`'s `A`
-  // (1 `<path>`, `childCount` 4). dss T3c: the zone's colour is read from the
-  // `state.body` bucket and the `state` tiers (`resolveStateBodyFill`), not
-  // inferred from the header fill.
-  const bodyFill = resolveStateBodyFill(node, theme);
-  const body =
-    bodyFill !== undefined
-      ? compositeBodyPath(node.x, node.y, node.width, node.height, headerHeight, bodyFill, radius)
+  const shadowRect =
+    node.shadowing !== undefined && node.shadowing > 0
+      ? rect(node.x, node.y, node.width, node.height, { ...outlineAttrs, filter: stateShadowFilterUrl() })
       : '';
-  const outline = rect(node.x, node.y, node.width, node.height, {
-    fill: 'none',
-    stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
-    rx: radius,
-    ry: radius,
-  });
-  const divider = line(node.x, dividerY, node.x + node.width, dividerY, {
-    stroke: border,
-    strokeWidth: STATE_BORDER_STROKE_WIDTH,
-  });
+  // `RoundedNorth.java:65-66`: nothing for a transparent colour (xipela-98: `StateBackgroundColor transparent`).
+  const north = isTransparentColor(fill)
+    ? ''
+    : compositeHeaderPath(node.x, node.y, node.width, nameHeight, fill, radius);
+  const center =
+    descriptionHeight === 0
+      ? ''
+      : rect(node.x, node.y + nameHeight, node.width, descriptionHeight, {
+          fill: centerFill,
+          stroke: centerFill,
+          strokeWidth: 1,
+        });
+  const south =
+    bodyFill === undefined
+      ? ''
+      : compositeBodyPath(node.x, node.y, node.width, node.height, nameHeight + descriptionHeight, bodyFill, radius);
+  const outline = rect(node.x, node.y, node.width, node.height, outlineAttrs);
+  const dividers = hline(nameHeight) + (descriptionHeight > 0 ? hline(nameHeight + descriptionHeight) : '');
+  // stdd T1d: `ClusterHeader.java:161-162` -- a `GroupType.PACKAGE` group's title
+  // is `package { title { FontStyle bold } }` (`plantuml.skin:72-76`).
+  // `getTitleHorizontalAlignment().draw(ug, title, MARGIN, 0, width)` (`Cluster.java:495-497`,
+  // `HorizontalAlignment.java:79-90`): LEFT at `MARGIN`, RIGHT at `width - block - MARGIN`, CENTER in the
+  // middle; the lines inside follow the same `name` style (stdd T5a, niveno-60).
+  const blockX = clusterTitleBlockX(node, textBlockWidth(headerLines), stateNameAlignment(theme));
   const title = renderCompositeTextLines(
     headerLines,
-    (ln) => node.x + node.width / 2 - ln.width / 2,
+    titleLineX(node, headerLines, blockX, theme),
     node.y + titleMargin + ascent,
     theme,
-    fontColor,
+    { fill: fontColor, ...(node.packageTitle === true ? { fontWeight: '700' as const } : {}) },
   );
-
-  return header + body + outline + divider + title;
+  const description = renderCompositeTextLines(
+    bodyLines,
+    () => node.x + MARGIN,
+    node.y + nameHeight + MARGIN / 2 + ascent,
+    theme,
+    { fill: resolveStateFontColor(node, theme, '#000000', STATE_DESCRIPTION_BUCKET) },
+  );
+  const symbol = isOOSymbolStereotype(node.stereotype)
+    ? renderOOSymbol(node.x + node.width, node.y + node.height, 'none', border, DEFAULT_STROKE_WIDTH)
+    : '';
+  return shadowRect + north + center + south + outline + dividers + title + description + symbol;
+  // #lizard forgives -- `RoundedContainer#drawU` + `Cluster#drawUState`, one layer per statement.
 }
 
-export function renderComposite(node: StateNodeGeo, theme: Theme): string {
+export function renderComposite(node: StateNodeGeo, theme: Theme, measurer?: StringMeasurer): string {
+  // stdd T6c: `Cluster.java:353-354` draws a group with a `USymbol` through `ClusterDecoration`, not `drawUState`.
+  if (node.usymbol === 'frame' && measurer !== undefined) return renderFrameCluster(node, theme, measurer);
   if (node.clusterHeaderHeight !== undefined) return renderClusterMeasured(node, theme);
   if (node.headerLines === undefined) return renderCompositeFallback(node, theme);
   return renderCompositeMeasured(node, theme);

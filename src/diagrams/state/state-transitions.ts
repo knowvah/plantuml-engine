@@ -37,15 +37,15 @@ import type { Transition, TransitionDirection } from './ast.js';
  * identity — see `stripSyncBarEquals` below).
  *
  * Upstream's `getStatePattern` also allows `:` inside plain ids
- * (`[%pLN_.:]+`) and unicode letters/digits (`%pLN`); this port keeps the
- * pre-existing ASCII `[\w.]+` id charset (matches CommandCreateState's own
- * `[%pLN_.]+` CODE pattern closely enough that no corpus fixture round-trips
- * through the wider charset) — flagged as a known, minor divergence rather
- * than silently dropped.
+ * (`[%pLN_.:]+`) and unicode letters/digits (`%pLN`). stdd T6b: mirrored --
+ * `[\p{L}\p{N}_.:]+` under the `u` flag (`CommandLinkStateCommon.java:75-76`),
+ * so vogimu-84's `[*] --> ma::Foo1` names one new leaf `ma::Foo1` (the state
+ * separator is `.`, `StateDiagram.java:62`), not `ma` with a `:Foo1` label.
  * @see ~/git/plantuml/.../statediagram/command/CommandLinkStateCommon.java#getStatePattern
  * @see ~/git/plantuml/.../statediagram/command/CommandLinkStateCommon.java#removeEquals
  */
-const ENT = String.raw`(={2,}[\w.]+={2,}|\[H\*\]|\[H\]|\[\*\]|[\w.]+\[H\*\]|[\w.]+\[H\]|[\w.]+)`;
+const ID = String.raw`[\p{L}\p{N}_.:]+`;
+const ENT = `(={2,}${ID}={2,}|\\[H\\*\\]|\\[H\\]|\\[\\*\\]|${ID}\\[H\\*\\]|${ID}\\[H\\]|${ID})`;
 
 /** Abbreviated compass directions — upstream tries full words before the
  *  single/double-letter abbreviations in this exact order. */
@@ -87,7 +87,7 @@ const FORWARD_RE = new RegExp(
     STEREOTYPE_TAIL +
     LABEL_TAIL +
     '$',
-  'i',
+  'iu',
 );
 
 /** Same 11-group shape as `FORWARD_RE`; decorA=circleEnd, decorB=crossStart,
@@ -99,7 +99,7 @@ const REVERSE_RE = new RegExp(
     STEREOTYPE_TAIL +
     LABEL_TAIL +
     '$',
-  'i',
+  'iu',
 );
 
 const DIRECTION_MAP: Readonly<Record<string, TransitionDirection>> = {
