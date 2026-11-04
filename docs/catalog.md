@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2074 modules · 7255 exported names.
+2074 modules · 7257 exported names.
 
 ## `src/`
 
@@ -533,7 +533,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `HColorAutomagic.ts` | `HColorAutomagic` |  |
 | `HColorGradient.ts` | `GradientPolicy`, `HColorGradient` |  |
 | `HColors.ts` | `HColors` |  |
-| `HColorSet.ts` | `ResolvedColor`, `parseSimpleColor`, `parseColor`, `toSvgHex`, `resolveColorToSvgHex`, `GradientToken`, `splitGradientToken`, `ConditionalColorSpec`, `parseConditionalColor`, `resolveConditionalColor`, `ParsedColor`, `HColorSet` | HColorSet — resolves a single color token (a `#RRGGBB`/`#RGB`/`#RRGGBBAA` hex form, or a named color from {@link ColorTrieNode}) to a canonical SVG-ready hex string, mirroring `HColorSet#parseSimpleColor` and `XColor#toSvg`. |
+| `HColorSet.ts` | `ResolvedColor`, `parseSimpleColor`, `parseColor`, `toSvgHex`, `resolveColorToSvgHex`, `GradientToken`, `splitGradientToken`, `ConditionalColorSpec`, `parseConditionalColor`, `resolveConditionalColor`, `ParsedColor`, `UNKNOWN_COLOR_NEUTRAL`, `colorOrNeutral`, `HColorSet` | HColorSet — resolves a single color token (a `#RRGGBB`/`#RGB`/`#RRGGBBAA` hex form, or a named color from {@link ColorTrieNode}) to a canonical SVG-ready hex string, mirroring `HColorSet#parseSimpleColor` and `XColor#toSvg`. |
 | `HColorSimple.ts` | `HColorSimple` |  |
 | `HUSLColorConverter.ts` | `xyzToRgb`, `rgbToXyz`, `xyzToLuv`, `luvToXyz`, `luvToLch`, `lchToLuv`, `hsluvToLch`, `lchToHsluv`, `hpluvToLch`, `lchToHpluv`, `rgbToHex`, `hexToRgb`, `lchToRgb`, `rgbToLch`, `hsluvToRgb`, `rgbToHsluv`, `hpluvToRgb`, `rgbToHpluv`, `hsluvToHex`, `hpluvToHex`, `hexToHsluv`, `hexToHpluv` | HUSLColorConverter -- the HSLuv / HPLuv colour-space conversions (Alexei Boronine's reference implementation, as vendored upstream). |
 | `NoSuchColorException.ts` | `NoSuchColorException` | NoSuchColorException — thrown by `HColorSet#getColor` for a token that resolves to no colour. |

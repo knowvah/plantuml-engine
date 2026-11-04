@@ -54,7 +54,7 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   hcl: { noteClass: 'smetana' },
   ditaa: {
     noteClass: 'notBuilt',
-    detail: 'It also cannot be compared as SVG: PlantUML writes a PNG for ditaa even when asked for SVG.',
+    detail: 'Dropped on purpose: its library is LGPL-3.0 and the MIT edition disables it (`DIVERGENCES.md`).',
   },
   ebnf: { noteClass: 'notBuilt' },
   network: {

@@ -23,7 +23,7 @@ Oracle coverage: 5855 of 5855 manifest rows have a jar oracle under some bucket 
 | chronology ‖ | chronology | 1 | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) | n/a (plantuml-ts only) |
 | class § | class | 768 | 874 | 712/712 (100%) | 831 / 20 / 23 (3 error) | 641/664 | 1111 | 1003 | n/a (no diff-baseline yet) | 869/874 | 874/874 |
 | component § | description | 384 | 266 | 260/263 (99%) | 215 / 13 / 38 | 248/251 | 214 | 214 | 15 · 42 | 266/266 | 266/266 |
-| ditaa ‡ | n/a (no engine (D8 todo)) | 2 | 2 | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) | n/a (no engine (D8 todo)) |
+| ditaa ‡ | n/a (no engine (dropped by ruling 2026-11-04)) | 2 | 2 | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) |
 | dot § | dot | 62 | 62 | n/a (no DOT stage (non-svek)) | 60 / 2 / 0 (8 error) | n/a (no DOT stage (non-svek)) | 52 | 5 | n/a (no diff-baseline yet) | 54/62 | 62/62 |
 | ebnf ‡ | n/a (no engine (D10 todo)) | 44 | 44 | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) | n/a (no engine (D10 todo)) |
 | files | files | 8 | 9 | n/a (no DOT stage (non-svek)) | 9 / 0 / 0 | n/a (no DOT stage (non-svek)) | 9 | 9 | n/a (no diff-baseline yet) | 9/9 | 9/9 |
@@ -51,7 +51,7 @@ Oracle coverage: 5855 of 5855 manifest rows have a jar oracle under some bucket 
 
 **‡** **No engine yet.** We do not draw this diagram type yet, so these fixtures get an error page. Applies to ebnf, regex, timing, wire.
 
-- **ditaa:** It also cannot be compared as SVG: PlantUML writes a PNG for ditaa even when asked for SVG.
+- **ditaa:** Dropped on purpose: its library is LGPL-3.0 and the MIT edition disables it (`DIVERGENCES.md`).
 - **network:** This bucket is filled by a keyword match and holds no nwdiag diagrams: one description diagram, which conforms, and two in the legacy `(*) -->` activity syntax, which we do not parse. Real nwdiag fixtures are counted under `unknown`.
 
 **§** **Open defects.** An engine exists, and what remains are bugs still to fix. No library forces them.

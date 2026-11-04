@@ -88,9 +88,10 @@ registration is commented out for MIT in `PSystemBuilder.java`), so a
 The default (GPL) PlantUML jar draws a puzzle there; that difference is
 deliberate, not a missing feature.
 
-One exception is kept on purpose: upstream's MIT edition also disables
-`@startditaa` (the factory registration is commented out for MIT in
-`PSystemBuilder.java`), but this port keeps its ditaa engine.
+`@startditaa` is not included either. Upstream's MIT edition disables it (the
+factory registration is commented out for MIT in `PSystemBuilder.java`), and
+the library it calls is LGPL-3.0, so a port of it could not ship in this MIT
+package.
 
 ## License
 

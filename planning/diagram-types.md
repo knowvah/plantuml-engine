@@ -593,6 +593,9 @@ These share the same renderer — only the parser front-end differs.
 
 ## DITAA
 
+> **Dropped by ruling 2026-11-04 (#111).** The library is LGPL-3.0, so it can't be ported into
+> this MIT package; see `DIVERGENCES.md`, "Ditaa is not included". Kept as a record.
+
 **Java source:** `ditaa/`
 **Layout:** Built-in — ASCII grid to SVG conversion.
 **Keyword:** `@startditaa`

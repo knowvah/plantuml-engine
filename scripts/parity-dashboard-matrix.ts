@@ -35,12 +35,12 @@ const ENGINE_OVERRIDE: Readonly<Record<string, string>> = {
  *  is dead, never wrong). `unknown` is handled separately (accounting bucket,
  *  not a todo) and is deliberately absent from this map. */
 const NO_ENGINE_D_ID: Readonly<Record<string, string>> = {
-  timing: 'D1',
-  network: 'D5',
-  ditaa: 'D8',
-  ebnf: 'D10',
-  regex: 'D11',
-  wire: 'D12',
+  timing: 'D1 todo',
+  network: 'D5 todo',
+  ditaa: 'dropped by ruling 2026-11-04',
+  ebnf: 'D10 todo',
+  regex: 'D11 todo',
+  wire: 'D12 todo',
 };
 
 /** Pure: which engine (if any) owns `bucket`. Throws rather than emitting a
@@ -53,7 +53,7 @@ export function engineCell(bucket: string, registeredEngines: readonly string[])
   if (override !== undefined) return override;
   if (registeredEngines.includes(bucket)) return bucket;
   const dId = NO_ENGINE_D_ID[bucket];
-  if (dId !== undefined) return `n/a (no engine (${dId} todo))`;
+  if (dId !== undefined) return `n/a (no engine (${dId}))`;
   throw new Error(`parity-dashboard: bucket "${bucket}" has no engine mapping and no D-row id`);
 }
 

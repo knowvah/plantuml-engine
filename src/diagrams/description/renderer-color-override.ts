@@ -5,6 +5,7 @@
  * move: the code below is byte-identical to what lived in `renderer-entity.ts`.
  */
 import type { Paint } from '../../core/paint.js';
+import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import { parseColor } from '../../core/paint.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 
@@ -54,7 +55,8 @@ export function parseColorOverride(raw: string): ColorOverride {
       // resolves through `HColorSet#getColorOrWhite` (gradient-aware,
       // klimt/color/HColorSet.java:107-119) exactly like a skinparam
       // background value already does (`skinparam.ts`'s `parseColor` call).
-      if (!token.includes('.')) result.back = parseColor(token);
+      // `Colors.java:103` reads it with the throwing `getColor`: `colorOrNeutral`'s doc.
+      if (!token.includes('.')) result.back = parseColor(colorOrNeutral(token));
       continue;
     }
     const name = token.slice(0, colonIdx);

@@ -17,8 +17,9 @@ narrower reading elsewhere in this file.
 
 - **Known diagram type:** every factory upstream registers in
   `PSystemBuilder.java:133-200`. A factory commented out there, or removed by the
-  `__MIT__` markers we mirror, is not known unless a signed ruling keeps it (ditaa,
-  2026-10-14; chronology, 2026-11-03).
+  `__MIT__` markers we mirror, is not known unless a signed ruling keeps it (chronology,
+  2026-11-03). Ditaa is not known: the 2026-10-14 ruling to keep it was reversed on
+  2026-11-04 (#111).
 - **Conformant:** every fixture of that type reads `conformant` in the SVG survey. A
   fixture where the jar draws an error page and we draw our own counts
   (`docs/svg-conformance.md`).
@@ -117,7 +118,7 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 10. **Network / nwdiag / rackdiag** (`@startnwdiag`) — row-based layout.
 11. **Git graph** (`@startgitgraph`) — lane layout.
 12. **Salt** (`@startsalt`) — grid layout (evaluate golem reuse).
-13. **DITAA** (`@startditaa`) — ASCII-art grid → SVG; highest complexity in P5.
+13. ~~**DITAA** (`@startditaa`)~~ — dropped by ruling 2026-11-04 (#111, `DIVERGENCES.md`).
 14. **Chen EER** (`@startchen`) — dot layout + EER shapes.
 15. **EBNF** (`@startebnf`) — railroad renderer (Track SI-3).
 16. **Regex** (`@startregex`) — regex → railroad IR (after EBNF).

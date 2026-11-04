@@ -163,17 +163,21 @@ describe('buildMatrix', () => {
     inputs.surveyByType['ditaa'] = { conformant: 0, structural: 0, diverged: 2, generatedAt: '2026-09-20' };
     inputs.routingByType['ditaa'] = { counts: { agree: 2 }, total: 2, measuredAt: '2026-09-20' };
     const r = buildMatrix(inputs).find((x) => x.type === 'ditaa')!;
-    expect(r.engine).toBe('n/a (no engine (D8 todo))');
+    expect(r.engine).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     expect(r.oracle).toBe('2');
     for (const cell of [r.dot, r.survey, r.census, r.ratchet, r.diffBaseline, r.routing, r.refusal]) {
-      expect(cell).toBe('n/a (no engine (D8 todo))');
+      expect(cell).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     }
     const f = buildFreshness(inputs).find((x) => x.type === 'ditaa')!;
     expect([f.survey, f.routing]).toEqual([undefined, undefined]);
   });
 
-  it('gives ditaa a D-row "no engine" reason, not a bare n/a', () => {
-    expect(row('ditaa').engine).toBe('n/a (no engine (D8 todo))');
+  it('gives ebnf a D-row "no engine" reason, not a bare n/a', () => {
+    expect(engineCell('ebnf', [])).toBe('n/a (no engine (D10 todo))');
+  });
+
+  it('says ditaa is dropped, not owed', () => {
+    expect(row('ditaa').engine).toBe('n/a (no engine (dropped by ruling 2026-11-04))');
     expect(row('ditaa').oracle).toBe('n/a (no oracle captured)');
   });
 
@@ -301,7 +305,7 @@ describe('renderReport', () => {
   it('AC2: every n/a in the Matrix table matches the D8 vocabulary, no bare n/a', () => {
     const tableBlock = out.slice(out.indexOf('## Matrix'), out.indexOf('## Freshness'));
     const vocab =
-      /^n\/a \((no engine \(D\d+ todo\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-ts only|engine, unclassifiable corpus|accounting bucket)\)$/;
+      /^n\/a \((no engine \((?:D\d+ todo|dropped by ruling \d{4}-\d{2}-\d{2})\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-ts only|engine, unclassifiable corpus|accounting bucket)\)$/;
     for (const line of tableBlock.split('\n').filter((l) => l.startsWith('| '))) {
       for (const cell of line.split('|').map((c) => c.trim())) {
         if (cell.startsWith('n/a')) expect(cell).toMatch(vocab);
@@ -540,8 +544,8 @@ describe('engineCell', () => {
 
 describe('noEngineColumn', () => {
   it('fires for a no engine (Dn todo) cell', () => {
-    expect(noEngineColumn('n/a (no engine (D8 todo))')).toEqual({
-      cell: 'n/a (no engine (D8 todo))',
+    expect(noEngineColumn('n/a (no engine (dropped by ruling 2026-11-04))')).toEqual({
+      cell: 'n/a (no engine (dropped by ruling 2026-11-04))',
       freshness: undefined,
     });
   });

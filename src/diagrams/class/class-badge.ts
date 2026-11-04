@@ -35,7 +35,7 @@
  *     `cy = boxLocalY + headerHeight/2`.
  */
 import type { ClassifierKind } from './ast.js';
-import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
+import { colorOrNeutral, resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { isTransparentColor, noGradient, paintToSvg, type Paint } from '../../core/paint.js';
 import { PAINT_NONE } from '../../core/svg.js';
 import { formatDecimal, DEFAULT_SVG_DECIMALS } from '../../core/svg-format.js';
@@ -219,7 +219,8 @@ export function resolveBadgeFill(
   // `spot<Kind>` bucket above, ABOVE the hardcoded kind default.
   rootFallback?: string,
 ): Paint {
-  if (colorOverride !== undefined) return resolveColorToSvgHex(colorOverride);
+  // `StereotypeDecoration.java:163` reads it with the throwing `getColor`: `colorOrNeutral`'s doc.
+  if (colorOverride !== undefined) return resolveColorToSvgHex(colorOrNeutral(colorOverride));
   // dss T3b: `transparent` is the jar's `fill="none"` (`HColors.transparent()`), not `paintToSvg`'s `#00000000`
   // (`ord-hdr`: `root { BackgroundColor transparent }` over every spot).
   if (spotBackground !== undefined) {

@@ -1207,6 +1207,14 @@ Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). B
 - **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
 - **`:a| <<foo>>`:** the jar reports `Syntax Error?` on that line. We draw an activity box, with the stereotype and any lines after it in the label.
 
+On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and each is signed in the ledger.
+
+An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
+
+### Ditaa is not included
+
+**Category:** edition mirrored by user ruling (2026-11-04, #111), reversing the 2026-10-14 ruling to keep it. Upstream comments out `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-167`), and the library it calls, `org.stathissideris.ascii2image`, is LGPL-3.0-or-later in 26 of its 28 files. Translating it into this MIT package would look like a derived work. No engine was ever ported. `@startditaa` draws the unknown-diagram sentinel, where upstream's MIT edition would return `PSystemUnsupported` (`PSystemBuilder.java:283`), the same sentinel gap every tag with no engine has (`src/core/dispatcher.ts`). The oracle is the GPL build, which writes a PNG even when asked for SVG, so both rows read `oracle-error` and are signed in the ledger.
+
 ### Chronology draws, though the jar has no such diagram
 
 **Category:** kept by user ruling (2026-11-03, #110). No library forces it. `ChronologyDiagramFactory` is commented out at `PSystemBuilder.java:184`, so `@startchronology` is an error in the jar (exit 200 under v1.2026.8), and we keep the engine and draw it. Every chronology source falls under this ruling, and the one corpus fixture is signed as `svg-chronology/lenudo-53-nade902`.

@@ -20,6 +20,8 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/Colors.java:95-124
  */
 
+import { colorOrNeutral } from './klimt/color/HColorSet.js';
+
 /** `ColorType.BACK`'s lowercase spelling in a `name:value` colour part
  *  (`ColorType.getType`, klimt/color/ColorType.java). */
 const BACK_COLOR_TYPE = 'back';
@@ -79,10 +81,9 @@ export function resolveBareOrBackColor(color: string | undefined): string | unde
       // (`line.bold`/`.dashed`/`.dotted`, read at `Colors.java:117-122` and
       // ported in `class-declaration-extractors.ts#parseDeclarationColors`),
       // never a colour. Divergence: upstream's `set.getColor(s)` THROWS
-      // `NoSuchColorException` on an unparseable bare token (aborting the
-      // whole declaration); this port has no rejection path and passes the
-      // token through to `parseColor` instead.
-      if (!stripped.includes('.')) back = part;
+      // `NoSuchColorException` on an unparseable bare token and draws an error
+      // page; this port draws, with the neutral (`colorOrNeutral`'s doc).
+      if (!stripped.includes('.')) back = colorOrNeutral(part);
       // `ColorType.getType` truncates the name at its first `.`
       // (`ColorType.java:41-47`), so `back.anything:blue` is still BACK.
     } else if (colorTypeName(stripped.slice(0, x)) === BACK_COLOR_TYPE) {

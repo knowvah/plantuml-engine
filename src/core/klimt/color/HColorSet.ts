@@ -369,6 +369,24 @@ export type ParsedColor = HColorSimple | HColorGradient | HColorAutomagic;
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:43-120
  */
+/**
+ * What an unknown bare colour paints. No library forces this: where the jar raises
+ * `NoSuchColorException` and draws an error page, we draw the diagram, and a neutral
+ * grey says "unresolved" where a raw invalid `fill` would read as black (maintainer
+ * ruling 2026-11-04, DIVERGENCES.md "We draw where the jar errors").
+ */
+export const UNKNOWN_COLOR_NEUTRAL = '#D3D3D3';
+
+/**
+ * `HColorSet#getColor`'s throw (`HColorSet.java:69-76`), as the neutral instead:
+ * `token` itself when the jar would accept it, else {@link UNKNOWN_COLOR_NEUTRAL}.
+ * Only for a site where the jar calls `getColor`, never `getColorOrNull`, because
+ * there the jar draws and the port mirrors it.
+ */
+export function colorOrNeutral(token: string): string {
+  return HColorSet.instance().getColorOrNull(token) === undefined ? UNKNOWN_COLOR_NEUTRAL : token;
+}
+
 export class HColorSet {
   /** @see HColorSet.java:45 */
   private static readonly singleton = new HColorSet();
