@@ -1,5 +1,54 @@
 # Border-point cluster (`rank=sink` port node + `ee` subgraph): inner nodes placed 2-17 px off native
 
+> **NOT a dot-engine defect (traced 2026-11-04).** The defect is in
+> plantuml-ts: our graph puts the anchor in `cluster0i`, and the jar's DOT puts
+> it in `cluster6ee`, before `i` opens. The filing below is kept as written;
+> its claim that our DOT equals the jar's, and its suspected C source, are wrong.
+>
+> **Mechanism.** `ClusterDotString.java:148-149` declares the special point in
+> `ee`, and `:151-152` then opens `i`. It is declared again inside `i` only when
+> the cluster has no direct node (`added == null`, `:178-183`; `empty()` is the
+> same id). In plantuml-ts the border-point family puts every non-port member,
+> the anchor included, in `innermost`, which is `i`
+> (`src/core/graph-layout-build.ts`, the `portRanksLabelOnEe` branch of
+> `addClusters`). The text emitter does the same
+> (`src/core/svek-dot-emit-clusters.ts`, `pointInEe` is false when
+> `portRanksLabelOnEe` is set).
+>
+> **Why `dotEqual` stayed true.** `tests/oracle/svek-dot.ts#scanNesting` folds
+> the `ee` and `i` wrappers into the base cluster, so it never sees which of them
+> holds a node. Our text is not byte-equal to the jar's.
+>
+> **Evidence (`dot-engine` 2.4.0, native 16.1.0).**
+> - `DE.render(DE.parse(svek-1.dot), 'dot')` is byte-identical to native
+>   `dot -Tdot` on that file.
+> - Native on the jar's DOT with only `zaent0001` moved into `cluster6i`
+>   reproduces our builder's numbers: start 50, chk 67, ex 125, zaent 95,
+>   cluster `16,16,139,293`.
+> - Our builder with only the anchor moved to `cluster0ee` reproduces native on
+>   the jar's DOT, for all six nodes:
+>
+> | Node | Builder now | Anchor in `ee` | Native, jar DOT |
+> | --- | --- | --- | --- |
+> | start | 50,242 | 61,242 | 61,242 |
+> | chk | 67,147 | 65,147 | 65,147 |
+> | final | 67,51 | 65,51 | 65,51 |
+> | ex | 125,51 | 128,51 | 128,51 |
+> | anchor | 95,242 | 106,242 | 106,242 |
+> | comp2 | 186,147 | 189,147 | 189,147 |
+>
+> - The same move on `state__hist-bg-diag` takes cluster `T` from 133 to 125 wide,
+>   the jar's `rect/@width`. The other nine `state__hist-*` rows were not run.
+>
+> **Ruled out.** The `:P` port and `rank=sink` handling: both graphs have them
+> and they lay out as native once the anchor moves. Not yet checked: a full
+> re-measure of `viroxo-69` with the fix, and the `added == null` case.
+>
+> **Fix belongs here:** place the anchor in `ee` in both the builder and the text
+> emitter, re-declare it in `i` when `added == null`, make `scanNesting` see the
+> difference, then retire the `DIVERGENCES.md` entry, which still calls this
+> library-forced.
+
 **Impact:** `state/viroxo-69-fito663` (93 attribute diffs, every one a 2-3 px
 x shift of the `comp1` cluster's content and a 17 px shift of its `[*]` start;
 cluster rect 109 px wide against the jar's 112). The same mechanism is the
