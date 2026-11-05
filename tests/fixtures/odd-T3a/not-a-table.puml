@@ -1,0 +1,10 @@
+@startuml
+class C {
+  | a
+  y()
+}
+object O {
+  | a
+  y
+}
+@enduml

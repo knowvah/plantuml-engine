@@ -1,0 +1,7 @@
+@startuml
+map m {
+  a => line\nnext
+  key\nsplit => v
+  c *-> m
+}
+@enduml

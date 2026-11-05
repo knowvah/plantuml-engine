@@ -23,7 +23,6 @@ import { ROW_TEXT_LEFT_MARGIN } from './layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import { rect, line, path } from '../../core/svg.js';
 import {} from '../../core/klimt/color/HColorSet.js';
-import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { mapColumnDividerEntries } from './renderer-classifier-map-dividers.js';
 import { protectedInnerBox } from './class-dot-graph.js';
 import { hasBadge } from './class-badge.js';
@@ -38,8 +37,8 @@ import { resolveClassTagCascadeEntry } from '../../core/style-cascade-class.js';
 import {} from './renderer-openiconic.js';
 import { buildEnhancedBodyPrimitives } from './renderer-body-enhanced.js';
 import { classShadowFilterUrl } from './class-shadow.js';
+import { objectHeaderSplitPaint, objectRoundCorner } from './class-object-header-split.js';
 import {
-  resolveElementHeaderBackground,
   classifierFill,
   classBorder,
   classBorderLine,
@@ -87,30 +86,26 @@ export { renderRow };
  * than re-deriving the geometry a second time -- see that method's own
  * doc comment for the ARC/LINE sequence this mirrors.
  *
- * `headerHeight` is `geo.dividerYs[0]` (the title block's own height, only
- * present when a divider is actually drawn -- `measureObjectClassifier`'s
- * own `dividerYs: showFields ? [title.height] : []`) -- gated on its
- * presence rather than re-deriving `title.height` independently; a
- * suppressed-fields object/map/json (no divider) is a real but UNSAMPLED
- * combination (no corpus fixture combines `hide fields` with a `.header`
- * BackgroundColor override) and is left undrawn rather than guessed.
+ * `halfRounded(0)` returns the `URectangle` itself (`URectangle.java:124-125`), so a square corner draws a rect.
  */
 function headerBackgroundPath(geo: ClassifierGeo, theme: ScaledTheme, roundCorner: number, fill: Paint): string {
-  const headerHeight = geo.dividerYs[0];
+  // `URectangle.build(widthTotal, dimTitle.getHeight())` (`EntityImageObject.java:200`), divider or none.
+  const headerHeight = geo.titleHeight ?? geo.dividerYs[0];
   if (headerHeight === undefined) return '';
   const r = roundCorner / 2;
   const x0 = geo.x;
   const y0 = geo.y;
   const x1 = geo.x + geo.width;
   const y1 = geo.y + headerHeight;
-  const d = roundedTopRectD(x0, y0, x1, y1, r);
   const dasharray = classBorderStrokeDasharray(geo, theme, theme.scaleK);
-  return path(d, {
+  const stroke = {
     fill,
     stroke: classBorder(geo, theme),
     strokeWidth: classBorderStrokeWidth(geo, theme),
     ...(dasharray !== undefined ? { strokeDasharray: dasharray } : {}),
-  });
+  };
+  if (roundCorner === 0) return rect(x0, y0, geo.width, headerHeight, stroke);
+  return path(roundedTopRectD(x0, y0, x1, y1, r), stroke);
 }
 
 /**
@@ -183,7 +178,7 @@ function buildHeaderPrimitive(geo: ClassifierGeo, theme: ScaledTheme): UrlTagged
   // 466-472`) -- scaled ONCE here so downstream readers need no changes.
   // object/map/json: `getStyle().value(PName.RoundCorner)` of their OWN
   // signature (`EntityImageObject.java:96`, `EntityImageMap.java:92`).
-  const kindRoundCorner = isObjectKind(geo.kind) ? theme.colors.elements?.[geo.kind]?.roundCorner : undefined;
+  const kindRoundCorner = isObjectKind(geo.kind) ? objectRoundCorner(geo, theme) : undefined;
   const roundCorner =
     (kindRoundCorner ??
       resolveClassTagCascadeEntry(theme, geo.stereotypeLabels, geo.styleGeneration)?.roundCorner ??
@@ -194,17 +189,9 @@ function buildHeaderPrimitive(geo: ClassifierGeo, theme: ScaledTheme): UrlTagged
   // map/json only (`headerBackgroundPath`'s own doc comment); drawn ONLY
   // when it genuinely differs from the body's own fill (jar's own
   // `backcolor.equals(headerBackcolor) == false` gate).
-  if (geo.kind === 'object' || geo.kind === 'map' || geo.kind === 'json') {
-    const bodyBg = classifierFill(geo, theme);
-    // `backcolor.equals(headerBackcolor)` (`EntityImageObject.java:199`): `HColorGradient` has no `equals`, and the body
-    // and the header each parsed their own (`ValueImpl.java:92-103`), so a gradient body always splits, unless an inline
-    // back colour made the header that same object (`:174-177`).
-    const inheritedBg =
-      typeof bodyBg !== 'string' && resolveBareOrBackColor(geo.color) === undefined ? bodyBg : undefined;
-    const headerBg = resolveElementHeaderBackground(theme, geo.kind) ?? inheritedBg;
-    if (headerBg !== undefined && (headerBg !== bodyBg || typeof headerBg !== 'string')) {
-      body += headerBackgroundPath(geo, theme, roundCorner, headerBg);
-    }
+  if (isObjectKind(geo.kind)) {
+    const headerBg = objectHeaderSplitPaint(geo, theme);
+    if (headerBg !== undefined) body += headerBackgroundPath(geo, theme, roundCorner, headerBg);
   }
   // G2 N58 item 40: `strictuml` suppresses the badge. CDD B7FU-R2 (c-b): a resolved sprite badge wins over the default one.
   if (geo.hideCircle !== true && hasBadge(geo.kind) && theme.strictUml !== true) {
@@ -390,7 +377,7 @@ function pushMemberRowPrimitives(
     if (row.text === '') continue;
     const effectiveUrl = row.url ?? geo.url;
     if (row.visibilityIcon === undefined) {
-      interleaved.push({ y: row.y, item: { url: effectiveUrl, body: renderRow(geo, row, theme) } });
+      interleaved.push({ y: row.sortY ?? row.y, item: { url: effectiveUrl, body: renderRow(geo, row, theme) } });
       continue;
     }
     // G2 N21/N40: an icon-bearing row draws as 2-or-3 primitives (icon,

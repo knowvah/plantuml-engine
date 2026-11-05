@@ -1,0 +1,13 @@
+@startuml
+<style>
+json {
+  FontSize 6
+}
+</style>
+json A {
+ "a": 1
+}
+json B {
+ "b": 2
+}
+@enduml

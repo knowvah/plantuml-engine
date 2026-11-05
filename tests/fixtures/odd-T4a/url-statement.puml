@@ -1,0 +1,8 @@
+@startuml
+url of m is [[http://a.example]]
+map m {
+ k => v
+}
+url of o is [[http://b.example{tip}]]
+object o
+@enduml

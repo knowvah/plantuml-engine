@@ -75,13 +75,10 @@ describe('object declaration — bare and aliased forms', () => {
 // ---------------------------------------------------------------------------
 
 describe('object declaration — duplicate handling', () => {
-  it('a second "object foo" after the first is a no-op (upstream: error)', () => {
+  it('a second "object foo" leaves the first as declared, under ruling #143', () => {
     const ast = parse('object foo <<first>>\nobject foo <<second>>');
     const objects = ast.classifiers.filter((c) => c.id === 'foo');
     expect(objects).toHaveLength(1);
-    // The FIRST declaration's fields win — the second is fully ignored,
-    // unlike a duplicate `class foo` (applyClassifierDecl always re-applies
-    // fields on redeclaration).
     expect(objects[0]!.stereotype).toBe('first');
   });
 });

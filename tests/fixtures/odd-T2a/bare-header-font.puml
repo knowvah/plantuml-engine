@@ -1,0 +1,20 @@
+@startuml
+<style>
+header {
+  FontSize 18
+  FontStyle bold
+  FontName Courier
+  LineColor blue
+  RoundCorner 12
+}
+</style>
+object o {
+ a = 1
+}
+map m {
+ k => v
+}
+json j {
+ "a": 1
+}
+@enduml

@@ -1038,7 +1038,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10276 -> 10327 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 10276 + 51 = 10327.
     // 10327 -> 10361 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 10327 + 34 = 10361.
     // 10361 -> 10368 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description, all render.
-    expect(manifest.fixtures.length).toBe(10368);
+    // 10368 -> 10414 at odd/T4b (2026-11-05): +46 svg-object, all render.
+    expect(manifest.fixtures.length).toBe(10414);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1275,7 +1276,8 @@ describe('refusal coverage — baseline shape', () => {
     // 9836 -> 9887 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 9836 + 51 = 9887.
     // 9887 -> 9921 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 9887 + 34 = 9921.
     // 9921 -> 9928 at c4dd/T4b (2026-11-05): the same 7 golden clones, all rendering.
-    expect(pinnedRendering.length).toBe(9928);
+    // 9928 -> 9974 at odd/T4b (2026-11-05): the same 46 golden clones, all rendering.
+    expect(pinnedRendering.length).toBe(9974);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

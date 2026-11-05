@@ -1,0 +1,12 @@
+@startuml
+map A {
+ ka => va
+ kb => vb
+}
+map B {
+ xa => ya
+ xb => yb
+}
+A::ka -left-> B::xa
+A::kb -up-> B::xb
+@enduml

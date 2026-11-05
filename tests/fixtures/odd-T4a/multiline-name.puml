@@ -1,0 +1,13 @@
+@startuml
+object "a\nb" as A
+map "c\nd" as B {
+ k => v
+}
+json "e\nf" as C {
+ "x": 1
+}
+object "<b>bold</b> <i>it</i>" as D
+object "=head" as E
+map "<color:red>r</color>" as F {
+}
+@enduml

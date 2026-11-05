@@ -1,0 +1,4 @@
+@startuml
+class C
+url of Z is [[http://x.example]]
+@enduml

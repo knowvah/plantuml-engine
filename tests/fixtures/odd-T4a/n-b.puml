@@ -1,0 +1,6 @@
+@startuml
+class C {
+ x
+}
+note left of C::x : n
+@enduml

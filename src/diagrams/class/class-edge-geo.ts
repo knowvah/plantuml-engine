@@ -93,9 +93,7 @@ function pointDist(a: { x: number; y: number }, b: { x: number; y: number }): nu
  * `<path id>` string, N9). `matchesFromTo` sidesteps it entirely: `true`
  * when `points[0]` is `rel.from`'s end (so `sourceDecor`/`targetDecor` need
  * no swap -- the common case, identical to pre-N30 behavior), `false` when
- * the entity-distance check (or, for non-arrow-grammar edges, the
- * `swappedEdges` fallback) flipped the array so `points[0]` is `rel.to`'s
- * end instead.
+ * upstream's `cl1` is `rel.to` (`dotEdgeReversed`), so `points[0]` is that end.
  */
 interface NormalizedEdgePoints {
   points: Array<{ x: number; y: number }>;
@@ -117,6 +115,7 @@ function normalizeEdgePoints(
   const start = rawPts[0];
   const end = rawPts[rawPts.length - 1];
   let reversed = dotSwap;
+  let matchesFromTo = true;
   // `getSvekNode1()`/`getSvekNode2()` (`SvekEdge.java:644-645`) are
   // `link.getEntity1()`/`getEntity2()`, i.e. upstream's `cl1`/`cl2`. This
   // port normalizes `from`/`to` by the arrowhead, so `dotEdgeReversed`
@@ -129,10 +128,12 @@ function normalizeEdgePoints(
     const normal = pointDist(start, c1) + pointDist(end, c2);
     const inversed = pointDist(start, c2) + pointDist(end, c1);
     reversed = inversed < normal;
+    // `SvekEdge.java:636-655`: "Sometime, GraphViz inverses the result line. So we reverse the inversion". The path runs
+    // cl1 to cl2 after this whichever way dot returned it, and the decors never move, so `dotSwap` says nothing here: a
+    // single-dash port edge under `left to right direction` comes back head to tail with no swap at all.
+    matchesFromTo = rel.dotEdgeReversed !== true;
   }
   const points = reversed ? [...rawPts].reverse() : [...rawPts];
-  // points[0] is rel.from's end iff exactly one of {dotSwap, reversed} holds.
-  const matchesFromTo = dotSwap === reversed;
   return { points, matchesFromTo };
 }
 

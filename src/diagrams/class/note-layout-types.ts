@@ -232,6 +232,8 @@ export interface TipRequest {
  */
 export interface ClassifierAnchor {
   id: string;
+  /** odd T4a: a map or json host answers no tip (`note-tips-resolve.ts#memberAnchorRows`). */
+  kind?: string;
   x: number;
   y: number;
   /**

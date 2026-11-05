@@ -1,0 +1,8 @@
+@startuml
+allow_mixing
+hide empty description
+state A
+state D
+D : x
+class B
+@enduml

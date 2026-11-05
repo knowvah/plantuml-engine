@@ -13,6 +13,7 @@
 import type { Classifier } from './ast.js';
 import type { ClassifierGeo } from './layout.js';
 import { NAME_MARGIN_TOTAL } from './class-badge.js';
+import { visibilityMemberStep } from './class-visibility-icon.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { MemberRowBuild } from './class-member-creole.js';
@@ -179,6 +180,8 @@ export interface SectionRowContext {
    *  icon-section indent, matching `sectionWidth`'s width reserve
    *  (upstream uses the SAME `radius + 3` for both). */
   iconZoneWidth: number;
+  /** odd T2d: {@link memberIconBlockHeight} of this classifier's `classAttributeIconSize`. */
+  iconBlockHeight: number;
   /** CDD B7FU-R2 item (b) (coordinator, journal row 161): the member-row
    *  font's OWN size -- `buildSectionRows`'s own doc comment for the
    *  bottom-anchor formula this feeds (identical mechanism/citation to
@@ -310,6 +313,8 @@ export function buildSectionRows(
   let rowTop = 0;
   // CDD T20 (M6): see `memberBlockHeights`'s own doc comment.
   const blockHeights = memberBlockHeights(members, rowBuilds);
+  let step = { maxHeight12: 0, textDrop: 0 };
+  let blockHeight = 0;
   for (let i = 0; i < members.length; i++) {
     const text = texts[i]!;
     const member = members[i]!;
@@ -351,9 +356,17 @@ export function buildSectionRows(
     // atom.ts`'s own doc comment; emoji resolves to `'text'`, dy-corrected
     // like sup/sub, confirmed via `resolveEmojiAtom`) to reach ONLY case 1.
     const hasImageAtom = build.atoms.some((a) => a.kind === 'image');
+    // odd T2d: a section with icons places each member by `PlacementStrategyVisibility`.
+    // A wrapped member's rows share one step: `blockHeights` holds the whole block on its first row.
+    if (members[i - 1] !== member) {
+      step = sectionHasIcon
+        ? visibilityMemberStep(ctx.iconBlockHeight, member.visibilityExplicit === true, blockHeights[i]!)
+        : { maxHeight12: blockHeights[i]!, textDrop: 0 };
+      blockHeight = blockHeights[i]!;
+    }
     const top = sectionTop + SECTION_MARGIN_TOP + rowTop;
-    const y = top + (hasImageAtom ? build.height - bottomAnchor : baselineOffset);
-    rowTop += build.height;
+    const y = top + step.textDrop + (hasImageAtom ? build.height - bottomAnchor : baselineOffset);
+    rowTop += build.height + (members[i + 1] === member ? 0 : step.maxHeight12 - blockHeight);
     rows.push(buildOneRow({ text, member, build, y, indent, showIcon, blockHeight: blockHeights[i]!, blockTop: top }));
   }
   return rows;

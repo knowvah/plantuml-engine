@@ -1,0 +1,6 @@
+@startuml
+map m {
+ a *-> pk.London
+ b => c
+}
+@enduml

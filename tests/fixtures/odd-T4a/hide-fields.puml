@@ -1,0 +1,12 @@
+@startuml
+hide fields
+object a {
+ x = 1
+}
+map b {
+ k => v
+}
+json c {
+ "x": 1
+}
+@enduml

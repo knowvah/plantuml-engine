@@ -7,6 +7,8 @@ import type { LeafSymbolInk } from '../../core/svek/image/leaf-sizing.js';
 import type { LeafSizingStereotypeSprite } from '../../core/svek/image/LeafSizingSubject.js';
 import type { ClassifierKind, UrlInfo } from './ast.js';
 import type { GenericTagGeo } from './class-stereotype.js';
+import type { ObjectStyleScope } from './class-object-style.js';
+import type { StateGeoTextFields } from '../state/state-sizing.js';
 import type { EmptyPackageLeafDim } from './class-namespace-shape.js';
 import type { EnhancedBodyGeo } from './class-body-enhanced-layout.js';
 import type { ClassifierRowGeo } from './class-geo-row-types.js';
@@ -155,6 +157,18 @@ export interface ClassifierGeo {
    *  #buildBodyPrimitives` draws INSTEAD OF the `dividerYs`/`rows` Y-sort
    *  merge for one. */
   jsonBody?: readonly JsonBodyItem[];
+  /** odd T3c: copied from `Classifier.stateRoundCorner`. */
+  stateRoundCorner?: number;
+  /** odd T3c: a `state` leaf draws through the state engine (`class-state-leaf.ts`). */
+  stateLeaf?: StateGeoTextFields;
+  /** odd T2c: the first stereotype line's `LimitFinder` text top, off the box's `y`. */
+  stereoInkTop?: number;
+  /** odd T2b: `dimTitle.getHeight()` of an `object`/`map`/`json` box, which sizes its header split. */
+  titleHeight?: number;
+  /** odd T2b: the header split's `UPath` reaches the ink (`class-object-header-split.ts`). */
+  headerPathInk?: true;
+  /** odd T2a: copied from `Classifier.objectStyle`; the renderer's first tier. */
+  objectStyle?: ObjectStyleScope;
   /** G2 N37: EVERY stereotype label (2-or-3-bracket, `class-stereotype.ts
    *  #resolveStyleStereotypeTags`) this classifier carries -- feeds
    *  `renderer-classifier-box.ts`'s `.tagname` `<style>` cascade lookup

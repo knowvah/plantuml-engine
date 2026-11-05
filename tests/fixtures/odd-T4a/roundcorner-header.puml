@@ -1,0 +1,32 @@
+@startuml
+<style>
+object {
+  RoundCorner 20
+  header {
+    BackgroundColor pink
+  }
+}
+map {
+  RoundCorner 0
+  header {
+    BackgroundColor pink
+  }
+}
+json {
+  RoundCorner 8
+  header {
+    BackgroundColor pink
+  }
+}
+</style>
+object a {
+ x = 1
+}
+object e
+map b {
+ k => v
+}
+json c {
+ "x": 1
+}
+@enduml

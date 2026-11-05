@@ -1,0 +1,8 @@
+@startuml
+skinparam jsonBackgroundColor #fff-#eee
+json a {
+ "k"
+}
+json b {
+}
+@enduml

@@ -166,6 +166,7 @@ export function scaleRow(row: RowGeo, k: number, themeFontSize: number): RowGeo 
   return {
     ...row,
     y: row.y * k,
+    ...(row.sortY !== undefined ? { sortY: row.sortY * k } : {}),
     indent: row.indent * k,
     fontSize: (row.fontSize ?? themeFontSize) * k,
     ...(row.width !== undefined ? { width: row.width * k } : {}),

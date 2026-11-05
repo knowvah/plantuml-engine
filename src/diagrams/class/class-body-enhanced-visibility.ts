@@ -53,6 +53,8 @@ export interface EnhancedRowInput {
   readonly text: string;
   readonly build: MemberRowBuild;
   readonly rowTop: number;
+  /** `PlacementStrategyVisibility`'s `(maxHeight12 - height2) / 2`. */
+  readonly textDrop: number;
   readonly indent: number;
   readonly baselineOffset: number;
   readonly bottomAnchor: number;
@@ -63,9 +65,9 @@ export interface EnhancedRowInput {
  *  purely to keep that function under the project's NLOC cap; no behavior
  *  change (a pure move plus this task's own `iconVisibilityFields` fix). */
 export function buildEnhancedRow(input: EnhancedRowInput): ClassifierGeo['rows'][number] {
-  const { m, text, build, rowTop, indent, baselineOffset, bottomAnchor } = input;
+  const { m, text, build, rowTop, textDrop, indent, baselineOffset, bottomAnchor } = input;
   const hasImageAtom = build.atoms.some((a) => a.kind === 'image');
-  const y = rowTop + (hasImageAtom ? build.height - bottomAnchor : baselineOffset);
+  const y = rowTop + textDrop + (hasImageAtom ? build.height - bottomAnchor : baselineOffset);
   return {
     text,
     y,

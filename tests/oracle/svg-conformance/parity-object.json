@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T07:10:00.004Z",
+  "generatedAt": "2026-11-05T11:18:21.143Z",
   "fixtures": [
     {
       "slug": "baloca-83-nadu916",
@@ -104,9 +104,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "gizini-87-vuve916",
@@ -120,9 +118,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@fill"
+      "verdict": "conformant"
     },
     {
       "slug": "guzojo-14-muxa584",
@@ -262,23 +258,14 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[4]/@id"
+      "verdict": "conformant"
     },
     {
       "slug": "lunike-70-xipi897",
       "type": "object",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,209.40311200000002,345.00009600000004 vs ours 0,0,217.712492,347.99990399999996"
-      },
-      "verdict": "diverged",
-      "maxDelta": 8.653999999999996,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@font-size",
-      "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[9]"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "majake-62-pero492",
@@ -291,15 +278,8 @@
       "slug": "maxosa-84-juci042",
       "type": "object",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,614.5,296 vs ours 0,0,1018.5,296"
-      },
-      "verdict": "diverged",
-      "maxDelta": 403.28799999999995,
-      "firstDiff": "svg/g[1]/g[2]/text[8]/@textLength",
-      "maxDeltaPath": "svg/g[1]/g[2]/rect[1]/@width"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "meloxo-38-jeti489",
@@ -341,9 +321,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 26.167,
-      "maxDeltaPath": "svg/g[1]/g[1]/g[4]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "slug": "pagidu-67-doxa131",
@@ -363,15 +341,8 @@
       "slug": "pikuba-31-faxo766",
       "type": "object",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,734.7875199999999,156.000024 vs ours 0,0,654.9375359999999,146.00001600000002"
-      },
-      "verdict": "diverged",
-      "maxDelta": 338.788,
-      "firstDiff": "svg/g[1]/g[2]/text[2]/@textLength",
-      "maxDeltaPath": "svg/g[1]/g[2]/line[2]/@x1"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "robitu-34-vupe367",
@@ -435,18 +406,14 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 97,
-      "maxDeltaPath": "svg/g[1]/g[3]/polygon[1]/@points[1]"
+      "verdict": "conformant"
     },
     {
       "slug": "sibika-09-sipu286",
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 3.5,
-      "maxDeltaPath": "svg/g[1]/g[1]/text[5]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "sigado-12-rina240",
@@ -467,9 +434,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 69,
-      "maxDeltaPath": "svg/g[1]/g[3]/polygon[1]/@points[1]"
+      "verdict": "conformant"
     },
     {
       "slug": "sivime-00-gudo607",
@@ -511,23 +476,14 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "tenalu-53-meri239",
       "type": "object",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,50.725007999999995,137.999976 vs ours 0,0,50.725007999999995,136.000032"
-      },
-      "verdict": "diverged",
-      "maxDelta": 2.1670000000000016,
-      "firstDiff": "svg/g[1]/g[1]/rect[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/g[1]/line[1]/@y1"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "tobuka-93-jale775",
@@ -540,15 +496,8 @@
       "slug": "togixe-65-bepo490",
       "type": "object",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,606.5625080000001,497.999976 vs ours 0,0,617.987508,496.000032"
-      },
-      "verdict": "diverged",
-      "maxDelta": 19,
-      "firstDiff": "svg/g[1]/g[24][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[24]/text[1]/@x"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "tujasu-04-nota700",
@@ -576,9 +525,7 @@
       "type": "object",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 11.055999999999997,
-      "maxDeltaPath": "svg/g[1]/g[1]/g[4]/ellipse[1]/@cy"
+      "verdict": "conformant"
     },
     {
       "slug": "vozomu-86-rodo657",
@@ -611,21 +558,16 @@
     {
       "slug": "zicope-62-pica490",
       "type": "object",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 359,
-      "firstDiff": "svg/g[1]/g[1]/text[3]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "zuvila-56-nuda425",
       "type": "object",
-      "dotEqual": false,
+      "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 399,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     }
   ]
 }

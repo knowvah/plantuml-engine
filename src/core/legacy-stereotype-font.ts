@@ -16,6 +16,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageObject.java:105-106
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:484-505
  */
+import { parseFontStyleFlags } from './skinparam-key-handlers-shared.js';
 import { resolveColorToSvgHex } from './klimt/color/HColorSet.js';
 import type { ElementColors } from './theme.js';
 
@@ -43,13 +44,35 @@ const FONT_PARAMS: readonly (readonly [bucket: string, key: string])[] = [
 export function legacyStereotypeFonts(
   skinparam: ReadonlyMap<string, string>,
   darkText: string,
-): Partial<Record<string, Pick<ElementColors, 'font'>>> {
+): Partial<Record<string, Pick<ElementColors, 'font' | 'fontSize' | 'fontFamily' | 'fontStyle'>>> {
   const dark = skinparam.get(MODE_KEY)?.toLowerCase() === MODE_DARK;
-  const out: Partial<Record<string, Pick<ElementColors, 'font'>>> = {};
+  const out: Partial<Record<string, Pick<ElementColors, 'font' | 'fontSize' | 'fontFamily' | 'fontStyle'>>> = {};
   for (const [bucket, key] of FONT_PARAMS) {
     const raw = skinparam.get(key) ?? skinparam.get(DEFAULT_FONT_COLOR_KEY);
     if (raw !== undefined) out[bucket] = { font: resolveColorToSvgHex(raw) };
     else if (dark) out[bucket] = { font: darkText };
   }
+  const objectFace = objectStereotypeFace(skinparam);
+  if (objectFace !== undefined) out[OBJECT_STEREOTYPE_BUCKET] = { ...out[OBJECT_STEREOTYPE_BUCKET], ...objectFace };
   return out;
+}
+
+/**
+ * The rest of `FontConfiguration.create(skinParam, FontParam.OBJECT_STEREOTYPE, stereotype)`: `SkinParam#getFont`'s
+ * `objectStereotypeFontSize`, `...FontName`, `...FontStyle`, each falling to the `default...` key.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:338-385
+ */
+function objectStereotypeFace(
+  skinparam: ReadonlyMap<string, string>,
+): Pick<ElementColors, 'fontSize' | 'fontFamily' | 'fontStyle'> | undefined {
+  const read = (suffix: string): string | undefined =>
+    skinparam.get(`objectstereotype${suffix}`) ?? skinparam.get(`default${suffix}`);
+  const size = read('fontsize');
+  const family = read('fontname');
+  const style = read('fontstyle');
+  const out: Pick<ElementColors, 'fontSize' | 'fontFamily' | 'fontStyle'> = {};
+  if (size !== undefined && Number.isFinite(Number(size))) out.fontSize = Number(size);
+  if (family !== undefined) out.fontFamily = family;
+  if (style !== undefined) out.fontStyle = parseFontStyleFlags(style);
+  return Object.keys(out).length === 0 ? undefined : out;
 }

@@ -140,7 +140,19 @@ function executeDescriptiveLeaf(state: ParseState, match: RegExpExecArray): void
     return;
   }
   const decl = parseClassifierDecl(line);
-  if (decl !== null) applyClassifierDecl(state, decl, false);
+  if (decl === null || refuseStateBody(state, decl)) return;
+  applyClassifierDecl(state, decl, false);
+}
+
+/**
+ * `state` is `CommandCreateElementFull2`'s SYMBOL alone (java:84), a single-line command, and no command in
+ * `ClassDiagramFactory` opens a state body: the jar has `state A {` as a syntax error at that line.
+ */
+function refuseStateBody(state: ParseState, decl: { kind: string; opensBody: boolean }): boolean {
+  if (decl.kind !== 'state' || !decl.opensBody) return false;
+  const at = state.currentLine ?? 0;
+  state.executionRefusal = refuse('syntax', at, at, 'Syntax Error?');
+  return true;
 }
 
 /**

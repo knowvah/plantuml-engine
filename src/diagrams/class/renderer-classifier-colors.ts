@@ -9,13 +9,17 @@ import type { ClassifierGeo } from './layout.js';
 import {} from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { ScaledTheme } from './class-scale-geo.js';
-import { scaleDashArrayString } from './class-scale-geo-row.js';
 import {} from '../../core/svg.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { noGradient, parseColor } from '../../core/paint.js';
 import type { Paint } from '../../core/paint.js';
 import { isObjectKind } from './object-kind-style.js';
-import { CLASS_BUCKET, classScopedColor, objectDefaultBackground } from './renderer-classifier-scoped-colors.js';
+import {
+  CLASS_BUCKET,
+  classScopedColor,
+  objectDefaultBackground,
+  scopedPaint,
+} from './renderer-classifier-scoped-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
 import {} from './class-map-sizing.js';
@@ -232,7 +236,6 @@ export function classifierFill(geo: ClassifierGeo, theme: Theme): Paint {
   // pre-T18 `resolveColorToSvgHex(override)` handed the unsplit token
   // straight to `fill=` (jar-verified `taceve-49-mezi408`'s Test1-4).
   // A non-gradient token still goes through `resolveColorToSvgHex`
-  // unchanged, so every flat inline override is byte-identical.
   const override = resolveBareOrBackColor(geo.color);
   if (override !== undefined) {
     const parsed = parseColor(override);
@@ -255,6 +258,8 @@ export function classifierFill(geo: ClassifierGeo, theme: Theme): Paint {
   // for FontSize, and is retired. (The GENERIC rewrite -- upstream needs no
   // per-key matcher at all -- remains tracked; see the ledger's M22 row.)
   if (geo.kind === 'object' || geo.kind === 'map' || geo.kind === 'json') {
+    const scoped = geo.objectStyle?.box.background;
+    if (scoped !== undefined) return scopedPaint(scoped);
     return resolveElementBackground(theme, geo.kind, geo.stereotypeLabels) ?? objectDefaultBackground(theme);
   }
   // G2 N37: the `.tagname` sub-selector cascade (`class { .mystyle {
@@ -321,7 +326,7 @@ export function classBorder(geo: ClassifierGeo, theme: Theme): Paint {
   if (isObjectKind(geo.kind)) {
     // dss T3b: no class tier below a kind with no `classDiagram`/`class_` in its signature; the skin default is the
     // root `LineColor` (`theme.colors.border`), which `root`/`element` declarations reach.
-    const kindBorder = theme.colors.elements?.[geo.kind]?.border;
+    const kindBorder = geo.objectStyle?.box.border ?? theme.colors.elements?.[geo.kind]?.border;
     if (kindBorder === undefined) return theme.colors.border;
     return typeof kindBorder === 'string' ? resolveColorToSvgHex(kindBorder) : kindBorder;
   }
@@ -425,7 +430,9 @@ export function classBorderStrokeWidth(geo: ClassifierGeo, theme: ScaledTheme): 
 export function classStyleLineThickness(geo: ClassifierGeo, theme: Theme): number {
   // object/map/json: `getStyle().getStroke()` of their OWN signature
   // (`EntityImageObject.java:158`, `EntityImageMap.java:158`).
-  const kindThickness = isObjectKind(geo.kind) ? theme.colors.elements?.[geo.kind]?.lineThickness : undefined;
+  const kindThickness = isObjectKind(geo.kind)
+    ? (geo.objectStyle?.box.lineThickness ?? theme.colors.elements?.[geo.kind]?.lineThickness)
+    : undefined;
   if (kindThickness !== undefined) return kindThickness;
   const graph = theme.colors.graph;
   const byStereo = graph.classBorderThicknessByStereo;
@@ -438,46 +445,7 @@ export function classStyleLineThickness(geo: ClassifierGeo, theme: Theme): numbe
   return graph.classBorderThickness ?? graph.classCascadeLineThickness ?? CLASS_BORDER_STROKE_WIDTH_DEFAULT;
 }
 
-/**
- * CDD T20 (M1): the SAME `colors.getSpecificLineStroke()` override
- * {@link classBorderStrokeWidth} consults, for the SVG `stroke-dasharray`
- * half of the SAME `UStroke` (`LinkStyle#getStroke3()`, `decoration/
- * LinkStyle.java:97-108` -- DASHED `(7,7)`, DOTTED `(1,3)`, BOLD/unset no
- * dash). Every `rect(...)`/`path(...)`/`line(...)` call that reads {@link
- * classBorder}/{@link classBorderLine} for its `stroke` reads this for its
- * `strokeDasharray`, mirroring the fill/border split's own "one call reads
- * both halves" convention -- `undefined` (no attribute) for every
- * classifier with no inline line-style override, zero behavior change.
- */
-export function classBorderStrokeDasharray(geo: ClassifierGeo, theme: Theme, k: number): string | undefined {
-  const lineStyle = parseDeclarationColors(geo.color).lineStyle;
-  if (lineStyle === undefined) return objectKindDasharray(geo, theme, k);
-  const dash = strokeForStyle(lineStyle).getDasharraySvg();
-  return dash === undefined ? undefined : scaleDashArrayString(`${dash[0]},${dash[1]}`, k);
-}
-
-/**
- * The dash of a body divider. object/map/json: the `<sname>` `LineStyle` dash
- * reaches only the empty-fields placeholder divider (`EntityImageObject.java
- * :110-113` `TextBlockLineBefore(thickness, TextBlockEmpty)`, drawn under the
- * box's own stroke via `UGraphicStencil.create(ug, this, stroke)`, `:215`);
- * a populated object's divider is `BodyEnhanced1`'s thickness-only stroke
- * (jar `object/lisepi-64-mudo307`: `Object_user` line `stroke-width:2`, no
- * dash; `London` placeholder line `stroke-width:2;stroke-dasharray:10,5`).
- */
-export function classDividerDasharray(geo: ClassifierGeo, theme: Theme, k: number): string | undefined {
-  const inline = parseDeclarationColors(geo.color).lineStyle;
-  if (inline === undefined && geo.kind === 'object' && geo.emptyFieldPlaceholder !== true) return undefined;
-  return classBorderStrokeDasharray(geo, theme, k);
-}
-
-/** object/map/json `style.getStroke()` dash half: `<style> <sname> {
- *  LineStyle 10-5 }` (`Style.java:299-320`); `{0,0}` is an explicit solid. */
-function objectKindDasharray(geo: ClassifierGeo, theme: Theme, k: number): string | undefined {
-  const dash = isObjectKind(geo.kind) ? theme.colors.elements?.[geo.kind]?.lineStyle : undefined;
-  if (dash === undefined || dash.dashVisible === 0) return undefined;
-  return scaleDashArrayString(`${dash.dashVisible},${dash.dashSpace}`, k);
-}
+export { classBorderStrokeDasharray, classDividerDasharray } from './renderer-classifier-dash.js';
 
 /**
  * G3/O3: `map`/`json` row dividers (`TextBlockMap#drawU`/

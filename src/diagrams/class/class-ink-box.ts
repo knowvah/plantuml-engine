@@ -98,6 +98,9 @@ function addLollipopRowInk(box: InkBox, c: ClassifierGeo): void {
  * distinguishes the two empty-body states from each other.
  */
 function addClassifierBoxInk(box: InkBox, c: ClassifierGeo): void {
+  // `LimitFinder#drawUPath` (`LimitFinder.java:164-167`) on the header split's `UPath`, no inset; its bottom is the title.
+  if (c.headerPathInk === true) addPoint(box, c.x + c.width, c.y);
+  if (c.stereoInkTop !== undefined) addPoint(box, c.x, c.y + c.stereoInkTop);
   // T2b (json-canvas-width-1px): `kind: 'json'` dispatches per body shape
   // -- see `addJsonBodyInk`'s own doc comment.
   if (c.kind === 'json') {
@@ -107,7 +110,9 @@ function addClassifierBoxInk(box: InkBox, c: ClassifierGeo): void {
   // B5/M6: `kind: 'object'` whose field list is empty but still SHOWN --
   // upstream's `TextBlockEmpty(10, 16)` placeholder branch.
   if (c.kind === 'object' && c.emptyFieldPlaceholder === true) {
-    addRectInkEmptyShownBody(box, c.x, c.y, c.width, c.height);
+    // `LimitFinder.java:186-187`: `x + w - 1 + getDeltaShadow() * 2`.
+    const shadow = 2 * (c.shadowing ?? 0);
+    addRectInkEmptyShownBody(box, c.x, c.y, c.width + shadow, c.height + shadow);
     return;
   }
   // B35/M40: the THIRD state -- G3/O2's separate `addRectInkEmptyBody` rule

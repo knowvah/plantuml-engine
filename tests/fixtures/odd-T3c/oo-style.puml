@@ -1,0 +1,12 @@
+@startuml
+allow_mixing
+state A <<O-O>>
+state Z
+Z : desc
+class B
+<style>
+state {
+  BackgroundColor yellow
+}
+</style>
+@enduml

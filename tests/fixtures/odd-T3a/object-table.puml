@@ -1,0 +1,7 @@
+@startuml
+object O {
+  | a | b |
+  | c | d |
+}
+object P
+@enduml

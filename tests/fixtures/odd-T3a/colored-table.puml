@@ -1,0 +1,9 @@
+@startuml
+class C {
+  <#pink>| a | b |
+  |<#yellow> c | d |
+}
+object O {
+  <#pink>| a | b |
+}
+@enduml

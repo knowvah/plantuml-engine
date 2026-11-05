@@ -1,0 +1,8 @@
+@startuml
+skinparam object {
+ BorderRoundCorner 8
+}
+object a
+object b
+a -> b
+@enduml

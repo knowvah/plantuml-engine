@@ -1,0 +1,20 @@
+@startuml
+<style>
+object {
+  FontColor red
+  FontSize 10
+  FontName Courier
+}
+class {
+  FontColor blue
+}
+</style>
+object O {
+  | a | b |
+  | c | d |
+}
+class C {
+  | a | b |
+  | c | d |
+}
+@enduml

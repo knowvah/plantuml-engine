@@ -39,6 +39,9 @@ import { CANONICAL_OBJECT_SEPARATOR } from './class-object-display.js';
 import { buildObjectMemberRow } from './class-object-member-creole.js';
 import type { ObjectMemberRow } from './class-object-member-creole.js';
 import { atomsToPlainText } from './class-member-creole.js';
+import { parseWithNewlines } from '../../core/klimt/creole/DisplayNewlines.js';
+import { Pragma } from '../../core/skin/Pragma.js';
+import { memberIconBlockHeight, visibilityMemberStep } from './class-visibility-icon.js';
 import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import type { FlatMemberRows } from './class-member-rows.js';
 
@@ -154,6 +157,11 @@ function toFlatMemberRows(
   };
 }
 
+/** A field's `Display.getWithNewlines` lines (`Display.java:263-300`). */
+function fieldDisplayLines(text: string): readonly string[] {
+  return parseWithNewlines(Pragma.createEmpty(), text)!.lines;
+}
+
 /**
  * MethodsOrFieldsArea (via BodyFactory.create1 -> BodyEnhanced1 -> a single
  * buildTextBlock, since object field lines never contain a block separator/
@@ -188,12 +196,22 @@ export function measureObjectFields(
   showFields: boolean,
   bodyFont: ObjectKindFont,
 ): FieldsResult {
-  const visibleMembers = classifier.members.filter((m) => m.hidden !== true);
+  const declared = classifier.members.filter((m) => m.hidden !== true);
   if (!showFields) return { dim: { width: 0, height: 0 }, rows: [], flat: toFlatMemberRows([], [], []) };
-  if (visibleMembers.length === 0) return { dim: OBJECT_EMPTY_FIELDS, rows: [], flat: toFlatMemberRows([], [], []) };
+  if (declared.length === 0) return { dim: OBJECT_EMPTY_FIELDS, rows: [], flat: toFlatMemberRows([], [], []) };
 
   const fontSpec = { family: bodyFont.family, size: bodyFont.size };
-  const texts = visibleMembers.map(formatObjectMemberText);
+  // `MethodsOrFieldsArea#createTextBlock` keeps the modifier character when `hasSmallIcon` is false (A13).
+  const keepChar = theme.classAttributeIconSize === 0;
+  // A field is one `Display` block (`MethodsOrFieldsArea#createTextBlock`), so `\n` stacks lines in it: a member repeats
+  // once per line, as a wrapped class member does (`class-member-rows.ts#buildWrappedSectionRowBuilds`).
+  const lines = declared.flatMap((m) =>
+    fieldDisplayLines(
+      keepChar && m.visibilityExplicit === true ? m.visibility + formatObjectMemberText(m) : formatObjectMemberText(m),
+    ).map((text) => ({ member: m, text })),
+  );
+  const visibleMembers = lines.map((l) => l.member);
+  const texts = lines.map((l) => l.text);
   // G3/O4: `\t` characters (`skinparam tabSize`) split a line into
   // multiple independently-positioned text runs -- see `layoutTabRuns`'s
   // own doc comment. `tabStopWidthPx` is computed once per block (font-
@@ -206,7 +224,8 @@ export function measureObjectFields(
   const font: FontConfiguration = memberBaseFont(bodyFont, {});
   const builds = texts.map((t) => buildObjectMemberRow(t, font, measurer, tabStopPx));
   const widths = builds.map((b) => b.width);
-  const hasIcon = visibleMembers.some((m) => m.visibilityExplicit === true);
+  // `MethodsOrFieldsArea#hasSmallIcon` (java:125-127): icon size 0 draws none.
+  const hasIcon = theme.classAttributeIconSize !== 0 && visibleMembers.some((m) => m.visibilityExplicit === true);
   const iconReserve = hasIcon ? OBJECT_SMALL_ICON : 0;
   const textIndent = OBJECT_FIELD_MARGIN_X + iconReserve;
   const width = Math.max(...widths) + iconReserve + OBJECT_FIELD_MARGIN_X * 2;
@@ -218,9 +237,23 @@ export function measureObjectFields(
   const baselineOffset = baselineOffsetFor(fontSpec, measurer);
   const rows: ClassifierGeo['rows'] = [];
   let rowTop = OBJECT_FIELD_MARGIN_Y;
+  const iconBlockHeight = memberIconBlockHeight(theme.classAttributeIconSize);
+  let step = { maxHeight12: 0, textDrop: 0 };
+  let blockHeight = 0;
+  let blockTop = rowTop;
   builds.forEach((build, i) => {
-    const y = rowTop + baselineOffset;
-    rowTop += build.height;
+    const member = visibleMembers[i]!;
+    // `PlacementStrategyVisibility#getPositions`, once the section has an icon (`MethodsOrFieldsArea#getLayout`).
+    const firstLine = visibleMembers[i - 1] !== member;
+    if (firstLine) {
+      blockHeight = builds.reduce((sum, b, j) => (visibleMembers[j] === member ? sum + b.height : sum), 0);
+      step = hasIcon
+        ? visibilityMemberStep(iconBlockHeight, member.visibilityExplicit === true, blockHeight)
+        : { maxHeight12: blockHeight, textDrop: 0 };
+      blockTop = rowTop;
+    }
+    const y = rowTop + step.textDrop + baselineOffset;
+    rowTop += build.height + (visibleMembers[i + 1] === member ? 0 : step.maxHeight12 - blockHeight);
     build.runs.forEach(({ atom, x }, runIndex) => {
       rows.push({
         text: atomsToPlainText([atom]),
@@ -242,8 +275,13 @@ export function measureObjectFields(
         // FIELD`/`PRIVATE_FIELD` data-attributes, never `_METHOD`). Absent
         // pre-O4, `row.visibilityIsField === true` evaluated false for
         // every object row, incorrectly filling `+` icons like a method.
-        ...(runIndex === 0 && visibleMembers[i]!.visibilityExplicit === true
-          ? { visibilityIcon: visibleMembers[i]!.visibility, visibilityIsField: true as const }
+        ...(hasIcon && runIndex === 0 && firstLine && member.visibilityExplicit === true
+          ? {
+              visibilityIcon: member.visibility,
+              visibilityIsField: true as const,
+              visibilityBlockHeight: blockHeight,
+              visibilityBlockTopDy: blockTop - y,
+            }
           : {}),
       });
     });

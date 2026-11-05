@@ -1,0 +1,8 @@
+@startuml
+map m {
+ k => v
+}
+note left of m::k
+ n
+end note
+@enduml

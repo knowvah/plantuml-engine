@@ -1,0 +1,13 @@
+@startuml
+hide members
+object a {
+ x = 1
+}
+map b {
+ k => v
+}
+show a fields
+object d {
+ y = 2
+}
+@enduml

@@ -413,7 +413,7 @@ function writtenColor(role: keyof typeof ROLE_PNAMES, raw: string): ElementColor
 }
 
 /** The value's string, unless it has none (`ValueNull`, a dark-only value) or is conditional (see {@link roleColor}). */
-function writableColor(value: Value | undefined): string | undefined {
+export function writableColor(value: Value | undefined): string | undefined {
   const raw = value?.asString();
   return !raw || parseConditionalColor(raw) !== undefined ? undefined : raw;
 }

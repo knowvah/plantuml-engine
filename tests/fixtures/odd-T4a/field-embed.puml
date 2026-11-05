@@ -1,0 +1,16 @@
+@startuml
+object o
+o : a = {{
+o : class A
+o : }}
+object q {
+ {{
+ class B
+ }}
+}
+object p {
+ a = {{
+ class A
+ }}
+}
+@enduml

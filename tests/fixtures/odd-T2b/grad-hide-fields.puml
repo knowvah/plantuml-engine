@@ -1,0 +1,12 @@
+@startuml
+hide fields
+<style>
+object {
+ BackgroundColor #fff-#eee
+}
+</style>
+object a
+object b {
+ x = 1
+}
+@enduml

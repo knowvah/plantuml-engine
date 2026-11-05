@@ -8,6 +8,7 @@ import type { Member, Visibility } from './class-member-ast.js';
 import type { JsonNode } from '../../core/command/JsonNode.js';
 import type { UrlInfo } from './class-url.js';
 import type { MapRow } from './ast.js';
+import type { ObjectStyleScope } from './class-object-style.js';
 import type { DisplayPositioned } from '../../core/annotations/index.js';
 import type { LeafSizingStereotypeSprite } from '../../core/svek/image/LeafSizingSubject.js';
 
@@ -126,6 +127,9 @@ export interface Classifier {
    */
   suppressFields?: boolean;
   suppressMethods?: boolean;
+  /** odd T4a: the source order of the command that set each flag (`class-member-portion.ts`). */
+  suppressFieldsSeq?: number;
+  suppressMethodsSeq?: number;
   /**
    * For `kind: 'descriptive'`, the source keyword (`database`, `node`, …) — the
    * upstream USymbol. Preserved for rendering; does not affect DOT structure.
@@ -193,6 +197,11 @@ export interface Classifier {
    * feeds and `plans/g2-class-svg/ledger.md` N2 for the named remainder).
    */
   creationIndex?: number;
+  /** odd T3c: a `state` leaf's merged `RoundCorner` and shadow (`class-state-leaf.ts`). */
+  stateRoundCorner?: number;
+  stateShadowing?: number;
+  /** odd T2a: what an `object`/`map`/`json` image asks its merged styles (`class-object-style.ts`). */
+  objectStyle?: ObjectStyleScope;
   /** cdd-T3 (A1 SB3): standalone rank of the DOUBLE-couple `apoint` NAME tick, which upstream burns two ranks
    *  BEFORE the point entity (`objectdiagram/AbstractClassOrObjectDiagram.java:120-129`) -- so {@link phantomSlot}'s
    *  "rank at `creationIndex - 1`" encoding cannot express it. Single couples (`:226-231`) keep `phantomSlot`. */

@@ -1,0 +1,10 @@
+@startuml
+class C {
+ x
+}
+hide members
+show C fields
+class D {
+ y
+}
+@enduml

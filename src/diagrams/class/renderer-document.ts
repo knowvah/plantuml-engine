@@ -7,6 +7,7 @@
  * makers' `TextBlock` in the same exporter (`net/atmp/CucaDiagram.java:462-485`
  * picks the maker, `core/TextBlockExporter.java:159-180` draws either).
  */
+import { isNoteGeo } from './class-geo-types.js';
 import type { ClassGeometry } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import { scaleClassTheme, type ScaledTheme } from './class-scale-geo.js';
@@ -86,7 +87,8 @@ export function beginClassDocument(geo: ClassGeometry, rawTheme: Theme): ClassDo
   // establishes (mirrors `state/renderer.ts`'s identical Batch-2 gate) --
   // byte-identical (empty extraDefs) for every pre-mission/shadow-off
   // fixture.
-  const shadowDef = theme.shadowing !== undefined && theme.shadowing > 0 ? buildClassShadowFilterDef() : '';
+  const anyShadow = (theme.shadowing ?? 0) > 0 || geo.leaves.some((c) => !isNoteGeo(c) && (c.shadowing ?? 0) > 0);
+  const shadowDef = anyShadow ? buildClassShadowFilterDef() : '';
   // G2 N4/N48: full-canvas background rect, ONLY for a non-default
   // (non-black, non-white, non-transparent) background -- see
   // `renderClass`'s own doc comment for the jar-verified exclusion list and

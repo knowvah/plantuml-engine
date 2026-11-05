@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T07:06:23.106Z",
+  "generatedAt": "2026-11-05T11:14:43.200Z",
   "fixtures": [
     {
       "slug": "bajotu-30-soku184",
@@ -1819,15 +1819,8 @@
       "slug": "godage-48-foro407",
       "type": "class",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,245,81 vs ours 0,0,479,80"
-      },
-      "verdict": "diverged",
-      "maxDelta": 234.374,
-      "firstDiff": "svg/g[1]/g[1]/text[1]/@font-size",
-      "maxDeltaPath": "svg/g[1]/g[2]/line[1]/@x2"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "gojadi-30-tame684",
@@ -2698,9 +2691,7 @@
       "type": "class",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[2]/@id"
+      "verdict": "conformant"
     },
     {
       "slug": "lejoga-79-poji465",

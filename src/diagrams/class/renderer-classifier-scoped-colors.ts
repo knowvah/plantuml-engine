@@ -43,7 +43,7 @@ export const CLASS_HEADER_BUCKET = 'class.header';
  * `transparent` is the jar's `fill="none"` (`HColors.transparent()`), not the `#00000000` the flat cascades resolve
  * it to (`class__d3-theme-only`'s `root { BackgroundColor transparent }`); a gradient is already a `Paint`.
  */
-function scopedPaint(value: Paint): Paint {
+export function scopedPaint(value: Paint): Paint {
   if (typeof value !== 'string') return value;
   return isTransparentColor(value) ? PAINT_NONE : resolveColorToSvgHex(value);
 }

@@ -31,7 +31,7 @@ function scaleTableCell(cell: NoteTableCell, k: number): NoteTableCell {
   };
 }
 
-function scaleLineTable(t: NoteTableDraw | undefined, k: number): NoteTableDraw | undefined {
+export function scaleLineTable(t: NoteTableDraw | undefined, k: number): NoteTableDraw | undefined {
   if (t === undefined) return undefined;
   return {
     ...t,

@@ -85,8 +85,11 @@ function objectFamilyCascadeFontColor(
   isHeader: boolean,
   isStereoLabelRow: boolean,
 ): string {
+  const nameRow = isHeader && !isStereoLabelRow;
+  const scoped = (nameRow ? geo.objectStyle?.header.font : undefined) ?? geo.objectStyle?.box.font;
   return (
-    (isHeader && !isStereoLabelRow ? resolveElementHeaderFont(theme, geo.kind) : undefined) ??
+    (scoped !== undefined ? resolveColorToSvgHex(scoped) : undefined) ??
+    (nameRow ? resolveElementHeaderFont(theme, geo.kind) : undefined) ??
     resolveElementFont(theme, geo.kind) ??
     objectDefaultFontColor(theme)
   );

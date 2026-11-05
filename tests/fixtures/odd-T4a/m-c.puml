@@ -1,0 +1,10 @@
+@startuml
+hide fields
+object a {
+ x = 1
+}
+show a members
+object d {
+ y = 2
+}
+@enduml

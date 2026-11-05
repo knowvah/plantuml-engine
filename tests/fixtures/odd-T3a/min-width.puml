@@ -1,0 +1,11 @@
+@startuml
+skinparam minClassWidth 200
+object O {
+  | a | b |
+  | c | d |
+}
+class C {
+  | a | b |
+  | c | d |
+}
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+skinparam mapBackgroundColor #fff-#eee
+map a {
+}
+map b {
+}
+map c {
+ k => v
+}
+a -> b
+@enduml

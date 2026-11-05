@@ -1,0 +1,18 @@
+@startuml
+class C {
+  | a | b |
+  | c | d |
+
+  x
+
+  | a | b |
+  | c | d |
+}
+object O {
+  | a | b |
+  | c | d |
+
+  | a | b |
+  | c | d |
+}
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+skinparam objectAttributeFontName Courier
+object o {
+ a = 1
+}
+@enduml

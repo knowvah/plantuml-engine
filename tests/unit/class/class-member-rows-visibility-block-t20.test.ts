@@ -20,7 +20,7 @@ function build(height: number): MemberRowBuild {
   return { atoms: [], width: 10, height };
 }
 
-const CTX: SectionRowContext = { baselineOffset: 0, iconZoneWidth: 14, fontSize: 14 };
+const CTX: SectionRowContext = { baselineOffset: 0, iconBlockHeight: 11, iconZoneWidth: 14, fontSize: 14 };
 
 describe('buildSectionRows — visibilityBlockHeight', () => {
   // cdd3-T22: superseded expectation -- the field used to be omitted when

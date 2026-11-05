@@ -1,0 +1,12 @@
+@startuml
+hide stereotype
+object a <<S>> {
+ x = 1
+}
+map b <<S>> {
+ k => v
+}
+json c <<S>> {
+ "x": 1
+}
+@enduml

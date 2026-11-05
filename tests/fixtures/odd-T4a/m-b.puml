@@ -1,0 +1,9 @@
+@startuml
+object a {
+ x = 1
+}
+hide a fields
+object d {
+ y = 2
+}
+@enduml

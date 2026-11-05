@@ -23,6 +23,9 @@ export function inkBodyFields(m: MeasuredClassifier): Partial<ClassifierGeo> {
   return {
     ...(m.emptyFieldPlaceholder === true ? { emptyFieldPlaceholder: true as const } : {}),
     ...(m.bodyInkWidth !== undefined ? { bodyInkWidth: m.bodyInkWidth } : {}),
+    ...(m.titleHeight !== undefined ? { titleHeight: m.titleHeight } : {}),
+    ...(m.stateLeaf !== undefined ? { stateLeaf: m.stateLeaf } : {}),
+    ...(m.stereoInkTop !== undefined ? { stereoInkTop: m.stereoInkTop } : {}),
     ...(m.bodyInkHeight !== undefined ? { bodyInkHeight: m.bodyInkHeight } : {}),
     ...(m.symbolInk !== undefined ? { symbolInk: m.symbolInk } : {}),
   };

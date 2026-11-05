@@ -24,6 +24,7 @@ import {
 } from './class-member-rows.js';
 import { isEnhancedBody } from './class-body-enhanced.js';
 import { measureEnhancedBody } from './class-body-enhanced-layout.js';
+import { memberIconBlockHeight } from './class-visibility-icon.js';
 import type { computeStereoAndTagGeo } from './class-layout-header-geo.js';
 
 /** Params bundle for {@link computeMemberSectionsGeo} -- kept under the
@@ -100,7 +101,18 @@ export function computeMemberSectionsGeo(
   // it, so the sum is identical for the common case).
   const fieldsH = suppress.fields ? 0 : sectionHeight(fieldFlat.builds);
   const methodsH = suppress.methods ? 0 : sectionHeight(methodFlat.builds);
-  return { fieldFlat, methodFlat, fieldsHasIcon, methodsHasIcon, sectionsWidth, fieldsH, methodsH, iconZoneWidth };
+  const iconBlockHeight = memberIconBlockHeight(options.classAttributeIconSize);
+  return {
+    fieldFlat,
+    methodFlat,
+    fieldsHasIcon,
+    methodsHasIcon,
+    sectionsWidth,
+    fieldsH,
+    methodsH,
+    iconZoneWidth,
+    iconBlockHeight,
+  };
 }
 
 /**
@@ -118,7 +130,11 @@ export function computeEnhancedBodyGeo(
   fontSpec: { family: string; size: number; hyperlinkColor?: string },
   measurer: StringMeasurer,
   stereoGeo: ReturnType<typeof computeStereoAndTagGeo>,
-  options: { sprites: SpriteRegistry | undefined; suppress: MemberSuppression },
+  options: {
+    sprites: SpriteRegistry | undefined;
+    suppress: MemberSuppression;
+    classAttributeIconSize?: number | undefined;
+  },
 ) {
   const { sprites, suppress } = options;
   if (!isEnhancedBody(classifier.rawBodyLines) || (suppress.fields && suppress.methods)) return undefined;
@@ -127,6 +143,7 @@ export function computeEnhancedBodyGeo(
     measurer,
     sprites,
     baselineOffset: stereoGeo.memberBaselineOffset,
+    iconBlockHeight: memberIconBlockHeight(options.classAttributeIconSize),
     bodyTop: stereoGeo.headerRowHeight,
   });
 }

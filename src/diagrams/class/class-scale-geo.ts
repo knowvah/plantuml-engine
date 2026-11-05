@@ -74,6 +74,8 @@ function scaleClassifierGeo(c: ClassifierGeo, k: number, themeFontSize: number):
     ...(c.enhancedBody !== undefined ? { enhancedBody: scaleEnhancedBody(c.enhancedBody, k, themeFontSize) } : {}),
     ...(c.jsonBody !== undefined ? { jsonBody: scaleJsonBody(c.jsonBody, k, themeFontSize) } : {}),
     ...(c.bodyInkWidth !== undefined ? { bodyInkWidth: c.bodyInkWidth * k } : {}),
+    ...(c.titleHeight !== undefined ? { titleHeight: c.titleHeight * k } : {}),
+    ...(c.stereoInkTop !== undefined ? { stereoInkTop: c.stereoInkTop * k } : {}),
     ...(c.bodyInkHeight !== undefined ? { bodyInkHeight: c.bodyInkHeight * k } : {}),
   };
 }

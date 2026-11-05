@@ -52,10 +52,18 @@ import type { MeasuredClassifier } from './class-layout-helpers.js';
 import type { EnhancedBodyGeo } from './class-body-enhanced-layout.js';
 import { isEnhancedBody } from './class-body-enhanced.js';
 import { measureEnhancedBody } from './class-body-enhanced-layout.js';
+import { measureNameBlock } from './class-object-name-block.js';
+import { memberIconBlockHeight } from './class-visibility-icon.js';
 import type { Dim } from './class-object-map-header.js';
-import { titleDimension, measureStereo, headerRows, baselineOffsetFor } from './class-object-map-header.js';
+import {
+  titleDimension,
+  measureStereo,
+  headerRows,
+  baselineOffsetFor,
+  nameRowCountFields,
+  stereoInkField,
+} from './class-object-map-header.js';
 import { floorAtMinimumWidth, objectBodyReportsPorts } from './class-object-map-sizing.js';
-import { objectDisplayText } from './class-object-display.js';
 import { measureObjectFields, methodOrFieldHeight } from './class-object-fields.js';
 import { resolveStyleStereotypeTags } from './class-stereotype.js';
 import { headerFontSpec, resolveHeaderFontOverride, resolveObjectBodyFont } from './object-kind-style.js';
@@ -124,13 +132,18 @@ function computeObjectTitle(classifier: Classifier, theme: Theme, measurer: Stri
   // header-specific override; a stereotype-scoped size wins over both
   // (`withTOBECHANGED(stereotype)`, jar `object/tenalu-53-meri239`).
   // FontName / FontStyle resolve the same way (`object-kind-style.ts`).
-  const nameFont = resolveHeaderFontOverride(theme, 'object', resolveStyleStereotypeTags(classifier));
+  const nameFont = resolveHeaderFontOverride(
+    theme,
+    'object',
+    resolveStyleStereotypeTags(classifier),
+    classifier.objectStyle,
+  );
   const nameFontSpec = headerFontSpec(theme, nameFont);
   // Tilde escapes resolved before measuring -- see `class-object-display.ts`.
-  const nameM = measurer.measure(objectDisplayText(classifier.display), nameFontSpec);
+  const nameBlock = measureNameBlock(classifier.display, nameFontSpec, measurer);
   const nameDim: Dim = {
-    width: nameM.width + OBJECT_NAME_PADDING * 2,
-    height: nameM.height + OBJECT_NAME_PADDING * 2,
+    width: nameBlock.width + OBJECT_NAME_PADDING * 2,
+    height: nameBlock.height + OBJECT_NAME_PADDING * 2,
   };
   const stereoDim = measureStereo(classifier, theme, measurer);
   return { title: titleDimension(nameDim, stereoDim), nameFont };
@@ -147,6 +160,7 @@ function buildEnhancedObjectGeo(params: EnhancedObjectBranchParams): MeasuredCla
     Math.max(enhancedBody.width, title.width + OBJECT_X_MARGIN_CIRCLE * 2),
     theme,
     'object',
+    classifier.objectStyle?.box.minimumWidth,
   );
   const patchedHeaderRows = headerRows(classifier, theme, measurer, {
     boxWidth: width,
@@ -189,7 +203,7 @@ function buildFieldBasedObjectGeo(params: FieldBasedObjectGeoParams): MeasuredCl
     theme,
     measurer,
     showFields,
-    resolveObjectBodyFont(theme, 'object', resolveStyleStereotypeTags(classifier)),
+    resolveObjectBodyFont(theme, 'object', resolveStyleStereotypeTags(classifier), classifier.objectStyle),
   );
   const fieldsHeight = methodOrFieldHeight(fieldsDim.height, showFields);
 
@@ -197,6 +211,7 @@ function buildFieldBasedObjectGeo(params: FieldBasedObjectGeoParams): MeasuredCl
     Math.max(fieldsDim.width, title.width + OBJECT_X_MARGIN_CIRCLE * 2),
     theme,
     'object',
+    classifier.objectStyle?.box.minimumWidth,
   );
   const height = title.height + fieldsHeight;
 
@@ -206,6 +221,10 @@ function buildFieldBasedObjectGeo(params: FieldBasedObjectGeoParams): MeasuredCl
     underlineName: theme.strictUml === true,
     nameFont,
   });
+  const nameCounts = nameRowCountFields(
+    rows.length,
+    measureNameBlock(classifier.display, headerFontSpec(theme, nameFont), measurer).lines.length,
+  );
   for (const r of fieldRows) rows.push({ ...r, y: title.height + r.y });
 
   // B5/M6: an empty-but-SHOWN field list is upstream's
@@ -232,7 +251,10 @@ function buildFieldBasedObjectGeo(params: FieldBasedObjectGeoParams): MeasuredCl
     height,
     rows,
     portMemberSections,
+    ...nameCounts,
     dividerYs: showFields ? [title.height] : [],
+    titleHeight: title.height,
+    ...stereoInkField(classifier, theme, measurer),
     ...(emptyFieldPlaceholder ? { emptyFieldPlaceholder: true as const } : {}),
     // B35/M40: only a POPULATED field list is a real `BodyFactory.create1`
     // body, whose `decorate` wraps it in a `TextBlockMarged` that draws the
@@ -245,6 +267,12 @@ function buildFieldBasedObjectGeo(params: FieldBasedObjectGeoParams): MeasuredCl
     // a `TextBlockMarged`. See `class-ink-box.ts#addRectInk`.
     bodyInkWidth: showFields && !emptyFieldPlaceholder ? fieldsDim.width : 0,
   };
+}
+
+/** `CommandCreateEntityObjectMultilines#executeNow`: `lines.trim().removeEmptyLines()`, so an object's raw body never
+ *  holds a blank, and two tables a blank separates in the source are one table in the jar. */
+function objectBodyLines(raw: readonly string[]): readonly string[] {
+  return raw.filter((line) => line.trim() !== '');
 }
 
 /**
@@ -283,15 +311,21 @@ export function measureObjectClassifier(
   // already-verified common case while adding ONLY the separator/tree
   // capability. `fontSpec` here is the FIELD font (theme default) -- the
   // header override above is name-row-only, unrelated.
-  const bodyFont = resolveObjectBodyFont(theme, 'object', resolveStyleStereotypeTags(classifier));
+  const bodyFont = resolveObjectBodyFont(
+    theme,
+    'object',
+    resolveStyleStereotypeTags(classifier),
+    classifier.objectStyle,
+  );
   const fontSpec = { family: bodyFont.family, size: bodyFont.size };
   const enhancedBody =
     isEnhancedBody(classifier.rawBodyLines) && showFields
-      ? measureEnhancedBody(classifier.rawBodyLines!, {
+      ? measureEnhancedBody(objectBodyLines(classifier.rawBodyLines!), {
           fontSpec,
           measurer,
           sprites,
           baselineOffset: baselineOffsetFor(fontSpec, measurer),
+          iconBlockHeight: memberIconBlockHeight(theme.classAttributeIconSize),
           bodyTop: title.height,
         })
       : undefined;

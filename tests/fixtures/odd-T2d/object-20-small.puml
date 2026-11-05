@@ -1,0 +1,14 @@
+@startuml
+skinparam classAttributeIconSize 20
+<style>
+object {
+  FontSize 6
+}
+</style>
+object O {
+ -a = 1
+ b = 2
+}
+object P
+O --> P
+@enduml

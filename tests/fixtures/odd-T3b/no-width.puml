@@ -1,0 +1,6 @@
+@startuml
+map m {
+  k => a long value that does not wrap at all here
+  key two => v
+}
+@enduml

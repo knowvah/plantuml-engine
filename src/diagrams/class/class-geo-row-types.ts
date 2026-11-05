@@ -95,6 +95,11 @@ export interface ClassifierRowGeo {
    * common case, `theme.strictUml` unset).
    */
   underline?: boolean;
+  /** odd T3b: the draw-order key of a map cell's wrapped line, its row's first baseline: `TextBlockMap#drawU` draws a
+   *  whole key block, then a whole value block, then the column rule (`TextBlockMap.java:137-152`). */
+  sortY?: number;
+  /** odd T3b: this entry is a map row's value cell (`renderer-classifier-map-dividers.ts`). */
+  mapValueCell?: true;
   /**
    * CDD T20 (A5/M6): present only alongside `visibilityIcon` -- this
    * member's OWN total wrapped-block height (sum of every physical

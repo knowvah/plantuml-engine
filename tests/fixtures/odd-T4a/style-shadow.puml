@@ -1,0 +1,22 @@
+@startuml
+<style>
+map {
+  shadowing 3
+}
+object {
+  shadowing 2
+}
+json {
+  shadowing 1
+}
+</style>
+object a
+map b {
+ k => v
+}
+map d {
+}
+json c {
+ "x": 1
+}
+@enduml

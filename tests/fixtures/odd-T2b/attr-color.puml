@@ -1,0 +1,6 @@
+@startuml
+skinparam objectAttributeFontColor red
+object o {
+ a = 1
+}
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+left to right direction
+map A {
+ ka => va
+ kb => vb
+}
+map B {
+ xa => ya
+ xb => yb
+}
+object o {
+ f1 = 1
+ f2 = 2
+}
+A::ka --> B::xa
+B::xb <-- A::kb
+o::f1 --> A::kb
+A::kb <-- o::f2
+@enduml

@@ -121,8 +121,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   object: {
     noteClass: 'openDefect',
     detail:
-      'Mostly geometry on the 16 fixtures short of conformant: canvas size, text y positions, box heights and path ' +
-      'data; not yet diagnosed row by row.',
+      'object-divergence-drive (#115, 2026-11-05) took all 16 open rows to conformant: 81 of 81, all pinned. One authored ' +
+      'probe stays off the jar inside dot-engine, `docs/graphviz-issues/41`.',
   },
   packet: {
     noteClass: 'openDefect',

@@ -53,8 +53,14 @@ describe('addJsonBodyInk (T2b)', () => {
     expect(withObject.width).toBe(primitive.width + 1);
   });
 
-  it('height is unaffected by the hline dispatch (this task is width-only)', () => {
-    const primitive = computeClassRawInkDims([jsonLeaf({ x: 10, y: 10, width: 100, height: 40 })], [], [], []);
+  it('height is unaffected by the hline dispatch: a primitive draws its text, which reaches y+h', () => {
+    const text = { kind: 'text', row: { text: 'a', y: 30, indent: 5, width: 10 } } as const;
+    const primitive = computeClassRawInkDims(
+      [jsonLeaf({ x: 10, y: 10, width: 100, height: 40, jsonBody: [text] })],
+      [],
+      [],
+      [],
+    );
     const withObject = computeClassRawInkDims(
       [
         jsonLeaf({
@@ -70,5 +76,16 @@ describe('addJsonBodyInk (T2b)', () => {
       [],
     );
     expect(withObject.height).toBe(primitive.height);
+  });
+
+  it('an empty body bounds at y+h-1: its one vline has no height (TextBlockCucaJSon.java:167)', () => {
+    const vline = { kind: 'vline', x: 10, y: 30, height: 0 } as const;
+    const empty = computeClassRawInkDims(
+      [jsonLeaf({ x: 10, y: 10, width: 100, height: 40, jsonBody: [vline] })],
+      [],
+      [],
+      [],
+    );
+    expect(empty.height).toBe(49 - 9 + 15);
   });
 });

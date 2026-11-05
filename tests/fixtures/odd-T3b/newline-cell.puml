@@ -1,0 +1,10 @@
+@startuml
+<style>
+map {
+  MaximumWidth 60
+}
+</style>
+map m {
+  k => line one\nline two that wraps past
+}
+@enduml

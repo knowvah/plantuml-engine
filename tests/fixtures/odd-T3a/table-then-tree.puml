@@ -1,0 +1,12 @@
+@startuml
+class C {
+  | a | b |
+  |_ t1
+  |_ t2
+  | c | d |
+}
+object O {
+  |_ t1
+  | c | d |
+}
+@enduml

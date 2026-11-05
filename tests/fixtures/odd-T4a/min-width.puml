@@ -1,0 +1,19 @@
+@startuml
+<style>
+object {
+  MinimumWidth 150
+}
+map {
+  MinimumWidth 150
+}
+</style>
+object a {
+ x = 1
+}
+object b
+map c {
+ k => v
+}
+map d {
+}
+@enduml

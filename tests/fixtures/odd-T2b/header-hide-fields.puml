@@ -1,0 +1,11 @@
+@startuml
+<style>
+object {
+ header {
+  BackgroundColor pink
+  }
+}
+</style>
+hide fields
+object a
+@enduml

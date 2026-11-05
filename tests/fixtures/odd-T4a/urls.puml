@@ -1,0 +1,13 @@
+@startuml
+map m [[http://a.example]] {
+ k => v
+}
+map n {
+ k => [[http://b.example c]]
+ [[http://c.example d]] => w
+}
+object o [[http://d.example]]
+json j [[http://e.example]] {
+ "x": 1
+}
+@enduml

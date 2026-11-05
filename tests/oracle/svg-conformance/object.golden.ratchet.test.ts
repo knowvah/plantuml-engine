@@ -8,9 +8,11 @@
  * and then never regresses). ONE difference, structural, not procedural:
  * object diagrams have no separate engine upstream — `ClassDiagramFactory`
  * registers the object/map commands alongside the class ones — so this
- * suite reuses `render-fixture-class.ts#renderFixtureClass` VERBATIM
- * (the SAME helper class's own ratchet uses), not a dedicated object
- * render helper. `oracle/goldens/svg-object/<slug>/` has no `<type>`
+ * suite renders through `render-fixture-class.ts#renderClassFixture` under
+ * `censusClassFixtureOptions`, with a preloaded ELK backend, as class's own
+ * ratchet does (odd D9, cdd5-T2), not a dedicated object render helper. A
+ * `!pragma layout elk` row has no DOT stage, so AC3 admits it by the shared
+ * `isElkRow` rule. `oracle/goldens/svg-object/<slug>/` has no `<type>`
  * dimension either (mirrors svg-class, not svg-description's
  * `<type>/<slug>/`) — see that directory's own README.md.
  *
@@ -25,14 +27,16 @@
  * every other ratchet suite's own precedent), even though that branch is
  * not exercised at O0.
  */
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from './compare.js';
-import { renderFixtureClass } from './render-fixture-class.js';
+import { censusClassFixtureOptions } from '../../../scripts/svg-conformance-census.js';
+import { isElkRow } from './description-eligibility.js';
+import { prepareElkOnce, renderClassFixture } from './render-fixture-class.js';
 
 interface RatchetFixture {
   slug: string;
@@ -47,6 +51,7 @@ interface RatchetManifest {
 interface ParityEntry {
   slug: string;
   dotEqual: boolean;
+  oracleBlind?: boolean;
 }
 
 interface ParityReport {
@@ -82,6 +87,11 @@ function readSource(f: RatchetFixture): string {
   return readFileSync(join(fixtureDir(f), 'in.puml'), 'utf8');
 }
 
+/** cdd8 D12 (`description-eligibility.ts#isElkRow`), as `class.golden.ratchet.test.ts#isRatchetEligible`. */
+function isRatchetEligible(entry: ParityEntry, source: string): boolean {
+  return entry.dotEqual || isElkRow(entry, source);
+}
+
 function firstDiffPath(diffs: readonly { path: string }[]): string {
   return diffs.length > 0 ? diffs[0]!.path : '(none)';
 }
@@ -91,11 +101,15 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 // ---------------------------------------------------------------------------
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-object conformance ratchet (AC1)', () => {
+  beforeAll(async () => {
+    await prepareElkOnce();
+  });
+
   for (const f of manifest.fixtures) {
     it(`object/${f.slug}: stays zero-diff against the pinned golden`, () => {
       const golden = readGolden(f);
       const markup = readSource(f);
-      const ours = renderFixtureClass(markup, new DeterministicMeasurer());
+      const ours = renderClassFixture(markup, new DeterministicMeasurer(), censusClassFixtureOptions());
       const { pass, diffs } = compareSvg(ours, golden, 'deterministic');
       expect(
         pass,
@@ -119,6 +133,10 @@ if (manifest.fixtures.length === 0) {
 // ---------------------------------------------------------------------------
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-object conformance ratchet — tamper detection (AC2)', () => {
+  beforeAll(async () => {
+    await prepareElkOnce();
+  });
+
   it('a mutated golden (in-memory only) produces a failure naming slug + diff path', () => {
     const f = manifest.fixtures[0];
     expect(f, 'expected at least one seeded fixture to exercise tamper detection').toBeDefined();
@@ -126,7 +144,7 @@ describe.skipIf(manifest.fixtures.length === 0)('svg-object conformance ratchet 
 
     const golden = readGolden(target);
     const markup = readSource(target);
-    const ours = renderFixtureClass(markup, new DeterministicMeasurer());
+    const ours = renderClassFixture(markup, new DeterministicMeasurer(), censusClassFixtureOptions());
 
     // Confirm the untampered pair really is zero-diff first, so the
     // tampered-case failure below is attributable to the mutation alone.
@@ -160,14 +178,29 @@ if (manifest.fixtures.length === 0) {
 // ---------------------------------------------------------------------------
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-object conformance ratchet — eligibility (AC3)', () => {
-  it('every manifest slug has a dotEqual=true parity-object.json entry', () => {
+  it('every manifest slug is DOT-EQUAL in parity-object.json, or an ELK row with no DOT stage', () => {
     for (const f of manifest.fixtures) {
       const entry = findParityEntry(f.slug);
       expect(entry, `object/${f.slug}: no parity-object.json entry found`).toBeDefined();
-      expect(entry!.dotEqual, `object/${f.slug}: manifest entry is not DOT-EQUAL — ineligible for the ratchet`).toBe(
-        true,
-      );
+      expect(
+        isRatchetEligible(entry!, readSource(f)),
+        `object/${f.slug}: manifest entry is not DOT-EQUAL — ineligible for the ratchet`,
+      ).toBe(true);
     }
+  });
+
+  it('a dotEqual row is eligible whatever its source', () => {
+    expect(isRatchetEligible({ slug: 'x', dotEqual: true }, '@startuml\n@enduml')).toBe(true);
+  });
+
+  it('an oracleBlind row is eligible only with !pragma layout elk', () => {
+    const blind = { slug: 'x', dotEqual: false, oracleBlind: true };
+    expect(isRatchetEligible(blind, '@startuml\n!pragma layout elk\n@enduml')).toBe(true);
+    expect(isRatchetEligible(blind, '@startuml\n@enduml')).toBe(false);
+  });
+
+  it('a row neither dotEqual nor oracleBlind is ineligible, pragma or not', () => {
+    expect(isRatchetEligible({ slug: 'x', dotEqual: false }, '@startuml\n!pragma layout elk\n@enduml')).toBe(false);
   });
 });
 

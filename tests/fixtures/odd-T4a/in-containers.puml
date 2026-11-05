@@ -1,0 +1,19 @@
+@startuml
+together {
+ object a
+ map b {
+  k => v
+ }
+}
+package P {
+ object c
+ map d {
+  k => v
+ }
+ json e {
+  "x": 1
+ }
+}
+a --> c
+d::k --> a
+@enduml

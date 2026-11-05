@@ -1,0 +1,5 @@
+@startuml
+allow_mixing
+state A <<S>>
+class B
+@enduml

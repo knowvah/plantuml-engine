@@ -1,0 +1,9 @@
+@startuml
+!theme aws-orange
+object o {
+ a = 1
+}
+map m {
+ k => v
+}
+@enduml

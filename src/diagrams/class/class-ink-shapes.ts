@@ -369,9 +369,6 @@ export function addClassicRectInk(box: InkBox, x: number, y: number, w: number, 
  * -- so its presence is read directly rather than re-deriving the json
  * value's shape a second time.
  *
- * The Y rule is untouched (`bodyInkHeight` is never set for `kind:'json'`,
- * so `addRectInk`'s own fallback already gave `y+h` -- this task's own
- * measured residual is width-only).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageJson.java:192
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/cucadiagram/TextBlockCucaJSon.java:168,174,215-220
@@ -380,5 +377,12 @@ export function addJsonBodyInk(box: InkBox, c: ClassifierGeo): void {
   addPoint(box, c.x - 1, c.y - 1);
   const hasHline = (c.jsonBody ?? []).some((item) => item.kind === 'hline');
   const maxX = hasHline ? c.x + c.width : c.x + c.width - 1;
-  addPoint(box, maxX, c.y + c.height);
+  // An empty object draws one `ULine.vline(0)` at the title's foot (`TextBlockCucaJSon.java:167`) and an empty array
+  // nothing, so only `drawRectangle`'s `y + h - 1` reaches the bottom: the title stops `marginEmptyFieldsOrMethod`
+  // above it (`EntityImageJson.java:224-228`).
+  const reachesBottom = (c.jsonBody ?? []).some((item) => item.kind !== 'vline');
+  const maxY = reachesBottom ? c.y + c.height : c.y + c.height - 1;
+  addPoint(box, maxX, maxY);
+  const shadow = c.shadowing ?? 0;
+  if (shadow > 0) addPoint(box, c.x + c.width - 1 + 2 * shadow, c.y + c.height - 1 + 2 * shadow);
 }

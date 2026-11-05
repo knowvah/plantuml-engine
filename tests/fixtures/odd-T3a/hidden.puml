@@ -1,0 +1,12 @@
+@startuml
+hide empty members
+class C {
+  | a | b |
+  | c | d |
+}
+hide fields
+object O {
+  | a | b |
+  | c | d |
+}
+@enduml

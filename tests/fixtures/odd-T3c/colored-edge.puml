@@ -1,0 +1,8 @@
+@startuml
+allow_mixing
+state A #pink
+state "long name here" as L
+class B
+B --> A
+L --> B : x
+@enduml

@@ -433,6 +433,29 @@ export function visibilityIconOriginY(rowBaselineY: number, rowHeight: number, t
   return rowBaselineY - ascent + centeringDelta(rowHeight, iconBlockHeight(theme, k), k);
 }
 
+/** `MethodsOrFieldsArea#getUBlock(null, ...)`, a member with no modifier: `new XDimension2D(1, 1)` (java:345-347). */
+const NO_MODIFIER_BLOCK_HEIGHT = 1;
+
+/** `VisibilityModifier#getUBlock`'s `size + 1` (`VisibilityModifier.java:100-102`), for layout's raw size. */
+export function memberIconBlockHeight(classAttributeIconSize: number | undefined): number {
+  return (classAttributeIconSize ?? VISIBILITY_ICON_SIZE) + 1;
+}
+
+/**
+ * One member's step through `PlacementStrategyVisibility#getPositions` (java:56-69): `maxHeight12`, what `y` advances
+ * by, and `textDrop`, the text's `(maxHeight12 - height2) / 2`. The box's own height never reads this
+ * (`MethodsOrFieldsArea#calculateDimensionOnlyMembers` sums the text heights alone, java:154-178), so a large icon
+ * overflows it, as the jar's does.
+ */
+export function visibilityMemberStep(
+  iconBlockHeightPx: number,
+  hasModifier: boolean,
+  textHeight: number,
+): { maxHeight12: number; textDrop: number } {
+  const maxHeight12 = Math.max(hasModifier ? iconBlockHeightPx : NO_MODIFIER_BLOCK_HEIGHT, textHeight);
+  return { maxHeight12, textDrop: (maxHeight12 - textHeight) / 2 };
+}
+
 /**
  * cdd3-T22 (E1-3): `PlacementStrategyVisibility#getPositions`'s icon Y,
  * ported whole rather than through a baseline: `2 + y + (maxHeight12 -

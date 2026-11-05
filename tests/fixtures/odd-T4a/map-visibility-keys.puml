@@ -1,0 +1,12 @@
+@startuml
+map m {
+ +pub => a
+ -priv => b
+ #prot => c
+ ~pack => d
+ __under__ => e
+}
+object o
+m::pub --> o
+m::-priv --> o
+@enduml

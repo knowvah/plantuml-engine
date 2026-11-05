@@ -206,12 +206,7 @@ function parseObjectMatch(match: RegExpExecArray): ObjectMatch {
  * Upstream then errors ("Object already exists") when the resolved quark
  * already carries entity data — this fires for BOTH a genuine
  * re-declaration and the auto-created-endpoint case above, since both leave
- * `quark.getData() != null`. This parser has no error-reporting channel for
- * command execution (no site in class-commands.ts surfaces diagnostics —
- * see class-lollipop.ts's `applyLollipop` doc for the same gap), so the
- * observable behavior is a silent no-op: an existing classifier is left
- * completely untouched by a re-declaration, unlike `applyClassifierDecl`
- * (class/interface/…), which always re-applies fields on redeclaration.
+ * `quark.getData() != null`.
  *
  * The resolved id is computed via `resolveReference` (the same helper
  * `ensureClassifier` uses internally) BEFORE calling `ensureClassifier`,
@@ -231,7 +226,9 @@ function applyObjectDecl(state: ParseState, match: RegExpExecArray): void {
     classifiers: state.ast.classifiers,
     reuseExistingChild: true,
   });
-  if (state.classifierIndex.has(id)) return; // "Object already exists" — no-op
+  // Upstream errors here (`error("Object already exists: " + quark.getName())`); the maintainer's ruling of 2026-11-04
+  // (#143) signed `losote-76` as drawn, so the first declaration stands until that ruling changes.
+  if (state.classifierIndex.has(id)) return;
 
   const classifier = ensureClassifier(state, rawId, 'object', rawDisplay, true);
   if (stereotype !== undefined) classifier.stereotype = stereotype;

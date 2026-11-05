@@ -42,7 +42,10 @@ import type { Classifier } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { ClassifierGeo } from './layout.js';
-import { splitStereotypeLabels, measureStereoLabelWidths } from './class-stereotype.js';
+import { OBJECT_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
+import { measureNameBlock } from './class-object-name-block.js';
+import { headerLineTops, headerLineY } from './class-header-line-stacking.js';
+import { resolveVisibleStereotypeLabels } from './class-stereotype.js';
 import { objectDisplayText } from './class-object-display.js';
 import { plainRowRender } from './class-driver-text-placement.js';
 import { headerFontSpec, type HeaderFontOverride } from './object-kind-style.js';
@@ -115,6 +118,30 @@ interface StereoHeaderRowsResult {
  *  EntityImageObject and EntityImageMap; independent of theme.fontSize. */
 const STEREO_FONT_SIZE = 12;
 
+/** `LimitFinder.java:220`, `y -= dim.getHeight() - 1.5`. */
+const LIMIT_FINDER_TEXT_DESCENT = 1.5;
+
+/** `FontParam.OBJECT_STEREOTYPE` (`FontParam.java:58`) through its skinparam chain (`legacy-stereotype-font.ts`). */
+function stereoFace(theme: Theme): { family: string; size: number; bold: boolean; italic: boolean } {
+  const bucket = theme.colors.elements?.[OBJECT_STEREOTYPE_BUCKET];
+  return {
+    family: bucket?.fontFamily ?? theme.fontFamily,
+    size: bucket?.fontSize ?? STEREO_FONT_SIZE,
+    bold: bucket?.fontStyle?.bold === true,
+    italic: bucket?.fontStyle === undefined || bucket.fontStyle.italic === true,
+  };
+}
+
+/** Each label's guillemet-wrapped width, at its bold face when {@link stereoFace} has one. */
+function stereoLabelWidths(
+  labels: readonly string[],
+  face: { family: string; size: number; bold: boolean },
+  measurer: StringMeasurer,
+): number[] {
+  const spec: FontSpec = { family: face.family, size: face.size, ...(face.bold ? { weight: 'bold' as const } : {}) };
+  return labels.map((label) => measurer.measure(wrapGuillemet(label), spec).width);
+}
+
 /** Guillemet.GUILLEMET (`«`/`»`) — upstream's default wrapping when
  *  no `skinparam guillemet` override is configured. */
 function wrapGuillemet(label: string): string {
@@ -167,10 +194,36 @@ export function measureStereo(classifier: Classifier, theme: Theme, measurer: St
   // (`ast.ts#Classifier.hideStereotype`'s own doc comment); jar-verified
   // `kocupi-02-ripa662`.
   if (classifier.stereotype === undefined || classifier.hideStereotype === true) return { width: 0, height: 0 };
-  const labels = splitStereotypeLabels(classifier.stereotype);
+  const labels = resolveVisibleStereotypeLabels(classifier);
   if (labels.length === 0) return { width: 0, height: 0 };
-  const widths = measureStereoLabelWidths(labels, theme.fontFamily, measurer, undefined, STEREO_FONT_SIZE);
-  return { width: Math.max(...widths), height: labels.length * STEREO_FONT_SIZE };
+  const face = stereoFace(theme);
+  const widths = stereoLabelWidths(labels, face, measurer);
+  return { width: Math.max(...widths), height: labels.length * face.size };
+}
+
+/**
+ * Where the first stereotype line's text tops out, relative to the box: `LimitFinder#drawText`
+ * (`LimitFinder.java:217-225`) does `y -= dim.getHeight() - 1.5` off the bounder's own height, unfloored. At 12 px that
+ * clears the rect's `y - 1` (`:185`): `9.333 - 10.5 = -1.167`, dss follow-on 22.
+ */
+function stereoTextInkTop(classifier: Classifier, theme: Theme, measurer: StringMeasurer): number | undefined {
+  if (classifier.stereotype === undefined || classifier.hideStereotype === true) return undefined;
+  const [label] = resolveVisibleStereotypeLabels(classifier);
+  if (label === undefined) return undefined;
+  const face = stereoFace(theme);
+  const spec = { family: face.family, size: face.size };
+  const baseline = face.size - measurer.getDescent(spec, '');
+  return baseline - measurer.measure(wrapGuillemet(label), spec).height + LIMIT_FINDER_TEXT_DESCENT;
+}
+
+/** {@link stereoTextInkTop} as a `MeasuredClassifier` field. */
+export function stereoInkField(
+  classifier: Classifier,
+  theme: Theme,
+  measurer: StringMeasurer,
+): { stereoInkTop?: number } {
+  const top = stereoTextInkTop(classifier, theme, measurer);
+  return top === undefined ? {} : { stereoInkTop: top };
 }
 
 /**
@@ -273,26 +326,29 @@ function buildStereoHeaderRows(
   measurer: StringMeasurer,
   boxWidth: number,
 ): StereoHeaderRowsResult {
-  const stereoFontSpec = { family: theme.fontFamily, size: STEREO_FONT_SIZE };
+  const face = stereoFace(theme);
+  const stereoFontSpec = { family: face.family, size: face.size };
   const stereoLabels =
     classifier.stereotype === undefined || classifier.hideStereotype === true
       ? []
-      : splitStereotypeLabels(classifier.stereotype);
-  const stereoWidths = measureStereoLabelWidths(stereoLabels, theme.fontFamily, measurer, undefined, STEREO_FONT_SIZE);
-  const stereoBaselineOffset = STEREO_FONT_SIZE - measurer.getDescent(stereoFontSpec, '');
+      : resolveVisibleStereotypeLabels(classifier);
+  const stereoWidths = stereoLabelWidths(stereoLabels, face, measurer);
+  const stereoBaselineOffset = face.size - measurer.getDescent(stereoFontSpec, '');
   const rows: ClassifierGeo['rows'] = stereoLabels.map((label, i) => {
     const width = stereoWidths[i]!;
     return {
       text: wrapGuillemet(label),
-      y: i * STEREO_FONT_SIZE + stereoBaselineOffset,
+      y: i * face.size + stereoBaselineOffset,
       indent: (boxWidth - width) / 2,
-      italic: true,
+      ...(face.italic ? { italic: true } : {}),
+      ...(face.bold ? { bold: true } : {}),
+      ...(face.family !== theme.fontFamily ? { fontFamily: face.family } : {}),
       stereotypeLabel: true,
       width,
-      fontSize: STEREO_FONT_SIZE,
+      fontSize: face.size,
     };
   });
-  return { rows, stereoHeight: stereoLabels.length * STEREO_FONT_SIZE };
+  return { rows, stereoHeight: stereoLabels.length * face.size };
 }
 
 /**
@@ -386,27 +442,51 @@ export function headerRows(
   // Same resolved text the sizer measures (`class-object-display.ts`); the
   // two are gated in lock-step by the sizer<->renderer parity test.
   const displayText = objectDisplayText(classifier.display);
-  const nameWidth = measurer.measure(displayText, nameFontSpec).width;
   const nameBaseline = nameFontSpec.size - measurer.getDescent(nameFontSpec, displayText);
-  const nameY = stereoHeight + namePadding + nameBaseline;
-  const nameIndent = (boxWidth - nameWidth) / 2;
+  const nameTop = stereoHeight + namePadding;
   if (underlineName) {
+    const nameWidth = measurer.measure(displayText, nameFontSpec).width;
     rows.push(
-      ...buildUnderlinedNameRows(displayText, nameY, nameIndent, {
+      ...buildUnderlinedNameRows(displayText, nameTop + nameBaseline, (boxWidth - nameWidth) / 2, {
         fontSpec: nameFontSpec,
         measurer,
         font: nameFont,
       }),
     );
-  } else {
+    return rows;
+  }
+  const block = measureNameBlock(classifier.display, nameFontSpec, measurer);
+  const tops = headerLineTops(
+    nameTop,
+    block.lines.length,
+    nameFontSpec.size,
+    block.lines.map((l) => l.height),
+  );
+  block.lines.forEach((line, i) => {
+    const y = headerLineY({
+      lineTop: tops[i]!,
+      fontSize: nameFontSpec.size,
+      baselineOffset: nameBaseline,
+      atoms: line.atoms,
+      height: line.height,
+    });
     rows.push({
-      text: displayText,
-      y: nameY,
-      indent: nameIndent,
-      width: nameWidth,
-      ...plainRowRender(displayText, (s) => measurer.measure(s, nameFontSpec).width),
+      text: line.text,
+      y,
+      indent: (boxWidth - line.width) / 2,
+      width: line.width,
+      ...(line.atoms !== undefined ? { atoms: line.atoms } : {}),
+      ...line.render,
       ...nameRowFont(nameFont),
     });
-  }
+  });
   return rows;
+}
+
+/** The header counts a multi-line name needs: the rows the renderer draws as the header, and the name's. */
+export function nameRowCountFields(
+  headerRowCount: number,
+  nameLineCount: number,
+): { headerRowCount?: number; nameRowCount?: number } {
+  return nameLineCount > 1 ? { headerRowCount, nameRowCount: nameLineCount } : {};
 }

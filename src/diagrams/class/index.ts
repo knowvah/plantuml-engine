@@ -10,6 +10,8 @@ import { parseClass } from './parser.js';
 import { layoutClass, classPageAst, classPageCount } from './layout.js';
 import { renderClass, renderClassPage } from './renderer.js';
 import { annotateClassStyles } from './class-cluster-corner.js';
+import { annotateObjectStyles } from './class-object-style.js';
+import { annotateStateLeafStyles } from './class-state-leaf.js';
 import { layoutClassElk } from './class-elk-layout.js';
 import { ELK_RENDER_SYNC_UNSUPPORTED } from '../../core/elk/layout-services.js';
 import { DiagramRefusal } from '../../core/error/error-diagrams.js';
@@ -79,7 +81,11 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
   layoutSync(ast, theme, measurer, services) {
     if (ast.layoutEngine === 'elk' && services?.elk === undefined) throw new Error(ELK_RENDER_SYNC_UNSUPPORTED);
     const builder = services?.styleBuilder?.();
-    if (builder !== undefined) annotateClassStyles(ast, builder);
+    if (builder !== undefined) {
+      annotateClassStyles(ast, builder);
+      annotateObjectStyles(ast.classifiers, builder, theme);
+      annotateStateLeafStyles(ast.classifiers, builder);
+    }
     const geo =
       ast.layoutEngine === 'elk' && services?.elk !== undefined
         ? layoutClassElk(ast, theme, measurer, services.elk)

@@ -203,7 +203,11 @@ function computeClassifierGeoPipeline(
   const minClassWidth = options.minClassWidth ?? 0;
   const { attribute: fontSpec } = fonts;
   const { headerNameGeo, stereoGeo } = buildHeaderAndStereoGeo(classifier, fonts, measurer, options);
-  const enhancedBody = computeEnhancedBodyGeo(classifier, fontSpec, measurer, stereoGeo, { sprites, suppress });
+  const enhancedBody = computeEnhancedBodyGeo(classifier, fontSpec, measurer, stereoGeo, {
+    sprites,
+    suppress,
+    classAttributeIconSize: options.classAttributeIconSize,
+  });
   const memberSections =
     enhancedBody !== undefined
       ? undefined
@@ -275,6 +279,7 @@ function buildEnhancedBodyResult(
   headerRowsGeo: ReturnType<typeof computeHeaderRowsGeo>,
   enhancedBody: NonNullable<ReturnType<typeof computeEnhancedBodyGeo>>,
   commonFields: CommonHeaderFields,
+  headerInkWidth: number | undefined,
 ): MeasuredClassifier {
   return {
     width,
@@ -287,6 +292,9 @@ function buildEnhancedBodyResult(
     // CDD B7FU-R2 item (a): see `MeasuredClassifier.enhancedPortRows`'s doc.
     ...(enhancedBody.portMembers.length > 0 ? { enhancedPortRows: enhancedBody.portMembers } : {}),
     ...commonFields,
+    // Its blocks are `TextBlockMarged`s no wider than the body (`BodyEnhancedAbstract#decorate`, `BodyEnhanced1.java:144`),
+    // so a `MinimumWidth` past them leaves only the rect's `x + w - 1` (`BodyEnhanced1.java:162-164`).
+    ...(headerInkWidth !== undefined ? { bodyInkWidth: Math.max(headerInkWidth, enhancedBody.width) } : {}),
   };
 }
 
@@ -354,7 +362,8 @@ function measureGenericClassifierAt(
   const { headerNameGeo, stereoGeo, enhancedBody, memberSections, width, headerRowsGeo, commonFields } = pipeline;
 
   if (enhancedBody !== undefined) {
-    return buildEnhancedBodyResult(width, stereoGeo, headerRowsGeo, enhancedBody, commonFields);
+    const headerInk = genericClassifierInkFields(classifier.kind, pipeline, suppress, options.badgeRadius);
+    return buildEnhancedBodyResult(width, stereoGeo, headerRowsGeo, enhancedBody, commonFields, headerInk.bodyInkWidth);
   }
 
   // cdd2-T17/cdd3-T7: `bodyInkWidth`/`bodyInkHeight` ride with the header
@@ -432,6 +441,7 @@ function buildNormalClassifierResult(
   const rowCtx: SectionRowContext = {
     baselineOffset: stereoGeo.memberBaselineOffset,
     iconZoneWidth: memberSections.iconZoneWidth,
+    iconBlockHeight: memberSections.iconBlockHeight,
     fontSize,
   };
   if (!suppress.fields) {

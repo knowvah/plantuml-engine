@@ -37,14 +37,17 @@ import { buildMemberRow, type MemberRowBuild } from './class-member-creole.js';
 import { formatMemberText } from './class-layout-helpers.js';
 import { sectionWidth, ROW_TEXT_LEFT_MARGIN } from './class-member-rows.js';
 import { buildEnhancedRow } from './class-body-enhanced-visibility.js';
-import { splitEnhancedBlocks, type EnhancedBodyBlock, type BlockSeparatorSpec } from './class-body-enhanced.js';
-import { measureTreeCells, computeTreeConnectors, type TreeConnector } from './class-body-tree.js';
+import { splitEnhancedBlocks, type BlockSeparatorSpec } from './class-body-enhanced.js';
+import type { TreeConnector } from './class-body-tree.js';
 import {
   ClassifierBodyGeometry,
   ELEMENT_DEFAULT_LINE_THICKNESS,
   BODY_ENHANCED_MARGIN_X,
 } from './class-body-enhanced-geometry.js';
 import type { EmbeddedRenderer } from './class-nested-diagram-renderer.js';
+import { visibilityMemberStep } from './class-visibility-icon.js';
+import { layoutTableBlock, layoutTreeBlock } from './class-body-enhanced-special-blocks.js';
+import type { NoteTableDraw } from './note-layout-measure-table.js';
 import { extractEmbeds, stackEmbeds, type EmbeddedBlockGeo } from './class-body-enhanced-embeds.js';
 import { buildPortMembers, translatePortMembers, type EnhancedPortMemberInput } from './class-body-enhanced-ports.js';
 
@@ -55,7 +58,6 @@ const ROW_INDENT_WITH_ICON = ROW_TEXT_LEFT_MARGIN + ROW_ICON_ZONE_WIDTH;
 /** `AtomWithMargin(tree, 2, 2)` — vertical-only top/bottom margin wrapping
  *  the WHOLE tree block (distinct from `AtomTree`'s own internal
  *  `CELL_TEXT_MARGIN`, see `class-body-tree.ts`'s module doc comment). */
-const TREE_BLOCK_MARGIN = 2;
 /** ADR-7: the ONE `src/core/` owner this file's plain/titled divider
  *  branches consume for their Y-axis geometry — see `class-body-enhanced-
  *  geometry.ts`'s own module doc comment. A single shared instance is
@@ -71,6 +73,8 @@ export interface EnhancedLayoutCtx {
   readonly measurer: StringMeasurer;
   readonly sprites: SpriteRegistry | undefined;
   readonly baselineOffset: number;
+  /** odd T2d: {@link memberIconBlockHeight} of this classifier's `classAttributeIconSize`. */
+  readonly iconBlockHeight: number;
   /** The classifier's own `headerRowHeight` -- every emitted `row.y`/
    *  `part.y`/`title.y` below is relative to `geo.y` DIRECTLY (matching
    *  every other `ClassifierGeo.rows[].y` consumer's convention), so this
@@ -135,7 +139,16 @@ export interface EnhancedTreePart {
   readonly connectors: readonly TreeConnector[];
 }
 
-export type EnhancedBodyPart = EnhancedDividerPart | EnhancedRowsPart | EnhancedTreePart;
+/** A creole table's block (`BodyEnhanced1.java:143-146`): `y` is the block's top, `x` its left margin. */
+export interface EnhancedTablePart {
+  readonly kind: 'table';
+  readonly x: number;
+  readonly y: number;
+  readonly baselineOffset: number;
+  readonly table: NoteTableDraw;
+}
+
+export type EnhancedBodyPart = EnhancedDividerPart | EnhancedRowsPart | EnhancedTreePart | EnhancedTablePart;
 
 export interface EnhancedBodyGeo {
   readonly parts: readonly EnhancedBodyPart[];
@@ -257,24 +270,33 @@ function buildRowsBlockRows(lines: readonly string[], ctx: EnhancedLayoutCtx, co
   // must NOT shift `y` (`class-member-rows.ts#buildSectionRows`'s own doc
   // comment: exposant-01-class/sovuxo-25-tepi226 regressions, same fix).
   let rowTop = contentTop;
+  // `MethodsOrFieldsArea#calculateDimensionOnlyMembers` sums the text heights alone (java:154-178), where the rows step
+  // by `maxHeight12`: the block ends here, whatever a large icon did to `rowTop`.
+  let blockBottom = contentTop;
   const bottomAnchor = fontSpec.size - baselineOffset;
   // cdd-T23/T19 + cdd5-T4e: row shape built by `class-body-enhanced-
   // visibility.ts#buildEnhancedRow` (isMethodMember bucketing,
   // visibilityBlockHeight/TopDy one-row-block rationale, own doc comment).
   const rows: ClassifierGeo['rows'] = members.map((m, i) => {
+    // odd T2d: `PlacementStrategyVisibility`, on this path too (`MethodsOrFieldsArea#getLayout`).
+    const step = hasIcon
+      ? visibilityMemberStep(ctx.iconBlockHeight, m.visibilityExplicit === true, builds[i]!.height)
+      : { maxHeight12: builds[i]!.height, textDrop: 0 };
     const row = buildEnhancedRow({
       m,
       text: texts[i]!,
       build: builds[i]!,
       rowTop,
+      textDrop: step.textDrop,
       indent,
       baselineOffset,
       bottomAnchor,
     });
-    rowTop += builds[i]!.height;
+    rowTop += step.maxHeight12;
+    blockBottom += builds[i]!.height;
     return row;
   });
-  const embeds = stackEmbeds(embedSources, ctx, rowTop);
+  const embeds = stackEmbeds(embedSources, ctx, blockBottom);
   const portMembers = buildPortMembers(members, texts, builds, contentTop);
   // Box geometry uses each embed's size -- the SAME `UImageSvg` size that is
   // drawn (`class-body-enhanced-embeds.ts#renderEmbed`). Width margin
@@ -289,7 +311,7 @@ function buildRowsBlockRows(lines: readonly string[], ctx: EnhancedLayoutCtx, co
   return {
     rows,
     width: Math.max(sectionWidth(builds, hasIcon), embedsWidth),
-    contentHeight: rowTop - contentTop + embedsHeight,
+    contentHeight: blockBottom - contentTop + embedsHeight,
     embeds,
     portMembers,
   };
@@ -308,7 +330,7 @@ function rowsBlockWidth(memberAreaWidth: number, titleWidth: number | undefined)
   return titleWidth === undefined ? memberAreaWidth : Math.max(memberAreaWidth, titleWidth + 8);
 }
 
-interface BlockLayoutResult {
+export interface BlockLayoutResult {
   readonly cursor: number;
   readonly width: number;
 }
@@ -437,42 +459,6 @@ function layoutRowsBlock(
   return result;
 }
 
-/** One tree-block (`EnhancedBodyBlock` with `kind: 'tree'`) — the
- *  `AtomTree`/`Skeleton2` geometry (`class-body-tree.ts`), offset by
- *  `TREE_BLOCK_MARGIN` (`AtomWithMargin(tree, 2, 2)`'s top half) and
- *  `cursor`. Text `indent` is `level*8 + 10` (`xEndForLevel(level) +
- *  CELL_TEXT_MARGIN`, `class-body-tree.ts`'s own formula), baked per-row
- *  since level varies cell to cell. */
-function layoutTreeBlock(
-  block: Extract<EnhancedBodyBlock, { kind: 'tree' }>,
-  ctx: EnhancedLayoutCtx,
-  cursor: number,
-  parts: EnhancedBodyPart[],
-): BlockLayoutResult {
-  const { fontSpec, measurer, sprites, baselineOffset } = ctx;
-  const tree = measureTreeCells(block.cells, fontSpec, measurer, sprites);
-  const contentTop = cursor + TREE_BLOCK_MARGIN;
-  const rows: ClassifierGeo['rows'] = tree.rows.map((r) => ({
-    text: r.build.atoms.length === 1 && r.build.atoms[0]!.kind === 'text' ? r.build.atoms[0]!.text : '',
-    y: contentTop + r.localTop + baselineOffset,
-    indent: r.level * 8 + 10,
-    width: r.build.width,
-    atoms: r.build.atoms,
-  }));
-  const connectors = computeTreeConnectors(tree.rows).map((c) => ({
-    bulletX: c.bulletX,
-    bulletY: contentTop + c.bulletY,
-    hx1: c.hx1,
-    hx2: c.hx2,
-    hy: contentTop + c.hy,
-    vx: c.vx,
-    vy1: contentTop + c.vy1,
-    vy2: contentTop + c.vy2,
-  }));
-  parts.push({ kind: 'tree', rows, connectors });
-  return { cursor: contentTop + tree.height + TREE_BLOCK_MARGIN, width: tree.width };
-}
-
 /**
  * Assembles the full enhanced-body geometry for a classifier's raw member
  * lines. Mirrors `measureGenericClassifier`'s classic-path signature
@@ -492,7 +478,9 @@ export function measureEnhancedBody(rawLines: readonly string[], ctx: EnhancedLa
     const result =
       block.kind === 'tree'
         ? layoutTreeBlock(block, ctx, cursor, parts)
-        : layoutRowsBlock(block.lines, block.separator, ctx, cursor, parts);
+        : block.kind === 'table'
+          ? layoutTableBlock(block, ctx, cursor, parts)
+          : layoutRowsBlock(block.lines, block.separator, ctx, cursor, parts);
     cursor = result.cursor;
     width = Math.max(width, result.width);
   }

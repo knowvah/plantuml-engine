@@ -9,6 +9,7 @@
 import type { NotePosition } from './ast.js';
 import { parseTagTokens } from './class-declaration-parser.js';
 import { addFreestandingNote, addNote, NOTE_STEREO_CAPTURE, NOTE_COLOR, NOTE_URL, NOTE_TARGET } from './class-notes.js';
+import { refuseUnknownNoteTarget } from './class-note-target.js';
 import { parseUrlBracket } from './class-url.js';
 import type { Command } from './class-command-types.js';
 import { refuse } from '../../core/parse-refusal.js';
@@ -134,6 +135,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
         refuseNothingToNoteTo(state);
         return;
       }
+      if (refuseUnknownNoteTarget(state, target, match[2] === undefined, true)) return;
       // G2 N37: NOTE_STEREO_CAPTURE is now capturing (group 3) -- COLOR
       // shifted from match[3] to match[4].
       // G2 N70: NOTE_URL is now capturing (group 5) -- the text group shifted

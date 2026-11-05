@@ -1,0 +1,12 @@
+@startuml
+skinparam object {
+  HeaderBackgroundColor palegreen
+  FontColor red
+  AttributeFontColor blue
+  BorderColor green
+}
+object o <<Foo>> {
+ a = 1
+}
+skinparam objectStereotypeFontColor purple
+@enduml

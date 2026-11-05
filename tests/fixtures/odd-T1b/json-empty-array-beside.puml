@@ -1,0 +1,7 @@
+@startuml
+json j {
+[]
+}
+map m {
+}
+@enduml

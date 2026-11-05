@@ -1,0 +1,6 @@
+@startuml
+skinparam objectBorderThickness 3
+object a
+object b
+a -> b
+@enduml

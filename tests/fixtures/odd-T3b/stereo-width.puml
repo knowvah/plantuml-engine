@@ -1,0 +1,13 @@
+@startuml
+<style>
+.X {
+  MaximumWidth 60
+}
+</style>
+map m <<X>> {
+  k => a long value that wraps too
+}
+map n {
+  k => a long value that wraps too
+}
+@enduml

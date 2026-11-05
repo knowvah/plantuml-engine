@@ -1,0 +1,7 @@
+@startuml
+map m {
+ just text
+ a => b
+}
+object user
+@enduml

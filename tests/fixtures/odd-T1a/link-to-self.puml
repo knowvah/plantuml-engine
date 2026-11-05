@@ -1,0 +1,7 @@
+@startuml
+map CapitalCity {
+ UK *-> CapitalCity
+ USA => Washington
+}
+object user
+@enduml

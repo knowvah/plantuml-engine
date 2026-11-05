@@ -1,0 +1,8 @@
+@startuml
+skinparam classAttributeIconSize 20
+skinparam wrapWidth 40
+class C {
+ -aaaaaaaaaaa bbbbbbbbbbb ccccccccc
+ +d()
+}
+@enduml
