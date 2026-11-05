@@ -1195,7 +1195,8 @@ describe('routing conformance — jar-error classification', () => {
     // 9635 -> 9669 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 9635 + 34 = 9669.
     // 9669 -> 9676 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 9669 + 7 = 9676.
     // 9676 -> 9722 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 9676 + 46 = 9722.
-    expect(pinnedAgree.length).toBe(9722);
+    // 9722 -> 9723 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
+    expect(pinnedAgree.length).toBe(9723);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1273,7 +1274,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10327 -> 10361 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 10327 + 34 = 10361.
     // 10361 -> 10368 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 10361 + 7 = 10368.
     // 10368 -> 10414 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 10368 + 46 = 10414.
-    expect(manifest.fixtures.length).toBe(10414);
+    // 10414 -> 10415 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
+    expect(manifest.fixtures.length).toBe(10415);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

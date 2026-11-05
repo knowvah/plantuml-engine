@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T11:21:31.654Z",
+  "generatedAt": "2026-11-05T13:55:24.376Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -7737,9 +7737,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "structural-match",
-      "maxDelta": 0.21999999999999886,
-      "maxDeltaPath": "svg/g[1]/g[3]/path[1]/@d[22]"
+      "verdict": "conformant"
     },
     {
       "slug": "zodiro-57-zuli767",
