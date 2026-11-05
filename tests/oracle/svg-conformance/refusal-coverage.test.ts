@@ -76,408 +76,61 @@
  * It renders since sdd2 T8b: upstream treats a missing `!includedef` file as
  * an empty body, and so does this port now.
  *
+ * THE MEASUREMENT IS SPLIT INTO PART FILES (2026-11-05). Vitest shards by file,
+ * so one test over the whole corpus kept one shard busy for as long as it took.
+ * `refusal-coverage.part-N.test.ts` each render a stable slice of the corpus
+ * through `refusal-coverage-gate.ts`; this file keeps the checks that need no
+ * render. A whole-corpus count is no longer logged in one place: each part logs
+ * its own `[REFUSAL SLI]`, and the baseline is the record of the total.
+ *
  * Re-measure by hand:
- *   npx vitest run tests/oracle/svg-conformance/refusal-coverage.test.ts
+ *   npx vitest run tests/oracle/svg-conformance/refusal-coverage
  */
-import { beforeAll, describe, it, expect } from 'vitest';
-import { readdirSync, readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
-import { join, dirname, relative } from 'node:path';
+import { describe, it, expect } from 'vitest';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
-import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
-import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
+import {
+  CORPUS_WALK_BUDGET_MS,
+  isJarErrorPage,
+  expectedPartTestFiles,
+  partTestFilesOnDisk,
+} from './corpus-gate-part.js';
+import {
+  checkJarClassification,
+  checkNoNewRefusal,
+  collectFixtures,
+  engineOf,
+  engineTable,
+  isDefect,
+  keyOf,
+  manifest,
+  pinnedErroring,
+  pinnedJarErrors,
+  pinnedRendering,
+  progressNote,
+  weErroredIn,
+  type BaselineFixture,
+  type LiveRefusal,
+} from './refusal-coverage-gate.js';
 import { fullDescription } from '../../../src/core/version.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
-
-/** Which committed tree a fixture lives in. Decides the golden's filename and
- *  the root the `slug` is relative to — nothing else. */
-type Tree = 'dot-cache' | 'goldens';
-
-interface BaselineFixture {
-  readonly tree: Tree;
-  /** Top-level directory under the tree root. NOT authoritative — the corpus
-   *  populator over-selects, so a directory name builds a path and does
-   *  nothing else (routing gate D6). */
-  readonly type: string;
-  /** Path from `<tree root>/<type>/` to the fixture directory. */
-  readonly slug: string;
-  /** True iff the fixture's golden is NOT one of the jar's own error pages.
-   *  Derived from the golden, and checked against it in both directions. */
-  readonly jarRendered: boolean;
-  /** True iff OUR render of the same source is a `PSystemError` page. */
-  readonly weErrored: boolean;
-  /** WHICH engine owns the answer, so a coverage task (T13-T20) can filter to
-   *  its own bucket without re-running the corpus. When we errored it is the
-   *  `(Assumed diagram type: X)` the error page itself prints
-   *  (`ErrorUml.java#getError`); otherwise our root `data-diagram-type`
-   *  lower-cased, or `none` when the engine stamps none. INFORMATIONAL: this
-   *  gate never asserts on it, because which engine drew is the sibling
-   *  routing gate's subject and failing here for a routing move would name the
-   *  same defect twice. */
-  readonly engine: string;
-  /** `known-gap` excuses a fixture from the defect count. Reserved for batches
-   *  4-6, each pin carrying the unported `Command` that explains it. Nothing
-   *  is pinned `known-gap` at baseline. */
-  readonly status: 'ok' | 'known-gap';
-  /** Required on a `known-gap` pin: the unported `Command` that explains the
-   *  refusal, with its upstream `file:line`. D7's bar for excusing one. */
-  readonly reason?: string;
-  readonly measuredAt: string;
-  readonly measuredAgainstCommit: string;
-}
-
-interface BaselineManifest {
-  readonly fixtures: readonly BaselineFixture[];
-}
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const REPO = join(HERE, '../../..');
-const MANIFEST_PATH = join(REPO, 'oracle/goldens/svg-conformance/refusal-baseline.json');
-const CACHE_ROOT = join(REPO, 'test-results/dot-cache');
-const GOLDENS_ROOT = join(REPO, 'oracle/goldens');
-
-const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as BaselineManifest;
-
-/** Read only the head of a GOLDEN: the evidence both classifiers below need is
- *  in the first element, and `sequence/zudize-61-vomi445`'s golden is 8.26 MB.
- *  OUR OWN output is never truncated — see {@link weErroredIn}. */
-const HEAD_BYTES = 4096;
-
-/**
- * Upstream's two graphical error pages, keyed on the text PlantUML itself
- * writes into them — the identical classifier `routing-conformance.test.ts`
- * carries, on the identical evidence:
- *
- *   1. `PSystemError#header()` (`PSystemError.java:148-155`) opens EVERY
- *      graphical error page with `Version.fullDescription()`
- *      (`Version.java:51-54`).
- *   2. The crash page prepends `ReportLog#anErrorHasOccurred`
- *      (`ReportLog.java:103-108`), whose first line is
- *      `"An error has occurred : " + exception`.
- *
- * Both markers are anchored at BOTH ends, so a label merely MENTIONING the
- * phrase leaves other characters inside the element and does not fire.
- * Measured over all 3158 committed goldens: 8 fire, 3150 do not.
- *
- * It is duplicated rather than imported because the sibling is a `.test.ts`:
- * importing it would execute its module body and register its ~3158-fixture
- * measurement a second time inside this file's suite. Extracting it into a
- * shared module is outside T0's write-set.
- */
-const JAR_ERROR_PAGE_RE = />(?:PlantUML version [^<]*\[[^<]*\]|An error has occurred[^<]*)<\/text>/;
-
-export function isJarErrorPage(head: string): boolean {
-  return JAR_ERROR_PAGE_RE.test(head);
-}
-
-/**
- * OUR error banner, as one whole `<text>` element. Built from
- * `fullDescription()` itself, never spelled out, so this gate cannot be
- * silently blinded by a version bump.
- * @see ~/git/plantuml/.../version/Version.java#fullDescription
- */
-const OUR_ERROR_BANNER = `>${fullDescription()}</text>`;
-
-/**
- * Deliberately scans the WHOLE document, not a head window. The banner's
- * offset is not fixed: `PSystemError#getGraphicalFormatted` prepends the
- * welcome block only for a short source, measured at byte 4544 for a
- * two-line source and byte 2459 for a 200-line one — a 4 KB window would
- * miss the first and see the second, which is the worst possible failure for
- * a gate whose subject is "did we error at all".
- */
-export function weErroredIn(ours: string): boolean {
-  return ours.includes(OUR_ERROR_BANNER);
-}
-
-/** `ErrorUml#getError`'s suffix, printed only once a parser has committed to a
- *  diagram type. Absent on a crash, which is what `unknown` records.
- *  @see ~/git/plantuml/.../ErrorUml.java#getError */
-const ASSUMED_TYPE_RE = /\(Assumed diagram type: ([^)<]+)\)/;
-/** `TextBlockExporter.java:292-294`'s root attribute. */
-const DIAGRAM_TYPE_RE = /data-diagram-type="([A-Z]+)"/;
-
-export function engineOf(ours: string, errored: boolean): string {
-  if (errored) return ASSUMED_TYPE_RE.exec(ours)?.[1] ?? 'unknown';
-  return DIAGRAM_TYPE_RE.exec(ours.slice(0, HEAD_BYTES))?.[1]?.toLowerCase() ?? 'none';
-}
-
-function readHead(path: string): string {
-  const fd = openSync(path, 'r');
-  try {
-    const buf = Buffer.alloc(HEAD_BYTES);
-    return buf.subarray(0, readSync(fd, buf, 0, HEAD_BYTES, 0)).toString('utf8');
-  } finally {
-    closeSync(fd);
-  }
-}
-
-type FixtureRef = Pick<BaselineFixture, 'tree' | 'type' | 'slug'>;
-
-function fixtureDir(f: FixtureRef): string {
-  return join(f.tree === 'dot-cache' ? CACHE_ROOT : GOLDENS_ROOT, f.type, f.slug);
-}
-
-function goldenPath(f: FixtureRef): string {
-  return join(fixtureDir(f), f.tree === 'dot-cache' ? 'in.svg' : 'golden.svg');
-}
-
-/** Stable identity across the two trees. */
-function keyOf(f: FixtureRef): string {
-  return `${f.tree}:${f.type}/${f.slug}`;
-}
-
-function hasCachedFixture(f: FixtureRef): boolean {
-  return existsSync(join(fixtureDir(f), 'in.puml')) && existsSync(goldenPath(f));
-}
 
 // ---------------------------------------------------------------------------
-// Enumeration -- from DISK, not from the manifest, so a fixture added to
-// either tree without a baseline entry is detectable (it is a FAIL below).
+// AC3 -- corpus completeness in BOTH directions. A walk of the trees, with no
+// render, so it stays in this file rather than in a part.
 // ---------------------------------------------------------------------------
-
-/** Depth-first: a directory holding both `in.puml` and the tree's golden IS a
- *  fixture; anything else is descended into. Both trees are mostly flat but
- *  `oracle/goldens/svg-description/{component,usecase}/<slug>/` and
- *  `svg-skin/rose/<slug>/` nest one level deeper. */
-function walk(typeRoot: string, dir: string, tree: Tree, type: string, out: FixtureRef[]): void {
-  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    const child = join(dir, e.name);
-    const ref: FixtureRef = { tree, type, slug: relative(typeRoot, child) };
-    if (hasCachedFixture(ref)) out.push(ref);
-    else walk(typeRoot, child, tree, type, out);
-  }
-}
-
-function collectTree(root: string, tree: Tree, keep: (name: string) => boolean): FixtureRef[] {
-  const out: FixtureRef[] = [];
-  for (const e of readdirSync(root, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-    if (!e.isDirectory() || !keep(e.name)) continue;
-    walk(join(root, e.name), join(root, e.name), tree, e.name, out);
-  }
-  return out;
-}
-
-function collectFixtures(): FixtureRef[] {
-  return [
-    ...collectTree(CACHE_ROOT, 'dot-cache', () => true),
-    ...collectTree(GOLDENS_ROOT, 'goldens', (n) => n.startsWith('svg-')),
-  ];
-}
-
-// ---------------------------------------------------------------------------
-// Measurement
-// ---------------------------------------------------------------------------
-
-interface LiveRefusal {
-  readonly jarRendered: boolean;
-  readonly weErrored: boolean;
-  readonly engine: string;
-}
-
-/** Renders ONE fixture the way production does. `DeterministicMeasurer` is
- *  passed for the reason every sibling harness passes it, plus one specific to
- *  a refusal gate: under vitest's jsdom environment the production
- *  `CanvasMeasurer` hits an unimplemented `getContext`, and the resulting
- *  layout failure IS an error page — putting a fabricated refusal inside the
- *  measurement. */
-/** One ELK backend per process (cdd8 D2d): `!pragma layout elk` fixtures
- *  make `renderSync` refuse without `options.elk` (cdd8 T1b), which would
- *  read here as a refusal the jar never made. */
-let elk: ElkBackend | undefined;
-beforeAll(async () => {
-  elk = await loadElk();
-});
-
-function measure(f: FixtureRef, store: ReturnType<typeof fixtureIncludeStore>): LiveRefusal {
-  const markup = readFileSync(join(fixtureDir(f), 'in.puml'), 'utf8');
-  const ours = renderSync(
-    markup,
-    withJarCompatibleStyleInput({
-      includeStore: store,
-      measurer: new DeterministicMeasurer(),
-      elk,
-    }),
-  );
-  const weErrored = weErroredIn(ours);
-  return {
-    jarRendered: !isJarErrorPage(readHead(goldenPath(f))),
-    weErrored,
-    engine: engineOf(ours, weErrored),
-  };
-}
-
-let measured: Map<string, LiveRefusal> | undefined;
-
-/** Memoised whole-corpus measurement. Every assertion below reads this map;
- *  the warm-up `it()` at the top of the first `describe` pays for it once and
- *  carries the only budget. */
-function live(): Map<string, LiveRefusal> {
-  if (measured !== undefined) return measured;
-  const store = fixtureIncludeStore();
-  measured = new Map(collectFixtures().map((f) => [keyOf(f), measure(f, store)]));
-  return measured;
-}
-
-// ---------------------------------------------------------------------------
-// Pure gate logic -- extracted so every branch is exercisable with fabricated
-// inputs, without ever touching refusal-baseline.json on disk.
-// ---------------------------------------------------------------------------
-
-interface CheckResult {
-  readonly ok: boolean;
-  readonly message: string;
-}
-
-/** SLI 2's quantity: WE errored and the JAR rendered. A `known-gap` pin
- *  excuses a fixture only once someone has written the unported `Command`
- *  that explains it (D7). */
-export function isDefect(now: LiveRefusal, status: BaselineFixture['status']): boolean {
-  return now.weErrored && now.jarRendered && status === 'ok';
-}
-
-/**
- * A fixture that renders today must keep rendering — unless the jar errors on
- * it too, in which case us erroring is agreement rather than a defect.
- */
-export function checkNoNewRefusal(f: BaselineFixture, now: LiveRefusal | undefined): CheckResult {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (now === undefined) {
-    return {
-      ok: false,
-      message:
-        `${at}: pinned in refusal-baseline.json but ABSENT from the live corpus walk. ` +
-        `Both trees are committed, so a missing fixture means a broken or partial ` +
-        `checkout — restore the tree rather than pruning the baseline to match it.`,
-    };
-  }
-  if (f.weErrored || !isDefect(now, f.status))
-    return { ok: true, message: `${at}: no new refusal (engine ${now.engine}).` };
-  return {
-    ok: false,
-    message:
-      `${at}: NEWLY REFUSED by the ${now.engine} engine, on a source the jar RENDERED. It ` +
-      `rendered when the baseline was pinned (${f.measuredAt}, ${f.measuredAgainstCommit}). ` +
-      `Per D7 this is a DEFECT, not baseline movement: our command table is missing a ` +
-      `Command the jar has. Find it in the Java (PSystemCommandFactory.java:169-175 lists ` +
-      `how a line is matched) and port it. Do NOT relax the refusal to make this pass — ` +
-      `refusing a line the jar accepts is this mission's defining failure mode and it ` +
-      `looks exactly like progress (stop condition 3).`,
-  };
-}
-
-/** Progress classification. `undefined` when nothing about this fixture moved. */
-export function progressNote(f: BaselineFixture, now: LiveRefusal): string | undefined {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (f.weErrored && !now.weErrored) {
-    return (
-      `[FIXED] ${at} now RENDERS where it used to error. Its pin is STALE: re-pin ` +
-      `weErrored: false in oracle/goldens/svg-conformance/refusal-baseline.json from a ` +
-      `fresh measurement. A fall never fails this gate.`
-    );
-  }
-  if (!f.weErrored && now.weErrored && !now.jarRendered) {
-    return (
-      `[MATCHED] ${at} now errors, and so does the jar — its golden is an upstream error ` +
-      `page. Not a defect: the gated quantity is "we error AND the jar rendered".`
-    );
-  }
-  if (f.weErrored && now.weErrored && now.engine !== f.engine) {
-    return (
-      `[CHANGED] ${at} still errors, but the error is now owned by ${now.engine} rather ` +
-      `than ${f.engine}. Not a regression — engine is informational here.`
-    );
-  }
-  return undefined;
-}
-
-/**
- * The pin must agree with what the GOLDEN says, in both directions. A jar
- * upgrade that stops crashing is a real change to the oracle; letting it pass
- * silently would leave a fixture permanently excused from the defect count for
- * a reason that has ceased to hold. The converse pin would floor SLI 2 above
- * zero for a reason no command-table work can move.
- */
-export function checkJarClassification(f: BaselineFixture, now: LiveRefusal | undefined): CheckResult {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (now === undefined) return { ok: true, message: `${at}: absent; owned by the walk gate.` };
-  if (f.jarRendered === now.jarRendered) return { ok: true, message: `${at}: classification matches its golden.` };
-  return {
-    ok: false,
-    message:
-      `${at}: pinned jarRendered: ${String(f.jarRendered)}, but its golden now says ` +
-      `${String(now.jarRendered)} (PSystemError.java:148-155 / ReportLog.java:103-108). The ` +
-      `classification comes from the golden, never from the pin — re-measure and re-pin.`,
-  };
-}
-
-/** The per-engine table, so a failure names the command table that moved
- *  rather than only the fixture. */
-export function engineTable(rows: readonly LiveRefusal[]): string {
-  const buckets = new Map<string, number>();
-  for (const r of rows) buckets.set(r.engine, (buckets.get(r.engine) ?? 0) + 1);
-  const lines = [...buckets.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([k, n]) => `    ${k}: ${n}`);
-  return [`  refusing engine (${rows.length} erroring):`, ...lines].join('\n');
-}
-
-const pinnedRendering = manifest.fixtures.filter((f) => !f.weErrored);
-const pinnedErroring = manifest.fixtures.filter((f) => f.weErrored);
-/** Excluded from SLI 2 by construction, and watched by the classification gate
- *  below so the exclusion cannot go stale. */
-const pinnedJarErrors = manifest.fixtures.filter((f) => !f.jarRendered);
-
-// ---------------------------------------------------------------------------
-// AC3 -- warm-up + corpus completeness in BOTH directions. Runs first, so it
-// owns the whole-corpus measurement cost and the only per-test budget.
-// ---------------------------------------------------------------------------
-
-/** Transferred from the sibling routing gate's in-situ derivation rather than
- *  re-derived, because the per-fixture work is the same work: render the
- *  fixture, read the golden's head. That note measured **15,492 ms** under a
- *  full `npm test` (v8 coverage on, 12 vitest forks on 12 cores) and applied
- *  the 2.70x fork-contention step from `.agent-notes/ratchet-zudize-timeout.md`
- *  to reach a ~41,800 ms ceiling; 120,000 ms is ~2.9x that, wide because the
- *  contended worker also runs the rest of its shard.
- *
- *  Corroborated here, not assumed: this gate measures **7,304 ms** solo
- *  (jiti, no coverage, 2026-08-24) against the sibling's 6,000 ms under the
- *  same conditions. The ~1.3 s delta is the full-document banner scan
- *  {@link weErroredIn} deliberately does not truncate. Same order, same
- *  ceiling.
- *
- *  Re-derived on the runner with the sibling (2026-10-10; its CORPUS_BUDGET_MS
- *  comment has the derivation, now 330,000 ms). This gate's own in-suite CI
- *  samples sit in the same band: 108,222 ms (run 37856273415), 111,457 ms
- *  (run 38046648955) and 102,491 ms (run 38075923903), 85-93% of the old
- *  120,000 ms. That margin is too thin for a 4-vCPU runner, so the same
- *  budget applies here.
- *
- * RE-DERIVED AGAIN (2026-10-28, PR #95 run 40730527655). gantt-engine-port
- * turned 265 gantt rows from error pages into real renders and added 251
- * gantt golden clones (8,432 -> 8,684 rows), so this gate's CI cost tripled:
- * 336,125 ms here (timed out at 330,000) and <= 315 s on the last green main
- * run (40528746274, same ubuntu-26.04 image, shard-4 wall clock); the sibling
- * measured 277,236 ms. Not a slow runner: zudize-61 took 24 s against its
- * 22-41 s samples. The dev box measures 92-131 s across gep b0 .. gdd final
- * (12 cores vs the runner's 4 vCPU). Budget raised to 10 minutes (user
- * ruling 2026-10-28); CI's 12-minute `test` step cap remains the outer
- * backstop. */
-const CORPUS_BUDGET_MS = 600_000;
 
 describe('refusal coverage — corpus completeness', () => {
   it(
     'every fixture on disk is pinned, and every pin is on disk',
     () => {
-      const seen = live();
+      const seen = new Set(collectFixtures().map(keyOf));
       expect(manifest.fixtures.length, 'the baseline must not be empty').toBeGreaterThan(0);
 
       const pinnedKeys = new Set(manifest.fixtures.map(keyOf));
-      const unpinned = [...seen.keys()].filter((k) => !pinnedKeys.has(k));
+      const unpinned = [...seen].filter((k) => !pinnedKeys.has(k));
       expect(
         unpinned.slice(0, 10),
         `${unpinned.length} fixture(s) exist on disk with NO refusal-baseline.json entry. ` +
@@ -492,70 +145,11 @@ describe('refusal coverage — corpus completeness', () => {
           `committed, so this is a broken checkout, not a cache awaiting regeneration.`,
       ).toEqual([]);
     },
-    CORPUS_BUDGET_MS,
+    CORPUS_WALK_BUDGET_MS,
   );
-});
 
-// ---------------------------------------------------------------------------
-// AC1 -- no fixture that renders today may error at run time. Aggregate, not
-// per-fixture: only an aggregate can carry the engine table, and 3152 `it()`
-// blocks would cost more in runner overhead than the measurement they wrap.
-// ---------------------------------------------------------------------------
-
-describe('refusal coverage — no fixture newly errors', () => {
-  it('every fixture pinned as rendering still renders', () => {
-    const seen = live();
-    const broken = pinnedRendering
-      .map((f) => ({ f, result: checkNoNewRefusal(f, seen.get(keyOf(f))) }))
-      .filter(({ result }) => !result.ok);
-
-    const moved = broken.map(({ f }) => seen.get(keyOf(f))).filter((r): r is LiveRefusal => r !== undefined);
-    const detail =
-      broken.length === 0
-        ? ''
-        : `\n${broken.map(({ result }) => `  - ${result.message}`).join('\n')}\n${engineTable(moved)}`;
-
-    expect(
-      broken.length,
-      `${broken.length} of ${pinnedRendering.length} previously-rendering fixtures NEWLY ` +
-        `ERROR on sources the jar rendered. Per D7 each is a missing Command, not baseline ` +
-        `movement.${detail}`,
-    ).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// AC5 -- a pinned refusal that improves must PASS, loudly. Batches 4-6 exist
-// to make these fall, so a fall must never be able to fail.
-// ---------------------------------------------------------------------------
-
-describe('refusal coverage — pinned refusals', () => {
-  for (const f of pinnedErroring) {
-    it(`${f.tree} ${f.type}/${f.slug}: errors under ${f.engine}`, () => {
-      const now = live().get(keyOf(f));
-      expect(now, `${keyOf(f)}: pinned but absent from the live walk`).toBeDefined();
-      const note = progressNote(f, now!);
-      if (note !== undefined) console.log(note);
-      expect(checkNoNewRefusal(f, now).ok).toBe(true);
-    });
-  }
-
-  it('reports the standing SLI 2 count and its engine table', () => {
-    const seen = live();
-    const defects = manifest.fixtures
-      .map((f) => ({ f, now: seen.get(keyOf(f)) }))
-      .filter((r): r is { f: BaselineFixture; now: LiveRefusal } => r.now !== undefined)
-      .filter(({ f, now }) => isDefect(now, f.status));
-    console.log(
-      `[REFUSAL SLI] ${defects.length} fixture(s) error here on a source the jar RENDERED ` +
-        `(target 0, or a mechanism per residual — D7). ${pinnedJarErrors.length} further ` +
-        `fixtures are excluded because the jar itself produced an error page, so its ` +
-        `failure is no evidence about us.\n${engineTable(defects.map((d) => d.now))}\n` +
-        defects.map((d) => `    ${keyOf(d.f)}`).join('\n'),
-    );
-    expect(defects.length).toBeLessThanOrEqual(
-      manifest.fixtures.filter((f) => f.weErrored && f.jarRendered && f.status === 'ok').length,
-    );
+  it('every part of the corpus has its test file, so no slice goes unmeasured', () => {
+    expect(partTestFilesOnDisk(HERE, 'refusal-coverage')).toEqual(expectedPartTestFiles('refusal-coverage'));
   });
 });
 
@@ -565,15 +159,6 @@ describe('refusal coverage — pinned refusals', () => {
 // ---------------------------------------------------------------------------
 
 describe('refusal coverage — baseline shape', () => {
-  it('every pin matches what its own golden says about the jar erroring', () => {
-    const seen = live();
-    const wrong = manifest.fixtures.map((f) => checkJarClassification(f, seen.get(keyOf(f)))).filter((r) => !r.ok);
-    expect(
-      wrong.map((r) => r.message),
-      `${wrong.length} fixture(s) are pinned inconsistently with their golden's own content.`,
-    ).toEqual([]);
-  });
-
   it('the manifest is 5309 fixtures, 99 of them jar errors, 269 of them erroring here', () => {
     // DERIVATION, re-measured at T19 rather than carried forward. The 8
     // jar-error fixtures are the same 8 the routing gate pins. The 15 we error

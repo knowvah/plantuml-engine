@@ -28,7 +28,7 @@
  * sibling. Importing a `.test.ts` runs its top-level `describe(...)` outside
  * a vitest worker and throws (`Cannot read properties of undefined (reading
  * 'config')`, confirmed standalone) -- the exact reason `repin-sequence-
- * baselines.ts` duplicates `refusal-coverage.test.ts`'s `weErroredIn`
+ * baselines.ts` duplicates `refusal-coverage-gate.ts`'s `weErroredIn`
  * instead of importing it. `styleCensusOf` below is that same precedented
  * duplication, kept byte-identical to the test file's `censusOf`.
  *
