@@ -1,0 +1,8 @@
+@startboard
+skinparam monochrome reverse
+A
++B
+++C
+D
++E
+@endboard

@@ -15,8 +15,8 @@ function asSimple(c: ParsedColor): HColorSimple {
 
 /**
  * HColors — the colour constants and factories the style engine reaches:
- * `BLACK`, `WHITE`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`. The other
- * constants (`RED_LIGHT` … `COL_BBBBBB`) and helpers (`noGradient`,
+ * `BLACK`, `WHITE`, `LIGHT_GRAY`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`.
+ * The other constants (`RED_LIGHT` … `COL_BBBBBB`) and helpers (`noGradient`,
  * `changeBack`, `middle`) are not ported; `unlinear` is (gantt completion shading).
  *
  * Every constant is built on first read, as the JVM initializes the class
@@ -30,6 +30,7 @@ function asSimple(c: ParsedColor): HColorSimple {
 export class HColors {
   private static black: HColorSimple | undefined;
   private static white: HColorSimple | undefined;
+  private static lightGray: HColorSimple | undefined;
   /** `TRANSPARENT = HColorSimple.create(new XColor(0, 0, 0, 0))`. @see HColors.java:121 */
   private static transparentColor: HColorSimple | undefined;
 
@@ -43,6 +44,17 @@ export class HColors {
   static get WHITE(): HColorSimple {
     HColors.white ??= asSimple(HColorSet.instance().getColorOrWhite('#FFFFFF'));
     return HColors.white;
+  }
+
+  /**
+   * `set.getColorOrWhite("#C0C0C0")`, the board card's fill. Declared `HColor`
+   * upstream; a `#RRGGBB` literal always resolves to an `HColorSimple`, so the
+   * cast holds.
+   * @see HColors.java:94
+   */
+  static get LIGHT_GRAY(): HColorSimple {
+    HColors.lightGray ??= asSimple(HColorSet.instance().getColorOrWhite('#C0C0C0'));
+    return HColors.lightGray;
   }
 
   /** `transparent()` is the shared `TRANSPARENT`; `transparent(fillBehavior)` is a

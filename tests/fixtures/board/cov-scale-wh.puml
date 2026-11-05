@@ -1,0 +1,8 @@
+@startboard
+scale 400*200
+A
++B
+++C
+D
++E
+@endboard

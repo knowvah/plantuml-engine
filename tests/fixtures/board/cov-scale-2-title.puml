@@ -1,0 +1,9 @@
+@startboard
+scale 2
+title My Board
+A
++B
+++C
+D
++E
+@endboard

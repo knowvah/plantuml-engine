@@ -1,0 +1,8 @@
+@startboard
+skinparam mode dark
+A
++B
+++C
+D
++E
+@endboard

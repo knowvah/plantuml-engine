@@ -693,8 +693,8 @@
       "diffCount": 0
     },
     "board__selector-activitydiagram": {
-      "conformant": false,
-      "diffCount": 15
+      "conformant": true,
+      "diffCount": 0
     },
     "class__cascade-bg-diag": {
       "conformant": true,

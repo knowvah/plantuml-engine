@@ -1,0 +1,9 @@
+@startboard
+scale 2
+footer ftr
+A
++B
+++C
+D
++E
+@endboard

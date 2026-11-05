@@ -1,0 +1,8 @@
+@startboard
+skinparam backgroundColor red/blue
+A
++B
+++C
+D
++E
+@endboard

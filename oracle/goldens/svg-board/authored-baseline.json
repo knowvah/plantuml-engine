@@ -1,0 +1,699 @@
+{
+  "fixtures": [
+    {
+      "type": "board",
+      "slug": "cov-back-black",
+      "topic": "T3b style and skin: back-black",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-back-gradient",
+      "topic": "T3b style and skin: back-gradient",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-all",
+      "topic": "T3b chrome and embedding: chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-caption",
+      "topic": "T3b chrome and embedding: chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-footer",
+      "topic": "T3b chrome and embedding: chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-header",
+      "topic": "T3b chrome and embedding: chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-legend",
+      "topic": "T3b chrome and embedding: chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-legend-right",
+      "topic": "T3b chrome and embedding: chrome-legend-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-mainframe",
+      "topic": "T3b chrome and embedding: chrome-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-multiline-title",
+      "topic": "T3b chrome and embedding: chrome-multiline-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-chrome-title",
+      "topic": "T3b chrome and embedding: chrome-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-creole-mixed",
+      "topic": "T3b labels: creole-mixed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-dark-media",
+      "topic": "T3b style and skin: dark-media",
+      "status": "baseline",
+      "weightedScore": 301,
+      "diffCount": 130,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException: null/#333333 (326)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-dark-mode",
+      "topic": "T3b style and skin: dark-mode",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-dpi-150",
+      "topic": "T3b chrome and embedding: dpi-150",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-embed-class",
+      "topic": "T3b chrome and embedding: embed-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-embed-sequence",
+      "topic": "T3b chrome and embedding: embed-sequence",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-emoji",
+      "topic": "T3b labels: emoji",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-bin-60",
+      "topic": "T3b grid and errors: grid-bin-60",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-blank-lines",
+      "topic": "T3b grid and errors: grid-blank-lines",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-blank-spaces",
+      "topic": "T3b grid and errors: grid-blank-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-comment",
+      "topic": "T3b grid and errors: grid-comment",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-deep-stage",
+      "topic": "T3b grid and errors: grid-deep-stage",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-empty",
+      "topic": "T3b grid and errors: grid-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: board)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-hashmap-resize",
+      "topic": "T3b grid and errors: grid-hashmap-resize",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-many-activities",
+      "topic": "T3b grid and errors: grid-many-activities",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-nel",
+      "topic": "T3b grid and errors: grid-nel",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: board)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-newpage",
+      "topic": "T3b grid and errors: grid-newpage",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-only-plus",
+      "topic": "T3b grid and errors: grid-only-plus",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-page-zero",
+      "topic": "T3b grid and errors: grid-page-zero",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Argument must be positive (Assumed diagram type: board)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-plus-alone",
+      "topic": "T3b grid and errors: grid-plus-alone",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-plus-first",
+      "topic": "T3b grid and errors: grid-plus-first",
+      "status": "baseline",
+      "weightedScore": 41,
+      "diffCount": 28,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IndexOutOfBoundsException: Index -1 out of bounds for length 0 (Assumed diagram type: board)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-siblings",
+      "topic": "T3b grid and errors: grid-siblings",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-stage-zero-climb",
+      "topic": "T3b grid and errors: grid-stage-zero-climb",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-grid-whitespace",
+      "topic": "T3b grid and errors: grid-whitespace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-hand-option",
+      "topic": "T3b style and skin: hand-option",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-hand-skinparam",
+      "topic": "T3b style and skin: hand-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-label-monospace",
+      "topic": "T3b labels: label-monospace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-label-newline-activity",
+      "topic": "T3b labels: label-newline-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-label-newline-release",
+      "topic": "T3b labels: label-newline-release",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-label-url",
+      "topic": "T3b labels: label-url",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-label-wrap-long",
+      "topic": "T3b labels: label-wrap-long",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-long-label",
+      "topic": "T3b labels: long-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-mono-reverse",
+      "topic": "T3b style and skin: mono-reverse",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-mono-true",
+      "topic": "T3b style and skin: mono-true",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-reverse-dark",
+      "topic": "T3b style and skin: reverse-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-reverse-rgb",
+      "topic": "T3b style and skin: reverse-rgb",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2",
+      "topic": "T3b chrome and embedding: scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-caption",
+      "topic": "T3b chrome and embedding: scale-2-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-footer",
+      "topic": "T3b chrome and embedding: scale-2-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-header",
+      "topic": "T3b chrome and embedding: scale-2-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-legend",
+      "topic": "T3b chrome and embedding: scale-2-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-mainframe",
+      "topic": "T3b chrome and embedding: scale-2-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-2-title",
+      "topic": "T3b chrome and embedding: scale-2-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-half",
+      "topic": "T3b chrome and embedding: scale-half",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-max",
+      "topic": "T3b chrome and embedding: scale-max",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-scale-wh",
+      "topic": "T3b chrome and embedding: scale-wh",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-skin-backcolor",
+      "topic": "T3b style and skin: skin-backcolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-skin-rose",
+      "topic": "T3b style and skin: skin-rose",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-sprite-ref",
+      "topic": "T3b labels: sprite-ref",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-style-activity",
+      "topic": "T3b style and skin: style-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-style-board",
+      "topic": "T3b style and skin: style-board",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-style-document",
+      "topic": "T3b style and skin: style-document",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-style-margin",
+      "topic": "T3b style and skin: style-margin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-style-root-font",
+      "topic": "T3b style and skin: style-root-font",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-theme-cerulean",
+      "topic": "T3b style and skin: theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    },
+    {
+      "type": "board",
+      "slug": "cov-theme-plain",
+      "topic": "T3b style and skin: theme-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "b201ba8ff"
+    }
+  ]
+}

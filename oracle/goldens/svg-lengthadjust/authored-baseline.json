@@ -46,30 +46,28 @@
       "slug": "board-default",
       "engine": "board",
       "variant": "default",
-      "score": 22,
-      "diffCount": 22,
+      "score": 0,
+      "diffCount": 0,
       "rootExact": true,
-      "textLength": "baseline",
-      "textLengthMatch": false,
-      "reason": "emitter writes no textLength (pre-existing; owner: the engine's own drive)"
+      "textLength": "exact",
+      "textLengthMatch": true
     },
     {
       "slug": "board-glyphs",
       "engine": "board",
       "variant": "glyphs",
-      "score": 22,
-      "diffCount": 22,
+      "score": 0,
+      "diffCount": 0,
       "rootExact": true,
-      "textLength": "baseline",
-      "textLengthMatch": false,
-      "reason": "emitter writes no textLength (pre-existing; owner: the engine's own drive)"
+      "textLength": "exact",
+      "textLengthMatch": true
     },
     {
       "slug": "board-none",
       "engine": "board",
       "variant": "none",
-      "score": 18,
-      "diffCount": 18,
+      "score": 0,
+      "diffCount": 0,
       "rootExact": true,
       "textLength": "exact",
       "textLengthMatch": true
@@ -78,12 +76,11 @@
       "slug": "board-onechar",
       "engine": "board",
       "variant": "onechar",
-      "score": 20,
-      "diffCount": 20,
+      "score": 0,
+      "diffCount": 0,
       "rootExact": true,
-      "textLength": "baseline",
-      "textLengthMatch": false,
-      "reason": "emitter writes no textLength (pre-existing; owner: the engine's own drive)"
+      "textLength": "exact",
+      "textLengthMatch": true
     },
     {
       "slug": "chart-default",

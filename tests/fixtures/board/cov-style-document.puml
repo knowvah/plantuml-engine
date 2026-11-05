@@ -1,0 +1,10 @@
+@startboard
+<style>
+document {
+  BackgroundColor #EEEEFF
+  Margin 30
+}
+</style>
+A
++B
+@endboard

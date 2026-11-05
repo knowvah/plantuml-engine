@@ -316,8 +316,8 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_GANTT:
     case DIAGRAM_TYPE_CHART:
     case DIAGRAM_TYPE_PACKET:
-      return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_BOARD:
+      return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:
       return finalizeGenericRootFragment(fragment);
     default:

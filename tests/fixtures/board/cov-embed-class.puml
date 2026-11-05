@@ -1,0 +1,10 @@
+@startuml
+class Foo
+note right of Foo
+{{board
+X
++Y
+Z
+}}
+end note
+@enduml

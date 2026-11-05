@@ -101,8 +101,18 @@ Colour reads still open, each small:
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
 19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
 20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
-21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. Board's body (`board__selector-activitydiagram` 15) stays (dbp 2); packet's DONE by packet-engine-port (#117).
+21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. ~~Board's body (`board__selector-activitydiagram` 15)~~ DONE by board-engine-port (#118): 0; packet's DONE by packet-engine-port (#117).
 22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+
+## board-engine-port (bep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #118)
+
+`src/diagrams/board/` is a file-for-file port of `net/sourceforge/plantuml/board/` on klimt; the old parse/layout/string-template pipeline is deleted. `board` 0/0/4 to 4/0/0, all 4 pinned in `svg-board`; 67 authored fixtures in `tests/fixtures/board`, 62 at 0 diffs and 5 jar errors where we also error. 0 lost in every engine, no other bucket moved. No new divergence, no needs-ruling issue.
+
+Follow-ons:
+
+1. **Scaled chrome text rounds twice on packet, chart, mindmap, wbs, salt and gantt.** Their `rawTextBlock` fragments are not `numbersDeferred`, so chrome strings are formatted at scale 1 and post-multiplied (`TextBlockExporter.ts#scaleToken`): `scale 2` + `footer ftr` gives `textLength="17.626"` where the jar writes 17.625 (`8.8125 × 2`, formatted once, `SvgGraphics.java:468-475`). Measured 1 diff each on packet, mindmap and wbs on 2026-11-05 (`/tmp/bep-T5/fo`); chart, salt, gantt share the shape, unmeasured. Board's fix is `isExportScaled(...) ? { numbersDeferred: true }` in `board/index.ts#rawTextBlock`, as `description/index.ts:173` does. No corpus row exhibits it.
+2. **`javaStringHashCode` has local copies** (`board/BArray.ts`, `tim/TFunctionSignature.ts`, `klimt/drawing/svg/svg-seed.ts` as `bigint`, and others per bep D3). Consolidating them in `src/core/` is a refactor this mission did not do.
+3. **Error-page line numbers.** `cov-grid-empty`: jar line 2, ours line 1; `cov-grid-plus-first`: jar line 2, ours line 4 (the throw escapes the factory, so our page names the block's last line). Both conformant by the 2026-10-10 ruling.
 
 ## packet-engine-port (pep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #117)
 
@@ -137,7 +147,7 @@ gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
 1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
-2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0.
+2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).
 5. ~~**`sequenceDiagram { document { BackgroundColor } }` is ignored**~~ — struck by dss T1a (`9f7cdbaf4`, through `dss/pre-squash`): the document background reads the ported `StyleBuilder`, with the diagram's name in the signature.
@@ -287,7 +297,8 @@ Follow-ons:
 - **13 `textLength` baseline rows → 9:** board, packet and chart (default /
   glyphs / onechar) emit no `textLength` where the jar does
   (`SvgGraphics.java:699-705`). Owner: each engine's own drive. The four files
-  rows are at 0 since the ddc files port (T1b/T2e, 2026-10-28).
+  rows are at 0 since the ddc files port (T1b/T2e, 2026-10-28); the four board
+  rows since board-engine-port (#118).
 - Non-targets kept as-is (D8): `@startdot` passthrough, `PlainDiagram`
   utility/error pages (no SkinParam at `TextBlockExporter.java:306`), the
   unported engines, the per-element `lengthAdjust: 'spacing'` literals in the
@@ -1566,7 +1577,7 @@ refusal 0 mindmap gaps. Journal: `plans/mindmap-engine-port/decision-journal.md`
    `skinparam { handwritten }` also warns; `!option handwritten true` not honoured (empty
    `PreprocessingArtifact`); monochrome maps the background only (the SVG layer dropped
    `ColorMapper`, `u-graphic-svg.ts:72`); titled+handwritten chrome not jiggled; scale-1
-   `<defs>` on the chrome path; board/chart parsers trim although upstream is doTrim=false;
+   `<defs>` on the chrome path; board/chart parsers trim although upstream is doTrim=false (board DONE by board-engine-port, #118);
    multiline-orgmode body lines keep their trailing space upstream; a per-command `myTrim2`
    in `MindMapDiagramFactory.ts` (Root trims via `trin` today); `parity-dashboard.ts` does
    not read the svg-mindmap ratchet/diff-baseline ("no ratchet yet" on the mindmap row).

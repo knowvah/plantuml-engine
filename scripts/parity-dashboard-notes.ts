@@ -93,12 +93,6 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'error page where PlantUML draws a diagram (`partition` as a grouping keyword, which we do not parse); the ' +
       'rest differ in a title child count, a dash pattern and path data.',
   },
-  board: {
-    noteClass: 'openDefect',
-    detail:
-      'The SVG has not been aligned with PlantUML yet: card fill (`#D3D3D3` against `#C0C0C0`), text placement and ' +
-      'canvas size all differ.',
-  },
   c4: {
     noteClass: 'jarDeclines',
     detail:

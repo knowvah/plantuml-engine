@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2122 modules · 7392 exported names.
+2127 modules · 7399 exported names.
 
 ## `src/`
 
@@ -1549,11 +1549,21 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `ast.ts` | `BoardNode`, `BoardActivity`, `BoardDiagramAST`, `CardGeometry`, `ActivityGeometry`, `BoardGeometry` |  |
-| `index.ts` | `boardPlugin` |  |
-| `layout.ts` | `CELL_H`, `layoutBoard` |  |
-| `parser.ts` | `parseBoard` |  |
-| `renderer.ts` | `renderBoard` |  |
+| `Activity.ts` | `Activity` | Activity — one column group of a board: its root card (stage 0) and the releases under it, placed on a grid of `PostIt` cells. |
+| `BArray.ts` | `BArray` | BArray — the cards of one activity, keyed by `"x;stage"` in a default `HashMap<String, BNode>`. |
+| `BNode.ts` | `AtomicInteger`, `BNode` | BNode — one card of a board activity: its label, its stage (the number of `+` that introduced it, 0 for the activity's root) and the column `x` that `computeX` assigns. |
+| `board-skin-param.ts` | `SkinParamSource`, `SkinParam` | The board engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `BoardDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine' |
+| `BoardDiagram.ts` | `BoardDiagram` | BoardDiagram — one `@startboard` block: the activities side by side, each a grid of cards, with a dashed separator under every stage row. |
+| `BoardDiagramFactory.ts` | `parseBoard` | `BoardDiagramFactory`: `CommonCommands.addCommonCommands1` first, then `CommandBoardPlus`, then `checkFinalError`. |
+| `CardBox.ts` | `CardBox` | CardBox — one board card: a fixed 150×70 shadowed rectangle, black on light gray, and its label as a creole sheet at `(3, 3)`. |
+| `index.ts` | `BoardGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderBoard`, `boardPlugin` | Board diagram plugin — `BoardDiagramFactory` (parse), then `TextBlockExporter`'s export of `BoardDiagram#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` (BoardDiagram.java:71-84) plus `calculateMargin`, |
+| `PostIt.ts` | `PostIt` | PostIt — the grid pitch of a board: every card cell is 170 wide and 90 high. |
+
+## `src/diagrams/board/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandBoardPlus.ts` | `BOARD_PLUS_RE`, `applyBoardPlus` | `CommandBoardPlus`: a run of `+` (empty starts an activity), optional spaces, then the label. |
 
 ## `src/diagrams/chart/`
 

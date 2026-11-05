@@ -1,0 +1,9 @@
+@startboard
+scale 2
+mainframe frame
+A
++B
+++C
+D
++E
+@endboard

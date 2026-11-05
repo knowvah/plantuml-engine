@@ -34,7 +34,7 @@ import { SkinParam } from './mindmap-skin-param.js';
 /** `@startmindmap`/`@endmindmap` — `UmlSource.lines` is documented as
  *  already directive-stripped for a render-pipeline-built source, but a
  *  hand-built test fixture may still include them; tolerated defensively,
- *  matching this port's other per-engine parsers (`board/parser.ts`). */
+ *  matching this port's other per-engine parsers (`board/BoardDiagramFactory.ts`). */
 const START_END_RE = /^@(start|end)mindmap\s*$/i;
 
 /**

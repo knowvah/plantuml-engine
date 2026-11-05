@@ -27,7 +27,7 @@ import { parseClass as raw_parseClass } from '../../src/diagrams/class/parser.js
 import { parseState as raw_parseState } from '../../src/diagrams/state/parser.js';
 import { parseSequence as raw_parseSequence } from '../../src/diagrams/sequence/parser.js';
 import { parseDescription as raw_parseDescription } from '../../src/diagrams/description/parser.js';
-import { parseBoard as raw_parseBoard } from '../../src/diagrams/board/parser.js';
+import { parseBoard as raw_parseBoard } from '../../src/diagrams/board/BoardDiagramFactory.js';
 import { parseChronology } from '../../src/diagrams/chronology/parser.js';
 import { parseFiles } from '../../src/diagrams/files/parser.js';
 import { parsePacket as raw_parsePacket } from '../../src/diagrams/packetdiag/PacketDiagramFactory.js';
@@ -49,7 +49,7 @@ const parseClass = (b: UmlSource) => astOrThrow(raw_parseClass(b), 'class');
 const parseState = (b: UmlSource) => astOrThrow(raw_parseState(b), 'state');
 const parseSequence = (l: readonly string[]) => astOrThrow(raw_parseSequence(sequenceSource(l)), 'sequence');
 const parseDescription = (b: UmlSource) => astOrThrow(raw_parseDescription(b), 'description');
-const parseBoard = (b: UmlSource) => astOrThrow(raw_parseBoard(b), 'board');
+const parseBoard = (b: UmlSource) => astOrThrow(raw_parseBoard(b, new PreprocessingArtifact()), 'board');
 const parsePacket = (b: UmlSource) => astOrThrow(raw_parsePacket(b, new PreprocessingArtifact()), 'packetdiag');
 
 /** Split markup into trimmed, non-empty content lines -- same helper as
@@ -114,11 +114,11 @@ describe('sprite registry population per engine', () => {
     expect(ast.nodes.filter((n) => n.kind === 'action')).toHaveLength(2);
   });
 
-  it('board: parseBoard populates ast.sprites, not an activity label', () => {
+  it('board: parseBoard populates the skin param sprites, not an activity label', () => {
     const source: UmlSource = { lines: L(`root\n${SPRITE_BLOCK}\n+child`), type: 'board' };
-    const ast = parseBoard(source);
-    expectIcon(ast.sprites);
-    expect(ast.activities.map((a) => a.name)).toEqual(['root']);
+    const parsed = parseBoard(source);
+    expectIcon(parsed.sprites);
+    expect(parsed.getActivities().map((a) => a.getCells().map((n) => n.getName()))).toEqual([['root', 'child']]);
   });
 
   it('chronology: parseChronology populates ast.sprites, not an event', () => {

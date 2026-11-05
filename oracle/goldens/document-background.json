@@ -17,12 +17,12 @@
       "diffCount": 0
     },
     "board-black": {
-      "conformant": false,
-      "diffCount": 18
+      "conformant": true,
+      "diffCount": 0
     },
     "board-gradient": {
-      "conformant": false,
-      "diffCount": 20
+      "conformant": true,
+      "diffCount": 0
     },
     "chart-black": {
       "conformant": true,
