@@ -10,6 +10,7 @@ import {
   splitOnNewlineSentinel,
 } from '../../../../../../src/core/klimt/creole/legacy/CreoleStripeSimpleParser.js';
 import { BackSlash } from '../../../../../../src/core/text/BackSlash.js';
+import { CreoleMode } from '../../../../../../src/core/klimt/creole/CreoleMode.js';
 
 describe('classifyStripeLine — HORIZONTAL_LINE (bare, empty capture)', () => {
   test('a bare "----" classifies as HORIZONTAL_LINE style "-"', () => {
@@ -124,5 +125,19 @@ describe('splitOnNewlineSentinel (T5a, java:164)', () => {
 
   test('an empty string is a single-element array containing the empty string', () => {
     expect(splitOnNewlineSentinel('')).toEqual(['']);
+  });
+});
+
+describe('classifyStripeLine — the mode gates (CreoleStripeSimpleParser.java:86-90, 119-144)', () => {
+  test('NO_CREOLE keeps even a horizontal-line shape as NORMAL text', () => {
+    expect(classifyStripeLine('----', CreoleMode.NO_CREOLE)).toEqual({ type: 'NORMAL', content: '----' });
+  });
+
+  test('SIMPLE_LINE reads a leading ** as text, not a bullet (pep T3c)', () => {
+    expect(classifyStripeLine('**Acknow...', CreoleMode.SIMPLE_LINE)).toEqual({
+      type: 'NORMAL',
+      content: '**Acknow...',
+    });
+    expect(classifyStripeLine('**Acknow...', CreoleMode.FULL).type).toBe('LIST_WITHOUT_NUMBER');
   });
 });

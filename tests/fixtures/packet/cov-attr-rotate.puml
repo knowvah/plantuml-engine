@@ -1,0 +1,5 @@
+@startpacketdiag
+packetdiag {
+  0-15: Rotated [rotate = 90]
+}
+@endpacketdiag

@@ -1,0 +1,34 @@
+{
+  "fixtures": [
+    {
+      "slug": "packet-auto-position",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "packet-colwidth-8",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "packet-rtl",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "packet-spanning-field",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "packet-tall-field",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "packet-tcp-header",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache"
+    }
+  ]
+}

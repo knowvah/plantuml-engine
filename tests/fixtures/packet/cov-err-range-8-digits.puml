@@ -1,0 +1,5 @@
+@startpacketdiag
+packetdiag {
+  12345678: A
+}
+@endpacketdiag

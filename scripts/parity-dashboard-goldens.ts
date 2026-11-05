@@ -34,6 +34,7 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   gantt: ['svg-gantt'],
   files: ['svg-files'],
   chart: ['svg-chart'],
+  packet: ['svg-packet'],
   unknown: ['svg-utility', 'svg-description'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],

@@ -795,7 +795,7 @@ justification did not hold, not to chase a gate it cannot reach.
 
 ### ~~Spanning field — no spurious stub at row boundary (bug fix)~~ — RETIRED (unwind2-S1, 2026-10-08)
 
-The jar draws no stub; its spanning remainder block is `min(colWidth, carried width)` wide (`PacketDiagram.java:430,526`), mirrored in `src/diagrams/packetdiag/layout.ts`.
+The jar draws no stub; its spanning remainder block is `min(colWidth, carried width)` wide (`PacketDiagram.java:430,525-527`), mirrored in `src/diagrams/packetdiag/PacketDiagram.ts#placeOverflow` (pep T3a ported the engine file for file).
 
 ---
 

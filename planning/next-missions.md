@@ -101,8 +101,18 @@ Colour reads still open, each small:
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
 19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
 20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
-21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. Board's body (`board__selector-activitydiagram` 15) and packet's residuals stay (dbp 2).
+21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. Board's body (`board__selector-activitydiagram` 15) stays (dbp 2); packet's DONE by packet-engine-port (#117).
 22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+
+## packet-engine-port (pep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #117)
+
+`src/diagrams/packetdiag/` is a file-for-file port of `net/sourceforge/plantuml/packetdiag/` on klimt, with `nwdiag/VerticalLine.ts` and `NwDiagram.toSet` at their upstream home for #124. `packet` 0/0/6 to 6/0/0, all 6 pinned in `svg-packet`; upstream's 62 `vega/packet` sources plus 84 authored probes in `tests/fixtures/packet`, 132 at 0 diffs and 14 jar errors where we also error. 0 lost in every engine; activity `limazo-01-ximu737` gained (the creole fix below). No new divergence.
+
+Follow-ons:
+
+1. **Chart's sprite registry carries no Twemoji store** (`ChartDiagramFactory.ts:290`, `createSpriteRegistry()`), so a chart label `<:smile:>` likely measures and draws no outline, as packet's did until T3c. Unmeasured: no chart fixture has an emoji. `gantt/index.ts:311-313` and now `packetdiag/index.ts` show the wiring.
+2. **Refusal `consumed` differs by engine.** Packet counts the offending line (`PSystemCommandFactory.java:171-174`); chart, wbs, mindmap and gantt pass the 0-based index. Only cross-factory error choice reads it.
+3. **Error-page text.** Ours says "Assumed diagram type: packetdiag" where the jar says "packet"; and a draw-time crash (`4-2: x`) shows our Welcome page where the jar shows its crash page. Both conformant by the 2026-10-10 ruling.
 
 ## chart-engine-port (cep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #116)
 
@@ -127,7 +137,7 @@ gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
 1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
-2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0.
+2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).
 5. ~~**`sequenceDiagram { document { BackgroundColor } }` is ignored**~~ — struck by dss T1a (`9f7cdbaf4`, through `dss/pre-squash`): the document background reads the ported `StyleBuilder`, with the diagram's name in the signature.

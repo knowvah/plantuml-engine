@@ -1,0 +1,4 @@
+@startpacketdiag
+0-15: A
+16-31: B
+@endpacketdiag

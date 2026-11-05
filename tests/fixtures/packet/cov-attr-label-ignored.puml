@@ -1,0 +1,5 @@
+@startpacketdiag
+packetdiag {
+  0-15: A [label = "B", description = "C", numbered = 5]
+}
+@endpacketdiag

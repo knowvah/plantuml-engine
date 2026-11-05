@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  node_height = 10
+  0-15: A
+}
+@endpacketdiag

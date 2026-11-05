@@ -179,6 +179,20 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'commands -- IdeaShape lives in the mindmap package upstream and the ' +
       'port keeps it at its upstream path (mission wbs-engine-port D3/D4).',
   },
+  {
+    from: 'src/diagrams/packetdiag/PacketIndicator.ts',
+    to: 'src/diagrams/nwdiag/VerticalLine.ts',
+    why:
+      'pep D3 — upstream draws the packet scale tick through nwdiag: PacketIndicator.java:53 imports ' +
+      'net.sourceforge.plantuml.nwdiag.VerticalLine, drawn at java:211.',
+  },
+  {
+    from: 'src/diagrams/packetdiag/command/CommandNumRange.ts',
+    to: 'src/diagrams/nwdiag/NwDiagram.ts',
+    why:
+      'pep D3 — upstream parses field attributes through nwdiag: CommandNumRange.java:45 imports ' +
+      'net.sourceforge.plantuml.nwdiag.NwDiagram, java:118 calls NwDiagram.toSet.',
+  },
 ];
 
 /** Measured 2026-08-17 at 321bfb8b (T0): 13 edges, each naming the task

@@ -1,0 +1,7 @@
+@startpacketdiag
+PacketDiag {
+  COLWIDTH = 8
+  Scale_Direction = RTL
+  0-7: A
+}
+@endpacketdiag

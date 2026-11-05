@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  scale_interval = 99999999999
+  0-15: A
+}
+@endpacketdiag

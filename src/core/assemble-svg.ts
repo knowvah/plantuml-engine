@@ -315,10 +315,10 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_WBS:
     case DIAGRAM_TYPE_GANTT:
     case DIAGRAM_TYPE_CHART:
+    case DIAGRAM_TYPE_PACKET:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_FILES:
-    case DIAGRAM_TYPE_PACKET:
       return finalizeGenericRootFragment(fragment);
     default:
       return fragment;

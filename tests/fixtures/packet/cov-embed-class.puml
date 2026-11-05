@@ -1,0 +1,9 @@
+@startuml
+class A
+note right of A
+{{packetdiag
+0-7: X
+8-15: Y
+}}
+end note
+@enduml

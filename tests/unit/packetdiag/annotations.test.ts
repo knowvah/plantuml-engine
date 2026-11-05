@@ -1,45 +1,35 @@
-/**
- * Annotation-command wiring for the packetdiag diagram parser (mission
- * G0b/T6).
- */
-
-import { describe, it, expect } from 'vitest';
-import { parsePacket } from '../../../src/diagrams/packetdiag/parser.js';
+/** Annotation commands reach `PacketDiagram#annotations`, not the fields. */
+import { describe, expect, it } from 'vitest';
 import { isEmpty } from '../../../src/core/annotations/index.js';
-import type { UmlSource } from '../../../src/core/block-extractor.js';
-import type { PacketDiagramAST } from '../../../src/diagrams/packetdiag/ast.js';
+import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
+import type { PacketDiagram } from '../../../src/diagrams/packetdiag/PacketDiagram.js';
+import { parsePacket } from '../../../src/diagrams/packetdiag/PacketDiagramFactory.js';
 
-function src(lines: string[]): UmlSource {
-  return { lines, type: 'packetdiag' };
-}
-
-/** See `parser.test.ts`'s `parseOk` for why this narrows rather than casts
- *  (mission dispatch-by-parse-attempt, T11/D1). */
-function parseOk(lines: string[]): PacketDiagramAST {
-  const parsed = parsePacket(src(lines));
-  if ('refused' in parsed) {
-    throw new Error(`packetdiag refused at line ${String(parsed.line)} (${parsed.kind}): ${parsed.message}`);
-  }
+function parseOk(lines: string[]): PacketDiagram {
+  const parsed = parsePacket({ lines, type: 'packetdiag' }, new PreprocessingArtifact());
+  if ('refused' in parsed) throw new Error(`refused at line ${String(parsed.line)}: ${parsed.message}`);
   return parsed;
 }
 
-describe('parsePacket — annotation commands (mission G0b/T6)', () => {
+describe('parsePacket — annotation commands', () => {
   it('single-line `title X` populates annotations.title, not a field', () => {
-    const ast = parseOk(['title My Packet', '0-15: Source Port']);
-    expect(ast.annotations?.title.display).toEqual(['My Packet']);
-    expect(ast.items.length).toBe(1);
-    expect(ast.items[0]!.label).toBe('Source Port');
+    const diagram = parseOk(['title My Packet', '0-15: Source Port']);
+    expect(diagram.annotations.title.display).toEqual(['My Packet']);
+    expect(
+      diagram
+        .getPacketGrid()
+        .flat()
+        .map((b) => b.getLabel()),
+    ).toEqual(['Source Port']);
   });
 
   it('multi-line `legend ... end legend` populates annotations.legend, not a field', () => {
-    const ast = parseOk(['0-15: Source Port', 'legend', 'a legend line', 'end legend']);
-    expect(ast.annotations?.legend.display).toEqual(['a legend line']);
-    expect(ast.items.length).toBe(1);
+    const diagram = parseOk(['0-15: Source Port', 'legend', 'a legend line', 'end legend']);
+    expect(diagram.annotations.legend.display).toEqual(['a legend line']);
+    expect(diagram.getPacketGrid().flat()).toHaveLength(1);
   });
 
-  it('annotation-free fixture parses identically (no chrome, empty annotations)', () => {
-    const ast = parseOk(['0-15: Source Port']);
-    expect(isEmpty(ast.annotations!)).toBe(true);
-    expect(ast.items.length).toBe(1);
+  it('an annotation-free source leaves the annotations empty', () => {
+    expect(isEmpty(parseOk(['0-15: Source Port']).annotations)).toBe(true);
   });
 });

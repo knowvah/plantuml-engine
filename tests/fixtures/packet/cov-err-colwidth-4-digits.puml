@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  colwidth = 1234
+  0-15: A
+}
+@endpacketdiag

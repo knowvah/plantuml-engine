@@ -213,12 +213,12 @@
       "diffCount": 0
     },
     "packet-black": {
-      "conformant": false,
-      "diffCount": 36
+      "conformant": true,
+      "diffCount": 0
     },
     "packet-gradient": {
-      "conformant": false,
-      "diffCount": 21
+      "conformant": true,
+      "diffCount": 0
     },
     "salt-black": {
       "conformant": true,

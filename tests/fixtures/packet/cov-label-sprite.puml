@@ -1,0 +1,11 @@
+@startpacketdiag
+sprite $s [8x4/4] {
+FFFFFFFF
+F0F0F0F0
+0F0F0F0F
+00000000
+}
+packetdiag {
+  0-15: <$s> sprite
+}
+@endpacketdiag

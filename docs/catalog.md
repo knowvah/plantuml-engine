@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2110 modules · 7368 exported names.
+2122 modules · 7392 exported names.
 
 ## `src/`
 
@@ -2304,6 +2304,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `SymetricalTeePositioned.ts` | `SymetricalTeePositioned` |  |
 | `Tetris.ts` | `Tetris` |  |
 
+## `src/diagrams/nwdiag/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `NwDiagram.ts` | `NwDiagram` | NwDiagram — only the static `toSet` attribute parser, which `packetdiag`'s `CommandNumRange` calls (`CommandNumRange.java:118`). |
+| `VerticalLine.ts` | `VerticalLine` | VerticalLine — a vertical `UPath` from `y1` to `y2` at x = 0, broken by an arc around each `skip` ordinate (a network bus crossing it). |
+
 ## `src/diagrams/openiconic/`
 
 | Module | Exports | Purpose |
@@ -2318,11 +2325,26 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `ast.ts` | `ScaleDirection`, `PacketItem`, `PacketBlock`, `PacketIndicator`, `PacketDiagramAST`, `PacketGeometry` |  |
-| `index.ts` | `packetdiagPlugin` |  |
-| `layout.ts` | `V_LINE_SHORT`, `INDICATOR_HEIGHT`, `V_MARGIN`, `FONT_ASCENT`, `blockRenderedHeight`, `layoutPacket` |  |
-| `parser.ts` | `parsePacket` |  |
-| `renderer.ts` | `renderPacket` |  |
+| `index.ts` | `PacketGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderPacket`, `packetdiagPlugin` | Packet diagram plugin — `PacketDiagramFactory` (parse), then `TextBlockExporter`'s export of `PacketDiagram#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` (PacketDiagram.java:151-180) plus `calculateMar |
+| `packet-skin-param.ts` | `SkinParamSource`, `SkinParam` | The packet engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `PacketDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engin |
+| `PacketBlock.ts` | `OpenSides`, `PacketBlock` | PacketBlock — one drawn field of a packet row: `width` bit columns by `height` bit rows, its label centred inside. |
+| `PacketDiagram.ts` | `DEFAULT_COL_WIDTH`, `ScaleDirection`, `PacketItem`, `PacketDiagram` | PacketDiagram — one `@startpacketdiag` block: the fields in declaration order, laid out by `build()` into rows of `colWidth` bits, and drawn as one `TextBlock`: the bit scale across the top, then the block grid row by row. |
+| `PacketDiagramFactory.ts` | `parsePacket` | `PacketDiagramFactory`: `CommonCommands.addCommonCommands1` first, then the packet commands in `initCommandsList` order, then `checkFinalError` (which runs `build()`). |
+| `PacketIndicator.ts` | `PacketIndicator` | PacketIndicator — one tick of the bit scale above the grid: a full or short vertical line through `nwdiag.VerticalLine`, and the bit number centred above it when numbered. |
+
+## `src/diagrams/packetdiag/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandColWidth.ts` | `COL_WIDTH_RE`, `applyColWidth` | `CommandColWidth`: `colwidth = N` (1 to 3 digits), the bits per row. |
+| `CommandNodeHeight.ts` | `NODE_HEIGHT_RE`, `applyNodeHeight` | `CommandNodeHeight`: `node_height = N` (1 to 3 digits), one bit row's pixel height. |
+| `CommandNumRange.ts` | `NUM_RANGE_RE`, `applyNumRange` | `CommandNumRange`: a field as `N: desc`, `A-B: desc` or `* desc`, with an optional `[attributes]`. |
+| `CommandPacketDiagEnd.ts` | `PACKET_DIAG_END_RE`, `applyPacketDiagEnd` | `CommandPacketDiagEnd`: an optional `}` alone on its line, accepted anywhere. |
+| `CommandPacketDiagStart.ts` | `PACKET_DIAG_START_RE`, `applyPacketDiagStart` | `CommandPacketDiagStart`: an optional `packetdiag`, then an optional `{`. |
+| `CommandSameHeight.ts` | `SAME_HEIGHT_RE`, `applySameHeight` | `CommandSameHeight`: `same_height = true\|false`. |
+| `CommandScaleDirection.ts` | `SCALE_DIRECTION_RE`, `applyScaleDirection` | `CommandScaleDirection`: `scale_direction = ltr\|rtl`. |
+| `CommandScaleInterval.ts` | `SCALE_INTERVAL_RE`, `applyScaleInterval` | `CommandScaleInterval`: `scale_interval = N`, how often a bit is numbered. |
+| `packet-command-text.ts` | `JAVA_S`, `JAVA_DOT`, `SP0`, `parseJavaInt`, `directive` | The regex fragments and Java text helpers the packet commands share. |
 
 ## `src/diagrams/salt/`
 

@@ -437,7 +437,9 @@ export class CreoleParser implements SheetBuilder {
     // #createStripes`'s own `%newline()`/U+E100 split -- one Stripe per
     // resulting piece, every piece sharing this line's ONE classification).
     const align = isSimpleStripe(lastStripe) ? lastStripe.cellAlignment : this.horizontalAlignment;
-    const classification = classifyStripeLine(line);
+    // `new CreoleStripeSimpleParser(line, context, fontConfiguration, skinParam, creoleMode)`
+    // (java:113): the mode gates the list arms, so a SIMPLE_LINE `**x` is text, not a bullet.
+    const classification = classifyStripeLine(line, this.creoleMode);
 
     if (classification.type === 'HORIZONTAL_LINE') {
       return this.buildHorizontalLineStripes('', classification.style, fontConfiguration, align);

@@ -30,7 +30,8 @@ import { parseDescription as raw_parseDescription } from '../../src/diagrams/des
 import { parseBoard as raw_parseBoard } from '../../src/diagrams/board/parser.js';
 import { parseChronology } from '../../src/diagrams/chronology/parser.js';
 import { parseFiles } from '../../src/diagrams/files/parser.js';
-import { parsePacket as raw_parsePacket } from '../../src/diagrams/packetdiag/parser.js';
+import { parsePacket as raw_parsePacket } from '../../src/diagrams/packetdiag/PacketDiagramFactory.js';
+import { PreprocessingArtifact } from '../../src/core/tim/PreprocessingArtifact.js';
 import { parseYaml } from '../../src/diagrams/yaml/parser.js';
 import { parseHcl } from '../../src/diagrams/hcl/parser.js';
 import { parseJson } from '../../src/diagrams/json/parser.js';
@@ -49,7 +50,7 @@ const parseState = (b: UmlSource) => astOrThrow(raw_parseState(b), 'state');
 const parseSequence = (l: readonly string[]) => astOrThrow(raw_parseSequence(sequenceSource(l)), 'sequence');
 const parseDescription = (b: UmlSource) => astOrThrow(raw_parseDescription(b), 'description');
 const parseBoard = (b: UmlSource) => astOrThrow(raw_parseBoard(b), 'board');
-const parsePacket = (b: UmlSource) => astOrThrow(raw_parsePacket(b), 'packetdiag');
+const parsePacket = (b: UmlSource) => astOrThrow(raw_parsePacket(b, new PreprocessingArtifact()), 'packetdiag');
 
 /** Split markup into trimmed, non-empty content lines -- same helper as
  *  `annotations-parsers-a.test.ts` (mission G0b/T5). */
@@ -137,11 +138,16 @@ describe('sprite registry population per engine', () => {
     expect(ast.root.children.map((c) => c.name)).toEqual(['root']);
   });
 
-  it('packetdiag: parsePacket populates ast.sprites, not a field line', () => {
+  it('packetdiag: parsePacket populates the skin param sprites, not a field line', () => {
     const source: UmlSource = { lines: L(`0-15: Source\n${SPRITE_BLOCK}\n16-31: Dest`), type: 'packetdiag' };
     const parsed = parsePacket(source);
     expectIcon(parsed.sprites);
-    expect(parsed.items.map((i) => i.label)).toEqual(['Source', 'Dest']);
+    expect(
+      parsed
+        .getPacketGrid()
+        .flat()
+        .map((b) => b.getLabel()),
+    ).toEqual(['Source', 'Dest']);
   });
 
   // The json family has no command table: `StyleExtractor.java:63-103` does

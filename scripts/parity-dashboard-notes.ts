@@ -118,12 +118,6 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'object-divergence-drive (#115, 2026-11-05) took all 16 open rows to conformant: 81 of 81, all pinned. One authored ' +
       'probe stays off the jar inside dot-engine, `docs/graphviz-issues/41`.',
   },
-  packet: {
-    noteClass: 'openDefect',
-    detail:
-      'The canvas can match, but text is anchored and lines are drawn differently: PlantUML positions text with ' +
-      '`textLength` and draws `<path>` where we draw `<line>`.',
-  },
   state: {
     noteClass: 'openDefect',
     detail:

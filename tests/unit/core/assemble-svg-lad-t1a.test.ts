@@ -37,7 +37,7 @@ describe.each(TYPES)('%s shell arm', (type) => {
   });
 });
 
-describe.each(['BOARD', 'FILES', 'PACKET'] as const)('%s generic root arm', (type) => {
+describe.each(['BOARD', 'FILES'] as const)('%s generic root arm', (type) => {
   it('passes a bodyWrapped body through without a second wrapper', () => {
     const svg = assembleSvg(fragment(type, { body: `<g>${RECT}</g>`, bodyWrapped: true }));
     expect(svg).toContain(`<defs/>${ROOT_G_SPACING}${RECT}</g></svg>`);
@@ -45,11 +45,11 @@ describe.each(['BOARD', 'FILES', 'PACKET'] as const)('%s generic root arm', (typ
   });
 });
 
-describe('CHART titled-diagram arm (cep T4a)', () => {
-  // A chromed chart is a klimt fragment: `finalizeTitledDiagramFragment` needs the margin
-  // `chart/index.ts#rawTextBlock` carries, as WBS, MINDMAP, SALT and GANTT do.
+describe.each(['CHART', 'PACKET'] as const)('%s titled-diagram arm (cep T4a, pep T3a)', (type) => {
+  // A chromed chart or packet is a klimt fragment: `finalizeTitledDiagramFragment` needs the margin
+  // `<engine>/index.ts#rawTextBlock` carries, as WBS, MINDMAP, SALT and GANTT do.
   it('refuses a chromed fragment with no exportMargin', () => {
-    expect(() => assembleSvg(fragment('CHART', { body: `<g>${RECT}</g>`, bodyWrapped: true }))).toThrow(
+    expect(() => assembleSvg(fragment(type, { body: `<g>${RECT}</g>`, bodyWrapped: true }))).toThrow(
       'chromed fragment without exportMargin',
     );
   });

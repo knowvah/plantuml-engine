@@ -1,0 +1,7 @@
+@startpacketdiag
+packetdiag {
+  colwidth = 8;
+  node_height = 40;
+  0-7: A
+}
+@endpacketdiag

@@ -323,6 +323,26 @@ export class Style {
   }
 
   /**
+   * The back and line colours (a `colors` entry wins over the style's), the
+   * stroke, the shadow and the corners as one {@link Fashion}.
+   * @see Style.java:270-286
+   */
+  getSymbolContext(set: HColorSet, colors?: Colors): Fashion {
+    const backColor =
+      (colors === undefined ? undefined : colorsGet(colors, ColorType.BACK)) ??
+      this.value('BackGroundColor').asColor(set);
+    const foreColor =
+      (colors === undefined ? undefined : colorsGet(colors, ColorType.LINE)) ?? this.value('LineColor').asColor(set);
+    const deltaShadowing = this.getShadowing();
+    const roundCorner = this.value('RoundCorner').asDouble();
+    const diagonalCorner = this.value('DiagonalCorner').asDouble();
+    return new Fashion(backColor, foreColor)
+      .withStroke(this.getStroke())
+      .withDeltaShadow(deltaShadowing)
+      .withCorner(roundCorner, diagonalCorner);
+  }
+
+  /**
    * `LineColor` as the foreground (`HColors.none()` where it is null),
    * then {@link getStroke}. Applying an `HColor` sets the foreground
    * (AbstractCommonUGraphic.java:123-124), which is the port's `Fore`.

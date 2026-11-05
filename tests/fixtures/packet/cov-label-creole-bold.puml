@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  0-15: **Bold** port
+  16-31: <color:red>Red</color> port
+}
+@endpacketdiag
