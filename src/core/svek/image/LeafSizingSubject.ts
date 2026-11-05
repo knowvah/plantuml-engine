@@ -24,15 +24,15 @@
  * - `display`: every per-symbol case in `leaf-sizing.ts#measureLeafNode`,
  *   `leaf-sizing-entity.ts#buildSizingEntityParams` (`labels.codeName`/
  *   `.displayText`), `leaf-sizing-folder.ts#measureFolderLeaf`,
- *   `leaf-sizing-legacy-fallback.ts#measureLegacyBoxFallback`.
+ *   the entity image.
  * - `symbol`: the `measureLeafNode` dispatch switch,
  *   `leaf-sizing-entity.ts#buildSizingEntityParams` (`symbol.keyword`),
  *   `leaf-sizing-folder.ts#measureFolderLeaf` (margin/tab-family lookup),
- *   `leaf-sizing-legacy-fallback.ts#measureLegacyBoxFallback`/`#boxIcon`.
+ *   `USymbol` box geometry.
  * - `stereotype`: `leaf-sizing.ts#measureLeafNode`'s `<latex>`-usecase
  *   branch, `leaf-sizing-entity.ts#buildSizingEntityParams`
  *   (`labels.stereotypeLabels`), `leaf-sizing-folder.ts#folderStereoBlock`,
- *   `leaf-sizing-legacy-fallback.ts#measureLegacyBoxFallback`.
+ *   the entity image.
  * - `stereotypeSprite`: `leaf-sizing-entity.ts#spriteLabel`, which hands it
  *   straight to `resolveStereotypeSprite`
  *   (`EntityImageDescriptionDelegates.ts`) — already typed structurally
@@ -53,7 +53,27 @@
  * it if/when the description and class engines share a real `Entity`.
  */
 import type { USymbol } from '../../descriptive-keywords.js';
+import type { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
+import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import type { ResolvedColor } from '../../klimt/color/HColorSet.js';
+
+/**
+ * The values `EntityImageDescription`'s constructor reads from its merged styles and that change the box
+ * (`EntityImageDescription.java:171-175,207`). Absent on a subject with no style builder: the sizer's own defaults.
+ */
+export interface EntitySizing {
+  readonly fontTitle?: FontConfiguration;
+  readonly fontBody?: FontConfiguration;
+  readonly fontStereo?: FontConfiguration;
+  readonly titleAlignment?: HorizontalAlignment;
+  readonly stereotypeAlignment?: HorizontalAlignment;
+  readonly thickness?: number;
+  /** `style.wrapWidth()`, `style.value(PName.MinimumWidth)` (`EntityImageDescription.java:185-191`). */
+  readonly wrapWidth?: number;
+  readonly minimumWidth?: number;
+  /** `styleTitle.value(PName.MinimumWidth)`, the `package` name's floor. */
+  readonly minimumWidthTitle?: number;
+}
 
 /** The sprite half of a `<<...>>` stereotype run — mirrors
  *  `resolveStereotypeSprite`'s own structural parameter shape
@@ -71,9 +91,13 @@ export interface LeafSizingStereotypeSprite {
 /** See module doc comment for the upstream citation and the per-field read
  *  sites across the leaf-sizing family. */
 export interface LeafSizingSubject {
+  /** See {@link EntitySizing}. */
+  readonly entitySizing?: EntitySizing | undefined;
   readonly id: string;
   readonly display: string;
   readonly symbol: USymbol;
   readonly stereotype?: readonly string[];
+  /** `getLabels(Guillemet.DOUBLE_COMPARATOR)` of the same stereotype, padding kept. */
+  readonly stereotypeRawLabels?: readonly string[] | undefined;
   readonly stereotypeSprite?: LeafSizingStereotypeSprite;
 }

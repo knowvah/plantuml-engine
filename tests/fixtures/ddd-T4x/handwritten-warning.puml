@@ -1,0 +1,13 @@
+@startuml
+skinparam handwritten true
+actor a
+rectangle "b" as b
+usecase c
+package p {
+  node n
+}
+a --> b : one
+b --> c
+c --> n
+note right of b : hand
+@enduml

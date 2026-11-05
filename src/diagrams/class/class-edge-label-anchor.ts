@@ -14,10 +14,9 @@ import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import { type GuideLine, type MagicArrowDirection, magicArrowGlyphPoints } from './class-magic-arrow.js';
 import { computeQuantifierBox } from '../../core/edge-label-box.js';
 import type { QuantifierLineGeo } from './class-geo-edge-extras.js';
-import type { Positionable } from '../../core/klimt/geom/Positionable.js';
 import { PositionableImpl } from '../../core/klimt/geom/PositionableImpl.js';
 import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
-import { addMargin, intersect, moveAwayFrom } from '../../core/klimt/geom/PositionableUtils.js';
+import { manageCollision } from '../../core/svek/quantifier-collision.js';
 import { stripLabelLines } from './class-edge-label-lines.js';
 
 /**
@@ -209,7 +208,6 @@ export function guideLinesAnchor(
 /** Every node grows by this much on each side before the port-label
  *  overlap test -- upstream inlines it as `addMargin(sh, 8, 8)`
  *  (`svek/SvekEdge.java:1207`). */
-const PORT_LABEL_COLLISION_MARGIN = 8;
 
 /**
  * `SvekEdge#manageCollision` (`svek/SvekEdge.java:1205-1216`): push a port
@@ -237,15 +235,6 @@ const PORT_LABEL_COLLISION_MARGIN = 8;
  * can be pushed again by a later one, and a different order can reach a
  * different fixed point.
  */
-function manageCollision(box: Positionable, nodes: DotLayoutResult['nodes']): Positionable {
-  let current = box;
-  for (const n of nodes) {
-    const sh = new PositionableImpl(n.x, n.y, new XDimension2D(n.width, n.height));
-    const cl = addMargin(sh, PORT_LABEL_COLLISION_MARGIN, PORT_LABEL_COLLISION_MARGIN);
-    if (intersect(cl, current)) current = moveAwayFrom(cl, current);
-  }
-  return current;
-}
 
 /**
  * Convert a `graph-layout.ts#extractPortLabelPositions` CENTER point into

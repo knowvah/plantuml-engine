@@ -25,6 +25,7 @@ import { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
 import { UTranslate } from '../../klimt/UTranslate.js';
 import { Fore } from '../../klimt/Fore.js';
 import { Back } from '../../klimt/Back.js';
+import { asAtomOpenIconic } from '../../klimt/creole/atom/AtomOpenIconic.js';
 import { UText } from '../../klimt/shape/UText.js';
 import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import { UImage } from '../../klimt/shape/UImage.js';
@@ -203,11 +204,23 @@ function drawAtoms(
       x += bulletDimension(atom.order).width;
       continue;
     }
+    // `AtomOpenIconic` (`StripeSimple.java:239-243`): a `<&glyph>`, in the stereotype and other flat lines too.
+    const glyph = atom.ambientFont === undefined ? undefined : asAtomOpenIconic(atom, atom.ambientFont);
+    if (glyph !== undefined) {
+      // `Sea#doAlign`: `-height + startingAltitude`, against a text run's `-rawHeight` on the same line.
+      const dim = glyph.calculateDimension(stringBounder);
+      const dy = m.rawHeight - dim.getHeight() + glyph.getStartingAltitude(stringBounder);
+      glyph.drawU(ug.apply(new UTranslate(x, origin.y + dy)));
+      x += dim.getWidth();
+      continue;
+    }
     // ADR-2: cursor advances by DECLARED width, never ink.
     const resolved: ResolvedAtomImageWithRaster | undefined = resolveAtomImage?.(atom.atom, () => stringBounder);
     if (resolved === undefined) continue;
     const drawX = x;
-    drawWithAtomUrl(ug, atom.url, () => drawResolvedInline(ug, resolved, drawX, origin.y));
+    // `Sea#doAlign`: `-height` with a starting altitude of 0 (`AtomSprite.java:69-71`, `AtomImg.java:242-244`).
+    const drawY = origin.y + m.rawHeight - resolved.height;
+    drawWithAtomUrl(ug, atom.url, () => drawResolvedInline(ug, resolved, drawX, drawY));
     x += resolved.width;
   }
   // #lizard forgives -- ADR-2's two-variant branch pushed NLOC over 30 (T7).

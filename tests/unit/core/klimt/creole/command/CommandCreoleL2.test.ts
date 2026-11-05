@@ -98,6 +98,7 @@ describe('CommandCreoleColorChange', () => {
         kind: 'inline',
         atom: { kind: 'sprite', name: 'Batch', scale: 1 },
         ambientFont: { family: 'sans-serif', size: 14, color: '#FF0000', styles: new Set() },
+        lineEndFont: PLAIN,
       },
     ]);
   });

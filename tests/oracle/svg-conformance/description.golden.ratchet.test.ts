@@ -205,10 +205,9 @@ describe('svg-description conformance ratchet — eligibility (AC3)', () => {
   });
 
   it('rejects adding a fixture whose DOT is not EQUAL', () => {
-    // Real rows known (via parity-component.json) to be dotEqual=false:
-    // `berelu-46-namo819` (diverged; `gutute-00-gaki684` is now dotEqual) and `dirofi-81-cuga514`, which is
+    // A real row known (via parity-component.json) to be dotEqual=false: `dirofi-81-cuga514`, which is
     // verdict=conformant yet dotEqual=false -- conformance alone is not enough.
-    for (const slug of ['berelu-46-namo819', 'dirofi-81-cuga514']) {
+    for (const slug of ['dirofi-81-cuga514']) {
       const entry = surveyRows('component').find((r) => r.slug === slug);
       expect(entry, `expected ${slug} in parity-component.json`).toBeDefined();
       expect(entry!.dotEqual).toBe(false);

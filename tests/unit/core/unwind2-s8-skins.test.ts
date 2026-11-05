@@ -52,7 +52,7 @@ const PINS: Readonly<Record<string, number>> = {
   'skin-state-sonyxperiadev': 1,
   'skin-strictuml': 5,
   'skin-usecase-reddress': 5,
-  'skin-usecase-sonyxperiadev': 2,
+  'skin-usecase-sonyxperiadev': 0,
 };
 
 const CASES = readdirSync(DIR)

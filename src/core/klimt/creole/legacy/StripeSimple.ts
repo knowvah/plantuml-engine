@@ -158,9 +158,20 @@ class StripeAtomBuilder implements StripeBuilder {
 
   analyzeAndAddInlineWithUrl(text: string, url: string, tooltip: string): void {
     const saved = this.activeUrl;
+    const outer = this.built;
     this.activeUrl = { url, tooltip };
+    this.built = [];
     this.modifyStripe(text);
+    const pieces = this.built;
+    this.built = outer;
     this.activeUrl = saved;
+    // `createAtomTextForUrl` returns one `AtomHorizontalTexts` for a label with an image (`AtomTextUtils.java:121-159`),
+    // which a one-line `AtomVerticalTexts` measures and draws identically (`atom/AtomVerticalTexts.ts`).
+    if (pieces.length > 1 && pieces.some((atom) => atom.kind === 'inline')) {
+      this.built.push({ kind: 'vertical', lines: [pieces] });
+    } else {
+      this.built.push(...pieces);
+    }
   }
 
   addUrlLines(lines: readonly string[], url: string, tooltip: string): void {
@@ -294,7 +305,8 @@ class StripeAtomBuilder implements StripeBuilder {
    *  fallback, applied once the whole line has been processed. */
   finish(): readonly CreoleAtom[] {
     if (this.built.length === 0) return [{ kind: 'text', text: ' ', font: this.font }];
-    return this.built;
+    // The font at the line's end, for a line whose only atoms turn out to name no sprite (`SheetBlock1#drawableAtoms`).
+    return this.built.map((atom) => (atom.kind === 'inline' ? { ...atom, lineEndFont: this.font } : atom));
   }
 }
 

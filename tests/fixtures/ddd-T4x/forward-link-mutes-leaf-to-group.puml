@@ -1,0 +1,7 @@
+@startuml
+rectangle "S" as s
+s -right-> g
+rectangle "G" as g {
+  rectangle b
+}
+@enduml

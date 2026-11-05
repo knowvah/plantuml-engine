@@ -72,16 +72,16 @@ const DQUOTE = '\x22';
 const SEP = '(?:\\s*:\\s*|\\s+)';
 
 /** `[%g](.*)[%g]` | `(.*[%pLN_.].*)` -- quoted (group A, may be empty) or
- *  unquoted (group B, must contain a word/dot char) value. Two capture
+ *  unquoted (group B, must contain a `%pLN`, `_` or `.` char, so a Cyrillic title is one: CommandTitle.java:66) value. Two capture
  *  groups per use; callers pass in the 1-based index of the quoted group
  *  ({@link pickValueAt}). */
-const VALUE = '(?:' + DQUOTE + '(.*)' + DQUOTE + '|(.*[\\w.].*))';
+const VALUE = '(?:' + DQUOTE + '(.*)' + DQUOTE + '|(.*[\\p{L}\\p{N}_.].*))';
 
 /** `(left|right|center)` -- header/footer/legend alignment word. */
 const POSITION = '(left|right|center)';
 
 function buildRegex(pattern: string): RegExp {
-  return new RegExp(pattern, 'i');
+  return new RegExp(pattern, 'iu');
 }
 
 function pickValueAt(m: RegExpMatchArray, quotedIndex: number, unquotedIndex: number): string {

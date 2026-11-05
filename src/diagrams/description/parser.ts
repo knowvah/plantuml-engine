@@ -13,6 +13,7 @@
  * the top-level line loop and its dispatch priority.
  */
 
+import { countStyleBlocksBefore } from '../../core/style-generation.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
@@ -56,6 +57,7 @@ export { CONTAINER_SYMBOLS } from './parse-helpers.js';
 function makeInitialState(internal?: InternalSpriteStore, emoji?: InternalEmojiStore): ParseState {
   return {
     inSpriteBlock: false,
+    styleGeneration: 0,
     pendingElement: undefined,
     ast: makeDefaultAST(internal, emoji),
     containerStack: [],
@@ -172,6 +174,12 @@ function continueElementBlock(
 ): LineOutcome {
   const raw = lines[i]!;
   const trimmed = raw.trim();
+  if (pending.terminator === 'archimate') {
+    // `CommandArchimateMultilines.java:71-72,147,157`: `^(.*)\]$` ends it, `lines.trim()`, the edges dropped.
+    if (trimmed.endsWith(']')) finishElementBlock(state);
+    else pending.lines.push(trimmed);
+    return 1;
+  }
   if (getEmbeddedType(trimmed) !== null) {
     const embedded = scanEmbeddedElementBlock(lines, i);
     for (const l of embedded.block) pushElementBody(pending, l);
@@ -189,18 +197,15 @@ function continueElementBlock(
 }
 
 /** Apply the opener's captured STEREO/COLOR run (`ELEMENT_DECORATION_RUN`)
- *  through the same extractors the single-line path uses. `withColor` is
- *  TYPE0-only: TYPE0's color slot sits before `as` and has no single-line
- *  equivalent, whereas TYPE1's color is a separate, unmeasured gap (see this
- *  task's decision-journal row). */
-function applyElementDecorations(node: DescriptiveNode, run: string, withColor: boolean): void {
+ *  through the same extractors the single-line path uses; both phases set the
+ *  colours (`CommandCreateElementMultilines.java:222-223`). */
+function applyElementDecorations(node: DescriptiveNode, run: string): void {
   if (run.trim() === '') return;
   const sr = extractNodeStereotype(run);
   if (sr !== undefined) {
     node.stereotype = sr.stereotypes;
     if (sr.sprite !== undefined) node.stereotypeSprite = sr.sprite;
   }
-  if (!withColor) return;
   const cr = extractColor(sr === undefined ? run : sr.remainder);
   if (cr !== undefined) node.color = cr.color;
 }
@@ -217,7 +222,7 @@ function openElementBlock(
   if (symbol === undefined) return null;
   const code = open[2]!;
   const node = makeNode(code, code, symbol);
-  applyElementDecorations(node, open[3]!, terminator === 'quote');
+  applyElementDecorations(node, open[3]!);
   emitNode(state, node);
   const pending: PendingElementState = {
     terminator,
@@ -420,6 +425,7 @@ export function parseDescription(
       continue;
     }
     const rawLine = block.linePositions?.[i] ?? i;
+    state.styleGeneration = countStyleBlocksBefore(block.stylePositions ?? [], rawLine);
     const result = processLine(state, lines, i, rawLine);
     if (result === false) break;
     if (typeof result !== 'number') return result;

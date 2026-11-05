@@ -1,0 +1,12 @@
+@startuml
+component a
+newpage
+skinparam handwritten true
+skinparam componentBackgroundColor red
+<style>
+component {
+  LineThickness 3
+}
+</style>
+component b
+@enduml

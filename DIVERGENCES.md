@@ -208,6 +208,13 @@ conformance bars, rather than silently excluding them from the denominator.
 baseline is now component 253/262, usecase 84/90, class 708/708, object
 78/80, state 266/267 with oracle-blind reduced to the elk residue.*
 
+**Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
+pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
+against 262x161). Their node order is mirrored
+(`CucaDiagramFileMakerSmetana.java:283,589,636`). Two structural residues sit on
+Smetana's own edge, not chased: `SmetanaEdge` writes no path `id`, and it draws
+some extremities before the path.
+
 **Category:** limitation (upstream's alternate engines are redundant copies of
 the one we implement).
 
@@ -633,6 +640,14 @@ recursion 257–~1000 deep that the jar renders is refused here (it already
 failed past ~546 before this bound). **Category:** limitation.
 
 ## Descriptive diagrams
+
+### `usecase/fepuvo-06` — unreadable by the comparer, not a divergence
+
+The jar writes an entity name holding `----` into `<!--entity ...-->`
+(`EntityImageDescription.java:295`) and `<!--link ...-->`, which is not
+well-formed XML, so `compareSvg` cannot parse the oracle and the survey reports
+`oracle-error`. Our output carries the same bytes. With comments stripped from
+both sides the row has zero diffs (`tests/unit/description/ddd-t5e-named-ends.test.ts`).
 
 <!--
 RESOLVED 2026-06-26 — "Descriptive diagrams — edge routing": an earlier draft

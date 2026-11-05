@@ -1185,14 +1185,25 @@ describe('routing conformance — jar-error classification', () => {
     // 9341 -> 9370 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones (batch 6: layout inputs, residue).
     // 9370 -> 9371 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
     // Derivation: 9341 + 29 + 1 = 9371.
-    expect(pinnedAgree.length).toBe(9371);
+    // 9371 -> 9448 at ddd/T0b (2026-11-04): +77 svg-description golden clones. Derivation: 9371 + 77 = 9448.
+    // 9448 -> 9456 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 9448 + 8 = 9456.
+    // 9456 -> 9461 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 9456 + 5 = 9461.
+    // 9461 -> 9464 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 9461 + 3 = 9464.
+    // 9464 -> 9480 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 9464 + 16 = 9480.
+    // 9480 -> 9584 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 9480 + 104 = 9584.
+    // 9584 -> 9635 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 9584 + 51 = 9635.
+    // 9635 -> 9669 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 9635 + 34 = 9669.
+    expect(pinnedAgree.length).toBe(9669);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
     // activity 128 (114 legacy `(*) -->` + 13 activity3 + 1 legacy we draw as CLASS), class 2,
     // sequence 1, timing 19, unknown 22 (16 DESCRIPTION + 6 head-window error pages we draw).
     // Derivation: 374 + 172 = 546.
-    expect(pinnedMisroutes.length).toBe(546);
+    // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
+    // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
+    // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
+    expect(pinnedMisroutes.length).toBe(530);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -1253,7 +1264,12 @@ describe('routing conformance — jar-error classification', () => {
     // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones. Derivation: 9341 + 546 + 162 = 10049.
     // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones. Derivation: 9370 + 546 + 162 = 10078.
     // 10078 -> 10079 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
-    expect(manifest.fixtures.length).toBe(10079);
+    // 10079 -> 10156 at ddd/T0b (2026-11-04): +77 svg-description golden clones.
+    // 10156 -> 10172 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 10156 + 16 = 10172.
+    // 10172 -> 10276 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 10172 + 104 = 10276.
+    // 10276 -> 10327 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 10276 + 51 = 10327.
+    // 10327 -> 10361 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 10327 + 34 = 10361.
+    expect(manifest.fixtures.length).toBe(10361);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1327,7 +1343,10 @@ describe('routing conformance — jar-error classification', () => {
     // 375 -> 374 at ddc/close-b0 (2026-10-28): files/files-directory-tree-with-note now agrees.
     // 374 -> 546 at ogc/T5: the 172 new misroutes all carry a ledger reason (the pin tool
     // refuses one without), so censused still equals pinnedMisroutes.
-    expect(censused.length).toBe(546);
+    // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
+    // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
+    // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
+    expect(censused.length).toBe(530);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

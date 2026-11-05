@@ -11,33 +11,12 @@
  * 218-245`, the `cpt1` tick) when it does not.
  */
 
+import { countStyleBlocksBefore } from '../../core/style-generation.js';
 import type { Classifier, ClassifierKind } from './ast.js';
 import { makeClassifier, registerInNamespace, resolveReference } from './class-namespace.js';
 import { eventuallyBuildPhantomGroups, isLikeClass } from './class-namespace-resolve.js';
 import { stripQuotes } from './class-relationship-parser.js';
 import type { ParseState } from './class-parse-state.js';
-
-/**
- * G2 N39: how many `<style>` blocks (their own opening `<style>` tag's
- * source line) sit strictly BEFORE `currentLine` -- the "style generation"
- * a classifier created AT `currentLine` captures, mirroring upstream's
- * `Entity#currentStyleBuilder` snapshot (`ast.ts#Classifier.styleGeneration`'s
- * doc comment). `currentLine === undefined` (a hand-built literal fixture,
- * or a merged-brace line with no tracked position) returns `0` -- the same
- * "no scoping information available" fallback `state.currentLine`'s own
- * doc comment already documents for `Relationship.sourceLine`.
- */
-function countStyleBlocksBefore(
-  stylePositions: readonly (number | undefined)[],
-  currentLine: number | undefined,
-): number {
-  if (currentLine === undefined) return 0;
-  let count = 0;
-  for (const pos of stylePositions) {
-    if (pos !== undefined && pos < currentLine) count += 1;
-  }
-  return count;
-}
 
 /** Phase-1 output: a reference resolved to its quark (id + owning
  *  namespace + default display), no leaf created yet. */

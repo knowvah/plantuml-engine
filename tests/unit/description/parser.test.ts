@@ -3102,18 +3102,15 @@ describe('G6-c: first-match ordering guards for rules 10 / 11 / 11b / 15', () =>
     expect(node).toMatchObject({ id: 'Just quoted', display: 'Just quoted', symbol: 'actor' });
   });
 
-  it('G6-c5: a quoted LHS with a quoted RHS matches NO alternative upstream, so the whole diagram refuses (T7)', () => {
-    // CODE_CORE has no quoted branch, so alternative 3 cannot take `"a"` as
-    // its CODE; alternative 2/4 cannot take `"b"` as their CODE either. No
-    // OTHER command in the factory matches an arrow-free, keyword-free,
-    // bracket-free line either, so upstream's `getCandidate` returns `null`
-    // -- `SYNTAX_ERROR "Syntax Error?"` for the WHOLE document
-    // (`PSystemCommandFactory.java:169-175`), not a silent no-op. Re-examined
-    // for T7: the original assertion (zero nodes, no error) never matched
-    // real upstream behaviour.
-    const refusal = parseRefusal('"a" as "b"');
-    expect(refusal.kind).toBe('syntax');
-    expect(refusal.line).toBe(0);
+  it('G6-c5: a quoted LHS with a quoted RHS is ONE quoted CODE1, the lazy `[%g].+?[%g]` running to the last quote', () => {
+    // CODE_WITH_QUOTE (`CommandCreateElementFull.java:128`) is anchored by the tail (`:107-115`), so the lazy group
+    // extends past the inner quotes. Jar: one stickman, `<!--entity a" as "b-->`, drawn text `a" as "b`.
+    const node = parse('"a" as "b"').nodes[0];
+    expect({ id: node?.id, display: node?.display, symbol: node?.symbol }).toEqual({
+      id: 'a" as "b',
+      display: 'a" as "b',
+      symbol: 'actor',
+    });
   });
 });
 

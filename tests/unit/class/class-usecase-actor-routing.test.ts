@@ -119,18 +119,16 @@ describe("measureUsecaseOrActor routes through the description engine's faithful
     const withoutSprites = measureUsecaseOrActor(classifier, fontSpec, measurer);
     const withSprites = measureUsecaseOrActor(classifier, fontSpec, measurer, registry);
 
-    // Literal numbers captured from a real run (jiti probe, 2026-08-02).
-    // Un-resolvable `<$icon>` (no lookup passed) collapses to the bare 6x6
-    // margin-only ellipse; a REGISTERED sprite widens/heightens it via the
+    // Un-resolvable `<$icon>` (no lookup passed) adds no atom, leaving the stripe's one space
+    // (`StripeSimple.java:124-125`). Jar, `allowmixing` + `usecase "<$icon>"`: rx 11.959, ry 10.167.
+    // A REGISTERED sprite widens/heightens it via the
     // real ink decomposition. If the sprites parameter were dropped from
     // the call site (the exact regression this test guards), `withSprites`
     // would equal `withoutSprites` and this assertion would fail.
-    expect(withoutSprites).toEqual({
-      width: 6,
-      height: 6,
-      rows: [{ text: '<$icon>', y: 3, indent: 0, italic: false }],
-      dividerYs: [],
-    });
+    expect(withoutSprites.width).toBeCloseTo(23.918, 3);
+    expect(withoutSprites.height).toBeCloseTo(20.335, 3);
+    expect(withoutSprites.rows).toEqual([{ text: '<$icon>', y: withoutSprites.height / 2, indent: 0, italic: false }]);
+    expect(withoutSprites.dividerYs).toEqual([]);
     expect(withSprites.width).toBeCloseTo(21.22999221017179, 6);
     expect(withSprites.height).toBeCloseTo(18.183993768137434, 6);
     expect(withSprites.width).not.toBe(withoutSprites.width);
@@ -165,17 +163,11 @@ describe("measureUsecaseOrActor routes through the description engine's faithful
     const withoutSprites = measureClassifier(classifier, defaultTheme, measurer, suppress);
     const withSprites = measureClassifier(classifier, defaultTheme, measurer, suppress, registry);
 
-    // Literal numbers captured from a real run (jiti probe, 2026-08-02) --
-    // font-independent for this display (matches the direct
-    // measureUsecaseOrActor probe above, since defaultTheme's font differs
-    // from this file's own fontSpec but the bare `<$icon>` display has no
-    // text ink to size against).
-    expect(withoutSprites).toEqual({
-      width: 6,
-      height: 6,
-      rows: [{ text: '<$icon>', y: 3, indent: 0, italic: false }],
-      dividerYs: [],
-    });
+    // The jar's unresolved-sprite ellipse, as above.
+    expect(withoutSprites.width).toBeCloseTo(23.918, 3);
+    expect(withoutSprites.height).toBeCloseTo(20.335, 3);
+    expect(withoutSprites.rows).toEqual([{ text: '<$icon>', y: withoutSprites.height / 2, indent: 0, italic: false }]);
+    expect(withoutSprites.dividerYs).toEqual([]);
     expect(withSprites.width).toBeCloseTo(21.22999221017179, 6);
     expect(withSprites.height).toBeCloseTo(18.183993768137434, 6);
     // If `class-layout-helpers.ts:286` stopped forwarding `sprites` to

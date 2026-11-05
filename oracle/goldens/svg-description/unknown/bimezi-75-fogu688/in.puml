@@ -1,0 +1,7 @@
+@startuml
+skinparam actorStyle hollow
+:User:
+"Main Admin" as Admin
+(Start)
+"Use the application" as (Use)
+@enduml

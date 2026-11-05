@@ -91,6 +91,26 @@ function projectionSpecOf(
 
 const toBbox = (r: RectangleArea): Bbox => ({ x: r.minX, y: r.minY, width: r.maxX - r.minX, height: r.maxY - r.minY });
 
+/**
+ * The rectangle of the final draw: `Cluster#drawU` calls `manageEntryExitPoint` each time it draws (`Cluster.java:344-345`),
+ * so after the ink walk the real draw runs it once more on the walk's result, which `ensureMinWidth` can move.
+ */
+export function computePortClusterFinalBbox(
+  children: readonly DescriptionNodeGeo[],
+  info: PortClusterInfo,
+  spacing: ClusterSpacing,
+  first: Bbox,
+): Bbox {
+  const spec = projectionSpecOf('', children, info, spacing);
+  const current: RectangleArea = {
+    minX: first.x,
+    minY: first.y,
+    maxX: first.x + first.width,
+    maxY: first.y + first.height,
+  };
+  return toBbox(entryExitPointRect(spec, current, (id) => info.clusterRects.get(id)));
+}
+
 /** A port cluster's drawn bbox, `Cluster.manageEntryExitPoint`
  *  (`Cluster.java:410-430`) -- see this module's doc comment. */
 export function computePortClusterBbox(

@@ -1,0 +1,8 @@
+@startuml
+component a
+component b
+a --> b
+note on link #blue;line:red;text:yellow : hello
+b --> a : back
+note right on link #palegreen : there
+@enduml

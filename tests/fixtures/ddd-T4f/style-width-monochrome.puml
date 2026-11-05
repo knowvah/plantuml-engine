@@ -1,0 +1,14 @@
+@startuml
+skinparam monochrome true
+<style>
+rectangle {
+  MinimumWidth 120
+  MaximumWidth 60
+}
+</style>
+rectangle #LightGreen "Social Media Competency" as a
+rectangle "b" as b
+actor c
+a --> b : ""
+b --> c : " "
+@enduml

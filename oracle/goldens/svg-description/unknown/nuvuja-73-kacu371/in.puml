@@ -1,0 +1,6 @@
+@startuml
+title test
+skinparam titleFontSize 6
+:actor: <<Foo>>
+(use case) <<Foo>>
+@enduml

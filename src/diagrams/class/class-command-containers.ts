@@ -9,6 +9,7 @@
  */
 import { applyAssocCouple, ASSOC_COUPLE_RE, ASSOC_DOUBLE_COUPLE_RE } from './class-assoc-couple.js';
 import { applyDoubleCouple } from './class-assoc-double-couple.js';
+import { refuse } from '../../core/parse-refusal.js';
 import type { Command } from './class-command-types.js';
 import type { Visibility } from './ast.js';
 import type { ParseState } from './parser.js';
@@ -164,6 +165,13 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
     ),
     execute(state, match) {
       const name = match[2] ?? match[3];
+      // `CommandPackage.java:154-158`: an empty NAME with no `as` is an execution error, so the next
+      // factory runs (`PSystemBuilder.java:136-140`, D10). `package {}` is `CommandPackageEmpty`'s.
+      if ((name === undefined || name === '') && match[4] === undefined && match[10] === undefined) {
+        const at = state.currentLine ?? 0;
+        state.executionRefusal = refuse('execution', at, at, 'Error in name', 0);
+        return;
+      }
       let effectiveId: string;
       if (name !== undefined) {
         effectiveId = openNamespaceBlock(state, match[4] ?? name, name);

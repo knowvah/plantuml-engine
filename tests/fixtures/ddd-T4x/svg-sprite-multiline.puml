@@ -1,0 +1,8 @@
+@startuml
+sprite $box <svg viewBox="0 0 24 24">
+<path d="M3 3h18v18H3z" fill="#ff0000"/>
+</svg>
+rectangle "before <$box> after" as a
+actor "<$box>" as b
+a --> b
+@enduml

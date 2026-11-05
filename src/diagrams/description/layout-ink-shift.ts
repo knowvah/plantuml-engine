@@ -71,7 +71,7 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import type { DescriptionNodeGeo, DescriptionEdgeGeo } from './layout-helpers.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import { buildUidPlan } from './renderer-uid.js';
-import { collectByKind, drawClusters, drawEntities, drawEdges } from './renderer-draw-sequence.js';
+import { buildEdgeMagnets, collectByKind, drawClusters, drawEntities, drawEdges } from './renderer-draw-sequence.js';
 import { runInkWalk, driverBounderFor } from './renderer-ink-extent.js';
 
 // `JAR_INK_MARGIN` comes from the single owner, `core/svek/SvekResult.ts`;
@@ -137,7 +137,7 @@ function walkRawInk(
       // T1e write-set expansion (journaled): see
       // `renderer-draw-sequence.ts#drawEntities`'s own doc comment.
       drawEntities(ug, leaves, theme, plan, sprites, false, rawEdges);
-      drawEdges(ug, rawEdges, theme, plan, false);
+      drawEdges(ug, rawEdges, theme, plan, false, buildEdgeMagnets(containers, leaves, theme, plan, sprites), sprites);
     },
     driverBounder,
     measurer,

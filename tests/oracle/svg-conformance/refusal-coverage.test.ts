@@ -1032,7 +1032,12 @@ describe('refusal coverage — baseline shape', () => {
     // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all render.
     // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all render.
     // 10078 -> 10079 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
-    expect(manifest.fixtures.length).toBe(10079);
+    // 10079 -> 10156 at ddd/T0b (2026-11-04): +77 svg-description golden clones. Derivation: 10079 + 77 = 10156.
+    // 10156 -> 10172 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 10156 + 16 = 10172.
+    // 10172 -> 10276 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 10172 + 104 = 10276.
+    // 10276 -> 10327 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 10276 + 51 = 10327.
+    // 10327 -> 10361 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 10327 + 34 = 10361.
+    expect(manifest.fixtures.length).toBe(10361);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1083,7 +1088,10 @@ describe('refusal coverage — baseline shape', () => {
     // page past the 4096-byte head, PSystemError.java:217-218) now count as erroring here.
     // 217 -> 446 at ogc/T5: +229 erroring = 173 known-gap rows (activity 127, sequence 1, timing 19,
     // unknown 26) + 56 of the 76 new jar-error rows where we error too. Derivation: 217 + 229 = 446.
-    expect(pinnedErroring.length).toBe(446);
+    // 446 -> 441 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 446 - 5 = 441.
+    // 441 -> 438 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 441 - 3 = 438.
+    // 438 -> 440 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 438 + 2 = 440.
+    expect(pinnedErroring.length).toBe(440);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1258,7 +1266,14 @@ describe('refusal coverage — baseline shape', () => {
     // 9596 -> 9603 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones, all rendering. Derivation: 10049 - 446 = 9603.
     // 9603 -> 9632 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones, all rendering.
     // 9632 -> 9633 (2026-11-04): +1, viroxo-69. Derivation: 10079 - 446 = 9633.
-    expect(pinnedRendering.length).toBe(9633);
+    // 9633 -> 9710 at ddd/T0b (2026-11-04): +77 svg-description golden clones.
+    // 9710 -> 9715 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 9710 + 5 = 9715.
+    // 9715 -> 9718 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 9715 + 3 = 9718.
+    // 9718 -> 9734 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 9718 + 16 = 9734.
+    // 9734 -> 9836 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 9734 + 102 = 9836.
+    // 9836 -> 9887 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 9836 + 51 = 9887.
+    // 9887 -> 9921 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 9887 + 34 = 9921.
+    expect(pinnedRendering.length).toBe(9921);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1337,7 +1352,10 @@ describe('refusal coverage — baseline shape', () => {
     // 179 -> 352 at ogc/T5: +173 known-gap rows, each citing the upstream command that accepts its
     // first refused line (ogc-T4a: 113 legacy activity + 19 timing; T4b: 14 activity3/legacy + 1
     // sequence; T4c: 8 DESCRIPTION + 18 head-window error pages). Derivation: 179 + 173 = 352.
-    expect(gaps.length).toBe(352);
+    // 352 -> 347 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 352 - 5 = 347.
+    // 347 -> 344 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 347 - 3 = 344.
+    // 344 -> 346 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 344 + 2 = 346.
+    expect(gaps.length).toBe(346);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

@@ -41,6 +41,8 @@ const OPTIONAL_SCALAR_KEYS = [
   'genericDisplayOld', // cdd3-T25 (E3-3)
   'monochrome',
   'reverseColor',
+  'stereotypeAlignment',
+  'svgDimensionStyle',
   'shadowing',
   'packageStyle',
   'nodeSep',

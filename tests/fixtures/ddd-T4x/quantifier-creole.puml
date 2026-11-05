@@ -1,0 +1,7 @@
+@startuml
+component a
+component b
+component c
+a --> "<size:12> mandatory" b
+a "**bold**" --> "<color:red>one\ntwo" c : label
+@enduml

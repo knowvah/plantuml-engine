@@ -1,0 +1,9 @@
+@startuml
+actor x
+node B #red|green;line.dashed;line:blue [
+BB
+]
+component C #pink [
+CC
+]
+@enduml

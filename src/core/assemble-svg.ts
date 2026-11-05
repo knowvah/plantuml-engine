@@ -264,7 +264,9 @@ function finalizeDescriptionFragment(fragment: RenderFragment): RenderFragment {
     Math.trunc(fragment.width),
     Math.trunc(fragment.height),
   );
-  const body = background === '' ? fragment.body : spliceAsFirstChild(fragment.body, background);
+  // A warning banner with no other chrome reaches here unwrapped: the shared root `<g>` (`SvgGraphics.java:155-158`).
+  const wrapped = fragment.bodyWrapped === true ? fragment.body : group(fragment.body);
+  const body = background === '' ? wrapped : spliceAsFirstChild(wrapped, background);
   // `TextBlockExporter#exportTo` (`:159-177`): `computeScaleFactor` reads the chrome-and-margin dimension before
   // `ensureVisible` (`:204-208`); the tail is shared with every other engine.
   return exportTo(fragment, body);

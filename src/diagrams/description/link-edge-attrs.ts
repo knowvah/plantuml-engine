@@ -13,22 +13,28 @@
  * same precedent as `resolveInlineLinks`/I5 for `[[url label]]`.
  */
 
+import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
+import { parseWithNewlines } from '../../core/klimt/creole/DisplayNewlines.js';
+import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
+import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
+import { Pragma } from '../../core/skin/Pragma.js';
+import { EDGE_LABEL_MARGIN, SELF_LOOP_EDGE_LABEL_MARGIN } from '../../core/svek/SvekEdge.js';
+import { buildTextBlock } from '../../core/svek/image/EntityImageDescriptionTextBlock.js';
+import { sizingAtomImageResolverFor } from '../../core/svek/image/leaf-sizing-entity.js';
+import { styleFont } from './description-entity-style.js';
+import { LABEL_SHIELD } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import type { DescriptiveLink } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import { measureLinkNoteDim } from './link-note-box.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { DotInputEdge } from '../../core/graph-layout.js';
 import { resolveInlineLinks } from './parse-helpers.js';
-import {
-  computeReservedLabelBox,
-  computeQuantifierBox,
-  computeMergedLabelBox,
-  parseMagicArrowLabel,
-} from '../../core/edge-label-box.js';
+import { measureQuantifierBlock } from '../../core/svek/quantifier-block.js';
+import { computeMergedLabelBox, parseMagicArrowLabel } from '../../core/edge-label-box.js';
 // T1: the ONE `Display#getWithNewlines` port (retires `splitCreoleLines`).
 import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
 import { type SpriteDimsLookup } from '../../core/creole-atoms.js';
-import { measureLineWithAtoms, lineAtomHeightExcess } from '../../core/creole-atoms-measure.js';
+import { measureLineWithAtoms } from '../../core/creole-atoms-measure.js';
 
 // ---------------------------------------------------------------------------
 // Graph spacing (nodesep / ranksep) — DotStringFactory.createDotString +
@@ -239,35 +245,24 @@ function mainLabelText(link: DescriptiveLink): string | undefined {
 }
 
 /**
- * The plain (non-arrow) reserved box for a main-label text -- T4's shared
- * box formula, not a single-line string measure. Multi-line labels take the
- * MAX line width rather than the concatenation, creole formatting tags are
- * stripped, and the line count reaches the height -- see
- * `core/edge-label-box.ts`. Atom-bearing lines still need
- * `measureLineWithAtoms`'s extra width, so the two combine: the box supplies
- * the text dimensions, the atom scan adds any icon width on the widest line.
- * `box.lines` are already split on `\n` and stripped of formatting tags;
- * each is then measured atom-aware, and the WIDEST wins. Height is one font
- * size per line plus whatever a tall atom on that line needs -- the per-line
- * pattern `lineAtomHeightExcess` documents for exactly this composition.
- *
- * The RESERVED box, not the measured one -- the jar writes the margined,
- * floored value into the DOT table (`SvekEdge.java:504-507`). `marginLabel`
- * is read off the helper rather than restated, so the 1-vs-6 self-loop rule
- * stays in one place; only the atom-aware measurement is redone here,
- * because the helper measures plain text and an icon occupies real width.
+ * The plain (non-arrow) reserved box for a main-label text: the RESERVED box, not the measured one, since the jar
+ * writes the margined, floored value into the DOT table (`SvekEdge.java:504-507`).
  */
 function measureMainLabelBox(text: string, isSelfLoop: boolean, ctx: MeasureCtx): { width: number; height: number } {
-  const wrap = { maxWidth: ctx.theme?.maxMessageSize }; // G20: SvekEdge.java:288-300, inline label only
-  const box = computeReservedLabelBox(text, ctx.fontSpec, ctx.measurer, isSelfLoop, wrap);
-  const widest = Math.max(
-    ...box.lines.map((l) => measureLineWithAtoms(l, ctx.fontSpec, ctx.measurer, ctx.sprites).width),
+  // `labelText.calculateDimension` (`SvekEdge.java:441`): the same creole block `SvekEdge#drawU` draws, with `\n` stripes,
+  // `**bold**` and `=heading` as formatting, `<$sprite>` atoms and the wrap width (`:288-300`), inside `marginLabel` (`:372-373`).
+  const marginLabel = isSelfLoop ? SELF_LOOP_EDGE_LABEL_MARGIN : EDGE_LABEL_MARGIN;
+  const font: FontConfiguration = { color: '#000000', styles: new Set(), ...ctx.fontSpec };
+  const parsed = parseWithNewlines(Pragma.createEmpty(), text)!;
+  const block = buildTextBlock(
+    parsed.lines.join('\n'),
+    font,
+    HorizontalAlignment.CENTER,
+    sizingAtomImageResolverFor(ctx.sprites)(font),
+    ctx.theme?.maxMessageSize ?? 0,
   );
-  const stacked = box.lines.reduce(
-    (h, l) => h + ctx.fontSpec.size + lineAtomHeightExcess(l, ctx.fontSpec, ctx.sprites),
-    0,
-  );
-  return { width: Math.floor(widest + 2 * box.marginLabel), height: stacked + 2 * box.marginLabel };
+  const dim = block.calculateDimension(new MeasurerStringBounder(ctx.measurer));
+  return { width: Math.floor(dim.getWidth() + 2 * marginLabel), height: Math.trunc(dim.getHeight() + 2 * marginLabel) };
 }
 
 /**
@@ -297,6 +292,12 @@ function measureMainLabelBox(text: string, isSelfLoop: boolean, ctx: MeasureCtx)
  * simplification, not a guess. `resolvedLabelText`: pre-sanitized by the
  * caller (`applyMainLabel`'s own doc comment).
  */
+/** `dimNote.delta(2 * labelShield)` (`SvekEdge.java:441`), `labelShield` 7 with a middle decor (`:353-356`). */
+function shielded(dim: { width: number; height: number }, link: DescriptiveLink): { width: number; height: number } {
+  if (link.middleDecor === undefined) return dim;
+  return { width: dim.width + 2 * LABEL_SHIELD, height: dim.height + 2 * LABEL_SHIELD };
+}
+
 function computeMainLabelDims(
   resolvedLabelText: string,
   isSelfLoop: boolean,
@@ -345,7 +346,7 @@ function computeNoteMergedDims(
     noteDim,
     position: link.linkNotePosition ?? 'bottom',
     halfWidth: false,
-    hasMiddleDecor: false,
+    hasMiddleDecor: link.middleDecor !== undefined,
     font: ctx.fontSpec,
     measurer: ctx.measurer,
   });
@@ -382,7 +383,7 @@ function applyMainLabel(
   const m =
     noteDim !== undefined
       ? computeNoteMergedDims(sizingText, noteDim, link, ctx)
-      : computeMainLabelDims(sizingText, link.from === link.to, ctx);
+      : shielded(computeMainLabelDims(sizingText, link.from === link.to, ctx), link);
   if (linetype === 'ortho') {
     attrs.xlabel = resolvedLabelText;
     attrs.xlabelWidth = m.width;
@@ -449,16 +450,18 @@ function applyQualifierLabels(
   // `headlabel=<TABLE>`, SvekEdge.java:447-468): `graph-layout-build-edges`
   // emits the end-label TABLE only when `tailLabel`/`headLabel` is set too,
   // exactly as the class engine does (`class-layout-edge-labels.ts`).
+  // `cardinalityFont` per link: `getStyleArrowCardinality(link.getStereotype())` (`GraphvizImageBuilder.java:237`).
+  const font = styleFont(link.cardinalityStyle) ?? ctx.cardinalityFontSpec;
   if (link.firstLabel !== undefined) {
     const text = resolveInlineLinks(link.firstLabel);
-    const box = computeQuantifierBox(text, ctx.cardinalityFontSpec, ctx.measurer);
+    const box = measureQuantifierBlock(text, font, ctx.measurer);
     attrs.tailLabelWidth = box.reservedWidth;
     attrs.tailLabelHeight = box.reservedHeight;
     attrs.tailLabel = text;
   }
   if (link.secondLabel !== undefined) {
     const text = resolveInlineLinks(link.secondLabel);
-    const box = computeQuantifierBox(text, ctx.cardinalityFontSpec, ctx.measurer);
+    const box = measureQuantifierBlock(text, font, ctx.measurer);
     attrs.headLabelWidth = box.reservedWidth;
     attrs.headLabelHeight = box.reservedHeight;
     attrs.headLabel = text;
@@ -473,7 +476,8 @@ export function buildLinkEdgeAttributes(
   sprites?: SpriteDimsLookup,
 ): NonNullable<DotInputEdge['attributes']> {
   const ctx: MeasureCtx = {
-    fontSpec: fonts.label,
+    // `labelFont` per link: `getDefaultStyleDefinitionArrow(link.getStereotype())` (`GraphvizImageBuilder.java:235-236`).
+    fontSpec: styleFont(link.arrowStyle) ?? fonts.label,
     cardinalityFontSpec: fonts.cardinality,
     measurer,
     sprites,

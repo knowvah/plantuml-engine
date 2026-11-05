@@ -5,6 +5,7 @@ import type { BlockUml, BlockUmlOk, RawBlock } from './core/BlockUmlBuilder.js';
 import { registry, type AssembledSvg, type DiagramPlugin, type Resolution } from './core/dispatcher.js';
 import { skinCutOf } from './core/skin-command.js';
 import { buildTheme } from './core/build-theme.js';
+import { firstPageOf } from './core/preprocessor-first-page.js';
 import { applyChrome, isEmpty as isAnnotationsEmpty } from './core/annotations/index.js';
 import { applyExportedChrome } from './core/annotations/chrome-export.js';
 import type { DiagramAnnotations } from './core/annotations/index.js';
@@ -74,6 +75,8 @@ export { combineAssetStores, type AssetPayload, type AssetStore } from './core/a
 // Upstream's factory order (`PSystemBuilder.java:133-200`); the registrations,
 // their order rationale and each one's Java line live in `registered-plugins.ts`.
 registerPlugins(registry);
+
+const DESCRIPTION_PLUGIN = 'description';
 
 /** The block's preprocessed interior plus the style sources the interpreter pulled out of THAT block. */
 function umlSourceOfBlock(block: BlockUmlOk): UmlSource {
@@ -318,8 +321,10 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   const plugin = resolution.plugin;
   // sdd3-T8h: a nested `{{ }}` diagram starts from the enclosing diagram's skinparams (`nested-previous.ts`).
   // D9 (lad Amendment 1): `styleInput` is the jar-compatible normalisation, applied only when conformance asks for it.
-  const styled = isJarCompatibleStyleInput(options) ? plugin.styleInput?.(block.preprocessed, umlSource) : undefined;
-  const preprocessed = withPrevious(styled ?? block.preprocessed, previous);
+  // ddd-T5a: description's `newpage` is a fresh diagram (`CommandNewpage.java:68-73`); sequence's is a page break.
+  const ownPreprocessed = plugin.type === DESCRIPTION_PLUGIN ? firstPageOf(block.preprocessed) : block.preprocessed;
+  const styled = isJarCompatibleStyleInput(options) ? plugin.styleInput?.(ownPreprocessed, umlSource) : undefined;
+  const preprocessed = withPrevious(styled ?? ownPreprocessed, previous);
   const { theme, styleMap } = buildTheme(preprocessed, options, plugin.type);
   const measurer = resolveMeasurer(plugin.type, options);
   const ast = astOf(resolution, options);
@@ -378,7 +383,12 @@ export function renderPagesSync(source: string, options?: RenderOptions): string
     if (!('layoutSync' in ctx.plugin))
       throw new Error('renderSync() is not supported for this diagram type — use render()');
 
-    const geo = ctx.plugin.layoutSync(ast, ctx.theme, ctx.measurer, layoutServicesSync(ctx.plugin, ast, options));
+    const geo = ctx.plugin.layoutSync(
+      ast,
+      ctx.theme,
+      ctx.measurer,
+      layoutServicesSync(ctx.plugin, ast, options, ctx.preprocessed),
+    );
     return assemblePages(ctx, geo, ast, options);
   } catch (err) {
     return [errorSvg(source, err, options)];
@@ -488,7 +498,12 @@ async function renderBlockPages(block: BlockUml, options?: RenderOptions): Promi
     const { ctx, ast } = prepareBlock(block, umlSource, withImages);
     const geo =
       'layoutSync' in ctx.plugin
-        ? ctx.plugin.layoutSync(ast, ctx.theme, ctx.measurer, await layoutServices(ctx.plugin, ast, withImages))
+        ? ctx.plugin.layoutSync(
+            ast,
+            ctx.theme,
+            ctx.measurer,
+            await layoutServices(ctx.plugin, ast, withImages, ctx.preprocessed),
+          )
         : await ctx.plugin.layout(ast, ctx.theme, ctx.measurer);
     return assemblePages(ctx, geo, ast, withImages);
   } catch (err) {

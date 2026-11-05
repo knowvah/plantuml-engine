@@ -107,7 +107,7 @@ describe('USymbols registry — record() singletons', () => {
     ['frame', USymbolFrame, ['frame']],
     ['group', USymbolFrame, ['group']],
     ['hexagon', USymbolHexagon, ['hexagon']],
-    ['interface', USymbolInterface, ['interface']],
+    ['interface', USymbolInterface, ['interface_']],
     ['label', USymbolLabel, ['label']],
     ['node', USymbolNode, ['node']],
     ['package', USymbolFolder, ['package_']],

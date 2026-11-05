@@ -1,0 +1,4 @@
+@startuml
+skinparam svgDimensionStyle false
+component a
+@enduml

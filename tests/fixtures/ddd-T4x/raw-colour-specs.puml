@@ -1,0 +1,7 @@
+@startuml
+rectangle a #line.dashed:blue;text:red
+rectangle b #pink;line:red;line.bold;text:blue
+component d #text:Red
+a --> b #line:green;text:blue : one
+b --> d #red;line.dotted : two
+@enduml

@@ -117,9 +117,21 @@ describe('assembleSvg — routing', () => {
     expect(svg).toContain('<defs/>');
   });
 
-  it('leaves a DESCRIPTION fragment’s body untouched (no finalize entry, matches the deleted assembleKlimtShell no-op)', () => {
-    const svg = assembleSvg({ body: '<g class="mark">X</g>', width: 10, height: 10, diagramType: 'DESCRIPTION' });
-    expect(svg.endsWith('<g class="mark">X</g></svg>')).toBe(true);
+  it('leaves a chrome-wrapped DESCRIPTION body as it is', () => {
+    const svg = assembleSvg({
+      body: '<g class="mark">X</g>',
+      width: 10,
+      height: 10,
+      diagramType: 'DESCRIPTION',
+      bodyWrapped: true,
+    });
+    expect(svg).not.toContain('<g class="mark">X</g></g>');
+    expect(svg).toContain('<g class="mark">X</g></svg>');
+  });
+
+  it('gives a DESCRIPTION body with only a warning banner the root group (SvgGraphics.java:155-158)', () => {
+    const svg = assembleSvg({ body: '<rect/>', width: 10, height: 10, diagramType: 'DESCRIPTION' });
+    expect(svg).toContain('<rect/></g></svg>');
   });
 });
 

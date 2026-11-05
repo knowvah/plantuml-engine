@@ -1,0 +1,7 @@
+@startuml
+skinparam actorStyle awesome
+:User:
+"Main Admin" as Admin
+(Start)
+"Use the application" as (Use)
+@enduml

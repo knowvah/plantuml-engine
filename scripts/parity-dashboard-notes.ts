@@ -101,7 +101,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   },
   c4: {
     noteClass: 'openDefect',
-    detail: 'Drawn by the description engine. The first difference is usually the corner rounding of a boundary box.',
+    detail:
+      'Drawn by the description engine: 7 of 11 conformant since description-divergence-drive (#113). The other 4 ' +
+      "are this diagram type's own, chiefly filter ids and a dashed stroke, and stay with #114.",
   },
   chart: {
     noteClass: 'openDefect',
@@ -112,8 +114,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   component: {
     noteClass: 'openDefect',
     detail:
-      'Mostly stroke, fill and path differences. Four fixtures also contain LaTeX, which we render with KaTeX rather ' +
-      'than JLaTeXMath, and that part is permanent.',
+      'description-divergence-drive (#113, 2026-11-04) took all 51 open rows to conformant, the LaTeX fixtures ' +
+      'included: only the image bytes differ, and the comparer exempts them.',
   },
   object: {
     noteClass: 'openDefect',
@@ -137,8 +139,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   usecase: {
     noteClass: 'openDefect',
     detail:
-      'Mostly text position, canvas size, path data and structure differences. One more fixture cannot be compared ' +
-      'at all, because its cached PlantUML output is not well-formed XML.',
+      'description-divergence-drive (#113, 2026-11-04) took 23 of the 24 open rows to conformant. `fepuvo-06` cannot ' +
+      "be compared because the jar's comment is not well-formed; with comments stripped it has zero diffs.",
   },
   // The `unknown` sentence is generated from the survey (`unknownDetail`, D4
   // of plans/parity-dashboard-repair) and passed to `notesSection`.

@@ -34,6 +34,9 @@ import { Back } from '../../core/klimt/Back.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { parseSvgPath } from '../../core/klimt/sprite/SvgPath.js';
 import { moveTo, lineTo } from '../../core/svg-path-builder.js';
+import { Direction } from '../../core/abel/Direction.js';
+import { XPoint2D } from '../../core/klimt/geom/XPoint2D.js';
+import { corner, getPolygonLinked, polygonNormal } from '../../core/svek/image/OpalePolygons.js';
 import type { DescriptionNodeGeo } from './layout-helpers.js';
 import {
   OPALE_CORNERSIZE,
@@ -60,7 +63,16 @@ export interface NotePaints {
   readonly back: Paint;
   readonly border: Paint;
   readonly stroke: UStroke;
+  /** `skinParam.getRoundCorner(CornerParam.DEFAULT, null)` (`EntityImageNote.java:270-272`), absent for 0. */
+  readonly roundCorner?: number;
 }
+
+const OPALE_DIRECTIONS: Record<OpaleDirection, Direction> = {
+  left: Direction.LEFT,
+  right: Direction.RIGHT,
+  up: Direction.UP,
+  down: Direction.DOWN,
+};
 
 /** Dispatch table mirroring `class/renderer-note.ts#opaleOutline`'s own
  *  switch (`Opale.java:106-115`'s `strategy` dispatch). */
@@ -92,6 +104,23 @@ export function opalePolygonNormal(width: number, height: number): string {
   ].join(' ');
 }
 
+/** `Opale#setRoundCorner`, `getRoundCorner()` (`EntityImageNote.java:261,270-272,276`): the arcs of `Opale.java:134-229`. */
+function drawRoundedNoteShape(colored: UGraphic, node: DescriptionNodeGeo, stroke: UStroke, roundCorner: number): void {
+  const fold = corner(node.width, roundCorner, OPALE_CORNERSIZE);
+  const opale = node.opale;
+  if (opale === undefined) {
+    colored.apply(stroke).draw(polygonNormal(node.width, node.height, roundCorner, OPALE_CORNERSIZE));
+    colored.draw(fold);
+    return;
+  }
+  const bounds = { width: node.width, height: node.height, roundCorner, cornersize: OPALE_CORNERSIZE };
+  const pp1 = new XPoint2D(opale.pp1.x, opale.pp1.y);
+  const pp2 = new XPoint2D(opale.pp2.x, opale.pp2.y);
+  const styled = colored.apply(stroke);
+  styled.draw(getPolygonLinked(OPALE_DIRECTIONS[opale.direction], bounds, pp1, pp2));
+  styled.draw(fold);
+}
+
 /**
  * Draws the note's outline polygon and fold triangle. The note's own box
  * origin is LOCAL (0,0) -- `drawEntity`'s caller already applied the node's
@@ -110,8 +139,13 @@ export function opalePolygonNormal(width: number, height: number): string {
 export function drawNoteShape(ug: UGraphic, node: DescriptionNodeGeo, paints: NotePaints): void {
   const box: OpaleBox = { origin: { x: 0, y: 0 }, width: node.width, height: node.height };
   const colored = ug.apply(new Back(paints.back)).apply(new Fore(paints.border));
-  const corner = parseSvgPath(opaleCorner(box.origin, box.width), UTranslate.none());
+  const roundCorner = paints.roundCorner ?? 0;
   const opale = node.opale;
+  if (roundCorner !== 0) {
+    drawRoundedNoteShape(colored, node, paints.stroke, roundCorner);
+    return;
+  }
+  const corner = parseSvgPath(opaleCorner(box.origin, box.width), UTranslate.none());
   if (opale === undefined) {
     colored.apply(paints.stroke).draw(parseSvgPath(opalePolygonNormal(box.width, box.height), UTranslate.none()));
     colored.draw(corner);

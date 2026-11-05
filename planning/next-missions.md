@@ -47,6 +47,17 @@ The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-matc
 5. **`CommandLinkStateCommon`'s `node` edge-label style** (`statediagramedgelabelstyle node`, `createTransitionWithIntermediateNode`) is unported; no corpus row.
 6. **A `frame` composite's gradient back colour** — `renderer-frame-cluster.ts` returns the fragment body and drops `extraDefs`; the default frame has no gradient (`group { BackGroundColor transparent }`), so nothing moves today.
 
+## description-divergence-drive (ddd) — DONE 2026-11-04 on `feature/parity-queue`
+
+Issue #113. In scope 508 conformant to 709 of 716: `component` 266/266, `usecase` 93/94, `unknown` jar-DESCRIPTION 350/356. `c4` 2 to 7. 0 losses in any engine. 282 pinned. Mechanisms in `plans/description-divergence-drive/decision-journal.md`.
+
+**Follow-ons:**
+- #147: `json`, `map`, `domain` and `requirement` images in description (`gacoxo-93`, `liripi-72`, `rukitu-26`).
+- A port cluster that is also an edge end adds `E` passes of `manageEntryExitPoint` (`SvekEdge.java:663`), where `geo.portFinalBbox` assumes `E = 0`. No row moves on it. `.agent-notes/ddd-T5d.md`.
+- Unported, no row in scope: `skinparam padding` on a `Display` block; a `<color:x>` in chrome text under monochrome; a class-routed `node B #...;line:blue [` drops `line:`. `.agent-notes/ddd-T5c.md`.
+- D2's one standing limit: `skinparam mode dark` keeps the flat reads, because the parser has no `@media` side (#120).
+- Smetana rows `zomoba-18`, `revezi-19` still draw a path `id` and order some extremities unlike `SmetanaEdge`; both named, not chased.
+
 ## diagram-style-scope (dss) — DONE 2026-11-03 (branch `feat/diagram-style-scope` off `4f653cac9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 4f653cac9`; working history on the local tag `dss/pre-squash`)
 
 Document background and element `BackgroundColor`, `LineColor`, `FontColor` read through the ported `StyleBuilder`, precomputed into the existing theme. **865 authored rows, 792 conformant** (`tests/fixtures/diagram-style-scope/`, shrink-only pin `oracle/goldens/diagram-style-scope.json`); the 73 open rows are named in the brief's README. 0 conformant losses in 28 engines vs b0, d.ts identical. dbp follow-ons 5 and 7 and the two bucket leaks are closed (`class__scope-note-objectdiagram`, `state__scope-state-classdiagram` at 0).
@@ -75,12 +86,12 @@ Layout and parser, not colour reads:
 
 Colour reads still open, each small:
 16. **A group whose body starts with an inline colour arrow** — `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
-17. **`note on link` attribute colour** `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
+17. ~~**`note on link` attribute colour**~~ — description side DONE by ddd (`note-grammar.ts`, `COLORS_REGEXP`, line and back, text ignored as the jar does). `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
 19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
 20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
 21. **chart prints `theme.colors.background` raw** (`src/diagrams/chart/layout.ts:169`); board's body (`board__selector-activitydiagram` 15) and packet/chart residuals (dbp 2).
-22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` remainders undiagnosed; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
 
 ## document-background-paint (dbp) — DONE 2026-11-02 (branch `feat/document-background-paint` off `fe794c0a9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S fe794c0a9`; working history on the local tag `dbp/pre-squash`)
 
@@ -640,14 +651,14 @@ engines at b1 and b5 (b2–b4 closes folded into b5, journal row 41).
 - ~~Edge `path @id` uses the qualified name; the jar uses `Quark.getName` (fidati, kofovu, tojitu: 88
   diffs each). Needs the separator in the edge geo → next description mission.~~ DONE by dur
   (T3 `b3ac1a279`): all three conformant.
-- Link middle decor `-0)-`/`-(0)-` not drawn; core `SvekEdge` has no middle decor (lakuti, bokumi,
+- DONE by ddd T3a (`core/svek/extremity/MiddleCircleDecor.ts`): link middle decor `-0)-`/`-(0)-` not drawn; core `SvekEdge` has no middle decor (lakuti, bokumi,
   nofunu, saveje; `CommandLinkElement.java:104,149-157`, `SvekEdge.java:353-356`) → core mission.
-- Description magic-arrow glyph (berelu, funeme; glyph only in `class-magic-arrow.ts`) → core.
-- Note-on-link (`EntityImageNoteLink`) unported: dikexa, povuju, tujica, josoxo, usecase fogiku/jafuke.
-- Quantifier text not drawn (purevo "1", misube "*", fetefi) though it now reaches the DOT.
-- Degenerate-leaf sizing omits element font options (`layout.ts:406` vs `layout-dot-tree.ts:190-206`;
+- DONE by ddd T3e (`TextBlockArrow2`): description magic-arrow glyph (berelu, funeme; glyph only in `class-magic-arrow.ts`) → core.
+- DONE by dss T3a and ddd T4e: note-on-link (`EntityImageNoteLink`) unported: dikexa, povuju, tujica, josoxo, usecase fogiku/jafuke.
+- DONE by ddd T3c: quantifier text not drawn (purevo "1", misube "*", fetefi) though it now reaches the DOT.
+- DONE by ddd T4a: degenerate-leaf sizing omits element font options (`layout.ts:406` vs `layout-dot-tree.ts:190-206`;
   kuciku, mavicu; patch proven in T4's report) — single-file, cheap.
-- `<latex>` box guard in `leaf-sizing.ts:182` (kezodo, vimulo; gevozu/sunuju 164 → 68) — core, D5.
+- DONE by ddd T5e, guard removed: `<latex>` box guard in `leaf-sizing.ts:182` (kezodo, vimulo; gevozu/sunuju 164 → 68) — core, D5.
 - cumofi: `skinparam handwritten` jitter and the deprecation-warning block.
 - Stereotype-signed styles on description leaves/clusters and `StereotypeFontColor` (golamo, berufi);
   `Shadowing<<stereo>>` (deroxu); `!theme carbon-gray` title-style border (reroca).

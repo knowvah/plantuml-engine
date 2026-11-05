@@ -4,6 +4,7 @@
  * both files under this project's 500-line ceiling once `AtomText.java:179-181`'s 10-px run floor landed.
  * `EntityImageDescriptionTextBlock.ts` re-exports `measureLine`, so every import path is unchanged.
  */
+import { asAtomOpenIconic } from '../../klimt/creole/atom/AtomOpenIconic.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
 import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import type { AtomImageResolver } from '../../creole-atoms.js';
@@ -225,6 +226,13 @@ export function measureAtomsWidthHeight(
       const box = verticalAtomBox(atom.lines, (sub) => measureAtomsWidthHeight(stringBounder, [sub], resolveAtomImage));
       width += box.width;
       grow(box.height);
+      continue;
+    }
+    const glyph = atom.ambientFont === undefined ? undefined : asAtomOpenIconic(atom, atom.ambientFont);
+    if (glyph !== undefined) {
+      const dim = glyph.calculateDimension(stringBounder);
+      width += dim.getWidth();
+      grow(dim.getHeight());
       continue;
     }
     const resolved = resolveAtomImage?.(atom.atom, () => stringBounder);

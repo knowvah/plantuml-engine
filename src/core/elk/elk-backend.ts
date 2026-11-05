@@ -10,6 +10,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/elk/proxy/graph/util/ElkGraphUtil.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/elk/proxy/core/RecursiveGraphLayoutEngine.java
  */
+import type { StyleBuilder } from '../style/StyleBuilder.js';
 import type { ElkLayoutRunner } from './proxy/core/RecursiveGraphLayoutEngine.js';
 import type { ElkGraphUtil } from './proxy/graph/util/ElkGraphUtil.js';
 
@@ -32,6 +33,13 @@ export interface ElkBackend extends ElkGraphUtil, ElkLayoutRunner {}
 export interface LayoutServices {
   /** Present when the caller passed `RenderOptions.elk`, or `render()` loaded elkjs for a diagram that requires ELK. */
   readonly elk?: ElkBackend | undefined;
+  /**
+   * `Entity#getCurrentStyleBuilder` (`Entity.java:755-768`): the builder after `generation` `<style>` blocks, or the
+   * diagram's last one where the diagram used `skinparam` or `generation` is absent. Built once per generation on first
+   * read; `undefined` for a `<style>` the parser rejects. A thunk: only the engines that read it pay for it (D2).
+   * `positional` is `Link#getStyleBuilder` (`Link.java:130`), which has no `isSkinParamUsed` gate.
+   */
+  readonly styleBuilder?: ((generation?: number, positional?: boolean) => StyleBuilder | undefined) | undefined;
 }
 
 /** A backend could not lay a graph out: a missing or changed elkjs, or a graph it did not build. */

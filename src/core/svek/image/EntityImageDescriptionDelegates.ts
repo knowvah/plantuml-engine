@@ -172,7 +172,7 @@ function drawTextAtom(ug: UGraphic, atom: Extract<CreoleAtom, { kind: 'text' }>)
       x = advanceToTabStop(x, tabSize);
       continue;
     }
-    ug.apply(new UTranslate(x, m.height - m.descent)).draw(UText.build(token.text, atom.font));
+    ug.apply(new UTranslate(x, m.rawHeight - m.descent)).draw(UText.build(token.text, atom.font));
     x += widthOf(token.text);
   }
 }
@@ -233,6 +233,12 @@ export function descAtomOps(
     return resolved === undefined ? { width: 0, height: 0 } : resolved;
   }
   const ops: AtomOps = {
+    isDrawable(creoleAtom: CreoleAtom, stringBounder: StringBounder): boolean {
+      const atom = creoleAtom as CreoleAtom | Atom;
+      if (!isCreoleAtomData(atom) || atom.kind !== 'inline' || atom.atom.kind !== 'sprite') return true;
+      const resolved = resolveAtomImage?.(atom.atom, () => stringBounder);
+      return resolved !== undefined && (resolved.width > 0 || resolved.height > 0);
+    },
     calculateDimension(creoleAtom: CreoleAtom, stringBounder: StringBounder): XDimension2D {
       const atom = creoleAtom as CreoleAtom | Atom;
       if (!isCreoleAtomData(atom)) return atom.calculateDimension(stringBounder);
@@ -275,7 +281,8 @@ export function descAtomOps(
       }
       if (atom.kind === 'latex') {
         const r = renderLatexAsImage(atom.expr, atom.color ?? '#000000');
-        ug.draw(UImage.build(r.width, r.height, r.href));
+        // `Footprint` sees `AtomMath`'s raster `UImage` (`AtomMath.java:90-95`, `UImage.java:87-92`), one less each way.
+        ug.draw(UImage.build(r.width, r.height, r.href, { rasterWidth: r.width, rasterHeight: r.height }));
         return;
       }
       // Artwork when the asset channel supplies it, platform-glyph text run
@@ -407,6 +414,7 @@ export function resolveStereotypeSprite(
   const dims = sprites?.get(ref.name);
   if (dims === undefined) return undefined;
   return {
+    name: ref.name,
     width: dims.width,
     height: dims.height,
     scale: ref.scale,
@@ -427,16 +435,26 @@ export function resolveStereotypeSprite(
  * this call site and is deliberately not ported here.
  */
 class StereotypeSpriteBlock implements TextBlock {
-  constructor(private readonly sprite: EntityImageDescriptionStereotypeSprite) {}
+  constructor(
+    private readonly sprite: EntityImageDescriptionStereotypeSprite,
+    private readonly resolveAtomImage: AtomImageResolver | undefined,
+  ) {}
 
   calculateDimension(_stringBounder: StringBounder): XDimension2D {
     return new XDimension2D(this.sprite.width * this.sprite.scale, this.sprite.height * this.sprite.scale);
   }
 
   drawU(ug: UGraphic): void {
-    // A PNG-backed internal sprite has no draw path in this port (see
-    // `EntityImageDescriptionStereotypeSprite.svg`) -- it still measures.
-    if (this.sprite.svg === undefined) return;
+    if (this.sprite.svg === undefined) {
+      // A monochrome or PNG sprite (`Stereotype#getSprite`, `Stereotype.java:108-117`): `asTextBlock(color, null, scale, null)`
+      // draws the image at the stereotype's own scale. `insideUrl` is the atom's "no font ratio", which this path has none of.
+      const resolved = this.resolveAtomImage?.(
+        { kind: 'sprite', name: this.sprite.name, scale: this.sprite.scale, insideUrl: true },
+        () => ug.getStringBounder(),
+      );
+      if (resolved !== undefined) drawResolvedInline(ug, resolved);
+      return;
+    }
     createSvgSpriteParser(this.sprite.svg, this.sprite.parser ?? SvgParserSelector.NANO).drawU(
       ug,
       this.sprite.scale,
@@ -446,6 +464,19 @@ class StereotypeSpriteBlock implements TextBlock {
   }
 }
 
+/** `Guillemet.DOUBLE_COMPARATOR` prints a label as written, padding kept (`Guillemet.java:75-77,87-89`); any other pair
+ *  takes the padding-free label. */
+export function labelsForGuillemet(
+  labels: {
+    readonly stereotypeLabels: readonly string[];
+    readonly stereotypeRawLabels?: readonly string[] | undefined;
+  },
+  guillemet: GuillemetPair | undefined,
+): readonly string[] {
+  const doubled = guillemet?.start === '<<' && guillemet.end === '>>';
+  return doubled && labels.stereotypeRawLabels !== undefined ? labels.stereotypeRawLabels : labels.stereotypeLabels;
+}
+
 /** Upstream: the `stereo` local-variable if/else-if/else chain
  *  (`EntityImageDescription.java:192-201`), sprite branch included. */
 export function buildStereo(
@@ -453,13 +484,21 @@ export function buildStereo(
   fontStereo: FontConfiguration,
   resolveAtomImage?: AtomImageResolver,
   sprite?: EntityImageDescriptionStereotypeSprite,
+  guillemet: GuillemetPair = GUILLEMET_DEFAULT,
 ): TextBlock {
   // java:193-194 -- tested FIRST and unconditionally: a resolvable sprite
   // replaces the label block, and `TextBlockUtils.withMargin`'s 1px side
   // padding is NOT applied to it (that is the label branch's own call).
-  if (sprite !== undefined) return new StereotypeSpriteBlock(sprite);
+  if (sprite !== undefined) return new StereotypeSpriteBlock(sprite, resolveAtomImage);
   if (stereotypeLabels.length === 0) return TextBlockUtils.empty(0, 0);
-  const text = stereotypeLabels.map((label) => `«${label}»`).join('\n');
-  const block = buildTextBlock(text, fontStereo, HorizontalAlignment.CENTER, resolveAtomImage);
+  // `Display.create(stereotypeLabels).create(fcStereo, CENTER, skinParam)`: the creole parser's `skinParam.guillemet()`
+  // turns each `<<x>>` into the skinparam's pair (`SkinParam.java:1070-1073`, `Guillemet.java:50-67`).
+  const isDoubleComparator = guillemet.start === '<<' && guillemet.end === '>>';
+  const text = stereotypeLabels
+    .map((label) =>
+      isDoubleComparator && label.startsWith('<<') ? label : `${guillemet.start}${label}${guillemet.end}`,
+    )
+    .join('\n');
+  const block = buildTextBlock(text, fontStereo, HorizontalAlignment.CENTER, resolveAtomImage, 0, guillemet);
   return TextBlockUtils.withMargin(block, 1, 1, 0, 0);
 }

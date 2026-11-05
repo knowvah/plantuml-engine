@@ -248,7 +248,7 @@ describe('StripeSimple#addQrcode (java:216-218) — <qrcode:> becomes an AtomImg
     const atoms = buildStripeAtoms('a<qrcode:abcdef>b', PLAIN);
     expect(atoms).toEqual([
       { kind: 'text', text: 'a', font: PLAIN },
-      { kind: 'inline', atom: createQrcode('abcdef', 3), ambientFont: PLAIN },
+      { kind: 'inline', atom: createQrcode('abcdef', 3), ambientFont: PLAIN, lineEndFont: PLAIN },
       { kind: 'text', text: 'b', font: PLAIN },
     ]);
   });

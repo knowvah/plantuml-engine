@@ -9,6 +9,11 @@
  * link `stereotype` field — into one model (decisions D1, D2).
  */
 
+import type { Warning } from '../../core/warning/Warning.js';
+import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
+import type { Style } from '../../core/style/Style.js';
+import type { EntitySizing } from '../../core/svek/image/LeafSizingSubject.js';
+import type { DescriptionEntityStyle } from './description-entity-style.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
 import type { DiagramAnnotations } from '../../core/annotations/index.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
@@ -24,6 +29,8 @@ export type { StereotypeSpriteRef } from './ast-stereotype-sprite.js';
 // ---------------------------------------------------------------------------
 
 export interface DescriptiveNode {
+  /** A `\\l` or `\\r` in a group's display beats its title alignment (`Display.java:648-649`, `ClusterHeader.java:117-119`). */
+  naturalAlignment?: 'left' | 'right';
   id: string;
   display: string;
   /** Upstream `USymbol` shape — drives both layout sizing and render dispatch. */
@@ -113,6 +120,14 @@ export interface DescriptiveNode {
    *  `restore`/`hide` (HideOrShow#isApplyableTag) — see
    *  `parser.ts#removeEntity`. */
   tags?: string[];
+  /** `USymbols.ARCHIMATE` (`CommandArchimate.java:144`): a rectangle by shape, `SName.archimate` by style (`USymbols.java:66`). */
+  archimate?: boolean;
+  /** `<style>` blocks executed before this entity's line (`Entity.java:165,755-768`). */
+  styleGeneration?: number;
+  /** The merged styles this entity reads, set at layout start (`description-entity-style.ts`). */
+  entityStyle?: DescriptionEntityStyle;
+  /** The sizer's narrowed read of {@link entityStyle}. */
+  entitySizing?: EntitySizing;
   /** Raw inline `[[url]]` token as written, brackets included (e.g.
    *  `[[http://x{tip}]]`). The layout/render seam builds the Url with the
    *  theme's topurl (`CommandCreateElementFull.java:333-337`). */
@@ -225,6 +240,18 @@ export interface DescriptiveLink {
    */
   firstLabel?: string;
   secondLabel?: string;
+  /** `LinkMiddleDecor`, the INSIDE group (`CommandLinkElement.java:149-157`). */
+  middleDecor?: MiddleDecor;
+  /** The pre-colon `<<a>><<b>>` run whole: `Stereotype.build(arg.get("STEREOTYPE"))`, every label signs the arrow style. */
+  stereotypeRun?: string;
+  /** `<style>` blocks executed before this link's line: its `Link#getStyleBuilder` (`CommandLinkElement.java:322`). */
+  styleGeneration?: number;
+  /** `getDefaultStyleDefinition(stereotype).getMergedStyle(link.getStyleBuilder())` (`SvekEdge.java:816-821,874-875`). */
+  arrowStyle?: Style;
+  /** `GraphvizImageBuilder#getStyleArrowCardinality` (`:124-130`, `:237`). */
+  cardinalityStyle?: Style;
+  /** `Link#getSupplementaryColors`: a bracket's later `;` segments (`WithLinkType.java:68-74`). */
+  supplementaryColors?: readonly string[];
   /**
    * Raw HEAD1/HEAD2 `LinkDecor` tokens (trimmed, lowercased), swapped on
    * inversion like firstLabel/secondLabel. Recorded for future decor
@@ -432,6 +459,12 @@ export interface DescriptionDiagramAST {
    * the diagram's own UNSCALED document dimension.
    */
   scale?: ScaleSpec;
+  /** `!pragma layout smetana`: `nodes` is filled root leaves first (`CucaDiagramFileMakerSmetana.java:283,589,636`). */
+  smetanaDrawOrder?: boolean;
+  /** `!pragma svginteractive`: the `SvgOption#withInteractive` of `TextBlockExporter.java:299-304`. */
+  svgInteractive?: boolean;
+  /** `CommandSkinParam#executeArg`'s warnings for the hoisted `skinparam` lines (`CommandSkinParam.java:92-99`). */
+  warnings?: readonly Warning[];
   /**
    * T17 seed thread: `UmlSource.seed()` (see `svg-graphics-core.ts#seedOf`),
    * computed by the plugin's `parse()` step from the raw `@start.../@end...`

@@ -12,6 +12,7 @@
  * unchanged.
  */
 
+import { rawStereotypeLabels } from './parse-helpers.js';
 import type { DescriptiveNode, DescriptiveLink } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
@@ -40,6 +41,7 @@ import {
 } from './layout-helpers.js';
 import {
   computePortClusterBbox,
+  computePortClusterFinalBbox,
   registerPortCluster,
   type PortClusterInfo,
   type ClusterSpacing,
@@ -213,7 +215,13 @@ export function buildDotNodes(
       // resolver for the no-link single-leaf path it owns.
       emojiArtwork: ctx.emojiArtwork,
     };
-    const dims = measureLeafNode(sizedNode, fontSpec, measurer, sizingOpts, ctx.sprites);
+    const dims = measureLeafNode(
+      { ...sizedNode, stereotypeRawLabels: rawLabelsOf(sizedNode.stereotype) },
+      fontSpec,
+      measurer,
+      sizingOpts,
+      ctx.sprites,
+    );
     if (node.symbol === 'port') {
       result.push(buildPortNode(id, node, dims, fontSpec, measurer));
       continue;
@@ -543,6 +551,16 @@ function buildGeoNode(
     const url = resolveNodeUrl(astNode.url, portClusterCtx.topurl);
     if (url !== undefined) geo.url = url;
     if (astNode.color !== undefined) geo.color = astNode.color;
+    if (astNode.entityStyle !== undefined) geo.entityStyle = astNode.entityStyle;
+    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
+    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
+    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
+    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
+    if (astNode.entityStyle !== undefined) geo.entityStyle = astNode.entityStyle;
+    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
+    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
+    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
+    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
     if (astNode.creationIndex !== undefined) geo.creationIndex = astNode.creationIndex;
     if (astNode.declaredAsGroup === true) geo.declaredAsGroup = true;
     // G1 I-hideshow: draw-time-only marker (see `DescriptionNodeGeo.hidden`'s
@@ -578,6 +596,9 @@ function buildGeoNode(
     ...bbox,
     children,
   };
+  if (portInfo !== undefined) {
+    geo.portFinalBbox = computePortClusterFinalBbox(children, portInfo, portClusterCtx.spacing, bbox);
+  }
   const visibleStereotype = visibleStereotypeLabels(astNode.stereotype, stereotypeRules);
   if (visibleStereotype !== undefined && visibleStereotype.length > 0) geo.stereotype = visibleStereotype;
   if (astNode.stereotype !== undefined && astNode.stereotype.length > (visibleStereotype?.length ?? 0)) {
@@ -589,6 +610,9 @@ function buildGeoNode(
   const url = resolveNodeUrl(astNode.url, portClusterCtx.topurl);
   if (url !== undefined) geo.url = url;
   if (astNode.color !== undefined) geo.color = astNode.color;
+  if (astNode.entityStyle !== undefined) geo.entityStyle = astNode.entityStyle;
+  if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
+  if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
   if (astNode.creationIndex !== undefined) geo.creationIndex = astNode.creationIndex;
   if (astNode.declaredAsGroup === true) geo.declaredAsGroup = true;
   // G1 I-hideshow: a hidden CONTAINER draws NOTHING at all (jar-verified,
@@ -609,6 +633,11 @@ function buildGeoNode(
   // vs real-cluster-recursion split, GraphvizImageBuilder.printGroups)
   // sharing the same optional-field-copy shape -- mission G5/C1 500-line
   // split (pure move), not introduced here.
+}
+
+/** `rawStereotypeLabels`, tolerating no stereotype. */
+function rawLabelsOf(labels: readonly string[] | undefined): readonly string[] | undefined {
+  return labels === undefined ? undefined : rawStereotypeLabels(labels);
 }
 
 export function buildGeoTree(

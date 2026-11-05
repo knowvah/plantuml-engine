@@ -1,0 +1,8 @@
+@startuml
+usecase sameid1
+rectangle sameid2
+
+interface foo
+interface foo
+
+@enduml

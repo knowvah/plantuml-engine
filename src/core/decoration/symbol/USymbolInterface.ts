@@ -41,7 +41,7 @@ import { CircleInterface2 } from '../../svek/CircleInterface2.js';
  */
 export class USymbolInterface extends USymbolSimpleAbstract {
   getSNames(): readonly SName[] {
-    return ['interface'];
+    return ['interface_'];
   }
 
   protected getDrawing(symbolContext: SymbolContext): TextBlock {

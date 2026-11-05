@@ -11,6 +11,7 @@
  * import path.
  */
 
+import { rawStereotypeLabels } from './parse-helpers.js';
 import type { DescriptionDiagramAST, DescriptiveNode } from './ast.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import { CONTAINER_SYMBOLS } from './parse-helpers.js';
@@ -96,6 +97,9 @@ export { measureTitleLabel } from './title-label-sizing.js';
 // Container membership
 // ---------------------------------------------------------------------------
 
+/** Graphviz prints a coordinate with two decimals (`gvprintnum`, `lib/gvc/gvdevice.c`). */
+const DOT_COORDINATE_SCALE = 100;
+
 export function isContainer(symbol: USymbol): boolean {
   return CONTAINER_SYMBOLS.has(symbol);
 }
@@ -121,14 +125,44 @@ function shiftKermorNotes(notes: KermorNotesGeo, dx: number, dy: number): Kermor
   };
 }
 
+/**
+ * `RectangleArea#move`, then `getWidth` (`RectangleArea.java:60-66`), in the jar's frame: `min` is dot's printed
+ * coordinate, two decimals, and `moveDelta` is `SvekResult.java:133`'s, the port's frame less `originShift`.
+ */
+function movedExtent(min: number, extent: number, moveDelta: number): number {
+  const dotMin = Math.round(min * DOT_COORDINATE_SCALE) / DOT_COORDINATE_SCALE;
+  return dotMin + extent + moveDelta - (dotMin + moveDelta);
+}
+
 /** Recursively shift a DescriptionNodeGeo and all its descendants by (dx, dy). */
-export function shiftGeo(geo: DescriptionNodeGeo, dx: number, dy: number): DescriptionNodeGeo {
+export function shiftGeo(
+  geo: DescriptionNodeGeo,
+  dx: number,
+  dy: number,
+  originShift: { readonly x: number; readonly y: number } = { x: 0, y: 0 },
+): DescriptionNodeGeo {
   return {
     ...geo,
     ...(geo.kermorNotes === undefined ? {} : { kermorNotes: shiftKermorNotes(geo.kermorNotes, dx, dy) }),
     x: geo.x + dx,
     y: geo.y + dy,
-    children: geo.children.map((c) => shiftGeo(c, dx, dy)),
+    ...(geo.portFinalBbox !== undefined
+      ? {
+          movedSize: {
+            ...geo.portFinalBbox,
+            x: geo.portFinalBbox.x + dx,
+            y: geo.portFinalBbox.y + dy,
+          },
+        }
+      : geo.children.length === 0
+        ? {}
+        : {
+            movedSize: {
+              width: movedExtent(geo.x + originShift.x, geo.width, dx - originShift.x),
+              height: movedExtent(geo.y + originShift.y, geo.height, dy - originShift.y),
+            },
+          }),
+    children: geo.children.map((c) => shiftGeo(c, dx, dy, originShift)),
   };
 }
 
@@ -225,7 +259,9 @@ export function degenerateSingleLeaf(
   // draws the real glyph — the RENDERER resolves the same store off the same
   // registry (`renderer-entity.ts`), keeping the two in lock-step.
   const sizingOpts = emojiArtwork === undefined ? boxOpts : { ...(boxOpts ?? {}), emojiArtwork };
-  const dims = measureLeafNode(visibleNode, fontSpec, measurer, sizingOpts, sprites);
+  const stereotypeRawLabels =
+    visibleNode.stereotype === undefined ? undefined : rawStereotypeLabels(visibleNode.stereotype);
+  const dims = measureLeafNode({ ...visibleNode, stereotypeRawLabels }, fontSpec, measurer, sizingOpts, sprites);
   const geo: DescriptionNodeGeo = {
     id: node.id,
     symbol: node.symbol,
@@ -236,6 +272,9 @@ export function degenerateSingleLeaf(
     height: dims.height,
     children: [],
   };
+  if (node.entityStyle !== undefined) geo.entityStyle = node.entityStyle;
+  if (node.naturalAlignment !== undefined) geo.naturalAlignment = node.naturalAlignment;
+  if (node.entitySizing !== undefined) geo.entitySizing = node.entitySizing;
   if (visibleStereotype !== undefined && visibleStereotype.length > 0) geo.stereotype = visibleStereotype;
   if (node.stereotype !== undefined && node.stereotype.length > (visibleStereotype?.length ?? 0)) {
     geo.styleStereotype = node.stereotype;

@@ -15,6 +15,9 @@
  * exact chrome. Documented approximation, not a T17 acceptance blocker
  * (neither symbol appears in the T17 zero-diff conformance fixture).
  */
+import type { MagneticBorder } from '../../core/klimt/geom/MagneticBorder.js';
+import { styleFont, stylePaint } from './description-entity-style.js';
+import { rawStereotypeLabels } from './parse-helpers.js';
 import { bareEntityName } from './namespace-groups.js';
 import { GUILLEMET_DEFAULT } from '../../core/text/Guillemet.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
@@ -60,7 +63,7 @@ import { type SpriteRegistry, spriteDimsLookupFor } from '../../core/sprite-comm
 import { resolveStereotypeSprite } from '../../core/svek/image/EntityImageDescriptionDelegates.js';
 import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
 import { drawNote } from './renderer-note.js';
-import { parseColorOverride, lineStyleStroke, type ColorOverride } from './renderer-color-override.js';
+import { lineStyleStroke, parseColorOverride, type ColorOverride } from './renderer-color-override.js';
 
 /** Jar-verified default entity corner radius / stroke width for the
  *  rectangle-family `USymbol`s (`test-results/dot-cache/component/
@@ -148,6 +151,11 @@ export function buildEntityParams(
   );
   const fontBody = recolor(textFont(theme, node.symbol), titleColor);
   const fontStereo = recolor(stereotypeTextFont(theme, node.symbol, styleLabels, STEREOTYPE_STYLES), stereoColor);
+  // `fcTitle`, `fc`, `fcStereo` (`EntityImageDescription.java:172-174`).
+  const entityStyle = node.entityStyle;
+  const fcTitle = styleFont(entityStyle?.title) ?? fontTitle;
+  const fc = styleFont(entityStyle?.body) ?? fontBody;
+  const fcStereo = styleFont(entityStyle?.stereo) ?? fontStereo;
   // D3 (cdd6 T1b/T2f): this entity's own resolved LineThickness -- the SAME
   // value `paint.stroke` below draws the body's border with -- doubles as
   // the sprite decomposition's ambient stroke seed (`SvgNanoParser.java
@@ -158,7 +166,10 @@ export function buildEntityParams(
   // comment). Computed ONCE and reused by both `paint.stroke` and
   // `atomImageResolverFor` below, so the body border and its own sprite
   // atoms can never disagree on this entity's ambient thickness.
-  const lineThickness = resolveElementLineThickness(theme, node.symbol) ?? ENTITY_STROKE_WIDTH;
+  // `styleTitle.getStroke(colors)` (`EntityImageDescription.java:171`): thickness and dash, per stereotype and per symbol.
+  const styleStroke = node.entityStyle?.title?.getStroke();
+  const lineThickness =
+    styleStroke?.getThickness() ?? resolveElementLineThickness(theme, node.symbol) ?? ENTITY_STROKE_WIDTH;
   return {
     entity: { name: bareEntityName(node.id), uid: '', qualifiedName: node.id, location: null, url: node.url ?? null },
     symbol: {
@@ -173,6 +184,7 @@ export function buildEntityParams(
       codeName: node.id,
       displayText: node.display,
       stereotypeLabels,
+      stereotypeRawLabels: rawStereotypeLabels(stereotypeLabels),
       // Same resolution the sizer performed (`leaf-sizing-entity.ts
       // #spriteLabel`), through the SAME `SpriteDimsLookup` narrowing, so the
       // drawn sprite cannot differ from the measured one.
@@ -180,14 +192,24 @@ export function buildEntityParams(
     },
     paint: {
       // EntityImageDescription.java:152-166: `<<labels>>` re-sign the style.
-      forecolor: override.line ?? resolveElementPaint(theme, node.symbol, 'border', styleLabels),
+      forecolor:
+        override.line ??
+        stylePaint(entityStyle?.title, 'LineColor') ??
+        resolveElementPaint(theme, node.symbol, 'border', styleLabels),
       // dss T3a: a business actor/use case reads its own signature's `BackGroundColor` like every other symbol
       // (`EntityImageDescription.java:162-166`, `{..., actor, business, title}`); `style-element-scope.ts` writes it to
       // the `actor-business`/`usecase-business` buckets. The `businessActorFill`/`businessUsecaseFill` defaults it
       // replaces (`none`, `#FFFFFF`) are not the jar's: `actor/`, `usecase/` draw `#F1F1F1` (jar: `unknown/xisora-84-faca166`).
-      backcolor: override.back ?? resolveElementPaint(theme, node.symbol, 'background', styleLabels),
-      roundCorner: resolveElementRoundCorner(theme, node.symbol) ?? ENTITY_ROUND_CORNER,
-      diagonalCorner: 0,
+      backcolor:
+        override.back ??
+        stylePaint(entityStyle?.title, 'BackGroundColor') ??
+        resolveElementPaint(theme, node.symbol, 'background', styleLabels),
+      // `styleTitle.value(PName.RoundCorner)`, `.value(PName.DiagonalCorner)` (`EntityImageDescription.java:168-169`).
+      roundCorner:
+        node.entityStyle?.title?.value('RoundCorner').asDouble() ??
+        resolveElementRoundCorner(theme, node.symbol) ??
+        ENTITY_ROUND_CORNER,
+      diagonalCorner: node.entityStyle?.title?.value('DiagonalCorner').asDouble() ?? 0,
       // mission skin-file-loading (deferred D3 item): was hardcoded 0 --
       // `EntityImageDescription.ts:251`'s `.withShadow(params.paint
       // .deltaShadow)` already draws the shadow given a nonzero value (the
@@ -199,18 +221,33 @@ export function buildEntityParams(
       // Shadowing N } }`), matching jar's `EntityImageDescription`-family
       // shared `getStyle().getShadowing()` read. Jar-verified
       // malado-53-noso561.
-      deltaShadow: resolveElementShadowing(theme, node.symbol, styleLabels),
-      stroke: overrideStroke(override.lineStyle, lineThickness),
-      fontTitle: override.text !== undefined ? { ...fontTitle, color: override.text } : fontTitle,
-      fontBody: override.text !== undefined ? { ...fontBody, color: override.text } : fontBody,
-      fontStereo: override.text !== undefined ? { ...fontStereo, color: override.text } : fontStereo,
-      titleAlignment: titleAlignmentFor(node.symbol, {
-        own: theme.colors.elements?.[node.symbol]?.horizontalAlignment,
-        root: theme.colors.elements?.root?.horizontalAlignment,
-      }),
-      minimumWidth: resolveElementMinimumWidth(theme, node.symbol) ?? 0,
-      stereotypeAlignment: HorizontalAlignment.CENTER,
-      ...(theme.wrapWidth !== undefined ? { wrapWidth: theme.wrapWidth } : {}),
+      // `styleTitle.getShadowing()` (`EntityImageDescription.java:170`), where a builder answers.
+      deltaShadow: node.entityStyle?.title?.getShadowing() ?? resolveElementShadowing(theme, node.symbol, styleLabels),
+      stroke: lineStyleStroke(override.lineStyle) ?? styleStroke ?? overrideStroke(undefined, lineThickness),
+      fontTitle: override.text !== undefined ? { ...fcTitle, color: override.text } : fcTitle,
+      fontBody: override.text !== undefined ? { ...fc, color: override.text } : fc,
+      fontStereo: override.text !== undefined ? { ...fcStereo, color: override.text } : fcStereo,
+      // `defaultAlign = styleTitle.getHorizontalAlignment()` (`EntityImageDescription.java:175`).
+      titleAlignment:
+        entityStyle?.title?.getHorizontalAlignment() ??
+        titleAlignmentFor(node.symbol, {
+          own: theme.colors.elements?.[node.symbol]?.horizontalAlignment,
+          root: theme.colors.elements?.root?.horizontalAlignment,
+        }),
+      // `BodyEnhancedAbstract#getDefaultThickness`: `style.value(LineThickness)` of the style `BodyFactory.create3` was
+      // given (`EntityImageDescription.java:188-191`), the same read the sizer makes.
+      defaultThickness: entityStyle?.body?.getStroke().getThickness() ?? lineThickness,
+      minimumWidth: node.entitySizing?.minimumWidth ?? resolveElementMinimumWidth(theme, node.symbol) ?? 0,
+      ...(node.entitySizing?.minimumWidthTitle === undefined
+        ? {}
+        : { minimumWidthTitle: node.entitySizing.minimumWidthTitle }),
+      // `styleStereo.getHorizontalAlignment()` (`EntityImageDescription.java:207`).
+      stereotypeAlignment: entityStyle?.stereo?.getHorizontalAlignment() ?? HorizontalAlignment.CENTER,
+      ...(node.entitySizing?.wrapWidth !== undefined
+        ? { wrapWidth: node.entitySizing.wrapWidth }
+        : theme.wrapWidth !== undefined
+          ? { wrapWidth: theme.wrapWidth }
+          : {}),
       guillemet: {
         start: theme.colors.graph.guillemetStart ?? GUILLEMET_DEFAULT.start,
         end: theme.colors.graph.guillemetEnd ?? GUILLEMET_DEFAULT.end,
@@ -314,4 +351,19 @@ export function drawEntity(
   }
   const params = buildEntityParams(node, theme, sprites);
   new EntityImageDescription({ ...params, entity: { ...params.entity, uid } }).drawU(translated);
+}
+
+/** `SvekNode#getMagneticBorder` (`SvekNode.java:486-492`): the image's, translated to the node's corner. */
+export function leafMagneticBorder(
+  node: DescriptionNodeGeo,
+  theme: Theme,
+  sprites: SpriteRegistry | undefined,
+): MagneticBorder | undefined {
+  if (node.symbol !== 'folder' && node.symbol !== 'package') return undefined;
+  const orig = new EntityImageDescription(buildEntityParams(node, theme, sprites)).getMagneticBorder();
+  return {
+    getForceAt(position, stringBounder) {
+      return orig.getForceAt({ x: position.x - node.x, y: position.y - node.y }, stringBounder);
+    },
+  };
 }

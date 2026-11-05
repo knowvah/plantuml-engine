@@ -62,12 +62,12 @@ const PINS: Readonly<Record<string, readonly [number, number]>> = {
   'sequence-style-before': [0, 0],
   'sequence-style-root': [0, 0],
   'sequence-theme-only': [0, 0],
-  'usecase-skinparam-after': [0, 15],
-  'usecase-skinparam-before': [0, 15],
-  'usecase-style-after': [0, 15],
-  'usecase-style-before': [0, 15],
+  'usecase-skinparam-after': [0, 0],
+  'usecase-skinparam-before': [0, 0],
+  'usecase-style-after': [0, 0],
+  'usecase-style-before': [0, 0],
   'usecase-style-root': [0, 0],
-  'usecase-theme-only': [0, 15],
+  'usecase-theme-only': [0, 0],
 };
 
 const CASES = readdirSync(DIR)

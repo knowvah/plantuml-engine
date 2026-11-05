@@ -400,7 +400,7 @@ const CHAR_HIDDER_ESCAPE_TARGETS = '_-"#][*./<';
  * Scoped to a LEADING escape only — no fixture needs mid-line, and the
  * list-bullet path is out of scope.
  */
-function stripLeadingEscapedChar(line: string): string {
+export function stripLeadingEscapedChar(line: string): string {
   if (line.length < 2 || line[0] !== '~') return line;
   return CHAR_HIDDER_ESCAPE_TARGETS.includes(line[1]!) ? line.slice(1) : line;
 }

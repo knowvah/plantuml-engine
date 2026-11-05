@@ -13,15 +13,10 @@
  * keep that file under the repo's 500-line-per-file cap.
  */
 
+import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import { canonicalizeArrow, splitCanonicalHeads } from './class-arrow-grammar.js';
 
-/** `decoration/LinkMiddleDecor.java`'s four INSIDE-reachable members (`NONE`
- *  is `undefined` here, matching every other decor field's convention;
- *  `SUBSET`/`SUPERSET` have no INSIDE token -- CommandLinkClass never
- *  constructs them from this regex group, only from a description-diagram
- *  command this port's class engine does not share -- so they are not
- *  representable here). */
-export type MiddleDecor = 'circle' | 'circleCircled' | 'circleCircled1' | 'circleCircled2';
+export type { MiddleDecor };
 
 /**
  * `CommandLinkClass#getLinkType`'s INSIDE if/else-if chain, ported as a

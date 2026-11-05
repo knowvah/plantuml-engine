@@ -8,6 +8,7 @@
  * original inline code — this is a pure move.
  */
 
+import { LABEL_SHIELD } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import type { Relationship } from './ast.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotInputEdge } from '../../core/graph-layout.js';
@@ -47,7 +48,6 @@ const CONSTRAINT_SPOT = 10;
  * used to carry (below) predates that port and is corrected alongside this
  * constant, which the note-merge arm's own `hasMiddleDecor` flag also reads.
  */
-const LABEL_SHIELD = 7;
 
 /**
  * `plantuml.skin`'s `arrow { FontSize 13 }` block (`svek/GraphvizImageBuilder

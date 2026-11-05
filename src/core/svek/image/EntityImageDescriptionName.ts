@@ -124,11 +124,11 @@ function titleEntity(): Entity {
 
 /** The resolved `styleTitle` reads `create2` consumes: all three font slots
  *  are the ONE title font (java:198's single `styleTitle` argument). */
-function titleStyle(font: FontConfiguration, atomOps: AtomOps): BodyEnhanced1Style {
+function titleStyle(font: FontConfiguration, atomOps: AtomOps, minimumWidth: number): BodyEnhanced1Style {
   return {
     getHorizontalAlignment: () => HorizontalAlignment.CENTER,
     lineThickness: ROOT_LINE_THICKNESS,
-    minimumWidth: 0,
+    minimumWidth,
     titleConfig: font,
     treeTableFontConfig: font,
     memberFontConfig: font,
@@ -149,6 +149,7 @@ export function buildCreate2Name(
   font: FontConfiguration,
   atomOps: AtomOps,
   guillemet: GuillemetPair | undefined,
+  minimumWidth = 0,
 ): TextBlock {
   const skinParam = buildTitleSkinParam(guillemet, atomOps);
   const display = Display.getWithNewlines(Pragma.createEmpty(), code);
@@ -158,7 +159,7 @@ export function buildCreate2Name(
     skinParam,
     undefined,
     titleEntity(),
-    titleStyle(font, atomOps),
+    titleStyle(font, atomOps, minimumWidth),
   );
 }
 
@@ -167,6 +168,8 @@ export interface EntityNamePaint {
   readonly fontTitle: FontConfiguration;
   readonly titleAlignment: HorizontalAlignment;
   readonly guillemet?: GuillemetPair | undefined;
+  /** `styleTitle.value(PName.MinimumWidth)`: `BodyEnhanced1.java:182-184` under `create2` (java:198-199). */
+  readonly minimumWidthTitle?: number | undefined;
 }
 
 /**
@@ -190,5 +193,11 @@ export function buildEntityName(
   if (symbol.getSNames()[0] !== 'package_') {
     return buildTextBlock(codeName, paint.fontTitle, paint.titleAlignment, resolveAtomImage);
   }
-  return buildCreate2Name(codeName, paint.fontTitle, descAtomOps(resolveAtomImage, emojiArtwork), paint.guillemet);
+  return buildCreate2Name(
+    codeName,
+    paint.fontTitle,
+    descAtomOps(resolveAtomImage, emojiArtwork),
+    paint.guillemet,
+    paint.minimumWidthTitle,
+  );
 }

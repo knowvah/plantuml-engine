@@ -92,6 +92,21 @@ export const KEY_HANDLERS_B: ReadonlyArray<readonly [keys: readonly string[], ha
     },
   ],
   [
+    ['svgdimensionstyle'],
+    (acc, value) => {
+      // `!valueIs("svgdimensionstyle", "false")` (`SkinParam.java:1196-1198`).
+      acc.svgDimensionStyle = value.trim().toLowerCase() !== 'false';
+    },
+  ],
+  [
+    ['stereotypealignment'],
+    (acc, value) => {
+      // `SkinParam#getStereotypeAlignment` reads the RAW value (`SkinParam.java:741-747`), apart from the style's
+      // convert (`FromSkinparamToStyle.java:252`).
+      acc.stereotypeAlignment = value.trim();
+    },
+  ],
+  [
     ['mode'],
     (acc, value) => {
       // cdd-T33: `SkinParam.isDark` (`skin/SkinParam.java:114-116`) --

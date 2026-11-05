@@ -50,8 +50,10 @@
 import type { UDriver } from '../../AbstractCommonUGraphic.js';
 import type { UParam } from '../../UParam.js';
 import { parseColor } from '../../../paint.js';
-import { resolveColorToSvgHex } from '../../color/HColorSet.js';
-import { toSvgPaint, toSvgSolid, type ColorMapper } from '../../color/ColorMapper.js';
+import { resolveColorToSvgHex, resolveConditionalColor } from '../../color/HColorSet.js';
+import { HColorGradient } from '../../color/HColorGradient.js';
+import { HColorSimple } from '../../color/HColorSimple.js';
+import { toSvgPaint, toSvgSolid, type ColorMapper, type HColorOrPaint } from '../../color/ColorMapper.js';
 import { shortenColor } from '../../../svg-format.js';
 import { FontStyle, getFont } from '../../shape/UText.js';
 import { UStroke } from '../../UStroke.js';
@@ -77,6 +79,24 @@ export interface StringBounder {
 function fontColorOf(font: FontConfiguration, color: string, mapper: ColorMapper): string {
   if (font.hColor !== undefined && font.hColor.asPaint() === color) return font.hColor.toSvg(mapper);
   return toSvgSolid(color, mapper);
+}
+
+/** A gradient's first colour, as a solid string. */
+function paintFirstColor(paint: Exclude<HColorOrPaint, string | HColorSimple>): string {
+  return paint instanceof HColorGradient ? paintFirstColor(paint.asPaint()) : paint.color1;
+}
+
+/**
+ * `FontConfiguration#adjustColorForBackground` (`FontConfiguration.java:350-357`): a `#?light:dark` text colour against
+ * the back it draws on. A gradient back is its first colour (`HColorGradient#toColor`).
+ */
+function adjustColorForBackground(color: string, param: UParam): string {
+  if (!color.startsWith('#?')) return color;
+  const back = param.getBackcolor();
+  const paint = back instanceof HColorSimple ? back.asPaint() : back;
+  const solid = typeof paint === 'string' ? paint : paintFirstColor(paint);
+  const hex = solid === 'none' ? 'transparent' : (resolveColorToSvgHex(solid) ?? 'transparent');
+  return resolveConditionalColor(color, hex) ?? color;
 }
 
 // Upstream: `text.replace(' ', (char) 160)` — regular space -> NBSP.
@@ -160,7 +180,7 @@ export class DriverTextSvg implements UDriver<UText> {
     // before the text itself and instead of the `feFlood` filter.
     this.drawBackGradient(deco.backGradient, x, y, dim, mapper);
 
-    this.svg.setFillColor(fontColorOf(font, font.color, mapper));
+    this.svg.setFillColor(fontColorOf(font, adjustColorForBackground(font.color, param), mapper));
     this.svg.text(trimmed, x, y, {
       fontFamily: drawFont.family,
       fontSize: drawFont.size,

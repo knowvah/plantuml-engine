@@ -21,7 +21,7 @@ import { CONTAINER_COMMANDS } from './class-command-containers.js';
 import { RELATIONSHIP_COMMANDS } from './class-command-relationships.js';
 import { DECLARATION_COMMANDS } from './class-command-declarations.js';
 import { NOTE_COMMANDS } from './class-command-notes.js';
-import { DESCRIPTIVE_LEAF_COMMANDS } from './class-descriptive-leaf-command.js';
+import { DESCRIPTIVE_LEAF_COMMANDS, ELEMENT_FULL2_BEFORE_LINKS_COMMAND } from './class-descriptive-leaf-command.js';
 import { applyStereotypeStatement, STEREOTYPE_STATEMENT_RE } from './class-stereotype-command.js';
 import type { Command } from './class-command-types.js';
 
@@ -31,6 +31,7 @@ import type { Command } from './class-command-types.js';
 export const COMMANDS: readonly Command[] = [
   ...DIRECTIVE_COMMANDS,
   ...CONTAINER_COMMANDS,
+  ELEMENT_FULL2_BEFORE_LINKS_COMMAND,
   ...RELATIONSHIP_COMMANDS,
   ...DECLARATION_COMMANDS,
   ...NOTE_COMMANDS,

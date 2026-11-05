@@ -1,0 +1,6 @@
+@startuml
+skinparam dpi 300
+:ac: --> (uc)
+:ac1: --> (uc)
+:ac2: --> (uc)
+@enduml

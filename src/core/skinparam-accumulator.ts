@@ -96,6 +96,8 @@ export interface SkinparamAccumulator {
   monochrome: 'true' | 'reverse' | undefined;
   /** Raw `skinparam reversecolor` (`TitledDiagram.java:301`). */
   reverseColor: string | undefined;
+  stereotypeAlignment: string | undefined;
+  svgDimensionStyle: boolean | undefined;
   packageStyle: PackageStyleSetting | undefined;
   fixCircleLabelOverlapping: boolean | undefined;
   shadowing: number | undefined;
@@ -333,6 +335,8 @@ const SCALAR_FIELD_NAMES = [
   'mode',
   'monochrome',
   'reverseColor',
+  'stereotypeAlignment',
+  'svgDimensionStyle',
   'packageStyle',
   'fixCircleLabelOverlapping',
   'shadowing',

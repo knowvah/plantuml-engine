@@ -1,0 +1,7 @@
+@startuml
+actor/ :Last actor: as Person1
+rectangle :a b: as c
+rectangle (d e) as f
+node [g h] as i
+rectangle j #pink
+@enduml

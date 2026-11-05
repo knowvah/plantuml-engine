@@ -158,69 +158,21 @@ describe('T3 widened routing — box + <img> now routes through measureEntityLea
   });
 });
 
-/**
- * T3 coverage restoration -- `measureLegacyBoxFallback`
- * (`leaf-sizing-legacy-fallback.ts`) and `measureTextBlock`
- * (`leaf-sizing-text.ts`) are now reachable ONLY via a `<latex>` box
- * display (the `<img>` guard that used to reach them, with every
- * componentStyle/stereotype/wrapWidth combination a real fixture happened
- * to carry, is gone). These three cases exercise the SAME internal
- * branches -- `boxIcon`'s non-uml2 early return, the stereotype merge, and
- * `measureTextBlock`'s word-wrapped path -- through the one guard left,
- * so `leaf-sizing-legacy-fallback.ts`/`leaf-sizing-text.ts` do not lose
- * coverage as a side effect of narrowing `leaf-sizing.ts`'s box guard.
- */
-describe('T3 coverage restoration — measureLegacyBoxFallback via <latex> (the one reachable guard left)', () => {
-  it('a non-uml2 component draws no corner icon (boxIcon early return)', () => {
+/** ddd-T5e: a `<latex>` box is its image atom through `measureEntityLeaf`. Jar: `skinparam componentStyle uml1` +
+ *  `component "<latex>x^2</latex>"` draws 47x46; `rectangle "<latex>x^2</latex>" <<Foo>>` draws 61.725x60, and
+ *  without the stereotype 47x46. */
+describe('a <latex> box sizes from its image atom', () => {
+  it('a uml1 component measures the jar box', () => {
     const node: DescriptiveNode = { id: 'c', display: '<latex>x^2</latex>', symbol: 'component', children: [] };
-    const uml1 = measureLeafNode(node, fontSpec, measurer, { componentStyle: 'uml1' });
-    const uml2 = measureLeafNode(node, fontSpec, measurer, { componentStyle: 'uml2' });
-    expect(uml1).toEqual({ width: 20, height: 34 });
-    expect(uml2).toEqual({ width: 40, height: 44 });
-    expect(uml1.width).toBeLessThan(uml2.width);
+    expect(measureLeafNode(node, fontSpec, measurer, { componentStyle: 'uml1' })).toEqual({ width: 47, height: 46 });
   });
 
-  it('a stereotype adds its own line + STEREO_MARGIN on top of the <latex> content', () => {
-    const withStereo: DescriptiveNode = {
-      id: 'r',
-      display: '<latex>x^2</latex>',
-      symbol: 'rectangle',
-      stereotype: ['Foo'],
-      children: [],
-    };
-    const withoutStereo: DescriptiveNode = {
-      id: 'r',
-      display: '<latex>x^2</latex>',
-      symbol: 'rectangle',
-      children: [],
-    };
-    // 61.725 float32-rounded by the measurer (oracle seam #4 v2): compare at the
-    // jar DOT's printed precision.
-    const stereoDim = measureLeafNode(withStereo, fontSpec, measurer);
-    expect(stereoDim.width).toBeCloseTo(61.725, 4);
-    expect(stereoDim.height).toBe(48);
-    expect(measureLeafNode(withoutStereo, fontSpec, measurer)).toEqual({ width: 20, height: 34 });
-  });
-
-  it("skinparam wrapWidth word-wraps a <latex>-guarded box (measureTextBlock's wrapped path)", () => {
-    const node: DescriptiveNode = {
-      id: 'r',
-      display: '<latex>x^2</latex> plus some words here',
-      symbol: 'rectangle',
-      children: [],
-    };
-    const wrapped = measureLeafNode(node, fontSpec, measurer, { wrapWidth: 40 });
-    const unwrapped = measureLeafNode(node, fontSpec, measurer);
-    expect(wrapped.width).toBeCloseTo(57.3625, 4); // float32-rounded measurer
-    expect(wrapped.height).toBe(76);
-    // No jar render exists for a <latex> box (the jar's JLaTeXMath is a permanent
-    // divergence, DIVERGENCES.md); the value is the former 145.3 plus the display's
-    // four spaces at 3.85 (14pt, oracle seam #4 v2): 145.3 + 4 * 3.85 = 160.7.
-    expect(unwrapped.width).toBeCloseTo(145.3 + 4 * 3.85, 4);
-    expect(unwrapped.height).toBe(34);
-    // Wrapping must narrow the box and grow its height (more lines) --
-    // proves the wrapped branch actually ran, not a silent passthrough.
-    expect(wrapped.width).toBeLessThan(unwrapped.width);
-    expect(wrapped.height).toBeGreaterThan(unwrapped.height);
+  it('a stereotype widens to its label and adds its line', () => {
+    const plain: DescriptiveNode = { id: 'r', display: '<latex>x^2</latex>', symbol: 'rectangle', children: [] };
+    const stereotyped: DescriptiveNode = { ...plain, stereotype: ['Foo'] };
+    expect(measureLeafNode(plain, fontSpec, measurer)).toEqual({ width: 47, height: 46 });
+    const dim = measureLeafNode(stereotyped, fontSpec, measurer);
+    expect(dim.width).toBeCloseTo(61.725, 4);
+    expect(dim.height).toBe(60);
   });
 });

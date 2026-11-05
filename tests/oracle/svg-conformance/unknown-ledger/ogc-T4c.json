@@ -4,7 +4,7 @@
     {
       "slug": "corevo-13-cega392",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':joe:/ <<xxx>> #green -[#blue]-> (action)/ <<yyy>> #orange'. The jar accepts it as ONE element via CommandCreateElementFull (CommandCreateElementFull.java:83-115, registered DescriptionDiagramFactory.java:121): CODE1 ':joe:/' (CODE_CORE ':[^:]+:/?', CommandCreateElementFull.java:126), then STEREOTYPE (CommandCreateElementFull.java:110) whose lazy '(\\<\\<.+?\\>\\>)' (StereotypePattern.java:67) extends to the last '>>' so it spans '<<xxx>> #green -[#blue]-> (action)/ <<yyy>>', then color '#orange' (CommandCreateElementFull.java:115); CommandLinkElement (DescriptionDiagramFactory.java:92) does not match because after ENT1 its HEAD1 takes '<<' and BODY1 '[-=.~]+' meets 'xxx' (CommandLinkElement.java:99-100). Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity FIRST alternatives cannot start with ':' and ARROW_BODY1 '[-.]+' fails at it (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. We refuse the line in description (no single-element rule lets a stereotype span the arrow text: business-actor shorthand + SHORTHAND_TRAILER, src/diagrams/description/command-table-shorthand.ts:28, command-table-helpers.ts:18; refusal at src/diagrams/description/parser.ts:340) and fall through to activity3 (src/registered-plugins.ts:63), which accepts it; upstream ActivityDiagramFactory3 sits after Description (PSystemBuilder.java:138, :140). Open -> #113."
     },
@@ -32,14 +32,14 @@
     {
       "slug": "fubuja-64-vane162",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line 'package {' (anonymous package). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180); '() item10' is CommandCreateElementFull's '\\(\\)' SYMBOL (CommandCreateElementFull.java:84). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
     },
     {
       "slug": "gepuko-44-gizi401",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "The class factory (PSystemBuilder.java:136) rejects line 3, 'Person \"1\" *-- \"*\" Person : \"parent\" contains \"children\"', before CommandLinkClass sees it: the line starts with 'Person', a keyword of CommandCreateElementFull.ALL_TYPES (CommandCreateElementFull.java:76, regexes compile CASE_INSENSITIVE, Pattern2.java:114), and ends with a quote, so CommandCreateElementFull2's regex (CommandCreateElementFull2.java:109-131, registered ClassDiagramFactory.java:133, ahead of CommandLinkClass at :143) matches it with SYMBOL 'person' and CODE1 = CODE_WITH_QUOTE's '[%g].+?[%g]' (CommandCreateElementFull.java:128) stretched over '\"1\" *-- \"*\" Person : \"parent\" contains \"children\"'; its executeArg returns the error 'Use allowmixing if you want to mix classes and other UML elements.' (CommandCreateElementFull2.java:197-198). Jar probes 2026-11-04: the line alone -> DESCRIPTION; the same line with a 'class Dummy' line forcing the class factory -> that error at line 3; without the cardinality quotes ('Person *-- Other : \"parent\" contains \"children\"') or without the trailing quote ('Person \"1\" *-- \"*\" Person : parent') -> CLASS. So DescriptionDiagramFactory (PSystemBuilder.java:138) wins and accepts every link line via CommandLinkElement (CommandLinkElement.java:89-121, registered DescriptionDiagramFactory.java:92). We route CLASS: our class engine has no ALL_TYPES keyword command ahead of its link parser, so it accepts the link and draws CLASS where the jar draws DESCRIPTION. Open -> #113."
     },
@@ -60,7 +60,7 @@
     {
       "slug": "gugapu-35-kama674",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity cannot start with ':' (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); the source then falls through to activity3 (src/registered-plugins.ts:63), which accepts it, while upstream's ActivityDiagramFactory3 comes after Description (PSystemBuilder.java:138, :140). Open -> #113."
     },
@@ -88,28 +88,28 @@
     {
       "slug": "luzida-92-gebi610",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line 'package {' (anonymous package; 'circle test' before it is a class 'circle', CommandCreateClass TYPE, CommandCreateClass.java:87, ClassDiagramFactory.java:120). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
     },
     {
       "slug": "maxeme-36-rale224",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line 'note left of toto [[http://note]] {'. The jar accepts it via CommandFactoryNoteOnEntity.createMultiLine(true) (registered DescriptionDiagramFactory.java:125): the bracket regex is 'note' POSITION 'of' entity, stereotype, color, UrlBuilder.OPTIONAL, then '\\{' (CommandFactoryNoteOnEntity.java:122-146, URL slot :142). Class refuses earlier at 'actor toto [[http://toto]]': CommandCreateElementFull2 NORMAL_KEYWORD returns 'Use allowmixing...' (CommandCreateElementFull2.java:197-198). We refuse: our RE_NOTE_ON_ENTITY_OPEN_BRACE has no URL slot before '{' (src/diagrams/description/note-grammar.ts:69-75), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
     },
     {
       "slug": "mideva-42-fumu406",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':Main Database: as MySql << Application >>'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121, with the trailing '<< Application >>' taken by STEREOTYPE (CommandCreateElementFull.java:110). our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
     },
     {
       "slug": "minece-51-xape147",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line 'package #green {' (anonymous package with a color). ClassDiagramFactory reaches 'package {' first through CommandPackage (registered ClassDiagramFactory.java:127, before CommandPackageWithUSymbol at :130): its NAME '[^#%s{}]*' (CommandPackage.java:78) matches empty and executeArg returns error(\"Error in name\") when NAME is empty and there is no 'as' (CommandPackage.java:154-158), an EXECUTION_ERROR page (PSystemCommandFactory.java:180-186). Legacy Activity has no 'package' command (ActivityDiagramFactory.java:75-100) -> 'Syntax Error?' (PSystemCommandFactory.java:169-174). The jar takes 'package {' via CommandPackageWithUSymbol (registered DescriptionDiagramFactory.java:96): CODE9 '[^#%s{}%g]*' matches empty (CommandPackageWithUSymbol.java:118) and executeArg names it getUniqueSequence(\"##\") (CommandPackageWithUSymbol.java:179-180); the color is CommandPackageWithUSymbol's color slot (CommandPackageWithUSymbol.java:127). we route CLASS because our class package command accepts a nameless 'package {' and synthesizes a '__pkg<n>' id (src/diagrams/class/class-command-containers.ts:154, :166-169) where upstream's CommandPackage errors. Open -> #113."
     },
@@ -158,7 +158,7 @@
     {
       "slug": "popufa-55-goci799",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':Main Database: as MySql << Application >>'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121, with the trailing '<< Application >>' taken by STEREOTYPE (CommandCreateElementFull.java:110). our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
     },
@@ -193,7 +193,7 @@
     {
       "slug": "sifagi-73-kexu776",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line 'title Домашняя библиотека - диаграмма прецедентов'. The jar accepts it via CommandTitle (CommandTitle.java:59-67; TITLE2 '(.*[%pLN_.].*)' at :66, %pLN admits Cyrillic letters), registered CommonCommands.java:113 from addCommonCommands1 (CommonCommands.java:56) at DescriptionDiagramFactory.java:90. We refuse it: our TITLE_RE's unquoted VALUE is '(.*[\\w.].*)' (src/core/annotations/commands.ts:78, :97), ASCII \\w, so a title with no ASCII letter, digit, '_' or '.' matches no command and every engine answers 'Syntax Error?' (description: src/diagrams/description/parser.ts:340). Open -> #113."
     },
@@ -214,21 +214,21 @@
     {
       "slug": "tipado-10-jave498",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':actor 1: as act1'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121; the later ':actor 2 -tech: << tech >> as act2' takes STEREOTYPE2 before 'as' (CommandCreateElementFull.java:91). Class rejects it: no class command admits a keyword-less ':display:' head: CommandCreateElementFull2 needs a SYMBOL keyword (CommandCreateElementFull2.java:112), CommandCreateElementParenthesis needs a '()' prefix (CommandCreateElementParenthesis.java:78), CommandLinkClass's endpoint is getClassIdentifier (CommandLinkClass.java:177-178) and CommandAddMethod's NAME is '[%pLN_.]+' (CommandAddMethod.java:64-66), so ClassDiagramFactory answers 'Syntax Error?' (PSystemCommandFactory.java:169-174); legacy Activity's CommandLinkActivity cannot start with ':' (CommandLinkActivity.java:82-86, :92) -> 'Syntax Error?'. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); the source then falls through to activity3 (src/registered-plugins.ts:63), which accepts it, while upstream's ActivityDiagramFactory3 comes after Description (PSystemBuilder.java:138, :140). Open -> #113."
     },
     {
       "slug": "vajeje-58-peli352",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); activity3 also refuses the source, so we draw an error page. Open -> #113."
     },
     {
       "slug": "virobu-13-gufo770",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line '(Another Business usecase)/ as (BUC2)'. The jar accepts it via CommandCreateElementFull's DISPLAY2 branch (CommandCreateElementFull.java:89-94): DISPLAY '\\([^()]+\\)/?' (CommandCreateElementFull.java:130), 'as', CODE2 '\\([^()]+\\)/?' (CODE_CORE, CommandCreateElementFull.java:126), registered DescriptionDiagramFactory.java:121. We refuse it: the business-usecase shorthand takes only decorations after '(Name)/' (src/diagrams/description/command-table-shorthand.ts:44, SHORTHAND_TRAILER command-table-helpers.ts:18) and the use-case alias rule has no '/' before 'as' (src/diagrams/description/command-table-containers.ts:72), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
     },
@@ -263,7 +263,7 @@
     {
       "slug": "zisuvu-18-goja196",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-gap",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "deciding line ':Main Admin: as Admin'. The jar accepts it via CommandCreateElementFull.java:83-115, DISPLAY2 branch :89-94 (DISPLAY ':[^:]+:/?', CommandCreateElementFull.java:130; then 'as' and CODE2), registered DescriptionDiagramFactory.java:121. our description parser has no ':display: as CODE' form: the actor shorthand (src/diagrams/description/command-table-shorthand.ts:36) takes only decorations after ':Name:' (SHORTHAND_TRAILER, command-table-helpers.ts:18), so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340); activity3 also refuses the source, so we draw an error page. Open -> #113."
     },
@@ -277,7 +277,7 @@
     {
       "slug": "zuzura-28-telu962",
       "cohort": "ogc-unknown-description",
-      "disposition": "known-misroute",
+      "disposition": "fixed",
       "task": "ogc-T4c",
       "reason": "Same source as gepuko-44-gizi401 plus 'skinparam flashcode 1' (CommandSkinParam, CommonCommands.java:67). The class factory (PSystemBuilder.java:136) rejects line 3, 'Person \"1\" *-- \"*\" Person : \"parent\" contains \"children\"', before CommandLinkClass sees it: the line starts with 'Person', a keyword of CommandCreateElementFull.ALL_TYPES (CommandCreateElementFull.java:76, regexes compile CASE_INSENSITIVE, Pattern2.java:114), and ends with a quote, so CommandCreateElementFull2's regex (CommandCreateElementFull2.java:109-131, registered ClassDiagramFactory.java:133, ahead of CommandLinkClass at :143) matches it with SYMBOL 'person' and CODE1 = CODE_WITH_QUOTE's '[%g].+?[%g]' (CommandCreateElementFull.java:128) stretched over '\"1\" *-- \"*\" Person : \"parent\" contains \"children\"'; its executeArg returns the error 'Use allowmixing if you want to mix classes and other UML elements.' (CommandCreateElementFull2.java:197-198). Jar probes 2026-11-04: the line alone -> DESCRIPTION; the same line with a 'class Dummy' line forcing the class factory -> that error at line 3; without the cardinality quotes ('Person *-- Other : \"parent\" contains \"children\"') or without the trailing quote ('Person \"1\" *-- \"*\" Person : parent') -> CLASS. So DescriptionDiagramFactory (PSystemBuilder.java:138) wins and accepts every link line via CommandLinkElement (CommandLinkElement.java:89-121, registered DescriptionDiagramFactory.java:92). We route CLASS: our class engine has no ALL_TYPES keyword command ahead of its link parser, so it accepts the link and draws CLASS where the jar draws DESCRIPTION. Open -> #113."
     }

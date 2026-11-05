@@ -171,6 +171,23 @@ export const DIRECTIVE_COMMANDS: readonly Command[] = [
     },
   },
 
+  // 2e0. `p.isTrue(PragmaKey.SVG_INTERACTIVE)` (`TextBlockExporter.java:299-304`, `Pragma.java:85-88`): the last wins.
+  {
+    pattern: /^!pragma\s+svginteractive(?:\s+(\S+))?\s*$/i,
+    execute(state, match) {
+      const value = match[1]?.toLowerCase();
+      state.ast.svgInteractive = value === 'true' || value === 'on';
+    },
+  },
+
+  // 2e0b. `!pragma layout smetana`: laid out with dot-engine (ruling 2026-08-09), drawn in Smetana's node order.
+  {
+    pattern: /^!pragma\s+layout\s+smetana\s*$/i,
+    execute(state) {
+      state.ast.smetanaDrawOrder = true;
+    },
+  },
+
   // 2e1. `!pragma layout elk` (cdd8 T3b) -- `CommandPragma#executeArg` calls
   //      `system.setUseElk(true)` (CommandPragma.java:128-129, inside
   //      `!TeaVM.isTeaVM()`), which `CucaDiagram#getCucaDiagramFileMaker`

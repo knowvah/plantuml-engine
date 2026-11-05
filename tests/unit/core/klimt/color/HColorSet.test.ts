@@ -158,10 +158,10 @@ describe('HColorSet class (HColorSet.java:43-120)', () => {
     expect(set.getColor('blue').asString()).toBe('#0000FF');
   });
 
-  it('`automatic` resolves to an HColorAutomagic (HColor.asString "?HColorAutomagic"); HColorScheme is unported', () => {
+  it('`automatic` resolves to an HColorAutomagic, `?a:b[:c]` to an HColorScheme (HColor.asString)', () => {
     expect(set.getColorOrWhite('automatic').asString()).toBe('?HColorAutomagic');
-    expect(() => set.getColorOrWhite('#?red:blue')).toThrow('HColorScheme');
-    expect(() => set.getColorOrWhite('#?red:blue:green')).toThrow('HColorScheme');
+    expect(set.getColorOrWhite('#?red:blue').asString()).toBe('?HColorScheme');
+    expect(set.getColorOrWhite('#?red:blue:green').asString()).toBe('?HColorScheme');
   });
 
   it('a c1<policy>c2 token is an HColorGradient (java:109-117), asString "?HColorGradient" (HColor.java:113-115)', () => {

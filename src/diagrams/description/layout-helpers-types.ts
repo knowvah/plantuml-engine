@@ -9,6 +9,11 @@
  * importers keep their `./layout-helpers.js` import path unchanged.
  */
 
+import type { Warning } from '../../core/warning/Warning.js';
+import type { EntitySizing } from '../../core/svek/image/LeafSizingSubject.js';
+import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
+import type { Style } from '../../core/style/Style.js';
+import type { DescriptionEntityStyle } from './description-entity-style.js';
 import type { DescriptiveLinkStyle, StereotypeSpriteRef } from './ast.js';
 import type { NotePosition } from './note-grammar.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
@@ -26,6 +31,13 @@ export type DescriptionElkDrawing = MyElkDrawing;
 // Public output node type
 // ---------------------------------------------------------------------------
 
+/** A quantifier: its text, and the centre of the table graphviz placed for it. */
+export interface EdgeEndText {
+  readonly text: string;
+  readonly x: number;
+  readonly y: number;
+}
+
 export interface DescriptionNodeGeo {
   id: string;
   /** Upstream USymbol shape — drives render dispatch in T6. */
@@ -36,6 +48,20 @@ export interface DescriptionNodeGeo {
   width: number;
   height: number;
   children: DescriptionNodeGeo[];
+  /**
+   * A group's size after `Cluster#moveDelta`: both corners move and `getWidth` subtracts (`RectangleArea.java:60-70`),
+   * a difference a cloud's seed truncates (`USymbolCloud.java:75`). The ink walk precedes the move
+   * (`SvekResult.java:131-134`), so only the final draw reads it.
+   */
+  movedSize?: { readonly x?: number; readonly y?: number; readonly width: number; readonly height: number };
+  /** A port cluster's rectangle in the final draw, the second `manageEntryExitPoint` (`Cluster.java:344-345`). */
+  portFinalBbox?: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
+  /** `DescriptiveNode.entityStyle`, for the renderer. */
+  entityStyle?: DescriptionEntityStyle;
+  /** `DescriptiveNode.naturalAlignment`. */
+  naturalAlignment?: 'left' | 'right';
+  /** `DescriptiveNode.entitySizing`, so the renderer draws the wrap and floor the sizer measured. */
+  entitySizing?: EntitySizing;
   /** G1 I5b: ALL stereotype tags, in source order (see
    *  `DescriptiveNode.stereotype`'s doc comment). */
   stereotype?: readonly string[];
@@ -208,6 +234,16 @@ export interface DescriptionEdgeGeo {
   styleColor?: string;
   /** `DescriptiveLink.textColor`: label font colour override (SvekEdge.java:260-262). */
   styleTextColor?: string;
+  /** `DescriptiveLink.arrowStyle`, `.cardinalityStyle`, `.middleDecor`, `.supplementaryColors`. */
+  arrowStyle?: Style;
+  cardinalityStyle?: Style;
+  /** `Link.inverted` (`Link.java:145-147`). */
+  linkInverted?: boolean;
+  middleDecor?: MiddleDecor;
+  supplementaryColors?: readonly string[];
+  /** `SvekEdge.java:330-340`: the two quantifiers, at the table corner the engine placed (`:956-980`). */
+  tailQuantifier?: EdgeEndText;
+  headQuantifier?: EdgeEndText;
   arrowHead?: 'open' | 'filled' | 'none';
   /**
    * T17 write-set expansion (journaled — see the mission decision journal):
@@ -330,6 +366,12 @@ export interface DescriptionGeometry {
    * document, byte for byte.
    */
   chromed?: true;
+  /** `DescriptionDiagramAST.smetanaDrawOrder`. */
+  smetanaDrawOrder?: boolean;
+  /** `!pragma svginteractive true` on the page. */
+  svgInteractive?: boolean;
+  /** `TitledDiagram#getWarnings()`, drawn as the banner above the block. */
+  warnings?: readonly Warning[];
 }
 
 // ---------------------------------------------------------------------------

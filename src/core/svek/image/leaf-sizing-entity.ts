@@ -245,6 +245,27 @@ function spriteLabel(
   return resolved === undefined ? {} : { stereotypeSprite: resolved };
 }
 
+/** The style's own reads over the sizer's defaults: the renderer draws these, so the box must measure them. */
+function sizedFromStyle(
+  paint: EntityImageDescriptionParams['paint'],
+  node: LeafSizingSubject,
+): EntityImageDescriptionParams['paint'] {
+  const sized = node.entitySizing;
+  if (sized === undefined) return paint;
+  return {
+    ...paint,
+    ...(sized.fontTitle === undefined ? {} : { fontTitle: sized.fontTitle }),
+    ...(sized.fontBody === undefined ? {} : { fontBody: sized.fontBody }),
+    ...(sized.fontStereo === undefined ? {} : { fontStereo: sized.fontStereo }),
+    ...(sized.titleAlignment === undefined ? {} : { titleAlignment: sized.titleAlignment }),
+    ...(sized.stereotypeAlignment === undefined ? {} : { stereotypeAlignment: sized.stereotypeAlignment }),
+    ...(sized.thickness === undefined ? {} : { stroke: UStroke.withThickness(sized.thickness) }),
+    ...(sized.wrapWidth === undefined ? {} : { wrapWidth: sized.wrapWidth }),
+    ...(sized.minimumWidth === undefined ? {} : { minimumWidth: sized.minimumWidth }),
+    ...(sized.minimumWidthTitle === undefined ? {} : { minimumWidthTitle: sized.minimumWidthTitle }),
+  };
+}
+
 function buildSizingEntityParams(
   node: LeafSizingSubject,
   fontSpec: FontSpec,
@@ -270,6 +291,7 @@ function buildSizingEntityParams(
       codeName: node.display,
       displayText: node.display,
       stereotypeLabels: node.stereotype ?? [],
+      stereotypeRawLabels: node.stereotypeRawLabels,
       // `Stereotype#getSprite` (java:110-118). Without this the `<<$name>>`
       // run falls through to `stereotypeLabels` and is measured as guillemet
       // TEXT -- one font-size line -- instead of the sprite's declared box.
@@ -278,7 +300,7 @@ function buildSizingEntityParams(
       // `«label»` block.
       ...spriteLabel(node, ctx.sprites),
     },
-    paint: sizingPaint(font, sizingFontConfig(fontSpec, fontStereoSize), ctx.opts, node.symbol),
+    paint: sizedFromStyle(sizingPaint(font, sizingFontConfig(fontSpec, fontStereoSize), ctx.opts, node.symbol), node),
     links: [],
     fixCircleLabelOverlapping: false,
     atomImageResolverFor: sizingAtomImageResolverFor(ctx.sprites),
@@ -297,7 +319,13 @@ function minWidthFloorBaseline(
 ): number {
   // `stereotype` omitted, not set to `undefined` (`exactOptionalPropertyTypes`).
   const { stereotype: _dropped, ...rest } = node;
-  const baselineNode: LeafSizingSubject = { ...rest, display: '' };
+  const baselineNode: LeafSizingSubject = {
+    ...rest,
+    display: '',
+    ...(rest.entitySizing === undefined
+      ? {}
+      : { entitySizing: { ...rest.entitySizing, minimumWidth: 0, minimumWidthTitle: 0 } }),
+  };
   const baselineCtx: EntityLeafCtx = {
     ...ctx,
     opts: ctx.opts === undefined ? undefined : { ...ctx.opts, minimumWidth: 0 },

@@ -1228,14 +1228,14 @@ describe('layoutDescription — empty nested container', () => {
 // ---------------------------------------------------------------------------
 
 describe('layoutDescription — latex label sizing', () => {
-  it('usecase with latex display gets dimensions from measureLatex', () => {
+  it('a usecase with a latex display fits its ellipse around the image atom, as the jar does', () => {
+    // Jar: `usecase "<latex>\\frac{a}{b}</latex>"` emits `shape=ellipse,width=0.911325,height=0.745727`.
     const display = '<latex>\\frac{a}{b}</latex>';
     const ast = makeAst([node('uc', 'usecase', display)], []);
     const geo = layoutDescription(ast, defaultTheme, measurer);
-    const expected = measureLatex(display);
     const ucGeo = geo.nodes.find((n) => n.id === 'uc')!;
-    expect(ucGeo.width).toBe(expected.width);
-    expect(ucGeo.height).toBe(expected.height);
+    expect(ucGeo.width / 72).toBeCloseTo(0.911325, 5);
+    expect(ucGeo.height / 72).toBeCloseTo(0.745727, 5);
   });
 
   it('actor is sized by the stickman + latex label stack (T6/ADR-6: routed through EntityImageDescription, so a `<latex>` label is measured uniformly with usecase, not raw text)', () => {

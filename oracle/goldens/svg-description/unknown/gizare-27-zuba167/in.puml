@@ -1,0 +1,5 @@
+@startuml
+:joe:/ <<xxx>> #green
+(action)/ <<yyy>> #orange
+joe -[#blue]-> action
+@enduml

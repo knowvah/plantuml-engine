@@ -1,0 +1,5 @@
+@startuml
+!pragma svginteractive true
+title t
+component a
+@enduml

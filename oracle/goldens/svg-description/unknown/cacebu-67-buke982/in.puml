@@ -1,0 +1,4 @@
+@startuml
+Footer Footer
+User --> (Start the application)
+@enduml

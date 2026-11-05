@@ -32,12 +32,21 @@
 import type { UDriver } from '../../AbstractCommonUGraphic.js';
 import type { UParam } from '../../UParam.js';
 import { toSvgPaint, type ColorMapper, type HColorOrPaint } from '../../color/ColorMapper.js';
+import { HColorSet } from '../../color/HColorSet.js';
 import { HColorSimple } from '../../color/HColorSimple.js';
 import type { UPath } from '../../shape/UPath.js';
 import type { SvgGraphics } from './svg-graphics.js';
 import { DriverRectangleSvg } from './driver-rectangle-svg.js';
 
 // See the module doc comment above for the HColor#equals adaptation.
+/** Two spellings of one colour (`#F00`, `#FF0000`, `red`) are one XColor (`HColorSimple.java:85-89`; jar: nuxebu-15's folder). */
+function sameXColor(a: string, b: string): boolean {
+  const set = HColorSet.instance();
+  const left = set.getColorOrNull(a);
+  const right = set.getColorOrNull(b);
+  return left instanceof HColorSimple && right instanceof HColorSimple && left.equals(right);
+}
+
 function paintsEqual(a: HColorOrPaint, b: HColorOrPaint): boolean {
   if (a instanceof HColorSimple && b instanceof HColorSimple) return a.equals(b);
   // The port seeds colour/back with the string 'none' (AbstractCommonUGraphic.ts)
@@ -49,7 +58,7 @@ function paintsEqual(a: HColorOrPaint, b: HColorOrPaint): boolean {
   if (typeof a === 'string' && a === 'none' && b instanceof HColorSimple) return b.isTransparent();
   if (typeof b === 'string' && b === 'none' && a instanceof HColorSimple) return a.isTransparent();
   if (typeof a === 'string' && typeof b === 'string')
-    return a === b || (isTransparentSpelling(a) && isTransparentSpelling(b));
+    return a === b || (isTransparentSpelling(a) && isTransparentSpelling(b)) || sameXColor(a, b);
   return false;
 }
 

@@ -1,0 +1,9 @@
+@startuml
+skinparam monochrome reverse
+title A title
+footer A footer
+header A header
+rectangle a #LightGreen
+actor b
+a --> b : one
+@enduml

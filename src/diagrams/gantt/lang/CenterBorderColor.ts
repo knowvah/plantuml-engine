@@ -1,3 +1,4 @@
+import { HColorScheme } from '../../../core/klimt/color/HColorScheme.js';
 import { Back } from '../../../core/klimt/Back.js';
 import { Fore } from '../../../core/klimt/Fore.js';
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
@@ -9,8 +10,12 @@ import type { HColorOrPaint } from '../../../core/klimt/color/ColorMapper.js';
 const AUTOMAGIC_TO_COLOR_FAILURE =
   'UnsupportedOperationException: class net.sourceforge.plantuml.klimt.color.HColorAutomagic';
 
+/** {@link AUTOMAGIC_TO_COLOR_FAILURE} for an `HColorScheme`. */
+const SCHEME_TO_COLOR_FAILURE =
+  'UnsupportedOperationException: class net.sourceforge.plantuml.klimt.color.HColorScheme';
+
 /** Any upstream `HColor` (`CenterBorderColor.java:42-48`). */
-export type GanttColor = HColorOrPaint | HColorAutomagic;
+export type GanttColor = HColorOrPaint | HColorAutomagic | HColorScheme;
 
 /**
  * `HColors.unlinear` over {@link GanttColor}: the klimt port takes no
@@ -18,12 +23,16 @@ export type GanttColor = HColorOrPaint | HColorAutomagic;
  * `0` / `100` / fallback-to-`color1` branches.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColors.java:156-167
  */
+function isToColorless(color: GanttColor | undefined): color is HColorAutomagic | HColorScheme {
+  return color instanceof HColorAutomagic || color instanceof HColorScheme;
+}
+
 function unlinear(
   color1: GanttColor | undefined,
   color2: GanttColor | undefined,
   completion: number,
 ): GanttColor | undefined {
-  if (color1 instanceof HColorAutomagic || color2 instanceof HColorAutomagic) {
+  if (isToColorless(color1) || isToColorless(color2)) {
     if (completion === 100) return color2;
     return color1;
   }
@@ -60,6 +69,9 @@ export class CenterBorderColor {
     // This is the earliest point the port can fail with the same message.
     if (this.center instanceof HColorAutomagic || this.border instanceof HColorAutomagic)
       throw new Error(AUTOMAGIC_TO_COLOR_FAILURE);
+    // `HColorScheme` overrides `getAppropriateColor` alone, the same `toColor` throw (`HColorScheme.java:36-62`).
+    if (this.center instanceof HColorScheme || this.border instanceof HColorScheme)
+      throw new Error(SCHEME_TO_COLOR_FAILURE);
 
     // center.bg() is new Back(center); an HColor used as a UChange is the foreground.
     let result = ug.apply(new Back(this.center));

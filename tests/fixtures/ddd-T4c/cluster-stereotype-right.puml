@@ -1,0 +1,6 @@
+@startuml
+skinparam StereotypeAlignment right
+node "Technology Device" as T <<device>> {
+  rectangle "Function that is wide enough" as F
+}
+@enduml

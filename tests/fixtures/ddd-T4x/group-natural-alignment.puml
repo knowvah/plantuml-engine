@@ -1,0 +1,8 @@
+@startuml
+rectangle "a long title line\r right" as a {
+  rectangle b
+}
+rectangle "a long title line\l left" as c {
+  rectangle d
+}
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+<style>
+rectangle {
+  RoundCorner 12
+  LineThickness 3
+  FontColor blue
+}
+</style>
+rectangle "alone\nin the world" as a <<x>>
+@enduml

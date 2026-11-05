@@ -184,6 +184,7 @@ export const LINK_LINE_RE = new RegExp(LINK_LINE_SOURCE, 'iu');
  * corrects that for the groups this module reads.
  */
 export interface LinkGroups {
+  inside?: string;
   ent1: string;
   ent2: string;
   body1: string;

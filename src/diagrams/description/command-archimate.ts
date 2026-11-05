@@ -4,7 +4,10 @@
  *
  * @see net/sourceforge/plantuml/descdiagram/command/CommandArchimate.java
  */
+import { compileUpstream } from '../../core/command/CommandCreateElementFull.js';
 import { KEYWORD_TO_SYMBOL } from '../../core/descriptive-keywords.js';
+import { COLOR_REGEXP, COLORS_REGEXP } from '../../core/klimt/color/ColorParser.js';
+import { getRegexp } from '../../core/url/UrlBuilder.js';
 import { extractNodeStereotype, makeNode, parseNameSection } from './parse-helpers.js';
 import { emitNode, type ParseState } from './parse-state.js';
 import { leafDisplayName } from './namespace-groups.js';
@@ -25,8 +28,7 @@ import { leafDisplayName } from './namespace-groups.js';
  * intact — verified against `archimate #Business "<<inside>> Hello"`
  * (co-located test).
  *
- * `CommandArchimateMultilines` (`[ … ]` body) and `CommandArchimatePackage`
- * (`{ … }` group) are filed, not implemented — see
+ * `CommandArchimatePackage` (`{ … }` group) is filed, not implemented — see
  * plans/s1l-leaf-sizing/ledger.md. A line missing the color token (upstream:
  * no command matches, no entity created) falls through to the generic
  * `KEYWORD_TO_SYMBOL` dispatch (`command-table-containers.ts` rule 14)
@@ -55,7 +57,31 @@ function archimateStereotype(labels: readonly string[] | undefined): ReturnType<
   return extractNodeStereotype(`<<$archimate/${icon}>>`);
 }
 
+/**
+ * `CommandArchimateMultilines.java:76-90`: `archimate #color CODE <<icon>> [url] [#color] [`. The text on the opening
+ * and closing lines is dropped (`lines.subExtract(1, 1)`, `:157`), and `END` is any line ending `]` (`:71-72`).
+ */
+const ARCHIMATE_MULTILINE_RE = compileUpstream(
+  String.raw`^archimate[%s]+(?:${COLORS_REGEXP})?[%s]+(?<CODE>[%pLN_.]+)[%s]*(?<STEREOTYPE><<[-\w]+?>>)?[%s]*` +
+    String.raw`(?:${getRegexp()})?[%s]*(?<COLOR2>${COLOR_REGEXP})?[%s]*\[.*$`,
+);
+
+function tryArchimateMultilines(state: ParseState, line: string): boolean {
+  const g = ARCHIMATE_MULTILINE_RE.exec(line)?.groups;
+  if (g === undefined) return false;
+  const code = g['CODE']!;
+  const icon =
+    g['STEREOTYPE'] === undefined ? undefined : extractNodeStereotype(`<<$archimate/${g['STEREOTYPE'].slice(2, -2)}>>`);
+  // Both colour leaves are named COLOR (`:80,85`), and the later entry of `RegexComposed#createPartialMatch`'s map wins
+  // (`RegexComposed.java:109`), so the leading `#Technology` is parsed and dropped (jar: ceboti-36 fills `#F1F1F1`).
+  const node = makeNode(code, code, 'rectangle', icon?.stereotypes, g['COLOR2'], undefined, icon?.sprite);
+  emitNode(state, node);
+  state.pendingElement = { terminator: 'archimate', node, lines: [], baseIndent: undefined };
+  return true;
+}
+
 export function tryArchimate(state: ParseState, line: string): number | null {
+  if (tryArchimateMultilines(state, line)) return 1;
   const m = ARCHIMATE_RE.exec(line);
   if (m === null) return null;
   const symbol = KEYWORD_TO_SYMBOL.get('archimate');
@@ -68,6 +94,7 @@ export function tryArchimate(state: ParseState, line: string): number | null {
     icon === undefined
       ? makeNode(id, finalDisplay, symbol, stereotype, color, tags, stereotypeSprite)
       : makeNode(id, finalDisplay, symbol, icon.stereotypes, color, tags, icon.sprite);
+  node.archimate = true;
   emitNode(state, node);
   return 1;
 }

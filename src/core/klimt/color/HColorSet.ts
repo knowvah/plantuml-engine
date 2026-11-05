@@ -27,6 +27,7 @@ import type { RgbTriple } from './ColorTrieNode.js';
 import type { GradientPolicy, HColorGradient } from './HColorGradient.js';
 import { HColors } from './HColors.js';
 import { HColorAutomagic } from './HColorAutomagic.js';
+import { HColorScheme } from './HColorScheme.js';
 import type { HColorSimple } from './HColorSimple.js';
 import { NoSuchColorException } from './NoSuchColorException.js';
 
@@ -315,27 +316,17 @@ export function resolveConditionalColor(raw: string, localBackgroundHex: string)
 const GRADIENT_POLICIES = new Set(['-', '\\', '|', '/']);
 
 /**
- * A `parseColor` result whose `HColor` class is not ported: thrown rather
- * than silently resolved, so a caller never draws a wrong colour.
+ * The `?light:dark[:transparent]` branch of `HColorSet#parseColor` (java:93-104). A 2-part spec with an unparsable half
+ * reads `colors[2]`: upstream's `ArrayIndexOutOfBoundsException`, kept. `undefined` falls through to the gradient scan.
  */
-function unported(className: string, s: string): Error {
-  return new Error(`unported: ${className} for color "${s}" (klimt/color/${className}.java)`);
-}
-
-/**
- * The `?light:dark[:transparent]` branch of `HColorSet#parseColor`
- * (java:86-95): `HColorScheme` is not ported, so a scheme that upstream
- * would build throws. A 2-part spec with an unparsable half reads
- * `colors[2]` -- upstream's `ArrayIndexOutOfBoundsException`, kept.
- */
-function parseScheme(s: string): void {
+function parseScheme(s: string): HColorScheme | undefined {
   const colors = s.substring(1).split(':');
-  if (colors.length !== 2 && colors.length !== 3) return;
+  if (colors.length !== 2 && colors.length !== 3) return undefined;
   const col0 = parseSimpleColor(colors[0] as string);
   const col1 = parseSimpleColor(colors[1] as string);
-  if (colors.length === 2 && col0 !== undefined && col1 !== undefined) throw unported('HColorScheme', s);
+  if (colors.length === 2 && col0 !== undefined && col1 !== undefined) return new HColorScheme(s.substring(1));
   if (colors.length === 2) throw new Error('ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2');
-  if (parseSimpleColor(colors[2] as string) !== undefined) throw unported('HColorScheme', s);
+  return parseSimpleColor(colors[2] as string) === undefined ? undefined : new HColorScheme(s.substring(1));
 }
 
 /**
@@ -356,16 +347,14 @@ function parseGradient(s: string): HColorGradient | undefined {
 }
 
 /** What `HColorSet#parseColor` returns (`HColor` subclasses). */
-export type ParsedColor = HColorSimple | HColorGradient | HColorAutomagic;
+export type ParsedColor = HColorSimple | HColorGradient | HColorAutomagic | HColorScheme;
 
 /**
  * HColorSet — the colour-name/hex resolver as upstream's singleton class,
  * layered over this module's {@link parseSimpleColor} (the private
  * `HColorSet#parseSimpleColor`, java:122-157). Resolves to
  * {@link HColorSimple}, or {@link HColorGradient} for a `c1<policy>c2`
- * token (java:109-117). The `automatic` and `?light:dark` forms
- * (`HColorAutomagic`, `HColorScheme`) are not ported and throw: no mindmap
- * fixture reaches either (b6-T6a). Stateless.
+ * token (java:109-117), `HColorAutomagic` for `automatic`, `HColorScheme` for `?light:dark`. Stateless.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:43-120
  */
@@ -443,7 +432,10 @@ export class HColorSet {
     const result = parseSimpleColor(s);
     if (result !== undefined) return HColors.simple(result);
 
-    if (s.startsWith('?')) parseScheme(s);
+    if (s.startsWith('?')) {
+      const scheme = parseScheme(s);
+      if (scheme !== undefined) return scheme;
+    }
     return parseGradient(s);
   }
 }
