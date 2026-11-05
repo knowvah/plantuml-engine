@@ -14,7 +14,15 @@ import { compareSvg } from '../../oracle/svg-conformance/compare.js';
 const STEM = 'tests/fixtures/ddd-T5e/fepuvo-06-rugi981';
 const COMMENT = /<!--[\s\S]*?-->/g;
 const MALFORMED_MARK = '- -- -';
-const strip = (svg: string): string => svg.replace(COMMENT, '');
+const strip = (svg: string): string => {
+  let stripped = svg;
+  let previous: string;
+  do {
+    previous = stripped;
+    stripped = stripped.replace(COMMENT, '');
+  } while (stripped !== previous);
+  return stripped;
+};
 const malformed = (svg: string): string[] =>
   (svg.match(COMMENT) ?? []).filter((comment) => comment.includes(MALFORMED_MARK));
 

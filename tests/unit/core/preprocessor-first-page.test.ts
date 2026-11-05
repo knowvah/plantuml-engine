@@ -14,26 +14,25 @@ const assignment = (
   order: position,
 });
 
-const preprocessed = (lines: readonly string[], positions: readonly number[]): PreprocessorResult =>
-  ({
-    lines,
-    linePositions: positions,
-    theme: null,
-    styles: ['early', 'late'],
-    stylePositions: [1, 9],
+const preprocessed = (lines: readonly string[], positions: readonly number[]): PreprocessorResult => ({
+  lines,
+  linePositions: positions,
+  theme: null,
+  styles: ['early', 'late'],
+  stylePositions: [1, 9],
+  skinparam: new Map([
+    ['a', '2'],
+    ['b', '3'],
+  ]),
+  skinparamAssignments: [assignment('a', '1', 2), assignment('a', '2', 3), assignment('b', '3', 8)],
+  declarationOrder: {
     skinparam: new Map([
-      ['a', '2'],
-      ['b', '3'],
+      ['a', 2],
+      ['b', 3],
     ]),
-    skinparamAssignments: [assignment('a', '1', 2), assignment('a', '2', 3), assignment('b', '3', 8)],
-    declarationOrder: {
-      skinparam: new Map([
-        ['a', 2],
-        ['b', 3],
-      ]),
-      styles: [1, 4],
-    },
-  });
+    styles: [1, 4],
+  },
+});
 
 describe('firstPageOf (CommandNewpage.java:68-73)', () => {
   it('drops what follows the first newpage, last value of the first page winning', () => {
