@@ -1,0 +1,4 @@
+@startchart
+h-axis [A]
+v-axis 0 --> 10 ticks [0:"**zero**", 10:"<color:red>ten</color>"]
+@endchart

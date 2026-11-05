@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2096 modules · 7356 exported names.
+2110 modules · 7368 exported names.
 
 ## `src/`
 
@@ -79,6 +79,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `internal-render-options.ts` | `InternalRenderOptions`, `isJarCompatibleStyleInput`, `withJarCompatibleStyleInput`, `clockOfOptions`, `withClock` |  |
 | `internal-sprite-store.ts` | `INTERNAL_SPRITE_ASSET_PREFIX`, `internalSpriteAssetKey`, `InternalSpriteStore`, `readPng`, `internalSpriteStoreFrom`, `matchJarSpriteLine` | `SpriteImage.fromInternal` (java `klimt/sprite/SpriteImage.java:100-128`) — the jar-internal `/sprites/**` bundle, ported onto ADR-2's synchronous asset channel (`plans/s1l-tail-fix/decisions.md`). |
 | `java-hash-set.ts` | `javaDoubleHashCode`, `javaHashSetOrder` | java-hash-set.ts — the iteration order of a `java.util.HashSet` built by successive `add` calls, for code upstream iterates straight out of a `HashSet` (e.g. |
+| `java-number-format.ts` | `javaTrim`, `javaFormatF`, `javaFormatE`, `javaFormatLong`, `isLongValued`, `javaDoubleToString`, `parseDouble` | Java's number text: `String.format("%.Nf" \| "%.Ne" \| "%d")` (Locale.US) and `Double.parseDouble`'s grammar. |
 | `java-whitespace.ts` | `isJavaWhitespaceAt` | `Character.isWhitespace(char)`, enumerated. |
 | `latex-metrics.ts` | `TeXIconSize`, `texIconDimension`, `measureTeXIcon` | The size of a `<latex>` image, by the rule upstream sizes it with. |
 | `latex.ts` | `measureNodeLabel`, `renderNodeLabel`, `LabelSpan`, `parseLatexLabel`, `measureLatex`, `renderLatexMathML`, `renderLatexAsImage` | LaTeX label parsing, sizing, and rendering utilities. |
@@ -170,7 +171,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `svg-defs-scale.ts` | `scaleShadowFilterDefs` | svg-defs-scale.ts -- the document scale applied to the shadow `<filter>` def. |
 | `svg-defs-seeded.ts` | `getSeed`, `seededDefIdRenames`, `applySeededDefIds` | svg-defs-seeded.ts — the seeded def-id pass over an assembled document. |
 | `svg-defs.ts` | `nextDef`, `extractGradientDefs`, `extractFilterDefs`, `backColorFilterId`, `backColorFilterDef`, `ANY_ID_RE`, `idOfElement`, `collapseDuplicateFilterDefs`, `DQUOTE`, `collapseDuplicateGradientDefs`, `withContentGradientIds`, `collectDocumentDefs`, `INLINE_DEF_OPENS`, `mapOutsideInlineDefs` | svg-defs.ts — `<defs>` collection for the pure-string SVG assembler. |
-| `svg-format.ts` | `DEFAULT_SVG_DECIMALS`, `trimZeros`, `formatDecimal`, `withDeferredFormat`, `fmt`, `shortenColor`, `formatOpacity`, `formatPercent`, `escapeAttribute`, `escapeText`, `escapeComment` | Shared SVG formatting rules — decimal precision, color shortening, and opacity/percent formatting. |
+| `svg-format.ts` | `DEFAULT_SVG_DECIMALS`, `javaFixedN`, `trimZeros`, `formatDecimal`, `withDeferredFormat`, `fmt`, `shortenColor`, `formatOpacity`, `formatPercent`, `escapeAttribute`, `escapeText`, `escapeComment` | Shared SVG formatting rules — decimal precision, color shortening, and opacity/percent formatting. |
 | `svg-link-title.ts` | `linkTitle` | Matches `<U+XXXX>` escapes in a link tooltip. |
 | `svg-markers.ts` | `ArrowType`, `ALL_ARROW_TYPES`, `arrowHeadRef`, `arrowHead`, `openArrowHeadDef` | SVG arrow-marker builders — the `<marker>` `<defs>` for every edge arrowhead. |
 | `svg-path-builder.ts` | `moveTo`, `lineTo`, `arcTo`, `splinePathD`, `roundedTopRectD`, `roundedBottomRectD`, `cubicTo` | Shared `<path>` `d`-string segment builder — the plain-string counterpart to `UPath` (`core/klimt/shape/UPath.ts`) for this port's several class-diagram renderers that draw markup as plain strings rather than through a `UGraphic`/`SvgGraphi |
@@ -1558,27 +1559,40 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `ast.ts` | `SeriesType`, `MarkerShape`, `LegendPosition`, `GridMode`, `StackMode`, `Orientation`, `LabelPosition`, `ChartAxisDef`, `ChartSeriesDef`, `ChartAnnotationDef`, `ChartDiagramAST` |  |
-| `chart-layout-axes.ts` | `buildCategoricalTicks`, `buildNumericTicks`, `buildVAxisGeometry`, `buildHAxisGeometry` | Chart axis geometry: categorical + numeric tick construction and the vertical/horizontal axis geometry builders. |
-| `chart-layout-core.ts` | `CHART_MARGIN`, `TITLE_SPACE`, `LEGEND_MARGIN`, `LEGEND_SYMBOL_SIZE`, `LEGEND_TEXT_SPACING`, `LEGEND_ITEM_SPACING`, `X_AXIS_TITLE_EXTRA`, `BAR_WIDTH_RATIO`, `MIN_PLOT_WIDTH`, `PLOT_HEIGHT`, `AXIS_LABEL_SPACE`, `PlotArea`, `TickMark`, `AxisGeometry`, `BarRect`, `DataPoint`, `BarSeriesGeo`, `LineSeriesGeo`, `AreaSeriesGeo`, `ScatterSeriesGeo`, `SeriesGeo`, `LegendEntry`, `LegendGeometry`, `AnnotationGeometry`, `ChartGeometry`, `PointContext`, `BarSpec`, `LegendSpec`, `AreaBaselineSpec`, `valueToPixel`, `formatAxisValue`, `resolveColor` | Chart layout core vocabulary: plot-area / axis / series / legend geometry interfaces plus the shared value->pixel, axis-value formatting, and series color helpers. |
-| `chart-layout-series.ts` | `buildLegendGeometry`, `buildBarRectsGrouped`, `buildBarRectsStacked`, `buildBarRectsHorizontal`, `buildDataPoints`, `buildAreaBaseline` | Chart series geometry: legend layout plus grouped/stacked/horizontal bar rects, scatter/line data points, and area baselines. |
-| `chart-renderer-axes.ts` | `TICK_SIZE`, `TICK_LABEL_FONT_SIZE`, `AXIS_TITLE_FONT_SIZE`, `drawHorizontalGridLines`, `drawVerticalGridLines`, `drawHAxis`, `drawVAxis` | Chart axis rendering: grid lines + horizontal/vertical axis drawing (ticks, tick labels, axis titles). |
-| `index.ts` | `chartPlugin` |  |
-| `layout-series-dispatch.ts` | `buildSeriesGeometries` | Per-series-type geometry dispatch (bar/line/area/scatter) for chart diagrams. |
-| `layout.ts` | `PlotArea`, `TickMark`, `AxisGeometry`, `BarRect`, `DataPoint`, `BarSeriesGeo`, `LineSeriesGeo`, `AreaSeriesGeo`, `ScatterSeriesGeo`, `SeriesGeo`, `LegendEntry`, `LegendGeometry`, `AnnotationGeometry`, `ChartGeometry`, `layoutChart` | layoutChart() — pixel geometry for chart diagrams. |
-| `line-handlers.ts` | `tryV2Axis`, `tryVAxis`, `tryHAxis`, `tryGrid`, `tryBar`, `tryLine`, `tryArea`, `tryScatter`, `tryChartLegend`, `tryStackMode`, `tryOrientation`, `tryChartAnnotation` | Per-line-shape handlers for the chart diagram parser's dispatch chain. |
-| `parse-helpers.ts` | `resolveSeriesColor`, `extractStyleMap`, `colorFromStereo`, `markerShapeFromStereo`, `markerSizeFromStereo`, `RE_HAXIS`, `RE_VAXIS`, `RE_V2AXIS`, `RE_BAR`, `RE_LINE`, `RE_AREA`, `RE_SCATTER`, `RE_LEGEND`, `RE_STACKMODE`, `RE_ORIENTATION`, `RE_ANNOTATION`, `RE_GRID`, `makeAxis`, `includeValue`, `parseLabels`, `parseCustomTicks`, `parseCoordinatePairs`, `parseYValues`, `stereoToMarker`, `addSeries` | Shared regex constants, style/color/marker resolution, and per-series parsing helpers for the chart diagram parser. |
-| `parser.ts` | `parseChart` | Parser for PlantUML chart diagrams (@startchart / @endchart). |
-| `renderer.ts` | `renderChart` | renderChart() — SVG orchestrator for chart diagrams. |
+| `AreaRenderer.ts` | `AreaRendererParams`, `AreaRenderer` | AreaRenderer — a polygon, top then bottom, drawn with no stroke set, so it inherits the outer 1.0; then its top line at 2.0; then labels at `y - 8`. |
+| `BarRenderer.ts` | `BarRendererParams`, `BarRenderer` | BarRenderer — single, grouped and stacked bars. |
+| `chart-modes.ts` | `LegendPosition`, `GridMode`, `StackMode`, `Orientation` | `ChartDiagram`'s nested enums, apart from the diagram so the renderers can read them without an import cycle. |
+| `chart-skin-param.ts` | `SkinParamSource`, `SkinParam` | The chart engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `ChartDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine' |
+| `ChartAnnotation.ts` | `ChartAnnotation` | ChartAnnotation — text at a data coordinate, with an optional arrow. |
+| `ChartAxis.ts` | `LabelPosition`, `ChartTick`, `ChartAxis` | ChartAxis — one numeric axis: title, range, autoscale, custom ticks, tick spacing and label position. |
+| `ChartDiagram.ts` | `GridMode`, `LegendPosition`, `Orientation`, `StackMode`, `ChartDiagram` | ChartDiagram — one `@startchart` block: the axes, the series and the plot annotations the commands fill. |
+| `ChartDiagramFactory.ts` | `parseChart` | `ChartDiagramFactory`: the chart commands first, the common commands last ("so they don't override chart-specific ones"). |
+| `ChartRenderer.ts` | `ChartRenderer` | ChartRenderer — the frame: `calculateDimension`, `drawU`, `drawSeries`. |
+| `ChartRendererAnnotations.ts` | `drawAnnotations` | `drawAnnotations`. |
+| `ChartRendererAxes.ts` | `YAxisArgs`, `drawYAxis`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally`, `drawGridLines` | `ChartRenderer`'s axes and grid: `drawYAxis`, `drawVerticalText`, `drawHorizontalAxisTitle`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally` and `drawGridLines`, split out under the hooks (D5). |
+| `ChartRendererLegend.ts` | `calculateLegendDimension`, `LegendFrame`, `drawLegend` | `calculateLegendDimension`, `drawLegend` and `drawLegendScatterMarker`. |
+| `ChartSeries.ts` | `SeriesType`, `MarkerShape`, `ChartSeries` | ChartSeries — one `bar`, `line`, `area` or `scatter`, index-based or by coordinate pairs. |
+| `ChartStyles.ts` | `StyleFontConfiguration`, `ChartRendererState`, `MARGIN`, `AXIS_LABEL_SPACE`, `TITLE_SPACE`, `TICK_SIZE`, `LEGEND_MARGIN`, `LEGEND_SYMBOL_SIZE`, `LEGEND_TEXT_SPACING`, `LEGEND_ITEM_SPACING`, `SMALL_FONT_SIZE`, `fore`, `back`, `asNullable`, `mergedStyle`, `lineColorOf`, `getStyleSignature`, `getBarStyleSignature`, `getLineStyleSignature`, `getAreaStyleSignature`, `getScatterStyleSignature`, `getAxisStyleSignature`, `getGridStyleSignature`, `getLegendStyleSignature`, `getAnnotationStyleSignature`, `getBarStyle`, `getLineStyle`, `getAreaStyle`, `getScatterStyle`, `formatValue`, `formatAxisValue`, `getDefaultColor`, `displayBlock`, `plainFontConfiguration`, `valueLabelFontConfiguration`, `drawLabel`, `plotY` | The merged styles and small drawing helpers `ChartRenderer` and its series renderers share (D5). |
+| `index.ts` | `ChartGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderChart`, `chartPlugin` | Chart diagram plugin — `ChartDiagramFactory` (parse), then `TextBlockExporter`'s export of `ChartDiagram#getTextBlock` on the klimt substrate: canvas = the renderer's `calculateDimension` (ChartRenderer.java:135-153) plus `calculateMargin`, |
+| `LineRenderer.ts` | `LINE_THICKNESS`, `LineRendererParams`, `LineRenderer`, `drawSegment` | LineRenderer — one `ULine` per segment at stroke 2.0. |
+| `ScatterRenderer.ts` | `ScatterRendererParams`, `markerShapeOf`, `ScatterRenderer`, `MarkerArgs`, `drawMarker` | ScatterRenderer. |
 
-## `src/diagrams/chart/renderers/`
+## `src/diagrams/chart/command/`
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `area.ts` | `drawArea` | AreaRenderer — draws an area chart series as an SVG fragment. |
-| `bar.ts` | `drawBar` | BarRenderer — SVG fragment generator for bar chart series. |
-| `line.ts` | `drawLine` | LineRenderer — draws a line chart series as an SVG fragment. |
-| `scatter.ts` | `drawScatter` | ScatterRenderer — draws a scatter chart series as an SVG fragment. |
+| `chart-command-text.ts` | `SP0`, `SP1`, `TITLE_PART`, `RANGE_PART`, `bracketGroup`, `LABELS_PART`, `V2_PART`, `seriesHead`, `javaSplitComma`, `parseLabels`, `parseValues`, `CoordinatePairs`, `parseCoordinatePairs`, `decorateSeries`, `withBadColor` | The regex fragments and Java text helpers the chart commands share. |
+| `CommandChartAnnotation.ts` | `CHART_ANNOTATION_RE`, `applyChartAnnotation` | `CommandChartAnnotation`: `annotation "text" at (x, y) [<<arrow>>]`. |
+| `CommandChartArea.ts` | `CHART_AREA_RE`, `applyChartArea` | `CommandChartArea`: values only, so `area [(1,2)]` fails `parseValues`. |
+| `CommandChartBar.ts` | `CHART_BAR_RE`, `applyChartBar` | `CommandChartBar`: no `V2` group, so `bar [1,2] v2` is a syntax error, and values only, so `bar [(1,2)]` fails `parseValues`. |
+| `CommandChartGrid.ts` | `CHART_GRID_RE`, `applyChartGrid` | `CommandChartGrid`. |
+| `CommandChartHAxis.ts` | `CHART_H_AXIS_RE`, `applyChartHAxis` | `CommandChartHAxis`: `h-axis` or `x-axis`. |
+| `CommandChartLegend.ts` | `CHART_LEGEND_RE`, `applyChartLegend` | `CommandChartLegend`: `legend left\|right\|top\|bottom`. |
+| `CommandChartLine.ts` | `CHART_LINE_RE`, `applyChartLine` | `CommandChartLine`: coordinate pairs when the data contains a `(`. |
+| `CommandChartOrientation.ts` | `CHART_ORIENTATION_RE`, `applyChartOrientation` | `CommandChartOrientation`: `orientation vertical\|horizontal`. |
+| `CommandChartScatter.ts` | `CHART_SCATTER_RE`, `applyChartScatter` | `CommandChartScatter`: only the trailing `MARKER` group sets the shape, so `scatter <<triangle>> [1]` is a stereotype named triangle and draws a circle. |
+| `CommandChartStackMode.ts` | `CHART_STACK_MODE_RE`, `applyChartStackMode` | `CommandChartStackMode`: `stackMode grouped\|stacked`. |
+| `CommandChartVAxis.ts` | `CHART_V_AXIS_RE`, `parseCustomTicks`, `applyChartVAxis` | `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`. |
 
 ## `src/diagrams/chronology/`
 

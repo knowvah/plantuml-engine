@@ -1,0 +1,6 @@
+@startchart
+h-axis [A, B, C, D]
+bar "two\nlines" [1, 2]
+line "L" [1, 2]
+legend right
+@endchart

@@ -1,0 +1,5 @@
+@startchart
+h-axis [A]
+v-axis 0 --> 100
+annotation "top" at (A, 100) <<arrow>>
+@endchart

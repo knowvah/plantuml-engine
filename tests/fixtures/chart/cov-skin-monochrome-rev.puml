@@ -1,0 +1,5 @@
+@startchart
+skinparam monochrome reverse
+h-axis [A, B, C, D]
+bar "B" [1] #3498db
+@endchart

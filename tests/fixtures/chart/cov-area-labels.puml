@@ -1,0 +1,6 @@
+@startchart
+h-axis [A, B, C, D]
+v-axis 0 --> 100
+area "A" [10.5, 40, 30, 60] #3498db labels
+area "B" [5, 5, 5, 5] labels
+@endchart

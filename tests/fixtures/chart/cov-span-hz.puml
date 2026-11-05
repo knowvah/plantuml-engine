@@ -1,0 +1,5 @@
+@startchart
+orientation horizontal
+v-axis [A]
+h-axis 5 --> 5
+@endchart

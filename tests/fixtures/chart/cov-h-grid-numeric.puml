@@ -1,0 +1,5 @@
+@startchart
+h-axis "x" 0 --> 10 grid
+v-axis 0 --> 10
+line [(0, 1), (10, 5)]
+@endchart

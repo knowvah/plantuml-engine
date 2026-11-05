@@ -1,0 +1,12 @@
+@startchart
+<style>
+chartDiagram {
+line {
+LineColor red
+}
+}
+</style>
+h-axis [A, B, C, D]
+line "B" [1, 2]
+legend right
+@endchart

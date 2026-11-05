@@ -1196,7 +1196,8 @@ describe('routing conformance — jar-error classification', () => {
     // 9669 -> 9676 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 9669 + 7 = 9676.
     // 9676 -> 9722 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 9676 + 46 = 9722.
     // 9722 -> 9723 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
-    expect(pinnedAgree.length).toBe(9723);
+    // 9723 -> 9781 at cep/T5 (2026-11-05): the 29 chart misroutes flip to agree, +29 svg-chart golden clones. Derivation: 9723 + 29 + 29 = 9781.
+    expect(pinnedAgree.length).toBe(9781);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1206,7 +1207,8 @@ describe('routing conformance — jar-error classification', () => {
     // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
     // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
     // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
-    expect(pinnedMisroutes.length).toBe(530);
+    // 530 -> 501 at cep/T5 (2026-11-05): the 29 chart rows flip to agree, the port stamps diagramType. Derivation: 530 - 29 = 501.
+    expect(pinnedMisroutes.length).toBe(501);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -1275,7 +1277,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10361 -> 10368 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 10361 + 7 = 10368.
     // 10368 -> 10414 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 10368 + 46 = 10414.
     // 10414 -> 10415 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
-    expect(manifest.fixtures.length).toBe(10415);
+    // 10415 -> 10444 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 10415 + 29 = 10444.
+    expect(manifest.fixtures.length).toBe(10444);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1352,7 +1355,8 @@ describe('routing conformance — jar-error classification', () => {
     // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
     // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
     // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
-    expect(censused.length).toBe(530);
+    // 530 -> 501 at cep/T5 (2026-11-05): the 29 chart rows flip to agree. Derivation: 530 - 29 = 501.
+    expect(censused.length).toBe(501);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

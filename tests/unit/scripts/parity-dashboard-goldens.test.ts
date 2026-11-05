@@ -49,6 +49,7 @@ describe('RATCHET_FAMILY / DIFF_BASELINE_FAMILY (D1)', () => {
   it('maps gantt and files to their own ratchet families', () => {
     expect(RATCHET_FAMILY.gantt).toEqual(['svg-gantt']);
     expect(RATCHET_FAMILY.files).toEqual(['svg-files']);
+    expect(RATCHET_FAMILY.chart).toEqual(['svg-chart']);
   });
 
   it('maps unknown to both the utility and the shared description family', () => {

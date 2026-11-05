@@ -1,0 +1,6 @@
+@startchart
+h-axis [A]
+bar "**B**" [1]
+line "<color:red>L</color>" [1]
+legend right
+@endchart

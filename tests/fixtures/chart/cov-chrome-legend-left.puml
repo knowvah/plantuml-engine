@@ -1,0 +1,8 @@
+@startchart
+h-axis [A, B, C, D]
+bar "B" [1]
+legend
+body
+endlegend
+legend top
+@endchart

@@ -106,12 +106,6 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'c4-divergence-drive (#114), 9 pinned. The last, `gikaju-64`, is a jar error page where we draw, a signed entry ' +
       'in `oracle/accepted-divergences.json`.',
   },
-  chart: {
-    noteClass: 'openDefect',
-    detail:
-      'The SVG has not been aligned with PlantUML yet: on every fixture the axis and series lines sit at other ' +
-      'coordinates with other stroke styling, text is anchored and sized differently, and the canvas size differs.',
-  },
   component: {
     noteClass: 'openDefect',
     detail:

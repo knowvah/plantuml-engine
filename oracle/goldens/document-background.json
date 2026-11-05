@@ -25,12 +25,12 @@
       "diffCount": 20
     },
     "chart-black": {
-      "conformant": false,
-      "diffCount": 104
+      "conformant": true,
+      "diffCount": 0
     },
     "chart-gradient": {
-      "conformant": false,
-      "diffCount": 75
+      "conformant": true,
+      "diffCount": 0
     },
     "class-black": {
       "conformant": true,

@@ -1,0 +1,6 @@
+@startchart
+h-axis [A]
+bar [0]
+bar [1]
+stackMode stacked
+@endchart

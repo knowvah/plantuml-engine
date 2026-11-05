@@ -1,0 +1,5 @@
+@startchart
+skinparam backgroundColor #ffeeaa
+h-axis [A, B, C, D]
+bar [1]
+@endchart

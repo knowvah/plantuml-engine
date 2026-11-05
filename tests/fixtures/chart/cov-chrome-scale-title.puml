@@ -1,0 +1,5 @@
+@startchart
+title T
+scale 0.5
+h-axis [A, B, C, D]
+@endchart

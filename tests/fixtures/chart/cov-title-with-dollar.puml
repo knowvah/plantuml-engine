@@ -1,0 +1,4 @@
+@startchart
+h-axis "a$b" [A]
+v-axis "x%y" 0 --> 1
+@endchart

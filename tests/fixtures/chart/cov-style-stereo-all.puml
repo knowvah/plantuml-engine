@@ -1,0 +1,17 @@
+@startchart
+<style>
+.hot {
+BackGroundColor red
+LineColor blue
+MarkerColor green
+MarkerSize 12
+MarkerShape square
+}
+</style>
+h-axis [A, B, C, D]
+bar <<hot>> "B" [1]
+line <<hot>> "L" [1, 2]
+area <<hot>> "A" [1, 2]
+scatter <<hot>> "S" [1, 2]
+legend right
+@endchart

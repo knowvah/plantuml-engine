@@ -1,0 +1,11 @@
+@startchart
+<style>
+chartDiagram {
+bar {
+BarWidth 1.5
+}
+}
+</style>
+h-axis [A, B, C, D]
+bar [1, 2]
+@endchart

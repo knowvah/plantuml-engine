@@ -1,0 +1,4 @@
+@startchart
+h-axis [A, B, C, D]
+legend right
+@endchart

@@ -1,0 +1,7 @@
+@startchart
+orientation horizontal
+v-axis [A, B]
+h-axis 0 --> 100
+line "l" [50, 25]
+scatter "s" [30, 15]
+@endchart

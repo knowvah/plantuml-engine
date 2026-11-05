@@ -1,0 +1,4 @@
+@startchart
+h-axis ["A B", "C"]
+v-axis 0 --> 5
+@endchart

@@ -165,11 +165,11 @@ describe('sprite registry population per engine', () => {
     expect(parseDot(source)).toMatchObject({ refused: true, line: 1, message: 'Syntax Error?' });
   });
 
-  it('chart: parseChart populates ast.sprites, series data still parses', () => {
+  it('chart: parseChart populates the skin param sprites, series data still parses', () => {
     const source: UmlSource = { lines: [...L(SPRITE_BLOCK), 'bar [1,2,3]'], type: 'chart' };
-    const ast = parseChartAst(source);
-    expectIcon(ast.sprites);
-    expect(ast.series).toHaveLength(1);
+    const diagram = parseChartAst(source);
+    expectIcon(diagram.sprites);
+    expect(diagram.getSeries()).toHaveLength(1);
   });
 });
 

@@ -1,0 +1,1819 @@
+{
+  "fixtures": [
+    {
+      "type": "chart",
+      "slug": "cov-annot-arrow-up",
+      "topic": "T4c geometry: annot-arrow-up",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-annot-numeric-vertical",
+      "topic": "T4c geometry: annot-numeric-vertical",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-annot-unknown-label",
+      "topic": "T4c geometry: annot-unknown-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-area-labels",
+      "topic": "T4c geometry: area-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-area-single",
+      "topic": "T4c geometry: area-single",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-area-stacked-unequal",
+      "topic": "T4c geometry: area-stacked-unequal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-autoscale-above-100",
+      "topic": "T4c geometry: autoscale-above-100",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-autoscale-below-zero",
+      "topic": "T4c geometry: autoscale-below-zero",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-axis-2f",
+      "topic": "T4d text and style: axis-2f",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-axis-exponent",
+      "topic": "T4d text and style: axis-exponent",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-axis-numeric-1f",
+      "topic": "T4d text and style: axis-numeric-1f",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-case-insensitive",
+      "topic": "T4d text and style: case-insensitive",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-all",
+      "topic": "T4e chrome and embedding: chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-hide",
+      "topic": "T4e chrome and embedding: chrome-hide",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-legend-both",
+      "topic": "T4e chrome and embedding: chrome-legend-both",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-legend-left",
+      "topic": "T4e chrome and embedding: chrome-legend-left",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-mainframe",
+      "topic": "T4e chrome and embedding: chrome-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-minwidth",
+      "topic": "T4e chrome and embedding: chrome-minwidth",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-page",
+      "topic": "T4e chrome and embedding: chrome-page",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-page-spaces",
+      "topic": "T4e chrome and embedding: chrome-page-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-rotate",
+      "topic": "T4e chrome and embedding: chrome-rotate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-scale-2",
+      "topic": "T4e chrome and embedding: chrome-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-scale-height",
+      "topic": "T4e chrome and embedding: chrome-scale-height",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-scale-title",
+      "topic": "T4e chrome and embedding: chrome-scale-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-chrome-scale-width",
+      "topic": "T4e chrome and embedding: chrome-scale-width",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-annotation",
+      "topic": "T4d text and style: creole-annotation",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-category",
+      "topic": "T4d text and style: creole-category",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-hz-url",
+      "topic": "T4d text and style: creole-hz-url",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-legend",
+      "topic": "T4d text and style: creole-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-tick",
+      "topic": "T4d text and style: creole-tick",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-title-plain",
+      "topic": "T4d text and style: creole-title-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-creole-url",
+      "topic": "T4d text and style: creole-url",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-embed-class",
+      "topic": "T4e chrome and embedding: embed-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-embed-sequence",
+      "topic": "T4e chrome and embedding: embed-sequence",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-empty",
+      "topic": "T4e/T4c error or crash: empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-empty-data",
+      "topic": "T4e/T4c error or crash: empty-data",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-annotation-y",
+      "topic": "T4e/T4c error or crash: err-annotation-y",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Y position must be a numeric value: b (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-bar-color",
+      "topic": "T4e/T4c error or crash: err-bar-color",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "No such color (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-bar-pairs",
+      "topic": "T4e/T4c error or crash: err-bar-pairs",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Invalid number format in bar data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-bar-v2",
+      "topic": "T4e/T4c error or crash: err-bar-v2",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-bar-x",
+      "topic": "T4e/T4c error or crash: err-bar-x",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Invalid number format in bar data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-bare-text",
+      "topic": "T4e/T4c error or crash: err-bare-text",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-grid",
+      "topic": "T4e/T4c error or crash: err-grid",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-line-triple",
+      "topic": "T4e/T4c error or crash: err-line-triple",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Invalid coordinate pair format in line data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-lone-quote",
+      "topic": "T4e/T4c error or crash: err-lone-quote",
+      "status": "baseline",
+      "weightedScore": 35,
+      "diffCount": 28,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.StringIndexOutOfBoundsException: Range [1, 0) out of bounds for length 1 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-mixed",
+      "topic": "T4e/T4c error or crash: err-mixed",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "All series must use the same data format (either all coordinate pairs or all index-based) (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-page-0",
+      "topic": "T4e/T4c error or crash: err-page-0",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Argument must be positive (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-pairs-labels",
+      "topic": "T4e/T4c error or crash: err-pairs-labels",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Coordinate pair notation requires numeric h-axis (e.g., h-axis \"x\" -5 --> 5), not categorical labels (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-pairs-no-range",
+      "topic": "T4e/T4c error or crash: err-pairs-no-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Coordinate pair notation requires explicit h-axis range (e.g., h-axis \"x\" -5 --> 5) (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-range-dots",
+      "topic": "T4e/T4c error or crash: err-range-dots",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Invalid number format in axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-spacing-0",
+      "topic": "T4e/T4c error or crash: err-spacing-0",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "X-axis spacing must be greater than 0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-style",
+      "topic": "T4e/T4c error or crash: err-style",
+      "status": "baseline",
+      "weightedScore": 39,
+      "diffCount": 18,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Error in style definition: Invalid open bracket (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-tick-comma",
+      "topic": "T4e/T4c error or crash: err-tick-comma",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Invalid tick format. Expected: [value:\"label\", ...] (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-v-spacing-0",
+      "topic": "T4e/T4c error or crash: err-v-spacing-0",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Tick spacing must be greater than 0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-err-x-range",
+      "topic": "T4e/T4c error or crash: err-x-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "X-coordinate 6.0 is outside h-axis range [0.0, 5.0] (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-grid-labels",
+      "topic": "T4c geometry: h-grid-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-grid-numeric",
+      "topic": "T4c geometry: h-grid-numeric",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-grid-spacing",
+      "topic": "T4c geometry: h-grid-spacing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-numeric-title-right",
+      "topic": "T4c geometry: h-numeric-title-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-reversed",
+      "topic": "T4e/T4c error or crash: h-reversed",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "X-coordinate 5.0 is outside h-axis range [10.0, 0.0] (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-spacing-labels",
+      "topic": "T4c geometry: h-spacing-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-h-title-right",
+      "topic": "T4c geometry: h-title-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-annotations",
+      "topic": "T4c geometry: hz-annotations",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-grid",
+      "topic": "T4c geometry: hz-grid",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-grouped",
+      "topic": "T4c geometry: hz-grouped",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-labels",
+      "topic": "T4c geometry: hz-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-legend",
+      "topic": "T4c geometry: hz-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-line-scatter",
+      "topic": "T4c geometry: hz-line-scatter",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-negative",
+      "topic": "T4c geometry: hz-negative",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-no-labels",
+      "topic": "T4c geometry: hz-no-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-stacked",
+      "topic": "T4c geometry: hz-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-hz-title",
+      "topic": "T4c geometry: hz-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-inf-bar",
+      "topic": "T4e/T4c error or crash: inf-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-inf-fixed",
+      "topic": "T4e/T4c error or crash: inf-fixed",
+      "status": "baseline",
+      "weightedScore": 353,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-label-negative-small",
+      "topic": "T4d text and style: label-negative-small",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-bottom",
+      "topic": "T4c geometry: legend-bottom",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-bottom-v2",
+      "topic": "T4c geometry: legend-bottom-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-left",
+      "topic": "T4c geometry: legend-left",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-left-v2",
+      "topic": "T4c geometry: legend-left-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-multiline-name",
+      "topic": "T4c geometry: legend-multiline-name",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-no-series",
+      "topic": "T4c geometry: legend-no-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-right-unset-colours",
+      "topic": "T4c geometry: legend-right-unset-colours",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-top",
+      "topic": "T4c geometry: legend-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-legend-top-v2",
+      "topic": "T4c geometry: legend-top-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-line-labels",
+      "topic": "T4c geometry: line-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-nan-annotation",
+      "topic": "T4e/T4c error or crash: nan-annotation",
+      "status": "baseline",
+      "weightedScore": 367,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-nan-annotation-y",
+      "topic": "T4e/T4c error or crash: nan-annotation-y",
+      "status": "baseline",
+      "weightedScore": 386,
+      "diffCount": 68,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-nan-area",
+      "topic": "T4e/T4c error or crash: nan-area",
+      "status": "baseline",
+      "weightedScore": 339,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-nan-bar",
+      "topic": "T4e/T4c error or crash: nan-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-nan-scatter",
+      "topic": "T4e/T4c error or crash: nan-scatter",
+      "status": "baseline",
+      "weightedScore": 360,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-neg-zero-tick",
+      "topic": "T4c geometry: neg-zero-tick",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-no-axes",
+      "topic": "T4c geometry: no-axes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-no-series",
+      "topic": "T4c geometry: no-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-openiconic-label",
+      "topic": "T4d text and style: openiconic-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-pairs-labels-legend",
+      "topic": "T4c geometry: pairs-labels-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-pairs-negative-x",
+      "topic": "T4c geometry: pairs-negative-x",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-pairs-one-point",
+      "topic": "T4c geometry: pairs-one-point",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-quoted-labels",
+      "topic": "T4d text and style: quoted-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-no-zero-above",
+      "topic": "T4c geometry: range-no-zero-above",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-no-zero-below",
+      "topic": "T4c geometry: range-no-zero-below",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-reversed",
+      "topic": "T4c geometry: range-reversed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-zero-span",
+      "topic": "T4c geometry: range-zero-span",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-scatter-labels",
+      "topic": "T4c geometry: scatter-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-scatter-leading-stereo",
+      "topic": "T4c geometry: scatter-leading-stereo",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-scatter-square",
+      "topic": "T4c geometry: scatter-square",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-scatter-triangle",
+      "topic": "T4c geometry: scatter-triangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-series-past-categories",
+      "topic": "T4c geometry: series-past-categories",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-background",
+      "topic": "T4d text and style: skin-background",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-defaultfont",
+      "topic": "T4d text and style: skin-defaultfont",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-gradient",
+      "topic": "T4d text and style: skin-gradient",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-gradient-bar",
+      "topic": "T4d text and style: skin-gradient-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-handwritten",
+      "topic": "T4d text and style: skin-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-handwritten-option",
+      "topic": "T4d text and style: skin-handwritten-option",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-mode-dark",
+      "topic": "T4d text and style: skin-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-monochrome",
+      "topic": "T4d text and style: skin-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-monochrome-rev",
+      "topic": "T4d text and style: skin-monochrome-rev",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-shadowing",
+      "topic": "T4d text and style: skin-shadowing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-theme",
+      "topic": "T4d text and style: skin-theme",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-skin-theme-dark",
+      "topic": "T4d text and style: skin-theme-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-spacing-fractional",
+      "topic": "T4c geometry: spacing-fractional",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-annotation",
+      "topic": "T4e/T4c error or crash: span-annotation",
+      "status": "baseline",
+      "weightedScore": 386,
+      "diffCount": 68,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-bar",
+      "topic": "T4e/T4c error or crash: span-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-bar-at-min",
+      "topic": "T4e/T4c error or crash: span-bar-at-min",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-grid",
+      "topic": "T4e/T4c error or crash: span-grid",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-hz",
+      "topic": "T4e/T4c error or crash: span-hz",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-line",
+      "topic": "T4e/T4c error or crash: span-line",
+      "status": "baseline",
+      "weightedScore": 346,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-spacing",
+      "topic": "T4e/T4c error or crash: span-spacing",
+      "status": "baseline",
+      "weightedScore": 314,
+      "diffCount": 132,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-ticks",
+      "topic": "T4e/T4c error or crash: span-ticks",
+      "status": "baseline",
+      "weightedScore": 333,
+      "diffCount": 133,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-sprite-label",
+      "topic": "T4d text and style: sprite-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-annotation",
+      "topic": "T4d text and style: style-annotation",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-area",
+      "topic": "T4d text and style: style-area",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-axis",
+      "topic": "T4d text and style: style-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-axis-apart",
+      "topic": "T4d text and style: style-axis-apart",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-bar",
+      "topic": "T4d text and style: style-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-barwidth-grouped",
+      "topic": "T4d text and style: style-barwidth-grouped",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-barwidth-in",
+      "topic": "T4d text and style: style-barwidth-in",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-barwidth-one",
+      "topic": "T4d text and style: style-barwidth-one",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-barwidth-out",
+      "topic": "T4d text and style: style-barwidth-out",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-barwidth-stacked",
+      "topic": "T4d text and style: style-barwidth-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-grid",
+      "topic": "T4d text and style: style-grid",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-legend",
+      "topic": "T4d text and style: style-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-line",
+      "topic": "T4d text and style: style-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-markercolor-unset",
+      "topic": "T4d text and style: style-markercolor-unset",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-root-font",
+      "topic": "T4d text and style: style-root-font",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-scatter",
+      "topic": "T4d text and style: style-scatter",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-stereo-all",
+      "topic": "T4d text and style: style-stereo-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-style-stereo-selector",
+      "topic": "T4d text and style: style-stereo-selector",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-ticks-past-range",
+      "topic": "T4c geometry: ticks-past-range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-title-with-dollar",
+      "topic": "T4d text and style: title-with-dollar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-trailing-comma",
+      "topic": "T4d text and style: trailing-comma",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v-labels-title-dropped",
+      "topic": "T4c geometry: v-labels-title-dropped",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v2-capital",
+      "topic": "T4d text and style: v2-capital",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v2-label-top",
+      "topic": "T4c geometry: v2-label-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v2-line-area-scatter",
+      "topic": "T4c geometry: v2-line-area-scatter",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v2-spacing",
+      "topic": "T4c geometry: v2-spacing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-v2-ticks-spacing",
+      "topic": "T4c geometry: v2-ticks-spacing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-value-hexfloat",
+      "topic": "T4d text and style: value-hexfloat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-value-huge",
+      "topic": "T4d text and style: value-huge",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-value-nan",
+      "topic": "T4e/T4c error or crash: value-nan",
+      "status": "baseline",
+      "weightedScore": 346,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-value-rounding",
+      "topic": "T4d text and style: value-rounding",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-zero-grouped",
+      "topic": "T4e/T4c error or crash: zero-grouped",
+      "status": "baseline",
+      "weightedScore": 344,
+      "diffCount": 68,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException: height=0.0"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-zero-horizontal",
+      "topic": "T4e/T4c error or crash: zero-horizontal",
+      "status": "baseline",
+      "weightedScore": 332,
+      "diffCount": 76,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException: width=0.0"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-zero-single",
+      "topic": "T4e/T4c error or crash: zero-single",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-zero-stacked",
+      "topic": "T4e/T4c error or crash: zero-stacked",
+      "status": "baseline",
+      "weightedScore": 325,
+      "diffCount": 76,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException: height=0.0"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "d2eaf323e"
+    }
+  ]
+}

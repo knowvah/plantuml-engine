@@ -20,6 +20,25 @@
 export const DEFAULT_SVG_DECIMALS = 3;
 
 /**
+ * `x.toString()` in plain notation: JS switches to an exponent for
+ * `x >= 1e21` and `0 < x < 1e-6`, where Java's `%.<n>f` still prints every
+ * digit and pads with zeros (`FormattedFloatingDecimal`). SVG geometry never
+ * gets there; a chart's `%.2f` on a huge value does.
+ */
+function plainDecimal(x: number): string {
+  const shortest = x.toString();
+  const e = shortest.indexOf('e');
+  if (e < 0) return shortest;
+  const mantissa = shortest.slice(0, e);
+  const dot = mantissa.indexOf('.');
+  const digits = mantissa.replace('.', '');
+  const point = (dot < 0 ? mantissa.length : dot) + Number(shortest.slice(e + 1));
+  if (point <= 0) return `0.${'0'.repeat(-point)}${digits}`;
+  if (point >= digits.length) return digits + '0'.repeat(point - digits.length);
+  return `${digits.slice(0, point)}.${digits.slice(point)}`;
+}
+
+/**
  * Renders `%.<decimals>f` (Locale.US, HALF_UP) the way Java's
  * `java.util.Formatter` does it — HALF_UP rounding applied to the value's
  * SHORTEST ROUND-TRIP DECIMAL STRING, not to its exact IEEE754 binary
@@ -42,17 +61,9 @@ export const DEFAULT_SVG_DECIMALS = 3;
  * mantissa — reproduces Java's rounding INPUT faithfully without a second
  * bespoke float-to-decimal implementation.
  */
-function javaFixedN(x: number, decimals: number): string {
+export function javaFixedN(x: number, decimals: number): string {
   const neg = x < 0;
-  const shortest = Math.abs(x).toString();
-  // `toString()` only switches to exponential notation for |x| >= 1e21 or
-  // 0 < |x| < 1e-6 -- SVG pixel geometry never reaches either extreme (nor
-  // does the jar's own %.<n>f range), so a plain decimal-notation string is
-  // assumed below.
-  /* v8 ignore next 3 -- unreachable for SVG geometry, see comment above */
-  if (shortest.includes('e')) {
-    return Math.abs(x).toFixed(decimals);
-  }
+  const shortest = plainDecimal(Math.abs(x));
   const dot = shortest.indexOf('.');
   const intPart = dot < 0 ? shortest : shortest.slice(0, dot);
   const fracPart = dot < 0 ? '' : shortest.slice(dot + 1);

@@ -1040,7 +1040,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10361 -> 10368 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description, all render.
     // 10368 -> 10414 at odd/T4b (2026-11-05): +46 svg-object, all render.
     // 10414 -> 10415 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
-    expect(manifest.fixtures.length).toBe(10415);
+    // 10415 -> 10444 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 10415 + 29 = 10444.
+    expect(manifest.fixtures.length).toBe(10444);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1281,7 +1282,8 @@ describe('refusal coverage — baseline shape', () => {
     // 9928 -> 9974 at odd/T4b (2026-11-05): the same 46 golden clones, all rendering.
     // 9974 -> 9975 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
     // 9975 -> 9973 (2026-11-05): dulone-62 and losote-76 error as the jar does (#152). Derivation: 10415 - 442 = 9973.
-    expect(pinnedRendering.length).toBe(9973);
+    // 9973 -> 10002 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 9973 + 29 = 10002.
+    expect(pinnedRendering.length).toBe(10002);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

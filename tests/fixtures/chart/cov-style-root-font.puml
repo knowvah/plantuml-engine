@@ -1,0 +1,15 @@
+@startchart
+<style>
+root {
+FontColor red
+FontSize 11
+}
+element {
+LineColor blue
+}
+</style>
+h-axis [A, B, C, D]
+bar "B" [1]
+annotation "n" at (A, 2)
+legend right
+@endchart

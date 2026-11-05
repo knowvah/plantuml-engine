@@ -100,32 +100,12 @@ function umlSourceOfBlock(block: BlockUmlOk): UmlSource {
  * validation boundary (see `security.md`: boundary validation applies to
  * data crossing INTO the process, not between our own typed stages).
  *
- * Every engine's AST carries `annotations?: DiagramAnnotations` EXCEPT
- * chart, whose AST already had an unrelated pre-existing `annotations`
- * field (plot text/arrow callouts) and stores chrome under `chrome`
- * instead (`src/diagrams/chart/ast.ts`'s doc comment) -- `chrome` is
- * checked FIRST, unconditionally, for exactly this reason (see the
- * function body). json/dot/chart's `annotations`/`chrome.title` is
- * never populated by their own parsers (title stays on their bespoke
- * field until T8) -- so reading this field generically for every
- * engine, with no other special-casing, already gives json/dot/chart's
- * caption/legend/header/footer shared chrome for free while leaving
- * their bespoke title bands untouched.
+ * Every engine's AST carries `annotations?: DiagramAnnotations`, and reading the
+ * field generically gives json/dot their caption/legend/header/footer chrome for
+ * free while leaving their bespoke title bands untouched.
  */
 function annotationsOf(ast: unknown): DiagramAnnotations | undefined {
   if (typeof ast !== 'object' || ast === null) return undefined;
-  // `chrome` is checked FIRST and unconditionally: it is chart's own
-  // unambiguous chrome marker (no other engine's AST has this field), and
-  // chart's AST ALSO carries an unrelated pre-existing `annotations: Chart
-  // AnnotationDef[]` (plot text/arrow callouts, `src/diagrams/chart/ast.ts`)
-  // that is NOT a `DiagramAnnotations` -- checking `annotations` first
-  // would silently hand that array to `isEmpty`/`applyChrome`, which read
-  // `.title`/`.legend`/etc. off it and crash on `undefined.display` (T7
-  // regression found via `tests/unit/chart/renderer.test.ts`'s AC1 case).
-  if ('chrome' in ast) {
-    const value = (ast as { chrome?: DiagramAnnotations }).chrome;
-    if (value !== undefined) return value;
-  }
   if ('annotations' in ast) {
     const value = (ast as { annotations?: DiagramAnnotations }).annotations;
     if (value !== undefined) return value;
@@ -146,9 +126,9 @@ function annotationsOf(ast: unknown): DiagramAnnotations | undefined {
  * comment); its `completeSvg` is unwrapped into a `RenderFragment`, run
  * through the SAME `applyChrome`, and reassembled via the SAME
  * `assembleSvg` every other engine uses -- no third chrome implementation.
- * Any OTHER `CompleteSvg` producer (chart's fixed-size error box, reached
- * only when parse/validation errors exist) is left untouched: chrome has
- * no sensible placement on a diagnostic box with no diagram context.
+ * Any OTHER `CompleteSvg` producer (a renderer's own inline error document) is
+ * left untouched: chrome has no sensible placement on a diagnostic box with no
+ * diagram context.
  */
 /** The diagram's own `SpriteRegistry`, read off the AST exactly as
  *  `core/sprite-registry.ts#surfaceSpriteWarnings` reads it (`'sprites' in

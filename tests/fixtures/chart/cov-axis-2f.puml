@@ -1,0 +1,4 @@
+@startchart
+h-axis [A]
+v-axis 0 --> 7
+@endchart

@@ -273,7 +273,7 @@ function finalizeDescriptionFragment(fragment: RenderFragment): RenderFragment {
 }
 
 /**
- * lad-T1a: board/files/packet/chart. Their jar oracles open the content with the shared root `<g>`
+ * lad-T1a: board/files/packet. Their jar oracles open the content with the shared root `<g>`
  * (`TextBlockExporter.java:292-294`, `SvgGraphics.java:155-158`) and draw no extra chrome here, so an
  * unwrapped body gets a bare `<g>` for the document shell to decorate (`withRootGroupAttributes`);
  * a `bodyWrapped` body already carries it and passes through.
@@ -314,11 +314,11 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_SALT:
     case DIAGRAM_TYPE_WBS:
     case DIAGRAM_TYPE_GANTT:
+    case DIAGRAM_TYPE_CHART:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_FILES:
     case DIAGRAM_TYPE_PACKET:
-    case DIAGRAM_TYPE_CHART:
       return finalizeGenericRootFragment(fragment);
     default:
       return fragment;
@@ -330,8 +330,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
  * hands back an `AssembledSvg` -- either a `RenderFragment` (the common
  * case) or a `CompleteSvg` escape hatch for engines that already emit a
  * full document themselves (klimt/description's annotation-free path;
- * chart's inline error path; `@startdot`'s graphviz passthrough) and must
- * not be re-wrapped.
+ * `@startdot`'s graphviz passthrough) and must not be re-wrapped.
  *
  * A `RenderFragment` carrying `diagramType` is finalized (see
  * {@link finalizeShellFragment}) and reassembled via `core/klimt/document-

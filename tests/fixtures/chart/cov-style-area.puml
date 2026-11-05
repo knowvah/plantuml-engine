@@ -1,0 +1,13 @@
+@startchart
+<style>
+chartDiagram {
+area {
+BackGroundColor red
+LineColor blue
+}
+}
+</style>
+h-axis [A, B, C, D]
+area "B" [1, 2]
+legend right
+@endchart

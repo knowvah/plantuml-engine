@@ -1,0 +1,7 @@
+@startchart
+skinparam monochrome true
+h-axis [A, B, C, D]
+bar "B" [1] #3498db
+line "L" [1, 2] #e74c3c
+legend right
+@endchart

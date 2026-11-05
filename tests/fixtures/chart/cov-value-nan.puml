@@ -1,0 +1,5 @@
+@startchart
+h-axis [A, B]
+v-axis 0 --> 10
+line [NaN, 1]
+@endchart

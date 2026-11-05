@@ -1,0 +1,4 @@
+@startchart
+h-axis [A, B, C, D]
+v-axis 0 --> 10 ticks [-5:"low", 0:"zero", 5:"mid", 15:"high"]
+@endchart

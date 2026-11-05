@@ -1,0 +1,4 @@
+@startchart
+h-axis [A, B, C]
+bar [1e30, 9223372036854775807, -1e30] labels
+@endchart

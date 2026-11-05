@@ -1,0 +1,3 @@
+@startchart
+bar "B" [10, 20]
+@endchart

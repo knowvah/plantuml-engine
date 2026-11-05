@@ -1,0 +1,7 @@
+@startchart
+orientation horizontal
+v-axis [A, B]
+h-axis 0 --> 100
+bar "x" [50, 25]
+legend bottom
+@endchart

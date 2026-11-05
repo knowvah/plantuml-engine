@@ -1,0 +1,9 @@
+@startuml
+class A
+note right of A
+{{chart
+h-axis [Q1, Q2]
+bar "R" [1, 2]
+}}
+end note
+@enduml

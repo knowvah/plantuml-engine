@@ -1,0 +1,5 @@
+@startchart
+h-axis [A, B]
+v-axis 0 --> 10
+bar [0x1p3, 1d] labels
+@endchart

@@ -1,0 +1,6 @@
+@startchart
+orientation horizontal
+v-axis [A, B]
+h-axis -50 --> 50
+bar [-20, 10] labels
+@endchart
