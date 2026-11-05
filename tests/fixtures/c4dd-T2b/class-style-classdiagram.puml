@@ -1,0 +1,8 @@
+@startuml
+<style>
+classDiagram { RoundCorner 9 }
+</style>
+package P {
+  class A
+}
+@enduml

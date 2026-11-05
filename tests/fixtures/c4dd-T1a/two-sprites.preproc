@@ -1,0 +1,8 @@
+@startuml
+sprite $ma_access_point #material2.1.19#access_point:ma_access_point
+
+skinparam folderBackgroundColor<<MA ACCESS_POINT>> White
+sprite mdiAccountAlert :material7.4.47:accountuser/accountalert:mdiAccountAlert
+
+class A
+@enduml

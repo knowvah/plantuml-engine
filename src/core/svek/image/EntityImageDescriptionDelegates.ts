@@ -25,7 +25,7 @@ import { XDimension2D } from '../../klimt/geom/XDimension2D.js';
 import { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
 import { UTranslate } from '../../klimt/UTranslate.js';
 import type { FontConfiguration } from '../../klimt/shape/UText.js';
-import { UText, getFont } from '../../klimt/shape/UText.js';
+import { UText } from '../../klimt/shape/UText.js';
 import {
   TAB_STRING,
   advanceToTabStop,
@@ -42,6 +42,7 @@ import { SvgParserSelector, createSvgSpriteParser } from '../../klimt/sprite/sax
 import type { USymbol } from '../../decoration/symbol/USymbol.js';
 import { buildTextBlock, measureLine } from './EntityImageDescriptionSupport.js';
 import { drawWithAtomUrl } from './EntityImageDescriptionTextBlock.js';
+import { measuringFont } from './EntityImageDescriptionTextMeasure.js';
 import { asAtomOpenIconic, type AtomOpenIconic } from '../../klimt/creole/atom/AtomOpenIconic.js';
 import { emojiSquareDim, emojiStartingAltitude } from '../../klimt/creole/atom/AtomEmoji.js';
 import { drawEmojiAtom, type EmojiArtworkResolver } from './EntityImageDescriptionEmoji.js';
@@ -152,10 +153,6 @@ function isCreoleAtomData(x: CreoleAtom | Atom): x is CreoleAtom {
  *  .getFont()` reads, D1). `UText.build`/`drawU` keep the UNMUTED config
  *  (upstream's `useFontConfiguration`, java:205) -- `DriverTextSvg.draw`
  *  mutes again at render time (`driver-text-svg.ts:135`, SI30). */
-function measuringFont(fc: FontConfiguration): FontConfiguration {
-  return { ...fc, size: getFont(fc).size };
-}
-
 /** `AtomText#drawU`'s tokenizer loop (`AtomText.java:210-231`): the baseline
  *  `ypos` is the WHOLE run's `height - descent`; each tab advances `x` to the
  *  next stop (`getTabSize`, java:270-275), each other token draws at `x` and

@@ -1,0 +1,8 @@
+@startuml
+!include <C4/C4_Dynamic>
+Person(u, "User")
+Container(a, "A", "t", "d")
+Rel(u, a, "first")
+Rel_R(a, u, "second", $index=SetIndex(7))
+SHOW_LEGEND()
+@enduml

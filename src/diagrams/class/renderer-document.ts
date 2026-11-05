@@ -135,6 +135,8 @@ export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, draw
     body: applyColorMapperToFragment(drawn.body, doc.colorMapper),
     width: drawn.width,
     height: drawn.height,
+    // The root's `width`/`height` are `format(maxX)` (`SvgGraphics.java:808-811`), scaled, where the viewBox truncates.
+    ...(theme.scaleK === 1 ? {} : { scaledCanvas: true as const }),
     background: doc.canonicalBackground,
     // dbp-T2b (D1): see {@link beginClassDocument}'s `documentBackgroundRect`; omitted when unset.
     ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),

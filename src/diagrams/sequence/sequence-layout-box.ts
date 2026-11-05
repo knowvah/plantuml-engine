@@ -13,6 +13,7 @@ import { Stereotype } from '../../core/stereo/Stereotype.js';
 import { ClockwiseTopRightBottomLeft } from '../../core/klimt/geom/ClockwiseTopRightBottomLeft.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import { dollStyle, paintOf, type SequencePaint } from './sequence-skin-param.js';
+import { displayLinesAligned } from './display-lines.js';
 import { componentLabelBlock, offsetRun, symbolInk, type LabelBlock } from './sequence-creole-sheet.js';
 
 /** A colour the style layer can hold (`Value.ts#HColor`); `Colors` keeps
@@ -63,7 +64,6 @@ export interface EngloberDimension {
  * the title's text block plus the padding, plus 3 below. An empty one-line
  * title is a `TextBlockEmpty` (`AbstractTextualComponent.java:84-85`), 0 x 0,
  * so a bare `box` still reserves 1 + 1 + 3 = 5; a `" "` title is a real line.
- * One line: the label is never split (see {@link boxLabelRuns}).
  */
 export function engloberDimension(
   label: string,
@@ -80,20 +80,24 @@ export function engloberDimension(
 
 /** The englober's text block: `create0` at the box style's font, its
  *  padding's sides as margins (`ComponentRoseEnglober.java:58`), drawn after
- *  `symbolContext.apply(ug)` (`:65-71`). One line: the label is never split. */
+ *  `symbolContext.apply(ug)` (`:65-71`). The title is a `Display`:
+ *  `Display.getWithNewlines(pragma, title)` (`CommandBoxStart.java:128`). */
 function engloberBlock(
   label: string,
   paint: SequencePaint,
   measurer: StringMeasurer,
   sprites: SpriteRegistry | undefined,
 ): LabelBlock {
+  const display = displayLinesAligned(label);
   const opts = {
     sprites,
     ink: symbolInk(paint),
     marginX1: ENGLOBER_PADDING.getLeft(),
     marginX2: ENGLOBER_PADDING.getRight(),
+    // `AbstractTextualComponent.java:82`, and a natural `\r`/`\l` over it (`Display.java:648-649`).
+    align: display.align ?? paint.align,
   };
-  return componentLabelBlock([label], paint.font, opts, measurer);
+  return componentLabelBlock(display.lines, paint.font, opts, measurer);
 }
 
 /** The box's drawn extent, as `Doll#drawMe` placed it. */
@@ -110,7 +114,7 @@ export interface BoxFrame {
  * font (`AbstractTextualComponent.java:80,91`, `box { FontSize 13; FontStyle
  * bold }`, `plantuml.skin:172-177`); its 3 px side margins
  * (`ComponentRoseEnglober.java:58`) are symmetric, so the glyphs start
- * `(width - glyph width) / 2` in. One line: the label is never split.
+ * `(width - glyph width) / 2` in.
  */
 export function boxLabelRuns(
   label: string,

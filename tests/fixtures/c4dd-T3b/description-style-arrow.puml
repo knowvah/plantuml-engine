@@ -1,0 +1,10 @@
+@startuml
+!pragma layout elk
+<style>
+arrow { LineThickness 4 }
+</style>
+component A
+component B
+A -[dashed]-> B
+A --> B
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+!include <DomainStory/domainStory>
+Boundary(Org) {
+  Boundary(Team) {
+    Person(Ann)
+    Person(Bob)
+  }
+  Conversation(topic)
+}
+Document(doc)
+activity(1, Ann, tells, topic, to, Bob)
+activity(2, Bob, writes, doc)
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+box "A\nB\nC" #LightBlue
+participant X
+participant Y
+end box
+box "\n"
+participant Z
+end box
+X -> Y
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Container>
+UpdateElementStyle(person, $bgColor="#123456", $fontColor="#ffffff")
+AddBoundaryTag("zone", $bgColor="#eeeeee", $borderColor="#ff0000", $fontColor="#ff0000", $legendText="Zone", $borderStyle="DottedLine()", $borderThickness="3")
+Person(u, "User")
+Boundary(z, "Zone", $tags="zone") {
+  Container(a, "A", "tech", "desc")
+}
+Rel(u, a, "Uses")
+@enduml

@@ -19,7 +19,7 @@
  * rather than as a numeric diff against the jar's error page; callers
  * (ratchets, `pin-description.mts`) rely on that.
  */
-import { renderSync } from '../../../src/index.js';
+import { loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
 import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
 import { setErrorPageObserver } from '../../../src/core/error/error-renderer.js';
 import { combineAssetStores } from '../../../src/core/asset-store.js';
@@ -36,6 +36,19 @@ const FIXTURE_ASSET_STORE = combineAssetStores(
   buildEmojiAssetsStore(),
   buildUtilityAssetsStore(),
 );
+
+let elkLoad: Promise<ElkBackend> | undefined;
+let preparedElk: ElkBackend | undefined;
+
+/**
+ * Loads elkjs once per module instance, as `render-fixture-class.ts#prepareElkOnce` does: `renderSync` refuses
+ * `!pragma layout elk` without `options.elk`, the survey passes one, and this function stays synchronous. A ratchet
+ * awaits it in `beforeAll`.
+ */
+export function prepareElkOnce(): Promise<ElkBackend> {
+  elkLoad ??= loadElk().then((backend) => (preparedElk = backend));
+  return elkLoad;
+}
 
 /** Renders `markup` exactly as the survey does, with `measurer` injected.
  *  An error page is returned as the SVG it is, with `errorPage: true`. */
@@ -55,6 +68,7 @@ export function renderFixtureSurveyStyle(
         measurer,
         assetStore: FIXTURE_ASSET_STORE,
         includeStore: fixtureIncludeStore(),
+        ...(preparedElk === undefined ? {} : { elk: preparedElk }),
       }),
     );
     return { svg, errorPage };

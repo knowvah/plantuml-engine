@@ -66,6 +66,7 @@ import type { DiagramType } from '../TitledDiagram.js';
 import type { SName } from '../style/SName.js';
 import { PNAMES } from '../style/PName.js';
 import { StyleSignatureBasic } from '../style/StyleSignatureBasic.js';
+import { mergedRoundCornerReader, type MergedRoundCorner } from './annotation-round-corner.js';
 import { loadSkin } from '../style/StyleLoader.js';
 import { skinRunsOf } from '../skin-loader.js';
 import { DEFAULT_SKIN } from '../style/mindmap-style-builder.js';
@@ -126,6 +127,7 @@ export function resolveAnnotationStyles(
     documentBackgroundGradient: theme.colors.backgroundGradient,
     themeStyleMap: toStyleMap(theme.styleOverrides),
     segments: segmentsOf(declarations, styleMap),
+    mergedRoundCorner: mergedRoundCornerReader(declarations),
   };
   const result = {} as Record<AnnotationElement, AnnotationBoxStyle>;
   // The exporter draws the chrome through the same `ColorMapper` as the block (`TextBlockExporter.java:172-177`).
@@ -163,6 +165,7 @@ interface ResolveContext {
   readonly documentBackgroundGradient: Gradient | undefined;
   readonly themeStyleMap: StyleMap | undefined;
   readonly segments: readonly StyleSkinparamSegment[];
+  readonly mergedRoundCorner: MergedRoundCorner;
 }
 
 /**
@@ -211,6 +214,8 @@ function resolveElement(
     applyStyleOverrides(element, style, ctx.themeStyleMap, ctx.documentBackgroundHex, styleName);
   }
   for (const segment of ctx.segments) applySegment(element, style, segment, ctx.documentBackgroundHex, styleName);
+  const roundCorner = ctx.mergedRoundCorner(element, styleName);
+  if (roundCorner !== undefined) style.roundCorner = roundCorner;
   return style;
 }
 

@@ -1,0 +1,10 @@
+@startuml
+<style>
+package { title { RoundCorner 3 } }
+</style>
+package P {
+}
+package Q {
+  class A
+}
+@enduml

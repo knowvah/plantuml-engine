@@ -125,6 +125,8 @@ export function wrapCluster(name: string, uid: string, qualifiedName: string, in
 export interface WrapLinkInfo {
   readonly from: string;
   readonly to: string;
+  /** `Link#commentForSvg`'s text where the caller has the link's own ends; else read off `from`/`to`. */
+  readonly comment?: string;
   readonly uid: string;
   readonly fromUid: string;
   readonly toUid: string;
@@ -144,12 +146,9 @@ export interface WrapLinkInfo {
 export function wrapLink(info: WrapLinkInfo, inner: string): string {
   const { from, to, uid, fromUid, toUid, decor1, decor2 } = info;
   const reversed = looksLikeRevertedForSvg(decor1, decor2);
+  const fallback = `${reversed ? 'reverse link' : 'link'} ${from} to ${to}`;
   // SI-saea T3c/D8: `escapeComment` defangs `--`, see {@link wrapEntity}.
-  const efrom = escapeComment(from);
-  const eto = escapeComment(to);
-  const comment = reversed
-    ? '<!--reverse link ' + efrom + ' to ' + eto + '-->'
-    : '<!--link ' + efrom + ' to ' + eto + '-->';
+  const comment = '<!--' + escapeComment(info.comment ?? fallback) + '-->';
   const linkType = getLinkTypeName(decor1, decor2);
   return (
     comment +

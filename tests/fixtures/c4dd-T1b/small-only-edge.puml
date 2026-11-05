@@ -1,0 +1,5 @@
+@startuml
+actor A
+usecase B
+A --> B : <size:8>s</size><size:6>t</size>
+@enduml

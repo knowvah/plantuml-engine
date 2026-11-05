@@ -1,0 +1,11 @@
+@startuml
+skinparam roundcorner 6
+package Outer {
+  namespace Inner {
+    class A
+  }
+  folder F {
+    class B
+  }
+}
+@enduml

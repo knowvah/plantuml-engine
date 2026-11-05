@@ -1,0 +1,7 @@
+@startuml
+!include <tupadr3/font-awesome-5/users>
+!include <C4/C4_Container>
+Person(u, "User", "desc", $sprite="users")
+Container(c, "C", "tech", "desc", $sprite="users")
+Rel(u, c, "Uses", $sprite="users")
+@enduml

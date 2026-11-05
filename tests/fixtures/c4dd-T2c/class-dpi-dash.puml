@@ -1,0 +1,10 @@
+@startuml
+skinparam dpi 100
+package P {
+  class A
+  class B
+}
+A ..> B
+class C
+C ..> A
+@enduml

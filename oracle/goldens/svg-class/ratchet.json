@@ -5297,6 +5297,18 @@
       "slug": "nugecu-04-tona107",
       "addedAt": "2026-10-14",
       "source": "dot-engine-2.4.0"
+    },
+    {
+      "slug": "rosoga-84-vari641",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache",
+      "tree": "c4"
+    },
+    {
+      "slug": "xetego-25-dinu652",
+      "addedAt": "2026-11-05",
+      "source": "dot-cache",
+      "tree": "c4"
     }
   ]
 }

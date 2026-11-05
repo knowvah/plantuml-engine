@@ -229,6 +229,7 @@ function namespaceGeoFromBox(
     ...(ns.usymbol !== undefined ? { usymbol: ns.usymbol } : {}),
     ...(ns.color !== undefined ? { color: ns.color } : {}),
     ...(ns.url !== undefined ? { url: ns.url } : {}),
+    ...(ns.roundCorner !== undefined ? { roundCorner: ns.roundCorner } : {}),
   };
 }
 

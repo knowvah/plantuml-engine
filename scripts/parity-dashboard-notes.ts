@@ -100,10 +100,11 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'canvas size all differ.',
   },
   c4: {
-    noteClass: 'openDefect',
+    noteClass: 'jarDeclines',
     detail:
-      'Drawn by the description engine: 7 of 11 conformant since description-divergence-drive (#113). The other 4 ' +
-      "are this diagram type's own, chiefly filter ids and a dashed stroke, and stay with #114.",
+      'Drawn by the description engine, with two class rows and one ELK row: 10 of 11 conformant since ' +
+      'c4-divergence-drive (#114), 9 pinned. The last, `gikaju-64`, is a jar error page where we draw, a signed entry ' +
+      'in `oracle/accepted-divergences.json`.',
   },
   chart: {
     noteClass: 'openDefect',

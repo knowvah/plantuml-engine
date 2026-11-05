@@ -162,6 +162,11 @@ const USYMBOLS: readonly (readonly [string, readonly SName[], (readonly SName[])
   ['usecase-business', ['usecase', 'business']], // USymbolUsecase.java:67-69, Entity.java:412-413
 ];
 
+/** A `USymbol`'s `getSNames()`, by its port name; an unknown name holds no symbol's selector. */
+export function usymbolSNames(symbol: string): readonly SName[] {
+  return USYMBOLS.find(([bucket]) => bucket === symbol)?.[1] ?? [];
+}
+
 /**
  * The leaf: fill and line off `styleTitle` (`EntityImageDescription.java:152-153,162-166`), text off `style`
  * (`:159-160,173`), which is what a display differing from the code draws with (`:187-190`; jar: bare

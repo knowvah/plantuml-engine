@@ -1,0 +1,10 @@
+@startuml
+<style>
+group { RoundCorner 9 }
+</style>
+package P {
+  class A
+}
+package E {
+}
+@enduml

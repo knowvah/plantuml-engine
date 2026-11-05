@@ -95,8 +95,9 @@ import type { ISkinSimple } from '../../../style/ISkinSimple.js';
 import { FontStyle, type FontConfiguration } from '../../shape/UText.js';
 import { Pragma } from '../../../skin/Pragma.js';
 import { BackSlash } from '../../../text/BackSlash.js';
-import { parseSimpleColor } from '../../color/HColorSet.js';
+import { parseColor } from '../../color/HColorSet.js';
 import type { Paint } from '../../../paint.js';
+import { PAINT_NONE } from '../../../svg.js';
 import type { CreoleAtom } from '../atom/Atom.js';
 import { buildLineAtoms } from './StripeSimple.js';
 import { CreoleParser } from './CreoleParser.js';
@@ -113,13 +114,15 @@ const HIDDEN_BAR = '';
 /** Upstream: `HColorSet#getColorOrWhite` (java:58-63) — this port has no
  *  `getIHtmlColorSet()`-returning OOP wrapper on `ISkinSimple.ts`
  *  (that file's own doc comment), so this resolves directly against
- *  `klimt/color/HColorSet.ts#parseSimpleColor`, the SAME free-function
- *  color resolver every other seam in this port already uses. Falls
- *  back to `'white'` (this port's own `Paint` spelling of
- *  `HColors.WHITE`) for an unrecognized token, exactly matching
- *  upstream's null -> WHITE fallback. */
+ *  `klimt/color/HColorSet.ts#parseColor`, the method java:59 calls. Its
+ *  keyword branch (java:82-83) maps `transparent` and `background` to
+ *  `HColors.none()`, this port's {@link PAINT_NONE}. Falls back to `'white'`
+ *  (this port's own `Paint` spelling of `HColors.WHITE`) for an unrecognized
+ *  token, exactly matching upstream's null -> WHITE fallback. */
 function colorOrWhite(s: string): Paint {
-  return parseSimpleColor(s) !== undefined ? s : 'white';
+  const color = parseColor(s);
+  if (color === undefined) return 'white';
+  return color.a === 0 ? PAINT_NONE : s;
 }
 
 /** Upstream: `String#split(",")` (Java's default `limit=0` drops

@@ -1,15 +1,12 @@
 {
-  "generatedAt": "2026-11-05T04:04:02.019Z",
+  "generatedAt": "2026-11-05T07:05:23.303Z",
   "fixtures": [
     {
       "slug": "biluko-70-licu481",
       "type": "c4",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0.6670000000000016,
-      "firstDiff": "svg/defs[1]/filter[1]/@id",
-      "maxDeltaPath": "svg/g[1]/g[5]/text[2]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "favasu-27-fesa452",
@@ -60,20 +57,14 @@
       "type": "c4",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 2.344,
-      "firstDiff": "svg/g[1]/g[4]/path[1]/@stroke-dasharray",
-      "maxDeltaPath": "svg/g[1]/g[1]/path[1]/@d[4]"
+      "verdict": "conformant"
     },
     {
       "slug": "vakasu-51-xiza794",
       "type": "c4",
       "dotEqual": false,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 3.646,
-      "firstDiff": "svg/g[1]/line[1]/@stroke-width",
-      "maxDeltaPath": "svg/g[1]/g[3]/rect[1]/@rx",
+      "verdict": "conformant",
       "oracleBlind": true
     },
     {

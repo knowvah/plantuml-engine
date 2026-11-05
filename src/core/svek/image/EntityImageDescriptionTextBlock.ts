@@ -46,6 +46,7 @@ import {
   measureLine,
   measureBuiltLine,
   measureAtomsWidthHeight,
+  measuringFont,
   buildWrappedLines,
 } from './EntityImageDescriptionTextMeasure.js';
 export { measureLine } from './EntityImageDescriptionTextMeasure.js';
@@ -134,14 +135,12 @@ function drawResolvedInline(
  * Draws one line's already-built atom sequence (E2r/L1): each atom draws as
  * its OWN `UText` (a text run) or `UImage`/`DrawablePrimitive[]` (a resolved
  * inline atom, T7/T9 ADR-2), left to right, x-advancing by each segment's
- * own DECLARED width — the SAME math `measureAtomsWidthHeight` (above)
- * already summed, so drawing and measuring agree by construction. Atoms sit
- * at the line's TOP (`origin.y`, no baseline offset), matching
- * `AtomImg`/`AtomSprite.getStartingAltitude() === 0`; text keeps its normal
- * baseline (`origin.y + baselineDy`) even when a taller atom on the same
- * line grows `m.height` beyond any one text run's own height. This produces
- * ONE `<text>` SVG element per styled run — the jar's own element structure
- * — rather than the pre-E2r single-`UText`-per-line path.
+ * own DECLARED width, the width `Sea` summed for `m`. Each atom's box top is
+ * `Sea`'s (`m.top`). A text run then draws at its OWN `rect.getHeight() -
+ * descent` inside that box (`AtomText.java:213-215`), so a mixed-size line
+ * has no shared baseline: the runs share a box BOTTOM, each on its own descent.
+ * The measured `rect` is unfloored, so a run under the 10px floor
+ * (`AtomText.java:179-181`) sits above its floored box's bottom.
  *
  * `origin` bundles x/y into a single param to stay under this project's
  * 5-param complexity-hook ceiling; `stringBounder` comes off
@@ -156,20 +155,20 @@ function drawAtoms(
   resolveAtomImage: AtomImageResolver | undefined,
 ): void {
   const stringBounder = ug.getStringBounder();
-  const baselineDy = m.rawHeight - m.descent;
   let x = origin.x;
-  for (const atom of atoms) {
+  for (const [i, atom] of atoms.entries()) {
+    const top = origin.y + (m.top[i] as number);
     if (atom.kind === 'text') {
-      const segM = measureLine(stringBounder, atom.text, atom.font);
+      const segM = measureLine(stringBounder, atom.text, measuringFont(atom.font));
       drawWithAtomUrl(ug, atom.url, () =>
-        ug.apply(new UTranslate(x, origin.y + baselineDy)).draw(UText.build(atom.text, atom.font)),
+        ug.apply(new UTranslate(x, top + segM.rawHeight - segM.descent)).draw(UText.build(atom.text, atom.font)),
       );
       x += segM.width;
       continue;
     }
     if (atom.kind === 'latex') {
       const resolved = renderLatexAsImage(atom.expr, atom.color ?? '#000000');
-      ug.apply(new UTranslate(x, origin.y)).draw(UImage.build(resolved.width, resolved.height, resolved.href));
+      ug.apply(new UTranslate(x, top)).draw(UImage.build(resolved.width, resolved.height, resolved.href));
       x += resolved.width;
       continue;
     }
@@ -178,7 +177,8 @@ function drawAtoms(
     // 36*factor box (ADR-2), never this glyph's own measure.
     if (atom.kind === 'emoji') {
       const run = emojiRenderRun(atom);
-      ug.apply(new UTranslate(x, origin.y + baselineDy)).draw(UText.build(run.text, run.font));
+      const runM = measureLine(stringBounder, run.text, run.font);
+      ug.apply(new UTranslate(x, top + runM.height - runM.descent)).draw(UText.build(run.text, run.font));
       x += emojiBoxDim(atom.factor).width;
       continue;
     }
@@ -190,7 +190,7 @@ function drawAtoms(
     // `AtomVerticalTexts#drawU` (`AtomVerticalTexts.java:71-78`): each stacked
     // line is drawn as its own atom row, `dy` the heights of the rows above.
     if (atom.kind === 'vertical') {
-      let rowY = origin.y;
+      let rowY = top;
       for (const row of atom.lines) {
         const rowM = measureAtomsWidthHeight(stringBounder, row, resolveAtomImage);
         drawAtoms(ug, row, { x, y: rowY }, rowM, resolveAtomImage);
@@ -207,10 +207,9 @@ function drawAtoms(
     // `AtomOpenIconic` (`StripeSimple.java:239-243`): a `<&glyph>`, in the stereotype and other flat lines too.
     const glyph = atom.ambientFont === undefined ? undefined : asAtomOpenIconic(atom, atom.ambientFont);
     if (glyph !== undefined) {
-      // `Sea#doAlign`: `-height + startingAltitude`, against a text run's `-rawHeight` on the same line.
+      // `Sea#doAlign`: `-height + startingAltitude`. `creoleAtomStartingAltitude` reports 0 for a glyph, so the raise is here.
       const dim = glyph.calculateDimension(stringBounder);
-      const dy = m.rawHeight - dim.getHeight() + glyph.getStartingAltitude(stringBounder);
-      glyph.drawU(ug.apply(new UTranslate(x, origin.y + dy)));
+      glyph.drawU(ug.apply(new UTranslate(x, top + glyph.getStartingAltitude(stringBounder))));
       x += dim.getWidth();
       continue;
     }
@@ -219,8 +218,7 @@ function drawAtoms(
     if (resolved === undefined) continue;
     const drawX = x;
     // `Sea#doAlign`: `-height` with a starting altitude of 0 (`AtomSprite.java:69-71`, `AtomImg.java:242-244`).
-    const drawY = origin.y + m.rawHeight - resolved.height;
-    drawWithAtomUrl(ug, atom.url, () => drawResolvedInline(ug, resolved, drawX, drawY));
+    drawWithAtomUrl(ug, atom.url, () => drawResolvedInline(ug, resolved, drawX, top));
     x += resolved.width;
   }
   // #lizard forgives -- ADR-2's two-variant branch pushed NLOC over 30 (T7).

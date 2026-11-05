@@ -1,0 +1,12 @@
+@startuml
+!pragma teoz true
+box "A\nB"
+participant X
+end box
+box "Outer\nline" #pink
+box "In\nner"
+participant Y
+end box
+end box
+X -> Y
+@enduml

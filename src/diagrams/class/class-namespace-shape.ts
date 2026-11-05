@@ -57,6 +57,7 @@ import {
   MARGIN_TITLE_X2,
   MARGIN_TITLE_X3,
   PACKAGE_ROUND_CORNER,
+  namespaceRoundCorner,
   packageTitleFontColor,
   packageBorderColor,
   PACKAGE_SYMBOL,
@@ -67,6 +68,7 @@ import {
 // cap); re-exported so no import path changed.
 export {
   PACKAGE_ROUND_CORNER,
+  namespaceRoundCorner,
   titleFontColor,
   getHTitle,
   getWTitle,
@@ -194,7 +196,7 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
     border,
     strokeWidth,
     fill,
-    roundCorner: PACKAGE_ROUND_CORNER * theme.scaleK,
+    roundCorner: (geo.roundCorner ?? PACKAGE_ROUND_CORNER) * theme.scaleK,
     marginX3: MARGIN_TITLE_X3 * theme.scaleK,
   });
   // G2 N18: deterministic-text `textLength` from `wtitle` (= rawTextWidth +
@@ -259,7 +261,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
   // CDD T18b: `...package_,group`-signature site -- see
   // `PACKAGE_CLUSTER_BORDER_DEFAULT`'s doc comment.
   const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol);
-  const corner = ((theme.strictUml === true ? 0 : PACKAGE_ROUND_CORNER) * theme.scaleK) / 2;
+  const corner = (namespaceRoundCorner(geo, theme) * theme.scaleK) / 2;
   const outline = rect(geo.x, geo.y, geo.width, geo.height, {
     stroke: isTransparentColor(border) ? PAINT_NONE : border, // SvgGraphics.java:539-540 fixColor
     strokeWidth,

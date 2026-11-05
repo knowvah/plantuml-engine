@@ -112,6 +112,10 @@ export type {
 export interface Namespace {
   id: string;
   display: string;
+  /** `Cluster.java:321` off the merged style (`class-cluster-corner.ts`); absent with no builder. */
+  roundCorner?: number;
+  /** `EntityImageEmptyPackage.java:104`, for a namespace that collapses to a leaf. */
+  emptyLeafRoundCorner?: number;
   /** Classifier ids contained within this namespace. */
   classifiers: string[];
   /**

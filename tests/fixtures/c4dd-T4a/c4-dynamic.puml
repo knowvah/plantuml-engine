@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Dynamic>
+Person(user, "User")
+Container(a, "A", "tech", "desc")
+Container(b, "B", "tech", "desc")
+Rel(user, a, "1st")
+Rel(a, b, "2nd", "HTTP")
+RelIndex(9, b, a, "back")
+@enduml

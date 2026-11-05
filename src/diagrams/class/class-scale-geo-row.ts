@@ -206,6 +206,7 @@ export function scaleFolderTab(tab: EmptyPackageLeafDim, k: number): EmptyPackag
     wtitle: tab.wtitle * k,
     htitle: tab.htitle * k,
     baselineOffset: tab.baselineOffset * k,
+    ...(tab.roundCorner !== undefined ? { roundCorner: tab.roundCorner } : {}),
     // cdd3-T21 (E3-6): the leaf's stereo block, same uniform k.
     ...(tab.stereo !== undefined
       ? {

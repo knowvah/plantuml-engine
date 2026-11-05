@@ -1,0 +1,6 @@
+@startuml
+legend
+<#nosuchcolour,#alsonot>| a | b |
+end legend
+class A
+@enduml

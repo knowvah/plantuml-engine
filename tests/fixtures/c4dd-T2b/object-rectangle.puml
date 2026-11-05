@@ -1,0 +1,7 @@
+@startuml
+skinparam roundcorner 8
+skinparam packageStyle rectangle
+package P {
+  object A
+}
+@enduml

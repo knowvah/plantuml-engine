@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Container>
+Container(a, "A", "t", "d")
+Container(b, "B", "t", "d")
+Container(c, "C", "t", "d")
+Lay_R(a, b)
+Lay_D(b, c)
+BiRel(a, c, "both", "tcp")
+Rel_Neighbor(b, c, "next")
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+<style>
+legend { RoundCorner 3 }
+</style>
+skinparam roundcorner 8
+legend
+L1
+end legend
+actor A
+usecase B
+A --> B
+@enduml

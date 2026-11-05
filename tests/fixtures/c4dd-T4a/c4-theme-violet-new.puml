@@ -1,0 +1,8 @@
+@startuml
+!theme C4_violet_new from <C4/themes>
+!include <C4/C4_Container>
+Person(u, "User", "desc")
+Container(a, "A", "tech", "desc")
+Rel(u, a, "Uses", "https")
+SHOW_LEGEND()
+@enduml

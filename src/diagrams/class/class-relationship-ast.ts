@@ -7,9 +7,12 @@ import type { NotePosition } from './class-note-decl-ast.js';
 import type { MiddleDecor } from './class-arrow-middle-decor.js';
 import type { UrlInfo } from './class-url.js';
 import type { RelationshipType, LinkDecor } from './class-relationship-decor-ast.js';
+import type { UStroke } from '../../core/klimt/UStroke.js';
 export type { MiddleDecor, RelationshipType, LinkDecor };
 
 export interface Relationship {
+  /** `styleLine.getStroke()` (`MyElkEdge.java:170`) off the merged style (`class-cluster-corner.ts`); the ELK path's. */
+  arrowStroke?: UStroke;
   from: string;
   to: string;
   type: RelationshipType;

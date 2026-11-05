@@ -1,0 +1,16 @@
+@startuml
+!include <DomainStory/domainStory>
+Person(Alice)
+Group(Team)
+System(Mail)
+Document(Letter)
+Info(Note)
+Conversation(topic)
+activity(1, Alice, writes the, Letter, for, Team)
+activity(2, Team, sends via, Mail)
+note right of Alice : a note
+note bottom of Mail
+  multi
+  line
+end note
+@enduml

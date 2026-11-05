@@ -1,0 +1,7 @@
+@startuml
+usecase "<size:8>s</size> mid <size:20>BIG</size>\nnext" as U
+rectangle "<size:8>s</size> mid <size:20>BIG</size>\nnext" as R
+component "<size:8>s</size> mid <size:20>BIG</size>" as C
+U --> R
+R --> C
+@enduml

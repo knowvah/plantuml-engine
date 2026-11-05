@@ -1,0 +1,5 @@
+@startuml
+actor A
+usecase B
+A --> B : <size:8>s</size> mid <size:20>BIG</size>\nnext <size:6>t</size><size:8>u</size>
+@enduml

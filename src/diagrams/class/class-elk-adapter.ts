@@ -219,11 +219,12 @@ function namespaceTags(ns: Namespace): readonly string[] {
 /** `Cluster.getDefaultStyleDefinition(classDiagram, null, PACKAGE)`'s merged facts (`MyElkCluster.java:93-104`). */
 function clusterStyle(index: ClassElkIndex, groupId: string) {
   const theme = index.model.theme;
-  const tags = namespaceTags(requireValue(index.namespaces, groupId, 'group'));
+  const ns = requireValue(index.namespaces, groupId, 'group');
+  const tags = namespaceTags(ns);
   return {
     shadowing: theme.shadowing ?? 0,
     stroke: UStroke.withThickness(packageBorderThickness(theme, tags, PACKAGE_LINE_THICKNESS)),
-    roundCorner: PACKAGE_ROUND_CORNER,
+    roundCorner: ns.roundCorner ?? PACKAGE_ROUND_CORNER,
     lineColor: packageBorderColor(theme, tags, PACKAGE_LINE_COLOR),
   };
 }
@@ -323,10 +324,10 @@ function linkMembers(index: ClassElkIndex, ends: ReturnType<typeof linkEndMember
     isHidden: (id: string) => link(id).hidden === true || hidden(link(id).from) || hidden(link(id).to),
     getType: (id: string) => linkType(link(id)),
     // `{root, element, classDiagram, arrow}` (`MyElkEdge.java:140-145`).
-    getArrowStyle: () => ({
+    getArrowStyle: (id: string) => ({
       lineColor:
         elementGradient(theme, 'arrow', 'border') ?? theme.colors.graph.classCascadeArrowColor ?? theme.colors.arrow,
-      stroke: UStroke.simple(),
+      stroke: link(id).arrowStroke ?? UStroke.simple(),
     }),
     getLinkColors: () => null,
     getSpecificColor: (id: string) => link(id).colorOverride ?? null,

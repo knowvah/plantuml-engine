@@ -25,8 +25,9 @@ import { execFileSync } from 'node:child_process';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from '../../../tests/oracle/svg-conformance/compare.js';
 import { dotEligibility, ELIGIBLE_TYPES } from '../../../tests/oracle/svg-conformance/description-eligibility.js';
-import { renderFixture } from '../../../tests/oracle/svg-conformance/render-fixture.js';
+import { prepareElkOnce, renderFixture } from '../../../tests/oracle/svg-conformance/render-fixture.js';
 
+await prepareElkOnce();
 const REPO = execFileSync('git', ['rev-parse', '--show-toplevel']).toString().trim();
 const [surveyDir, label, flag] = process.argv.slice(2);
 if (surveyDir === undefined || label === undefined) throw new Error('usage: <survey-dir> <close-label> [--write]');
@@ -42,6 +43,7 @@ interface Row {
   type: string;
   verdict?: string;
   dotEqual?: boolean;
+  oracleBlind?: boolean;
 }
 const readJson = <T,>(p: string): T => JSON.parse(readFileSync(p, 'utf8')) as T;
 const manifest = readJson<{ fixtures: Row[] }>(join(GOLDENS, 'ratchet.json'));
@@ -71,7 +73,7 @@ for (const type of TYPES) {
     const key = `${type}/${r.slug}`;
     if (r.verdict !== 'conformant' || pinned.has(key)) continue;
     const diffs = zeroDiff(type, r.slug);
-    const el = dotEligibility(type, r, ourTypes.get(key));
+    const el = dotEligibility(type, r, ourTypes.get(key), readFileSync(join(CACHE, type, r.slug, 'in.puml'), 'utf8'));
     const ok = diffs === 0 && el.ok;
     const why = ok ? 'pin' : !el.ok ? el.reason : diffs < 0 ? 'renderFixture threw' : `${diffs} ratchet diffs`;
     console.log(`${ok ? 'PIN ' : 'skip'} ${key} ratchetDiffs=${diffs} eligibility=${el.ok ? 'ok' : 'NO'} (${el.reason}) => ${why}`);

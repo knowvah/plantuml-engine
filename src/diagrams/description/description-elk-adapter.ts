@@ -385,8 +385,10 @@ export class DescriptionElkAdapter implements ElkDiagramAdapter {
     return HorizontalAlignment.CENTER;
   }
 
+  /** `skinParam.getThickness(LineParam.arrow, null)` (`MyElkEdge.java:171`): null unless `skinparam arrowThickness`. */
   getArrowThickness(): UStroke | null {
-    return null;
+    const thickness = this.input.theme.colors.graph.arrowThickness;
+    return thickness === undefined ? null : UStroke.withThickness(thickness);
   }
 
   // --- Link ----------------------------------------------------------------------

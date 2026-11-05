@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Component>
+Container_Boundary(api, "API") {
+  Component(c1, "Controller", "Spring", "Handles")
+  ComponentDb(c2, "Store", "JPA")
+}
+Rel(c1, c2, "Reads")
+SHOW_LEGEND()
+@enduml

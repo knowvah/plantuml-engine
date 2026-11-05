@@ -58,7 +58,7 @@ import { LimitFinder } from '../../core/klimt/drawing/LimitFinder.js';
 import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
 import type { LeafSymbolInk } from '../../core/svek/image/leaf-sizing-entity.js';
 import {
-  PACKAGE_ROUND_CORNER,
+  namespaceRoundCorner,
   DEFAULT_GROUP_FONT_COLOR,
   byStereo,
   elementLineStyle,
@@ -338,7 +338,7 @@ export function namespaceUSymbolInk(
   if (symbol === undefined) return undefined;
   const decoration = inkDecoration(geo, symbol, theme);
   const finder = LimitFinder.create(new MeasurerStringBounder(measurer), false);
-  const roundCorner = theme.strictUml === true ? 0 : PACKAGE_ROUND_CORNER;
+  const roundCorner = namespaceRoundCorner(geo, theme);
   decoration.drawU(
     finder,
     'none',

@@ -41,6 +41,8 @@ export interface Classifier {
   typeParamsRawText?: string;
   members: Member[];
   stereotype?: string;
+  /** A collapsed group's corner, `EntityImageEmptyPackage.java:104` off the merged style (`class-cluster-corner.ts`). */
+  emptyLeafRoundCorner?: number;
   /**
    * G2 N24: the classifier's stereotype, split into individual labels and
    * filtered through `hide|show [<<pattern>>] stereotype(s)` directives

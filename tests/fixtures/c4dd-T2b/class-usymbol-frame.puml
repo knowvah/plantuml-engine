@@ -1,0 +1,9 @@
+@startuml
+skinparam roundcorner 8
+package P <<Frame>> {
+  class A
+}
+package Q <<Rectangle>> {
+  class B
+}
+@enduml

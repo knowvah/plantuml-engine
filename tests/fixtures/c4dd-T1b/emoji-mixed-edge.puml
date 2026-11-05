@@ -1,0 +1,5 @@
+@startuml
+actor A
+usecase B
+A --> B : <size:20>BIG</size> <:rocket:> <size:8>s</size>
+@enduml

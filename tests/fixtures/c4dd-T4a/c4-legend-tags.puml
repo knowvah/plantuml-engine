@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Container>
+AddElementTag("v1", $bgColor="#d73027", $fontColor="#ffffff", $legendText="Version one")
+AddRelTag("sync", $lineColor="#0000ff", $textColor="#0000ff", $lineStyle="DashedLine()", $legendText="Sync")
+Container(a, "A", "tech", "desc", $tags="v1")
+Container(b, "B", "tech", "desc")
+Rel(a, b, "Calls", $tags="sync")
+SHOW_LEGEND()
+@enduml

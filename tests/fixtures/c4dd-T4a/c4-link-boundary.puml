@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Container>
+Enterprise_Boundary(e, "Ent", $link="https://example.com/e") {
+  System_Boundary(s, "Sys", $descr="Long description here") {
+    Container(a, "A", "t", "d", $link="https://example.com/a")
+  }
+}
+Rel(a, a, "self", $link="https://example.com/r")
+@enduml

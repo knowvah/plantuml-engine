@@ -47,6 +47,17 @@ The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-matc
 5. **`CommandLinkStateCommon`'s `node` edge-label style** (`statediagramedgelabelstyle node`, `createTransitionWithIntermediateNode`) is unported; no corpus row.
 6. **A `frame` composite's gradient back colour** — `renderer-frame-cluster.ts` returns the fragment body and drops `extraDefs`; the default frame has no gradient (`group { BackGroundColor transparent }`), so nothing moves today.
 
+## c4-divergence-drive (c4dd) — DONE 2026-11-05 on `feature/parity-queue`
+
+Issue #114. `c4` 7 to 10 of 11 conformant: `biluko-70`, `rosoga-84`, `vakasu-51`. `gikaju-64` stays a signed error page. 0 losses in any engine. 9 of 10 conformant rows pinned, across two ratchets; `kipive-74` stays out as an error page. Three zero-diff ELK rows of other buckets pinned by the same eligibility rule: `dirofi-81`, `foraba-98`, `xoviku-63`. 34 authored C4 and DomainStory probes at 0 diffs, 65 more authored rows across T1b to T3b. `plans/c4-divergence-drive/` holds the journal.
+
+**Follow-ons:**
+- #148: `usecase U` under `skinparam titleBorderColor`: the jar paints the ellipse, ours does not. Mechanism not confirmed.
+- #149: a class USymbol group's title is `2 * (scale - 1)` short under `scale`.
+- #150: emoji artwork on an edge label: `buildTextBlock` has no seam for it.
+- #151: comment bytes on 6 conformant class rows and under `set namespaceSeparator`.
+- D2 option C stays the known route if a later row needs `PreprocessorResult.lines` compiled too: only `dataLines` folds a stdlib sprite.
+
 ## description-divergence-drive (ddd) — DONE 2026-11-04 on `feature/parity-queue`
 
 Issue #113. In scope 508 conformant to 709 of 716: `component` 266/266, `usecase` 93/94, `unknown` jar-DESCRIPTION 350/356. `c4` 2 to 7. 0 losses in any engine. 282 pinned. Mechanisms in `plans/description-divergence-drive/decision-journal.md`.

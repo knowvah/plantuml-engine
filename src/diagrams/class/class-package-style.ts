@@ -41,6 +41,11 @@ const MARGIN_TITLE_Y1 = 3;
  *  element { RoundCorner 5 } }`): `A2.5,2.5`/`A3.75,3.75` folder arcs,
  *  `rx="2.5"` rects. */
 export const PACKAGE_ROUND_CORNER = 5;
+
+/** A group's corner as `Cluster.java:321-324` has it: the merged style's, `strictuml` zeroing it. Unscaled. */
+export function namespaceRoundCorner(geo: { readonly roundCorner?: number }, theme: Theme): number {
+  return theme.strictUml === true ? 0 : (geo.roundCorner ?? PACKAGE_ROUND_CORNER);
+}
 const MARGIN_TITLE_Y2 = 3;
 
 /** `FontParam.PACKAGE`'s `defaultColor` (`klimt/font/FontParam.java:67`,

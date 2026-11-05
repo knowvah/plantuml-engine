@@ -338,7 +338,8 @@ function tryMeasureNonGenericClassifier(
       height: dim.height,
       dividerYs: [],
       rows: [{ text: classifier.display, y: 0, indent: 0 }],
-      folderTab: dim,
+      folderTab:
+        classifier.emptyLeafRoundCorner === undefined ? dim : { ...dim, roundCorner: classifier.emptyLeafRoundCorner },
     };
   }
   // object/map/json leaves are NOT the generic name+members box — each has

@@ -1,0 +1,7 @@
+@startuml
+skinparam roundcorner 8
+mainframe M
+actor A
+usecase B
+A --> B
+@enduml

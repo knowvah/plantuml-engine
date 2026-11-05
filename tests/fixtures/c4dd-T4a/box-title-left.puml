@@ -1,0 +1,5 @@
+@startuml
+box "wide line one\rB\rC"
+participant X
+end box
+@enduml

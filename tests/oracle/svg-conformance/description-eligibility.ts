@@ -26,6 +26,18 @@ export interface SurveyRow {
   readonly slug: string;
   readonly verdict?: string;
   readonly dotEqual?: boolean;
+  readonly oracleBlind?: boolean;
+}
+
+/**
+ * `!pragma layout elk` (`CommandPragma.java:128-129`): such a row has no DOT stage, because the jar's ELK path
+ * (`CucaDiagram.java:478-479`) dumps no `svek-N.dot`, so it can never be `dotEqual`.
+ */
+const ELK_PRAGMA = /^\s*!pragma\s+layout\s+elk\s*$/im;
+
+/** cdd8 D12: eligible with no DOT stage when the survey marks it blind AND its source carries the pragma. */
+export function isElkRow(row: Pick<SurveyRow, 'oracleBlind'>, source: string): boolean {
+  return row.oracleBlind === true && ELK_PRAGMA.test(source);
 }
 
 export interface Eligibility {
@@ -40,14 +52,23 @@ function isRoutedType(type: string): boolean {
 /** Whether a survey row may be pinned (ignoring zero-diff, which the caller
  *  measures). `ourType` is the routing-baseline value for the row's
  *  dot-cache twin; it is consulted only for the routed buckets. */
-export function dotEligibility(type: string, row: SurveyRow | undefined, ourType: string | undefined): Eligibility {
+export function dotEligibility(
+  type: string,
+  row: SurveyRow | undefined,
+  ourType: string | undefined,
+  source = '',
+): Eligibility {
   if (!(ELIGIBLE_TYPES as readonly string[]).includes(type)) {
     return { ok: false, reason: `type ${type} is not a description ratchet type` };
   }
   if (row === undefined) return { ok: false, reason: `no parity-${type}.json row` };
-  if (row.dotEqual !== true) return { ok: false, reason: `dotEqual=${String(row.dotEqual)} in parity-${type}.json` };
+  const elk = isElkRow(row, source);
+  if (row.dotEqual !== true && !elk) {
+    return { ok: false, reason: `dotEqual=${String(row.dotEqual)} in parity-${type}.json` };
+  }
   if (isRoutedType(type) && ourType !== DESCRIPTION_ENGINE_TYPE) {
     return { ok: false, reason: `routing-baseline ourType=${String(ourType)}, not ${DESCRIPTION_ENGINE_TYPE}` };
   }
-  return { ok: true, reason: 'dotEqual=true' + (isRoutedType(type) ? `, routed ${DESCRIPTION_ENGINE_TYPE}` : '') };
+  const stage = elk ? 'ELK, no DOT stage' : 'dotEqual=true';
+  return { ok: true, reason: stage + (isRoutedType(type) ? `, routed ${DESCRIPTION_ENGINE_TYPE}` : '') };
 }

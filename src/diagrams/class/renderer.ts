@@ -20,7 +20,7 @@ import {
   renderNamespaceFolder,
   renderNamespaceRect,
   namespaceFill,
-  PACKAGE_ROUND_CORNER,
+  namespaceRoundCorner,
 } from './class-namespace-shape.js';
 import { DEFAULT_GROUP_FONT_COLOR } from './class-package-style.js';
 import { renderNamespaceUSymbol } from './class-namespace-usymbol-shape.js';
@@ -64,7 +64,7 @@ function renderNamespace(geo: NamespaceGeo, theme: ScaledTheme, measurer: String
       // cdd-B8FU: renderNamespaceUSymbol draws through renderDrawableToFragment
       // at scale=1 (no SvgOption.scale threading, class-namespace-usymbol-
       // shape.ts's own citation) -- this literal needs its own scaleK factor.
-      roundCorner: (theme.strictUml === true ? 0 : PACKAGE_ROUND_CORNER) * theme.scaleK,
+      roundCorner: namespaceRoundCorner(geo, theme) * theme.scaleK,
       // cdd3-T21: a USymbol group's title style is `{..., <usymbol>,
       // composite, title}` (`ClusterHeader.java:150-153`) -- no `package_`,
       // so `packageFontColor` never reaches it (jar gigoru-88: `#000`).
@@ -81,7 +81,7 @@ function renderNamespace(geo: NamespaceGeo, theme: ScaledTheme, measurer: String
 // Edge
 // ---------------------------------------------------------------------------
 
-import { renderEdge } from './renderer-edge.js';
+import { linkCommentOf, renderEdge } from './renderer-edge.js';
 import { renderNoteConnectorLink } from './renderer-note-connector.js';
 import { interleaveNoteLinks, relIndexOfDotEdgeId } from './class-link-order.js';
 
@@ -251,6 +251,7 @@ export function renderClass(geo: ClassGeometry, rawTheme: Theme): RenderFragment
         {
           from: edge.from,
           to: edge.to,
+          comment: linkCommentOf(edge, syntheticNames),
           uid: uidPlan.edgeUid[i] ?? '',
           fromUid: uidPlan.resolveEntityUid(edge.from),
           toUid: uidPlan.resolveEntityUid(edge.to),

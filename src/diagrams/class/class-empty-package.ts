@@ -92,6 +92,8 @@ export interface EmptyPackageStereoLine {
 
 /** Box + title/stereo geometry for a collapsed-empty package leaf. */
 export interface EmptyPackageLeafDim {
+  /** `EntityImageEmptyPackage.java:104`, unscaled; absent means the skin's {@link PACKAGE_ROUND_CORNER}. */
+  roundCorner?: number;
   width: number;
   height: number;
   wtitle: number;
@@ -273,13 +275,13 @@ function emptyPackageFill(theme: ScaledTheme): Paint {
  *  block + symbol ({@link EmptyPackageLeafDim}) and its style-matching
  *  stereotype tags (`withTOBECHANGED(stereotype)`, `:88-91`). */
 export interface EmptyPackageLeafExtras {
-  readonly tab?: Pick<EmptyPackageLeafDim, 'stereo' | 'rect'>;
+  readonly tab?: Pick<EmptyPackageLeafDim, 'stereo' | 'rect' | 'roundCorner'>;
   readonly tags?: readonly string[];
 }
 
 interface EmptyPackageLeafDraw {
   readonly geo: NamespaceGeo;
-  readonly tab: Pick<EmptyPackageLeafDim, 'stereo' | 'rect'>;
+  readonly tab: Pick<EmptyPackageLeafDim, 'stereo' | 'rect' | 'roundCorner'>;
   readonly tags: readonly string[];
 }
 
@@ -359,7 +361,7 @@ function renderFolderLeaf(
     border,
     strokeWidth,
     fill: geo.color !== undefined ? parseColor(geo.color) : fill, // S-12: EntityImageEmptyPackage.java:97,109-112
-    roundCorner: PACKAGE_ROUND_CORNER * theme.scaleK,
+    roundCorner: (draw.tab.roundCorner ?? PACKAGE_ROUND_CORNER) * theme.scaleK,
     marginX3: MARGIN_TITLE_X3 * theme.scaleK,
   });
   const titleX = geo.x + TITLE_X_OFFSET * theme.scaleK;
@@ -385,7 +387,7 @@ function renderFolderLeaf(
 function renderRectLeaf(draw: EmptyPackageLeafDraw, theme: ScaledTheme, measurer: StringMeasurer | undefined): string {
   const { geo } = draw;
   const { strokeWidth, border, fill, dash } = emptyPackagePaint(theme, draw.tags);
-  const corner = (PACKAGE_ROUND_CORNER * theme.scaleK) / 2;
+  const corner = ((draw.tab.roundCorner ?? PACKAGE_ROUND_CORNER) * theme.scaleK) / 2;
   const outline = rect(geo.x, geo.y, geo.width, geo.height, {
     stroke: isNoPaint(border) ? PAINT_NONE : border, // SvgGraphics.java:539-540 fixColor
     strokeWidth,

@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Container>
+Person(user, "User", "A person")
+System_Boundary(b, "Bank") {
+  Container(web, "Web", "Nginx", "Serves")
+  ContainerDb(db, "DB", "Postgres", "Stores")
+  ContainerQueue(q, "Queue", "Kafka", "Moves")
+}
+Rel(user, web, "Uses", "HTTPS")
+Rel(web, db, "Reads", "SQL")
+Rel(web, q, "Publishes")
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+box "A\n<size:12>[B]</size>"
+participant X
+end box
+@enduml

@@ -176,7 +176,7 @@ export function renderFixtureActivity(
     return assembleSvg(applyActivityScale(fragment, { ast, theme }), seed);
   }
 
-  const styles = resolveAnnotationStyles(theme, preprocessed.skinparam, styleMap);
+  const styles = resolveAnnotationStyles(theme, preprocessed, styleMap);
   // add1 b3 (journal row 52): mirror `src/index.ts#applyAnnotationChrome`'s
   // activity branch -- the document margin wraps the chrome (T3j,
   // `TextBlockExporter.java:159-203`), so this harness must compose the same

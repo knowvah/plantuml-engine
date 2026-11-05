@@ -6,16 +6,16 @@
  */
 import { asAtomOpenIconic } from '../../klimt/creole/atom/AtomOpenIconic.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
-import type { FontConfiguration } from '../../klimt/shape/UText.js';
+import { getFont, type FontConfiguration } from '../../klimt/shape/UText.js';
 import type { AtomImageResolver } from '../../creole-atoms.js';
 import type { CreoleAtom } from '../../klimt/creole/atom/Atom.js';
 import { SPACE_ATOM_HEIGHT } from '../../klimt/creole/atom/AtomSpace.js';
-import { verticalAtomBox, bulletDimension } from './creole-sea-line.js';
+import { verticalAtomBox, bulletDimension, layoutLineThroughSea } from './creole-sea-line.js';
 import { buildLineAtoms, type LineBuildAtoms } from '../../klimt/creole/legacy/StripeSimple.js';
 import { getSplitted } from '../../klimt/creole/Fission.js';
 import { atomTextWidth } from '../../klimt/creole/legacy/AtomText.js';
 import { renderLatexAsImage } from '../../latex.js';
-import { EMOJI_BOX_FACTOR, emojiBoxDim, emojiLineHeightFactor } from '../../klimt/creole/atom/AtomEmoji.js';
+import { EMOJI_BOX_FACTOR, emojiBoxDim } from '../../klimt/creole/atom/AtomEmoji.js';
 
 /**
  * SI15 T1 (ADR-1): widens `AtomImageResolver`'s `image` variant with the
@@ -73,9 +73,13 @@ export function measureLine(
 export interface LineMetrics {
   width: number;
   height: number;
-  /** The tallest atom's UNCLAMPED height: the baseline is `rawHeight - descent` (`AtomText.java:215`). */
-  rawHeight: number;
-  descent: number;
+  /**
+   * Each atom's box top within the line, parallel to the atoms: `Sea#getPosition(atom).getMinY()` after
+   * `translateMinYto(0)`, the position `SheetBlock1#drawU` translates to before `Atom#drawU`
+   * (`SheetBlock1.java:212-217`). A text run's baseline is its own `rect.getHeight() - descent` below this
+   * (`AtomText.java:213-215`), so there is no single baseline per line.
+   */
+  top: readonly number[];
 }
 
 /**
@@ -126,121 +130,60 @@ export function buildLine(line: string, font: FontConfiguration): LineBuild {
   return buildLineAtoms(line, font);
 }
 
-/** Sums each atom's own width (text run measured under ITS own
- *  `FontConfiguration`; a resolved `<img>`/`<$sprite>` atom under its
- *  resolved dims) and takes the MAX height across atoms — the same
- *  width-ADD/height-MAX composition `creole-atoms.ts#measureLineWithAtoms`
- *  already established for the img/sprite-only case (D9), now generalized
- *  to every styled text run too. An unresolved inline atom (`resolveAtomImage`
- *  returns `undefined`, or no resolver supplied at all) contributes
- *  nothing, matching `StripeSimple.addSprite`'s "never added" behavior. */
 /**
- * F4-b: whether any atom on this line sits at starting altitude 0 — every
- * `CreoleAtom` kind EXCEPT `emoji` (`AtomImg`/`AtomSprite`/`AtomMath` all
- * `return 0` upstream; `AtomText` returns `getSpace()`, 0 for `NORMAL`,
- * this port's only reachable position — see `descAtomOps`'s doc comment in
- * `EntityImageDescriptionDelegates.ts`). Such an atom pins the line's
- * `maxY` at 0 under `Sea#doAlign`, which is what makes a shared line
- * `39*factor` tall and an emoji-only line `36*factor`
- * ({@link emojiLineHeightFactor}).
- *
- * Named for the RULE (altitude), not for the common case (a text sibling),
- * because a line of `<:rocket:><$sprite>` takes the shared-line height too
- * — the sprite's altitude is 0 exactly like text's.
+ * The size an atom measures at: `AtomText#drawU` and `#calculateDimensionSlow` read
+ * `fontConfiguration.getFont()`, which mutes a `<sub>`/`<sup>` run (`FontConfiguration.java:98-104`).
  */
-export function hasZeroAltitudeAtom(atoms: readonly CreoleAtom[]): boolean {
-  return atoms.some((atom) => atom.kind !== 'emoji');
+export function measuringFont(fc: FontConfiguration): FontConfiguration {
+  return { ...fc, size: getFont(fc).size };
 }
 
+/**
+ * `Atom#calculateDimension` for one atom. An unresolved inline atom (`resolveAtomImage` returns `undefined`, or no
+ * resolver supplied at all) contributes nothing, matching `StripeSimple.addSprite`'s "never added" behavior.
+ */
+function atomDimension(
+  stringBounder: StringBounder,
+  atom: CreoleAtom,
+  resolveAtomImage: AtomImageResolver | undefined,
+): { readonly width: number; readonly height: number } {
+  if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font));
+  if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000');
+  // `AtomEmoji#calculateDimensionSlow`: the 36*factor square; its -3*factor altitude reaches the line through `Sea`.
+  if (atom.kind === 'emoji') return { width: EMOJI_BOX_FACTOR * atom.factor, height: EMOJI_BOX_FACTOR * atom.factor };
+  // `AtomSpace#calculateDimensionSlow`: (width, 1).
+  if (atom.kind === 'space') return { width: atom.width, height: SPACE_ATOM_HEIGHT };
+  // stdd T6d: `Bullet#calculateDimensionSlow` (`Bullet.java:57-62`).
+  if (atom.kind === 'bullet') return bulletDimension(atom.order);
+  // `AtomVerticalTexts#calculateDimensionSlow` (`AtomVerticalTexts.java:54-64`).
+  if (atom.kind === 'vertical')
+    return verticalAtomBox(atom.lines, (sub) => atomDimension(stringBounder, sub, resolveAtomImage));
+  const glyph = atom.ambientFont === undefined ? undefined : asAtomOpenIconic(atom, atom.ambientFont);
+  if (glyph !== undefined) {
+    const dim = glyph.calculateDimension(stringBounder);
+    return { width: dim.getWidth(), height: dim.getHeight() };
+  }
+  return resolveAtomImage?.(atom.atom, () => stringBounder) ?? { width: 0, height: 0 };
+}
+
+/**
+ * One stripe through the real `Sea`, as `SheetBlock1#initMap` does (`SheetBlock1.java:130-152`): the width adds, each
+ * atom hangs from the line by its own height and starting altitude (`Sea.java:72-80`), so `<sub>` grows a line's
+ * bottom, `<sup>` its top, and a run shorter than `AtomText.java:179-181`'s floor sits inside its floored box. The
+ * measuring half of `layoutLineThroughSea`; `dy` is unused here because this seam draws from `top`.
+ */
 export function measureAtomsWidthHeight(
   stringBounder: StringBounder,
   atoms: readonly CreoleAtom[],
   resolveAtomImage: AtomImageResolver | undefined,
 ): LineMetrics {
-  // #lizard forgives(cyclomatic_complexity, nloc) -- one flat per-atom-kind
-  // dispatch loop (R2i adds the emoji width/height branch to a pre-existing
-  // at-cap shape).
-  let width = 0;
-  let height = 0;
-  let rawHeight = 0;
-  const grow = (h: number): void => {
-    if (h > height) height = h;
-    if (h > rawHeight) rawHeight = h;
-  };
-  // cdd3-T8 (`daxeno-00-kasu166`): MAX across TEXT atoms' own per-atom
-  // descent (`measureLine`'s `stringBounder.getDescent(atom.font,
-  // atom.text)`, already computed there, previously discarded) -- the SAME
-  // width-ADD/height-MAX-per-atom composition this loop already applies,
-  // one term further. The prior single `built.lineFont`-wide descent used
-  // the LINE's BASE font unconditionally, ignoring a per-run `<size:N>`
-  // override baked into `atom.font` -- wrong for a `<size:18>styled</size>`
-  // run inside a 14px-base title: descent 14/4.5=3.111 instead of the run's
-  // OWN 18/4.5=4.0, an 0.889px baseline error on `daxeno-00-kasu166`'s
-  // package cluster title (`text/@y` Δ0.889). A line whose only run keeps
-  // the base font (the common case) is unaffected: its one atom's own font
-  // IS the base font. Non-text atoms contribute 0 (unread by `drawAtoms`'s
-  // `baselineDy`, which only text atoms consume).
-  let descent = 0;
-  const sharedLine = hasZeroAltitudeAtom(atoms);
-  for (const atom of atoms) {
-    if (atom.kind === 'text') {
-      const m = measureLine(stringBounder, atom.text, atom.font);
-      width += m.width;
-      if (m.height > height) height = m.height;
-      if (m.rawHeight > rawHeight) rawHeight = m.rawHeight;
-      if (m.descent > descent) descent = m.descent;
-      continue;
-    }
-    if (atom.kind === 'latex') {
-      const resolved = renderLatexAsImage(atom.expr, atom.color ?? '#000000');
-      width += resolved.width;
-      grow(resolved.height);
-      continue;
-    }
-    // A2s R2i: a `<:name:>` emoji sizes as `AtomEmoji`'s exact contract --
-    // 36*factor box width (`klimt/creole/atom/AtomEmoji.ts`;
-    // murava-69-tago286). F4-b: the LINE height is 39*factor only when a
-    // zero-altitude atom shares the line, 36*factor when the emoji is alone
-    // -- `emojiLineHeightFactor`, this file's `hasZeroAltitudeAtom`.
-    if (atom.kind === 'emoji') {
-      width += EMOJI_BOX_FACTOR * atom.factor;
-      const lineHeight = emojiLineHeightFactor(sharedLine) * atom.factor;
-      grow(lineHeight);
-      continue;
-    }
-    // `AtomSpace#calculateDimensionSlow`: (width, 1).
-    if (atom.kind === 'space') {
-      width += atom.width;
-      grow(SPACE_ATOM_HEIGHT);
-      continue;
-    }
-    // stdd T6d: `Bullet#calculateDimensionSlow` (`Bullet.java:57-62`).
-    if (atom.kind === 'bullet') {
-      const box = bulletDimension(atom.order);
-      width += box.width;
-      grow(box.height);
-      continue;
-    }
-    // `AtomVerticalTexts#calculateDimensionSlow` (`AtomVerticalTexts.java:54-64`).
-    if (atom.kind === 'vertical') {
-      const box = verticalAtomBox(atom.lines, (sub) => measureAtomsWidthHeight(stringBounder, [sub], resolveAtomImage));
-      width += box.width;
-      grow(box.height);
-      continue;
-    }
-    const glyph = atom.ambientFont === undefined ? undefined : asAtomOpenIconic(atom, atom.ambientFont);
-    if (glyph !== undefined) {
-      const dim = glyph.calculateDimension(stringBounder);
-      width += dim.getWidth();
-      grow(dim.getHeight());
-      continue;
-    }
-    const resolved = resolveAtomImage?.(atom.atom, () => stringBounder);
-    if (resolved === undefined) continue;
-    width += resolved.width;
-    grow(resolved.height);
-  }
-  return { width, height, rawHeight, descent };
+  const layout = layoutLineThroughSea(atoms, {
+    dim: (atom) => atomDimension(stringBounder, atom, resolveAtomImage),
+    drawHeight: () => 0,
+    descent: () => 0,
+    normalDescent: () => 0,
+  });
+  return { width: layout.width, height: layout.height, top: layout.top };
 }
 
 export function measureBuiltLine(
@@ -249,12 +192,7 @@ export function measureBuiltLine(
   resolveAtomImage: AtomImageResolver | undefined,
 ): LineMetrics {
   if (built.classification.type === 'HORIZONTAL_LINE') {
-    return {
-      width: SEPARATOR_WIDTH_CONTRIBUTION,
-      height: SEPARATOR_SIZE_HEIGHT,
-      rawHeight: SEPARATOR_SIZE_HEIGHT,
-      descent: 0,
-    };
+    return { width: SEPARATOR_WIDTH_CONTRIBUTION, height: SEPARATOR_SIZE_HEIGHT, top: [] };
   }
   return measureAtomsWidthHeight(stringBounder, built.atoms, resolveAtomImage);
 }
@@ -269,7 +207,7 @@ export function measureSingleAtomWidth(
   atom: CreoleAtom,
   resolveAtomImage: AtomImageResolver | undefined,
 ): number {
-  if (atom.kind === 'text') return measureLine(stringBounder, atom.text, atom.font).width;
+  if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font)).width;
   if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000').width;
   // A2s R2i: emoji x-advance is the 36*factor box (see measureAtomsWidthHeight).
   if (atom.kind === 'emoji') return emojiBoxDim(atom.factor).width;
