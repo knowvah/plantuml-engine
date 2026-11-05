@@ -1220,7 +1220,7 @@ Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). B
 - **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
 - **`:a| <<foo>>`:** the jar reports `Syntax Error?` on that line. We draw an activity box, with the stereotype and any lines after it in the label.
 
-On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and each is signed in the ledger.
+On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and 24 remain signed in the ledger. The ruling on #152 (2026-11-05) retired `dulone-62` and `losote-76`: a duplicate `map` or `object` now errors as the jar does (`CommandCreateMap.java:165-166`, `CommandCreateEntityObject.java:121-122`).
 
 An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
 

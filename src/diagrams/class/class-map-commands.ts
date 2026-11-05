@@ -158,8 +158,8 @@ function parseMapMatch(match: RegExpExecArray): MapMatch {
  * ALREADY-declared entity, of ANY kind, at that resolved id — matching
  * upstream's Entity-level check, not a map-only one) then fails the whole
  * command ("Map already exists" — `executeArg0` returns null, `executeNow`
- * errors before ever reading a body line). Ruling #143 keeps the port drawing the
- * first declaration: see the comment at the check.
+ * errors before ever reading a body line). The block is one trace in the jar, so
+ * the refusal waits for the `}`: {@link ParseState.pendingBodyRefusal}.
  */
 function applyMapOpen(state: ParseState, match: RegExpExecArray): void {
   const { rawCode, rawDisplay, stereotype, color } = parseMapMatch(match);
@@ -174,9 +174,8 @@ function applyMapOpen(state: ParseState, match: RegExpExecArray): void {
     reuseExistingChild: true,
   });
   if (state.classifierIndex.has(id)) {
-    // `CommandCreateMap.java` `executeNow` errors here (`"Map already exists: " + line0.get("NAME", 1)`); the
-    // maintainer's ruling of 2026-11-04 (#143) signed `dulone-62` as drawn, so its body is discarded until that changes.
-    state.pendingBodyId = '';
+    // `CommandCreateMap.java:165-166`: `error("Map already exists: " + line0.get("NAME", 1))`, the id as written.
+    state.pendingBodyRefusal = { message: `Map already exists: ${rawCode}` };
     return;
   }
 
@@ -344,7 +343,7 @@ export function applyMapBodyLine(state: ParseState, classifier: Classifier, rawL
 }
 
 /** `Quark#getName`: the last segment of `quarkInContext(true, dest)`, which is what `No such entity` prints. */
-function quarkName(state: ParseState, dest: string): string {
+export function quarkName(state: ParseState, dest: string): string {
   return splitOnSeparator(dest, state.namespaceSeparator)?.at(-1) ?? dest;
 }
 

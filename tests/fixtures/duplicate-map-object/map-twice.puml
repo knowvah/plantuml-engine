@@ -1,0 +1,8 @@
+@startuml
+map CapitalCity {
+ UK => London
+}
+map CapitalCity {
+ UK => Paris
+}
+@enduml

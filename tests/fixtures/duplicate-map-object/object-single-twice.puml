@@ -1,0 +1,4 @@
+@startuml
+object foo <<first>>
+object foo <<second>>
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+object user {
+  name = "Dummy"
+}
+
+object user
+@enduml

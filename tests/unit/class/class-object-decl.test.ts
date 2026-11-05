@@ -12,6 +12,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { parseClass } from './parse-helper.js';
+import { parseClass as parseClassRaw } from '../../../src/diagrams/class/parser.js';
+import { parseRefusalOf } from '../../../src/core/dispatcher.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import type { ClassDiagramAST, Classifier } from '../../../src/diagrams/class/ast.js';
 
@@ -75,11 +77,10 @@ describe('object declaration — bare and aliased forms', () => {
 // ---------------------------------------------------------------------------
 
 describe('object declaration — duplicate handling', () => {
-  it('a second "object foo" leaves the first as declared, under ruling #143', () => {
-    const ast = parse('object foo <<first>>\nobject foo <<second>>');
-    const objects = ast.classifiers.filter((c) => c.id === 'foo');
-    expect(objects).toHaveLength(1);
-    expect(objects[0]!.stereotype).toBe('first');
+  it('a second "object foo" refuses with the jar\'s message', () => {
+    const lines = ['object foo <<first>>', 'object foo <<second>>'];
+    const block: UmlSource = { lines, type: 'class' };
+    expect(parseRefusalOf(parseClassRaw(block))?.message).toBe('Object already exists: foo');
   });
 });
 

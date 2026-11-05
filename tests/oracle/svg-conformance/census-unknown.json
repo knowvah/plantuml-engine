@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-05T13:55:40.355Z",
-  "measuredAgainstCommit": "7c304c2c0",
+  "generatedAt": "2026-11-05T14:25:26.749Z",
+  "measuredAgainstCommit": "94544fd48",
   "type": "unknown",
   "measurer": "deterministic",
   "fixtures": [
@@ -1069,7 +1069,7 @@
     {
       "slug": "dulone-62-neri182",
       "status": "ok",
-      "diffCount": 6,
+      "diffCount": 5,
       "bucket": "4-10"
     },
     {
@@ -2809,7 +2809,7 @@
     {
       "slug": "losote-76-beki147",
       "status": "ok",
-      "diffCount": 6,
+      "diffCount": 7,
       "bucket": "4-10"
     },
     {

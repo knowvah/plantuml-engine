@@ -127,10 +127,8 @@ describe('map body — block refusals', () => {
     expect(refused('map m {\njust text\n}')).toBe('Map definition should contains key => value');
   });
 
-  it('a second map of one name discards its body, under ruling #143', () => {
-    const ast = parse('map m {\nk1 => v1\n}\nmap m {\nk2 => v2\n}');
-    expect(ast.classifiers.filter((c) => c.id === 'm')[0]!.rows).toEqual([{ key: 'k1', value: 'v1' }]);
-    expect(ast.classifiers.find((c) => c.id === 'k2')).toBeUndefined();
+  it('a second map of one name refuses the block, by the id as written', () => {
+    expect(refused('map m {\nk1 => v1\n}\nmap m {\nk2 => v2\n}')).toBe('Map already exists: m');
   });
 
   it('a link to no entity refuses the block, by the quark name', () => {

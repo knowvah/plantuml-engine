@@ -212,15 +212,6 @@
     },
     {
       "match": {
-        "id": "svg-unknown/dulone-62-neri182"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-11-04",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Map already exists: CapitalCity (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
         "id": "svg-unknown/duluve-89-mati167"
       },
       "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
@@ -281,15 +272,6 @@
       "acceptedAt": "2026-11-04",
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"No such color (Assumed diagram type: activity)\". An unknown colour paints neutral grey here (ruling 2026-11-04), never a raw invalid value. The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
-        "id": "svg-unknown/losote-76-beki147"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-11-04",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-11-04 (#143), after reviewing our drawing beside the jar error page. Verified 2026-11-04 against the official release plantuml-1.2026.8.jar (no -D flags, -stdrpt:1): exit 200. Pinned jar: \"Object already exists: user (Assumed diagram type: class)\". The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
     },
     {
       "match": {

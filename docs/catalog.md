@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2096 modules · 7355 exported names.
+2096 modules · 7356 exported names.
 
 ## `src/`
 
@@ -1714,7 +1714,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-lollipop.ts` | `LOLLIPOP_SIZE`, `ASSOC_POINT_SIZE`, `LOLLIPOP_RE`, `LollipopCounter`, `LollipopOutcome`, `applyLollipop` | Interface lollipop shorthand: `Name ()-- Existing` / `Existing --() Name`. |
 | `class-magic-arrow.ts` | `MagicArrowDirection`, `MagicArrowLabel`, `parseMagicArrowLabel`, `hasSeveralGuideLines`, `GuideLine`, `splitGuideLines`, `computeGuideLinesBox`, `ARROW_GLYPH_SIZE`, `magicArrowTriSize`, `isBareMagicArrowLabel`, `magicArrowAngle`, `magicArrowGlyphPoints` | class-magic-arrow.ts — G2 item 44 / M4 cause D: the "magic arrow" edge-label glyph (`StringWithArrow.java`, `TextBlockArrow2`, `SvekEdge #getArrowDirectionInRadian`). |
 | `class-magma.ts` | `isCollapsedGroup`, `buildClassMagmaEdges` | Class-engine binding for the shared cucadiagram "Magma" standalone-chaining feature (`src/core/magma.ts`). |
-| `class-map-commands.ts` | `MAP_MULTILINE_DECL_RE`, `MAP_BARE_DECL_RE`, `applyMapBodyLine`, `applyMemberToMapOrJson`, `MAP_COMMANDS` | `map` declaration command for the class diagram parser (mission object-dot-sync T3 — `CommandCreateMap` + `BodierMap`). |
+| `class-map-commands.ts` | `MAP_MULTILINE_DECL_RE`, `MAP_BARE_DECL_RE`, `applyMapBodyLine`, `quarkName`, `applyMemberToMapOrJson`, `MAP_COMMANDS` | `map` declaration command for the class diagram parser (mission object-dot-sync T3 — `CommandCreateMap` + `BodierMap`). |
 | `class-map-port-rows.ts` | `mapPortRows`, `mapPortName`, `shouldMarkPort` | `map`/`json` row-port PRODUCERS -- split out of ./class-port-rows.ts (S-B, pure relocation, no logic change) to keep that file under the repo's 500-line-per-file cap, same split rationale as ./class-object-fields.ts's own module doc (split |
 | `class-map-sizing.ts` | `MAP_CELL_MARGIN_X`, `measureMapClassifier` | `map` classifier sizing — `kind:'map'` leaves in the class diagram layout engine (./layout.ts). |
 | `class-member-ast.ts` | `Visibility`, `Member` | `Member`/`Visibility` types for class/interface/enum/object leaves. |

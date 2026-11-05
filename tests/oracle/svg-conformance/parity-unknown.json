@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T13:55:24.376Z",
+  "generatedAt": "2026-11-05T14:25:15.933Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1344,8 +1344,8 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "firstDiff": "error-page"
+      "verdict": "conformant",
+      "errorPage": true
     },
     {
       "slug": "duluve-89-mati167",
@@ -3566,8 +3566,8 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "firstDiff": "error-page"
+      "verdict": "conformant",
+      "errorPage": true
     },
     {
       "slug": "loxeke-95-tita253",

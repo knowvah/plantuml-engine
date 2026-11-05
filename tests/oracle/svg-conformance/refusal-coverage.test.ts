@@ -1094,7 +1094,8 @@ describe('refusal coverage — baseline shape', () => {
     // 446 -> 441 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 446 - 5 = 441.
     // 441 -> 438 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 441 - 3 = 438.
     // 438 -> 440 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 438 + 2 = 440.
-    expect(pinnedErroring.length).toBe(440);
+    // 440 -> 442 (2026-11-05): dulone-62 and losote-76 error as the jar does (#152).
+    expect(pinnedErroring.length).toBe(442);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1279,7 +1280,8 @@ describe('refusal coverage — baseline shape', () => {
     // 9921 -> 9928 at c4dd/T4b (2026-11-05): the same 7 golden clones, all rendering.
     // 9928 -> 9974 at odd/T4b (2026-11-05): the same 46 golden clones, all rendering.
     // 9974 -> 9975 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
-    expect(pinnedRendering.length).toBe(9975);
+    // 9975 -> 9973 (2026-11-05): dulone-62 and losote-76 error as the jar does (#152). Derivation: 10415 - 442 = 9973.
+    expect(pinnedRendering.length).toBe(9973);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
