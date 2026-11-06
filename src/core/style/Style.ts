@@ -388,3 +388,14 @@ export class Style {
     return this.value('HorizontalAlignment').asHorizontalAlignment();
   }
 }
+
+/**
+ * PORT-ONLY: `style` with every value as `ColorMapper.DARK_MODE` paints it ({@link ValueImpl#darkScheme}), same
+ * signature. A free function, not a member: `Style` is in the public d.ts, which smc D2 keeps unchanged.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/ColorMapper.java:68-72
+ */
+export function darkSchemeStyle(style: Style): Style {
+  const result = new Map<PName, Value>();
+  for (const name of PNAMES) if (style.hasValue(name)) result.set(name, asValueImpl(style.value(name)).darkScheme());
+  return new Style(style.getSignature(), result);
+}

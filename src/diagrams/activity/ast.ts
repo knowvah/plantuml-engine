@@ -23,6 +23,10 @@ export interface ActivityAction {
    *  group (`Stereogroup#buildStereotype`), where {@link stereotype} keeps one label. */
   stereotypes?: readonly string[];
   swimlane?: string;
+  /** The document line of the `:label;` command (`UmlSource.linePositions`). `ActivityDiagram3#addActivity` hands the
+   *  box the style builder current at that command (`InstructionSimple.java:85,107`, `FtileBox.java:144-150`), so a
+   *  skinparam or `<style>` after it does not reach the box (smc-T4b, `activity-box-style.ts`). */
+  position?: number;
 }
 
 export interface ActivityStart {

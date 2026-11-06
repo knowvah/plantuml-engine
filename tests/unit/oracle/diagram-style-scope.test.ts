@@ -23,7 +23,7 @@ import {
 } from '../../oracle/svg-conformance/diagram-style-scope.js';
 import { renderDbgMarkup } from '../../oracle/svg-conformance/document-background.js';
 
-const ROW_COUNT = 865;
+const ROW_COUNT = 996;
 const SOLID = '@startuml\nskinparam backgroundColor black\nA -> B : hi\n@enduml\n';
 
 let root: string;
@@ -125,6 +125,45 @@ describe('measureScopeRow', () => {
     expect(firstScopeDiffs('t__x-y', 5, root, boom)).toEqual(['renderSync threw: boom']);
   });
 
+  // smc T1a (D5): the error-page rule of docs/svg-conformance.md "Error pages".
+  const SYNTAX_ERROR = '@startuml\nA -> B : hi\nthis is not a line\n@enduml\n';
+  const JAR_ERROR_PAGE =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9"><text>PlantUML version</text></svg>';
+
+  it('counts a stockError row 0 when our render is an error page', () => {
+    writeRow('e__x-y', SYNTAX_ERROR, JAR_ERROR_PAGE);
+    expect(measureScopeRow('e__x-y', root, renderDbgMarkup, true)).toEqual({
+      conformant: true,
+      diffCount: 0,
+      stockError: true,
+    });
+  });
+
+  it('counts the same row by its bytes without the flag', () => {
+    writeRow('e__x-y', SYNTAX_ERROR, JAR_ERROR_PAGE);
+    const raw = measureScopeRow('e__x-y', root);
+    expect(raw.conformant).toBe(false);
+    expect(raw.diffCount).toBeGreaterThan(0);
+    expect(raw).not.toHaveProperty('stockError');
+  });
+
+  it('counts a stockError row that draws a diagram by its bytes plus 1', () => {
+    writeRow('d__x-y', SOLID, JAR_ERROR_PAGE);
+    const raw = measureScopeRow('d__x-y', root).diffCount;
+    expect(measureScopeRow('d__x-y', root, renderDbgMarkup, true)).toEqual({
+      conformant: false,
+      diffCount: raw + 1,
+      stockError: true,
+    });
+  });
+
+  it('leaves no error-page observer installed after a stockError measure', () => {
+    writeRow('e__x-y', SYNTAX_ERROR, JAR_ERROR_PAGE);
+    writeRow('d__x-y', SOLID, JAR_ERROR_PAGE);
+    measureScopeRow('e__x-y', root, renderDbgMarkup, true);
+    expect(measureScopeRow('d__x-y', root, renderDbgMarkup, true).diffCount).toBeGreaterThan(1);
+  });
+
   it('reads the markup and oracle of a row', () => {
     writeRow('s__x-y', SOLID, '<svg/>');
     expect(readScopeFixture('s__x-y', root)).toEqual({ markup: SOLID, golden: '<svg/>' });
@@ -137,14 +176,14 @@ describe('committed rows and pin', () => {
     expect(Object.keys(pin.rows).sort()).toEqual(listScopeRows());
   });
 
-  it('pins the two rows no fix in this mission may move', () => {
+  it('pins a drawn row and a stock-error row (smc T1a, T1b)', () => {
     const { rows } = readScopePin();
     expect(rows['gantt__selector-own-doc']).toEqual({ conformant: true, diffCount: 0 });
-    expect(rows['sequence__scope-malformed-brace']).toEqual({ conformant: false, diffCount: 6 });
+    expect(rows['sequence__scope-malformed-brace']).toEqual({ conformant: true, diffCount: 0, stockError: true });
   });
 
-  it('measures a committed row to its pinned value', () => {
-    const live = measureScopeRow('sequence__scope-malformed-brace');
+  it('measures a committed stock-error row to its pinned value under the error-page rule', () => {
+    const live = measureScopeRow('sequence__scope-malformed-brace', undefined, undefined, true);
     expect(live).toEqual(readScopePin().rows['sequence__scope-malformed-brace']);
   });
 

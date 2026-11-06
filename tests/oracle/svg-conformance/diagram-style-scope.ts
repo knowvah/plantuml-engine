@@ -17,6 +17,9 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { installErrorPageFlag } from '../../../scripts/lib/survey-error-verdict.js';
+import { setErrorPageObserver } from '../../../src/core/error/error-renderer.js';
+
 import {
   auditDbgPin,
   checkDbgRow,
@@ -42,11 +45,23 @@ export const DIAGRAM_STYLE_SCOPE_PIN_PATH: string = join(HERE, '../../../oracle/
 
 export { THROW_DIFF_COUNT };
 
-/** A row's verdict: `conformant` means zero diffs against the jar's oracle. */
-export type ScopeRow = DbgRow;
+/**
+ * A row's verdict: `conformant` means zero diffs against the jar's oracle.
+ * `stockError` marks a row the STOCK jar errors on (smc D5, checked with
+ * `plans/style-mode-cascades/measurements/stock-check.mjs`): the error-page
+ * rule of `docs/svg-conformance.md` "Error pages" then applies.
+ */
+export interface ScopeRow extends DbgRow {
+  readonly stockError?: true;
+}
 
 /** The pin file's shape: `{ rows: Record<string, ScopeRow> }`. */
-export type ScopePin = DbgPin;
+export interface ScopePin extends DbgPin {
+  readonly rows: Readonly<Record<string, ScopeRow>>;
+}
+
+/** The diff a stock-error row costs when we draw a diagram instead of an error page (survey `firstDiff: 'error-page'`). */
+const ERROR_PAGE_DIFF = 1;
 
 /** Row ids (`<engine>__<group>-<case>`) with a `.puml` AND a `.svg` in `root`, sorted. */
 export function listScopeRows(root: string = DIAGRAM_STYLE_SCOPE_ROOT): string[] {
@@ -61,13 +76,28 @@ export function readScopeFixture(
   return readDbgFixture(row, root);
 }
 
-/** Renders `row` and compares with its oracle; a throwing render is {@link THROW_DIFF_COUNT}. */
+/**
+ * Renders `row` and compares with its oracle; a throwing render is {@link THROW_DIFF_COUNT}.
+ * With `stockError` (smc D5) the error-page rule applies, as in the survey
+ * (`scripts/lib/survey-error-verdict.ts#errorPageVerdict`): our error page is
+ * conformant whatever its bytes; a diagram where the jar errors counts its
+ * bytes plus {@link ERROR_PAGE_DIFF}, so the rule never hides a drawing.
+ */
 export function measureScopeRow(
   row: string,
   root: string = DIAGRAM_STYLE_SCOPE_ROOT,
   render: (markup: string) => string = renderDbgMarkup,
+  stockError = false,
 ): ScopeRow {
-  return measureDbgRow(row, root, render);
+  if (!stockError) return measureDbgRow(row, root, render);
+  const errorPage = installErrorPageFlag();
+  try {
+    const raw = measureDbgRow(row, root, render);
+    const diffCount = errorPage() ? 0 : raw.diffCount + ERROR_PAGE_DIFF;
+    return { ...rowFromDiffCount(diffCount), stockError: true };
+  } finally {
+    setErrorPageObserver(undefined);
+  }
 }
 
 /** The first `limit` diff lines for `row` (path, ours, jar) -- for `diff-row.mts`. */

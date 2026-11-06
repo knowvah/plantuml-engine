@@ -10,6 +10,7 @@
  */
 
 import type { Separator, State } from './ast.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import type { Theme } from '../../core/theme.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import { splitStateDisplayLines } from './state-sizing.js';
@@ -70,7 +71,7 @@ export function measureAutonomWrapper(
   theme: Theme,
   measurer: StringMeasurer,
 ): AutonomWrapper {
-  const font: FontSpec = { family: stateFontFamily(theme), size: theme.fontSize };
+  const font: FontSpec = { family: stateFontFamily(theme), size: stateNameFontSizeOf(theme) };
   const text = measureLines(splitStateDisplayLines(state.display), font, measurer, theme);
   const bodyLines = (state.description ?? []).flatMap(splitStateDisplayLines);
   const attr = measureLines(bodyLines, font, measurer, theme);

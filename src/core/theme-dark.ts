@@ -13,10 +13,11 @@
  * from `resources/skin/plantuml.skin`'s literal
  * `@media (prefers-color-scheme:dark) { ... }` block (`:563-776`).
  *
- * This port has no `@media`/dark-variant style parser (explicitly out of
- * scope — see `plans/class-divergence-drive/batch-9/T33-mode-dark.md`'s own
- * boundaries) — this table reads the block's literal values directly, for
- * exactly the five defaults `skinparam-theme-builder.ts#buildThemePartial`
+ * The port's style parser DOES read `@media` (`style/parser/StyleParser.ts`, `style/ValueImpl.ts`'s paired
+ * `value1`/`value2`), and sequence takes its dark colours from the builder (`StyleBuilder.ts#setDarkScheme`, smc T2a).
+ * The engines that read `theme.colors` take their ELEMENT colours from the builder too
+ * (`style-element-scope.ts`, smc D2: every source under `mode dark`, no gate). This table keeps the scalar defaults no
+ * element signature reaches, read directly from the block for exactly the defaults `skinparam-theme-builder.ts#buildThemePartial`
  * gates on `SkinparamAccumulator.mode === 'dark'`. An EXPLICIT skinparam or
  * `<style>` value for the SAME field always wins (mirrors
  * `HColorSimple#darkSchemeTheme`: a color with no baked `.dark` variant is
@@ -60,15 +61,6 @@ export const DARK_MODE_DEFAULTS = {
    * (`defaultTheme.colors.graph.classBackground`).
    */
   classBackground: '#313139',
-  /**
-   * `spot { spotClass { BackgroundColor #2E5233 } }` — plantuml.skin:
-   * 644-646. The class-kind badge fill AND (reusing `ElementColors.font`,
-   * fed by the SAME `root { FontColor white }` value as {@link text}) the
-   * badge glyph's own fill — `resolveBadgeFill`/`resolveBadgeGlyphColor`
-   * both consult `theme.colors.elements['spotclass']` ahead of their
-   * hardcoded kind defaults.
-   */
-  spotClassBackground: '#2E5233',
   /**
    * add2 T3h (family DARK): `activityDiagram { circle { start, stop, end {
    * LineColor #d; BackgroundColor #d } } }` — plantuml.skin:687-692. The

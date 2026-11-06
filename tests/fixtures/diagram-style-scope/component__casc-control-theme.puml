@@ -1,0 +1,9 @@
+@startuml
+!theme cerulean
+<style>
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

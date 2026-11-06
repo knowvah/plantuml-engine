@@ -20,6 +20,7 @@ import type { PreprocessorResult } from './preprocessor.js';
 import { resolveColorPaint } from './skinparam-key-handlers.js';
 import { resolveColor } from './skinparam-key-normalize.js';
 import { defaultTheme } from './theme.js';
+import { HColorSet } from './klimt/color/HColorSet.js';
 import { buildMindmapStyleBuilder, type MindmapStyleSource } from './style/mindmap-style-builder.js';
 import { StyleParsingException } from './style/parser/StyleParser.js';
 import type { SName } from './style/SName.js';
@@ -200,6 +201,9 @@ export function documentBackColor(
 ): DocumentBackColor | undefined {
   if (builder === undefined) return undefined;
   const value = backColorValue(builder, diagramType);
+  // smc T1c (D4): `style.value(BackGroundColor).asColor(set)` runs whatever the mode, and throws
+  // `IllegalArgumentException` on a dark-only value (`value1` null, `ValueImpl.java:100-101`); the crash page follows.
+  if (value?.asString() === null) value.asColor(HColorSet.instance());
   if (!isDefaultSkinValue(value, diagramType)) return pairOf(value?.asString() ?? TRANSPARENT);
   return callerNamedTheme || isDark(pre) ? undefined : { background: defaultTheme.colors.background };
 }

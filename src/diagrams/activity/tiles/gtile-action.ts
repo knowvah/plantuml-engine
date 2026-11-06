@@ -6,6 +6,7 @@ import type { ActivityAction } from '../ast.js';
 import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
 import { withActivityBox } from '../activity-box-theme.js';
+import { activityBoxStyleAtOf } from '../../../core/activity-box-style.js';
 import type { Style } from '../../../core/style/Style.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
 import { actionBoxDimension, buildActionTextBlock, klimtStringBounder } from '../activity-creole-sheet.js';
@@ -185,7 +186,10 @@ export class GtileAction extends TileLeaf {
     this.color = node.color;
     this.stereotype = node.stereotype;
     this.shield = boxStyleShield(node.stereotype);
-    this.boxStyle = theme.colors.graph.activity?.boxStyleOf?.(node.stereotypes ?? []);
+    const labels = node.stereotypes ?? [];
+    const boxStyleAt = activityBoxStyleAtOf(theme);
+    this.boxStyle =
+      boxStyleAt === undefined ? theme.colors.graph.activity?.boxStyleOf?.(labels) : boxStyleAt(labels, node.position);
     const { width, height } = computeActionSize(node.label, bounder, withActivityBox(theme, this.boxStyle));
     this.width = width + this.shield;
     this.height = height;

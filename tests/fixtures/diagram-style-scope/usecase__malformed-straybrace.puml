@@ -1,0 +1,11 @@
+@startuml
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+}
+</style>
+actor U
+U --> (x)
+note right of U: n
+@enduml

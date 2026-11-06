@@ -14,7 +14,7 @@
 import type { DiagramType } from './block-extractor.js';
 import type { Theme, ElementColors } from './theme.js';
 import type { StyleMap } from './skinparam.js';
-import { deepMergeTheme } from './theme.js';
+import { deepMergeTheme, mergeElementBuckets } from './theme.js';
 import { resolveColor } from './skinparam.js';
 import {
   collectElementStyleBuckets,
@@ -141,54 +141,6 @@ function styleMapHasNoOverrides(graphOverride: Partial<GraphColors>, extras: Sty
   );
 }
 
-/**
- * Merge the `<style>`-derived element buckets onto `base.colors.elements`
- * **per SName**, mirroring `StyleBuilder#muteStyle`
- * (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/
- * StyleBuilder.java:86-104`): the incoming styles are merged into a COPY of
- * the existing storage one `StyleSignatureBasic` at a time — absent
- * signature → `put`, present signature → `orig.mergeWith(modifiedStyle,
- * MergeStrategy.OVERWRITE_EXISTING_VALUE)`. So the incoming block wins
- * FIELD-BY-FIELD inside its own signature, and can never evict a signature
- * it does not name.
- *
- * S1L-tail F4-e (M1, `plans/s1l-tail-fix/findings/fariba-82-residual.md`):
- * `deepMergeTheme`'s `colors: { ...base.colors, ...partial.colors }` spread
- * is shallow, so handing it a bare `elements` key REPLACED the whole map.
- * Any element-scoped `<style>` selector therefore deleted every
- * skinparam-derived bucket built by stage 2 — in `fariba-82-xolu802`, a
- * `<style> file { … }` block deleted `elements.rectangle`'s
- * `stereotypeFontSize: 12` (from awslib's `skinparam rectangle {
- * StereotypeFontSize 12 }`), forcing the `«User»` row to 14pt and +2px of
- * node height. Upstream cannot express that: `file` and `rectangle` are
- * distinct signatures.
- *
- * `stereotypeFontSizeByStereo` merges one level deeper for the same reason:
- * its keys are per-stereotype-NAME rules that upstream registers as their
- * OWN (more specific) signatures, so a `<style>` rule for one tag must not
- * evict a skinparam-derived rule for a different tag either.
- */
-function mergeElementBuckets(
-  base: Theme,
-  incoming: Record<string, ElementColors>,
-): Partial<Record<string, ElementColors>> {
-  const merged: Partial<Record<string, ElementColors>> = { ...base.colors.elements };
-  for (const [sname, style] of Object.entries(incoming)) {
-    const orig = merged[sname];
-    if (orig === undefined) {
-      merged[sname] = style;
-      continue;
-    }
-    const byStereo = { ...orig.stereotypeFontSizeByStereo, ...style.stereotypeFontSizeByStereo };
-    merged[sname] = {
-      ...orig,
-      ...style,
-      ...(Object.keys(byStereo).length > 0 ? { stereotypeFontSizeByStereo: byStereo } : {}),
-    };
-  }
-  return merged;
-}
-
 /** Assemble the `Partial<Theme>` passed to `deepMergeTheme`. */
 function buildStyleMapPartialTheme(
   base: Theme,
@@ -204,7 +156,7 @@ function buildStyleMapPartialTheme(
     colors: {
       ...base.colors,
       ...(extras.rootElementBorderRaw !== undefined ? { border: resolveColor(extras.rootElementBorderRaw) } : {}),
-      ...(extras.hasElements ? { elements: mergeElementBuckets(base, extras.elements) } : {}),
+      ...(extras.hasElements ? { elements: mergeElementBuckets(base.colors.elements, extras.elements) } : {}),
       ...(extras.hasNoteTagCascade ? { noteTagCascade: extras.noteTagCascade } : {}),
       ...(extras.hasShowStereotypeByTag ? { showStereotypeByTag: extras.showStereotypeByTag } : {}),
       graph: { ...base.colors.graph, ...graphOverride },

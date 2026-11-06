@@ -9,6 +9,10 @@
  * engine; `svg-defs-seeded.ts` renames the id to the jar's seeded `f<seed>`, and `TextBlockExporter` scales it.
  */
 import { attrs } from '../../core/svg.js';
+import type { ActivityNodeGeo } from './activity-geometry.types.js';
+import type { Theme } from '../../core/theme.js';
+import { noteStyleFactsOf } from '../../core/note-style-facts.js';
+import { activityDocumentStyleOf, type ActivityShadowing } from '../../core/activity-document-style.js';
 
 /** The pre-seed id; `svg-defs-seeded.ts#applySeededDefIds` renames it. */
 const ACTIVITY_SHADOW_FILTER_ID = 'activityShadow';
@@ -43,4 +47,39 @@ export function activityShadowFilterDef(): string {
 /** `addFilterShadowId` (`SvgGraphics.java:889-893`): a shape with `deltaShadow > 0` references the filter. */
 export function activityShadowFilter(deltaShadow: number): { readonly filter?: string } {
   return deltaShadow > 0 ? { filter: `url(#${ACTIVITY_SHADOW_FILTER_ID})` } : {};
+}
+
+/** The document's plain-element shadows (`core/activity-document-style.ts`), all 0 for a theme that has none. */
+const NO_SHADOWING: ActivityShadowing = { start: 0, stop: 0, end: 0, box: 0 };
+
+export function activityShadowingOf(theme: Theme): ActivityShadowing {
+  return activityDocumentStyleOf(theme)?.shadowing ?? NO_SHADOWING;
+}
+
+/** The ONE shadow `<filter>` is written once a drawn shape carries a positive shadow (`SvgGraphics#manageShadow`). */
+export function anyShadowed(nodes: readonly ActivityNodeGeo[], theme: Theme): boolean {
+  const shadowing = activityShadowingOf(theme);
+  return nodes.some((n) => shadowOfNode(n, shadowing, theme) > 0);
+}
+
+function shadowOfNode(node: ActivityNodeGeo, shadowing: ActivityShadowing, theme: Theme): number {
+  switch (node.kind) {
+    case 'start':
+      return shadowing.start;
+    case 'stop':
+      return shadowing.stop;
+    case 'end':
+      return shadowing.end;
+    case 'action':
+      return node.boxStyle?.getShadowing() ?? shadowing.box;
+    case 'note':
+      return noteStyleFactsOf(theme)?.shadowing ?? 0;
+    default:
+      return node.boxStyle?.getShadowing() ?? 0;
+  }
+}
+
+/** The note's merged-style shadow (`note-style-facts.ts`), the filter its body path carries (`Opale.java:122`). */
+export function noteShadowFilter(theme: Theme): { readonly filter?: string } {
+  return activityShadowFilter(noteStyleFactsOf(theme)?.shadowing ?? 0);
 }

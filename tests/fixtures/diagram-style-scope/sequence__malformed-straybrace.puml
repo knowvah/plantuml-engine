@@ -1,0 +1,11 @@
+@startuml
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+}
+</style>
+participant A
+A -> B
+note right: n
+@enduml

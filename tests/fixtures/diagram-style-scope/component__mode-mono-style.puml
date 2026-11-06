@@ -1,0 +1,9 @@
+@startuml
+skinparam monochrome true
+<style>
+component { BackgroundColor #FF0000 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

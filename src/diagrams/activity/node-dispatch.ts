@@ -129,6 +129,12 @@ function trySimpleKeyword(ctx: ParseContext, idx: number, line: string, lc: stri
   }
 }
 
+/** `ActivityAction.position` for the command at `idx`, absent when the source carries no line positions. */
+function positionSpread(ctx: ParseContext, idx: number): { position?: number } {
+  const position = ctx.positions?.[idx];
+  return position === undefined ? {} : { position };
+}
+
 // ---------------------------------------------------------------------------
 // Action: :label; or :label; #color  or multiline :label\n...\n;
 // ---------------------------------------------------------------------------
@@ -145,6 +151,7 @@ function tryAction(ctx: ParseContext, idx: number, line: string): DispatchResult
     ...stereotypesSpread(actionMatch[2]),
     ...(color !== undefined ? { color } : {}),
     ...swimlaneSpread(ctx),
+    ...positionSpread(ctx, idx),
   };
   return { idx: idx + 1, node };
 }
@@ -174,6 +181,7 @@ function tryMultilineAction(ctx: ParseContext, idx: number, line: string): Dispa
     ...stereotypesSpread(body.multiGroup),
     ...(body.multiColor !== undefined ? { color: body.multiColor } : {}),
     ...swimlaneSpread(ctx),
+    ...positionSpread(ctx, idx),
   };
   return { idx: body.cursor, node };
 }

@@ -20,7 +20,8 @@
 import type { ScaledTheme } from './class-scale-geo.js';
 import type { Paint } from '../../core/paint.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
-import { resolveElementLineThickness } from '../../core/theme-element-resolve.js';
+import { resolveElementLineThickness, resolveElementShadowing } from '../../core/theme-element-resolve.js';
+import { classShadowFilterUrl } from './class-shadow.js';
 
 /** `plantuml.skin:322-326` `note { LineThickness 0.5 }`. */
 export const NOTE_STROKE_WIDTH = 0.5;
@@ -29,6 +30,9 @@ export const NOTE_STROKE_WIDTH = 0.5;
 export interface NoteStroke {
   readonly stroke: Paint;
   readonly strokeWidth: number;
+  /** The shadow `filter` the note's body path carries: `polygon.setDeltaShadow(style.getShadowing())`
+   *  (`EntityImageNote.java:109,281`; `Opale.java:122`, `EntityImageTips.java:196`). */
+  readonly filter?: string;
 }
 
 function noteBorder(theme: ScaledTheme): Paint {
@@ -42,7 +46,12 @@ function noteBorder(theme: ScaledTheme): Paint {
 export function resolveNoteStroke(theme: ScaledTheme): NoteStroke {
   const thickness =
     resolveElementLineThickness(theme, 'note') ?? theme.colors.graph.noteCascadeLineThickness ?? NOTE_STROKE_WIDTH;
-  return { stroke: noteBorder(theme), strokeWidth: thickness * theme.scaleK };
+  const shadowed = resolveElementShadowing(theme, 'note') > 0;
+  return {
+    stroke: noteBorder(theme),
+    strokeWidth: thickness * theme.scaleK,
+    ...(shadowed ? { filter: classShadowFilterUrl() } : {}),
+  };
 }
 
 /**

@@ -631,7 +631,10 @@ describe('refusal coverage — baseline shape', () => {
     // 10454 -> 10459 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10454 + 5 = 10459.
     // 10459 -> 10465 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10459 + 6 = 10465.
     // 10465 -> 10571 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state). Derivation: 10465 + 106 = 10571.
-    expect(manifest.fixtures.length).toBe(10571);
+    // 10571 -> 10572 at smc/T3a (2026-11-06): +1 svg-activity golden clone (gigefo-15-cami497).
+    // 10572 -> 10574 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
+    // 10574 -> 10576 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
+    expect(manifest.fixtures.length).toBe(10576);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -686,7 +689,8 @@ describe('refusal coverage — baseline shape', () => {
     // 441 -> 438 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 441 - 3 = 438.
     // 438 -> 440 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 438 + 2 = 440.
     // 440 -> 442 (2026-11-05): dulone-62 and losote-76 error as the jar does (#152).
-    expect(pinnedErroring.length).toBe(442);
+    // 442 -> 441 at smc/T3a (2026-11-06): gigefo-15-cami497 no longer errors.
+    expect(pinnedErroring.length).toBe(441);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -878,7 +882,10 @@ describe('refusal coverage — baseline shape', () => {
     // 10012 -> 10017 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10012 + 5 = 10017.
     // 10017 -> 10023 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10017 + 6 = 10023.
     // 10023 -> 10129 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state), all rendering. Derivation: 10023 + 106 = 10129.
-    expect(pinnedRendering.length).toBe(10129);
+    // 10129 -> 10131 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to ok, plus its golden clone.
+    // 10131 -> 10133 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
+    // 10133 -> 10135 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
+    expect(pinnedRendering.length).toBe(10135);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -960,7 +967,8 @@ describe('refusal coverage — baseline shape', () => {
     // 352 -> 347 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 352 - 5 = 347.
     // 347 -> 344 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 347 - 3 = 344.
     // 344 -> 346 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 344 + 2 = 346.
-    expect(gaps.length).toBe(346);
+    // 346 -> 345 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to ok (stale since ubt fixed its while-stereotype refusal).
+    expect(gaps.length).toBe(345);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

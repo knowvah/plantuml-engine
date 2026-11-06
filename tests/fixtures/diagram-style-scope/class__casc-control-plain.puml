@@ -1,0 +1,7 @@
+@startuml
+<style>
+note { FontSize 12 }
+</style>
+class A
+note right of A: n
+@enduml

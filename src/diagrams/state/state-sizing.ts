@@ -37,6 +37,7 @@
  */
 
 import type { State, StateKind } from './ast.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import { stateColorsOf, type StateColors } from './state-colors.js';
 // T1: the ONE `Display#getWithNewlines` port -- upstream builds a state's
 // display/description text via the SAME method (`CommandCreateState.java
@@ -316,7 +317,7 @@ export function measureState(
   // why this is a LAYOUT-time concern (feeds the DOT node's own
   // width/height), unlike its `stateBackgroundColor<<X>>`/`stateFontColor
   // <<X>>` siblings, which are render-time-only.
-  const fontSize = resolveStateFontSize(state, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(state, theme, stateNameFontSizeOf(theme));
   const font: FontSpec = { family: stateFontFamily(theme), size: fontSize };
   const ctx: TextCtx = { font, measurer, opts: stateCreoleOpts(theme, true) };
   const { dim, shape } = measureNormalKind(state, hideEmptyDescription, ctx);
@@ -448,7 +449,7 @@ export function buildStateGeoTextFields(
   // `measureState`'s own doc comment above; the SAME resolved font size
   // measures `StateTextLine.width` here so the renderer's `textLength`
   // attribute matches jar's own larger/smaller glyph metrics.
-  const fontSize = resolveStateFontSize(state, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(state, theme, stateNameFontSizeOf(theme));
   const font: FontSpec = { family: stateFontFamily(theme), size: fontSize };
   // G1: `wrapWidth` only on the LEAF `EntityImageState*` branch, matching
   // the SIZER's own `measureState` call above -- see `isLeafState`.

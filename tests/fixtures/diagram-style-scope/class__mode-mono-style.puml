@@ -1,0 +1,8 @@
+@startuml
+skinparam monochrome true
+<style>
+class { BackgroundColor #FF0000 }
+</style>
+class A
+note right of A: n
+@enduml

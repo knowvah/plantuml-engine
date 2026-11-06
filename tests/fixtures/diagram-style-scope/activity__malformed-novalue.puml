@@ -1,0 +1,12 @@
+@startuml
+<style>
+document {
+  BackgroundColor
+}
+}
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

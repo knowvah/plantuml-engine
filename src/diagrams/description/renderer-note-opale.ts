@@ -29,6 +29,7 @@
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { Paint } from '../../core/paint.js';
 import type { UStroke } from '../../core/klimt/UStroke.js';
+import type { UPath } from '../../core/klimt/shape/UPath.js';
 import { Fore } from '../../core/klimt/Fore.js';
 import { Back } from '../../core/klimt/Back.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
@@ -63,6 +64,9 @@ export interface NotePaints {
   readonly back: Paint;
   readonly border: Paint;
   readonly stroke: UStroke;
+  /** `polygon.setDeltaShadow(this.shadowing)` (`EntityImageNote.java:109,281`; `Opale.java:122`): the note style's
+   *  `Shadowing`, on the outline only. */
+  readonly shadowing: number;
   /** `skinParam.getRoundCorner(CornerParam.DEFAULT, null)` (`EntityImageNote.java:270-272`), absent for 0. */
   readonly roundCorner?: number;
 }
@@ -104,12 +108,26 @@ export function opalePolygonNormal(width: number, height: number): string {
   ].join(' ');
 }
 
+/** `polygon.setDeltaShadow(shadowing)` (`EntityImageNote.java:281`, `Opale.java:122`). */
+function shadowed(polygon: UPath, shadowing: number): UPath {
+  polygon.setDeltaShadow(shadowing);
+  return polygon;
+}
+
 /** `Opale#setRoundCorner`, `getRoundCorner()` (`EntityImageNote.java:261,270-272,276`): the arcs of `Opale.java:134-229`. */
-function drawRoundedNoteShape(colored: UGraphic, node: DescriptionNodeGeo, stroke: UStroke, roundCorner: number): void {
+function drawRoundedNoteShape(
+  colored: UGraphic,
+  node: DescriptionNodeGeo,
+  paints: NotePaints,
+  roundCorner: number,
+): void {
+  const { stroke, shadowing } = paints;
   const fold = corner(node.width, roundCorner, OPALE_CORNERSIZE);
   const opale = node.opale;
   if (opale === undefined) {
-    colored.apply(stroke).draw(polygonNormal(node.width, node.height, roundCorner, OPALE_CORNERSIZE));
+    colored
+      .apply(stroke)
+      .draw(shadowed(polygonNormal(node.width, node.height, roundCorner, OPALE_CORNERSIZE), shadowing));
     colored.draw(fold);
     return;
   }
@@ -117,7 +135,7 @@ function drawRoundedNoteShape(colored: UGraphic, node: DescriptionNodeGeo, strok
   const pp1 = new XPoint2D(opale.pp1.x, opale.pp1.y);
   const pp2 = new XPoint2D(opale.pp2.x, opale.pp2.y);
   const styled = colored.apply(stroke);
-  styled.draw(getPolygonLinked(OPALE_DIRECTIONS[opale.direction], bounds, pp1, pp2));
+  styled.draw(shadowed(getPolygonLinked(OPALE_DIRECTIONS[opale.direction], bounds, pp1, pp2), shadowing));
   styled.draw(fold);
 }
 
@@ -142,17 +160,19 @@ export function drawNoteShape(ug: UGraphic, node: DescriptionNodeGeo, paints: No
   const roundCorner = paints.roundCorner ?? 0;
   const opale = node.opale;
   if (roundCorner !== 0) {
-    drawRoundedNoteShape(colored, node, paints.stroke, roundCorner);
+    drawRoundedNoteShape(colored, node, paints, roundCorner);
     return;
   }
   const corner = parseSvgPath(opaleCorner(box.origin, box.width), UTranslate.none());
   if (opale === undefined) {
-    colored.apply(paints.stroke).draw(parseSvgPath(opalePolygonNormal(box.width, box.height), UTranslate.none()));
+    const polygon = parseSvgPath(opalePolygonNormal(box.width, box.height), UTranslate.none());
+    colored.apply(paints.stroke).draw(shadowed(polygon, paints.shadowing));
     colored.draw(corner);
     return;
   }
   const connector: OpaleConnector = { pp1: opale.pp1, pp2: opale.pp2 };
   const styled = colored.apply(paints.stroke);
-  styled.draw(parseSvgPath(OPALE_OUTLINE_BUILDERS[opale.direction](box, connector), UTranslate.none()));
+  const outline = parseSvgPath(OPALE_OUTLINE_BUILDERS[opale.direction](box, connector), UTranslate.none());
+  styled.draw(shadowed(outline, paints.shadowing));
   styled.draw(corner);
 }

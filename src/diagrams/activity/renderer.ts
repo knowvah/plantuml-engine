@@ -5,7 +5,7 @@
  * No DOM, no async.
  */
 
-import { activityShadowFilterDef } from './activity-shadow.js';
+import { activityShadowFilterDef, anyShadowed } from './activity-shadow.js';
 import type { ActivityGeometry, ActivityEdgeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
@@ -23,7 +23,11 @@ import type { Paint } from '../../core/paint.js';
 import { LinkStyle } from '../../core/decoration/LinkStyle.js';
 import { edgeColorTokens, edgeLinkStyle } from './layout/edge-link-style.js';
 import { parseColor, toSvgHex } from '../../core/klimt/color/HColorSet.js';
-import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/color/fragment-color-mapper.js';
+import {
+  applyColorMapperToFragment,
+  colorMapperOf,
+  mapDocumentBackground,
+} from '../../core/klimt/color/fragment-color-mapper.js';
 import { edgeDecorationVector } from './layout/compress/shapes-of-terminal.js';
 import { SVG_CANVAS_CEIL, activityDocumentMargin } from './activity-layout-constants.js';
 import { withActivityMeasurer } from './activity-string-bounder.js';
@@ -419,7 +423,8 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
     height: geo.totalHeight,
     // ubt-T2a: the fold every composer shifts with the body; `finalizeActivityFragment` canvases on it.
     ...(drawExtent.maxX > 0 ? { drawnMaxX: drawExtent.maxX, drawnMaxY: drawExtent.maxY } : {}),
-    background: theme.colors.background,
+    // smc-T3a: the root background through the same mapper (`SvgGraphics.java:181-182`).
+    background: mapDocumentBackground(theme.colors.background, colorMapperOf(theme)),
     // T2d-a pass 2 (row DOCGRAD): `skinparam backgroundColor <c1>-<c2>` --
     // see `theme.colors.backgroundGradient`'s own doc comment. Omitted
     // entirely (not `undefined`, `exactOptionalPropertyTypes`) for the
@@ -427,7 +432,7 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
     ...(theme.colors.backgroundGradient !== undefined ? { backgroundGradient: theme.colors.backgroundGradient } : {}),
     diagramType: DIAGRAM_TYPE_ACTIVITY,
     // `SvgGraphics#manageShadow`: the one shadow filter, once a shadowed box is drawn (`activity-shadow.ts`).
-    ...(geo.nodes.some((n) => (n.boxStyle?.getShadowing() ?? 0) > 0) ? { extraDefs: activityShadowFilterDef() } : {}),
+    ...(anyShadowed(geo.nodes, theme) ? { extraDefs: activityShadowFilterDef() } : {}),
     // lad-T2a: `TextBlockExporter.java:306-307` -- `skinparam lengthAdjust`; spread
     // only when set so unset output stays byte-identical (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),

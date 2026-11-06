@@ -19,14 +19,21 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleSignatureBasic.java:194-220
  */
 import type { DiagramType } from './block-extractor.js';
-import { defaultFontStyleBuilder, documentStyleBuilder, isDark, styleNameOf } from './document-back-color.js';
+import {
+  currentStyleBuilderOf,
+  defaultFontStyleBuilder,
+  documentStyleBuilder,
+  isDark,
+  styleNameOf,
+} from './document-back-color.js';
 import { parseConditionalColor } from './klimt/color/HColorSet.js';
 import { noGradient, parseColor } from './paint.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { buildMindmapStyleBuilder } from './style/mindmap-style-builder.js';
+import { StyleParsingException } from './style/parser/StyleParser.js';
 import type { PName } from './style/PName.js';
 import type { SName } from './style/SName.js';
-import type { StyleBuilder } from './style/StyleBuilder.js';
+import { setDarkScheme, type StyleBuilder } from './style/StyleBuilder.js';
 import { StyleSignatureBasic } from './style/StyleSignatureBasic.js';
 import type { Value } from './style/Value.js';
 import type { ElementColors } from './theme.js';
@@ -375,8 +382,10 @@ function heldByFlat(
 interface ScopeRead {
   readonly builder: StyleBuilder;
   readonly defaultBuilder: StyleBuilder;
-  /** An untouched default keeps the flat path outright: `theme-dark`, or a caller-named theme (D3). */
+  /** An untouched default keeps the flat path outright: a caller-named theme (D3). */
   readonly keepDefault: boolean;
+  /** `SkinParam#isDark`: every value the builder answers is written, as `ColorMapper.DARK_MODE` paints it (smc D2). */
+  readonly dark: boolean;
   readonly flat: Partial<Record<string, ElementColors>> | undefined;
 }
 
@@ -403,7 +412,7 @@ function roleColor(
   if (raw === undefined) return undefined;
   const untouched = signature.getMergedStyle(read.defaultBuilder)?.value(ROLE_PNAMES[role]);
   const isDefault = value?.toString() === untouched?.toString();
-  if (isDefault && (read.keepDefault || !heldByFlat(row, role, read.flat, out))) return undefined;
+  if (!read.dark && isDefault && (read.keepDefault || !heldByFlat(row, role, read.flat, out))) return undefined;
   return writtenColor(role, raw);
 }
 
@@ -456,7 +465,10 @@ export function elementScopeColors(
   flat?: Partial<Record<string, ElementColors>>,
   options: ElementScopeOptions = {},
 ): Partial<Record<string, ElementScopeColors>> {
-  const documentBuilder = options.builder ?? documentStyleBuilder(pre);
+  const dark = isDark(pre);
+  const documentBuilder = dark
+    ? darkSchemeBuilder(pre, options.builder)
+    : (options.builder ?? documentStyleBuilder(pre));
   // D3b leaves such a document's two other roles on the flat path; only `root { FontColor }` needs the signatures.
   const builder = documentBuilder ?? defaultFontStyleBuilder(pre);
   const rows = signaturesOf(diagramType);
@@ -464,10 +476,29 @@ export function elementScopeColors(
   const read: ScopeRead = {
     builder,
     defaultBuilder: buildMindmapStyleBuilder({ skinparam: new Map(), styles: [] }),
-    keepDefault: options.callerNamedTheme === true || isDark(pre),
+    keepDefault: options.callerNamedTheme === true,
+    dark,
     flat,
   };
   return colorsOfRows(read, rows, documentBuilder === undefined ? FONT_ROLE : ROLES);
+}
+
+/**
+ * Under `skinparam mode dark` every source reads its element colours off the builder, gate or no gate: upstream paints
+ * the whole `UGraphic` through `ColorMapper.DARK_MODE` (`TitledDiagram.java:292-294`), a value with no `@media` partner
+ * keeping itself (`ColorMapper.java:68-72`). A copy, tagged: `documentBackColor` reads the shared builder untagged.
+ * `undefined` for a `<style>` the parser rejects (D6).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:114-116
+ */
+function darkSchemeBuilder(pre: PreprocessorResult, shared: StyleBuilder | undefined): StyleBuilder | undefined {
+  try {
+    const dark = (shared ?? currentStyleBuilderOf(pre)).cloneMe();
+    setDarkScheme(dark, true);
+    return dark;
+  } catch (e) {
+    if (e instanceof StyleParsingException) return undefined;
+    throw e;
+  }
 }
 
 /** {@link elementScopeColors}'s walk: `roles`, then the title font, of each row in table order (a later row reads an earlier one, {@link heldByFlat}). */

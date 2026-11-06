@@ -69,16 +69,28 @@ Issue #113. In scope 508 conformant to 709 of 716: `component` 266/266, `usecase
 - D2's one standing limit: `skinparam mode dark` keeps the flat reads, because the parser has no `@media` side (#120).
 - Smetana rows `zomoba-18`, `revezi-19` still draw a path `id` and order some extremities unlike `SmetanaEdge`; both named, not chased.
 
+## style-mode-cascades (smc) — DONE 2026-11-06 (#120; branch `feature/parity-queue`, squashed to one commit on `47346297c`, unsigned, not pushed; per-task history on the local tag `style-mode-cascades/pre-squash`)
+
+Dark mode, monochrome and reverse colour, malformed `<style>`, and the `FontSize`/`LineThickness`/`RoundCorner`/`Shadowing` cascades under `skin rose`, `!theme` and a late skinparam. 131 authored dss rows; every in-scope row (93) conformant, 0 losses in every engine, d.ts identical. Activity: `gigefo-15`, `finadu-74`, `titope-07`, `ronovu-01`, `vifiba-70` conformant and pinned.
+
+### Follow-ons (mechanism, owner)
+1. **Two-tier cascade storage** — skinparam values and `<style>` values live in separate theme tiers; `skinparam-supersedes-cascade.ts` restores counter order for the measured pairs only (`classFontSize`, `stateBorderThickness`, `roundCorner`, `arrowThickness`, `<style> class { LineThickness }`). Siblings unmapped: `classBorderThickness`, `*BackgroundColor`, `*FontName`, class `Shadowing`, the activity corner vs an earlier `<style>`. Structural fix: one merged `Style` per element (D7). Author rows first.
+2. **Activity builder capture** — only plain `:label;` boxes take the builder current at their command (`activity-box-builder-at.ts`); `InstructionIf.java:104`, `InstructionRepeat.java:105`, `InstructionWhile`, repeat-inline and `backward:` also capture it.
+3. **Activity shadows not ported** — diamond, fork bar, spot (`FtileDiamond.java:89`, `FtileCircleSpot`); swimlane extents ignore shadows (`swimlane-context.ts#itemsExtentOf`).
+4. **Rounded Opale** — tip notes and the class link-box are not wired.
+5. **Mapper gaps** — `backgroundGradient` and `diagramBorderColor` are not mapped by monochrome/reverse in activity, sequence, state or class (`SvgGraphics.java:178-181`).
+6. **Stale `known-*` routing/refusal baseline rows** — a fixed row stays `known-misroute`/`known-gap` silently (found on `gigefo-15`, stale since ubt).
+
 ## diagram-style-scope (dss) — DONE 2026-11-03 (branch `feat/diagram-style-scope` off `4f653cac9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 4f653cac9`; working history on the local tag `dss/pre-squash`)
 
 Document background and element `BackgroundColor`, `LineColor`, `FontColor` read through the ported `StyleBuilder`, precomputed into the existing theme. **865 authored rows, 792 conformant** (`tests/fixtures/diagram-style-scope/`, shrink-only pin `oracle/goldens/diagram-style-scope.json`); the 73 open rows are named in the brief's README. 0 conformant losses in 28 engines vs b0, d.ts identical. dbp follow-ons 5 and 7 and the two bucket leaks are closed (`class__scope-note-objectdiagram`, `state__scope-state-classdiagram` at 0).
 
 ### Follow-ons (mechanism, owner)
 Stays filed by the user's ruling (D8 did not reverse it):
-1. **Dark mode's other diffs** — `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
-2. **Monochrome and reverse root background.**
-3. **`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades** — `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`). — **state part struck by stdd T3b/T5a (2026-11-04, `stdd/pre-squash`):** `LineThickness` reads through `stateArrowLineThickness`/`stateBorderStrokeAttrs`, `somuke-94` and `sugico-41` conformant; `xefuma-94` is an `unknown`-bucket row (#119). The component/skin items stay.
-4. **Malformed `<style>`** — the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
+1. ~~**Dark mode's other diffs**~~ — **struck by smc T2a/T2b (2026-11-06, `style-mode-cascades/pre-squash`):** dark colours read off a dark-tagged style builder (`StyleBuilder.ts#setDarkScheme`), every engine, every source; the dark-only `@media` document colour crashes as the jar does (T1c). Was: `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
+2. ~~**Monochrome and reverse root background.**~~ — **struck by smc T3a/T3b (2026-11-06):** activity, sequence and state map the root background, state maps its fragment; `gigefo-15` pinned.
+3. ~~**`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades**~~ — **struck by smc T4a-T4e (2026-11-06):** rose shadows, late skinparams, `!theme` + `<style>`, state note and name fonts; `component__probe-skin-rose` and `-skinparam-after-style` conformant, `finadu-74` pinned. Was: `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`). — **state part struck by stdd T3b/T5a (2026-11-04, `stdd/pre-squash`):** `LineThickness` reads through `stateArrowLineThickness`/`stateBorderStrokeAttrs`, `somuke-94` and `sugico-41` conformant; `xefuma-94` is an `unknown`-bucket row (#119). The component/skin items stay.
+4. ~~**Malformed `<style>`**~~ — **struck by smc T1b (2026-11-06):** a style cut stops the parse at the failing block, as `CommandStyleMultilinesCSS` does. Was: the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
 
 Needs a ruling only the user can sign:
 5. **A gradient `LineColor` reaching `partition`** — the jar throws `UnsupportedOperationException` at `HColor.java:126`, from `FtileGroup.java:102`; we draw. Check the latest release jar under the error-page ruling.

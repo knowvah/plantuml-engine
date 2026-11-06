@@ -1,0 +1,10 @@
+@startuml
+<style>
+component { LineThickness 3 }
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+skinparam componentBorderThickness 2
+@enduml

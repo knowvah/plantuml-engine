@@ -1,0 +1,6 @@
+@startuml
+skinparam mode dark
+actor U
+U --> (x)
+note right of U: n
+@enduml

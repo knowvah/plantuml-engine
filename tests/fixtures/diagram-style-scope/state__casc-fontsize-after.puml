@@ -1,0 +1,10 @@
+@startuml
+<style>
+state { FontSize 18 }
+note { FontSize 12 }
+</style>
+state S
+S --> T
+note right of S: n
+skinparam stateFontSize 16
+@enduml

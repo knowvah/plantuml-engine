@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import type { DiagramType } from '../../../src/core/block-extractor.js';
 import { buildTheme } from '../../../src/core/build-theme.js';
+import { setErrorPageObserver } from '../../../src/core/error/error-renderer.js';
+import { renderSync } from '../../../src/index.js';
 import { currentStyleBuilderOf, documentBackColor, styleNameOf } from '../../../src/core/document-back-color.js';
 import { withPrevious } from '../../../src/core/nested-previous.js';
 import { preprocess, type PreprocessorResult } from '../../../src/core/preprocessor.js';
@@ -183,6 +185,33 @@ describe('documentBackColor: skinparam mode dark (D3)', () => {
   it('a skinparam white after the mode: the same (jar #FFFFFF)', () => {
     const pre = source(`${DARK}\nskinparam backgroundColor white\n${style('note {\n BackgroundColor red\n}')}`);
     expect(documentBackColor(pre, 'sequence')).toEqual(DECLARED_WHITE);
+  });
+});
+
+describe('documentBackColor: a dark-only @media value (smc T1c, D4)', () => {
+  const DARK_ONLY = style('@media (prefers-color-scheme:dark) {\n document {\n  BackgroundColor #111111\n }\n}');
+
+  // `DarkString#mergeWith` keeps the user's (null, #111111) over the skin's (white, #1B1B1B): higher priority, both
+  // value2 set (DarkString.java:50-67); `asColor` then throws on the null value1 (ValueImpl.java:100-101).
+  it('throws as asColor does, with no dark mode (stock jar: IllegalArgumentException: null/#111111)', () => {
+    expect(() => read(DARK_ONLY)).toThrow(/IllegalArgumentException: null\/#111111/);
+  });
+
+  it('throws under skinparam mode dark too: calculateBackColor reads asColor whatever the mode (TitledDiagram.java:280-289)', () => {
+    expect(() => read(`skinparam mode dark\n${DARK_ONLY}`)).toThrow(/IllegalArgumentException/);
+  });
+
+  it('renderSync draws our crash page for sequence__scope-media-dark-only', () => {
+    let errorPage = false;
+    setErrorPageObserver(() => {
+      errorPage = true;
+    });
+    try {
+      renderSync(`@startuml\n${DARK_ONLY}\nA -> B\n@enduml\n`);
+    } finally {
+      setErrorPageObserver(undefined);
+    }
+    expect(errorPage).toBe(true);
   });
 });
 

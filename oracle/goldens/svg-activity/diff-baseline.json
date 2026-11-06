@@ -1714,7 +1714,7 @@
     {
       "type": "activity",
       "slug": "finadu-74-duvi890",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 50,
       "measuredAt": "2026-11-05",
       "measuredAgainstCommit": "29322602",
@@ -2317,7 +2317,7 @@
     {
       "type": "activity",
       "slug": "gigefo-15-cami497",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 1,
       "measuredAt": "2026-11-05",
       "measuredAgainstCommit": "e9a870d1",
@@ -3839,10 +3839,10 @@
       "type": "activity",
       "slug": "lulavi-01-fose679",
       "status": "baseline",
-      "diffCount": 283,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 283
+      "diffCount": 211,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 211
     },
     {
       "type": "activity",
@@ -5773,11 +5773,11 @@
     {
       "type": "activity",
       "slug": "ronovu-01-voku005",
-      "status": "baseline",
-      "diffCount": 42,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 42
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5882,10 +5882,10 @@
       "type": "activity",
       "slug": "rutaji-30-suda150",
       "status": "baseline",
-      "diffCount": 280,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 280
+      "diffCount": 208,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 208
     },
     {
       "type": "activity",
@@ -6547,7 +6547,7 @@
     {
       "type": "activity",
       "slug": "titope-07-cixa052",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 3,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6880,11 +6880,11 @@
     {
       "type": "activity",
       "slug": "vifiba-70-repa468",
-      "status": "baseline",
-      "diffCount": 42,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 42
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 0
     },
     {
       "type": "activity",

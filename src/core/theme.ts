@@ -460,7 +460,7 @@ export type ThemeOverride = Partial<ThemeRootFields> & {
 // extraction to keep this file under the 500-line cap, same rationale as the
 // `theme-graph-colors.ts`/`theme-element-resolve.ts` splits above) and
 // re-exported here so no consumer's import path changed.
-export { deepMergeTheme } from './theme-merge.js';
+export { deepMergeTheme, mergeElementBuckets } from './theme-merge.js';
 
 /**
  * Resolve a theme option to a concrete Theme object.

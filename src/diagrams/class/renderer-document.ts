@@ -9,12 +9,13 @@
  */
 import { isNoteGeo } from './class-geo-types.js';
 import type { ClassGeometry } from './layout.js';
-import type { Theme } from '../../core/theme.js';
+import { resolveElementShadowing, type Theme } from '../../core/theme.js';
 import { scaleClassTheme, type ScaledTheme } from './class-scale-geo.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/color/fragment-color-mapper.js';
 import { buildClassShadowFilterDef } from './class-shadow.js';
+import { scaleShadowFilterDefs } from '../../core/svg-defs-scale.js';
 
 /** `net.sourceforge.plantuml.core.DiagramType#CLASS` -- verified against
  *  every cached jar class-diagram fixture's `data-diagram-type` root
@@ -87,8 +88,11 @@ export function beginClassDocument(geo: ClassGeometry, rawTheme: Theme): ClassDo
   // establishes (mirrors `state/renderer.ts`'s identical Batch-2 gate) --
   // byte-identical (empty extraDefs) for every pre-mission/shadow-off
   // fixture.
-  const anyShadow = (theme.shadowing ?? 0) > 0 || geo.leaves.some((c) => !isNoteGeo(c) && (c.shadowing ?? 0) > 0);
-  const shadowDef = anyShadow ? buildClassShadowFilterDef() : '';
+  const anyShadow =
+    (theme.shadowing ?? 0) > 0 ||
+    geo.leaves.some((c) => (isNoteGeo(c) ? resolveElementShadowing(theme, 'note') : (c.shadowing ?? 0)) > 0);
+  // `SvgGraphics#addFilter` writes `format(2)` and `format(4)` (`SvgGraphics.java:1081,1084`), scaled by the document.
+  const shadowDef = anyShadow ? scaleShadowFilterDefs(buildClassShadowFilterDef(), theme.scaleK) : '';
   // G2 N4/N48: full-canvas background rect, ONLY for a non-default
   // (non-black, non-white, non-transparent) background -- see
   // `renderClass`'s own doc comment for the jar-verified exclusion list and

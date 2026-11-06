@@ -308,6 +308,9 @@ const LINE_THICKNESS_DEFAULTS: Readonly<Record<ActivitySName, number>> = {
 export function activityLineThickness(theme: Theme, sname: ActivitySName): number {
   const bucket = resolveElementLineThickness(theme, bucketKey(sname));
   if (bucket !== undefined) return bucket;
+  // `addConvert("arrowThickness", PName.LineThickness, SName.arrow)` (`FromSkinparamToStyle.java:150`) folds into the
+  // builder as it executes (`SkinParam.java:227-234`), later than the skin's own `arrow` value, so it wins by counter.
+  if (sname === 'arrow' && theme.colors.graph.arrowThickness !== undefined) return theme.colors.graph.arrowThickness;
   if (sname === 'arrow' || sname === 'diamond') {
     const activityBucket = resolveElementLineThickness(theme, bucketKey('activity'));
     if (activityBucket !== undefined) return activityBucket;
@@ -350,7 +353,15 @@ const ROUND_CORNER_DEFAULTS: Readonly<Record<ActivitySName, number>> = {
 /** The resolved corner radius for one activity element kind, RAW and
  * UNHALVED — the caller halves it onto both `rx` and `ry` (D4). */
 export function activityRoundCorner(theme: Theme, sname: ActivitySName): number {
-  return theme.colors.elements?.[bucketKey(sname)]?.roundCorner ?? ROUND_CORNER_DEFAULTS[sname];
+  return (
+    theme.colors.elements?.[bucketKey(sname)]?.roundCorner ??
+    // `skinparam roundCorner N` is `root { RoundCorner N }` (`FromSkinparamToStyle.java:164`), folded into the builder
+    // as it executes (`SkinParam.java:227-234`), later than the skin's `activity { RoundCorner 25 }`
+    // (`plantuml.skin:362`), so it wins by counter; the theme stores it in `classCascadeRoundCorner`
+    // (`resolveElementRoundCorner`, `theme-element-resolve.ts`).
+    theme.colors.graph.classCascadeRoundCorner ??
+    ROUND_CORNER_DEFAULTS[sname]
+  );
 }
 
 // ---------------------------------------------------------------------------

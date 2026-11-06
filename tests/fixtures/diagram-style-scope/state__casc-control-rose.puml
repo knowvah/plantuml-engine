@@ -1,0 +1,9 @@
+@startuml
+skin rose
+<style>
+note { FontSize 12 }
+</style>
+state S
+S --> T
+note right of S: n
+@enduml

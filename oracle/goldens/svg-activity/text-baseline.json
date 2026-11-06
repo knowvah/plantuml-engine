@@ -1,7 +1,7 @@
 {
   "$comment": "Text census (fill, anchor, inset) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): insets move where a label's box shifted with the compressed geometry; no fill/anchor change is expected.",
-  "measuredAt": "2026-11-05",
-  "measuredAgainstCommit": "29322602",
+  "measuredAt": "2026-11-06",
+  "measuredAgainstCommit": "78ad396b",
   "fixtures": [
     {
       "type": "activity",
@@ -5325,8 +5325,8 @@
       "type": "activity",
       "slug": "finadu-74-duvi890",
       "status": "baseline",
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "29322602",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#FFF": 1,
@@ -5336,7 +5336,7 @@
           "(absent)": 4
         },
         "inset": {
-          "10.416": 1
+          "6.25": 1
         },
         "textCount": 4
       },
@@ -11760,8 +11760,8 @@
       "type": "activity",
       "slug": "lulavi-01-fose679",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#888": 6,
@@ -11772,7 +11772,7 @@
           "(absent)": 9
         },
         "inset": {
-          "10": 6
+          "0": 6
         },
         "textCount": 9
       },
@@ -17426,8 +17426,8 @@
       "type": "activity",
       "slug": "ronovu-01-voku005",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#000": 3
@@ -17436,7 +17436,7 @@
           "(absent)": 3
         },
         "inset": {
-          "10": 3
+          "5": 3
         },
         "textCount": 3
       },
@@ -17800,8 +17800,8 @@
       "type": "activity",
       "slug": "rutaji-30-suda150",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#888": 6,
@@ -17812,7 +17812,7 @@
           "(absent)": 9
         },
         "inset": {
-          "10": 6
+          "0": 6
         },
         "textCount": 9
       },
@@ -20981,8 +20981,8 @@
       "type": "activity",
       "slug": "vifiba-70-repa468",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#000": 3
@@ -20991,7 +20991,7 @@
           "(absent)": 3
         },
         "inset": {
-          "10": 3
+          "5": 3
         },
         "textCount": 3
       },

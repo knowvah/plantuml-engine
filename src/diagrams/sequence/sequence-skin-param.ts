@@ -49,6 +49,10 @@ import type { Url } from '../../core/url/Url.js';
 // Dispatch (WBSDiagramFactory.ts#createStyleDispatch, D2)
 // ---------------------------------------------------------------------------
 
+/** `SkinParam.isDark`: `"dark".equalsIgnoreCase(getValue("mode"))`. @see SkinParam.java:114-116 */
+const MODE_KEY = 'mode';
+const MODE_DARK = 'dark';
+
 const EMPTY_SKINPARAM: ReadonlyMap<string, string> = new Map<string, string>();
 
 /** A hand-built source's style sources: no skin, no skinparam, no style. */
@@ -180,6 +184,8 @@ function positionedSequenceDeclarations(
 export function createSequenceStyleDispatch(source: UmlSource): SequenceStyleDispatch {
   const styleSource = source.styleSource ?? EMPTY_STYLE_SOURCE;
   const style = createMindmapSkinParam(styleSource);
+  // `SkinParam#isDark` reads the final `mode`; `DARK_MODE` paints every style colour (smc T2a, D2).
+  style.setDarkScheme(styleSource.skinparam.get(MODE_KEY)?.trim().toLowerCase() === MODE_DARK);
   const params = new SequenceLegacyParams();
   if (source.skinparamAssignments === undefined)
     return {

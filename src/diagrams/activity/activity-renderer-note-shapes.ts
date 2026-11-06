@@ -8,6 +8,8 @@ import { NOTE_CORNER_SIZE, NOTE_SPIKE_DELTA } from './activity-layout-constants.
 import type { ActivityNodeGeo } from './activity-geometry.types.js';
 import type { Theme } from '../../core/theme.js';
 import { parseColor, type Paint } from '../../core/paint.js';
+import { noteStyleFactsOf } from '../../core/note-style-facts.js';
+import { NOTE_LINE_THICKNESS } from './activity-style-defaults.js';
 import { scopedBack, scopedLine, stereotypeBack, stereotypeLine } from './activity-scoped-colors.js';
 
 /** add4-T1c: the Opale's own `BackGroundColor` -- the note's `#color` when
@@ -26,6 +28,12 @@ export function noteFillOf(node: ActivityNodeGeo, theme: Theme): Paint {
 /** The Opale's line: the stereotype's style (`FtileWithNoteOpale.java:137`), the merged `LineColor` (`:141`). */
 export function noteLineOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint {
   return stereotypeLine(theme, 'note', node.stereotype) ?? scopedLine(theme, 'note') ?? theme.colors.border;
+}
+
+/** The Opale's `style.getStroke()` thickness (`FtileWithNoteOpale.java:143`): the merged `note` style's, else the flat
+ *  tiers' `plantuml.skin:325`. */
+export function noteLineThickness(theme: Theme): number {
+  return noteStyleFactsOf(theme)?.thickness ?? NOTE_LINE_THICKNESS;
 }
 
 /** `Opale#getCorner` (`:134-147`, `roundCorner=0`): the fold triangle,

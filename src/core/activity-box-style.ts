@@ -14,12 +14,14 @@
 import type { Theme } from './theme.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { currentStyleBuilderOf } from './document-back-color.js';
+import { builderAtPosition, lastDeclarationPosition } from './activity-box-builder-at.js';
 import { StyleParsingException } from './style/parser/StyleParser.js';
 import type { PName } from './style/PName.js';
 import type { Style } from './style/Style.js';
 import type { StyleBuilder } from './style/StyleBuilder.js';
 import { StyleSignatureBasic } from './style/StyleSignatureBasic.js';
 import { Stereotype } from './stereo/Stereotype.js';
+import { ClockwiseTopRightBottomLeft } from './klimt/geom/ClockwiseTopRightBottomLeft.js';
 
 /** `FtileBox.getStyleSignature`. @see FtileBox.java:97-99 */
 const ACTIVITY_BOX_SIGNATURE = StyleSignatureBasic.of('root', 'element', 'activityDiagram', 'activity');
@@ -45,6 +47,26 @@ const READ_BY_FTILE_BOX: readonly PName[] = [
   'MinimumWidth',
 ];
 
+/**
+ * `plantuml.skin:360`'s `activity { Padding 10 }`, the one value the flat readers hold for `FtileBox`'s
+ * `style.getPadding()` (`FtileBox.java:170`; `activity-box-theme.ts#boxPadding`). They have no padding tier, so a merged
+ * style whose padding differs (a theme's `root { Padding 6 }` declared after the skin: `ValueImpl.java:51-55`, later
+ * counter wins) must reach the box as its style.
+ */
+const SKIN_BOX_PADDING = ClockwiseTopRightBottomLeft.same(10);
+
+/** Whether `style`'s padding is other than {@link SKIN_BOX_PADDING}. */
+function paddingOtherThanSkin(style: Style): boolean {
+  const padding = style.getPadding();
+  const skin = SKIN_BOX_PADDING;
+  return (
+    padding.getTop() !== skin.getTop() ||
+    padding.getRight() !== skin.getRight() ||
+    padding.getBottom() !== skin.getBottom() ||
+    padding.getLeft() !== skin.getLeft()
+  );
+}
+
 /** The merged style of a box whose stereogroup holds `labels`, in `Stereogroup#getLabels` order. */
 export type ActivityBoxStyleResolver = (labels: readonly string[]) => Style | undefined;
 
@@ -64,11 +86,14 @@ function readsAlike(a: Style, b: Style): boolean {
  */
 export function resolveActivityBoxStyle(builder: StyleBuilder, labels: readonly string[]): Style | undefined {
   const stereotype = stereotypeOf(labels);
-  if (stereotype === undefined) return undefined;
+  if (stereotype === undefined) {
+    const plainMerged = ACTIVITY_BOX_SIGNATURE.getMergedStyle(builder);
+    return plainMerged !== undefined && paddingOtherThanSkin(plainMerged) ? plainMerged : undefined;
+  }
   const merged = ACTIVITY_BOX_SIGNATURE.withTOBECHANGED(stereotype).getMergedStyle(builder);
   if (merged === undefined) return undefined;
   const plain = ACTIVITY_BOX_SIGNATURE.getMergedStyle(builder);
-  return plain !== undefined && readsAlike(plain, merged) ? undefined : merged;
+  return plain !== undefined && readsAlike(plain, merged) && !paddingOtherThanSkin(merged) ? undefined : merged;
 }
 
 /** The document's builder, `null` for a `<style>` block the parser rejects. */
@@ -81,15 +106,53 @@ function builderOf(pre: PreprocessorResult): StyleBuilder | null {
   }
 }
 
+/** The box style of the command at `position`: {@link ActivityBoxStyleResolver} plus where the `:label;` stood. */
+export type ActivityBoxStyleAtResolver = (labels: readonly string[], position: number | undefined) => Style | undefined;
+
+const BOX_STYLE_AT_KEY: unique symbol = Symbol('activity.boxStyleAt');
+
+type ThemeWithBoxStyleAt = Theme & { readonly [BOX_STYLE_AT_KEY]?: ActivityBoxStyleAtResolver };
+
+/**
+ * `FtileBox.create`'s style for a box built from `builder`, kept only where it reads other than the flat tiers (which
+ * hold the final builder's plain `activity` style). `undefined` for none.
+ */
+function boxStyleFrom(builder: StyleBuilder, flat: Style | undefined, labels: readonly string[]): Style | undefined {
+  const merged = ACTIVITY_BOX_SIGNATURE.withTOBECHANGED(stereotypeOf(labels)).getMergedStyle(builder);
+  if (merged === undefined) return undefined;
+  return flat !== undefined && readsAlike(flat, merged) && !paddingOtherThanSkin(merged) ? undefined : merged;
+}
+
 /** `theme` with `graph.activity.boxStyleOf` set from `pre` (unchanged when a `<style>` block does not parse, as
  *  `activity-circle-style.ts#resolveActivityCircleStyle`). */
 export function withActivityBoxStyle(theme: Theme, pre: PreprocessorResult): Theme {
   // Built on the first stereotyped box: a diagram with none pays nothing.
   let builder: StyleBuilder | null | undefined;
+  const finalBuilder = (): StyleBuilder | null => (builder === undefined ? (builder = builderOf(pre)) : builder);
   const boxStyleOf: ActivityBoxStyleResolver = (labels) => {
-    if (builder === undefined) builder = builderOf(pre);
-    return builder === null ? undefined : resolveActivityBoxStyle(builder, labels);
+    const final = finalBuilder();
+    return final === null ? undefined : resolveActivityBoxStyle(final, labels);
+  };
+  // `ActivityDiagram3#addActivity` (`ActivityDiagram3.java:114-117`): the box keeps the builder current at its
+  // command. A declaration after it does not reach the box (`FtileBox.java:144-150`).
+  const lastDeclaration = lastDeclarationPosition(pre);
+  const boxStyleAt: ActivityBoxStyleAtResolver = (labels, position) => {
+    const final = finalBuilder();
+    if (final === null) return undefined;
+    if (position === undefined || lastDeclaration === undefined || lastDeclaration < position)
+      return resolveActivityBoxStyle(final, labels);
+    const at = builderAtPosition(pre, position);
+    return at === null ? undefined : boxStyleFrom(at, ACTIVITY_BOX_SIGNATURE.getMergedStyle(final), labels);
   };
   const graph = theme.colors.graph;
-  return { ...theme, colors: { ...theme.colors, graph: { ...graph, activity: { ...graph.activity, boxStyleOf } } } };
+  const withResolver: Theme = {
+    ...theme,
+    colors: { ...theme.colors, graph: { ...graph, activity: { ...graph.activity, boxStyleOf } } },
+  };
+  return { ...withResolver, [BOX_STYLE_AT_KEY]: boxStyleAt } as ThemeWithBoxStyleAt;
+}
+
+/** The position-aware resolver of {@link withActivityBoxStyle}, absent on a hand-built theme. */
+export function activityBoxStyleAtOf(theme: Theme): ActivityBoxStyleAtResolver | undefined {
+  return (theme as ThemeWithBoxStyleAt)[BOX_STYLE_AT_KEY];
 }

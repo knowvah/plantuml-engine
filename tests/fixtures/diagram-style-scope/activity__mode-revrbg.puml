@@ -1,0 +1,7 @@
+@startuml
+skinparam reversecolor RBG
+start
+:a;
+note right: n
+stop
+@enduml

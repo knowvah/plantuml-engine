@@ -1,5 +1,65 @@
 {
   "rows": {
+    "activity__casc-control-plain": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-control-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-control-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-fontsize-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-fontsize-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-fontsize-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-roundcorner-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-roundcorner-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-roundcorner-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-shadow-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-shadow-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-shadow-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-thickness-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-thickness-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__casc-thickness-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__cascade-bg-diag": {
       "conformant": true,
       "diffCount": 0
@@ -484,6 +544,15 @@
       "conformant": false,
       "diffCount": 311
     },
+    "activity__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "activity__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__merge-activity": {
       "conformant": true,
       "diffCount": 0
@@ -600,6 +669,30 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mode-revrbg": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__probe-all": {
       "conformant": true,
       "diffCount": 0
@@ -696,6 +789,66 @@
       "conformant": true,
       "diffCount": 0
     },
+    "class__casc-control-plain": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-control-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-control-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-fontsize-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-fontsize-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-fontsize-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-roundcorner-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-roundcorner-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-roundcorner-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-shadow-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-shadow-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-shadow-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-thickness-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-thickness-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__casc-thickness-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "class__cascade-bg-diag": {
       "conformant": true,
       "diffCount": 0
@@ -773,8 +926,8 @@
       "diffCount": 0
     },
     "class__d3-skin-rose-element": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "class__d3-style-class-then-element-default": {
       "conformant": true,
@@ -1065,6 +1218,39 @@
       "diffCount": 0
     },
     "class__kinds-none": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "class__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__mode-revrbg": {
       "conformant": true,
       "diffCount": 0
     },
@@ -1416,6 +1602,66 @@
       "conformant": true,
       "diffCount": 0
     },
+    "component__casc-control-plain": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-control-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-control-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-fontsize-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-fontsize-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-fontsize-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-roundcorner-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-roundcorner-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-roundcorner-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-shadow-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-shadow-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-shadow-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-thickness-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-thickness-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__casc-thickness-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "component__cascade-bg-diag": {
       "conformant": true,
       "diffCount": 0
@@ -1716,6 +1962,39 @@
       "conformant": true,
       "diffCount": 0
     },
+    "component__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "component__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__mode-revrbg": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "component__probe-business": {
       "conformant": true,
       "diffCount": 0
@@ -1725,16 +2004,16 @@
       "diffCount": 0
     },
     "component__probe-cond-root": {
-      "conformant": false,
-      "diffCount": 1
+      "conformant": true,
+      "diffCount": 0
     },
     "component__probe-dark": {
-      "conformant": false,
-      "diffCount": 63
+      "conformant": true,
+      "diffCount": 0
     },
     "component__probe-dark-element": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "component__probe-font-transparent": {
       "conformant": true,
@@ -1769,12 +2048,12 @@
       "diffCount": 0
     },
     "component__probe-skin-rose": {
-      "conformant": false,
-      "diffCount": 13
+      "conformant": true,
+      "diffCount": 0
     },
     "component__probe-skinparam-after-style": {
-      "conformant": false,
-      "diffCount": 35
+      "conformant": true,
+      "diffCount": 0
     },
     "component__probe-stereo": {
       "conformant": true,
@@ -2288,6 +2567,39 @@
       "conformant": true,
       "diffCount": 0
     },
+    "object__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "object__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "object__mode-revrbg": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "object__probe-map-json": {
       "conformant": true,
       "diffCount": 0
@@ -2345,6 +2657,66 @@
       "diffCount": 0
     },
     "salt__selector-reversed": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-control-plain": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-control-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-control-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-fontsize-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-fontsize-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-fontsize-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-roundcorner-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-roundcorner-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-roundcorner-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-shadow-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-shadow-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-shadow-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-thickness-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-thickness-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__casc-thickness-theme": {
       "conformant": true,
       "diffCount": 0
     },
@@ -2421,6 +2793,39 @@
       "diffCount": 0
     },
     "sequence__default-font-dt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "sequence__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "sequence__mode-revrbg": {
       "conformant": true,
       "diffCount": 0
     },
@@ -2501,36 +2906,39 @@
       "diffCount": 0
     },
     "sequence__scope-dark-explicit-white": {
-      "conformant": false,
-      "diffCount": 17
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence__scope-dark-own": {
-      "conformant": false,
-      "diffCount": 17
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence__scope-dark-skinparam-white": {
-      "conformant": false,
-      "diffCount": 17
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence__scope-dark-style": {
-      "conformant": false,
-      "diffCount": 17
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence__scope-dark-unrelated-style": {
-      "conformant": false,
-      "diffCount": 17
+      "conformant": true,
+      "diffCount": 0
     },
     "sequence__scope-malformed-brace": {
-      "conformant": false,
-      "diffCount": 6
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
     },
     "sequence__scope-malformed-colour": {
-      "conformant": false,
-      "diffCount": 6
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
     },
     "sequence__scope-media-dark-only": {
-      "conformant": false,
-      "diffCount": 25
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
     },
     "sequence__scope-note-classdiagram": {
       "conformant": true,
@@ -2545,8 +2953,9 @@
       "diffCount": 0
     },
     "sequence__scope-single-line-slash": {
-      "conformant": false,
-      "diffCount": 7
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
     },
     "sequence__scope-single-line-tight": {
       "conformant": true,
@@ -2609,6 +3018,66 @@
       "diffCount": 0
     },
     "sequence__variant-title": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-control-plain": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-control-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-control-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-fontsize-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-fontsize-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-fontsize-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-roundcorner-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-roundcorner-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-roundcorner-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-shadow-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-shadow-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-shadow-theme": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-thickness-after": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-thickness-rose": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__casc-thickness-theme": {
       "conformant": true,
       "diffCount": 0
     },
@@ -3056,6 +3525,39 @@
       "conformant": true,
       "diffCount": 0
     },
+    "state__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "state__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "state__mode-revrbg": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "state__probe-diag": {
       "conformant": true,
       "diffCount": 0
@@ -3357,6 +3859,39 @@
       "diffCount": 0
     },
     "usecase__gradient-LineColor-usecase": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__malformed-novalue": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
+    "usecase__malformed-straybrace": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-dark-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-mono-style": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-monorev": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-revdark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "usecase__mode-revrbg": {
       "conformant": true,
       "diffCount": 0
     },

@@ -44,12 +44,15 @@ import { isRefusal, type ParseContext } from './dispatch-support.js';
  * `if-dispatch.ts#unescapeLabelNewlines`, which every condition/label
  * capture already routes through (IFNL, same task).
  */
-function joinUnbalancedLines(lines: readonly string[]): string[] {
+function joinUnbalancedLines(lines: readonly string[]): { readonly lines: string[]; readonly origin: number[] } {
   const RE_OPENER = /^\s*(?:if|elseif|while|else|repeatwhile|repeat\s+while|endwhile)\b/i;
   const out: string[] = [];
+  // `origin[n]`: the index in `lines` that output line `n` starts at (smc-T4b, `ParseContext.positions`).
+  const origin: number[] = [];
   let i = 0;
   while (i < lines.length) {
     const line = lines[i]!;
+    origin.push(i);
     if (!RE_OPENER.test(line)) {
       out.push(line);
       i++;
@@ -69,7 +72,7 @@ function joinUnbalancedLines(lines: readonly string[]): string[] {
     // continuation-line joiner; CCN 11 is one over threshold from the
     // nested nested-paren-depth scan, not from this task's changes.
   }
-  return out;
+  return { lines: out, origin };
 }
 
 function countParenDepth(s: string): number {
@@ -95,9 +98,11 @@ export function parseActivity(block: UmlSource, options?: ParseOptions): Activit
   // D6 (cdd6-T1c): resolved ONCE, mirroring `class/parser.ts:326-327`.
   const internalSprites = options?.assetStore === undefined ? undefined : internalSpriteStoreFrom(options.assetStore);
   const internalEmoji = options?.assetStore === undefined ? undefined : internalEmojiStoreFrom(options.assetStore);
-  const joinedLines = joinUnbalancedLines(block.lines);
+  const joined = joinUnbalancedLines(block.lines);
+  const linePositions = block.linePositions;
   const ctx: ParseContext = {
-    lines: joinedLines,
+    lines: joined.lines,
+    ...(linePositions === undefined ? {} : { positions: joined.origin.map((at) => linePositions[at]) }),
     swimlanes: [],
     swimlaneSet: new Set(),
     currentSwimlane: undefined,

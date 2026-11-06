@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+participant { FontSize 18 }
+note { FontSize 12 }
+</style>
+participant A
+A -> B
+note right: n
+@enduml

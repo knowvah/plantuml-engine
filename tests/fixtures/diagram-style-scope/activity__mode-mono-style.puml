@@ -1,0 +1,10 @@
+@startuml
+skinparam monochrome true
+<style>
+activity { BackgroundColor #FF0000 }
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

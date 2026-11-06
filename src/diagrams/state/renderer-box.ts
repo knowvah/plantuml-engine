@@ -34,6 +34,7 @@
  * @see ~/git/plantuml/.../svek/image/EntityImageStateCommon.java (MARGIN/MARGIN_LINE=5)
  */
 import { lineTo, moveTo } from '../../core/svg-path-builder.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
 import { renderStateRuns, renderStateTable, type TableRuleStroke } from './renderer-box-runs.js';
 // stdd T5a: the run/table emitters moved to `renderer-box-runs.ts`; every importer is unchanged.
@@ -109,7 +110,7 @@ export function renderStateTextLines(
 ): string {
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
-  const fontSize = opts.fontSize ?? theme.fontSize;
+  const fontSize = opts.fontSize ?? stateNameFontSizeOf(theme);
   const style = {
     fontFamily: stateFontFamily(theme),
     fill: opts.fill ?? '#000000',
@@ -155,11 +156,11 @@ const TABLE_STRIPE_MARGIN_Y = 2;
 function renderUnmeasuredFallback(node: StateNodeGeo, theme: Theme, box: string): string {
   return (
     box +
-    text(node.x + node.width / 2, node.y + node.height / 2 + theme.fontSize / 2, node.display, {
+    text(node.x + node.width / 2, node.y + node.height / 2 + stateNameFontSizeOf(theme) / 2, node.display, {
       textAnchor: 'middle',
       fill: theme.colors.text,
       fontFamily: stateFontFamily(theme),
-      fontSize: theme.fontSize,
+      fontSize: stateNameFontSizeOf(theme),
     })
   );
 }
@@ -181,7 +182,7 @@ function renderEmptyDescription(node: StateNodeGeo, theme: Theme, box: string, f
   const headerLines = node.headerLines!;
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
-  const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(node, theme, stateNameFontSizeOf(theme));
   const ascent = textAscent(fontSize);
   const textBlockHeight = headerLines.length * fontSize;
   const yDesc = (node.height - textBlockHeight) / 2;
@@ -248,7 +249,7 @@ export function renderSdlReceive(node: StateNodeGeo, theme: Theme): string {
 
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
   // `state-render-colors.ts#resolveStateFontSize`'s own doc comment.
-  const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(node, theme, stateNameFontSizeOf(theme));
   const ascent = textAscent(fontSize);
   // dss T3e site 19: `EntityImageState2.java:80-86,98-99`: the `state` style's FontColor, as a leaf's.
   const label = text(node.x + SDL_MARGIN.x1 + BODY_MARGIN_X, node.y + SDL_MARGIN.y1 + ascent, node.display, {
@@ -300,7 +301,7 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   // verified `laferu-31-tice836` (font-size 30, box widened to match the
   // `state-sizing.ts` measurement this SAME resolution feeds at layout
   // time).
-  const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(node, theme, stateNameFontSizeOf(theme));
   const ascent = textAscent(fontSize);
   // mission G4 S15: `StateFontColor<<X>>` cascade -- see
   // `resolveStateFontColor`'s own doc comment.

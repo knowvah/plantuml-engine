@@ -22,6 +22,7 @@ import { activityFontColor } from './activity-text-style.js';
 import { inlineBack, scopedBack, scopedLine, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
+import { activityShadowFilter, activityShadowingOf } from './activity-shadow.js';
 
 /**
  * `circle { start, stop, end { LineColor #2 } } }` (`plantuml.skin:379-380`
@@ -97,7 +98,12 @@ export function renderStart(node: ActivityNodeGeo, theme: Theme): string {
     { back: actColors(theme).startFill, line: circleInk(theme) },
     node,
   );
-  return ellipse(cx, cy, r, r, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS });
+  return ellipse(cx, cy, r, r, {
+    fill: back,
+    stroke: line,
+    'stroke-width': CIRCLE_LINE_THICKNESS,
+    ...activityShadowFilter(activityShadowingOf(theme).start), // `CircleStart.java:79-81`
+  });
 }
 
 /**
@@ -151,6 +157,7 @@ export function renderStop(node: ActivityNodeGeo, theme: Theme): string {
       fill: 'none',
       stroke: line,
       'stroke-width': CIRCLE_LINE_THICKNESS,
+      ...activityShadowFilter(activityShadowingOf(theme).stop), // `CircleEnd.java:83-85`: the outer ring only
     }) + ellipse(cx, cy, innerR, innerR, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS })
   );
 }
@@ -210,6 +217,7 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
       fill: 'none',
       stroke: ellipsePaint(endFill),
       'stroke-width': CIRCLE_END_LINE_THICKNESS,
+      ...activityShadowFilter(activityShadowingOf(theme).end), // `FtileCircleEndCross.java:78,105`
     }) +
     orderedLine(node.x + delta, node.y + delta, node.x + delta + size2, node.y + delta + size2, crossStyle) +
     orderedLine(

@@ -1,0 +1,7 @@
+@startuml
+skinparam monochrome reverse
+start
+:a;
+note right: n
+stop
+@enduml

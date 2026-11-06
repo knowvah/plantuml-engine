@@ -234,3 +234,17 @@ describe('measureNote / renderStateNoteFreestanding — <sub> per-run size+dy (S
     expect(oY).toBe(hY);
   });
 });
+
+describe('state note FontSize from the merged `note` style (smc T4d)', () => {
+  // `EntityImageNote.java:188-189` signs `note`; jar oracle `state__casc-control-plain.svg`: note text
+  // `font-size="12"`, canvas `width="134"`.
+  it('sizes and draws the note at `note { FontSize 12 }`, not the 13pt skin default', async () => {
+    const { renderSync } = await import('../../../src/index.js');
+    const svg = renderSync(
+      '@startuml\n<style>\nnote { FontSize 12 }\n</style>\nstate S\nS --> T\nnote right of S: n\n@enduml\n',
+    );
+    expect(svg).toContain('font-size="12" fill="#000">n<');
+    expect(svg).toContain('width="134px"');
+    expect(svg).not.toContain('font-size="13"');
+  });
+});

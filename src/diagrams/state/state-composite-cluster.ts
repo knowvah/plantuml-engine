@@ -14,6 +14,7 @@
  */
 
 import type { State } from './ast.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import type { TransitionGeo } from './state-geo-types.js';
 import { stateColorsOf } from './state-colors.js';
 import { stateFontFamily } from './state-render-colors.js';
@@ -244,7 +245,7 @@ export function resolveClusterComposite(
   // unconditional for state, so no separate exclusion branch is needed.
   const stereoLines = 0;
   const stereoWidth = 0;
-  const headerFont: FontSpec = { family: stateFontFamily(ctx.theme), size: ctx.theme.fontSize };
+  const headerFont: FontSpec = { family: stateFontFamily(ctx.theme), size: stateNameFontSizeOf(ctx.theme) };
   // `ClusterHeader.java:78`: the jar's creole sheet width (Bullet header
   // included), not the raw glyph width -- gopudo-91-bego999 jar 40 vs raw 38.
   const attrWidth = stateDescriptionBlockWidth(attrTextLines, headerFont, ctx.measurer, ctx.theme);
@@ -255,7 +256,7 @@ export function resolveClusterComposite(
   // cluster regardless of border-point routing, so both port fields must
   // carry the IDENTICAL formula output.
   const headerWidth = titleAndAttributeWidth(title.width, stereoWidth, attrWidth);
-  const headerHeight = computeTitleTableHeight(title.lineCount, stereoLines, attrLines, ctx.theme.fontSize);
+  const headerHeight = computeTitleTableHeight(title.lineCount, stereoLines, attrLines, stateNameFontSizeOf(ctx.theme));
   // stdd T3c: the drawn blocks -- `ClusterHeader#getTitleBlock` (`ClusterHeader.java:151-170`,
   // `Display#create`, no wrap) and `Entity#getStateDescription` (`Entity.java:610-632`); the creole
   // block is what `RoundedContainer` measures (`Cluster.java:473-474,489-490`).

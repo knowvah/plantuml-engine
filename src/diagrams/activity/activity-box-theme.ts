@@ -17,7 +17,7 @@ import type { Theme } from '../../core/theme.js';
 import type { ElementColors } from '../../core/theme-graph-colors.js';
 import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import { ACTIVITY_PADDING } from './activity-style-defaults.js';
-import { activityShadowFilter } from './activity-shadow.js';
+import { activityShadowFilter, activityShadowingOf } from './activity-shadow.js';
 
 /** What the activity readers have no `elements` tier for. */
 interface BoxExtras {
@@ -93,9 +93,9 @@ export function boxPadding(theme: Theme): ClockwiseTopRightBottomLeft {
   return (theme as ThemeWithBox)[BOX_KEY]?.padding ?? DEFAULT_PADDING;
 }
 
-/** `style.getShadowing()` (`FtileBox.java:173`), 0 for a box that reads the flat tiers. */
+/** `style.getShadowing()` (`FtileBox.java:173`): the stereotyped box's own style, else the plain `activity` signature's. */
 export function boxShadowing(theme: Theme): number {
-  return (theme as ThemeWithBox)[BOX_KEY]?.shadowing ?? 0;
+  return (theme as ThemeWithBox)[BOX_KEY]?.shadowing ?? activityShadowingOf(theme).box;
 }
 
 /** `style.getStroke()`'s dash (`FtileBox.java:208`), absent for a solid line. */

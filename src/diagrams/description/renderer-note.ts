@@ -22,7 +22,7 @@ import { bareEntityName } from './namespace-groups.js';
 import type { EntityUrl } from '../../core/svek/image/EntityImageDescription.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { Theme } from '../../core/theme.js';
-import { resolveElementFontSize, resolveElementLineThickness } from '../../core/theme.js';
+import { resolveElementFontSize, resolveElementLineThickness, resolveElementShadowing } from '../../core/theme.js';
 import type { Paint } from '../../core/paint.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
@@ -124,6 +124,7 @@ export function resolveNotePaints(node: DescriptionNodeGeo, theme: Theme): NoteP
     back: override.back ?? stylePaint(style, 'BackGroundColor') ?? back,
     border: stylePaint(style, 'LineColor') ?? bucket?.border ?? theme.colors.border,
     stroke: style?.getStroke() ?? UStroke.withThickness(thickness),
+    shadowing: style?.getShadowing() ?? resolveElementShadowing(theme, 'note'),
     ...(theme.colors.graph.classCascadeRoundCorner === undefined
       ? {}
       : { roundCorner: theme.colors.graph.classCascadeRoundCorner }),

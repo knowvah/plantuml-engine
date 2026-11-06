@@ -1,0 +1,7 @@
+@startuml
+skinparam mode dark
+start
+:a;
+note right: n
+stop
+@enduml

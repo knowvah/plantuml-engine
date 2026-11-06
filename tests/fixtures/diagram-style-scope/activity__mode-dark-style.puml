@@ -1,0 +1,10 @@
+@startuml
+skinparam mode dark
+<style>
+note { FontSize 12 }
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

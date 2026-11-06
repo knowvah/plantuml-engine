@@ -8,6 +8,7 @@
  * footprint formula (was an invented flat padding, now the jar-verified
  * folder-tab-driven formula — see `class-namespace-shape.ts`).
  */
+import { classShadowingOf } from '../../core/class-style-facts.js';
 import type { ClassDiagramAST, Classifier } from './ast.js';
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { MeasuredClassifier } from './class-layout-helpers.js';
@@ -168,7 +169,11 @@ function shadowingField(
   measured: MeasuredClassifier,
   theme: Theme,
 ): { shadowing?: number } {
-  const shadowing = classifier.stateShadowing ?? classifier.objectStyle?.box.shadowing ?? theme.shadowing;
+  // `shadow = getStyle().getShadowing()` (`EntityImageClass.java:197`): the merged `{root, element, classDiagram, class}`
+  // style, so a `<style> class { Shadowing N }` beats the root tier the theme's `shadowing` holds (a theme's
+  // `skinparam shadowing false` executes before it, `ValueImpl.java:51-55`).
+  const shadowing =
+    classifier.stateShadowing ?? classifier.objectStyle?.box.shadowing ?? classShadowingOf(theme) ?? theme.shadowing;
   return shadowing !== undefined && shadowing > 0 && drawsBorderedBox(classifier, measured) ? { shadowing } : {};
 }
 
@@ -331,7 +336,11 @@ export { buildEdgeGeos } from './class-edge-geo.js';
  * proof). Split out of {@link degenerateSingleClassifier} purely to keep
  * that function under the project's per-function NLOC cap (R2j precedent).
  */
-function buildDegenerateClassifierLeaf(classifier: Classifier, measured: MeasuredClassifier): ClassifierGeo {
+function buildDegenerateClassifierLeaf(
+  classifier: Classifier,
+  measured: MeasuredClassifier,
+  theme: Theme,
+): ClassifierGeo {
   return {
     id: classifier.id,
     kind: classifier.kind,
@@ -356,6 +365,8 @@ function buildDegenerateClassifierLeaf(classifier: Classifier, measured: Measure
     ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
     ...stereotypeLabelFields(classifier),
     ...(classifier.styleGeneration !== undefined ? { styleGeneration: classifier.styleGeneration } : {}),
+    // `EntityImageClass.java:197,210`: the lone class casts its merged style's shadow like any other.
+    ...shadowingField(classifier, measured, theme),
   };
 }
 
@@ -467,7 +478,7 @@ export function degenerateSingleClassifier(
   const measured = measuredMap.get(classifier.id)!;
   const margin = classDocumentMargin(theme);
   // dss T3b: the exporter's translate by `(margin.left, margin.top)` (`TextBlockExporter.java:173`).
-  const leaf = buildDegenerateClassifierLeaf(classifier, measured);
+  const leaf = buildDegenerateClassifierLeaf(classifier, measured, theme);
   const geo = margin === undefined ? leaf : shiftClassifierGeo(leaf, margin.left, margin.top);
   return degenerateClassifierDims(geo, measured, margin);
   // #lizard forgives — flat chain of early-return guards encoding upstream's

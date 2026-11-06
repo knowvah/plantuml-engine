@@ -1,0 +1,10 @@
+@startuml
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+}
+</style>
+class A
+note right of A: n
+@enduml

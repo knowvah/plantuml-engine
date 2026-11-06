@@ -19,11 +19,12 @@ import {
   noteBodySpikeLeft,
   noteFillOf,
   noteLineOf,
+  noteLineThickness,
 } from './activity-renderer-note-shapes.js';
+import { noteShadowFilter } from './activity-shadow.js';
 import {
   ACTIVITY_BAR_FILL,
   CIRCLE_INK,
-  NOTE_LINE_THICKNESS,
   activityFontSize,
   activityLineThickness,
   activityRoundCorner,
@@ -209,7 +210,9 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   const stroke = noteLineOf(node, theme); // `FtileWithNoteOpale.java:89,141`
 
   const spike = node.spikeTip;
-  const paint = { fill: noteFill, stroke, strokeWidth: NOTE_LINE_THICKNESS };
+  const paint = { fill: noteFill, stroke, strokeWidth: noteLineThickness(theme) };
+  // `Opale.java:122`: `polygon.setDeltaShadow(shadowing)` on the outline; the fold is a separate, unshadowed path.
+  const bodyPaint = { ...paint, ...noteShadowFilter(theme) };
   // `node.notePosition === 'left'` means the NOTE sits left of its target,
   // so the spike protrudes from the note's RIGHT edge (`getPolygonRight`);
   // `'right'` is the mirror (`getPolygonLeft`, spike on the LEFT edge).
@@ -223,7 +226,7 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   }
   // `Opale#drawU` (`:126`) draws the fold as its OWN filled `<path>`
   // unconditionally -- same shape whether or not the note has a spike.
-  const body = path(bodyD, paint) + path(noteFoldPath(x, y, w), paint);
+  const body = path(bodyD, bodyPaint) + path(noteFoldPath(x, y, w), paint);
 
   const label = node.label ?? '';
 

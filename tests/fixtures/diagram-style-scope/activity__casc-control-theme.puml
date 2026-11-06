@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+note { FontSize 12 }
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

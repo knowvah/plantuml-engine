@@ -1,0 +1,9 @@
+@startuml
+<style>
+class { LineThickness 3 }
+note { FontSize 12 }
+</style>
+class A
+note right of A: n
+skinparam classBorderThickness 2
+@enduml

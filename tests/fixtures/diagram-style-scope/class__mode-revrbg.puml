@@ -1,0 +1,5 @@
+@startuml
+skinparam reversecolor RBG
+class A
+note right of A: n
+@enduml

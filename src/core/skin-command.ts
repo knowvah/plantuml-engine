@@ -51,10 +51,15 @@ export interface SkinCut {
   readonly index: number;
   /** The refusal at the `skin` line itself. */
   readonly refusal: ParseRefusal;
+  /**
+   * smc T1b: the command only a `PSystemCommandFactory` dispatches (a
+   * `<style>` sheet, `style-command.ts`); other factory bases parse past it.
+   */
+  readonly commandFactoryOnly?: true;
 }
 
 /** Body lines whose document position precedes `position`. */
-function linesBefore(source: UmlSource, position: number): number {
+export function linesBefore(source: UmlSource, position: number): number {
   const positions = source.linePositions;
   if (positions === undefined) return 0;
   let count = 0;

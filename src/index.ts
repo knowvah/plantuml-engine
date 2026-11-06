@@ -3,7 +3,7 @@ import { withRemoteImages } from './core/remote-image-prefetch.js';
 import { inlineRemoteImageLines } from './core/remote-image-store.js';
 import type { BlockUml, BlockUmlOk, RawBlock } from './core/BlockUmlBuilder.js';
 import { registry, type AssembledSvg, type DiagramPlugin, type Resolution } from './core/dispatcher.js';
-import { skinCutOf } from './core/skin-command.js';
+import { commandCutsOf } from './core/style-command.js';
 import { buildTheme } from './core/build-theme.js';
 import { firstPageOf } from './core/preprocessor-first-page.js';
 import { applyChrome, isEmpty as isAnnotationsEmpty } from './core/annotations/index.js';
@@ -282,7 +282,7 @@ interface PreparedBlock {
  * {@link renderBlockPages} before they diverge on sync-vs-async layout and
  * error wrapping: resolve its diagram plugin (the parse happens HERE: upstream
  * picks a factory by attempting the parse, and D0 forbids a second parse
- * path; a failing `skin` line cuts it, unwind2-S8), build the theme from the
+ * path; a failing `skin` line cuts it, unwind2-S8, and so does a failing `<style>` sheet, smc T1b), build the theme from the
  * plugin's `styleInput` when jar-compatible (unwind-U1, D9), resolve its measurer, extract its AST (or throw the block's
  * `DiagramRefusal`), and surface any sprite/parse warnings. Neither caller's
  * try/catch nor sync-vs-async `layout` call belongs here.
@@ -291,11 +291,11 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   const previous = takePendingPrevious();
   // Served remote images (`options.assetStore`, `remote-image:<url>`) become the data URIs creole decodes; see `remote-image-store.ts`.
   const umlSource = { ...source, lines: inlineRemoteImageLines(source.lines, options?.assetStore) };
-  const skinCut = skinCutOf(block.preprocessed, umlSource);
+  const cuts = commandCutsOf(block.preprocessed, umlSource);
   const resolution = registry.resolve(
     umlSource,
     { assetStore: options?.assetStore, clock: renderClock(options) },
-    skinCut,
+    cuts,
     isBlockEmpty(block),
   );
   const plugin = resolution.plugin;

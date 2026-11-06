@@ -1,0 +1,5 @@
+## Observation: rose shadow loss was missing note/circle shadow, not a `<style>` snapshot
+- **Context**: smc T4a, `skin rose` + `<style>` rows.
+- **Finding**: Hypothesis (dss D3 gate drops Shadowing) was wrong: `theme.shadowing` stays 4 with a `<style>` block. Causes: class lone-classifier path (`buildDegenerateClassifierLeaf`) never set `shadowing`; class/description/state/activity notes never drew `filter` (Opale.java:122, EntityImageNote.java:281); activity start/stop/end circles and plain boxes read no merged Shadowing (only stereotyped boxes via `node.boxStyle`). Note stroke in activity/state was a flat 0.5 (rose root LineThickness 1.0 wins). Without a `<style>` block the same loss exists (jar oracle for /tmp act-nostyle has 4 filters, ours 0).
+- **Impact**: Merged-style facts ride the Theme under symbol keys (`note-style-facts.ts`, `activity-document-style.ts`) to keep `dist/*.d.ts` identical. Swimlane lane extents (`swimlane-context.ts#itemsExtentOf`) still call `nodeFudge` without the shadows.
+- **Confidence**: High

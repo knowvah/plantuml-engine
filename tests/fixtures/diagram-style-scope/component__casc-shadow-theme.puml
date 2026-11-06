@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+component { Shadowing 4 }
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

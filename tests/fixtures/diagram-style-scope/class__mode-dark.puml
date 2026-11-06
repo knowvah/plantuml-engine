@@ -1,0 +1,5 @@
+@startuml
+skinparam mode dark
+class A
+note right of A: n
+@enduml

@@ -8,7 +8,8 @@
  *   - every `.puml` with a `.svg` has EXACTLY one pin row (a new fixture with
  *     no row FAILS naming it);
  *   - every pin row names a `.puml` + `.svg` on disk;
- *   - a row's `diffCount` may only shrink; a `conformant` row stays conformant.
+ *   - a row's `diffCount` may only shrink; a `conformant` row stays conformant;
+ *   - a `stockError` row is measured under the error-page rule (smc D5).
  */
 import { describe, it, expect } from 'vitest';
 
@@ -36,7 +37,7 @@ describe('diagram-style-scope ratchet -- pin shape', () => {
 describe('diagram-style-scope ratchet -- diffCount never rises', () => {
   for (const [row, pinned] of Object.entries(pin.rows)) {
     it(`${row}: never rises above ${String(pinned.diffCount)}`, () => {
-      const { ok, message } = checkScopeRow(row, pinned, measureScopeRow(row));
+      const { ok, message } = checkScopeRow(row, pinned, measureScopeRow(row, undefined, undefined, pinned.stockError));
       expect(ok, message).toBe(true);
     });
   }

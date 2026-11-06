@@ -1,7 +1,7 @@
 {
   "$comment": "Style census (font sizes, stroke widths, rx, text count, canvas) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): canvas width/height move with the removed compression slots on 85 (x) / 160 (y) fixtures; no font/stroke/rx/textCount change is expected from this mission.",
-  "measuredAt": "2026-11-05",
-  "measuredAgainstCommit": "29322602",
+  "measuredAt": "2026-11-06",
+  "measuredAgainstCommit": "78ad396b",
   "fixtures": [
     {
       "type": "activity",
@@ -6479,21 +6479,21 @@
       "type": "activity",
       "slug": "finadu-74-duvi890",
       "status": "baseline",
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "29322602",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fontSize": {
           "12.5": 4
         },
         "strokeWidth": {
-          "1.042": 3
+          "3.125": 3
         },
         "rx": {
-          "13.021": 1
+          "4.167": 1
         },
         "textCount": 4,
         "width": "89",
-        "height": "209"
+        "height": "201"
       },
       "jar": {
         "fontSize": {
@@ -14320,13 +14320,13 @@
       "type": "activity",
       "slug": "lulavi-01-fose679",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fontSize": {
           "5": 1,
-          "12": 6,
-          "18": 2
+          "18": 2,
+          "19": 6
         },
         "strokeWidth": {
           "1": 16,
@@ -14334,11 +14334,11 @@
         },
         "rx": {
           "(absent)": 2,
-          "12.5": 6
+          "7.5": 6
         },
         "textCount": 9,
-        "width": "298",
-        "height": "441"
+        "width": "357",
+        "height": "363"
       },
       "jar": {
         "fontSize": {
@@ -21220,8 +21220,8 @@
       "type": "activity",
       "slug": "ronovu-01-voku005",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fontSize": {
           "12": 3
@@ -21233,8 +21233,8 @@
           "12.5": 3
         },
         "textCount": 3,
-        "width": "112",
-        "height": "172"
+        "width": "102",
+        "height": "142"
       },
       "jar": {
         "fontSize": {
@@ -21672,13 +21672,13 @@
       "type": "activity",
       "slug": "rutaji-30-suda150",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fontSize": {
           "5": 1,
-          "12": 6,
-          "18": 2
+          "18": 2,
+          "19": 6
         },
         "strokeWidth": {
           "1": 16,
@@ -21686,11 +21686,11 @@
         },
         "rx": {
           "(absent)": 2,
-          "12.5": 6
+          "7.5": 6
         },
         "textCount": 9,
-        "width": "298",
-        "height": "441"
+        "width": "357",
+        "height": "363"
       },
       "jar": {
         "fontSize": {
@@ -25631,8 +25631,8 @@
       "type": "activity",
       "slug": "vifiba-70-repa468",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fontSize": {
           "12": 3
@@ -25644,8 +25644,8 @@
           "12.5": 3
         },
         "textCount": 3,
-        "width": "112",
-        "height": "172"
+        "width": "102",
+        "height": "142"
       },
       "jar": {
         "fontSize": {

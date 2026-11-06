@@ -1,0 +1,9 @@
+@startuml
+skinparam monochrome true
+<style>
+participant { BackgroundColor #FF0000 }
+</style>
+participant A
+A -> B
+note right: n
+@enduml

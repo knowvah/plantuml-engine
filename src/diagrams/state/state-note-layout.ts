@@ -90,6 +90,12 @@ interface NoteMeasurement {
  *  constant already establishes for the identical jar font. */
 const NOTE_FONT_STYLES: ReadonlySet<FontStyle> = new Set();
 
+/** The note's `FontSize`: the `note` style `EntityImageNote.java:188-189` signs (`plantuml.skin:` `note { FontSize 13 }`),
+ *  read from the same bucket the class engine reads (`class/renderer-note.ts`); absent -> the skin default. */
+export function stateNoteFontSize(theme: Partial<Pick<Theme, 'colors'>>): number {
+  return theme.colors?.elements?.['note']?.fontSize ?? NOTE_FONT_SIZE;
+}
+
 /**
  * SI28 `findings/note.md` (fatupo-62-bemu777, xeziki-47-zomo866#a): the note
  * body's CONTENT dimension now routes through `buildNoteBody`
@@ -112,7 +118,7 @@ const NOTE_FONT_STYLES: ReadonlySet<FontStyle> = new Set();
  * (un-padded) content box, `EntityImageNote.java:176-181`'s own split.
  */
 export function measureNote(text: string, theme: Theme, measurer: StringMeasurer): NoteMeasurement {
-  const pure = measureNotePureText(text, theme.fontFamily, measurer, theme.sprites);
+  const pure = measureNotePureText(text, theme.fontFamily, measurer, theme.sprites, stateNoteFontSize(theme));
   return {
     lines: buildRenderLines(text, theme, measurer),
     width: pure.width + NOTE_MARGIN_X1 + NOTE_MARGIN_X2,
@@ -143,8 +149,9 @@ export function measureNotePureText(
   fontFamily: string,
   measurer: StringMeasurer,
   sprites?: SpriteRegistry,
+  fontSize: number = NOTE_FONT_SIZE,
 ): PureNoteTextDim {
-  const font: FontConfiguration = { family: fontFamily, size: NOTE_FONT_SIZE, color: null, styles: NOTE_FONT_STYLES };
+  const font: FontConfiguration = { family: fontFamily, size: fontSize, color: null, styles: NOTE_FONT_STYLES };
   // unwind2-S11: `skinParam.getSprite` sizes a `<$sprite>` atom
   // (`StripeSimple.java:229`).
   const opts = sprites === undefined ? undefined : { atomImageResolverFor: makeAtomImageResolverFor(sprites) };
@@ -180,10 +187,10 @@ const NOTE_TAB_SIZE_NB = 8;
  */
 export function buildRenderLines(
   text: string,
-  theme: Pick<Theme, 'fontFamily' | 'sprites'>,
+  theme: Pick<Theme, 'fontFamily' | 'sprites'> & Partial<Pick<Theme, 'colors'>>,
   measurer: StringMeasurer,
 ): readonly StateStyledTextLine[] {
-  const font: FontSpec = { family: theme.fontFamily, size: NOTE_FONT_SIZE };
+  const font: FontSpec = { family: theme.fontFamily, size: stateNoteFontSize(theme) };
   // stdd T5a: the state creole block, whose `|= a | b |` rows are the real `StripeTable` grid
   // (`state-sizing-creole.ts#tableLine`, drawn by `renderer-box.ts#renderStateTable`), as a state body's
   // (fatupo-62); `EntityImageNote.java` builds the body through the same `Display#create` pipeline.

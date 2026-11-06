@@ -4,6 +4,7 @@
  * the document chrome `TextBlockExporter` draws (background, border). Split
  * out of `renderer.ts` (500-line hook cap, sdd2-T7f).
  */
+import { colorMapperOf, mapDocumentBackground } from '../../core/klimt/color/fragment-color-mapper.js';
 import type { SequenceGeometry } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
@@ -146,7 +147,8 @@ export function documentChromeOf(
     // canvas rect unless that string is `#00000000`, `#000000` or `#FFFFFF`
     // (`SvgGraphics.java:189-191`). Handing over the raw token (`white`, as
     // `!theme plain` writes it) failed that test and drew an extra rect.
-    background: resolveColorToSvgHex(theme.colors.background),
+    // D6 (smc-T3a): mapped by the same `muteColorMapper` as the body (`SvgGraphics.java:181-182`).
+    background: mapDocumentBackground(resolveColorToSvgHex(theme.colors.background), colorMapperOf(theme)),
     ...(backgroundGradient === undefined ? {} : { backgroundGradient }),
     ...diagramBorderOf(theme),
   };

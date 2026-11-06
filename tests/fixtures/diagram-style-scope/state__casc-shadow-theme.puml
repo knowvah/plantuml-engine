@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+state { Shadowing 4 }
+note { FontSize 12 }
+</style>
+state S
+S --> T
+note right of S: n
+@enduml

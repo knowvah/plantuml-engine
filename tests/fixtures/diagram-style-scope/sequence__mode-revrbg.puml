@@ -1,0 +1,6 @@
+@startuml
+skinparam reversecolor RBG
+participant A
+A -> B
+note right: n
+@enduml

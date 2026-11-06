@@ -1,0 +1,9 @@
+@startuml
+skin rose
+<style>
+note { FontSize 12 }
+</style>
+participant A
+A -> B
+note right: n
+@enduml

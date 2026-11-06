@@ -363,6 +363,9 @@ export function matchesStopKeyword(lineLc: string, stops: StopKeywords): boolean
 
 export interface ParseContext {
   lines: readonly string[];
+  /** The document line of each of {@link lines} (`UmlSource.linePositions`, a joined line at its first); absent for a
+   *  hand-built source. smc-T4b: an action is stamped with it (`ActivityAction.position`). */
+  positions?: readonly (number | undefined)[];
   swimlanes: string[];
   swimlaneSet: Set<string>;
   currentSwimlane: string | undefined;
