@@ -1,6 +1,6 @@
 // (Re)generate oracle/goldens/svg-packet/authored-baseline.json from a fresh measurement of tests/fixtures/packet/*.puml.
 // Prints each nonzero row. With --write, replaces the file. Usage: npx jiti <this> <commit> [--write]
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg, weightedScore } from '../../../tests/oracle/svg-conformance/compare.js';
