@@ -1,0 +1,9 @@
+@startuml
+<style>
+.c {
+  FontStyle bold
+}
+</style>
+:A longer action label for width; <<c>>
+:second plain one;
+@enduml

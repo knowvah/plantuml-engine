@@ -35,7 +35,7 @@
  */
 import { lineTo, moveTo } from '../../core/svg-path-builder.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
-import { renderStateRuns, renderStateTable } from './renderer-box-runs.js';
+import { renderStateRuns, renderStateTable, type TableRuleStroke } from './renderer-box-runs.js';
 // stdd T5a: the run/table emitters moved to `renderer-box-runs.ts`; every importer is unchanged.
 export { renderStateRuns, renderStateTable } from './renderer-box-runs.js';
 import type { Theme } from '../../core/theme.js';
@@ -103,8 +103,8 @@ export function renderStateTextLines(
     readonly fontSize?: number;
     readonly back?: Paint;
     readonly fontWeight?: '700';
-    /** stdd T5a -- see `renderStateTable`'s `ruleWidth`. */
-    readonly tableRuleWidth?: number;
+    /** stdd T5a -- see `renderStateTable`'s `ruleStroke`. */
+    readonly tableRuleStroke?: TableRuleStroke;
   } = {},
 ): string {
   // mission G4 S16: `skinparam stateFontSize<<X>>` -- see
@@ -127,7 +127,7 @@ export function renderStateTextLines(
         fontSize,
         fill: style.fill,
         ascent,
-        ...(opts.tableRuleWidth !== undefined ? { ruleWidth: opts.tableRuleWidth } : {}),
+        ...(opts.tableRuleStroke !== undefined ? { ruleStroke: opts.tableRuleStroke } : {}),
       });
       lineTop += height;
       continue;
@@ -310,7 +310,9 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
   // unwind2-S11: `applyColor` puts the fill on the `ug` both text blocks
   // draw with (`EntityImageState.java` `drawU`), a sprite's tint back.
   const textOpts = { fill: nameFont, fontSize, back: fill };
-  const bodyOpts = { ...textOpts, fill: descriptionFont };
+  // ubt-T2b: `ug = ug.apply(stroke)` (`EntityImageState.java:130-132`) is the `ug` the
+  // fields draw with (`:162`), so a creole table's rules take the state's own stroke.
+  const bodyOpts = { ...textOpts, fill: descriptionFont, tableRuleStroke: stateBorderStrokeAttrs(node, theme) };
   const headerMarkup = renderStateTextLines(
     node.headerLines,
     () => nameBlockLeft(node, node.headerLines!),

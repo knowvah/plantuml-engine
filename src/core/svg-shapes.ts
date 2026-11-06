@@ -171,6 +171,7 @@ export function path(d: string, style: LineStyle = {}): string {
     ['marker-start', style.markerStart],
     ['id', style.id],
     ['codeLine', style.codeLine],
+    ['filter', style.filter],
   ] as const);
   return `${strokeR.def}${fillR?.def ?? ''}<path${a}/>`;
 }
@@ -272,6 +273,7 @@ export function polygon(points: ReadonlyArray<{ x: number; y: number }>, style: 
     // klimt path. 4018 of the 4037 polygons in the cached corpus carry it.
     ['stroke-linejoin', sd.styled ? 'miter' : undefined],
     ['stroke-miterlimit', sd.styled ? 10 : undefined],
+    ['filter', style.filter],
   ] as const);
   return `${fillR.def}${strokeR.def}<polygon${a}/>`;
 }

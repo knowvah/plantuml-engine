@@ -228,7 +228,7 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
       fontSize: NOTE_FONT_SIZE,
       back,
       // `AtomTable#drawU` rules take the ambient stroke, the note's `style.getStroke()` (`EntityImageNote.java:292-297`).
-      tableRuleWidth: NOTE_STROKE_WIDTH,
+      tableRuleStroke: { strokeWidth: NOTE_STROKE_WIDTH },
     },
   );
 }

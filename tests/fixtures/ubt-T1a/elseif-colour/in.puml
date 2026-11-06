@@ -1,0 +1,13 @@
+@startuml
+start
+if (foo) then (yes)
+  :a;
+elseif (bar) then (maybe) <<#red>>
+  :b;
+elseif (baz) then (perhaps)
+  :c;
+else (no)
+  :d;
+endif <<#blue>>
+stop
+@enduml

@@ -283,13 +283,14 @@ function minEventX(event: EventGeo): number {
       // component origin `xMargin` left of its drawn box
       // (`teoz/ReferenceTile.java:163-171`, `sequence-layout-ref.ts`).
       if (event.frameType === 'ref') return event.x - REF_X_MARGIN;
-      // A group reserves `EXTERNAL_MARGINX1` beyond its own frame:
+      // A group reserves `EXTERNAL_MARGINX1` beyond its own frame, and the
+      // notes written after its `end` beyond that:
       // `GroupingTile#getMinX:984-986` is
-      // `min.addFixed(-EXTERNAL_MARGINX1 - notesWidth(LEFT))` with
+      // `min.addFixed(-EXTERNAL_MARGINX1 - getNotesWidth(LEFT))` with
       // `EXTERNAL_MARGINX1 = 3` (`:83`). The frame's `x` is the border it
-      // draws; the tile's footprint starts 3 further left. (The left-note term
-      // is not modelled here -- see `findings/document-margins.md`.)
-      return event.x - FRAME_EXTERNAL_MARGIN_X1;
+      // draws; `drawNotes` puts a left note at `min - width` (`:1007-1013`),
+      // so the footprint starts 3 px left of the outermost left note.
+      return event.x - FRAME_EXTERNAL_MARGIN_X1 - (event.endNotesWidth?.left ?? 0);
     case 'activation':
       return event.lifelineX;
     case 'divider':

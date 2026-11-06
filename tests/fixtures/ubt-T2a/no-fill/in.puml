@@ -1,0 +1,13 @@
+@startuml
+skinparam partitionBorderColor red
+skinparam partitionBackgroundColor #EEEEFF
+sprite react <svg viewBox="0 0 230 230">
+<circle cx="115" cy="102" r="20.5"/>
+<ellipse rx="110" ry="42"  cx="115" cy="102" stroke="#61dafb" fill="none"/>
+<path d="M10,10 L50,50"/>
+</svg>
+
+partition <$react{scale=0.5}> {
+:x;
+}
+@enduml

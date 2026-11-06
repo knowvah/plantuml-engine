@@ -308,8 +308,10 @@ describe('svg-activity style census — corpus presence', () => {
     // nuzise) moved to dot-cache/sequence (aepp D3); romuru (CLASS) stays.
     // Derivation: 434 / 3 - 2 = 1 / 14.
     // ogc/T6 (2026-11-04): +301 promoted, +128 error (ledgered). Derivation: 434 + 301 = 735 / 1 + 128 = 129 / 14.
-    expect(baselineFixtures.length).toBe(735);
-    expect(errorFixtures.length).toBe(129);
+    // ubt/T1a (2026-11-06): dadelu-44, gigefo-15, tusaxu-17 render once start/while take a stereogroup
+    // (CommandStart3.java:63, CommandWhile3.java:76-78) -- promoted error -> baseline. Derivation: 735 + 3 = 738 / 129 - 3 = 126.
+    expect(baselineFixtures.length).toBe(738);
+    expect(errorFixtures.length).toBe(126);
     expect(jarErrorFixtures.length).toBe(14);
   });
 });

@@ -1,4 +1,5 @@
 import type { ActivityDiagramAST } from '../ast.js';
+import { colorSpread } from './diamond-colors.js';
 import type { ActivityEdgeGeo, ActivityGeometry, ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { Tile } from '../tiles/tile.js';
 import { NORTH_HOOK, SOUTH_HOOK } from '../tiles/points.js';
@@ -231,6 +232,13 @@ function walkIfVariant(tile: Tile, x: number, y: number, myLane: string | undefi
   }
 }
 
+/** The geo node kind of each terminal tile. */
+const TERMINAL_KIND: Readonly<Record<string, 'start' | 'stop' | 'end'>> = {
+  'gtile-start': 'start',
+  'gtile-stop': 'stop',
+  'gtile-end': 'end',
+};
+
 export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out: Out): void {
   const { kindHint, lane } = hints;
   const myLane = laneAt(tile, lane);
@@ -242,16 +250,13 @@ export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out
 
   switch (tile.kind) {
     case 'gtile-start':
-      pushNode(out, { id: out.nextId('start'), kind: 'start', x, y, width: tile.width, height: tile.height }, myLane);
-      return;
-
     case 'gtile-stop':
-      pushNode(out, { id: out.nextId('stop'), kind: 'stop', x, y, width: tile.width, height: tile.height }, myLane);
+    case 'gtile-end': {
+      const kind = TERMINAL_KIND[tile.kind]!;
+      const geo = { x, y, width: tile.width, height: tile.height, ...colorSpread(tile.diamondColors?.open) };
+      pushNode(out, { id: out.nextId(kind), kind, ...geo }, myLane);
       return;
-
-    case 'gtile-end':
-      pushNode(out, { id: out.nextId('end'), kind: 'end', x, y, width: tile.width, height: tile.height }, myLane);
-      return;
+    }
 
     case 'gtile-break':
       pushNode(out, { id: out.nextId('break'), kind: 'break', x, y, width: tile.width, height: tile.height }, myLane);
@@ -271,6 +276,8 @@ export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out
       if (t.color !== undefined) node.color = t.color;
       // `FtileBox`'s `boxStyle` (`FtileBox.java:222`), read by the renderer.
       if (t.stereotype !== undefined) node.stereotype = t.stereotype;
+      // `FtileBox.create`'s merged style, the SAME value `GtileAction` sized the box with.
+      if (t.boxStyle !== undefined) node.boxStyle = t.boxStyle;
       pushNode(out, node, myLane);
       return;
     }

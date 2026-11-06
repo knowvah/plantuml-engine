@@ -21,6 +21,11 @@
  * placeholder assertion when `ratchet.json`/`parity-state.json` are empty
  * (the SAME defensive precedent every other ratchet suite already uses)
  * — this branch IS exercised at S0, unlike object's O0.
+ *
+ * An `unknown` tree (ubt-T3c, D6 of `plans/unknown-bucket-triage/decisions.md`): an entry MAY carry
+ * `tree: 'unknown'`, a corpus row filed under `unknown` that the jar types as STATE; its golden lives at
+ * `svg-state/unknown/<slug>/`, renders through the same helper, and its AC3 row is read from
+ * `parity-unknown.json` (as `class.golden.ratchet.test.ts` reads its `unknown` tree).
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -31,10 +36,16 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { compareSvg } from './compare.js';
 import { renderFixtureState } from './render-fixture-state.js';
 
+/** A pin's survey bucket when it is not `state` (ubt-T3c, D6 of `plans/unknown-bucket-triage/decisions.md`):
+ *  a corpus row filed under `unknown` that the jar types as STATE and our router sends here. */
+type RatchetTree = 'unknown';
+
 interface RatchetFixture {
   slug: string;
   addedAt: string;
   source: string;
+  /** Absent: a `state` row at `svg-state/<slug>/`; `'unknown'`: at `svg-state/unknown/<slug>/`. */
+  tree?: RatchetTree;
 }
 
 interface RatchetManifest {
@@ -59,16 +70,24 @@ const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'ut
 // `render-fixture-state.ts`'s doc comment and `oracle/goldens/svg-state/
 // README.md`'s "Add rule"). Regenerate via `svg-parity-survey.ts --out
 // ... state` before adding new slugs.
-const parity = JSON.parse(
-  readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'parity-state.json'), 'utf8'),
-) as ParityReport;
+const readParity = (file: string): ParityReport =>
+  JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), file), 'utf8')) as ParityReport;
+const PARITY_BY_TREE: Record<'state' | RatchetTree, ParityReport> = {
+  state: readParity('parity-state.json'),
+  unknown: readParity('parity-unknown.json'),
+};
 
-function findParityEntry(slug: string): ParityEntry | undefined {
-  return parity.fixtures.find((f) => f.slug === slug);
+function findParityEntry(f: RatchetFixture): ParityEntry | undefined {
+  return PARITY_BY_TREE[f.tree ?? 'state'].fixtures.find((e) => e.slug === f.slug);
 }
 
 function fixtureDir(f: RatchetFixture): string {
-  return join(GOLDENS_ROOT, f.slug);
+  return f.tree === undefined ? join(GOLDENS_ROOT, f.slug) : join(GOLDENS_ROOT, f.tree, f.slug);
+}
+
+/** `state/<slug>` or `unknown/<slug>`: the pin's bucket and slug, for messages. */
+function labelOf(f: RatchetFixture): string {
+  return `${f.tree ?? 'state'}/${f.slug}`;
 }
 
 function readGolden(f: RatchetFixture): string {
@@ -89,14 +108,14 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-state conformance ratchet (AC1)', () => {
   for (const f of manifest.fixtures) {
-    it(`state/${f.slug}: stays zero-diff against the pinned golden`, () => {
+    it(`${labelOf(f)}: stays zero-diff against the pinned golden`, () => {
       const golden = readGolden(f);
       const markup = readSource(f);
       const ours = renderFixtureState(markup, new DeterministicMeasurer());
       const { pass, diffs } = compareSvg(ours, golden, 'deterministic');
       expect(
         pass,
-        `state/${f.slug}: conformance regression — first diff: ${firstDiffPath(diffs)}` +
+        `${labelOf(f)}: conformance regression — first diff: ${firstDiffPath(diffs)}` +
           ` — ${JSON.stringify(diffs[0])}`,
       ).toBe(true);
       expect(diffs).toEqual([]);
@@ -159,11 +178,9 @@ if (manifest.fixtures.length === 0) {
 describe.skipIf(manifest.fixtures.length === 0)('svg-state conformance ratchet — eligibility (AC3)', () => {
   it('every manifest slug has a dotEqual=true parity-state.json entry', () => {
     for (const f of manifest.fixtures) {
-      const entry = findParityEntry(f.slug);
-      expect(entry, `state/${f.slug}: no parity-state.json entry found`).toBeDefined();
-      expect(entry!.dotEqual, `state/${f.slug}: manifest entry is not DOT-EQUAL — ineligible for the ratchet`).toBe(
-        true,
-      );
+      const entry = findParityEntry(f);
+      expect(entry, `${labelOf(f)}: no parity entry found`).toBeDefined();
+      expect(entry!.dotEqual, `${labelOf(f)}: manifest entry is not DOT-EQUAL — ineligible for the ratchet`).toBe(true);
     }
   });
 });
@@ -181,7 +198,33 @@ if (manifest.fixtures.length === 0) {
     // See this file's doc comment + oracle/goldens/svg-state/README.md
     // "Add rule": regenerate via `svg-parity-survey.ts --out ... state`
     // whenever a render-side change might create a new zero-diff candidate.
-    expect(parity.fixtures.length).toBeGreaterThan(0);
+    expect(PARITY_BY_TREE.state.fixtures.length).toBeGreaterThan(0);
     expect(manifest.fixtures).toHaveLength(0);
   });
 }
+
+// ---------------------------------------------------------------------------
+// ubt-T3c (D6) -- the `unknown` tree: resolution, and tamper detection on an
+// unknown-tree pin (red until the first one is pinned).
+// ---------------------------------------------------------------------------
+
+describe('svg-state conformance ratchet -- unknown tree (ubt-T3c)', () => {
+  it('an unknown entry resolves under svg-state/unknown/<slug>/, a bare one under svg-state/<slug>/', () => {
+    const base = { slug: 'synthetic-slug', addedAt: '2026-11-06', source: 'test' };
+    expect(fixtureDir({ ...base, tree: 'unknown' })).toBe(join(GOLDENS_ROOT, 'unknown', 'synthetic-slug'));
+    expect(fixtureDir(base)).toBe(join(GOLDENS_ROOT, 'synthetic-slug'));
+  });
+
+  it('a mutated unknown-tree golden (in-memory only) fails, naming the tree and slug', () => {
+    const f = manifest.fixtures.find((x) => x.tree === 'unknown');
+    expect(f, 'expected at least one unknown-tree pin').toBeDefined();
+    const golden = readGolden(f!);
+    const ours = renderFixtureState(readSource(f!), new DeterministicMeasurer());
+    expect(compareSvg(ours, golden, 'deterministic').pass).toBe(true);
+    const tampered = golden.replace(/ x="([\d.]+)"/, (_m, x: string) => ` x="${Number(x) + 500}"`);
+    expect(tampered).not.toBe(golden);
+    const { pass, diffs } = compareSvg(ours, tampered, 'deterministic');
+    expect(pass).toBe(false);
+    expect(`${labelOf(f!)}: ${diffs[0]!.path}`).toContain(`unknown/${f!.slug}`);
+  });
+});

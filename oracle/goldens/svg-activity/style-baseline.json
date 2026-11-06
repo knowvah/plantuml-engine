@@ -1,7 +1,7 @@
 {
   "$comment": "Style census (font sizes, stroke widths, rx, text count, canvas) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): canvas width/height move with the removed compression slots on 85 (x) / 160 (y) fixtures; no font/stroke/rx/textCount change is expected from this mission.",
   "measuredAt": "2026-11-05",
-  "measuredAgainstCommit": "8eb3bd2e",
+  "measuredAgainstCommit": "29322602",
   "fixtures": [
     {
       "type": "activity",
@@ -2379,10 +2379,11 @@
       "type": "activity",
       "slug": "cajodu-78-topo568",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fontSize": {
+          "11": 1,
           "12": 4
         },
         "strokeWidth": {
@@ -2391,8 +2392,8 @@
         "rx": {
           "12.5": 4
         },
-        "textCount": 4,
-        "width": "102",
+        "textCount": 5,
+        "width": "120",
         "height": "268"
       },
       "jar": {
@@ -3987,10 +3988,37 @@
     {
       "type": "activity",
       "slug": "dadelu-44-xuvu530",
-      "status": "error",
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command; our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fontSize": {
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 1,
+        "width": "72",
+        "height": "149"
+      },
+      "jar": {
+        "fontSize": {
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 1,
+        "width": "72",
+        "height": "149"
+      }
     },
     {
       "type": "activity",
@@ -6061,11 +6089,12 @@
       "type": "activity",
       "slug": "fejune-25-rome862",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fontSize": {
-          "12": 3
+          "11": 2,
+          "12": 1
         },
         "strokeWidth": {
           "1": 2
@@ -6074,8 +6103,8 @@
           "12.5": 3
         },
         "textCount": 3,
-        "width": "111",
-        "height": "172"
+        "width": "106",
+        "height": "170"
       },
       "jar": {
         "fontSize": {
@@ -6450,8 +6479,8 @@
       "type": "activity",
       "slug": "finadu-74-duvi890",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fontSize": {
           "12.5": 4
@@ -6463,8 +6492,8 @@
           "13.021": 1
         },
         "textCount": 4,
-        "width": "97",
-        "height": "234"
+        "width": "89",
+        "height": "209"
       },
       "jar": {
         "fontSize": {
@@ -8453,10 +8482,11 @@
       "type": "activity",
       "slug": "gexufa-76-paga835",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fontSize": {
+          "11": 3,
           "12": 2
         },
         "strokeWidth": {
@@ -8465,9 +8495,9 @@
         "rx": {
           "12.5": 2
         },
-        "textCount": 2,
+        "textCount": 5,
         "width": "195",
-        "height": "245"
+        "height": "255"
       },
       "jar": {
         "fontSize": {
@@ -8593,10 +8623,39 @@
     {
       "type": "activity",
       "slug": "gigefo-15-cami497",
-      "status": "error",
-      "reason": "the jar accepts 'while (data available?) <<#AliceBlue>>' via CommandWhile3.java:63-80 (registered ActivityDiagramFactory3.java:137): the regex ends `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:76-78), so a <<#AliceBlue>> tail is accepted; our activity engine refuses that line (dispatch-support.ts:247 RE_WHILE ends `\\s*$` after the optional is/equals label, with no stereogroup), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':foo1;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fontSize": {
+          "11": 5,
+          "12": 13
+        },
+        "strokeWidth": {
+          "1": 29
+        },
+        "rx": {
+          "12.5": 8
+        },
+        "textCount": 18,
+        "width": "321",
+        "height": "713"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 5,
+          "12": 13
+        },
+        "strokeWidth": {
+          "1": 29
+        },
+        "rx": {
+          "12.5": 8
+        },
+        "textCount": 18,
+        "width": "321",
+        "height": "713"
+      }
     },
     {
       "type": "activity",
@@ -13366,12 +13425,12 @@
       "type": "activity",
       "slug": "liluje-29-vuja668",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fontSize": {
-          "11": 8,
-          "12": 12
+          "11": 14,
+          "12": 6
         },
         "strokeWidth": {
           "1": 32,
@@ -13381,8 +13440,8 @@
           "12.5": 2
         },
         "textCount": 20,
-        "width": "495",
-        "height": "415"
+        "width": "481",
+        "height": "419"
       },
       "jar": {
         "fontSize": {
@@ -24599,10 +24658,11 @@
       "type": "activity",
       "slug": "totave-53-fiju801",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fontSize": {
+          "11": 3,
           "12": 2
         },
         "strokeWidth": {
@@ -24611,9 +24671,9 @@
         "rx": {
           "12.5": 2
         },
-        "textCount": 2,
-        "width": "185",
-        "height": "247"
+        "textCount": 5,
+        "width": "189",
+        "height": "257"
       },
       "jar": {
         "fontSize": {
@@ -24840,10 +24900,39 @@
     {
       "type": "activity",
       "slug": "tusaxu-17-rasi651",
-      "status": "error",
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command (and CommandEnd3.java:58-65, registered :153, carries the same stereogroup leaf at :63 for 'end <<#blue>>'); our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fontSize": {
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2,
+          "2.5": 2
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 1,
+        "width": "72",
+        "height": "147"
+      },
+      "jar": {
+        "fontSize": {
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2,
+          "2.5": 2
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 1,
+        "width": "72",
+        "height": "147"
+      }
     },
     {
       "type": "activity",
@@ -26267,12 +26356,13 @@
       "type": "activity",
       "slug": "vupecu-35-tisa672",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fontSize": {
+          "10": 1,
           "11": 6,
-          "12": 2
+          "12": 1
         },
         "strokeWidth": {
           "1": 11
@@ -26282,7 +26372,7 @@
         },
         "textCount": 8,
         "width": "136",
-        "height": "304"
+        "height": "302"
       },
       "jar": {
         "fontSize": {

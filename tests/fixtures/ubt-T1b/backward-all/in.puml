@@ -1,0 +1,24 @@
+@startuml
+<style>
+.c {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 3
+  FontSize 20
+  FontName Courier
+  FontStyle bold
+  FontColor red
+  Padding 4
+  RoundCorner 5
+  Shadowing 6
+  MaximumWidth 80
+  MinimumWidth 150
+}
+</style>
+start
+repeat
+  :Generate diagrams;
+backward:Log the context; <<c>>
+repeat while (more data?) is (yes)
+stop
+@enduml

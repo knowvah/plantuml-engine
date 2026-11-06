@@ -10,6 +10,20 @@ export interface StringBounder {
   getDimension(text: string, fontSizePt: number): { width: number; height: number };
 }
 
+/**
+ * The stereogroup `<<#color>>` fills of one compound's own diamonds (`if`, `elseif`, `endif`, `while`, `repeat`,
+ * `switch`), already resolved the way the upstream builder falls back; absent members take the diamond style's.
+ * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorIf.java:81-83
+ */
+export interface DiamondColors {
+  /** The opening diamond (`if`, `while`, `switch`, `repeat`'s entry). */
+  readonly open?: string | undefined;
+  /** The closing diamond (`endif`, `endswitch`, `repeat while` and its break diamond). */
+  readonly close?: string | undefined;
+  /** `elseif` diamond `i` (`FtileIfLongHorizontal.java:178`); index 0 is the `if` itself. */
+  readonly branches?: readonly (string | undefined)[];
+}
+
 export interface Tile {
   readonly kind: string;
   readonly width: number;
@@ -80,6 +94,8 @@ export interface Tile {
    * Set by `withKilled` (`layout/tile-layout.ts`), next to the `hasPointOut()` override it accompanies.
    */
   killed?: true;
+  /** The `<<#color>>` fills this compound's own diamonds take, see {@link DiamondColors}. */
+  diamondColors?: DiamondColors;
   getCoord(hook: HookName): GPoint;
   /**
    * Whether this tile has an outgoing connection point that a later
@@ -108,6 +124,7 @@ export abstract class TileLeaf implements Tile {
   inLabel?: { label: string; color?: string };
   outLabel?: { label: string; color?: string };
   killed?: true;
+  diamondColors?: DiamondColors;
 
   /**
    * Default `true` rather than `abstract`: every production `gtile-*.ts`
@@ -135,6 +152,7 @@ export abstract class TileComposite implements Tile {
   inLabel?: { label: string; color?: string };
   outLabel?: { label: string; color?: string };
   killed?: true;
+  diamondColors?: DiamondColors;
 
   /**
    * Default `true` for the same reason as `TileLeaf.hasPointOut` above:

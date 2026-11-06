@@ -19,21 +19,34 @@ export interface ActivityAction {
   label: string;
   color?: string;
   stereotype?: string;
+  /** EVERY label of the stereogroup, in `Stereogroup#getLabels` order: `FtileBox.create` builds its style from the whole
+   *  group (`Stereogroup#buildStereotype`), where {@link stereotype} keeps one label. */
+  stereotypes?: readonly string[];
   swimlane?: string;
 }
 
 export interface ActivityStart {
   kind: 'start';
+  /** The BACK of `start <<#c>>`'s stereogroup, `#` kept: the circle's fill (`CircleStart.java:72,82`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandStart3.java:84-88 */
+  color?: string;
   swimlane?: string;
 }
 
 export interface ActivityStop {
   kind: 'stop';
+  /** `stop <<#c>>`: the inner disc's fill (`CircleEnd.java:75,99`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandStop3.java:85-90 */
+  color?: string;
   swimlane?: string;
 }
 
 export interface ActivityEnd {
   kind: 'end';
+  /** `end <<#c>>`: read (`CommandEnd3.java:85-90`) but drawn nowhere -- the cross is `LineColor`
+   *  (`FtileCircleEndCross.java:79-80,105-114`), so a BACK colour is invisible.
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandEnd3.java:85-90 */
+  color?: string;
   swimlane?: string;
 }
 
@@ -116,6 +129,8 @@ export interface ActivityBackward {
   notes?: ActivityNote[];
   /** Box style (`CommandBackward3.java:136-138`), as `ActivityAction.stereotype`. */
   stereotype?: string;
+  /** Every stereogroup label, as `ActivityAction.stereotypes`. */
+  stereotypes?: readonly string[];
 }
 
 /**
@@ -205,6 +220,9 @@ export interface ActivityElseIf {
    * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileIfLongHorizontal.java:178-186
    */
   incomingLabel?: string;
+  /** `elseif (..) <<#c>>`: this branch's own diamond fill (`FtileIfLongHorizontal.java:178`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandElseIf2.java:141,150 */
+  color?: string;
   body: ActivityNode[];
 }
 
@@ -218,6 +236,12 @@ export interface ActivityIf {
   /** Intermediate elseif clauses in order; may be empty. */
   elseIfBranches: ActivityElseIf[];
   swimlane?: string;
+  /** `if (..) <<#c>>`: the diamond fill (`FtileFactoryDelegatorIf.java:81-83`), which `endif` and every `elseif` inherit.
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf2.java:136-151 */
+  color?: string;
+  /** `endif <<#c>>`: the closing diamond's fill (`InstructionIf.java:196`, `Branch.java:204-207`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandEndif3.java:93-96 */
+  endColor?: string;
   /**
    * Notes the IF ITSELF owns (never a branch's own flow content), in
    * `WithNote#addNote`'s own insertion order: a LEADING note in the
@@ -242,6 +266,9 @@ export interface ActivityWhile {
   yesLabel?: string;
   /** Label on the exit edge (the "is not" path). */
   exitLabel?: string;
+  /** `while (..) <<#c>>`: the header diamond's fill (`FtileFactoryDelegatorWhile.java:81-83`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandWhile3.java:117-121 */
+  color?: string;
   body: ActivityNode[];
   swimlane?: string;
   /**
@@ -284,6 +311,15 @@ export interface ActivityRepeat {
    *   (`ftile/vcompact/FtileRepeat.java:77-80`).
    */
   entry?: ActivityAction;
+  /** `repeat <<#c>>`: `diamondColor1`, the entry diamond's fill and the entry box's BACK.
+   *  @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorRepeat.java:80-82,107-108 */
+  color?: string;
+  /** `repeat while (..) <<#c>>`: `diamondColor2`, the condition and break diamonds' fill.
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeatWhile3.java:147,161-164 */
+  whileColor?: string;
+  /** `repeat while` carries a stereogroup (of any content): `diamondColor2` is then its own, never `diamondColor1`.
+   *  @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorRepeat.java:99-100 */
+  whileStereogroup?: true;
   body: ActivityNode[];
   condition: string;
   /**
@@ -405,6 +441,12 @@ export interface ActivitySwitch {
   condition: string;
   cases: ActivitySwitchCase[];
   swimlane?: string;
+  /** `switch (..) <<#c>>`: the opening diamond's fill (`FtileFactoryDelegatorSwitch.java:137-139`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandSwitch.java:100-111 */
+  color?: string;
+  /** `endswitch <<#c>>`: the closing diamond's fill, merged over {@link color} (`InstructionSwitch.java:123-124`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandEndSwitch.java:86-89 */
+  endColor?: string;
   notes?: ActivityNote[];
 }
 

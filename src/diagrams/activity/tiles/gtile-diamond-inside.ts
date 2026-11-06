@@ -1,6 +1,6 @@
 import type { GPoint, HookName } from './points.js';
 import { EAST_HOOK, NORTH_BORDER, NORTH_HOOK, SOUTH_BORDER, SOUTH_HOOK, WEST_HOOK } from './points.js';
-import type { StringBounder } from './tile.js';
+import type { DiamondColors, StringBounder } from './tile.js';
 import { TileLeaf } from './tile.js';
 import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
@@ -52,6 +52,8 @@ export interface DiamondConditionTile {
   readonly kind: string;
   readonly swimlane?: string;
   readonly swimlaneOut?: string;
+  /** The stereogroup `<<#color>>` fill this diamond draws (`layout/diamond-colors.ts`). */
+  diamondColors?: DiamondColors;
   readonly label: string;
   /** isw-T2-act F5: the test and SIMPLE_LINE side blocks carry the style
    *  `wrapWidth()` ({@link DiamondText}). */

@@ -137,6 +137,13 @@ export function renderStateRuns(
   return out;
 }
 
+/** The ambient `UStroke` a table's rules are drawn with: its thickness and
+ *  dash pattern (`UStroke`, the same pair a state border carries). */
+export interface TableRuleStroke {
+  readonly strokeWidth: number;
+  readonly strokeDasharray?: string;
+}
+
 /**
  * A creole TABLE stripe (`AtomTable#drawU`, `AtomTable.java:106-158`):
  * every cell's own runs at its `Position` (LEFT-aligned, no padding), then
@@ -157,9 +164,10 @@ export function renderStateTable(
     readonly fontSize: number;
     readonly fill: string;
     readonly ascent: number;
-    /** stdd T5a: the ambient `UStroke` the grid rules take -- a note's own `style.getStroke()`
-     *  (`EntityImageNote.java:292-297`, 0.5), else {@link TABLE_RULE_WIDTH}. */
-    readonly ruleWidth?: number;
+    /** stdd T5a, ubt-T2b: the ambient `UStroke` the grid rules take -- a note's own
+     *  `style.getStroke()` (`EntityImageNote.java:292-297`, 0.5), a leaf state's
+     *  (`EntityImageState.java:130-132`), else {@link TABLE_RULE_WIDTH}. */
+    readonly ruleStroke?: TableRuleStroke;
   },
 ): string {
   let out = '';
@@ -176,7 +184,7 @@ export function renderStateTable(
   }
   const lastX = x + (table.colX[table.colX.length - 1] as number);
   const lastY = y + (table.rowY[table.rowY.length - 1] as number);
-  const stroke = { stroke: style.fill, strokeWidth: style.ruleWidth ?? TABLE_RULE_WIDTH };
+  const stroke = { stroke: style.fill, ...(style.ruleStroke ?? { strokeWidth: TABLE_RULE_WIDTH }) };
   for (const ry of table.rowY) out += line(x, y + ry, lastX, y + ry, stroke);
   for (const cx of table.colX) out += line(x + cx, y, x + cx, lastY, stroke);
   return out;

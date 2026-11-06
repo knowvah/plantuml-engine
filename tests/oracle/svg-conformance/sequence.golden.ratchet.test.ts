@@ -19,6 +19,11 @@
  * none is created here -- doing so would be a second, uncalled-for
  * comparator (D1, stop 4).
  *
+ * An `unknown` tree (ubt-T3c, D6 of `plans/unknown-bucket-triage/decisions.md`): an entry MAY carry
+ * `tree: 'unknown'`, a corpus row filed under `unknown` that the jar types as SEQUENCE; its golden lives at
+ * `svg-sequence/unknown/<slug>/` and renders through the same helper (as `class.golden.ratchet.test.ts`
+ * reads its `unknown` tree).
+ *
  * SHIPS EMPTY, BY MEASUREMENT, NOT BY OVERSIGHT. Sequence's diff-baseline
  * floor (`sequence.diff-baseline.ratchet.test.ts`, T2) is min 10 diffs
  * across all 1138 measurable fixtures -- ZERO reach 0. `fixtures: []` here
@@ -37,10 +42,16 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { compareSvg } from './compare.js';
 import { renderFixtureSequence, sequenceFixtureOptions } from './render-fixture-sequence.js';
 
+/** A pin's survey bucket when it is not `sequence` (ubt-T3c, D6 of `plans/unknown-bucket-triage/decisions.md`):
+ *  a corpus row filed under `unknown` that the jar types as SEQUENCE and our router sends here. */
+type RatchetTree = 'unknown';
+
 interface RatchetFixture {
   slug: string;
   addedAt: string;
   source: string;
+  /** Absent: a `sequence` row at `svg-sequence/<slug>/`; `'unknown'`: at `svg-sequence/unknown/<slug>/`. */
+  tree?: RatchetTree;
 }
 
 interface RatchetManifest {
@@ -52,7 +63,12 @@ const GOLDENS_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../ora
 const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'utf8')) as RatchetManifest;
 
 function fixtureDir(f: RatchetFixture): string {
-  return join(GOLDENS_ROOT, f.slug);
+  return f.tree === undefined ? join(GOLDENS_ROOT, f.slug) : join(GOLDENS_ROOT, f.tree, f.slug);
+}
+
+/** `sequence/<slug>` or `unknown/<slug>`: the pin's bucket and slug, for messages. */
+function labelOf(f: RatchetFixture): string {
+  return `${f.tree ?? 'sequence'}/${f.slug}`;
 }
 
 function readGolden(f: RatchetFixture): string {
@@ -85,7 +101,7 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 describe.skipIf(manifest.fixtures.length === 0)('svg-sequence conformance ratchet (AC1)', () => {
   for (const f of manifest.fixtures) {
     it(
-      `sequence/${f.slug}: stays zero-diff against the pinned golden`,
+      `${labelOf(f)}: stays zero-diff against the pinned golden`,
       () => {
         const golden = readGolden(f);
         const markup = readSource(f);
@@ -93,7 +109,7 @@ describe.skipIf(manifest.fixtures.length === 0)('svg-sequence conformance ratche
         const { pass, diffs } = compareSvg(ours, golden, 'deterministic');
         expect(
           pass,
-          `sequence/${f.slug}: conformance regression — first diff: ${firstDiffPath(diffs)}` +
+          `${labelOf(f)}: conformance regression — first diff: ${firstDiffPath(diffs)}` +
             ` — ${JSON.stringify(diffs[0])}`,
         ).toBe(true);
         expect(diffs).toEqual([]);
@@ -150,3 +166,29 @@ if (manifest.fixtures.length === 0) {
     expect(manifest.fixtures).toHaveLength(0);
   });
 }
+
+// ---------------------------------------------------------------------------
+// ubt-T3c (D6) -- the `unknown` tree: resolution, and tamper detection on an
+// unknown-tree pin (red until the first one is pinned).
+// ---------------------------------------------------------------------------
+
+describe('svg-sequence conformance ratchet -- unknown tree (ubt-T3c)', () => {
+  it('an unknown entry resolves under svg-sequence/unknown/<slug>/, a bare one under svg-sequence/<slug>/', () => {
+    const base = { slug: 'synthetic-slug', addedAt: '2026-11-06', source: 'test' };
+    expect(fixtureDir({ ...base, tree: 'unknown' })).toBe(join(GOLDENS_ROOT, 'unknown', 'synthetic-slug'));
+    expect(fixtureDir(base)).toBe(join(GOLDENS_ROOT, 'synthetic-slug'));
+  });
+
+  it('a mutated unknown-tree golden (in-memory only) fails, naming the tree and slug', () => {
+    const f = manifest.fixtures.find((x) => x.tree === 'unknown');
+    expect(f, 'expected at least one unknown-tree pin').toBeDefined();
+    const golden = readGolden(f!);
+    const ours = renderFixtureSequence(readSource(f!), new DeterministicMeasurer(), sequenceFixtureOptions());
+    expect(compareSvg(ours, golden, 'deterministic').pass).toBe(true);
+    const tampered = golden.replace(/ x="([\d.]+)"/, (_m, x: string) => ` x="${Number(x) + 500}"`);
+    expect(tampered).not.toBe(golden);
+    const { pass, diffs } = compareSvg(ours, tampered, 'deterministic');
+    expect(pass).toBe(false);
+    expect(`${labelOf(f!)}: ${diffs[0]!.path}`).toContain(`unknown/${f!.slug}`);
+  });
+});

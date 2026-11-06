@@ -1,0 +1,12 @@
+@startuml
+|A|
+start
+if (x?) then (yes) <<#green>>
+  :a;
+else (no)
+  |B|
+  :b;
+endif <<#red>>
+|A|
+stop
+@enduml

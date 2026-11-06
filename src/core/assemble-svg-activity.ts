@@ -127,7 +127,14 @@ function spliceIntoActivityContentGroup(body: string, markup: string): string {
  * diagram or chrome draw, so the rect is the content group's first child
  * whether or not `applyChrome` wrapped the body.
  */
-export function finalizeActivityFragment(fragment: RenderFragment): RenderFragment {
+export function finalizeActivityFragment(drawn: RenderFragment): RenderFragment {
+  // ubt-T2a: `ensureVisible`'s running maximum is the larger of the composed seed and the drawn fold
+  // (`RenderFragment.drawnMaxX/Y`, `SvgGraphics.java:129-136`), as `finalizeSequenceFragment` reads it.
+  const fragment = {
+    ...drawn,
+    width: Math.trunc(Math.max(drawn.width, drawn.drawnMaxX ?? 0)),
+    height: Math.trunc(Math.max(drawn.height, drawn.drawnMaxY ?? 0)),
+  };
   const canonical =
     fragment.background === undefined
       ? fragment

@@ -24,6 +24,7 @@ import { cleanForKeySlow } from './style/mindmap-style-builder.js';
 import { parseConditionalColor } from './klimt/color/HColorSet.js';
 import { parseClockwise } from './annotations/annotation-clockwise.js';
 import { withActivityCircleStyle } from './activity-circle-style.js';
+import { withActivityBoxStyle } from './activity-box-style.js';
 import { ROOT_LINE_COLOR_KEY } from './skinparam-key-handlers-shared.js';
 import { OptionKey } from './tim/EaterOption.js';
 
@@ -106,7 +107,9 @@ export function buildTheme(
   const styleMap = mergedStyleMap([...skinSegments.map(rootColourRun), ...segments]);
   // add4-T3f: the activity circles' priority-ordered merged style -- see
   // `activity-circle-style.ts`; read only by the activity renderer.
-  const withStyleMap = withActivityCircleStyle(withDocumentStyle(withDeclarations, styleMap), preprocessed);
+  const withCircles = withActivityCircleStyle(withDocumentStyle(withDeclarations, styleMap), preprocessed);
+  // ubt-T1b: a stereotyped box's merged style (`activity-box-style.ts`), activity only.
+  const withStyleMap = diagramType === 'activity' ? withActivityBoxStyle(withCircles, preprocessed) : withCircles;
 
   // G2 N39: position-scoped classifier `.tagname` cascade generations --
   // see `preprocessed.stylePositions`'s doc comment for the mechanism.

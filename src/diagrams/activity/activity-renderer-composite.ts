@@ -36,7 +36,8 @@ import {
   stereotypeLine,
   stereotypeFont,
 } from './activity-scoped-colors.js';
-import { frameTitleWidth } from './tiles/gtile-group.js';
+import { frameTitleDimension } from './tiles/gtile-group.js';
+import { UStroke } from '../../core/klimt/UStroke.js';
 
 /** The root `FontColor black` a frame's title inherits. @see ~/git/plantuml/src/main/resources/skin/plantuml.skin:9 */
 const COMPOSITE_TITLE_FONT_COLOR = '#000';
@@ -64,7 +65,16 @@ function compositeTabPath(x: number, y: number, textWidth: number, textHeight: n
  * (`layout/compress/shapes-of-frame.ts`) so both read one width.
  */
 export function compositeTitleWidth(theme: Theme, title: string): number {
-  return frameTitleWidth(title, activityMeasurer(theme), theme);
+  return compositeTitleDimension(theme, title).width;
+}
+
+/** `dimTitle` whole (`USymbolFrame.java:146`, `USymbolRectangle.java:124`): the
+ *  title block's width and height, a sprite's box included. */
+export function compositeTitleDimension(
+  theme: Theme,
+  title: string,
+): { readonly width: number; readonly height: number } {
+  return frameTitleDimension(title, activityMeasurer(theme), theme);
 }
 
 /** The frame's `<symbol>/composite` style colours (`FtileGroup.java:101-102`):
@@ -207,7 +217,7 @@ function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
  * widthTitle < 25` branch (`:152-156`) draws the SAME text either way
  * (`AbstractUGraphic.java:121-122` draws a `SpecialText` as its title); the
  * branch only changes the compression footprint, which
- * `layout/compress/shapes-of-frame.ts#frameTitleShape` ports.
+ * `layout/compress/shapes-of-frame.ts#frameTitleShapes` ports.
  */
 export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
   const ink = compositeInk(node, theme);
@@ -216,17 +226,16 @@ export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
   if (node.usymbol !== undefined) return renderSymbolComposite(node, node.usymbol, theme, ink);
   const body = rect(node.x, node.y, node.width, node.height, { fill, stroke: style.borderColor, strokeWidth });
 
-  const fontSize = activityFontSize(theme, 'composite');
   const title = node.label ?? '';
-  const titleWidth = compositeTitleWidth(theme, title);
+  const titleDim = compositeTitleDimension(theme, title);
+  const titleWidth = titleDim.width;
   // `getWTitle`/`getYpos`/`drawFrame`'s own `cornersize` local (`:76-
   // 84,99-104`): an EMPTY title falls back to a width/height-derived tab.
-  // `WidthTableMeasurer#measure`'s height is always the raw font size
-  // (`activity-renderer-shapes.ts#ASCENT_FRACTION`'s own doc citation), so
-  // `dimTitle.getHeight()` is `fontSize` directly, never re-measured.
+  // ubt-T2a: `dimTitle.getHeight()` is the title block's own height, a
+  // sprite's box for `<$sprite>`.
   const textWidth = titleWidth === 0 ? node.width / 3 : titleWidth + 10;
   const cornerSize = titleWidth === 0 ? 7 : 10;
-  const textHeight = titleWidth === 0 ? 12 : fontSize + 3;
+  const textHeight = titleWidth === 0 ? 12 : titleDim.height + 3;
   const tab = path(compositeTabPath(node.x, node.y, textWidth, textHeight, cornerSize), {
     fill: 'none',
     stroke: style.borderColor,
@@ -235,7 +244,12 @@ export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
 
   if (title === '') return body + tab;
   // `USymbolFrame.java:154`: `title.drawU(ug.apply(new UTranslate(3, 1)))`.
-  const titleEl = drawCompositeTitle(title, { x: node.x + 3, y: node.y + 1 }, compositeTitleColor(node, theme), theme);
+  const titleEl = drawCompositeTitle(
+    title,
+    { x: node.x + 3, y: node.y + 1 },
+    { color: compositeTitleColor(node, theme), strokeWidth },
+    theme,
+  );
   return body + tab + titleEl;
 }
 
@@ -251,36 +265,41 @@ function renderSymbolComposite(
   theme: Theme,
   ink: CompositeInk,
 ): string {
-  const fontSize = activityFontSize(theme, 'composite');
   const title = node.label ?? '';
-  const titleWidth = compositeTitleWidth(theme, title);
-  const dim = { width: titleWidth, height: title === '' ? 0 : fontSize };
+  const dim = compositeTitleDimension(theme, title);
   const frame = drawCompositeSymbol(node, usymbol, dim, ink);
   if (title === '') return frame;
-  const origin = compositeSymbolTitleOrigin(node, usymbol, titleWidth);
-  return frame + drawCompositeTitle(title, origin, compositeTitleColor(node, theme), theme);
+  const origin = compositeSymbolTitleOrigin(node, usymbol, dim.width);
+  const paint = { color: compositeTitleColor(node, theme), strokeWidth: ink.strokeWidth };
+  return frame + drawCompositeTitle(title, origin, paint, theme);
 }
 
 /**
  * `FtileGroup`'s `name` (`FtileGroup.java:104-108`): `title.create(fc,
  * HorizontalAlignment.LEFT, skinParam)` -- a FULL creole Sheet at the
  * composite style's `getFontConfiguration` (`Style.java:259-268`, incl.
- * `HyperLinkColor`), drawn with its top-left at `at`.
+ * `HyperLinkColor`), drawn with its top-left at `at`. Every `asBig` draws
+ * it on the `ug` `Fashion#apply` gave the frame (`USymbolRectangle.java:
+ * 110,133`; `Fashion.java:67-71,86-88`), so the frame's stroke reaches a
+ * sprite shape that sets no `stroke-width` (`SvgNanoParser.java:187-195`).
  */
 function drawCompositeTitle(
   title: string,
   at: { readonly x: number; readonly y: number },
-  color: string,
+  paint: { readonly color: string; readonly strokeWidth: number },
   theme: Theme,
 ): string {
+  const color = paint.color;
   const fc = {
     ...activityTextFontConfiguration(theme, activityFontSize(theme, 'composite'), 'composite'),
     color: fontConfigurationColor(color),
   };
+  const stroke = UStroke.withThickness(paint.strokeWidth);
   const tb = activityDisplayBlock(title, theme, {
     fontConfiguration: fc,
     horizontalAlignment: HorizontalAlignment.LEFT,
     creoleMode: CreoleMode.FULL,
+    ambientStroke: stroke,
   });
-  return drawActivityTextBlock(tb, at, theme, fc);
+  return drawActivityTextBlock(tb, at, theme, fc, [stroke]);
 }

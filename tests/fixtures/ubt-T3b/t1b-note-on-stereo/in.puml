@@ -1,0 +1,12 @@
+@startuml
+<style>
+.big {
+  LineThickness 2
+  FontSize 16
+  BackgroundColor #EEFFEE
+}
+</style>
+:boxed; <<big>>
+note right: a note
+:plain;
+@enduml

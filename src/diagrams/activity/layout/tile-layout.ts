@@ -7,6 +7,7 @@ import type {
   ActivityWhile,
   ActivityRepeat,
 } from '../ast.js';
+import { repeatDiamondColors, whileDiamondColors, withDiamondColors } from './diamond-colors.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
 import { withActivityMeasurer } from '../activity-string-bounder.js';
 import type { Theme } from '../../../core/theme.js';
@@ -204,6 +205,7 @@ function tileBackwardActivity(node: ActivityBackward, bounder: StringBounder, th
     label: node.label,
     ...(node.swimlane !== undefined ? { swimlane: node.swimlane } : {}),
     ...(node.stereotype !== undefined ? { stereotype: node.stereotype } : {}),
+    ...(node.stereotypes !== undefined ? { stereotypes: node.stereotypes } : {}),
   };
   const tile = tileSimpleLeaf(action, bounder, theme);
   if (node.notes === undefined || node.notes.length === 0) return tile;
@@ -260,7 +262,7 @@ function tileWhile(
   const labels: { north?: string; west?: string } = {};
   if (node.yesLabel !== undefined) labels.north = node.yesLabel;
   if (node.exitLabel !== undefined) labels.west = node.exitLabel;
-  const header = buildWhileHeader(node, labels, bounder, theme);
+  const header = withDiamondColors(buildWhileHeader(node, labels, bounder, theme), whileDiamondColors(node));
   const { rest, backward } = extractBackward(node.body);
   const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
   const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
@@ -369,14 +371,15 @@ function tileRepeat(
   laneOrder: readonly string[],
   pragma: Pragma,
 ): GtileRepeat {
-  const entry = tileRepeatEntry(node, bounder, theme, laneOrder, pragma);
+  const colors = repeatDiamondColors(node);
+  const entry = withDiamondColors(tileRepeatEntry(node, bounder, theme, laneOrder, pragma), colors.entry);
   const { rest, backward } = extractBackward(node.body);
   const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
   const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
   const backwardTile = backward !== undefined ? tileBackwardActivity(backward, bounder, theme) : undefined;
   const labels = selectRepeatConditionLabels(theme.conditionStyle, node, backward, laneOrder);
   const condition = withSwimlane(
-    tileRepeatCondition(node, labels, bounder, theme),
+    withDiamondColors(tileRepeatCondition(node, labels, bounder, theme), colors.condition),
     outLane(node.swimlaneOut, node.swimlane),
   );
   const backConnection = selectRepeatBackConnection(node, laneOrder);

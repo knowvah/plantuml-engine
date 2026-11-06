@@ -46,6 +46,8 @@ export interface MultilineActionBody {
   cursor: number;
   labelParts: string[];
   multiStereo: string | undefined;
+  /** The closer's whole stereogroup, for {@link stereotypesSpread}. */
+  multiGroup: string | undefined;
   /** {@link stereogroupBackColor} of the closer's stereogroup. */
   multiColor: string | undefined;
 }
@@ -65,7 +67,10 @@ function findCloseIndex(lines: readonly string[], startIdx: number): number {
 }
 
 /** Steps 3-4 of the module doc: the closer's own TEXT, or nothing. */
-function closingText(closer: string, previous: string | undefined): { text?: string; stereo?: string; color?: string } {
+function closingText(
+  closer: string,
+  previous: string | undefined,
+): { text?: string; stereo?: string; color?: string; group?: string } {
   const m = RE_ACTION_CLOSE.exec(closer.trimEnd())!;
   const stereo = stereogroupStereotype(m[2]);
   const color = stereogroupBackColor(m[2]);
@@ -75,6 +80,7 @@ function closingText(closer: string, previous: string | undefined): { text?: str
     ...(dropped ? {} : { text }),
     ...(stereo !== undefined ? { stereo } : {}),
     ...(color !== undefined ? { color } : {}),
+    ...(m[2] !== undefined ? { group: m[2] } : {}),
   };
 }
 
@@ -101,13 +107,15 @@ export function readMultilineActionBody(
   labelParts.push(...middle);
   let multiStereo: string | undefined;
   let multiColor: string | undefined;
+  let multiGroup: string | undefined;
   if (closed) {
     // `createFoo`'s `tmp.size() > 2` guard: the label already holds >= 2 lines.
     const previous = labelParts.length >= 2 ? labelParts[labelParts.length - 1] : undefined;
-    const { text, stereo, color } = closingText(block[block.length - 1]!, previous);
+    const { text, stereo, color, group } = closingText(block[block.length - 1]!, previous);
     if (text !== undefined) labelParts.push(text);
     multiStereo = stereo;
     multiColor = color;
+    multiGroup = group;
   }
-  return { cursor: end, labelParts, multiStereo, multiColor };
+  return { cursor: end, labelParts, multiStereo, multiColor, multiGroup };
 }

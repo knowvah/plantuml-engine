@@ -5,6 +5,8 @@ import type { StringBounder } from './tile.js';
 import type { ActivityAction } from '../ast.js';
 import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
+import { withActivityBox } from '../activity-box-theme.js';
+import type { Style } from '../../../core/style/Style.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
 import { actionBoxDimension, buildActionTextBlock, klimtStringBounder } from '../activity-creole-sheet.js';
 
@@ -150,7 +152,7 @@ export function boxStyleShield(stereotype: string | undefined): number {
  * included, measured through the caller's own `StringBounder`.
  */
 function computeActionSize(label: string, bounder: StringBounder, theme: Theme): { width: number; height: number } {
-  // `activityDiagram { activity { FontSize 12 } }` (plantuml.skin:361).
+  // `activityDiagram { activity { FontSize 12 } }` (plantuml.skin:361); `theme` is the box's own (`withActivityBox`).
   const fontSize = activityFontSize(theme, 'activity');
   const sheetBounder = klimtStringBounder(measurerAdapterOf(bounder), { family: theme.fontFamily, size: fontSize });
   return actionBoxDimension(buildActionTextBlock(label, theme, fontSize, 'activity'), sheetBounder, theme, 'activity');
@@ -174,6 +176,8 @@ export class GtileAction extends TileLeaf {
   readonly stereotype: string | undefined;
   /** {@link boxStyleShield}. */
   readonly shield: number;
+  /** `FtileBox.create`'s ONE merged style for a stereotyped box (`activity-box-theme.ts`); absent for the flat tiers. */
+  readonly boxStyle: Style | undefined;
 
   constructor(node: ActivityAction, bounder: StringBounder, theme: Theme) {
     super();
@@ -181,7 +185,8 @@ export class GtileAction extends TileLeaf {
     this.color = node.color;
     this.stereotype = node.stereotype;
     this.shield = boxStyleShield(node.stereotype);
-    const { width, height } = computeActionSize(node.label, bounder, theme);
+    this.boxStyle = theme.colors.graph.activity?.boxStyleOf?.(node.stereotypes ?? []);
+    const { width, height } = computeActionSize(node.label, bounder, withActivityBox(theme, this.boxStyle));
     this.width = width + this.shield;
     this.height = height;
   }

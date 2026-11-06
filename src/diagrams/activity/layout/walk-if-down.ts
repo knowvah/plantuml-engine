@@ -14,6 +14,7 @@
  *   -- `create`'s `conns` order.
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileIfDown } from '../tiles/gtile-if-down.js';
 import type { DiamondConditionTile, DiamondSide } from '../tiles/gtile-diamond-inside.js';
 import type { GPoint } from '../tiles/points.js';
@@ -168,6 +169,7 @@ function pushDiamond1(ctx: IfDownCtx): void {
       height: t.diamond1.height,
       label: t.diamond1.label,
       diamondShape: diamondShapeOf(t.diamond1),
+      ...colorSpread(t.diamondColors?.open),
     },
     myLane,
   );
@@ -193,6 +195,7 @@ function pushMergeNode(ctx: IfDownCtx): void {
       y: y + t.offsets.diamond2Y,
       width: t.offsets.diamond2Size,
       height: t.offsets.diamond2Size,
+      ...colorSpread(t.diamondColors?.close),
     },
     myLane,
   );

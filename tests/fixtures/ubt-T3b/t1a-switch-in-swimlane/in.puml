@@ -1,0 +1,12 @@
+@startuml
+|L1|
+start
+switch (s?) <<#gold>>
+case (a)
+  :a;
+case (b)
+  |L2|
+  :b;
+endswitch <<#cyan>>
+stop
+@enduml

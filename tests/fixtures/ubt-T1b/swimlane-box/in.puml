@@ -1,0 +1,14 @@
+@startuml
+<style>
+.c {
+  LineThickness 2
+  FontSize 16
+  Shadowing 3
+}
+</style>
+|A|
+:in A; <<c>>
+|B|
+:in B; <<c>>
+:plain in B;
+@enduml

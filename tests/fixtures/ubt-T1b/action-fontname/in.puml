@@ -1,0 +1,9 @@
+@startuml
+<style>
+.c {
+  FontName Courier
+}
+</style>
+:A longer action label for width; <<c>>
+:second plain one;
+@enduml

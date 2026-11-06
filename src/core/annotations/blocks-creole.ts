@@ -71,6 +71,7 @@ import { Fore } from '../klimt/Fore.js';
 import type { XDimension2D } from '../klimt/geom/XDimension2D.js';
 import { emojiStartingAltitude } from '../klimt/creole/atom/AtomEmoji.js';
 import { makeAtomImageResolverFor } from '../creole-atoms-image-resolver.js';
+import type { UStroke } from '../klimt/UStroke.js';
 import { drawEmojiAtom } from '../svek/image/EntityImageDescriptionEmoji.js';
 import type { EmojiArtworkResolver } from '../svek/image/EntityImageDescriptionEmoji.js';
 import type { SpriteRegistry } from '../sprite-commands.js';
@@ -158,9 +159,15 @@ export function chromeFontConfiguration(style: AnnotationBoxStyle, hyperlinkColo
  * `atomTextStartingAltitude`), an emoji's `AtomEmoji`'s `-3 * factor`
  * (`AtomEmoji.java:62-64`), everything else 0 (upstream `AtomImg`/`AtomSprite`/
  * `AtomMath` all `return 0`); a composite `Atom` — and a `<&glyph>` token, as
- * `AtomOpenIconic` — answers all three. */
-export function chromeAtomOps(sprites: SpriteRegistry | undefined, baseFont: FontConfiguration): AtomOps {
-  const resolverFor = makeAtomImageResolverFor(sprites);
+ * `AtomOpenIconic` — answers all three. `ambientStroke` is the `UStroke` the
+ * caller's `ug` holds where the block is drawn, which a sprite shape with no
+ * `stroke-width` of its own keeps (`makeAtomImageResolverFor`'s D3 seam). */
+export function chromeAtomOps(
+  sprites: SpriteRegistry | undefined,
+  baseFont: FontConfiguration,
+  ambientStroke?: UStroke,
+): AtomOps {
+  const resolverFor = makeAtomImageResolverFor(sprites, ambientStroke);
   // The registry's Twemoji store (`Emoji.java:167`'s classpath read, ADR-2):
   // without it `drawAtom` falls back to the platform glyph, as before.
   const emojiStore = sprites?.emoji;

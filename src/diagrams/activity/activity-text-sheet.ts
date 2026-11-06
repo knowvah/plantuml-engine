@@ -46,11 +46,13 @@ import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
 import { basicSvgOption } from '../../core/klimt/drawing/svg/svg-graphics.js';
 import { lengthAdjustOverride } from '../../core/klimt/drawing/svg/svg-option.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
-import { extractFlatContent } from '../../core/klimt/document-shell-fragment.js';
+import { extractFlatContent, extractViewBoxDims } from '../../core/klimt/document-shell-fragment.js';
+import { reportActivityDrawExtent } from './activity-draw-extent.js';
 import { activityMeasurer } from './activity-string-bounder.js';
 import { fontConfigurationColor } from './activity-scoped-colors.js';
 import { backColorFilterDef } from '../../core/svg-defs.js';
 import { getSprite } from '../../core/sprite-registry.js';
+import type { UStroke } from '../../core/klimt/UStroke.js';
 
 /** `{{ }}` inside a label -- the global registry (`src/index.ts`), absent
  *  only when nothing registered one (a unit test). */
@@ -131,6 +133,8 @@ export interface ActivityDisplayParams {
   readonly creoleMode: CreoleMode;
   /** `style.wrapWidth()`; `LineBreakStrategy.NONE` when omitted. */
   readonly maxMessageSize?: LineBreakStrategy;
+  /** The `UStroke` of the `ug` the block is drawn on, for a sprite shape that sets none (`SvgNanoParser.java:187-195`). */
+  readonly ambientStroke?: UStroke;
 }
 
 /**
@@ -143,7 +147,7 @@ export function activityDisplayBlock(label: string, theme: Theme, params: Activi
   const ctx = {
     fontConfiguration: fc,
     spriteContainer: activitySkinSimple(fc, theme),
-    atomOps: chromeAtomOps(theme.sprites, fc),
+    atomOps: chromeAtomOps(theme.sprites, fc, params.ambientStroke),
   };
   return Display.create(label.split('\n')).create0(
     ctx,
@@ -217,6 +221,9 @@ export function drawActivityTextBlock(
   });
   const ug = UGraphicSvg.build(0, option, THROWAWAY_VERSION, driverBounder, measurer);
   tb.drawU(changes.reduce<UGraphic>((g, c) => g.apply(c), ug.apply(new UTranslate(at.x, at.y))));
-  const { body, extraDefs } = extractFlatContent(ug.getSvgString());
+  const document = ug.getSvgString();
+  // ubt-T2a: the throwaway graphic's `ensureVisible` fold (`activity-draw-extent.ts`).
+  reportActivityDrawExtent(theme, extractViewBoxDims(document));
+  const { body, extraDefs } = extractFlatContent(document);
   return withBackColorFilters(body, extraDefs);
 }

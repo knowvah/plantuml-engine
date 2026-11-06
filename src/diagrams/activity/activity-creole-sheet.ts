@@ -38,7 +38,8 @@ import {
   activityMinimumWidth,
   activityNoteHorizontalAlignment,
 } from './activity-text-style.js';
-import { activityPadding, activityFontSize, activityLineThickness } from './activity-style-defaults.js';
+import { activityFontSize, activityLineThickness } from './activity-style-defaults.js';
+import { boxDash, boxFontConfiguration, boxPadding } from './activity-box-theme.js';
 import { actionBorderOf, actionFillOf } from './activity-renderer-shapes.js';
 import { fontConfigurationColor, withStereotypeFont } from './activity-scoped-colors.js';
 import { NOTE_MARGIN_X1, NOTE_MARGIN_X2, NOTE_MARGIN_Y } from './activity-layout-constants.js';
@@ -152,11 +153,14 @@ export function klimtStringBounder(measurer: StringMeasurer, font: FontSpec): St
  *  reads for a `[[url]]` run. */
 function activityFontConfiguration(theme: Theme, fontSize: number, sname: ActivitySName): FontConfiguration {
   const hyperlinkColor = activityHyperlinkColor(theme, sname);
+  // `FtileBox.java:167`: the box's merged style's whole font configuration (face included).
+  const boxFont = sname === 'activity' ? boxFontConfiguration(theme) : undefined;
   return {
     family: activityFontFamily(theme, sname),
     size: fontSize,
     color: fontConfigurationColor(activityFontColor(theme, sname)),
     styles: new Set(),
+    ...(boxFont === undefined ? {} : { styles: boxFont.styles, fontFace: boxFont.fontFace }),
     ...(hyperlinkColor === undefined ? {} : { hyperlinkColor }),
     ...(theme.hyperlinkUnderline === false ? { hyperlinkUnderlineStroke: null } : {}),
   };
@@ -210,12 +214,13 @@ export function buildActionTextBlock(
     chromeAtomOps(theme.sprites, fc),
     theme.padding ?? 0,
   );
-  const padding = activityPadding(sname);
+  const padding = boxPadding(theme);
   return new SheetBlock2(
     sheet1,
     {
-      getStartingX: () => -padding, // FtileBox.java:126-128
-      getEndingX: (stringBounder) => actionBoxDimension(sheet1, stringBounder, theme, sname).width + shield - padding, // :130-133
+      getStartingX: () => -padding.getLeft(), // FtileBox.java:126-128
+      getEndingX: (stringBounder) =>
+        actionBoxDimension(sheet1, stringBounder, theme, sname).width + shield - padding.getRight(), // :130-133
     },
     UStroke.withThickness(1),
   );
@@ -228,13 +233,13 @@ export function actionBoxDimension(
   tb: TextBlock,
   stringBounder: StringBounder,
   theme: Theme,
-  sname: ActivitySName,
+  _sname: ActivitySName, // `FtileBox` is the 'activity' box alone: its padding is {@link boxPadding}
 ): { width: number; height: number } {
   const dim = tb.calculateDimension(stringBounder);
-  const padding = activityPadding(sname);
+  const padding = boxPadding(theme);
   return {
-    width: Math.max(dim.getWidth() + 2 * padding, activityMinimumWidth(theme)),
-    height: dim.getHeight() + 2 * padding,
+    width: Math.max(dim.getWidth() + padding.getLeft() + padding.getRight(), activityMinimumWidth(theme)),
+    height: dim.getHeight() + padding.getBottom() + padding.getTop(),
   };
 }
 
@@ -243,11 +248,16 @@ export function actionBoxDimension(
  *  dimTb.width - padding.getRight(), padding.getBottom())`, CENTER
  *  `((dimTotal.width - dimTb.width) / 2, padding.getBottom())` -- `padding`
  *  is symmetric here (`activityPadding`), so every branch's `dy` is it. */
-function actionTextTranslate(theme: Theme, boxWidth: number, tbWidth: number, padding: number): UTranslate {
+function actionTextTranslate(
+  theme: Theme,
+  boxWidth: number,
+  tbWidth: number,
+  padding: ClockwiseTopRightBottomLeft,
+): UTranslate {
   const align = activityHorizontalAlignment(theme);
-  if (align === 'right') return new UTranslate(boxWidth - tbWidth - padding, padding);
-  if (align === 'center') return new UTranslate((boxWidth - tbWidth) / 2, padding);
-  return new UTranslate(padding, padding);
+  if (align === 'right') return new UTranslate(boxWidth - tbWidth - padding.getRight(), padding.getBottom());
+  if (align === 'center') return new UTranslate((boxWidth - tbWidth) / 2, padding.getBottom());
+  return new UTranslate(padding.getLeft(), padding.getTop());
 }
 
 /** The ambient `UGraphic` state a text block is drawn under: the
@@ -283,6 +293,13 @@ export function drawActionTextBlock(tb: TextBlock, x: number, y: number, ctx: Dr
   return extractFlatContent(ug.getSvgString()).body;
 }
 
+/** `style.getStroke()` (`FtileBox.java:208`): the merged thickness, dashed where `LineStyle` says. */
+export function boxStroke(theme: Theme): UStroke {
+  const thickness = activityLineThickness(theme, 'activity');
+  const dash = boxDash(theme);
+  return dash === undefined ? UStroke.withThickness(thickness) : new UStroke(dash[0], dash[1], thickness);
+}
+
 /**
  * The `renderAction` entry point: `FtileBox#drawU`'s `tb.drawU(...)`
  * (`FtileBox.java:224-233`) for EVERY action label. `box.width` is the box's
@@ -304,27 +321,24 @@ export function renderActionLabel(
     readonly stereotype?: string;
   },
 ): string {
+  // A box with a merged style (`activity-box-theme.ts`) already holds its stereotype's font.
   const tb = buildActionTextBlock(
     label,
-    withStereotypeFont(theme, box.stereotype),
+    boxFontConfiguration(theme) === undefined ? withStereotypeFont(theme, box.stereotype) : theme,
     fontSize,
     'activity',
     box.shield ?? 0,
   );
   const font = { family: activityFontFamily(theme, 'activity'), size: fontSize };
   const tbWidth = tb.calculateDimension(klimtStringBounder(activityMeasurer(theme), font)).getWidth();
-  const t = actionTextTranslate(theme, box.width, tbWidth, activityPadding('activity'));
+  const t = actionTextTranslate(theme, box.width, tbWidth, boxPadding(theme));
   // `FtileBox#drawU` (`FtileBox.java:205-217`): `ug.apply(borderColor)`, then
   // `ug.apply(style.getStroke())`, before `tb.drawU` -- the ink a stencilled
   // `----` `ULine` is stroked with and the stroke a creole table's grid
   // (`AtomTable#drawU`) inherits.
   // unwind2-S11: `ug.apply(backColor.bg())` (`:215-218`) -- the back a
   // creole `<$sprite>` tints over (`SpriteMonochrome.java:216`).
-  const changes = [
-    new Fore(actionBorderOf(box, theme)),
-    new Back(actionFillOf(box, theme)),
-    UStroke.withThickness(activityLineThickness(theme, 'activity')),
-  ];
+  const changes = [new Fore(actionBorderOf(box, theme)), new Back(actionFillOf(box, theme)), boxStroke(theme)];
   return drawActionTextBlock(tb, box.x + t.getDx(), box.y + t.getDy(), { theme, font, changes });
 }
 

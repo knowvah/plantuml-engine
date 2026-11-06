@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T23:29:02.577Z",
+  "generatedAt": "2026-11-06T03:12:35.823Z",
   "fixtures": [
     {
       "slug": "bacupi-77-fuke586",
@@ -2843,9 +2843,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 3,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "jozete-34-kete358",

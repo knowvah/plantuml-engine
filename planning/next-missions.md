@@ -104,6 +104,22 @@ Colour reads still open, each small:
 21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. ~~Board's body (`board__selector-activitydiagram` 15)~~ DONE by board-engine-port (#118): 0; packet's DONE by packet-engine-port (#117).
 22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
 
+## unknown-bucket-triage (ubt) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #119)
+
+The 18 `unknown` rows the jar types as engines we draw: 14 conformant (activity 12, state 1, sequence 1) and 4 named in `DIVERGENCES.md` (2 HCL copies under the Smetana delta, 2 `sudoku` rows under the MIT-edition ruling). Five rows went to #121/#123 with comments. `unknown` 845 to 859 conformant, `activity` 595 to 605, `sequence` 1228 to 1229; 0 lost in every engine. 106 conformant `unknown` rows pinned through a new `unknown` tree in the activity (49), sequence (52) and state (5) ratchets. No new divergence, no needs-ruling issue.
+
+Follow-ons:
+
+1. **`!theme` + a `<style>` class: a plain activity box reads the flat tiers** (finadu-74's 50 diffs; a T3b probe). On #120.
+2. **`if (...) then <<foo>>` gives the diamond the stereotype style** (`FtileFactoryDelegatorIf.java:79-80`); vupecu-35's 28 diffs. On #121.
+3. **`<style> activityDiagram { partition { LineThickness } }` reaches no activity frame.** On #138.
+4. **A sprite group title is compressed shape by shape in the jar** (`UGraphicCompressOnXorY`), so a sprite with empty space moves; ours draws the title as one block. On #121.
+5. **State under `!pragma layout elk` diverges on a plain composite** (29 diffs on `X --> Y { Z }`, no table): draw order, ids, cluster header. No issue yet.
+6. **`dist/plantuml-ts.d.ts` grew 1,471 lines** since `dbb996060`: T1b put `boxStyleOf?: ActivityBoxStyleResolver` on the public theme graph (`theme-graph-colors-b.ts:405`), which drags the whole `Style` type graph into the bundle. Additive only; no consumer exists. An opaque type there would undo it.
+7. **The dashboard counts an engine's `unknown`-tree pins under that engine**, not under `unknown` (as it does for the 634 `svg-class/unknown` pins), so the `unknown` ratchet cell stays 366.
+8. **ogc-captured sequence rows have no `svg-sequence/diff-baseline.json` row**, so the sequence pin tool refuses them (jovijo-34, now conformant). On #139.
+9. **Activity text blocks drawn into throwaway graphics** now report their `ensureVisible` fold (`activity-draw-extent.ts`); shapes drawn as strings still report none. Any other engine splicing throwaway graphics has the same gap.
+
 ## board-engine-port (bep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #118)
 
 `src/diagrams/board/` is a file-for-file port of `net/sourceforge/plantuml/board/` on klimt; the old parse/layout/string-template pipeline is deleted. `board` 0/0/4 to 4/0/0, all 4 pinned in `svg-board`; 67 authored fixtures in `tests/fixtures/board`, 62 at 0 diffs and 5 jar errors where we also error. 0 lost in every engine, no other bucket moved. No new divergence, no needs-ruling issue.

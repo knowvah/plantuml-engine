@@ -25,6 +25,7 @@
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorRepeat.java:123-169
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GPoint } from '../tiles/points.js';
 import { SOUTH_HOOK } from '../tiles/points.js';
 import { HEXAGON_HALF_SIZE } from './hexagon-reservations.js';
@@ -58,6 +59,7 @@ function pushWeldDiamond(frame: RepeatFrame, dX: number, dY: number): void {
       y: dY,
       width: WELD_DIAMOND_SIZE,
       height: WELD_DIAMOND_SIZE,
+      ...colorSpread(condition.diamondColors?.open),
     },
     conditionOutLane,
   );

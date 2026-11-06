@@ -1,0 +1,9 @@
+@startuml
+start
+if (foo) then (yes) <<#red>> <<#blue>>
+  :a;
+else (no)
+  :b;
+endif
+stop
+@enduml

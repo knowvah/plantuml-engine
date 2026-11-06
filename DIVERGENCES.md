@@ -168,6 +168,11 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligne
 
 </details>
 
+`unknown/jubete-32-sutu417` and `unknown/vocago-35-xodu446` are the rows `hcl/jubete-32-sutu417` and
+`hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
+2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
+names them (#119).
+
 **Category:** limitation (one engine, by choice).
 
 ---
@@ -1227,6 +1232,10 @@ An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar 
 ### Ditaa is not included
 
 **Category:** edition mirrored by user ruling (2026-11-04, #111), reversing the 2026-10-14 ruling to keep it. Upstream comments out `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-167`), and the library it calls, `org.stathissideris.ascii2image`, is LGPL-3.0-or-later in 26 of its 28 files. Translating it into this MIT package would look like a derived work. No engine was ever ported. `@startditaa` draws the unknown-diagram sentinel, where upstream's MIT edition would return `PSystemUnsupported` (`PSystemBuilder.java:283`), the same sentinel gap every tag with no engine has (`src/core/dispatcher.ts`). The oracle is the GPL build, which writes a PNG even when asked for SVG, so both rows read `oracle-error` and are signed in the ledger.
+
+### Sudoku is not included
+
+**Category:** edition mirrored by user ruling (2026-10-13, ufp D13: mirror the MIT edition). Upstream registers `PSystemSudokuFactory` only outside `__MIT__ __EPL__ __BSD__ __ASL__ __LGPL__` (`PSystemBuilder.java:161-164`, `// ::comment when __MIT__`) and strips the `sudoku/` package from every non-GPL edition, so in the MIT edition no factory accepts `sudoku <seed>` and the `@startuml` candidates refuse it. We draw that syntax-error page; the GPL oracle draws a puzzle. Rows: `unknown/gazale-13-tadu312` (`sudoku 5678`) and `unknown/lazama-75-loli189` (`sudoku 1234`). Checked 2026-11-06 against an oracle of a line no factory accepts (`nosuchkeyword 1234`): our page differs from the jar's only in the echoed line, the version line (kept by ruling, `README.md`) and the `[From …]` file name. `README.md` ("Mirrors upstream's MIT edition") says the same.
 
 ### Chronology draws, though the jar has no such diagram
 

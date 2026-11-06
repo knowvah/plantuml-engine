@@ -1,0 +1,10 @@
+@startuml
+<style>
+.save {
+  LineThickness 3
+  FontSize 20
+  BackgroundColor pink
+}
+</style>
+:Save the diagram; <<save>>
+@enduml

@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2127 modules · 7399 exported names.
+2134 modules · 7436 exported names.
 
 ## `src/`
 
@@ -22,7 +22,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `activity-circle-style.ts` | `ActivityCircleColors`, `ActivityCircleStyle`, `ActivityCircleStyleSource`, `resolveActivityCircleStyle`, `withActivityCircleStyle` | The activity start/stop circles' merged-style colours (mission add4, T3f, `labala-74-juki864`). |
+| `activity-box-style.ts` | `ActivityBoxStyleResolver`, `resolveActivityBoxStyle`, `withActivityBoxStyle` | A stereotyped activity box's ONE merged style (mission ubt, T1b, D3). |
+| `activity-circle-style.ts` | `ActivityCircleColors`, `ActivityCircleStyle`, `ActivityCircleStyleSource`, `paintOf`, `resolveActivityCircleStyle`, `withActivityCircleStyle` | The activity start/stop circles' merged-style colours (mission add4, T3f, `labala-74-juki864`). |
 | `arrow-label-font.ts` | `ARROW_LABEL_DEFAULT_COLOR`, `ArrowLabelFont`, `resolveArrowLabelFont`, `resolveCardinalityFontColor`, `resolveCardinalityFont` | D3: the arrow-label font resolver -- `GraphvizImageBuilder.java:234-235` (`getDefaultStyleDefinitionArrow(stereotype).getMergedStyle(...) .getFontConfiguration(...)`), upstream's `labelFont` argument to `SvekEdge`'s constructor. |
 | `assemble-svg-activity.ts` | `finalizeActivityFragment` | Activity's per-diagram body finalization — split out of `assemble-svg.ts` (T2d-a pass 2, 500-line hook) to make room for the DOCGRAD gradient background branch. |
 | `assemble-svg-backcolor.ts` | `backcolorMarkup` | assemble-svg-backcolor.ts -- the body markup of `SvgGraphics`' constructor paint for the four finalizers that share `svg-backcolor.ts#backcolorPaint` (decisions.md D2: json/yaml/hcl, state, class, description). |
@@ -1354,13 +1355,15 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `activity-creole-sheet.ts` | `klimtStringBounder`, `buildActionTextBlock`, `actionBoxDimension`, `drawActionTextBlock`, `renderActionLabel`, `buildNoteTextBlock`, `noteTextBlockDimension`, `renderNoteLabel` | activity-creole-sheet -- every action and note label drawn through the REAL `SheetBuilder -> SheetBlock1 -> SheetBlock2 -> stripes/atoms` pipeline upstream builds them with: `FtileBox.java:178-181` for the action box (`new SheetBlock2(new S |
+| `activity-box-theme.ts` | `withActivityBox`, `boxFontConfiguration`, `boxPadding`, `boxShadowing`, `boxDash`, `boxPaintExtras` | The one merged `Style` of a stereotyped box (`FtileBox.create`, `FtileBox.java:138-146`), as the theme its sizer and its renderer both read (mission ubt, T1b, D3). |
+| `activity-creole-sheet.ts` | `klimtStringBounder`, `buildActionTextBlock`, `actionBoxDimension`, `drawActionTextBlock`, `boxStroke`, `renderActionLabel`, `buildNoteTextBlock`, `noteTextBlockDimension`, `renderNoteLabel` | activity-creole-sheet -- every action and note label drawn through the REAL `SheetBuilder -> SheetBlock1 -> SheetBlock2 -> stripes/atoms` pipeline upstream builds them with: `FtileBox.java:178-181` for the action box (`new SheetBlock2(new S |
+| `activity-draw-extent.ts` | `ActivityDrawExtent`, `withActivityDrawExtent`, `reportActivityDrawExtent` | activity-draw-extent -- the `SvgGraphics#ensureVisible` fold of every `TextBlock` an activity render draws into a throwaway graphic. |
 | `activity-edge-look.ts` | `LineStroke`, `EdgeLook`, `defaultEdgeLook` | The colours and stroke an activity edge is drawn with when no inline `-[#color]->` replaces them. |
 | `activity-geometry.types.ts` | `ActivityNodeGeo`, `CompositeUSymbol`, `ActivityEdgeGeo`, `SwimlaneGeo`, `SwimlaneBandGeo`, `SwimlaneDividerY`, `ActivityGeometry` | Shared geometry types for the activity diagram layout engine. |
 | `activity-layout-constants.ts` | `NODE_MARGIN_Y`, `NODE_MARGIN_X`, `SEQUENTIAL_ASSEMBLY_GAP`, `START_STOP_RADIUS`, `STOP_OUTER_RADIUS`, `STOP_INNER_DELTA`, `END_OUTER_RADIUS`, `END_CROSS_THICKNESS`, `NOTE_MARGIN_X1`, `NOTE_MARGIN_X2`, `NOTE_CORNER_SIZE`, `NOTE_SPIKE_DELTA`, `NOTE_MARGIN_Y`, `NOTE_OPALE_GAP`, `BAR_HEIGHT`, `THIN_SPLIT_HEIGHT`, `JOIN_LABEL_MARGIN`, `PARALLEL_X_MARGIN`, `SPACE_AROUND_BLACK_BAR`, `DIAMOND_MIN`, `DIAMOND_LABEL_PAD`, `RECENTRED_PAD`, `RECENTRED_ENLARGE`, `ACTIVITY_DOCUMENT_MARGIN`, `DocumentMargin`, `activityDocumentMargin`, `documentMarginTheme`, `SVG_CANVAS_CEIL` | Layout constants for the activity diagram layout engine. |
 | `activity-renderer-bars.ts` | `renderBar`, `renderSplitLine` | Fork/split bar rendering, split out of `activity-renderer-shapes.ts` to keep that file (already over the 500-line cap before this mission) from growing further (mission `activity-parallel-connectors`, T3, README "Push forward" -- "equivalen |
 | `activity-renderer-composite-symbols.ts` | `CompositeInk`, `TitleDim`, `compositeSymbolTitleOrigin`, `drawCompositeSymbol` | The three non-frame container symbols `FtileGroup#drawU` can draw (`type.asBig(name, align, TextBlockUtils.empty(0, 0), ...)`, `ftile/vcompact/FtileGroup.java:216-219`): `package` -> `USymbolFolder`, `card` -> `USymbolCard`, `rectangle` -> |
-| `activity-renderer-composite.ts` | `compositeTitleWidth`, `renderComposite` | `group`/`partition` frame rendering (`USymbolFrame#asBig`, `decoration/symbol/USymbolFrame.java:136-170`, called by `FtileGroup#drawU`, `ftile/vcompact/FtileGroup.java:209-227` -- `USymbols.PARTITION`/`USymbols.GROUP` are both a bare `USymb |
+| `activity-renderer-composite.ts` | `compositeTitleWidth`, `compositeTitleDimension`, `renderComposite` | `group`/`partition` frame rendering (`USymbolFrame#asBig`, `decoration/symbol/USymbolFrame.java:136-170`, called by `FtileGroup#drawU`, `ftile/vcompact/FtileGroup.java:209-227` -- `USymbols.PARTITION`/`USymbols.GROUP` are both a bare `USymb |
 | `activity-renderer-if-shapes.ts` | `renderIfMerge`, `renderDiamond`, `renderIfLabel`, `renderHexagonPolygon`, `renderDiamondSquarePolygon`, `renderIfSplitShape`, `renderHexagonOwnLabel`, `diamondColors` | `if-merge` and `if-label` node renderers (mission `activity-if-tile-port`, D2/D3). |
 | `activity-renderer-note-shapes.ts` | `noteFillOf`, `noteLineOf`, `noteFoldPath`, `noteBodyNormal`, `zeroArc`, `noteBodySpikeRight`, `noteBodySpikeLeft` | Note-body polygon primitives -- split out of `activity-renderer- shapes.ts` (500-line cap, add3-T3d) purely mechanically: no behavior change, every function moved verbatim. |
 | `activity-renderer-shapes.ts` | `renderStart`, `renderStop`, `renderEnd`, `renderSpot`, `renderDiamond`, `ASCENT_FRACTION`, `centeredFirstBaselineY`, `ActivityColors`, `actColors`, `actionFillOf`, `actionBorderOf`, `renderAction`, `renderNote`, `renderNode` | Activity node-shape rendering: per-shape SVG emitters (start/stop/end, action -- plain or `BoxStyle`d, `activity-renderer-signal-shapes.ts` --, bar, diamond, hexagon, note) plus the renderNode dispatcher and shared label/color helpers. |
@@ -1368,6 +1371,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `activity-renderer-swimlanes.ts` | `renderSwimlaneChrome`, `renderSwimlaneTitles` | Swimlane chrome: dividers, the transparent title band, and the floating per-lane titles. |
 | `activity-renderer-terminals.ts` | `renderStart`, `renderStop`, `orderedLine`, `renderEnd`, `renderSpot`, `renderNodesDispatchingGotos` | Terminal-circle renderers: `start`/`stop`/`kill`/`end`, plus the `spot` connector (mission add2-T2g). |
 | `activity-scoped-colors.ts` | `svgBack`, `inlineBack`, `fontConfigurationColor`, `scopedBack`, `scopedLine`, `activityBoxLine`, `arrowLineColor`, `activityArrowHeadColor`, `stereotypeBack`, `stereotypeLine`, `stereotypeFont`, `withStereotypeFont` | What the activity readers take from `theme.colors.elements` per element: T2a's resolved `BackGroundColor` (D2) and the stereotype tier above it (`withTOBECHANGED`, `FtileBox.java:146`, re-signed at +1000, `StyleLoader.java:178-186`). |
+| `activity-shadow.ts` | `activityShadowFilterDef`, `activityShadowFilter` | activity-shadow.ts -- the drop-shadow `<filter>` a shadowed action box references. |
 | `activity-spot-glyph-data.ts` | `ActivitySpotLetter`, `SPOT_REFERENCE_CX`, `SPOT_REFERENCE_CY`, `SPOT_GLYPH_D`, `CAPTURED_SPOT_LETTERS` | Glyph outline `d` data for the `circle,spot` connector's single character (`(A)`, `#blue:(B)`, ...) -- captured verbatim from the jar's own SVG output, the SAME scraping method `class-badge-glyph-data.ts` documents (its own module doc comme |
 | `activity-spot-glyph.ts` | `spotGlyphPath`, `SPOT_TEXT_FALLBACK_NOTE` | Translates {@link SPOT_GLYPH_D}'s reference-position outline to an arbitrary spot centre -- the SAME per-token `(x, y, x, y, ...)` shift `class-badge.ts#badgeGlyphPath` uses for its own captured table (every command this letter set emits, ` |
 | `activity-string-bounder.ts` | `withActivityMeasurer`, `activityMeasurer` | activity-string-bounder -- the ONE `StringBounder` an activity render measures with, layout and draw alike. |
@@ -1386,7 +1390,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `dispatch-multiline-body.ts` | `removeEmptyColumns`, `MultilineActionBody`, `readMultilineActionBody` | dispatch-multiline-body -- the BlocLines half of upstream's multi-line activity command (`CommandActivityLong3#executeNow`, `activitydiagram3/command/CommandActivityLong3.java:120-142`). |
 | `dispatch-newline-sentinels.ts` | `displayWithNewlines` | The activity label line splitter (`Display#getWithNewlines`), split into its own file purely to keep `dispatch-support.ts`/`node-dispatch.ts` under the project's 500-line cap. |
 | `dispatch-note-patterns.ts` | `RE_NOTE_SINGLE`, `RE_NOTE_MULTI`, `defaultLeftPosition`, `RE_NOTE_END` | The note commands' line shapes and their position default, split out of `dispatch-support.ts` (500-line cap, dss T4a). |
-| `dispatch-stereogroup.ts` | `stereogroupStereotype`, `stereogroupBackColor` | dispatch-stereogroup -- the single `stereotype` an activity keeps from its trailing stereogroup (`<<a>> <<b>>`), split out of `dispatch-support.ts` (500-line cap). |
+| `dispatch-stereogroup.ts` | `stereogroupStereotype`, `stereogroupLabels`, `stereotypesSpread`, `stereogroupBackColor`, `backColorSpread`, `RE_TERMINAL`, `RE_REPEAT_STEREOGROUP` | dispatch-stereogroup -- the single `stereotype` an activity keeps from its trailing stereogroup (`<<a>> <<b>>`), split out of `dispatch-support.ts` (500-line cap). |
 | `dispatch-support.ts` | `RE_SWIMLANE`, `RE_ACTION`, `RE_ACTION_CLOSE`, `RE_ACTIVITY_LIST`, `RE_BACKWARD`, `RE_BACKWARD_HEAD`, `RE_IF`, `RE_IF4`, `RE_IF_LEGACY`, `RE_ELSEIF`, `RE_ELSE`, `RE_ELSE_LEGACY`, `RE_ENDIF`, `RE_SWITCH`, `RE_CASE`, `RE_ENDSWITCH`, `RE_GROUP_OPEN`, `RE_CLOSE_GROUP`, `RE_CLOSE_GROUP_LEGACY`, `RE_WHILE`, `RE_ENDWHILE`, `RE_REPEATWHILE`, `RE_ARROW_LABEL`, `RE_ARROW_LONG`, `RE_ARROW_LONG_END`, `RE_REPEAT_HEAD`, `RE_REPEAT_INLINE_TERMINATOR`, `RE_PRAGMA`, `StopKeywords`, `matchesStopKeyword`, `ParseContext`, `setCurrentSwimlane`, `swimlaneSpread`, `ParseResult`, `ParseOutcome`, `isRefusal`, `DispatchResult`, `LineHandler`, `tryAssumeTransparent` | Shared regex constants, stop-keyword matching, and the mutable parse context/result shapes for the activity diagram recursive-descent parser. |
 | `group-dispatch.ts` | `tryOpenGroup` | `partition\|package\|rectangle\|card\|group NAME { ... |
 | `if-dispatch.ts` | `stripTrailingSemi`, `unescapeLabelNewlines`, `unescapeLabel`, `tryIf` | `if / elseif / else / endif` dispatch for the activity diagram parser. |
@@ -1397,6 +1401,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `parallel-dispatch.ts` | `tryFork`, `trySplit` | `fork` / `fork again` / `end fork` and `split` / `split again` / `end split` dispatch for the activity diagram parser. |
 | `parser.ts` | `parseActivity` | Parser for PlantUML activity diagrams (new syntax). |
 | `renderer.ts` | `renderActivity` | Activity diagram SVG renderer. |
+| `repeat-dispatch.ts` | `tryRepeat` | `repeat` / `repeat while` dispatch, split out of `node-dispatch.ts` (500-line cap) with the `<<#color>>` reads of `CommandRepeat3` and `CommandRepeatWhile3` added. |
 | `swimlane-strategy.ts` | `SwimlaneStrategy`, `SWIMLANE_AT_START_MESSAGE`, `manageSwimlaneStrategy`, `enterSwimlane`, `isInstructionHandler` | Upstream's one-way swimlane gate: the first thing added to the diagram decides whether lanes are still legal. |
 | `switch-dispatch.ts` | `extractLeadingCaseNotes`, `tryOpenSwitch` | `switch (test) / case (v) / endswitch` dispatch (mission ubrr-T10 M2). |
 
@@ -1427,6 +1432,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `conditional-builder-arrows.ts` | `instructionsOf`, `withBranchArrowLabels` | How a branch's leading and trailing arrows read as instructions and labels, split out of `conditional-builder.ts` (500-line cap, dss T4a). |
 | `conditional-builder-long.ts` | `buildIfLongHorizontal`, `buildIfLongVertical` | The `elseif`-chain if-builders, split out of `conditional-builder.ts` (hook-enforced 500-line cap; add2 T3i needed the room for ELSEIFIN) -- `FtileIfLongHorizontal.create`'s per-branch hexagon row and `FtileIfLongVertical.create`'s downward |
 | `conditional-builder.ts` | `IfBuilder`, `IfLayoutCtx`, `IfBuilderResult`, `ifBuilderOf`, `isMainLaneSmallerThanAllOthers`, `buildIf` | `ConditionalBuilder#create`'s dispatch (`ifBuilderOf`, T1's Q0 note) and all three builders (`buildIf`). |
+| `diamond-colors.ts` | `withDiamondColors`, `colorSpread`, `ifDiamondColors`, `whileDiamondColors`, `own`, `repeatDiamondColors`, `switchDiamondColors` | The `<<#color>>` fills of a compound's own diamonds, resolved once per tile the way each upstream builder falls back (`Branch#getColor`, `Colors#mergeWith`, `Stereogroup#getHColor`), so the walkers copy a value and never decide. |
 | `diamond-labels.ts` | `diamondBackOf`, `emitDiamondLabels`, `emitDiamondOwnLabel` | `emitDiamondLabels` — the shared `if-label` node emission every `GtileDiamondInside` caller needs: one node per side in `sides` whose `labelAt(side)` is non-null, translated into the walk's absolute frame. |
 | `diamond-wrap.ts` | `wrappedSpread` | isw-T2-act F5: a diamond's label nodes carry whether their block was built with the style `wrapWidth()` (`DiamondText`, `gtile-diamond-inside.ts`), so the draw rebuilds the block the layout measured. |
 | `display-white.ts` | `nonWhiteTest` | `Display#isWhite` (`klimt/creole/Display.java:170-175`) for a parsed condition: no line, or ONE line of only `\s` (Java's `[ \t\n\x0B\f\r]`). |
@@ -1488,7 +1494,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `compression-transform.ts` | `PiecewiseAffineTransform`, `CompressionTransform` | compression-transform.ts — `klimt/compress/PiecewiseAffineTransform.java`, `CompressionTransform.java` (mission `activity-klimt-compress` T2, `decisions.md` D6). |
 | `edge-label-anchor.ts` | `EdgeLabelLayout`, `LabelAnchor`, `edgeLabelBlock`, `edgeLabelBlockSize`, `edgeLabelLayout`, `labelAnchors`, `transformAnchors`, `withLabelDeltas` | Edge-label placement through compression (add4-T3a, R2). |
 | `shapes-of-boxes.ts` | `hexagonBox`, `diamondBox`, `conditionBox`, `noteBox`, `boxStyleBox` | `shapes-of.ts`'s pure node-box geometry helpers -- split into their own sibling file (mission `activity-divergence-drive-3` T3i) purely to keep `shapes-of.ts` under the 500-line hook cap; no behavior change, a mechanical extraction of four |
-| `shapes-of-frame.ts` | `frameTabShape`, `frameTitleShape`, `frameShapes` | The `USymbolFrame#asBig` shapes a `group`/`partition` frame contributes to compression, beyond its own ignored rect (`shapes-of.ts#shapeForNode`): the title-tab underline and the title itself. |
+| `shapes-of-frame-title.ts` | `TitleDrawnShapes`, `titleDrawnShapes` | The compression slots a `USymbolFrame` title drawn as a plain block leaves (`USymbolFrame.java:153-154`: `title.drawU(ug.apply(new UTranslate(3, 1)))` under the `SlotFinder`): every shape the title block draws, each through `SlotFinder#draw |
+| `shapes-of-frame.ts` | `frameTabShape`, `frameTitleShapes`, `frameShapes` | The `USymbolFrame#asBig` shapes a `group`/`partition` frame contributes to compression, beyond its own ignored rect (`shapes-of.ts#shapeForNode`): the title-tab underline and the title itself. |
 | `shapes-of-hexagon-label.ts` | `ifOwnLabelShapes` | `if-own-label`'s text slots (add4-T3a, HEX-LABEL-SLOT; split out of `shapes-of.ts`, which sits near its 500-line cap). |
 | `shapes-of-swimlane-title.ts` | `titleShapes` | The swimlane titles' compression shapes -- split out of `shapes-of.ts` (its 500-line hook) by isw-T2b-ca when the title became the drawn creole block (wrapped by `skinparam swimlaneWrapTitleWidth`). |
 | `shapes-of-terminal.ts` | `edgeDecorationVector`, `terminalDecorationVector` | The direction of an edge's END decoration, shared by the renderer (`renderer.ts#renderEdge`'s terminal `arrowTip`) and the compressor's shape adapter (`shapes-of.ts#terminalArrowhead`) so both see the same arrowhead. |
@@ -1520,7 +1527,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `gtile-end.ts` | `GtileEnd` |  |
 | `gtile-fork.ts` | `GtileFork` |  |
 | `gtile-goto.ts` | `GtileGoto`, `markDecoratedSoleChild` |  |
-| `gtile-group.ts` | `frameTitleWidth`, `GtileGroupOptions`, `GtileGroup` |  |
+| `gtile-group.ts` | `frameTitleWidth`, `frameTitleDimension`, `frameTitleBlock`, `frameTitleBounder`, `GtileGroupOptions`, `GtileGroup` |  |
 | `gtile-if-down.ts` | `GtileIfDown` |  |
 | `gtile-if-long-horizontal.ts` | `BranchLayout`, `GtileIfLongHorizontal` |  |
 | `gtile-if-long-vertical.ts` | `VerticalInlabel`, `VerticalBranchLayout`, `GtileIfLongVertical` |  |
@@ -1543,7 +1550,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `gtile-with-notes.ts` | `WithNotesEntry`, `StackedNote`, `NoteStack`, `GtileWithNotes` |  |
 | `index.ts` | `GPoint`, `HookName`, `NORTH_HOOK`, `SOUTH_HOOK`, `EAST_HOOK`, `WEST_HOOK`, `NORTH_BORDER`, `SOUTH_BORDER`, `gpoint`, `StringBounder`, `Tile`, `TileLeaf`, `TileComposite` |  |
 | `points.ts` | `GPoint`, `NORTH_HOOK`, `SOUTH_HOOK`, `EAST_HOOK`, `WEST_HOOK`, `NORTH_BORDER`, `SOUTH_BORDER`, `HookName`, `gpoint` |  |
-| `tile.ts` | `StringBounder`, `Tile`, `TileLeaf`, `TileComposite` |  |
+| `tile.ts` | `StringBounder`, `DiamondColors`, `Tile`, `TileLeaf`, `TileComposite` |  |
 
 ## `src/diagrams/board/`
 
@@ -2571,7 +2578,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `parser.ts` | `parseState` | Parser for PlantUML state diagrams. |
 | `renderer-arrowhead.ts` | `TransitionArrowhead`, `DecorSide`, `buildTransitionArrowhead`, `applyHeadTrim`, `DEFAULT_DECORATION_LENGTH`, `decorationTrim`, `pullTipBack`, `TransitionArrowheadInk`, `transitionArrowheadInk`, `CIRCLE_END_RADIUS`, `buildCircleEndMarkup`, `buildCrossStartMarkup` | renderer-arrowhead.ts — mission G4 S1, mechanism 3 ("arrowhead-drawing mechanism"): replaces `state/renderer.ts`'s SVG-`<marker>`-reference arrowhead (`markerEnd: 'url(#arrow-dependency)'`) with the SAME inline-`<polygon>` extremity shape t |
 | `renderer-border-point.ts` | `renderBorderPoint` | `EntityImageStateBorder` — the image class upstream instantiates for a border point (`<<entrypoint>>`/`<<exitpoint>>`/`<<inputPin>>`/ `<<outputPin>>`), instead of the ordinary state box. |
-| `renderer-box-runs.ts` | `renderStateRuns`, `renderStateTable` | The per-run and table emitters every state text path shares (`renderStateRuns`, `renderStateTable`), split out of `renderer-box.ts` (stdd T5a, 500-line cap): `AtomText#drawU`'s runs with `Sea`'s baseline, and `AtomTable#drawU`'s cells and r |
+| `renderer-box-runs.ts` | `renderStateRuns`, `TableRuleStroke`, `renderStateTable` | The per-run and table emitters every state text path shares (`renderStateRuns`, `renderStateTable`), split out of `renderer-box.ts` (stdd T5a, 500-line cap): `AtomText#drawU`'s runs with `Sea`'s baseline, and `AtomTable#drawU`'s cells and r |
 | `renderer-box-symbol.ts` | `isOOSymbolStereotype`, `renderOOSymbol` | The `<<O-O>>` symbol of a state box (G8), split out of `renderer-box.ts` (500-line cap, dss T3c). |
 | `renderer-box-zones.ts` | `LeafZoneFills`, `resolveLeafZoneFills`, `ZonedLeafGeometry`, `roundedZone`, `renderZonedLeafBox`, `nameBlockLeft`, `leafSouthZoneDrawn` | A leaf state whose `name` and `description` zones differ (dss T3c), drawn the way `EntityImageState#drawU` does it: through `RoundedContainer`. |
 | `renderer-box.ts` | `renderStateRuns`, `renderStateTable`, `isOOSymbolStereotype`, `renderOOSymbol`, `renderStateTextLines`, `renderSdlReceive`, `renderNormal` | Simple-state (`kind:'normal'`) leaf box renderer — mission G4 S2, mechanism 5. |

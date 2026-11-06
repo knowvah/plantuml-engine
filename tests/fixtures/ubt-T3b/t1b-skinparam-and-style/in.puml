@@ -1,0 +1,14 @@
+@startuml
+skinparam activity {
+  FontSize 13
+  BorderThickness 1
+}
+<style>
+.big {
+  LineThickness 3
+  FontSize 9
+}
+</style>
+:one; <<big>>
+:two;
+@enduml

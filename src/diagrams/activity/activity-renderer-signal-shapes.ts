@@ -26,6 +26,7 @@ import { fmt } from '../../core/svg-format.js';
 import { activityFontSize, activityLineThickness } from './activity-style-defaults.js';
 import { actionBorderOf, actionFillOf } from './activity-renderer-shapes.js';
 import { renderActionLabel } from './activity-creole-sheet.js';
+import { boxPaintExtras } from './activity-box-theme.js';
 import { DELTA_INPUT_OUTPUT, boxStyleShield } from './tiles/gtile-action.js';
 
 /** `BoxStyle.java:111`. */
@@ -39,7 +40,13 @@ interface Outline {
   readonly y: number;
   readonly w: number;
   readonly h: number;
-  readonly paint: { readonly fill: Paint; readonly stroke: Paint; readonly strokeWidth: number };
+  readonly paint: {
+    readonly fill: Paint;
+    readonly stroke: Paint;
+    readonly strokeWidth: number;
+    readonly strokeDasharray?: string;
+    readonly filter?: string;
+  };
 }
 
 type Pt = readonly [number, number];
@@ -204,6 +211,7 @@ export function renderBoxStyleAction(node: ActivityNodeGeo, theme: Theme, style:
       fill: actionFillOf(node, theme),
       stroke: actionBorderOf(node, theme),
       strokeWidth: activityLineThickness(theme, 'activity'),
+      ...boxPaintExtras(theme),
     },
   };
   const label = renderActionLabel(node.label ?? '', theme, activityFontSize(theme, 'activity'), { ...node, shield });

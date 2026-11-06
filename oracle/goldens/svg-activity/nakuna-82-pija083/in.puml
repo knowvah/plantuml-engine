@@ -1,0 +1,29 @@
+@startuml
+<style>
+.test  {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 2
+  ArrowThickness 0.5
+  FontName Arial Narrow
+  FontColor red
+}
+.save {
+  FontColor navy
+  BackGroundColor Cyan
+}
+</style>
+
+:multiple\nlines\nusing\nbackslash-n; <<test>>
+:multiple\nlines\nusing\nbackslash-n; <<test>>
+:multiple
+lines
+using
+new lines; <<test>>
+
+:multiple\nlines\nusing\nbackslash-n; <<save>>
+:multiple
+lines
+using
+new lines; <<save>>
+@enduml

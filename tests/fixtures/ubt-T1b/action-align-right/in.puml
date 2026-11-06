@@ -1,0 +1,10 @@
+@startuml
+<style>
+.c {
+  HorizontalAlignment right
+  Padding 3 8 6 2
+}
+</style>
+:A long first line
+short; <<c>>
+@enduml

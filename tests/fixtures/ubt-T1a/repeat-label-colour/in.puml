@@ -1,0 +1,7 @@
+@startuml
+start
+repeat :entry; <<#green>>
+  :work;
+repeat while (more?)
+stop
+@enduml

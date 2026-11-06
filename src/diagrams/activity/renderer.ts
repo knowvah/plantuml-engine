@@ -5,6 +5,7 @@
  * No DOM, no async.
  */
 
+import { activityShadowFilterDef } from './activity-shadow.js';
 import type { ActivityGeometry, ActivityEdgeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
@@ -26,6 +27,7 @@ import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/colo
 import { edgeDecorationVector } from './layout/compress/shapes-of-terminal.js';
 import { SVG_CANVAS_CEIL, activityDocumentMargin } from './activity-layout-constants.js';
 import { withActivityMeasurer } from './activity-string-bounder.js';
+import { withActivityDrawExtent } from './activity-draw-extent.js';
 import { withDeferredFormat } from '../../core/svg-format.js';
 
 // ---------------------------------------------------------------------------
@@ -400,7 +402,10 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
   // resolves a label's `<$sprite>` exactly as the sizer did.
   const spriteTheme = geo.sprites === undefined ? skinTheme : { ...skinTheme, sprites: geo.sprites };
   // isw-T2-act F1: draw through the layout's own bounder (`Swimlanes.java:239,246`).
-  const theme = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
+  const measuredTheme = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
+  // ubt-T2a: `SvgGraphics#ensureVisible` over every drawn text block (`activity-draw-extent.ts`).
+  const drawExtent = { maxX: 0, maxY: 0 };
+  const theme = withActivityDrawExtent(measuredTheme, drawExtent);
   // isw-T2c-scale: scaled => formatted once, by the scale pass (SvgGraphics.java:468-475).
   const deferred = geo.exportScaled === true;
   const body = withDeferredFormat(deferred, () => drawActivityBody(geo, theme));
@@ -412,6 +417,8 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
     body: applyColorMapperToFragment(body, colorMapperOf(theme)),
     width: geo.totalWidth,
     height: geo.totalHeight,
+    // ubt-T2a: the fold every composer shifts with the body; `finalizeActivityFragment` canvases on it.
+    ...(drawExtent.maxX > 0 ? { drawnMaxX: drawExtent.maxX, drawnMaxY: drawExtent.maxY } : {}),
     background: theme.colors.background,
     // T2d-a pass 2 (row DOCGRAD): `skinparam backgroundColor <c1>-<c2>` --
     // see `theme.colors.backgroundGradient`'s own doc comment. Omitted
@@ -419,6 +426,8 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
     // common case, mirroring `preserveAspectRatio` below.
     ...(theme.colors.backgroundGradient !== undefined ? { backgroundGradient: theme.colors.backgroundGradient } : {}),
     diagramType: DIAGRAM_TYPE_ACTIVITY,
+    // `SvgGraphics#manageShadow`: the one shadow filter, once a shadowed box is drawn (`activity-shadow.ts`).
+    ...(geo.nodes.some((n) => (n.boxStyle?.getShadowing() ?? 0) > 0) ? { extraDefs: activityShadowFilterDef() } : {}),
     // lad-T2a: `TextBlockExporter.java:306-307` -- `skinparam lengthAdjust`; spread
     // only when set so unset output stays byte-identical (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),

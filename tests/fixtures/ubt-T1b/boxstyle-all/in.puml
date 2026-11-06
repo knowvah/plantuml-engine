@@ -1,0 +1,20 @@
+@startuml
+<style>
+.c {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 3
+  FontSize 20
+  FontName Courier
+  FontStyle bold
+  FontColor red
+  Padding 4
+  RoundCorner 5
+  Shadowing 6
+  MaximumWidth 80
+  MinimumWidth 150
+}
+</style>
+:Save the diagram; <<save>> <<c>>
+:Send the signal; <<input>> <<c>>
+@enduml

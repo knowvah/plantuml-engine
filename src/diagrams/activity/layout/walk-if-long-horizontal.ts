@@ -15,6 +15,7 @@
  *   -- `create`'s `conns` order.
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileIfLongHorizontal } from '../tiles/gtile-if-long-horizontal.js';
 import type { GtileDiamondInside2, DiamondInside2Side } from '../tiles/gtile-diamond-inside2.js';
 import type { GPoint } from '../tiles/points.js';
@@ -146,6 +147,7 @@ function pushDiamondNode(ctx: LhCtx, i: number): void {
       width: diamond.hexWidth,
       height: diamond.hexHeight,
       label: diamond.label,
+      ...colorSpread(ctx.t.diamondColors?.branches?.[i]),
     },
     ctx.myLane,
   );

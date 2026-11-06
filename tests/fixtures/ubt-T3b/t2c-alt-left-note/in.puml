@@ -1,0 +1,11 @@
+@startuml
+alt a
+  A -> B : x
+else b
+  B -> A : y
+end
+note left
+long note left of the alt group frame here
+end note
+note right : right side
+@enduml

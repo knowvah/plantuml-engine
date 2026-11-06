@@ -13,6 +13,7 @@ import { edgeInkX } from './canvas-origin.js';
 import { isInkless, nodeFudge } from './canvas-origin-fudge.js';
 import type { CompositeUSymbol } from '../activity-geometry.types.js';
 import type { ActivityEdgeGeo } from '../activity-geometry.types.js';
+import type { Style } from '../../../core/style/Style.js';
 
 export interface SwimlaneContext {
   name: string;
@@ -55,6 +56,8 @@ export interface LaneItem {
    *  outline ink `canvas-origin-fudge.ts#nodeFudge` reads. */
   readonly stereotype?: string;
   readonly height?: number;
+  /** ubt-T1b: the box's merged style, whose padding and shadow the same ink reads. */
+  readonly boxStyle?: Style;
 }
 
 /**

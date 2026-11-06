@@ -16,6 +16,7 @@
  *   -- `addLinks`'s connector order.
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileIfWithLinks } from '../tiles/gtile-if-with-links.js';
 import type { DiamondConditionTile, DiamondSide } from '../tiles/gtile-diamond-inside.js';
 import type { GPoint } from '../tiles/points.js';
@@ -166,6 +167,7 @@ function pushDiamond1(ctx: IfLinksCtx): void {
       height: t.diamond1.height,
       label: t.diamond1.label,
       diamondShape: diamondShapeOf(t.diamond1),
+      ...colorSpread(t.diamondColors?.open),
     },
     myLane,
   );
@@ -198,6 +200,7 @@ function pushMerge(ctx: IfLinksCtx): void {
       y: y + t.mergeY,
       width: t.mergeSize,
       height: t.mergeSize,
+      ...colorSpread(t.diamondColors?.close),
     },
     myLane,
   );

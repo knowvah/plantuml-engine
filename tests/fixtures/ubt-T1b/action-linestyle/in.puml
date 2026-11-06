@@ -1,0 +1,10 @@
+@startuml
+<style>
+.c {
+  LineStyle 5;3
+  LineThickness 2
+  FontColor red
+}
+</style>
+:Dashed; <<c>>
+@enduml

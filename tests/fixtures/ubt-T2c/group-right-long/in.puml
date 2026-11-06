@@ -1,0 +1,9 @@
+@startuml
+A -> B : hi
+opt test
+  A -> B : x
+end
+note right
+A rather long note on the right side of the group frame here.
+end note
+@enduml

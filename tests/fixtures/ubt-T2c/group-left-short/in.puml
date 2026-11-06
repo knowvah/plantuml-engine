@@ -1,0 +1,7 @@
+@startuml
+A -> B : hi
+opt test
+  A -> B : x
+end
+note left : short
+@enduml

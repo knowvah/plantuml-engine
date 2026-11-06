@@ -628,7 +628,10 @@ describe('refusal coverage — baseline shape', () => {
     // 10415 -> 10444 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 10415 + 29 = 10444.
     // 10444 -> 10450 at pep/T4 (2026-11-05): +6 svg-packet golden clones. Derivation: 10444 + 6 = 10450.
     // 10450 -> 10454 at bep/T4 (2026-11-05): +4 svg-board golden clones. Derivation: 10450 + 4 = 10454.
-    expect(manifest.fixtures.length).toBe(10454);
+    // 10454 -> 10459 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10454 + 5 = 10459.
+    // 10459 -> 10465 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10459 + 6 = 10465.
+    // 10465 -> 10571 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state). Derivation: 10465 + 106 = 10571.
+    expect(manifest.fixtures.length).toBe(10571);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -872,7 +875,10 @@ describe('refusal coverage — baseline shape', () => {
     // 9973 -> 10002 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 9973 + 29 = 10002.
     // 10002 -> 10008 at pep/T4 (2026-11-05): +6 svg-packet golden clones. Derivation: 10002 + 6 = 10008.
     // 10008 -> 10012 at bep/T4 (2026-11-05): +4 svg-board golden clones. Derivation: 10008 + 4 = 10012.
-    expect(pinnedRendering.length).toBe(10012);
+    // 10012 -> 10017 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10012 + 5 = 10017.
+    // 10017 -> 10023 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10017 + 6 = 10023.
+    // 10023 -> 10129 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state), all rendering. Derivation: 10023 + 106 = 10129.
+    expect(pinnedRendering.length).toBe(10129);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

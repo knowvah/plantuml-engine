@@ -115,7 +115,7 @@ export const RE_BACKWARD_HEAD = /^(?:\(([^)]*)\)\s*)?backward\s*:(.*)$/i;
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf2.java:60-80
  *   -- `new RegexLeaf(1, "TEST", "(.*?)")`.
  */
-export const RE_IF = /^if\s*\((.*?)\)\s*(?:then\s*(?:\((.*?)\))?)?\s*(?:<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
+export const RE_IF = /^if\s*\((.*?)\)\s*(?:then\s*(?:\((.*?)\))?)?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /**
  * `if (test) is|equals (value) then`, the leading `is`/`equals` synonym
@@ -155,7 +155,7 @@ export const RE_IF_LEGACY = /^if\s*\((.*?)\)\s*then\s+when\s+(.*)$/i;
  *   `"\\(" (.*?) "\\)"`), before `else`/`if`.
  */
 export const RE_ELSEIF =
-  /^(?:\(([^)]*)\)\s*)?else\s*if\s*\((.*?)\)\s*(?:then\s*(?:\((.*?)\))?)?\s*(?:<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
+  /^(?:\(([^)]*)\)\s*)?else\s*if\s*\((.*?)\)\s*(?:then\s*(?:\((.*?)\))?)?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /**
  * else (label?) — `LABEL` is lazy, same reason as {@link RE_IF}'s own
@@ -182,7 +182,7 @@ export const RE_ELSE_LEGACY = /^else\s+when\s+(.*)$/i;
  *   -- `new RegexLeaf("end"), RegexLeaf.spaceZeroOrMore(), new
  *   RegexLeaf("if")`.
  */
-export const RE_ENDIF = /^end\s*if(?:\s*<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
+export const RE_ENDIF = /^end\s*if\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
 
 /**
  * `switch (test)`, optionally a trailing stereogroup. The leading
@@ -191,7 +191,7 @@ export const RE_ENDIF = /^end\s*if(?:\s*<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
  * omission `RE_IF`'s own history already established).
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandSwitch.java:60-70
  */
-export const RE_SWITCH = /^switch\s*\(([^)]*)\)\s*(?:<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
+export const RE_SWITCH = /^switch\s*\(([^)]*)\)\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /** `case (value)` -- no trailing stereogroup on this one, unlike its
  *  siblings (`CommandCase.java` has no `Stereogroup` at all).
@@ -203,7 +203,7 @@ export const RE_CASE = /^case\s*\(([^)]*)\)\s*$/i;
  *  {@link RE_ENDIF}).
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandEndSwitch.java:58-63
  */
-export const RE_ENDSWITCH = /^endswitch(?:\s*<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
+export const RE_ENDSWITCH = /^endswitch\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
 
 /** `ColorParser.simpleColor(ColorType.BACK, id)`'s `COLORS_REGEXP`
  *  (`PART2 | COLOR_REGEXP`), as one non-capturing alternation.
@@ -244,7 +244,8 @@ export const RE_CLOSE_GROUP = /^\}$/;
 export const RE_CLOSE_GROUP_LEGACY = /^(?:end\s?group|group\s?end)$/i;
 
 /** while (condition) [is|equals (yesLabel)] */
-export const RE_WHILE = /^while\s*\(([^)]*)\)\s*(?:(?:is|equals?)\s*\(([^)]*)\))?\s*$/i;
+export const RE_WHILE =
+  /^while\s*\(([^)]*)\)\s*(?:(?:is|equals?)\s*\(([^)]*)\))?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /**
  * `endwhile` / `end while` / `while end` (exitLabel?) -- `CommandWhileEnd3`
@@ -260,7 +261,7 @@ export const RE_ENDWHILE = /^(?:end\s*while|while\s*end)\s*(?:\(([^)]*)\))?\s*$/
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeatWhile3.java:101
  *   -- `new RegexLeaf(";?")` before the end of the closer's regex. */
 export const RE_REPEATWHILE =
-  /^repeat\s*while(?:\s*\(([^)]*)\))?(?:\s*(?:is|equals?)\s*\(([^)]*)\))?(?:\s*not\s*\(([^)]*)\))?\s*;?\s*$/i;
+  /^repeat\s*while(?:\s*\(([^)]*)\))?(?:\s*(?:is|equals?)\s*\(([^)]*)\))?(?:\s*not\s*\(([^)]*)\))?\s*;?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /** Shared head of `CommandArrow3` / `CommandArrowLong3`: `RegexOr("->",
  *  COLOR=STYLE_COLORS_MULTIPLES)` + `spaceZeroOrMore`; group 1 = COLOR. */
@@ -306,11 +307,11 @@ export const RE_ARROW_LONG_END = new RegExp('^(.*);$');
  *  measurement (and defeated `#lizard forgives`) until hoisted here. */
 export const RE_REPEAT_HEAD = new RegExp('^repeat(?:\\s+(.*))?$', 'i');
 
-/** Trailing `;` (optionally `<<stereo>>`) on a `repeat`'s inline action --
+/** Trailing `;` (optionally `<<stereo>>`s: `Stereogroup.optionalStereogroup()` takes several) on a `repeat`'s inline action --
  *  same lizard brace-depth workaround as {@link RE_REPEAT_HEAD} above, and
  *  additionally contains `<`/`>`, which the project's regex-hoisting
  *  convention also requires building from a string. */
-export const RE_REPEAT_INLINE_TERMINATOR = new RegExp(';\\s*(?:<<[^>]*>>)?\\s*(?:#\\w+)?\\s*$');
+export const RE_REPEAT_INLINE_TERMINATOR = new RegExp(';\\s*(?:<<[^>]*>>\\s*)*(?:#\\w+)?\\s*$');
 
 /**
  * `!pragma NAME [VALUE]` (D12/T1p-b, `dispatch-common-commands.ts#tryPragma`)

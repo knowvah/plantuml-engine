@@ -1,0 +1,8 @@
+@startuml
+skinparam state {
+  BorderThickness 2
+}
+state X
+X: |= h1 |= h2 |
+X: | a | b |
+@enduml

@@ -70,7 +70,7 @@ export function renderIfMerge(node: ActivityNodeGeo, theme: Theme): string {
 function mergeColors(node: ActivityNodeGeo, c: ActivityColors): { fill: Paint; stroke: Paint } {
   return node.diamondSName === 'activity'
     ? { fill: c.nodeFill, stroke: c.nodeBorder }
-    : { fill: c.diamondFill, stroke: c.diamondBorder };
+    : { fill: inlineBack(node) ?? c.diamondFill, stroke: c.diamondBorder };
 }
 
 /**
@@ -108,7 +108,7 @@ export function renderDiamond(node: ActivityNodeGeo, theme: Theme): string {
   const c = actColors(theme);
   const first = { x: cx, y: cy - size };
   const shape = polygon([first, { x: cx + size, y: cy }, { x: cx, y: cy + size }, { x: cx - size, y: cy }, first], {
-    fill: c.diamondFill,
+    fill: inlineBack(node) ?? c.diamondFill,
     stroke: c.diamondBorder,
     strokeWidth: activityLineThickness(theme, 'diamond'),
   });

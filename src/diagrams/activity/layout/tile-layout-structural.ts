@@ -7,6 +7,7 @@
  * comments, same call sites (now imported).
  */
 
+import { switchDiamondColors, withDiamondColors } from './diamond-colors.js';
 import type {
   ActivityFork,
   ActivityGroup,
@@ -351,9 +352,13 @@ export function tileSwitch(
   // `FtileDiamondInside` hexagons (no `.withNorth`/`.withWest`/`.withEast`
   // call anywhere in that file) -- diamond1 carries the switch's own
   // condition label, diamond2 is always empty.
-  const diamond = new GtileDiamondInside(nonWhiteTest(node.condition), {}, bounder, theme);
+  const colors = switchDiamondColors(node);
+  const diamond = withDiamondColors(
+    new GtileDiamondInside(nonWhiteTest(node.condition), {}, bounder, theme),
+    colors.first,
+  );
   const cases = node.cases.map((kase) => tileSwitchCase(kase, bounder, theme, laneOrder, pragma));
-  const mergeDiamond = new GtileDiamondInside('', {}, bounder, theme);
+  const mergeDiamond = withDiamondColors(new GtileDiamondInside('', {}, bounder, theme), colors.last);
   const tile = withSwimlane(new GtileSwitch(diamond, cases, mergeDiamond, bounder, theme), node.swimlane);
   return wrapSwitchNotes(tile, node.notes ?? [], bounder, theme);
 }

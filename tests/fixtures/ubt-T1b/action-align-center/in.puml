@@ -1,0 +1,9 @@
+@startuml
+<style>
+.c {
+  HorizontalAlignment center
+}
+</style>
+:A long first line
+short; <<c>>
+@enduml

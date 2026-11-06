@@ -1,0 +1,6 @@
+@startuml
+state X ##[bold] {
+  state Y
+}
+X: | a | b |
+@enduml

@@ -22,6 +22,7 @@
  *   -- `create`'s `conns` order.
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileIfLongVertical } from '../tiles/gtile-if-long-vertical.js';
 import type { GtileDiamondInside2, DiamondInside2Side } from '../tiles/gtile-diamond-inside2.js';
 import type { GPoint } from '../tiles/points.js';
@@ -172,6 +173,7 @@ function pushDiamondNode(ctx: LvCtx, i: number): void {
       width: diamond.hexWidth,
       height: diamond.hexHeight,
       label: diamond.label,
+      ...colorSpread(ctx.t.diamondColors?.open),
     },
     ctx.myLane,
   );
@@ -198,6 +200,7 @@ function pushLastDiamondNode(ctx: LvCtx): void {
       y: origin.y,
       width: ctx.t.lastDiamondSize,
       height: ctx.t.lastDiamondSize,
+      ...colorSpread(ctx.t.diamondColors?.open),
     },
     ctx.myLane,
   );

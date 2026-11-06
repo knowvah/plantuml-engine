@@ -12,6 +12,7 @@
 import type { SnakeTextAlign } from './layout/snake-text-position.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { StringMeasurer } from '../../core/measurer.js';
+import type { Style } from '../../core/style/Style.js';
 
 // ---------------------------------------------------------------------------
 // Public geometry types
@@ -23,6 +24,8 @@ export interface ActivityNodeGeo {
   label?: string;
   color?: string;
   stereotype?: string;
+  /** The box's ONE merged style (`activity-box-theme.ts`), absent where the flat tiers hold its values. */
+  boxStyle?: Style;
   x: number;
   y: number;
   width: number;

@@ -768,7 +768,10 @@ describe('routing conformance — jar-error classification', () => {
     // 9723 -> 9781 at cep/T5 (2026-11-05): the 29 chart misroutes flip to agree, +29 svg-chart golden clones. Derivation: 9723 + 29 + 29 = 9781.
     // 9781 -> 9793 at pep/T4 (2026-11-05): the 6 packet misroutes flip to agree, +6 svg-packet golden clones. Derivation: 9781 + 6 + 6 = 9793.
     // 9793 -> 9801 at bep/T4 (2026-11-05): the 4 board misroutes flip to agree, +4 svg-board golden clones. Derivation: 9793 + 4 + 4 = 9801.
-    expect(pinnedAgree.length).toBe(9801);
+    // 9801 -> 9806 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 9801 + 5 = 9806.
+    // 9806 -> 9812 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 9806 + 6 = 9812.
+    // 9812 -> 9918 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state), all agree. Derivation: 9812 + 106 = 9918.
+    expect(pinnedAgree.length).toBe(9918);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -853,7 +856,10 @@ describe('routing conformance — jar-error classification', () => {
     // 10415 -> 10444 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 10415 + 29 = 10444.
     // 10444 -> 10450 at pep/T4 (2026-11-05): +6 svg-packet golden clones. Derivation: 10444 + 6 = 10450.
     // 10450 -> 10454 at bep/T4 (2026-11-05): +4 svg-board golden clones. Derivation: 10450 + 4 = 10454.
-    expect(manifest.fixtures.length).toBe(10454);
+    // 10454 -> 10459 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10454 + 5 = 10459.
+    // 10459 -> 10465 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10459 + 6 = 10465.
+    // 10465 -> 10571 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state). Derivation: 10465 + 106 = 10571.
+    expect(manifest.fixtures.length).toBe(10571);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

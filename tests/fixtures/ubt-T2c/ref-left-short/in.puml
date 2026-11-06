@@ -1,0 +1,4 @@
+@startuml
+ref over A, B : Sub
+note left : short
+@enduml

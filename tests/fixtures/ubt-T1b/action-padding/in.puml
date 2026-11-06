@@ -1,0 +1,9 @@
+@startuml
+<style>
+.c {
+  Padding 4
+}
+</style>
+:A longer action label for width; <<c>>
+:second plain one;
+@enduml

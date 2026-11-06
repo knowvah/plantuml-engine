@@ -1,0 +1,7 @@
+@startuml
+partition P {
+repeat <<#pink>>
+  :a;
+repeat while (more?) <<#yellow>>
+}
+@enduml

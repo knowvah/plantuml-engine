@@ -1,0 +1,16 @@
+@startuml
+<style>
+.a {
+  LineThickness 3
+  BackgroundColor pink
+  FontSize 20
+}
+.b {
+  LineThickness 1
+  LineColor blue
+  FontName Courier
+}
+</style>
+:First wins ties; <<a>> <<b>>
+:Reverse order; <<b>> <<a>>
+@enduml

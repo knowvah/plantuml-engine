@@ -1,0 +1,9 @@
+@startuml
+loop outer
+  opt inner
+    A -> B : x
+  end
+  note left : inner end note
+end
+note left : outer end note
+@enduml
