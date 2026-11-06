@@ -1,0 +1,9 @@
+@startuml
+skin rose
+<style>
+class { FontSize 18 }
+note { FontSize 12 }
+</style>
+class A
+note right of A: n
+@enduml

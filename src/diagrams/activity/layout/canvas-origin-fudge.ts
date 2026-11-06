@@ -7,14 +7,16 @@
  * (`FtileGroup.java:150-158`), all through {@link nodeFudge}.
  */
 import type { ActivityNodeGeo } from '../activity-geometry.types.js';
+import type { ActivityShadowing } from '../../../core/activity-document-style.js';
 
 /** What {@link nodeFudge} reads of a node: a placed `ActivityNodeGeo`, or
  *  a `swimlane-context.ts#LaneItem` built from one. */
 export type FudgeSubject = Pick<ActivityNodeGeo, 'kind'> &
-  Partial<Pick<ActivityNodeGeo, 'usymbol' | 'label' | 'stereotype' | 'width' | 'height'>>;
+  Partial<Pick<ActivityNodeGeo, 'usymbol' | 'label' | 'stereotype' | 'width' | 'height' | 'boxStyle'>>;
 import { classifyStripeLine } from '../../../core/klimt/creole/legacy/CreoleStripeSimpleParser.js';
 import { boxStyleName, boxStyleOutlineX, boxStyleShield } from '../tiles/gtile-action.js';
 import { activityPadding } from '../activity-style-defaults.js';
+import { ClockwiseTopRightBottomLeft } from '../../../core/klimt/geom/ClockwiseTopRightBottomLeft.js';
 
 /** A shape kind's own `{ near, far }` LimitFinder fudge (module doc above):
  *  `recordedMin = real.min - near`, `recordedMax = real.max + far`. Exported
@@ -150,17 +152,55 @@ function boxStyleFudge(node: FudgeSubject): { x: ShapeFudge; y: ShapeFudge } | u
   const outline = boxStyleOutlineX(style, width, node.height ?? 0);
   const p = POLYGON_FUDGE_X.near;
   // The LEFT-aligned text's exact ink, `[padding, width - shield - padding]`.
-  const pad = activityPadding('activity');
-  const near = Math.max(p - outline.minX, -pad);
-  const far = Math.max(outline.maxX - width + p, -(boxStyleShield(style) + pad));
+  const pad = boxPaddingOf(node);
+  const near = Math.max(p - outline.minX, -pad.getLeft());
+  const far = Math.max(outline.maxX - width + p, -(boxStyleShield(style) + pad.getRight()));
   return { x: { near, far }, y: NO_FUDGE };
 }
 
-export function nodeFudge(node: FudgeSubject): { x: ShapeFudge; y: ShapeFudge } {
+/** `style.getPadding()` (`FtileBox.java:170`): the box's merged style's, else `plantuml.skin:360`'s. */
+function boxPaddingOf(node: FudgeSubject): ClockwiseTopRightBottomLeft {
+  return node.boxStyle?.getPadding() ?? ClockwiseTopRightBottomLeft.same(activityPadding('activity'));
+}
+
+/** The `BoxStyle`s whose `drawMe` draws a `URectangle` (`BoxStyle.java:160-163,239-243,340-343,359-362`). */
+const RECTANGLE_BOX_STYLES = new Set(['procedure', 'task', 'object']);
+
+/** `drawRectangle`'s `+ 2 * getDeltaShadow()` on the far corner (`LimitFinder.java:186-187`), for a box drawn as a rectangle
+ *  with a shadowing style (`FtileBox.java:173,222`); a polygon or path adds none. */
+function withBoxShadow(
+  node: FudgeSubject,
+  fudge: { x: ShapeFudge; y: ShapeFudge },
+  plain: ActivityShadowing | undefined,
+): { x: ShapeFudge; y: ShapeFudge } {
+  const shadowing = node.boxStyle?.getShadowing() ?? plain?.box ?? 0;
+  if (node.kind !== 'action' || shadowing === 0) return fudge;
+  const style = boxStyleName(node.stereotype);
+  if (style !== undefined && !RECTANGLE_BOX_STYLES.has(style)) return fudge;
+  const far = (f: ShapeFudge): ShapeFudge => ({ near: f.near, far: f.far + 2 * shadowing });
+  return { x: far(fudge.x), y: far(fudge.y) };
+}
+
+/** `drawEllipse`'s `+ 2 * getDeltaShadow()` on the far corner (`LimitFinder.java:206-210`): the circle's merged style's. */
+function withCircleShadow(
+  kind: string,
+  fudge: { x: ShapeFudge; y: ShapeFudge },
+  plain: ActivityShadowing | undefined,
+): { x: ShapeFudge; y: ShapeFudge } {
+  const shadowing = kind === 'start' || kind === 'stop' || kind === 'end' ? (plain?.[kind] ?? 0) : 0;
+  if (shadowing === 0) return fudge;
+  const far = (f: ShapeFudge): ShapeFudge => ({ near: f.near, far: f.far + 2 * shadowing });
+  return { x: far(fudge.x), y: far(fudge.y) };
+}
+
+/** `plain` is the document's merged-style shadows (`core/activity-document-style.ts`), for the elements with no style of
+ *  their own on the node. */
+export function nodeFudge(node: FudgeSubject, plain?: ActivityShadowing): { x: ShapeFudge; y: ShapeFudge } {
   const composite = compositeFudge(node);
   if (composite !== undefined) return composite;
   const boxStyle = boxStyleFudge(node);
-  if (boxStyle !== undefined) return boxStyle;
-  if (hasHorizontalRule(node)) return { x: RECT_WITH_FULL_HLINE_X, y: RECT_FUDGE };
-  return { x: fudgeX(node.kind), y: fudgeY(node.kind) };
+  if (boxStyle !== undefined) return withBoxShadow(node, boxStyle, plain);
+  if (hasHorizontalRule(node)) return withBoxShadow(node, { x: RECT_WITH_FULL_HLINE_X, y: RECT_FUDGE }, plain);
+  const base = { x: fudgeX(node.kind), y: fudgeY(node.kind) };
+  return withCircleShadow(node.kind, withBoxShadow(node, base, plain), plain);
 }

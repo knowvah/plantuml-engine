@@ -1,0 +1,7 @@
+@startuml
+state X {
+  state Y
+}
+X: |= h1 |= h2 |
+X: | a | b |
+@enduml

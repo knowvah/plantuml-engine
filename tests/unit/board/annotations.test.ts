@@ -1,39 +1,36 @@
-/**
- * Annotation-command wiring for the board diagram parser (mission G0b/T6).
- */
-
-import { describe, it, expect } from 'vitest';
-import { boardPlugin } from '../../../src/diagrams/board/index.js';
-import { parseAst } from '../../helpers/parse-ast.js';
+/** Annotation commands reach `BoardDiagram#annotations`, not the activities. */
+import { describe, expect, it } from 'vitest';
 import { isEmpty } from '../../../src/core/annotations/index.js';
-import type { UmlSource } from '../../../src/core/block-extractor.js';
+import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
+import type { BoardDiagram } from '../../../src/diagrams/board/BoardDiagram.js';
+import { parseBoard } from '../../../src/diagrams/board/BoardDiagramFactory.js';
 
-function makeSource(lines: string[]): UmlSource {
-  return { lines, type: 'board' };
+function parseOk(lines: string[]): BoardDiagram {
+  const parsed = parseBoard({ lines, type: 'board' }, new PreprocessingArtifact());
+  if ('refused' in parsed) throw new Error(`refused at line ${String(parsed.line)}: ${parsed.message}`);
+  return parsed;
 }
 
-/** Narrows `parseBoard`'s `AST | ParseRefusal` result (mission T9, D1). */
-function parseBoardOk(source: UmlSource) {
-  return parseAst(boardPlugin, source);
+function names(diagram: BoardDiagram): string[][] {
+  return diagram.getActivities().map((a) => a.getCells().map((n) => n.getName()));
 }
 
-describe('parseBoard — annotation commands (mission G0b/T6)', () => {
+describe('parseBoard — annotation commands', () => {
   it('single-line `title X` populates annotations.title, not an activity', () => {
-    const ast = parseBoardOk(makeSource(['title My Board', 'World']));
-    expect(ast.annotations?.title.display).toEqual(['My Board']);
-    expect(ast.activities.map((a) => a.name)).toEqual(['World']);
+    const diagram = parseOk(['title My Board', 'World']);
+    expect(diagram.annotations.title.display).toEqual(['My Board']);
+    expect(names(diagram)).toEqual([['World']]);
   });
 
   it('multi-line `legend ... end legend` populates annotations.legend, not an activity', () => {
-    const ast = parseBoardOk(makeSource(['World', 'legend', 'a legend line', 'end legend']));
-    expect(ast.annotations?.legend.display).toEqual(['a legend line']);
-    expect(ast.activities.map((a) => a.name)).toEqual(['World']);
+    const diagram = parseOk(['World', 'legend', 'a legend line', 'end legend']);
+    expect(diagram.annotations.legend.display).toEqual(['a legend line']);
+    expect(names(diagram)).toEqual([['World']]);
   });
 
-  it('annotation-free fixture parses identically (no chrome, empty annotations)', () => {
-    const ast = parseBoardOk(makeSource(['World', '+Europe', '++France']));
-    expect(isEmpty(ast.annotations!)).toBe(true);
-    expect(ast.activities.length).toBe(1);
-    expect(ast.activities[0]!.root.children[0]!.name).toBe('Europe');
+  it('an annotation-free source leaves the annotations empty', () => {
+    const diagram = parseOk(['World', '+Europe', '++France']);
+    expect(isEmpty(diagram.annotations)).toBe(true);
+    expect(names(diagram)).toEqual([['World', 'Europe', 'France']]);
   });
 });

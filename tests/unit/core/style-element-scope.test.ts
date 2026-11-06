@@ -189,9 +189,12 @@ describe('elementScopeColors: D3, D3a', () => {
     expect(scope(style(`database { FontSize 12 }`), 'description', {})['note']).toBeUndefined();
   });
 
-  it('`skinparam mode dark`: an untouched default keeps `theme-dark` even where a flat role exists (D3)', () => {
+  it('`skinparam mode dark`: the builder answers as `DARK_MODE` paints it, a flat role and the gate aside (smc D2)', () => {
     const body = `skinparam mode dark\n${style('database { FontSize 12 }')}`;
-    expect(scope(body, 'activity', { activity: { font: '#FFFFFF' } })['activity']).toBeUndefined();
+    // `plantuml.skin` `root` @media dark: BackGroundColor #313139, LineColor #e7e7e7, FontColor white (:566-568)
+    const expected = { background: '#313139', border: '#e7e7e7', font: 'white' };
+    expect(scope(body, 'activity', { activity: { font: '#FFFFFF' } })['activity']).toEqual(expected);
+    expect(scope('skinparam mode dark', 'activity', {})['activity']).toEqual(expected);
   });
 
   it('a caller-named theme: an untouched default keeps that theme (D3, as `documentBackColor`)', () => {

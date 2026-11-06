@@ -172,6 +172,7 @@ function dispatchAnnotationOrSprite(
   trimmedLines: readonly string[],
   i: number,
   rawLines: readonly string[] = trimmedLines,
+  spriteLines: readonly string[] = trimmedLines,
 ): number | null {
   // makeDefaultAST() always sets annotations; the field is optional on
   // SequenceDiagramAST only so hand-authored literal fixtures elsewhere
@@ -185,7 +186,7 @@ function dispatchAnnotationOrSprite(
   // `addCommonCommands1`
   // (addTitleCommands then addCommonCommands2/sprite) being registered
   // FIRST by SequenceDiagramFactory.
-  const spriteMatch = matchSpriteCommand(trimmedLines, i, state.ast.sprites!);
+  const spriteMatch = matchSpriteCommand(spriteLines, i, state.ast.sprites!);
   if (spriteMatch !== null) return spriteMatch.consumed;
 
   // `CommandSpriteBase64` (`CommonCommands.java:79`), registered by the same
@@ -302,11 +303,14 @@ function dispatchViews(lines: readonly string[]): {
   trimmedEntries: { text: string; origIndex: number }[];
   trimmedLines: string[];
   rawAlignedLines: string[];
+  /** `CommandSpriteSvgMultiline.java:107-108` keeps each line whole, indent and trailing space, for the sprite's XML. */
+  spriteLines: string[];
 } {
   const trimmedEntries = trimNonBlank(lines);
   const trimmedLines = trimmedEntries.map((e) => e.text);
   const rawAlignedLines = trimmedEntries.map((e) => (lines[e.origIndex] ?? '').replace(/\s+$/, ''));
-  return { trimmedEntries, trimmedLines, rawAlignedLines };
+  const spriteLines = trimmedEntries.map((e) => lines[e.origIndex] ?? '');
+  return { trimmedEntries, trimmedLines, rawAlignedLines, spriteLines };
 }
 
 /**
@@ -338,7 +342,7 @@ function documentPositionOf(source: UmlSource, origIndex: number): number {
  * 164-167`); a rejected `<style>` is that command's error.
  */
 function runDispatchLoop(state: ParseState, source: UmlSource): ParseRefusal | null {
-  const { trimmedEntries, trimmedLines, rawAlignedLines } = dispatchViews(source.lines);
+  const { trimmedEntries, trimmedLines, rawAlignedLines, spriteLines } = dispatchViews(source.lines);
 
   // The last raw source line a pending note consumed: its body starts after it.
   let lastRaw = -1;
@@ -361,7 +365,7 @@ function runDispatchLoop(state: ParseState, source: UmlSource): ParseRefusal | n
     }
     if (handlePendingRef(state, line, rawLine)) continue;
 
-    const consumed = dispatchAnnotationOrSprite(state, trimmedLines, i, rawAlignedLines);
+    const consumed = dispatchAnnotationOrSprite(state, trimmedLines, i, rawAlignedLines, spriteLines);
     if (consumed !== null) {
       i += consumed - 1;
       continue;

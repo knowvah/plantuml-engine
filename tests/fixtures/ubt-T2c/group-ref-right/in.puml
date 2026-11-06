@@ -1,0 +1,10 @@
+@startuml
+opt test
+    ref over A, B
+        SomeSequence
+    end ref
+end
+note right
+A long note to the right of an opt holding a ref.
+end note
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+!theme C4_sandstone from <C4/themes>
+!include <C4/C4_Container>
+Person(u, "User", "desc")
+System_Boundary(b, "Bank") {
+  Container(a, "A", "tech", "desc")
+  ContainerDb(d, "D", "tech", "desc")
+}
+Rel(u, a, "Uses")
+Rel(a, d, "Reads")
+SHOW_LEGEND()
+@enduml

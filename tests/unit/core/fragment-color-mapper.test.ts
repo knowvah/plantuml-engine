@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { applyMonochromeHex, applyMonochromeToFragment } from '../../../src/core/klimt/color/fragment-color-mapper.js';
+import {
+  applyMonochromeHex,
+  applyMonochromeToFragment,
+  colorMapperOf,
+  mapDocumentBackground,
+} from '../../../src/core/klimt/color/fragment-color-mapper.js';
 
 // G2 N61: `skinparam monochrome true|reverse` -- jar's `ColorMapper.MONOCHROME`/
 // `MONOCHROME_REVERSE` (`ColorUtils.java#getGrayScaleColor`/
@@ -69,5 +74,37 @@ describe('applyMonochromeToFragment', () => {
   it('does not touch a "fill: none" or unrelated hex-free markup', () => {
     const svg = '<rect fill="none" id="ent0001"/>';
     expect(applyMonochromeToFragment(svg, 'true')).toBe(svg);
+  });
+});
+
+// smc-T3a: `HColor.java:74-76` returns `#00000000` for a transparent colour before the mapper runs,
+// and `SvgGraphics.java:521-528` + `fillMe` write it as `fill="#000" fill-opacity="0"`: never mapped.
+// Jar value: `sequence__mode-monorev` lifeline hover rect `fill="#000" fill-opacity="0"`.
+describe('transparent fill-opacity rect', () => {
+  it('is left unmapped under monochrome reverse', () => {
+    const hover = '<rect x="1" fill="#000" fill-opacity="0"/>';
+    expect(applyMonochromeToFragment(hover, 'reverse')).toBe(hover);
+  });
+
+  it('still maps a fill with a non-zero opacity', () => {
+    expect(applyMonochromeToFragment('<rect fill="#000" fill-opacity="0.5"/>', 'reverse')).toBe(
+      '<rect fill="#FFF" fill-opacity="0.5"/>',
+    );
+  });
+});
+
+// `SvgGraphics.java:181-182`: the root background is `backcolor.toSvg(option.getColorMapper())`.
+// Jar values: `activity__mode-monorev` `#000000`; `activity__mode-revdark` `#010101`.
+describe('mapDocumentBackground', () => {
+  it('maps a white background to black under monochrome reverse', () => {
+    expect(mapDocumentBackground('white', colorMapperOf({ monochrome: 'reverse' }))).toBe('#000000');
+  });
+
+  it('maps white to #010101 under reversecolor dark', () => {
+    expect(mapDocumentBackground('#FFFFFF', colorMapperOf({ reverseColor: 'dark' }))).toBe('#010101');
+  });
+
+  it('returns the background unchanged with no mapper', () => {
+    expect(mapDocumentBackground('white', undefined)).toBe('white');
   });
 });

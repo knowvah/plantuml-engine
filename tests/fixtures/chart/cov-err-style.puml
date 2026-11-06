@@ -1,0 +1,6 @@
+@startchart
+<style>
+foo { { }
+</style>
+bar [1]
+@endchart

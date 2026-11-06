@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  0-15: A
+  bogus line
+}
+@endpacketdiag

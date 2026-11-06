@@ -62,6 +62,8 @@ import { NOTE_FONT_SIZE } from '../../core/klimt/font/FontParam.js';
  *  `renderer-note-connector.ts#renderNoteConnectorPath`). */
 import { NOTE_STROKE_WIDTH, resolveNoteFontColor, resolveNoteStroke } from './renderer-note-stroke.js';
 import { atomsOverBack } from './class-sprite-back.js';
+import { noteRoundCornerOfTheme } from '../../core/note-style-facts.js';
+import { opaleRoundedCorner, opaleRoundedOutline } from '../../core/svek/image/opale-rounded-path.js';
 export { NOTE_STROKE_WIDTH };
 
 /** `EntityImageNote.java:275-289` `ug.draw(Opale.getCorner(...))`: the fold
@@ -397,21 +399,29 @@ export function renderPlainNote(note: NoteGeo, theme: ScaledTheme): { entityPart
   // scale identically now.
   const f = NOTE_FOLD * theme.scaleK;
   const ns = resolveNoteStroke(theme);
+  const roundCorner = noteRoundCornerOfTheme(theme);
+  const origin = { x, y };
   const entityParts: string[] = [
     // Body: `Opale.getPolygonNormal`'s vertex order (see `noteBodyPathData`'s
     // own doc comment), the note style's OWN stroke (`applyStroke`).
-    path(noteBodyPathData(x, y, w, h, f), { fill, stroke: ns.stroke, strokeWidth: ns.strokeWidth }),
+    path(
+      roundCorner === 0
+        ? noteBodyPathData(x, y, w, h, f)
+        : opaleRoundedOutline({ origin, width: w, height: h }, undefined, roundCorner, theme.scaleK),
+      { fill, ...ns },
+    ),
     // Fold: `Opale.getCorner`, reused unchanged from `note-opale.ts`/
     // `core/svek/image/Opale.ts` (the SAME primitive `renderTipNote`/
     // `renderOpaleNote` already call) -- filled with the note's OWN
     // background (not `none`) at the diagram's DEFAULT stroke width, per
     // `EntityImageNote.java:275-289` (see `NOTE_FOLD_STROKE_WIDTH`'s doc
     // comment).
-    path(opaleCorner({ x, y }, w, theme.scaleK), {
-      fill,
-      stroke: ns.stroke,
-      strokeWidth: NOTE_FOLD_STROKE_WIDTH * theme.scaleK,
-    }),
+    path(
+      roundCorner === 0
+        ? opaleCorner(origin, w, theme.scaleK)
+        : opaleRoundedCorner(origin, w, roundCorner, theme.scaleK),
+      { fill, stroke: ns.stroke, strokeWidth: NOTE_FOLD_STROKE_WIDTH * theme.scaleK },
+    ),
     renderNoteText(note, theme),
   ];
   return { entityParts };
@@ -439,7 +449,7 @@ export function renderTipNote(note: NoteGeo, tip: TipShape, theme: ScaledTheme):
   // stroked `ug` -- both take the note style's stroke.
   const ns = resolveNoteStroke(theme);
   const parts: string[] = [
-    path(outline, { fill, stroke: ns.stroke, strokeWidth: ns.strokeWidth }),
+    path(outline, { fill, ...ns }),
     path(opaleCorner({ x: note.x, y: note.y }, note.width, k), {
       fill,
       stroke: ns.stroke,
@@ -491,13 +501,19 @@ export function renderOpaleNote(note: NoteGeo, theme: ScaledTheme): string {
   // cdd3-T34 (E1-8): `theme.scaleK` -- `opalePolygonLeft`'s own doc comment.
   const ns = resolveNoteStroke(theme);
   const k = theme.scaleK;
+  const roundCorner = noteRoundCornerOfTheme(theme);
+  const origin = { x: note.x, y: note.y };
   const parts: string[] = [
-    path(opaleOutline(opale.direction, box, connector, k), { fill, stroke: ns.stroke, strokeWidth: ns.strokeWidth }),
-    path(opaleCorner({ x: note.x, y: note.y }, note.width, k), {
-      fill,
-      stroke: ns.stroke,
-      strokeWidth: ns.strokeWidth,
-    }),
+    path(
+      roundCorner === 0
+        ? opaleOutline(opale.direction, box, connector, k)
+        : opaleRoundedOutline(box, { direction: opale.direction, pp: connector }, roundCorner, k),
+      { fill, ...ns },
+    ),
+    path(
+      roundCorner === 0 ? opaleCorner(origin, note.width, k) : opaleRoundedCorner(origin, note.width, roundCorner, k),
+      { fill, stroke: ns.stroke, strokeWidth: ns.strokeWidth },
+    ),
   ];
   parts.push(renderNoteText(note, theme, ns.strokeWidth));
   return parts.join('');

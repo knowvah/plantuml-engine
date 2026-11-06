@@ -1,0 +1,11 @@
+@startuml
+Alice -> Bob : hi
+note left
+{{packetdiag
+packetdiag {
+  0-15: A
+  16-31: B
+}
+}}
+end note
+@enduml

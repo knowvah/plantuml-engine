@@ -1,0 +1,13 @@
+@startuml
+<style>
+.color {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 2
+  FontSize 11
+}
+</style>
+repeat
+  :Generate diagrams1; <<color>>
+repeat while (more data?) is (yes)
+@enduml

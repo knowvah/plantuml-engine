@@ -1,0 +1,4 @@
+@startchart
+h-axis [A, B, C, D]
+bar [150, 20]
+@endchart

@@ -6,6 +6,7 @@
  * class-commands.ts to stay under the line cap; order preserved (spread
  * third in COMMANDS, right after the container group).
  */
+import { applyMemberToMapOrJson } from './class-map-commands.js';
 import { dropsAsSingleDuplicate } from '../../core/cucadiagram/linkDedup.js';
 import { resolveNoteEndpoint } from './class-note-endpoint.js';
 import { applyLollipop, LOLLIPOP_RE } from './class-lollipop.js';
@@ -112,6 +113,7 @@ export const RELATIONSHIP_COMMANDS: readonly Command[] = [
       const classId = match[1]!;
       const memberStr = match[2]!.trim();
       const classifier = ensureClassifier(state, classId, undefined, undefined, true);
+      if (applyMemberToMapOrJson(state, classifier, memberStr)) return;
       // An already-`object`-kind target uses object field semantics
       // (`name = value`); a missing target is created as a plain `class`
       // (CommandAddMethod always uses LeafType.CLASS) and parsed as a

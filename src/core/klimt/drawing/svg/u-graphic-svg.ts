@@ -94,6 +94,7 @@ import { ColorMapper } from '../../color/ColorMapper.js';
 import { AbstractCommonUGraphic } from '../../AbstractCommonUGraphic.js';
 import type { UDriver, ShapeConstructor } from '../../AbstractCommonUGraphic.js';
 import type { UShape } from '../../UShape.js';
+import type { UTranslate } from '../../UTranslate.js';
 import { URectangle } from '../../shape/URectangle.js';
 import { UEllipse } from '../../shape/UEllipse.js';
 import { ULine } from '../../shape/ULine.js';
@@ -137,6 +138,27 @@ function asShapeCtor<S extends UShape>(ctor: { readonly name: string }): ShapeCo
 /** `SkinParam.java:1082` — `getValue("svglinktarget", "_top")`. */
 const DEFAULT_LINK_TARGET = '_top';
 
+/** `MinMaxMutable#addPoint`'s guard. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/geom/MinMaxMutable.java:80-85 */
+function addPoint(x: number, y: number): void {
+  if (Number.isNaN(x) || Number.isNaN(y)) throw new Error('IllegalArgumentException');
+}
+
+/**
+ * The points `AbstractUGraphic#updateMinMax` adds that a shape's own size can make
+ * NaN; every shape adds the translate, and an empty polygon adds nothing. A polygon
+ * point cannot be NaN here: `UPolygon#addPoint` has already thrown.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/AbstractUGraphic.java:151-232
+ */
+function checkMinMaxPoints(shape: UShape, translate: UTranslate): void {
+  const x = translate.getDx();
+  const y = translate.getDy();
+  if (shape instanceof UPolygon && shape.getPoints().length === 0) return;
+  addPoint(x, y);
+  if (shape instanceof ULine) addPoint(x + shape.getDX(), y + shape.getDY());
+  else if (shape instanceof URectangle || shape instanceof UEllipse)
+    addPoint(x + shape.getWidth(), y + shape.getHeight());
+}
+
 export class UGraphicSvg extends AbstractCommonUGraphic {
   private constructor(
     private readonly svg: SvgGraphics,
@@ -152,6 +174,19 @@ export class UGraphicSvg extends AbstractCommonUGraphic {
   ) {
     super();
     this.register();
+  }
+
+  /**
+   * `AbstractUGraphic#draw`: `updateMinMax(shape)` before the driver. The bounds
+   * themselves are not read here, but `MinMaxMutable#addPoint` throws on a NaN
+   * point, which is how a diagram with a NaN coordinate crashes rather than
+   * printing `NaN`. `UEmpty` and `UComment` return before it.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/AbstractUGraphic.java:125-135
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/geom/MinMaxMutable.java:80-85
+   */
+  override draw(shape: UShape): void {
+    if (!(shape instanceof UEmpty) && !(shape instanceof UComment)) checkMinMaxPoints(shape, this.getTranslate());
+    super.draw(shape);
   }
 
   /** Upstream: the merged `UGraphicSvg(StringBounder, ...)` ctor +

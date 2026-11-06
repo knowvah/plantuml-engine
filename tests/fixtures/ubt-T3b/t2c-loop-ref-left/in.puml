@@ -1,0 +1,9 @@
+@startuml
+participant A
+participant B
+loop 3 times
+  ref over A, B : inner
+end
+note left : after loop
+A -> B : z
+@enduml

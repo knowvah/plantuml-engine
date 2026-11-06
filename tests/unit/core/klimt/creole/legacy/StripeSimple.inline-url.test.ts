@@ -24,13 +24,12 @@ function summary(atoms: readonly CreoleAtom[]): string[] {
 describe('StripeSimple stamps the active url on inline atoms', () => {
   test('openiconic inside [[url ...]] carries the url, text around it too', () => {
     const atoms = buildStripeAtoms(`pre [[${URL} before <&cloud> after]] post`, PLAIN);
-    expect(summary(atoms)).toEqual([
-      'text:pre @-',
-      `text:before @${URL}`,
-      `openiconic@${URL}`,
-      `text: after@${URL}`,
-      'text: post@-',
-    ]);
+    // One `AtomHorizontalTexts`, a one-line vertical here (`AtomTextUtils.java:121-159`).
+    expect(summary(atoms)).toEqual(['text:pre @-', 'vertical', 'text: post@-']);
+    const stacked = atoms[1]!;
+    if (stacked.kind !== 'vertical') throw new Error('expected the url label as one atom');
+    expect(stacked.lines.length).toBe(1);
+    expect(summary(stacked.lines[0]!)).toEqual([`text:before @${URL}`, `openiconic@${URL}`, `text: after@${URL}`]);
   });
 
   test('openiconic outside any url carries no url', () => {

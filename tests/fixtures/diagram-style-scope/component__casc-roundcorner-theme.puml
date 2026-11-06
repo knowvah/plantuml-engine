@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+component { RoundCorner 20 }
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

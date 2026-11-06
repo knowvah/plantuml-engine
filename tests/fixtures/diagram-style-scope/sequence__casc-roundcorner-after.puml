@@ -1,0 +1,10 @@
+@startuml
+<style>
+participant { RoundCorner 20 }
+note { FontSize 12 }
+</style>
+participant A
+A -> B
+note right: n
+skinparam roundCorner 8
+@enduml

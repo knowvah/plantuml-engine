@@ -30,12 +30,9 @@ import type { UrlTaggedPrimitive } from './renderer-url.js';
  * iteration order, key then value, before this function's own entries are
  * appended).
  *
- * Row/column geometry is reconstructed from rows[]/dividerYs alone (no
- * ClassifierGeo schema change — see class-map-sizing.ts#buildMapRowGeo for
- * why): every data row contributes exactly two rows[] entries (key, value)
- * after the header entries (those with y below dividerYs[0]); a linked
- * row's value entry has empty text and is skipped (upstream never draws
- * that cell either).
+ * Row/column geometry is reconstructed from rows[]/dividerYs alone: every data
+ * row flags one entry `mapValueCell`, its value's first line; a linked row's
+ * has empty text and is skipped (upstream never draws that cell either).
  *
  * NOT used for `json` — a json entries area can nest arbitrarily deep, so it
  * does not fit the "exactly two rows[] entries per data row" invariant this
@@ -48,10 +45,10 @@ export function mapColumnDividerEntries(
   theme: ScaledTheme,
 ): Array<{ y: number; item: UrlTaggedPrimitive }> {
   if (geo.kind !== 'map' || geo.dividerYs.length === 0) return [];
-  const dataRows = geo.rows.filter((r) => r.y >= geo.dividerYs[0]!);
+  const valueCells = geo.rows.filter((r) => r.mapValueCell === true);
   const entries: Array<{ y: number; item: UrlTaggedPrimitive }> = [];
   for (let i = 0; i < geo.dividerYs.length; i++) {
-    const value = dataRows[2 * i + 1];
+    const value = valueCells[i];
     if (value === undefined || value.text === '') continue; // linked/point row
     const top = geo.dividerYs[i]!;
     const bottom = geo.dividerYs[i + 1] ?? geo.height;

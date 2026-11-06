@@ -25,10 +25,11 @@
  * `hexagon-reservations.ts` needs no new call site here.
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileRepeat, RepeatBackConnection, RepeatConditionTile } from '../tiles/gtile-repeat.js';
 import type { GPoint } from '../tiles/points.js';
 import { NORTH_HOOK, SOUTH_HOOK } from '../tiles/points.js';
-import type { Tile } from '../tiles/tile.js';
+import type { DiamondColors, Tile } from '../tiles/tile.js';
 import { laneAt, laneIn, laneOut } from './swimlane-placement.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
@@ -128,7 +129,7 @@ interface RepeatOrigins {
  * through `walkTile` like any other node (D2, {@link walkRepeat}).
  */
 function pushRepeatEntry(
-  entry: { width: number; height: number },
+  entry: { width: number; height: number; diamondColors?: DiamondColors },
   x: number,
   y: number,
   myLane: string | undefined,
@@ -136,7 +137,15 @@ function pushRepeatEntry(
 ): void {
   pushNode(
     out,
-    { id: out.nextId('repeat-start'), kind: 'repeat-start', x, y, width: entry.width, height: entry.height },
+    {
+      id: out.nextId('repeat-start'),
+      kind: 'repeat-start',
+      x,
+      y,
+      width: entry.width,
+      height: entry.height,
+      ...colorSpread(entry.diamondColors?.open),
+    },
     myLane,
   );
 }
@@ -181,7 +190,12 @@ function pushRepeatCondition(
   if (condition.kind === 'gtile-repeat-empty') return;
   const hexLane = laneAt(condition, myLane);
   const box = { x: condX, y: condY, width: condition.width, height: condition.getCoord(SOUTH_HOOK).y };
-  pushNode(out, { id: out.nextId('repeat-cond'), kind: 'repeat-cond', ...box, label: condition.label }, hexLane);
+  const color = colorSpread(condition.diamondColors?.open);
+  pushNode(
+    out,
+    { id: out.nextId('repeat-cond'), kind: 'repeat-cond', ...box, label: condition.label, ...color },
+    hexLane,
+  );
   emitDiamondLabels(condition, { x: condX, y: condY }, ['north', 'south'], hexLane, out);
   emitDiamondOwnLabel(condition, box, hexLane, out);
   emitDiamondLabels(condition, { x: condX, y: condY }, ['east', 'west'], hexLane, out);

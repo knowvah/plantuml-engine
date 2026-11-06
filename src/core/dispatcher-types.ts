@@ -270,8 +270,8 @@ export interface RenderFragment {
 /**
  * Escape hatch for plugins that emit a complete `<svg>` document themselves
  * and do not go through the shared `svgRoot` assembler — the description
- * (klimt) engine, and any renderer's own inline error-document path (e.g.
- * chart's `renderErrorDiagram`). `assembleSvg` returns `completeSvg` as-is.
+ * (klimt) engine, and any renderer's own inline error-document path.
+ * `assembleSvg` returns `completeSvg` as-is.
  */
 export interface CompleteSvg {
   completeSvg: string;

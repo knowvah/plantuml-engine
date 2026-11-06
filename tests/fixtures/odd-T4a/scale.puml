@@ -1,0 +1,20 @@
+@startuml
+scale 1.5
+<style>
+object {
+  header {
+    BackgroundColor pink
+  }
+}
+</style>
+object a <<S>> {
+ +x = 1
+ -y = 2
+}
+map m {
+ k => v
+}
+json j {
+ "x": 1
+}
+@enduml

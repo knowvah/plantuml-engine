@@ -1,0 +1,5 @@
+@startuml
+rectangle "a <$nope> b" as a
+rectangle "<$nope>" as c
+a --> c
+@enduml

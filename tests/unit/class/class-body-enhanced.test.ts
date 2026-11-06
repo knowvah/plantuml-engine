@@ -256,6 +256,7 @@ describe('measureEnhancedBody — row y bottom-anchor is gated on an image atom'
       measurer: new DeterministicMeasurer(),
       sprites,
       baselineOffset: 11,
+      iconBlockHeight: 11,
       bodyTop: 0,
     };
   }
@@ -322,6 +323,7 @@ describe('measureEnhancedBody — visibilityBlockHeight/visibilityBlockTopDy on 
       measurer: new DeterministicMeasurer(),
       sprites: undefined,
       baselineOffset,
+      iconBlockHeight: 11,
       bodyTop: 0,
     };
   }

@@ -1,0 +1,12 @@
+@startuml
+
+<style>
+.a {
+  LineThickness 3
+  Linecolor red
+}
+</style>
+
+card a
+a -> b <<a>>
+@enduml

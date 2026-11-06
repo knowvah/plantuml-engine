@@ -1,4 +1,6 @@
 import type { FontConfiguration as StyleFontConfiguration } from '../../abel/FontConfiguration.js';
+import { HColorGradient } from '../color/HColorGradient.js';
+import { HColorScheme } from '../color/HColorScheme.js';
 import { HColorSimple } from '../color/HColorSimple.js';
 import { FontStyle, type FontConfiguration } from '../shape/UText.js';
 import { UFont } from './UFont.js';
@@ -44,12 +46,9 @@ export function bridgeFontConfiguration(fc: StyleFontConfiguration): FontConfigu
   const font = fc.getFont();
   if (!(font instanceof UFont)) throw new Error('ClassCastException: FontConfiguration font is not a UFont');
   const color = fc.getColor();
-  if (!(color instanceof HColorSimple))
-    throw new Error('ClassCastException: FontConfiguration color is not an HColorSimple');
-
   const hyperlinkColor = fc.getHyperlinkColor();
-  if (!(hyperlinkColor instanceof HColorSimple))
-    throw new Error('ClassCastException: FontConfiguration hyperlinkColor is not an HColorSimple');
+  if (!(color instanceof HColorSimple) || !(hyperlinkColor instanceof HColorSimple))
+    return bridgeNonSimple(fc, font, color, hyperlinkColor);
 
   const face = font.getFontFace();
   const transparent = color.isTransparent();
@@ -63,6 +62,35 @@ export function bridgeFontConfiguration(fc: StyleFontConfiguration): FontConfigu
     hyperlinkUnderlineStroke: fc.getHyperlinkUnderlineStroke(),
   };
   return transparent ? bridged : { ...bridged, hColor: color };
+}
+
+/**
+ * A colour no `HColorSimple` carries. A `#?a:b` scheme travels as its spelling for `DriverTextSvg` to resolve against the
+ * drawing back; a gradient paints its first colour (`HColorGradient#toColor`, `HColorGradient.java:103-105`).
+ */
+function bridgeNonSimple(
+  fc: StyleFontConfiguration,
+  font: UFont,
+  color: unknown,
+  hyperlinkColor: unknown,
+): FontConfiguration {
+  const paintOf = (c: unknown): string => {
+    if (c instanceof HColorScheme) return c.asPaint();
+    if (c instanceof HColorSimple) return solidPaint(c);
+    if (c instanceof HColorGradient) return c.asPaint().color1;
+    throw new Error('ClassCastException: FontConfiguration colour is not drawable');
+  };
+  const face = font.getFontFace();
+  const shown = paintOf(color);
+  return {
+    family: font.getFontStack().getFullDefinition(),
+    size: font.getSize(),
+    color: shown.toLowerCase() === 'transparent' || shown === '#00000000' ? null : shown,
+    styles: getStyles(face.cssWeight >= BOLD_CSS_WEIGHT, face.italic),
+    fontFace: face,
+    hyperlinkColor: paintOf(hyperlinkColor),
+    hyperlinkUnderlineStroke: fc.getHyperlinkUnderlineStroke(),
+  };
 }
 
 /** `HColorSimple#asPaint` is always a solid `XColor#toSvg` string (HColorSimple.ts). */

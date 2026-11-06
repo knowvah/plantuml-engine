@@ -1,0 +1,10 @@
+@startuml
+<style>
+state { LineThickness 3 }
+note { FontSize 12 }
+</style>
+state S
+S --> T
+note right of S: n
+skinparam stateBorderThickness 2
+@enduml

@@ -18,6 +18,7 @@ import type {
 import type { EnhancedPortMemberInput } from './class-body-enhanced-ports.js';
 import type { TreeConnector } from './class-body-tree.js';
 import { scaleRow, scaleDashArrayString } from './class-scale-geo-row.js';
+import { scaleLineTable } from './class-scale-geo-note.js';
 
 function scalePortMember(p: EnhancedPortMemberInput, k: number): EnhancedPortMemberInput {
   return { ...p, top: p.top * k, height: p.height * k };
@@ -84,6 +85,14 @@ function scaleEnhancedBodyPart(part: EnhancedBodyPart, k: number, themeFontSize:
       return scaleRowsPart(part, k, themeFontSize);
     case 'tree':
       return scaleTreePart(part, k, themeFontSize);
+    case 'table':
+      return {
+        ...part,
+        x: part.x * k,
+        y: part.y * k,
+        baselineOffset: part.baselineOffset * k,
+        table: scaleLineTable(part.table, k)!,
+      };
   }
 }
 

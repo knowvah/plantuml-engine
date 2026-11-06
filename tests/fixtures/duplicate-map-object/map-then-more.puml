@@ -1,0 +1,9 @@
+@startuml
+map m {
+ k => v
+}
+map m {
+ k => v
+}
+class Next
+@enduml

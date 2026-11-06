@@ -1,0 +1,7 @@
+@startuml
+skinparam roundcorner 8
+skinparam style strictuml
+package P {
+  class A
+}
+@enduml

@@ -14,7 +14,13 @@ import type { DescriptionEdgeGeo } from './layout-helpers.js';
 import { cleanStereotypeToken } from '../../core/style-map-element.js';
 import { elementGradient } from '../../core/theme-element-resolve.js';
 import { bareEntityName } from './namespace-groups.js';
-import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
+import { resolveArrowLabelFont, resolveCardinalityFont } from '../../core/arrow-label-font.js';
+import type { MagneticBorder } from '../../core/klimt/geom/MagneticBorder.js';
+import { headPaint, styleFont, stylePaint } from './description-entity-style.js';
+import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
+import type { SpriteRegistry } from '../../core/sprite-commands.js';
+import type { SvekEdgeEndText } from '../../core/svek/SvekEdge.js';
+import type { EdgeEndText } from './layout-helpers-types.js';
 import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
 
 /**
@@ -43,11 +49,25 @@ function edgeLabelFont(edge: DescriptionEdgeGeo, theme: Theme): FontConfiguratio
   // dss T3a site 1: `{root,element,<diagram>,arrow}`'s `FontColor` as the style engine resolved it (`T2a`,
   // `style-element-scope.ts`); `graph.arrowFontColor` is the flat path it supersedes (`GraphvizImageBuilder.java:234-235`).
   const scoped = theme.colors.elements?.arrow?.font;
-  const font = scoped === undefined ? resolved : { ...resolved, color: paintTextColor(scoped) };
+  // `getDefaultStyleDefinitionArrow(stereotype).getMergedStyle(link.getStyleBuilder()).getFontConfiguration`
+  // (`GraphvizImageBuilder.java:235-236`).
+  const font =
+    styleFont(edge.arrowStyle) ?? (scoped === undefined ? resolved : { ...resolved, color: paintTextColor(scoped) });
   // The link's own `Colors` mute the style-resolved font AFTER it (SvekEdge.java:260-262), so `text:` outranks the
   // stereotype-signed arrow `FontColor` (`SvekEdge.java:816-821`), which outranks the theme's arrow font colour.
-  const color = edge.styleTextColor ?? tagStyle(edge, theme)?.fontColor;
+  const color = edge.styleTextColor ?? (edge.arrowStyle === undefined ? tagStyle(edge, theme)?.fontColor : undefined);
   return color === undefined ? font : { ...font, color };
+}
+
+/** `SvekEdge#getSvekNode1/2().getMagneticBorder()`, or the cluster's: the border an end is pulled to (`SvekEdge.java:923-942`). */
+export type EdgeMagnets = (id: string) => MagneticBorder | undefined;
+
+interface EdgeEnds {
+  readonly fromUid: string;
+  readonly toUid: string;
+  readonly magnet1: MagneticBorder | undefined;
+  readonly magnet2: MagneticBorder | undefined;
+  readonly sprites: SpriteRegistry | undefined;
 }
 
 /**
@@ -112,12 +132,66 @@ function tagStyle(
   return cascade[cleanStereotypeToken(edge.stereotype)];
 }
 
-function edgeThickness(edge: DescriptionEdgeGeo, theme: Theme): number | undefined {
-  return edge.styleThickness ?? tagStyle(edge, theme)?.thickness ?? theme.colors.graph.arrowThickness;
+/** `SvekEdge.java:265,876,897-904`: the three inputs `strokeOfLink` chooses between. */
+function strokeFields(
+  edge: DescriptionEdgeGeo,
+  theme: Theme,
+): Pick<SvekEdgeInput, 'styleThickness' | 'defaultThickness' | 'suggestedStroke'> {
+  const defaultThickness = theme.colors.graph.arrowThickness;
+  const suggested = edge.arrowStyle?.getStroke();
+  const tagThickness = suggested === undefined ? tagStyle(edge, theme)?.thickness : undefined;
+  return {
+    ...(edge.styleThickness === undefined ? {} : { styleThickness: edge.styleThickness }),
+    ...(defaultThickness === undefined && tagThickness === undefined
+      ? {}
+      : { defaultThickness: tagThickness ?? (defaultThickness as number) }),
+    ...(suggested === undefined ? {} : { suggestedStroke: suggested }),
+  };
 }
 
-function thicknessField(styleThickness: number | undefined): { styleThickness?: number } {
-  return styleThickness === undefined ? {} : { styleThickness };
+/** `Rainbow.build(styleLine, set)`'s head colour (`Rainbow.java:83-90`): `HeadColor` where the style has one. A link's own colour replaces both (`SvekEdge.java:884-893`). */
+function headColorField(edge: DescriptionEdgeGeo): Pick<SvekEdgeInput, 'headColor'> {
+  if (edge.styleColor !== undefined) return {};
+  const head = edge.arrowStyle === undefined ? undefined : headPaint(edge.arrowStyle);
+  return head === undefined ? {} : { headColor: head };
+}
+
+/** `SvekEdge.java:330-340`, `Display.getWithNewlines(...).create(cardinalityFont, CENTER, skinParam)`. */
+function endText(end: EdgeEndText | undefined, font: FontConfiguration): SvekEdgeEndText | undefined {
+  return end === undefined ? undefined : { ...end, font };
+}
+
+function cardinalityFontConfig(edge: DescriptionEdgeGeo, theme: Theme): FontConfiguration {
+  const styled = styleFont(edge.cardinalityStyle);
+  if (styled !== undefined) return styled;
+  const font = resolveCardinalityFont(theme);
+  const styles = new Set<FontStyle>();
+  if (font.weight === 'bold') styles.add(FontStyle.BOLD);
+  if (font.style === 'italic') styles.add(FontStyle.ITALIC);
+  return { family: font.family, size: font.size, color: font.color, styles };
+}
+
+/** `SvekEdge.java:291-294`, the wrap width, with the label's atoms and the link's own inversion. */
+function labelFields(
+  edge: DescriptionEdgeGeo,
+  theme: Theme,
+  sprites: SpriteRegistry | undefined,
+): Pick<SvekEdgeInput, 'linkInverted' | 'labelMaxWidth' | 'resolveAtomImage'> {
+  const styleWidth = edge.arrowStyle?.wrapWidth().getMaxWidth() ?? 0;
+  const maxWidth = styleWidth > 0 ? styleWidth : (theme.maxMessageSize ?? 0);
+  return {
+    ...(edge.linkInverted === true ? { linkInverted: true } : {}),
+    ...(maxWidth > 0 ? { labelMaxWidth: maxWidth } : {}),
+    ...(sprites === undefined ? {} : { resolveAtomImage: makeAtomImageResolverFor(sprites) }),
+  };
+}
+
+/** `SvekEdge.java:266-268,986`: `arrowLollipopColor`, defaulting to the background. */
+function middleDecorField(edge: DescriptionEdgeGeo, theme: Theme): Pick<SvekEdgeInput, 'middleDecor'> {
+  if (edge.middleDecor === undefined) return {};
+  const diagramBackColor = theme.colors.background;
+  const backColor = theme.colors.arrowLollipopColor ?? diagramBackColor;
+  return { middleDecor: { decor: edge.middleDecor, backColor, diagramBackColor } };
 }
 
 /** The label, with its `note on link` block (`SvekEdge.java:312-326`) when the link has one and a table to draw in. */
@@ -138,6 +212,7 @@ function edgeLabel(edge: DescriptionEdgeGeo, theme: Theme, blockText: string | u
 function edgeLineColor(edge: DescriptionEdgeGeo, theme: Theme): Paint {
   return (
     edge.styleColor ??
+    stylePaint(edge.arrowStyle, 'LineColor') ??
     tagStyle(edge, theme)?.color ??
     elementGradient(theme, 'arrow', 'border') ??
     theme.colors.graph.descriptionCascadeArrowColor ??
@@ -145,13 +220,11 @@ function edgeLineColor(edge: DescriptionEdgeGeo, theme: Theme): Paint {
   );
 }
 
-function buildInput(
-  edge: DescriptionEdgeGeo,
-  theme: Theme,
-  uid: string,
-  fromUid: string,
-  toUid: string,
-): SvekEdgeInput {
+function buildInput(edge: DescriptionEdgeGeo, theme: Theme, uid: string, ends: EdgeEnds): SvekEdgeInput {
+  const { fromUid, toUid } = ends;
+  const cardinality = cardinalityFontConfig(edge, theme);
+  const tailQuantifier = endText(edge.tailQuantifier, cardinality);
+  const headQuantifier = endText(edge.headQuantifier, cardinality);
   const headDecor = edge.headDecor ?? (edge.tailDecor === undefined ? fallbackHeadToken(edge.arrowHead) : undefined);
   // G1 I5e: only the POST-colon-embedded stereotype form is ever drawn as
   // visible edge text upstream -- see `DescriptiveLink.stereotypeIsLinkLabel`'s
@@ -177,7 +250,15 @@ function buildInput(
     // `SvekEdge.java:265` defaultThickness = `getThickness(LineParam.arrow)`
     // (`skinparam arrowThickness`), applied at `:899` unless the link
     // carries its own bracket thickness -- as class-edge-geo.ts does.
-    ...thicknessField(edgeThickness(edge, theme)),
+    ...strokeFields(edge, theme),
+    ...labelFields(edge, theme, ends.sprites),
+    ...headColorField(edge),
+    ...middleDecorField(edge, theme),
+    ...(tailQuantifier === undefined ? {} : { tailQuantifier }),
+    ...(headQuantifier === undefined ? {} : { headQuantifier }),
+    ...(edge.supplementaryColors === undefined ? {} : { supplementaryColors: edge.supplementaryColors }),
+    ...(ends.magnet1 === undefined ? {} : { magnet1: ends.magnet1 }),
+    ...(ends.magnet2 === undefined ? {} : { magnet2: ends.magnet2 }),
     // A bracket `#color` override feeds BOTH the line AND the (same-color)
     // filled extremity upstream (`svek/SvekEdge.java:884-893`) -- this
     // port's `SvekEdgeInput.color` already serves that dual role (no
@@ -212,13 +293,24 @@ export function drawEdge(
   edge: DescriptionEdgeGeo,
   theme: Theme,
   uid: string,
-  nodeUid: ReadonlyMap<string, string>,
+  plan: {
+    readonly nodeUid: ReadonlyMap<string, string>;
+    readonly magnets: EdgeMagnets;
+    readonly sprites?: SpriteRegistry | undefined;
+  },
   sharedIds: Set<string>,
   hidden = false,
 ): void {
-  const fromUid = nodeUid.get(edge.from) ?? edge.from;
-  const toUid = nodeUid.get(edge.to) ?? edge.to;
-  const svekEdge = new SvekEdge(buildInput(edge, theme, uid, fromUid, toUid));
+  const fromUid = plan.nodeUid.get(edge.from) ?? edge.from;
+  const toUid = plan.nodeUid.get(edge.to) ?? edge.to;
+  const ends: EdgeEnds = {
+    fromUid,
+    toUid,
+    magnet1: plan.magnets(edge.from),
+    magnet2: plan.magnets(edge.to),
+    sprites: plan.sprites,
+  };
+  const svekEdge = new SvekEdge(buildInput(edge, theme, uid, ends));
   svekEdge.setSharedIds(sharedIds);
   if (hidden) svekEdge.drawHiddenU(ug);
   else svekEdge.drawU(ug);

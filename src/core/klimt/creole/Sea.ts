@@ -28,6 +28,11 @@ export interface AtomOps {
   calculateDimension(atom: CreoleAtom, stringBounder: StringBounder): XDimension2D;
   getStartingAltitude(atom: CreoleAtom, stringBounder: StringBounder): number;
   drawU(atom: CreoleAtom, ug: UGraphic): void;
+  /**
+   * False for a `<$name>` no registry holds: `StripeSimple#addSprite` adds no atom then (`StripeSimple.java:228-236`), so a
+   * line of nothing else is `getAtoms`'s one space (`:124-125`). The stripe parser has no registry to ask, so the sheet does.
+   */
+  isDrawable?(atom: CreoleAtom, stringBounder: StringBounder): boolean;
 }
 
 /**

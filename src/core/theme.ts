@@ -127,6 +127,10 @@ export interface Theme extends ThemeRootFields {
    *  applied by the same post-process (`fragment-color-mapper.ts#colorMapperOf`).
    *  Read by `skinparam-key-handlers-table-b.ts`'s `reversecolor` row. */
   reverseColor?: string;
+  /** The RAW `skinparam stereotypeAlignment`: `SkinParam#getStereotypeAlignment`, read by `Cluster.java:374`. */
+  stereotypeAlignment?: string;
+  /** `skinparam svgDimensionStyle false` drops the root's `width` and `height` (`SvgGraphics.java:808-811`). */
+  svgDimensionStyle?: boolean;
   /** G2 N18: `skinparam style strictuml` -- a global sharp-corner toggle,
    *  checked by `USymbolFolder#drawFolder`'s `roundCorner=0` `UPolygon`
    *  branch (jar-verified `jinibe-02-tebi269`). Class-only consumer
@@ -409,6 +413,10 @@ export type ThemeOverride = Partial<ThemeRootFields> & {
   monochrome?: 'true' | 'reverse';
   /** See {@link Theme.reverseColor}. */
   reverseColor?: string;
+  /** See {@link Theme.stereotypeAlignment}. */
+  stereotypeAlignment?: string;
+  /** See {@link Theme.svgDimensionStyle}. */
+  svgDimensionStyle?: boolean;
   /** See `Theme.shadowing`'s own doc comment. */
   shadowing?: number;
   packageStyle?: PackageStyleSetting;
@@ -452,7 +460,7 @@ export type ThemeOverride = Partial<ThemeRootFields> & {
 // extraction to keep this file under the 500-line cap, same rationale as the
 // `theme-graph-colors.ts`/`theme-element-resolve.ts` splits above) and
 // re-exported here so no consumer's import path changed.
-export { deepMergeTheme } from './theme-merge.js';
+export { deepMergeTheme, mergeElementBuckets } from './theme-merge.js';
 
 /**
  * Resolve a theme option to a concrete Theme object.

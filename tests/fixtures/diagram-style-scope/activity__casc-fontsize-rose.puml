@@ -1,0 +1,11 @@
+@startuml
+skin rose
+<style>
+activity { FontSize 18 }
+note { FontSize 12 }
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

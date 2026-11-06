@@ -1,0 +1,11 @@
+@startuml
+<style>
+document {
+  BackgroundColor #AAAAAA
+}
+}
+</style>
+state S
+S --> T
+note right of S: n
+@enduml

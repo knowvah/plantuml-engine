@@ -1,0 +1,11 @@
+@startuml
+skinparam shadowing true
+map a {
+ k => v
+}
+json b {
+}
+json c {
+ "k"
+}
+@enduml

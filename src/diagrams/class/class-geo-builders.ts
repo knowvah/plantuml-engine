@@ -8,10 +8,13 @@
  * footprint formula (was an invented flat padding, now the jar-verified
  * folder-tab-driven formula — see `class-namespace-shape.ts`).
  */
+import { classShadowingOf } from '../../core/class-style-facts.js';
 import type { ClassDiagramAST, Classifier } from './ast.js';
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { MeasuredClassifier } from './class-layout-helpers.js';
 import type { Theme } from '../../core/theme.js';
+import { headerSplitDrawsPath } from './class-object-header-split.js';
+import { isObjectKind } from './object-kind-style.js';
 import { shiftClassifierGeo } from './class-layout-shift.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import type { StringMeasurer } from '../../core/measurer.js';
@@ -128,6 +131,7 @@ export function buildClassifierGeos(
       ...(classifier.creationIndex !== undefined ? { creationIndex: classifier.creationIndex } : {}),
       ...(classifier.url !== undefined ? { url: classifier.url } : {}),
       ...(classifier.color !== undefined ? { color: classifier.color } : {}),
+      ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
       ...(classifier.syntheticIdName !== undefined ? { syntheticIdName: classifier.syntheticIdName } : {}),
       ...(classifier.phantomSlot === true ? { phantomSlot: true as const } : {}),
       ...(classifier.noUidSlot === true ? { noUidSlot: true as const } : {}),
@@ -138,10 +142,10 @@ export function buildClassifierGeos(
       // mission skin-file-loading (deferred D3 item): see
       // `ClassifierGeo.shadowing`'s doc comment (class-geo-types.ts) for the
       // full jar-verified mechanism the `drawsBorderedBox` gate reproduces.
-      ...(options.theme.shadowing !== undefined && options.theme.shadowing > 0 && drawsBorderedBox(classifier, measured)
-        ? { shadowing: options.theme.shadowing }
-        : {}),
+      ...(classifier.stateRoundCorner !== undefined ? { stateRoundCorner: classifier.stateRoundCorner } : {}),
+      ...shadowingField(classifier, measured, options.theme),
     });
+    markHeaderSplitInk(classifiers.at(-1)!, options.theme);
   }
   return classifiers;
 }
@@ -158,6 +162,25 @@ export function buildClassifierGeos(
  * `Json`'s shared `setDeltaShadow` on the outer bordered rect -- a
  * different jar image class, with no shadow, draws every other kind here).
  */
+/** A state leaf and an object-family box cast their merged style's shadow (`rect.setDeltaShadow(style.getShadowing())`,
+ *  `EntityImageObject.java:186`); every other box, the theme's. */
+function shadowingField(
+  classifier: ClassDiagramAST['classifiers'][number],
+  measured: MeasuredClassifier,
+  theme: Theme,
+): { shadowing?: number } {
+  // `shadow = getStyle().getShadowing()` (`EntityImageClass.java:197`): the merged `{root, element, classDiagram, class}`
+  // style, so a `<style> class { Shadowing N }` beats the root tier the theme's `shadowing` holds (a theme's
+  // `skinparam shadowing false` executes before it, `ValueImpl.java:51-55`).
+  const shadowing =
+    classifier.stateShadowing ?? classifier.objectStyle?.box.shadowing ?? classShadowingOf(theme) ?? theme.shadowing;
+  return shadowing !== undefined && shadowing > 0 && drawsBorderedBox(classifier, measured) ? { shadowing } : {};
+}
+
+function markHeaderSplitInk(geo: ClassifierGeo, theme: Theme): void {
+  if (isObjectKind(geo.kind) && headerSplitDrawsPath(geo, theme)) geo.headerPathInk = true;
+}
+
 function drawsBorderedBox(classifier: ClassDiagramAST['classifiers'][number], measured: MeasuredClassifier): boolean {
   if (classifier.kind === 'assoc-circle' || classifier.kind === 'lollipop') return false;
   if (measured.folderTab !== undefined) return false;
@@ -229,6 +252,7 @@ function namespaceGeoFromBox(
     ...(ns.usymbol !== undefined ? { usymbol: ns.usymbol } : {}),
     ...(ns.color !== undefined ? { color: ns.color } : {}),
     ...(ns.url !== undefined ? { url: ns.url } : {}),
+    ...(ns.roundCorner !== undefined ? { roundCorner: ns.roundCorner } : {}),
   };
 }
 
@@ -312,7 +336,11 @@ export { buildEdgeGeos } from './class-edge-geo.js';
  * proof). Split out of {@link degenerateSingleClassifier} purely to keep
  * that function under the project's per-function NLOC cap (R2j precedent).
  */
-function buildDegenerateClassifierLeaf(classifier: Classifier, measured: MeasuredClassifier): ClassifierGeo {
+function buildDegenerateClassifierLeaf(
+  classifier: Classifier,
+  measured: MeasuredClassifier,
+  theme: Theme,
+): ClassifierGeo {
   return {
     id: classifier.id,
     kind: classifier.kind,
@@ -334,8 +362,11 @@ function buildDegenerateClassifierLeaf(classifier: Classifier, measured: Measure
     ...(classifier.usymbol !== undefined ? { usymbol: classifier.usymbol } : {}),
     ...(classifier.url !== undefined ? { url: classifier.url } : {}),
     ...(classifier.color !== undefined ? { color: classifier.color } : {}),
+    ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
     ...stereotypeLabelFields(classifier),
     ...(classifier.styleGeneration !== undefined ? { styleGeneration: classifier.styleGeneration } : {}),
+    // `EntityImageClass.java:197,210`: the lone class casts its merged style's shadow like any other.
+    ...shadowingField(classifier, measured, theme),
   };
 }
 
@@ -447,7 +478,7 @@ export function degenerateSingleClassifier(
   const measured = measuredMap.get(classifier.id)!;
   const margin = classDocumentMargin(theme);
   // dss T3b: the exporter's translate by `(margin.left, margin.top)` (`TextBlockExporter.java:173`).
-  const leaf = buildDegenerateClassifierLeaf(classifier, measured);
+  const leaf = buildDegenerateClassifierLeaf(classifier, measured, theme);
   const geo = margin === undefined ? leaf : shiftClassifierGeo(leaf, margin.left, margin.top);
   return degenerateClassifierDims(geo, measured, margin);
   // #lizard forgives — flat chain of early-return guards encoding upstream's

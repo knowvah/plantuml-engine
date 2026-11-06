@@ -1,0 +1,6 @@
+@startchart
+h-axis "x" -5 --> 5
+v-axis 0 --> 10
+line "L" [(-5, 1), (0, 5), (5, 9)] #3498db
+scatter "S" [(-2, 3), (2, 7)] labels
+@endchart

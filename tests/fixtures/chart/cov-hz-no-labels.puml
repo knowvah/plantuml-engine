@@ -1,0 +1,5 @@
+@startchart
+orientation horizontal
+h-axis "V" 0 --> 100
+bar [50, 25]
+@endchart

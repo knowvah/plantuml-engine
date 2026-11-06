@@ -138,7 +138,9 @@ function scanSvgSpriteBlock(
   for (let j = i + 1; j < lines.length; j++) {
     const line = lines[j] ?? '';
     parts.push(line);
-    if (SVG_END_RE.test(line.trim())) return { svg: parts.join('\n'), consumed: j - i + 1 };
+    // `SvgSpriteParserFactory.java:91-97` appends the raw lines with no separator, so `<path` at the end of a line
+    // meets the next line's indent: `<path    d=...`. An unindented next line makes `<pathd=`, which `drawU` ignores.
+    if (SVG_END_RE.test(line.trim())) return { svg: parts.join(''), consumed: j - i + 1 };
   }
   return null;
 }

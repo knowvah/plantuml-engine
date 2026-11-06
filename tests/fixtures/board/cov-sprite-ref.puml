@@ -1,0 +1,10 @@
+@startboard
+sprite $s [8x4/4] {
+FFFFFFFF
+F0F0F0F0
+0F0F0F0F
+00000000
+}
+A <$s> sprite
++B
+@endboard

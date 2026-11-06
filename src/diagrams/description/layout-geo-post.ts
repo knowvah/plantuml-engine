@@ -26,6 +26,14 @@ import {
 import { clipSplineStart, clipSplineEnd } from '../../core/spline-clip.js';
 import { resolveOpaleConnector } from '../../core/svek/image/Opale.js';
 import { bareEntityName, leafDisplayName } from './namespace-groups.js';
+import { measureQuantifierBlock } from '../../core/svek/quantifier-block.js';
+import type { UTranslate } from '../../core/klimt/UTranslate.js';
+import { PositionableImpl } from '../../core/klimt/geom/PositionableImpl.js';
+import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
+import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
+import { manageCollision } from '../../core/svek/quantifier-collision.js';
+import { styleFont } from './description-entity-style.js';
+import type { EdgeEndText } from './layout-helpers-types.js';
 import { DescriptionSolveRects } from './frontier-cluster-bbox.js';
 
 /** One edge from the graphviz layout result. */
@@ -49,6 +57,14 @@ export interface EdgeMapping {
   /** `set separator` (`ast.namespaceSeparator`): `Quark#getName()` is the last segment of the split path
    *  (`Quark.java:84-86`), so edge ids/comments name endpoints by that leaf. */
   namespaceSeparator?: string | null | undefined;
+  /** `SvekNode#getMagneticBorder`'s force on a leaf at a point in the edge's frame (`EntityImageNote.java:246`). */
+  leafMagnet?: (node: DescriptionNodeGeo, at: { x: number; y: number }) => UTranslate | undefined;
+  /** What `manageCollision` needs (`SvekEdge.java:1205-1218`): the leaves in layout order, and the quantifier's measure. */
+  quantifiers?: {
+    readonly nodes: DotLayoutResult['nodes'];
+    readonly measurer: StringMeasurer;
+    readonly defaultFont: FontSpec;
+  };
 }
 
 // ── Phase 5: edge geo construction ──
@@ -105,6 +121,11 @@ function assembleEdgeGeo(
   if (link.thicknessOverride !== undefined) geo.styleThickness = link.thicknessOverride;
   if (link.colorOverride !== undefined) geo.styleColor = link.colorOverride;
   if (link.textColor !== undefined) geo.styleTextColor = link.textColor;
+  if (link.arrowStyle !== undefined) geo.arrowStyle = link.arrowStyle;
+  if (link.cardinalityStyle !== undefined) geo.cardinalityStyle = link.cardinalityStyle;
+  if (link.middleDecor !== undefined) geo.middleDecor = link.middleDecor;
+  if (link.inverted === true) geo.linkInverted = true;
+  if (link.supplementaryColors !== undefined) geo.supplementaryColors = link.supplementaryColors;
   if (link.stereotype !== undefined) geo.stereotype = link.stereotype;
   if (link.stereotypeIsLinkLabel) geo.stereotypeIsLinkLabel = true;
   if (link.arrowHead !== undefined) geo.arrowHead = link.arrowHead;
@@ -119,7 +140,43 @@ function assembleEdgeGeo(
   return geo;
 }
 
+/** The `dotKey` a cluster's anchor node ends in (`layout-helpers-shape-endpoint.ts`): a port artefact, not a `SvekNode`. */
+const CLUSTER_ANCHOR_SUFFIX = '-anchor';
+
+/**
+ * `startTailLabelXY`, `endHeadLabelXY` (`SvekEdge.java:750-767`): the table's corner, moved clear of the nodes
+ * (`manageCollision`, `:1205-1218`). Measured in the layout's own frame, the frame `result.nodes` is in.
+ */
+function quantifierAt(
+  text: string,
+  center: { x: number; y: number },
+  link: DescriptiveLink,
+  m: EdgeMapping,
+): EdgeEndText {
+  const q = m.quantifiers!;
+  const font = styleFont(link.cardinalityStyle) ?? q.defaultFont;
+  const box = measureQuantifierBlock(text, font, q.measurer);
+  const placed = manageCollision(
+    new PositionableImpl(
+      center.x - box.reservedWidth / 2,
+      center.y - box.reservedHeight / 2,
+      new XDimension2D(box.width, box.height),
+    ),
+    q.nodes.filter((n) => !n.id.endsWith(CLUSTER_ANCHOR_SUFFIX)),
+  ).getPosition();
+  return { text: box.text, x: placed.getX() + m.dx, y: placed.getY() + m.dy };
+}
+
+function addEdgeQuantifiers(geo: DescriptionEdgeGeo, link: DescriptiveLink, re: ResultEdge, m: EdgeMapping): void {
+  if (m.quantifiers === undefined) return;
+  if (link.firstLabel !== undefined && re.tailLabelX !== undefined && re.tailLabelY !== undefined)
+    geo.tailQuantifier = quantifierAt(link.firstLabel, { x: re.tailLabelX, y: re.tailLabelY }, link, m);
+  if (link.secondLabel !== undefined && re.headLabelX !== undefined && re.headLabelY !== undefined)
+    geo.headQuantifier = quantifierAt(link.secondLabel, { x: re.headLabelX, y: re.headLabelY }, link, m);
+}
+
 function addEdgeLabel(geo: DescriptionEdgeGeo, link: DescriptiveLink, re: ResultEdge, m: EdgeMapping): void {
+  addEdgeQuantifiers(geo, link, re, m);
   const { dx, dy } = m;
   const stereotypeLabel = link.stereotypeIsLinkLabel === true && link.stereotype !== undefined;
   if (link.label === undefined && !stereotypeLabel && link.linkNote === undefined) return;
@@ -195,7 +252,23 @@ function applyOpaleNote(
   const resolved = resolveOpaleConnector({ width: noteNode.width, height: noteNode.height }, origin, pts);
   if (resolved === undefined) return;
   geo.consumedByOpaleNote = true;
-  geo.opale = resolved;
+  geo.opale = withOtherMagnet(resolved, otherNode, pts, m);
+}
+
+/**
+ * `EntityImageNote.java:246,258`: `force2 = other.getMagneticBorder().getForceAt(stringBounder, path.getEndPoint())`,
+ * read before the path is moved or reversed, then `pp2 = force2.getTranslated(path.getEndPoint())`.
+ */
+function withOtherMagnet(
+  resolved: NonNullable<DescriptionEdgeGeo['opale']>,
+  other: DescriptionNodeGeo,
+  pts: ReadonlyArray<{ x: number; y: number }>,
+  m: EdgeMapping,
+): NonNullable<DescriptionEdgeGeo['opale']> {
+  const end = pts[pts.length - 1];
+  const force = end === undefined ? undefined : m.leafMagnet?.({ ...other, x: other.x + m.dx, y: other.y + m.dy }, end);
+  if (force === undefined) return resolved;
+  return { ...resolved, pp2: { x: resolved.pp2.x + force.getDx(), y: resolved.pp2.y + force.getDy() } };
 }
 
 /**

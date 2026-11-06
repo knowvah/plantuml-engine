@@ -3,8 +3,8 @@
  * `scripts/pin-corpus-tree-measure.ts#measureFixture` must measure a
  * `!pragma layout elk` source the way the gates do (mission
  * oracle-gap-capture, T4b finding): the gates hold one ELK backend per
- * process (routing-conformance.test.ts:258-273, refusal-coverage.test.ts:
- * 287-301), and `renderSync` without one refuses such a source outright
+ * process (`measure` in routing-conformance-gate.ts and
+ * refusal-coverage-gate.ts), and `renderSync` without one refuses such a source outright
  * (`ELK_RENDER_SYNC_UNSUPPORTED`, src/core/elk/layout-services.ts), which the
  * pin tool would then record as a refusal the gates never see.
  */

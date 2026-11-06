@@ -13,6 +13,7 @@
 // Types
 // ---------------------------------------------------------------------------
 
+import { COLORS_REGEXP } from '../../core/klimt/color/ColorParser.js';
 import { cleanId } from './parse-helpers.js';
 
 /** `net.sourceforge.plantuml.utils.Position` — always one of these four; the
@@ -34,11 +35,11 @@ export type NoteTerminator = 'endnote' | 'brace';
 // `note left of link : ...` resolves as on-link, not on-entity with CODE
 // "link" (CODE's bare-identifier alternative would otherwise also match).
 const RE_NOTE_ON_LINK_SINGLE = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b(?:\\s+(#\\w+[-\\\\|/]?\\w+))?[^:]*:\\s*(.+)$',
+  `^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link\\b(?:\\s+(${COLORS_REGEXP}))?[^:]*:\\s*(.+)$`,
   'i',
 );
 const RE_NOTE_ON_LINK_OPEN = new RegExp(
-  '^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+(#\\w+[-\\\\|/]?\\w+))?\\s*$',
+  `^note\\s+(?:(left|right|top|bottom)\\s+)?(?:on|of)\\s+link(?:\\s+(${COLORS_REGEXP}))?\\s*$`,
   'i',
 );
 
@@ -57,12 +58,15 @@ const RE_NOTE_FLOATING_OPEN = new RegExp('^note\\s+as\\s+([\\w.]+)\\s*(.*)$', 'i
 // as the fill and `getStyleSignature().withTOBECHANGED(getStereo())` selects the
 // `.tag` style, so both reach the drawn note.
 const NOTE_STEREOTYPE_OPT = '(?:\\s+(<<[^>]+>>))?';
-// `ColorParser.java:43` `COLOR_REGEXP`: the second half of a gradient carries no `#`.
-const NOTE_COLOR_OPT = '(?:\\s+(#\\w+[-\\\\|/]?\\w+))?';
+// `ColorParser.simpleColor` is `COLORS_REGEXP` (`ColorParser.java:45-46,74-75`): the attribute form as well.
+const NOTE_COLOR_OPT = `(?:\\s+(${COLORS_REGEXP}))?`;
+// `UrlBuilder.OPTIONAL` after the colour (`CommandFactoryNoteOnEntity.java:109,142,166`), added to the note at `:335-336`.
+const NOTE_URL_OPT = '(?:\\s*(\\[\\[[^\\]]*(?:\\][^\\]]+)*\\]\\]))?';
 const RE_NOTE_ON_ENTITY_SINGLE = new RegExp(
   '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+((?:\\(\\)\\s*)?"[^"]+"|\\(\\)[\\w.]+|\\([^)]+\\)|:[^:]+:|\\[[^\\]]+\\]|[\\w.]+))?' +
     NOTE_STEREOTYPE_OPT +
     NOTE_COLOR_OPT +
+    NOTE_URL_OPT +
     '\\s*:\\s*(.+)$',
   'i',
 );
@@ -70,6 +74,7 @@ const RE_NOTE_ON_ENTITY_OPEN_BRACE = new RegExp(
   '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+((?:\\(\\)\\s*)?"[^"]+"|\\(\\)[\\w.]+|\\([^)]+\\)|:[^:]+:|\\[[^\\]]+\\]|[\\w.]+))?' +
     NOTE_STEREOTYPE_OPT +
     NOTE_COLOR_OPT +
+    NOTE_URL_OPT +
     '\\s*\\{\\s*$',
   'i',
 );
@@ -77,6 +82,7 @@ const RE_NOTE_ON_ENTITY_OPEN_PLAIN = new RegExp(
   '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+((?:\\(\\)\\s*)?"[^"]+"|\\(\\)[\\w.]+|\\([^)]+\\)|:[^:]+:|\\[[^\\]]+\\]|[\\w.]+))?' +
     NOTE_STEREOTYPE_OPT +
     NOTE_COLOR_OPT +
+    NOTE_URL_OPT +
     '\\s*$',
   'i',
 );
@@ -141,22 +147,24 @@ export function noteAttachment(
 export interface NoteDecor {
   readonly stereotype?: string;
   readonly color?: string;
+  readonly url?: string;
 }
 
-/** Builds a {@link NoteDecor} from the two optional capture groups, omitting
+/** Builds a {@link NoteDecor} from the optional capture groups, omitting
  *  an absent token (`exactOptionalPropertyTypes`). */
-function noteDecor(stereotype: string | undefined, color: string | undefined): NoteDecor {
+function noteDecor(stereotype: string | undefined, color: string | undefined, url: string | undefined): NoteDecor {
   return {
     ...(stereotype !== undefined ? { stereotype } : {}),
     ...(color !== undefined ? { color } : {}),
+    ...(url !== undefined ? { url } : {}),
   };
 }
 
 export type NoteOpenMatch =
   | { kind: 'on-link-single'; position: NotePosition | undefined; color: string | undefined; text: string }
   | { kind: 'on-link-open'; position: NotePosition | undefined; color: string | undefined }
-  | { kind: 'floating-single'; id: string; text: string }
-  | { kind: 'floating-open'; id: string }
+  | { kind: 'floating-single'; id: string; text: string; decor: NoteDecor }
+  | { kind: 'floating-open'; id: string; decor: NoteDecor }
   | {
       kind: 'on-entity-single';
       position: NotePosition;
@@ -172,6 +180,12 @@ export type NoteOpenMatch =
       terminator: NoteTerminator;
     };
 
+/** `CommandFactoryNote.java:76-106`'s tail after CODE: TAGS, STEREO, `ColorParser.exp1()`. */
+function floatingDecor(rest: string | undefined): NoteDecor {
+  const m = new RegExp(`^\\s*(?:\\$\\S+\\s*)*(?:(<<.+?>>)\\s*)?(${COLORS_REGEXP})?\\s*$`).exec(rest ?? '');
+  return m === null ? {} : noteDecor(m[1], m[2], undefined);
+}
+
 /** `note [pos] on|of link [#color][: text]` — CommandFactoryNoteOnLink. In
  *  svek DOT the note becomes the LINK's label table (SvekEdge
  *  hasNoteLabelText — fogiku-22's oracle counts it as label [1,0,0,0]).
@@ -184,8 +198,7 @@ export type NoteOpenMatch =
  *
  *  The `COLOR` group (`ColorParser.simpleColor(ColorType.BACK)`) reaches `CucaNote#getColors()`, which
  *  `EntityImageNoteLink` hands to `ComponentRoseNote`'s `symbolContext` (`ComponentRoseNote.java:73`): the note
- *  polygon's fill, now that `renderer-edge.ts` draws it (dss T3a). Only the plain `#name` / `#hex` form is
- *  captured; the attribute form (`#blue;line:red`) is not parsed. */
+ *  polygon's fill and line (`Style.java:270-281`), now that `renderer-edge.ts` draws it (dss T3a). */
 function matchOnLink(line: string): NoteOpenMatch | undefined {
   const single = RE_NOTE_ON_LINK_SINGLE.exec(line);
   if (single !== null) {
@@ -204,9 +217,10 @@ function onLinkPosition(raw: string | undefined): NotePosition | undefined {
 
 function matchFloating(line: string): NoteOpenMatch | undefined {
   const single = RE_NOTE_FLOATING_SINGLE.exec(line);
-  if (single !== null) return { kind: 'floating-single', id: single[2]!, text: single[1]! };
+  if (single !== null)
+    return { kind: 'floating-single', id: single[2]!, text: single[1]!, decor: floatingDecor(single[3]) };
   const open = RE_NOTE_FLOATING_OPEN.exec(line);
-  if (open !== null) return { kind: 'floating-open', id: open[1]! };
+  if (open !== null) return { kind: 'floating-open', id: open[1]!, decor: floatingDecor(open[2]) };
   return undefined;
 }
 
@@ -225,8 +239,8 @@ function matchOnEntitySingle(line: string): NoteOpenMatch | undefined {
     kind: 'on-entity-single',
     position: m[1]!.toLowerCase() as NotePosition,
     targetId: onEntityTargetId(m[2]),
-    decor: noteDecor(m[3], m[4]),
-    text: m[5]!,
+    decor: noteDecor(m[3], m[4], m[5]),
+    text: m[6]!,
   };
 }
 
@@ -237,7 +251,7 @@ function matchOnEntityOpen(line: string): NoteOpenMatch | undefined {
       kind: 'on-entity-open',
       position: brace[1]!.toLowerCase() as NotePosition,
       targetId: onEntityTargetId(brace[2]),
-      decor: noteDecor(brace[3], brace[4]),
+      decor: noteDecor(brace[3], brace[4], brace[5]),
       terminator: 'brace',
     };
   }
@@ -247,7 +261,7 @@ function matchOnEntityOpen(line: string): NoteOpenMatch | undefined {
     kind: 'on-entity-open',
     position: plain[1]!.toLowerCase() as NotePosition,
     targetId: onEntityTargetId(plain[2]),
-    decor: noteDecor(plain[3], plain[4]),
+    decor: noteDecor(plain[3], plain[4], plain[5]),
     terminator: 'endnote',
   };
 }

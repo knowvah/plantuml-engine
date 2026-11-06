@@ -1,0 +1,5 @@
+@startuml
+!pragma svek_trace on
+A --> [B] : Test
+C -- [D]
+@enduml

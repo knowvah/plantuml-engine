@@ -78,7 +78,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@knowvah/dot-engine": "https://registry.npmjs.org/@knowvah/dot-engine/-/dot-engine-2.4.0.tgz",
+    "@knowvah/dot-engine": "https://registry.npmjs.org/@knowvah/dot-engine/-/dot-engine-2.10.3.tgz",
     "@xmldom/xmldom": "^0.9.12",
     "elkjs": "0.12.1",
     "katex": "^0.19.1",

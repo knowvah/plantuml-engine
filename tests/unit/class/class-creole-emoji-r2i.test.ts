@@ -204,6 +204,7 @@ describe('MemberRowBuild.height (lozego-15-coci435 per-row heights)', () => {
     const member = { visibility: '+', hidden: false } as never;
     const rows = buildSectionRows([member, member], ['<$test>', '+a'], [sprite, plain], 0, false, {
       baselineOffset: 11,
+      iconBlockHeight: 11,
       iconZoneWidth: 14,
       fontSize: 14,
     });
@@ -225,6 +226,7 @@ describe('MemberRowBuild.height (lozego-15-coci435 per-row heights)', () => {
     const member = { visibility: '+', hidden: false } as never;
     const rows = buildSectionRows([member], ['x<sup>2</sup>'], [sup], 0, false, {
       baselineOffset: 11,
+      iconBlockHeight: 11,
       iconZoneWidth: 14,
       fontSize: 14,
     });
@@ -238,6 +240,7 @@ describe('MemberRowBuild.height (lozego-15-coci435 per-row heights)', () => {
     const member = { visibility: '+', hidden: false } as never;
     const rows = buildSectionRows([member], ['example1'], [small], 0, false, {
       baselineOffset: 6.222222222222222,
+      iconBlockHeight: 11,
       iconZoneWidth: 14,
       fontSize: 8,
     });
@@ -251,6 +254,7 @@ describe('MemberRowBuild.height (lozego-15-coci435 per-row heights)', () => {
     const member = { visibility: '+', hidden: false } as never;
     const rows = buildSectionRows([member], ['<$test>'], [sprite], 0, false, {
       baselineOffset: 11,
+      iconBlockHeight: 11,
       iconZoneWidth: 14,
       fontSize: 14,
     });

@@ -1,0 +1,8 @@
+@startuml
+!theme C4_superhero from <C4/themes>
+!include <C4/C4_Context>
+Person(u, "User", "desc")
+System_Ext(s, "S", "desc")
+Rel(u, s, "Uses")
+SHOW_LEGEND()
+@enduml

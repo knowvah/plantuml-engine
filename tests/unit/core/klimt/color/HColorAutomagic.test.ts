@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildBlockUmls } from '../../../../../src/core/BlockUmlBuilder.js';
+import type { HColorGradient } from '../../../../../src/core/klimt/color/HColorGradient.js';
 import { HColorAutomagic } from '../../../../../src/core/klimt/color/HColorAutomagic.js';
 import { HColorSet } from '../../../../../src/core/klimt/color/HColorSet.js';
 import { HColorSimple } from '../../../../../src/core/klimt/color/HColorSimple.js';
@@ -25,7 +26,7 @@ describe('HColorAutomagic (HColorAutomagic.java:38-41)', () => {
   });
 
   it('a non-simple back has no opposite: UnsupportedOperationException (HColor.java:129-131)', () => {
-    const gradient = set.getColorOrWhite('red-blue');
+    const gradient = set.getColorOrWhite('red-blue') as HColorGradient;
     expect(() => new HColorAutomagic().getAppropriateColor(gradient)).toThrow('UnsupportedOperationException');
     expect(() => new HColorAutomagic().getAppropriateColor(new HColorAutomagic())).toThrow(
       'UnsupportedOperationException',

@@ -1,0 +1,5 @@
+@startuml
+map m {
+  {{\nclass K\n}} => v
+}
+@enduml

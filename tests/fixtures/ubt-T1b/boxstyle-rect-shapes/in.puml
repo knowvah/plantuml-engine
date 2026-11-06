@@ -1,0 +1,14 @@
+@startuml
+<style>
+.c {
+  Shadowing 4
+  Padding 3 8 6 2
+  LineThickness 2
+  BackgroundColor wheat
+}
+</style>
+:The procedure; <<procedure>> <<c>>
+:The task; <<task>> <<c>>
+:The object; <<object>> <<c>>
+:The continuous; <<continuous>> <<c>>
+@enduml

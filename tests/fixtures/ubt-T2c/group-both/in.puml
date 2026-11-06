@@ -1,0 +1,7 @@
+@startuml
+group g
+  A -> B : x
+end
+note left : on the left
+note right : on the right
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+left to right direction
+class A {
+ a
+}
+class B {
+ b
+}
+A::a -> B::b
+@enduml

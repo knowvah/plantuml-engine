@@ -83,6 +83,8 @@
  * fully fixed by the layout pass.
  */
 
+import { UGraphicHandwritten } from '../../core/klimt/drawing/hand/UGraphicHandwritten.js';
+import { muteColorMapper } from '../../core/klimt/color/ColorMapper.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
 import type { Theme } from '../../core/theme.js';
@@ -93,7 +95,8 @@ import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { jarMeasurer } from '../../core/measurer-jar.js';
 import { buildUidPlan } from './renderer-uid.js';
-import { collectByKind, drawClusters, drawEntities, drawEdges } from './renderer-draw-sequence.js';
+import type { DescriptionNodeGeo } from './layout-helpers.js';
+import { buildEdgeMagnets, collectByKind, drawClusters, drawEntities, drawEdges } from './renderer-draw-sequence.js';
 import { computeDocumentDims, driverBounderFor } from './renderer-ink-extent.js';
 import { resolveScaleFactor } from '../../core/scale-command.js';
 import { CUCA_DOCUMENT_MARGIN, calculateMargin, type DocumentMargin } from '../../core/document-margin.js';
@@ -186,6 +189,15 @@ interface DocumentBody {
  * The svek body: `SvekResult#drawU` (clusters, leaves, edges) and the document dimension recipe (see
  * `renderDescription`'s doc comment). Moved out of `renderDescription` verbatim (cdd8 T3b).
  */
+/** Smetana's `nodes` map: the root leaves first, then the groups' (`CucaDiagramFileMakerSmetana.java:283,589,636`). */
+function rootLeavesFirst(
+  leaves: readonly DescriptionNodeGeo[],
+  roots: readonly DescriptionNodeGeo[],
+): DescriptionNodeGeo[] {
+  const root = new Set(roots);
+  return [...leaves.filter((leaf) => root.has(leaf)), ...leaves.filter((leaf) => !root.has(leaf))];
+}
+
 function svekBody(
   geo: DescriptionGeometry,
   theme: Theme,
@@ -193,20 +205,22 @@ function svekBody(
   margin: DocumentMargin,
 ): DocumentBody {
   const plan = buildUidPlan(geo);
-  const { containers, leaves } = collectByKind(geo.nodes);
+  const { containers, leaves: svekLeaves } = collectByKind(geo.nodes);
+  const leaves = geo.smetanaDrawOrder === true ? rootLeavesFirst(svekLeaves, geo.nodes) : svekLeaves;
   // G1 I-hideshow: `respectHidden` distinguishes the LimitFinder ink-extent
   // pass (`false` -- see `drawClusters`'s doc comment for why jar's own
   // `LimitFinder`/`UGraphicNo` structurally cannot see a hidden flag at
   // all) from the real `UGraphicSvg` pass (`true` -- content-visible
   // suppression). Same `draw` closure either way, matching upstream's own
   // single shared `SvekResult#drawU` call site for both purposes.
+  const magnets = buildEdgeMagnets(containers, leaves, theme, plan, geo.sprites);
   const draw = (target: UGraphic, respectHidden: boolean): void => {
     drawClusters(target, containers, theme, plan, respectHidden, geo.sprites);
     // T1e write-set expansion (journaled): `geo.edges` threaded through so
     // a note leaf can find its own Opale connector — see
     // `renderer-draw-sequence.ts#drawEntities`'s own doc comment.
     drawEntities(target, leaves, theme, plan, geo.sprites, respectHidden, geo.edges);
-    drawEdges(target, geo.edges, theme, plan, respectHidden);
+    drawEdges(target, geo.edges, theme, plan, respectHidden, magnets, geo.sprites);
   };
 
   const driverBounder = driverBounderFor(measurer);
@@ -257,6 +271,9 @@ function elkBody(
  * already-correct formula — NOT `computeTotalDimensions`'s now-deprecated
  * hand-scan, `layout-geo-post.ts`) for degenerate single-leaf ones.
  */
+/** `interactiveBaseFilename = "default"` for a non-sequence diagram (`TextBlockExporter.java:300`). */
+const INTERACTIVE_BASE_FILENAME = 'default';
+
 export function renderDescription(
   geo: DescriptionGeometry,
   theme: Theme,
@@ -291,6 +308,10 @@ export function renderDescription(
     // the raw `red/blue` spelling, which `toSvgPaint` would read as a (garbage) solid colour.
     backcolor: theme.colors.backgroundGradient ?? theme.colors.background,
     scale,
+    colorMapper: muteColorMapper(theme),
+    interactiveBaseFilename: geo.svgInteractive === true ? INTERACTIVE_BASE_FILENAME : null,
+    // `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (`TextBlockExporter.java:308`).
+    svgDimensionStyle: theme.svgDimensionStyle !== false,
     rootAttributes: new Map([['data-diagram-type', DIAGRAM_TYPE_DESCRIPTION]]),
     // lad-T2b: `TextBlockExporter.java:306-307` (`option.withLengthAdjust(skinParam.getlengthAdjust())`);
     // unset keeps `basicSvgOption`'s SPACING default (D4).
@@ -299,7 +320,9 @@ export function renderDescription(
   const ug = UGraphicSvg.build(geo.seed ?? 0n, option, VERSION_PLACEHOLDER, driverBounder, measurer);
 
   // `TextBlockExporter#exportTo`: `ug.apply(new UTranslate(margin.getLeft(), margin.getTop()))`.
-  body.draw(ug.apply(new UTranslate(margin.left, margin.top)), true);
+  const translated = ug.apply(new UTranslate(margin.left, margin.top));
+  // `if (isHandwritten) ug = new UGraphicHandwritten(ug)` (`TextBlockExporter.java:173-175`); the ink walk above is not.
+  body.draw(theme.handwritten === true ? new UGraphicHandwritten(translated) : translated, true);
 
   return ug.getSvgString();
 }

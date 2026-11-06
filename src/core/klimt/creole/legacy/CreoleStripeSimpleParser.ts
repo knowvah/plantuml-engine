@@ -208,6 +208,9 @@ function listClassification(line: string, mode: CreoleMode): StripeClassificatio
 }
 
 export function classifyStripeLine(line: string, mode: CreoleMode = CreoleMode.FULL): StripeClassification {
+  // java:86-90: NO_CREOLE keeps the whole line as NORMAL text, before any pattern.
+  if (mode === CreoleMode.NO_CREOLE) return { type: 'NORMAL', content: line };
+
   const header = SECTION_HEADER_PATTERN.exec(line);
   if (header !== null) return bareOrLiteral(header[1]!, '-', line);
 

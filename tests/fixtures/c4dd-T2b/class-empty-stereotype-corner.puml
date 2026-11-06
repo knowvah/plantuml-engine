@@ -1,0 +1,11 @@
+@startuml
+skinparam roundcorner 8
+<style>
+.foo { RoundCorner 2 }
+</style>
+package P <<foo>> {
+}
+package Q {
+}
+class A
+@enduml

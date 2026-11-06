@@ -172,9 +172,9 @@ describe('unexcusedFailures (dot-parity-backlog-data, shared with the ratchets)'
     expect(unexcusedFailures(d, ['labelSizeOk'])).toEqual(['portOk']);
   });
 
-  it('the description goldens name exactly the 3 label-size slugs and no direction slugs', () => {
+  it('the description goldens name no label-size slug and no direction slug', () => {
     const backlogs = loadStructuralBacklogs(join(REPO, 'oracle', 'goldens', 'description'));
-    expect(expectedBacklogFailures('berelu-46-namo819', backlogs)).toEqual(['labelSizeOk']);
+    expect(expectedBacklogFailures('berelu-46-namo819', backlogs)).toEqual([]);
     expect(expectedBacklogFailures('zosuje-43-zebi775', backlogs)).toEqual([]);
     expect(expectedBacklogFailures('zusota-76-jagu564', backlogs)).toEqual([]);
     // Was 10 until `edge-label-box-backlog` T12c ported cause D (the `<`/`>`
@@ -206,6 +206,6 @@ describe('unexcusedFailures (dot-parity-backlog-data, shared with the ratchets)'
     // This count is deliberately hardcoded rather than derived from the file:
     // the backlog is shrink-only, so a bare `.size` assertion is what catches
     // a slug being ADDED. Lower it as slugs legitimately clear; never raise it.
-    expect(backlogs.get('label-size-backlog.json')!.size).toBe(3);
+    expect(backlogs.get('label-size-backlog.json')!.size).toBe(0);
   });
 });

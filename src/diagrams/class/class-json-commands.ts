@@ -42,6 +42,11 @@ import { refuse } from '../../core/parse-refusal.js';
  *  `rawId` (CODE / NAME group 1 respectively), so one message suffices. */
 const JSON_ALREADY_EXISTS = 'JSON already exists: ';
 
+function refuseNow(state: ParseState, message: string): void {
+  const at = state.currentLine ?? 0;
+  state.executionRefusal = refuse('execution', at, at, message);
+}
+
 /**
  * Class-diagram host: resolve-or-create the leaf via the SAME
  * `resolveReference` duplicate check + `ensureClassifier` chokepoint every
@@ -71,15 +76,11 @@ function adapt(state: ParseState): JsonCommandHost<Classifier> {
         // executeNow/executeArg return an EXECUTION error, which aborts the
         // whole parse (parser.ts:398's `state.executionRefusal` check), not
         // a silent no-op that keeps the first declaration.
-        state.executionRefusal = refuse(
-          'execution',
-          state.currentLine ?? 0,
-          state.currentLine ?? 0,
-          JSON_ALREADY_EXISTS + rawId,
-        );
+        // The block is one trace, so its refusal lands on the closing line (`pendingBodyRefusal`).
+        if (reuseExisting) state.pendingBodyRefusal = { message: JSON_ALREADY_EXISTS + rawId };
+        else refuseNow(state, JSON_ALREADY_EXISTS + rawId);
         return undefined;
       }
-
       const classifier = ensureClassifier(state, rawId, 'json', rawDisplay, reuseExisting);
       if (stereotype !== undefined) classifier.stereotype = stereotype;
       if (color !== undefined) classifier.color = color;

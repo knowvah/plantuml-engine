@@ -8,6 +8,7 @@
 
 import type { ActivityNodeGeo } from '../../activity-geometry.types.js';
 import { activityPadding } from '../../activity-style-defaults.js';
+import { ClockwiseTopRightBottomLeft } from '../../../../core/klimt/geom/ClockwiseTopRightBottomLeft.js';
 import { boxStyleName, boxStyleOutlineX, boxStyleShield } from '../../tiles/gtile-action.js';
 
 /**
@@ -78,8 +79,8 @@ export function boxStyleBox(
   const style = boxStyleName(node.stereotype);
   if (style === undefined) return undefined;
   const outline = boxStyleOutlineX(style, node.width, node.height);
-  const pad = activityPadding('activity');
-  const minX = Math.min(outline.minX, pad);
-  const maxX = Math.max(outline.maxX, node.width - boxStyleShield(style) - pad);
+  const pad = node.boxStyle?.getPadding() ?? ClockwiseTopRightBottomLeft.same(activityPadding('activity'));
+  const minX = Math.min(outline.minX, pad.getLeft());
+  const maxX = Math.max(outline.maxX, node.width - boxStyleShield(style) - pad.getRight());
   return { x: node.x + minX, y: node.y, width: maxX - minX, height: node.height };
 }

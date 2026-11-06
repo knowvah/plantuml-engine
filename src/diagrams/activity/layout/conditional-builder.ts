@@ -13,6 +13,7 @@
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorIf.java:85-92
  */
 
+import { ifDiamondColors, withDiamondColors } from './diamond-colors.js';
 import type { ActivityIf, ActivityNode } from '../ast.js';
 import type { Theme } from '../../../core/theme.js';
 import { Pragma } from '../../../core/skin/Pragma.js';
@@ -464,6 +465,16 @@ export function buildIf(
   const node = withBranchArrowLabels(source);
   const dispatch = ifBuilderOf(node, pragma);
   const ctx: IfLayoutCtx = { laneOrder, pragma };
+  return withDiamondColors(buildIfTile(node, bounder, theme, dispatch, ctx), ifDiamondColors(source, dispatch));
+}
+
+function buildIfTile(
+  node: ActivityIf,
+  bounder: StringBounder,
+  theme: Theme,
+  dispatch: IfBuilderResult,
+  ctx: IfLayoutCtx,
+): Tile {
   if (dispatch.builder === 'with-links') return buildIfWithLinks(node, bounder, theme, ctx);
   if (dispatch.builder === 'down') return buildIfDown(node, bounder, theme, dispatch, ctx);
   if (dispatch.builder === 'long-vertical') return buildIfLongVertical(node, bounder, theme, ctx);

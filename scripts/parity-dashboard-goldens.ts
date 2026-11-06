@@ -33,7 +33,12 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   wbs: ['svg-wbs'],
   gantt: ['svg-gantt'],
   files: ['svg-files'],
+  chart: ['svg-chart'],
+  packet: ['svg-packet'],
+  board: ['svg-board'],
   unknown: ['svg-utility', 'svg-description'],
+  // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
+  c4: ['svg-description', 'svg-class'],
 };
 
 /** Subset of `RATCHET_FAMILY` whose families also carry a `diff-baseline.json`
@@ -62,7 +67,11 @@ export const NON_BUCKET_FAMILIES: Readonly<Record<string, string>> = {
 interface RatchetFixture {
   type?: string;
   addedAt?: string;
+  tree?: string;
 }
+
+/** The one bucket that holds pins inside another's type-less family (`svg-class/c4/`). */
+const C4_BUCKET = 'c4';
 
 export interface RatchetSummary {
   count: number;
@@ -70,11 +79,14 @@ export interface RatchetSummary {
 }
 
 /** Pure: pins for `type` within one family's fixtures. A family with no
- *  per-entry `type` field (every single-type family) uses every fixture;
- *  `svg-description` (the only shared family) filters by it. */
+ *  per-entry `type` field (every single-type family) uses every fixture but
+ *  its `tree: 'c4'` ones, which are the c4 bucket's; `svg-description` (the
+ *  only shared family) filters by it. */
 export function ratchetPinsOf(fixtures: readonly RatchetFixture[], type: string): RatchetSummary {
   const shared = fixtures.some((f) => f.type !== undefined);
-  const filtered = shared ? fixtures.filter((f) => f.type === type) : fixtures;
+  const filtered = shared
+    ? fixtures.filter((f) => f.type === type)
+    : fixtures.filter((f) => (f.tree === C4_BUCKET) === (type === C4_BUCKET));
   const dates = filtered.map((f) => f.addedAt).filter((d): d is string => d !== undefined);
   return { count: filtered.length, addedAt: dates.length > 0 ? dates.sort().at(-1) : undefined };
 }

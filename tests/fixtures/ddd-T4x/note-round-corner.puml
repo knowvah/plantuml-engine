@@ -1,0 +1,10 @@
+@startuml
+skinparam roundCorner 10
+file file
+note left : foo
+component c
+note right of c
+  body
+end note
+c --> file
+@enduml

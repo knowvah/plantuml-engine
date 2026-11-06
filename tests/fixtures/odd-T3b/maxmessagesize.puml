@@ -1,0 +1,6 @@
+@startuml
+skinparam maxMessageSize 60
+map m {
+  k => a long value that wraps too
+}
+@enduml

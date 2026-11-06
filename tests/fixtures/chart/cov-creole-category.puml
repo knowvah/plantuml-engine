@@ -1,0 +1,4 @@
+@startchart
+h-axis [**bold**, //it//, <color:red>r</color>, ~~st~~]
+v-axis 0 --> 10
+@endchart

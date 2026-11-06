@@ -93,53 +93,37 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'error page where PlantUML draws a diagram (`partition` as a grouping keyword, which we do not parse); the ' +
       'rest differ in a title child count, a dash pattern and path data.',
   },
-  board: {
-    noteClass: 'openDefect',
-    detail:
-      'The SVG has not been aligned with PlantUML yet: card fill (`#D3D3D3` against `#C0C0C0`), text placement and ' +
-      'canvas size all differ.',
-  },
   c4: {
-    noteClass: 'openDefect',
-    detail: 'Drawn by the description engine. The first difference is usually the corner rounding of a boundary box.',
-  },
-  chart: {
-    noteClass: 'openDefect',
+    noteClass: 'jarDeclines',
     detail:
-      'The SVG has not been aligned with PlantUML yet: on every fixture the axis and series lines sit at other ' +
-      'coordinates with other stroke styling, text is anchored and sized differently, and the canvas size differs.',
+      'Drawn by the description engine, with two class rows and one ELK row: 10 of 11 conformant since ' +
+      'c4-divergence-drive (#114), 9 pinned. The last, `gikaju-64`, is a jar error page where we draw, a signed entry ' +
+      'in `oracle/accepted-divergences.json`.',
   },
   component: {
     noteClass: 'openDefect',
     detail:
-      'Mostly stroke, fill and path differences. Four fixtures also contain LaTeX, which we render with KaTeX rather ' +
-      'than JLaTeXMath, and that part is permanent.',
+      'description-divergence-drive (#113, 2026-11-04) took all 51 open rows to conformant, the LaTeX fixtures ' +
+      'included: only the image bytes differ, and the comparer exempts them.',
   },
   object: {
     noteClass: 'openDefect',
     detail:
-      'Mostly geometry on the 16 fixtures short of conformant: canvas size, text y positions, box heights and path ' +
-      'data; not yet diagnosed row by row.',
-  },
-  packet: {
-    noteClass: 'openDefect',
-    detail:
-      'The canvas can match, but text is anchored and lines are drawn differently: PlantUML positions text with ' +
-      '`textLength` and draws `<path>` where we draw `<line>`.',
+      'object-divergence-drive (#115, 2026-11-05) took all 16 open rows to conformant: 81 of 81, all pinned. One authored ' +
+      'probe stays off the jar inside dot-engine, `docs/graphviz-issues/41`.',
   },
   state: {
     noteClass: 'openDefect',
     detail:
-      'state-divergence-drive (#112, 2026-11-04) took the 174 open rows to 2: 297 of 299 conformant, 293 pinned. ' +
-      '`viroxo-69-fito663` is a dot-engine placement delta on a border-point cluster (graphviz issue 39, ' +
-      'DIVERGENCES.md "State diagrams"); `xetase-70-zaza808` is a `{{ }}` edge label the flat creole seam cannot ' +
-      'embed (#144, chained on #136).',
+      'state-divergence-drive (#112, 2026-11-04) took the 174 open rows to 2, and the border-point anchor fix ' +
+      '(graphviz issue 39, reclassified as ours) closed `viroxo-69-fito663`: 298 of 299 conformant. ' +
+      '`xetase-70-zaza808` is a `{{ }}` edge label the flat creole seam cannot embed (#144, chained on #136).',
   },
   usecase: {
     noteClass: 'openDefect',
     detail:
-      'Mostly text position, canvas size, path data and structure differences. One more fixture cannot be compared ' +
-      'at all, because its cached PlantUML output is not well-formed XML.',
+      'description-divergence-drive (#113, 2026-11-04) took 23 of the 24 open rows to conformant. `fepuvo-06` cannot ' +
+      "be compared because the jar's comment is not well-formed; with comments stripped it has zero diffs.",
   },
   // The `unknown` sentence is generated from the survey (`unknownDetail`, D4
   // of plans/parity-dashboard-repair) and passed to `notesSection`.

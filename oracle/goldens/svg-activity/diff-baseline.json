@@ -463,11 +463,11 @@
     {
       "type": "activity",
       "slug": "bufice-81-cemu957",
-      "status": "baseline",
-      "diffCount": 6,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 6
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -580,11 +580,11 @@
     {
       "type": "activity",
       "slug": "cajodu-78-topo568",
-      "status": "baseline",
-      "diffCount": 53,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 58
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -634,11 +634,11 @@
     {
       "type": "activity",
       "slug": "cazeme-06-xixe352",
-      "status": "baseline",
-      "diffCount": 1,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 1
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1039,11 +1039,11 @@
     {
       "type": "activity",
       "slug": "dadelu-44-xuvu530",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command; our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "diffCount": 5,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 5
     },
     {
       "type": "activity",
@@ -1291,11 +1291,11 @@
     {
       "type": "activity",
       "slug": "disopi-10-nesi127",
-      "status": "baseline",
-      "diffCount": 1,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 1
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1597,11 +1597,11 @@
     {
       "type": "activity",
       "slug": "fejune-25-rome862",
-      "status": "baseline",
-      "diffCount": 43,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 43
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1714,11 +1714,11 @@
     {
       "type": "activity",
       "slug": "finadu-74-duvi890",
-      "status": "baseline",
-      "diffCount": 82,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 82
+      "status": "pinned",
+      "diffCount": 50,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 50
     },
     {
       "type": "activity",
@@ -2038,11 +2038,11 @@
     {
       "type": "activity",
       "slug": "gaface-50-mefo107",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2191,11 +2191,11 @@
     {
       "type": "activity",
       "slug": "gekasa-78-jevi903",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2282,10 +2282,10 @@
       "type": "activity",
       "slug": "gexufa-76-paga835",
       "status": "baseline",
-      "diffCount": 19,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 39
+      "diffCount": 1,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 1
     },
     {
       "type": "activity",
@@ -2317,11 +2317,11 @@
     {
       "type": "activity",
       "slug": "gigefo-15-cami497",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'while (data available?) <<#AliceBlue>>' via CommandWhile3.java:63-80 (registered ActivityDiagramFactory3.java:137): the regex ends `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:76-78), so a <<#AliceBlue>> tail is accepted; our activity engine refuses that line (dispatch-support.ts:247 RE_WHILE ends `\\s*$` after the optional is/equals label, with no stereogroup), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':foo1;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 1,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 1
     },
     {
       "type": "activity",
@@ -3586,20 +3586,20 @@
     {
       "type": "activity",
       "slug": "liluje-29-vuja668",
-      "status": "baseline",
-      "diffCount": 423,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 423
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "limazo-01-ximu737",
-      "status": "baseline",
-      "diffCount": 9,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 22
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3839,10 +3839,10 @@
       "type": "activity",
       "slug": "lulavi-01-fose679",
       "status": "baseline",
-      "diffCount": 283,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 283
+      "diffCount": 211,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 211
     },
     {
       "type": "activity",
@@ -4486,11 +4486,11 @@
     {
       "type": "activity",
       "slug": "nakuna-82-pija083",
-      "status": "baseline",
-      "diffCount": 15,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 15
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5674,11 +5674,11 @@
     {
       "type": "activity",
       "slug": "rezese-31-mivi750",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5773,11 +5773,11 @@
     {
       "type": "activity",
       "slug": "ronovu-01-voku005",
-      "status": "baseline",
-      "diffCount": 42,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 42
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5882,10 +5882,10 @@
       "type": "activity",
       "slug": "rutaji-30-suda150",
       "status": "baseline",
-      "diffCount": 280,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 280
+      "diffCount": 208,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 208
     },
     {
       "type": "activity",
@@ -6547,7 +6547,7 @@
     {
       "type": "activity",
       "slug": "titope-07-cixa052",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 3,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6629,10 +6629,10 @@
       "type": "activity",
       "slug": "totave-53-fiju801",
       "status": "baseline",
-      "diffCount": 34,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 54
+      "diffCount": 2,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 2
     },
     {
       "type": "activity",
@@ -6682,11 +6682,11 @@
     {
       "type": "activity",
       "slug": "tusaxu-17-rasi651",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command (and CommandEnd3.java:58-65, registered :153, carries the same stereogroup leaf at :63 for 'end <<#blue>>'); our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "weightedScore": 2
     },
     {
       "type": "activity",
@@ -6880,11 +6880,11 @@
     {
       "type": "activity",
       "slug": "vifiba-70-repa468",
-      "status": "baseline",
-      "diffCount": 42,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 42
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7088,10 +7088,10 @@
       "type": "activity",
       "slug": "vupecu-35-tisa672",
       "status": "baseline",
-      "diffCount": 110,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 110
+      "diffCount": 28,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
+      "weightedScore": 28
     },
     {
       "type": "activity",

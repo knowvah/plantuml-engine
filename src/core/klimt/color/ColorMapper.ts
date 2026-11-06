@@ -1,5 +1,5 @@
 import type { Gradient, Paint } from '../../paint.js';
-import { getReverse, type ColorOrder } from './ColorOrder.js';
+import { fromString as colorOrderFromString, getReverse, type ColorOrder } from './ColorOrder.js';
 import { getGrayScaleColor, getGrayScaleColorReverse } from './ColorUtils.js';
 import { getReversed } from './fragment-color-mapper.js';
 import { HColorGradient } from './HColorGradient.js';
@@ -66,6 +66,24 @@ function reverse(order: ColorOrder): ColorMapper {
 
 /** Upstream's `ColorMapper` statics: the constant mappers plus `reverse(order)`. */
 export const ColorMapper = { ...MAPPERS, reverse } as const;
+
+/**
+ * `TitledDiagram#muteColorMapper` past its dark arm, which the port's themes
+ * carry themselves (`theme-dark.ts`).
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:295-313
+ */
+export function muteColorMapper(theme: {
+  readonly monochrome?: 'true' | 'reverse' | undefined;
+  readonly reverseColor?: string | undefined;
+}): ColorMapper {
+  if (theme.monochrome === 'true') return MAPPERS.MONOCHROME;
+  if (theme.monochrome === 'reverse') return MAPPERS.MONOCHROME_REVERSE;
+  if (theme.reverseColor === undefined) return MAPPERS.IDENTITY;
+  if (theme.reverseColor.toLowerCase() === 'dark') return MAPPERS.LIGTHNESS_INVERSE;
+  const order = colorOrderFromString(theme.reverseColor);
+  return order === undefined ? MAPPERS.IDENTITY : reverse(order);
+}
 
 /** `HColor#toSvg(mapper)` for one solid colour string: transparent stays
  *  `#00000000` without consulting the mapper (HColor.java:74-79); a string

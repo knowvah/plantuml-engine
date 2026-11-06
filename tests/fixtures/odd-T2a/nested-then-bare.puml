@@ -1,0 +1,17 @@
+@startuml
+<style>
+object {
+  BackgroundColor pink
+  header {
+    FontColor red
+  }
+}
+header {
+  FontColor blue
+  BackgroundColor palegreen
+}
+</style>
+object o {
+ a = 1
+}
+@enduml

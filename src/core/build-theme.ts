@@ -19,13 +19,25 @@ import { legacyStereotypeFonts } from './legacy-stereotype-font.js';
 import { objectSkinDefaults } from './object-skin-default.js';
 import { elementScopeColors, type ElementScopeColors } from './style-element-scope.js';
 import { styleSkinparamSegments, type StyleSkinparamSegment } from './style-skinparam-segments.js';
+import { withoutSupersededByStyle, withoutSupersededCascades } from './skinparam-supersedes-cascade.js';
 import { dropRootShadowed, rootColoursOf } from './style-root-shadowing.js';
 import { cleanForKeySlow } from './style/mindmap-style-builder.js';
 import { parseConditionalColor } from './klimt/color/HColorSet.js';
 import { parseClockwise } from './annotations/annotation-clockwise.js';
 import { withActivityCircleStyle } from './activity-circle-style.js';
+import { withClassShadowing } from './class-style-facts.js';
+import { withStateNameFont, withStateShadowing } from './state-style-facts.js';
+import { withActivityBoxStyle } from './activity-box-style.js';
+import { withActivityDocumentStyle } from './activity-document-style.js';
+import { withNoteRoundCorner, withNoteStyleFacts } from './note-style-facts.js';
 import { ROOT_LINE_COLOR_KEY } from './skinparam-key-handlers-shared.js';
 import { OptionKey } from './tim/EaterOption.js';
+
+/** The engines that draw a note through `EntityImageNote` / `FtileWithNoteOpale` and read its merged style. */
+const NOTE_FACT_ENGINES: ReadonlySet<DiagramType> = new Set<DiagramType>(['activity', 'state']);
+
+/** The engines whose notes draw through `EntityImageNote` and read the flat `skinparam roundCorner` for their corner. */
+const NOTE_ROUND_CORNER_ENGINES: ReadonlySet<DiagramType> = new Set<DiagramType>(['class', 'object', 'state']);
 
 /**
  * Five-stage theme resolution:
@@ -106,7 +118,26 @@ export function buildTheme(
   const styleMap = mergedStyleMap([...skinSegments.map(rootColourRun), ...segments]);
   // add4-T3f: the activity circles' priority-ordered merged style -- see
   // `activity-circle-style.ts`; read only by the activity renderer.
-  const withStyleMap = withActivityCircleStyle(withDocumentStyle(withDeclarations, styleMap), preprocessed);
+  const withCircles = withActivityCircleStyle(withDocumentStyle(withDeclarations, styleMap), preprocessed);
+  // ubt-T1b: a stereotyped box's merged style (`activity-box-style.ts`), activity only.
+  const withStyleMap =
+    diagramType === 'activity'
+      ? withActivityDocumentStyle(withActivityBoxStyle(withCircles, preprocessed), preprocessed)
+      : withCircles;
+  // The note's merged `Shadowing` and `LineThickness` (`note-style-facts.ts`), the engines whose notes read them.
+  const withNotes = NOTE_FACT_ENGINES.has(diagramType)
+    ? withNoteStyleFacts(withStyleMap, preprocessed, diagramType)
+    : withStyleMap;
+  const withNoteCorner = NOTE_ROUND_CORNER_ENGINES.has(diagramType)
+    ? withNoteRoundCorner(withNotes, preprocessed)
+    : withNotes;
+  // The class box's merged `Shadowing` (`class-style-facts.ts`), class only.
+  const withClassFacts = diagramType === 'class' ? withClassShadowing(withNoteCorner, preprocessed) : withNoteCorner;
+  // The state box's merged `Shadowing` replaces the flat root tier the state sites read (`state-style-facts.ts`).
+  const withEngineFacts =
+    diagramType === 'state'
+      ? withStateNameFont(withStateShadowing(withClassFacts, preprocessed), preprocessed)
+      : withClassFacts;
 
   // G2 N39: position-scoped classifier `.tagname` cascade generations --
   // see `preprocessed.stylePositions`'s doc comment for the mechanism.
@@ -116,12 +147,12 @@ export function buildTheme(
   const classTagCascadeGenerations = computeClassTagCascadeGenerations(preprocessed.styles);
   const withGenerations =
     classTagCascadeGenerations === undefined
-      ? withStyleMap
+      ? withEngineFacts
       : {
-          ...withStyleMap,
+          ...withEngineFacts,
           colors: {
-            ...withStyleMap.colors,
-            graph: { ...withStyleMap.colors.graph, classTagCascadeGenerations },
+            ...withEngineFacts.colors,
+            graph: { ...withEngineFacts.colors.graph, classTagCascadeGenerations },
           },
         };
 
@@ -256,12 +287,18 @@ function applySkinSegment(theme: Theme, segment: StyleSkinparamSegment, diagramT
  */
 function applySegment(theme: Theme, segment: StyleSkinparamSegment, diagramType: DiagramType | undefined): Theme {
   if (segment.kind === 'skinparam')
-    return withoutSupersededArrowCascade(resolveSkinparam(segment.entries, theme).theme, segment.entries);
+    return withoutSupersededArrowCascade(
+      resolveSkinparam(segment.entries, withoutSupersededCascades(theme, segment.entries.keys())).theme,
+      segment.entries,
+    );
   const flatRoot = new Map([
     ...rootCascadeSkinparams(segment.styleMap.get('root')),
     ...(segment.styleMap.get('') ?? new Map<string, string>()),
   ]);
-  return applyStyleMap(segment.styleMap, resolveSkinparam(flatRoot, theme).theme, diagramType);
+  return withoutSupersededByStyle(
+    applyStyleMap(segment.styleMap, resolveSkinparam(flatRoot, theme).theme, diagramType),
+    segment.styleMap,
+  );
 }
 
 /**

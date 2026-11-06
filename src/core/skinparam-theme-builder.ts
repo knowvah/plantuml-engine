@@ -71,6 +71,8 @@ const ROOT_SCALAR_FIELDS: FieldTable = [
   ['handwritten', (acc) => acc.handwritten],
   ['monochrome', (acc) => acc.monochrome],
   ['reverseColor', (acc) => acc.reverseColor],
+  ['stereotypeAlignment', (acc) => acc.stereotypeAlignment],
+  ['svgDimensionStyle', (acc) => acc.svgDimensionStyle],
   ['packageStyle', (acc) => acc.packageStyle],
   ['fixCircleLabelOverlapping', (acc) => acc.fixCircleLabelOverlapping],
   ['shadowing', (acc) => acc.shadowing],
@@ -115,6 +117,10 @@ const GRAPH_OVERRIDE_FIELDS: FieldTable = [
   // G2 N65 item 47: see `theme.ts#classCascadeRoundCorner`'s doc comment
   // for why a bare skinparam reuses that SAME field.
   ['classCascadeRoundCorner', (acc) => acc.roundCorner],
+  // smc-T4b: `skinparam roundCorner` converts to `root { RoundCorner }` (`FromSkinparamToStyle.java:164`), which the
+  // state style `{root, element, stateDiagram, state}` merges (`EntityImageStateCommon`, `Cluster.java:320`), so the
+  // state boxes read it through the field a `<style>` `state`/`root` RoundCorner writes.
+  ['stateRoundCorner', (acc) => acc.roundCorner],
   ['interfaceBackground', (acc) => acc.interfaceBackground],
   ['enumBackground', (acc) => acc.enumBackground],
   ['actorStroke', (acc) => acc.actorStroke],
@@ -354,35 +360,6 @@ const DARK_SCALAR_SEEDS: ReadonlyArray<
   ['arrowFontColor', DARK_MODE_DEFAULTS.text],
 ];
 
-/** The `elements['spotclass']` half of {@link applyDarkModeDefaults} --
- *  split out purely to keep that function's own CCN under the cap. */
-function seedDarkSpotClass(acc: SkinparamAccumulator): void {
-  if (acc.elements['spotclass'] === undefined) {
-    acc.elements['spotclass'] = { background: DARK_MODE_DEFAULTS.spotClassBackground, font: DARK_MODE_DEFAULTS.text };
-  }
-}
-
-/**
- * add2 T3h (family DARK): the activity-EXCLUSIVE `elements['activity']`/
- * `elements['diamond']` buckets' own FontColor -- `activity-text-style.ts
- * #activityFontColor`'s bucket tier (checked FIRST, ahead of its hardcoded
- * `ACTIVITY_FONT_COLOR` black default) already reads these for an
- * EXPLICIT `<style> activityDiagram { activity { FontColor } } }`; dark
- * mode seeds the SAME bucket instead, mirroring {@link seedDarkSpotClass}
- * exactly. Both SNames are activity-exclusive (`activity-style-
- * defaults.ts#ActivitySName`'s own doc comment), so this cannot move any
- * other diagram's text colour -- UNLIKE `arrowFontColor` above, which
- * reuses a SHARED field other engines also read (surveyed, not assumed).
- */
-function seedDarkActivityFontColors(acc: SkinparamAccumulator): void {
-  if (acc.elements['activity'] === undefined) {
-    acc.elements['activity'] = { font: DARK_MODE_DEFAULTS.text };
-  }
-  if (acc.elements['diamond'] === undefined) {
-    acc.elements['diamond'] = { font: DARK_MODE_DEFAULTS.text };
-  }
-}
-
 function applyDarkModeDefaults(acc: SkinparamAccumulator): void {
   if (acc.mode !== 'dark') return;
   for (const [key, value] of DARK_SCALAR_SEEDS) {
@@ -396,8 +373,6 @@ function applyDarkModeDefaults(acc: SkinparamAccumulator): void {
   // .arrow)` already reads this field for an explicit `skinparam
   // ArrowColor`.
   acc.arrow ??= DARK_MODE_DEFAULTS.border;
-  seedDarkSpotClass(acc);
-  seedDarkActivityFontColors(acc);
 }
 
 /** Build a `Partial<Theme>` containing only the keys actually seen in `acc`. */

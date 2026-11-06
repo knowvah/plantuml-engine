@@ -22,6 +22,7 @@ import {
   type StopKeywords,
 } from './dispatch-support.js';
 import { parseNodes } from './node-dispatch.js';
+import { backColorSpread, stereogroupBackColor } from './dispatch-stereogroup.js';
 
 // ---------------------------------------------------------------------------
 // if / elseif / else / endif
@@ -55,6 +56,8 @@ interface IfClauses {
   elseLabel: string | undefined;
   /** The `else` keyword was written; `endif` alone creates the empty `else` branch (`InstructionIf.java:192-196`). */
   hadElse: boolean;
+  /** The closing `endif`'s stereogroup (`CommandEndif3.java:93-96`). */
+  endGroup: string | undefined;
 }
 
 /** Strips the same optional trailing `;` the main dispatch loop applies to
@@ -148,6 +151,7 @@ function consumeElseifClause(
       condition: unescapeLabelNewlines(elseifMatch[2]!),
       ...(eiLabel !== undefined && eiLabel !== '' ? { label: eiLabel } : {}),
       ...(incomingLabel !== undefined && incomingLabel !== '' ? { incomingLabel } : {}),
+      ...backColorSpread(elseifMatch[4]),
       body: eiResult.nodes,
     },
   };
@@ -157,6 +161,8 @@ interface ElseStep {
   cursor: number;
   branch: ActivityNode[];
   label: string | undefined;
+  /** The closing `endif`'s stereogroup. */
+  endGroup: string | undefined;
 }
 
 /**
@@ -172,19 +178,23 @@ function consumeElseClause(ctx: ParseContext, cursor: number, label: string | un
   const elseResult = parseNodes(ctx, cursor + 1, [RE_ENDIF]);
   if (isRefusal(elseResult)) return elseResult;
   let next = elseResult.nextIdx;
-  if (next < lines.length && RE_ENDIF.test(stripTrailingSemi(lines[next]!.trim()))) {
+  let endGroup: string | undefined;
+  const endMatch = next < lines.length ? RE_ENDIF.exec(stripTrailingSemi(lines[next]!.trim())) : null;
+  if (endMatch !== null) {
+    endGroup = endMatch[1];
     next++;
   }
-  return { cursor: next, branch: elseResult.nodes, label };
+  return { cursor: next, branch: elseResult.nodes, label, endGroup };
 }
 
 /** One step of {@link consumeIfClauses}'s clause-header scan. `'unexpected'`
  *  is the not-converted-to-refusal fallback -- see that function's doc
  *  comment for why. */
 type ClauseStep =
-  | { kind: 'endif' | 'unexpected'; cursor: number }
+  | { kind: 'unexpected'; cursor: number }
+  | { kind: 'endif'; cursor: number; endGroup: string | undefined }
   | { kind: 'elseif'; cursor: number; branch: ActivityElseIf }
-  | { kind: 'else'; cursor: number; branch: ActivityNode[]; label: string | undefined }
+  | { kind: 'else'; cursor: number; branch: ActivityNode[]; label: string | undefined; endGroup: string | undefined }
   | ParseRefusal;
 
 /** Classifies and consumes exactly one clause-header line: `endif`
@@ -194,7 +204,8 @@ type ClauseStep =
 function classifyClauseLine(ctx: ParseContext, cursor: number, ifInnerStops: StopKeywords): ClauseStep {
   const clauseLine = stripTrailingSemi(ctx.lines[cursor]!.trim());
 
-  if (RE_ENDIF.test(clauseLine)) return { kind: 'endif', cursor: cursor + 1 };
+  const endifMatch = RE_ENDIF.exec(clauseLine);
+  if (endifMatch !== null) return { kind: 'endif', cursor: cursor + 1, endGroup: endifMatch[1] };
 
   if (RE_ELSEIF.test(clauseLine)) {
     const step = consumeElseifClause(ctx, cursor, clauseLine, ifInnerStops);
@@ -211,13 +222,13 @@ function classifyClauseLine(ctx: ParseContext, cursor: number, ifInnerStops: Sto
   if (legacyMatch !== null) {
     const step = consumeElseClause(ctx, cursor, unescapeLabel(legacyMatch[1]!.trim()));
     if (isRefusal(step)) return step;
-    return { kind: 'else', cursor: step.cursor, branch: step.branch, label: step.label };
+    return { kind: 'else', cursor: step.cursor, branch: step.branch, label: step.label, endGroup: step.endGroup };
   }
 
   if (RE_ELSE.test(clauseLine)) {
     const step = consumeElseClause(ctx, cursor, unescapeLabel(RE_ELSE.exec(clauseLine)![1]));
     if (isRefusal(step)) return step;
-    return { kind: 'else', cursor: step.cursor, branch: step.branch, label: step.label };
+    return { kind: 'else', cursor: step.cursor, branch: step.branch, label: step.label, endGroup: step.endGroup };
   }
 
   return { kind: 'unexpected', cursor: cursor + 1 };
@@ -251,12 +262,16 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
   let elseBranch: ActivityNode[] = [];
   let elseLabel: string | undefined;
   let hadElse = false;
+  let endGroup: string | undefined;
 
   while (cursor < ctx.lines.length) {
     const step = classifyClauseLine(ctx, cursor, ifInnerStops);
     if (isRefusal(step)) return step;
     cursor = step.cursor;
-    if (step.kind === 'endif') break;
+    if (step.kind === 'endif') {
+      endGroup = step.endGroup;
+      break;
+    }
     if (step.kind === 'elseif') {
       elseIfBranches.push(step.branch);
       continue;
@@ -264,18 +279,21 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
     if (step.kind === 'else') {
       elseBranch = step.branch;
       elseLabel = step.label;
+      endGroup = step.endGroup;
       hadElse = true;
       break;
     }
     // 'unexpected' -- see this function's doc comment above.
   }
 
-  return { cursor, elseIfBranches, elseBranch, elseLabel, hadElse };
+  return { cursor, elseIfBranches, elseBranch, elseLabel, hadElse, endGroup };
 }
 
 interface IfHeader {
   condition: string;
   thenLabel: string | undefined;
+  /** `CommandIf2`'s stereogroup; `CommandIf4` reads none (`:101-104`, "currently ignored"). */
+  group?: string | undefined;
 }
 
 /**
@@ -291,7 +309,8 @@ function matchIfHeader(line: string): IfHeader | null {
   const if4 = RE_IF4.exec(line);
   if (if4 !== null) return { condition: unescapeLabelNewlines(if4[1]!), thenLabel: unescapeLabel(if4[2]) };
   const if2 = RE_IF.exec(line);
-  if (if2 !== null) return { condition: unescapeLabelNewlines(if2[1]!), thenLabel: unescapeLabel(if2[2]) };
+  if (if2 !== null)
+    return { condition: unescapeLabelNewlines(if2[1]!), thenLabel: unescapeLabel(if2[2]), group: if2[3] };
   const legacy = RE_IF_LEGACY.exec(line);
   if (legacy !== null) {
     return { condition: unescapeLabelNewlines(legacy[1]!), thenLabel: unescapeLabel(legacy[2]!.trim()) };
@@ -359,7 +378,7 @@ function extractIfOwnNotes(
 export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const header = matchIfHeader(line);
   if (header === null) return null;
-  const { condition, thenLabel } = header;
+  const { condition, thenLabel, group } = header;
 
   // Mission `activity-lane-capture` D1/T3: read BEFORE the then-branch
   // parses, so a lane switch inside the body never leaks into this node's
@@ -385,10 +404,11 @@ export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchRes
 
   const clauses = consumeIfClauses(ctx, thenResult.nextIdx, IF_INNER_STOPS);
   if (isRefusal(clauses)) return clauses;
-  const { cursor, elseIfBranches, elseLabel } = clauses;
+  const { cursor, elseIfBranches, elseLabel, endGroup } = clauses;
   const elseBranch = clauses.hadElse ? clauses.elseBranch : endifArrowBranch(thenBranch, elseIfBranches);
   const extracted = extractIfOwnNotes(thenBranch, elseIfBranches, elseBranch);
 
+  const endColor = stereogroupBackColor(endGroup);
   // Always push exactly one if node per `if (...)` opener
   const ifNode: ActivityIf = {
     kind: 'if',
@@ -399,6 +419,8 @@ export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchRes
     elseBranch: extracted.elseBranch,
     elseIfBranches: extracted.elseIfBranches,
     ...openerSwimlane,
+    ...backColorSpread(group),
+    ...(endColor !== undefined ? { endColor } : {}),
     ...(extracted.notes.length > 0 ? { notes: extracted.notes } : {}),
   };
   return { idx: cursor, node: ifNode };

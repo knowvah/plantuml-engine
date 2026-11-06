@@ -1,0 +1,13 @@
+@startuml
+<style>
+map {
+  MaximumWidth 60
+  MinimumWidth 200
+}
+</style>
+map m {
+  k => a long value that wraps too
+}
+object o
+m::k --> o
+@enduml

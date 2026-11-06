@@ -17,20 +17,20 @@
       "diffCount": 0
     },
     "board-black": {
-      "conformant": false,
-      "diffCount": 18
+      "conformant": true,
+      "diffCount": 0
     },
     "board-gradient": {
-      "conformant": false,
-      "diffCount": 20
+      "conformant": true,
+      "diffCount": 0
     },
     "chart-black": {
-      "conformant": false,
-      "diffCount": 104
+      "conformant": true,
+      "diffCount": 0
     },
     "chart-gradient": {
-      "conformant": false,
-      "diffCount": 75
+      "conformant": true,
+      "diffCount": 0
     },
     "class-black": {
       "conformant": true,
@@ -213,12 +213,12 @@
       "diffCount": 0
     },
     "packet-black": {
-      "conformant": false,
-      "diffCount": 36
+      "conformant": true,
+      "diffCount": 0
     },
     "packet-gradient": {
-      "conformant": false,
-      "diffCount": 21
+      "conformant": true,
+      "diffCount": 0
     },
     "salt-black": {
       "conformant": true,

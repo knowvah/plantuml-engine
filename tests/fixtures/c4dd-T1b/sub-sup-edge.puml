@@ -1,0 +1,5 @@
+@startuml
+actor A
+usecase B
+A --> B : x<sub>2</sub> y\nz<sup>3</sup> w\nplain
+@enduml

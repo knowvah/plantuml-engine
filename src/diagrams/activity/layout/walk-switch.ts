@@ -22,6 +22,7 @@
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/FtileSwitchWithOneLink.java
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { GtileSwitch } from '../tiles/gtile-switch.js';
 import { EAST_HOOK, NORTH_HOOK, SOUTH_HOOK, WEST_HOOK } from '../tiles/points.js';
 import type { GPoint } from '../tiles/points.js';
@@ -138,6 +139,7 @@ function pushSwitchDiamond(
       height: diamond.height,
       label,
       diamondShape: SWITCH_DIAMOND_SHAPE,
+      ...colorSpread(diamond.diamondColors?.open),
     },
     myLane,
   );

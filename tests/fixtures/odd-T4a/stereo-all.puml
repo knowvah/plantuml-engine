@@ -1,0 +1,22 @@
+@startuml
+<style>
+.Foo {
+  shadowing 3
+  RoundCorner 12
+  LineThickness 3
+  LineStyle 5-2
+  MinimumWidth 120
+  FontStyle italic
+}
+</style>
+object a <<Foo>> {
+ x = 1
+}
+map b <<Foo>> {
+ k => v
+}
+json c <<Foo>> {
+ "x": 1
+}
+object d
+@enduml

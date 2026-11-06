@@ -1,0 +1,7 @@
+@startchart
+skinparam defaultFontName Courier
+skinparam defaultFontSize 18
+h-axis [A, B, C, D]
+bar "B" [1]
+legend right
+@endchart

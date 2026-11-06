@@ -1,0 +1,6 @@
+@startuml
+skinparam mode dark
+state S
+S --> T
+note right of S: n
+@enduml

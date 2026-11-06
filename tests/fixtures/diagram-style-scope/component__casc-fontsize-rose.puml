@@ -1,0 +1,10 @@
+@startuml
+skin rose
+<style>
+component { FontSize 18 }
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

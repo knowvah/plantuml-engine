@@ -16,9 +16,13 @@
  *      activity fixtures, D9 of `plans/activity-oracle-harness/
  *      decisions.md`), so there is no DOT oracle to compare against and no
  *      `parity-activity.json`-style second condition.
- *   2. NO `unknown` tree. Activity has its own dedicated dispatcher entry
- *      (`activityPlugin`, `src/diagrams/activity/index.ts`) — there is no
- *      router-misclassification case this ratchet needs to reach.
+ *   2. An `unknown` tree (ubt-T3c, D6 of `plans/unknown-bucket-triage/
+ *      decisions.md`). A manifest entry MAY carry `tree: 'unknown'`: a
+ *      corpus row filed under `unknown` that the jar types as ACTIVITY and our
+ *      router sends to this engine. Its golden lives at
+ *      `svg-activity/unknown/<slug>/`, rendered through the SAME helper as
+ *      every other pin (the way `class.golden.ratchet.test.ts` reads its
+ *      `unknown` tree).
  *
  * `renderFixtureActivity` (`render-fixture-activity.ts`) is the render
  * helper — the SAME seam `activity.diff-baseline.ratchet.test.ts` and
@@ -50,10 +54,15 @@ import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { compareSvg } from './compare.js';
 import { renderFixtureActivity } from './render-fixture-activity.js';
 
+/** A pin's survey bucket when it is not `activity` (ubt-T3c, D6). */
+type RatchetTree = 'unknown';
+
 interface RatchetFixture {
   slug: string;
   addedAt: string;
   source: string;
+  /** Absent: an `activity` row at `svg-activity/<slug>/`; `'unknown'`: at `svg-activity/unknown/<slug>/`. */
+  tree?: RatchetTree;
 }
 
 interface RatchetManifest {
@@ -65,7 +74,12 @@ const GOLDENS_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../ora
 const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'utf8')) as RatchetManifest;
 
 function fixtureDir(f: RatchetFixture): string {
-  return join(GOLDENS_ROOT, f.slug);
+  return f.tree === undefined ? join(GOLDENS_ROOT, f.slug) : join(GOLDENS_ROOT, f.tree, f.slug);
+}
+
+/** `unknown/<slug>` for an unknown-tree pin, else the bare slug. */
+function labelOf(f: RatchetFixture): string {
+  return f.tree === undefined ? f.slug : `${f.tree}/${f.slug}`;
 }
 
 function readGolden(f: RatchetFixture): string {
@@ -90,13 +104,13 @@ function renderPinned(f: RatchetFixture): string {
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-activity conformance ratchet (AC1)', () => {
   for (const f of manifest.fixtures) {
-    it(`${f.slug}: stays zero-diff against the pinned golden`, () => {
+    it(`${labelOf(f)}: stays zero-diff against the pinned golden`, () => {
       const golden = readGolden(f);
       const ours = renderPinned(f);
       const { pass, diffs } = compareSvg(ours, golden, 'deterministic');
       expect(
         pass,
-        `${f.slug}: conformance regression — first diff: ${firstDiffPath(diffs)} — ${JSON.stringify(diffs[0])}`,
+        `${labelOf(f)}: conformance regression — first diff: ${firstDiffPath(diffs)} — ${JSON.stringify(diffs[0])}`,
       ).toBe(true);
       expect(diffs).toEqual([]);
     });
@@ -147,3 +161,29 @@ if (manifest.fixtures.length === 0) {
     expect(manifest.fixtures).toHaveLength(0);
   });
 }
+
+// ---------------------------------------------------------------------------
+// ubt-T3c (D6) — the `unknown` tree: resolution, and tamper detection on an
+// unknown-tree pin (red until the first one is pinned).
+// ---------------------------------------------------------------------------
+
+describe('svg-activity conformance ratchet — unknown tree (ubt-T3c)', () => {
+  it('an unknown entry resolves under svg-activity/unknown/<slug>/, a bare one under svg-activity/<slug>/', () => {
+    const base = { slug: 'synthetic-slug', addedAt: '2026-11-06', source: 'test' };
+    expect(fixtureDir({ ...base, tree: 'unknown' })).toBe(join(GOLDENS_ROOT, 'unknown', 'synthetic-slug'));
+    expect(fixtureDir(base)).toBe(join(GOLDENS_ROOT, 'synthetic-slug'));
+  });
+
+  it('a mutated unknown-tree golden (in-memory only) fails, naming the tree and slug', () => {
+    const f = manifest.fixtures.find((x) => x.tree === 'unknown');
+    expect(f, 'expected at least one unknown-tree pin').toBeDefined();
+    const golden = readGolden(f!);
+    const ours = renderPinned(f!);
+    expect(compareSvg(ours, golden, 'deterministic').pass).toBe(true);
+    const tampered = golden.replace(/ x="([\d.]+)"/, (_m, x: string) => ` x="${Number(x) + 500}"`);
+    expect(tampered).not.toBe(golden);
+    const { pass, diffs } = compareSvg(ours, tampered, 'deterministic');
+    expect(pass).toBe(false);
+    expect(`${labelOf(f!)}: ${diffs[0]!.path}`).toContain(`unknown/${f!.slug}`);
+  });
+});

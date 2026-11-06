@@ -1,0 +1,17 @@
+@startuml
+<style>
+header {
+  BackGroundColor palegreen
+  FontColor red
+}
+</style>
+object o {
+ a = 1
+}
+map m {
+ k => v
+}
+json j {
+ "a": 1
+}
+@enduml

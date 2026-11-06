@@ -1,0 +1,5 @@
+@startboard
+' a comment
+A
++B ' not a comment
+@endboard

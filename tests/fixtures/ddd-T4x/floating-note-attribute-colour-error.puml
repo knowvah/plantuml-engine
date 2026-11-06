@@ -1,0 +1,5 @@
+@startuml
+component a
+note "floating" as N1 #yellow;line:green;line.bold
+a .. N1
+@enduml

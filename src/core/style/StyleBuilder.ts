@@ -1,7 +1,7 @@
 import type { AutomaticCounter } from './AutomaticCounter.js';
 import { MergeStrategy } from './MergeStrategy.js';
 import type { PName } from './PName.js';
-import { Style } from './Style.js';
+import { darkSchemeStyle, Style } from './Style.js';
 import { StyleSignatureBasic } from './StyleSignatureBasic.js';
 import { StyleStorage } from './StyleStorage.js';
 import type { Value } from './Value.js';
@@ -39,6 +39,7 @@ export class StyleBuilder implements AutomaticCounter {
   /** Storage and counter copied into a new builder. @see StyleBuilder.java:65-71 */
   cloneMe(): StyleBuilder {
     const result = new StyleBuilder();
+    if (DARK_SCHEME_BUILDERS.has(this)) DARK_SCHEME_BUILDERS.add(result);
     result.storage.putAll(this.storage);
     result.counter = this.counter;
     return result;
@@ -63,6 +64,7 @@ export class StyleBuilder implements AutomaticCounter {
    */
   muteStyle(modifiedStyles: Iterable<Style>): StyleBuilder {
     const result = new StyleBuilder();
+    if (DARK_SCHEME_BUILDERS.has(this)) DARK_SCHEME_BUILDERS.add(result);
     result.counter = this.counter;
     result.storage.putAll(this.storage);
 
@@ -94,7 +96,8 @@ export class StyleBuilder implements AutomaticCounter {
     const cached = this.mergedStyleCache.get(key);
     if (cached !== undefined) return cached;
 
-    const result = this.storage.computeMergedStyle(signature);
+    const merged = this.storage.computeMergedStyle(signature);
+    const result = merged !== undefined && DARK_SCHEME_BUILDERS.has(this) ? darkSchemeStyle(merged) : merged;
     if (result !== undefined) this.mergedStyleCache.set(key, result);
     return result;
   }
@@ -116,4 +119,20 @@ export class StyleBuilder implements AutomaticCounter {
     }
     return mergedStyle;
   }
+}
+
+/**
+ * PORT-ONLY: the builders serving a diagram where `SkinParam#isDark` holds (`SkinParam.java:114-116`). Their
+ * {@link StyleBuilder#getMergedStyle} answers each colour as `ColorMapper.DARK_MODE` paints it
+ * (`TitledDiagram.java:292-294`, `darkSchemeStyle`). Upstream decides at the drawing step from the diagram's final
+ * skinparams, so a caller tags a builder from the whole source, not from the declarations run so far; `cloneMe` and
+ * `muteStyle` carry the tag. A module-level set, not a field: `StyleBuilder` is in the public d.ts (smc D2).
+ * Concurrency: written only while a diagram's own `SkinParam` builds its builders, read by that diagram's render.
+ */
+const DARK_SCHEME_BUILDERS = new WeakSet<StyleBuilder>();
+
+/** Tags or untags `builder` as a dark-mode diagram's ({@link DARK_SCHEME_BUILDERS}). */
+export function setDarkScheme(builder: StyleBuilder, isDark: boolean): void {
+  if (isDark) DARK_SCHEME_BUILDERS.add(builder);
+  else DARK_SCHEME_BUILDERS.delete(builder);
 }

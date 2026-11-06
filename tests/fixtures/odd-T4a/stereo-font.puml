@@ -1,0 +1,13 @@
+@startuml
+skinparam objectStereotypeFontSize 18
+skinparam objectStereotypeFontColor red
+skinparam objectStereotypeFontStyle bold
+skinparam objectStereotypeFontName Courier
+object A <<Foo>>
+map B <<Foo>> {
+ k => v
+}
+json C <<Foo>> {
+ "x": 1
+}
+@enduml

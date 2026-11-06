@@ -10,6 +10,7 @@
  * (every node, hidden ones through `UHidden`) and `GeneralImageBuilder
  * #createEntityImageBlock`'s leaf-type switch; see the per-branch comments.
  */
+import { renderStateLeaf, stateLeafDrawsNoGroup } from './class-state-leaf.js';
 import type { ClassifierGeo, EdgeGeo } from './layout.js';
 import type { ClassLeafGeo } from './class-geo-types.js';
 import { isNoteGeo } from './class-geo-types.js';
@@ -40,6 +41,7 @@ function tryRenderUSymbol(geo: ClassifierGeo, theme: ScaledTheme): string | unde
 }
 
 function renderClassifier(geo: ClassifierGeo, theme: ScaledTheme): string {
+  if (geo.stateLeaf !== undefined) return renderStateLeaf(geo, geo.stateLeaf, theme);
   const icon = tryRenderUSymbol(geo, theme);
   if (icon !== undefined) return icon;
   return renderClassifierBox(geo, theme);
@@ -104,6 +106,10 @@ function tryRenderEntityFragment(classifier: ClassifierGeo, ctx: ClassLeafRender
 function renderClassifierLeaf(classifier: ClassifierGeo, ctx: ClassLeafRenderContext, sink: ClassLeafSink): void {
   const theme = ctx.theme;
   if (classifier.hidden === true) return;
+  if (classifier.stateLeaf !== undefined && stateLeafDrawsNoGroup(classifier.stateLeaf)) {
+    sink.children.push(renderStateLeaf(classifier, classifier.stateLeaf, theme));
+    return;
+  }
   // G2 N8: an association-class-couple "point" entity draws unwrapped --
   // no `<g class="entity">`, no id, no comment -- see `renderAssocPoint`'s
   // own doc comment.

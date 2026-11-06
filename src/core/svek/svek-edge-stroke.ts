@@ -46,3 +46,21 @@ export function strokeForStyle(style: SvekLinkStyle, thicknessOverride?: number)
       return UStroke.withThickness(thicknessOverride);
   }
 }
+
+/**
+ * The stroke `SvekEdge#drawU` chooses (`SvekEdge.java:897-901`, `LinkType#getStroke3(UStroke)`, `LinkType.java:245-256`).
+ * A bracket `thickness=N` wins; a non-normal link style takes `defaultThickness` (`skinparam arrowThickness`); a normal
+ * one takes the `arrow` style's stroke, whose dash stands when it has one.
+ */
+export function strokeOfLink(
+  style: SvekLinkStyle,
+  thicknessOverride: number | undefined,
+  defaultThickness: number | undefined,
+  suggested: UStroke | undefined,
+): UStroke {
+  if (thicknessOverride !== undefined) return strokeForStyle(style, thicknessOverride);
+  const chosen = suggested === undefined || style !== 'solid' ? undefined : suggested;
+  if (chosen === undefined) return strokeForStyle(style, defaultThickness);
+  if (chosen.getDashVisible() === 0 && chosen.getDashSpace() === 0) return strokeForStyle(style, chosen.getThickness());
+  return chosen;
+}

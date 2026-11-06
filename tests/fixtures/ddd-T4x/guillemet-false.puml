@@ -1,0 +1,7 @@
+@startuml
+skinparam guillemet false
+rectangle a <<one>>
+node n <<two>> {
+  rectangle b <<three>>
+}
+@enduml

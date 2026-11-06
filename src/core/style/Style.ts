@@ -323,6 +323,26 @@ export class Style {
   }
 
   /**
+   * The back and line colours (a `colors` entry wins over the style's), the
+   * stroke, the shadow and the corners as one {@link Fashion}.
+   * @see Style.java:270-286
+   */
+  getSymbolContext(set: HColorSet, colors?: Colors): Fashion {
+    const backColor =
+      (colors === undefined ? undefined : colorsGet(colors, ColorType.BACK)) ??
+      this.value('BackGroundColor').asColor(set);
+    const foreColor =
+      (colors === undefined ? undefined : colorsGet(colors, ColorType.LINE)) ?? this.value('LineColor').asColor(set);
+    const deltaShadowing = this.getShadowing();
+    const roundCorner = this.value('RoundCorner').asDouble();
+    const diagonalCorner = this.value('DiagonalCorner').asDouble();
+    return new Fashion(backColor, foreColor)
+      .withStroke(this.getStroke())
+      .withDeltaShadow(deltaShadowing)
+      .withCorner(roundCorner, diagonalCorner);
+  }
+
+  /**
    * `LineColor` as the foreground (`HColors.none()` where it is null),
    * then {@link getStroke}. Applying an `HColor` sets the foreground
    * (AbstractCommonUGraphic.java:123-124), which is the port's `Fore`.
@@ -367,4 +387,15 @@ export class Style {
   getHorizontalAlignment(): HorizontalAlignment | undefined {
     return this.value('HorizontalAlignment').asHorizontalAlignment();
   }
+}
+
+/**
+ * PORT-ONLY: `style` with every value as `ColorMapper.DARK_MODE` paints it ({@link ValueImpl#darkScheme}), same
+ * signature. A free function, not a member: `Style` is in the public d.ts, which smc D2 keeps unchanged.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/ColorMapper.java:68-72
+ */
+export function darkSchemeStyle(style: Style): Style {
+  const result = new Map<PName, Value>();
+  for (const name of PNAMES) if (style.hasValue(name)) result.set(name, asValueImpl(style.value(name)).darkScheme());
+  return new Style(style.getSignature(), result);
 }

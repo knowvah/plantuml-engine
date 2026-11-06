@@ -1,0 +1,19 @@
+@startpacketdiag
+<style>
+packetdiagDiagram {
+  rectangle {
+    BackGroundColor lightblue
+    LineColor red
+    LineThickness 2
+    RoundCorner 10
+    FontColor blue
+  }
+}
+</style>
+packetdiag {
+  0-15: Source Port
+  16-31: Destination Port
+  32-39: Flags
+  40-47: Checksum
+}
+@endpacketdiag

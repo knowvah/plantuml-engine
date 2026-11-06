@@ -7,7 +7,11 @@
  */
 import type { GvGraphBuilder } from '@knowvah/dot-engine';
 import type { DotInputCluster, DotInputGraph, DotInputNode } from './graph-layout.types.js';
-import { buildBorderPointClusterHandles, inheritedEeLabel } from './graph-layout-build-borderpoint.js';
+import {
+  buildBorderPointClusterHandles,
+  inheritedEeLabel,
+  placeBorderPointMembers,
+} from './graph-layout-build-borderpoint.js';
 import {
   addNodesWithKermorRootEmpty,
   buildKermorClusterHandles,
@@ -256,6 +260,7 @@ export interface ClusterIndex {
 interface ClusterHandles {
   main: GvGraphBuilder;
   innermost: GvGraphBuilder;
+  ee?: GvGraphBuilder;
 }
 
 /**
@@ -465,27 +470,23 @@ export function addClusters(b: GvGraphBuilder, input: DotInputGraph): ClusterInd
   };
   const portIds = new Set(input.nodes.filter((n) => n.isPort === true).map((n) => n.id));
   for (const c of clusters) {
-    const { main, innermost } = handlesFor(c);
+    const handles = handlesFor(c);
+    const { main, innermost } = handles;
     if (input.kermor === true) {
       placeKermorMembers(c, innermost, () => portRankSubId++);
       continue;
     }
     if (isHasPortCluster(c)) {
-      placeHasPortMembers(c, { main, innermost }, portIds);
+      placeHasPortMembers(c, handles, portIds);
       continue;
     }
-    // G7 T14b: border-point clusters place their OWN remainder (anchor +
-    // any other non-port direct member) into `innermost` (`ee`/`i`,
-    // whichever `handlesFor` resolved) -- port ids are already placed by
-    // the rank-group loop above, inside `handlesFor`'s border-point branch.
-    // Must run BEFORE the `innerMarginLevels === undefined` check below: a
-    // border-point cluster always has `innerMarginLevels === undefined`
+    // G7 T14b: must run BEFORE the `innerMarginLevels === undefined` check
+    // below: a border-point cluster always has `innerMarginLevels === undefined`
     // (`state-composite-cluster.ts`'s own guard), so without this early
     // branch it would silently fall into the flat `main.addNode` loop,
     // losing the rank/`ee`/`i` structure entirely.
     if (c.portRanksLabelOnEe === true) {
-      const portIds = new Set((c.portRanks ?? []).flatMap((rg) => rg.nodeIds));
-      for (const id of c.nodeIds) if (!portIds.has(id)) innermost.addNode(id);
+      placeBorderPointMembers(c, handles);
       continue;
     }
     if (c.innerMarginLevels === undefined) {

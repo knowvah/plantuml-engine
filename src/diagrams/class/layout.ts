@@ -27,6 +27,7 @@
  * this file under the 500-line cap after adding shadow support.
  */
 
+import { memberPortionSuppressed } from './class-member-portion.js';
 import type { ClassDiagramAST, Classifier } from './ast.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
@@ -149,20 +150,11 @@ export function preMeasureClassifiers(
       ? visibleMembers.length === 0
       : visibleMembers.filter((m) => !isMethodMember(m)).length === 0;
     const methodsEmpty = isObjectLike ? true : visibleMembers.filter(isMethodMember).length === 0;
-    // G2 N26: entity-qualified `hide <entity> members|fields|attributes|
-    // methods` (`class-directives.ts#applyHideShowEntityDirectives`) already
-    // stamped these two flags directly onto the classifier post-parse --
-    // OR'd in alongside the diagram-global targets above.
-    const suppressFields =
-      hideMembers ||
-      hideFields ||
-      ((hideEmptyMembers || hideEmptyFields) && fieldsEmpty) ||
-      classifier.suppressFields === true;
-    const suppressMethods =
-      hideMembers ||
-      hideMethods ||
-      ((hideEmptyMembers || hideEmptyMethods) && methodsEmpty) ||
-      classifier.suppressMethods === true;
+    // G2 N26: entity-qualified `hide <entity> members|fields|attributes|methods` stamped these flags post-parse.
+    const globalFields = hideMembers || hideFields || ((hideEmptyMembers || hideEmptyFields) && fieldsEmpty);
+    const globalMethods = hideMembers || hideMethods || ((hideEmptyMembers || hideEmptyMethods) && methodsEmpty);
+    const suppressFields = memberPortionSuppressed(classifier, ast.directives, 'fields', globalFields);
+    const suppressMethods = memberPortionSuppressed(classifier, ast.directives, 'methods', globalMethods);
     measuredMap.set(
       classifier.id,
       measureLeaf(classifier, theme, measurer, { fields: suppressFields, methods: suppressMethods }, ast.sprites),

@@ -16,6 +16,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { parseClass } from './parse-helper.js';
+import { parseClass as parseClassRaw } from '../../../src/diagrams/class/parser.js';
+import { parseRefusalOf } from '../../../src/core/dispatcher.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import type { ClassDiagramAST, Classifier } from '../../../src/diagrams/class/ast.js';
 import { MAP_POINT_SENTINEL } from '../../../src/diagrams/class/ast.js';
@@ -109,44 +111,29 @@ describe('map body — "key *-> dest" linked row', () => {
     expect(ast.relationships).toHaveLength(1);
     expect(ast.relationships[0]).toMatchObject({ length: 2 });
   });
-
-  it('keeps the row but adds no relationship when dest does not exist', () => {
-    const ast = parse('map m {\nWarsaw *-> Nowhere\n}');
-    const m = ast.classifiers.find((c) => c.id === 'm');
-    expect(m).toBeDefined();
-    expect(m!.rows).toEqual([{ key: 'Warsaw', value: MAP_POINT_SENTINEL }]);
-    expect(ast.relationships).toHaveLength(0);
-    // No phantom classifier is created for the unresolved dest either.
-    expect(ast.classifiers.find((c) => c.id === 'Nowhere')).toBeUndefined();
-  });
 });
 
 // ---------------------------------------------------------------------------
-// Unparseable body line (neither "=>" nor "*->")
+// Block refusals (`CommandCreateMap#executeNow`'s three errors)
 // ---------------------------------------------------------------------------
 
-describe('map body — unparseable line', () => {
-  it('drops a line with neither "=>" nor a linked-entry arrow', () => {
-    const c = findClassifier('map m {\njust text\n}', 'm');
-    expect(c.rows ?? []).toEqual([]);
+describe('map body — block refusals', () => {
+  const refused = (source: string): string | undefined => {
+    const lines = source.split('\n');
+    return parseRefusalOf(parseClassRaw({ lines, type: 'class' }))?.message;
+  };
+
+  it('a line with neither "=>" nor a linked-entry arrow refuses the block', () => {
+    expect(refused('map m {\njust text\n}')).toBe('Map definition should contains key => value');
   });
-});
 
-// ---------------------------------------------------------------------------
-// Duplicate map name ("Map already exists")
-// ---------------------------------------------------------------------------
+  it('a second map of one name refuses the block, by the id as written', () => {
+    expect(refused('map m {\nk1 => v1\n}\nmap m {\nk2 => v2\n}')).toBe('Map already exists: m');
+  });
 
-describe('map declaration — duplicate handling', () => {
-  it('a second "map m" after the first is a no-op; the second body is consumed, not leaked', () => {
-    const ast = parse('map m {\nk1 => v1\n}\nmap m {\nk2 => v2\n}');
-    const maps = ast.classifiers.filter((c) => c.id === 'm');
-    expect(maps).toHaveLength(1);
-    // First declaration's rows win — the second body never touches "m".
-    expect(maps[0]!.rows).toEqual([{ key: 'k1', value: 'v1' }]);
-    // The second body's line did not leak out as a bogus top-level command
-    // (e.g. spawn a stray "k2" classifier or relationship).
-    expect(ast.classifiers.find((c) => c.id === 'k2')).toBeUndefined();
-    expect(ast.relationships).toHaveLength(0);
+  it('a link to no entity refuses the block, by the quark name', () => {
+    expect(refused('map m {\na *-> London\n}')).toBe('No such entity London');
+    expect(refused('map m {\na *-> pk.London\n}')).toBe('No such entity London');
   });
 });
 

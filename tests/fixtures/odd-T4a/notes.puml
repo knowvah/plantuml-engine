@@ -1,0 +1,14 @@
+@startuml
+object a {
+ x
+}
+map b {
+ k => v
+}
+note right of a : n1
+note left of b::k : n2
+note top of b
+ t
+end note
+b::k .. a
+@enduml

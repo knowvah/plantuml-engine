@@ -1,0 +1,22 @@
+@startuml
+skinparam roundcorner 8
+<style>
+document {
+  title { BackgroundColor pink; LineColor red }
+  caption { BackgroundColor pink; LineColor red }
+  header { BackgroundColor pink; LineColor red }
+  footer { BackgroundColor pink; LineColor red }
+}
+</style>
+title T
+caption C
+header H
+footer F
+legend
+L1
+end legend
+mainframe M
+actor A
+usecase B
+A --> B
+@enduml

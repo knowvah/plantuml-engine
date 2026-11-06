@@ -11,10 +11,8 @@ import type { Paint } from '../../core/paint.js';
 import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
 import { basicSvgOption } from '../../core/klimt/drawing/svg/svg-graphics.js';
 import { Fore } from '../../core/klimt/Fore.js';
-import { Back } from '../../core/klimt/Back.js';
-import { UStroke } from '../../core/klimt/UStroke.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
-import { UEllipse } from '../../core/klimt/shape/UEllipse.js';
+import { drawMiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import { extractFlatContent } from '../../core/klimt/document-shell.js';
 import { buildDotPathFromSplinePoints } from '../../core/svek/svek-edge-geometry.js';
 import type { MiddleDecor } from './class-arrow-middle-decor.js';
@@ -25,16 +23,6 @@ import type { EdgeGeo } from './layout.js';
  *  required 4th parameter (mirrors `renderer-arrowhead.ts`'s own
  *  identically-purposed constant). */
 const NO_TEXT_BOUNDER = { calculateDimension: (): { width: number } => ({ width: 0 }) };
-
-/** `MiddleCircle`/`MiddleCircleCircled`'s two hardcoded radii (both
- *  Java classes: `radius1 = 6`, `radius2 = 10`) -- NOT derived from any
- *  edge/theme value, matching upstream's own literals. */
-const MIDDLE_RADIUS_INNER = 6;
-const MIDDLE_RADIUS_OUTER = 10;
-/** `MiddleCircle`/`MiddleCircleCircled#drawU`'s own `UStroke.withThickness
- *  (1.5)` -- a fixed value, independent of the edge's own resolved stroke
- *  width (unlike the head/tail extremities' `resolvedStrokeWidth`). */
-const MIDDLE_STROKE_WIDTH = 1.5;
 
 /**
  * `MiddleCircleCircled#drawU`/`MiddleCircle#drawU` — the arc(s) (for the
@@ -76,35 +64,9 @@ function drawMiddleDecorShape(
   // geo-edge.ts`), and this draws through the SAME scale-aware klimt
   // pipeline, so it must be unscaled before translating.
   const ug = UGraphicSvg.build(0, basicSvgOption({ scale: k }), '$version$', NO_TEXT_BOUNDER);
-  const base = ug
-    .apply(new Fore(strokeColor))
-    .apply(UStroke.withThickness(MIDDLE_STROKE_WIDTH))
-    .apply(new Back(backColor))
-    .apply(new UTranslate(point.x / k, point.y / k));
-  if (middleDecor === 'circleCircled') {
-    const bigCircle = UEllipse.build(2 * MIDDLE_RADIUS_OUTER, 2 * MIDDLE_RADIUS_OUTER);
-    base
-      .apply(new Fore(diagramBackColor))
-      .apply(new Back(diagramBackColor))
-      .apply(new UTranslate(-MIDDLE_RADIUS_OUTER, -MIDDLE_RADIUS_OUTER))
-      .draw(bigCircle);
-  }
-  if (middleDecor === 'circleCircled' || middleDecor === 'circleCircled1') {
-    const arc1 = new UEllipse(2 * MIDDLE_RADIUS_OUTER, 2 * MIDDLE_RADIUS_OUTER, angle, 90);
-    base.apply(new Back('none')).apply(new UTranslate(-MIDDLE_RADIUS_OUTER, -MIDDLE_RADIUS_OUTER)).draw(arc1);
-  }
-  if (middleDecor === 'circleCircled' || middleDecor === 'circleCircled2') {
-    const arc2 = new UEllipse(2 * MIDDLE_RADIUS_OUTER, 2 * MIDDLE_RADIUS_OUTER, angle + 180, 90);
-    base.apply(new Back('none')).apply(new UTranslate(-MIDDLE_RADIUS_OUTER, -MIDDLE_RADIUS_OUTER)).draw(arc2);
-  }
-  base
-    .apply(new UTranslate(-MIDDLE_RADIUS_INNER, -MIDDLE_RADIUS_INNER))
-    .draw(UEllipse.build(2 * MIDDLE_RADIUS_INNER, 2 * MIDDLE_RADIUS_INNER));
+  const base = ug.apply(new Fore(strokeColor)).apply(new UTranslate(point.x / k, point.y / k));
+  drawMiddleDecor(base, middleDecor, angle, { backColor, diagramBackColor });
   return extractFlatContent(ug.getSvgString());
-  // #lizard forgives -- faithful port of MiddleCircleCircled#drawU's own
-  // three-branch (BOTH/MODE1/MODE2) dispatch plus MiddleCircle's always-on
-  // inner circle, folded into one function since both share the SAME
-  // radius/stroke setup (module doc comment above).
 }
 
 /**

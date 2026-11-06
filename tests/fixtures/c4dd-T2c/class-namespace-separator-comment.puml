@@ -1,0 +1,9 @@
+@startuml
+set namespaceSeparator ::
+skinparam dpi 120
+class X::Y::A
+class X::B
+A <|.. B
+class "long name" as L
+L --> B
+@enduml

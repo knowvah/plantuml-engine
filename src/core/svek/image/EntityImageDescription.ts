@@ -121,6 +121,7 @@ import {
 import {
   buildDesc,
   buildStereo,
+  labelsForGuillemet,
   hasSomeHorizontalLinkVisible,
   isThereADoubleLink,
   hasSomeHorizontalLinkDoubleDecorated,
@@ -168,6 +169,8 @@ export interface EntityImageDescriptionLabels {
   readonly codeName: string;
   readonly displayText: string;
   readonly stereotypeLabels: readonly string[];
+  /** The same labels as `getLabels(Guillemet.DOUBLE_COMPARATOR)`, padding kept (`<< x >>`): what `skinparam guillemet false` prints. */
+  readonly stereotypeRawLabels?: readonly string[] | undefined;
   /**
    * `stereotype.getSprite(getSkinParam())` (java:193-194), ALREADY resolved
    * against the caller's own sprite view — the sizer holds a
@@ -199,6 +202,8 @@ export interface EntityImageDescriptionLabels {
  * dropping it from both.
  */
 export interface EntityImageDescriptionStereotypeSprite {
+  /** The registry name, for the image path of a sprite with no `svg`. */
+  readonly name: string;
   readonly width: number;
   readonly height: number;
   readonly scale: number;
@@ -233,6 +238,8 @@ export interface EntityImageDescriptionPaint {
    *  (grep-verified), so 0 is upstream's own real default, not a fitted
    *  constant. */
   readonly minimumWidth?: number;
+  /** See `EntityNamePaint.minimumWidthTitle`. */
+  readonly minimumWidthTitle?: number;
   /** T4: `style.value(PName.LineThickness).asDouble()`, forwarded to
    *  `BodyFactory.create3`'s `BodyEnhanced2StyleValues.defaultThickness`
    *  (`BodyEnhancedAbstract#getDefaultThickness`, java, via `super()`) --
@@ -352,10 +359,11 @@ export class EntityImageDescription {
     );
     this.desc = buildDesc(this.symbol, params.labels, params.paint, params.atomImageResolverFor, params.emojiArtwork);
     this.stereo = buildStereo(
-      params.labels.stereotypeLabels,
+      labelsForGuillemet(params.labels, params.paint.guillemet),
       params.paint.fontStereo,
       params.atomImageResolverFor?.(params.paint.fontStereo),
       params.labels.stereotypeSprite,
+      params.paint.guillemet,
     );
 
     this.asSmall = this.hideText

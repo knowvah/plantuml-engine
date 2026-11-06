@@ -1,0 +1,8 @@
+@startboard
+scale max 300 width
+A
++B
+++C
+D
++E
+@endboard

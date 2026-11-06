@@ -1,0 +1,6 @@
+@startchart
+orientation horizontal
+v-axis [A]
+h-axis 0 --> 10
+bar [0]
+@endchart

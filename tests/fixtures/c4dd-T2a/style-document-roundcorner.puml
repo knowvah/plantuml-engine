@@ -1,0 +1,15 @@
+@startuml
+<style>
+document { RoundCorner 9 }
+</style>
+title T
+caption C
+header H
+footer F
+legend
+L1
+end legend
+actor A
+usecase B
+A --> B
+@enduml

@@ -13,18 +13,10 @@
  * `plans/g2-class-svg/ledger.md` N40 "Priority 2" for the tree-list
  * derivation this file's tree-cell extraction implements).
  *
- * Scope: block separators (labeled/unlabeled `--`/`==`/`..`/`__`), `|_`
- * tree-list runs, and `{{ }}` embedded-diagram openers (CDD B7FU-R2,
- * `BodierLikeClassOrObject.java:96`'s fourth disjunct,
- * `EmbeddedDiagram.getEmbeddedType(s) != null` — a bare `{{ }}` block with
- * no separator/tree line, e.g. `class C { {{ file f }} }`, is "enhanced"
- * on its own) — upstream's THIRD `isBodyEnhanced` trigger, a `|...|` table
- * line (`CreoleParser.isTableLine`), has ZERO corpus reach inside a class
- * member body (surveyed: every `|...|` table sample in the class corpus is
- * inside a `legend`/`note`, a different render subsystem) and is NOT
- * ported here — a table-line-only body still falls through `isEnhancedBody`
- * as `false` (classic 2-compartment rendering, matching this port's
- * pre-N42 behavior, not a new regression).
+ * Scope: every `isBodyEnhanced` trigger (`BodierLikeClassOrObject.java:93-100`): block separators
+ * (labeled/unlabeled `--`/`==`/`..`/`__`), `|_` tree-list runs, a `|...|` table line (`CreoleParser.isTableLine`), and
+ * `{{ }}` embedded-diagram openers. An `object` takes this path whatever its body holds
+ * (`BodierLikeClassOrObject.java:231-236`), which is how it reaches the same table.
  *
  * @see ~/git/plantuml/.../cucadiagram/BodyEnhancedAbstract.java#isBlockSeparator
  * @see ~/git/plantuml/.../cucadiagram/BodierLikeClassOrObject.java#isBodyEnhanced
@@ -33,6 +25,7 @@
  * @see ~/git/plantuml/.../EmbeddedDiagram.java#getEmbeddedType
  */
 import { getEmbeddedType } from '../../core/EmbeddedDiagram.js';
+import { CreoleParser } from '../../core/klimt/creole/legacy/CreoleParser.js';
 
 /** One `--`/`==`/`..`/`__` block-separator line, parsed into its draw
  *  char + optional label. `char` selects the divider's stroke (`class-
@@ -68,9 +61,32 @@ export interface EnhancedTreeCell {
 export interface EnhancedTreeBlock {
   readonly kind: 'tree';
   readonly cells: readonly EnhancedTreeCell[];
+  /** The run's left margin, when a table line opened it: see {@link RunMargin}. */
+  readonly margin?: RunMargin;
 }
 
-export type EnhancedBodyBlock = EnhancedRowsBlock | EnhancedTreeBlock;
+/**
+ * `BodyEnhanced1#getArea` (java:136-146) draws a whole tree-or-table run as one `Display#create7`, wrapped in
+ * `withMargin(block, 10, 10, 0, 5)` only when its FIRST line is a table: a tree inside such a run sits in that margin.
+ * `bottom` is set on the run's last block.
+ */
+export interface RunMargin {
+  readonly left: number;
+  readonly bottom: number;
+}
+
+/** `BodyEnhanced1.java:144-145`. */
+const TABLE_RUN_MARGIN_X = 10;
+const TABLE_RUN_MARGIN_BOTTOM = 5;
+
+/** A contiguous table part of a tree-or-table run (`BodyEnhanced1#buildTreeOrTable`), its indent purged. */
+export interface EnhancedTableBlock {
+  readonly kind: 'table';
+  readonly lines: readonly string[];
+  readonly margin: RunMargin;
+}
+
+export type EnhancedBodyBlock = EnhancedRowsBlock | EnhancedTreeBlock | EnhancedTableBlock;
 
 /** `BodyEnhancedAbstract#isBlockSeparator` — verbatim (no trim: upstream
  *  checks the RAW line, so an INDENTED `  --  --` is never recognized as a
@@ -102,7 +118,13 @@ function isTreeStartLine(s: string): boolean {
  */
 export function isEnhancedBody(rawLines: readonly string[] | undefined): boolean {
   if (rawLines === undefined) return false;
-  return rawLines.some((s) => isBlockSeparatorLine(s) || isTreeStartLine(s.trimStart()) || getEmbeddedType(s) !== null);
+  return rawLines.some(
+    (s) =>
+      isBlockSeparatorLine(s) ||
+      CreoleParser.isTableLine(s) ||
+      isTreeStartLine(s.trimStart()) ||
+      getEmbeddedType(s) !== null,
+  );
 }
 
 /** `BodyEnhancedAbstract#getTitle`: strips the leading+trailing 2-char
@@ -177,6 +199,46 @@ function buildTreeRun(rawLines: readonly string[], startIdx: number): { cells: E
   return { cells, consumed: i - startIdx };
 }
 
+/** `BodyEnhanced1#isTreeOrTable` (java:117-120). */
+function isTreeOrTable(s: string): boolean {
+  const trimmed = s.trim();
+  return isTreeStartLine(trimmed) || CreoleParser.isTableLine(trimmed);
+}
+
+/** The lines of one tree-or-table run, `BodyEnhanced1#buildTreeOrTable` (java:192-213), its indent purged. */
+function treeOrTableRun(rawLines: readonly string[], startIdx: number): { lines: string[]; consumed: number } {
+  const start = LEADING_WHITESPACE_RE.exec(rawLines[startIdx]!)?.[1] ?? '';
+  const lines: string[] = [];
+  let i = startIdx;
+  for (; i < rawLines.length && isTreeOrTable(rawLines[i]!); i++) {
+    const raw = rawLines[i]!;
+    lines.push(raw.startsWith(start) ? raw.slice(start.length) : raw);
+  }
+  return { lines, consumed: i - startIdx };
+}
+
+/** One run as its blocks: `isTable` reads the raw first line, untrimmed (`BodyEnhanced1.java:134`). */
+function runBlocks(rawLines: readonly string[], startIdx: number): { blocks: EnhancedBodyBlock[]; consumed: number } {
+  const { lines, consumed } = treeOrTableRun(rawLines, startIdx);
+  const isTable = CreoleParser.isTableLine(rawLines[startIdx]!);
+  const left = isTable ? TABLE_RUN_MARGIN_X : 0;
+  const blocks: EnhancedBodyBlock[] = [];
+  for (let i = 0; i < lines.length;) {
+    const asTable = CreoleParser.isTableLine(lines[i]!.trim());
+    let end = i + 1;
+    while (end < lines.length && CreoleParser.isTableLine(lines[end]!.trim()) === asTable) end++;
+    const bottom = isTable && end === lines.length ? TABLE_RUN_MARGIN_BOTTOM : 0;
+    const part = lines.slice(i, end);
+    blocks.push(
+      asTable
+        ? { kind: 'table', lines: part, margin: { left, bottom } }
+        : { kind: 'tree', cells: buildTreeRun(part, 0).cells, ...(isTable ? { margin: { left, bottom } } : {}) },
+    );
+    i = end;
+  }
+  return { blocks, consumed };
+}
+
 /**
  * `BodyEnhanced1#getArea`'s own block-accumulation loop, ported 1:1: walks
  * `rawLines` once, flushing an `EnhancedRowsBlock` whenever a block
@@ -205,11 +267,11 @@ export function splitEnhancedBlocks(rawLines: readonly string[]): EnhancedBodyBl
       sep = blockSeparatorSpec(raw);
       continue;
     }
-    if (isTreeStartLine(raw.trimStart())) {
+    if (isTreeOrTable(raw)) {
       flushRows();
-      const { cells, consumed } = buildTreeRun(rawLines, i);
-      blocks.push({ kind: 'tree', cells });
-      i += consumed - 1;
+      const run = runBlocks(rawLines, i);
+      blocks.push(...run.blocks);
+      i += run.consumed - 1;
       continue;
     }
     (lines ??= []).push(raw);

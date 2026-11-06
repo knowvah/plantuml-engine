@@ -1,0 +1,5 @@
+@startuml
+class c
+c --> d
+object d
+@enduml

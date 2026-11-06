@@ -1,0 +1,12 @@
+@startuml
+package P {
+  rectangle a
+}
+folder F {
+  rectangle b
+}
+rectangle c
+P --> F
+c --> P
+F --> c
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+object a ##[dashed]blue
+map b ##[dotted]green {
+ k => v
+}
+object c ##[bold]red
+map d ##blue {
+ k => v
+}
+@enduml

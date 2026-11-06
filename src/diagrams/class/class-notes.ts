@@ -14,6 +14,7 @@ import { noteSeparator } from './class-note-endpoint.js';
 import { applyNoteOnLink } from './class-note-on-link.js';
 import { splitEndpointPort, stripQuotes } from './class-relationship-parser.js';
 import type { ParseState } from './class-parse-state.js';
+import { refuseUnknownNoteTarget } from './class-note-target.js';
 
 /**
  * Optional note decoration segments, shared by all four note command shapes
@@ -441,6 +442,14 @@ export function finalizePendingNote(
 export function handlePendingNoteLine(state: ParseState, line: string): boolean {
   if (state.pendingNote === null) return false;
   if (isNoteCloser(state.pendingNote, line)) {
+    const pending = state.pendingNote;
+    if (
+      pending.kind === 'attached' &&
+      refuseUnknownNoteTarget(state, pending.target, pending.implicitTarget === true)
+    ) {
+      state.pendingNote = null;
+      return true;
+    }
     const id = finalizePendingNote(state.ast, state.pendingNote, state.creationCounter, state.tipGroupsSeen);
     if (id !== undefined) {
       state.lastEntity = id;

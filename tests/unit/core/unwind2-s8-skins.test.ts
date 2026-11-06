@@ -20,7 +20,7 @@
  * declarations in an inline `<style>` and no `skin` line at all (sequence
  * ignores `participant`/`lifeLine` styles and emits `document
  * BackGroundColor white` raw; state/usecase text ignores `root FontColor`;
- * no engine reads `root FontStyle`) -- engine style-reading gaps, not the
+ * no engine but object reads `root FontStyle`) -- engine style-reading gaps, not the
  * skin.
  */
 import { readFileSync, readdirSync } from 'node:fs';
@@ -43,7 +43,7 @@ const PINS: Readonly<Record<string, number>> = {
   'skin-mindmap-reddress': 5,
   'skin-mindmap-sonyxperiadev': 0,
   'skin-object-reddress': 5,
-  'skin-object-sonyxperiadev': 2,
+  'skin-object-sonyxperiadev': 0,
   'skin-sequence-reddress': 5,
   // 1 -> 0 at sdd2 close-b4: sequence now reads the arrow style's
   // HorizontalAlignment (sdd2 T4c, `Rose.java:299-342`).
@@ -52,7 +52,7 @@ const PINS: Readonly<Record<string, number>> = {
   'skin-state-sonyxperiadev': 1,
   'skin-strictuml': 5,
   'skin-usecase-reddress': 5,
-  'skin-usecase-sonyxperiadev': 2,
+  'skin-usecase-sonyxperiadev': 0,
 };
 
 const CASES = readdirSync(DIR)

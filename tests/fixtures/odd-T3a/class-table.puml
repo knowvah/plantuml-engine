@@ -1,0 +1,7 @@
+@startuml
+class C {
+  | a | b |
+  | c | d |
+}
+class D
+@enduml

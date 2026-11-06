@@ -1,0 +1,8 @@
+@startuml
+map m {
+  a => before\n{{\nclass A\n}}\nafter
+  b => two\nlines
+}
+object o
+m::a --> o
+@enduml

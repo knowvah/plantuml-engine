@@ -10,6 +10,7 @@
  * chars appear inside /regex/ literals inside function bodies.
  */
 
+import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
 import { KEYWORD_TO_SYMBOL, type USymbol } from '../../core/descriptive-keywords.js';
 import type { DescriptiveNode } from './ast.js';
 import {
@@ -39,6 +40,7 @@ export {
   resolveInlineLinks,
   extractColor,
   extractTags,
+  stereotypeOfRun,
   extractLinkStereotype,
 } from './parse-helpers-strings.js';
 export type {
@@ -87,6 +89,8 @@ export interface NameSection {
   stereotypeSprite?: StereotypeSpriteRef;
   color?: string;
   tags?: string[];
+  /** `\\l`/`\\r` in the display: see `DescriptiveNode.naturalAlignment`. */
+  naturalAlignment?: 'left' | 'right';
   /** Raw `[[url]]` token — see `DescriptiveNode.url`. */
   url?: string;
 }
@@ -128,22 +132,22 @@ interface IdDisplay {
 // they have no upstream counterpart to be faithful to, and `stripFullWrap`
 // (mirroring `isDoubleQuote`, StringUtils.java:90-92) would not remove `'`
 // delimiters if they were captured.
-const RE_DQ_AS_ALIAS = /^(".+?")\s*as\s+(\S+)$/;
-const RE_SQ_AS_ALIAS = /^'([^']+)'\s+as\s+(\S+)$/;
-const RE_ID_AS_DQ = /^(\S+)\s+as\s+(".+?")$/;
-const RE_ID_AS_SQ = /^(\S+)\s+as\s+'([^']+)'$/;
-const RE_PAREN_ALIAS = /^\(([^)]+)\)\s+as\s+(\S+|\([^)]+\)|:[^:]+:)$/;
+const RE_DQ_AS_ALIAS = /^(".+?")\s*as\s+(\S+)$/i;
+const RE_SQ_AS_ALIAS = /^'([^']+)'\s+as\s+(\S+)$/i;
+const RE_ID_AS_DQ = /^(\S+)\s+as\s+(".+?")$/i;
+const RE_ID_AS_SQ = /^(\S+)\s+as\s+'([^']+)'$/i;
+const RE_PAREN_ALIAS = /^\(([^)]+)\)\s+as\s+(\S+|\([^)]+\)|:[^:]+:)$/i;
 // `()bareword` / `()"quoted"` (interface shorthand -- CommandCreateElementFull
 // CODE_CORE's `\(\)[%s]*[%pLN_.]+` / `\(\)[%s]*[%g][^%g]+[%g]` alternatives,
 // java:126) is tried BEFORE the bare-paren alternative since it also starts
 // with `(`; `cleanId` (parseAliasForms's m5b branch) already strips the `()`
 // prefix and any quotes.
-const RE_DQ_AS_WRAPPED = /^(".+?")\s*as\s+(\(\)\s*(?:"[^"]+"|\S+)|\([^)]+\)|:[^:]+:|\[[^\]]+\])$/;
+const RE_DQ_AS_WRAPPED = /^(".+?")\s*as\s+(\(\)\s*(?:"[^"]+"|\S+)|\([^)]+\)|:[^:]+:|\[[^\]]+\])$/i;
 // CODE as :wrapped: — bare code, colon/paren/bracket-wrapped display
 // (`Admin as :Main Admin:`). Display keeps its notation stripped by cleanId.
-const RE_ID_AS_WRAPPED = /^(\S+)\s+as\s+(\([^)]+\)|:[^:]+:|\[[^\]]+\])$/;
+const RE_ID_AS_WRAPPED = /^(\S+)\s+as\s+(\([^)]+\)|:[^:]+:|\[[^\]]+\])$/i;
 const RE_PAREN_ONLY = /^\(([^)]+)\)$/;
-const RE_PLAIN_ALIAS = /^(\S+)\s+as\s+(\S+)$/;
+const RE_PLAIN_ALIAS = /^(\S+)\s+as\s+(\S+)$/i;
 
 // parseNameSection — quoted-only form
 const RE_DQ_ONLY = /^"(.+?)"$/;
@@ -230,6 +234,12 @@ function buildNameSection(
   if (color !== undefined) section.color = color;
   if (tags !== undefined && tags.length > 0) section.tags = tags;
   return section;
+}
+
+/** `Display#getNaturalHorizontalAlignment`, which `finalizeDisplay`'s plain newlines cannot carry (`Display.java:648-649`). */
+function withNaturalAlignment(section: NameSection, rawDisplay: string): NameSection {
+  const { align } = splitDisplayLines(rawDisplay);
+  return align === 'center' ? section : { ...section, naturalAlignment: align };
 }
 
 /** The `<<...>>` half of a name section: labels plus the optional sprite
@@ -319,12 +329,15 @@ export function parseNameSection(rest: string): NameSection {
 
   const aliases = parseAliasForms(remainder);
   if (aliases !== undefined) {
-    return buildNameSection(cleanId(aliases.id), finalizeDisplay(aliases.display), decoration, color, tags);
+    return withNaturalAlignment(
+      buildNameSection(cleanId(aliases.id), finalizeDisplay(aliases.display), decoration, color, tags),
+      aliases.display,
+    );
   }
 
   const mq = RE_DQ_ONLY.exec(remainder);
   if (mq !== null) {
-    return buildNameSection(mq[1]!, finalizeDisplay(mq[1]!), decoration, color, tags);
+    return withNaturalAlignment(buildNameSection(mq[1]!, finalizeDisplay(mq[1]!), decoration, color, tags), mq[1]!);
   }
 
   const id = cleanId(remainder.trim());

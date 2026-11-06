@@ -1,0 +1,6 @@
+@startuml
+legend
+<#TRANSPARENT,#Background>| a | b |
+end legend
+class A
+@enduml

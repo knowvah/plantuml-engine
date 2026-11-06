@@ -1,0 +1,9 @@
+@startuml
+skinparam monochrome true
+<style>
+state { BackgroundColor #FF0000 }
+</style>
+state S
+S --> T
+note right of S: n
+@enduml

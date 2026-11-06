@@ -1,0 +1,6 @@
+@startchart
+!option handwritten true
+h-axis [A, B, C, D]
+bar "B" [1, 2] #3498db
+area "A" [1, 2]
+@endchart

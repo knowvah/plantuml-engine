@@ -1,0 +1,12 @@
+@startuml
+<style>
+header {
+  BackGroundColor palegreen
+  FontColor red
+}
+</style>
+header page header
+object o {
+ a = 1
+}
+@enduml

@@ -17,10 +17,12 @@
  * @see ~/git/plantuml/.../svek/image/EntityImageNote.java:154-233 (drawU)
  * @see ~/git/plantuml/.../svek/image/EntityImageNote.java:272-286 (drawNormal)
  */
+import type { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { bareEntityName } from './namespace-groups.js';
+import type { EntityUrl } from '../../core/svek/image/EntityImageDescription.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { Theme } from '../../core/theme.js';
-import { resolveElementFontSize, resolveElementLineThickness } from '../../core/theme.js';
+import { resolveElementFontSize, resolveElementLineThickness, resolveElementShadowing } from '../../core/theme.js';
 import type { Paint } from '../../core/paint.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
@@ -45,6 +47,7 @@ import {
 } from '../../core/svek/DecorateEntityImage.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import type { DescriptionNodeGeo } from './layout-helpers.js';
+import { styleFont, stylePaint } from './description-entity-style.js';
 import { parseColorOverride } from './renderer-color-override.js';
 import { drawNoteShape, NOTE_STROKE_WIDTH, type NotePaints } from './renderer-note-opale.js';
 
@@ -78,8 +81,15 @@ function noteFont(theme: Theme): FontConfiguration {
 }
 
 /** The creole body block both note kinds draw (`BodyFactory.create3` over the `note` font). */
-export function buildNoteBlock(display: string, theme: Theme, sprites: SpriteRegistry | undefined): TextBlock {
-  return buildNoteBody(display, noteFont(theme), {
+export function buildNoteBlock(
+  display: string,
+  theme: Theme,
+  sprites: SpriteRegistry | undefined,
+  styled?: FontConfiguration,
+  alignment?: HorizontalAlignment,
+): TextBlock {
+  return buildNoteBody(display, styled ?? noteFont(theme), {
+    ...(alignment === undefined ? {} : { alignment }),
     wrapWidth: theme.wrapWidth,
     guillemet: {
       start: theme.colors.graph.guillemetStart ?? GUILLEMET_DEFAULT.start,
@@ -109,7 +119,16 @@ export function resolveNotePaints(node: DescriptionNodeGeo, theme: Theme): NoteP
   const styled = tagBackground(theme, node.styleStereotype ?? node.stereotype ?? []) ?? bucket?.background;
   const back = override.back ?? (styled !== undefined ? resolveStyled(styled) : theme.colors.noteBackground);
   const thickness = resolveElementLineThickness(theme, 'note') ?? NOTE_STROKE_WIDTH;
-  return { back, border: bucket?.border ?? theme.colors.border, stroke: UStroke.withThickness(thickness) };
+  const style = node.entityStyle?.note;
+  return {
+    back: override.back ?? stylePaint(style, 'BackGroundColor') ?? back,
+    border: stylePaint(style, 'LineColor') ?? bucket?.border ?? theme.colors.border,
+    stroke: style?.getStroke() ?? UStroke.withThickness(thickness),
+    shadowing: style?.getShadowing() ?? resolveElementShadowing(theme, 'note'),
+    ...(theme.colors.graph.classCascadeRoundCorner === undefined
+      ? {}
+      : { roundCorner: theme.colors.graph.classCascadeRoundCorner }),
+  };
 }
 
 /** A `<style>` colour NAME needs `HColorSet` resolution; a gradient passes through. */
@@ -133,13 +152,23 @@ export function drawNote(
 ): void {
   const info: EntityDecorationInfo = { name: bareEntityName(node.id), qualifiedName: node.id, uid, location: null };
   const paints = resolveNotePaints(node, theme);
-  const block = buildNoteBlock(node.display, theme, sprites);
+  const block = buildNoteBlock(
+    node.display,
+    theme,
+    sprites,
+    styleFont(node.entityStyle?.note),
+    node.entityStyle?.note?.getHorizontalAlignment(),
+  );
   decorateEntityDrawing(
     requireGroups(ug),
     info,
     {
-      drawU(inner: UGraphic): void {
-        const ug2 = UGraphicStencil.create(inner, new XDimension2D(node.width, node.height));
+      drawU(grouped: UGraphic): void {
+        // `EntityImageNote.java:194,204-205,266-267`. Optional calls: the ink-extent pass has no `startUrl`.
+        const linkable = grouped as UGraphic & Partial<{ startUrl(u: EntityUrl): void; closeUrl(): void }>;
+        const url = node.url;
+        if (url !== undefined) linkable.startUrl?.(url);
+        const ug2 = UGraphicStencil.create(grouped, new XDimension2D(node.width, node.height));
         drawNoteShape(ug2, node, paints);
         // The text draws on the note's `Back` and `Fore` (`drawNormal` :279,
         // `Opale.drawU` :107 apply `bg` then `border`), so a sprite atom tints
@@ -150,6 +179,7 @@ export function drawNote(
         const coloured = ug2.apply(new Back(paints.back)).apply(new Fore(paints.border));
         const textUg = node.opale === undefined ? coloured : coloured.apply(paints.stroke);
         block.drawU(textUg.apply(new UTranslate(NOTE_MARGIN_X, NOTE_MARGIN_Y)));
+        if (url !== undefined) linkable.closeUrl?.();
       },
     },
     { withComment: false },

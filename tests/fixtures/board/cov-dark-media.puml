@@ -1,0 +1,14 @@
+@startboard
+<style>
+@media (prefers-color-scheme:dark) {
+  document {
+    BackgroundColor #333333
+  }
+}
+</style>
+A
++B
+++C
+D
++E
+@endboard

@@ -5,7 +5,55 @@
  * move, no behavior change). Re-exported from `theme.ts` so every existing
  * `from './theme.js'` call site is unaffected.
  */
-import type { Theme, ThemeOverride } from './theme.js';
+import type { ElementColors, Theme, ThemeOverride } from './theme.js';
+
+/**
+ * Merge the `<style>`-derived element buckets onto `base.colors.elements`
+ * **per SName**, mirroring `StyleBuilder#muteStyle`
+ * (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/
+ * StyleBuilder.java:86-104`): the incoming styles are merged into a COPY of
+ * the existing storage one `StyleSignatureBasic` at a time — absent
+ * signature → `put`, present signature → `orig.mergeWith(modifiedStyle,
+ * MergeStrategy.OVERWRITE_EXISTING_VALUE)`. So the incoming block wins
+ * FIELD-BY-FIELD inside its own signature, and can never evict a signature
+ * it does not name.
+ *
+ * S1L-tail F4-e (M1, `plans/s1l-tail-fix/findings/fariba-82-residual.md`):
+ * `deepMergeTheme`'s `colors: { ...base.colors, ...partial.colors }` spread
+ * is shallow, so handing it a bare `elements` key REPLACED the whole map.
+ * Any element-scoped `<style>` selector therefore deleted every
+ * skinparam-derived bucket built by stage 2 — in `fariba-82-xolu802`, a
+ * `<style> file { … }` block deleted `elements.rectangle`'s
+ * `stereotypeFontSize: 12` (from awslib's `skinparam rectangle {
+ * StereotypeFontSize 12 }`), forcing the `«User»` row to 14pt and +2px of
+ * node height. Upstream cannot express that: `file` and `rectangle` are
+ * distinct signatures.
+ *
+ * `stereotypeFontSizeByStereo` merges one level deeper for the same reason:
+ * its keys are per-stereotype-NAME rules that upstream registers as their
+ * OWN (more specific) signatures, so a `<style>` rule for one tag must not
+ * evict a skinparam-derived rule for a different tag either.
+ */
+export function mergeElementBuckets(
+  base: Theme['colors']['elements'],
+  incoming: Readonly<Record<string, ElementColors>>,
+): Partial<Record<string, ElementColors>> {
+  const merged: Partial<Record<string, ElementColors>> = { ...base };
+  for (const [sname, style] of Object.entries(incoming)) {
+    const orig = merged[sname];
+    if (orig === undefined) {
+      merged[sname] = style;
+      continue;
+    }
+    const byStereo = { ...orig.stereotypeFontSizeByStereo, ...style.stereotypeFontSizeByStereo };
+    merged[sname] = {
+      ...orig,
+      ...style,
+      ...(Object.keys(byStereo).length > 0 ? { stereotypeFontSizeByStereo: byStereo } : {}),
+    };
+  }
+  return merged;
+}
 
 /** Merge the nested `colors.graph` block (activity/json one level deep). */
 function mergeGraphColors(base: Theme, partial: ThemeOverride): Theme['colors']['graph'] {
@@ -41,6 +89,8 @@ const OPTIONAL_SCALAR_KEYS = [
   'genericDisplayOld', // cdd3-T25 (E3-3)
   'monochrome',
   'reverseColor',
+  'stereotypeAlignment',
+  'svgDimensionStyle',
   'shadowing',
   'packageStyle',
   'nodeSep',

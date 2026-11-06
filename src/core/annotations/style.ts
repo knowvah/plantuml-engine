@@ -58,6 +58,7 @@
 import type { Gradient } from '../paint.js';
 import type { Theme } from '../theme.js';
 import type { StyleMap } from '../skinparam.js';
+import { colorMapperOf } from '../klimt/color/fragment-color-mapper.js';
 import { resolveColorToSvgHex } from '../klimt/color/HColorSet.js';
 import { ANNOTATION_ELEMENTS } from './annotation-style-types.js';
 import type { AnnotationBoxStyle, AnnotationElement, ResolvedAnnotationStyles } from './annotation-style-types.js';
@@ -65,6 +66,7 @@ import type { DiagramType } from '../TitledDiagram.js';
 import type { SName } from '../style/SName.js';
 import { PNAMES } from '../style/PName.js';
 import { StyleSignatureBasic } from '../style/StyleSignatureBasic.js';
+import { mergedRoundCornerReader, type MergedRoundCorner } from './annotation-round-corner.js';
 import { loadSkin } from '../style/StyleLoader.js';
 import { skinRunsOf } from '../skin-loader.js';
 import { DEFAULT_SKIN } from '../style/mindmap-style-builder.js';
@@ -125,9 +127,21 @@ export function resolveAnnotationStyles(
     documentBackgroundGradient: theme.colors.backgroundGradient,
     themeStyleMap: toStyleMap(theme.styleOverrides),
     segments: segmentsOf(declarations, styleMap),
+    mergedRoundCorner: mergedRoundCornerReader(declarations),
   };
   const result = {} as Record<AnnotationElement, AnnotationBoxStyle>;
-  for (const element of ANNOTATION_ELEMENTS) result[element] = resolveElement(element, ctx, undefined);
+  // The exporter draws the chrome through the same `ColorMapper` as the block (`TextBlockExporter.java:172-177`).
+  const mapper = colorMapperOf(theme);
+  const mapped = (style: AnnotationBoxStyle): AnnotationBoxStyle =>
+    mapper === undefined
+      ? style
+      : {
+          ...style,
+          fontColor: mapper(resolveColorToSvgHex(style.fontColor)),
+          backgroundColor: style.backgroundColor === null ? null : mapper(resolveColorToSvgHex(style.backgroundColor)),
+          lineColor: style.lineColor === null ? null : mapper(resolveColorToSvgHex(style.lineColor)),
+        };
+  for (const element of ANNOTATION_ELEMENTS) result[element] = mapped(resolveElement(element, ctx, undefined));
   // wep-T5b: one legend per style name, resolved on first use (upstream
   // memoizes `getMergedStyle` per signature, StyleBuilder.java:126-129).
   const legends = new Map<SName, AnnotationBoxStyle>();
@@ -136,7 +150,7 @@ export function resolveAnnotationStyles(
     const styleName = getStyleName(diagramType);
     const cached = legends.get(styleName);
     if (cached !== undefined) return cached;
-    const legend = resolveElement('legend', ctx, styleName);
+    const legend = mapped(resolveElement('legend', ctx, styleName));
     legends.set(styleName, legend);
     return legend;
   };
@@ -151,6 +165,7 @@ interface ResolveContext {
   readonly documentBackgroundGradient: Gradient | undefined;
   readonly themeStyleMap: StyleMap | undefined;
   readonly segments: readonly StyleSkinparamSegment[];
+  readonly mergedRoundCorner: MergedRoundCorner;
 }
 
 /**
@@ -199,6 +214,8 @@ function resolveElement(
     applyStyleOverrides(element, style, ctx.themeStyleMap, ctx.documentBackgroundHex, styleName);
   }
   for (const segment of ctx.segments) applySegment(element, style, segment, ctx.documentBackgroundHex, styleName);
+  const roundCorner = ctx.mergedRoundCorner(element, styleName);
+  if (roundCorner !== undefined) style.roundCorner = roundCorner;
   return style;
 }
 

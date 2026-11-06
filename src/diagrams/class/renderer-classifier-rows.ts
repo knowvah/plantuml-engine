@@ -448,7 +448,8 @@ export function renderRowAtoms(
     // so a 0.158 residual remains here -- shared with every text baseline in
     // the port, not specific to atoms.
     const lineBottomY = y + theme.fontSize / 4.5;
-    out += image(x, lineBottomY - atom.height, Math.round(atom.width), Math.round(atom.height), atom.href);
+    const round = atom.exactSize === true ? (v: number) => v : Math.round;
+    out += image(x, lineBottomY - atom.height, round(atom.width), round(atom.height), atom.href);
     x += atom.width;
   }
   return out;

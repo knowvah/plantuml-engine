@@ -1,0 +1,7 @@
+@startuml
+json j {
+  "a": "one\ntwo",
+  "b": "{{\nclass A\n}}"
+}
+object o
+@enduml

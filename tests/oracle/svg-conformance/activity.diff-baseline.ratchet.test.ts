@@ -352,8 +352,14 @@ describe('svg-activity weighted-score baseline ratchet — "pinned" rows are ski
     // add1-b1 pinned the first real rows (D5). A pinned row is owned by
     // activity.golden.ratchet.test.ts; this check keeps the two files in
     // lockstep so a row can never be gated by neither test (or by both).
-    const ratchet = JSON.parse(readFileSync(RATCHET_PATH, 'utf8')) as { fixtures: readonly { slug: string }[] };
-    const ratchetSlugs = ratchet.fixtures.map((f) => f.slug).sort();
+    // ubt-T3c (D6): an `unknown`-tree pin is an `unknown` corpus row, which this activity manifest never lists.
+    const ratchet = JSON.parse(readFileSync(RATCHET_PATH, 'utf8')) as {
+      fixtures: readonly { slug: string; tree?: string }[];
+    };
+    const ratchetSlugs = ratchet.fixtures
+      .filter((f) => f.tree === undefined)
+      .map((f) => f.slug)
+      .sort();
     expect(pinnedFixtures.map((f) => f.slug).sort()).toEqual(ratchetSlugs);
   });
 });

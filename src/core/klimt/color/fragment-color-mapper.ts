@@ -41,6 +41,7 @@ import { shortenColor } from '../../svg-format.js';
 import type { RgbTriple } from './ColorTrieNode.js';
 import { rgbToHsluv, hsluvToRgb } from './HUSLColorConverter.js';
 import { to255 } from './ColorUtils.js';
+import { resolveColorToSvgHex } from './HColorSet.js';
 import { fromString as colorOrderFromString, getReverse } from './ColorOrder.js';
 
 export type MonochromeMode = 'true' | 'reverse';
@@ -171,7 +172,17 @@ export function colorMapperOf(theme: {
  *  collide with this pattern, but scoping to known color properties is the
  *  defensive choice regardless). */
 const COLOR_PROPERTY_RE =
-  /((?:fill|stroke|stop-color)(?:="|:\s*))#([0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?|[0-9A-Fa-f]{3}(?![0-9A-Fa-f]))/g;
+  /((?:fill|stroke|stop-color)(?:="|:\s*))#([0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?|[0-9A-Fa-f]{3}(?![0-9A-Fa-f]))(?!"\s+fill-opacity="0"[\s/>])/g;
+
+/**
+ * The root background through the same mapper as the fragment: `SvgGraphics.java:181-182`
+ * writes `backcolor.toSvg(option.getColorMapper())`. A transparent background
+ * returns `#00000000` before the mapper (`HColor.java:74-76`), which
+ * {@link mapHexChannels} leaves alone. No mapper returns the background unchanged.
+ */
+export function mapDocumentBackground(background: string, mapper: HexColorMapper | undefined): string {
+  return mapper === undefined ? background : mapper(resolveColorToSvgHex(background));
+}
 
 /**
  * The single post-processing choke point: run once, over the WHOLE assembled

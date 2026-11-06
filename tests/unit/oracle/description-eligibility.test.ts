@@ -31,6 +31,24 @@ describe('dotEligibility', () => {
     });
   });
 
+  it('a blind row with an active elk pragma has no DOT stage to equal (cdd8 D12, c4dd D6)', () => {
+    const r = { slug: 's', dotEqual: false, oracleBlind: true };
+    const source = '@startuml\n!pragma layout elk\nclass A\n@enduml\n';
+    expect(dotEligibility('component', r, undefined, source)).toEqual({ ok: true, reason: 'ELK, no DOT stage' });
+    expect(dotEligibility('c4', r, 'DESCRIPTION', source)).toEqual({
+      ok: true,
+      reason: 'ELK, no DOT stage, routed DESCRIPTION',
+    });
+  });
+
+  it('a blind row without the pragma, or a pragma on a row the survey does not call blind, is not eligible', () => {
+    const source = '@startuml\n!pragma layout elk\nclass A\n@enduml\n';
+    expect(
+      dotEligibility('component', { slug: 's', dotEqual: false, oracleBlind: true }, undefined, 'class A').ok,
+    ).toBe(false);
+    expect(dotEligibility('component', { slug: 's', dotEqual: false }, undefined, source).ok).toBe(false);
+  });
+
   it('a dotEqual component row is eligible without consulting routing', () => {
     expect(dotEligibility('component', { slug: 's', dotEqual: true }, undefined)).toEqual({
       ok: true,

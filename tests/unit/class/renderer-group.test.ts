@@ -129,7 +129,7 @@ describe('cdd-T16 — lazeju-60-boki114 full pipeline', () => {
   it('renders every one of A3`s/A4`s 7 grouped links as a bare solid path, no polygon, in its own <g class="link">', () => {
     const svg = renderFixtureClass(markup, measurer);
     for (const child of ['B3', 'C3', 'D3', 'B4', 'C4', 'D4', 'E4']) {
-      const linkMatch = new RegExp(`<!--link ${child} to A[34]-->(.*?)</g>`, 's').exec(svg);
+      const linkMatch = new RegExp(`<!--reverse link A[34] to ${child}-->(.*?)</g>`, 's').exec(svg);
       expect(linkMatch).not.toBeNull();
       expect(linkMatch![1]).not.toContain('<polygon');
       expect(linkMatch![1]).toContain('<path');
@@ -184,7 +184,7 @@ describe('cdd-T16b — jakapi-64-tine258 full pipeline (allButSametails)', () =>
     // draws no `<g class="link">` at all (`Link.java:459`'s isHidden OR),
     // so only Events/Travels are checked here.
     for (const child of ['Events', 'Travels']) {
-      const linkMatch = new RegExp(`<!--link ${child} to Group-->(.*?)</g>`, 's').exec(svg);
+      const linkMatch = new RegExp(`<!--reverse link Group to ${child}-->(.*?)</g>`, 's').exec(svg);
       expect(linkMatch).not.toBeNull();
       expect(linkMatch![1]).not.toContain('<polygon');
     }

@@ -1,0 +1,12 @@
+@startboard
+<style>
+document {
+  Margin 5 40 20 0
+}
+</style>
+A
++B
+++C
+D
++E
+@endboard

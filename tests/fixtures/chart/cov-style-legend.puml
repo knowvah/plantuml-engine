@@ -1,0 +1,13 @@
+@startchart
+<style>
+chartDiagram {
+legend {
+FontColor red
+FontSize 20
+}
+}
+</style>
+h-axis [A, B, C, D]
+bar "B" [1]
+legend right
+@endchart

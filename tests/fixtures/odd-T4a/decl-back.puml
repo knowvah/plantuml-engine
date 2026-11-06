@@ -1,0 +1,9 @@
+@startuml
+object a #pink
+map b #pink {
+ k => v
+}
+json c #pink {
+ "x": 1
+}
+@enduml

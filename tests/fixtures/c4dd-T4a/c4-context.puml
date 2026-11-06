@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+Person(user, "User", "A person")
+Person_Ext(ext, "External", "Someone outside")
+System(sys, "System", "Does things")
+System_Ext(mail, "Mail", "Sends mail")
+Rel(user, sys, "Uses")
+Rel_R(sys, mail, "Sends", "SMTP")
+Rel_Back(ext, sys, "Notifies")
+@enduml

@@ -16,10 +16,11 @@ Same rationale as `oracle/goldens/svg-class/README.md` and
 `oracle/goldens/svg-description/README.md`: production (`renderSync`)
 always measures text with `jarMeasurer` (AWT font metrics via the cached
 jar), a pre-existing, already-documented apples-to-oranges gap (D12), not
-evidence of a rendering bug. This ratchet reuses `render-fixture-
-class.ts#renderFixtureClass` VERBATIM (G2/N0, extended G3/O0) — object
-fixtures need no dedicated render helper since they share the class
-engine's exact pipeline; see that file's own doc comment.
+evidence of a rendering bug. This ratchet renders through `render-fixture-
+class.ts#renderClassFixture` under `censusClassFixtureOptions` with a
+preloaded ELK backend, as the class ratchet does (odd D9) — object fixtures
+need no dedicated render helper since they share the class engine's exact
+pipeline.
 
 ## Layout
 
@@ -41,6 +42,21 @@ the `object` issue-corpus bucket that happens to declare zero `object`-
 keyword entities) plain `class`. `in.puml` and `golden.svg` are committed
 copies so the ratchet test runs fully offline — no dependency on the
 gitignored, regenerable `test-results/dot-cache/` tree at test time.
+
+## Current state (odd T4b, 2026-11-05)
+
+**All 81 `object` rows pinned**, the whole bucket conformant (issue #115). A
+row is eligible when it is DOT-EQUAL in `parity-object.json`, or an ELK row
+with no DOT stage (`description-eligibility.ts#isElkRow`:
+`robitu-34-vupe367`).
+
+## Add rule (odd T4b)
+
+Regenerate `tests/oracle/svg-conformance/parity-object.json` with
+`npm run svg:survey -- object --out <path>` and copy it over, then run
+`npx jiti plans/object-divergence-drive/measurements/pin-object.mts --write`,
+which copies `in.puml` and `in.svg` here and adds each row's `goldens` twin to
+`oracle/goldens/svg-conformance/{routing,refusal}-baseline.json`.
 
 ## Current state (G3/O0, 2026-07-19)
 

@@ -1,0 +1,11 @@
+@startuml
+<style>
+activity { Shadowing 4 }
+note { FontSize 12 }
+</style>
+start
+:a;
+note right: n
+stop
+skinparam shadowing false
+@enduml

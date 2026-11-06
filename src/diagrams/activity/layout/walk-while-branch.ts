@@ -11,6 +11,7 @@
  * D7).
  */
 
+import { colorSpread } from './diamond-colors.js';
 import type { ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { GtileWhile } from '../tiles/gtile-while.js';
 import type { DiamondConditionTile } from '../tiles/gtile-diamond-inside.js';
@@ -59,7 +60,12 @@ function pushWhileHeader(
   const hexLane = laneAt(header, myLane);
   const inY = header.getCoord(NORTH_HOOK).y;
   const box = { x: hX, y: hY + inY, width: header.width, height: header.getCoord(SOUTH_HOOK).y - inY };
-  pushNode(out, { id: out.nextId('while-header'), kind: 'while-header', ...box, label: header.label }, hexLane);
+  const color = colorSpread(header.diamondColors?.open);
+  pushNode(
+    out,
+    { id: out.nextId('while-header'), kind: 'while-header', ...box, label: header.label, ...color },
+    hexLane,
+  );
   const northAt = out.nodes.length;
   emitDiamondLabels(header, { x: hX, y: hY }, ['north'], hexLane, out);
   markEmptyDiamondTest(header, out.nodes[northAt]);

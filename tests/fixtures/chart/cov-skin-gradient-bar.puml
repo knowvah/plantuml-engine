@@ -1,0 +1,11 @@
+@startchart
+h-axis [A, B, C, D]
+<style>
+chartDiagram {
+bar {
+BackGroundColor red/blue
+}
+}
+</style>
+bar [1, 2]
+@endchart

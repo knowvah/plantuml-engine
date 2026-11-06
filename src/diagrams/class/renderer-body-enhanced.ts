@@ -55,6 +55,8 @@ import { renderRow, pushIconRowPrimitives } from './renderer-classifier-box.js';
 import type { EnhancedBodyGeo, EnhancedBodyPart } from './class-body-enhanced-layout.js';
 import { BODY_ENHANCED_MARGIN_X } from './class-body-enhanced-geometry.js';
 import type { UrlTaggedPrimitive } from './renderer-url.js';
+import { renderCreoleTable } from './renderer-note-lines.js';
+import { classifierCascadeFontColor } from './renderer-classifier-row-font-color.js';
 import { classStyleLineThickness } from './renderer-classifier-colors.js';
 
 type DividerPart = Extract<EnhancedBodyPart, { kind: 'divider' }>;
@@ -209,6 +211,21 @@ function renderTreePart(
   return out;
 }
 
+/** `Display#create7` draws under the body's font, and `AtomTable`'s rules take its colour; their stroke is the
+ *  graphic's default 1, which no style reaches here (jar: `stroke-width:1` under `objectBorderThickness 3`). */
+function renderTablePart(
+  geo: ClassifierGeo,
+  part: Extract<EnhancedBodyPart, { kind: 'table' }>,
+  theme: ScaledTheme,
+): string {
+  const color = classifierCascadeFontColor(geo, theme, false, false);
+  return renderCreoleTable(
+    part.table,
+    { x0: geo.x + part.x, rowTop: geo.y + part.y, baselineOffset: part.baselineOffset },
+    { fontColor: color, lineColor: color, strokeWidth: theme.scaleK },
+  );
+}
+
 /**
  * Builds one `UrlTaggedPrimitive` PER divider/tree part and PER ROW inside
  * a 'rows' part, IN ORDER (never Y-sorted — see this file's own module doc
@@ -243,6 +260,8 @@ export function buildEnhancedBodyPrimitives(
       primitives.push({ url: geo.url, body: renderDividerPart(geo, part, theme, borderColor) });
     } else if (part.kind === 'rows') {
       primitives.push(...buildRowsPartPrimitives(geo, part, theme));
+    } else if (part.kind === 'table') {
+      primitives.push({ url: geo.url, body: renderTablePart(geo, part, theme) });
     } else {
       primitives.push({ url: geo.url, body: renderTreePart(geo, part, theme, fill) });
     }

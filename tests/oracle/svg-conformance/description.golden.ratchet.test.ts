@@ -24,14 +24,14 @@
  * dependency at test time — that tree is gitignored and regenerable; see
  * `oracle/goldens/svg-description/README.md`).
  */
-import { describe, it, expect, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { beforeAll, describe, it, expect, vi } from 'vitest';
+import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from './compare.js';
-import { renderFixture } from './render-fixture.js';
+import { prepareElkOnce, renderFixture } from './render-fixture.js';
 import { dotEligibility, type Eligibility, type SurveyRow } from './description-eligibility.js';
 import { CI_RENDER_BUDGET_MS } from '../../helpers/ci-test-budgets.js';
 
@@ -85,10 +85,12 @@ function ourTypeOf(type: string, slug: string): string | undefined {
 }
 
 function eligibilityOf(type: string, slug: string): Eligibility {
+  const pinnedSource = join(GOLDENS_ROOT, type, slug, 'in.puml');
   return dotEligibility(
     type,
     surveyRows(type).find((r) => r.slug === slug),
     ourTypeOf(type, slug),
+    existsSync(pinnedSource) ? readFileSync(pinnedSource, 'utf8') : '',
   );
 }
 
@@ -132,6 +134,10 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 // ---------------------------------------------------------------------------
 
 describe.skipIf(manifest.fixtures.length === 0)('svg-description conformance ratchet (AC1)', () => {
+  beforeAll(async () => {
+    await prepareElkOnce();
+  });
+
   for (const f of manifest.fixtures) {
     it(`${f.type}/${f.slug}: stays zero-diff against the pinned golden`, () => {
       const golden = readGolden(f);
@@ -205,16 +211,16 @@ describe('svg-description conformance ratchet — eligibility (AC3)', () => {
   });
 
   it('rejects adding a fixture whose DOT is not EQUAL', () => {
-    // Real rows known (via parity-component.json) to be dotEqual=false:
-    // `berelu-46-namo819` (diverged; `gutute-00-gaki684` is now dotEqual) and `dirofi-81-cuga514`, which is
-    // verdict=conformant yet dotEqual=false -- conformance alone is not enough.
-    for (const slug of ['berelu-46-namo819', 'dirofi-81-cuga514']) {
-      const entry = surveyRows('component').find((r) => r.slug === slug);
-      expect(entry, `expected ${slug} in parity-component.json`).toBeDefined();
+    // A real row known (via parity-unknown.json) to be dotEqual=false: `citoda-80-dimi195`, which is
+    // verdict=conformant yet dotEqual=false -- conformance alone is not enough. An ELK row has no DOT stage and
+    // passes on its own rule (cdd8 D12, c4dd D6).
+    for (const slug of ['citoda-80-dimi195']) {
+      const entry = surveyRows('unknown').find((r) => r.slug === slug);
+      expect(entry, `expected ${slug} in parity-unknown.json`).toBeDefined();
       expect(entry!.dotEqual).toBe(false);
-      expect(eligibilityOf('component', slug)).toEqual({
+      expect(eligibilityOf('unknown', slug)).toEqual({
         ok: false,
-        reason: 'dotEqual=false in parity-component.json',
+        reason: 'dotEqual=false in parity-unknown.json',
       });
       expect(manifest.fixtures.some((f) => f.slug === slug)).toBe(false);
     }

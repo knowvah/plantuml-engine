@@ -1,0 +1,8 @@
+@startboard
+skinparam backgroundColor #DDEEFF
+A
++B
+++C
+D
++E
+@endboard

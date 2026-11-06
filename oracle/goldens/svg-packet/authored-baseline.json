@@ -1,0 +1,1534 @@
+{
+  "fixtures": [
+    {
+      "type": "packet",
+      "slug": "cov-attr-color-ignored",
+      "topic": "T3c edges and errors: attr-color-ignored",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-height-0",
+      "topic": "T3c edges and errors: attr-height-0",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-height-3",
+      "topic": "T3c edges and errors: attr-height-3",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-label-ignored",
+      "topic": "T3c edges and errors: attr-label-ignored",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-len-negative",
+      "topic": "T3c edges and errors: attr-len-negative",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 5,
+        "message": "Fatal crash error, you should send a mail to plantuml@gmail.com with: java.lang.IllegalArgumentException: -1"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-len-plus",
+      "topic": "T3c edges and errors: attr-len-plus",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-attr-rotate",
+      "topic": "T3c edges and errors: attr-rotate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-big-start",
+      "topic": "T3c edges and errors: big-start",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-brace-only",
+      "topic": "T3c edges and errors: brace-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-case-insensitive",
+      "topic": "T3c edges and errors: case-insensitive",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-all",
+      "topic": "T3c chrome and embedding: chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-caption",
+      "topic": "T3c chrome and embedding: chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-footer",
+      "topic": "T3c chrome and embedding: chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-header",
+      "topic": "T3c chrome and embedding: chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-hide",
+      "topic": "T3c chrome and embedding: chrome-hide",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-legend",
+      "topic": "T3c chrome and embedding: chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-legend-right",
+      "topic": "T3c chrome and embedding: chrome-legend-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-mainframe",
+      "topic": "T3c chrome and embedding: chrome-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-multiline-title",
+      "topic": "T3c chrome and embedding: chrome-multiline-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-page",
+      "topic": "T3c chrome and embedding: chrome-page",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-rotate",
+      "topic": "T3c chrome and embedding: chrome-rotate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-scale-2",
+      "topic": "T3c chrome and embedding: chrome-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-scale-all",
+      "topic": "T3c chrome and embedding: chrome-scale-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-scale-half",
+      "topic": "T3c chrome and embedding: chrome-scale-half",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-scale-title",
+      "topic": "T3c chrome and embedding: chrome-scale-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-scale-width",
+      "topic": "T3c chrome and embedding: chrome-scale-width",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-chrome-title",
+      "topic": "T3c chrome and embedding: chrome-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-colwidth-3",
+      "topic": "T3c edges and errors: colwidth-3",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-colwidth-999",
+      "topic": "T3c edges and errors: colwidth-999",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-embed-class",
+      "topic": "T3c chrome and embedding: embed-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-embed-sequence",
+      "topic": "T3c chrome and embedding: embed-sequence",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-empty",
+      "topic": "T3c edges and errors: empty",
+      "status": "baseline",
+      "weightedScore": 28,
+      "diffCount": 21,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-empty-body",
+      "topic": "T3c edges and errors: empty-body",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-colwidth-4-digits",
+      "topic": "T3c edges and errors: err-colwidth-4-digits",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-no-desc",
+      "topic": "T3c edges and errors: err-no-desc",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-range-8-digits",
+      "topic": "T3c edges and errors: err-range-8-digits",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-scale-interval-overflow",
+      "topic": "T3c edges and errors: err-scale-interval-overflow",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Scale interval invalid (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-style",
+      "topic": "T3c edges and errors: err-style",
+      "status": "baseline",
+      "weightedScore": 92,
+      "diffCount": 39,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 5,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.style.parser.StyleToken.getType()\" because the return value of \"net.sourceforge.plantuml.utils.Peeker.peek(int)\" is null (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-unclosed",
+      "topic": "T3c edges and errors: err-unclosed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-err-unknown-line",
+      "topic": "T3c edges and errors: err-unknown-line",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-brackets",
+      "topic": "T3c labels: label-brackets",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-creole-bold",
+      "topic": "T3c labels: label-creole-bold",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-cut-1",
+      "topic": "T3c labels: label-cut-1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-cut-2",
+      "topic": "T3c labels: label-cut-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-cut-8",
+      "topic": "T3c labels: label-cut-8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-cut-creole",
+      "topic": "T3c labels: label-cut-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-emoji",
+      "topic": "T3c labels: label-emoji",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-empty",
+      "topic": "T3c labels: label-empty",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-newline",
+      "topic": "T3c labels: label-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-openiconic",
+      "topic": "T3c labels: label-openiconic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-quote",
+      "topic": "T3c labels: label-quote",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-spaces",
+      "topic": "T3c labels: label-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-sprite",
+      "topic": "T3c labels: label-sprite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-label-url",
+      "topic": "T3c labels: label-url",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-no-wrapper",
+      "topic": "T3c edges and errors: no-wrapper",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-node-height-small",
+      "topic": "T3c edges and errors: node-height-small",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-overlap",
+      "topic": "T3c edges and errors: overlap",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-rtl-same-height",
+      "topic": "T3c edges and errors: rtl-same-height",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-rtl-spanning",
+      "topic": "T3c edges and errors: rtl-spanning",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-scale-interval-big",
+      "topic": "T3c chrome and embedding: scale-interval-big",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-semicolons",
+      "topic": "T3c edges and errors: semicolons",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-background",
+      "topic": "T3c style and skin: skin-background",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-defaultfont",
+      "topic": "T3c style and skin: skin-defaultfont",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-handwritten",
+      "topic": "T3c style and skin: skin-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-handwritten-option",
+      "topic": "T3c style and skin: skin-handwritten-option",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-mode-dark",
+      "topic": "T3c style and skin: skin-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-monochrome",
+      "topic": "T3c style and skin: skin-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-monochrome-reverse",
+      "topic": "T3c style and skin: skin-monochrome-reverse",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-reversecolor",
+      "topic": "T3c style and skin: skin-reversecolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-rose",
+      "topic": "T3c style and skin: skin-rose",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-rose-style",
+      "topic": "T3c style and skin: skin-rose-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-shadowing",
+      "topic": "T3c style and skin: skin-shadowing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-theme-cerulean",
+      "topic": "T3c style and skin: skin-theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-theme-dark",
+      "topic": "T3c style and skin: skin-theme-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-skin-theme-plain",
+      "topic": "T3c style and skin: skin-theme-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-start-gap",
+      "topic": "T3c edges and errors: start-gap",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-diagram-colors",
+      "topic": "T3c style and skin: style-diagram-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-element",
+      "topic": "T3c style and skin: style-element",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-fontsize",
+      "topic": "T3c style and skin: style-fontsize",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-linestyle",
+      "topic": "T3c style and skin: style-linestyle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-rectangle",
+      "topic": "T3c style and skin: style-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-rectangle-shadow",
+      "topic": "T3c style and skin: style-rectangle-shadow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-style-root",
+      "topic": "T3c style and skin: style-root",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "cov-two-wrappers",
+      "topic": "T3c edges and errors: two-wrappers",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R01.01-simple",
+      "topic": "T3b upstream vega/packet: R01.01-simple",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.01-colwidth_0",
+      "topic": "T3b upstream vega/packet: R02.01-colwidth_0",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.02-colwidth_1",
+      "topic": "T3b upstream vega/packet: R02.02-colwidth_1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.03-colwidth_10",
+      "topic": "T3b upstream vega/packet: R02.03-colwidth_10",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.04-colwidth_16",
+      "topic": "T3b upstream vega/packet: R02.04-colwidth_16",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.05-colwidth_32",
+      "topic": "T3b upstream vega/packet: R02.05-colwidth_32",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R02.06-colwidth_33",
+      "topic": "T3b upstream vega/packet: R02.06-colwidth_33",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.01-node_height_0",
+      "topic": "T3b upstream vega/packet: R03.01-node_height_0",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.02-node_height_80",
+      "topic": "T3b upstream vega/packet: R03.02-node_height_80",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.03-node_height_0_with_range",
+      "topic": "T3b upstream vega/packet: R03.03-node_height_0_with_range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.04-node_height_80_with_range",
+      "topic": "T3b upstream vega/packet: R03.04-node_height_80_with_range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.05-node_height_0_at_end_with_range",
+      "topic": "T3b upstream vega/packet: R03.05-node_height_0_at_end_with_range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R03.06-node_height_80_at_end_with_range",
+      "topic": "T3b upstream vega/packet: R03.06-node_height_80_at_end_with_range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R04.01-scale_direction_ltr",
+      "topic": "T3b upstream vega/packet: R04.01-scale_direction_ltr",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R04.02-scale_direction_rtl",
+      "topic": "T3b upstream vega/packet: R04.02-scale_direction_rtl",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R05.01-scale_interval_0",
+      "topic": "T3b upstream vega/packet: R05.01-scale_interval_0",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R05.02-scale_interval_1",
+      "topic": "T3b upstream vega/packet: R05.02-scale_interval_1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R05.03-scale_interval_2",
+      "topic": "T3b upstream vega/packet: R05.03-scale_interval_2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R05.04-scale_interval_4",
+      "topic": "T3b upstream vega/packet: R05.04-scale_interval_4",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R05.05-scale_interval_8",
+      "topic": "T3b upstream vega/packet: R05.05-scale_interval_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R06.01-Range_2",
+      "topic": "T3b upstream vega/packet: R06.01-Range_2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R06.02-Range_8",
+      "topic": "T3b upstream vega/packet: R06.02-Range_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R06.03-Range_16",
+      "topic": "T3b upstream vega/packet: R06.03-Range_16",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R07.01-Range_Error1",
+      "topic": "T3b upstream vega/packet: R07.01-Range_Error1",
+      "status": "baseline",
+      "weightedScore": 297,
+      "diffCount": 123,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R07.02-Range_Error2",
+      "topic": "T3b upstream vega/packet: R07.02-Range_Error2",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Fatal crash error, you should send a mail to plantuml@gmail.com with: java.lang.ArithmeticException: / by zero"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R08.01-Automatic_wrapping_0",
+      "topic": "T3b upstream vega/packet: R08.01-Automatic_wrapping_0",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R08.02-Automatic_wrapping_1",
+      "topic": "T3b upstream vega/packet: R08.02-Automatic_wrapping_1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R08.03-Automatic_wrapping_2",
+      "topic": "T3b upstream vega/packet: R08.03-Automatic_wrapping_2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R08.04-Automatic_wrapping_4",
+      "topic": "T3b upstream vega/packet: R08.04-Automatic_wrapping_4",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R08.05-Automatic_wrapping_8",
+      "topic": "T3b upstream vega/packet: R08.05-Automatic_wrapping_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R09.01-Range_17_automatic_wrapping",
+      "topic": "T3b upstream vega/packet: R09.01-Range_17_automatic_wrapping",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R10.01-Sparse_packet",
+      "topic": "T3b upstream vega/packet: R10.01-Sparse_packet",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R10.02-Sparse_packet_with_range",
+      "topic": "T3b upstream vega/packet: R10.02-Sparse_packet_with_range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.01-len_0",
+      "topic": "T3b upstream vega/packet: R11.01-len_0",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Fatal crash error, you should send a mail to plantuml@gmail.com with: java.lang.ArithmeticException: / by zero"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.02-len_1",
+      "topic": "T3b upstream vega/packet: R11.02-len_1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.03-len_2",
+      "topic": "T3b upstream vega/packet: R11.03-len_2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.04-len_16",
+      "topic": "T3b upstream vega/packet: R11.04-len_16",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.05-len_17",
+      "topic": "T3b upstream vega/packet: R11.05-len_17",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.06-len_empty_8",
+      "topic": "T3b upstream vega/packet: R11.06-len_empty_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.07-len_0_8",
+      "topic": "T3b upstream vega/packet: R11.07-len_0_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.08-len_1_8",
+      "topic": "T3b upstream vega/packet: R11.08-len_1_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.09-len_8_8",
+      "topic": "T3b upstream vega/packet: R11.09-len_8_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R11.10-len_9_8",
+      "topic": "T3b upstream vega/packet: R11.10-len_9_8",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R12.01-rotate_270",
+      "topic": "T3b upstream vega/packet: R12.01-rotate_270",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R12.02-rotate_0_360",
+      "topic": "T3b upstream vega/packet: R12.02-rotate_0_360",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R13.01-height",
+      "topic": "T3b upstream vega/packet: R13.01-height",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R13.02-colheight",
+      "topic": "T3b upstream vega/packet: R13.02-colheight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R14.01-description",
+      "topic": "T3b upstream vega/packet: R14.01-description",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R14.02-description_quoted",
+      "topic": "T3b upstream vega/packet: R14.02-description_quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R15.01-label",
+      "topic": "T3b upstream vega/packet: R15.01-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R16.01-numbered",
+      "topic": "T3b upstream vega/packet: R16.01-numbered",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R17.01-color",
+      "topic": "T3b upstream vega/packet: R17.01-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R18.01-skin",
+      "topic": "T3b upstream vega/packet: R18.01-skin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R18.02-skin",
+      "topic": "T3b upstream vega/packet: R18.02-skin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.01-same_height_default",
+      "topic": "T3b upstream vega/packet: R22.01-same_height_default",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.02-same_height_true",
+      "topic": "T3b upstream vega/packet: R22.02-same_height_true",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.03-same_height_false",
+      "topic": "T3b upstream vega/packet: R22.03-same_height_false",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.04-same_height_default_colheight",
+      "topic": "T3b upstream vega/packet: R22.04-same_height_default_colheight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.05-same_height_true_colheight",
+      "topic": "T3b upstream vega/packet: R22.05-same_height_true_colheight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R22.06-same_height_false_colheight",
+      "topic": "T3b upstream vega/packet: R22.06-same_height_false_colheight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-R23.01-error",
+      "topic": "T3b upstream vega/packet: R23.01-error",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "Syntax Error? (Assumed diagram type: packet)"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    },
+    {
+      "type": "packet",
+      "slug": "vega-error-with-exception",
+      "topic": "T3b upstream vega/packet: error-with-exception",
+      "status": "baseline",
+      "weightedScore": 297,
+      "diffCount": 123,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "280faca29"
+    }
+  ]
+}

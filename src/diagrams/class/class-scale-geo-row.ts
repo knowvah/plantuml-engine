@@ -166,6 +166,7 @@ export function scaleRow(row: RowGeo, k: number, themeFontSize: number): RowGeo 
   return {
     ...row,
     y: row.y * k,
+    ...(row.sortY !== undefined ? { sortY: row.sortY * k } : {}),
     indent: row.indent * k,
     fontSize: (row.fontSize ?? themeFontSize) * k,
     ...(row.width !== undefined ? { width: row.width * k } : {}),
@@ -206,6 +207,7 @@ export function scaleFolderTab(tab: EmptyPackageLeafDim, k: number): EmptyPackag
     wtitle: tab.wtitle * k,
     htitle: tab.htitle * k,
     baselineOffset: tab.baselineOffset * k,
+    ...(tab.roundCorner !== undefined ? { roundCorner: tab.roundCorner } : {}),
     // cdd3-T21 (E3-6): the leaf's stereo block, same uniform k.
     ...(tab.stereo !== undefined
       ? {

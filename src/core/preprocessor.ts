@@ -20,6 +20,7 @@
 import { EaterException } from './tim/EaterException.js';
 import type { IncludeStore } from './tim/IncludeStore.js';
 import { readLines } from './tim/ReadLineReader.js';
+import { foldStdlibSprites } from './tim/stdlib-sprite-compile.js';
 import { StringLocated } from './tim/StringLocated.js';
 import type { LineLocation } from './tim/LineLocation.js';
 import { TContext } from './tim/TContext.js';
@@ -105,8 +106,10 @@ export interface PreprocessorResult {
   /**
    * cdd3-T27: upstream's `BlockUml#data` before `Jaws.mutateExpands1` -- the
    * TIM result list with the lines the collector consumed kept in place,
-   * substituted, un-trimmed. Only `UmlSource#seed()` reads it
-   * (`uml-source-lines.ts`). Absent on a hand-built result.
+   * substituted, un-trimmed, and a stdlib sprite compiled to the one line the
+   * jar's stdlib holds it as (`tim/stdlib-sprite-compile.ts`). Only
+   * `UmlSource#seed()` reads it (`uml-source-lines.ts`). Absent on a hand-built
+   * result.
    */
   readonly dataLines?: readonly string[];
   /**
@@ -396,7 +399,7 @@ function resultOf(context: TContext): PreprocessorResult {
   return {
     lines: flattened.lines,
     linePositions: flattened.positions,
-    dataLines: context.getResultList().map((line) => line.getString()),
+    dataLines: foldStdlibSprites(context.getResultList()),
     theme: context.getThemeName() ?? null,
     skin: collector.skin,
     skinDirectives: collector.skinDirectives,

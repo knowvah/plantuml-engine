@@ -1,0 +1,8 @@
+@startuml
+!include <C4/C4_Context>
+skinparam dpi 150
+Person(u, "User", "d")
+System(s, "S", "d")
+Rel(u, s, "uses")
+SHOW_LEGEND()
+@enduml

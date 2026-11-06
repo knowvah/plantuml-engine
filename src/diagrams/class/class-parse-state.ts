@@ -77,6 +77,8 @@ export interface ParseState {
    * closing line. `undefined` in the overwhelming majority of parses.
    */
   pendingBodyRefusal?: { readonly message: string } | undefined;
+  /** odd T4a: the hide/show commands seen so far (`class-hideshow-dispatch.ts`). */
+  hideShowSeq?: number;
   /**
    * dss T3b: how deep inside a `{{ ... }}` embedded diagram the open brace body is. While above 0 no line is the
    * body's closing `}`: `PSystemCommandFactory.addOneSingleLineManageEmbedded2` (`:288-307`) swallows the whole

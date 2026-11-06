@@ -14,14 +14,11 @@
  */
 
 import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
-import type { ActivityAction, ActivityArrowLabel, ActivityNode, ActivityRepeat, ActivityWhile } from './ast.js';
+import type { ActivityAction, ActivityArrowLabel, ActivityNode, ActivityWhile } from './ast.js';
 import {
   RE_ACTION,
   RE_ARROW_LABEL,
   RE_ENDWHILE,
-  RE_REPEAT_HEAD,
-  RE_REPEAT_INLINE_TERMINATOR,
-  RE_REPEATWHILE,
   RE_SWIMLANE,
   RE_WHILE,
   isRefusal,
@@ -35,7 +32,8 @@ import {
   type ParseOutcome,
   type StopKeywords,
 } from './dispatch-support.js';
-import { tryIf, unescapeLabel, unescapeLabelNewlines } from './if-dispatch.js';
+import { tryIf } from './if-dispatch.js';
+import { tryRepeat } from './repeat-dispatch.js';
 import { tryFork, trySplit } from './parallel-dispatch.js';
 import {
   tryActivityList,
@@ -60,7 +58,13 @@ import {
   trySprite,
   tryScale,
 } from './dispatch-common-commands.js';
-import { stereogroupBackColor, stereogroupStereotype } from './dispatch-stereogroup.js';
+import {
+  RE_TERMINAL,
+  backColorSpread,
+  stereogroupBackColor,
+  stereogroupStereotype,
+  stereotypesSpread,
+} from './dispatch-stereogroup.js';
 
 // ---------------------------------------------------------------------------
 // Swimlane header: |name| or |[#color]name|
@@ -107,14 +111,13 @@ export function swimlaneDisplaysOf(ctx: ParseContext): ReadonlyMap<string, strin
 // ---------------------------------------------------------------------------
 // start / stop / end / kill / detach / break
 // ---------------------------------------------------------------------------
-function trySimpleKeyword(ctx: ParseContext, idx: number, _line: string, lc: string): DispatchResult | null {
+function trySimpleKeyword(ctx: ParseContext, idx: number, line: string, lc: string): DispatchResult | null {
+  const terminal = RE_TERMINAL.exec(line);
+  if (terminal !== null) {
+    const kind = terminal[1]!.toLowerCase() as 'start' | 'stop' | 'end';
+    return { idx: idx + 1, node: { kind, ...backColorSpread(terminal[2]), ...swimlaneSpread(ctx) } };
+  }
   switch (lc) {
-    case 'start':
-      return { idx: idx + 1, node: { kind: 'start', ...swimlaneSpread(ctx) } };
-    case 'stop':
-      return { idx: idx + 1, node: { kind: 'stop', ...swimlaneSpread(ctx) } };
-    case 'end':
-      return { idx: idx + 1, node: { kind: 'end', ...swimlaneSpread(ctx) } };
     case 'kill':
       return { idx: idx + 1, node: { kind: 'kill', ...swimlaneSpread(ctx) } };
     case 'detach':
@@ -124,6 +127,12 @@ function trySimpleKeyword(ctx: ParseContext, idx: number, _line: string, lc: str
     default:
       return null;
   }
+}
+
+/** `ActivityAction.position` for the command at `idx`, absent when the source carries no line positions. */
+function positionSpread(ctx: ParseContext, idx: number): { position?: number } {
+  const position = ctx.positions?.[idx];
+  return position === undefined ? {} : { position };
 }
 
 // ---------------------------------------------------------------------------
@@ -139,8 +148,10 @@ function tryAction(ctx: ParseContext, idx: number, line: string): DispatchResult
     kind: 'action',
     label,
     ...(stereotype !== undefined ? { stereotype } : {}),
+    ...stereotypesSpread(actionMatch[2]),
     ...(color !== undefined ? { color } : {}),
     ...swimlaneSpread(ctx),
+    ...positionSpread(ctx, idx),
   };
   return { idx: idx + 1, node };
 }
@@ -167,8 +178,10 @@ function tryMultilineAction(ctx: ParseContext, idx: number, line: string): Dispa
     // (`CreoleStripeSimpleParser.java:164`) and a table cell keeps it.
     label: body.labelParts.join('\n'),
     ...(body.multiStereo !== undefined ? { stereotype: body.multiStereo } : {}),
+    ...stereotypesSpread(body.multiGroup),
     ...(body.multiColor !== undefined ? { color: body.multiColor } : {}),
     ...swimlaneSpread(ctx),
+    ...positionSpread(ctx, idx),
   };
   return { idx: body.cursor, node };
 }
@@ -213,116 +226,12 @@ function tryWhile(ctx: ParseContext, idx: number, line: string): DispatchResult 
     condition,
     ...(yesLabel !== undefined && yesLabel !== '' ? { yesLabel } : {}),
     ...(exitLabel !== undefined && exitLabel !== '' ? { exitLabel } : {}),
+    ...backColorSpread(whileMatch[3]),
     body,
     ...(notes.length > 0 ? { notes } : {}),
     ...openerSwimlane,
   };
   return { idx: cursor, node };
-}
-
-// ---------------------------------------------------------------------------
-// repeat / repeatwhile
-// `repeat` may stand alone or be followed by an inline action:
-//   repeat :foo;  <<stereo>>
-// The action becomes the ENTRY tile (`ActivityRepeat.entry`), never a body
-// element.
-// ---------------------------------------------------------------------------
-
-/**
- * Parses the inline action on `repeat :label;`, if present, into the
- * repeat's ENTRY tile. `undefined` for a bare `repeat`.
- * @see net/sourceforge/plantuml/activitydiagram3/CommandRepeat3.java:126
- *   -- the inline label is handed to `ActivityDiagram3#startRepeat`.
- * @see net/sourceforge/plantuml/activitydiagram3/InstructionRepeat.java:51
- *   -- stored as `startLabel`, handed to `factory.repeat(…, startLabel,
- *   …)` (`:166-167`) as the tile that replaces the entry diamond
- *   (`ftile/vcompact/FtileRepeat.java:77-80`).
- */
-function parseRepeatEntry(ctx: ParseContext, inlineRest: string | undefined): ActivityAction | undefined {
-  if (inlineRest === undefined || inlineRest === '') return undefined;
-  // Parse the inline content as a virtual line — most commonly an action
-  // :label; with optional <<stereotype>>. The action regex requires a `;`
-  // followed by optional stereotype/color suffixes, so leave the line as-is
-  // when it already terminates properly and only synthesize a `;` for bare
-  // `:label`.
-  const restLine = RE_REPEAT_INLINE_TERMINATOR.test(inlineRest) ? inlineRest : inlineRest + ';';
-  const actionM = RE_ACTION.exec(restLine);
-  if (actionM === null) return undefined;
-  const label = displayWithNewlines(ctx.pragma, actionM[1]!);
-  const stereotype = stereogroupStereotype(actionM[2]);
-  const color = stereogroupBackColor(actionM[2]);
-  return {
-    kind: 'action',
-    label,
-    ...(stereotype !== undefined ? { stereotype } : {}),
-    ...(color !== undefined ? { color } : {}),
-    ...swimlaneSpread(ctx),
-  };
-}
-
-interface RepeatClose {
-  readonly condition: string;
-  readonly yesLabel: string | undefined;
-  readonly outLabel: string | undefined;
-  readonly nextIdx: number;
-}
-
-/**
- * Parses the `repeatwhile`/`repeat while` closer line, including its
- * `is (…)`/`not (…)` side labels.
- * @see net/sourceforge/plantuml/activitydiagram3/ActivityDiagram3.java:359-371
- *   -- `repeatWhile(label, yes, out, …)`.
- * @see net/sourceforge/plantuml/activitydiagram3/InstructionRepeat.java:193-200
- *   -- `setTest` stores `yesTb`/`outTb`, drawn on the condition hexagon
- *   (`ftile/vcompact/FtileRepeat.java:150-151`). xabesu-51-dimi831 (T3i):
- *   `CommandRepeatWhile3.java:144-147` routes TEST/WHEN/OUT through the
- *   same `Display.getWithNewlines` escape as `if`/`elseif` (IFNL, T3d).
- */
-function parseRepeatClose(lines: readonly string[], cursor: number): RepeatClose {
-  if (cursor >= lines.length) return { condition: '', yesLabel: undefined, outLabel: undefined, nextIdx: cursor };
-  const endLine = lines[cursor]!.trim();
-  const repeatMatch = RE_REPEATWHILE.exec(endLine);
-  const condition = unescapeLabelNewlines(repeatMatch?.[1] ?? '');
-  const yesLabel = unescapeLabel(repeatMatch?.[2]);
-  const outLabel = unescapeLabel(repeatMatch?.[3]);
-  return { condition, yesLabel, outLabel, nextIdx: cursor + 1 };
-}
-
-/**
- * Captures the `repeat`'s swimlane at its opener, and `swimlaneOut` at
- * `repeat while`, not at a single closer.
- * @see net/sourceforge/plantuml/activitydiagram3/InstructionRepeat.java:107
- *   -- `this.swimlane = swimlanes.getCurrentSwimlane()`, taken when the
- *   `repeat` line itself is parsed, before the body.
- * @see net/sourceforge/plantuml/activitydiagram3/InstructionRepeat.java:194-196
- *   -- `setTest` stores `swimlaneOut`, taken when `repeat while` is parsed
- *   (`ActivityDiagram3.java:367`).
- */
-function tryRepeat(ctx: ParseContext, idx: number, line: string, lc: string): DispatchResult | ParseRefusal | null {
-  const repeatHeadMatch = RE_REPEAT_HEAD.exec(line);
-  if (repeatHeadMatch === null || !lc.startsWith('repeat')) return null;
-  // Mission `activity-lane-capture` D1/T5: read BEFORE the body parses, so
-  // a lane switch inside the body never leaks into this node's own
-  // `swimlane`.
-  const openerSwimlane = swimlaneSpread(ctx);
-  const entry = parseRepeatEntry(ctx, repeatHeadMatch[1]?.trim());
-  const bodyResult = parseNodes(ctx, idx + 1, ['repeatwhile', 'repeat while']);
-  if (isRefusal(bodyResult)) return bodyResult;
-  const close = parseRepeatClose(ctx.lines, bodyResult.nextIdx);
-  // Mission activity-lane-capture D1/T5: `swimlaneOut` is the lane current
-  // AT `repeat while`, which may differ from the opener's.
-  const closerSwimlane = ctx.currentSwimlane;
-  const node: ActivityRepeat = {
-    kind: 'repeat',
-    ...(entry !== undefined ? { entry } : {}),
-    body: bodyResult.nodes,
-    condition: close.condition,
-    ...(close.yesLabel !== undefined && close.yesLabel !== '' ? { yesLabel: close.yesLabel } : {}),
-    ...(close.outLabel !== undefined && close.outLabel !== '' ? { outLabel: close.outLabel } : {}),
-    ...openerSwimlane,
-    ...(closerSwimlane !== undefined ? { swimlaneOut: closerSwimlane } : {}),
-  };
-  return { idx: close.nextIdx, node };
 }
 
 /** `CommandArrow3` (`CommandArrow3.java:61-71`): `-> label;`,

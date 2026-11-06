@@ -34,12 +34,22 @@ function emitNoteLeaf(state: ParseState, id: string, text: string, decor?: NoteD
   const labels = decor?.stereotype === undefined ? [] : (extractNodeStereotype(decor.stereotype)?.stereotypes ?? []);
   emitNode(
     state,
-    makeNode(id, resolveNewlineEscapes(text), 'note', labels.length > 0 ? labels : undefined, decor?.color),
+    makeNode(
+      id,
+      resolveNewlineEscapes(text),
+      'note',
+      labels.length > 0 ? labels : undefined,
+      decor?.color,
+      undefined,
+      undefined,
+      { url: decor?.url },
+    ),
   );
 }
 
 /** Upstream's own wording, verbatim — `CommandFactoryNoteOnEntity.java:301`. */
 const NOTHING_TO_NOTE_TO = 'Nothing to note to';
+const NO_SUCH_COLOR = 'No such color';
 
 /** `CommandFactoryNoteOnEntity.java:327`: `diagram.getUniqueSequence("GMN")`
  *  draws one value from the shared `cpt1` counter (the quark name
@@ -197,12 +207,17 @@ export function executeNoteOpen(state: ParseState, m: NoteOpenMatch): void {
     };
     return;
   }
+  // `getIHtmlColorSet().getColor(s)` takes one colour, not the attribute form (`CommandFactoryNote.java:201-203`).
+  if ((m.kind === 'floating-single' || m.kind === 'floating-open') && /[;:]/.test(m.decor.color ?? '')) {
+    state.executionError = NO_SUCH_COLOR;
+    return;
+  }
   if (m.kind === 'floating-single') {
-    emitNoteLeaf(state, m.id, m.text);
+    emitNoteLeaf(state, m.id, m.text, m.decor);
     return;
   }
   if (m.kind === 'floating-open') {
-    state.pendingNote = { kind: 'floating', terminator: 'endnote', lines: [], id: m.id };
+    state.pendingNote = { kind: 'floating', terminator: 'endnote', lines: [], id: m.id, decor: m.decor };
     return;
   }
   executeNoteOnEntityOpen(state, m);
@@ -220,7 +235,7 @@ export function closePendingNote(state: ParseState): void {
   }
   const text = removeEmptyColumns(pending.lines).join('\n');
   if (pending.kind === 'floating') {
-    emitNoteLeaf(state, pending.id, text);
+    emitNoteLeaf(state, pending.id, text, pending.decor);
     return;
   }
   attachNoteToEntity(state, pending.position, pending.targetId, text, pending.decor);

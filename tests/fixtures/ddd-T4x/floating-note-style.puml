@@ -1,0 +1,16 @@
+@startuml
+<style>
+note {
+  BackgroundColor #eeeeff
+  LineThickness 2
+}
+.warn {
+  BackgroundColor #ffeeee
+}
+</style>
+component a
+note "floating" as N1 <<warn>>
+note "plain" as N2 #lightblue
+a .. N1
+a .. N2
+@enduml

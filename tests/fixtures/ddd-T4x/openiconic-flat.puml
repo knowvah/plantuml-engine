@@ -1,0 +1,5 @@
+@startuml
+rectangle a <<<&heart> love>>
+component b <<<&star>>>
+rectangle "<&check> done\nnot <&x> done" as c
+@enduml

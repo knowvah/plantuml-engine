@@ -376,6 +376,7 @@ function laneItemsOf(node: ActivityNodeGeo, laneNames: readonly string[]): LaneI
       ...(node.label !== undefined ? { label: node.label } : {}),
       // add4-T3e: an action's `BoxStyle` outline ink (`nodeFudge`).
       ...(node.stereotype !== undefined ? { stereotype: node.stereotype, height: node.height } : {}),
+      ...(node.boxStyle !== undefined ? { boxStyle: node.boxStyle, height: node.height } : {}),
     };
     return [
       node.swimlane !== undefined

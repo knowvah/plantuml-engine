@@ -1,0 +1,14 @@
+@startuml
+start
+repeat <<#lightblue>>
+  if (c?) then (y) <<#orange>>
+    :x;
+  elseif (d?) then (z) <<#violet>>
+    :y;
+  endif
+repeat while (again?)
+while (w?) <<#lime>>
+  :w;
+endwhile
+stop
+@enduml

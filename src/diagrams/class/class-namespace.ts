@@ -67,6 +67,7 @@ function copyMutedEntityFields(ns: Namespace, classifier: Classifier): void {
   // which becomes the leaf's stereo block.
   // @see ~/git/plantuml/.../svek/image/EntityImageEmptyPackage.java:121-124
   if (ns.legend !== undefined) classifier.legend = ns.legend;
+  if (ns.emptyLeafRoundCorner !== undefined) classifier.emptyLeafRoundCorner = ns.emptyLeafRoundCorner;
 }
 
 /**

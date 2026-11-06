@@ -6,6 +6,9 @@
  * parse state — so they compose cleanly with the command-dispatch table.
  */
 
+import type { Classifier } from './ast.js';
+import { isMethodMember } from './class-layout-helpers.js';
+import { lastGlobalSeq } from './class-member-portion.js';
 import type {
   ClassDiagramAST,
   HideShowDirective,
@@ -251,6 +254,32 @@ function stereotypeGenderMatches(stereotype: string | undefined, what: string): 
  * silently a no-op, matching this port's established directive-application
  * posture elsewhere in this file.
  */
+/** A `show` after `hide members` brings the rows back that `applyDirectives` marked (`CucaDiagram.java:576-586`). */
+function setFieldsFlag(
+  classifier: Classifier,
+  hide: boolean,
+  seq: number | undefined,
+  directives: HideShowDirective[],
+): void {
+  classifier.suppressFields = hide;
+  if (seq !== undefined) classifier.suppressFieldsSeq = seq;
+  if (hide || seq === undefined || seq <= lastGlobalSeq(directives, classifier, 'fields')) return;
+  for (const member of classifier.members) if (!isMethodMember(member)) delete member.hidden;
+}
+
+/** {@link setFieldsFlag} for the methods. */
+function setMethodsFlag(
+  classifier: Classifier,
+  hide: boolean,
+  seq: number | undefined,
+  directives: HideShowDirective[],
+): void {
+  classifier.suppressMethods = hide;
+  if (seq !== undefined) classifier.suppressMethodsSeq = seq;
+  if (hide || seq === undefined || seq <= lastGlobalSeq(directives, classifier, 'methods')) return;
+  for (const member of classifier.members) if (isMethodMember(member)) delete member.hidden;
+}
+
 export function applyHideShowEntityDirectives(ast: ClassDiagramAST): void {
   const directives = ast.hideEntityDirectives;
   if (directives === undefined || directives.length === 0) return;
@@ -277,7 +306,7 @@ export function applyHideShowEntityDirectives(ast: ClassDiagramAST): void {
     // is still per-list, not source-interleaved across the kind/entity
     // lists -- a `show <<x>> p` line written BEFORE a `hide class p` line
     // would upstream re-hide; that ordering has zero corpus reach and is
-    // the known limit of the split-list structure.
+    // the known limit of the split-list structure, for a kind form (members: `class-member-portion.ts`).
     // A2s R2g: group-scope gate (directiveAppliesTo) on every gender form.
     const matched = (
       entityId.startsWith('<<') && entityId.endsWith('>>')
@@ -294,15 +323,15 @@ export function applyHideShowEntityDirectives(ast: ClassDiagramAST): void {
         continue;
       }
       if (target === 'members') {
-        classifier.suppressFields = hide;
-        classifier.suppressMethods = hide;
+        setFieldsFlag(classifier, hide, d.seq, ast.directives);
+        setMethodsFlag(classifier, hide, d.seq, ast.directives);
         continue;
       }
       if (target === 'fields') {
-        classifier.suppressFields = hide;
+        setFieldsFlag(classifier, hide, d.seq, ast.directives);
         continue;
       }
-      classifier.suppressMethods = hide;
+      setMethodsFlag(classifier, hide, d.seq, ast.directives);
     }
   }
 }

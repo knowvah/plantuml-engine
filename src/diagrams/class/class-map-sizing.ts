@@ -29,12 +29,27 @@ import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { ClassifierGeo } from './layout.js';
 import type { MeasuredClassifier } from './class-layout-helpers.js';
+import { splitJsonCell, type JsonCellContext } from './class-json-sizing.js';
+import { getEmbeddedType } from '../../core/EmbeddedDiagram.js';
+import { parseWithNewlines } from '../../core/klimt/creole/DisplayNewlines.js';
+import { Pragma } from '../../core/skin/Pragma.js';
+import { renderEmbed, wrapEmbeddedSource } from './class-body-enhanced-embeds.js';
+import { scanEmbeddedElementBlock } from './class-embedded-block.js';
+import { getClassNestedDiagramRenderer } from './class-nested-diagram-renderer.js';
+import { resolveElementMaximumWidth } from '../../core/theme-element-resolve.js';
 import type { Dim } from './class-object-map-sizing.js';
 import { floorAtMinimumWidth } from './class-object-map-sizing.js';
 import { headerFontSpec, resolveHeaderFontOverride, resolveObjectBodyFont } from './object-kind-style.js';
 import { resolveStyleStereotypeTags } from './class-stereotype.js';
-import { titleDimension, measureStereo, headerRows, baselineOffsetFor } from './class-object-map-sizing.js';
-import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
+import {
+  titleDimension,
+  measureStereo,
+  headerRows,
+  baselineOffsetFor,
+  measureNameBlock,
+  nameRowCountFields,
+  stereoInkField,
+} from './class-object-map-sizing.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import { buildMemberAtoms, memberBaseFont, resolveMemberAtoms } from './class-member-creole.js';
 import { mapPortName } from './class-map-port-rows.js';
@@ -69,11 +84,25 @@ interface MapRowMetrics {
   /** Raw (unpadded) value text width, unrounded, `0` (unused) for a Point
    *  row -- jar never draws Point-row value text at all. */
   rawValueWidth: number;
-  /** M3(a): the key cell's `CreoleMode.FULL` runs. */
-  keyAtoms: readonly MemberRenderAtom[];
-  /** M3(a): the value cell's runs — `undefined` for a Point row, the ONLY
+  /** M3(a): the key cell's `CreoleMode.FULL` lines. */
+  keyLines: readonly MapCellLine[];
+  /** M3(a): the value cell's lines — `undefined` for a Point row, the ONLY
    *  case `TextBlockMap#drawU` never draws a value cell for. */
-  valueAtoms?: readonly MemberRenderAtom[];
+  valueLines?: readonly MapCellLine[];
+}
+
+/** One drawn line of a cell: a `Fission` stripe when `MaximumWidth` wraps, else the cell's single line. */
+interface MapCellLine {
+  atoms: readonly MemberRenderAtom[];
+  width: number;
+  height: number;
+}
+
+/** A built cell: its widest line's raw width, its margined block, and its lines. */
+interface MapCell {
+  raw: number;
+  dim: Dim;
+  lines: readonly MapCellLine[];
 }
 
 /**
@@ -95,17 +124,42 @@ interface MapRowMetrics {
  * atom, which is exactly the `<text> </text>` the jar draws for `key => `
  * (fusopu-05-loxo960) and for satuco-50-vusa163's empty KEY.
  */
-function measureMapCell(
-  text: string,
-  font: FontConfiguration,
-  measurer: StringMeasurer,
-): { raw: number; dim: Dim; atoms: readonly MemberRenderAtom[] } {
-  const build = resolveMemberAtoms(buildMemberAtoms(text, font), font, measurer);
-  return {
-    raw: build.width,
-    dim: { width: build.width + MAP_CELL_MARGIN_X * 2, height: build.height + MAP_CELL_MARGIN_Y * 2 },
-    atoms: build.atoms,
-  };
+function measureMapCell(text: string, ctx: JsonCellContext): MapCell {
+  const lines = mapCellLines(text, ctx);
+  const raw = Math.max(...lines.map((line) => line.width));
+  const height = lines.reduce((sum, line) => sum + line.height, 0);
+  return { raw, dim: { width: raw + MAP_CELL_MARGIN_X * 2, height: height + MAP_CELL_MARGIN_Y * 2 }, lines };
+}
+
+/**
+ * `Display.getWithNewlines(pragma, key).create0(...)` (`TextBlockMap.java:176-178`): the cell splits on `\n` and
+ * `%breakline()`, and `CreoleParser#createSheetSlow` (`CreoleParser.java:148-156`) takes a line opening `{{`, through its
+ * `}}`, as one `EmbeddedDiagram` stripe; every other line is a `Fission` stripe.
+ */
+function mapCellLines(text: string, ctx: JsonCellContext): MapCellLine[] {
+  const display = parseWithNewlines(Pragma.createEmpty(), text)!.lines;
+  const out: MapCellLine[] = [];
+  for (let i = 0; i < display.length; i++) {
+    const line = display[i]!;
+    const type = getEmbeddedType(line);
+    if (type === null) {
+      for (const atoms of splitJsonCell(buildMemberAtoms(line, ctx.font), ctx)) {
+        const built = resolveMemberAtoms(atoms, ctx.font, ctx.measurer);
+        out.push({ atoms: built.atoms, width: built.width, height: built.height });
+      }
+      continue;
+    }
+    const { block, consumed } = scanEmbeddedElementBlock(display, i);
+    i += consumed - 1;
+    out.push(embeddedCellLine(renderEmbed(wrapEmbeddedSource(type, block), getClassNestedDiagramRenderer())));
+  }
+  return out;
+}
+
+/** An `EmbeddedDiagram` stripe: the nested document's own size, `EmbeddedDiagram.java:129-133`. */
+function embeddedCellLine(image: { width: number; height: number; href?: string }): MapCellLine {
+  const { width, height, href } = image;
+  return { atoms: href === undefined ? [] : [{ kind: 'image', href, width, height, exactSize: true }], width, height };
 }
 
 /** The drawn text of a built cell — the creole-STRIPPED label
@@ -123,7 +177,7 @@ function cellText(atoms: readonly MemberRenderAtom[]): string {
 /** One TextBlockMap row: getHeightOfRow = max(key, value) cell height; each
  *  cell (key always, value only for a non-point row) gets the 5,2 margin;
  *  a point row's value cell is the 7x7 Point diameter instead. */
-function measureMapRow(row: MapRow, font: FontConfiguration, measurer: StringMeasurer): MapRowMetrics {
+function measureMapRow(row: MapRow, ctx: JsonCellContext): MapRowMetrics {
   // `TextBlockMap`'s CONSTRUCTOR strips a leading visibility character from
   // the KEY (and only the key) before `getTextBlock` ever sees it —
   // `if (VisibilityModifier.isVisibilityCharacter(key)) key = key.substring(1)`
@@ -131,8 +185,8 @@ function measureMapRow(row: MapRow, font: FontConfiguration, measurer: StringMea
   // port band ids already go through (`class-map-port-rows.ts#mapPortName`).
   // Jar: vimavu-26-civo110 / guzojo-14-muxa584 draw `+__method1__` as an
   // underlined `method1`, with no `+` glyph and 8.225px less key width.
-  const key = measureMapCell(mapPortName(row.key), font, measurer);
-  const shared = { keyWidth: key.dim.width, rawKeyWidth: key.raw, keyAtoms: key.atoms };
+  const key = measureMapCell(mapPortName(row.key), ctx);
+  const shared = { keyWidth: key.dim.width, rawKeyWidth: key.raw, keyLines: key.lines };
   if (row.value === MAP_POINT_SENTINEL)
     return {
       ...shared,
@@ -141,14 +195,14 @@ function measureMapRow(row: MapRow, font: FontConfiguration, measurer: StringMea
       isPoint: true,
       rawValueWidth: 0,
     };
-  const value = measureMapCell(row.value, font, measurer);
+  const value = measureMapCell(row.value, ctx);
   return {
     ...shared,
     valueWidth: value.dim.width,
     height: Math.max(key.dim.height, value.dim.height),
     isPoint: false,
     rawValueWidth: value.raw,
-    valueAtoms: value.atoms,
+    valueLines: value.lines,
   };
 }
 
@@ -160,6 +214,17 @@ interface MapRowGeoContext {
   colAWidth: number;
   boxWidth: number;
   baselineOffset: number;
+  /** The cell font's size less {@link baselineOffset}. */
+  descent: number;
+  /** `style.getHorizontalAlignment()`, centre by `plantuml.skin`'s `map` when no style moved it. */
+  alignment: string | undefined;
+}
+
+/** `HorizontalAlignment#getPosition` (`HorizontalAlignment.java:92-98`). */
+function keyPosition(alignment: string | undefined, width: number, total: number): number {
+  if (alignment === 'left') return 0;
+  if (alignment === 'right') return total - width;
+  return (total - width) / 2;
 }
 
 /**
@@ -185,33 +250,27 @@ interface MapRowGeoContext {
  * for every key (never centered) and set no `width` on either cell (no
  * textLength).
  */
-function buildOneMapRow(
-  row: MapRow,
-  m: MapRowMetrics,
-  rowTop: number,
-  ctx: MapRowGeoContext,
-): { key: ClassifierGeo['rows'][number]; value: ClassifierGeo['rows'][number] } {
-  const textY = rowTop + MAP_CELL_MARGIN_Y + ctx.baselineOffset;
+function buildOneMapRow(m: MapRowMetrics, rowTop: number, ctx: MapRowGeoContext): ClassifierGeo['rows'] {
+  const firstY = rowTop + MAP_CELL_MARGIN_Y + ctx.baselineOffset;
   const keyCenterAgainst = m.isPoint ? ctx.boxWidth : ctx.colAWidth;
-  return {
-    key: {
-      text: cellText(m.keyAtoms),
-      y: textY,
-      indent: (keyCenterAgainst - m.rawKeyWidth) / 2,
-      width: m.rawKeyWidth,
-      atoms: m.keyAtoms,
-    },
-    value:
-      m.valueAtoms === undefined
-        ? { text: '', y: textY, indent: ctx.colAWidth + MAP_CELL_MARGIN_X }
-        : {
-            text: cellText(m.valueAtoms),
-            y: textY,
-            indent: ctx.colAWidth + MAP_CELL_MARGIN_X,
-            width: m.rawValueWidth,
-            atoms: m.valueAtoms,
-          },
+  // `horizontalAlignment.getPosition(keyWidth, trueWidth or widthColA)` (`TextBlockMap.java:141-147`), the cell's own
+  // margin included in `keyWidth`.
+  const keyIndent = keyPosition(ctx.alignment, m.keyWidth, keyCenterAgainst) + MAP_CELL_MARGIN_X;
+  const valueIndent = ctx.colAWidth + MAP_CELL_MARGIN_X;
+  const placeLines = (lines: readonly MapCellLine[], indent: number): ClassifierGeo['rows'] => {
+    let lineTop = rowTop + MAP_CELL_MARGIN_Y;
+    return lines.map((line) => {
+      // An image atom is bottom-aligned to the row it draws on (`renderer-classifier-rows.ts#renderRowAtoms`).
+      const hasImage = line.atoms.some((a) => a.kind === 'image');
+      const y = lineTop + (hasImage ? line.height - ctx.descent : ctx.baselineOffset);
+      lineTop += line.height;
+      return { text: cellText(line.atoms), y, sortY: firstY, indent, width: line.width, atoms: line.atoms };
+    });
   };
+  const key = placeLines(m.keyLines, keyIndent);
+  if (m.valueLines === undefined) return [...key, { text: '', y: firstY, indent: valueIndent, mapValueCell: true }];
+  const [first, ...rest] = placeLines(m.valueLines, valueIndent);
+  return [...key, { ...first!, mapValueCell: true }, ...rest];
 }
 
 /**
@@ -227,7 +286,6 @@ function buildOneMapRow(
  * centering + baseline) lives in {@link buildOneMapRow}'s own doc comment.
  */
 function buildMapRowGeo(
-  rows: readonly MapRow[],
   metrics: readonly MapRowMetrics[],
   titleHeight: number,
   ctx: MapRowGeoContext,
@@ -235,10 +293,9 @@ function buildMapRowGeo(
   const outRows: ClassifierGeo['rows'] = [];
   const dividerYs: number[] = [];
   let y = titleHeight;
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < metrics.length; i++) {
     dividerYs.push(y);
-    const { key, value } = buildOneMapRow(rows[i]!, metrics[i]!, y, ctx);
-    outRows.push(key, value);
+    outRows.push(...buildOneMapRow(metrics[i]!, y, ctx));
     y += metrics[i]!.height;
   }
   return { rows: outRows, dividerYs };
@@ -257,11 +314,14 @@ export function measureMapClassifier(
   measurer: StringMeasurer,
 ): MeasuredClassifier {
   const tags = resolveStyleStereotypeTags(classifier);
-  const bodyFont = resolveObjectBodyFont(theme, 'map', tags);
+  const bodyFont = resolveObjectBodyFont(theme, 'map', tags, classifier.objectStyle);
   const fontSpec = { family: bodyFont.family, size: bodyFont.size };
-  const nameFont = resolveHeaderFontOverride(theme, 'map', tags);
-  const nameM = measurer.measure(classifier.display, headerFontSpec(theme, nameFont));
-  const nameDim: Dim = { width: nameM.width + MAP_NAME_MARGIN * 2, height: nameM.height + MAP_NAME_MARGIN * 2 };
+  const nameFont = resolveHeaderFontOverride(theme, 'map', tags, classifier.objectStyle);
+  const nameBlock = measureNameBlock(classifier.display, headerFontSpec(theme, nameFont), measurer);
+  const nameDim: Dim = {
+    width: nameBlock.width + MAP_NAME_MARGIN * 2,
+    height: nameBlock.height + MAP_NAME_MARGIN * 2,
+  };
   const stereoDim = measureStereo(classifier, theme, measurer);
   const title = titleDimension(nameDim, stereoDim);
 
@@ -270,15 +330,25 @@ export function measureMapClassifier(
   // `FontConfiguration` (not the bare `FontSpec` the header still uses) is
   // what `TextBlockMap#getTextBlock` hands `create0`. No `{abstract}`/
   // `{static}` modifiers exist on a map row, hence the empty member.
-  const cellFont = memberBaseFont(bodyFont, {});
-  const metrics = rows.map((r) => measureMapRow(r, cellFont, measurer));
+  // `BodierMap#getBody` hands `style.wrapWidth()` to every cell (`BodierMap.java:104`, `TextBlockMap.java:176-178`).
+  const cellCtx = {
+    font: memberBaseFont(bodyFont, {}),
+    measurer,
+    maxWidth: classifier.objectStyle?.box.maximumWidth ?? resolveElementMaximumWidth(theme, 'map') ?? 0,
+  };
+  const metrics = rows.map((r) => measureMapRow(r, cellCtx));
   const colA = metrics.length === 0 ? 0 : Math.max(...metrics.map((m) => m.keyWidth));
   const colB = metrics.length === 0 ? 0 : Math.max(...metrics.map((m) => m.valueWidth));
   const fieldsHeight = metrics.reduce((sum, m) => sum + m.height, 0);
 
   // B25/M27: `EntityImageMap.java:127-130` clamps here, identically to
   // object/json/class -- see `floorAtMinimumWidth`'s own doc comment.
-  const width = floorAtMinimumWidth(Math.max(colA + colB, title.width + MAP_X_MARGIN_CIRCLE * 2), theme, 'map');
+  const width = floorAtMinimumWidth(
+    Math.max(colA + colB, title.width + MAP_X_MARGIN_CIRCLE * 2),
+    theme,
+    'map',
+    classifier.objectStyle?.box.minimumWidth,
+  );
   // getMethodOrFieldHeight's empty-substitution never fires for MAP
   // (leafType === MAP is excluded in the upstream condition) — height is
   // titleHeight + the raw (possibly zero, for an empty map body) fields height.
@@ -290,11 +360,26 @@ export function measureMapClassifier(
     namePadding: MAP_NAME_MARGIN,
   });
   const baselineOffset = baselineOffsetFor(fontSpec, measurer);
-  const { rows: rowGeo, dividerYs } = buildMapRowGeo(rows, metrics, title.height, {
+  const { rows: rowGeo, dividerYs } = buildMapRowGeo(metrics, title.height, {
     colAWidth: colA,
     boxWidth: width,
     baselineOffset,
+    descent: bodyFont.size - baselineOffset,
+    alignment: classifier.objectStyle?.box.horizontalAlignment,
   });
 
-  return { width, height, rows: [...headerGeo, ...rowGeo], dividerYs };
+  // `TextBlockMap#drawU`'s loop is what reaches `x + w` (`ULine.hline(trueWidth)`, `LimitFinder.java:179-182`). No row
+  // draws no line, and the name stops `xMarginCircle` short (`EntityImageMap.java:128`), so an empty map's right ink is
+  // its `URectangle`, `x + w - 1` (`LimitFinder.java:184-188`). Its bottom stays `y + h`: the name's `TextBlockMarged`
+  // draws a `UEmpty` at the title's full height (`EntityImageMap.java:96-97`, `TextBlockMarged.java:79-86`).
+  return {
+    width,
+    height,
+    rows: [...headerGeo, ...rowGeo],
+    dividerYs,
+    bodyInkWidth: rows.length === 0 ? 0 : width,
+    titleHeight: title.height,
+    ...stereoInkField(classifier, theme, measurer),
+    ...nameRowCountFields(headerGeo.length, nameBlock.lines.length),
+  };
 }

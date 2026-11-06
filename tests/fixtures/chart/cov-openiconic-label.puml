@@ -1,0 +1,4 @@
+@startchart
+h-axis [<&flag>, B]
+bar [1]
+@endchart

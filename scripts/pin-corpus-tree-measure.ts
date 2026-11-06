@@ -3,16 +3,13 @@
  * file under the 500-line complexity cap (CLAUDE.md / code-principles.md).
  *
  * Every classifier here is a DELIBERATE duplicate of the one the two gates
- * own -- `tests/oracle/svg-conformance/routing-conformance.test.ts:124-167`
- * (`diagramTypeOf`, `isJarErrorPage`, `readHead`) and
- * `refusal-coverage.test.ts:167-201` (`weErroredIn`, `engineOf`) -- not an
- * import of either. Both are `.test.ts` files; `refusal-coverage.test.ts`'s
- * own header explains why its sibling gate is duplicated rather than
- * imported: importing a `.test.ts` module executes its top-level body,
- * which would register that file's own ~3572-fixture measurement a second
- * time. The regexes, byte budget and field derivations below are copied
- * verbatim from those two files so this tool's measurement is the gates'
- * own, not a re-derived approximation of it.
+ * own -- `tests/oracle/svg-conformance/routing-conformance-gate.ts`
+ * (`diagramTypeOf`, `readHead`), `corpus-gate-part.ts` (`isJarErrorPage`) and
+ * `refusal-coverage-gate.ts` (`weErroredIn`, `engineOf`) -- not an import of
+ * them. The gate modules import vitest, which throws outside a worker. The
+ * regexes, byte budget and field derivations below are copied verbatim from
+ * those files so this tool's measurement is the gates' own, not a re-derived
+ * approximation of it.
  */
 import { readFileSync, readdirSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
@@ -29,7 +26,7 @@ const DIAGRAM_TYPE_ATTR_RE = /data-diagram-type="([A-Z]+)"/;
 
 /** Only the head is read for a GOLDEN: the attribute is always on the root
  *  element, and `sequence/zudize-61-vomi445`'s golden is 8.26 MB
- *  (routing-conformance.test.ts:116-119). */
+ *  (`routing-conformance-gate.ts#DIAGRAM_TYPE_ATTR_RE`). */
 const HEAD_BYTES = 4096;
 
 /** The value recorded when a document carries no root attribute at all --
@@ -43,7 +40,7 @@ export function diagramTypeOf(head: string): string {
 /** Upstream's two graphical error pages, keyed on the text PlantUML itself
  *  writes into them -- `PSystemError#header()` (`PSystemError.java:148-155`)
  *  and `ReportLog#anErrorHasOccurred` (`ReportLog.java:103-108`). See
- *  `routing-conformance.test.ts:128-157` for the full derivation. */
+ *  `corpus-gate-part.ts#isJarErrorPage` for the full derivation. */
 const JAR_ERROR_PAGE_RE = />(?:PlantUML version [^<]*\[[^<]*\]|An error has occurred[^<]*)<\/text>/;
 
 export function isJarErrorPage(head: string): boolean {
@@ -52,11 +49,11 @@ export function isJarErrorPage(head: string): boolean {
 
 /** OUR error banner, built from `fullDescription()` itself -- never spelled
  *  out -- so a version bump cannot silently blind this classifier
- *  (refusal-coverage.test.ts:171-178). */
+ *  (`refusal-coverage-gate.ts#OUR_ERROR_BANNER`). */
 const OUR_ERROR_BANNER = `>${fullDescription()}</text>`;
 
 /** Deliberately scans the WHOLE document, not a head window: the banner's
- *  offset moves with source length (refusal-coverage.test.ts:179-189). */
+ *  offset moves with source length (`refusal-coverage-gate.ts#weErroredIn`). */
 export function weErroredIn(ours: string): boolean {
   return ours.includes(OUR_ERROR_BANNER);
 }
@@ -106,8 +103,8 @@ export interface MeasuredFixture {
 
 /** One fixture, through the SAME seams both gates measure with: `renderSync`
  *  + `DeterministicMeasurer` + `fixtureIncludeStore()` (mission brief's
- *  Context paragraph; routing-conformance.test.ts:243-269,
- *  refusal-coverage.test.ts:278-296). */
+ *  Context paragraph; `measure` in routing-conformance-gate.ts and
+ *  refusal-coverage-gate.ts). */
 export function measureFixture(
   treeDir: string,
   slug: string,
@@ -116,8 +113,8 @@ export function measureFixture(
 ): MeasuredFixture {
   const dir = join(treeDir, slug);
   const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
-  // `elk` as the gates pass it (routing-conformance.test.ts:258-273,
-  // refusal-coverage.test.ts:287-301): without it `renderSync` refuses a
+  // `elk` as the gates pass it (`measure` in routing-conformance-gate.ts and
+  // refusal-coverage-gate.ts): without it `renderSync` refuses a
   // `!pragma layout elk` source (ELK_RENDER_SYNC_UNSUPPORTED) and this tool
   // would pin a refusal the gates never measure (ogc T4b finding).
   const ours = renderSync(

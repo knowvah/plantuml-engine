@@ -1,0 +1,8 @@
+@startchart
+h-axis [A, B]
+v-axis 0 --> 100
+bar "B" [10, 20, 30, 40]
+line "L" [10, 20, 30, 40]
+area "A" [10, 20, 30, 40]
+scatter "S" [10, 20, 30, 40]
+@endchart

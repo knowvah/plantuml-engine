@@ -1,0 +1,12 @@
+@startuml
+class C {
+  |= h1 |= h2 |
+  | a | b |
+  | c | d |
+}
+object O {
+  |= h1 |= h2 |
+  | a | b |
+  | c | d |
+}
+@enduml

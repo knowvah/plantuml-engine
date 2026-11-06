@@ -1,0 +1,5 @@
+@startchart
+h-axis [A]
+v-axis "**plain**" 0 --> 10
+v2-axis "//plain//" 0 --> 10
+@endchart

@@ -19,11 +19,12 @@ import {
   noteBodySpikeLeft,
   noteFillOf,
   noteLineOf,
+  noteLineThickness,
 } from './activity-renderer-note-shapes.js';
+import { noteShadowFilter } from './activity-shadow.js';
 import {
   ACTIVITY_BAR_FILL,
   CIRCLE_INK,
-  NOTE_LINE_THICKNESS,
   activityFontSize,
   activityLineThickness,
   activityRoundCorner,
@@ -50,6 +51,7 @@ import { renderBoxStyleAction } from './activity-renderer-signal-shapes.js';
 import { renderStart, renderStop, renderEnd, renderSpot } from './activity-renderer-terminals.js';
 import { boxStyleName } from './tiles/gtile-action.js';
 import { renderActionLabel, renderNoteLabel } from './activity-creole-sheet.js';
+import { boxFontConfiguration, boxPaintExtras, withActivityBox } from './activity-box-theme.js';
 
 // Pure-move re-exports (500-line splits T1c/T3f): these symbols now live in
 // `activity-renderer-terminals.ts`/`activity-renderer-if-shapes.ts`
@@ -158,12 +160,19 @@ export function actColors(theme: Theme): ActivityColors {
 /** A box's back: its own colour (`FtileBox.java:163`, `eventuallyOverride(specBack)`), the stereotype's style
  *  (`:146`, `withTOBECHANGED`), the merged `BackGroundColor` (`:165`). */
 export function actionFillOf(node: Pick<ActivityNodeGeo, 'color' | 'stereotype'>, theme: Theme): Paint {
-  return inlineBack(node) ?? stereotypeBack(theme, 'activity', node.stereotype) ?? actColors(theme).nodeFill;
+  return inlineBack(node) ?? stereotypeBackOf(node, theme) ?? actColors(theme).nodeFill;
+}
+
+/** The one-label stereotype tier, where the box holds no merged style (`activity-box-theme.ts`) to read instead. */
+function stereotypeBackOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint | undefined {
+  return boxFontConfiguration(theme) === undefined ? stereotypeBack(theme, 'activity', node.stereotype) : undefined;
 }
 
 /** A box's line: the stereotype's style (`FtileBox.java:146`, `withTOBECHANGED`), the merged `LineColor` (`:164`). */
 export function actionBorderOf(node: Pick<ActivityNodeGeo, 'stereotype'>, theme: Theme): Paint {
-  return stereotypeLine(theme, 'activity', node.stereotype) ?? actColors(theme).nodeBorder;
+  const tagged =
+    boxFontConfiguration(theme) === undefined ? stereotypeLine(theme, 'activity', node.stereotype) : undefined;
+  return tagged ?? actColors(theme).nodeBorder;
 }
 
 export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
@@ -178,6 +187,7 @@ export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
     strokeWidth: activityLineThickness(theme, 'activity'),
     rx: actionCornerRadius(theme),
     ry: actionCornerRadius(theme),
+    ...boxPaintExtras(theme),
   });
   // D5 Sheet spike (`FtileBox.java:178-181`); `renderActionLabel` doc.
   return box + renderActionLabel(node.label ?? '', theme, actionSize, node);
@@ -187,7 +197,9 @@ export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
  *  rounded rectangle ({@link renderAction}); every other `BoxStyle`
  *  (`Stereogroup#getBoxStyle`, `BoxStyle.java:126-133`) draws its own
  *  outline (`activity-renderer-signal-shapes.ts`). */
-function renderActionBox(node: ActivityNodeGeo, theme: Theme): string {
+function renderActionBox(node: ActivityNodeGeo, skinTheme: Theme): string {
+  // `FtileBox.create`'s ONE merged style (`activity-box-theme.ts`), the value `GtileAction` sized the box with.
+  const theme = withActivityBox(skinTheme, node.boxStyle);
   const style = boxStyleName(node.stereotype);
   return style === undefined ? renderAction(node, theme) : renderBoxStyleAction(node, theme, style);
 }
@@ -198,7 +210,9 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   const stroke = noteLineOf(node, theme); // `FtileWithNoteOpale.java:89,141`
 
   const spike = node.spikeTip;
-  const paint = { fill: noteFill, stroke, strokeWidth: NOTE_LINE_THICKNESS };
+  const paint = { fill: noteFill, stroke, strokeWidth: noteLineThickness(theme) };
+  // `Opale.java:122`: `polygon.setDeltaShadow(shadowing)` on the outline; the fold is a separate, unshadowed path.
+  const bodyPaint = { ...paint, ...noteShadowFilter(theme) };
   // `node.notePosition === 'left'` means the NOTE sits left of its target,
   // so the spike protrudes from the note's RIGHT edge (`getPolygonRight`);
   // `'right'` is the mirror (`getPolygonLeft`, spike on the LEFT edge).
@@ -212,7 +226,7 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   }
   // `Opale#drawU` (`:126`) draws the fold as its OWN filled `<path>`
   // unconditionally -- same shape whether or not the note has a spike.
-  const body = path(bodyD, paint) + path(noteFoldPath(x, y, w), paint);
+  const body = path(bodyD, bodyPaint) + path(noteFoldPath(x, y, w), paint);
 
   const label = node.label ?? '';
 

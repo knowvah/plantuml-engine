@@ -1,0 +1,5 @@
+@startuml
+skinparam mode dark
+object O
+note right of O: n
+@enduml

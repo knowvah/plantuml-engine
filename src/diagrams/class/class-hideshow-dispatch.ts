@@ -46,6 +46,12 @@ function stampGroupScope(state: ParseState, directive: { scopeNsId?: string }): 
   if (state.activeNamespace !== null) directive.scopeNsId = state.activeNamespace;
 }
 
+/** The next source order number across the hide/show forms: `class-member-portion.ts`. */
+function nextSeq(state: ParseState): number {
+  state.hideShowSeq = (state.hideShowSeq ?? 0) + 1;
+  return state.hideShowSeq;
+}
+
 const HIDE_SHOW_RESOLVERS: readonly HideShowResolver[] = [
   // G2 N24: `hide [<<pattern>>] stereotype(s)` — tried BEFORE the entity-
   // pattern parser below: that parser's own `\S+` alternative ambiguously
@@ -58,6 +64,7 @@ const HIDE_SHOW_RESOLVERS: readonly HideShowResolver[] = [
     const directive = parseHideShowDirective(input);
     if (directive === null) return false;
     stampGroupScope(state, directive);
+    directive.seq = nextSeq(state);
     state.ast.directives.push(directive);
     return true;
   },
@@ -77,6 +84,7 @@ const HIDE_SHOW_RESOLVERS: readonly HideShowResolver[] = [
     const entity = parseHideShowEntityDirective(input);
     if (entity === null) return false;
     stampGroupScope(state, entity);
+    entity.seq = nextSeq(state);
     (state.ast.hideEntityDirectives ??= []).push(entity);
     return true;
   },

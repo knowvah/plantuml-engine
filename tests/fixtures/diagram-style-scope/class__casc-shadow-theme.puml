@@ -1,0 +1,9 @@
+@startuml
+!theme cerulean
+<style>
+class { Shadowing 4 }
+note { FontSize 12 }
+</style>
+class A
+note right of A: n
+@enduml

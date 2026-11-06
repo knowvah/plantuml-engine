@@ -1,45 +1,33 @@
 {
-  "generatedAt": "2026-11-04T13:25:53.224Z",
+  "generatedAt": "2026-11-06T03:03:25.442Z",
   "fixtures": [
     {
       "slug": "gasaxu-65-cipo396",
       "type": "board",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 190.889,
-      "firstDiff": "svg/g[1]/rect[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/text[11]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "jifeju-37-zeza533",
       "type": "board",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 12,
-      "firstDiff": "svg/g[1]/rect[1]/@fill",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "nuropa-85-vili653",
       "type": "board",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 190.889,
-      "firstDiff": "svg/g[1]/rect[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/text[5]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "rebire-77-depi269",
       "type": "board",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 12,
-      "firstDiff": "svg/g[1]/rect[1]/@fill",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     }
   ]
 }

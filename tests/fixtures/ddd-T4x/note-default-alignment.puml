@@ -1,0 +1,8 @@
+@startuml
+skinparam defaultTextAlignment center
+component a
+note right of a
+  long first line of the note
+  short
+end note
+@enduml

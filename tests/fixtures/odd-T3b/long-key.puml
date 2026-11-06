@@ -1,0 +1,12 @@
+@startuml
+<style>
+map {
+  MaximumWidth 60
+}
+</style>
+map m {
+  a long key that wraps => short
+  k => a long value that wraps too
+  both long key side => both long value side
+}
+@enduml

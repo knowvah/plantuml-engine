@@ -1,0 +1,9 @@
+@startpacketdiag
+packetdiag {
+  scale_direction = rtl
+  same_height = true
+  0-7: A [height=2]
+  8-15: B
+  16-31: C
+}
+@endpacketdiag

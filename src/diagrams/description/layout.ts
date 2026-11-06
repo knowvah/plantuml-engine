@@ -76,7 +76,9 @@ export type { ClassifyCtx, ContainerDesc, EdgeDotBuildResult } from './layout-ty
 /** D3/D4: the arrow-label font resolver -- `layoutDescription`'s
  *  `edgeFontSpec` construction (below) is its measurement-site wiring;
  *  `renderer-edge.ts#arrowLabelFontConfig` is the matching SVG-text site. */
-import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
+import { resolveArrowLabelFont, resolveCardinalityFont } from '../../core/arrow-label-font.js';
+import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
+import { leafMagneticBorder } from './renderer-entity.js';
 import { applyDescriptionTogethers } from './together.js';
 
 // ── Public API helpers ──
@@ -144,7 +146,10 @@ function runLayout(
     ...c,
     nodeIds: c.nodeIds.filter((id) => !removed.has(id)),
   }));
-  const { nodeSep, rankSep } = computeGraphSpacing(ast.links, edgeFonts.label, measurer, kermor, ctx.sprites);
+  const dzetaSpacing = computeGraphSpacing(ast.links, edgeFonts.label, measurer, kermor, ctx.sprites);
+  // `if (skinParam.getNodesep() != 0) nodesep = skinParam.getNodesep()` (`DotStringFactory.java:123-124,132-133`).
+  const nodeSep = theme.nodeSep ?? dzetaSpacing.nodeSep;
+  const rankSep = theme.rankSep ?? dzetaSpacing.rankSep;
   const input: DotInputGraph = {
     nodes: buildDotNodes(
       ctx,
@@ -242,6 +247,9 @@ function buildGeoAndEdges(
     dy: 0,
     xlabelTableByDotId: xlabelTables(edgeDotBuild.dotEdges),
     namespaceSeparator: ast.namespaceSeparator,
+    quantifiers: { nodes: result.nodes, measurer, defaultFont: resolveCardinalityFont(theme) },
+    leafMagnet: (node, at) =>
+      leafMagneticBorder(node, theme, ast.sprites)?.getForceAt(at, new MeasurerStringBounder(measurer)),
   };
   const rawEdges = buildEdgeGeos(ast.links, result.edges, rawMapping, hidden);
   // lgm-T1c: `placeBody` is `SvekResult#calculateDimension`'s `moveDelta` -- or its absence
@@ -256,7 +264,7 @@ function buildGeoAndEdges(
     },
   );
   const { dx, dy } = placement;
-  const nodes = rawNodes.map((n) => shiftGeo(n, dx, dy));
+  const nodes = rawNodes.map((n) => shiftGeo(n, dx, dy, result.originShift));
   const edges =
     dx === 0 && dy === 0
       ? rawEdges
@@ -402,6 +410,13 @@ export function layoutDescription(
     // Single-leaf diagram: resolve the floor for THAT leaf's own USymbol so a
     // scoped `<style> <sname> { MinimumWidth }` applies (S1L-b T5).
     minimumWidth: resolveElementMinimumWidth(theme, ast.nodes[0]?.symbol ?? ''),
+    // The same options `layout-dot-tree.ts#buildDotNodes` sizes a leaf with: `EntityImageDegenerated` wraps the one
+    // `EntityImageDescription`, so its box reads the same fonts, wrap width and guillemet (`EntityImageDescription.java:172-201`).
+    wrapWidth: ctx.wrapWidth,
+    guillemet: ctx.guillemet,
+    fontSize: ctx.fontSizeFor(ast.nodes[0]?.symbol ?? ''),
+    stereotypeFontSize: ctx.stereotypeFontSizeFor(ast.nodes[0]?.symbol ?? '', ast.nodes[0]?.stereotype),
+    lineThickness: ctx.lineThicknessFor(ast.nodes[0]?.symbol ?? ''),
     ...(theme.topurl !== undefined ? { topurl: theme.topurl } : {}),
   });
   if (degenerate !== undefined) {

@@ -1,0 +1,4 @@
+@startchart
+h-axis "Quarter" [A, B] label-right
+v-axis 0 --> 10
+@endchart

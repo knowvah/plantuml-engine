@@ -45,7 +45,7 @@ import {
 import type { AssembledSvg, RenderFragment } from '../../../core/dispatcher.js';
 import { isExportScaled, resolveScaleFactor, type ScaleSpec } from '../../../core/scale-command.js';
 import type { Theme } from '../../../core/theme.js';
-import { shiftFragmentBody } from '../../../core/annotations/coord-shift.js';
+import { shiftFragmentBody, shiftedFold } from '../../../core/annotations/coord-shift.js';
 import { applyChrome, type AnnotationStyles } from '../../../core/annotations/chrome.js';
 import type { DiagramAnnotations } from '../../../core/annotations/model.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
@@ -75,6 +75,7 @@ export function applyActivityDocumentMargin(
   return {
     ...fragment,
     body: shiftFragmentBody(fragment.body, margin.left, margin.top),
+    ...shiftedFold(fragment, margin.left, margin.top),
     width: Math.floor(fragment.width + margin.left + margin.right + SVG_CANVAS_CEIL),
     height: Math.floor(fragment.height + margin.top + margin.bottom + SVG_CANVAS_CEIL),
   };
@@ -189,6 +190,7 @@ export function applyActivityChrome(
   const raw: RenderFragment = {
     ...fragment,
     body: shiftFragmentBody(fragment.body, -ACTIVITY_DOCUMENT_MARGIN, -ACTIVITY_DOCUMENT_MARGIN),
+    ...shiftedFold(fragment, -ACTIVITY_DOCUMENT_MARGIN, -ACTIVITY_DOCUMENT_MARGIN),
     width: fragment.preChromeWidth ?? fragment.width,
     height: fragment.preChromeHeight ?? fragment.height,
   };

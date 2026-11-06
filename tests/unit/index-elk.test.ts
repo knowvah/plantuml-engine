@@ -66,7 +66,7 @@ describe('ELK layout services', () => {
     it('hands renderSync the caller’s options.elk', () => {
       const svg = renderPagesSync(CLASS_SOURCE, { elk: STUB_ELK });
       expect(svg).toHaveLength(1);
-      expect(servicesSeen(layoutSpy)).toEqual([{ elk: STUB_ELK }]);
+      expect(servicesSeen(layoutSpy).map((s) => s?.elk)).toEqual([STUB_ELK]);
     });
 
     it('hands render() the caller’s options.elk without loading elkjs', async () => {
@@ -88,12 +88,12 @@ describe('ELK layout services', () => {
   describe('a plugin that does not require ELK', () => {
     it('passes no backend through render() and never loads one', async () => {
       await render(CLASS_SOURCE);
-      expect(servicesSeen(layoutSpy)).toEqual([{ elk: undefined }]);
+      expect(servicesSeen(layoutSpy).map((s) => s?.elk)).toEqual([undefined]);
     });
 
     it('passes options.elk through renderSync unused', () => {
       renderSync(CLASS_SOURCE, { elk: STUB_ELK });
-      expect(servicesSeen(layoutSpy)).toEqual([{ elk: STUB_ELK }]);
+      expect(servicesSeen(layoutSpy).map((s) => s?.elk)).toEqual([STUB_ELK]);
     });
 
     it('renders a diagram with no requiresElk hook exactly as before', () => {

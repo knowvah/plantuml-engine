@@ -13,13 +13,17 @@ export interface OpaleBounds {
   readonly height: number;
   readonly roundCorner: number;
   readonly cornersize: number;
+  /** {@link DELTA} at the ambient scale `k`, for a caller whose `pp1`/`pp2` are already scaled (the jar scales the whole
+   *  `UGraphic`, so `delta` scales with the notch it sits in); absent for the unscaled geometry. */
+  readonly delta?: number;
 }
 
 /**
  * `Opale#delta` -- the half-depth of the notch.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/Opale.java:173
  */
-const DELTA = 4;
+export const OPALE_DELTA = 4;
+const DELTA = OPALE_DELTA;
 
 /**
  * `MathUtils.limitation`: clamp, but answer `v` untouched when `min >= max`.
@@ -39,14 +43,15 @@ function limitation(v: number, min: number, max: number): number {
  */
 export function getPolygonLeft(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPath {
   const { width, height, roundCorner, cornersize } = b;
+  const delta = b.delta ?? DELTA;
   const polygon = UPath.none();
   polygon.moveTo(0, roundCorner / 2);
 
-  let y1 = pp1.getY() - DELTA;
-  y1 = limitation(y1, 0, height - 2 * DELTA);
+  let y1 = pp1.getY() - delta;
+  y1 = limitation(y1, 0, height - 2 * delta);
   polygon.lineTo(0, y1);
   polygon.lineTo(pp2.getX(), pp2.getY());
-  polygon.lineTo(0, y1 + 2 * DELTA);
+  polygon.lineTo(0, y1 + 2 * delta);
 
   polygon.lineTo(0, height - roundCorner / 2);
   polygon.arcTo(new XPoint2D(roundCorner / 2, height), roundCorner / 2, 0, 0);
@@ -66,6 +71,7 @@ export function getPolygonLeft(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UP
  */
 export function getPolygonRight(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPath {
   const { width, height, roundCorner, cornersize } = b;
+  const delta = b.delta ?? DELTA;
   const polygon = UPath.none();
   polygon.moveTo(0, roundCorner / 2);
   polygon.lineTo(0, height - roundCorner / 2);
@@ -73,9 +79,9 @@ export function getPolygonRight(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): U
   polygon.lineTo(width - roundCorner / 2, height);
   polygon.arcTo(new XPoint2D(width, height - roundCorner / 2), roundCorner / 2, 0, 0);
 
-  let y1 = pp1.getY() - DELTA;
-  y1 = limitation(y1, cornersize, height - 2 * DELTA);
-  polygon.lineTo(width, y1 + 2 * DELTA);
+  let y1 = pp1.getY() - delta;
+  y1 = limitation(y1, cornersize, height - 2 * delta);
+  polygon.lineTo(width, y1 + 2 * delta);
   polygon.lineTo(pp2.getX(), pp2.getY());
   polygon.lineTo(width, y1);
 
@@ -93,6 +99,7 @@ export function getPolygonRight(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): U
  */
 export function getPolygonUp(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPath {
   const { width, height, roundCorner, cornersize } = b;
+  const delta = b.delta ?? DELTA;
   const polygon = UPath.none();
   polygon.moveTo(0, roundCorner / 2);
   polygon.lineTo(0, height - roundCorner / 2);
@@ -102,9 +109,9 @@ export function getPolygonUp(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPat
   polygon.lineTo(width, cornersize);
   polygon.lineTo(width - cornersize, 0);
 
-  let x1 = pp1.getX() - DELTA;
+  let x1 = pp1.getX() - delta;
   x1 = limitation(x1, 0, width - cornersize);
-  polygon.lineTo(x1 + 2 * DELTA, 0);
+  polygon.lineTo(x1 + 2 * delta, 0);
   polygon.lineTo(pp2.getX(), pp2.getY());
 
   polygon.lineTo(x1, 0);
@@ -120,16 +127,17 @@ export function getPolygonUp(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPat
  */
 export function getPolygonDown(b: OpaleBounds, pp1: XPoint2D, pp2: XPoint2D): UPath {
   const { width, height, roundCorner, cornersize } = b;
+  const delta = b.delta ?? DELTA;
   const polygon = UPath.none();
   polygon.moveTo(0, roundCorner / 2);
   polygon.lineTo(0, height - roundCorner / 2);
   polygon.arcTo(new XPoint2D(roundCorner / 2, height), roundCorner / 2, 0, 0);
 
-  let x1 = pp1.getX() - DELTA;
+  let x1 = pp1.getX() - delta;
   x1 = limitation(x1, 0, width);
   polygon.lineTo(x1, height);
   polygon.lineTo(pp2.getX(), pp2.getY());
-  polygon.lineTo(x1 + 2 * DELTA, height);
+  polygon.lineTo(x1 + 2 * delta, height);
 
   polygon.lineTo(width - roundCorner / 2, height);
   polygon.arcTo(new XPoint2D(width, height - roundCorner / 2), roundCorner / 2, 0, 0);

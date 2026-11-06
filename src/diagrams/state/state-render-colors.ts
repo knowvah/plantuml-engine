@@ -209,9 +209,16 @@ export function stateBorderStrokeAttrs(
   };
 }
 
-/** stdd T3b: the state style's `LineThickness` (`style-cascade-state.ts`), else the skin's `element` 0.5. */
+/** stdd T3b: the state style's `LineThickness` (`style-cascade-state.ts`), then `skinparam stateBorderThickness`,
+ *  which upstream converts to that same `state { LineThickness }` (`FromSkinparamToStyle.java:208`) and ours keeps
+ *  in the `state` element bucket (`skinparam-key-handlers.ts#tryElementLineThicknessBucket`), else the skin's
+ *  `element` 0.5. */
 export function stateLineThickness(theme: Pick<Theme, 'colors'>): number {
-  return theme.colors.graph.stateLineThickness ?? STATE_BORDER_STROKE_WIDTH;
+  return (
+    theme.colors.graph.stateLineThickness ??
+    theme.colors.elements?.['state']?.lineThickness ??
+    STATE_BORDER_STROKE_WIDTH
+  );
 }
 
 export function resolveStateBorder(node: Pick<StateNodeGeo, 'stereotype' | 'stateColors'>, theme: Theme): Paint {

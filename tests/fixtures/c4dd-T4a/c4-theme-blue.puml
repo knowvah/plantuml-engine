@@ -1,0 +1,8 @@
+@startuml
+!theme C4_blue from <C4/themes>
+!include <C4/C4_Context>
+Person(u, "User", "desc")
+System(s, "S", "desc")
+Rel(u, s, "Uses")
+SHOW_FLOATING_LEGEND()
+@enduml

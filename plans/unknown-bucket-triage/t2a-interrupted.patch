@@ -1,0 +1,214 @@
+diff --git a/src/core/klimt/drawing/svg/svg-graphics-core.ts b/src/core/klimt/drawing/svg/svg-graphics-core.ts
+index 332cb7aea..8bd232351 100644
+--- a/src/core/klimt/drawing/svg/svg-graphics-core.ts
++++ b/src/core/klimt/drawing/svg/svg-graphics-core.ts
+@@ -181,6 +181,18 @@ export class SvgGraphicsCore {
+     if (y > this.maxY) this.maxY = Math.trunc(y) + 1;
+   }
+ 
++  /**
++   * The `(maxX, maxY)` every `ensureVisible` call so far has left
++   * (`SvgGraphics.java:129-136`; the root `width`/`height` attributes,
++   * `:finalizeRootAttributes`). Upstream keeps them private: a port whose
++   * caller draws into a throwaway graphic and splices the markup into
++   * another document (the activity engine) reads them to keep that
++   * document's own extent as large as the jar's one-graphic extent.
++   */
++  getEnsureVisibleExtent(): { readonly maxX: number; readonly maxY: number } {
++    return { maxX: this.maxX, maxY: this.maxY };
++  }
++
+   /** Upstream: `addRoboto()`. `protected`, not `private`, since `text()`
+    * (`svg-graphics-elements.ts`) calls it for `fontFamily === 'roboto'`. */
+   protected addRoboto(): void {
+diff --git a/src/core/klimt/drawing/svg/u-graphic-svg.ts b/src/core/klimt/drawing/svg/u-graphic-svg.ts
+index cae8b6965..0deff3183 100644
+--- a/src/core/klimt/drawing/svg/u-graphic-svg.ts
++++ b/src/core/klimt/drawing/svg/u-graphic-svg.ts
+@@ -370,4 +370,10 @@ export class UGraphicSvg extends AbstractCommonUGraphic {
+   getSvgString(): string {
+     return this.svg.createXml();
+   }
++
++  /** `SvgGraphics#ensureVisible`'s running extent -- see
++   *  {@link SvgGraphics.getEnsureVisibleExtent}. */
++  getEnsureVisibleExtent(): { readonly maxX: number; readonly maxY: number } {
++    return this.svg.getEnsureVisibleExtent();
++  }
+ }
+diff --git a/src/diagrams/activity/activity-draw-extent.ts b/src/diagrams/activity/activity-draw-extent.ts
+new file mode 100644
+index 000000000..6b105215c
+--- /dev/null
++++ b/src/diagrams/activity/activity-draw-extent.ts
+@@ -0,0 +1,42 @@
++/**
++ * activity-draw-extent -- the `SvgGraphics#ensureVisible` extent of every
++ * `TextBlock` an activity render draws into a throwaway graphic.
++ *
++ * Upstream draws the whole document into ONE `SvgGraphics`, whose root
++ * `width`/`height` is the largest point any element asked
++ * `ensureVisible` to keep visible (`SvgGraphics.java:129-136`) -- which is
++ * not always the layout's ink box: an `SEG_ARCTO` segment asks for
++ * `(endX + rx, endY + ry)` (`SvgGraphics.java:854`), past the path's own
++ * `UPath` minmax (`UPath.java:86-87`, the end point alone). This port
++ * splices each text block's markup from a throwaway graphic
++ * (`activity-text-sheet.ts#drawActivityTextBlock`), so that graphic's
++ * extent would be lost; the render's sink keeps the maximum. The sink rides
++ * on the theme the way `activity-string-bounder.ts`'s measurer does, and a
++ * theme without one (layout-time callers) simply records nothing.
++ *
++ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/SvgGraphics.java:129-136,854
++ */
++import type { Theme } from '../../core/theme.js';
++
++/** The running maximum of the throwaway graphics' `ensureVisible` extents. */
++export interface ActivityDrawExtent {
++  maxX: number;
++  maxY: number;
++}
++
++const EXTENT_KEY: unique symbol = Symbol('activity.drawExtent');
++
++type ThemeWithExtent = Theme & { readonly [EXTENT_KEY]?: ActivityDrawExtent };
++
++/** `theme` carrying `sink` as the render's draw-extent accumulator. */
++export function withActivityDrawExtent<T extends Theme>(theme: T, sink: ActivityDrawExtent): T {
++  return { ...theme, [EXTENT_KEY]: sink };
++}
++
++/** Raise the render's extent to `extent` (a no-op for a theme with no sink). */
++export function reportActivityDrawExtent(theme: Theme, extent: ActivityDrawExtent): void {
++  const sink = (theme as ThemeWithExtent)[EXTENT_KEY];
++  if (sink === undefined) return;
++  sink.maxX = Math.max(sink.maxX, extent.maxX);
++  sink.maxY = Math.max(sink.maxY, extent.maxY);
++}
+diff --git a/src/diagrams/activity/activity-text-sheet.ts b/src/diagrams/activity/activity-text-sheet.ts
+index 447326f42..41b8b9d79 100644
+--- a/src/diagrams/activity/activity-text-sheet.ts
++++ b/src/diagrams/activity/activity-text-sheet.ts
+@@ -48,6 +48,7 @@ import { lengthAdjustOverride } from '../../core/klimt/drawing/svg/svg-option.js
+ import { UTranslate } from '../../core/klimt/UTranslate.js';
+ import { extractFlatContent } from '../../core/klimt/document-shell-fragment.js';
+ import { activityMeasurer } from './activity-string-bounder.js';
++import { reportActivityDrawExtent } from './activity-draw-extent.js';
+ import { fontConfigurationColor } from './activity-scoped-colors.js';
+ import { backColorFilterDef } from '../../core/svg-defs.js';
+ import { getSprite } from '../../core/sprite-registry.js';
+@@ -217,6 +218,8 @@ export function drawActivityTextBlock(
+   });
+   const ug = UGraphicSvg.build(0, option, THROWAWAY_VERSION, driverBounder, measurer);
+   tb.drawU(changes.reduce<UGraphic>((g, c) => g.apply(c), ug.apply(new UTranslate(at.x, at.y))));
++  console.error('EXT', JSON.stringify(ug.getEnsureVisibleExtent()), at.x, at.y);
++  reportActivityDrawExtent(theme, ug.getEnsureVisibleExtent());
+   const { body, extraDefs } = extractFlatContent(ug.getSvgString());
+   return withBackColorFilters(body, extraDefs);
+ }
+diff --git a/src/diagrams/activity/renderer.ts b/src/diagrams/activity/renderer.ts
+index 5098b2562..41aef7b72 100644
+--- a/src/diagrams/activity/renderer.ts
++++ b/src/diagrams/activity/renderer.ts
+@@ -27,6 +27,7 @@ import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/colo
+ import { edgeDecorationVector } from './layout/compress/shapes-of-terminal.js';
+ import { SVG_CANVAS_CEIL, activityDocumentMargin } from './activity-layout-constants.js';
+ import { withActivityMeasurer } from './activity-string-bounder.js';
++import { withActivityDrawExtent } from './activity-draw-extent.js';
+ import { withDeferredFormat } from '../../core/svg-format.js';
+ 
+ // ---------------------------------------------------------------------------
+@@ -401,18 +402,22 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
+   // resolves a label's `<$sprite>` exactly as the sizer did.
+   const spriteTheme = geo.sprites === undefined ? skinTheme : { ...skinTheme, sprites: geo.sprites };
+   // isw-T2-act F1: draw through the layout's own bounder (`Swimlanes.java:239,246`).
+-  const theme = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
++  const measuredTheme = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
++  // `SvgGraphics#ensureVisible` over every drawn text block (`activity-draw-extent.ts`).
++  const drawExtent = { maxX: 0, maxY: 0 };
++  const theme = withActivityDrawExtent(measuredTheme, drawExtent);
+   // isw-T2c-scale: scaled => formatted once, by the scale pass (SvgGraphics.java:468-475).
+   const deferred = geo.exportScaled === true;
+   const body = withDeferredFormat(deferred, () => drawActivityBody(geo, theme));
+   const raw = preChromeDims(geo, theme);
++  console.error('RW', geo.totalWidth, drawExtent, raw);
+   return {
+     ...(deferred ? { numbersDeferred: true as const } : {}),
+     // add4-T3d: `TitledDiagram#muteColorMapper` maps EVERY drawn colour
+     // (`ColorMapper.java:80-91`), applied once to the assembled body.
+     body: applyColorMapperToFragment(body, colorMapperOf(theme)),
+-    width: geo.totalWidth,
+-    height: geo.totalHeight,
++    width: Math.max(geo.totalWidth, drawExtent.maxX),
++    height: Math.max(geo.totalHeight, drawExtent.maxY),
+     background: theme.colors.background,
+     // T2d-a pass 2 (row DOCGRAD): `skinparam backgroundColor <c1>-<c2>` --
+     // see `theme.colors.backgroundGradient`'s own doc comment. Omitted
+diff --git a/src/diagrams/activity/tiles/gtile-group.ts b/src/diagrams/activity/tiles/gtile-group.ts
+index fbee512cf..8452bd1e6 100644
+--- a/src/diagrams/activity/tiles/gtile-group.ts
++++ b/src/diagrams/activity/tiles/gtile-group.ts
+@@ -6,7 +6,10 @@ import type { Theme } from '../../../core/theme.js';
+ import { activityFontSize } from '../activity-style-defaults.js';
+ import type { StringMeasurer } from '../../../core/measurer.js';
+ import type { CompositeUSymbol } from '../activity-geometry.types.js';
+-import { creoleTextLines } from '../../../core/svek/image/creole-text-lines.js';
++import { activityDisplayBlock, activityTextFontConfiguration } from '../activity-text-sheet.js';
++import { HorizontalAlignment } from '../../../core/klimt/geom/HorizontalAlignment.js';
++import { CreoleMode } from '../../../core/klimt/creole/CreoleMode.js';
++import { klimtStringBounder } from '../activity-creole-sheet.js';
+ import { measurerAdapterOf } from './gtile-action.js';
+ 
+ /** `FtileUtils.addHorizontalMargin(inner, 10)` (`FtileGroup.java:97`): a
+@@ -30,9 +33,31 @@ const BOTTOM_PAD = 20;
+  * and the compression adapter's title slot (`USymbolFrame.java:150-156`).
+  */
+ export function frameTitleWidth(title: string, measurer: StringMeasurer, theme: Theme): number {
+-  if (title === '') return 0;
+-  const font = { family: theme.fontFamily, size: activityFontSize(theme, 'composite') };
+-  return Math.max(0, ...creoleTextLines(title, font, measurer).map((line) => line.width));
++  return frameTitleDimension(title, measurer, theme).width;
++}
++
++/**
++ * `name.calculateDimension(stringBounder)` (`FtileGroup.java:104-108,
++ * 136-143,160-167`): the title `TextBlock` built by `title.create(fc, LEFT,
++ * skinParam)` measured as a whole, so a `<$sprite>` atom contributes its
++ * (scaled) image box to both axes (`AtomSprite#calculateDimension`). A
++ * null/empty title is `TextBlockUtils.empty(0, 0)` (`:106`).
++ */
++export function frameTitleDimension(
++  title: string,
++  measurer: StringMeasurer,
++  theme: Theme,
++): { readonly width: number; readonly height: number } {
++  if (title === '') return { width: 0, height: 0 };
++  const size = activityFontSize(theme, 'composite');
++  const fc = activityTextFontConfiguration(theme, size, 'composite');
++  const tb = activityDisplayBlock(title, theme, {
++    fontConfiguration: fc,
++    horizontalAlignment: HorizontalAlignment.LEFT,
++    creoleMode: CreoleMode.FULL,
++  });
++  const dim = tb.calculateDimension(klimtStringBounder(measurer, { family: fc.family, size }));
++  return { width: dim.getWidth(), height: dim.getHeight() };
+ }
+ 
+ /** `FtileGroup`'s constructor inputs beyond the title/body
+@@ -103,7 +128,7 @@ export class GtileGroup extends TileComposite {
+     // `activityFontSize` returns for a kind declaring none. Routed through
+     // the resolver rather than left as a bare `theme.fontSize` so a user's
+     // `<style> activityDiagram { composite { FontSize N } }` reaches it.
+-    const titleMeasured = bounder.getDimension(title, activityFontSize(theme, 'composite'));
++    const titleMeasured = frameTitleDimension(title, measurerAdapterOf(bounder), theme);
+     // `FtileGroup.java:140-143` -- `diffHeightTitle`: `max(25, dimTitle
+     // .getHeight() + 20)`. Was `titleMeasured.height + 8`, unsourced.
+     const diffHeightTitle = Math.max(25, titleMeasured.height + 20);
+@@ -116,7 +141,7 @@ export class GtileGroup extends TileComposite {
+     // `orig.width` is `margedBodyWidth` (the body already widened by
+     // `FtileMarged`, `getInnerDimension`'s ink-scan correction unported --
+     // see this class's own `drawU` counterpart's doc).
+-    const titleWidth = frameTitleWidth(title, measurerAdapterOf(bounder), theme);
++    const titleWidth = titleMeasured.width;
+     const suppWidth = Math.max(margedBodyWidth, titleWidth + 20, 20) - margedBodyWidth;
+     this.width = margedBodyWidth + suppWidth;
+     // `:145-148` -- `getTranslate`: `(suppWidth/2, diffHeightTitle +

@@ -1,0 +1,14 @@
+@startboard
+<style>
+activityDiagram {
+  document {
+    BackgroundColor #FFEEDD
+  }
+}
+</style>
+A
++B
+++C
+D
++E
+@endboard

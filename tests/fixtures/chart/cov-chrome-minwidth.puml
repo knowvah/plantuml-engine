@@ -1,0 +1,4 @@
+@startchart
+minwidth 300
+h-axis [A, B, C, D]
+@endchart

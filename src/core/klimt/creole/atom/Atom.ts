@@ -56,6 +56,8 @@ export type CreoleAtom =
   | {
       readonly kind: 'inline';
       readonly atom: InlineAtomToken;
+      /** `StripeSimple#getAtoms`'s one-space fallback font (`StripeSimple.java:124-125`), set when the line is built. */
+      readonly lineEndFont?: FontConfiguration;
       /** G2 N41: the font state active AT THE POINT this inline atom was
        *  recognized (`StripeSimple.ts#modifyStripe`'s own `this.font` --
        *  mirrors the `'text'` variant's own `font` field). Only OpenIconic

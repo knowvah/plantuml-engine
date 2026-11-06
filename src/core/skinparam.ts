@@ -28,8 +28,8 @@
  *   - skinparam-style-block.ts      — parseStyleBlock and its helpers
  */
 
-import { deepMergeTheme } from './theme.js';
-import type { Theme } from './theme.js';
+import { deepMergeTheme, mergeElementBuckets } from './theme.js';
+import type { ElementColors, Theme, ThemeOverride } from './theme.js';
 import { createSkinparamAccumulator } from './skinparam-accumulator.js';
 import type { SkinparamAccumulator } from './skinparam-accumulator.js';
 import { applyStereoOverride } from './skinparam-stereo-keys.js';
@@ -68,9 +68,22 @@ export function resolveSkinparam(skinparams: ReadonlyMap<string, string>, base: 
     applyNormalKey(acc, key, value);
   }
 
-  const partial = buildThemePartial(acc);
+  const partial = withMutedElementBuckets(buildThemePartial(acc), base);
   const theme = deepMergeTheme(solidBackgroundMergeBase(base, acc), partial);
   return { theme, unknown: acc.unknown };
+}
+
+/**
+ * The skinparam's element buckets mute the existing ones signature by signature, as `SkinParam#setParam` does
+ * (`muteStyle` into the one storage, `SkinParam.java:227-234`, `StyleBuilder.java:86-104`). `deepMergeTheme` spreads
+ * `colors` one level, so a bare `elements` key would replace the map and erase every bucket an earlier `<style>` block
+ * built (`note { FontSize 12 }` after `skinparam componentFontSize`).
+ */
+function withMutedElementBuckets(partial: ThemeOverride, base: Theme): ThemeOverride {
+  const incoming = partial.colors?.elements;
+  if (incoming === undefined) return partial;
+  const elements = mergeElementBuckets(base.colors.elements, incoming as Record<string, ElementColors>);
+  return { ...partial, colors: { ...partial.colors, elements } };
 }
 
 /**

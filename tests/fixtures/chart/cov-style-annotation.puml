@@ -1,0 +1,13 @@
+@startchart
+<style>
+chartDiagram {
+annotation {
+LineColor red
+LineThickness 2
+FontColor blue
+}
+}
+</style>
+h-axis [A, B, C, D]
+annotation "a" at (A, 50) <<arrow>>
+@endchart

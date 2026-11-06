@@ -1,0 +1,10 @@
+@startuml
+Alice -> Bob : hi
+note left
+{{chart
+h-axis [Q1, Q2]
+v-axis 0 --> 5
+bar "R" [1, 2] #3498db
+}}
+end note
+@enduml

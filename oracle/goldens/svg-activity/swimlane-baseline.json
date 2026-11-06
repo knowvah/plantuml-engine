@@ -1,7 +1,7 @@
 {
   "$comment": "Swimlane census (divider x's, titles, band) of OUR laned activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): lanes transform like rectangles (D7), so divider x's moved on every laned fixture whose content compressed; 17-fixture fork/split subset 14 closer / 1 same / 2 farther (maketa, noxasi: the filed parser lane-capture defect).",
-  "measuredAt": "2026-10-09",
-  "measuredAgainstCommit": "3d8988d8",
+  "measuredAt": "2026-11-06",
+  "measuredAgainstCommit": "78ad396b",
   "fixtures": [
     {
       "type": "activity",
@@ -4938,61 +4938,61 @@
       "ours": {
         "dividerXs": [
           20,
-          141.425,
-          269.813
+          174.756,
+          329.513
         ],
         "titles": [
           {
-            "fontSize": "12",
-            "x": "72.075",
+            "fontSize": "19",
+            "x": "83.119",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "62.363",
+            "fontSize": "19",
+            "x": "67.741",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "36",
+            "fontSize": "19",
+            "x": "26",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "191.475",
+            "fontSize": "19",
+            "x": "234.669",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "175.463",
+            "fontSize": "19",
+            "x": "209.316",
             "anchor": "(absent)"
           },
           {
             "fontSize": "5",
-            "x": "199.669",
+            "x": "249.666",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "157.425",
-            "anchor": "(absent)"
-          },
-          {
-            "fontSize": "18",
-            "x": "40.606",
+            "fontSize": "19",
+            "x": "180.756",
             "anchor": "(absent)"
           },
           {
             "fontSize": "18",
-            "x": "165.513",
+            "x": "57.272",
+            "anchor": "(absent)"
+          },
+          {
+            "fontSize": "18",
+            "x": "212.028",
             "anchor": "(absent)"
           }
         ],
         "bandRect": {
           "x": 0,
           "y": 0,
-          "width": 298,
-          "height": 441,
+          "width": 357,
+          "height": 363,
           "fill": "#AAA"
         },
         "lanes": [
@@ -5005,8 +5005,8 @@
             "width": 128.38750076293945
           }
         ],
-        "width": "298",
-        "height": "441"
+        "width": "357",
+        "height": "363"
       },
       "jar": {
         "dividerXs": [
@@ -8336,61 +8336,61 @@
       "ours": {
         "dividerXs": [
           20,
-          141.425,
-          269.813
+          174.756,
+          329.513
         ],
         "titles": [
           {
-            "fontSize": "12",
-            "x": "72.075",
+            "fontSize": "19",
+            "x": "83.119",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "62.363",
+            "fontSize": "19",
+            "x": "67.741",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "36",
+            "fontSize": "19",
+            "x": "26",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "191.475",
+            "fontSize": "19",
+            "x": "234.669",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "175.463",
+            "fontSize": "19",
+            "x": "209.316",
             "anchor": "(absent)"
           },
           {
             "fontSize": "5",
-            "x": "199.669",
+            "x": "249.666",
             "anchor": "(absent)"
           },
           {
-            "fontSize": "12",
-            "x": "157.425",
-            "anchor": "(absent)"
-          },
-          {
-            "fontSize": "18",
-            "x": "40.606",
+            "fontSize": "19",
+            "x": "180.756",
             "anchor": "(absent)"
           },
           {
             "fontSize": "18",
-            "x": "165.513",
+            "x": "57.272",
+            "anchor": "(absent)"
+          },
+          {
+            "fontSize": "18",
+            "x": "212.028",
             "anchor": "(absent)"
           }
         ],
         "bandRect": {
           "x": 0,
           "y": 0,
-          "width": 298,
-          "height": 441,
+          "width": 357,
+          "height": 363,
           "fill": "#AAA"
         },
         "lanes": [
@@ -8403,8 +8403,8 @@
             "width": 128.38750076293945
           }
         ],
-        "width": "298",
-        "height": "441"
+        "width": "357",
+        "height": "363"
       },
       "jar": {
         "dividerXs": [

@@ -1,0 +1,6 @@
+@startuml
+object o
+map a {
+ k *-> o
+}
+@enduml

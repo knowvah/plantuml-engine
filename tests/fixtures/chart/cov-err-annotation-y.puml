@@ -1,0 +1,3 @@
+@startchart
+annotation "a" at (A, b)
+@endchart

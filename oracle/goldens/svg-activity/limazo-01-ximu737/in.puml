@@ -1,0 +1,9 @@
+@startuml
+start
+:act1;
+-[#gray]->    #going to end;
+:act2;
+-[#green]->#going to end;
+:act3;
+stop
+@enduml

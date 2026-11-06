@@ -22,6 +22,7 @@ import { activityFontColor } from './activity-text-style.js';
 import { inlineBack, scopedBack, scopedLine, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
+import { activityShadowFilter, activityShadowingOf } from './activity-shadow.js';
 
 /**
  * `circle { start, stop, end { LineColor #2 } } }` (`plantuml.skin:379-380`
@@ -55,11 +56,17 @@ function ellipsePaint(paint: Paint): Paint {
  * falls back to the pre-existing default only when absent (a hand-built
  * `Theme`, or an unparsable `<style>` block).
  */
-function circleColors(theme: Theme, leaf: 'start' | 'stop', back: Paint, line: string): { back: Paint; line: Paint } {
+function circleColors(
+  theme: Theme,
+  leaf: 'start' | 'stop',
+  fallback: { back: Paint; line: string },
+  node: ActivityNodeGeo,
+): { back: Paint; line: Paint } {
   const merged = theme.colors.graph.activity?.circleStyle?.[leaf];
   return {
-    back: ellipsePaint(svgBack(merged?.back) ?? back),
-    line: ellipsePaint(merged?.line ?? line),
+    // `colors.getColor(style, BackGroundColor)`: the stereogroup's BACK beats the style's (`CircleStart.java:72`, `CircleEnd.java:75`).
+    back: ellipsePaint(inlineBack(node) ?? svgBack(merged?.back) ?? fallback.back),
+    line: ellipsePaint(merged?.line ?? fallback.line),
   };
 }
 
@@ -85,8 +92,18 @@ export function renderStart(node: ActivityNodeGeo, theme: Theme): string {
   // (`levuma-67-cego489`: jar stroke `#DDD`, ours `#222`).
   // add4-T3f: `CircleStart#drawU` -- `lineColor` stroke, `backColor` fill
   // (`svek/image/CircleStart.java:72-82`), both off the merged style.
-  const { back, line } = circleColors(theme, 'start', actColors(theme).startFill, circleInk(theme));
-  return ellipse(cx, cy, r, r, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS });
+  const { back, line } = circleColors(
+    theme,
+    'start',
+    { back: actColors(theme).startFill, line: circleInk(theme) },
+    node,
+  );
+  return ellipse(cx, cy, r, r, {
+    fill: back,
+    stroke: line,
+    'stroke-width': CIRCLE_LINE_THICKNESS,
+    ...activityShadowFilter(activityShadowingOf(theme).start), // `CircleStart.java:79-81`
+  });
 }
 
 /**
@@ -134,12 +151,13 @@ export function renderStop(node: ActivityNodeGeo, theme: Theme): string {
   // merged style, which carries `ActivityStopColor` too (`LineColor`,
   // `FromSkinparamToStyle.java:139`).
   const ink = circleInk(theme);
-  const { back, line } = circleColors(theme, 'stop', ink, ink);
+  const { back, line } = circleColors(theme, 'stop', { back: ink, line: ink }, node);
   return (
     ellipse(cx, cy, outerR, outerR, {
       fill: 'none',
       stroke: line,
       'stroke-width': CIRCLE_LINE_THICKNESS,
+      ...activityShadowFilter(activityShadowingOf(theme).stop), // `CircleEnd.java:83-85`: the outer ring only
     }) + ellipse(cx, cy, innerR, innerR, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS })
   );
 }
@@ -199,6 +217,7 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
       fill: 'none',
       stroke: ellipsePaint(endFill),
       'stroke-width': CIRCLE_END_LINE_THICKNESS,
+      ...activityShadowFilter(activityShadowingOf(theme).end), // `FtileCircleEndCross.java:78,105`
     }) +
     orderedLine(node.x + delta, node.y + delta, node.x + delta + size2, node.y + delta + size2, crossStyle) +
     orderedLine(

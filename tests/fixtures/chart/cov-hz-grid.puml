@@ -1,0 +1,6 @@
+@startchart
+orientation horizontal
+v-axis [A, B] grid
+h-axis 0 --> 100 grid
+bar [50, 25]
+@endchart

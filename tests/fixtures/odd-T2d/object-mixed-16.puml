@@ -1,0 +1,10 @@
+@startuml
+skinparam classAttributeIconSize 16
+object O {
+ -a = 1
+ b = 2
+ +c = 3
+}
+object P
+O --> P
+@enduml

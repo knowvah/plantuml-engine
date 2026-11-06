@@ -1,0 +1,6 @@
+@startuml
+object o
+object o {
+  x = 1
+}
+@enduml

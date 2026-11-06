@@ -16,6 +16,8 @@ import type { ClusterHeaderStereo } from './class-cluster-header.js';
 import type { LeafSymbolInk } from '../../core/svek/image/leaf-sizing-entity.js';
 
 export interface NamespaceGeo {
+  /** `Cluster.java:321`, unscaled; absent means the skin's {@link PACKAGE_ROUND_CORNER} (`namespaceRoundCorner`). */
+  roundCorner?: number;
   id: string;
   x: number;
   y: number;

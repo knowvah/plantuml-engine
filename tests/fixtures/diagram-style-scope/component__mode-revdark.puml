@@ -1,0 +1,6 @@
+@startuml
+skinparam reversecolor dark
+[C]
+database D
+note left of C: n
+@enduml

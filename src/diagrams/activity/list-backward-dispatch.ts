@@ -23,7 +23,7 @@ import {
   type DispatchResult,
   type ParseContext,
 } from './dispatch-support.js';
-import { stereogroupStereotype } from './dispatch-stereogroup.js';
+import { stereogroupStereotype, stereotypesSpread } from './dispatch-stereogroup.js';
 import { readMultilineActionBody } from './node-dispatch.js';
 import { unescapeLabelNewlines } from './if-dispatch.js';
 import { redirectNoteOntoSwitch } from './note-dispatch.js';
@@ -254,6 +254,7 @@ export function tryBackward(ctx: ParseContext, idx: number, line: string): Dispa
       ...backArrowSpread('outgoing', single[4]),
       // `CommandBackward3.java:136-138`: `stereogroup.getBoxStyle()`.
       ...stereoSpread(stereogroupStereotype(single[3])),
+      ...stereotypesSpread(single[3]),
     };
     return { idx: idx + 1, node };
   }
@@ -270,6 +271,7 @@ export function tryBackward(ctx: ParseContext, idx: number, line: string): Dispa
     ...backArrowSpread('incoming', headMatch[1]),
     // `CommandBackwardLong3.java:112-115`: the closer's stereogroup.
     ...stereoSpread(body.multiStereo),
+    ...stereotypesSpread(body.multiGroup),
   };
   return { idx: body.cursor, node };
 }

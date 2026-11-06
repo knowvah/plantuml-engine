@@ -1,0 +1,18 @@
+@startuml
+skinparam objectBackgroundColor pink
+<style>
+objectDiagram {
+  header {
+    FontColor red
+  }
+}
+element {
+  header {
+    BackgroundColor palegreen
+  }
+}
+</style>
+object o {
+ a = 1
+}
+@enduml

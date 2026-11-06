@@ -1,0 +1,6 @@
+@startchart
+h-axis "x" 0 --> 10
+v-axis "y" 0 --> 10
+line "l" [(1, 1), (2, 2)] labels
+legend bottom
+@endchart

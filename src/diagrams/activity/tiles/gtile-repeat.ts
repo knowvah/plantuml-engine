@@ -1,6 +1,6 @@
 import type { GPoint, HookName } from './points.js';
 import { EAST_HOOK, NORTH_BORDER, NORTH_HOOK, SOUTH_BORDER, SOUTH_HOOK, WEST_HOOK } from './points.js';
-import type { StringBounder, Tile } from './tile.js';
+import type { DiamondColors, StringBounder, Tile } from './tile.js';
 import { TileComposite } from './tile.js';
 import type { GtileDiamondInside } from './gtile-diamond-inside.js';
 import type { GtileDiamondSquare } from './gtile-diamond-square.js';
@@ -56,6 +56,7 @@ export class RepeatConditionEmpty implements Tile {
    *  tile goes through. */
   swimlane?: string = undefined;
   swimlaneOut?: string = undefined;
+  diamondColors?: DiamondColors = undefined;
 
   getCoord(_hook: HookName): GPoint {
     return { x: 0, y: 0 };

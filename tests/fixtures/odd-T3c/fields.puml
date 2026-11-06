@@ -1,0 +1,7 @@
+@startuml
+allow_mixing
+state A
+A : text one
+A : text two
+class B
+@enduml

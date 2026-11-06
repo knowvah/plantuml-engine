@@ -34,6 +34,7 @@
  */
 
 import type { StateNodeGeo } from './state-geo-types.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
 import { ellipse, line, rect, text } from '../../core/svg.js';
@@ -143,7 +144,7 @@ export function renderBorderPoint(node: StateNodeGeo, theme: Theme): string {
   if (lines.length === 0) return symbol;
   // stdd T1b: `EntityImageStateBorder.java:89` draws `desc` before `:103`'s
   // `entityPosition.drawSymbol`, so the label precedes the symbol.
-  const fontSize = resolveStateFontSize(node, theme, theme.fontSize);
+  const fontSize = resolveStateFontSize(node, theme, stateNameFontSizeOf(theme));
   const descHeight = lines.length * fontSize;
   const labelTop = node.borderPointLabelAbove === true ? node.y - 2 * RADIUS - descHeight : node.y + 2 * RADIUS;
   const fontColor = resolveStateFontColor(node, theme, '#000000');

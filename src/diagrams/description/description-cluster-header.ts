@@ -40,6 +40,7 @@ function headerNode(container: ContainerDesc): DescriptionNodeGeo {
     children: [],
     ...(container.stereotype === undefined ? {} : { stereotype: container.stereotype }),
     ...(container.stereotypeSprite === undefined ? {} : { stereotypeSprite: container.stereotypeSprite }),
+    ...(container.entityStyle === undefined ? {} : { entityStyle: container.entityStyle }),
   };
 }
 
@@ -77,7 +78,12 @@ export function descriptionClusterTitleTable(
   const suppHeight = symbol?.suppHeightBecauseOfShape() ?? 0;
   const labelWidth = dimLabel.getWidth() > 0 ? truncated(dimLabel.getWidth()) + suppWidth : 0;
   const labelHeight = dimLabel.getWidth() > 0 ? truncated(dimLabel.getHeight() + suppHeight) : 0;
-  const minimumWidth = Math.ceil(resolveElementMinimumWidth(theme, container.symbol) ?? 0);
+  // `getStyle().value(PName.MinimumWidth)` (`Cluster.java:262`).
+  const minimumWidth = Math.ceil(
+    container.entityStyle?.cluster?.value('MinimumWidth').asDouble() ??
+      resolveElementMinimumWidth(theme, container.symbol) ??
+      0,
+  );
   const width = Math.max(labelWidth, minimumWidth);
   if (width <= 0 && labelHeight <= 0) return undefined;
   // Raw dims first; `computeTitleTableHeight(…) - 5` is the shared `-5` (ClusterDotString.java:124).

@@ -25,9 +25,11 @@
  * @see ~/git/plantuml/.../objectdiagram/ClassDiagramFactory.java (registration)
  */
 
+import { DiagramRefusal } from '../../core/error/error-diagrams.js';
 import type { Classifier, MapRow, Relationship } from './ast.js';
 import { MAP_POINT_SENTINEL } from './ast.js';
-import { countByName, firstWithName, qualifiedId, resolveReference, splitOnSeparator } from './class-namespace.js';
+import { resolveExistingId } from './class-existing-entity.js';
+import { resolveReference, splitOnSeparator } from './class-namespace.js';
 import { ensureClassifier, type ParseState } from './parser.js';
 
 // ---------------------------------------------------------------------------
@@ -155,21 +157,9 @@ function parseMapMatch(match: RegExpExecArray): MapMatch {
  * `applyObjectDecl` doc) resolves the quark; `quark.getData() != null` (an
  * ALREADY-declared entity, of ANY kind, at that resolved id — matching
  * upstream's Entity-level check, not a map-only one) then fails the whole
- * command ("Map already exists" — `executeArg0` returns null,
- * `executeNow` errors before ever reading a body line). This parser has no
- * error-reporting channel for command execution (same gap as `object`'s
- * duplicate no-op), so the observable behavior is: the existing entity is
- * left completely untouched, AND — unlike `object`'s single-line duplicate,
- * which has no body to worry about — the map's `{ ... }` body must still be
- * consumed so its lines do not leak to `dispatchCommand` as bogus top-level
- * commands (upstream: `executeNow` always operates on the WHOLE matched
- * multi-line block; the null check happens after the block is already
- * extracted). `state.pendingBodyId` is set to `''` — a sentinel no real
- * classifier can ever have as its id (every declaration grammar's CODE/NAME
- * charset requires at least one character) — so
- * `parser.ts#handlePendingBodyLine`'s `classifierIndex.get('')` lookup
- * always misses and every body line up to the closing `}` is silently
- * discarded without touching any classifier's `rows`.
+ * command ("Map already exists" — `executeArg0` returns null, `executeNow`
+ * errors before ever reading a body line). The block is one trace in the jar, so
+ * the refusal waits for the `}`: {@link ParseState.pendingBodyRefusal}.
  */
 function applyMapOpen(state: ParseState, match: RegExpExecArray): void {
   const { rawCode, rawDisplay, stereotype, color } = parseMapMatch(match);
@@ -184,7 +174,8 @@ function applyMapOpen(state: ParseState, match: RegExpExecArray): void {
     reuseExistingChild: true,
   });
   if (state.classifierIndex.has(id)) {
-    state.pendingBodyId = ''; // "Map already exists" — consume-and-discard the body
+    // `CommandCreateMap.java:165-166`: `error("Map already exists: " + line0.get("NAME", 1))`, the id as written.
+    state.pendingBodyRefusal = { message: `Map already exists: ${rawCode}` };
     return;
   }
 
@@ -223,6 +214,13 @@ function applyBareMapDecl(state: ParseState, match: RegExpExecArray): void {
  */
 const LINKED_ENTRY_RE = /(\*-+_?>)/;
 
+/** `CommandCreateMap.java` `executeNow`, on a line `addFieldOrMethod` refuses. */
+const MAP_DEFINITION_ERROR = 'Map definition should contains key => value';
+/** `CommandCreateMap.java` `executeNow`, on a destination with no entity. */
+const NO_SUCH_ENTITY_ERROR = 'No such entity';
+/** `BodierJSon#addFieldOrMethod` throws (`BodierJSon.java:95`). */
+const JSON_ADD_FIELD_ERROR = 'UnsupportedOperationException';
+
 /**
  * Compute the `MapRow` a body line contributes, mirroring
  * `BodierMap#addFieldOrMethod`'s two-branch `ok` decision: `=>` is checked
@@ -232,9 +230,7 @@ const LINKED_ENTRY_RE = /(\*-+_?>)/;
  * {@link MAP_POINT_SENTINEL}, upstream's own `map.put(..., "\0")` at
  * `BodierMap.java:79`; the port `MapRow.linkedCode` is filled in by the
  * caller once the link resolves).
- * Returns `null` for neither form ("Map definition should contains key =>
- * value" upstream — silently dropped here, matching this parser's existing
- * no-error-channel posture).
+ * Returns `null` for neither form: {@link MAP_DEFINITION_ERROR}.
  */
 function computeMapRow(line: string): MapRow | null {
   const eqIdx = line.indexOf('=>');
@@ -283,32 +279,6 @@ function computeMapLink(line: string): MapLink | null {
 }
 
 /**
- * Read-only counterpart to `resolveReference`'s lookup rules, for the map
- * link's dest resolution — upstream's `quarkInContext(true, dest)` followed
- * immediately by `entity2 == null` bails without ever creating anything, so
- * this must NOT mutate `state.ast.namespaces` the way `resolveReference`'s
- * qualified-path fallback does (`ensureNamespaceChain` unconditionally
- * registers namespace entries for the resolved id, even when the caller only
- * wanted to check existence) — a namespace conjured for a dest that turns
- * out not to exist would later get promoted to a phantom leaf classifier by
- * `collapseEmptyNamespacesFinal` (class-namespace.ts). Mirrors the bare-name
- * unique-match shortcut (`tryReuseExisting`'s `countByName`/`firstWithName`
- * pair) for the common case, falling back to a plain qualified-id lookup
- * against the already-registered `classifierIndex` for a dotted reference —
- * a simplified (existence-check-only) subset of the full endpoint resolution
- * `class-relationship-parser.ts` performs for ordinary arrow endpoints,
- * sufficient here since a map link never AUTO-CREATES its destination.
- */
-function resolveExistingId(state: ParseState, rawName: string): string | undefined {
-  const sep = state.namespaceSeparator;
-  if (splitOnSeparator(rawName, sep) === null && countByName(state.ast.classifiers, sep, rawName) === 1) {
-    return firstWithName(state.ast.classifiers, sep, rawName)!.id;
-  }
-  const id = qualifiedId(rawName, state.activeNamespace, sep, state.ast.namespaces);
-  return state.classifierIndex.has(id) ? id : undefined;
-}
-
-/**
  * Apply one `map { ... }` body line (parser.ts#handlePendingBodyLine, routed
  * here when the pending classifier's `kind` is `'map'`). Blank lines are
  * dropped (upstream: `lines.trim().removeEmptyLines()` runs on the WHOLE
@@ -323,44 +293,73 @@ function resolveExistingId(state: ParseState, rawName: string): string | undefin
  * guard is needed to replicate upstream's `ok` gate (it is structurally the
  * same condition here).
  *
- * A missing dest ("No such entity") skips ONLY the link — the row (if any)
- * from the SAME line is still appended, a deliberate silent-no-op divergence
- * from upstream's hard command error (documented per this parser's existing
- * no-error-channel posture; see {@link applyMapOpen}'s doc for the same
- * posture on a duplicate map name).
+ * A line that is no row, and a link whose dest does not exist, refuse the
+ * whole block as `executeNow` does (`error("Map definition should contains key
+ * => value")`, `error("No such entity " + ident2.getName())`). The error lands
+ * on the block's `}`, which {@link ParseState.pendingBodyRefusal} carries.
  */
 export function applyMapBodyLine(state: ParseState, classifier: Classifier, rawLine: string): void {
   const line = rawLine.trim();
   const row = computeMapRow(line);
+  if (row === null) {
+    state.pendingBodyRefusal = { message: MAP_DEFINITION_ERROR };
+    return;
+  }
+  // `addFieldOrMethod` runs before the link is read, but a refusal keeps nothing, so the order cannot show.
   const link = computeMapLink(line);
   if (link !== null) {
     const destId = resolveExistingId(state, link.dest);
-    if (destId !== undefined) {
-      if (row !== null) row.linkedCode = destId;
-      const rel: Relationship = {
-        from: classifier.id,
-        to: destId,
-        // LinkType(LinkDecor.ARROW, LinkDecor.NONE) — verified (via
-        // CommandLinkClass#getLinkType/executeArg) to be EXACTLY the LinkType
-        // a plain `entity1 -> entity2` relationship line produces: LinkType's
-        // decor1 field holds the decor found near ENT2 (the arrow's target
-        // head), decor2 holds the decor found near ENT1 (the source) — see
-        // `getLinkType`'s `new LinkType(decors2, decors1)` swap. So this
-        // reuses the same type/decor pair `resolveArrow('->')` /
-        // `parseArrowDecors('->', false)` compute for a bare `->` token:
-        // association, source undecorated, target open-arrowhead.
-        type: 'association',
-        sourceDecor: 'none',
-        targetDecor: 'open',
-        fromPort: link.key,
-        length: link.length,
-      };
-      state.ast.relationships.push(rel);
+    if (destId === undefined) {
+      state.pendingBodyRefusal = { message: `${NO_SUCH_ENTITY_ERROR} ${quarkName(state, link.dest)}` };
+      return;
     }
+    row.linkedCode = destId;
+    const rel: Relationship = {
+      from: classifier.id,
+      to: destId,
+      // LinkType(LinkDecor.ARROW, LinkDecor.NONE) — verified (via
+      // CommandLinkClass#getLinkType/executeArg) to be EXACTLY the LinkType
+      // a plain `entity1 -> entity2` relationship line produces: LinkType's
+      // decor1 field holds the decor found near ENT2 (the arrow's target
+      // head), decor2 holds the decor found near ENT1 (the source) — see
+      // `getLinkType`'s `new LinkType(decors2, decors1)` swap. So this
+      // reuses the same type/decor pair `resolveArrow('->')` /
+      // `parseArrowDecors('->', false)` compute for a bare `->` token:
+      // association, source undecorated, target open-arrowhead.
+      type: 'association',
+      sourceDecor: 'none',
+      targetDecor: 'open',
+      fromPort: link.key,
+      length: link.length,
+    };
+    // `CommandCreateMap#executeNow` runs `new Link(...)` inside its row loop and `Link.java:135` takes the uid from
+    // the counter `Entity.java:171` shares, so the link numbers before the next statement's entity. A block command
+    // runs at `}`, and no other statement can interleave a map's body, so stamping per line gives the same order.
+    state.creationCounter.value += 1;
+    rel.creationIndex = state.creationCounter.value;
+    state.ast.relationships.push(rel);
   }
-  if (row !== null) {
-    putMapRow((classifier.rows ??= []), row);
-  }
+  putMapRow((classifier.rows ??= []), row);
+}
+
+/** `Quark#getName`: the last segment of `quarkInContext(true, dest)`, which is what `No such entity` prints. */
+export function quarkName(state: ParseState, dest: string): string {
+  return splitOnSeparator(dest, state.namespaceSeparator)?.at(-1) ?? dest;
+}
+
+/**
+ * `CommandAddMethod#executeArg`'s `entity.getBodier().addFieldOrMethod(field)` on a `BodierMap` or `BodierJSon`. A map
+ * takes the row and ignores a line that is none (`BodierMap.java:72-84` answers false, unread here; and a linked row
+ * draws no link, which only `CommandCreateMap` builds). A json throws `UnsupportedOperationException`
+ * (`BodierJSon.java:95`), the jar's crash page; ours is an error page at the same line.
+ */
+export function applyMemberToMapOrJson(state: ParseState, classifier: Classifier, member: string): boolean {
+  // A crash ends the attempt outright, where a refusal lets the state factory claim the block next.
+  if (classifier.kind === 'json') throw new DiagramRefusal(JSON_ADD_FIELD_ERROR, state.currentLine, 'class');
+  if (classifier.kind !== 'map') return false;
+  const row = computeMapRow(member.trim());
+  if (row !== null) putMapRow((classifier.rows ??= []), row);
+  return true;
 }
 
 /**

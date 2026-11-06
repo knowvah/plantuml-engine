@@ -1,0 +1,12 @@
+@startuml
+skinparam dpi 100
+skinparam arrowThickness 3
+package P {
+  class A
+  class B
+}
+class C
+A ..> B
+C -[dashed]-> A
+C -[dotted]-> B
+@enduml

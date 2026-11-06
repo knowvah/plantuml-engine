@@ -81,6 +81,7 @@
  * @see ~/git/plantuml/.../svek/InnerStateAutonom.java
  */
 import { roundedBottomRectD, roundedTopRectD } from '../../core/svg-path-builder.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import type { StateNodeGeo, StateTextLine } from './state-geo-types.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
@@ -193,7 +194,7 @@ function renderCompositeTextLines(
  *  #tableLine`). Identical to `count * fontSize` for every ordinary line. */
 function textBlockHeight(lines: readonly StateTextLine[], theme: Theme): number {
   let out = 0;
-  for (const ln of styledLines(lines)) out += ln.height === 0 ? theme.fontSize : ln.height;
+  for (const ln of styledLines(lines)) out += ln.height === 0 ? stateNameFontSizeOf(theme) : ln.height;
   return out;
 }
 
@@ -208,11 +209,11 @@ function renderCompositeFallback(node: StateNodeGeo, theme: Theme): string {
     strokeDasharray: '6,3',
     rx: 8,
   });
-  const label = text(node.x + node.width / 2, node.y + theme.fontSize + 4, node.display, {
+  const label = text(node.x + node.width / 2, node.y + stateNameFontSizeOf(theme) + 4, node.display, {
     textAnchor: 'middle',
     fill: theme.colors.text,
     fontFamily: theme.fontFamily,
-    fontSize: theme.fontSize,
+    fontSize: stateNameFontSizeOf(theme),
   });
   return outerBox + label;
 }
@@ -251,8 +252,8 @@ function buildCoreLayers(
   // cascade -- see `resolveStateFontColor`'s own doc comment.
   // dss T3c: the title is the `name` zone (`InnerStateAutonom.java:102`, `ClusterHeader.java:156-157`).
   const fontColor = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
-  const ascent = textAscent(theme.fontSize);
-  const headerHeight = MARGIN + headerLines.length * theme.fontSize + MARGIN_LINE;
+  const ascent = textAscent(stateNameFontSizeOf(theme));
+  const headerHeight = MARGIN + headerLines.length * stateNameFontSizeOf(theme) + MARGIN_LINE;
   const dividerY1 = node.y + headerHeight;
 
   const header = compositeHeaderPath(node.x, node.y, node.width, headerHeight, fill, radius);
@@ -410,7 +411,7 @@ function renderClusterMeasured(node: StateNodeGeo, theme: Theme): string {
   const border = resolveStateBorder(node, theme);
   const radius = resolveStateBoxRadius(theme, STATE_BOX_RX);
   const fontColor = resolveStateFontColor(node, theme, '#000000', STATE_NAME_BUCKET);
-  const ascent = textAscent(theme.fontSize);
+  const ascent = textAscent(stateNameFontSizeOf(theme));
   const outlineAttrs = { fill: 'none', stroke: border, ...stateBorderStrokeAttrs(node, theme), rx: radius, ry: radius };
   const strokeAttrs = { stroke: border, ...stateBorderStrokeAttrs(node, theme) };
   const hline = (dy: number): string => line(node.x, node.y + dy, node.x + node.width, node.y + dy, strokeAttrs);

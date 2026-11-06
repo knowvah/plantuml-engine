@@ -1,0 +1,8 @@
+@startuml
+start
+switch (what) <<#green>>
+case (a)
+  :a;
+endswitch <<#blue>>
+stop
+@enduml

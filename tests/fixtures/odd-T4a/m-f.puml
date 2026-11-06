@@ -1,0 +1,8 @@
+@startuml
+object a {
+ x = 1
+}
+hide members
+show a
+show a fields
+@enduml

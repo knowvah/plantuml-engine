@@ -753,3 +753,27 @@ describe('unknownDetail', () => {
     expect(renderReport(model)).toContain(`- **unknown:** Of the ${short} fixtures`);
   });
 });
+
+describe('ratchetPinsOf — a c4 pin inside svg-class (c4dd D6)', () => {
+  const fixtures = [
+    { addedAt: '2026-01-01' },
+    { addedAt: '2026-02-02', tree: 'unknown' },
+    { addedAt: '2026-11-05', tree: 'c4' },
+  ];
+
+  it('counts it for c4 alone', () => {
+    expect(ratchetPinsOf(fixtures, 'c4')).toEqual({ count: 1, addedAt: '2026-11-05' });
+  });
+
+  it('leaves it out of the class bucket', () => {
+    expect(ratchetPinsOf(fixtures, 'class')).toEqual({ count: 2, addedAt: '2026-02-02' });
+  });
+
+  it('a shared family still filters by type', () => {
+    const shared = [
+      { type: 'c4', addedAt: '2026-11-04' },
+      { type: 'component', addedAt: '2026-11-01' },
+    ];
+    expect(ratchetPinsOf(shared, 'c4')).toEqual({ count: 1, addedAt: '2026-11-04' });
+  });
+});

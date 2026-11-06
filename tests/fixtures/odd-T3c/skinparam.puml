@@ -1,0 +1,8 @@
+@startuml
+allow_mixing
+skinparam stateBackgroundColor cyan
+skinparam roundcorner 0
+skinparam shadowing true
+state A
+class B
+@enduml

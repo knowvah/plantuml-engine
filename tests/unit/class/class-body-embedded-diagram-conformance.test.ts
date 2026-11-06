@@ -98,6 +98,7 @@ describe('moxobo/zikabo — the extraction+render mechanism, byte-exact, called 
       measurer,
       sprites: undefined,
       baselineOffset: 10,
+      iconBlockHeight: 11,
       bodyTop: 0,
       nestedRenderer: createNestedDiagramRenderer((source) => renderSync(source, { measurer })),
     };

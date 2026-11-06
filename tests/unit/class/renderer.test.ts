@@ -490,11 +490,11 @@ function makeCapitalCityMapGeo(): ClassifierGeo {
     rows: [
       { text: 'CapitalCity', y: 12.8889, indent: 41.8063, width: 67.8125 },
       { text: 'UK', y: 30.8889, indent: 23.9875, width: 19.5125 },
-      { text: 'London', y: 30.8889, indent: 72.4875, width: 46.725 },
+      { text: 'London', y: 30.8889, indent: 72.4875, width: 46.725, mapValueCell: true },
       { text: 'USA', y: 48.8889, indent: 19.3063, width: 28.875 },
-      { text: 'Washington', y: 48.8889, indent: 72.4875, width: 73.9375 },
+      { text: 'Washington', y: 48.8889, indent: 72.4875, width: 73.9375, mapValueCell: true },
       { text: 'Germany', y: 66.8889, indent: 5, width: 57.4875 },
-      { text: 'Berlin', y: 66.8889, indent: 72.4875, width: 35.875 },
+      { text: 'Berlin', y: 66.8889, indent: 72.4875, width: 35.875, mapValueCell: true },
     ],
   };
 }

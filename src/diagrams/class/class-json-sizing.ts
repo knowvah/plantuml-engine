@@ -65,7 +65,15 @@ import {
   type ObjectKindFont,
 } from './object-kind-style.js';
 import { resolveStyleStereotypeTags } from './class-stereotype.js';
-import { titleDimension, measureStereo, headerRows, baselineOffsetFor } from './class-object-map-sizing.js';
+import {
+  titleDimension,
+  measureStereo,
+  headerRows,
+  baselineOffsetFor,
+  measureNameBlock,
+  nameRowCountFields,
+  stereoInkField,
+} from './class-object-map-sizing.js';
 import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import { buildMemberAtoms, memberBaseFont, resolveMemberAtoms, resolveOneAtom } from './class-member-creole.js';
@@ -106,7 +114,7 @@ interface JsonCellLine {
 /** What every cell build needs: the cell `FontConfiguration`, the measurer
  *  and the `wordWrap` width (`TextBlockCucaJSon.java:66`, `BodierJSon.java:85`
  *  `style.wrapWidth()`; 0 = no wrap). Bundled to stay under the 5-param cap. */
-interface JsonCellContext {
+export interface JsonCellContext {
   font: FontConfiguration;
   measurer: StringMeasurer;
   maxWidth: number;
@@ -168,7 +176,7 @@ function measureJsonCell(text: string, ctx: JsonCellContext): { dim: Dim; lines:
  * draws `a`, ` `, `min.`, ` `, `test` as five texts). The width callback is
  * the same per-atom measure `buildWrappedMemberRows` hands to Fission.
  */
-function splitJsonCell(
+export function splitJsonCell(
   atoms: ReturnType<typeof buildMemberAtoms>,
   ctx: JsonCellContext,
 ): readonly ReturnType<typeof buildMemberAtoms>[] {
@@ -337,8 +345,14 @@ function buildJsonItems(node: JsonDimNode, cur: JsonDrawCursor): JsonBodyItem[] 
  *  (`memberBaseFont`, no member modifiers on a json entry) and cdd6 T3g's
  *  wrap width -- `BodierJSon.java:85` passes `style.wrapWidth()`
  *  (`resolveElementMaximumWidth`; absent = 0 = no wrap). */
-function jsonCellContext(theme: Theme, bodyFont: ObjectKindFont, measurer: StringMeasurer): JsonCellContext {
-  return { font: memberBaseFont(bodyFont, {}), measurer, maxWidth: resolveElementMaximumWidth(theme, 'json') ?? 0 };
+function jsonCellContext(
+  classifier: Classifier,
+  theme: Theme,
+  bodyFont: ObjectKindFont,
+  measurer: StringMeasurer,
+): JsonCellContext {
+  const maxWidth = classifier.objectStyle?.box.maximumWidth ?? resolveElementMaximumWidth(theme, 'json') ?? 0;
+  return { font: memberBaseFont(bodyFont, {}), measurer, maxWidth };
 }
 
 /**
@@ -353,13 +367,13 @@ export function measureJsonClassifier(
   measurer: StringMeasurer,
 ): MeasuredClassifier {
   const tags = resolveStyleStereotypeTags(classifier);
-  const bodyFont = resolveObjectBodyFont(theme, 'json', tags);
+  const bodyFont = resolveObjectBodyFont(theme, 'json', tags, classifier.objectStyle);
   const fontSpec = { family: bodyFont.family, size: bodyFont.size };
-  const nameFont = resolveHeaderFontOverride(theme, 'json', tags);
-  const nameM = measurer.measure(classifier.display, headerFontSpec(theme, nameFont));
+  const nameFont = resolveHeaderFontOverride(theme, 'json', tags, classifier.objectStyle);
+  const nameBlock = measureNameBlock(classifier.display, headerFontSpec(theme, nameFont), measurer);
   const nameDim: Dim = {
-    width: nameM.width + JSON_NAME_MARGIN * 2,
-    height: nameM.height + JSON_NAME_MARGIN * 2,
+    width: nameBlock.width + JSON_NAME_MARGIN * 2,
+    height: nameBlock.height + JSON_NAME_MARGIN * 2,
   };
   const stereoDim = measureStereo(classifier, theme, measurer);
   const title = titleDimension(nameDim, stereoDim);
@@ -368,13 +382,18 @@ export function measureJsonClassifier(
   // carries the base `FontConfiguration` rather than the bare `FontSpec`
   // the header still uses. A json entry has no `{abstract}`/`{static}`
   // member modifiers, hence the empty member.
-  const cellCtx = jsonCellContext(theme, bodyFont, measurer);
+  const cellCtx = jsonCellContext(classifier, theme, bodyFont, measurer);
   const dimNode = measureJsonNode(classifier.jsonValue ?? EMPTY_OBJECT_NODE, cellCtx);
   const fieldsHeight = dimNode.height === 0 ? JSON_EMPTY_HEIGHT_FALLBACK : dimNode.height;
 
   // B25/M27: `EntityImageJson.java:127-132` clamps here, identically to
   // object/map/class -- see `floorAtMinimumWidth`'s own doc comment.
-  const width = floorAtMinimumWidth(Math.max(dimNode.width, title.width + JSON_X_MARGIN_CIRCLE * 2), theme, 'json');
+  const width = floorAtMinimumWidth(
+    Math.max(dimNode.width, title.width + JSON_X_MARGIN_CIRCLE * 2),
+    theme,
+    'json',
+    classifier.objectStyle?.box.minimumWidth,
+  );
   const height = title.height + fieldsHeight;
 
   const headerGeo = headerRows(classifier, theme, measurer, {
@@ -400,5 +419,15 @@ export function measureJsonClassifier(
   // entries from `jsonBody`, so a stacked stereotype row + name row must be
   // counted or the name is never drawn (jar: stereotype row, then name).
   const headerRowCountField = headerGeo.length > 1 ? { headerRowCount: headerGeo.length } : {};
-  return { width, height, rows: [...headerGeo, ...entryRows], dividerYs, jsonBody, ...headerRowCountField };
+  return {
+    width,
+    height,
+    rows: [...headerGeo, ...entryRows],
+    dividerYs,
+    jsonBody,
+    titleHeight: title.height,
+    ...stereoInkField(classifier, theme, measurer),
+    ...headerRowCountField,
+    ...nameRowCountFields(headerGeo.length, nameBlock.lines.length),
+  };
 }

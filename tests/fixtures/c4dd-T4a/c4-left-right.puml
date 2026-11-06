@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_LEFT_RIGHT()
+System(a, "A", "desc")
+System(b, "B", "desc")
+System(c, "C", "desc")
+Rel(a, b, "to b")
+Rel(a, c, "to c")
+@enduml

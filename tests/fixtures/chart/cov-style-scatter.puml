@@ -1,0 +1,15 @@
+@startchart
+<style>
+chartDiagram {
+scatter {
+MarkerColor red
+MarkerSize 12
+MarkerShape triangle
+LineColor blue
+}
+}
+</style>
+h-axis [A, B, C, D]
+scatter "B" [1, 2]
+legend right
+@endchart

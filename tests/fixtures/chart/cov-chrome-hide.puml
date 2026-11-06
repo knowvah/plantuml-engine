@@ -1,0 +1,6 @@
+@startchart
+hide empty description
+hide public members
+hide stereotypes
+h-axis [A, B, C, D]
+@endchart

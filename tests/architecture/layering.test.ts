@@ -81,6 +81,23 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'the core home mirrors the Java package.',
   },
   {
+    from: 'src/diagrams/class/class-state-leaf.ts',
+    to: 'src/diagrams/state/',
+    why:
+      'odd D7 — upstream GeneralImageBuilder.java:130-143 returns EntityImageState for a LeafType.STATE in any ' +
+      'diagram, so `state` under allow_mixing is the state engine draw, not a second sizing formula.',
+  },
+  {
+    from: 'src/diagrams/class/class-layout-helpers.ts',
+    to: 'src/diagrams/state/state-sizing.ts',
+    why: 'odd D7 — the type of the state leaf fields MeasuredClassifier carries; see class-state-leaf.ts.',
+  },
+  {
+    from: 'src/diagrams/class/class-geo-types.ts',
+    to: 'src/diagrams/state/state-sizing.ts',
+    why: 'odd D7 — the type of the state leaf fields ClassifierGeo carries; see class-state-leaf.ts.',
+  },
+  {
     from: 'src/diagrams/hcl/',
     to: 'src/diagrams/json/',
     why:
@@ -161,6 +178,20 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'ITFComposed.java:54, WBSDiagram.java:65 and the four CommandWBSItem* ' +
       'commands -- IdeaShape lives in the mindmap package upstream and the ' +
       'port keeps it at its upstream path (mission wbs-engine-port D3/D4).',
+  },
+  {
+    from: 'src/diagrams/packetdiag/PacketIndicator.ts',
+    to: 'src/diagrams/nwdiag/VerticalLine.ts',
+    why:
+      'pep D3 — upstream draws the packet scale tick through nwdiag: PacketIndicator.java:53 imports ' +
+      'net.sourceforge.plantuml.nwdiag.VerticalLine, drawn at java:211.',
+  },
+  {
+    from: 'src/diagrams/packetdiag/command/CommandNumRange.ts',
+    to: 'src/diagrams/nwdiag/NwDiagram.ts',
+    why:
+      'pep D3 — upstream parses field attributes through nwdiag: CommandNumRange.java:45 imports ' +
+      'net.sourceforge.plantuml.nwdiag.NwDiagram, java:118 calls NwDiagram.toSet.',
   },
 ];
 

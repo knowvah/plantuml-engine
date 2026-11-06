@@ -13,6 +13,14 @@
  * @see ~/git/plantuml/.../classdiagram/command/CommandCreateElementFull2.java
  */
 
+import {
+  CODE,
+  CODE_WITH_QUOTE,
+  DISPLAY,
+  compileUpstream,
+  elementTail,
+  optionalStereotype,
+} from '../../core/command/CommandCreateElementFull.js';
 import { refuse } from '../../core/parse-refusal.js';
 import { applyClassifierDecl, parseClassifierDecl } from './class-declaration-parser.js';
 import { ALL_DESCRIPTIVE_LEAF } from './class-descriptive-leaf-keywords.js';
@@ -106,42 +114,71 @@ export function adjudicateAllowMixing(state: ParseState): void {
   state.ast.errorLine = state.gatedLeafLine;
 }
 
+function executeDescriptiveLeaf(state: ParseState, match: RegExpExecArray): void {
+  const line = match.input;
+  // `CommandCreateElementFull2#executeArg`:
+  //   if (mode == Mode.NORMAL_KEYWORD && diagram.isAllowMixing() == false)
+  //     return CommandExecutionResult.error(...)
+  //
+  // Refused IMMEDIATELY, as upstream refuses it. This used to be merely
+  // RECORDED and adjudicated at end of parse, gated on the block also
+  // holding a native class construct -- a compensation for this port's
+  // dispatcher being more eager than upstream's factory selection, which
+  // sent C4 and other macro-expanded descriptive diagrams here when
+  // upstream would have given them to `DescriptionDiagramFactory`.
+  //
+  // T12 removed the reason for that compensation: dispatch now attempts
+  // the parse, so refusing here is exactly what hands the block to the
+  // next candidate, which is what upstream does. Measured: deferring it
+  // cost 200 DESCRIPTION and 150 STATE fixtures, each claimed by the
+  // class engine because this gate never fired in time.
+  if (!state.allowMixing && !MIX_PREFIX.test(line) && !isContainerOpener(line.trim())) {
+    // Upstream returns the error BEFORE applying anything, so the
+    // declaration below must not run. `error(String)` carries score 0
+    // (`CommandExecutionResult.java:81-83`).
+    state.executionRefusal = refuse('execution', state.currentLine ?? 0, state.currentLine ?? 0, ALLOW_MIXING_ERROR, 0);
+    return;
+  }
+  const decl = parseClassifierDecl(line);
+  if (decl === null || refuseStateBody(state, decl)) return;
+  applyClassifierDecl(state, decl, false);
+}
+
+/**
+ * `state` is `CommandCreateElementFull2`'s SYMBOL alone (java:84), a single-line command, and no command in
+ * `ClassDiagramFactory` opens a state body: the jar has `state A {` as a syntax error at that line.
+ */
+function refuseStateBody(state: ParseState, decl: { kind: string; opensBody: boolean }): boolean {
+  if (decl.kind !== 'state' || !decl.opensBody) return false;
+  const at = state.currentLine ?? 0;
+  state.executionRefusal = refuse('syntax', at, at, 'Syntax Error?');
+  return true;
+}
+
+/**
+ * `CommandCreateElementFull2`'s own regex, which `ClassDiagramFactory.java:133-134` tries BEFORE
+ * `CommandLinkClass` (`:143`). `[%g].+?[%g]` (`CommandCreateElementFull.java:128`) is lazy but anchored, so
+ * `Person "1" *-- "*" Person : "parent" contains "children"` matches as ONE quoted code, case-insensitively
+ * (`Pattern2.java:114`), and refuses through the same gate as any other leaf. `entity`, `interface` and
+ * `circle` reach this command only when `CommandCreateClass` (`ClassDiagramFactory.java:120`) declines, which
+ * for a quoted name means a quote inside it.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/classdiagram/command/CommandCreateElementFull2.java:84-131
+ */
+const RE_ELEMENT_FULL2 = compileUpstream(
+  `^(?:mix_)?(?:(?:${ALL_DESCRIPTIVE_LEAF})[%s]+(?:` +
+    `${CODE_WITH_QUOTE}|${DISPLAY}${optionalStereotype('STEREOTYPE2')}as[%s]+${CODE})` +
+    `|(?:entity|interface|circle)[%s]+[%g][^%g]*[%g].*[%g])${elementTail()}`,
+);
+
+/** The rule tried ahead of `RELATIONSHIP_COMMANDS`; see {@link RE_ELEMENT_FULL2}. */
+export const ELEMENT_FULL2_BEFORE_LINKS_COMMAND: Command = {
+  pattern: RE_ELEMENT_FULL2,
+  execute: executeDescriptiveLeaf,
+};
+
 export const DESCRIPTIVE_LEAF_COMMANDS: readonly Command[] = [
   {
     pattern: new RegExp('^(?:mix_)?(?:' + ALL_DESCRIPTIVE_LEAF + ')\\s+\\S', 'i'),
-    execute(state, match) {
-      const line = match.input;
-      // `CommandCreateElementFull2#executeArg`:
-      //   if (mode == Mode.NORMAL_KEYWORD && diagram.isAllowMixing() == false)
-      //     return CommandExecutionResult.error(...)
-      //
-      // Refused IMMEDIATELY, as upstream refuses it. This used to be merely
-      // RECORDED and adjudicated at end of parse, gated on the block also
-      // holding a native class construct -- a compensation for this port's
-      // dispatcher being more eager than upstream's factory selection, which
-      // sent C4 and other macro-expanded descriptive diagrams here when
-      // upstream would have given them to `DescriptionDiagramFactory`.
-      //
-      // T12 removed the reason for that compensation: dispatch now attempts
-      // the parse, so refusing here is exactly what hands the block to the
-      // next candidate, which is what upstream does. Measured: deferring it
-      // cost 200 DESCRIPTION and 150 STATE fixtures, each claimed by the
-      // class engine because this gate never fired in time.
-      if (!state.allowMixing && !MIX_PREFIX.test(line) && !isContainerOpener(line.trim())) {
-        // Upstream returns the error BEFORE applying anything, so the
-        // declaration below must not run. `error(String)` carries score 0
-        // (`CommandExecutionResult.java:81-83`).
-        state.executionRefusal = refuse(
-          'execution',
-          state.currentLine ?? 0,
-          state.currentLine ?? 0,
-          ALLOW_MIXING_ERROR,
-          0,
-        );
-        return;
-      }
-      const decl = parseClassifierDecl(line);
-      if (decl !== null) applyClassifierDecl(state, decl, false);
-    },
+    execute: executeDescriptiveLeaf,
   },
 ];

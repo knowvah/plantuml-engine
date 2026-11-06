@@ -1,0 +1,14 @@
+@startboard
+<style>
+boardDiagram {
+  document {
+    BackgroundColor #FFEEDD
+  }
+}
+</style>
+A
++B
+++C
+D
++E
+@endboard

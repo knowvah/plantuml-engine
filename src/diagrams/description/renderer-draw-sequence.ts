@@ -20,8 +20,11 @@ import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { DescriptionGeometry, DescriptionNodeGeo, DescriptionEdgeGeo } from './layout-helpers.js';
 import type { UidPlan } from './renderer-uid.js';
 import { buildCluster } from './renderer-cluster.js';
-import { drawEntity } from './renderer-entity.js';
-import { drawEdge } from './renderer-edge.js';
+import { drawEntity, leafMagneticBorder } from './renderer-entity.js';
+import type { MagneticBorder } from '../../core/klimt/geom/MagneticBorder.js';
+import { drawEdge, type EdgeMagnets } from './renderer-edge.js';
+
+const noMagnets: EdgeMagnets = () => undefined;
 
 /**
  * I3b write-set expansion (journaled): splits `geo.nodes` into a containers
@@ -106,6 +109,11 @@ export function collectByKind(nodes: readonly DescriptionNodeGeo[]): {
   return { containers, leaves };
 }
 
+/** The final draw's rectangle, `DescriptionNodeGeo.movedSize`. */
+function withMovedSize(node: DescriptionNodeGeo): DescriptionNodeGeo {
+  return node.movedSize === undefined ? node : { ...node, ...node.movedSize };
+}
+
 /** `SvekResult#drawU`'s first loop — every cluster, absolute position
  *  resolved internally by `Cluster#drawU` (see `renderer-cluster.ts`). */
 export function drawClusters(
@@ -136,7 +144,7 @@ export function drawClusters(
     // `ug.getParam().isHidden()`, so it holds on the LimitFinder pass too --
     // `respectHidden` gates ENTITY hiding only (`drawEntities`).
     if (node.hidden === true) continue;
-    buildCluster(node, theme, plan.nodeUid.get(node.id)!, sprites).drawU(ug);
+    buildCluster(respectHidden ? withMovedSize(node) : node, theme, plan.nodeUid.get(node.id)!, sprites).drawU(ug);
   }
 }
 
@@ -229,7 +237,10 @@ export function drawEdges(
   theme: Theme,
   plan: UidPlan,
   respectHidden: boolean,
+  magnets: EdgeMagnets = noMagnets,
+  sprites?: SpriteRegistry,
 ): void {
+  const edgePlan = { nodeUid: plan.nodeUid, magnets, sprites };
   // Upstream `SvekResult#drawU` (SvekResult.java:93-101): ONE `Set<String>
   // ids` created per diagram draw, shared across every edge via
   // `SvekEdge#setSharedIds` before that edge's own `drawU` — see
@@ -253,9 +264,39 @@ export function drawEdges(
     // precedent for the class engine).
     if (edge.consumedByOpaleNote === true) return;
     try {
-      drawEdge(ug, edge, theme, plan.edgeUid[i]!, plan.nodeUid, sharedIds, respectHidden && edge.hidden === true);
+      drawEdge(ug, edge, theme, plan.edgeUid[i]!, edgePlan, sharedIds, respectHidden && edge.hidden === true);
     } catch (err) {
       console.error('renderDescription: edge draw failed', edge.id, err);
     }
   });
+}
+
+/**
+ * `SvekNode#getMagneticBorder` (`SvekNode.java:486-492`) and `Cluster#getMagneticBorder` (`Cluster.java:726-760`), by the
+ * node id an edge names: the force at a position in the edge's own coordinates. A shape's border is `None` unless
+ * `ShapeType.FOLDER` (`EntityImageDescription.java:363-365`); a note draws its own opale, and so has none here.
+ */
+export function buildEdgeMagnets(
+  containers: readonly DescriptionNodeGeo[],
+  leaves: readonly DescriptionNodeGeo[],
+  theme: Theme,
+  plan: UidPlan,
+  sprites: SpriteRegistry | undefined,
+): EdgeMagnets {
+  const made = new Map<string, MagneticBorder | undefined>();
+  const leafById = new Map(leaves.map((n) => [n.id, n]));
+  const groupById = new Map(containers.map((n) => [n.id, n]));
+  return (id) => {
+    if (made.has(id)) return made.get(id);
+    const group = groupById.get(id);
+    const leaf = leafById.get(id);
+    const border =
+      group !== undefined
+        ? buildCluster(group, theme, plan.nodeUid.get(id)!, sprites).getMagneticBorder()
+        : leaf === undefined
+          ? undefined
+          : leafMagneticBorder(leaf, theme, sprites);
+    made.set(id, border);
+    return border;
+  };
 }

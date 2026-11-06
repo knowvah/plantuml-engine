@@ -22,6 +22,8 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/elk/CucaDiagramFileMakerElk.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/net/atmp/CucaDiagram.java
  */
+import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
+import { styleFont, stylePaint } from './description-entity-style.js';
 import type { ElkBackend } from '../../core/elk/elk-backend.js';
 import type {
   ElkArrowStyle,
@@ -383,8 +385,10 @@ export class DescriptionElkAdapter implements ElkDiagramAdapter {
     return HorizontalAlignment.CENTER;
   }
 
+  /** `skinParam.getThickness(LineParam.arrow, null)` (`MyElkEdge.java:171`): null unless `skinparam arrowThickness`. */
   getArrowThickness(): UStroke | null {
-    return null;
+    const thickness = this.input.theme.colors.graph.arrowThickness;
+    return thickness === undefined ? null : UStroke.withThickness(thickness);
   }
 
   // --- Link ----------------------------------------------------------------------
@@ -417,7 +421,13 @@ export class DescriptionElkAdapter implements ElkDiagramAdapter {
   getLabel(linkId: string, _stringBounder: StringBounder): TextBlock {
     const { link } = this.resolved(linkId);
     if (link.label === undefined) return TextBlockUtils.empty(0, 0);
-    const block = this.displayBlock(link.label, CreoleMode.SIMPLE_LINE, this.maxMessageSize());
+    // `getFontForLink`: the arrow style with the link's stereotype (`CucaDiagramFileMakerElk.java:157-163`).
+    const block = this.displayBlock(
+      link.label,
+      CreoleMode.SIMPLE_LINE,
+      this.maxMessageSize(),
+      styleFont(link.arrowStyle),
+    );
     // CucaDiagramFileMakerElk.java:158 (addVisibilityModifier's margin) then :228-229.
     const marged = TextBlockUtils.withMargin(block, LABEL_MARGIN, LABEL_MARGIN);
     // The `isEmpty` test of :228 is never true here: the margin above already makes the block non-empty.
@@ -437,9 +447,14 @@ export class DescriptionElkAdapter implements ElkDiagramAdapter {
    * (`CommandLinkElement.java:320`, `CucaDiagramFileMakerElk.java:213-215`, `:256-259`): the literal `\\n` escapes
    * split first, then creole.
    */
-  private displayBlock(text: string, creoleMode: CreoleMode, maxMessageSize: LineBreakStrategy): TextBlock {
+  private displayBlock(
+    text: string,
+    creoleMode: CreoleMode,
+    maxMessageSize: LineBreakStrategy,
+    font?: FontConfiguration,
+  ): TextBlock {
     return elkDisplayBlock(splitDisplayLines(text).lines, {
-      font: arrowLabelFontConfig(this.input.theme),
+      font: font ?? arrowLabelFontConfig(this.input.theme),
       alignment: HorizontalAlignment.CENTER,
       creoleMode,
       maxMessageSize,
@@ -475,8 +490,13 @@ export class DescriptionElkAdapter implements ElkDiagramAdapter {
   }
 
   /** `plantuml.skin:316-319`: arrow `LineThickness 1.0`; line colour from the theme's arrow colour. */
-  getArrowStyle(_linkId: string): ElkArrowStyle {
-    return { lineColor: this.input.theme.colors.arrow, stroke: UStroke.withThickness(ARROW_LINE_THICKNESS) };
+  getArrowStyle(linkId: string): ElkArrowStyle {
+    // `MyElkEdge#getStyle` (`MyElkEdge.java:140-144`) with the link's stereotype, `styleLine.value(LineColor)`, `getStroke()`.
+    const style = this.resolved(linkId).link.arrowStyle;
+    return {
+      lineColor: stylePaint(style, 'LineColor') ?? this.input.theme.colors.arrow,
+      stroke: style?.getStroke() ?? UStroke.withThickness(ARROW_LINE_THICKNESS),
+    };
   }
 
   /** The description grammar carries no per-link `Colors` (a bracket `#color` is {@link getSpecificColor}). */

@@ -16,7 +16,15 @@ import type { Theme } from '../../core/theme.js';
 import { resolveElementMinimumWidth } from '../../core/theme.js';
 
 export type { Dim } from './class-object-map-header.js';
-export { titleDimension, measureStereo, headerRows, baselineOffsetFor } from './class-object-map-header.js';
+export { measureNameBlock } from './class-object-name-block.js';
+export {
+  titleDimension,
+  measureStereo,
+  headerRows,
+  baselineOffsetFor,
+  nameRowCountFields,
+  stereoInkField,
+} from './class-object-map-header.js';
 
 // ---------------------------------------------------------------------------
 // object
@@ -47,8 +55,8 @@ export { titleDimension, measureStereo, headerRows, baselineOffsetFor } from './
  * only); `MinimumWidth` was swept in with them and object/map/json got no
  * floor at all.
  */
-export function floorAtMinimumWidth(width: number, theme: Theme, sname: string): number {
-  return Math.max(width, resolveElementMinimumWidth(theme, sname) ?? 0);
+export function floorAtMinimumWidth(width: number, theme: Theme, sname: string, scoped?: number): number {
+  return Math.max(width, scoped ?? resolveElementMinimumWidth(theme, sname) ?? 0);
 }
 
 /**

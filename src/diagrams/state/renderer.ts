@@ -19,6 +19,11 @@
  * approximation for autonom composites.
  */
 
+import {
+  applyColorMapperToFragment,
+  colorMapperOf,
+  mapDocumentBackground,
+} from '../../core/klimt/color/fragment-color-mapper.js';
 import type { StateGeometry, StateNodeGeo, TransitionGeo } from './layout.js';
 import type { StateUrl } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
@@ -60,6 +65,7 @@ import { renderComposite } from './renderer-composite-box.js';
 import { renderStateNote } from './renderer-note.js';
 import { STATE_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
 import { buildStateShadowFilterDef } from './state-shadow.js';
+import { noteStyleFactsOf } from '../../core/note-style-facts.js';
 import { renderTransitionWrapped } from './state-renderer-transitions.js';
 import { allCluster, allLines, allNodes } from './state-svek-draw-order.js';
 
@@ -309,6 +315,11 @@ function renderNodeWrapped(node: StateNodeGeo, outer: StateRenderCtx): string {
 // Transition renderer
 // ---------------------------------------------------------------------------
 
+/** A `note` node anywhere in the tree: notes sit in their owner's `children` as in the top-level array. */
+function hasNote(nodes: readonly StateNodeGeo[]): boolean {
+  return nodes.some((n) => n.kind === 'note' || hasNote(n.children));
+}
+
 /**
  * Render a state diagram geometry into an SVG string.
  */
@@ -345,12 +356,17 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
   // resolves ONE shadowing value for the whole diagram via the theme
   // cascade, mission skin-file-loading Batch 1). `undefined` (svgRoot's own
   // default empty extraDefs) for every pre-Batch-2/shadow-off fixture.
-  const extraDefs = theme.shadowing !== undefined && theme.shadowing > 0 ? buildStateShadowFilterDef() : undefined;
+  // A note casts its own merged style's shadow (`note-style-facts.ts`), whatever the diagram-wide one is.
+  const noteShadowed = (noteStyleFactsOf(theme)?.shadowing ?? 0) > 0 && hasNote(geo.states);
+  const extraDefs = (theme.shadowing ?? 0) > 0 || noteShadowed ? buildStateShadowFilterDef() : undefined;
+  // smc-T3b: `TitledDiagram#muteColorMapper` maps EVERY drawn colour (`TitledDiagram.java:292-313`),
+  // the root background too (`SvgGraphics.java:181-182`); one choke point, as class and activity.
+  const colorMapper = colorMapperOf(theme);
   return {
-    body,
+    body: applyColorMapperToFragment(body, colorMapper),
     width: geo.totalWidth,
     height: geo.totalHeight,
-    background: resolveColorToSvgHex(theme.colors.background),
+    background: mapDocumentBackground(resolveColorToSvgHex(theme.colors.background), colorMapper),
     // dbp-T2b (D1): a `<style>`/`skinparam` document gradient, for the finalizer to paint as
     // `SvgGraphics`' constructor does (`SvgGraphics.java:178-183`); omitted when unset.
     ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),

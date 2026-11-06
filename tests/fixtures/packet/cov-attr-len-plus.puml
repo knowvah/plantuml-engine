@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  * A [len=+4]
+  * B
+}
+@endpacketdiag

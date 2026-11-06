@@ -1,32 +1,32 @@
 {
-  "generatedAt": "2026-11-04T01:05:16.350Z",
-  "measuredAgainstCommit": "f31b2eac9",
+  "generatedAt": "2026-11-05T23:44:03.776Z",
+  "measuredAgainstCommit": "ee7bcec94",
   "type": "board",
   "measurer": "deterministic",
   "fixtures": [
     {
       "slug": "gasaxu-65-cipo396",
       "status": "ok",
-      "diffCount": 79,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "jifeju-37-zeza533",
       "status": "ok",
-      "diffCount": 55,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "nuropa-85-vili653",
       "status": "ok",
-      "diffCount": 67,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "rebire-77-depi269",
       "status": "ok",
-      "diffCount": 88,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     }
   ]
 }

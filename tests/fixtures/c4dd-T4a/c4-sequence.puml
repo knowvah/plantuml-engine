@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Sequence>
+Person(user, "User")
+Container_Boundary(b, "Box")
+  Container(a, "A", "tech", "desc")
+  Component(c, "C", "tech", "desc")
+Boundary_End()
+Rel(user, a, "Calls")
+Rel(a, c, "Forwards", "RPC")
+@enduml

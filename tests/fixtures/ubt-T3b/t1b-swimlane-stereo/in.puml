@@ -1,0 +1,12 @@
+@startuml
+<style>
+.big {
+  LineThickness 2
+  FontSize 16
+}
+</style>
+|A|
+:one; <<big>>
+|B|
+:two; <<big>>
+@enduml

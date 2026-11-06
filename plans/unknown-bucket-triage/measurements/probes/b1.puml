@@ -1,0 +1,11 @@
+@startuml
+<style>
+.color {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 2
+  FontSize 11
+}
+</style>
+:Generate diagrams1; <<color>>
+@enduml

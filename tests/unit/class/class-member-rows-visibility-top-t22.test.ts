@@ -20,7 +20,12 @@ import { scaleClassTheme } from '../../../src/diagrams/class/class-scale-geo.js'
 
 const theme = scaleClassTheme(defaultTheme, 1);
 const BASELINE_OFFSET = 14 - 14 / 4.5;
-const CTX: SectionRowContext = { baselineOffset: BASELINE_OFFSET, iconZoneWidth: 14, fontSize: 14 };
+const CTX: SectionRowContext = {
+  baselineOffset: BASELINE_OFFSET,
+  iconBlockHeight: 11,
+  iconZoneWidth: 14,
+  fontSize: 14,
+};
 const SECTION_MARGIN_TOP = 4;
 
 function member(): Member {

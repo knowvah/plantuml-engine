@@ -26,7 +26,7 @@ import type { PreprocessorResult } from '../preprocessor.js';
 import { readLines, StyleParser, StyleParsingException, trin } from './parser/StyleParser.js';
 import { STRICTUML_SKIN } from './skins/plantuml-skin.js';
 import type { Style } from './Style.js';
-import type { StyleBuilder } from './StyleBuilder.js';
+import { setDarkScheme, type StyleBuilder } from './StyleBuilder.js';
 import { convertSkinparam as convertSkinparamDefault } from './FromSkinparamToStyle.js';
 import { getMissingRootProperties, loadSkin, NoStyleAvailableException } from './StyleLoader.js';
 
@@ -122,7 +122,7 @@ export function cleanForKeySlow(key: string): string[] {
  * starts with `'` is dropped before the block is parsed.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/MultilinesStrategy.java:46-63
  */
-function removeStartingQuote(lines: readonly string[]): string[] {
+export function removeStartingQuote(lines: readonly string[]): string[] {
   return lines.filter((s) => !trin(s).startsWith("'"));
 }
 
@@ -139,11 +139,26 @@ export class SkinParam {
   /** @see SkinParam.java:125 */
   private styleBuilder: StyleBuilder | undefined;
 
+  /** PORT-ONLY: `StyleBuilder.ts#setDarkScheme`, for every builder this `SkinParam` holds. */
+  private darkScheme = false;
+
   constructor(private readonly convertSkinparam: ConvertSkinparam) {}
+
+  /**
+   * `isDark()` (`SkinParam.java:114-116`) from the diagram's final skinparams, which a caller reads off the whole
+   * source: the builders are tagged now and by every `muteStyle` after.
+   */
+  setDarkScheme(isDark: boolean): void {
+    this.darkScheme = isDark;
+    if (this.styleBuilder !== undefined) setDarkScheme(this.styleBuilder, isDark);
+  }
 
   /** @see SkinParam.java:156-162 */
   getCurrentStyleBuilder(): StyleBuilder {
-    this.styleBuilder ??= this.getCurrentStyleBuilderInternal();
+    if (this.styleBuilder === undefined) {
+      this.styleBuilder = this.getCurrentStyleBuilderInternal();
+      setDarkScheme(this.styleBuilder, this.darkScheme);
+    }
     return this.styleBuilder;
   }
 

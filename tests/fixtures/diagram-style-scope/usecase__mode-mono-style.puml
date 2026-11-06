@@ -1,0 +1,9 @@
+@startuml
+skinparam monochrome true
+<style>
+usecase { BackgroundColor #FF0000 }
+</style>
+actor U
+U --> (x)
+note right of U: n
+@enduml

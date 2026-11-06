@@ -1,0 +1,5 @@
+@startchart
+orientation horizontal
+v-axis [[[http://a.b lnk]], B]
+h-axis 0 --> 10
+@endchart

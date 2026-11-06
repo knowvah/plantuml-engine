@@ -1,0 +1,7 @@
+@startchart
+title Report
+orientation horizontal
+v-axis "Cats" [A, B]
+h-axis "Value" 0 --> 100
+bar [50, 25]
+@endchart

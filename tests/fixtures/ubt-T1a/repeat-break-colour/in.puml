@@ -1,0 +1,10 @@
+@startuml
+start
+repeat <<#green>>
+  :work;
+  if (bad?) then (yes)
+    break
+  endif
+repeat while (more?) <<#red>>
+stop
+@enduml

@@ -13,6 +13,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/rose/ComponentRoseNote.java:81-133
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/AbstractComponent.java:142-149
  */
+import { parseColorOverride } from './renderer-color-override.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { Theme } from '../../core/theme.js';
@@ -67,6 +68,8 @@ export function buildLinkNoteBlock(
   color?: string,
 ): TextBlock {
   const noteTheme = linkNoteTheme(theme);
+  // `Style#getSymbolContext(set, colors)`: `ColorType.LINE` beats the style's, the stroke stays the style's (`Style.java:274-280`).
+  const lineColor = color === undefined ? undefined : parseColorOverride(color).line;
   const paints = resolveNotePaints(color === undefined ? PAINT_PROBE : { ...PAINT_PROBE, color }, noteTheme);
   const body = buildNoteBlock(display, noteTheme, sprites);
   return {
@@ -87,7 +90,7 @@ export function buildLinkNoteBlock(
       const stroked = ug
         .apply(new UTranslate(ROSE_NOTE_PADDING, ROSE_NOTE_PADDING))
         .apply(new Back(paints.back))
-        .apply(new Fore(paints.border))
+        .apply(new Fore(lineColor ?? paints.border))
         .apply(paints.stroke);
       stroked.draw(parseSvgPath(opalePolygonNormal(x2, textHeight), UTranslate.none()));
       stroked.draw(parseSvgPath(opaleCorner({ x: 0, y: 0 }, x2), UTranslate.none()));

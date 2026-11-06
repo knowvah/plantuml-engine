@@ -50,6 +50,7 @@
  * trailing newline. Jar-verified, see `svg-graphics.test.ts`.
  */
 
+import { interactiveCss, interactiveJs } from './svg-interactive-assets.js';
 import { XmlDocument } from './xml-writer.js';
 import type { XmlNode } from './xml-writer.js';
 import { isTransparentColor, type LinearGradientPaint } from '../../../paint.js';
@@ -201,17 +202,23 @@ export class SvgGraphicsCore {
     this.getG().appendChild(this.pendingBackground);
   }
 
-  /**
-   * Upstream loads `/svg/<baseFilename>.css`/`.js` classpath resources;
-   * this port has no bundle, so both return `null` (matches upstream's
-   * own resource-missing branch). Not a D3′ stub — a faithful no-op.
-   */
+  /** `SvgGraphics.java:214-225`: a `<style>` of the resource's text, `null` where the resource is missing. */
   private getStylesForInteractiveMode(): XmlNode | null {
-    return null;
+    const text = interactiveCss(this.option.interactiveBaseFilename ?? '');
+    if (text === undefined) return null;
+    const style = this.document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    style.appendCData(text);
+    return style;
   }
 
+  /** `SvgGraphics.java:254-263`. */
   private getScriptForInteractiveMode(): XmlNode | null {
-    return null;
+    const text = interactiveJs(this.option.interactiveBaseFilename ?? '');
+    if (text === undefined) return null;
+    const script = this.document.createElement('script');
+    script.setTextContent(text);
+    return script;
   }
 
   private getPathHover(hover: string): XmlNode {

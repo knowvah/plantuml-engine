@@ -22,6 +22,13 @@ object ratchets and census re-run instantly against an updated `.tgz`).
      residual is post-layout. Measurements are in
      .agent-notes/dot-engine-2.4.0-bump.md. -->
 
+<!-- NOTE 2026-11-05: plantuml-ts pins @knowvah/dot-engine 2.10.3, up from 2.4.0.
+     Surveyed one type at a time at 7c304c2c0 against 2.4.0, across all 28 types:
+     unknown/zodela-36-sica712 becomes conformant, and no other verdict, dotEqual or
+     layoutEqual moved. Versions 2.8.0 to 2.10.2 cannot be pinned (issue 40). 2.10.3
+     writes `console.warn` on any titled cluster (issue 42). Measurements are in
+     .agent-notes/dot-engine-2.10.2-bump.md. -->
+
 `[~]` marks an issue closed without an upstream fix to wait for —
 either diagnosed as correct-by-oracle, or reclassified as our work.
 
@@ -736,10 +743,19 @@ either diagnosed as correct-by-oracle, or reclassified as our work.
         RE-VERIFIED 2026-10-14 against graphviz 16.1.0 (dot-engine oracle now matches homebrew 16.1.0): pass — test/golden/pt-issue-35.test.ts (inline, bamami, quote)
         CONSUMED 2026-10-14 in plantuml-ts (dot-engine pinned at 2.4.0): unknown/bamami-10-lava790 is still 0/100, bytes unchanged. Our builder graph does NOT lay out like native on the jar DOT, because our DOT input differs from the jar's although `dotEqual` reports true: the same missing package wrapper clusters as 32. 2.4.0 renders the jar's own svek-1.dot byte-identical to native, so the remaining work is ours (a DOT-input gap), not an upstream wait. 
         CONSUMED 2026-10-15 (codd): unknown/bamami-10-lava790 re-measures CLEAN on dot-engine 2.4.0 (render-diff 0/0, survey conformant, dotEqual and layoutEqual true) after T2's cluster-rect drawing. Box ticked under the file's rule. -->
-- [ ] 36-flat-adjacent-unlabelled-edge-endpoint-offset.md  <!-- FILED 2026-10-15 (codd-T0b): single flat adjacent minlen=0 edge, no port/label, endpoints 0.1-0.3 px off native 16.1.0; unknown/zodela-36-sica712, usecase/cimare-47-deke334 (conformant, invisible edges). 
-        CONSUMED 2026-10-15 (codd): still the engine's; zodela-36-sica712 now 0/1 (the one numeric diff is this sub-px rect x). -->
-- [ ] 37-rerender-not-idempotent.md  <!-- FILED 2026-10-30 (jff-T1a): render() twice on one Graph is not idempotent (stale e.info.to_virt + spl survive dotCleanup); native layout/gvFreeLayout cycle is; no fixture affected (layoutGraph renders once). -->
-- [ ] 38-playground-png-export-tainted-canvas-hang.md  <!-- FILED 2026-11-03: docs-site Playground.vue calls toBlob inside img.onload, so a tainted canvas leaves the export hanging with an uncaught SecurityError and no message; latent, no tried DOT input taints. Not in the .tgz, no fixture: ticks when dot-engine's playground fixes it, without a re-measure. -->
+- [x] 36-flat-adjacent-unlabelled-edge-endpoint-offset.md  <!-- FILED 2026-10-15 (codd-T0b): single flat adjacent minlen=0 edge, no port/label, endpoints 0.1-0.3 px off native 16.1.0; unknown/zodela-36-sica712, usecase/cimare-47-deke334 (conformant, invisible edges). 
+        CONSUMED 2026-10-15 (codd): still the engine's; zodela-36-sica712 now 0/1 (the one numeric diff is this sub-px rect x).
+        TICKED 2026-11-05: fixed in 2.10.3. The repro edge equals native 16.1.0; unknown/zodela-36-sica712 is conformant and pinned, usecase/cimare-47-deke334 stays conformant. -->
+- [x] 37-rerender-not-idempotent.md  <!-- FILED 2026-10-30 (jff-T1a): render() twice on one Graph is not idempotent (stale e.info.to_virt + spl survive dotCleanup); native layout/gvFreeLayout cycle is; no fixture affected (layoutGraph renders once).
+        TICKED 2026-11-05: fixed in 2.10.3 (records reset at the next layout, `src/gvc/layout-reset.ts`). Three renders of one Graph are identical and equal a fresh parse. No fixture, as filed. -->
+- [x] 38-playground-png-export-tainted-canvas-hang.md  <!-- FILED 2026-11-03: docs-site Playground.vue calls toBlob inside img.onload, so a tainted canvas leaves the export hanging with an uncaught SecurityError and no message; latent, no tried DOT input taints. Not in the .tgz, no fixture: ticks when dot-engine's playground fixes it, without a re-measure.
+        TICKED 2026-11-05: fixed in dot-engine (`theme/svg-to-png.ts` rejects on the throw, per its `plans/decision-journal.md`). Not in the .tgz, no re-measure, as filed. -->
   <!-- 23 ALSO SEEN 2026-10-08 (lgm-T0c): nugecu-04-tona107 minimises to this mechanism; related 32, 33.
         CONSUMED 2026-10-14 (dsw, merge to main pending): unknown/bamami-10-lava790 layoutParity unequal -> EQUAL (p0/p1 wrappers + 17x23 title TABLE); render-diff 0/100 -> 0/88, post-layout residual ours. Box stays open. -->
-- [ ] 39-border-point-cluster-sink-port-node-placement.md  <!-- FILED 2026-11-04 (stdd-T6c): cluster with a rank=sink port node, an ee subgraph with a point anchor and a :P compass edge; DOT equal to the jar, inner nodes 2-17 px off native 16.1.0 (start 17 px left of chk, cluster 109 vs 112 wide); state/viroxo-69-fito663, the ten state__hist-* diagram-style-scope rows. -->
+- [~] 39-border-point-cluster-sink-port-node-placement.md  <!-- FILED 2026-11-04 (stdd-T6c): cluster with a rank=sink port node, an ee subgraph with a point anchor and a :P compass edge; DOT equal to the jar, inner nodes 2-17 px off native 16.1.0 (start 17 px left of chk, cluster 109 vs 112 wide); state/viroxo-69-fito663, the ten state__hist-* diagram-style-scope rows.
+        2026-11-04: NOT a dot-engine defect, reclassified as our work. Our builder and text emitter put the border-point anchor in `i`; the jar declares it in `ee` (ClusterDotString.java:148-152). `dotEqual` folds both wrappers, so it stayed true. Moving only the anchor reproduces native on all six viroxo-69 nodes. FIXED here 2026-11-04 (`borderPointAnchorDecl`); viroxo-69 and the state__hist-* rows are conformant. -->
+- [x] 40-getlayout-loses-labels-after-render.md  <!-- FILED 2026-11-04: regression from 2.8.0 to at least 2.10.2. dot cleanup clears every label record during `render`'s free, so getLayout after render reports no label positions and state falls 298 -> 154 conformant. Blocks the pin bump. With only those frees removed, 2.10.2 loses no verdict across 28 types and fixes issues 36 and 37.
+        TICKED 2026-11-05: fixed in 2.10.3 (PR #124, merge bf0c19ae, commit 35cfd33f). 184f4eac, first in 2.8.0, ported the label frees into each engine cleanup; they now happen at the next layout. All five label kinds present after render; state stays 298 of 299. -->
+- [ ] 41-parallel-port-edges-second-route.md  <!-- FILED 2026-11-05 (odd-T4a): five parallel edges between two port nodes, the second routed as a tight arc where native takes the long route. Probe only, no corpus row; dot-engine 2.4.0 vs native 16.1.0 on the jar's DOT.
+        RE-MEASURED 2026-11-05: unchanged on 2.10.3; the second edge is still the tight arc where native takes the long route. -->
+- [ ] 42-console-warn-with-no-sink.md  <!-- FILED 2026-11-05: 2.10.3 writes the graphviz table-size warning with console.warn on every titled cluster, and the public API has no way to redirect it. Faithful to native's stderr, but the jar never shows it, so plantuml-ts now writes to a consumer's console on valid diagrams. Output is unaffected. -->

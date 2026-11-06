@@ -22,8 +22,18 @@ import {
 } from './parse-helpers.js';
 import { parseBracketDeclaration } from './element-grammar.js';
 import { RE_BARE_DECORATED_DECL, RE_BARE_QUOTED_DECL } from './element-grammar-nosymbol.js';
-import { emitNode, findReopenedGroup, nextCreationIndex } from './parse-state.js';
+import { ELEMENT_FULL_COMMAND, keywordLineSymbol, tryColonDisplayForm } from './command-create-element-full.js';
+import { emitNode, findReopenedGroup, muteLeafToGroup, nextCreationIndex, type ParseState } from './parse-state.js';
 import { leafDisplayName } from './namespace-groups.js';
+
+/**
+ * `CommandPackageWithUSymbol.java:178-180`: an anonymous container (no CODE) takes
+ * `diagram.getUniqueSequence("##")` as its quark name, one value of the shared counter BEFORE the group Entity's
+ * own uid (see DescriptiveNode.creationIndex's doc comment). Unique, so a second `package {` never reopens the first.
+ */
+function anonymousGroupId(state: ParseState): string {
+  return `##${nextCreationIndex(state)}`;
+}
 
 /**
  * Order matters: patterns are tested top-to-bottom; first match wins.
@@ -106,17 +116,15 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
     execute(state, match) {
       const kw = match[1]!.toLowerCase();
       const symbol = KEYWORD_TO_SYMBOL.get(kw) ?? 'node';
-      const { id, display, stereotype, color, tags, stereotypeSprite, url } = parseNameSection(match[2]!.trim());
+      const section = parseNameSection(match[2]!.trim());
+      const { id: code, display, stereotype, color, tags, stereotypeSprite, url } = section;
+      const id = code.length === 0 ? anonymousGroupId(state) : code;
       const container = makeNode(id, display, symbol, stereotype, color, tags, stereotypeSprite, { url });
       container.declaredAsGroup = true;
+      if (section.naturalAlignment !== undefined) container.naturalAlignment = section.naturalAlignment;
       for (const child of parseInlineBody(match[3]!)) {
         container.children.push(child);
       }
-      // CommandPackageWithUSymbol.java:178-180: an anonymous container (no
-      // CODE) burns ONE extra shared-counter value generating its internal
-      // quark name (`getUniqueSequence("##")`) BEFORE the group Entity's own
-      // uid is assigned -- see DescriptiveNode.creationIndex's doc comment.
-      if (id.length === 0) nextCreationIndex(state);
       emitNode(state, container);
     },
   },
@@ -133,7 +141,9 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
     execute(state, match) {
       const kw = match[1]!.toLowerCase();
       const symbol = KEYWORD_TO_SYMBOL.get(kw) ?? 'node';
-      const { id, display, stereotype, color, tags, stereotypeSprite, url } = parseNameSection(match[2]!.trim());
+      const section = parseNameSection(match[2]!.trim());
+      const { id: code, display, stereotype, color, tags, stereotypeSprite, url } = section;
+      const id = code.length === 0 ? anonymousGroupId(state) : code;
       const existing = findReopenedGroup(state, id);
       if (existing !== undefined) {
         state.containerStack.push(existing);
@@ -141,11 +151,12 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
       }
       const container = makeNode(id, display, symbol, stereotype, color, tags, stereotypeSprite, { url });
       container.declaredAsGroup = true;
-      // CommandPackageWithUSymbol.java:178-180: an anonymous container (no
-      // CODE) burns ONE extra shared-counter value generating its internal
-      // quark name (`getUniqueSequence("##")`) BEFORE the group Entity's own
-      // uid is assigned -- see DescriptiveNode.creationIndex's doc comment.
-      if (id.length === 0) nextCreationIndex(state);
+      if (section.naturalAlignment !== undefined) container.naturalAlignment = section.naturalAlignment;
+      const muted = muteLeafToGroup(state, id, container);
+      if (muted !== undefined) {
+        state.containerStack.push(muted);
+        return;
+      }
       emitNode(state, container);
       state.containerStack.push(container);
     },
@@ -163,8 +174,10 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
     pattern: KEYWORD_RE,
     execute(state, match) {
       const kw = match[1]!.toLowerCase();
-      const symbol = KEYWORD_TO_SYMBOL.get(kw);
-      if (symbol === undefined) return;
+      const keywordSymbol = KEYWORD_TO_SYMBOL.get(kw);
+      if (keywordSymbol === undefined) return;
+      if (tryColonDisplayForm(state, match.input)) return;
+      const symbol = keywordLineSymbol(match.input, keywordSymbol);
       if (symbol === 'port' && state.containerStack.length === 0) {
         // CommandCreateElementFull.java:316-317: PORTIN/PORTOUT at root
         // level is an EXECUTION_ERROR upstream ("Port can only be used
@@ -248,4 +261,7 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
       emitNode(state, makeNode(id, display, 'actor', stereotype, color, tags, stereotypeSprite, { url }));
     },
   },
+
+  // 16. Everything else `CommandCreateElementFull`'s own regex admits. See that module.
+  ELEMENT_FULL_COMMAND,
 ];

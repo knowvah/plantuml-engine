@@ -1,0 +1,5 @@
+@startboard
+A **bold** <color:red>red</color>
++B\nsecond line
+++ C //it// --st--
+@endboard

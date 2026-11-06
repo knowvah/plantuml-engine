@@ -1,0 +1,11 @@
+@startuml
+left to right direction
+class C {
+  | a | b |
+  | k | v |
+}
+map M {
+  z => 1
+}
+M::z --> C
+@enduml

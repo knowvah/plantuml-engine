@@ -6,6 +6,7 @@
  * `CommandCreateElementFull.ALL_TYPES` keyword set.
  */
 
+import { annotateEntityStyles, annotateLinkStyles } from './description-entity-style.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import type { SyncPlugin, CompleteSvg, RenderFragment } from '../../core/dispatcher.js';
 import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
@@ -30,6 +31,12 @@ import { degenerateBlockDims, renderDescription, unwrapKlimtSvg } from './render
 import { isEmpty } from '../../core/annotations/index.js';
 import { isExportScaled } from '../../core/scale-command.js';
 import { withDeferredFormat } from '../../core/svg-format.js';
+import { CUCA_DOCUMENT_MARGIN, calculateMargin } from '../../core/document-margin.js';
+import { muteColorMapper, toSvgSolid } from '../../core/klimt/color/ColorMapper.js';
+import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
+import { jarMeasurer } from '../../core/measurer-jar.js';
+import { firstPageAssignments } from '../../core/preprocessor-first-page.js';
+import { skinParamWarnings, withWarningBanner } from '../../core/skinparam-warnings.js';
 
 /**
  * Reconstructs the raw `@start.../@end...` block text `UmlSource.seed()`
@@ -87,6 +94,9 @@ function layoutElkGeometry(
   };
 }
 
+/** Fixed id namespace for the banner's own klimt document; the banner emits no defs. */
+const BANNER_UID = 'description-warning-banner';
+
 export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeometry> = {
   type: 'description',
 
@@ -108,7 +118,20 @@ export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeo
     // T17 seed thread (see ast.ts's `DescriptionDiagramAST.seed` doc
     // comment) — computed once here, at the only point the raw source text
     // is available anywhere in the plugin pipeline.
-    return { ...ast, seed: seedOf(reconstructSourceForSeed(block)) };
+    const source = block.styleSource;
+    const warnings = skinParamWarnings(
+      source?.skinparamAssignments === undefined
+        ? source
+        : {
+            ...source,
+            skinparamAssignments: firstPageAssignments(source.skinparamAssignments, block.lines, block.linePositions),
+          },
+    );
+    return {
+      ...ast,
+      seed: seedOf(reconstructSourceForSeed(block)),
+      ...(warnings.length === 0 ? {} : { warnings }),
+    };
   },
 
   // cdd3-T28 (E3-9): the layout measurer rides on the geometry so `render`
@@ -122,13 +145,23 @@ export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeo
   },
 
   layoutSync(ast, theme, measurer, services) {
-    const chromed = ast.annotations !== undefined && !isEmpty(ast.annotations);
-    const chrome = chromed ? { chromed: true as const } : {};
+    if (services?.styleBuilder !== undefined) {
+      annotateEntityStyles(ast.nodes, services.styleBuilder, theme);
+      annotateLinkStyles(ast.links, services.styleBuilder);
+    }
+    // `DiagramChromeFactory#addWarnings` is the first chrome step (`DiagramChromeFactory.java:128`).
+    const warnings = ast.warnings === undefined ? {} : { warnings: ast.warnings };
+    const interactive = {
+      ...(ast.svgInteractive === true ? { svgInteractive: true } : {}),
+      ...(ast.smetanaDrawOrder === true ? { smetanaDrawOrder: true } : {}),
+    };
+    const chromed = (ast.annotations !== undefined && !isEmpty(ast.annotations)) || ast.warnings !== undefined;
+    const chrome = chromed ? { chromed: true as const, ...warnings } : {};
     if (ast.layoutEngine === 'elk' && ast.nodes.length > 0) {
       if (services?.elk === undefined) throw new Error(ELK_RENDER_SYNC_UNSUPPORTED);
-      return { ...layoutElkGeometry(ast, theme, measurer, services.elk), measurer, ...chrome };
+      return { ...layoutElkGeometry(ast, theme, measurer, services.elk), measurer, ...chrome, ...interactive };
     }
-    return { ...layoutDescription(ast, theme, measurer), measurer, ...chrome };
+    return { ...layoutDescription(ast, theme, measurer), measurer, ...chrome, ...interactive };
   },
 
   render(geo, theme): CompleteSvg | RenderFragment {
@@ -151,8 +184,9 @@ export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeo
         : geo.preChromeWidth !== undefined && geo.preChromeHeight !== undefined
           ? { preChromeWidth: geo.preChromeWidth, preChromeHeight: geo.preChromeHeight }
           : {};
-    return {
-      ...unwrapKlimtSvg(svg, theme.colors.background),
+    const fragment: RenderFragment = {
+      // The root background passes the same mapper as the block (`SvgGraphics.java:178-183`).
+      ...unwrapKlimtSvg(svg, toSvgSolid(resolveColorToSvgHex(theme.colors.background), muteColorMapper(theme))),
       ...(deferred ? { numbersDeferred: true as const } : {}),
       ...block,
       // lad-T2b: `TextBlockExporter.java:306-307` -- the shell re-roots the fragment, so it carries the option.
@@ -164,5 +198,15 @@ export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeo
       ...(geo.scale !== undefined ? { scaleSpec: geo.scale } : {}),
       ...(theme.dpi !== undefined ? { dpi: theme.dpi } : {}),
     };
+    return geo.warnings === undefined
+      ? fragment
+      : withWarningBanner(
+          fragment,
+          geo.warnings,
+          geo.measurer ?? jarMeasurer,
+          calculateMargin(theme, CUCA_DOCUMENT_MARGIN),
+          BANNER_UID,
+          theme.handwritten === true,
+        );
   },
 };

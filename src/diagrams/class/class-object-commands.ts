@@ -34,6 +34,8 @@ import type { Classifier, Member, Visibility } from './ast.js';
 import { parseUrlBracket } from './class-url.js';
 import { resolveReference } from './class-namespace.js';
 import { ensureClassifier, type ParseState } from './parser.js';
+import { quarkName } from './class-map-commands.js';
+import { refuse } from '../../core/parse-refusal.js';
 // The canonical `' = '` spelling is shared with `class-object-sizing.ts
 // #formatObjectMemberText`, the other half of the round-trip; it lives in the
 // leaf `class-object-display.ts` because this module is in an import cycle
@@ -206,12 +208,7 @@ function parseObjectMatch(match: RegExpExecArray): ObjectMatch {
  * Upstream then errors ("Object already exists") when the resolved quark
  * already carries entity data — this fires for BOTH a genuine
  * re-declaration and the auto-created-endpoint case above, since both leave
- * `quark.getData() != null`. This parser has no error-reporting channel for
- * command execution (no site in class-commands.ts surfaces diagnostics —
- * see class-lollipop.ts's `applyLollipop` doc for the same gap), so the
- * observable behavior is a silent no-op: an existing classifier is left
- * completely untouched by a re-declaration, unlike `applyClassifierDecl`
- * (class/interface/…), which always re-applies fields on redeclaration.
+ * `quark.getData() != null`.
  *
  * The resolved id is computed via `resolveReference` (the same helper
  * `ensureClassifier` uses internally) BEFORE calling `ensureClassifier`,
@@ -231,7 +228,12 @@ function applyObjectDecl(state: ParseState, match: RegExpExecArray): void {
     classifiers: state.ast.classifiers,
     reuseExistingChild: true,
   });
-  if (state.classifierIndex.has(id)) return; // "Object already exists" — no-op
+  if (state.classifierIndex.has(id)) {
+    // `CommandCreateEntityObject.java:121-122`: `error("Object already exists: " + quark.getName())`, the short name.
+    const at = state.currentLine ?? 0;
+    state.executionRefusal = refuse('execution', at, at, `Object already exists: ${quarkName(state, rawId)}`);
+    return;
+  }
 
   const classifier = ensureClassifier(state, rawId, 'object', rawDisplay, true);
   if (stereotype !== undefined) classifier.stereotype = stereotype;
@@ -245,7 +247,7 @@ function applyObjectDecl(state: ParseState, match: RegExpExecArray): void {
  * LeafType.OBJECT, ...)`, else the EXISTING entity is reused untouched
  * (`ensureClassifier` never mutates `kind` on an already-registered
  * classifier) — then apply stereotype/color UNCONDITIONALLY (unlike the
- * single-line form's duplicate no-op above, upstream's `executeArg0` sets
+ * single-line form's duplicate error above, upstream's `executeArg0` sets
  * both on whichever entity results either way), and arm `pendingBodyId` so
  * subsequent lines collect as object fields until the closing `}`.
  * @see ~/git/plantuml/.../objectdiagram/command/CommandCreateEntityObjectMultilines.java:152-177

@@ -1,0 +1,10 @@
+@startuml
+state C {
+  state R1
+  R1: | a | b |
+  --
+  state R2 {
+  }
+  R2: | c | d |
+}
+@enduml

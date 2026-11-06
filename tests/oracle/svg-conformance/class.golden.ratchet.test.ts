@@ -41,6 +41,7 @@ import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from './compare.js';
+import { isElkRow } from './description-eligibility.js';
 import { prepareElkOnce, renderClassFixture } from './render-fixture-class.js';
 // cdd5-T2 (D4): the survey's own asset/include stores, shared through T1's
 // `censusClassFixtureOptions` -- imported, not re-combined locally. Before
@@ -59,6 +60,9 @@ import { CI_RENDER_BUDGET_MS } from '../../helpers/ci-test-budgets.js';
 // derivation in tests/helpers/ci-test-budgets.ts.
 vi.setConfig({ testTimeout: CI_RENDER_BUDGET_MS });
 
+/** A pin's survey bucket, and the `svg-class/<tree>/` directory of a non-`class` one. */
+type RatchetTree = 'class' | 'unknown' | 'c4';
+
 interface RatchetFixture {
   slug: string;
   addedAt: string;
@@ -68,7 +72,7 @@ interface RatchetFixture {
    *  our router currently misfiles as `unknown` (see `oracle/goldens/
    *  svg-conformance/routing-baseline.json`'s `ourType`); their golden lives
    *  one directory level deeper (`fixtureDir` below). */
-  tree?: 'class' | 'unknown';
+  tree?: RatchetTree;
 }
 
 interface RatchetManifest {
@@ -114,8 +118,19 @@ const parityUnknown = JSON.parse(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'parity-unknown.json'), 'utf8'),
 ) as ParityReport;
 
-function findParityEntry(slug: string, tree: 'class' | 'unknown' = 'class'): ParityEntry | undefined {
-  return (tree === 'unknown' ? parityUnknown : parity).fixtures.find((f) => f.slug === slug);
+// c4dd D6: a c4-tree pin's survey row lives in parity-c4.json.
+const parityC4 = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'parity-c4.json'), 'utf8'),
+) as ParityReport;
+
+const PARITY_BY_TREE: Readonly<Record<RatchetTree, ParityReport>> = {
+  class: parity,
+  unknown: parityUnknown,
+  c4: parityC4,
+};
+
+function findParityEntry(slug: string, tree: RatchetTree = 'class'): ParityEntry | undefined {
+  return PARITY_BY_TREE[tree].fixtures.find((f) => f.slug === slug);
 }
 
 /** cdd5-T2 (D4): `tree: 'unknown'` goldens live one level deeper
@@ -126,7 +141,7 @@ function findParityEntry(slug: string, tree: 'class' | 'unknown' = 'class'): Par
  *  one) and expensive to notice once 706 fixtures are already reading
  *  through it. */
 function fixtureDir(f: RatchetFixture): string {
-  return f.tree === 'unknown' ? join(GOLDENS_ROOT, 'unknown', f.slug) : join(GOLDENS_ROOT, f.slug);
+  return f.tree === undefined || f.tree === 'class' ? join(GOLDENS_ROOT, f.slug) : join(GOLDENS_ROOT, f.tree, f.slug);
 }
 
 function readGolden(f: RatchetFixture): string {
@@ -155,6 +170,11 @@ describe('svg-class conformance ratchet — tree resolution (D4)', () => {
       tree: 'unknown',
     };
     expect(fixtureDir(entry)).toBe(join(GOLDENS_ROOT, 'unknown', 'synthetic-unknown-slug'));
+  });
+
+  it('a "c4" entry resolves under svg-class/c4/<slug>/', () => {
+    const entry: RatchetFixture = { slug: 'synthetic-c4-slug', addedAt: '2026-11-05', source: 'test', tree: 'c4' };
+    expect(fixtureDir(entry)).toBe(join(GOLDENS_ROOT, 'c4', 'synthetic-c4-slug'));
   });
 
   it('an entry with no tree field resolves under the flat svg-class/<slug>/ root (class default)', () => {
@@ -257,14 +277,10 @@ if (manifest.fixtures.length === 0) {
 // -- structural, never an exemption list. Read from the fixture's dot-cache
 // directory, the same `in.puml` the survey rendered.
 const DOT_CACHE_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../test-results/dot-cache');
-const ELK_PRAGMA = /^\s*!pragma\s+layout\s+elk\s*$/im;
 
-function hasElkPragma(tree: 'class' | 'unknown', slug: string): boolean {
-  return ELK_PRAGMA.test(readFileSync(join(DOT_CACHE_ROOT, tree, slug, 'in.puml'), 'utf8'));
-}
-
-function isRatchetEligible(entry: ParityEntry, tree: 'class' | 'unknown'): boolean {
-  return entry.dotEqual || (entry.oracleBlind === true && hasElkPragma(tree, entry.slug));
+function isRatchetEligible(entry: ParityEntry, tree: RatchetTree): boolean {
+  if (entry.dotEqual) return true;
+  return isElkRow(entry, readFileSync(join(DOT_CACHE_ROOT, tree, entry.slug, 'in.puml'), 'utf8'));
 }
 
 describe('svg-class conformance ratchet — ELK eligibility (D12)', () => {

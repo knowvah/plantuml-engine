@@ -133,7 +133,10 @@ function renderTitledDivider(
   const titleTop = at.y - title.height / 2 - 0.5;
   let out = hline(at.x1, at.x1 + len, at.y, d, theme);
   for (const sub of title.lines)
-    out += renderTableCellLine(titleX, titleTop + sub.y + at.baselineOffset, sub.atoms, theme);
+    out += renderTableCellLine(titleX, titleTop + sub.y + at.baselineOffset, sub.atoms, {
+      fontColor: resolveNoteFontColor(theme),
+      strokeWidth: theme.scaleK,
+    });
   return out + hline(at.x2 - len, at.x2, at.y, d, theme);
 }
 
@@ -163,12 +166,12 @@ function renderTableCellAtom(
   x: number,
   y: number,
   atom: Extract<MemberRenderAtom, { kind: 'text' }>,
-  theme: ScaledTheme,
+  ambient: TableAmbient,
 ): string {
   const rendered = text(x + (atom.renderDx ?? 0), y, atom.renderText ?? atom.text, {
     fontFamily: atom.font.family,
     fontSize: getFont(atom.font).size,
-    fill: atom.font.color ?? resolveNoteFontColor(theme),
+    fill: atom.font.color ?? ambient.fontColor,
     lengthAdjust: 'spacing',
     textLength: atom.renderWidth ?? atom.width,
     ...tableCellAtomStyleExtras(atom),
@@ -179,12 +182,12 @@ function renderTableCellAtom(
 /** One table cell's own subline run -- x-advances by each atom's LAYOUT
  *  `width` (never `renderWidth`), matching `renderNoteLineAtoms`'s
  *  identical convention. */
-function renderTableCellLine(x: number, y: number, atoms: readonly MemberRenderAtom[], theme: ScaledTheme): string {
+function renderTableCellLine(x: number, y: number, atoms: readonly MemberRenderAtom[], ambient: TableAmbient): string {
   let cx = x;
   let out = '';
   for (const atom of atoms) {
     if (atom.kind !== 'text') continue;
-    out += renderTableCellAtom(cx, y, atom, theme);
+    out += renderTableCellAtom(cx, y, atom, ambient);
     cx += atom.width;
   }
   return out;
@@ -218,10 +221,9 @@ function tableBackRect(x: number, y: number, w: number, h: number, fill: string)
  *  whole-line rect, THEN the per-column loop). `''` for a row with no such
  *  tag (`rowBackColor` unset or missing this row's entry) -- the common
  *  case. */
-function renderRowBackRect(note: NoteGeo, rowTop: number, table: NoteTableDraw, row: number, k: number): string {
+function renderRowBackRect(x0: number, rowTop: number, table: NoteTableDraw, row: number): string {
   const color = table.rowBackColor?.get(row);
   if (color === undefined) return '';
-  const x0 = note.x + NOTE_MARGIN_X1 * k;
   const y = rowTop + table.rowBounds[row]!;
   const h = table.rowBounds[row + 1]! - table.rowBounds[row]!;
   const w = table.colBounds[table.colBounds.length - 1]! - table.colBounds[0]!;
@@ -233,20 +235,16 @@ function renderRowBackRect(note: NoteGeo, rowTop: number, table: NoteTableDraw, 
  *  before the grid rules — `table.cells` is already built in that order by
  *  `note-layout-measure-table.ts#tableGridBounds`). */
 function renderTableCells(
-  note: NoteGeo,
+  x0: number,
   rowTop: number,
   table: NoteTableDraw,
   baselineOffset: number,
-  theme: ScaledTheme,
+  ambient: TableAmbient,
 ): string {
-  // cdd-B8FU: `NOTE_MARGIN_X1` (imported from the SHARED `core/svek/image/
-  // Opale.ts`, used here as a plain number) is scaled locally -- `note.x`/
-  // `table.colBounds`/`.rowBounds` are already scaled.
-  const x0 = note.x + NOTE_MARGIN_X1 * theme.scaleK;
   const nbRows = table.rowBounds.length - 1;
   let out = '';
   for (let r = 0; r < nbRows; r++) {
-    out += renderRowBackRect(note, rowTop, table, r, theme.scaleK);
+    out += renderRowBackRect(x0, rowTop, table, r);
     for (const cell of table.cells.filter((c) => c.row === r)) {
       const cellX = x0 + table.colBounds[cell.col]!;
       const cellTop = rowTop + table.rowBounds[cell.row]!;
@@ -256,7 +254,7 @@ function renderTableCells(
         out += tableBackRect(cellX, cellTop, w, h, cell.backColor);
       }
       for (const sub of cell.lines) {
-        out += renderTableCellLine(cellX + (sub.dx ?? 0), cellTop + sub.y + baselineOffset, sub.atoms, theme);
+        out += renderTableCellLine(cellX + (sub.dx ?? 0), cellTop + sub.y + baselineOffset, sub.atoms, ambient);
       }
     }
   }
@@ -269,17 +267,36 @@ function renderTableCells(
  *  stroke ({@link FREESTANDING_TABLE_STROKE_WIDTH} or
  *  `resolveNoteStroke(theme).strokeWidth` -- this constant's own doc
  *  comment). */
-function renderTableGrid(note: NoteGeo, rowTop: number, table: NoteTableDraw, k: number, strokeWidth: number): string {
-  const x0 = note.x + NOTE_MARGIN_X1 * k;
+function renderTableGrid(x0: number, rowTop: number, table: NoteTableDraw, ambient: TableAmbient): string {
   const yTop = rowTop + table.rowBounds[0]!;
   const yBottom = rowTop + table.rowBounds[table.rowBounds.length - 1]!;
   const xLeft = x0 + table.colBounds[0]!;
   const xRight = x0 + table.colBounds[table.colBounds.length - 1]!;
-  const style = { stroke: table.lineColor, strokeWidth };
+  const style = { stroke: ambient.lineColor ?? table.lineColor, strokeWidth: ambient.strokeWidth };
   let out = '';
   for (const y of table.rowBounds) out += line(xLeft, rowTop + y, xRight, rowTop + y, style);
   for (const x of table.colBounds) out += line(x0 + x, yTop, x0 + x, yBottom, style);
   return out;
+}
+
+/** What a table's text and rules take from where it is drawn. `lineColor`: `AtomTable`'s rules follow the font
+ *  (`StripeTable.java:79-82`), so a body with no font colour of its own on the row passes its ambient one. */
+export interface TableAmbient {
+  readonly fontColor: string;
+  readonly lineColor?: string;
+  readonly strokeWidth: number;
+}
+
+/** One creole table, cells then grid (`AtomTable#drawU`, `AtomTable.java:102-153`), at an already-scaled origin. */
+export function renderCreoleTable(
+  table: NoteTableDraw,
+  at: { readonly x0: number; readonly rowTop: number; readonly baselineOffset: number },
+  ambient: TableAmbient,
+): string {
+  return (
+    renderTableCells(at.x0, at.rowTop, table, at.baselineOffset, ambient) +
+    renderTableGrid(at.x0, at.rowTop, table, ambient)
+  );
 }
 
 /**
@@ -316,8 +333,14 @@ export function renderNoteRowExtra(
   const dividerOut = divider !== undefined ? renderDividerLine(note, lineTop, divider, theme, baselineOffset) : '';
   const tableOut =
     table !== undefined
-      ? renderTableCells(note, lineTop, table, baselineOffset, theme) +
-        renderTableGrid(note, lineTop, table, theme.scaleK, tableStrokeWidth)
+      ? renderCreoleTable(
+          table,
+          { x0: note.x + NOTE_MARGIN_X1 * theme.scaleK, rowTop: lineTop, baselineOffset },
+          {
+            fontColor: resolveNoteFontColor(theme),
+            strokeWidth: tableStrokeWidth,
+          },
+        )
       : '';
   return dividerOut + tableOut;
 }

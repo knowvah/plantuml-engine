@@ -76,6 +76,7 @@ import {
 import { arrowDirection, arrowHeadExtents, type ArrowDir } from '../arrows-regular.js';
 import { swimlaneTitleFontSize } from '../activity-style-defaults.js';
 import type { Theme } from '../../../core/theme.js';
+import { activityShadowingOf } from '../activity-shadow.js';
 import { shiftAll } from './canvas-origin-shift.js';
 import {
   SPLIT_LINE_KINDS,
@@ -103,7 +104,7 @@ function extendForNode(acc: MutableInkBounds, node: ActivityNodeGeo, theme: Them
     extendForIfOwnLabelText(acc, node, theme);
     return;
   }
-  const { x: fx, y: fy } = nodeFudge(node);
+  const { x: fx, y: fy } = nodeFudge(node, activityShadowingOf(theme));
   acc.minX = Math.min(acc.minX, node.x - fx.near);
   acc.maxX = Math.max(acc.maxX, node.x + node.width + fx.far);
   if (SPLIT_LINE_KINDS.has(node.kind)) {

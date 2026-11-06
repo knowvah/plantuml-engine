@@ -1,7 +1,7 @@
 {
   "$comment": "Text census (fill, anchor, inset) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): insets move where a label's box shifted with the compressed geometry; no fill/anchor change is expected.",
-  "measuredAt": "2026-10-09",
-  "measuredAgainstCommit": "3d8988d8",
+  "measuredAt": "2026-11-06",
+  "measuredAgainstCommit": "78ad396b",
   "fixtures": [
     {
       "type": "activity",
@@ -1521,11 +1521,12 @@
       "type": "activity",
       "slug": "bufice-81-cemu957",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fill": {
-          "#000": 17
+          "#000": 11,
+          "#F00": 6
         },
         "anchor": {
           "(absent)": 17
@@ -1910,19 +1911,19 @@
       "type": "activity",
       "slug": "cajodu-78-topo568",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 5
         },
         "inset": {
           "10": 4
         },
-        "textCount": 4
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -3249,10 +3250,33 @@
     {
       "type": "activity",
       "slug": "dadelu-44-xuvu530",
-      "status": "error",
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command; our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fill": {
+          "#000": 1
+        },
+        "anchor": {
+          "(absent)": 1
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 1
+      },
+      "jar": {
+        "fill": {
+          "#000": 1
+        },
+        "anchor": {
+          "(absent)": 1
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 1
+      }
     },
     {
       "type": "activity",
@@ -4063,11 +4087,12 @@
       "type": "activity",
       "slug": "disopi-10-nesi127",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fill": {
-          "#000": 3
+          "#000": 2,
+          "#F00": 1
         },
         "anchor": {
           "(absent)": 3
@@ -5300,8 +5325,8 @@
       "type": "activity",
       "slug": "finadu-74-duvi890",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#FFF": 1,
@@ -5311,7 +5336,7 @@
           "(absent)": 4
         },
         "inset": {
-          "10.417": 1
+          "6.25": 1
         },
         "textCount": 4
       },
@@ -6965,19 +6990,19 @@
       "type": "activity",
       "slug": "gexufa-76-paga835",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 5
         },
         "inset": {
           "10": 2
         },
-        "textCount": 2
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -7076,10 +7101,33 @@
     {
       "type": "activity",
       "slug": "gigefo-15-cami497",
-      "status": "error",
-      "reason": "the jar accepts 'while (data available?) <<#AliceBlue>>' via CommandWhile3.java:63-80 (registered ActivityDiagramFactory3.java:137): the regex ends `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:76-78), so a <<#AliceBlue>> tail is accepted; our activity engine refuses that line (dispatch-support.ts:247 RE_WHILE ends `\\s*$` after the optional is/equals label, with no stereogroup), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':foo1;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fill": {
+          "#FFF": 18
+        },
+        "anchor": {
+          "(absent)": 18
+        },
+        "inset": {
+          "10": 8
+        },
+        "textCount": 18
+      },
+      "jar": {
+        "fill": {
+          "#FFF": 18
+        },
+        "anchor": {
+          "(absent)": 18
+        },
+        "inset": {
+          "10": 8
+        },
+        "textCount": 18
+      }
     },
     {
       "type": "activity",
@@ -10975,12 +11023,12 @@
       "type": "activity",
       "slug": "liluje-29-vuja668",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "29322602",
       "ours": {
         "fill": {
-          "#000": 19,
-          "#F00": 1
+          "#000": 14,
+          "#F00": 6
         },
         "anchor": {
           "(absent)": 20
@@ -11008,19 +11056,19 @@
       "type": "activity",
       "slug": "limazo-01-ximu737",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "8eb3bd2e",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 5
         },
         "inset": {
           "10": 3
         },
-        "textCount": 7
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -11712,8 +11760,8 @@
       "type": "activity",
       "slug": "lulavi-01-fose679",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#888": 6,
@@ -11724,7 +11772,7 @@
           "(absent)": 9
         },
         "inset": {
-          "10": 6
+          "0": 6
         },
         "textCount": 9
       },
@@ -17378,8 +17426,8 @@
       "type": "activity",
       "slug": "ronovu-01-voku005",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#000": 3
@@ -17388,7 +17436,7 @@
           "(absent)": 3
         },
         "inset": {
-          "10": 3
+          "5": 3
         },
         "textCount": 3
       },
@@ -17752,8 +17800,8 @@
       "type": "activity",
       "slug": "rutaji-30-suda150",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#888": 6,
@@ -17764,7 +17812,7 @@
           "(absent)": 9
         },
         "inset": {
-          "10": 6
+          "0": 6
         },
         "textCount": 9
       },
@@ -20151,19 +20199,19 @@
       "type": "activity",
       "slug": "totave-53-fiju801",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 5
         },
         "inset": {
           "10": 2
         },
-        "textCount": 2
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -20340,10 +20388,33 @@
     {
       "type": "activity",
       "slug": "tusaxu-17-rasi651",
-      "status": "error",
-      "reason": "the jar accepts 'start <<#green;line:red>>' via CommandStart3.java:58-65 (registered ActivityDiagramFactory3.java:149): `start` + `;?` + spaceZeroOrMore + Stereogroup.optionalStereogroup() (:63, Stereogroup.java:72-75 `(<<[^<>]+>>(?:[%s]*<<[^<>]+>>)*)`), so a trailing <<#green;line:red>> stereogroup is part of the command (and CommandEnd3.java:58-65, registered :153, carries the same stereogroup leaf at :63 for 'end <<#blue>>'); our activity engine refuses that line (node-dispatch.ts:110-125 trySimpleKeyword matches only the bare lower-cased keyword, with no stereogroup tail), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':foo;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-05",
+      "measuredAgainstCommit": "e9a870d1",
+      "ours": {
+        "fill": {
+          "#000": 1
+        },
+        "anchor": {
+          "(absent)": 1
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 1
+      },
+      "jar": {
+        "fill": {
+          "#000": 1
+        },
+        "anchor": {
+          "(absent)": 1
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 1
+      }
     },
     {
       "type": "activity",
@@ -20910,8 +20981,8 @@
       "type": "activity",
       "slug": "vifiba-70-repa468",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "78ad396b",
       "ours": {
         "fill": {
           "#000": 3
@@ -20920,7 +20991,7 @@
           "(absent)": 3
         },
         "inset": {
-          "10": 3
+          "5": 3
         },
         "textCount": 3
       },

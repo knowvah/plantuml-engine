@@ -1,0 +1,7 @@
+@startuml
+!pragma layout elk
+skinparam arrowthickness 3
+class A
+class B
+A -[dashed]-> B
+@enduml

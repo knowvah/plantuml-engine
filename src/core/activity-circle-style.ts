@@ -70,7 +70,7 @@ const MODE_DARK = 'dark';
  * (`ValueImpl.java:92-108`); it is left `undefined` here so the caller
  * keeps its own default.
  */
-function paintOf(style: Style, name: PName, isDark: boolean): Paint | undefined {
+export function paintOf(style: Style, name: PName, isDark: boolean): Paint | undefined {
   const value = style.value(name);
   const raw = value.asString();
   if (raw === null) return undefined;

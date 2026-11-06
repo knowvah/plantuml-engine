@@ -1,0 +1,13 @@
+@startuml
+<style>
+map {
+  HorizontalAlignment right
+}
+</style>
+object o
+map m {
+ k *-> o
+ longerkey => v
+ s => w
+}
+@enduml

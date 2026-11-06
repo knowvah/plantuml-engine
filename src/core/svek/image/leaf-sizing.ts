@@ -6,41 +6,11 @@
  * `EntityImageDescription.calculateDimensionSlow` -- superseding the flat
  * per-symbol tables that used to re-derive this geometry independently.
  *
- * sizer-footprint-parity T3 (ADR-1/ADR-2) closed box+`<img>` fully and
- * usecase+`<$sprite>` PARTIALLY: single-line routes through
- * `measureEntityLeaf`; MULTI-LINE stayed on the analytic substitute for a
- * time, but SI10 (ADR-1/ADR-2) re-measured that branch INERT and removed
- * it -- see `hasUnroutedUsecaseMarkup`'s doc. `<latex>` is the one narrowing
- * still open, a permanent divergence; `folder`/`package`'s title narrowing
- * (was SI1/ADR-10) is CLOSED -- SI1 T12 routed the shown title through the
- * real `create2`/`BodyEnhanced1` (see the folder/package `case` below).
- * T10/ADR-3 retired the sizer's `fitToInk`
- * ink substitution -- see `sizingAtomImageResolverFor`'s own doc.
- *
- * `measureUsecase` (exported below) is NOT dead: it is `<latex>` usecase
- * content's own entry point (this file's `hasUnroutedUsecaseMarkup` guard,
- * the ONE case `measureLeafNode` still routes through it rather than the
- * faithful `measureEntityLeaf` call). SI10/ADR-2 additionally exports
- * `measureUsecaseOrActorLeaf` below, a purpose-built entry point routing
- * usecase/actor leaf sizing through the SAME faithful `measureEntityLeaf`
- * call this file already uses, so the class engine can call in instead of
- * reimplementing the routing decision.
- *
- * SI14/ADR-3 retired `usecase-footprint.ts`'s data-based ellipse-fit
- * (`FootprintBox`es handed to a standalone `smallestEnclosingCircle`) --
- * `measureUsecase`'s non-`<latex>` branch now delegates straight to
- * `measureEntityLeaf`, the SAME real, object-based `Footprint#getEllipse`
- * (`core/svek/image/Footprint.ts`) the faithful path already used, so there
- * is only ONE ellipse-fit implementation left for non-`<latex>` content.
- * PARTIAL (ADR-3's own fallback, taken here): the `<latex>` branch was NOT
- * also switched to wrap its box through `Footprint#getEllipse` -- measured
- * `widened 2` (`gevozu-46-sasu860`/`sunuju-01-pote718`, both `usecase
- * (<latex>...)`; delta 0.611632in -> 1.041146in against their pinned
- * ceiling), so it still returns the raw KaTeX box unchanged. See
- * `measureUsecase`'s own doc comment for the numbers; filed as tracked
- * follow-up, not completed. SI14/ADR-4 deleted `measureActor`:
- * `class-layout-leaf-shapes.ts` (SI10) imports only `measureUsecaseOrActor
- * Leaf` now, so nothing in `src/` calls it any longer.
+ * Every leaf runs through `measureEntityLeaf`, the same `EntityImageDescription` the renderer draws, `<latex>` included
+ * since ddd-T5e: a `<latex>` box is its image atom (`AtomMath.java:65-70`), and an ellipse's `Footprint` sees it as a
+ * raster `UImage`, one less each way (`AtomMath.java:90-95`, `UImage.java:87-92`). `folder`/`package` route the shown
+ * title through the real `create2`/`BodyEnhanced1` (see their `case` below). `measureUsecase` and
+ * `measureUsecaseOrActorLeaf` are the entry points the class engine and the tests call.
  *
  * See `plans/description-leaf-sizing-audit/decisions.md` (ADR-6),
  * `plans/sizer-footprint-parity/decisions.md` (ADR-1/2/4),
@@ -51,7 +21,6 @@
 
 import type { LeafSizingSubject } from './LeafSizingSubject.js';
 import type { StringMeasurer, FontSpec } from '../../measurer.js';
-import { measureNodeLabel } from '../../latex.js';
 import type { SpriteDimsLookup, AtomImageResolver } from '../../creole-atoms.js';
 import { MeasurerStringBounder } from '../../measurer-bounder.js';
 import type { FontConfiguration, FontStyle } from '../../klimt/shape/UText.js';
@@ -62,7 +31,6 @@ import type { GuillemetPair } from '../../text/Guillemet.js';
 import { buildDesc } from './EntityImageDescriptionDelegates.js';
 import { USymbols } from '../../decoration/symbol/USymbols.js';
 import { measureFolderLeaf } from './leaf-sizing-folder.js';
-import { measureLegacyBoxFallback } from './leaf-sizing-legacy-fallback.js';
 import { measureEntityLeaf, measureEntityLeafShield, sizingAtomImageResolverFor } from './leaf-sizing-entity.js';
 import type { Margins } from './EntityImageDescription.js';
 import {
@@ -155,15 +123,7 @@ export function measureLeafNode(
       return measureFolderLeaf(node, fontSpec, measurer, opts, sprites);
     case 'usecase':
     case 'usecase-business':
-      // sizer-footprint-parity T3/ADR-2 dropped the `<img` guard -- a
-      // single-line `<img>`/`<$sprite>` display routes through
-      // `measureEntityLeaf` unconditionally. SI10/ADR-1/ADR-2 additionally
-      // dropped the multi-line-`<$sprite>` guard (re-measured INERT); only
-      // `<latex>` STAYS guarded now -- see `hasUnroutedUsecaseMarkup`'s doc
-      // comment for the measurement.
-      return hasUnroutedUsecaseMarkup(node.display)
-        ? measureUsecase(node.display, fontSpec, measurer, sprites, node.stereotype)
-        : measureEntityLeaf(node, fontSpec, { opts, sprites, measurer }, false);
+      return measureEntityLeaf(node, fontSpec, { opts, sprites, measurer }, false);
     case 'actor':
     case 'actor-business':
     case 'control':
@@ -174,14 +134,9 @@ export function measureLeafNode(
       // pre-T6 (a DIFFERENT composition, `mergeLayoutT12B3`).
       return measureEntityLeaf(node, fontSpec, { opts, sprites, measurer }, false);
     default:
-      // Every other (true) box symbol routes through the same faithful call
-      // -- except a `<latex>`-bearing display, the ONLY box guard left (T3/
-      // ADR-1: `<img>`'s fallback font is hardcoded at its draw site now).
+      // Every other (true) box symbol routes through the same faithful call.
       // Only the generic box family floors width against `opts.minimumWidth`
       // (S1L-g).
-      if (node.display.includes('<latex>')) {
-        return measureLegacyBoxFallback(node, fontSpec, { measurer, opts, sprites, defaultFont: baseFont });
-      }
       return measureEntityLeaf(
         node,
         fontSpec,
@@ -212,34 +167,6 @@ export function measureLeafShield(
   return measureEntityLeafShield(node, fontSpec, { opts, sprites, measurer });
 }
 
-/** ONLY `<latex>` markup still routes through `measureUsecase` instead of
- *  `measureEntityLeaf` directly. SI14/ADR-3: `measureUsecase`'s own
- *  non-`<latex>` branch now delegates to `measureEntityLeaf` too (the SAME
- *  real `Footprint#getEllipse`), but the `<latex>` branch itself was NOT
- *  switched onto that ellipse fit -- doing so widened two fixtures past
- *  their pinned allowance (`measureUsecase`'s own doc comment has the
- *  numbers), so it still returns its raw KaTeX box, unchanged. `<img>`/
- *  `<$sprite>` -- single-line OR multi-line -- do NOT
- *  (sizer-footprint-parity T3/ADR-2 dropped single-line; SI10/ADR-1/ADR-2
- *  dropped multi-line).
- *
- *  DIAGNOSIS (re-measured 2026-08-01, `plans/si10-usecase-actor-routing/
- *  README.md`'s probe table -- supersedes the multi-line finding
- *  sizer-footprint-parity T3 recorded below): disabling the multi-line
- *  branch ALONE now measures `widened 0` against `measure-description-
- *  size-deltas.ts`, with a cause histogram IDENTICAL to baseline; both
- *  named fixtures the old guard cited (`bootstrap-0`, `ruziru-69-xixo434`)
- *  report `delta 0, conformant true` with and without the branch. The
- *  0.029321in widening T3's diagnosis originally found no longer
- *  reproduces -- `svg-sprite-nanoparser`'s two-channel sprite architecture
- *  (a later, unrelated mission) closed the gap that guard existed to paper
- *  over. Disabling `<latex>` TOO (both branches at once) measures
- *  `widened 2`, so `<latex>` alone remains genuinely load-bearing and
- *  stays guarded -- ADR-1. */
-function hasUnroutedUsecaseMarkup(display: string): boolean {
-  return display.includes('<latex>');
-}
-
 /** No style flags -- the sizing font carries family/size only
  *  (`leaf-sizing-entity.ts#SIZING_FONT_STYLES`'s convention). */
 const NOTE_FONT_STYLES: ReadonlySet<FontStyle> = new Set();
@@ -263,6 +190,8 @@ const NOTE_LINE_THICKNESS = 0.5;
  *  project's parameter-count budget. All three are optional and all three
  *  default to upstream's own unset value. */
 export interface NoteBodyOpts {
+  /** `style.getHorizontalAlignment()` (`EntityImageNote.java:112`), absent for the skin's left. */
+  readonly alignment?: HorizontalAlignment;
   /** `style.wrapWidth()` (`PName.MaximumWidth`) -- upstream passes it
    *  straight into `BodyFactory.create3`'s `lineBreakStrategy`
    *  (`EntityImageNote.java:117`), exactly as it does for entity `desc`. */
@@ -334,7 +263,7 @@ export function buildNoteBody(display: string, font: FontConfiguration, opts?: N
       fontStereo: font,
       // `style.getHorizontalAlignment()` -- `note {}` sets none, so it
       // inherits `root { HorizontalAlignment left }` (`plantuml.skin:11`).
-      titleAlignment: HorizontalAlignment.LEFT,
+      titleAlignment: opts?.alignment ?? HorizontalAlignment.LEFT,
       stereotypeAlignment: HorizontalAlignment.LEFT,
       // `style.value(PName.MinimumWidth)` -- no `plantuml.skin` selector sets
       // it for `note` (the same trace `buildDesc`'s own doc records).
@@ -403,32 +332,7 @@ function measureNote(
   return { width: dim.getWidth() + NOTE_MARGIN_H, height: dim.getHeight() + NOTE_MARGIN_V };
 }
 
-/**
- * Use-case ellipse sizing entry point for `<latex>` content -- the ONLY
- * markup `measureLeafNode`'s `usecase`/`usecase-business` case still routes
- * here instead of `measureEntityLeaf` (`hasUnroutedUsecaseMarkup`'s own doc
- * comment). Every non-`<latex>` display -- text, `<$sprite>`/`<img>`,
- * stereotyped or not, single- or multi-line -- delegates straight to
- * `measureEntityLeaf` (SI14/ADR-3): that is the SAME real, object-based
- * `Footprint#getEllipse` (`core/svek/image/Footprint.ts`) `TextBlockInEllipse`
- * uses, so there is exactly one ellipse-fit implementation left for
- * non-`<latex>` content, not two. `usecase-footprint.ts`'s retired data-based
- * substitute (`FootprintBox`es -> a standalone `smallestEnclosingCircle`)
- * matched this delegation to within floating-point noise on every shape it
- * was jar-verified against (`tests/unit/description/footprint-parity
- * .test.ts`).
- *
- * PARTIAL, per ADR-3's own fallback (`plans/si14-usymbol-measurement-sharing
- * /decisions.md`): the `<latex>` branch below still returns the RAW
- * `measureNodeLabel` box, unchanged, rather than wrapping it through
- * `Footprint#getEllipse` too. Measured (`gevozu-46-sasu860`/`sunuju-01-
- * pote718`, both usecase `(<latex>\mathcal{A}</latex>)`): wrapping widens
- * `maxSizeDeltaIn` from 0.611632in (their pinned ceiling) to 1.041146in --
- * our KaTeX box is already far wider than JLaTeXMath's for this markup, and
- * `.bigger(6)`-padding a diagonal-circle fit around it only grows that gap.
- * Filed as tracked follow-up, not completed here -- see this task's own
- * write-up for the full numbers.
- */
+/** A usecase's box through `measureEntityLeaf`, the same `Footprint#getEllipse` `TextBlockInEllipse` uses. */
 export function measureUsecase(
   display: string,
   fontSpec: FontSpec,
@@ -436,9 +340,6 @@ export function measureUsecase(
   sprites?: SpriteDimsLookup,
   stereotype?: readonly string[],
 ): Dim {
-  if (display.includes('<latex>')) {
-    return measureNodeLabel(display, measurer, fontSpec);
-  }
   const node: LeafSizingSubject = {
     id: '',
     display,

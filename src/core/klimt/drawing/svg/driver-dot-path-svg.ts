@@ -36,7 +36,7 @@ import { DriverRectangleSvg } from './driver-rectangle-svg.js';
 // See the module doc comment above for the isTransparent() adaptation.
 function isTransparentPaint(p: HColorOrPaint): boolean {
   if (p instanceof HColorSimple) return p.isTransparent();
-  return p === 'none' || p === '#00000000';
+  return p === 'none' || p === 'transparent' || p === '#00000000';
 }
 
 /** Upstream: `DriverDotPathSvg`. Ported in full — see the module doc

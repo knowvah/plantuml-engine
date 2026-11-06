@@ -77,7 +77,7 @@ export function oracleCountsOf(cacheDir: string): Record<string, number> {
  * The first line `PSystemUnsupported#getDescription` writes
  * (`PSystemUnsupported.java:62`), as the one whole `<text>` element the jar's
  * SVG exporter turns it into — anchored at both ends exactly the way
- * `routing-conformance.test.ts#isJarErrorPage` anchors the two error banners,
+ * `corpus-gate-part.ts#isJarErrorPage` anchors the two error banners,
  * so a label merely mentioning the phrase cannot fire. `PSystemBuilder.java:284`
  * returns that system when no factory in the block's candidate set produced a
  * diagram; a cached golden carrying it is the jar DECLINING the source, not an

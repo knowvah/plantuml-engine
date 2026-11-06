@@ -36,6 +36,7 @@ import type { TContext } from './TContext.js';
 import type { TMemory } from './TMemory.js';
 import { Sub } from './iterator/Sub.js';
 import { JAR_STDLIB_FOLDERS } from './stdlib-folders.js';
+import { markStdlibSprites } from './stdlib-sprite-compile.js';
 
 /** `http://` / `https://` include target -- upstream's `SURL` branch. */
 const RE_URL = /^https?:\/\//u;
@@ -77,7 +78,7 @@ export class IncludeExecutor {
       if (strategy === PreprocessorIncludeStrategy.DEFAULT) return;
     }
 
-    const lines = readLines(this.load(what, '!include', s), what, s.getLocation());
+    const lines = this.read(what, '!include', s);
     this.filesUsedCurrent.add(what);
 
     // A file that is itself a whole `@startuml ... @enduml` document contributes
@@ -101,9 +102,7 @@ export class IncludeExecutor {
       // `TContext.java:659-661`: an `!includesub`d file's reader is wrapped in
       // `ReadFilterMergeLines` directly -- unlike `executeInclude` /
       // `executeIncludeDef` below, which are NOT (upstream never wraps those).
-      const lines = mergeEndingBackslashLines(
-        readLines(this.load(filename, '!includesub', s), filename, s.getLocation()),
-      );
+      const lines = mergeEndingBackslashLines(this.read(filename, '!includesub', s));
       sub = Sub.fromLines(lines, blocname, context, memory);
     }
     sub ??= this.subs.get(what);
@@ -127,14 +126,13 @@ export class IncludeExecutor {
     const definitionName = include.getLocation();
     // `TContext.java:687-705` + `BlockUmlBuilder.java:150-156`: an unknown name
     // yields `Collections.emptyList()` -- an empty body, never an error.
-    let text: string;
+    let body: StringLocated[];
     try {
-      text = this.load(definitionName, '!includedef', s);
+      body = this.read(definitionName, '!includedef', s);
     } catch (e) {
       if (e instanceof IncludeNotFoundError || e instanceof StdlibNotBundledError) return;
       throw e;
     }
-    const body = readLines(text, definitionName, s.getLocation());
     context.executeLines(memory, body, undefined, false);
   }
 
@@ -151,6 +149,18 @@ export class IncludeExecutor {
     const _import = new EaterImport(s.getTrimmed());
     _import.analyze(context, memory);
     this.importedPaths.push(_import.getWhat());
+  }
+
+  /**
+   * The lines of `what`, parented on the directive's line. A stdlib read marks
+   * its sprite blocks, because the jar's stdlib holds them compiled.
+   * @see stdlib-sprite-compile.ts
+   */
+  private read(what: string, directive: string, s: StringLocated): StringLocated[] {
+    const lines = readLines(this.load(what, directive, s), what, s.getLocation());
+    const stdlib = stdlibPathOf(what);
+    if (stdlib !== undefined) markStdlibSprites(lines, stdlib);
+    return lines;
   }
 
   /**

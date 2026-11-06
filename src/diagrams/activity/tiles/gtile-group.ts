@@ -6,7 +6,12 @@ import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
 import type { CompositeUSymbol } from '../activity-geometry.types.js';
-import { creoleTextLines } from '../../../core/svek/image/creole-text-lines.js';
+import { activityDisplayBlock, activityTextFontConfiguration } from '../activity-text-sheet.js';
+import { HorizontalAlignment } from '../../../core/klimt/geom/HorizontalAlignment.js';
+import { CreoleMode } from '../../../core/klimt/creole/CreoleMode.js';
+import { klimtStringBounder } from '../activity-creole-sheet.js';
+import type { TextBlock } from '../../../core/klimt/shape/TextBlock.js';
+import type { StringBounder as KlimtStringBounder } from '../../../core/klimt/font/StringBounder.js';
 import { measurerAdapterOf } from './gtile-action.js';
 
 /** `FtileUtils.addHorizontalMargin(inner, 10)` (`FtileGroup.java:97`): a
@@ -30,9 +35,41 @@ const BOTTOM_PAD = 20;
  * and the compression adapter's title slot (`USymbolFrame.java:150-156`).
  */
 export function frameTitleWidth(title: string, measurer: StringMeasurer, theme: Theme): number {
-  if (title === '') return 0;
-  const font = { family: theme.fontFamily, size: activityFontSize(theme, 'composite') };
-  return Math.max(0, ...creoleTextLines(title, font, measurer).map((line) => line.width));
+  return frameTitleDimension(title, measurer, theme).width;
+}
+
+/**
+ * `name.calculateDimension(stringBounder)` (`FtileGroup.java:104-108,
+ * 140-143,160-167`): the title `TextBlock` built by `title.create(fc, LEFT,
+ * skinParam)`, measured whole, so a `<$sprite>` atom gives its scaled box
+ * on both axes (`AtomSprite#calculateDimension`). It is the block the
+ * renderer draws (`activity-renderer-composite.ts#drawCompositeTitle`). A
+ * null title is `TextBlockUtils.empty(0, 0)` (`:105-106`).
+ */
+export function frameTitleDimension(
+  title: string,
+  measurer: StringMeasurer,
+  theme: Theme,
+): { readonly width: number; readonly height: number } {
+  if (title === '') return { width: 0, height: 0 };
+  const dim = frameTitleBlock(title, theme).calculateDimension(frameTitleBounder(measurer, theme));
+  return { width: dim.getWidth(), height: dim.getHeight() };
+}
+
+/** `title.create(fc, HorizontalAlignment.LEFT, skinParam)` (`FtileGroup.java:108`) at the composite style's font. */
+export function frameTitleBlock(title: string, theme: Theme): TextBlock {
+  const fc = activityTextFontConfiguration(theme, activityFontSize(theme, 'composite'), 'composite');
+  return activityDisplayBlock(title, theme, {
+    fontConfiguration: fc,
+    horizontalAlignment: HorizontalAlignment.LEFT,
+    creoleMode: CreoleMode.FULL,
+  });
+}
+
+/** The klimt `StringBounder` over `measurer` at the composite title's font. */
+export function frameTitleBounder(measurer: StringMeasurer, theme: Theme): KlimtStringBounder {
+  const size = activityFontSize(theme, 'composite');
+  return klimtStringBounder(measurer, { family: activityTextFontConfiguration(theme, size, 'composite').family, size });
 }
 
 /** `FtileGroup`'s constructor inputs beyond the title/body
@@ -103,7 +140,7 @@ export class GtileGroup extends TileComposite {
     // `activityFontSize` returns for a kind declaring none. Routed through
     // the resolver rather than left as a bare `theme.fontSize` so a user's
     // `<style> activityDiagram { composite { FontSize N } }` reaches it.
-    const titleMeasured = bounder.getDimension(title, activityFontSize(theme, 'composite'));
+    const titleMeasured = frameTitleDimension(title, measurerAdapterOf(bounder), theme);
     // `FtileGroup.java:140-143` -- `diffHeightTitle`: `max(25, dimTitle
     // .getHeight() + 20)`. Was `titleMeasured.height + 8`, unsourced.
     const diffHeightTitle = Math.max(25, titleMeasured.height + 20);
@@ -116,7 +153,7 @@ export class GtileGroup extends TileComposite {
     // `orig.width` is `margedBodyWidth` (the body already widened by
     // `FtileMarged`, `getInnerDimension`'s ink-scan correction unported --
     // see this class's own `drawU` counterpart's doc).
-    const titleWidth = frameTitleWidth(title, measurerAdapterOf(bounder), theme);
+    const titleWidth = titleMeasured.width;
     const suppWidth = Math.max(margedBodyWidth, titleWidth + 20, 20) - margedBodyWidth;
     this.width = margedBodyWidth + suppWidth;
     // `:145-148` -- `getTranslate`: `(suppWidth/2, diffHeightTitle +

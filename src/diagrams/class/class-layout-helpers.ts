@@ -35,6 +35,8 @@ import { measureMapClassifier } from './class-map-sizing.js';
 import { resolveClassTagCascadeEntry } from '../../core/style-cascade-class.js';
 import { measureJsonClassifier } from './class-json-sizing.js';
 import { isCollapsedGroup } from './class-magma.js';
+import { measureStateLeaf } from './class-state-leaf.js';
+import type { StateGeoTextFields } from '../state/state-sizing.js';
 import { measureEmptyPackageLeafDim, type EmptyPackageLeafDim } from './class-namespace-shape.js';
 import { resolveBadgeRadius } from './class-badge.js';
 import { resolveStyleStereotypeTags, resolveVisibleStereotypeLabels, type GenericTagGeo } from './class-stereotype.js';
@@ -220,6 +222,12 @@ export interface MeasuredClassifier {
    *  `dividerYs[0]`), but the LINES are drawn from this, not from
    *  `dividerYs`. */
   jsonBody?: readonly JsonBodyItem[];
+  /** odd T3c: see `ClassifierGeo.stateLeaf`. */
+  stateLeaf?: StateGeoTextFields;
+  /** odd T2c: see `ClassifierGeo.stereoInkTop`. */
+  stereoInkTop?: number;
+  /** odd T2b: see `ClassifierGeo.titleHeight`. */
+  titleHeight?: number;
   /** B35/M40: see `ClassifierGeo.bodyInkWidth`'s doc comment (the geo
    *  field this one feeds) and `class-ink-box.ts#addRectInk`'s (the
    *  jar-verified rule that consumes it). */
@@ -338,7 +346,8 @@ function tryMeasureNonGenericClassifier(
       height: dim.height,
       dividerYs: [],
       rows: [{ text: classifier.display, y: 0, indent: 0 }],
-      folderTab: dim,
+      folderTab:
+        classifier.emptyLeafRoundCorner === undefined ? dim : { ...dim, roundCorner: classifier.emptyLeafRoundCorner },
     };
   }
   // object/map/json leaves are NOT the generic name+members box — each has
@@ -347,6 +356,7 @@ function tryMeasureNonGenericClassifier(
   // methods compartment concept (`BodierLikeClassOrObject#getFieldsToDisplay`
   // routes EVERY object member into "fields" regardless of method-like
   // syntax) — only `suppress.fields` is meaningful for them.
+  if (classifier.kind === 'state') return measureStateLeaf(classifier, theme, measurer);
   if (classifier.kind === 'object')
     return measureObjectClassifier(classifier, theme, measurer, suppress.fields, sprites);
   if (classifier.kind === 'map') return measureMapClassifier(classifier, theme, measurer);

@@ -71,6 +71,9 @@ type AnchorRow = {
  * matchable as a plain enhanced row, same `{text, y, indent, width}` shape.
  */
 function memberAnchorRows(host: ClassifierAnchor): ReadonlyArray<AnchorRow> {
+  // `other.getImage().getInnerPosition(member, ...)` (`EntityImageTips.java`) is null for a map or json image: neither
+  // overrides `TextBlock#getInnerPosition`, so its tips draw nothing.
+  if (host.kind === 'map' || host.kind === 'json') return [];
   if (host.enhancedBody === undefined) return classicMemberRows(host.rows.slice(1));
   const out: AnchorRow[] = [];
   for (const part of host.enhancedBody.parts) {

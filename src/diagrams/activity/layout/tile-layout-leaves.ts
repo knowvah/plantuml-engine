@@ -7,6 +7,7 @@
  * made the room for this split).
  */
 
+import { own, withDiamondColors } from './diamond-colors.js';
 import type { ActivityNode } from '../ast.js';
 import type { StringBounder, Tile } from '../tiles/tile.js';
 import type { Theme } from '../../../core/theme.js';
@@ -126,11 +127,11 @@ export function tileEarlyLeaf(node: EarlyLeafNode): Tile | null {
 export function tileSimpleLeaf(node: SimpleLeafNode, bounder: StringBounder, theme: Theme): Tile {
   switch (node.kind) {
     case 'start':
-      return withSwimlane(new GtileStart(), node.swimlane);
+      return withSwimlane(withDiamondColors(new GtileStart(), own(node.color)), node.swimlane);
     case 'stop':
-      return withSwimlane(new GtileStop(), node.swimlane);
+      return withSwimlane(withDiamondColors(new GtileStop(), own(node.color)), node.swimlane);
     case 'end':
-      return withSwimlane(new GtileEnd(), node.swimlane);
+      return withSwimlane(withDiamondColors(new GtileEnd(), own(node.color)), node.swimlane);
     case 'break':
       return withSwimlane(new GtileBreak(), node.swimlane);
     case 'action':

@@ -1,0 +1,5 @@
+@startchart
+h-axis [A]
+annotation "**big**" at (A, 50)
+annotation "//it//" at (A, 20) <<arrow>>
+@endchart

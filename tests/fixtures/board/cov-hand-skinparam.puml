@@ -1,0 +1,8 @@
+@startboard
+skinparam handwritten true
+A
++B
+++C
+D
++E
+@endboard

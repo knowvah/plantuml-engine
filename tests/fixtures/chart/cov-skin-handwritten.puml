@@ -1,0 +1,8 @@
+@startchart
+skinparam handwritten true
+h-axis [A, B, C, D]
+bar "B" [1, 2] #3498db
+line "L" [1, 2]
+scatter "S" [1, 2]
+legend right
+@endchart

@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Container>
+AddElementTag("round", $shape=RoundedBoxShape(), $bgColor="lightgreen", $legendText="round")
+AddElementTag("eight", $shape=EightSidedShape(), $bgColor="pink", $legendText="eight")
+AddRelTag("thick", $lineStyle=BoldLine(), $lineThickness="3", $legendText="thick")
+Container(a, "A", "t", "d", $tags="round")
+Container(b, "B", "t", "d", $tags="eight")
+ContainerQueue(c, "C", "t", "d", $tags="round+eight")
+Rel(a, b, "to", $tags="thick")
+Rel(b, c, "to")
+SHOW_LEGEND($details=Normal())
+@enduml

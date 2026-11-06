@@ -1,0 +1,11 @@
+@startuml
+object o {
+ a = 1
+ b = one\ntwo
+}
+object p
+o : c = three\nfour
+class C {
+ d\ne
+}
+@enduml

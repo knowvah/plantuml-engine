@@ -1,0 +1,17 @@
+@startuml
+<style>
+.test {
+  LineColor blue
+  BackgroundColor lightCyan
+  LineThickness 1.0
+  ArrowThickness 0.5
+  FontName Arial Narrow
+  FontColor green
+  FontSize 11
+  FontStyle bold
+}
+</style>
+:a;
+:b (OK); <<test>>
+:c (Not yet); <<test>>
+@enduml

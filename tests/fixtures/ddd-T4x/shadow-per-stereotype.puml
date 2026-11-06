@@ -1,0 +1,10 @@
+@startuml
+skinparam rectangle {
+    shadowing false
+}
+skinparam rectangle<<web>> {
+    Shadowing<<web>> true
+}
+rectangle "none"
+rectangle "web" <<web>> as w
+@enduml

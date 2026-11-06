@@ -1,0 +1,4 @@
+@startuml
+class C
+note left of Z : n
+@enduml

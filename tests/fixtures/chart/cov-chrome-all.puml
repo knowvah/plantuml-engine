@@ -1,0 +1,8 @@
+@startchart
+title T
+header H
+footer F
+caption C
+h-axis [A, B, C, D]
+bar "B" [1]
+@endchart

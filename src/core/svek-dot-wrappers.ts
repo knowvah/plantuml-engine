@@ -79,6 +79,44 @@ export function wrapperLevels(cluster: DotInputCluster): WrapperLevels {
   };
 }
 
+/** Where a border-point composite declares its special point. */
+export interface BorderPointAnchorDecl {
+  id: string;
+  /** Declared in `ee`, before `i` opens (`ClusterDotString.java:148-152`). */
+  beforeInner: boolean;
+  /** Declared last in the innermost level, after the child clusters
+   *  (`ClusterDotString.java:176,182-183`). */
+  afterMembers: boolean;
+}
+
+/**
+ * The declarations of a border-point composite's special point, the SINGLE
+ * definition the layout builder, the DOT emitter and the node order share:
+ *
+ *     if (thereALinkFromOrToGroup2) sb.append(specialPoint + " [shape=point,...];"); // :148-149
+ *     if (thereALinkFromOrToGroup1) subgraphClusterNoLabel(sb, "i");                 // :151-152
+ *     final SvekNode added = cluster.printCluster2(...);                             // :176
+ *     ... else if (added == null) sb.append(empty() + " [shape=point,...];");        // :182-183
+ *
+ * `empty()` is the same id (`:220-226`). `added` is set only in
+ * `printCluster2`'s node loop (`Cluster.java`), which skips border points
+ * (`getNodesOrderedWithoutTop`, `:218-238`), so a child cluster does not count.
+ *
+ * Undefined for any other family, and when the composite has no anchor node:
+ * `state-composite-cluster.ts` names `portAnchorId` on every border-point
+ * composite but adds the node only under `needsZaentPoint`.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/ClusterDotString.java:148-183
+ */
+export function borderPointAnchorDecl(cluster: DotInputCluster): BorderPointAnchorDecl | undefined {
+  const id = cluster.portAnchorId;
+  if (cluster.portRanksLabelOnEe !== true || id === undefined || !cluster.nodeIds.includes(id)) return undefined;
+  const linked = cluster.borderPointAncestorWrap === true;
+  const borderPoints = new Set((cluster.portRanks ?? []).flatMap((r) => r.nodeIds));
+  const added = cluster.nodeIds.some((n) => n !== id && !borderPoints.has(n));
+  return { id, beforeInner: linked, afterMembers: !linked || !added };
+}
+
 /** `subgraphClusterNoLabel` (`ClusterDotString.java:245-252`) — an opening
  *  `subgraph <clusterId><suffix> {label="";` with no other attribute. */
 export function subgraphNoLabel(clusterId: string, suffix: string): string {

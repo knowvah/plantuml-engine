@@ -1,0 +1,8 @@
+@startboard
+footer ftr
+A
++B
+++C
+D
++E
+@endboard

@@ -1,0 +1,4 @@
+@startuml
+object o
+url of o is [[http://x.example]]
+@enduml

@@ -1,0 +1,13 @@
+@startboard
+<style>
+root {
+  FontColor red
+  FontSize 20
+}
+</style>
+A
++B
+++C
+D
++E
+@endboard

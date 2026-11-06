@@ -163,8 +163,10 @@ describe('svg-activity text census — corpus presence', () => {
     // ogc/T6 (2026-11-04): #109's 429 new activity rows seeded `error` and promoted by
     // scripts/repin-activity-baselines.ts --write: +301 render, +128 stay `error` with their ledger
     // reason (ogc-T4a/T4b). Derivation: 434 + 301 = 735 / 1 + 128 = 129 / 14.
-    expect(baselineFixtures.length).toBe(735);
-    expect(errorFixtures.length).toBe(129);
+    // ubt/T1a (2026-11-06): dadelu-44, gigefo-15, tusaxu-17 render once start/while take a stereogroup
+    // (CommandStart3.java:63, CommandWhile3.java:76-78) -- promoted error -> baseline. Derivation: 735 + 3 = 738 / 129 - 3 = 126.
+    expect(baselineFixtures.length).toBe(738);
+    expect(errorFixtures.length).toBe(126);
     expect(jarErrorFixtures.length).toBe(14);
   });
 });

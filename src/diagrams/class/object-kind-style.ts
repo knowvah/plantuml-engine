@@ -18,6 +18,7 @@
 import type { Theme } from '../../core/theme.js';
 import type { FontSpec } from '../../core/measurer.js';
 import type { ElementColors } from '../../core/theme.js';
+import type { ObjectStyleScope } from './class-object-style.js';
 
 /** The kinds whose entity image owns an `objectDiagram` style signature. */
 export type ObjectKind = 'object' | 'map' | 'json';
@@ -66,12 +67,17 @@ function stereoFontSize(bucket: ElementColors | undefined, tags: readonly string
  * `FontConfiguration.create(skinParam, style, colors)`), i.e. the
  * `<sname>` style's FontName / FontSize / FontStyle over the diagram default.
  */
-export function resolveObjectBodyFont(theme: Theme, kind: ObjectKind, tags: readonly string[]): ObjectKindFont {
+export function resolveObjectBodyFont(
+  theme: Theme,
+  kind: ObjectKind,
+  tags: readonly string[],
+  scope?: ObjectStyleScope,
+): ObjectKindFont {
   const bucket = bucketOf(theme, kind);
   return {
-    family: bucket?.fontFamily ?? theme.fontFamily,
-    size: stereoFontSize(bucket, tags) ?? bucket?.fontSize ?? theme.fontSize,
-    ...fontFlags(bucket?.fontStyle),
+    family: scope?.box.fontFamily ?? bucket?.fontFamily ?? theme.fontFamily,
+    size: scope?.box.fontSize ?? stereoFontSize(bucket, tags) ?? bucket?.fontSize ?? theme.fontSize,
+    ...fontFlags(scope?.box.fontFace ?? bucket?.fontStyle),
   };
 }
 
@@ -82,12 +88,18 @@ export function resolveObjectBodyFont(theme: Theme, kind: ObjectKind, tags: read
  * value; a property neither sets is left out (the caller keeps the theme
  * default).
  */
-export function resolveHeaderFontOverride(theme: Theme, kind: ObjectKind, tags: readonly string[]): HeaderFontOverride {
+export function resolveHeaderFontOverride(
+  theme: Theme,
+  kind: ObjectKind,
+  tags: readonly string[],
+  scope?: ObjectStyleScope,
+): HeaderFontOverride {
   const bucket = bucketOf(theme, kind);
-  if (bucket === undefined) return {};
-  const size = stereoFontSize(bucket, tags) ?? bucket.headerFontSize ?? bucket.fontSize;
-  const family = bucket.headerFontFamily ?? bucket.fontFamily;
-  const { bold, italic } = fontFlags(bucket.headerFontStyle ?? bucket.fontStyle);
+  if (bucket === undefined && scope === undefined) return {};
+  const header = scope?.header;
+  const size = header?.fontSize ?? stereoFontSize(bucket, tags) ?? bucket?.headerFontSize ?? bucket?.fontSize;
+  const family = header?.fontFamily ?? bucket?.headerFontFamily ?? bucket?.fontFamily;
+  const { bold, italic } = fontFlags(header?.fontFace ?? bucket?.headerFontStyle ?? bucket?.fontStyle);
   return {
     ...(family !== undefined ? { family } : {}),
     ...(size !== undefined ? { size } : {}),

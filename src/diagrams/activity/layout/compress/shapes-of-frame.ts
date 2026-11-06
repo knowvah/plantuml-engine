@@ -13,8 +13,11 @@ import type { Theme } from '../../../../core/theme.js';
 import type { CompressShape } from './shapes-of.js';
 import { activityFontSize } from '../../activity-style-defaults.js';
 import { ASCENT_FRACTION } from '../../activity-renderer-shapes.js';
-import { compositeTitleWidth } from '../../activity-renderer-composite.js';
+import { compositeTitleDimension, compositeTitleWidth } from '../../activity-renderer-composite.js';
 import { compositeSymbolTitleOrigin } from '../../activity-renderer-composite-symbols.js';
+import { frameTitleBlock, frameTitleBounder } from '../../tiles/gtile-group.js';
+import { measurerAdapterOf } from '../../tiles/gtile-action.js';
+import { titleDrawnShapes } from './shapes-of-frame-title.js';
 
 /** `USymbolFrame#asBig`'s "Temporary hack" threshold: `if (widthFull -
  *  widthTitle < 25)` (`USymbolFrame.java:153`). */
@@ -40,10 +43,10 @@ const SPECIAL_TEXT_SLOT = 1;
  * (same `dimTitle.getWidth() == 0` branch, `USymbolFrame.java:76-84,99-104`).
  */
 export function frameTabShape(node: ActivityNodeGeo, theme: Theme): CompressShape {
-  const fontSize = activityFontSize(theme, 'composite');
-  const titleWidth = compositeTitleWidth(theme, node.label ?? '');
+  const titleDim = compositeTitleDimension(theme, node.label ?? '');
+  const titleWidth = titleDim.width;
   const textWidth = titleWidth === 0 ? node.width / 3 : titleWidth + 10;
-  const textHeight = titleWidth === 0 ? 12 : fontSize + 3;
+  const textHeight = titleWidth === 0 ? 12 : titleDim.height + 3;
   return { kind: 'polygon', x: node.x, y: node.y, width: textWidth, height: textHeight, polygonSkipMode: 'x' };
 }
 
@@ -60,23 +63,33 @@ export function frameTabShape(node: ActivityNodeGeo, theme: Theme): CompressShap
  *   :59-62`) -- a single pixel that keeps compression from cutting the
  *   title span while leaving the text itself free to overlap.
  *
- * `null` only for an empty title on the plain-text branch.
+ * Empty only for an empty title on the plain-text branch.
  */
-export function frameTitleShape(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape | null {
+export function frameTitleShapes(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape[] {
   const title = node.label ?? '';
   const titleWidth = compositeTitleWidth(theme, title);
   const x = node.x + TITLE_INSET_X;
   const y = node.y + TITLE_INSET_Y;
   if (node.width - titleWidth < SPECIAL_TEXT_MIN_SPARE) {
-    // An empty `Display` -- or one whose atoms carry no text ink (a lone
-    // `<$sprite>`: the sprite atom draws an image, not a `UText`) -- draws
-    // no `UText`, so nothing reaches `drawText` (`SlotFinder.java:127-135`).
-    if (title === '' || titleWidth === 0) return null;
+    // An empty `Display` draws nothing, so nothing reaches `SlotFinder`.
+    if (title === '' || titleWidth === 0) return [];
+    // ubt-T2a: the block's own drawn shapes (`shapes-of-frame-title.ts`): a
+    // `<$sprite>` atom's SVG shapes, and the title-wide text slot only when
+    // a text atom drew a `UText` (`SlotFinder.java:127-135`).
+    const drawn = titleDrawnShapes(
+      frameTitleBlock(title, theme),
+      { x, y },
+      frameTitleBounder(measurerAdapterOf(bounder), theme),
+    );
+    if (!drawn.drewText) return [...drawn.shapes];
     const fontSize = activityFontSize(theme, 'composite');
     const dim = bounder.getDimension(title, fontSize);
-    return { kind: 'text', x, y: y + fontSize * ASCENT_FRACTION, width: titleWidth, height: dim.height };
+    return [
+      ...drawn.shapes,
+      { kind: 'text', x, y: y + fontSize * ASCENT_FRACTION, width: titleWidth, height: dim.height },
+    ];
   }
-  return { kind: 'empty', x: x + titleWidth, y, width: SPECIAL_TEXT_SLOT, height: SPECIAL_TEXT_SLOT };
+  return [{ kind: 'empty', x: x + titleWidth, y, width: SPECIAL_TEXT_SLOT, height: SPECIAL_TEXT_SLOT }];
 }
 
 /**
@@ -84,7 +97,7 @@ export function frameTitleShape(node: ActivityNodeGeo, bounder: StringBounder, t
  *
  * - `USymbolFrame` (`usymbol` absent): the rect, ignorable on both axes
  *   (`USymbolFrame.java:70-71`), then {@link frameTabShape} and
- *   {@link frameTitleShape}.
+ *   {@link frameTitleShapes}.
  * - `package`/`card`/`rectangle`: the symbol's `UPolygon`/`URectangle`
  *   carries no ignore flag (`USymbolFolder.java:93-102`,
  *   `USymbolCard.java:60`, `USymbolRectangle.java:67-68`), so it occupies
@@ -99,13 +112,12 @@ export function frameShapes(node: ActivityNodeGeo, bounder: StringBounder, theme
       { kind: 'rect', ...box, ignoreX: true, ignoreY: true },
       frameTabShape(node, theme),
     ];
-    const title = frameTitleShape(node, bounder, theme);
-    return title === null ? shapes : [...shapes, title];
+    return [...shapes, ...frameTitleShapes(node, bounder, theme)];
   }
   const shapes: CompressShape[] = [{ kind: node.usymbol === 'package' ? 'polygon' : 'rect', ...box }];
   const title = node.label ?? '';
   const titleWidth = compositeTitleWidth(theme, title);
-  // No `UText` ink, no `SlotFinder#drawText` slot (see frameTitleShape).
+  // No `UText` ink, no `SlotFinder#drawText` slot (see frameTitleShapes).
   if (title === '' || titleWidth === 0) return shapes;
   const fontSize = activityFontSize(theme, 'composite');
   const origin = compositeSymbolTitleOrigin(node, node.usymbol, titleWidth);

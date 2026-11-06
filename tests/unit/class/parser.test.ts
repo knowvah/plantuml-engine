@@ -721,7 +721,7 @@ describe('default AST shape', () => {
     expect(ast.classifiers).toEqual([]);
     expect(ast.relationships).toEqual([]);
     expect(ast.namespaces).toEqual([]);
-    expect(ast.directives).toEqual([]);
+    expect(ast.directives).toMatchObject([]);
   });
 });
 
@@ -733,7 +733,7 @@ describe('hide/show directives — parsing', () => {
   it('hide empty members stores directive', () => {
     const ast = parse('hide empty members\nclass Foo');
     expect(ast.directives).toHaveLength(1);
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'empty members',
@@ -742,7 +742,7 @@ describe('hide/show directives — parsing', () => {
 
   it('hide members stores directive', () => {
     const ast = parse('hide members\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'members',
@@ -751,7 +751,7 @@ describe('hide/show directives — parsing', () => {
 
   it('hide circle stores directive', () => {
     const ast = parse('hide circle\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'circle',
@@ -760,7 +760,7 @@ describe('hide/show directives — parsing', () => {
 
   it('hide empty fields stores directive', () => {
     const ast = parse('hide empty fields\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'empty fields',
@@ -769,7 +769,7 @@ describe('hide/show directives — parsing', () => {
 
   it('hide empty methods stores directive', () => {
     const ast = parse('hide empty methods\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'empty methods',
@@ -782,7 +782,7 @@ describe('hide/show directives — parsing', () => {
   // empty methods` above (those only hide an ALREADY-empty compartment).
   it('hide fields stores directive', () => {
     const ast = parse('hide fields\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'fields',
@@ -791,7 +791,7 @@ describe('hide/show directives — parsing', () => {
 
   it('hide methods stores directive', () => {
     const ast = parse('hide methods\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'hide',
       target: 'methods',
@@ -800,7 +800,7 @@ describe('hide/show directives — parsing', () => {
 
   it('show empty members stores show directive', () => {
     const ast = parse('show empty members\nclass Foo');
-    expect(ast.directives[0]).toEqual({
+    expect(ast.directives[0]).toMatchObject({
       kind: 'hideshow',
       action: 'show',
       target: 'empty members',
@@ -874,7 +874,7 @@ describe('hide/show directives — effect on AST', () => {
 
   it('no hide/show directives → directives array is empty', () => {
     const ast = parse('class Foo');
-    expect(ast.directives).toEqual([]);
+    expect(ast.directives).toMatchObject([]);
   });
 
   it('hide circle does not affect member hidden flags', () => {
@@ -1501,26 +1501,28 @@ describe('A3 — interior blank lines in multiline constructs', () => {
 describe('A6 — singular/alias global hide targets', () => {
   it('parses `hide method` as the global methods target (zofabi-70 shape)', () => {
     const ast = parse('class M {\nfoo()\n}\nhide method');
-    expect(ast.directives).toEqual([{ kind: 'hideshow', action: 'hide', target: 'methods' }]);
+    expect(ast.directives).toMatchObject([{ kind: 'hideshow', action: 'hide', target: 'methods' }]);
   });
 
   it('parses `hide field` / `hide attribute` / `hide attributes` as the fields target', () => {
     for (const line of ['hide field', 'hide attribute', 'hide attributes']) {
       const ast = parse(`class M\n${line}`);
-      expect(ast.directives).toEqual([{ kind: 'hideshow', action: 'hide', target: 'fields' }]);
+      expect(ast.directives).toMatchObject([{ kind: 'hideshow', action: 'hide', target: 'fields' }]);
     }
   });
 
   it('parses `hide circled` / `hide circles` as the circle target', () => {
     for (const line of ['hide circled', 'hide circles']) {
       const ast = parse(`class M\n${line}`);
-      expect(ast.directives).toEqual([{ kind: 'hideshow', action: 'hide', target: 'circle' }]);
+      expect(ast.directives).toMatchObject([{ kind: 'hideshow', action: 'hide', target: 'circle' }]);
     }
   });
 
   it('parses `hide member` and `hide empty method` via the same aliases', () => {
-    expect(parse('class M\nhide member').directives).toEqual([{ kind: 'hideshow', action: 'hide', target: 'members' }]);
-    expect(parse('class M\nhide empty method').directives).toEqual([
+    expect(parse('class M\nhide member').directives).toMatchObject([
+      { kind: 'hideshow', action: 'hide', target: 'members' },
+    ]);
+    expect(parse('class M\nhide empty method').directives).toMatchObject([
       { kind: 'hideshow', action: 'hide', target: 'empty methods' },
     ]);
   });

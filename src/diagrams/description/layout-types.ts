@@ -5,6 +5,7 @@
  * `ClassifyCtx`/`EdgeDotBuildResult`, so every existing import path is
  * unchanged; `layout-dot-tree.ts` is their principal consumer.
  */
+import type { DescriptionEntityStyle } from './description-entity-style.js';
 import type { DescriptiveNode, StereotypeSpriteRef } from './ast.js';
 import type { DotInputEdge } from '../../core/graph-layout.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
@@ -25,6 +26,8 @@ export interface ContainerDesc {
   stereotype?: readonly string[];
   /** The `<<$name>>` half of the same stereotype run (`DescriptiveNode.stereotypeSprite`). */
   stereotypeSprite?: StereotypeSpriteRef;
+  /** `DescriptiveNode.entityStyle`: the header the DOT table measures is the one the renderer draws. */
+  entityStyle?: DescriptionEntityStyle;
   directLeafAstIds: string[];
   parentAstId?: string;
   /** `!pragma kermor on` TOP/BOTTOM group notes (`DescriptiveNode.kermorNotes`). */

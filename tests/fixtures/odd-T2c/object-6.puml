@@ -1,0 +1,11 @@
+@startuml
+<style>
+object {
+  FontSize 6
+}
+</style>
+object A {
+ a = 1
+}
+object B
+@enduml

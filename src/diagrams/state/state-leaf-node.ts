@@ -11,6 +11,7 @@
  */
 
 import type { State } from './ast.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
 import type { DotInputNode } from '../../core/graph-layout.js';
@@ -63,7 +64,7 @@ export function buildLeafNode(s: State, ctx: LeafNodeCtx): DotInputNode {
     // SvekNode#appendLabelHtmlSpecialForPort (EntityImageStateBorder
     // #getMaxWidthFromLabelForEntryExit): the entity's OWN display-text
     // width picks plaintext HTML port table (>40px) vs a plain small rect.
-    const font: FontSpec = { family: stateFontFamily(ctx.theme), size: ctx.theme.fontSize };
+    const font: FontSpec = { family: stateFontFamily(ctx.theme), size: stateNameFontSizeOf(ctx.theme) };
     const labelWidth = ctx.measurer.measure(s.display, font).width;
     const node: DotInputNode = {
       id: s.id,

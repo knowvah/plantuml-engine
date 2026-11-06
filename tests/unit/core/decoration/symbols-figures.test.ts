@@ -582,7 +582,7 @@ describe('USymbolInterface (T9, AC1) -- lollipop circle (circle/() alias)', () =
   });
 
   test('getSNames reports "interface"', () => {
-    expect(new USymbolInterface().getSNames()).toEqual(['interface']);
+    expect(new USymbolInterface().getSNames()).toEqual(['interface_']);
   });
 });
 

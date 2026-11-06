@@ -1,0 +1,6 @@
+@startuml
+(<&arrow-left> test)
+(<&star>) as s
+actor a
+a --> s
+@enduml

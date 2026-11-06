@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T13:33:04.625Z",
+  "generatedAt": "2026-11-06T03:13:07.142Z",
   "fixtures": [
     {
       "slug": "bajelo-54-dixe684",
@@ -1785,15 +1785,8 @@
       "slug": "viroxo-69-fito663",
       "type": "state",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "clusterTree",
-        "detail": "page 1: jar 1 vs ours 1; sorted[0] jar depth 0 wrappers a/-/i/- bb 16,16,126,277.000016 vs ours depth 0 wrappers a/-/i/- bb 16,16,123,277.000016"
-      },
-      "verdict": "diverged",
-      "maxDelta": 11,
-      "firstDiff": "svg/g[1]/g[9]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[2]/ellipse[1]/@cx"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "vixobo-14-jole910",

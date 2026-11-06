@@ -25,6 +25,8 @@ export interface HideShowDirective {
   kind: 'hideshow';
   action: 'hide' | 'show';
   target: HideTarget;
+  /** odd T4a: source order across the hide/show forms (`class-member-portion.ts`). */
+  seq?: number;
   /**
    * A2s R2g: the enclosing package/namespace id when the directive line was
    * parsed INSIDE a non-root group — upstream `CommandHideShowByGender
@@ -142,6 +144,8 @@ export interface HideShowEntityDirective {
   kind: 'hideshowentity';
   action: 'hide' | 'show';
   entityId: string;
+  /** odd T4a: see {@link HideShowDirective.seq}. */
+  seq?: number;
   target: 'circle' | 'members' | 'fields' | 'methods' | 'stereotype';
   /** Same command-level group scoping as {@link HideShowDirective.scopeNsId}
    *  (CommandHideShowByGender.java:272-273 ANDs `byPackage` onto EVERY

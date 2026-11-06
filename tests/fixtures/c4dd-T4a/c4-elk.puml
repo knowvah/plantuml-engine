@@ -1,0 +1,12 @@
+@startuml
+!pragma layout elk
+!include <C4/C4_Container>
+Person(u, "User", "d")
+System_Boundary(s, "Sys") {
+  Container(a, "A", "t", "d")
+  ContainerDb(b, "B", "t", "d")
+}
+Rel(u, a, "uses")
+Rel(a, b, "reads")
+SHOW_LEGEND()
+@enduml

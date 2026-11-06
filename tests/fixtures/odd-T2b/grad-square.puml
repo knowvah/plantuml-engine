@@ -1,0 +1,13 @@
+@startuml
+<style>
+object {
+ BackgroundColor #fff-#eee
+ RoundCorner 0
+}
+</style>
+object a
+object b {
+ x = 1
+}
+a -> b
+@enduml

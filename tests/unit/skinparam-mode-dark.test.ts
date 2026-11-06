@@ -56,10 +56,11 @@ describe('resolveSkinparam — skinparam mode dark', () => {
     expect(theme.colors.graph.classCascadeFontColor).toBe('#FFF');
   });
 
-  it('sets the spotClass badge background AND glyph font color', () => {
+  it('seeds no element bucket: spotClass and activity colours come from the builder (smc D2)', () => {
     const { theme } = resolveSkinparam(new Map([['mode', 'dark']]), defaultTheme);
-    expect(theme.colors.elements?.spotclass?.background).toBe('#2E5233');
-    expect(theme.colors.elements?.spotclass?.font).toBe('#FFF');
+    expect(theme.colors.elements?.spotclass).toBeUndefined();
+    expect(theme.colors.elements?.activity).toBeUndefined();
+    expect(theme.colors.elements?.diamond).toBeUndefined();
   });
 
   it('an explicit skinparam classBackgroundColor wins over the dark default, source order BEFORE mode', () => {
@@ -123,12 +124,6 @@ describe('resolveSkinparam — skinparam mode dark', () => {
     const { theme } = resolveSkinparam(new Map([['mode', 'dark']]), defaultTheme);
     expect(theme.colors.graph.arrowFontColor).toBe('#FFF');
     expect(theme.colors.arrow).toBe('#E7E7E7');
-  });
-
-  it('seeds the activity-exclusive activity/diamond FontColor buckets', () => {
-    const { theme } = resolveSkinparam(new Map([['mode', 'dark']]), defaultTheme);
-    expect(theme.colors.elements?.activity?.font).toBe('#FFF');
-    expect(theme.colors.elements?.diamond?.font).toBe('#FFF');
   });
 
   it('an explicit skinparam ActivityBackgroundColor wins over the dark default', () => {

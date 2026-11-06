@@ -1,0 +1,10 @@
+@startuml
+object o
+map m {
+ k => v
+}
+url of m is [[http://y.example]]
+C : x
+o : y
+m : z => 1
+@enduml

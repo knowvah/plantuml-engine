@@ -1,0 +1,8 @@
+@startuml
+ref over A, B
+  SomeSequence
+end ref
+note right
+Appears beside the ref, long enough to widen the diagram a lot.
+end note
+@enduml

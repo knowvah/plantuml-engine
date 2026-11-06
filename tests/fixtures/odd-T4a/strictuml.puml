@@ -1,0 +1,16 @@
+@startuml
+skinparam style strictuml
+object a {
+ x = 1
+}
+object "b : T" as b
+object "long name : Type" as c {
+ y = 2
+}
+map m {
+ k => v
+}
+json j {
+ "x": 1
+}
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+skinparam objectFontSize 16
+skinparam objectAttributeFontSize 11
+object o {
+ a = 1
+}
+@enduml

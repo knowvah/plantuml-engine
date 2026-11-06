@@ -1,0 +1,14 @@
+@startchart
+<style>
+line.hot {
+LineColor red
+}
+bar.hot {
+BackGroundColor green
+}
+</style>
+h-axis [A, B, C, D]
+bar <<hot>> "B" [1]
+line <<hot>> "L" [1, 2]
+legend right
+@endchart

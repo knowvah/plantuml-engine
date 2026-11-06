@@ -57,9 +57,8 @@ const routed = new Map<string, string>();
 // close; found by T19.
 const dispatchErrored = new Map<string, boolean>();
 
-/** `weErroredIn` from `refusal-coverage.test.ts`, duplicated rather than
- *  imported for the reason that file states about its own sibling: importing
- *  a `.test.ts` executes its module body. Built from `fullDescription()`
+/** `weErroredIn` from `refusal-coverage-gate.ts`, duplicated rather than
+ *  imported: that module imports vitest, which throws outside a worker. Built from `fullDescription()`
  *  itself, never spelled out, so a version bump cannot silently blind it.
  *  Scans the WHOLE document deliberately -- the banner's offset moves with
  *  source length. */

@@ -1,0 +1,5 @@
+@startchart
+h-axis [A]
+v-axis 0 --> 100
+annotation "n" at (50, 25)
+@endchart

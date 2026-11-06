@@ -1,0 +1,3 @@
+@startchart
+v-axis 0 --> 10 ticks [0:"a,b"]
+@endchart

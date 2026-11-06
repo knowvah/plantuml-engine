@@ -41,11 +41,45 @@ The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-matc
 
 ### Follow-ons (mechanism, owner)
 1. **`xetase-70-zaza808`** — a `{{ }}` edge label is an `EmbeddedDiagram` atom upstream, drawn as an `<image>` of the nested diagram; every engine measures edge labels through the flat creole seam (`core/edge-label-box.ts`). Issue #144 (`parity`, `queue:ready`, blocked by #136).
-2. **`viroxo-69-fito663`** and the ten `state__hist-*` dss rows — identical DOT, real `dot` matches the jar, dot-engine places a border-point cluster's `rank=sink` port node, `ee` anchor and inner nodes 2-17 px off. `docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`; `DIVERGENCES.md` "State diagrams".
+2. ~~**`viroxo-69-fito663`** and the ten `state__hist-*` dss rows~~ — DONE 2026-11-04. Not a dot-engine delta: our anchor sat in `i` where the jar declares it in `ee` (`ClusterDotString.java:148-152`), and `dotEqual` could not see it. State is 298 of 299. `docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`.
 3. **`LIST_WITH_NUMBER` creole headers** (`AtomTextUtils.createListNumber`, a `CreoleContext` counter) are still not carried by the flat creole seam; `LIST_WITHOUT_NUMBER` is (T6d). No state row exercises it.
 4. **`data-entity-1`/`data-entity-2` on a link into a composite** print this port's `__zaent_<id>` anchor where the jar prints the cluster's `entNNNN` uid (`jijuze-43`, `lumamo-63`); `compareSvg` ignores `data-*`, so no row moves. `renderer-group.ts#wrapLink`.
 5. **`CommandLinkStateCommon`'s `node` edge-label style** (`statediagramedgelabelstyle node`, `createTransitionWithIntermediateNode`) is unported; no corpus row.
 6. **A `frame` composite's gradient back colour** — `renderer-frame-cluster.ts` returns the fragment body and drops `extraDefs`; the default frame has no gradient (`group { BackGroundColor transparent }`), so nothing moves today.
+
+## c4-divergence-drive (c4dd) — DONE 2026-11-05 on `feature/parity-queue`
+
+Issue #114. `c4` 7 to 10 of 11 conformant: `biluko-70`, `rosoga-84`, `vakasu-51`. `gikaju-64` stays a signed error page. 0 losses in any engine. 9 of 10 conformant rows pinned, across two ratchets; `kipive-74` stays out as an error page. Three zero-diff ELK rows of other buckets pinned by the same eligibility rule: `dirofi-81`, `foraba-98`, `xoviku-63`. 34 authored C4 and DomainStory probes at 0 diffs, 65 more authored rows across T1b to T3b. `plans/c4-divergence-drive/` holds the journal.
+
+**Follow-ons:**
+- #148: `usecase U` under `skinparam titleBorderColor`: the jar paints the ellipse, ours does not. Mechanism not confirmed.
+- #149: a class USymbol group's title is `2 * (scale - 1)` short under `scale`.
+- #150: emoji artwork on an edge label: `buildTextBlock` has no seam for it.
+- #151: comment bytes on 6 conformant class rows and under `set namespaceSeparator`.
+- D2 option C stays the known route if a later row needs `PreprocessorResult.lines` compiled too: only `dataLines` folds a stdlib sprite.
+
+## description-divergence-drive (ddd) — DONE 2026-11-04 on `feature/parity-queue`
+
+Issue #113. In scope 508 conformant to 709 of 716: `component` 266/266, `usecase` 93/94, `unknown` jar-DESCRIPTION 350/356. `c4` 2 to 7. 0 losses in any engine. 282 pinned. Mechanisms in `plans/description-divergence-drive/decision-journal.md`.
+
+**Follow-ons:**
+- #147: `json`, `map`, `domain` and `requirement` images in description (`gacoxo-93`, `liripi-72`, `rukitu-26`).
+- A port cluster that is also an edge end adds `E` passes of `manageEntryExitPoint` (`SvekEdge.java:663`), where `geo.portFinalBbox` assumes `E = 0`. No row moves on it. `.agent-notes/ddd-T5d.md`.
+- Unported, no row in scope: `skinparam padding` on a `Display` block; a `<color:x>` in chrome text under monochrome; a class-routed `node B #...;line:blue [` drops `line:`. `.agent-notes/ddd-T5c.md`.
+- D2's one standing limit: `skinparam mode dark` keeps the flat reads, because the parser has no `@media` side (#120).
+- Smetana rows `zomoba-18`, `revezi-19` still draw a path `id` and order some extremities unlike `SmetanaEdge`; both named, not chased.
+
+## style-mode-cascades (smc) — DONE 2026-11-06 (#120; branch `feature/parity-queue`, squashed to one commit on `47346297c`, unsigned, not pushed; per-task history on the local tag `style-mode-cascades/pre-squash`)
+
+Dark mode, monochrome and reverse colour, malformed `<style>`, and the `FontSize`/`LineThickness`/`RoundCorner`/`Shadowing` cascades under `skin rose`, `!theme` and a late skinparam. 131 authored dss rows; every in-scope row (93) conformant, 0 losses in every engine, d.ts identical. Activity: `gigefo-15`, `finadu-74`, `titope-07`, `ronovu-01`, `vifiba-70` conformant and pinned.
+
+### Follow-ons (mechanism, owner)
+1. **Two-tier cascade storage** — skinparam values and `<style>` values live in separate theme tiers; `skinparam-supersedes-cascade.ts` restores counter order for the measured pairs only (`classFontSize`, `stateBorderThickness`, `roundCorner`, `arrowThickness`, `<style> class { LineThickness }`). Siblings unmapped: `classBorderThickness`, `*BackgroundColor`, `*FontName`, class `Shadowing`, the activity corner vs an earlier `<style>`. Structural fix: one merged `Style` per element (D7). Author rows first.
+2. **Activity builder capture** — only plain `:label;` boxes take the builder current at their command (`activity-box-builder-at.ts`); `InstructionIf.java:104`, `InstructionRepeat.java:105`, `InstructionWhile`, repeat-inline and `backward:` also capture it.
+3. **Activity shadows not ported** — diamond, fork bar, spot (`FtileDiamond.java:89`, `FtileCircleSpot`); swimlane extents ignore shadows (`swimlane-context.ts#itemsExtentOf`).
+4. **Rounded Opale** — tip notes and the class link-box are not wired.
+5. **Mapper gaps** — `backgroundGradient` and `diagramBorderColor` are not mapped by monochrome/reverse in activity, sequence, state or class (`SvgGraphics.java:178-181`).
+6. **Stale `known-*` routing/refusal baseline rows** — a fixed row stays `known-misroute`/`known-gap` silently (found on `gigefo-15`, stale since ubt).
 
 ## diagram-style-scope (dss) — DONE 2026-11-03 (branch `feat/diagram-style-scope` off `4f653cac9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S 4f653cac9`; working history on the local tag `dss/pre-squash`)
 
@@ -53,10 +87,10 @@ Document background and element `BackgroundColor`, `LineColor`, `FontColor` read
 
 ### Follow-ons (mechanism, owner)
 Stays filed by the user's ruling (D8 did not reverse it):
-1. **Dark mode's other diffs** — `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
-2. **Monochrome and reverse root background.**
-3. **`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades** — `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`). — **state part struck by stdd T3b/T5a (2026-11-04, `stdd/pre-squash`):** `LineThickness` reads through `stateArrowLineThickness`/`stateBorderStrokeAttrs`, `somuke-94` and `sugico-41` conformant; `xefuma-94` is an `unknown`-bucket row (#119). The component/skin items stay.
-4. **Malformed `<style>`** — the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
+1. ~~**Dark mode's other diffs**~~ — **struck by smc T2a/T2b (2026-11-06, `style-mode-cascades/pre-squash`):** dark colours read off a dark-tagged style builder (`StyleBuilder.ts#setDarkScheme`), every engine, every source; the dark-only `@media` document colour crashes as the jar does (T1c). Was: `sequence__scope-dark-*` 17, `component__probe-dark` 63; `skinparam mode dark` with no `<style>` leaves state and component boxes light (`#F1F1F1`, jar `#313139`) and state notes `#FEFFDD`, jar `#714137`; dark-only `@media` document colour. The D3 gate is the likely reason, not diagnosed.
+2. ~~**Monochrome and reverse root background.**~~ — **struck by smc T3a/T3b (2026-11-06):** activity, sequence and state map the root background, state maps its fragment; `gigefo-15` pinned.
+3. ~~**`FontSize`, `LineThickness`, `RoundCorner`, `Shadowing` cascades**~~ — **struck by smc T4a-T4e (2026-11-06):** rose shadows, late skinparams, `!theme` + `<style>`, state note and name fonts; `component__probe-skin-rose` and `-skinparam-after-style` conformant, `finadu-74` pinned. Was: `skin rose`'s residues (`component__probe-skin-rose` 13); `skinparam componentBackgroundColor` after `<style>` loses `note { FontSize }` (`component__probe-skinparam-after-style` 35); state reads no `LineThickness` (`somuke-94`, `sugico-41` 4 left, `xefuma-94`). — **state part struck by stdd T3b/T5a (2026-11-04, `stdd/pre-squash`):** `LineThickness` reads through `stateArrowLineThickness`/`stateBorderStrokeAttrs`, `somuke-94` and `sugico-41` conformant; `xefuma-94` is an `unknown`-bucket row (#119). The component/skin items stay.
+4. ~~**Malformed `<style>`**~~ — **struck by smc T1b (2026-11-06):** a style cut stops the parse at the failing block, as `CommandStyleMultilinesCSS` does. Was: the jar draws an error page, ours the diagram (D6, D6a; `sequence__scope-malformed-*` 6).
 
 Needs a ruling only the user can sign:
 5. **A gradient `LineColor` reaching `partition`** — the jar throws `UnsupportedOperationException` at `HColor.java:126`, from `FtileGroup.java:102`; we draw. Check the latest release jar under the error-page ruling.
@@ -75,12 +109,59 @@ Layout and parser, not colour reads:
 
 Colour reads still open, each small:
 16. **A group whose body starts with an inline colour arrow** — `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
-17. **`note on link` attribute colour** `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
+17. ~~**`note on link` attribute colour**~~ — description side DONE by ddd (`note-grammar.ts`, `COLORS_REGEXP`, line and back, text ignored as the jar does). `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
 19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
 20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
-21. **chart prints `theme.colors.background` raw** (`src/diagrams/chart/layout.ts:169`); board's body (`board__selector-activitydiagram` 15) and packet/chart residuals (dbp 2).
-22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` remainders undiagnosed; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. ~~Board's body (`board__selector-activitydiagram` 15)~~ DONE by board-engine-port (#118): 0; packet's DONE by packet-engine-port (#117).
+22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+
+## unknown-bucket-triage (ubt) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #119)
+
+The 18 `unknown` rows the jar types as engines we draw: 14 conformant (activity 12, state 1, sequence 1) and 4 named in `DIVERGENCES.md` (2 HCL copies under the Smetana delta, 2 `sudoku` rows under the MIT-edition ruling). Five rows went to #121/#123 with comments. `unknown` 845 to 859 conformant, `activity` 595 to 605, `sequence` 1228 to 1229; 0 lost in every engine. 106 conformant `unknown` rows pinned through a new `unknown` tree in the activity (49), sequence (52) and state (5) ratchets. No new divergence, no needs-ruling issue.
+
+Follow-ons:
+
+1. **`!theme` + a `<style>` class: a plain activity box reads the flat tiers** (finadu-74's 50 diffs; a T3b probe). On #120.
+2. **`if (...) then <<foo>>` gives the diamond the stereotype style** (`FtileFactoryDelegatorIf.java:79-80`); vupecu-35's 28 diffs. On #121.
+3. **`<style> activityDiagram { partition { LineThickness } }` reaches no activity frame.** On #138.
+4. **A sprite group title is compressed shape by shape in the jar** (`UGraphicCompressOnXorY`), so a sprite with empty space moves; ours draws the title as one block. On #121.
+5. **State under `!pragma layout elk` diverges on a plain composite** (29 diffs on `X --> Y { Z }`, no table): draw order, ids, cluster header. No issue yet.
+6. **`dist/plantuml-ts.d.ts` grew 1,471 lines** since `dbb996060`: T1b put `boxStyleOf?: ActivityBoxStyleResolver` on the public theme graph (`theme-graph-colors-b.ts:405`), which drags the whole `Style` type graph into the bundle. Additive only; no consumer exists. An opaque type there would undo it.
+7. **The dashboard counts an engine's `unknown`-tree pins under that engine**, not under `unknown` (as it does for the 634 `svg-class/unknown` pins), so the `unknown` ratchet cell stays 366.
+8. **ogc-captured sequence rows have no `svg-sequence/diff-baseline.json` row**, so the sequence pin tool refuses them (jovijo-34, now conformant). On #139.
+9. **Activity text blocks drawn into throwaway graphics** now report their `ensureVisible` fold (`activity-draw-extent.ts`); shapes drawn as strings still report none. Any other engine splicing throwaway graphics has the same gap.
+
+## board-engine-port (bep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #118)
+
+`src/diagrams/board/` is a file-for-file port of `net/sourceforge/plantuml/board/` on klimt; the old parse/layout/string-template pipeline is deleted. `board` 0/0/4 to 4/0/0, all 4 pinned in `svg-board`; 67 authored fixtures in `tests/fixtures/board`, 62 at 0 diffs and 5 jar errors where we also error. 0 lost in every engine, no other bucket moved. No new divergence, no needs-ruling issue.
+
+Follow-ons:
+
+1. **Scaled chrome text rounds twice on packet, chart, mindmap, wbs, salt and gantt.** Their `rawTextBlock` fragments are not `numbersDeferred`, so chrome strings are formatted at scale 1 and post-multiplied (`TextBlockExporter.ts#scaleToken`): `scale 2` + `footer ftr` gives `textLength="17.626"` where the jar writes 17.625 (`8.8125 × 2`, formatted once, `SvgGraphics.java:468-475`). Measured 1 diff each on packet, mindmap and wbs on 2026-11-05 (`/tmp/bep-T5/fo`); chart, salt, gantt share the shape, unmeasured. Board's fix is `isExportScaled(...) ? { numbersDeferred: true }` in `board/index.ts#rawTextBlock`, as `description/index.ts:173` does. No corpus row exhibits it.
+2. **`javaStringHashCode` has local copies** (`board/BArray.ts`, `tim/TFunctionSignature.ts`, `klimt/drawing/svg/svg-seed.ts` as `bigint`, and others per bep D3). Consolidating them in `src/core/` is a refactor this mission did not do.
+3. **Error-page line numbers.** `cov-grid-empty`: jar line 2, ours line 1; `cov-grid-plus-first`: jar line 2, ours line 4 (the throw escapes the factory, so our page names the block's last line). Both conformant by the 2026-10-10 ruling.
+
+## packet-engine-port (pep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #117)
+
+`src/diagrams/packetdiag/` is a file-for-file port of `net/sourceforge/plantuml/packetdiag/` on klimt, with `nwdiag/VerticalLine.ts` and `NwDiagram.toSet` at their upstream home for #124. `packet` 0/0/6 to 6/0/0, all 6 pinned in `svg-packet`; upstream's 62 `vega/packet` sources plus 84 authored probes in `tests/fixtures/packet`, 132 at 0 diffs and 14 jar errors where we also error. 0 lost in every engine; activity `limazo-01-ximu737` gained (the creole fix below). No new divergence.
+
+Follow-ons:
+
+1. **Chart's sprite registry carries no Twemoji store** (`ChartDiagramFactory.ts:290`, `createSpriteRegistry()`), so a chart label `<:smile:>` likely measures and draws no outline, as packet's did until T3c. Unmeasured: no chart fixture has an emoji. `gantt/index.ts:311-313` and now `packetdiag/index.ts` show the wiring.
+2. **Refusal `consumed` differs by engine.** Packet counts the offending line (`PSystemCommandFactory.java:171-174`); chart, wbs, mindmap and gantt pass the 0-based index. Only cross-factory error choice reads it.
+3. **Error-page text.** Ours says "Assumed diagram type: packetdiag" where the jar says "packet"; and a draw-time crash (`4-2: x`) shows our Welcome page where the jar shows its crash page. Both conformant by the 2026-10-10 ruling.
+
+## chart-engine-port (cep) — DONE 2026-11-05 (one commit on `feature/parity-queue`, #116)
+
+`src/diagrams/chart/` is a file-for-file port on klimt. `chart` 0/0/29 to 29/0/0, all 29 pinned in `svg-chart`; 164 authored fixtures, 129 at 0 diffs and 35 jar errors where we also error (each reproduced on the stock jar). 0 lost in every engine. No new divergence.
+
+Follow-ons, each measured against the jar on 2026-11-05 and none of them a chart row:
+
+1. **`!option handwritten true` is ignored on wbs, mindmap, salt and gantt.** The jar draws by hand (`TitledDiagram.java:114-118` falls through to `UgDiagram.java:117-121`); those plugins read only the skinparam and parse with a fresh `PreprocessingArtifact`. Diffs 5, 3, 1, 12 on one-line probes. `UmlSource.styleSource` now carries `options`; `chart/index.ts#preprocessingArtifactOf` is the shape.
+2. **`page` is too narrow on gantt and salt.** `CommandPage.java:61` is `x*`, so `page 2 3` matches, and `page 0x1` errors `Argument must be positive` (:89-90). `GanttDiagramFactory.ts:73` and `PSystemSaltFactory.ts` require one `x` and treat it as a no-op: `page 2 3` errors in ours and draws in the jar on both, and `page 0x1` draws in ours and errors in the jar on gantt.
+3. **`build-authored-baseline.mts` in `plans/lengthadjust-document-wide/tools/` loosens rows.** `--write` turns `files-*` from `textLength: exact` to `baseline`. Patch rows by hand until its classifier knows ddc's fix.
+4. **lint-staged runs `prettier` before `eslint --fix`,** so a `consistent-type-imports` fix can commit a file `format:check` rejects (`.agent-notes/cep-T1b.md`).
 
 ## document-background-paint (dbp) — DONE 2026-11-02 (branch `feat/document-background-paint` off `fe794c0a9`, one commit per batch after the squash, unsigned, not pushed; lands via PR after the user's `git rebase --force-rebase -S fe794c0a9`; working history on the local tag `dbp/pre-squash`)
 
@@ -94,7 +175,7 @@ gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
 1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
-2. **board / packet / chart root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21, 104/75. Their engines have no fidelity gate yet.
+2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).
 5. ~~**`sequenceDiagram { document { BackgroundColor } }` is ignored**~~ — struck by dss T1a (`9f7cdbaf4`, through `dss/pre-squash`): the document background reads the ported `StyleBuilder`, with the diagram's name in the signature.
@@ -244,7 +325,8 @@ Follow-ons:
 - **13 `textLength` baseline rows → 9:** board, packet and chart (default /
   glyphs / onechar) emit no `textLength` where the jar does
   (`SvgGraphics.java:699-705`). Owner: each engine's own drive. The four files
-  rows are at 0 since the ddc files port (T1b/T2e, 2026-10-28).
+  rows are at 0 since the ddc files port (T1b/T2e, 2026-10-28); the four board
+  rows since board-engine-port (#118).
 - Non-targets kept as-is (D8): `@startdot` passthrough, `PlainDiagram`
   utility/error pages (no SkinParam at `TextBlockExporter.java:306`), the
   unported engines, the per-element `lengthAdjust: 'spacing'` literals in the
@@ -640,14 +722,14 @@ engines at b1 and b5 (b2–b4 closes folded into b5, journal row 41).
 - ~~Edge `path @id` uses the qualified name; the jar uses `Quark.getName` (fidati, kofovu, tojitu: 88
   diffs each). Needs the separator in the edge geo → next description mission.~~ DONE by dur
   (T3 `b3ac1a279`): all three conformant.
-- Link middle decor `-0)-`/`-(0)-` not drawn; core `SvekEdge` has no middle decor (lakuti, bokumi,
+- DONE by ddd T3a (`core/svek/extremity/MiddleCircleDecor.ts`): link middle decor `-0)-`/`-(0)-` not drawn; core `SvekEdge` has no middle decor (lakuti, bokumi,
   nofunu, saveje; `CommandLinkElement.java:104,149-157`, `SvekEdge.java:353-356`) → core mission.
-- Description magic-arrow glyph (berelu, funeme; glyph only in `class-magic-arrow.ts`) → core.
-- Note-on-link (`EntityImageNoteLink`) unported: dikexa, povuju, tujica, josoxo, usecase fogiku/jafuke.
-- Quantifier text not drawn (purevo "1", misube "*", fetefi) though it now reaches the DOT.
-- Degenerate-leaf sizing omits element font options (`layout.ts:406` vs `layout-dot-tree.ts:190-206`;
+- DONE by ddd T3e (`TextBlockArrow2`): description magic-arrow glyph (berelu, funeme; glyph only in `class-magic-arrow.ts`) → core.
+- DONE by dss T3a and ddd T4e: note-on-link (`EntityImageNoteLink`) unported: dikexa, povuju, tujica, josoxo, usecase fogiku/jafuke.
+- DONE by ddd T3c: quantifier text not drawn (purevo "1", misube "*", fetefi) though it now reaches the DOT.
+- DONE by ddd T4a: degenerate-leaf sizing omits element font options (`layout.ts:406` vs `layout-dot-tree.ts:190-206`;
   kuciku, mavicu; patch proven in T4's report) — single-file, cheap.
-- `<latex>` box guard in `leaf-sizing.ts:182` (kezodo, vimulo; gevozu/sunuju 164 → 68) — core, D5.
+- DONE by ddd T5e, guard removed: `<latex>` box guard in `leaf-sizing.ts:182` (kezodo, vimulo; gevozu/sunuju 164 → 68) — core, D5.
 - cumofi: `skinparam handwritten` jitter and the deprecation-warning block.
 - Stereotype-signed styles on description leaves/clusters and `StereotypeFontColor` (golamo, berufi);
   `Shadowing<<stereo>>` (deroxu); `!theme carbon-gray` title-style border (reroca).
@@ -1523,7 +1605,7 @@ refusal 0 mindmap gaps. Journal: `plans/mindmap-engine-port/decision-journal.md`
    `skinparam { handwritten }` also warns; `!option handwritten true` not honoured (empty
    `PreprocessingArtifact`); monochrome maps the background only (the SVG layer dropped
    `ColorMapper`, `u-graphic-svg.ts:72`); titled+handwritten chrome not jiggled; scale-1
-   `<defs>` on the chrome path; board/chart parsers trim although upstream is doTrim=false;
+   `<defs>` on the chrome path; board/chart parsers trim although upstream is doTrim=false (board DONE by board-engine-port, #118);
    multiline-orgmode body lines keep their trailing space upstream; a per-command `myTrim2`
    in `MindMapDiagramFactory.ts` (Root trims via `trin` today); `parity-dashboard.ts` does
    not read the svg-mindmap ratchet/diff-baseline ("no ratchet yet" on the mindmap row).

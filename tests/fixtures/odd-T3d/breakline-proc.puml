@@ -1,0 +1,9 @@
+@startuml
+!procedure $e($t)
+$t => {{%breakline()class $t%breakline()}}
+!endprocedure
+map m {
+$e("A")
+$e("B")
+}
+@enduml

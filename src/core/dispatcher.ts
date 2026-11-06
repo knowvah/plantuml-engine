@@ -115,19 +115,29 @@ export class DiagramRegistry {
    * reaching it (`skin-command.ts`). Each candidate then parses only the
    * lines before it; one that accepts them is refused AT the cut, one that
    * refuses earlier keeps its own refusal, and the merge picks the page as
-   * upstream's `PSystemErrorUtils#merge` does.
+   * upstream's `PSystemErrorUtils#merge` does. Several cuts (smc T1b: a
+   * failing `skin` line and a failing `<style>` sheet) come earliest first;
+   * each candidate stops at the first that reaches it, and a
+   * `commandFactoryOnly` cut reaches only a `PSystemCommandFactory`.
    *
    * `emptySource` (T2g): the block is empty (`UmlSource#isEmpty`). A
    * command-factory candidate then answers `buildEmptyError` without parsing
    * (`PSystemCommandFactory.java:117-122`), never `isOk`, so it is skipped;
    * the other bases parse the empty source themselves.
    */
-  resolve(source: UmlSource, options?: ParseOptions, cut?: SkinCut, emptySource = false): Resolution {
+  resolve(
+    source: UmlSource,
+    options?: ParseOptions,
+    cut?: SkinCut | readonly SkinCut[],
+    emptySource = false,
+  ): Resolution {
     const attempts: Attempt[] = [];
-    const parsed = cut === undefined ? source : truncated(source, cut.index);
+    const cuts: readonly SkinCut[] = cut === undefined ? [] : Array.isArray(cut) ? cut : [cut as SkinCut];
     for (const plugin of this.plugins) {
       if (!isCandidate(plugin, source) || (emptySource && testsEmpty(plugin))) continue;
-      const outcome = attempt(plugin, parsed, options, cut);
+      const own = cuts.find((c) => c.commandFactoryOnly !== true || testsEmpty(plugin));
+      const parsed = own === undefined ? source : truncated(source, own.index);
+      const outcome = attempt(plugin, parsed, options, own);
       if (outcome.refusal === undefined) return { plugin, ast: outcome.ast };
       attempts.push({ plugin, refusal: outcome.refusal });
     }

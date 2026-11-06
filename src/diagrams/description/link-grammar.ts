@@ -16,6 +16,7 @@
  *   BODY2 HEAD2 [SECOND_LABEL] ENT2 [#color] [<<stereotype>>] [: label]
  */
 
+import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import type { DescriptiveLink, DescriptiveLinkStyle } from './ast.js';
 import { extractLinkStereotype } from './parse-helpers.js';
 import { parseLinkColors } from './link-colors.js';
@@ -33,6 +34,12 @@ const stripOuterQuotes = (s: string): string => {
   const t = s.trim();
   return t.startsWith('"') && t.endsWith('"') && t.length >= 2 ? t.slice(1, -1) : t;
 };
+
+/**
+ * `: ""` strips to an empty label (`Labels.java:102`), which is not null (`SvekEdge.java:281`): one
+ * stripe whose no atoms become one space, measured and drawn (`StripeSimple.java:124-125`).
+ */
+const EMPTY_DISPLAY_LABEL = ' ';
 
 function applyEmbeddedQualifiers(g: LinkGroups): void {
   const raw = g.label;
@@ -147,6 +154,8 @@ function resolveArrowHead(decors: { tail: string; head: string }): 'open' | 'fil
 // ---------------------------------------------------------------------------
 
 interface StyleFlags {
+  /** Colours of the bracket's later `;` segments. */
+  supplementary?: string[];
   hidden: boolean;
   norank: boolean;
   single: boolean;
@@ -217,6 +226,9 @@ function parseArrowStyle(style1: string | undefined, style2: string | undefined)
           // strip it, matching `renderer-entity.ts#parseColorOverride`'s
           // established convention.
           result.color = token.startsWith('#') ? token.slice(1) : token;
+        } else {
+          // `setSpecificColor(color, i)`: a later segment is a supplementary path (`WithLinkType.java:68-74`).
+          (result.supplementary ??= []).push(token.startsWith('#') ? token.slice(1) : token);
         }
       }
     }
@@ -228,6 +240,18 @@ function parseArrowStyle(style1: string | undefined, style2: string | undefined)
   // this into a token->handler map would obscure the 1:1 correspondence the
   // rest of this file's `@see` comments rely on (code review 2026-09-21).
   return result;
+}
+
+/**
+ * `CommandLinkElement.java:149-157`; `Link#getInv` takes `LinkType#getInversed`, whose `LinkMiddleDecor#getInversed`
+ * swaps the two half circles (`LinkMiddleDecor.java`).
+ */
+function middleDecorOf(inside: string | undefined, inverted: boolean): MiddleDecor | undefined {
+  if (inside === '0') return 'circle';
+  if (inside === '(0)') return 'circleCircled';
+  if (inside === '0)') return inverted ? 'circleCircled2' : 'circleCircled1';
+  if (inside === '(0') return inverted ? 'circleCircled1' : 'circleCircled2';
+  return undefined;
 }
 
 /** Inversion (LEFT/UP direction) swaps which raw ENT token is "from". */
@@ -325,6 +349,7 @@ function linkStyleFromQueue(queue: string): DescriptiveLinkStyle {
  */
 function resolveStereotypeAndLabel(g: LinkGroups): {
   stereotype?: string;
+  stereotypeRun?: string;
   label?: string;
   stereotypeIsLinkLabel: boolean;
 } {
@@ -333,9 +358,10 @@ function resolveStereotypeAndLabel(g: LinkGroups): {
     // edge text (see `DescriptiveLink.stereotypeIsLinkLabel`'s doc comment).
     const stereotype = /<<\s*(.+?)\s*>>/.exec(g.stereotype)![1]!;
     const label = g.label?.trim();
-    return label !== undefined && label.length > 0
-      ? { stereotype, label, stereotypeIsLinkLabel: false }
-      : { stereotype, stereotypeIsLinkLabel: false };
+    const stereotypeRun = g.stereotype.trim();
+    return label !== undefined && (label.length > 0 || g.label !== undefined)
+      ? { stereotype, stereotypeRun, label: label || EMPTY_DISPLAY_LABEL, stereotypeIsLinkLabel: false }
+      : { stereotype, stereotypeRun, stereotypeIsLinkLabel: false };
   }
   // Post-colon-embedded form -- the ONE shape the jar draws as a visible
   // `«tag»` guillemet edge label (jar-verified usecase/cevuji-49-bile305).
@@ -345,6 +371,7 @@ function resolveStereotypeAndLabel(g: LinkGroups): {
   };
   if (extracted.stereotype !== undefined) result.stereotype = extracted.stereotype;
   if (extracted.label !== undefined) result.label = extracted.label;
+  else if (g.label !== undefined && g.label.trim() === '') result.label = EMPTY_DISPLAY_LABEL;
   return result;
 }
 
@@ -428,8 +455,8 @@ export function parseLinkLine(groups: Record<string, string>): ParsedLink {
   const labels = resolveLabelPair(g, inverted);
   const arrowHead = resolveArrowHead(decors);
   const arrowStyle = parseArrowStyle(g.style1, g.style2);
-  const { hidden, norank, single, rawStyle, thickness, color } = arrowStyle;
-  const { stereotype, label, stereotypeIsLinkLabel } = resolveStereotypeAndLabel(g);
+  const { hidden, norank, single, rawStyle, thickness, color, supplementary } = arrowStyle;
+  const { stereotype, stereotypeRun, label, stereotypeIsLinkLabel } = resolveStereotypeAndLabel(g);
   // The trailing `#color` (CommandLinkElement.java:329) is set BEFORE the bracket style (`:330`), which wins on LINE;
   // ARROW outranks LINE in `getColor(ARROW, LINE)` (SvekEdge.java:885); a `line.dashed` colour-style outranks the type.
   const trailing = parseLinkColors(g.color);
@@ -459,5 +486,9 @@ export function parseLinkLine(groups: Record<string, string>): ParsedLink {
     stereotypeIsLinkLabel,
     label,
   });
+  const middleDecor = middleDecorOf(g.inside, inverted);
+  if (middleDecor !== undefined) link.middleDecor = middleDecor;
+  if (supplementary !== undefined) link.supplementaryColors = supplementary;
+  if (stereotypeRun !== undefined) link.stereotypeRun = stereotypeRun;
   return { from, to, link, inverted };
 }

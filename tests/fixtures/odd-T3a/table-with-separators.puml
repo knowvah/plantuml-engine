@@ -1,0 +1,18 @@
+@startuml
+class C {
+  x
+  --
+  | a | b |
+  | c | d |
+  --
+  y()
+}
+object O {
+  x
+  --
+  | a | b |
+  | c | d |
+  ==
+  y
+}
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+alt yes
+  A -> B : x
+else no
+  B -> A : y
+end
+note left
+A rather long note written left of the group frame, and wide.
+end note
+@enduml

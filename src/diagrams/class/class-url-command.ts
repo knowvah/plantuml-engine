@@ -7,6 +7,7 @@
  *
  * @see ~/git/plantuml/.../classdiagram/command/CommandUrl.java
  */
+import { refuse } from '../../core/parse-refusal.js';
 import { resolveReference } from './class-namespace.js';
 import { stripQuotes } from './class-relationship-parser.js';
 import { parseUrlBracket } from './class-url.js';
@@ -49,6 +50,11 @@ export function applyUrlStatement(state: ParseState, rawCode: string, bracket: s
     reuseExistingChild: true,
   });
   const idx = state.classifierIndex.get(id);
-  if (idx === undefined) return;
+  if (idx === undefined) {
+    // `CommandUrl.java:53-55`: `error(quark.getName() + " does not exist")`.
+    const at = state.currentLine ?? 0;
+    state.executionRefusal = refuse('execution', at, at, `${stripQuotes(rawCode)} does not exist`);
+    return;
+  }
   state.ast.classifiers[idx]!.url = url;
 }

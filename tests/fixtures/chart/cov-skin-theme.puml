@@ -1,0 +1,6 @@
+@startchart
+!theme plain
+h-axis [A, B, C, D]
+bar "B" [1]
+legend right
+@endchart

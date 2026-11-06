@@ -118,7 +118,7 @@ export interface UmlSource {
    */
   readonly styleSource?: Pick<
     PreprocessorResult,
-    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder'
+    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder' | 'options'
   >;
 }
 

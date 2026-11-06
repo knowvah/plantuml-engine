@@ -1,0 +1,11 @@
+@startchart
+skinparam shadowing true
+<style>
+element {
+Shadowing 3
+}
+</style>
+h-axis [A, B, C, D]
+bar "B" [1, 2]
+legend right
+@endchart

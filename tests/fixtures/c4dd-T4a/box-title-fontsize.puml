@@ -1,0 +1,7 @@
+@startuml
+skinparam sequenceBoxBorderColor red
+skinparam SequenceBoxFontSize 20
+box "wide line one\nB"
+participant X
+end box
+@enduml

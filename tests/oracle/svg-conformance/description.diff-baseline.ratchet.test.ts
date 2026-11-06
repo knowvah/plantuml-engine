@@ -199,23 +199,10 @@ if (baselineFixtures.length === 0) {
 
 describe.skipIf(!cacheAvailable)('svg-description diff-count baseline ratchet — forced-rise detection', () => {
   it('a fabricated baseline below the live count fails, naming fixture + baseline + new count', () => {
-    // cdd3-T28: the first cached baseline fixture (`bozana-38-xufi750`) now
-    // reaches zero diffs -- E3-14 draws its `package "good-enough?" as
-    // goodenough` leaves with the code name as the bold title and the
-    // display as the label (`EntityImageDescription.java:180-199`) -- so the
-    // sample is the first one whose live count is still above 0; a baseline
-    // of 0 is then a guaranteed rise.
-    let sample: { f: (typeof baselineFixtures)[number]; live: number } | undefined;
-    for (const f of baselineFixtures) {
-      if (!hasCachedFixture(f)) continue;
-      const r = measure(f);
-      if (!r.errored && r.diffCount > 0) {
-        sample = { f, live: r.diffCount };
-        break;
-      }
-    }
-    expect(sample, 'expected at least one baseline fixture with a non-zero live diff count').toBeDefined();
-    const { f, live } = sample!;
+    // ddd: every cached baseline fixture now reaches zero diffs, so the rise is fabricated on both sides: this
+    // exercises `checkNoRise`, and the fixtures' own live counts are the tests above.
+    const f = baselineFixtures[0]!;
+    const live = 3;
 
     const forcedBaseline = 0;
     const { ok, message } = checkNoRise(f, forcedBaseline, live);

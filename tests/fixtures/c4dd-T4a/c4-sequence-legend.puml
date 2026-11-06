@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Sequence>
+SHOW_INDEX()
+Person(u, "User")
+System_Boundary(b, "Box", $descr="desc line")
+  Container(a, "A", "t", "d")
+Boundary_End()
+Rel(u, a, "Calls")
+Rel(a, u, "Back", $index=SetIndex(9))
+SHOW_LEGEND()
+@enduml

@@ -73,6 +73,8 @@ export interface LineStyle {
    *  with a real background fill, matching jar's own `Opale.java#drawU`
    *  (`ug.apply(noteBackgroundColor.bg())` before `ug.draw(polygon)`). */
   fill?: Paint;
+  /** `filter="url(#...)"` -- the shadow a `UPath` with `setDeltaShadow` references (`SvgGraphics.java:889-893`). */
+  filter?: string;
 }
 
 export interface TextStyle {

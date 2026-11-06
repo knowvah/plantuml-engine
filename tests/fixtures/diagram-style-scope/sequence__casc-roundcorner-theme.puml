@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+<style>
+participant { RoundCorner 20 }
+note { FontSize 12 }
+</style>
+participant A
+A -> B
+note right: n
+@enduml

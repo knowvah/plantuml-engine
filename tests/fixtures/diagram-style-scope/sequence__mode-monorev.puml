@@ -1,0 +1,6 @@
+@startuml
+skinparam monochrome reverse
+participant A
+A -> B
+note right: n
+@enduml

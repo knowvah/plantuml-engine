@@ -1,0 +1,8 @@
+@startchart
+h-axis [A, B, C, D]
+v-axis 0 --> 100
+v2-axis "R" 0 --> 10
+line "L" [1, 4, 3, 6] #3498db v2
+area "A" [1, 2, 3, 4] #e74c3c v2
+scatter "S" [5, 5, 5, 5] v2 labels
+@endchart

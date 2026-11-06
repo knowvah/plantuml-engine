@@ -1,0 +1,10 @@
+@startuml
+Alice -> Bob : hi
+note left
+{{board
+A
++B
+++C
+}}
+end note
+@enduml

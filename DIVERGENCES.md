@@ -168,6 +168,11 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligne
 
 </details>
 
+`unknown/jubete-32-sutu417` and `unknown/vocago-35-xodu446` are the rows `hcl/jubete-32-sutu417` and
+`hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
+2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
+names them (#119).
+
 **Category:** limitation (one engine, by choice).
 
 ---
@@ -207,6 +212,13 @@ conformance bars, rather than silently excluding them from the denominator.
 41 arrived DOT-EQUAL and 39 are pinned in ratchet goldens; the DOT gate
 baseline is now component 253/262, usecase 84/90, class 708/708, object
 78/80, state 266/267 with oracle-blind reduced to the elk residue.*
+
+**Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
+pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
+against 262x161). Their node order is mirrored
+(`CucaDiagramFileMakerSmetana.java:283,589,636`). Two structural residues sit on
+Smetana's own edge, not chased: `SmetanaEdge` writes no path `id`, and it draws
+some extremities before the path.
 
 **Category:** limitation (upstream's alternate engines are redundant copies of
 the one we implement).
@@ -634,6 +646,14 @@ failed past ~546 before this bound). **Category:** limitation.
 
 ## Descriptive diagrams
 
+### `usecase/fepuvo-06` — unreadable by the comparer, not a divergence
+
+The jar writes an entity name holding `----` into `<!--entity ...-->`
+(`EntityImageDescription.java:295`) and `<!--link ...-->`, which is not
+well-formed XML, so `compareSvg` cannot parse the oracle and the survey reports
+`oracle-error`. Our output carries the same bytes. With comments stripped from
+both sides the row has zero diffs (`tests/unit/description/ddd-t5e-named-ends.test.ts`).
+
 <!--
 RESOLVED 2026-06-26 — "Descriptive diagrams — edge routing": an earlier draft
 of the merged description engine routed edges center-to-center (2-point lines).
@@ -780,7 +800,7 @@ justification did not hold, not to chase a gate it cannot reach.
 
 ### ~~Spanning field — no spurious stub at row boundary (bug fix)~~ — RETIRED (unwind2-S1, 2026-10-08)
 
-The jar draws no stub; its spanning remainder block is `min(colWidth, carried width)` wide (`PacketDiagram.java:430,526`), mirrored in `src/diagrams/packetdiag/layout.ts`.
+The jar draws no stub; its spanning remainder block is `min(colWidth, carried width)` wide (`PacketDiagram.java:430,525-527`), mirrored in `src/diagrams/packetdiag/PacketDiagram.ts#placeOverflow` (pep T3a ported the engine file for file).
 
 ---
 
@@ -792,19 +812,17 @@ Upstream fixed the crash (11ed6720, #2797): `sonyxperiadev.skin` is the jar's st
 
 ## State diagrams
 
-### Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz (library-forced: `@knowvah/dot-engine`)
+### ~~Border-point cluster with a `rank=sink` port node — inner nodes placed 2-17 px off graphviz~~ — RETIRED (2026-11-04)
 
-`state/viroxo-69-fito663` (`state comp1 { state ex <<exitpoint>> ... }` with
-links in and out of `comp1`): our DOT equals the jar's `svek-1.dot` byte for
-byte, and real `dot -Tdot` 16.1.0 reproduces the jar's SVG to the pixel
-(start 52, `chk` 56, `ex` 119, `comp1` 7..119). `@knowvah/dot-engine` 2.4.0
-places the cluster's `[*]` start 17 px left of `chk` where graphviz puts it
-4 px left, the exit point 58 px right of `chk` against 63, and the cluster
-109 px wide against 112; the same mechanism is the 8 px on the ten
-`state__hist-*` rows of `oracle/goldens/diagram-style-scope.json`. Filed as
-`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md`
-(stdd-T6c, 2026-11-04); not chased in this port (CLAUDE.md: a verified
-dot-engine finding is filed, never patched around).
+Filed as library-forced in error. The defect was ours: the builder and the text
+emitter held a linked composite's special point in `i`, where the jar declares
+it in `ee`, before `i` opens (`ClusterDotString.java:148-152`), and re-declares
+it inside only under `added == null` (`:182-183`). `dotEqual` folded the two
+wrappers, so it could not see the difference; it now counts `ee`'s own
+declarations. `viroxo-69-fito663` and the `state__hist-*`/`state__cluster-*` rows
+of `oracle/goldens/diagram-style-scope.json` are conformant.
+`docs/graphviz-issues/39-border-point-cluster-sink-port-node-placement.md` has the
+trace.
 
 ### ~~Composite-anchor transitions: clip-rect family unported for border-point children~~ — RETIRED (lgm-T1b/T1d, 2026-10-08)
 
@@ -1207,13 +1225,17 @@ Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). B
 - **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
 - **`:a| <<foo>>`:** the jar reports `Syntax Error?` on that line. We draw an activity box, with the stereotype and any lines after it in the label.
 
-On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and each is signed in the ledger.
+On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and 24 remain signed in the ledger. The ruling on #152 (2026-11-05) retired `dulone-62` and `losote-76`: a duplicate `map` or `object` now errors as the jar does (`CommandCreateMap.java:165-166`, `CommandCreateEntityObject.java:121-122`).
 
 An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
 
 ### Ditaa is not included
 
 **Category:** edition mirrored by user ruling (2026-11-04, #111), reversing the 2026-10-14 ruling to keep it. Upstream comments out `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-167`), and the library it calls, `org.stathissideris.ascii2image`, is LGPL-3.0-or-later in 26 of its 28 files. Translating it into this MIT package would look like a derived work. No engine was ever ported. `@startditaa` draws the unknown-diagram sentinel, where upstream's MIT edition would return `PSystemUnsupported` (`PSystemBuilder.java:283`), the same sentinel gap every tag with no engine has (`src/core/dispatcher.ts`). The oracle is the GPL build, which writes a PNG even when asked for SVG, so both rows read `oracle-error` and are signed in the ledger.
+
+### Sudoku is not included
+
+**Category:** edition mirrored by user ruling (2026-10-13, ufp D13: mirror the MIT edition). Upstream registers `PSystemSudokuFactory` only outside `__MIT__ __EPL__ __BSD__ __ASL__ __LGPL__` (`PSystemBuilder.java:161-164`, `// ::comment when __MIT__`) and strips the `sudoku/` package from every non-GPL edition, so in the MIT edition no factory accepts `sudoku <seed>` and the `@startuml` candidates refuse it. We draw that syntax-error page; the GPL oracle draws a puzzle. Rows: `unknown/gazale-13-tadu312` (`sudoku 5678`) and `unknown/lazama-75-loli189` (`sudoku 1234`). Checked 2026-11-06 against an oracle of a line no factory accepts (`nosuchkeyword 1234`): our page differs from the jar's only in the echoed line, the version line (kept by ruling, `README.md`) and the `[From …]` file name. `README.md` ("Mirrors upstream's MIT edition") says the same.
 
 ### Chronology draws, though the jar has no such diagram
 

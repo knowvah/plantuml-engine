@@ -1,0 +1,8 @@
+@startuml
+object o {
+ x
+}
+hide empty members
+object e
+hide o
+@enduml

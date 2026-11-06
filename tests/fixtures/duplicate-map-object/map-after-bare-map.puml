@@ -1,0 +1,6 @@
+@startuml
+map n
+map n {
+ k => v
+}
+@enduml

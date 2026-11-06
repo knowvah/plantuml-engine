@@ -1,0 +1,4 @@
+@startchart
+scale 200 height
+h-axis [A, B, C, D]
+@endchart

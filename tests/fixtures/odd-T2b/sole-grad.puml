@@ -1,0 +1,4 @@
+@startuml
+skinparam objectBackgroundColor #fff-#eee
+object a
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+skinparam monochrome reverse
+object O
+note right of O: n
+@enduml

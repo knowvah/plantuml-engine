@@ -1,0 +1,6 @@
+@startuml
+!theme aws-orange
+object a
+object b
+a -> b
+@enduml

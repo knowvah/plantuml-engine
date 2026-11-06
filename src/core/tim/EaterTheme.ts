@@ -25,6 +25,7 @@ import { Eater } from './Eater.js';
 import { EaterException } from './EaterException.js';
 import { EMPTY_INCLUDE_STORE, type IncludeStore } from './IncludeStore.js';
 import { readLines } from './ReadLineReader.js';
+import { markStdlibSprites } from './stdlib-sprite-compile.js';
 import { StringLocated } from './StringLocated.js';
 import type { TContext } from './TFunction.js';
 import type { TMemory } from './TMemory.js';
@@ -147,7 +148,11 @@ function loadBundledOrLocalTheme(store: IncludeStore, name: string): Theme | und
 function loadStdlibTheme(store: IncludeStore, name: string, from: string): Theme | undefined {
   const res = `${from.substring(1, from.length - 1)}/${getFilename(name)}`;
   const content = store.get(`<${res}>`) ?? store.getPumlResource?.(res);
-  return content === undefined ? undefined : themeOf(content, `${name} from ${from}`);
+  if (content === undefined) return undefined;
+
+  const lines = readLines(content, `${name} from ${from}`);
+  markStdlibSprites(lines, res);
+  return readThemeWithYamlHeader(lines);
 }
 
 /**

@@ -79,7 +79,7 @@ export function extractEmbeds(lines: readonly string[]): { memberLines: string[]
 
 /** See {@link extractEmbeds}'s own doc comment for why the closer is only
  *  stripped when one was actually found. */
-function wrapEmbeddedSource(type: string, block: readonly string[]): string[] {
+export function wrapEmbeddedSource(type: string, block: readonly string[]): string[] {
   const last = block.at(-1);
   const hasCloser = block.length > 1 && last !== undefined && last.trim() === EmbeddedDiagram.EMBEDDED_END;
   const body = hasCloser ? block.slice(1, -1) : block.slice(1);
@@ -106,7 +106,10 @@ const EMBEDDED_FALLBACK_SIZE = 42;
  * threw, and every embed reserved the (42, 42) catch fallback; this port
  * had fitted that artefact.
  */
-function renderEmbed(source: readonly string[], renderer: EmbeddedRenderer | undefined): Omit<EmbeddedBlockGeo, 'y'> {
+export function renderEmbed(
+  source: readonly string[],
+  renderer: EmbeddedRenderer | undefined,
+): Omit<EmbeddedBlockGeo, 'y'> {
   if (renderer === undefined) return { width: EMBEDDED_FALLBACK_SIZE, height: EMBEDDED_FALLBACK_SIZE };
   try {
     return renderer.renderImage(source);

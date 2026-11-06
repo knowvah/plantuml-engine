@@ -14,6 +14,7 @@
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/atom/AtomOpenIconic.java:48-86
  */
+import { UEmpty } from '../../shape/UEmpty.js';
 import { AbstractAtom } from './AbstractAtom.js';
 import type { CreoleAtom } from './Atom.js';
 import { XDimension2D } from '../../geom/XDimension2D.js';
@@ -99,6 +100,10 @@ export class AtomOpenIconic extends AbstractAtom {
   /** `asTextBlock().drawU(ug)` (java:76-84; `url` is always `null` from
    *  `addOpenIcon`) → OpenIconic.java:198-202. */
   drawU(ug: UGraphic): void {
+    // `withMargin(asTextBlock, 1, 0)`: `TextBlockMarged#drawU` first draws the whole box as a `UEmpty`, which `Footprint`
+    // and `LimitFinder` fold in (`TextBlockMarged.java:81-87`).
+    const { width, height } = openIconicDims(this.factor);
+    if (width > 0) ug.draw(UEmpty.create(new XDimension2D(width, height)));
     ug.apply(new UTranslate(MARGIN_X, 0))
       .apply(new Fore(this.color))
       .apply(new Back(this.color))

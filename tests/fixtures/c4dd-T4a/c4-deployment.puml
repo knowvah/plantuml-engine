@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Deployment>
+Deployment_Node(dc, "DC", "Rack") {
+  Node(host, "Host", "Linux") {
+    Container(app, "App", "JVM", "Runs")
+  }
+  Node_L(n2, "Other", "BSD")
+}
+Rel(app, n2, "Calls")
+@enduml

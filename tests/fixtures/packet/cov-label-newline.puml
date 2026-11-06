@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  0-15: two\nlines
+  16-31: one
+}
+@endpacketdiag

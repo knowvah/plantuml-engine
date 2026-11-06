@@ -1,0 +1,5 @@
+@startuml
+map m {
+  a => {{salt\n{\n[btn]\n}\n}}
+}
+@enduml

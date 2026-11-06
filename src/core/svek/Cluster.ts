@@ -107,6 +107,9 @@
  *    already established for the `USymbol*` family (see
  *    `symbols-component.test.ts`'s "Text measurement seam" note).
  */
+import type { MagneticBorder } from '../klimt/geom/MagneticBorder.js';
+import { MagneticBorderNone } from '../klimt/geom/MagneticBorderNone.js';
+import { textBlockMagneticBorder } from '../klimt/shape/TextBlock.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
 import type { UStroke } from '../klimt/UStroke.js';
 import type { Paint } from '../paint.js';
@@ -290,6 +293,40 @@ export class Cluster {
    * decoration path only (see module doc comment for the swimlane/state/
    * KERMOR branches this omits, all diagram-type-gated away from
    * description/component/usecase diagrams). */
+  /**
+   * `Cluster#getMagneticBorder` (`Cluster.java:726-760`): the decoration's text block's, in the cluster's corner. The
+   * group has a `USymbol` here, so the `None` arm (`:728-729`) is the symbol-less one.
+   */
+  getMagneticBorder(): MagneticBorder {
+    if (this.symbolInfo.symbol === null) return new MagneticBorderNone();
+    const packageStyle = this.symbolInfo.packageStyle ?? this.symbolInfo.defaultPackageStyle;
+    const stroke = getStrokeInternal(this.group.specificLineStroke, this.style.strokeDefault);
+    const decoration = new ClusterDecoration(
+      packageStyle,
+      this.symbolInfo.symbol,
+      this.header.title,
+      this.header.stereo,
+      this.geometry,
+      stroke,
+    );
+    const textBlock = decoration.getTextBlock(
+      '#000000',
+      '#000000',
+      0,
+      0,
+      this.header.titleHorizontalAlignment,
+      this.symbolInfo.stereoAlignment,
+      0,
+    );
+    const orig = textBlockMagneticBorder(textBlock);
+    const { dx, dy } = { dx: this.geometry.position.getDx(), dy: this.geometry.position.getDy() };
+    return {
+      getForceAt(position, stringBounder) {
+        return orig.getForceAt({ x: position.x - dx, y: position.y - dy }, stringBounder);
+      },
+    };
+  }
+
   drawU(ug: UGraphic): void {
     if (this.group.hidden) return;
 

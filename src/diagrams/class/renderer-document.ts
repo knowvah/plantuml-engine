@@ -7,13 +7,15 @@
  * makers' `TextBlock` in the same exporter (`net/atmp/CucaDiagram.java:462-485`
  * picks the maker, `core/TextBlockExporter.java:159-180` draws either).
  */
+import { isNoteGeo } from './class-geo-types.js';
 import type { ClassGeometry } from './layout.js';
-import type { Theme } from '../../core/theme.js';
+import { resolveElementShadowing, type Theme } from '../../core/theme.js';
 import { scaleClassTheme, type ScaledTheme } from './class-scale-geo.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/color/fragment-color-mapper.js';
 import { buildClassShadowFilterDef } from './class-shadow.js';
+import { scaleShadowFilterDefs } from '../../core/svg-defs-scale.js';
 
 /** `net.sourceforge.plantuml.core.DiagramType#CLASS` -- verified against
  *  every cached jar class-diagram fixture's `data-diagram-type` root
@@ -86,7 +88,11 @@ export function beginClassDocument(geo: ClassGeometry, rawTheme: Theme): ClassDo
   // establishes (mirrors `state/renderer.ts`'s identical Batch-2 gate) --
   // byte-identical (empty extraDefs) for every pre-mission/shadow-off
   // fixture.
-  const shadowDef = theme.shadowing !== undefined && theme.shadowing > 0 ? buildClassShadowFilterDef() : '';
+  const anyShadow =
+    (theme.shadowing ?? 0) > 0 ||
+    geo.leaves.some((c) => (isNoteGeo(c) ? resolveElementShadowing(theme, 'note') : (c.shadowing ?? 0)) > 0);
+  // `SvgGraphics#addFilter` writes `format(2)` and `format(4)` (`SvgGraphics.java:1081,1084`), scaled by the document.
+  const shadowDef = anyShadow ? scaleShadowFilterDefs(buildClassShadowFilterDef(), theme.scaleK) : '';
   // G2 N4/N48: full-canvas background rect, ONLY for a non-default
   // (non-black, non-white, non-transparent) background -- see
   // `renderClass`'s own doc comment for the jar-verified exclusion list and
@@ -135,6 +141,8 @@ export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, draw
     body: applyColorMapperToFragment(drawn.body, doc.colorMapper),
     width: drawn.width,
     height: drawn.height,
+    // The root's `width`/`height` are `format(maxX)` (`SvgGraphics.java:808-811`), scaled, where the viewBox truncates.
+    ...(theme.scaleK === 1 ? {} : { scaledCanvas: true as const }),
     background: doc.canonicalBackground,
     // dbp-T2b (D1): see {@link beginClassDocument}'s `documentBackgroundRect`; omitted when unset.
     ...(theme.colors.backgroundGradient === undefined ? {} : { backgroundGradient: theme.colors.backgroundGradient }),

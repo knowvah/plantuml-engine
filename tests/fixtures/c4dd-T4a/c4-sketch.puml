@@ -1,0 +1,7 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_AS_SKETCH()
+Person(u, "User")
+System(s, "S")
+Rel(u, s, "Uses")
+@enduml

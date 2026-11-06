@@ -96,6 +96,8 @@ export type MemberRenderAtom =
       /** unwind2-S7: a monochrome sprite's deferred tint, drawn over the
        *  emitting element's fill (`core/klimt/sprite/sprite-tint.ts`). */
       readonly tint?: SpriteTint;
+      /** odd T3d: an `EmbeddedDiagram`'s `UImageSvg` keeps its scaled fractional size; a raster's box rounds. */
+      readonly exactSize?: true;
     }
   /** C-4 (cdd3-T23): an SVG-backed `<$sprite>` atom -- `SvgNanoParser`'s
    *  draw-time `UPath`/`UEllipse`/`UText` decomposition

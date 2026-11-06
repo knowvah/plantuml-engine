@@ -1,0 +1,7 @@
+@startuml
+scale 1.5
+map m {
+  a => {{\nA -> B\n}}
+  b => one\ntwo
+}
+@enduml

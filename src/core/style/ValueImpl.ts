@@ -116,6 +116,18 @@ export class ValueImpl implements Value {
     return this.value.toString();
   }
 
+  /**
+   * PORT-ONLY: the value as `ColorMapper.DARK_MODE` paints it. A value with both halves reads as its `@media dark`
+   * half (`HColorSimple#darkSchemeTheme`, `HColorSimple.java:236-239`, reached by `ColorMapper.java:68-72`); a value
+   * with no partner, and a dark-only one, is itself. Upstream maps at the drawing step; the style layer is where
+   * this port still holds both halves.
+   */
+  darkScheme(): ValueImpl {
+    const dark = this.value.getValue2();
+    if (dark === null || this.value.getValue1() === null) return this;
+    return new ValueImpl(new DarkString(dark, null, this.value.getPriority()));
+  }
+
   /** `value1`; `null` for a dark-only value. @see ValueImpl.java:88-90 */
   asString(): string | null {
     return this.value.getValue1();

@@ -1,0 +1,7 @@
+@startuml
+component a
+note right of a #pink;line:red;line.dashed;text:blue : on entity
+note left of a #line.dotted;
+  block
+end note
+@enduml

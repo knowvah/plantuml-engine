@@ -75,10 +75,8 @@ describe('standalone `url [of|for] <Code> [is] [[url]]` statement', () => {
     expect(ast.classifiers[0]!.url).toEqual({ url: 'http://x.com', tooltip: 'http://x.com', label: 'http://x.com' });
   });
 
-  it('targeting a nonexistent classifier is a silent no-op, not a throw', () => {
-    expect(() => parse('url of Nonexistent is [[http://x.com]]')).not.toThrow();
-    const ast = parse('url of Nonexistent is [[http://x.com]]');
-    expect(ast.classifiers).toEqual([]);
+  it('targeting a nonexistent classifier refuses (CommandUrl.java:53-55)', () => {
+    expect(() => parse('url of Nonexistent is [[http://x.com]]')).toThrow('Nonexistent does not exist');
   });
 
   it(

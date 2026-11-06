@@ -112,6 +112,10 @@ export type {
 export interface Namespace {
   id: string;
   display: string;
+  /** `Cluster.java:321` off the merged style (`class-cluster-corner.ts`); absent with no builder. */
+  roundCorner?: number;
+  /** `EntityImageEmptyPackage.java:104`, for a namespace that collapses to a leaf. */
+  emptyLeafRoundCorner?: number;
   /** Classifier ids contained within this namespace. */
   classifiers: string[];
   /**
@@ -273,8 +277,6 @@ export interface ClassDiagramAST {
    * Additive/optional for the same reason as `removeDirectives` below:
    * absent is equivalent to `[]` for every reader, so existing AST literal
    * constructors (object-diagram reuse, unit-test fixtures) are unaffected.
-   * Mirrors the chart engine's own `errors`-on-geo precedent
-   * (`src/diagrams/chart/renderer.ts#renderErrorDiagram`).
    */
   errors?: string[];
   /** 0-indexed source line the refusal in `errors` belongs to. */

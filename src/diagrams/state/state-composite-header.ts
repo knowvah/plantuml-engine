@@ -10,6 +10,7 @@
  */
 
 import type { FontSpec } from '../../core/measurer.js';
+import { stateNameFontSizeOf } from '../../core/state-style-facts.js';
 import { splitStateDisplayLines } from './state-sizing.js';
 import { stateFontFamily } from './state-render-colors.js';
 import type { DiagramCtx } from './state-composite-pass.js';
@@ -49,7 +50,7 @@ export function measureClusterTitle(
   display: string,
   ctx: DiagramCtx,
 ): { width: number; height: number; lineCount: number } {
-  const font: FontSpec = { family: stateFontFamily(ctx.theme), size: ctx.theme.fontSize };
+  const font: FontSpec = { family: stateFontFamily(ctx.theme), size: stateNameFontSizeOf(ctx.theme) };
   const lines = splitStateDisplayLines(display);
   const dim = measureLines(lines, font, ctx);
   return { width: dim.width, height: dim.height, lineCount: lines.length };

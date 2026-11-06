@@ -75,7 +75,7 @@ import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotLayoutResult } from '../../core/graph-layout.types.js';
 import { path } from '../../core/svg.js';
-import { buildNoteGraphPartsByScope, type NoteSpec } from './state-note-layout.js';
+import { buildNoteGraphPartsByScope, stateNoteFontSize, type NoteSpec } from './state-note-layout.js';
 import { inlineBack, resolveStateFill, textAscent } from './state-render-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import {
@@ -103,6 +103,9 @@ import {
 // jar-verified derivation against labono-83-nega255/gedude-95-subi666).
 // ---------------------------------------------------------------------------
 
+import { noteRoundCornerOfTheme, noteStyleFactsOf } from '../../core/note-style-facts.js';
+import { opaleRoundedCorner, opaleRoundedOutline } from '../../core/svek/image/opale-rounded-path.js';
+import { stateShadowFilterUrl } from './state-shadow.js';
 import { NOTE_FONT_SIZE } from '../../core/klimt/font/FontParam.js';
 import { OPALE_MARGIN_X1 as NOTE_MARGIN_X1 } from '../../core/svek/image/Opale.js';
 import { OPALE_MARGIN_Y as NOTE_MARGIN_Y } from '../../core/svek/image/Opale.js';
@@ -221,14 +224,14 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
   return renderStateTextLines(
     node.noteLines ?? [],
     () => node.x + NOTE_MARGIN_X1,
-    node.y + NOTE_MARGIN_Y + textAscent(NOTE_FONT_SIZE),
+    node.y + NOTE_MARGIN_Y + textAscent(stateNoteFontSize(theme)),
     theme,
     {
       fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
-      fontSize: NOTE_FONT_SIZE,
+      fontSize: stateNoteFontSize(theme),
       back,
       // `AtomTable#drawU` rules take the ambient stroke, the note's `style.getStroke()` (`EntityImageNote.java:292-297`).
-      tableRuleWidth: NOTE_STROKE_WIDTH,
+      tableRuleStroke: { strokeWidth: NOTE_STROKE_WIDTH },
     },
   );
 }
@@ -245,6 +248,16 @@ function noteInk(node: StateNodeGeo, theme: Theme): { fill: Paint; stroke: Paint
   };
 }
 
+/** `EntityImageNote.java:109,283-285`: the note style's thickness on the outline, else `plantuml.skin:325`'s 0.5. */
+function noteStrokeWidth(theme: Theme): number {
+  return noteStyleFactsOf(theme)?.thickness ?? NOTE_STROKE_WIDTH;
+}
+
+/** `polygon.setDeltaShadow(shadowing)` (`EntityImageNote.java:281`, `Opale.java:122`): the outline's `filter`. */
+function noteOutlineShadow(theme: Theme): { filter?: string } {
+  return (noteStyleFactsOf(theme)?.shadowing ?? 0) > 0 ? { filter: stateShadowFilterUrl() } : {};
+}
+
 /** Freestanding note: `Opale.getPolygonNormal`/`getCorner` at `roundCorner
  *  === 0` (module doc comment's `drawNormal` derivation) — a plain
  *  rectangle-with-cut-corner `<path>` PLUS a separate filled corner
@@ -253,6 +266,24 @@ export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): s
   const { x, y, width: w, height: h } = node;
   const c = NOTE_FOLD;
   const { fill, stroke } = noteInk(node, theme);
+  const roundCorner = noteRoundCornerOfTheme(theme);
+  if (roundCorner !== 0) {
+    const box = { origin: { x, y }, width: w, height: h };
+    return (
+      path(opaleRoundedOutline(box, undefined, roundCorner), {
+        fill,
+        stroke,
+        strokeWidth: noteStrokeWidth(theme),
+        ...noteOutlineShadow(theme),
+      }) +
+      path(opaleRoundedCorner({ x, y }, w, roundCorner), {
+        fill,
+        stroke,
+        strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH,
+      }) +
+      renderNoteTextLines(node, theme, fill)
+    );
+  }
   const outline = [
     moveTo(x, y),
     lineTo(x, y + h),
@@ -263,7 +294,7 @@ export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): s
   ].join(' ');
   const corner = [moveTo(x + w - c, y), lineTo(x + w - c, y + c), lineTo(x + w, y + c), lineTo(x + w - c, y)].join(' ');
   return (
-    path(outline, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
+    path(outline, { fill, stroke, strokeWidth: noteStrokeWidth(theme), ...noteOutlineShadow(theme) }) +
     path(corner, { fill, stroke, strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH }) +
     renderNoteTextLines(node, theme, fill)
   );
@@ -284,12 +315,19 @@ export function renderStateNoteOpale(node: StateNodeGeo, theme: Theme): string {
   const opale = node.noteOpale!;
   const box = { origin: { x: node.x, y: node.y }, width: node.width, height: node.height };
   const connector = { pp1: opale.pp1, pp2: opale.pp2 };
-  const outline = OPALE_OUTLINE_FN[opale.direction](box, connector);
-  const corner = opaleCorner({ x: node.x, y: node.y }, node.width);
+  const roundCorner = noteRoundCornerOfTheme(theme);
+  const outline =
+    roundCorner === 0
+      ? OPALE_OUTLINE_FN[opale.direction](box, connector)
+      : opaleRoundedOutline(box, { direction: opale.direction, pp: connector }, roundCorner);
+  const corner =
+    roundCorner === 0
+      ? opaleCorner({ x: node.x, y: node.y }, node.width)
+      : opaleRoundedCorner({ x: node.x, y: node.y }, node.width, roundCorner);
   const { fill, stroke } = noteInk(node, theme);
   return (
-    path(outline, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
-    path(corner, { fill, stroke, strokeWidth: NOTE_STROKE_WIDTH }) +
+    path(outline, { fill, stroke, strokeWidth: noteStrokeWidth(theme), ...noteOutlineShadow(theme) }) +
+    path(corner, { fill, stroke, strokeWidth: noteStrokeWidth(theme) }) +
     renderNoteTextLines(node, theme, fill)
   );
 }

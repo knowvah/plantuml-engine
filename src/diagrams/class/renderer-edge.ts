@@ -10,6 +10,7 @@ import {} from './renderer-note.js';
 import type {} from './note-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { ScaledTheme } from './class-scale-geo.js';
+import { fmt } from '../../core/svg-format.js';
 import { scaleDashArrayString } from './class-scale-geo-row.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type {} from '../../core/dispatcher.js';
@@ -92,6 +93,25 @@ function buildPathData(points: EdgeGeo['points']): string {
  * `SvekEdge#uniq`, duplicated per this codebase's small-helper-per-call-
  * site convention -- see `renderer-group.ts`'s own `escAttr` precedent).
  */
+function linkEnds(geo: EdgeGeo, syntheticNames: ReadonlyMap<string, string>) {
+  return {
+    ent1: geo.idEntity1 ?? syntheticNames.get(geo.from) ?? leafPortion(geo.from),
+    ent2: geo.idEntity2 ?? syntheticNames.get(geo.to) ?? leafPortion(geo.to),
+    decorAtEnt1: decorName(geo.idEntity1Decor ?? geo.sourceDecor),
+    decorAtEnt2: decorName(geo.idEntity2Decor ?? geo.targetDecor),
+  };
+}
+
+/**
+ * `Link#commentForSvg` (`Link.java:116-121`): `getName()` is the quark's own name, not its qualified one
+ * (`Entity.java:686-688`, `Quark.java:84-86`), in the link's own entity order -- the ends {@link linkIdForSvg} reads.
+ */
+export function linkCommentOf(geo: EdgeGeo, syntheticNames: ReadonlyMap<string, string>): string {
+  const { ent1, ent2, decorAtEnt1, decorAtEnt2 } = linkEnds(geo, syntheticNames);
+  const word = looksLikeRevertedForSvg(decorAtEnt2, decorAtEnt1) ? 'reverse link' : 'link';
+  return `${word} ${ent1} to ${ent2}`;
+}
+
 export function linkIdForSvg(geo: EdgeGeo, ids: Set<string>, syntheticNames: ReadonlyMap<string, string>): string {
   // G2 N9: `idEntity1`/`idEntity2` are ALREADY the nsSep-aware leaf name
   // (`class-relationship-parser.ts#idLeaf`, computed at parse time from the
@@ -107,10 +127,7 @@ export function linkIdForSvg(geo: EdgeGeo, ids: Set<string>, syntheticNames: Rea
   // (a classifier name may carry `<`/`&`/`"`, e.g. a C++ template type,
   // nagega-30-poso418: `boost::function<ResultE(...)>`). A local pre-escape
   // here (removed) double-escaped once `attrs()` started escaping.
-  const ent1 = geo.idEntity1 ?? syntheticNames.get(geo.from) ?? leafPortion(geo.from);
-  const ent2 = geo.idEntity2 ?? syntheticNames.get(geo.to) ?? leafPortion(geo.to);
-  const decorAtEnt1 = decorName(geo.idEntity1Decor ?? geo.sourceDecor);
-  const decorAtEnt2 = decorName(geo.idEntity2Decor ?? geo.targetDecor);
+  const { ent1, ent2, decorAtEnt1, decorAtEnt2 } = linkEnds(geo, syntheticNames);
   let base: string;
   if (looksLikeRevertedForSvg(decorAtEnt2, decorAtEnt1)) base = `${ent1}-backto-${ent2}`;
   else if (looksLikeNoDecorAtAllSvg(decorAtEnt2, decorAtEnt1)) base = `${ent1}-${ent2}`;
@@ -311,7 +328,8 @@ function buildFlatEdgePath(d: string, geo: EdgeGeo, theme: ScaledTheme, style: E
     stroke: strokeColor,
     strokeWidth: edgeStrokeWidth,
     ...(geo.strokeDasharray !== undefined
-      ? { strokeDasharray: `${geo.strokeDasharray[0]},${geo.strokeDasharray[1]}` }
+      ? // `SvgGraphics#setStrokeWidth`: `format(dash[0]) + "," + format(dash[1])` (`SvgGraphics.java:561`).
+        { strokeDasharray: `${fmt(geo.strokeDasharray[0])},${fmt(geo.strokeDasharray[1])}` }
       : geo.dashed
         ? { strokeDasharray: scaleDashArrayString('7,7', theme.scaleK) }
         : {}),

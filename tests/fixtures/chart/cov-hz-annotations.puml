@@ -1,0 +1,9 @@
+@startchart
+orientation horizontal
+v-axis [A, B]
+h-axis 0 --> 100
+bar [50, 25]
+annotation "cat" at (A, 50)
+annotation "num" at (50, 25)
+annotation "arrow" at (B, 75) <<arrow>>
+@endchart

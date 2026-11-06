@@ -1,0 +1,11 @@
+@startboard
+title My Board
+caption cap
+legend
+leg
+endlegend
+header hdr
+footer ftr
+A
++B
+@endboard

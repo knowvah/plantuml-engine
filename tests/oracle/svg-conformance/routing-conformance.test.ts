@@ -54,423 +54,57 @@
  * can move — and that module's header already records that omitting it "was
  * measuring a different population than the census".
  *
+ * THE MEASUREMENT IS SPLIT INTO PART FILES (2026-11-05). Vitest shards by file,
+ * so one test over the whole corpus kept one shard busy for as long as it took.
+ * `routing-conformance.part-N.test.ts` each render a stable slice of the corpus
+ * through `routing-conformance-gate.ts`; this file keeps the checks that need
+ * no render. A whole-corpus count is no longer logged in one place: each part
+ * logs its own `[ROUTING SLI]`, and the baseline is the record of the total.
+ *
  * Re-measure by hand:
- *   npx vitest run tests/oracle/svg-conformance/routing-conformance.test.ts
+ *   npx vitest run tests/oracle/svg-conformance/routing-conformance
  */
-import { beforeAll, describe, it, expect } from 'vitest';
-import { readdirSync, readFileSync, existsSync, openSync, readSync, closeSync } from 'node:fs';
-import { join, dirname, relative } from 'node:path';
+import { describe, it, expect } from 'vitest';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
-import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
-import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
-
-/** Which committed tree a fixture lives in. Decides the golden's filename and
- *  the root the `slug` is relative to — nothing else. */
-type Tree = 'dot-cache' | 'goldens';
-
-interface BaselineFixture {
-  readonly tree: Tree;
-  /** Top-level directory under the tree root. NOT authoritative (D6). */
-  readonly type: string;
-  /** Path from `<tree root>/<type>/` to the fixture directory. Usually one
-   *  segment; `oracle/goldens/svg-description/` nests one level deeper. */
-  readonly slug: string;
-  /** The jar's own answer, read from this fixture's golden. */
-  readonly jarType: string;
-  /** Ours as pinned. Informational for an `agree` entry (it equals
-   *  `jarType`); for a `known-misroute` entry it records WHICH wrong engine
-   *  claimed the source, which is what the bucket table is built from. */
-  readonly ourType: string;
-  /** True iff this fixture's golden is one of PlantUML's OWN error pages, so
-   *  `jarType` records "the jar never exported a diagram" rather than "the jar
-   *  chose that engine". Present only on `jar-error` entries (D4). */
-  readonly jarErrored?: boolean;
-  readonly status: 'agree' | 'known-misroute' | 'jar-error';
-  /** Required on a `known-misroute` pin: WHY this source lands where it does,
-   *  naming the unported upstream mechanism with its `File.java:line`. Added
-   *  2026-08-25 for the same reason the refusal gate demands one — an
-   *  unexplained pin is exactly the dumping ground D7 warns about, and this
-   *  gate is the mission's primary stop condition, so it needs the stronger
-   *  bar, not the weaker one. */
-  readonly reason?: string;
-  readonly measuredAt: string;
-  readonly measuredAgainstCommit: string;
-}
-
-interface BaselineManifest {
-  readonly fixtures: readonly BaselineFixture[];
-}
+import {
+  CORPUS_WALK_BUDGET_MS,
+  isJarErrorPage,
+  expectedPartTestFiles,
+  partTestFilesOnDisk,
+} from './corpus-gate-part.js';
+import {
+  bucketTable,
+  checkJarErrorClassification,
+  checkNoNewMisroute,
+  collectFixtures,
+  diagramTypeOf,
+  keyOf,
+  manifest,
+  pinnedAgree,
+  pinnedJarErrors,
+  pinnedMisroutes,
+  progressNote,
+  type BaselineFixture,
+} from './routing-conformance-gate.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const REPO = join(HERE, '../../..');
-const MANIFEST_PATH = join(REPO, 'oracle/goldens/svg-conformance/routing-baseline.json');
-const CACHE_ROOT = join(REPO, 'test-results/dot-cache');
-const GOLDENS_ROOT = join(REPO, 'oracle/goldens');
-
-const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as BaselineManifest;
-
-/** `TextBlockExporter.java:292-294`'s root attribute. */
-const DIAGRAM_TYPE_ATTR_RE = /data-diagram-type="([A-Z]+)"/;
-/** Read only the head of a golden. The attribute is on the ROOT element, and
- *  `sequence/zudize-61-vomi445`'s golden is 8.26 MB — reading whole documents
- *  to find a byte-300 attribute would dominate this gate's runtime. */
-const HEAD_BYTES = 4096;
-/** The value recorded when a document carries no such attribute at all. Real
- *  on both sides (see the header), never a sentinel for "unmeasured". */
-const NO_DIAGRAM_TYPE = 'NONE';
-
-export function diagramTypeOf(head: string): string {
-  return DIAGRAM_TYPE_ATTR_RE.exec(head)?.[1] ?? NO_DIAGRAM_TYPE;
-}
-
-/**
- * Upstream's two graphical error pages, keyed on the text PlantUML itself
- * writes into them. NOT on the slug, and NOT on the absence of
- * `data-diagram-type` -- that absence is a legitimate `NONE` for `@startdot`
- * passthrough and for several of our own engines, and must keep comparing as
- * a real value everywhere else (D4).
- *
- *   1. `PSystemError.header()` (`PSystemError.java:148-155`) opens EVERY
- *      graphical error page with `Version.fullDescription()`
- *      (`Version.java:51-54`) -- `"PlantUML version " + version + " / " +
- *      commit + " [" + compileTime + "]"`. `getGraphicalFormatted()`
- *      (`PSystemError.java:126-146`) lays that header out first, on a black
- *      ground in `HColors.MY_GREEN`.
- *   2. The crash page prepends `ReportLog.anErrorHasOccurred`
- *      (`ReportLog.java:103-108`), whose first line is
- *      `"An error has occurred : " + exception`.
- *
- * Each upstream line becomes one whole `<text>` element, so both markers are
- * anchored at BOTH ends -- `>` opens the element and `</text>` closes it.
- * That is what stops either firing on a real diagram: a label merely
- * MENTIONING the phrase leaves other characters inside the element, and a
- * label whose entire content is `PlantUML version X / Y [Z]` is upstream's
- * own banner by construction. Measured over all 3158 committed goldens: 8
- * fire, 3150 do not, and each of the 8 is a black-ground error image.
- */
-const JAR_ERROR_PAGE_RE = />(?:PlantUML version [^<]*\[[^<]*\]|An error has occurred[^<]*)<\/text>/;
-
-export function isJarErrorPage(head: string): boolean {
-  return JAR_ERROR_PAGE_RE.test(head);
-}
-
-function readHead(path: string): string {
-  const fd = openSync(path, 'r');
-  try {
-    const buf = Buffer.alloc(HEAD_BYTES);
-    return buf.subarray(0, readSync(fd, buf, 0, HEAD_BYTES, 0)).toString('utf8');
-  } finally {
-    closeSync(fd);
-  }
-}
-
-type FixtureRef = Pick<BaselineFixture, 'tree' | 'type' | 'slug'>;
-
-function fixtureDir(f: FixtureRef): string {
-  return f.tree === 'dot-cache' ? join(CACHE_ROOT, f.type, f.slug) : join(GOLDENS_ROOT, f.type, f.slug);
-}
-
-function goldenPath(f: FixtureRef): string {
-  return join(fixtureDir(f), f.tree === 'dot-cache' ? 'in.svg' : 'golden.svg');
-}
-
-/** Stable identity across the two trees. */
-function keyOf(f: FixtureRef): string {
-  return `${f.tree}:${f.type}/${f.slug}`;
-}
-
-function hasCachedFixture(f: FixtureRef): boolean {
-  return existsSync(join(fixtureDir(f), 'in.puml')) && existsSync(goldenPath(f));
-}
 
 // ---------------------------------------------------------------------------
-// Enumeration -- from DISK, not from the manifest, so a fixture added to
-// either tree without a baseline entry is detectable (it is a FAIL below).
+// AC2 -- corpus completeness in BOTH directions. A walk of the trees, with no
+// render, so it stays in this file rather than in a part.
 // ---------------------------------------------------------------------------
-
-/** Depth-first: a directory holding both `in.puml` and the tree's golden IS a
- *  fixture; anything else is descended into. Both trees are mostly flat but
- *  `oracle/goldens/svg-description/{component,usecase}/<slug>/` and
- *  `svg-skin/rose/<slug>/` nest one level deeper — 52 fixtures that a
- *  single-level `readdir` silently drops. */
-function walk(typeRoot: string, dir: string, tree: Tree, type: string, out: FixtureRef[]): void {
-  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
-  for (const e of entries) {
-    if (!e.isDirectory()) continue;
-    const child = join(dir, e.name);
-    const ref: FixtureRef = { tree, type, slug: relative(typeRoot, child) };
-    if (hasCachedFixture(ref)) out.push(ref);
-    else walk(typeRoot, child, tree, type, out);
-  }
-}
-
-function collectTree(root: string, tree: Tree, keep: (name: string) => boolean): FixtureRef[] {
-  const out: FixtureRef[] = [];
-  for (const e of readdirSync(root, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-    if (!e.isDirectory() || !keep(e.name)) continue;
-    walk(join(root, e.name), join(root, e.name), tree, e.name, out);
-  }
-  return out;
-}
-
-function collectFixtures(): FixtureRef[] {
-  return [
-    ...collectTree(CACHE_ROOT, 'dot-cache', () => true),
-    ...collectTree(GOLDENS_ROOT, 'goldens', (n) => n.startsWith('svg-')),
-  ];
-}
-
-// ---------------------------------------------------------------------------
-// Measurement
-// ---------------------------------------------------------------------------
-
-interface LiveRouting {
-  readonly jarType: string;
-  readonly ourType: string;
-  /** Derived from the golden's own content by `isJarErrorPage`, never from
-   *  the manifest. The pin is checked AGAINST this, not the other way. */
-  readonly jarErrored: boolean;
-}
-
-/** The pair the routing comparison itself needs. Split out because only the
- *  jar-error classification reads `jarErrored`, and keeping the other three
- *  helpers on the narrower type lets them be exercised with the two values
- *  they actually use. */
-type RoutingPair = Pick<LiveRouting, 'jarType' | 'ourType'>;
-
-/** Routes ONE fixture the way production does: `renderSync` over the raw
- *  source, then read the root attribute off our own document. Deliberately
- *  NOT `registry.resolve()` — that would test the dispatcher in isolation and
- *  miss the engines whose `RenderFragment` carries no `diagramType` at all,
- *  which is exactly half of the `-> NONE` bucket.
- *
- *  `DeterministicMeasurer` is passed for the reason every sibling harness
- *  passes it, plus one specific to this file: under vitest's jsdom
- *  environment the production `CanvasMeasurer` default hits
- *  `HTMLCanvasElement.prototype.getContext` (unimplemented without the
- *  `canvas` package), putting a layout failure -- hence an `errorSvg`, hence
- *  a routing answer of `NONE` -- inside the measurement. Routing is
- *  measurer-independent, and that is measured, not assumed: the corpus
- *  scores 79 with an identical bucket table under either measurer. */
-/** One ELK backend per process (cdd8 D2d): `!pragma layout elk` fixtures
- *  make `renderSync` refuse without `options.elk` (cdd8 T1b), which would
- *  read here as a refusal the jar never made. */
-let elk: ElkBackend | undefined;
-beforeAll(async () => {
-  elk = await loadElk();
-});
-
-function measure(f: FixtureRef, store: ReturnType<typeof fixtureIncludeStore>): LiveRouting {
-  const markup = readFileSync(join(fixtureDir(f), 'in.puml'), 'utf8');
-  const ours = renderSync(
-    markup,
-    withJarCompatibleStyleInput({
-      includeStore: store,
-      measurer: new DeterministicMeasurer(),
-      elk,
-    }),
-  ).slice(0, HEAD_BYTES);
-  const golden = readHead(goldenPath(f));
-  return {
-    jarType: diagramTypeOf(golden),
-    ourType: diagramTypeOf(ours),
-    jarErrored: isJarErrorPage(golden),
-  };
-}
-
-let measured: Map<string, LiveRouting> | undefined;
-
-/** Memoised whole-corpus measurement. Every assertion below reads this map;
- *  the warm-up `it()` at the top of the first `describe` pays for it once and
- *  carries the only budget. */
-function live(): Map<string, LiveRouting> {
-  if (measured !== undefined) return measured;
-  const store = fixtureIncludeStore();
-  measured = new Map(collectFixtures().map((f) => [keyOf(f), measure(f, store)]));
-  return measured;
-}
-
-// ---------------------------------------------------------------------------
-// Pure gate logic -- extracted so the FAIL branch is exercisable (AC3) with
-// fabricated inputs, without ever touching routing-baseline.json on disk.
-// ---------------------------------------------------------------------------
-
-interface CheckResult {
-  readonly ok: boolean;
-  readonly message: string;
-}
-
-/** A fixture pinned `agree` must still agree. Nothing else can fail this gate:
- *  a pinned misroute is already counted, and no movement of one can raise the
- *  count. */
-export function checkNoNewMisroute(f: BaselineFixture, now: RoutingPair | undefined): CheckResult {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (now === undefined) {
-    return {
-      ok: false,
-      message:
-        `${at}: pinned in routing-baseline.json but ABSENT from the live corpus walk. ` +
-        `Both trees are committed, so a missing fixture means a broken or partial ` +
-        `checkout — restore the tree rather than pruning the baseline to match it.`,
-    };
-  }
-  if (now.ourType === now.jarType) return { ok: true, message: `${at}: agrees (${now.jarType}).` };
-  return {
-    ok: false,
-    message:
-      `${at}: NEWLY MISROUTES. The jar routes this source to ${now.jarType}; we route it ` +
-      `to ${now.ourType}. It agreed when the baseline was pinned (${f.measuredAt}, ` +
-      `${f.measuredAgainstCommit}), so a registration-order or heuristic change took a ` +
-      `fixture that was CORRECT. This gate ratchets DOWN ONLY and has no bypass: find the ` +
-      `mechanism in the Java before touching this file. Never widen a pattern to make a ` +
-      `bucket close — widening is how the over-claim class arose in the first place.`,
-  };
-}
-
-/** Progress classification for an already-pinned misroute. `undefined` when it
- *  is still wrong in exactly the way it was pinned. */
-export function progressNote(f: BaselineFixture, now: RoutingPair): string | undefined {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (now.ourType === now.jarType) {
-    return (
-      `[FIXED] ${at} now routes to ${now.jarType}, matching the jar. Its ` +
-      `known-misroute pin is STALE: re-pin this entry to status "agree" in ` +
-      `oracle/goldens/svg-conformance/routing-baseline.json from a fresh measurement. ` +
-      `A fall never fails this gate.`
-    );
-  }
-  if (now.ourType !== f.ourType) {
-    return (
-      `[CHANGED] ${at} still misroutes, but to a different engine: pinned ${f.ourType}, ` +
-      `now ${now.ourType} (jar says ${now.jarType}). Not a regression — the gated quantity ` +
-      `is the SET of misrouting fixtures, not which wrong engine each reached.`
-    );
-  }
-  return undefined;
-}
-
-/**
- * The pin must agree with what the GOLDEN says, in both directions.
- *
- *   - pinned `jar-error`, golden is no longer an error page -> FAIL. A jar
- *     upgrade that stops crashing is a real change to the oracle; letting it
- *     pass silently would leave a fixture permanently excused from the
- *     misroute count for a reason that has ceased to hold.
- *   - pinned `agree` or `known-misroute`, golden IS an error page -> FAIL.
- *     A jar crash is not a routing answer, and pinning one as a misroute
- *     floors this mission's SLI above zero for a reason no repair can move
- *     (D4).
- *
- * Absence from the live walk is not this check's business -- the corpus
- * completeness gate above already fails on it, and failing twice for one
- * cause names the same fixture in two places.
- */
-export function checkJarErrorClassification(f: BaselineFixture, now: LiveRouting | undefined): CheckResult {
-  const at = `${f.tree} ${f.type}/${f.slug}`;
-  if (now === undefined) return { ok: true, message: `${at}: absent; owned by the walk gate.` };
-  const pinned = f.status === 'jar-error';
-  if (pinned && !now.jarErrored)
-    return {
-      ok: false,
-      message:
-        `${at}: pinned "jar-error", but its golden is NO LONGER an upstream error page. ` +
-        `The jar now routes this source to ${now.jarType} and we route it to ${now.ourType}. ` +
-        `Re-measure and re-pin it as "agree" or "known-misroute" — a fixture excused from ` +
-        `the misroute count must keep earning the excuse.`,
-    };
-  if (!pinned && now.jarErrored)
-    return {
-      ok: false,
-      message:
-        `${at}: pinned "${f.status}", but its golden IS an upstream error page ` +
-        `(PSystemError.java:148-155 / ReportLog.java:103-108). The jar never exported a ` +
-        `diagram for it, so its jarType of "${now.jarType}" is not a routing answer. Pin it ` +
-        `"jar-error" with jarErrored: true — the classification comes from the golden, ` +
-        `never from the pin (D4).`,
-    };
-  return { ok: true, message: `${at}: classification matches its golden.` };
-}
-
-/** The jar->ours bucket table (AC5), so a failure names the mechanism class
- *  that moved rather than only the fixture. */
-export function bucketTable(rows: readonly RoutingPair[]): string {
-  const buckets = new Map<string, number>();
-  for (const r of rows) {
-    const k = `${r.jarType} -> ${r.ourType}`;
-    buckets.set(k, (buckets.get(k) ?? 0) + 1);
-  }
-  const lines = [...buckets.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([k, n]) => `    ${k}: ${n}`);
-  return [`  jar -> ours (${rows.length} disagreeing):`, ...lines].join('\n');
-}
-
-const pinnedAgree = manifest.fixtures.filter((f) => f.status === 'agree');
-const pinnedMisroutes = manifest.fixtures.filter((f) => f.status === 'known-misroute');
-/** Excluded from the misroute count by D4, and watched by the classification
- *  gate below so the exclusion cannot go stale. */
-const pinnedJarErrors = manifest.fixtures.filter((f) => f.status === 'jar-error');
-
-// ---------------------------------------------------------------------------
-// AC2 -- warm-up + corpus completeness in BOTH directions. Runs first, so it
-// owns the whole-corpus measurement cost and the only per-test budget.
-// ---------------------------------------------------------------------------
-
-/** Derived from measurement, never fitted to whatever made the test go green.
- *
- * BASE, measured in situ: **15,492 ms** under a full `npm test` -- v8
- * coverage on, 12 vitest forks on 12 cores, the rest of the 633-file suite
- * competing (`--reporter=verbose`, 2026-08-23). Alone it measures 11.25 s
- * with coverage and 6.0 s without, so most of the cost is instrumentation
- * and contention rather than the 3,158 renders.
- *
- * CEILING: `.agent-notes/ratchet-zudize-timeout.md` measured how a CPU-bound
- * conformance test degrades with fork count -- 1,374 ms at 12 copies, 3,711 ms
- * at 22, a **2.70x** step, well above the 1.83x CPU share alone predicts. Two
- * concurrent `npm test` runs put exactly 22 forks on 12 cores, and that
- * condition is what previously turned a green ratchet red. Applying it here:
- * 15,492 ms x 2.70 = **~41,800 ms**.
- *
- * RE-DERIVED ON THE RUNNER (2026-10-10). The numbers above are a 12-core dev
- * box at 3,158 renders; the manifest now holds 6,625 and CI runs vitest on a
- * 4-vCPU `ubuntu-latest` (3 workers, the `.agent-notes/catalog-ci-budget.md`
- * profile). In-suite on CI this test measured 108,816 ms (run 37856273415)
- * and 109,175 ms (run 38075923903), and was aborted at 121,557 ms by the old
- * 120,000 ms budget (run 38046648955) -- so that sample is a LOWER bound,
- * and the old budget was grazed on every run rather than broken once.
- * Ceiling: 121,557 ms x the same 2.70x contention step = **~328,200 ms**;
- * the budget is that, rounded up to the next 10 s. A hang now surfaces at
- * 5.5 min; CI's 12-minute `test` step cap remains the outer backstop.
- *
- * No PER-FIXTURE budget is needed or wanted. Unlike the sequence ratchet,
- * nothing here reads a whole golden: `readHead` takes the first 4 KB, so the
- * 8.26 MB `sequence/zudize-61-vomi445` golden that forced that budget costs
- * this gate the same as any other fixture.
- *
- * RE-DERIVED AGAIN (2026-10-28, PR #95 run 40730527655). gantt-engine-port
- * turned 265 gantt rows from error pages into real renders and added 251
- * gantt golden clones (8,432 -> 8,684 rows), so this gate's CI cost tripled:
- * 336,125 ms here (timed out at 330,000) and <= 315 s on the last green main
- * run (40528746274, same ubuntu-26.04 image, shard-4 wall clock); the sibling
- * measured 277,236 ms. Not a slow runner: zudize-61 took 24 s against its
- * 22-41 s samples. The dev box measures 92-131 s across gep b0 .. gdd final
- * (12 cores vs the runner's 4 vCPU). Budget raised to 10 minutes (user
- * ruling 2026-10-28); CI's 12-minute `test` step cap remains the outer
- * backstop. */
-const CORPUS_BUDGET_MS = 600_000;
 
 describe('routing conformance — corpus completeness', () => {
   it(
     'every fixture on disk is pinned, and every pin is on disk',
     () => {
-      const seen = live();
+      const seen = new Set(collectFixtures().map(keyOf));
       expect(manifest.fixtures.length, 'the baseline must not be empty').toBeGreaterThan(0);
 
       const pinnedKeys = new Set(manifest.fixtures.map(keyOf));
-      const unpinned = [...seen.keys()].filter((k) => !pinnedKeys.has(k));
+      const unpinned = [...seen].filter((k) => !pinnedKeys.has(k));
       expect(
         unpinned.slice(0, 10),
         `${unpinned.length} fixture(s) exist on disk with NO routing-baseline.json entry. ` +
@@ -485,67 +119,11 @@ describe('routing conformance — corpus completeness', () => {
           `committed, so this is a broken checkout, not a cache awaiting regeneration.`,
       ).toEqual([]);
     },
-    CORPUS_BUDGET_MS,
+    CORPUS_WALK_BUDGET_MS,
   );
-});
 
-// ---------------------------------------------------------------------------
-// AC1 + AC3 -- no fixture that agrees today may disagree at run time.
-// Aggregate, not per-fixture: only an aggregate can carry AC5's bucket table,
-// and 3079 `it()` blocks would cost more in runner overhead than the whole
-// measurement they wrap.
-// ---------------------------------------------------------------------------
-
-describe('routing conformance — no fixture newly misroutes', () => {
-  it('every fixture pinned "agree" still routes where the jar routes it', () => {
-    const seen = live();
-    const broken = pinnedAgree
-      .map((f) => ({ f, result: checkNoNewMisroute(f, seen.get(keyOf(f))) }))
-      .filter(({ result }) => !result.ok);
-
-    const moved = broken.map(({ f }) => seen.get(keyOf(f))).filter((r): r is LiveRouting => r !== undefined);
-    const detail =
-      broken.length === 0
-        ? ''
-        : `\n${broken.map(({ result }) => `  - ${result.message}`).join('\n')}\n${bucketTable(moved)}`;
-
-    expect(
-      broken.length,
-      `${broken.length} of ${pinnedAgree.length} previously-correct fixtures NEWLY ` +
-        `MISROUTE. This is the mission's primary stop condition.${detail}`,
-    ).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// AC4 -- a pinned misroute that improves must PASS, loudly. This is the whole
-// point of the mission, so it must never be able to fail.
-// ---------------------------------------------------------------------------
-
-describe('routing conformance — pinned misroutes', () => {
-  for (const f of pinnedMisroutes) {
-    it(`${f.tree} ${f.type}/${f.slug}: jar says ${f.jarType}, pinned as ${f.ourType}`, () => {
-      const now = live().get(keyOf(f));
-      expect(now, `${keyOf(f)}: pinned but absent from the live walk`).toBeDefined();
-      const note = progressNote(f, now!);
-      if (note !== undefined) console.log(note);
-      expect(now!.jarType).toBe(f.jarType);
-    });
-  }
-
-  it('reports the standing misroute count and its bucket table', () => {
-    const seen = live();
-    const still = pinnedMisroutes
-      .map((f) => seen.get(keyOf(f)))
-      .filter((r): r is LiveRouting => r !== undefined && r.ourType !== r.jarType);
-    console.log(
-      `[ROUTING SLI] ${still.length} of ${pinnedMisroutes.length} pinned misroutes remain ` +
-        `(target 0, ratcheting down only). ${pinnedJarErrors.length} further fixtures are ` +
-        `pinned "jar-error" and are DELIBERATELY EXCLUDED from that count: the jar itself ` +
-        `produced an error page for them, so it never chose an engine and there is no ` +
-        `routing defect to repair (D4).\n${bucketTable(still)}`,
-    );
-    expect(still.length).toBeLessThanOrEqual(pinnedMisroutes.length);
+  it('every part of the corpus has its test file, so no slice goes unmeasured', () => {
+    expect(partTestFilesOnDisk(HERE, 'routing-conformance')).toEqual(expectedPartTestFiles('routing-conformance'));
   });
 });
 
@@ -555,15 +133,6 @@ describe('routing conformance — pinned misroutes', () => {
 // ---------------------------------------------------------------------------
 
 describe('routing conformance — jar-error classification', () => {
-  it('every pin matches what its own golden says about the jar erroring', () => {
-    const seen = live();
-    const wrong = manifest.fixtures.map((f) => checkJarErrorClassification(f, seen.get(keyOf(f)))).filter((r) => !r.ok);
-    expect(
-      wrong.map((r) => r.message),
-      `${wrong.length} fixture(s) are pinned inconsistently with their golden's own content.`,
-    ).toEqual([]);
-  });
-
   it('the manifest splits into 4157 agree, 1053 known-misroute and 99 jar-error', () => {
     // 8, not the brief's 4: the brief scanned only WITHIN the original 79
     // disagreements, so the four `state/` banner pages -- which agree at
@@ -1183,15 +752,43 @@ describe('routing conformance — jar-error classification', () => {
     // 9318 -> 9334 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones (batch 4: scale/dpi, text).
     // 9334 -> 9341 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones (batch 5: hidden, skin, notes).
     // 9341 -> 9370 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones (batch 6: layout inputs, residue).
-    // Derivation: 9341 + 29 = 9370.
-    expect(pinnedAgree.length).toBe(9370);
+    // 9370 -> 9371 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
+    // Derivation: 9341 + 29 + 1 = 9371.
+    // 9371 -> 9448 at ddd/T0b (2026-11-04): +77 svg-description golden clones. Derivation: 9371 + 77 = 9448.
+    // 9448 -> 9456 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 9448 + 8 = 9456.
+    // 9456 -> 9461 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 9456 + 5 = 9461.
+    // 9461 -> 9464 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 9461 + 3 = 9464.
+    // 9464 -> 9480 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 9464 + 16 = 9480.
+    // 9480 -> 9584 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 9480 + 104 = 9584.
+    // 9584 -> 9635 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 9584 + 51 = 9635.
+    // 9635 -> 9669 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 9635 + 34 = 9669.
+    // 9669 -> 9676 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 9669 + 7 = 9676.
+    // 9676 -> 9722 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 9676 + 46 = 9722.
+    // 9722 -> 9723 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
+    // 9723 -> 9781 at cep/T5 (2026-11-05): the 29 chart misroutes flip to agree, +29 svg-chart golden clones. Derivation: 9723 + 29 + 29 = 9781.
+    // 9781 -> 9793 at pep/T4 (2026-11-05): the 6 packet misroutes flip to agree, +6 svg-packet golden clones. Derivation: 9781 + 6 + 6 = 9793.
+    // 9793 -> 9801 at bep/T4 (2026-11-05): the 4 board misroutes flip to agree, +4 svg-board golden clones. Derivation: 9793 + 4 + 4 = 9801.
+    // 9801 -> 9806 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 9801 + 5 = 9806.
+    // 9806 -> 9812 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 9806 + 6 = 9812.
+    // 9812 -> 9918 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state), all agree. Derivation: 9812 + 106 = 9918.
+    // 9918 -> 9920 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree, plus its golden clone.
+    // 9920 -> 9922 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
+    // 9922 -> 9924 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
+    expect(pinnedAgree.length).toBe(9924);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
     // activity 128 (114 legacy `(*) -->` + 13 activity3 + 1 legacy we draw as CLASS), class 2,
     // sequence 1, timing 19, unknown 22 (16 DESCRIPTION + 6 head-window error pages we draw).
     // Derivation: 374 + 172 = 546.
-    expect(pinnedMisroutes.length).toBe(546);
+    // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
+    // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
+    // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
+    // 530 -> 501 at cep/T5 (2026-11-05): the 29 chart rows flip to agree, the port stamps diagramType. Derivation: 530 - 29 = 501.
+    // 501 -> 495 at pep/T4 (2026-11-05): the 6 packet rows flip to agree, the port stamps diagramType. Derivation: 501 - 6 = 495.
+    // 495 -> 491 at bep/T4 (2026-11-05): the 4 board rows flip to agree, the port stamps diagramType. Derivation: 495 - 4 = 491.
+    // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
+    expect(pinnedMisroutes.length).toBe(490);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -1251,7 +848,25 @@ describe('routing conformance — jar-error classification', () => {
     // 10026 -> 10042 at stdd/close-b4 (2026-11-04): +16 svg-state golden clones. Derivation: 9334 + 546 + 162 = 10042.
     // 10042 -> 10049 at stdd/close-b5 (2026-11-04): +7 svg-state golden clones. Derivation: 9341 + 546 + 162 = 10049.
     // 10049 -> 10078 at stdd/close-b6 (2026-11-04): +29 svg-state golden clones. Derivation: 9370 + 546 + 162 = 10078.
-    expect(manifest.fixtures.length).toBe(10078);
+    // 10078 -> 10079 (2026-11-04): +1 svg-state golden clone, viroxo-69 (border-point anchor fix).
+    // 10079 -> 10156 at ddd/T0b (2026-11-04): +77 svg-description golden clones.
+    // 10156 -> 10172 at ddd/close-b1 (2026-11-04): +16 svg-description golden clones. Derivation: 10156 + 16 = 10172.
+    // 10172 -> 10276 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 10172 + 104 = 10276.
+    // 10276 -> 10327 at b4 (2026-11-04): ddd batch 4 close: flips and pins. Derivation: 10276 + 51 = 10327.
+    // 10327 -> 10361 at b5 (2026-11-04): ddd batch 5 close: flips and pins. Derivation: 10327 + 34 = 10361.
+    // 10361 -> 10368 at c4dd/T4b (2026-11-05): +2 svg-class under c4/, +5 svg-description. Derivation: 10361 + 7 = 10368.
+    // 10368 -> 10414 at odd/T4b (2026-11-05): +46 svg-object. Derivation: 10368 + 46 = 10414.
+    // 10414 -> 10415 (2026-11-05): +1 svg-description golden clone, zodela-36 (dot-engine 2.10.3, issue 36).
+    // 10415 -> 10444 at cep/T5 (2026-11-05): +29 svg-chart golden clones. Derivation: 10415 + 29 = 10444.
+    // 10444 -> 10450 at pep/T4 (2026-11-05): +6 svg-packet golden clones. Derivation: 10444 + 6 = 10450.
+    // 10450 -> 10454 at bep/T4 (2026-11-05): +4 svg-board golden clones. Derivation: 10450 + 4 = 10454.
+    // 10454 -> 10459 at ubt/T1a (2026-11-06): +5 svg-activity golden clones. Derivation: 10454 + 5 = 10459.
+    // 10459 -> 10465 at ubt/T1b (2026-11-06): +6 svg-activity golden clones. Derivation: 10459 + 6 = 10465.
+    // 10465 -> 10571 at ubt/T3c (2026-11-06): +106 golden clones under unknown/ (49 svg-activity, 52 svg-sequence, 5 svg-state). Derivation: 10465 + 106 = 10571.
+    // 10571 -> 10572 at smc/T3a (2026-11-06): +1 svg-activity golden clone (gigefo-15-cami497).
+    // 10572 -> 10574 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
+    // 10574 -> 10576 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
+    expect(manifest.fixtures.length).toBe(10576);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1325,7 +940,14 @@ describe('routing conformance — jar-error classification', () => {
     // 375 -> 374 at ddc/close-b0 (2026-10-28): files/files-directory-tree-with-note now agrees.
     // 374 -> 546 at ogc/T5: the 172 new misroutes all carry a ledger reason (the pin tool
     // refuses one without), so censused still equals pinnedMisroutes.
-    expect(censused.length).toBe(546);
+    // 546 -> 538 at ddd/T1a (2026-11-04): 8 rows flip to agree, CommandCreateElementFull's full forms. Derivation: 546 - 8 = 538.
+    // 538 -> 533 at ddd/T1b (2026-11-04): 5 rows flip to agree, the class factory refuses what upstream's refuses. Derivation: 538 - 5 = 533.
+    // 533 -> 530 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 533 - 3 = 530.
+    // 530 -> 501 at cep/T5 (2026-11-05): the 29 chart rows flip to agree. Derivation: 530 - 29 = 501.
+    // 501 -> 495 at pep/T4 (2026-11-05): the 6 packet rows flip to agree. Derivation: 501 - 6 = 495.
+    // 495 -> 491 at bep/T4 (2026-11-05): the 4 board rows flip to agree. Derivation: 495 - 4 = 491.
+    // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
+    expect(censused.length).toBe(490);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

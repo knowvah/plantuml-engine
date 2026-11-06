@@ -1,0 +1,11 @@
+@startuml
+package P {
+  rectangle a
+}
+note right of P : a note
+rectangle b
+note left of b
+  body
+end note
+b --> P
+@enduml

@@ -1,0 +1,10 @@
+@startboard
+legend
+the legend
+endlegend
+A
++B
+++C
+D
++E
+@endboard

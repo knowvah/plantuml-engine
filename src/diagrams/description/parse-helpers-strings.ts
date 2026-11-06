@@ -369,24 +369,34 @@ export function rawStereotypeLabels(labels: readonly string[]): readonly string[
  * matched and consumed (cases 1 and 2) — see `DescriptiveNode.stereotype`.
  */
 export function extractNodeStereotype(rest: string): StereotypeResult | undefined {
-  const run = /(?:<<\s*.+?\s*>>\s*)+/.exec(rest);
+  // `>>+`: the lazy `<<.+?>>` of `CommandCreateElementFull.java:97` runs on to a line end, past a third `>`.
+  const run = /(?:<<\s*.+?\s*>>+\s*)+/.exec(rest);
   if (run === null) return undefined;
-  const stereotype = Stereotype.build(run[0].trimEnd(), 0, undefined, parseSimpleColor);
-  const stereotypes = stereotype.getLabels(GUILLEMET_NONE).map((label) => resolveTextEscapes(label));
-  RAW_LABELS.set(stereotypes, stereotype.getLabels(GUILLEMET_DOUBLE_COMPARATOR));
-  // `getSprite(...)` (java:193) beats the label block, so the name travels.
-  const spriteName = stereotype.getSpriteName();
   const before = rest.slice(0, run.index).trimEnd();
   const after = rest.slice(run.index + run[0].length).trimStart();
   // A bare concatenation would fuse adjacent tokens when both sides are
   // non-empty (e.g. a trailing `$tag` after the stereotype getting glued to
   // a leading `#color` before it) — join with a single space in that case.
   const remainder = before.length > 0 && after.length > 0 ? `${before} ${after}` : before + after;
-  if (spriteName === undefined) return { stereotypes, remainder };
+  return { ...stereotypeOfRun(run[0].trimEnd()), remainder };
+}
+
+/**
+ * `Stereotype.build` on one captured STEREOTYPE group (`CommandCreateElementFull.java:327`): its labels and its sprite.
+ * The group may hold text between its `<<..>>` runs, which `cutLabels` ignores
+ * (`StereotypeDecoration.java:185-196`).
+ */
+export function stereotypeOfRun(run: string): Omit<StereotypeResult, 'remainder'> {
+  const stereotype = Stereotype.build(run, 0, undefined, parseSimpleColor);
+  const stereotypes = stereotype.getLabels(GUILLEMET_NONE).map((label) => resolveTextEscapes(label));
+  RAW_LABELS.set(stereotypes, stereotype.getLabels(GUILLEMET_DOUBLE_COMPARATOR));
+  // `getSprite(...)` (java:193) beats the label block, so the name travels.
+  const spriteName = stereotype.getSpriteName();
+  if (spriteName === undefined) return { stereotypes };
   const color = stereotype.getHtmlColor();
   const base = { name: spriteName, scale: stereotype.getSpriteScale() };
   const sprite: StereotypeSpriteRef = color === undefined ? base : { ...base, color };
-  return { stereotypes, sprite, remainder };
+  return { stereotypes, sprite };
 }
 
 /** A `<<...>>` run at the start of the slice (StereotypePattern.java:68). */

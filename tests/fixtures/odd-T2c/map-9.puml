@@ -1,0 +1,13 @@
+@startuml
+<style>
+map {
+  FontSize 9
+}
+</style>
+map A {
+ k => v
+}
+map B {
+ k => v
+}
+@enduml

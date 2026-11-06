@@ -1,0 +1,13 @@
+@startuml
+object o
+o : field
+o : +vis
+map m {
+ k => v
+}
+m : extra => w
+json j {
+ "x": 1
+}
+j : y
+@enduml

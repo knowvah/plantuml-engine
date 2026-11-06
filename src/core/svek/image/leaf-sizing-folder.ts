@@ -21,6 +21,9 @@
  *   as literal text lines (`rojida-14-fuli428` mechanism 2).
  */
 
+import type { FontConfiguration } from '../../klimt/shape/UText.js';
+import { sizingAtomImageResolverFor } from './leaf-sizing-entity.js';
+import { buildTextBlock } from './EntityImageDescriptionTextBlock.js';
 import type { LeafSizingSubject } from './LeafSizingSubject.js';
 import type { StringMeasurer, FontSpec } from '../../measurer.js';
 import type { SpriteDimsLookup } from '../../creole-atoms.js';
@@ -132,7 +135,7 @@ function folderBlockDims(
     ? measureShownFolderTitle(node.id, fontSpec, measurer, opts, sprites)
     : ([FOLDER_TAB_WIDTH, FOLDER_TAB_HEIGHT] as const);
   const labelText = showTitle && node.display === node.id ? '' : node.display;
-  const label = folderTextBlock(labelText, fontSpec, measurer, sprites);
+  const label = folderTextBlock(labelText, fontSpec, measurer, sprites, opts?.wrapWidth ?? 0);
   const stereo = folderStereoBlock(node, fontSpec, measurer, lineH);
   return { showTitle, title, label, stereo };
 }
@@ -185,10 +188,25 @@ function folderTextBlock(
   fontSpec: FontSpec,
   measurer: StringMeasurer,
   sprites: SpriteDimsLookup | undefined,
+  wrapWidth: number,
 ): readonly [number, number] {
   if (text === '') return [0, 0];
   const embedded = embeddedLabelDimension(text, measurer);
   if (embedded !== undefined) return embedded;
+  if (wrapWidth > 0) {
+    // `BodyFactory.create3(display, ..., style.wrapWidth(), style)` (`EntityImageDescription.java:188-191`): the block that
+    // draws, which `wrapWidth` narrows.
+    const font: FontConfiguration = { color: null, styles: new Set(), ...fontSpec };
+    const block = buildTextBlock(
+      text,
+      font,
+      HorizontalAlignment.LEFT,
+      sizingAtomImageResolverFor(sprites)(font),
+      wrapWidth,
+    );
+    const dim = block.calculateDimension(new MeasurerStringBounder(measurer));
+    return [dim.getWidth(), dim.getHeight()];
+  }
   const lineH = fontSpec.size * LINE_HEIGHT_FACTOR;
   return [
     maxLineWidth(text, fontSpec, measurer, sprites),

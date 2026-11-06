@@ -1,0 +1,9 @@
+@startuml
+actor A
+usecase B
+A --> B
+note right of B
+  <size:8>small</size> mid <size:20>big</size>
+  plain line
+end note
+@enduml

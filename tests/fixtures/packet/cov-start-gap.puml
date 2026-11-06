@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  0-7: A
+  20-27: B
+}
+@endpacketdiag

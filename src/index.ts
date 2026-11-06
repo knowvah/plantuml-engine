@@ -3,8 +3,9 @@ import { withRemoteImages } from './core/remote-image-prefetch.js';
 import { inlineRemoteImageLines } from './core/remote-image-store.js';
 import type { BlockUml, BlockUmlOk, RawBlock } from './core/BlockUmlBuilder.js';
 import { registry, type AssembledSvg, type DiagramPlugin, type Resolution } from './core/dispatcher.js';
-import { skinCutOf } from './core/skin-command.js';
+import { commandCutsOf } from './core/style-command.js';
 import { buildTheme } from './core/build-theme.js';
+import { firstPageOf } from './core/preprocessor-first-page.js';
 import { applyChrome, isEmpty as isAnnotationsEmpty } from './core/annotations/index.js';
 import { applyExportedChrome } from './core/annotations/chrome-export.js';
 import type { DiagramAnnotations } from './core/annotations/index.js';
@@ -75,6 +76,8 @@ export { combineAssetStores, type AssetPayload, type AssetStore } from './core/a
 // their order rationale and each one's Java line live in `registered-plugins.ts`.
 registerPlugins(registry);
 
+const DESCRIPTION_PLUGIN = 'description';
+
 /** The block's preprocessed interior plus the style sources the interpreter pulled out of THAT block. */
 function umlSourceOfBlock(block: BlockUmlOk): UmlSource {
   return {
@@ -97,32 +100,12 @@ function umlSourceOfBlock(block: BlockUmlOk): UmlSource {
  * validation boundary (see `security.md`: boundary validation applies to
  * data crossing INTO the process, not between our own typed stages).
  *
- * Every engine's AST carries `annotations?: DiagramAnnotations` EXCEPT
- * chart, whose AST already had an unrelated pre-existing `annotations`
- * field (plot text/arrow callouts) and stores chrome under `chrome`
- * instead (`src/diagrams/chart/ast.ts`'s doc comment) -- `chrome` is
- * checked FIRST, unconditionally, for exactly this reason (see the
- * function body). json/dot/chart's `annotations`/`chrome.title` is
- * never populated by their own parsers (title stays on their bespoke
- * field until T8) -- so reading this field generically for every
- * engine, with no other special-casing, already gives json/dot/chart's
- * caption/legend/header/footer shared chrome for free while leaving
- * their bespoke title bands untouched.
+ * Every engine's AST carries `annotations?: DiagramAnnotations`, and reading the
+ * field generically gives json/dot their caption/legend/header/footer chrome for
+ * free while leaving their bespoke title bands untouched.
  */
 function annotationsOf(ast: unknown): DiagramAnnotations | undefined {
   if (typeof ast !== 'object' || ast === null) return undefined;
-  // `chrome` is checked FIRST and unconditionally: it is chart's own
-  // unambiguous chrome marker (no other engine's AST has this field), and
-  // chart's AST ALSO carries an unrelated pre-existing `annotations: Chart
-  // AnnotationDef[]` (plot text/arrow callouts, `src/diagrams/chart/ast.ts`)
-  // that is NOT a `DiagramAnnotations` -- checking `annotations` first
-  // would silently hand that array to `isEmpty`/`applyChrome`, which read
-  // `.title`/`.legend`/etc. off it and crash on `undefined.display` (T7
-  // regression found via `tests/unit/chart/renderer.test.ts`'s AC1 case).
-  if ('chrome' in ast) {
-    const value = (ast as { chrome?: DiagramAnnotations }).chrome;
-    if (value !== undefined) return value;
-  }
   if ('annotations' in ast) {
     const value = (ast as { annotations?: DiagramAnnotations }).annotations;
     if (value !== undefined) return value;
@@ -143,9 +126,9 @@ function annotationsOf(ast: unknown): DiagramAnnotations | undefined {
  * comment); its `completeSvg` is unwrapped into a `RenderFragment`, run
  * through the SAME `applyChrome`, and reassembled via the SAME
  * `assembleSvg` every other engine uses -- no third chrome implementation.
- * Any OTHER `CompleteSvg` producer (chart's fixed-size error box, reached
- * only when parse/validation errors exist) is left untouched: chrome has
- * no sensible placement on a diagnostic box with no diagram context.
+ * Any OTHER `CompleteSvg` producer (a renderer's own inline error document) is
+ * left untouched: chrome has no sensible placement on a diagnostic box with no
+ * diagram context.
  */
 /** The diagram's own `SpriteRegistry`, read off the AST exactly as
  *  `core/sprite-registry.ts#surfaceSpriteWarnings` reads it (`'sprites' in
@@ -299,7 +282,7 @@ interface PreparedBlock {
  * {@link renderBlockPages} before they diverge on sync-vs-async layout and
  * error wrapping: resolve its diagram plugin (the parse happens HERE: upstream
  * picks a factory by attempting the parse, and D0 forbids a second parse
- * path; a failing `skin` line cuts it, unwind2-S8), build the theme from the
+ * path; a failing `skin` line cuts it, unwind2-S8, and so does a failing `<style>` sheet, smc T1b), build the theme from the
  * plugin's `styleInput` when jar-compatible (unwind-U1, D9), resolve its measurer, extract its AST (or throw the block's
  * `DiagramRefusal`), and surface any sprite/parse warnings. Neither caller's
  * try/catch nor sync-vs-async `layout` call belongs here.
@@ -308,18 +291,20 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   const previous = takePendingPrevious();
   // Served remote images (`options.assetStore`, `remote-image:<url>`) become the data URIs creole decodes; see `remote-image-store.ts`.
   const umlSource = { ...source, lines: inlineRemoteImageLines(source.lines, options?.assetStore) };
-  const skinCut = skinCutOf(block.preprocessed, umlSource);
+  const cuts = commandCutsOf(block.preprocessed, umlSource);
   const resolution = registry.resolve(
     umlSource,
     { assetStore: options?.assetStore, clock: renderClock(options) },
-    skinCut,
+    cuts,
     isBlockEmpty(block),
   );
   const plugin = resolution.plugin;
   // sdd3-T8h: a nested `{{ }}` diagram starts from the enclosing diagram's skinparams (`nested-previous.ts`).
   // D9 (lad Amendment 1): `styleInput` is the jar-compatible normalisation, applied only when conformance asks for it.
-  const styled = isJarCompatibleStyleInput(options) ? plugin.styleInput?.(block.preprocessed, umlSource) : undefined;
-  const preprocessed = withPrevious(styled ?? block.preprocessed, previous);
+  // ddd-T5a: description's `newpage` is a fresh diagram (`CommandNewpage.java:68-73`); sequence's is a page break.
+  const ownPreprocessed = plugin.type === DESCRIPTION_PLUGIN ? firstPageOf(block.preprocessed) : block.preprocessed;
+  const styled = isJarCompatibleStyleInput(options) ? plugin.styleInput?.(ownPreprocessed, umlSource) : undefined;
+  const preprocessed = withPrevious(styled ?? ownPreprocessed, previous);
   const { theme, styleMap } = buildTheme(preprocessed, options, plugin.type);
   const measurer = resolveMeasurer(plugin.type, options);
   const ast = astOf(resolution, options);
@@ -378,7 +363,12 @@ export function renderPagesSync(source: string, options?: RenderOptions): string
     if (!('layoutSync' in ctx.plugin))
       throw new Error('renderSync() is not supported for this diagram type — use render()');
 
-    const geo = ctx.plugin.layoutSync(ast, ctx.theme, ctx.measurer, layoutServicesSync(ctx.plugin, ast, options));
+    const geo = ctx.plugin.layoutSync(
+      ast,
+      ctx.theme,
+      ctx.measurer,
+      layoutServicesSync(ctx.plugin, ast, options, ctx.preprocessed),
+    );
     return assemblePages(ctx, geo, ast, options);
   } catch (err) {
     return [errorSvg(source, err, options)];
@@ -488,7 +478,12 @@ async function renderBlockPages(block: BlockUml, options?: RenderOptions): Promi
     const { ctx, ast } = prepareBlock(block, umlSource, withImages);
     const geo =
       'layoutSync' in ctx.plugin
-        ? ctx.plugin.layoutSync(ast, ctx.theme, ctx.measurer, await layoutServices(ctx.plugin, ast, withImages))
+        ? ctx.plugin.layoutSync(
+            ast,
+            ctx.theme,
+            ctx.measurer,
+            await layoutServices(ctx.plugin, ast, withImages, ctx.preprocessed),
+          )
         : await ctx.plugin.layout(ast, ctx.theme, ctx.measurer);
     return assemblePages(ctx, geo, ast, withImages);
   } catch (err) {

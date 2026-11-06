@@ -1,0 +1,12 @@
+@startchart
+<style>
+chartDiagram {
+grid {
+LineColor red
+LineThickness 3
+}
+}
+</style>
+h-axis [A] grid
+v-axis 0 --> 5 grid
+@endchart

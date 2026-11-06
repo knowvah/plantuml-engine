@@ -1,0 +1,9 @@
+@startuml
+start
+fork <<#red>>
+  :a;
+fork again
+  :b;
+end fork
+stop
+@enduml

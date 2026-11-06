@@ -1,0 +1,8 @@
+@startchart
+H-AXIS [A]
+V-Axis 0 --> 5
+BAR "x" [1]
+Legend Right
+STACKMODE stacked
+Orientation Vertical
+@endchart

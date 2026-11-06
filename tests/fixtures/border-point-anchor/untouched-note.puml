@@ -1,0 +1,8 @@
+@startuml
+state comp1 {
+  state ex <<exitpoint>>
+  note "floating" as N1
+}
+state comp2
+ex --> comp2
+@enduml

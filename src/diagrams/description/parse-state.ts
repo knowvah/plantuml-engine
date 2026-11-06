@@ -26,6 +26,8 @@ import type { NoteDecor, NotePosition, NoteTerminator } from './note-grammar.js'
 
 export interface ParseState {
   ast: DescriptionDiagramAST;
+  /** `<style>` blocks executed before the current line: what `Entity#currentStyleBuilder` captures. */
+  styleGeneration: number;
   /** Inside a `sprite $name [WxH/16z] { ... }` block — every body line is
    *  consumed verbatim (base64 pixel data would otherwise misparse as link
    *  lines: bivira-53's `...b1t-R3xpD...` matched the arrow grammar). */
@@ -112,7 +114,7 @@ export interface ParseState {
  * `END0 = ^(.*)[%g]$` (CommandCreateElementMultilines.java:80-81), both
  * applied to the `Trim.BOTH`-trimmed last line.
  */
-export type ElementBlockTerminator = 'bracket' | 'quote';
+export type ElementBlockTerminator = 'bracket' | 'quote' | 'archimate';
 
 /**
  * In-progress multi-line element block; see `ParseState.pendingElement`.
@@ -148,7 +150,7 @@ export type PendingNoteState =
       position: NotePosition | undefined;
       color: string | undefined;
     }
-  | { kind: 'floating'; terminator: NoteTerminator; lines: string[]; id: string }
+  | { kind: 'floating'; terminator: NoteTerminator; lines: string[]; id: string; decor: NoteDecor }
   | {
       kind: 'on-entity';
       terminator: NoteTerminator;
@@ -216,6 +218,7 @@ export function emitNode(state: ParseState, node: DescriptiveNode): void {
   // construction, group and leaf alike (see DescriptiveNode.creationIndex's
   // doc comment).
   node.creationIndex = nextCreationIndex(state);
+  node.styleGeneration = state.styleGeneration;
 }
 
 /** The node list of the innermost open container (`getCurrentGroup()`), or the root list. */
@@ -250,6 +253,28 @@ export function findReopenedGroup(state: ParseState, id: string): DescriptiveNod
       ? state.nodesById.get(id)
       : currentScope(state).find((n) => n.id === id);
   return existing?.declaredAsGroup === true ? existing : undefined;
+}
+
+/**
+ * `gotoGroup` with a quark that already holds a leaf: `ent.muteToGroupType(type)`, `ent.setUSymbol(usymbol)` and no
+ * `setDisplay`, which only a new group gets (`CucaDiagram.java:351-359`). The command then sets the stereotype and the
+ * colours (`CommandPackageWithUSymbol.java:204-216`).
+ */
+export function muteLeafToGroup(state: ParseState, id: string, group: DescriptiveNode): DescriptiveNode | undefined {
+  const sep = state.namespaceSeparator;
+  const existing =
+    sep === null || splitNamespacePath(id, sep) !== null
+      ? state.nodesById.get(id)
+      : currentScope(state).find((n) => n.id === id);
+  if (existing === undefined || existing.declaredAsGroup === true) return undefined;
+  existing.declaredAsGroup = true;
+  existing.symbol = group.symbol;
+  delete existing.stillUnknown;
+  if (group.stereotype !== undefined) existing.stereotype = group.stereotype;
+  if (group.stereotypeSprite !== undefined) existing.stereotypeSprite = group.stereotypeSprite;
+  if (group.color === undefined) delete existing.color;
+  else existing.color = group.color;
+  return existing;
 }
 
 /**
@@ -292,6 +317,7 @@ export function addLink(state: ParseState, link: DescriptiveLink): void {
   if (dropsAsSingleDuplicate(link.single === true, state.ast.links, link, descriptiveLinkConnection)) {
     return;
   }
+  link.styleGeneration = state.styleGeneration;
   state.ast.links.push(link);
 }
 

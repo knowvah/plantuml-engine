@@ -1,0 +1,4 @@
+@startchart
+page 2 3
+h-axis [A, B, C, D]
+@endchart

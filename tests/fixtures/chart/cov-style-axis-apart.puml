@@ -1,0 +1,14 @@
+@startchart
+<style>
+chartDiagram {
+hAxis {
+LineColor red
+}
+vAxis {
+LineColor blue
+}
+}
+</style>
+h-axis [A, B, C, D]
+v-axis 0 --> 5
+@endchart

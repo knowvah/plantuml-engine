@@ -1,0 +1,12 @@
+@startuml
+sprite $tiny [8x4/16] {
+FFFFFFFF
+FFFFFFFF
+FFFFFFFF
+FFFFFFFF
+}
+actor A
+usecase B
+A --> B : <size:8>s</size><$tiny><size:6>t</size>
+A --> B : <size:20>BIG</size><$tiny>
+@enduml

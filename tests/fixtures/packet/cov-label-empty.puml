@@ -1,0 +1,6 @@
+@startpacketdiag
+packetdiag {
+  0-15: 
+  16-31: x
+}
+@endpacketdiag

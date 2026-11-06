@@ -48,6 +48,21 @@ interface SplitLine {
   readonly atoms: readonly CreoleAtom[];
 }
 
+/** See {@link AtomOps.isDrawable}: the atoms `StripeSimple#addSprite` would have added, or the one space. */
+function drawableAtoms(
+  atoms: readonly CreoleAtom[],
+  ops: AtomOps,
+  stringBounder: StringBounder,
+): readonly CreoleAtom[] {
+  if (ops.isDrawable === undefined) return atoms;
+  const kept = atoms.filter((atom) => ops.isDrawable!(atom, stringBounder));
+  if (kept.length === atoms.length) return atoms;
+  if (kept.length > 0) return kept;
+  const last = atoms[atoms.length - 1];
+  const font = last !== undefined && 'lineEndFont' in last ? last.lineEndFont : undefined;
+  return font === undefined ? atoms : [{ kind: 'text', text: ' ', font }];
+}
+
 /**
  * SheetBlock1 — the real Creole "Sheet → TextBlock" assembly: word-wraps
  * each `Stripe` in a `Sheet` against a `LineBreakStrategy`, lays each
@@ -145,7 +160,7 @@ export class SheetBlock1 extends TextBlockMemoized implements Atom, Stencil {
 
     const stripes: SplitLine[] = [];
     for (const stripe of this.sheet) {
-      const atoms = stripe.getAtoms();
+      const atoms = drawableAtoms(stripe.getAtoms(), this.atomOps, stringBounder);
       const split = getSplitted(atoms, this.maxWidth.getMaxWidth(), (atom) =>
         this.atomOps.calculateDimension(atom, stringBounder).getWidth(),
       );

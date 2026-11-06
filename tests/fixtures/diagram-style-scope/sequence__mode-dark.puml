@@ -1,0 +1,6 @@
+@startuml
+skinparam mode dark
+participant A
+A -> B
+note right: n
+@enduml

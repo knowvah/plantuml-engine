@@ -1,0 +1,8 @@
+@startuml
+skinparam nodesep 70
+skinparam ranksep 120
+component a
+component b
+a --> c
+a --> d
+@enduml

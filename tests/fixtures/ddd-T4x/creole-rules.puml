@@ -1,0 +1,9 @@
+@startuml
+<style>
+rectangle {
+  LineThickness 3
+}
+</style>
+rectangle "__under__ and --strike-- ~~wave~~\n----\n====\n" as a
+component "__under__" as b
+@enduml

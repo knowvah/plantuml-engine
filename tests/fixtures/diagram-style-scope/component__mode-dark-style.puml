@@ -1,0 +1,9 @@
+@startuml
+skinparam mode dark
+<style>
+note { FontSize 12 }
+</style>
+[C]
+database D
+note left of C: n
+@enduml

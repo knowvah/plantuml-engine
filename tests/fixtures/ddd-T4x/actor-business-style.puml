@@ -1,0 +1,15 @@
+@startuml
+<style>
+actor {
+  LineThickness 2
+  BackgroundColor pink
+}
+business {
+  FontColor blue
+}
+</style>
+actor one
+actor/ "two" as t
+:three:/
+one --> t
+@enduml

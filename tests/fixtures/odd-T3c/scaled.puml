@@ -1,0 +1,7 @@
+@startuml
+scale 1.5
+allow_mixing
+state A
+A : x
+class B
+@enduml

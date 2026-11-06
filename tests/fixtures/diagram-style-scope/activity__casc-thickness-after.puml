@@ -1,0 +1,11 @@
+@startuml
+<style>
+activity { LineThickness 3 }
+note { FontSize 12 }
+</style>
+start
+:a;
+note right: n
+stop
+skinparam activityBorderThickness 2
+@enduml

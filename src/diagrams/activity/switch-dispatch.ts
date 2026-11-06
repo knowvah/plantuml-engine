@@ -23,6 +23,7 @@ import {
 import { parseNodes } from './node-dispatch.js';
 import { stripTrailingSemi, unescapeLabelNewlines } from './if-dispatch.js';
 import { tryNoteMulti, tryNoteSingle } from './note-dispatch.js';
+import { stereogroupBackColor } from './dispatch-stereogroup.js';
 
 /** `case`/`endswitch` are both simple word-prefix stops -- the same
  *  mechanism `if`'s `['elseif', 'else', 'endif']` already relies on
@@ -33,7 +34,7 @@ const NO_CASE_MESSAGE = "No 'case' in this switch";
 const SWITCH_INNER_STOPS: StopKeywords = ['case', 'endswitch'];
 
 type SwitchClauseStep =
-  | { kind: 'endswitch'; cursor: number }
+  | { kind: 'endswitch'; cursor: number; group: string | undefined }
   | { kind: 'case'; cursor: number; kase: ActivitySwitchCase; notes: ActivityNote[] }
   | { kind: 'note'; cursor: number; note: ActivityNote }
   | { kind: 'unexpected'; cursor: number }
@@ -84,7 +85,8 @@ function tryPreCaseNote(ctx: ParseContext, cursor: number): SwitchClauseStep | n
 function classifySwitchClauseLine(ctx: ParseContext, cursor: number): SwitchClauseStep {
   const clauseLine = stripTrailingSemi(ctx.lines[cursor]!.trim());
 
-  if (RE_ENDSWITCH.test(clauseLine)) return { kind: 'endswitch', cursor: cursor + 1 };
+  const endMatch = RE_ENDSWITCH.exec(clauseLine);
+  if (endMatch !== null) return { kind: 'endswitch', cursor: cursor + 1, group: endMatch[1] };
 
   const caseMatch = RE_CASE.exec(clauseLine);
   if (caseMatch !== null) {
@@ -106,7 +108,8 @@ function classifySwitchClauseLine(ctx: ParseContext, cursor: number): SwitchClau
 function consumeSwitchCases(
   ctx: ParseContext,
   startIdx: number,
-): { cursor: number; cases: ActivitySwitchCase[]; notes: ActivityNote[] } | ParseRefusal {
+):
+  { cursor: number; cases: ActivitySwitchCase[]; notes: ActivityNote[]; endGroup?: string | undefined } | ParseRefusal {
   let cursor = startIdx;
   const cases: ActivitySwitchCase[] = [];
   const notes: ActivityNote[] = [];
@@ -121,7 +124,7 @@ function consumeSwitchCases(
     if (step.kind === 'unexpected' && cases.length === 0 && ctx.lines[cursor]!.trim() !== '')
       return refuse('execution', cursor, cursor, NO_CASE_MESSAGE);
     cursor = step.cursor;
-    if (step.kind === 'endswitch') break;
+    if (step.kind === 'endswitch') return { cursor, cases, notes, endGroup: step.group };
     if (step.kind === 'case') {
       cases.push(step.kase);
       notes.push(...step.notes);
@@ -147,6 +150,15 @@ export function tryOpenSwitch(ctx: ParseContext, idx: number, line: string): Dis
   if (isRefusal(result)) return result;
 
   const notesSpread = result.notes.length > 0 ? { notes: result.notes } : {};
-  const node: ActivitySwitch = { kind: 'switch', condition, cases: result.cases, ...openerSwimlane, ...notesSpread };
+  const colors = { color: stereogroupBackColor(m[2]), endColor: stereogroupBackColor(result.endGroup) };
+  const node: ActivitySwitch = {
+    kind: 'switch',
+    condition,
+    cases: result.cases,
+    ...openerSwimlane,
+    ...(colors.color !== undefined ? { color: colors.color } : {}),
+    ...(colors.endColor !== undefined ? { endColor: colors.endColor } : {}),
+    ...notesSpread,
+  };
   return { idx: result.cursor, node };
 }
