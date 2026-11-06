@@ -1,0 +1,13 @@
+@startuml
+map A {
+ ka => va
+}
+map B {
+ xa => ya
+}
+A::ka <--> B::xa
+A::ka *-- B::xa
+A::ka o.. B::xa : lbl
+B::xa --|> A
+A --> B::xa
+@enduml

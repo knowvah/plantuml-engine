@@ -108,8 +108,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   object: {
     noteClass: 'openDefect',
     detail:
-      'object-divergence-drive (#115, 2026-11-05) took all 16 open rows to conformant: 81 of 81, all pinned. One authored ' +
-      'probe stays off the jar inside dot-engine, `docs/graphviz-issues/41`.',
+      'object-divergence-drive (#115, 2026-11-05) took all 16 open rows to conformant: 81 of 81, all pinned. Its authored ' +
+      'probes match the jar, `ports-decors` since dot-engine 2.12.0 fixed `docs/graphviz-issues/41`.',
   },
   state: {
     noteClass: 'openDefect',

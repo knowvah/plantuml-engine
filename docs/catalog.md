@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2237 modules · 7754 exported names.
+2238 modules · 7756 exported names.
 
 ## `src/`
 
@@ -63,6 +63,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `document-back-color.ts` | `DocumentBackColor`, `styleNameOf`, `currentStyleBuilderOf`, `documentStyleBuilder`, `defaultFontStyleBuilder`, `isDark`, `documentBackColor` | The document background through the style engine (dss T1a, D1, D3, D4, D6): upstream's one read, `TitledDiagram#calculateBackColor`, over the ported `StyleBuilder`: StyleSignatureBasic.of(SName.root, SName.document, getDiagramType().getStyl |
 | `document-margin.ts` | `DocumentMargin`, `SEQUENCE_DOCUMENT_MARGIN`, `CUCA_DOCUMENT_MARGIN`, `documentMarginOf`, `calculateMargin`, `removeDocumentMargin`, `applyDocumentMargin` | document-margin.ts -- lgm-T1a: `TextBlockExporter`'s outer document margin, applied to a fragment AFTER `DiagramChromeFactory.create` composed its chrome (title/legend/caption/header/footer/mainframe), as upstream does. |
 | `dot-engine-measurer.ts` | _(none)_ | The single install point for `@knowvah/dot-engine`'s text measurer. |
+| `dot-engine-messages.ts` | `withEngineMessagesDropped`, `withEngineMessagesCollected` | Keeps `@knowvah/dot-engine`'s graphviz messages off the host's console. |
 | `dot-splines.ts` | `dotSplinesAttrs` | Translates the `linetype` semantic enum on `DotInputGraph` into the DOT attribute pairs upstream emits for it. |
 | `edge-label-box-note-merge.ts` | `NoteOnLinkPosition`, `MergedLabelBoxInput`, `computeMergedLabelBox` | The `note on link` merge half of `edge-label-box.ts` — the note operand, the four `Position` merges and the shield. |
 | `edge-label-box.ts` | `stripCreoleMarkup`, `resolveLineFont`, `ReservedLabelBox`, `CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT`, `VisibilityIconAdjustment`, `applyVisibilityIcon`, `applyGuillemet`, `MagicArrowDirection`, `MagicArrowLabel`, `parseMagicArrowLabel`, `ReservedLabelBoxOptions`, `computeReservedLabelBox`, `QuantifierBox`, `stripLeadingEscapedChar`, `computeQuantifierBox`, `computeMergedLabelBox`, `MergedLabelBoxInput`, `NoteOnLinkPosition` | The reserved box an edge label occupies in the DOT handed to graphviz. |

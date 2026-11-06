@@ -30,6 +30,7 @@ import type { UmlSource } from '../../core/block-extractor.js';
 // The canvas-free text measurer `renderSvg` measures `test` with, installed
 // for its side effect as every other engine consumer does.
 import '../../core/dot-engine-measurer.js';
+import { withEngineMessagesDropped } from '../../core/dot-engine-messages.js';
 import { PLANTUML_LOGO } from '../../core/error/plantuml-logo.js';
 import type { RasterImage } from '../../core/error/raster-image.js';
 import { GraphicPosition } from '../../core/klimt/geom/GraphicPosition.js';
@@ -149,7 +150,7 @@ export function addInfoVersion(strings: string[], details: boolean): void {
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:160-178
  */
 function getTestCreateSimpleFile(): string | undefined {
-  const data = renderSvg(TEST_DOT, TEST_ENGINE);
+  const data = withEngineMessagesDropped(() => renderSvg(TEST_DOT, TEST_ENGINE));
   if (data.length === 0) return EMPTY_FILE;
   if (!data.includes('<svg')) return UNREADABLE_SVG;
   return undefined;

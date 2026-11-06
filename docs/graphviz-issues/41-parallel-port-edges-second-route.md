@@ -1,5 +1,8 @@
 # Parallel port edges: the second of five routes as a tight arc, not dot's long route
 
+**Fixed in `dot-engine` 2.12.0 (2026-11-06).** With a fixed-size label, all five routes equal native's; the probe
+`ports-decors` is an odd-T4a fixture at 0 diffs. Ticked in `TRACKER.md`.
+
 **Verified 2026-11-05 (odd-T4a), `dot-engine` 2.4.0, native graphviz 16.1.0.** Our DOT matches the jar's for every
 edge, and the engine alone reproduces the difference: `DE.render(DE.parse(svek-1.dot), 'dot')` differs from
 `dot -Tdot svek-1.dot` on exactly one line of the 46.

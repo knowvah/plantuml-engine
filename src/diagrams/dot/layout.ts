@@ -7,6 +7,8 @@ import '../../core/dot-engine-measurer.js';
 
 import { renderSvg } from '@knowvah/dot-engine';
 
+import { withEngineMessagesCollected } from '../../core/dot-engine-messages.js';
+
 import type { DotDiagramAST, DotGeometry } from './ast.js';
 
 /**
@@ -24,12 +26,16 @@ import type { DotDiagramAST, DotGeometry } from './ast.js';
  * text (`Error: <stdin>: syntax error in line 3 near '->'`) instead of an
  * SVG. Reproducing that needs graphviz's yacc error point and token, which
  * @knowvah/dot-engine's parser does not expose (and its grammar accepts some
- * inputs graphviz rejects) — library-forced; see the unwind-U2 notes.
+ * inputs graphviz rejects) — library-forced; see the unwind-U2 notes. A
+ * graphviz WARNING on a diagram that renders is mirrored: it precedes the SVG.
  */
 export function layoutDot(ast: DotDiagramAST): DotGeometry {
   let svg: string;
   try {
-    svg = renderSvg(ast.dotContent, 'dot');
+    // The jar's image is dot's merged stdout and stderr (`ProcessRunner.java:69`,
+    // `PSystemDot.java:97-98`): graphviz's warnings come before the SVG.
+    const { value, messages } = withEngineMessagesCollected(() => renderSvg(ast.dotContent, 'dot'));
+    svg = messages + value;
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     throw new Error(`@startdot: could not render DOT — ${detail}`);

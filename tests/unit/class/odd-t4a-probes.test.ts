@@ -2,7 +2,7 @@
  * odd T4a: authored object, map and json probes against the jar, past what the corpus rows reach. A drawn probe is
  * 0 diffs. An error page differs from the jar's only in the version line and source name, which the user's ruling keeps
  * (DIVERGENCES.md "Error pages print this port's version, and the source name is `string`"), so it asserts its line
- * and message instead. `ports-decors` is `docs/graphviz-issues/41-parallel-port-edges-second-route.md`, not here. The
+ * and message instead. `ports-decors` joined on dot-engine 2.12.0, which fixed graphviz issue 41's second route. The
  * probes the ruling of #143 covers (a duplicate object or map, an unknown colour) are on the needs-ruling issue.
  */
 import { readFileSync } from 'node:fs';
@@ -35,7 +35,7 @@ const OTHER_FACTORY = new Set(['url-statement', 'decl-linecolor']);
 
 describe('object, map and json probes against the jar', () => {
   it('collects every probe', () => {
-    expect(names.length).toBe(43);
+    expect(names.length).toBe(44);
     expect(drawn.length + refused.length).toBe(names.length);
   });
 
