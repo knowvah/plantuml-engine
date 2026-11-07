@@ -7,9 +7,10 @@
  * made the room for this split).
  */
 
-import { own, withDiamondColors } from './diamond-colors.js';
+import { withDiamondColors } from './diamond-colors.js';
 import type { ActivityNode } from '../ast.js';
 import type { StringBounder, Tile } from '../tiles/tile.js';
+import { documentThemeOf } from '../../../core/activity-theme-at.js';
 import type { Theme } from '../../../core/theme.js';
 import { GtileStart } from '../tiles/gtile-start.js';
 import { GtileStop } from '../tiles/gtile-stop.js';
@@ -124,14 +125,21 @@ export function tileEarlyLeaf(node: EarlyLeafNode): Tile | null {
  * switch under the complexity hook's cap once `backward` (M3) became a
  * 15th case there.
  */
-export function tileSimpleLeaf(node: SimpleLeafNode, bounder: StringBounder, theme: Theme): Tile {
+export function tileSimpleLeaf(node: SimpleLeafNode, bounder: StringBounder, positionalTheme: Theme): Tile {
+  const theme = documentThemeOf(positionalTheme); // aar-T6b: a leaf reads its own builder, not its parent's
   switch (node.kind) {
     case 'start':
-      return withSwimlane(withDiamondColors(new GtileStart(), own(node.color)), node.swimlane);
+      return withSwimlane(
+        withDiamondColors(new GtileStart(), { open: node.color, line: node.lineColor }),
+        node.swimlane,
+      );
     case 'stop':
-      return withSwimlane(withDiamondColors(new GtileStop(), own(node.color)), node.swimlane);
+      return withSwimlane(
+        withDiamondColors(new GtileStop(), { open: node.color, line: node.lineColor }),
+        node.swimlane,
+      );
     case 'end':
-      return withSwimlane(withDiamondColors(new GtileEnd(), own(node.color)), node.swimlane);
+      return withSwimlane(withDiamondColors(new GtileEnd(), { open: node.color, line: node.lineColor }), node.swimlane);
     case 'break':
       return withSwimlane(new GtileBreak(), node.swimlane);
     case 'action':

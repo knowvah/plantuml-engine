@@ -35,11 +35,22 @@ import type { CompressShape } from './shapes-of.js';
 export interface TitleDrawnShapes {
   readonly shapes: readonly CompressShape[];
   readonly drewText: boolean;
+  /** Every `UText` drawn, at its drawn translate: `TextLimitFinder#drawText`'s input (`SlotFinder.java:127-135`). */
+  readonly texts: readonly UText[];
+  readonly textOrigins: readonly { readonly x: number; readonly y: number }[];
+  /** The first shape drawn, of any kind, with its draw point: what `UGraphicCompressOnXorY` anchors a move on. */
+  readonly first: { readonly isText: boolean; readonly x: number; readonly y: number } | undefined;
+  /** The draw point of every `draw` call, in draw order (`UGraphicCompressOnXorY#draw` moves each by its own `ct()`). */
+  readonly points: readonly { readonly x: number; readonly y: number }[];
 }
 
 interface Sink {
   readonly shapes: CompressShape[];
   drewText: boolean;
+  readonly texts: UText[];
+  readonly textOrigins: { x: number; y: number }[];
+  first: { isText: boolean; x: number; y: number } | undefined;
+  readonly points: { x: number; y: number }[];
 }
 
 /** A `SlotFinder`-shaped recorder: one {@link CompressShape} per drawn shape. */
@@ -68,8 +79,12 @@ class TitleShapeRecorder extends UGraphicNo {
   draw(shape: UShape): void {
     const x = this.getTranslate().getDx();
     const y = this.getTranslate().getDy();
+    this.sink.first ??= { isText: shape instanceof UText, x, y };
+    this.sink.points.push({ x, y });
     if (shape instanceof UText) {
       this.sink.drewText = true;
+      this.sink.texts.push(shape);
+      this.sink.textOrigins.push({ x, y });
     } else if (shape instanceof URectangle) {
       this.sink.shapes.push({ kind: 'rect', x, y, width: shape.getWidth(), height: shape.getHeight() });
     } else if (shape instanceof UPath || shape instanceof UPolygon) {
@@ -91,7 +106,7 @@ export function titleDrawnShapes(
   at: { x: number; y: number },
   bounder: StringBounder,
 ): TitleDrawnShapes {
-  const sink: Sink = { shapes: [], drewText: false };
+  const sink: Sink = { shapes: [], drewText: false, texts: [], textOrigins: [], first: undefined, points: [] };
   title.drawU(new TitleShapeRecorder(bounder, new UTranslate(at.x, at.y), sink));
   return sink;
 }

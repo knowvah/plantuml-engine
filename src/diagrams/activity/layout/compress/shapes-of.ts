@@ -26,12 +26,17 @@ import { edgeLabelBlock, edgeLabelLayout } from './edge-label-anchor.js';
 import { measurerAdapterOf } from '../../tiles/gtile-action.js';
 import { ifLabelBlock, ifLabelFontSize, type IfLabelNode } from '../../activity-text-sheet-diamond.js';
 import { klimtStringBounder } from '../../activity-creole-sheet.js';
-import { TextBlockUtils } from '../../../../core/klimt/shape/TextBlockUtils.js';
 import { ASCENT_FRACTION } from '../../activity-renderer-shapes.js';
 import { activityTextFontConfiguration } from '../../activity-text-sheet.js';
 import { TEXT_LIMIT_SHIFT } from './slot-finder.js';
 import { edgeLinkStyle } from '../edge-link-style.js';
 import { ifOwnLabelShapes } from './shapes-of-hexagon-label.js';
+import { activityDebugOf } from '../../../../core/activity-debug-option.js';
+import type { StringBounder as KlimtStringBounder } from '../../../../core/klimt/font/StringBounder.js';
+import type { TextBlock } from '../../../../core/klimt/shape/TextBlock.js';
+import { activityMeasurer } from '../../activity-string-bounder.js';
+import { titleDrawnShapes } from './shapes-of-frame-title.js';
+import { emojiBoxShapes } from './shapes-of-emoji.js';
 
 export type { Reservation } from '../hexagon-reservations.js';
 
@@ -134,7 +139,13 @@ const FRAME_KINDS = new Set(['group', 'partition']);
  */
 export function ifLabelTextAnchor(theme: Theme, node: IfLabelNode): { dx: number; dy: number } {
   const pad = theme.padding ?? 0;
-  return { dx: pad, dy: pad + ifLabelFontSize(node, theme) * TITLE_BASELINE_ASCENT };
+  const textAnchor = { dx: pad, dy: pad + ifLabelFontSize(node, theme) * TITLE_BASELINE_ASCENT };
+  // aar-T6b: a label whose first draw is an image (`<latex>`, `<img>`) is anchored on that draw's own point, not on a
+  // text baseline (`UGraphicCompressOnXorY.java:107-108`, the translate-and-keep branch for every non-line shape).
+  const { tb, fc } = ifLabelBlock(node, theme);
+  const sb = klimtStringBounder(activityMeasurer(theme), { family: fc.family, size: fc.size });
+  const first = titleDrawnShapes(tb, { x: 0, y: 0 }, sb).first;
+  return first === undefined || first.isText ? textAnchor : { dx: first.x, dy: first.y };
 }
 
 /**
@@ -169,7 +180,7 @@ export function ifLabelTextAnchor(theme: Theme, node: IfLabelNode): { dx: number
  * SIZING side of this same label -- this is the matching envelope for the
  * DRAWING/compression-bounds side.
  */
-function ifLabelShape(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape {
+function ifLabelShapes(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape[] {
   // add4-T3j: `SlotFinder#drawText` (`SlotFinder.java:127-135`) boxes each
   // drawn `UText` at its OWN font (a heading stripe is 15pt), so the
   // envelope is the drawn block's text extent -- `LimitFinder#drawText`'s
@@ -177,15 +188,7 @@ function ifLabelShape(node: ActivityNodeGeo, bounder: StringBounder, theme: Them
   // 216-224`), read off the block drawn at the node's origin.
   const { tb, fc } = ifLabelBlock(node, theme);
   const sheetBounder = klimtStringBounder(measurerAdapterOf(bounder), { family: fc.family, size: fc.size });
-  const mm = TextBlockUtils.getMinMax(tb, sheetBounder, false);
-  const height = mm.getMaxY() - mm.getMinY();
-  return {
-    kind: 'text',
-    x: node.x + mm.getMinX(),
-    y: node.y + mm.getMaxY() - TEXT_LIMIT_SHIFT,
-    width: mm.getMaxX() - mm.getMinX(),
-    height,
-  };
+  return labelBlockShapes(tb, { x: node.x, y: node.y }, sheetBounder);
 }
 
 /**
@@ -228,7 +231,7 @@ function ifLabelShape(node: ActivityNodeGeo, bounder: StringBounder, theme: Them
  *   :138-161`) -- so which of the three a plain box kind is tagged does
  *   not change any slot.
  */
-function shapeForNode(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape | null {
+function shapeForNode(node: ActivityNodeGeo): CompressShape | null {
   if (NO_SHAPE_KINDS.has(node.kind)) return null;
   if (BAR_KINDS.has(node.kind)) {
     return { kind: 'rect', x: node.x, y: node.y, width: node.width, height: node.height, ignoreX: true };
@@ -237,7 +240,6 @@ function shapeForNode(node: ActivityNodeGeo, bounder: StringBounder, theme: Them
   if (node.kind === 'if-merge') {
     return { kind: 'polygon', x: node.x, y: node.y, width: node.width, height: node.height };
   }
-  if (node.kind === 'if-label') return ifLabelShape(node, bounder, theme);
   if (node.kind === 'note') return { kind: 'polygon', ...noteBox(node) };
   const styled = boxStyleBox(node); // add4-T3e
   if (styled !== undefined) return { kind: 'polygon', ...styled };
@@ -334,6 +336,38 @@ function midArrowShape(edge: ActivityEdgeGeo): CompressShape | undefined {
 }
 
 /**
+ * The slots of a drawn label block: every shape `SlotFinder#draw` has a branch for (`SlotFinder.java:84-109`), the
+ * label's `UText`s boxed as ONE envelope (`TextLimitFinder#drawText`, `TextLimitFinder.java:82-90`; the per-line slots
+ * touch, so it is the same slot set). A `<latex>`/`<img>` atom is a `UImageSvg`/`UImage`, which has no branch, so a
+ * label made of images leaves no slot (aar-T6b, `pedulu-06-xomo122`).
+ */
+function labelBlockShapes(
+  tb: TextBlock,
+  at: { readonly x: number; readonly y: number },
+  sheetBounder: KlimtStringBounder,
+): CompressShape[] {
+  const drawn = titleDrawnShapes(tb, at, sheetBounder);
+  const boxes = drawn.texts.map((text, i) => {
+    const dim = sheetBounder.calculateDimension(text.getFontConfiguration(), text.getText());
+    const origin = drawn.textOrigins[i]!;
+    return { x: origin.x, y: origin.y, width: dim.getWidth(), height: dim.getHeight() };
+  });
+  if (boxes.length === 0) return [...drawn.shapes];
+  const minX = Math.min(...boxes.map((b) => b.x));
+  const maxX = Math.max(...boxes.map((b) => b.x + b.width));
+  const minY = Math.min(...boxes.map((b) => b.y - b.height + TEXT_LIMIT_SHIFT));
+  const maxY = Math.max(...boxes.map((b) => b.y + TEXT_LIMIT_SHIFT));
+  const envelope: CompressShape = {
+    kind: 'text',
+    x: minX,
+    y: maxY - TEXT_LIMIT_SHIFT,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+  return [...drawn.shapes, envelope];
+}
+
+/**
  * An edge label -- the `UText` `Snake#drawInternalLabel` draws
  * (`ftile/Snake.java:225-231`: `text.textBlock.drawU(ug.apply(UTranslate
  * .point(getTextBlockPosition(...))))`), which `SlotFinder#drawText`
@@ -365,10 +399,10 @@ function midArrowShape(edge: ActivityEdgeGeo): CompressShape | undefined {
  * renderer's own, so on the ON_Y pass the box sits at the label's
  * X-compressed raw anchor, as the ON_Y `SlotFinder` sees it.
  */
-function edgeLabelShape(edge: ActivityEdgeGeo, bounder: StringBounder, theme: Theme): CompressShape | undefined {
+function edgeLabelShapes(edge: ActivityEdgeGeo, bounder: StringBounder, theme: Theme): CompressShape[] {
   const layout = edgeLabelLayout(edge, theme);
-  if (layout === undefined) return undefined;
-  // isw-T2b-ca: the box is the DRAWN block's `LimitFinder` text extent
+  if (layout === undefined) return [];
+  // isw-T2b-ca: the box is the DRAWN block's text extent
   // (`LimitFinder.java:216-224`, `ifLabelShape`'s envelope), so a label
   // wrapped by `style.wrapWidth()` (`Branch.java:248-258`) occupies every
   // line it draws, not only its `\n` lines; `SheetBlock1`'s padding
@@ -376,15 +410,8 @@ function edgeLabelShape(edge: ActivityEdgeGeo, bounder: StringBounder, theme: Th
   const tb = edgeLabelBlock(edge.label!, theme, edge.labelWrapped === true);
   const fc = activityTextFontConfiguration(theme, layout.size, 'arrow');
   const sheetBounder = klimtStringBounder(measurerAdapterOf(bounder), { family: fc.family, size: layout.size });
-  const mm = TextBlockUtils.getMinMax(tb, sheetBounder, false);
   const top = layout.baselineY - layout.size * ASCENT_FRACTION;
-  return {
-    kind: 'text',
-    x: layout.x + mm.getMinX(),
-    y: top + mm.getMaxY() - TEXT_LIMIT_SHIFT,
-    width: mm.getMaxX() - mm.getMinX(),
-    height: mm.getMaxY() - mm.getMinY(),
-  };
+  return labelBlockShapes(tb, { x: layout.x, y: top }, sheetBounder);
 }
 
 /** Every `CompressShape` one `ActivityEdgeGeo` contributes -- never its
@@ -406,8 +433,7 @@ function shapesForEdge(edge: ActivityEdgeGeo, meta: EdgeMeta, bounder: StringBou
   if (!edgeLinkStyle(edge).isInvisible()) shapes.push(...wormDecorations(edge, meta));
   const midArrow = midArrowShape(edge);
   if (midArrow !== undefined) shapes.push(midArrow);
-  const label = edgeLabelShape(edge, bounder, theme);
-  if (label !== undefined) shapes.push(label);
+  shapes.push(...edgeLabelShapes(edge, bounder, theme));
   return shapes;
 }
 
@@ -441,17 +467,29 @@ export function shapesOf(input: ShapesOfInput): CompressShape[] {
       shapes.push(...frameShapes(node, input.bounder, input.theme));
       continue;
     }
+    if (node.kind === 'if-label') {
+      shapes.push(...ifLabelShapes(node, input.bounder, input.theme));
+      continue;
+    }
     if (node.kind === 'if-own-label') {
       shapes.push(...ifOwnLabelShapes(node, input.bounder, input.theme));
       continue;
     }
-    const shape = shapeForNode(node, input.bounder, input.theme);
+    if (node.emojiBox === true) {
+      shapes.push(...emojiBoxShapes(node, input.bounder, input.theme));
+      continue;
+    }
+    // `FtileBox.java:201-206`: the debug rectangle is drawn before the box, over the same extent.
+    if (node.kind === 'action' && activityDebugOf(input.theme)) {
+      shapes.push({ kind: 'rect', x: node.x, y: node.y, width: node.width, height: node.height });
+    }
+    const shape = shapeForNode(node);
     if (shape !== null) shapes.push(shape);
   }
   for (let i = 0; i < input.edges.length; i++) {
     shapes.push(...shapesForEdge(input.edges[i]!, input.edgeMeta[i]!, input.bounder, input.theme));
   }
-  for (const r of input.reservations) shapes.push(shapeForReservation(r));
+  for (const r of input.reservations) if (r.skipCompression !== true) shapes.push(shapeForReservation(r));
   shapes.push(...titleShapes(input.swimlanes, input.swimlaneBand, input.bounder, input.theme));
   return shapes;
 }

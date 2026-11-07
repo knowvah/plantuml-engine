@@ -35,6 +35,20 @@ post-D7 measurements.
 
 ---
 
+## activity-authored-rows (aar) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #121; per-task history on the local tag `activity-authored-rows/pre-squash`)
+
+Activity survey 610/35/233 → 755/4/119 (conformant/structural-match/diverged); 145 of the 154 in-scope corpus rows conformant and pinned, `unknown/dijapi-54` pinned in the unknown tree, every authored and `loops-*` dss row at 0. The other 9 are named: 3 LaTeX rows (KaTeX), `nomave-73` (QR codes, MIT edition), `rekefe-90` (#155), 4 legacy-engine rows (#123). 0 conformant rows lost in any engine; `dist/*.d.ts` identical.
+
+### Follow-ons (mechanism, owner)
+
+1. **`\r`/`\l` natural-alignment escapes in activity labels** — `Display.java:291-296`; `label-newlines.ts` documents the gap (a per-label alignment override through `ActivityIf`/`renderIfLabel`). No corpus row.
+2. **Diamond `HorizontalAlignment` reads the `diamond` bucket over `root`**, not the full counter-priority merge (`ConditionalBuilder.java:241`): a later `skinparam defaultTextAlignment` after a `diamond {}` style would differ. No corpus row.
+3. **Box stereogroup colours** — only the `#`-label arm of `Stereogroup#getInnerColors` is ported (`Stereogroup.java:184-185`); the `###`/`##` and `name:value;` labels are not.
+4. **A `ULine`/`URectangle` inside a plain-branch frame title** gets only its start-point translate under compression; the jar also moves line ends and resizes rects (`UGraphicCompressOnXorY.java:96-108`). No fixture.
+5. **`<<icon>>` boxes and `!option debug` rects** are not in the swimlane lane extents or the group ink (`measureLaneExtents`, `canvas-origin-group-ink.ts`). No row needs them yet.
+6. **A group frame's merged style** carries FontSize, FontName and LineThickness, not bold/italic or font-face extras (`activity-composite-theme.ts`). No row uses them.
+7. **The activity harness duplicates `activityPlugin`** (`render-fixture-activity.ts`): a theme wrapper added in `activity/index.ts` must be mirrored there (it bit twice: `withActivityDocumentArrow`, and the asset store, now `activityRatchetOptions()`).
+
 ## state-divergence-drive (stdd) — DONE 2026-11-04 (branch `feature/parity-queue` off `4258f6c97`, collapsed to one unsigned commit per the queue ruling, not pushed; working history on the local tag `stdd/pre-squash`; issue #112)
 
 The 174 open state rows of `parity-state.json` (159 diverged, 15 structural-match of 299) went to **297 of 299 conformant**, 293 pinned in `state.golden.ratchet.test.ts` (110 at the start), 0 conformant losses in every engine against `4258f6c97`. Every mechanism carries its Java `file:line` in `plans/state-divergence-drive/decision-journal.md` (rows 1-46). The two rows left are named in `plans/state-divergence-drive/measurements/final-rows.md`.
@@ -75,7 +89,7 @@ Dark mode, monochrome and reverse colour, malformed `<style>`, and the `FontSize
 
 ### Follow-ons (mechanism, owner)
 1. **Two-tier cascade storage** — skinparam values and `<style>` values live in separate theme tiers; `skinparam-supersedes-cascade.ts` restores counter order for the measured pairs only (`classFontSize`, `stateBorderThickness`, `roundCorner`, `arrowThickness`, `<style> class { LineThickness }`). Siblings unmapped: `classBorderThickness`, `*BackgroundColor`, `*FontName`, class `Shadowing`, the activity corner vs an earlier `<style>`. Structural fix: one merged `Style` per element (D7). Author rows first.
-2. **Activity builder capture** — only plain `:label;` boxes take the builder current at their command (`activity-box-builder-at.ts`); `InstructionIf.java:104`, `InstructionRepeat.java:105`, `InstructionWhile`, repeat-inline and `backward:` also capture it.
+2. **Activity builder capture** — *partly struck by aar T6a (2026-11-06): the if, while and repeat diamonds now read the builder captured at their opener (`activity-theme-at.ts`); repeat-inline and `backward:` boxes remain.* Only plain `:label;` boxes take the builder current at their command (`activity-box-builder-at.ts`); `InstructionIf.java:104`, `InstructionRepeat.java:105`, `InstructionWhile`, repeat-inline and `backward:` also capture it.
 3. **Activity shadows not ported** — diamond, fork bar, spot (`FtileDiamond.java:89`, `FtileCircleSpot`); swimlane extents ignore shadows (`swimlane-context.ts#itemsExtentOf`).
 4. **Rounded Opale** — tip notes and the class link-box are not wired.
 5. **Mapper gaps** — `backgroundGradient` and `diagramBorderColor` are not mapped by monochrome/reverse in activity, sequence, state or class (`SvgGraphics.java:178-181`).
@@ -99,16 +113,16 @@ Needs a ruling only the user can sign:
 8. **Stale `withDiagramBorderRect` comment on `RenderFragment`** (`dispatcher-types.ts`) — T3f split the helper to `diagramBorderRect`; the frozen d.ts holds the comment, so correcting it is a public d.ts change.
 
 Layout and parser, not colour reads:
-9. **A floating note after `end split`** — `InstructionSplit.java:155-158` hands it to the last branch's last instruction; `activity__loops-*` 311, `split` + note alone 87. Ours not traced.
-10. **`-> label;` before a merge branch, `end merge`, or a box and note** — 10-19 px off the jar's width.
+9. ~~**A floating note after `end split`**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T2b hands the note to the last branch (`InstructionSplit.java:155-158`, `InstructionList.java:190-196`); all 10 `activity__loops-*` rows and the `splitnote-*` rows at 0. Was: `InstructionSplit.java:155-158` hands it to the last branch's last instruction; `activity__loops-*` 311, `split` + note alone 87. Ours not traced.
+10. ~~**`-> label;` before a merge branch, `end merge`, or a box and note**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T2b (`AbstractParallelFtilesBuilder` labels) and T2c; the `mergelabel-*` rows at 0. Was: 10-19 px off the jar's width.
 11. **Legacy activity `(*) -->`** — no engine (`net/sourceforge/plantuml/activitydiagram/`), separable port (`activity__probe-legacy` 21).
-12. **`CommandActivityLong3`'s leading colour** — `#red:a` / `b;` draws with a deprecation warning, the colour parsed and not applied (`CommandActivityLong3.java:126`); we refuse it.
-13. **`(X)` for letters outside A, B, E, G** — draws `<text>` where the jar draws an outline (`activity-spot-glyph-data.ts:103`, `DriverCenteredCharacterSvg.java:72-81`); needs glyph data through the platform-outline seam.
+12. ~~**`CommandActivityLong3`'s leading colour**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T1b (`CommandActivityLong3.java:126`); `long3-*` rows at 0 (`long3-oneline-colour` is a stock-jar error, pinned `stockError`). Was: `#red:a` / `b;` draws with a deprecation warning, the colour parsed and not applied (`CommandActivityLong3.java:126`); we refuse it.
+13. ~~**`(X)` for letters outside A, B, E, G**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T5a scraped the 32 upper-case and 26 lower-case outlines (no case folding, `CommandCircleSpot3.java:61`); every `spot-*` row at 0. Was: draws `<text>` where the jar draws an outline (`activity-spot-glyph-data.ts:103`, `DriverCenteredCharacterSvg.java:72-81`); needs glyph data through the platform-outline seam.
 14. **State** — border-point cluster with a link 8 px wide (`state__hist-*`); `__zaent_` link id (`Link.java:106-114`, 57 of 273 fixtures); literal `\n` in a one-line note; a note as a link endpoint `B --> N` makes a bogus state; a cluster composite with `--` regions draws a dashed-rect leaf; an implicit second note's link id `__note_0`, jar `GMN2`; our error page cites the previous line. — **struck by stdd (2026-11-04):** `__zaent_` id (T1a), the one-line `\n` note, the note endpoint and the implicit second note id (T5b), the `--` region leaf (T6a); the `state__hist-*` 8 px is dot-engine placement on a border-point cluster, graphviz issue 39.
-15. **Two positional `<style>` blocks in activity** (`dijapi-54`, first diamond `#F00`, jar `#00B`) — D2's stated consequence: a bucket is a snapshot.
+15. ~~**Two positional `<style>` blocks in activity**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T6a: if/while/repeat diamonds read the builder captured at their opener (`InstructionIf.java:104`); `unknown/dijapi-54` conformant and pinned. Was:(`dijapi-54`, first diamond `#F00`, jar `#00B`) — D2's stated consequence: a bucket is a snapshot.
 
 Colour reads still open, each small:
-16. **A group whose body starts with an inline colour arrow** — `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
+16. ~~**A group whose body starts with an inline colour arrow**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T3c: `FtileGroup#getInLinkRendering` returns the body's (`FtileGroup.java:124-126`); `groupin-*` rows at 0. Was: `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
 17. ~~**`note on link` attribute colour**~~ — description side DONE by ddd (`note-grammar.ts`, `COLORS_REGEXP`, line and back, text ignored as the jar does). `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
 18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
 19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
@@ -123,9 +137,9 @@ The 18 `unknown` rows the jar types as engines we draw: 14 conformant (activity 
 Follow-ons:
 
 1. **`!theme` + a `<style>` class: a plain activity box reads the flat tiers** (finadu-74's 50 diffs; a T3b probe). On #120.
-2. **`if (...) then <<foo>>` gives the diamond the stereotype style** (`FtileFactoryDelegatorIf.java:79-80`); vupecu-35's 28 diffs. On #121.
+2. ~~**`if (...) then <<foo>>` gives the diamond the stereotype style**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T6a group 2: the diamond's merged `withTOBECHANGED(stereotype)` style drives the test label font (`FtileFactoryDelegatorIf.java:79-80`, `ConditionalBuilder.java:117-118`); vupecu-35 pinned. Was:(`FtileFactoryDelegatorIf.java:79-80`); vupecu-35's 28 diffs. On #121.
 3. **`<style> activityDiagram { partition { LineThickness } }` reaches no activity frame.** On #138.
-4. **A sprite group title is compressed shape by shape in the jar** (`UGraphicCompressOnXorY`), so a sprite with empty space moves; ours draws the title as one block. On #121.
+4. ~~**A sprite group title is compressed shape by shape in the jar**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T6a: each plain-branch title shape moves by `ct()` of its own point (`UGraphicCompressOnXorY.java:107-108`) and the tab path counts toward the canvas (`LimitFinder.java:164-167`); authored `activity__title-sprite-*` at 0. Was:(`UGraphicCompressOnXorY`), so a sprite with empty space moves; ours draws the title as one block. On #121.
 5. **State under `!pragma layout elk` diverges on a plain composite** (29 diffs on `X --> Y { Z }`, no table): draw order, ids, cluster header. No issue yet.
 6. **`dist/plantuml-ts.d.ts` grew 1,471 lines** since `dbb996060`: T1b put `boxStyleOf?: ActivityBoxStyleResolver` on the public theme graph (`theme-graph-colors-b.ts:405`), which drags the whole `Style` type graph into the bundle. Additive only; no consumer exists. An opaque type there would undo it.
 7. **The dashboard counts an engine's `unknown`-tree pins under that engine**, not under `unknown` (as it does for the 634 `svg-class/unknown` pins), so the `unknown` ratchet cell stays 366.

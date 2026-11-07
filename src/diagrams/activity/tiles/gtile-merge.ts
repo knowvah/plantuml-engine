@@ -1,3 +1,4 @@
+import type { Theme } from '../../../core/theme.js';
 import type { StringBounder, Tile } from './tile.js';
 import { GtileFork } from './gtile-fork.js';
 import { HEXAGON_HALF_SIZE } from '../layout/hexagon-reservations.js';
@@ -33,8 +34,8 @@ export const MERGE_DIAMOND_SIZE = HEXAGON_HALF_SIZE * 2;
  *   -- `doStep1`/`doStep2`.
  */
 export class GtileMerge extends GtileFork {
-  constructor(branches: Tile[], bounder: StringBounder) {
-    super(branches, bounder);
+  constructor(branches: Tile[], bounder: StringBounder, theme?: Theme) {
+    super(branches, bounder, undefined, theme);
   }
 
   protected override bottomBandHeight(): number {

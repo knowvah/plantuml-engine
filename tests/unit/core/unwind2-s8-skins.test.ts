@@ -35,7 +35,9 @@ const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind
 
 const PINS: Readonly<Record<string, number>> = {
   'skin-activity-reddress': 5,
-  'skin-activity-sonyxperiadev': 1,
+  // 1 -> 0 at aar/T6a (2026-11-06): `FtileBox` takes its font from the merged style (`FtileBox.java:164-176`),
+  // so the skin's FontName reaches the box text.
+  'skin-activity-sonyxperiadev': 0,
   'skin-case-rose': 5,
   'skin-class-after-reddress': 7,
   'skin-class-reddress': 5,

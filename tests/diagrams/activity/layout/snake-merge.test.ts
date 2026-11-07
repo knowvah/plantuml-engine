@@ -212,7 +212,7 @@ describe('mergeSnakes — reverse-direction join (Snake.merge:323-324 recursion)
     expect(result.edges).toHaveLength(2);
   });
 
-  it('text on the NEW side does NOT block a reverse-direction merge', () => {
+  it('text on the NEW side blocks a reverse-direction merge too (Snake.java:308-310 precedes both joins; zovacu-12)', () => {
     const edges = [
       edge([
         { x: 10, y: 10 },
@@ -227,8 +227,7 @@ describe('mergeSnakes — reverse-direction join (Snake.merge:323-324 recursion)
       ),
     ];
     const result = mergeSnakes(edges, [meta(), meta()]);
-    expect(result.edges).toHaveLength(1);
-    expect(result.edges[0]!.label).toBe('new-text');
+    expect(result.edges).toHaveLength(2);
   });
 });
 

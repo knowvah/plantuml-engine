@@ -55,7 +55,7 @@ import type { StringMeasurer } from '../../../../core/measurer.js';
 import { activityMeasurer } from '../../activity-string-bounder.js';
 import { activityWrapWidth } from '../../activity-text-style.js';
 import type { TextBlock } from '../../../../core/klimt/shape/TextBlock.js';
-import { DEFAULT_LABEL_ALIGN, getTextBlockPosition } from '../snake-text-position.js';
+import { arrowHorizontalAlignment, getTextBlockPosition } from '../snake-text-position.js';
 
 /** A label's draw inputs: its lines, the arrow font size, the block width
  *  ({@link edgeLabelBlockSize}) and the block's anchor: its left `x` and
@@ -124,7 +124,7 @@ function placeOnPoints(edge: ActivityEdgeGeo, label: string, theme: Theme): Edge
   const size = activityFontSize(theme, 'arrow');
   const lines = label.split('\n');
   const dim = edgeLabelBlockSize(label, theme, undefined, edge.labelWrapped === true);
-  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? DEFAULT_LABEL_ALIGN);
+  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? arrowHorizontalAlignment(theme));
   return { lines, size, width: dim.width, x: position.x, baselineY: position.y + size * ASCENT_FRACTION };
 }
 

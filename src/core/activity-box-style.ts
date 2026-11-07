@@ -17,6 +17,7 @@ import { currentStyleBuilderOf } from './document-back-color.js';
 import { builderAtPosition, lastDeclarationPosition } from './activity-box-builder-at.js';
 import { StyleParsingException } from './style/parser/StyleParser.js';
 import type { PName } from './style/PName.js';
+import type { SName } from './style/SName.js';
 import type { Style } from './style/Style.js';
 import type { StyleBuilder } from './style/StyleBuilder.js';
 import { StyleSignatureBasic } from './style/StyleSignatureBasic.js';
@@ -55,6 +56,18 @@ const READ_BY_FTILE_BOX: readonly PName[] = [
  */
 const SKIN_BOX_PADDING = ClockwiseTopRightBottomLeft.same(10);
 
+/** `plantuml.skin:6`'s `root { FontName SansSerif }`, the face the flat readers answer for (`activity-diamond-theme.ts`). */
+const SKIN_FONT_NAME = 'SansSerif';
+
+/**
+ * Whether `style` names a face other than the skin's. A `<style> activity { FontName }` is no flat tier (only an
+ * object-kind bucket takes `FontName`, `style-map-element.ts#collectObjectKindFont`), yet `FtileBox` reads its font
+ * from the merged style (`FtileBox.java:164-176`), so such a box must reach the renderer as its style (aar-T6b).
+ */
+function fontNameOtherThanSkin(style: Style): boolean {
+  return style.value('FontName').asString() !== SKIN_FONT_NAME;
+}
+
 /** Whether `style`'s padding is other than {@link SKIN_BOX_PADDING}. */
 function paddingOtherThanSkin(style: Style): boolean {
   const padding = style.getPadding();
@@ -71,7 +84,7 @@ function paddingOtherThanSkin(style: Style): boolean {
 export type ActivityBoxStyleResolver = (labels: readonly string[]) => Style | undefined;
 
 /** `Stereogroup#buildStereotype` over `labels`; `undefined` for none (`withTOBECHANGED`'s own "no change", :119-126). */
-function stereotypeOf(labels: readonly string[]): Stereotype | undefined {
+export function stereotypeOf(labels: readonly string[]): Stereotype | undefined {
   return labels.length === 0 ? undefined : Stereotype.build(labels.map((label) => `<<${label}>>`).join(''));
 }
 
@@ -88,16 +101,19 @@ export function resolveActivityBoxStyle(builder: StyleBuilder, labels: readonly 
   const stereotype = stereotypeOf(labels);
   if (stereotype === undefined) {
     const plainMerged = ACTIVITY_BOX_SIGNATURE.getMergedStyle(builder);
-    return plainMerged !== undefined && paddingOtherThanSkin(plainMerged) ? plainMerged : undefined;
+    return plainMerged !== undefined && (paddingOtherThanSkin(plainMerged) || fontNameOtherThanSkin(plainMerged))
+      ? plainMerged
+      : undefined;
   }
   const merged = ACTIVITY_BOX_SIGNATURE.withTOBECHANGED(stereotype).getMergedStyle(builder);
   if (merged === undefined) return undefined;
   const plain = ACTIVITY_BOX_SIGNATURE.getMergedStyle(builder);
-  return plain !== undefined && readsAlike(plain, merged) && !paddingOtherThanSkin(merged) ? undefined : merged;
+  const flatReadsIt = !paddingOtherThanSkin(merged) && !fontNameOtherThanSkin(merged);
+  return plain !== undefined && readsAlike(plain, merged) && flatReadsIt ? undefined : merged;
 }
 
 /** The document's builder, `null` for a `<style>` block the parser rejects. */
-function builderOf(pre: PreprocessorResult): StyleBuilder | null {
+export function builderOf(pre: PreprocessorResult): StyleBuilder | null {
   try {
     return currentStyleBuilderOf(pre);
   } catch (e) {
@@ -155,4 +171,57 @@ export function withActivityBoxStyle(theme: Theme, pre: PreprocessorResult): The
 /** The position-aware resolver of {@link withActivityBoxStyle}, absent on a hand-built theme. */
 export function activityBoxStyleAtOf(theme: Theme): ActivityBoxStyleAtResolver | undefined {
   return (theme as ThemeWithBoxStyleAt)[BOX_STYLE_AT_KEY];
+}
+
+/** `FtileGroup.getStyleSignature(symbol)` (`FtileGroup.java:89-92`) over a USymbol's `getSNames()`
+ *  (`USymbols.java:81,86,87,91`; `USymbolCard.java:56`). */
+const COMPOSITE_SNAMES: Readonly<Record<string, SName>> = {
+  group: 'group', // USymbols.java:81
+  partition: 'partition', // USymbols.java:87
+  package: 'package_', // USymbols.java:86
+  rectangle: 'rectangle', // USymbols.java:91
+  card: 'card', // USymbolCard.java:56
+};
+
+/** The merged `Style` of a group frame of `symbol` (a {@link COMPOSITE_SNAMES} key) with `stereotype`'s label. */
+export type ActivityCompositeStyleResolver = (
+  symbol: string,
+  stereotype: string | undefined,
+  position: number | undefined,
+) => Style | undefined;
+
+const COMPOSITE_STYLE_KEY: unique symbol = Symbol('activity.compositeStyle');
+
+type ThemeWithCompositeStyle = Theme & { readonly [COMPOSITE_STYLE_KEY]?: ActivityCompositeStyleResolver };
+
+function compositeMerged(builder: StyleBuilder, symbol: string, stereotype: string | undefined): Style | undefined {
+  const sname = COMPOSITE_SNAMES[symbol];
+  if (sname === undefined) return undefined;
+  const signature = StyleSignatureBasic.of('root', 'element', 'activityDiagram', sname, 'composite');
+  return signature.withTOBECHANGED(stereotypeOf(stereotype === undefined ? [] : [stereotype])).getMergedStyle(builder);
+}
+
+/**
+ * `CommandPartition3.executeArg`'s `stylePartition` (`CommandPartition3.java:160-161`):
+ * `FtileGroup.getStyleSignature(symbol).withTOBECHANGED(stereotype).getMergedStyle(getCurrentStyleBuilder())`, the builder
+ * current at the command's `position` (as {@link withActivityBoxStyle}'s `boxStyleAt`).
+ */
+export function withActivityCompositeStyle(theme: Theme, pre: PreprocessorResult): Theme {
+  let builder: StyleBuilder | null | undefined;
+  const finalBuilder = (): StyleBuilder | null => (builder === undefined ? (builder = builderOf(pre)) : builder);
+  const lastDeclaration = lastDeclarationPosition(pre);
+  const resolver: ActivityCompositeStyleResolver = (symbol, stereotype, position) => {
+    const final = finalBuilder();
+    if (final === null) return undefined;
+    if (position === undefined || lastDeclaration === undefined || lastDeclaration < position)
+      return compositeMerged(final, symbol, stereotype);
+    const at = builderAtPosition(pre, position);
+    return at === null ? undefined : compositeMerged(at, symbol, stereotype);
+  };
+  return { ...theme, [COMPOSITE_STYLE_KEY]: resolver } as ThemeWithCompositeStyle;
+}
+
+/** The resolver of {@link withActivityCompositeStyle}, absent on a hand-built theme. */
+export function activityCompositeStyleOf(theme: Theme): ActivityCompositeStyleResolver | undefined {
+  return (theme as ThemeWithCompositeStyle)[COMPOSITE_STYLE_KEY];
 }

@@ -1,0 +1,23 @@
+@startuml
+start
+
+-> Before fork;
+fork
+-> Before A;
+:Fonction_A();
+
+-> END;
+fork again
+:fct_C();
+
+->END third part;
+fork again
+:fct_F();
+-> END last part;
+
+endfork
+
+
+stop
+
+@enduml

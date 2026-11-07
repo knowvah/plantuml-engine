@@ -97,9 +97,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { compareSvg, weightedScore } from './compare.js';
-import { renderFixtureActivity } from './render-fixture-activity.js';
+import { activityRatchetOptions, renderFixtureActivity } from './render-fixture-activity.js';
 
 interface BaselineFixture {
   readonly type: string;
@@ -172,9 +171,7 @@ function measure(f: FixtureRef): MeasureResult {
   const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
   const golden = readFileSync(join(dir, 'in.svg'), 'utf8');
   try {
-    const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), {
-      includeStore: fixtureIncludeStore(),
-    });
+    const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
     const { diffs } = compareSvg(ours, golden, 'deterministic');
     return {
       errored: false,

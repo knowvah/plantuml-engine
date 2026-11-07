@@ -36,6 +36,8 @@ import { markBigDiamondDuplicate } from './switch-swimlane-duplicate.js';
 import { compositeLaneGate, nonTranslatableConnectionDrawn } from './swimlane-connection-gate.js';
 import { applyInLabel, applyOutLabel } from './tile-layout-inlabel.js';
 import type { SnakeTextAlign } from './snake-text-position.js';
+import { arrowHorizontalAlignment } from './snake-text-position.js';
+import type { Theme } from '../../../core/theme.js';
 import {
   horizontalThenVerticalPoints,
   oneLinkBottomPoints,
@@ -67,8 +69,8 @@ function applyLastEdgeLabel(out: Out, label: string | undefined, align: SnakeTex
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/FtileSwitchWithManyLinks.java:91-92,218-219
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/FtileSwitchWithOneLink.java:82-83
  */
-function caseInLabelAlign(i: number, total: number): SnakeTextAlign {
-  if (i === 0 || i === total - 1) return { horizontal: 'LEFT' };
+function caseInLabelAlign(i: number, total: number, theme: Theme): SnakeTextAlign {
+  if (i === 0 || i === total - 1) return arrowHorizontalAlignment(theme);
   return { vertical: 'CENTER' };
 }
 
@@ -238,7 +240,7 @@ function pushCaseInEdge(step: SwitchCaseStep, args: OneCaseArgs, out: Out): void
     diamond1: { width: diamond.width, height: diamond.height },
   };
   pushEdge(out, points, laneOut(diamond, myLane), laneIn(c, myLane), { loop: hThenVLoop });
-  applyLastEdgeLabel(out, label, caseInLabelAlign(i, totalCases));
+  applyLastEdgeLabel(out, label, caseInLabelAlign(i, totalCases, out.theme));
 }
 
 /**
@@ -339,8 +341,10 @@ function pushOneMergeEdge(step: MergeEdgeStep, c: Tile, cPos: GPoint, asFirstOrL
   // LEFT/RIGHT arrow from the translated points (`:363-381`).
   if (vThenH !== undefined) out.edges[out.edges.length - 1]!.endDirection = vThenH.direction;
   // isw-T2-act F5: `getTextBlockSpecial()` (`FtileSwitchWithManyLinks.java:455-462`).
+  // The label only: every switch connection is drawn in the one style `arrowColor` (`FtileFactoryDelegatorSwitch
+  // .java:116-124`, `FtileSwitchWithManyLinks.java:176`), never the case's own `-[#c]->` (aar-T3a, `gopori-87`).
   if (c.outLabel !== undefined)
-    applyOutLabel(out, { outLabel: { ...c.outLabel, wrapped: true } }, CASE_OUT_LABEL_ALIGN);
+    applyOutLabel(out, { outLabel: { label: c.outLabel.label, wrapped: true } }, CASE_OUT_LABEL_ALIGN);
 }
 
 /**

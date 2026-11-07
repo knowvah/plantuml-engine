@@ -1,0 +1,16 @@
+@startuml
+start
+partition "partition" {
+  while (ForEach 1)
+    -[#LightGreen]->
+    :plop;
+  endwhile
+  -[#Blue]->
+  while (ForEach 2)
+    -[#LightGreen]->
+    :plop;
+  endwhile
+  -[#Blue]->
+  }
+stop
+@enduml

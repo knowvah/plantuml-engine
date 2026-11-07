@@ -22,7 +22,12 @@ export interface ActivityAction {
   /** EVERY label of the stereogroup, in `Stereogroup#getLabels` order: `FtileBox.create` builds its style from the whole
    *  group (`Stereogroup#buildStereotype`), where {@link stereotype} keeps one label. */
   stereotypes?: readonly string[];
+  /** The stereogroup's `line:` / `text:` colours (`Stereogroup#getInnerColors`): the box's border and `FontColor`. */
+  lineColor?: string;
+  textColor?: string;
   swimlane?: string;
+  /** The raw `[[url]]` of a `- label [[url]]` list item (`CommandActivityList.java:100-111`, `FtileWithUrl`). */
+  url?: string;
   /** The document line of the `:label;` command (`UmlSource.linePositions`). `ActivityDiagram3#addActivity` hands the
    *  box the style builder current at that command (`InstructionSimple.java:85,107`, `FtileBox.java:144-150`), so a
    *  skinparam or `<style>` after it does not reach the box (smc-T4b, `activity-box-style.ts`). */
@@ -31,6 +36,8 @@ export interface ActivityAction {
 
 export interface ActivityStart {
   kind: 'start';
+  /** The stereogroup's `line:` colour (`Stereogroup.java:184-185`, `Colors.java:95-124`): the circle's stroke. */
+  lineColor?: string;
   /** The BACK of `start <<#c>>`'s stereogroup, `#` kept: the circle's fill (`CircleStart.java:72,82`).
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandStart3.java:84-88 */
   color?: string;
@@ -39,6 +46,8 @@ export interface ActivityStart {
 
 export interface ActivityStop {
   kind: 'stop';
+  /** The stereogroup's `line:` colour (`Stereogroup.java:184-185`, `Colors.java:95-124`): the circle's stroke. */
+  lineColor?: string;
   /** `stop <<#c>>`: the inner disc's fill (`CircleEnd.java:75,99`).
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandStop3.java:85-90 */
   color?: string;
@@ -47,6 +56,8 @@ export interface ActivityStop {
 
 export interface ActivityEnd {
   kind: 'end';
+  /** The stereogroup's `line:` colour (`Stereogroup.java:184-185`, `Colors.java:95-124`): the circle's stroke. */
+  lineColor?: string;
   /** `end <<#c>>`: read (`CommandEnd3.java:85-90`) but drawn nowhere -- the cross is `LineColor`
    *  (`FtileCircleEndCross.java:79-80,105-114`), so a BACK colour is invisible.
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandEnd3.java:85-90 */
@@ -118,6 +129,10 @@ export interface ActivityBackward {
    * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileRepeat.java:182-187,513-535
    */
   outgoing?: string;
+  /** `(-[#c]->...)`'s style before `backward:` / after its `;`: `incoming1`/`incoming2`'s rainbow (aar-T2a).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandBackward3.java:69-71,82-84 */
+  incomingColor?: string;
+  outgoingColor?: string;
   /**
    * BACKNOTE (`activity-divergence-drive-3` T2a): `InstructionRepeat
    * .addNote` (`:218-226`) routes a note to {@link notes} ONLY while
@@ -224,6 +239,11 @@ export interface ActivityElseIf {
    * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileIfLongHorizontal.java:178-186
    */
   incomingLabel?: string;
+  /** `(-[#c]->...)`'s style before `elseif`: `inlabel.getRainbow`, the ConnectionHorizontal INTO this branch's diamond
+   *  (`Branch.java:182-184`, `FtileIfLongHorizontal.java:237`). aar-T3a. */
+  incomingColor?: string;
+  /** `then (-[#c]->...)`'s style: `labelPositive`'s rainbow, this branch's in colour (`Branch.java:163-168`). */
+  labelColor?: string;
   /** `elseif (..) <<#c>>`: this branch's own diamond fill (`FtileIfLongHorizontal.java:178`).
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandElseIf2.java:141,150 */
   color?: string;
@@ -232,6 +252,9 @@ export interface ActivityElseIf {
 
 export interface ActivityIf {
   kind: 'if';
+  /** The document line of the opener: the style builder current there is the one its diamonds read
+   *  (`InstructionIf.java:104`, `ActivityDiagram3.java:398`, `InstructionRepeat.java:105`). */
+  position?: number;
   condition: string;
   thenLabel?: string;
   elseLabel?: string;
@@ -243,6 +266,19 @@ export interface ActivityIf {
   /** `if (..) <<#c>>`: the diamond fill (`FtileFactoryDelegatorIf.java:81-83`), which `endif` and every `elseif` inherit.
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf2.java:136-151 */
   color?: string;
+  /** The `if`'s stereogroup labels: `getDefaultStyleDefinitionDiamond().withTOBECHANGED(stereotype)`
+   *  (`FtileFactoryDelegatorIf.java:79-83`) — a class/stereotype `BackgroundColor` fills the diamond. aar-T4a. */
+  labels?: readonly string[];
+  /** `else (-[#c]->...)`'s style: the else branch's `labelPositive` rainbow, its in colour (`CommandElse3.java:64-71`,
+   *  `Branch.java:163-168`). aar-T3a. */
+  elseLabelColor?: string;
+  /** `-[#c]->` right after `endif`: `setNextLink` gives the closed `if` its `outColor` (`ActivityDiagram3.java:449-450`,
+   *  `InstructionIf.java:264-266`), which only the elseif builder draws: `ConnectionHline` (`FtileIfLongHorizontal
+   *  .java:251-255`). aar-T3a. */
+  outColor?: string;
+  /** `[[url]] if (...)`: the raw link, drawn around diamond1 (`ConditionalBuilder.java:215-216`, `FtileWithUrl`).
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf2.java:139-145 */
+  url?: string;
   /** `endif <<#c>>`: the closing diamond's fill (`InstructionIf.java:196`, `Branch.java:204-207`).
    *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandEndif3.java:93-96 */
   endColor?: string;
@@ -265,6 +301,9 @@ export interface ActivityIf {
 
 export interface ActivityWhile {
   kind: 'while';
+  /** The document line of the opener: the style builder current there is the one its diamonds read
+   *  (`InstructionIf.java:104`, `ActivityDiagram3.java:398`, `InstructionRepeat.java:105`). */
+  position?: number;
   condition: string;
   /** Label on the entry edge (the "is" / "yes" path into the body). */
   yesLabel?: string;
@@ -290,6 +329,10 @@ export interface ActivityWhile {
    * tile then reports `hasPointOut() === false` (`InstructionWhile.java:
    * 128-129`'s `FtileKilled` wrap), same as a ordinary `stop`/`kill`.
    */
+  /** `-[#c]->` right after `endwhile`: `setNextLink` hands its rainbow to the closed while's `outColor`
+   *  (`ActivityDiagram3.java:445-448`, `InstructionWhile#outColor`, `:157-159`), drawn on `ConnectionOut` and
+   *  `ConnectionOutSpecial` (`FtileWhile.java:163-166`). aar-T2a. */
+  outColor?: string;
   specialOut?: ActivityStop | ActivityEnd;
   /**
    * add4-T2g: the while's OWN notes (`WithNote#addNote`, appended): every
@@ -304,6 +347,9 @@ export interface ActivityWhile {
 
 export interface ActivityRepeat {
   kind: 'repeat';
+  /** The document line of the opener: the style builder current there is the one its diamonds read
+   *  (`InstructionIf.java:104`, `ActivityDiagram3.java:398`, `InstructionRepeat.java:105`). */
+  position?: number;
   /**
    * `repeat :label;` -- the inline action, absent for a bare `repeat`.
    * Never appears in {@link body}.
@@ -324,6 +370,11 @@ export interface ActivityRepeat {
   /** `repeat while` carries a stereogroup (of any content): `diamondColor2` is then its own, never `diamondColor1`.
    *  @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorRepeat.java:99-100 */
   whileStereogroup?: true;
+  /** The opener's / `repeat while`'s stereogroup labels: `Stereogroup#getHColor` re-signs the diamond style with them
+   *  (`Stereogroup.java:150-155`, `FtileFactoryDelegatorRepeat.java:91-94`), so a `.r { BackgroundColor }` class
+   *  colours the diamond. aar-T4a. */
+  labels?: readonly string[];
+  whileLabels?: readonly string[];
   body: ActivityNode[];
   condition: string;
   /**
@@ -358,6 +409,13 @@ export interface ActivityRepeat {
    *   parsed (`ActivityDiagram3.java:367`).
    */
   swimlaneOut?: string;
+  /** `repeat while ... -> LABEL` / `-[#c]-> LABEL`: `setTest`'s `back`, which replaces `incoming1` when it is not none
+   *  (`InstructionRepeat.java:201-202`), drawn on the loop-back edge.
+   *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeatWhile3.java:153-164 */
+  backLink?: { label: string; color?: string };
+  /** No `repeat while` closed this repeat: `createFtile` then takes the pending link as `incoming1`
+   *  (`InstructionRepeat.java:167-168`). */
+  unclosed?: true;
 }
 
 export interface ActivityFork {
@@ -482,6 +540,8 @@ export interface ActivityGroup {
   /** `<<...>>` (`STEREO`), chevrons kept -- `Stereotype.build(stereo)`.
    * @see net/sourceforge/plantuml/activitydiagram3/command/CommandPartition3.java:151-152 */
   stereotype?: string;
+  /** The command's document line: its style is the builder current there (`CommandPartition3.java:160-161`). */
+  position?: number;
   body: ActivityNode[];
   swimlane?: string;
   /**
@@ -524,6 +584,9 @@ export type ActivityNode =
 // --- Root AST ---------------------------------------------------------------
 
 export interface ActivityDiagramAST {
+  /** `skinparam colorArrowSeparationSpace` (`SkinParam.java:1106-1108`, `getAsInt(..., 0)`), read at parse time as
+   *  `Rainbow.build` does (`CommandArrow3.java:101-102`). Kept off the public `Theme` (D7). aar-T3b. */
+  colorArrowSeparationSpace?: number;
   /** Top-level sequence of activity nodes (may contain nested structures). */
   nodes: ActivityNode[];
   /** Ordered list of swimlane names as they appear in the source. */

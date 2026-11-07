@@ -1,0 +1,9 @@
+@startuml
+start
+while( while 1 ) 
+-[#LightGreen]-> true;
+	:action;
+endwhile
+-[#Grey]-> false;
+stop
+@enduml

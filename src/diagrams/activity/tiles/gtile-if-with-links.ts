@@ -6,6 +6,7 @@ import type { DiamondConditionTile } from './gtile-diamond-inside.js';
 import type { IfOwnNote } from './gtile-note.js';
 import type { IfOwnNoteGeometry } from './gtile-if-with-links-notes.js';
 import { computeIfOwnNoteGeometry } from './gtile-if-with-links-notes.js';
+import { ydeltaForLabels, type MergeLabels } from './gtile-if-with-links-merge-labels.js';
 
 /** `ConditionalBuilder.java:138-139`: `FtileMinWidthCentered(branch, 30)`. */
 const MIN_BRANCH_WIDTH = 30;
@@ -89,18 +90,6 @@ export interface IfLinksFlags {
   readonly suppWidthNode: number;
   /** {@link ydeltaForLabels}. */
   readonly ydeltaForLabels: number;
-}
-
-/** `FtileIfWithLinks#getYdeltaForLabels`: diamond2's west/east height when
- *  it is an `FtileDiamond` (else `FtileEmpty`, 0). Its `tbout`s are
- *  `Display.NULL` (non-null) -> an empty Sheet in a padded `SheetBlock1`,
- *  `2 * padding` tall (`SheetBlock1.java:196-199`).
- * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/FtileIfWithLinks.java:83-88
- * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/ConditionalBuilder.java:292-303
- * @see net/sourceforge/plantuml/activitydiagram3/LinkRendering.java:49-53 */
-function ydeltaForLabels(hasTwoBranches: boolean, style: 'diamond' | 'hline', padding: number): number {
-  if (style === 'hline' || !hasTwoBranches) return 0;
-  return 2 * padding;
 }
 
 /** `getShape2`: a 24x24 rhombus when `hasTwoBranches()`, else the
@@ -302,6 +291,7 @@ interface GtileIfWithLinksFields extends Placement {
   readonly conditionEndStyle: 'diamond' | 'hline';
   readonly opaleLeft: IfOwnNote | null;
   readonly opaleRight: IfOwnNote | null;
+  readonly mergeLabels: MergeLabels | undefined;
 }
 
 /** {@link GtileIfWithLinks.create}'s options bag (5-param limit). Every
@@ -316,6 +306,8 @@ export interface IfWithLinksCreateOptions {
   readonly notes?: readonly IfOwnNote[];
   /** `SkinParam#getPadding` (`SkinParam.java:1147-1150`); default 0. */
   readonly padding?: number | undefined;
+  /** diamond2's west/east blocks, pre-measured; absent = both empty (`2 * padding` tall). */
+  readonly mergeLabels?: MergeLabels | undefined;
 }
 
 /** Both branches' padded geometry plus raw `hasPointOut` (NLOC split). */
@@ -356,7 +348,7 @@ function resolvePlacement(
     xDeltaNote: 0,
     yDeltaNote: 0,
     suppWidthNode: 0,
-    ydeltaForLabels: ydeltaForLabels(hasTwoBranches, style, options.padding ?? 0),
+    ydeltaForLabels: ydeltaForLabels(hasTwoBranches, style, options.mergeLabels, options.padding ?? 0),
   };
   const noteGeo = computeIfOwnNoteGeometry(options.notes ?? [], diamond1, geos.b1, geos.b2, baseFlags);
   const flags: IfLinksFlags = {
@@ -410,6 +402,8 @@ export class GtileIfWithLinks extends TileComposite {
    * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/cond/FtileIfWithDiamonds.java:75-76 */
   readonly opaleLeft: IfOwnNote | null;
   readonly opaleRight: IfOwnNote | null;
+  /** diamond2's west/east labels, `tbout1`/`tbout2` (`ConditionalBuilder.java:292-303`); `undefined` = none. */
+  readonly mergeLabels: MergeLabels | undefined;
 
   /** Field assignment only; all computation is in {@link
    *  GtileIfWithLinks.create} (T1p-a, keeps NLOC under the limit). */
@@ -425,6 +419,7 @@ export class GtileIfWithLinks extends TileComposite {
     this.conditionEndStyle = f.conditionEndStyle;
     this.opaleLeft = f.opaleLeft;
     this.opaleRight = f.opaleRight;
+    this.mergeLabels = f.mergeLabels;
     this.width = f.width;
     this.height = f.height;
     this.left = f.left;
@@ -463,6 +458,7 @@ export class GtileIfWithLinks extends TileComposite {
       conditionEndStyle: style,
       opaleLeft: noteGeo.opaleLeft,
       opaleRight: noteGeo.opaleRight,
+      mergeLabels: options?.mergeLabels,
       ...placement,
     });
   }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T03:14:12.629Z",
+  "generatedAt": "2026-11-06T23:53:05.560Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1171,10 +1171,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 42.980999999999995,
-      "firstDiff": "svg/g[1]/polygon[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/polygon[1]/@points[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "dikubo-27-cica403",

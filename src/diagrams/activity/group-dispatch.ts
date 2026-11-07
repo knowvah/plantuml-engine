@@ -6,18 +6,21 @@
  */
 
 import type { ParseRefusal } from '../../core/parse-refusal.js';
+import { resolveBareOrBackColor } from '../../core/color-override.js';
 import type { ActivityGroup, ActivityNode, ActivityNote } from './ast.js';
 import {
   RE_CLOSE_GROUP,
   RE_CLOSE_GROUP_LEGACY,
   RE_GROUP_OPEN,
   isRefusal,
+  positionSpread,
   swimlaneSpread,
   type DispatchResult,
   type ParseContext,
   type StopKeywords,
 } from './dispatch-support.js';
 import { parseNodes } from './node-dispatch.js';
+import { displayWithNewlines } from './dispatch-newline-sentinels.js';
 import { Warning } from '../../core/warning/Warning.js';
 import { eventuallyRemoveStartingAndEndingDoubleQuote } from '../../core/url/Url.js';
 
@@ -71,15 +74,18 @@ export function tryOpenGroup(ctx: ParseContext, idx: number, line: string): Disp
   if (!isGroupType(typeRaw)) return null; // unreachable: the regex's own alternation is exactly GROUP_TYPES
   // `eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME", 0))`
   // (`CommandPartition3.java:143`; `StringUtils.java:86-91`, format `"([:`).
-  const title = eventuallyRemoveStartingAndEndingDoubleQuote(m[3] ?? '', NAME_STRIP_FORMAT) ?? '';
-  // `b1 == null ? "BACK2" : "BACK1"` (`:145-147`).
-  const backColor = m[2] ?? m[4];
+  const name = eventuallyRemoveStartingAndEndingDoubleQuote(m[3] ?? '', NAME_STRIP_FORMAT) ?? '';
+  // `diagram.startGroup(Display.getWithNewlines(diagram.getPragma(), name), ...)` (`CommandPartition3.java:162`).
+  const title = displayWithNewlines(ctx.pragma, name);
+  // `b1 == null ? "BACK2" : "BACK1"` (`:145-147`), then `colors.getColor(ColorType.BACK)` (`:163`): the capture is a
+  // whole `Colors` spec (`ColorParser.java:58-66`), so `#CadetBlue;header:red` is back CadetBlue.
+  const backColor = resolveBareOrBackColor(m[2] ?? m[4]);
   const stereotype = m[5];
   const hasBracket = m[6]!.length > 0;
   const openerSwimlane = swimlaneSpread(ctx);
   // `CommandPartition3.java:154-157`: TYPE as written, NAME unquoted (:143).
   if (!hasBracket) {
-    ctx.pragma.addWarning(new Warning(`You should use a bracket ({) when defining your container '${m[1]!}' ${title}`));
+    ctx.pragma.addWarning(new Warning(`You should use a bracket ({) when defining your container '${m[1]!}' ${name}`));
   }
 
   const bodyResult = parseNodes(ctx, idx + 1, GROUP_STOPS);
@@ -103,6 +109,7 @@ export function tryOpenGroup(ctx: ParseContext, idx: number, line: string): Disp
     hasBracket,
     ...(backColor !== undefined ? { backColor } : {}),
     ...(stereotype !== undefined ? { stereotype } : {}),
+    ...positionSpread(ctx, idx),
     body,
     ...(note !== undefined ? { note } : {}),
     ...openerSwimlane,

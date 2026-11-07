@@ -1,0 +1,30 @@
+@startuml
+ 
+|Author|
+Start
+repeat
+repeat
+if (New document?) then (yes)
+:Create;
+else (no)
+:Update;
+endif
+->Document Draft;
+ 
+|Reviewer|
+:Review Document;
+repeat while (Document agreed?) is (ok)
+->Document Reviewed;
+ 
+|Approver|
+:Approve Document --> Update;
+repeat while (Document approved?) is (ok)
+->Document Verified;
+ 
+|Owner|
+:Archive;
+->Document Archived;
+ 
+stop
+ 
+@enduml

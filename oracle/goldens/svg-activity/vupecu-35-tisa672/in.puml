@@ -1,0 +1,23 @@
+@startuml
+<style>
+.foo {
+  LineColor red
+  BackgroundColor pink
+  LineThickness 1
+  ArrowThickness 1
+  FontName Courier
+  FontColor blue
+  FontSize 10
+  FontStyle italic
+}
+</style>
+
+if (decision) then (yes)
+    :C1; <<foo>>
+else (no)
+endif
+if (decision) then (yes) <<foo>>
+    :C2;
+else (no)
+endif
+@enduml

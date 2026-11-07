@@ -13,6 +13,8 @@ import { klimtStringBounder } from '../activity-creole-sheet.js';
 import type { TextBlock } from '../../../core/klimt/shape/TextBlock.js';
 import type { StringBounder as KlimtStringBounder } from '../../../core/klimt/font/StringBounder.js';
 import { measurerAdapterOf } from './gtile-action.js';
+import type { Style } from '../../../core/style/Style.js';
+import { compositeStyleOf, withCompositeStyle } from '../activity-composite-theme.js';
 
 /** `FtileUtils.addHorizontalMargin(inner, 10)` (`FtileGroup.java:97`): a
  *  flat 10px margin added to BOTH sides of the body before any of this
@@ -85,6 +87,10 @@ export interface GtileGroupOptions {
    *  (`layout/canvas-origin-group-ink.ts#groupInnerInkMaxX`); `undefined`
    *  when the body draws nothing. */
   readonly innerInkMaxX?: number;
+  /** The group keyword (`CommandPartition3.java:152`), which signs `stylePartition` (`FtileGroup.java:89-92`). */
+  readonly symbol?: string;
+  /** The command's document line, whose builder `stylePartition` reads. */
+  readonly position?: number;
 }
 
 /** `FtileGroup.java:183-184` -- `if (missingWidth > 0) return
@@ -124,6 +130,8 @@ export class GtileGroup extends TileComposite {
   readonly backColor: string | undefined;
   readonly stereotype: string | undefined;
   readonly usymbol: CompositeUSymbol | undefined;
+  /** `stylePartition` (`CommandPartition3.java:160-161`), absent where the flat tiers hold its values. */
+  readonly compositeStyle: Style | undefined;
 
   constructor(title: string, body: Tile, bounder: StringBounder, theme: Theme, opts: GtileGroupOptions = {}) {
     super();
@@ -132,6 +140,9 @@ export class GtileGroup extends TileComposite {
     this.backColor = opts.backColor;
     this.stereotype = opts.stereotype;
     this.usymbol = opts.usymbol;
+    this.compositeStyle =
+      opts.symbol === undefined ? undefined : compositeStyleOf(theme, opts.symbol, opts.stereotype, opts.position);
+    theme = withCompositeStyle(theme, this.compositeStyle);
     // A group/partition frame resolves `of(root, element, activityDiagram,
     // <symbol>, composite)` (`ftile/vcompact/FtileGroup.java:89-92`), and
     // `activityDiagram { composite { ... } }` (plantuml.skin:364-368)

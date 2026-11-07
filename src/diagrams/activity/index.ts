@@ -12,9 +12,11 @@ import type { Warning } from '../../core/warning/Warning.js';
 import type { ActivityDiagramAST } from './ast.js';
 import type { ActivityGeometry } from './layout/tile-layout.js';
 import { parseActivity } from './parser.js';
+import { withActivityDocumentArrow } from './activity-diamond-theme.js';
 import { layoutActivity } from './layout/tile-layout.js';
 import { renderActivity } from './renderer.js';
 import { activityWarnings, withSkinParamWarnings, withWarningBanner } from './activity-warnings.js';
+import { withColorArrowSeparationSpace } from './activity-rainbow.js';
 import { activityDocumentMargin, documentMarginTheme, type DocumentMargin } from './activity-layout-constants.js';
 import { isEmpty } from '../../core/annotations/index.js';
 
@@ -50,18 +52,18 @@ export const activityPlugin: SyncPlugin<ActivityDiagramAST, ActivityPluginGeomet
     const ast = parseActivity(block, options);
     // `refused` is `ParseRefusal`'s discriminant (`dispatcher.ts#parseRefusalOf`).
     if ('refused' in ast) return ast;
-    return withSkinParamWarnings(ast, block.styleSource);
+    return withSkinParamWarnings(withColorArrowSeparationSpace(ast, block.styleSource), block.styleSource);
   },
 
   // add4-T2e THEME-MARGIN: `documentMarginTheme`'s own doc (chrome keeps
   // the default margin until `applyActivityChrome` takes the theme's).
   layoutSync(ast, theme, measurer) {
-    const marginTheme = documentMarginTheme(theme, hasActivityChrome(ast));
+    const marginTheme = documentMarginTheme(withActivityDocumentArrow(theme), hasActivityChrome(ast));
     const geo = layoutActivity(ast, marginTheme, measurer);
     return { geo, warnings: activityWarnings(ast), measurer, margin: activityDocumentMargin(marginTheme) };
   },
 
   render({ geo, warnings, measurer, margin }, theme) {
-    return withWarningBanner(renderActivity(geo, theme), warnings, measurer, margin);
+    return withWarningBanner(renderActivity(geo, withActivityDocumentArrow(theme)), warnings, measurer, margin);
   },
 };

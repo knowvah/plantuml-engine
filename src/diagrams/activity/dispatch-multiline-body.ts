@@ -50,6 +50,8 @@ export interface MultilineActionBody {
   multiGroup: string | undefined;
   /** {@link stereogroupBackColor} of the closer's stereogroup. */
   multiColor: string | undefined;
+  /** False when no line closed the block before the end of the source. */
+  closed: boolean;
 }
 
 /** The block's closing line index (or `lines.length`): the first line,
@@ -117,5 +119,5 @@ export function readMultilineActionBody(
     multiColor = color;
     multiGroup = group;
   }
-  return { cursor: end, labelParts, multiStereo, multiColor, multiGroup };
+  return { cursor: end, labelParts, multiStereo, multiColor, multiGroup, closed };
 }

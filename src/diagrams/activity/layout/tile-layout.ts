@@ -10,7 +10,10 @@ import type {
 import { repeatDiamondColors, whileDiamondColors, withDiamondColors } from './diamond-colors.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
 import { withActivityMeasurer } from '../activity-string-bounder.js';
+import { withSeparationSpace } from '../activity-rainbow.js';
 import type { Theme } from '../../../core/theme.js';
+import { openerOf, withStylePosition } from './style-position.js';
+import { documentThemeOf } from '../../../core/activity-theme-at.js';
 import { Pragma } from '../../../core/skin/Pragma.js';
 import type { StringBounder, Tile } from '../tiles/tile.js';
 import { CREATE_TEXT, GtileDiamondInside } from '../tiles/gtile-diamond-inside.js';
@@ -26,9 +29,14 @@ import { GtileTopDown } from '../tiles/gtile-top-down.js';
 import { assignCoordinates } from './tile-coordinates.js';
 import { buildIf, isMainLaneSmallerThanAllOthers } from './conditional-builder.js';
 import type { RepeatBackConnection } from '../tiles/gtile-repeat.js';
-import { extractBackward, selectRepeatConditionLabels, withBackLabels } from './tile-layout-backward.js';
+import {
+  extractBackward,
+  repeatBackLabels,
+  selectRepeatConditionLabels,
+  withBackLabels,
+} from './tile-layout-backward.js';
 import { tileFork, tileGroup, tileSplit, tileSwitch, tileNote, wrapWhileNotes } from './tile-layout-structural.js';
-import { consumeArrowLabel, withInLabel } from './tile-layout-inlabel.js';
+import { consumeArrowLabel, withInLabel, withOutLabel } from './tile-layout-inlabel.js';
 import type { PendingInLabel } from './tile-layout-inlabel.js';
 import { isEarlyLeafKind, isSimpleLeaf, tileEarlyLeaf, tileSimpleLeaf } from './tile-layout-leaves.js';
 import { isExportScaled } from '../../../core/scale-command.js';
@@ -138,6 +146,8 @@ export function tileNodes(
   laneOrder: readonly string[] = [],
   pragma: Pragma = Pragma.createEmpty(),
 ): TileNodesResult {
+  // aar-T6b: a construct's own diamonds read its opener's builder; what it holds reads its own (`activity-theme-at.ts`).
+  theme = documentThemeOf(theme);
   const tiles: Tile[] = [];
   // T1b pass 2: `nextLinkRenderer()`'s pending state
   // (`ActivityDiagram3.java:105-106`) -- set by an `arrow-label` node,
@@ -161,7 +171,7 @@ export function tileNodes(
     const t = tileNode(node, bounder, theme, laneOrder, pragma);
     if (t !== null) {
       withInLabel(t, pendingInLabel);
-      pendingInLabel = undefined;
+      pendingInLabel = node.kind === 'group' ? t.outLabel : undefined; // `closeGroup` keeps the pending link
       tiles.push(t);
     }
   }
@@ -264,11 +274,15 @@ function tileWhile(
   if (node.exitLabel !== undefined) labels.west = node.exitLabel;
   const header = withDiamondColors(buildWhileHeader(node, labels, bounder, theme), whileDiamondColors(node));
   const { rest, backward } = extractBackward(node.body);
-  const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
+  const { tiles: bodyTiles, trailing } = tileNodes(rest, bounder, theme, laneOrder, pragma);
   const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
   const backwardTile = backward !== undefined ? tileBackwardActivity(backward, bounder, theme) : undefined;
   const specialOutTile = node.specialOut !== undefined ? tileSimpleLeaf(node.specialOut, bounder, theme) : undefined;
-  const ctx = withBackLabels({ bounder, theme, backward: backwardTile, specialOut: specialOutTile }, backward);
+  const ctx = withBackLabels(
+    { bounder, theme, backward: backwardTile, specialOut: specialOutTile, outColor: node.outColor },
+    backward,
+    trailing,
+  );
   return withSwimlane(new GtileWhile(header, body, ctx), node.swimlane);
 }
 
@@ -371,11 +385,15 @@ function tileRepeat(
   laneOrder: readonly string[],
   pragma: Pragma,
 ): GtileRepeat {
-  const colors = repeatDiamondColors(node);
+  const colors = repeatDiamondColors(node, theme);
   const entry = withDiamondColors(tileRepeatEntry(node, bounder, theme, laneOrder, pragma), colors.entry);
   const { rest, backward } = extractBackward(node.body);
-  const bodyTiles = tileNodes(rest, bounder, theme, laneOrder, pragma).tiles;
-  const body = withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel);
+  const { tiles: bodyTiles, trailing } = tileNodes(rest, bounder, theme, laneOrder, pragma);
+  // `decorateOut(tmp, endRepeatLinkRendering)` (`InstructionRepeat.java:166`): the arrow pending at `repeat while`.
+  const body = withOutLabel(
+    withInLabel(new GtileTopDown(bodyTiles, bounder, theme), bodyTiles[0]?.inLabel),
+    node.unclosed === true ? undefined : trailing,
+  );
   const backwardTile = backward !== undefined ? tileBackwardActivity(backward, bounder, theme) : undefined;
   const labels = selectRepeatConditionLabels(theme.conditionStyle, node, backward, laneOrder);
   const condition = withSwimlane(
@@ -383,7 +401,7 @@ function tileRepeat(
     outLane(node.swimlaneOut, node.swimlane),
   );
   const backConnection = selectRepeatBackConnection(node, laneOrder);
-  const backLabels = withBackLabels({ bounder, theme, backward: backwardTile }, backward);
+  const backLabels = repeatBackLabels({ bounder, theme, backward: backwardTile }, node, backward, trailing);
   const repeat = new GtileRepeat(entry, body, condition, backConnection, backLabels);
   return withSwimlaneOut(withSwimlane(repeat, node.swimlane), node.swimlaneOut);
 }
@@ -398,7 +416,7 @@ export function layoutActivity(ast: ActivityDiagramAST, skinTheme: Theme, measur
   // isw-T2-act F1: every sizer reads the render's measurer off `theme`
   // (`activity-string-bounder.ts`), as upstream's read the factory's.
   const spriteTheme = ast.sprites === undefined ? skinTheme : { ...skinTheme, sprites: ast.sprites };
-  const theme = withActivityMeasurer(spriteTheme, measurer);
+  const theme = withSeparationSpace(withActivityMeasurer(spriteTheme, measurer), ast.colorArrowSeparationSpace);
   if (ast.nodes.length === 0) {
     return { totalWidth: 0, totalHeight: 0, nodes: [], edges: [], swimlanes: [], measurer };
   }
@@ -420,7 +438,11 @@ export function layoutActivity(ast: ActivityDiagramAST, skinTheme: Theme, measur
   // #computeCanvasOrigin`) -- never a flat baseX/baseY constant.
   const placed = assignCoordinates(root, ast, { x: 0, y: 0 }, bounder, theme);
   const geo = isExportScaled(ast.scale, skinTheme.dpi) ? { ...placed, exportScaled: true as const } : placed;
-  return ast.sprites === undefined ? { ...geo, measurer } : { ...geo, sprites: ast.sprites, measurer };
+  const spaced =
+    ast.colorArrowSeparationSpace === undefined
+      ? geo
+      : { ...geo, colorArrowSeparationSpace: ast.colorArrowSeparationSpace };
+  return ast.sprites === undefined ? { ...spaced, measurer } : { ...spaced, sprites: ast.sprites, measurer };
 }
 
 /** `tileNode`'s exhaustive default: an unknown kind draws nothing. */
@@ -446,12 +468,27 @@ function tileNode(
   if (isSimpleLeaf(node)) return tileSimpleLeaf(node, bounder, theme);
   if (isEarlyLeafKind(node)) return tileEarlyLeaf(node);
   switch (node.kind) {
-    case 'if':
-      return tileIf(node, bounder, theme, laneOrder, pragma);
-    case 'while':
-      return wrapWhileNotes(tileWhile(node, bounder, theme, laneOrder, pragma), node.notes, bounder, theme);
-    case 'repeat':
-      return tileRepeat(node, bounder, theme, laneOrder, pragma);
+    case 'if': {
+      const opener = openerOf(theme, node.position, node.labels);
+      return withStylePosition(
+        tileIf(node, bounder, opener.theme, laneOrder, pragma),
+        node.position,
+        opener.diamondStyle,
+      );
+    }
+    case 'while': {
+      const opener = openerOf(theme, node.position);
+      const tile = tileWhile(node, bounder, opener.theme, laneOrder, pragma);
+      return wrapWhileNotes(withStylePosition(tile, node.position, opener.diamondStyle), node.notes, bounder, theme);
+    }
+    case 'repeat': {
+      const opener = openerOf(theme, node.position);
+      return withStylePosition(
+        tileRepeat(node, bounder, opener.theme, laneOrder, pragma),
+        node.position,
+        opener.diamondStyle,
+      );
+    }
     case 'fork':
       return tileFork(node, bounder, theme, laneOrder, pragma);
     case 'split':

@@ -35,9 +35,9 @@ const NUMBER_RE = new RegExp('-?\\d+(?:\\.\\d+)?', 'g');
  * applies to today).
  */
 export function spotGlyphPath(letter: string, cx: number, cy: number): string | undefined {
-  const upper = letter.toUpperCase();
-  if (!CAPTURED_SPOT_LETTERS.has(upper)) return undefined;
-  const refD = SPOT_GLYPH_D[upper as keyof typeof SPOT_GLYPH_D];
+  // `spot.charAt(0)` as written (`FtileCircleSpot.java:111`, `CommandCircleSpot3.java:61`): no case folding (aar-T5a).
+  if (!CAPTURED_SPOT_LETTERS.has(letter)) return undefined;
+  const refD = SPOT_GLYPH_D[letter]!;
   const dx = cx - SPOT_REFERENCE_CX;
   const dy = cy - SPOT_REFERENCE_CY;
   let axis = 0;

@@ -1,0 +1,25 @@
+@startuml
+skinparam ConditionEndStyle hline
+<style>
+arrow{
+  LineColor blue
+}
+</style>
+start
+repeat
+:;
+fork
+-[#blue]->
+fork again
+-[#green]->
+if (question) then (no) 
+-[#green]->
+:action;
+-[#green]->
+else (yes)
+-[#green]->
+endif
+-[#green]->
+end
+end merge
+@enduml

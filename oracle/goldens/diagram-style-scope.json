@@ -376,6 +376,18 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__groupin-group": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__groupin-merge": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__groupin-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__inline-if-bold": {
       "conformant": true,
       "diffCount": 0
@@ -504,45 +516,58 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__long3-colour": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__long3-colour-hex": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__long3-oneline-colour": {
+      "conformant": true,
+      "diffCount": 0,
+      "stockError": true
+    },
     "activity__loops-bg-diag": {
-      "conformant": false,
-      "diffCount": 313
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-bg-element": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-bg-root": {
-      "conformant": false,
-      "diffCount": 313
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-font-diag": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-font-element": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-font-root": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-line-diag": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-line-element": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-line-root": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__loops-none": {
-      "conformant": false,
-      "diffCount": 311
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__malformed-novalue": {
       "conformant": true,
@@ -669,6 +694,34 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__mergelabel-both": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-box-note": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-box-note-left": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-end": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-first": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-fork-end": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__mergelabel-split": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__mode-dark": {
       "conformant": true,
       "diffCount": 0
@@ -769,6 +822,250 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__splitnote-attached": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__splitnote-floating": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__splitnote-then-box": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-0": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-1": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-2": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-3": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-4": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-5": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-6": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-7": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-8": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-9": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-C": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-D": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-F": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-H": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-I": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-J": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-K": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-L": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-M": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-N": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-O": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-P": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-Q": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-R": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-S": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-T": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-U": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-V": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-W": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-X": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-Y": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-Z": {
+      "conformant": false,
+      "diffCount": 2
+    },
+    "activity__spot-la": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lb": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lc": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-ld": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-le": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lf": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lg": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lh": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-li": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lj": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lk": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-ll": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lm": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-ln": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lo": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lp": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lq": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lr": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-ls": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lt": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lu": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lv": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lw": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lx": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-ly": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__spot-lz": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__stereo-fork": {
       "conformant": true,
       "diffCount": 0
@@ -782,6 +1079,14 @@
       "diffCount": 0
     },
     "activity__stereo-skinparam": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__title-sprite-group": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__title-sprite-partition": {
       "conformant": true,
       "diffCount": 0
     },

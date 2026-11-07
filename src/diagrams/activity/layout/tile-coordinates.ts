@@ -5,6 +5,7 @@ import type { Tile } from '../tiles/tile.js';
 import { NORTH_HOOK, SOUTH_HOOK } from '../tiles/points.js';
 import type { GPoint } from '../tiles/points.js';
 import type { StringBounder } from '../tiles/tile.js';
+import { stylePositionWithin, type StampedStyle } from './style-position.js';
 import type { Theme } from '../../../core/theme.js';
 import type { GtileAction } from '../tiles/gtile-action.js';
 import type { GtileNote, GtileNoteOpale } from '../tiles/gtile-note.js';
@@ -42,6 +43,7 @@ import type { HlinePayload } from './swimlane-hline.js';
 import { assignCoordinatesFull } from './assign-coordinates-full.js';
 import { applyInLabel } from './tile-layout-inlabel.js';
 import { walkTileGroup } from './tile-coordinates-group.js';
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 /**
  * `kindHint` labels a diamond's role (`if-split`, `if-merge`,
@@ -70,6 +72,8 @@ export interface Out {
    */
   reservations: Reservation[];
   nextId: (prefix: string) => string;
+  /** The opener position of the `if`/`while`/`repeat` being walked (`style-position.ts`), stamped on each node pushed. */
+  stylePosition?: StampedStyle | undefined;
   /** The diagram theme, for walk-time label blocks (add4-T3j:
    *  `tile-layout-inlabel.ts#inLabelReservation` sizes the drawn block). */
   readonly theme: Theme;
@@ -84,7 +88,17 @@ export interface Out {
 
 export function pushNode(out: Out, node: ActivityNodeGeo, lane: string | undefined): void {
   if (lane !== undefined) node.swimlane = lane;
+  if (out.stylePosition !== undefined) {
+    node.position = out.stylePosition.position;
+    if (out.stylePosition.diamondStyle !== undefined) node.diamondStyle = out.stylePosition.diamondStyle;
+  }
   out.nodes.push(node);
+}
+
+/** `FtileWithUrl#drawU` (`FtileWithUrl.java:56-60`): every node pushed since `first` draws inside `url`'s link. */
+export function markUrl(out: Out, first: number, url: string | undefined): void {
+  if (url === undefined) return;
+  for (const node of out.nodes.slice(first)) node.url = url;
 }
 
 /**
@@ -190,7 +204,7 @@ function pushTopDownSiblingEdge(out: Out, link: TopDownSiblingLink): void {
   const to = { x: baseX + (nextOffsetX + northHook.x), y: nextY + northHook.y };
   pushEdge(out, new GConnectionVerticalDown().getPoints(from, to), laneOut(prevChild, myLane), laneIn(child, myLane));
   // T1b pass 2: `ConnectionVerticalDown.java:79-80`'s own `withLabel(textBlock, arrowHorizontalAlignment())`.
-  applyInLabel(out, child, { horizontal: 'LEFT' });
+  applyInLabel(out, child, arrowHorizontalAlignment(out.theme));
 }
 
 /** Every if-builder's own tile kind -- checked BEFORE `walkTile`'s own
@@ -240,6 +254,16 @@ const TERMINAL_KIND: Readonly<Record<string, 'start' | 'stop' | 'end'>> = {
 };
 
 export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out: Out): void {
+  const enclosing = out.stylePosition;
+  out.stylePosition = stylePositionWithin(tile, enclosing);
+  try {
+    walkTileNodes(tile, x, y, hints, out);
+  } finally {
+    out.stylePosition = enclosing;
+  }
+}
+
+function walkTileNodes(tile: Tile, x: number, y: number, hints: WalkHints, out: Out): void {
   const { kindHint, lane } = hints;
   const myLane = laneAt(tile, lane);
 
@@ -253,7 +277,15 @@ export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out
     case 'gtile-stop':
     case 'gtile-end': {
       const kind = TERMINAL_KIND[tile.kind]!;
-      const geo = { x, y, width: tile.width, height: tile.height, ...colorSpread(tile.diamondColors?.open) };
+      const line = tile.diamondColors?.line;
+      const geo = {
+        x,
+        y,
+        width: tile.width,
+        height: tile.height,
+        ...colorSpread(tile.diamondColors?.open),
+        ...(line !== undefined ? { lineColor: line } : {}),
+      };
       pushNode(out, { id: out.nextId(kind), kind, ...geo }, myLane);
       return;
     }
@@ -274,16 +306,23 @@ export function walkTile(tile: Tile, x: number, y: number, hints: WalkHints, out
         label: t.label,
       };
       if (t.color !== undefined) node.color = t.color;
+      if (t.lineColor !== undefined) node.lineColor = t.lineColor;
+      if (t.textColor !== undefined) node.textColor = t.textColor;
       // `FtileBox`'s `boxStyle` (`FtileBox.java:222`), read by the renderer.
       if (t.stereotype !== undefined) node.stereotype = t.stereotype;
       // `FtileBox.create`'s merged style, the SAME value `GtileAction` sized the box with.
       if (t.boxStyle !== undefined) node.boxStyle = t.boxStyle;
+      if (t.emojiBox !== undefined) node.emojiBox = true;
+      const first = out.nodes.length;
       pushNode(out, node, myLane);
+      markUrl(out, first, t.url); // `FtileWithUrl#drawU` (`FtileWithUrl.java:56-60`)
       return;
     }
 
     case 'gtile-note': {
       const t = tile as unknown as GtileNote;
+      // `FtileNoteAlone#getSwimlanes` empty: no lane draws it (`GtileNote#undrawn`).
+      if (t.undrawn) return;
       pushNode(
         out,
         {

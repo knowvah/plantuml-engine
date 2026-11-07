@@ -110,6 +110,9 @@ function joinOrdered(a: ActivityEdgeGeo, b: ActivityEdgeGeo, strategy: MergeStra
 function mergeTwo(head: ActivityEdgeGeo, tail: ActivityEdgeGeo): ActivityEdgeGeo | null {
   const strategy = maxStrategy(strategyOf(head), strategyOf(tail));
   if (strategy === 'NONE') return null;
+  // The guard is on `other` (the NEWLY pushed snake) before either join direction is tried (`Snake.java:308-310`
+  // precedes `:312,323`); the reversed join's recursive `other.merge(this)` then checks `head` too (joinOrdered).
+  if (hasText(tail.label)) return null;
 
   const headPts = head.points;
   const tailPts = tail.points;

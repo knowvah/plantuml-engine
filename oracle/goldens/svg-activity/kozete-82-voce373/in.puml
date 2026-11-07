@@ -1,0 +1,16 @@
+@startuml
+<style>
+activityDiagram {
+  arrow {
+    LineColor red
+    HeadColor none
+    FontColor gold
+    FontName arial
+    FontSize 15
+  }
+}
+</style>
+:Qwerty;
+->text;
+:Ytrewq;
+@enduml

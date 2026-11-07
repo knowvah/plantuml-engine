@@ -1,0 +1,9 @@
+@startuml
+!option debug true
+:\t\ta; <<time-event>>
+:b;
+:a; <<time-event>>
+:input; <<input>>
+:object signal;
+:object signal; <<object-signal>>
+@enduml

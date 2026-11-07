@@ -244,6 +244,22 @@ function collectTagStyle(
   // exactly as for the bare bucket (read last).
   merge('borderByStereo', props.get('bordercolor'));
   merge('borderByStereo', props.get('linecolor'));
+  // aar-T4b: the re-signed style's `PName.RoundCorner` (`FtileGroup.java:103`, `gateti-51-lasi768`).
+  const rc = Number.parseFloat(props.get('roundcorner') ?? '');
+  if (Number.isFinite(rc)) {
+    elements[sname] = {
+      ...elements[sname],
+      roundCornerByStereo: { ...elements[sname]?.roundCornerByStereo, [tag]: rc },
+    };
+  }
+  // aar-T6b: the re-signed style's `PName.LineThickness` (`FtileWithNoteOpale.java:137,143`, `Style#getStroke`).
+  const lt = Number.parseFloat(props.get('linethickness') ?? '');
+  if (Number.isFinite(lt)) {
+    elements[sname] = {
+      ...elements[sname],
+      lineThicknessByStereo: { ...elements[sname]?.lineThicknessByStereo, [tag]: lt },
+    };
+  }
   return true;
 }
 

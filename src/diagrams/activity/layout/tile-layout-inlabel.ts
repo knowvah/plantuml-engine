@@ -114,7 +114,7 @@ function inLabelReservation(
   const baselineY = position.y + pad + fontSize * TITLE_ASCENT_FRACTION;
   const top = baselineY - (fontSize - 1.5);
   const bottom = baselineY + fontSize * (lines.length - 1) + 1.5;
-  return { x: position.x + pad, y: top, width: dim.width - 2 * pad, height: bottom - top };
+  return { x: position.x + pad, y: top, width: dim.width - 2 * pad, height: bottom - top, skipCompression: true };
 }
 
 /**
@@ -159,13 +159,28 @@ export function applyOutColor(out: Out, tile: { readonly outLabel?: PendingInLab
   if (color !== undefined) out.edges[out.edges.length - 1]!.color = color;
 }
 
-/** {@link withOutLabel} for those builders: the trailing arrow's colour only, its label dropped. */
+/**
+ * `Branch#getInColor` of an EMPTY branch (`Branch.java:163-165`): `getFtile().getOutLinkRendering().getRainbow(arrowColor)`,
+ * the colour of the trailing arrow before `else`/`endif` (`Branch#setInlinkRendering`, `InstructionIf.java:172,197`),
+ * ahead of any `labelPositive` rainbow. The tile's {@link Tile.inLabel} carries it to {@link applyInColor}.
+ * @see net/sourceforge/plantuml/activitydiagram3/Branch.java:163-165
+ */
+export function withEmptyBranchInColor<T extends { inLabel?: PendingInLabel | undefined }>(
+  tile: T,
+  trailing: PendingInLabel | undefined,
+): T {
+  const color = trailing?.color;
+  if (color !== undefined) tile.inLabel = { label: '', color };
+  return tile;
+}
+
+/** {@link withOutLabel} for those builders: the trailing arrow is kept for `applyOutColor` and diamond2's `tbout`
+ *  blocks (`mergeLabelsOf`), never drawn as an edge label. */
 export function withOutColor<T extends { outLabel?: PendingInLabel | undefined }>(
   tile: T,
   outLabel: PendingInLabel | undefined,
 ): T {
-  const color = outLabel?.color;
-  if (color !== undefined) tile.outLabel = { label: '', color };
+  if (outLabel !== undefined) tile.outLabel = outLabel;
   return tile;
 }
 

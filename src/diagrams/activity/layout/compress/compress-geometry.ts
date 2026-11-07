@@ -24,6 +24,8 @@ import { ifLabelTextAnchor, shapesOf } from './shapes-of.js';
 import { collectSlots } from './slot-finder.js';
 import { CompressionTransform, type PiecewiseAffineTransform } from './compression-transform.js';
 import { arrowDirection } from '../../arrows-regular.js';
+import { planEdgeDraw } from '../../activity-rainbow.js';
+import { withFrameTitleDeltas } from './frame-title-deltas.js';
 import { labelAnchors, transformAnchors, withLabelDeltas } from './edge-label-anchor.js';
 
 export interface CompressInput {
@@ -323,8 +325,11 @@ function compressAxis(input: CompressInput, mode: CompressionMode): AxisResult {
   const ct = new CompressionTransform(slotSet);
   const removed = slotSet.slots().reduce((acc, s) => acc + s.size(), 0);
 
+  const env = { bounder: input.bounder, theme: input.theme };
   const nodes = input.nodes.map((n) =>
-    n.kind === 'if-label' ? transformIfLabel(n, ct, mode, input.theme) : transformNode(n, ct, mode),
+    n.kind === 'if-label'
+      ? transformIfLabel(n, ct, mode, input.theme)
+      : withFrameTitleDeltas({ raw: n, moved: transformNode(n, ct, mode), ct, mode }, env),
   );
   const edges = input.edges.map((e) => transformEdge(e, ct, mode));
   const reservations = input.reservations.map((r) => transformReservation(r, ct, mode));
@@ -335,6 +340,28 @@ function compressAxis(input: CompressInput, mode: CompressionMode): AxisResult {
       : { maxX: input.bounds.maxX, maxY: ct.transform(input.bounds.maxY) };
 
   return { next: { ...input, nodes, edges, reservations, swimlanes, bounds }, removed, ct };
+}
+
+/**
+ * aar-T6b: `Snake#drawRainbow` mutates the raw worm and draws each copy through `ct()` of both passes, so the
+ * copies are planned on `raw` and mapped by `ctX` then `ctY` here (`UGraphicCompressOnXorY.java:130-135`).
+ */
+function withRainbowCopies(
+  edges: ActivityEdgeGeo[],
+  raw: readonly ActivityEdgeGeo[],
+  cts: { x: PiecewiseAffineTransform; y: PiecewiseAffineTransform },
+  theme: Theme,
+): ActivityEdgeGeo[] {
+  return edges.map((edge, i) => {
+    const rawEdge = raw[i]!;
+    if (rawEdge.color === undefined || !rawEdge.color.includes(';')) return edge;
+    const copies = planEdgeDraw(rawEdge, theme).copies;
+    if (copies.length < 2) return edge;
+    const rainbowCopies = copies.map((c) =>
+      c.points.map((p) => ({ x: cts.x.transform(p.x), y: cts.y.transform(p.y) })),
+    );
+    return { ...edge, rainbowCopies };
+  });
 }
 
 /**
@@ -353,7 +380,12 @@ export function compressGeometry(input: CompressInput): CompressResult {
   const xNext = { ...x.next, edges: withLabelDeltas(x.next.edges, xLabels, input.theme) };
   const y = compressAxis(xNext, 'y');
   const yLabels = transformAnchors(xLabels, y.ct, 'y');
-  const edges = withLabelDeltas(y.next.edges, yLabels, input.theme);
+  const edges = withRainbowCopies(
+    withLabelDeltas(y.next.edges, yLabels, input.theme),
+    input.edges,
+    { x: x.ct, y: y.ct },
+    input.theme,
+  );
   const { nodes, swimlanes, reservations, bounds } = y.next;
   return { nodes, edges, swimlanes, reservations: [...reservations], bounds, removed: { x: x.removed, y: y.removed } };
 }

@@ -1,0 +1,8 @@
+@startuml
+skinparam activity {
+  BackgroundColor<<MyGreen>> LightGreen
+}
+:A;
+repeat:B; <<MyGreen>>
+repeat while (C) 
+@enduml

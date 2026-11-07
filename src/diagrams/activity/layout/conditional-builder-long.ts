@@ -21,7 +21,8 @@ import { measureSide } from '../tiles/gtile-diamond-inside.js';
 import { CreoleMode } from '../../../core/klimt/creole/CreoleMode.js';
 import { GtileTopDown } from '../tiles/gtile-top-down.js';
 import { tileNodes } from './tile-layout.js';
-import { withInLabel, withOutLabel } from './tile-layout-inlabel.js';
+import { withEmptyBranchInColor, withInLabel, withOutLabel } from './tile-layout-inlabel.js';
+import { instructionsOf } from './conditional-builder-arrows.js';
 import type { IfLayoutCtx } from './conditional-builder.js';
 
 interface LongHorizontalBranch {
@@ -35,6 +36,9 @@ interface LongHorizontalBranch {
    * on `elseif`), so it is always `undefined`.
    */
   readonly incomingLabel: string | undefined;
+  /** `inlabel.getRainbow` / `labelPositive`'s rainbow (aar-T3a): see `ActivityElseIf.incomingColor`/`.labelColor`. */
+  readonly incomingColor?: string | undefined;
+  readonly labelColor?: string | undefined;
   readonly body: readonly ActivityNode[];
 }
 
@@ -51,6 +55,8 @@ function longHorizontalBranches(node: ActivityIf): LongHorizontalBranch[] {
     condition: e.condition,
     label: e.label,
     incomingLabel: e.incomingLabel,
+    incomingColor: e.incomingColor,
+    labelColor: e.labelColor,
     body: e.body,
   }));
   return [first, ...rest];
@@ -114,16 +120,41 @@ function branchBodyWithOutLabel(
   bounder: StringBounder,
   theme: Theme,
   ctx: IfLayoutCtx,
-): Tile {
+  inlinked: boolean,
+): GtileTopDown {
   const { tiles, trailing } = tileNodes([...body], bounder, theme, ctx.laneOrder, ctx.pragma);
-  return withOutLabel(withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel), trailing);
+  const tile = withOutLabel(withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel), trailing);
+  return inlinked && instructionsOf(body).length === 0 ? withEmptyBranchInColor(tile, trailing) : tile;
+}
+
+/** `Branch#getInColor` (`Branch.java:163-175`): a non-empty branch's `labelPositive` rainbow wins over its first
+ *  tile's own in-link colour (aar-T3a, `takupu-75-xego596`). */
+function withPositiveColor(tile: GtileTopDown, body: readonly ActivityNode[], color: string | undefined): Tile {
+  if (color === undefined || instructionsOf(body).length === 0) return tile; // empty: `Branch.java:163-165`
+  return withInLabel(tile, { ...(tile.inLabel ?? { label: '' }), color });
 }
 
 export function buildIfLongHorizontal(node: ActivityIf, bounder: StringBounder, theme: Theme, ctx: IfLayoutCtx): Tile {
   const branches = longHorizontalBranches(node);
-  const tiles = branches.map((b): Tile => branchBodyWithOutLabel(b.body, bounder, theme, ctx));
-  const tile2 = branchBodyWithOutLabel(node.elseBranch, bounder, theme, ctx);
+  // Only the branch `else`/`endif` closes gets `setInlinkRendering` (`InstructionIf.java:172,197`); `elseIf` sets
+  // `special` alone (`:182`), so an empty branch closed by `elseif` keeps the default arrow colour.
+  const tiles = branches.map((b, i): Tile =>
+    withPositiveColor(
+      branchBodyWithOutLabel(b.body, bounder, theme, ctx, i === branches.length - 1),
+      b.body,
+      b.labelColor,
+    ),
+  );
+  const tile2 = withPositiveColor(
+    branchBodyWithOutLabel(node.elseBranch, bounder, theme, ctx, true),
+    node.elseBranch,
+    node.elseLabelColor,
+  );
   const diamonds = buildLongHorizontalDiamonds(branches, node.elseLabel, bounder, theme);
+  // `ConnectionHorizontal(diam1, diam2, thens.get(i + 1).getInRainbow(arrowColor))` (`FtileIfLongHorizontal.java:231-238`).
+  branches.forEach((b, i) => {
+    if (b.incomingColor !== undefined) diamonds[i]!.incomingColor = b.incomingColor;
+  });
   const inlabelSizes = diamonds.map((d) => d.labelAt('west')?.width ?? 0);
   return new GtileIfLongHorizontal(diamonds, tiles, tile2, inlabelSizes);
 }

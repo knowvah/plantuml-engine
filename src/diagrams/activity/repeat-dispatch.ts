@@ -13,6 +13,7 @@ import {
   swimlaneSpread,
   type DispatchResult,
   type ParseContext,
+  positionSpread,
 } from './dispatch-support.js';
 import { unescapeLabel, unescapeLabelNewlines } from './if-dispatch.js';
 import { displayWithNewlines } from './dispatch-newline-sentinels.js';
@@ -20,7 +21,9 @@ import { parseNodes } from './node-dispatch.js';
 import {
   RE_REPEAT_STEREOGROUP,
   backColorSpread,
+  deprecatedColorWarning,
   stereogroupBackColor,
+  stereogroupLabels,
   stereogroupStereotype,
   stereotypesSpread,
 } from './dispatch-stereogroup.js';
@@ -82,6 +85,10 @@ interface RepeatClose {
   readonly outLabel: string | undefined;
   /** `repeat while`'s own stereogroup (`CommandRepeatWhile3.java:61-63,147`). */
   readonly group: string | undefined;
+  /** `repeat while ... -> LABEL` / `-[#c]-> LABEL`: the `back` link (`ActivityDiagram3.java:366-367`). */
+  readonly backLink: { label: string; color?: string } | undefined;
+  /** No closer before the end of the source: `setTest` never ran (`InstructionRepeat.java:167-168`). */
+  readonly unclosed: boolean;
   readonly nextIdx: number;
 }
 
@@ -98,14 +105,26 @@ interface RepeatClose {
  */
 function parseRepeatClose(lines: readonly string[], cursor: number): RepeatClose {
   if (cursor >= lines.length) {
-    return { condition: '', yesLabel: undefined, outLabel: undefined, group: undefined, nextIdx: cursor };
+    const none = { yesLabel: undefined, outLabel: undefined, group: undefined, backLink: undefined };
+    return { condition: '', ...none, unclosed: true, nextIdx: cursor };
   }
   const endLine = lines[cursor]!.trim();
   const repeatMatch = RE_REPEATWHILE.exec(endLine);
   const condition = unescapeLabelNewlines(repeatMatch?.[1] ?? '');
   const yesLabel = unescapeLabel(repeatMatch?.[2]);
   const outLabel = unescapeLabel(repeatMatch?.[3]);
-  return { condition, yesLabel, outLabel, group: repeatMatch?.[4], nextIdx: cursor + 1 };
+  const backLink = repeatBackLink(repeatMatch?.[4], repeatMatch?.[5]);
+  return { condition, yesLabel, outLabel, group: repeatMatch?.[6], backLink, unclosed: false, nextIdx: cursor + 1 };
+}
+
+/** `LinkRendering.create(linkColor).withDisplay(linkLabel)` (`ActivityDiagram3.java:366`), `undefined` when it is
+ *  none: `Display.isNull(display) && rainbow.size() == 0` (`LinkRendering.java:84-86`). Any `->` or `-[..]->` makes
+ *  LABEL `(.*)` match (`CommandRepeatWhile3.java:95`), if only as "", and `Display.getWithNewlines(pragma, "")` is not
+ *  `Display.NULL` (`Display.java:262-264`): a bare `->` is a back link whose empty label draws a ` ` text. Only a
+ *  closer with no arrow at all (`LABEL` null) is none. */
+function repeatBackLink(color: string | undefined, label: string | undefined): RepeatClose['backLink'] {
+  if (label === undefined) return undefined;
+  return { label: unescapeLabelNewlines(label), ...(color !== undefined ? { color } : {}) };
 }
 
 /**
@@ -117,12 +136,16 @@ function parseRepeatClose(lines: readonly string[], cursor: number): RepeatClose
 function repeatColors(
   group: string | undefined,
   whileGroup: string | undefined,
-): Pick<ActivityRepeat, 'color' | 'whileColor' | 'whileStereogroup'> {
+): Pick<ActivityRepeat, 'color' | 'whileColor' | 'whileStereogroup' | 'labels' | 'whileLabels'> {
   const whileColor = stereogroupBackColor(whileGroup);
+  const labels = stereogroupLabels(group);
+  const whileLabels = stereogroupLabels(whileGroup);
   return {
     ...backColorSpread(group),
     ...(whileColor !== undefined ? { whileColor } : {}),
     ...(whileGroup !== undefined ? { whileStereogroup: true as const } : {}),
+    ...(labels.length > 0 ? { labels } : {}),
+    ...(whileLabels.length > 0 ? { whileLabels } : {}),
   };
 }
 
@@ -136,19 +159,17 @@ function repeatColors(
  *   -- `setTest` stores `swimlaneOut`, taken when `repeat while` is parsed
  *   (`ActivityDiagram3.java:367`).
  */
-export function tryRepeat(
-  ctx: ParseContext,
-  idx: number,
-  line: string,
-  lc: string,
-): DispatchResult | ParseRefusal | null {
+export function tryRepeat(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const repeatHeadMatch = RE_REPEAT_HEAD.exec(line);
-  if (repeatHeadMatch === null || !lc.startsWith('repeat')) return null;
+  if (repeatHeadMatch === null) return null;
+  // `CommandRepeat3.java:121-123`: the leading `#color:` is warned about and dropped.
+  const deprecatedColor = repeatHeadMatch[1];
+  if (deprecatedColor !== undefined) ctx.pragma.addWarning(deprecatedColorWarning(deprecatedColor));
   // Mission `activity-lane-capture` D1/T5: read BEFORE the body parses, so
   // a lane switch inside the body never leaks into this node's own
   // `swimlane`.
   const openerSwimlane = swimlaneSpread(ctx);
-  const { entry, group } = parseRepeatEntry(ctx, repeatHeadMatch[1]?.trim());
+  const { entry, group } = parseRepeatEntry(ctx, repeatHeadMatch[2]?.trim());
   const bodyResult = parseNodes(ctx, idx + 1, ['repeatwhile', 'repeat while']);
   if (isRefusal(bodyResult)) return bodyResult;
   const close = parseRepeatClose(ctx.lines, bodyResult.nextIdx);
@@ -157,12 +178,15 @@ export function tryRepeat(
   const closerSwimlane = ctx.currentSwimlane;
   const node: ActivityRepeat = {
     kind: 'repeat',
+    ...positionSpread(ctx, idx),
     ...(entry !== undefined ? { entry } : {}),
     ...repeatColors(group, close.group),
     body: bodyResult.nodes,
     condition: close.condition,
     ...(close.yesLabel !== undefined && close.yesLabel !== '' ? { yesLabel: close.yesLabel } : {}),
     ...(close.outLabel !== undefined && close.outLabel !== '' ? { outLabel: close.outLabel } : {}),
+    ...(close.backLink !== undefined ? { backLink: close.backLink } : {}),
+    ...(close.unclosed ? { unclosed: true as const } : {}),
     ...openerSwimlane,
     ...(closerSwimlane !== undefined ? { swimlaneOut: closerSwimlane } : {}),
   };

@@ -22,6 +22,8 @@ export interface DiamondColors {
   readonly close?: string | undefined;
   /** `elseif` diamond `i` (`FtileIfLongHorizontal.java:178`); index 0 is the `if` itself. */
   readonly branches?: readonly (string | undefined)[];
+  /** A terminal circle's stereogroup `line:` colour (its stroke). */
+  readonly line?: string | undefined;
 }
 
 export interface Tile {
@@ -96,6 +98,12 @@ export interface Tile {
   killed?: true;
   /** The `<<#color>>` fills this compound's own diamonds take, see {@link DiamondColors}. */
   diamondColors?: DiamondColors;
+  /** `[[url]] if`: the raw link `ConditionalBuilder#createWithLinks` wraps diamond1 in (`FtileWithUrl`,
+   *  `ConditionalBuilder.java:215-216`); only the with-links builder reads it, as upstream. */
+  diamondUrl?: string;
+  /** The closed `if`'s `outColor` (`afterEndwhile`), drawn on the elseif builder's `ConnectionHline`
+   *  (`FtileIfLongHorizontal.java:251-255`). aar-T3a. */
+  hlineColor?: string;
   getCoord(hook: HookName): GPoint;
   /**
    * Whether this tile has an outgoing connection point that a later
@@ -153,6 +161,8 @@ export abstract class TileComposite implements Tile {
   outLabel?: { label: string; color?: string };
   killed?: true;
   diamondColors?: DiamondColors;
+  diamondUrl?: string;
+  hlineColor?: string;
 
   /**
    * Default `true` for the same reason as `TileLeaf.hasPointOut` above:

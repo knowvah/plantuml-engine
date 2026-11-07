@@ -1,0 +1,14 @@
+@startuml
+|Architect|
+start
+repeat
+:Write;
+|#AntiqueWhite|Reviewer with a very long title|
+:Reviews;
+|Architect|
+repeat while (was it proper?)
+->yes;
+|(...)|
+:some action on the next level;
+stop
+@enduml

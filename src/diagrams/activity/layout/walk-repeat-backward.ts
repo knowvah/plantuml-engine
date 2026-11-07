@@ -35,6 +35,7 @@ import type { Out } from './tile-coordinates.js';
 import { pushEdge } from './tile-coordinates.js';
 import type { RepeatFrame } from './walk-repeat.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 /**
  * Both push sites below carry `Snake.create(...).withLabel(tbback,
@@ -42,22 +43,18 @@ import type { LoopTranslate } from './swimlane-loop-translate.js';
  * `FtileRepeat` back-connector variant upstream could pick -- `backConnection`
  * simple1/`ConnectionBackComplex1`/`ConnectionBackSimple2`/
  * `ConnectionBackBackward1`/`2` -- collapses to these two generic pushes
- * in this port). `arrowHorizontalAlignment()` defaults to
- * `HorizontalAlignment.LEFT` (`skin/AlignmentParam.java:42`); no seam in
- * this port resolves the `skinparam arrowMessageAlignment` override (same
- * reported gap as `walk-while-backward.ts`'s own citation) -- outside
- * this task's write-set.
+ * in this port). `arrowHorizontalAlignment()` is
+ * `skinparam arrowMessageAlignment`, LEFT when unset (`snake-text-position.ts#arrowHorizontalAlignment`).
  */
-export const BACKWARD_LABEL_ALIGN = { horizontal: 'LEFT' } as const;
 
-/** Attaches `label`/{@link BACKWARD_LABEL_ALIGN} to the edge most
+/** Attaches `label`/`arrowHorizontalAlignment()` to the edge most
  *  recently pushed onto `out`, when `label` is set -- split out of
  *  {@link pushRepeatBackwardConnections} to keep that function under
  *  this file's NLOC limit. */
 function applyBackwardLabel(out: Out, label: string | undefined): void {
   if (label === undefined) return;
   out.edges[out.edges.length - 1]!.label = label;
-  out.edges[out.edges.length - 1]!.labelAlign = BACKWARD_LABEL_ALIGN;
+  out.edges[out.edges.length - 1]!.labelAlign = arrowHorizontalAlignment(out.theme);
 }
 
 /**
@@ -149,6 +146,8 @@ export function pushRepeatBackwardConnections(
     readonly backOut: string | undefined;
     readonly backIncoming: string | undefined;
     readonly backOutgoing: string | undefined;
+    readonly backIncomingColor?: string | undefined;
+    readonly backOutgoingColor?: string | undefined;
   },
 ): void {
   const { out, conditionOutLane, entryInLane } = frame;
@@ -164,6 +163,9 @@ export function pushRepeatBackwardConnections(
 
   pushEdge(out, backward1Points(frame, backSouth), conditionOutLane, lanes.backIn, { loop: loop1 });
   applyBackwardLabel(out, lanes.backIncoming);
+  // `ConnectionBackBackward1(rainbow1, ...)`, `ConnectionBackBackward2(rainbow2, ...)` (`FtileRepeat.java:181-186`).
+  if (lanes.backIncomingColor !== undefined) out.edges[out.edges.length - 1]!.color = lanes.backIncomingColor;
   pushEdge(out, backward2Points(frame, backNorth), lanes.backOut, entryInLane, { loop: loop2 });
   applyBackwardLabel(out, lanes.backOutgoing);
+  if (lanes.backOutgoingColor !== undefined) out.edges[out.edges.length - 1]!.color = lanes.backOutgoingColor;
 }

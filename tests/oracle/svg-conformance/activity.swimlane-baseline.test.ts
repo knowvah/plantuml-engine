@@ -106,8 +106,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
-import { renderFixtureActivity } from './render-fixture-activity.js';
+import { activityRatchetOptions, renderFixtureActivity } from './render-fixture-activity.js';
 import {
   ABSENT,
   ACTIVITY_TYPE,
@@ -140,7 +139,7 @@ const errorFixtures = manifest.fixtures.filter((f) => f.status === 'error');
 const jarErrorFixtures = manifest.fixtures.filter((f) => f.status === 'jar-error');
 
 function renderOrThrow(markup: string): string {
-  return renderFixtureActivity(markup, new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+  return renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
 }
 
 // ---------------------------------------------------------------------------
@@ -198,9 +197,7 @@ describe('svg-activity swimlane census', () => {
       const dir = fixtureDir(f);
       const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
       const golden = readFileSync(join(dir, 'in.svg'), 'utf8');
-      const geometry = layoutFixtureActivity(markup, new DeterministicMeasurer(), {
-        includeStore: fixtureIncludeStore(),
-      });
+      const geometry = layoutFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
       expect(geometry.laneCount, `${f.slug}: laneCount from the AST moved`).toBe(f.laneCount);
 
       const oursCheck = checkCensus(f, 'ours', f.ours, censusOf(renderOrThrow(markup), geometry.lanes));

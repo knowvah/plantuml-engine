@@ -71,6 +71,7 @@ import { lengthAdjustOverride } from '../../core/klimt/drawing/svg/svg-option.js
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { extractFlatContent } from '../../core/klimt/document-shell-fragment.js';
 import { activityMeasurer } from './activity-string-bounder.js';
+import { withBackColorFilters } from './activity-text-sheet.js';
 import type { CreoleAtom } from '../../core/klimt/creole/atom/Atom.js';
 import type { Sheet } from '../../core/klimt/creole/Sheet.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
@@ -151,7 +152,7 @@ export function klimtStringBounder(measurer: StringMeasurer, font: FontSpec): St
  *  and `skinParam.useUnderlineForHyperlink()` (`SkinParam.java:1057-1060`)
  *  that `FontConfiguration#hyperlink()` (`FontConfiguration.java:335-340`)
  *  reads for a `[[url]]` run. */
-function activityFontConfiguration(theme: Theme, fontSize: number, sname: ActivitySName): FontConfiguration {
+export function activityFontConfiguration(theme: Theme, fontSize: number, sname: ActivitySName): FontConfiguration {
   const hyperlinkColor = activityHyperlinkColor(theme, sname);
   // `FtileBox.java:167`: the box's merged style's whole font configuration (face included).
   const boxFont = sname === 'activity' ? boxFontConfiguration(theme) : undefined;
@@ -290,7 +291,9 @@ export function drawActionTextBlock(tb: TextBlock, x: number, y: number, ctx: Dr
   });
   const ug = UGraphicSvg.build(0, option, THROWAWAY_VERSION, driverBounder, measurer);
   tb.drawU(ctx.changes.reduce<UGraphic>((g, c) => g.apply(c), ug.apply(new UTranslate(x, y))));
-  return extractFlatContent(ug.getSvgString()).body;
+  const { body, extraDefs } = extractFlatContent(ug.getSvgString());
+  // The throwaway graphic's `filterUid` is 0 for every fragment: re-key each `<back:>` filter by colour and keep its def.
+  return withBackColorFilters(body, extraDefs);
 }
 
 /** `style.getStroke()` (`FtileBox.java:208`): the merged thickness, dashed where `LineStyle` says. */

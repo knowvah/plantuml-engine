@@ -8,7 +8,9 @@ import { activityFontSize } from '../activity-style-defaults.js';
 import { withActivityBox } from '../activity-box-theme.js';
 import { activityBoxStyleAtOf } from '../../../core/activity-box-style.js';
 import type { Style } from '../../../core/style/Style.js';
+import type { StringBounder as KlimtStringBounder } from '../../../core/klimt/font/StringBounder.js';
 import type { StringMeasurer } from '../../../core/measurer.js';
+import { emojiBoxBlocks, emojiBoxGeometry, isIconStereotype, type EmojiBoxGeometry } from '../activity-box-emoji.js';
 import { actionBoxDimension, buildActionTextBlock, klimtStringBounder } from '../activity-creole-sheet.js';
 
 /** `AtomText#calculateDimensionSlow`'s own floor (`AtomText.java:179-181`,
@@ -163,6 +165,13 @@ function computeActionSize(label: string, bounder: StringBounder, theme: Theme):
  *  `dimRaw.width + boxStyle.getShield()` wide, but its in/out `left` stays
  *  `dimRaw.width / 2` -- the shield is extra width to the RIGHT of the
  *  hooks. */
+function emojiSheetBounder(bounder: StringBounder, theme: Theme): KlimtStringBounder {
+  return klimtStringBounder(measurerAdapterOf(bounder), {
+    family: theme.fontFamily,
+    size: activityFontSize(theme, 'activity'),
+  });
+}
+
 function hookX(width: number, shield: number): number {
   return (width - shield) / 2;
 }
@@ -175,34 +184,53 @@ export class GtileAction extends TileLeaf {
   readonly color: string | undefined;
   /** The action's stereotype -- its `BoxStyle` ({@link boxStyleName}). */
   readonly stereotype: string | undefined;
+  /** The stereogroup's `line:` / `text:` colours (`Stereogroup#getInnerColors`). */
+  readonly lineColor: string | undefined;
+  readonly textColor: string | undefined;
   /** {@link boxStyleShield}. */
   readonly shield: number;
   /** `FtileBox.create`'s ONE merged style for a stereotyped box (`activity-box-theme.ts`); absent for the flat tiers. */
   readonly boxStyle: Style | undefined;
+  /** `FtileBoxEmoji`'s geometry (`<<icon>>`): the box has no outline and its hooks sit at `left`/`inY`/`outY`. */
+  readonly emojiBox: EmojiBoxGeometry | undefined;
+  /** The raw `[[url]]` of a `- label [[url]]` list item (`FtileWithUrl`). */
+  readonly url: string | undefined;
 
   constructor(node: ActivityAction, bounder: StringBounder, theme: Theme) {
     super();
     this.label = node.label;
     this.color = node.color;
     this.stereotype = node.stereotype;
+    this.lineColor = node.lineColor;
+    this.textColor = node.textColor;
     this.shield = boxStyleShield(node.stereotype);
     const labels = node.stereotypes ?? [];
     const boxStyleAt = activityBoxStyleAtOf(theme);
     this.boxStyle =
       boxStyleAt === undefined ? theme.colors.graph.activity?.boxStyleOf?.(labels) : boxStyleAt(labels, node.position);
-    const { width, height } = computeActionSize(node.label, bounder, withActivityBox(theme, this.boxStyle));
+    this.url = node.url;
+    const boxTheme = withActivityBox(theme, this.boxStyle);
+    // `VCompactFactory.java:140-141`: an `<<icon>>` stereotype builds a `FtileBoxEmoji`, not a `FtileBox`.
+    this.emojiBox = isIconStereotype(node.stereotypes)
+      ? emojiBoxGeometry(emojiBoxBlocks(node.label, boxTheme), emojiSheetBounder(bounder, boxTheme))
+      : undefined;
+    const { width, height } = this.emojiBox ?? computeActionSize(node.label, bounder, boxTheme);
     this.width = width + this.shield;
     this.height = height;
   }
 
   getCoord(hook: HookName): GPoint {
+    // `FtileBoxEmoji`'s `FtileGeometry(width, height, left, inY, outY)` (`FtileBoxEmoji.java:165-169`).
+    const emoji = this.emojiBox;
     switch (hook) {
       case NORTH_HOOK:
       case NORTH_BORDER:
-        return { x: hookX(this.width, this.shield), y: 0 };
+        return emoji === undefined ? { x: hookX(this.width, this.shield), y: 0 } : { x: emoji.left, y: emoji.inY };
       case SOUTH_HOOK:
       case SOUTH_BORDER:
-        return { x: hookX(this.width, this.shield), y: this.height };
+        return emoji === undefined
+          ? { x: hookX(this.width, this.shield), y: this.height }
+          : { x: emoji.left, y: emoji.outY };
       case EAST_HOOK:
         return { x: this.width, y: this.height / 2 };
       case WEST_HOOK:

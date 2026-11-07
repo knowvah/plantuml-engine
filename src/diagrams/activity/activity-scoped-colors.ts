@@ -102,3 +102,21 @@ export function withStereotypeFont(theme: Theme, stereotype: string | undefined,
     colors: { ...theme.colors, elements: { ...elements, [sname]: { ...elements?.[sname], font } } },
   };
 }
+
+/**
+ * `theme` with the box's own stereogroup `line:` / `text:` colours as its `activity` border and font: `FtileBox.java:155`
+ * `style.eventuallyOverride(specBack)` puts them over every tier (`Style.java:202-208`, `PName.LineColor`/`FontColor`).
+ */
+export function withInlineBoxColors(
+  theme: Theme,
+  node: { readonly lineColor?: string | undefined; readonly textColor?: string | undefined },
+): Theme {
+  if (node.lineColor === undefined && node.textColor === undefined) return theme;
+  const elements = theme.colors.elements;
+  const activity = {
+    ...elements?.['activity'],
+    ...(node.lineColor === undefined ? {} : { border: parseColor(colorOrNeutral(node.lineColor)) }),
+    ...(node.textColor === undefined ? {} : { font: resolveColorToSvgHex(node.textColor) }),
+  };
+  return { ...theme, colors: { ...theme.colors, elements: { ...elements, activity } } };
+}

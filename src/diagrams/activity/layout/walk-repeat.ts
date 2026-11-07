@@ -33,12 +33,13 @@ import type { DiamondColors, Tile } from '../tiles/tile.js';
 import { laneAt, laneIn, laneOut } from './swimlane-placement.js';
 import type { Out } from './tile-coordinates.js';
 import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
-import { applyInColor } from './tile-layout-inlabel.js';
+import { applyInLabel, applyOutLabel } from './tile-layout-inlabel.js';
 import { emitDiamondLabels, emitDiamondOwnLabel } from './diamond-labels.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
 import { pushRepeatBackwardConnections } from './walk-repeat-backward.js';
 import { pushRepeatBack } from './walk-repeat-back-shapes.js';
 import { pushRepeatWeldings } from './walk-repeat-weldings.js';
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 /** Every absolute-frame value {@link pushRepeatIn}/{@link pushRepeatBack}/
  *  {@link pushRepeatOut}/{@link pushRepeatWeldings} share, computed once so
@@ -49,6 +50,9 @@ import { pushRepeatWeldings } from './walk-repeat-weldings.js';
  *  `tile-layout.ts`'s own `tileNode` doc explains the same reader quirk). */
 export interface RepeatFrame {
   readonly out: Out;
+  /** {@link GtileRepeat.backIncoming}/{@link GtileRepeat.backIncomingColor}: `incoming1`, drawn on the simple back edge. */
+  readonly backIncoming: string | undefined;
+  readonly backIncomingColor: string | undefined;
   readonly entry: Tile;
   readonly body: Tile;
   readonly condition: RepeatConditionTile;
@@ -238,6 +242,8 @@ function buildRepeatFrame(o: RepeatOrigins): RepeatFrame {
   const { t, x, y, entryX, entryY, bodyX, bodyY, condX, condY, entry, body, condition, myLane, out } = o;
   return {
     out,
+    backIncoming: t.backIncoming,
+    backIncomingColor: t.backIncomingColor,
     entry,
     body,
     condition,
@@ -278,7 +284,9 @@ function pushRepeatIn(frame: RepeatFrame): void {
   const p1 = { x: tileX + (entryOffsetX + entry.getCoord(SOUTH_HOOK).x), y: entryY + entry.getCoord(SOUTH_HOOK).y };
   const p2 = { x: tileX + (bodyOffsetX + body.getCoord(NORTH_HOOK).x), y: bodyY + body.getCoord(NORTH_HOOK).y };
   pushEdge(out, connectionInPoints(p1, p2), entryOutLane, bodyInLane);
-  applyInColor(out, body); // `repeat.getInLinkRendering().getRainbow(arrowColor)`, FtileRepeat.java:172
+  // `tbin1` and `repeat.getInLinkRendering().getRainbow(arrowColor)`, `withLabel(tbin, arrowHorizontalAlignment())`
+  // (`FtileRepeat.java:168-172,259-260`; aar-T2a, `loriki-95-kavi777`).
+  applyInLabel(out, body, arrowHorizontalAlignment(out.theme));
 }
 
 /**
@@ -319,6 +327,9 @@ function pushRepeatOut(frame: RepeatFrame): void {
   };
   const loop: LoopTranslate = { kind: 'repeat-out', p1, p2 };
   pushEdge(out, [p1, p2], bodyOutLane, conditionInLane, { loop });
+  // `tbout1` = `decorateOut(tmp, endRepeatLinkRendering)`'s display and `endRepeatLinkColor`
+  // (`InstructionRepeat.java:166`, `FtileRepeat.java:196-201,299-300`; aar-T2a).
+  applyOutLabel(out, body, arrowHorizontalAlignment(out.theme));
 }
 
 /**
@@ -379,6 +390,8 @@ function pushRepeatBackDispatch(
     // BACKLBL (add2 T3i): FtileRepeat.java:170-178,182-187 -- incoming1/incoming2.
     backIncoming: t.backIncoming,
     backOutgoing: t.backOutgoing,
+    backIncomingColor: t.backIncomingColor,
+    backOutgoingColor: t.backOutgoingColor,
   });
 }
 

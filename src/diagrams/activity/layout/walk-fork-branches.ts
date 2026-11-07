@@ -1,3 +1,4 @@
+import { edgeLinkStyle } from './edge-link-style.js';
 import type { ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { GtileFork } from '../tiles/gtile-fork.js';
 import { GtileMerge, MERGE_DIAMOND_SIZE } from '../tiles/gtile-merge.js';
@@ -11,12 +12,7 @@ import { applyInLabel, applyOutLabel } from './tile-layout-inlabel.js';
 import { markMergeIn, markMergeOut } from './merge-rainbow.js';
 import { pushLaneReservation } from './swimlane-reservation-lane.js';
 import { compositeLaneGate, nonTranslatableConnectionDrawn } from './swimlane-connection-gate.js';
-
-/** `arrowHorizontalAlignment()`'s own resolved default -- shared by
- *  `ParallelBuilderFork$ConnectionOut`/`ParallelBuilderSplit$ConnectionOut`
- *  (T1d rows 21/22/27/28), exactly as `applyInLabel`'s own IN-side call
- *  sites already use for the SAME classes' `ConnectionIn`. */
-const BRANCH_OUT_LABEL_ALIGN = { horizontal: 'LEFT' } as const;
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 /**
  * The fixed values every branch in one fork/split shares -- bundled to
@@ -125,7 +121,7 @@ function pushBranchIn(branch: Tile, bX: number, bY: number, ctx: ForkBranchConte
   // arrowHorizontalAlignment())` (`ParallelBuilderFork.java:156`/
   // `ParallelBuilderSplit.java:199`) -- a `-> label;` right after
   // `fork`/`fork again`/`split`/`also`.
-  applyInLabel(out, branch, { horizontal: 'LEFT' });
+  applyInLabel(out, branch, arrowHorizontalAlignment(out.theme));
   if (ctx.merge === true) markMergeIn(out, branch);
 }
 
@@ -157,7 +153,8 @@ function pushBranchOut(branch: Tile, bX: number, bY: number, ctx: ForkBranchCont
     ctx.myLaneOut,
     ctx.isSplit ? 'parallel-out-split' : 'parallel-out',
   );
-  applyOutLabel(out, branch, BRANCH_OUT_LABEL_ALIGN);
+  // `ParallelBuilderFork$ConnectionOut`/`ParallelBuilderSplit$ConnectionOut` (T1d rows 21/22/27/28).
+  applyOutLabel(out, branch, arrowHorizontalAlignment(out.theme));
 }
 
 /**
@@ -243,9 +240,20 @@ function pushTopBarOrLine(t: GtileFork, x: number, y: number, myLane: string | u
     return;
   }
   const { first, last } = computeSplitExtent(t, NORTH_HOOK, false);
+  // `getThin1Color` (`ParallelBuilderSplit.java:114-125`): `null` -- no stroke at all -- when EVERY branch's in-link
+  // rainbow is invisible (`-[hidden]->` at each branch head, aar-T6a `tovuka-43-kere263`).
+  const unstroked = t.children.every((c) => c.inLabel?.color !== undefined && edgeLinkStyle(c.inLabel).isInvisible());
   pushNode(
     out,
-    { id: out.nextId('split-bar'), kind: 'split-bar', x: x + first, y, width: last - first, height: t.barHeight },
+    {
+      id: out.nextId('split-bar'),
+      kind: 'split-bar',
+      x: x + first,
+      y,
+      width: last - first,
+      height: t.barHeight,
+      ...(unstroked ? { color: 'none' } : {}),
+    },
     laneIn(t.children[0]!, myLane),
   );
 }

@@ -17,7 +17,7 @@
  * rise LOUD: printed, and refused unless `--accept-rises` names the slug.
  *
  * REUSES THE GATES' OWN MEASUREMENT FUNCTIONS, never re-derives them:
- * `renderFixtureActivity` + `DeterministicMeasurer` + `fixtureIncludeStore()`
+ * `renderFixtureActivity` + `DeterministicMeasurer` + `activityRatchetOptions()`
  * + `compareSvg`/`weightedScore` (diff-baseline.json); `swimlane-census
  * .ts#censusOf`/`layoutFixtureActivity` (swimlane-baseline.json, the same
  * module the swimlane gate itself shares with its own re-pin generator);
@@ -68,9 +68,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../tests/helpers/fixture-include-store.js';
 import { compareSvg, weightedScore } from '../tests/oracle/svg-conformance/compare.js';
-import { renderFixtureActivity } from '../tests/oracle/svg-conformance/render-fixture-activity.js';
+import {
+  activityRatchetOptions,
+  renderFixtureActivity,
+} from '../tests/oracle/svg-conformance/render-fixture-activity.js';
 import { styleCensusOf } from './repin-activity-style-census.js';
 import { processPromotions } from './repin-activity-promote-run.js';
 import {
@@ -257,7 +259,7 @@ function readFixture(slug: string): { markup: string; golden: string } {
 }
 
 function renderOurs(markup: string): string {
-  return renderFixtureActivity(markup, new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+  return renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
 }
 
 function getToday(): string {
@@ -399,7 +401,7 @@ const TEXT_SPEC: EqualityFileSpec = {
  * `laneCount`, which lives outside the `ours`/`jar` shape. */
 function processSwimlaneFixture(f: SwimlaneFixture, ctx: RepinContext): boolean {
   const { markup, golden } = readFixture(f.slug);
-  const geometry = layoutFixtureActivity(markup, new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+  const geometry = layoutFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
   const liveOurs = swimlaneCensusOf(renderOurs(markup), geometry.lanes);
   const liveJar = swimlaneCensusOf(golden);
   const moved = censusChanged(f.ours, liveOurs) || censusChanged(f.jar, liveJar) || f.laneCount !== geometry.laneCount;

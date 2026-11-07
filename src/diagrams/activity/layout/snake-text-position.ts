@@ -22,6 +22,8 @@
  */
 
 import { arrowDirection } from '../arrows-regular.js';
+import type { Theme } from '../../../core/theme.js';
+import { arrowMessageAlignmentOfTheme } from '../../../core/arrow-message-alignment.js';
 
 /**
  * One label's alignment, mirroring `Snake#withLabel`'s two overloads
@@ -49,12 +51,13 @@ const DIRECTION_LETTER: Record<'up' | 'down' | 'left' | 'right', string> = {
 };
 
 /**
- * The alignment of a label whose push site carries none: the jar's
- * `arrowHorizontalAlignment()` (`ftile/AbstractFtile.java:108-110`), i.e.
- * `AlignmentParam.arrowMessageAlignment`, default LEFT
- * (`skin/AlignmentParam.java:42`).
+ * `AbstractFtile#arrowHorizontalAlignment` (`:108-110`): `skinparam arrowMessageAlignment` (`SkinParam.java:671-728`,
+ * resolved by `core/arrow-message-alignment.ts`), LEFT when unset. Every `withLabel(.., arrowHorizontalAlignment())` push
+ * site takes this.
  */
-export const DEFAULT_LABEL_ALIGN: SnakeTextAlign = { horizontal: 'LEFT' };
+export function arrowHorizontalAlignment(theme: Theme): SnakeTextAlign {
+  return { horizontal: arrowMessageAlignmentOfTheme(theme) };
+}
 
 /**
  * `Worm#getDirectionsCode` (`Worm.java:285-292`): one letter per segment

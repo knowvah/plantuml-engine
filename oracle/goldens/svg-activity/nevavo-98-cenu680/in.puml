@@ -1,0 +1,10 @@
+@startuml
+skinparam BackGroundColor pink
+scale 1.5
+:a;
+-[#00000000]-> OK, opacity min: that is transparent;
+:b;
+-[#transparent]-> KO, it's white not transparent!;
+:c;
+
+@enduml

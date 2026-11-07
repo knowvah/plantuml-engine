@@ -65,6 +65,7 @@
  * `activity-renderer-shapes.ts` (confirmed by inspection), so there is no
  * consumer to wire it into here — same situation as sequence.
  */
+import { withColorArrowSeparationSpace } from '../../../src/diagrams/activity/activity-rainbow.js';
 import { buildTheme } from '../../../src/core/build-theme.js';
 import { buildBlockUmls } from '../../../src/core/BlockUmlBuilder.js';
 import type { PreprocessOptions } from '../../../src/core/preprocessor.js';
@@ -74,6 +75,7 @@ import { astOrThrow } from '../../helpers/parse-ast.js';
 import { parseActivity } from '../../../src/diagrams/activity/parser.js';
 import { layoutActivity } from '../../../src/diagrams/activity/layout/tile-layout.js';
 import { renderActivity } from '../../../src/diagrams/activity/renderer.js';
+import { withActivityDocumentArrow } from '../../../src/diagrams/activity/activity-diamond-theme.js';
 import {
   activityWarnings,
   withSkinParamWarnings,
@@ -91,6 +93,11 @@ import { assembleSvg, seedOfUmlSource } from '../../../src/core/assemble-svg.js'
 import { renderSync } from '../../../src/index.js';
 import { inheritingRenderFn } from '../../../src/core/nested-previous.js';
 import { registerNestedDiagramRenderers } from '../../../src/diagrams/class/class-nested-diagram-renderer.js';
+import { combineAssetStores, type AssetStore } from '../../../src/core/asset-store.js';
+import { buildSpriteAssetsStore } from '../../helpers/sprite-assets-store.js';
+import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
+import { buildUtilityAssetsStore } from '../../helpers/utility-assets-store.js';
+import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 
 /** `renderFixtureActivity`'s own options bag: `PreprocessOptions` (forwarded
  *  to `buildBlockUmls`) UNION `ParseOptions` (`assetStore`, forwarded to
@@ -145,11 +152,13 @@ export function renderFixtureActivity(
     styleSource: preprocessed,
   };
   const parsed = astOrThrow(parseActivity(block, { assetStore: options?.assetStore }), 'activity');
-  const ast = withSkinParamWarnings(parsed, block.styleSource);
-  const marginTheme = documentMarginTheme(theme, hasActivityChrome(ast));
+  const ast = withSkinParamWarnings(withColorArrowSeparationSpace(parsed, block.styleSource), block.styleSource);
+  // aar-T6a: `activityPlugin.layoutSync`/`render` merge the arrow style first.
+  const arrowTheme = withActivityDocumentArrow(theme);
+  const marginTheme = documentMarginTheme(arrowTheme, hasActivityChrome(ast));
   const geo = layoutActivity(ast, marginTheme, measurer);
   const fragment = withWarningBanner(
-    renderActivity(geo, theme),
+    renderActivity(geo, arrowTheme),
     activityWarnings(ast),
     measurer,
     activityDocumentMargin(marginTheme),
@@ -187,4 +196,21 @@ export function renderFixtureActivity(
   }
   const chromed = applyChrome(fragment, annotations, styles, measurer, ast.sprites);
   return assembleSvg(chromed, seed);
+}
+
+let ratchetAssetStore: AssetStore | undefined;
+
+/**
+ * aar-T6a: the options every activity gate renders a cached fixture with — the vendored include store and the
+ * survey's own asset store (`scripts/svg-parity-survey.ts` `SURVEY_ASSET_STORE`: sprites, emoji, utility pictures),
+ * so the golden ratchet, the baselines and `pin-goldens.mts` measure what the survey measures. Without it a
+ * `<:emoji:>` row (dejuko-37-pida698) is conformant in the survey and diverged on the ratchet's path.
+ */
+export function activityRatchetOptions(): FixtureActivityOptions {
+  ratchetAssetStore ??= combineAssetStores(
+    buildSpriteAssetsStore(),
+    buildEmojiAssetsStore(),
+    buildUtilityAssetsStore(),
+  );
+  return { includeStore: fixtureIncludeStore(), assetStore: ratchetAssetStore };
 }

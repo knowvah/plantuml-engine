@@ -5,6 +5,7 @@ import type { Sheet } from './Sheet.js';
 import type { Stripe } from './Stripe.js';
 import type { CreoleAtom } from './atom/Atom.js';
 import { getSplitted } from './Fission.js';
+import { AtomBlank } from './atom/AtomBlank.js';
 import { Sea, type AtomOps } from './Sea.js';
 import type { Position } from './Position.js';
 import type { LineBreakStrategy } from '../LineBreakStrategy.js';
@@ -161,9 +162,7 @@ export class SheetBlock1 extends TextBlockMemoized implements Atom, Stencil {
     const stripes: SplitLine[] = [];
     for (const stripe of this.sheet) {
       const atoms = drawableAtoms(stripe.getAtoms(), this.atomOps, stringBounder);
-      const split = getSplitted(atoms, this.maxWidth.getMaxWidth(), (atom) =>
-        this.atomOps.calculateDimension(atom, stringBounder).getWidth(),
-      );
+      const split = this.splitStripe(stripe, atoms, stringBounder);
       if (split.length === 1 && split[0] === atoms) {
         // No wrapping occurred (Fission.java's own `valueMaxWidth == 0`
         // branch returns `Arrays.asList(stripe)` UNCHANGED) -- keep the
@@ -219,6 +218,27 @@ export class SheetBlock1 extends TextBlockMemoized implements Atom, Stencil {
     this.widths = widths;
     this.heights = heights;
     this.minMax = minMax;
+  }
+
+  /**
+   * `Fission#getSplitted` of one stripe: a list line's header (`Stripe#getLHeader`, `atoms[0]`) is kept off the wrapped
+   * body (`noHeader()`, `Fission.java:149-155`), heads the first line, and a same-sized blank heads every other
+   * (`Fission.java:73,92`).
+   */
+  private splitStripe(
+    stripe: Stripe,
+    atoms: readonly CreoleAtom[],
+    stringBounder: StringBounder,
+  ): readonly (readonly CreoleAtom[])[] {
+    const measure = (atom: CreoleAtom): number => this.atomOps.calculateDimension(atom, stringBounder).getWidth();
+    const maxWidth = this.maxWidth.getMaxWidth();
+    const header = stripe.getLHeader();
+    const head = atoms[0];
+    if (header === null || maxWidth === 0 || head === undefined || head !== (header as unknown))
+      return getSplitted(atoms, maxWidth, measure);
+    const lines = getSplitted(atoms.slice(1), maxWidth, measure, measure(head));
+    const blank = new AtomBlank(header as unknown as Atom) as unknown as CreoleAtom;
+    return lines.map((line, i) => [i === 0 ? head : blank, ...line] as readonly CreoleAtom[]);
   }
 
   private getCoef(key: Stripe): number {

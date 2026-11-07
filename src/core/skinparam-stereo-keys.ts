@@ -417,6 +417,11 @@ function applyElementFontSizeByStereo(acc: SkinparamAccumulator, key: string, va
   return true;
 }
 
+/** Skinparam prefixes whose `addConvert` lands on another SName: `PartitionBackgroundColor` is `SName.composite`
+ *  (`FromSkinparamToStyle.java:131-132`), so `skinparam partition { BackgroundColor<<x>> }` is a `composite<<x>>`
+ *  rule (aar-T4b, `fuficu-36-caga441`). */
+const SNAME_CONVERT: Readonly<Record<string, string>> = { partition: 'composite' };
+
 /**
  * `skinparam <sname>BackgroundColor<<label>>` — the ELEMENT's own background
  * under a stereotype. Exact mirror of {@link applyElementFontSizeByStereo},
@@ -436,8 +441,8 @@ function applyElementFontSizeByStereo(acc: SkinparamAccumulator, key: string, va
 function applyElementBackgroundColorByStereo(acc: SkinparamAccumulator, key: string, value: string): boolean {
   const m = ELEMENT_BACKGROUND_COLOR_STEREO_RE.exec(key);
   if (m === null) return false;
-  const sname = m[1]!;
-  if (!ELEMENT_BUCKET_SNAMES.has(sname)) return false;
+  const sname = SNAME_CONVERT[m[1]!] ?? m[1]!;
+  if (!ELEMENT_BUCKET_SNAMES.has(sname) && SNAME_CONVERT[m[1]!] === undefined) return false;
   const bucket = (acc.elements[sname] ??= {});
   bucket.backgroundColorByStereo = {
     ...bucket.backgroundColorByStereo,

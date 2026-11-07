@@ -1,0 +1,13 @@
+@startuml
+:foo1;
+-[#hotpink]->
+repeat
+  -[#gold]->
+  :foo2;
+  -[#green]->
+  :foo3;
+  -[#black]->
+repeatwhile (foo)
+-[#greenyellow]->
+:foo4;
+@enduml

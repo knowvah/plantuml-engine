@@ -39,14 +39,16 @@ import { unescapeLabelNewlines } from './if-dispatch.js';
 // add2 T3i), still parsed-and-dropped for `end merge` (`ActivityFork
 // .style`'s own doc, ast.ts: `ParallelBuilderMerge`'s constructor takes
 // no label upstream either).
-// `fork end` (word order reversed) stays out of scope, per this file's
-// pre-existing D12 note below.
+// `fork end` (word order reversed, `forkend` too) is the regex's second
+// alternative (aar-T1b: `munovo-17-voji978`, `rikegu-37-maze985`).
 // ---------------------------------------------------------------------------
 /** @see net/sourceforge/plantuml/activitydiagram3/command/CommandForkEnd3.java:57-81 */
 /** `fork;? <<stereogroup>>?` (`CommandFork3.java:60-64`); group 1 is the stereogroup (`Stereogroup.java:77-79`). */
 const RE_FORK = /^fork;?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?$/i;
 
-const RE_FORK_END = /^end\s*(fork|merge)\s*(\{[^}]*\})?\s*;?\s*$/i;
+/** `STYLE` is `end fork` | `fork end` | `end merge` (`CommandForkEnd3.java:60-76`); group 1 is `fork`/`merge` for the
+ *  `end` spellings and absent for `fork end`, which `style.contains("merge")` (`:108`) reads as `ForkStyle.FORK`. */
+const RE_FORK_END = /^(?:end\s*(fork|merge)|fork\s*end)\s*(\{[^}]*\})?\s*;?\s*$/i;
 /** @see net/sourceforge/plantuml/activitydiagram3/command/CommandForkAgain3.java:56-62 */
 const RE_FORK_AGAIN = /^fork\s*again\s*;?\s*$/i;
 const FORK_STOPS: StopKeywords = [RE_FORK_AGAIN, RE_FORK_END];
@@ -74,8 +76,6 @@ interface ForkBranches {
  *   `ForkStyle`, `ActivityDiagram3.java:236-244`).
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandForkEnd3.java:57-81
  *   -- the `STYLE` regex alternation: `end fork` | `fork end` | `end merge`.
- *   `fork end` (the reversed synonym) is a separate, pre-existing gap --
- *   out of scope here (D12 scopes this task to `end merge` only).
  */
 interface ForkSeparator {
   readonly cursor: number;

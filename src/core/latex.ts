@@ -227,6 +227,52 @@ export function parseLatexLabel(raw: string): LabelSpan[] {
 // measureLatex
 // ---------------------------------------------------------------------------
 
+/** The commands whose braced argument is parsed in text mode (`ignoreWhiteSpace` false) by JLaTeXMath. */
+const TEXT_MODE_COMMANDS = /^\\(?:text|textrm|textit|textbf|textsf|texttt|textnormal|mbox)\s*\{/;
+
+/**
+ * JLaTeXMath's `TeXParser#parse`, `'$'` arm (1.0.7, bytecode `TeXParser.parse`, the `bipush 36` case): the character
+ * is consumed, and `getDollarGroup` runs only `if (!ignoreWhiteSpace)`, i.e. in a text-mode argument. A formula
+ * starts in math mode, where `ignoreWhiteSpace` is true, so a `$` is skipped there: `set $x$ and $i$` is `set x and
+ * i`. KaTeX instead rejects it ("Can't use function '$' in math mode"). Escaped `\$` and a `$` inside a text-mode
+ * command's braces are kept, which KaTeX reads as JLaTeXMath does.
+ */
+export function stripMathModeDollars(expr: string): string {
+  if (!expr.includes('$')) return expr;
+  let out = '';
+  let textDepth = 0; // brace depth of the innermost open text-mode group, 0 when none
+  let depth = 0;
+  const textOpen: number[] = [];
+  for (let i = 0; i < expr.length; i++) {
+    const ch = expr[i]!;
+    if (ch === '\\') {
+      const command = TEXT_MODE_COMMANDS.exec(expr.slice(i));
+      if (command !== null) {
+        out += command[0];
+        i += command[0].length - 1;
+        depth++;
+        textOpen.push(depth);
+        textDepth = depth;
+      } else {
+        out += ch + (expr[i + 1] ?? '');
+        i++;
+      }
+      continue;
+    }
+    if (ch === '{') depth++;
+    if (ch === '}') {
+      if (textOpen.at(-1) === depth) {
+        textOpen.pop();
+        textDepth = textOpen.at(-1) ?? 0;
+      }
+      depth--;
+    }
+    if (ch === '$' && textDepth === 0) continue;
+    out += ch;
+  }
+  return out;
+}
+
 /**
  * The size of the image upstream draws for a LaTeX expression: JLaTeXMath's
  * `TeXIcon` dimensions for display style at size 20 with unit insets
@@ -236,7 +282,7 @@ export function parseLatexLabel(raw: string): LabelSpan[] {
  * (`latex-metrics.ts`). A `<latex>…</latex>` wrapper is stripped first.
  */
 export function measureLatex(raw: string): { width: number; height: number } {
-  const expr = raw.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1').trim();
+  const expr = stripMathModeDollars(raw.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1').trim());
   const { width, height } = measureTeXIcon(expr);
   return { width, height };
 }
@@ -260,7 +306,7 @@ export function measureLatex(raw: string): { width: number; height: number } {
  */
 export function renderLatexMathML(expr: string, x: number, y: number, w: number, h: number, color: string): string {
   // Strip <latex>…</latex> wrapper if present.
-  const stripped = expr.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1').trim();
+  const stripped = stripMathModeDollars(expr.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1').trim());
 
   const mathml = katex.renderToString(stripped, {
     output: 'mathml',

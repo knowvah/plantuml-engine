@@ -1,7 +1,7 @@
 {
   "$comment": "Style census (font sizes, stroke widths, rx, text count, canvas) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): canvas width/height move with the removed compression slots on 85 (x) / 160 (y) fixtures; no font/stroke/rx/textCount change is expected from this mission.",
   "measuredAt": "2026-11-06",
-  "measuredAgainstCommit": "78ad396b",
+  "measuredAgainstCommit": "98e54b80",
   "fixtures": [
     {
       "type": "activity",
@@ -896,11 +896,11 @@
       "type": "activity",
       "slug": "bineki-51-zedo397",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 5,
+          "11": 9,
           "12": 3
         },
         "strokeWidth": {
@@ -909,9 +909,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 8,
+        "textCount": 12,
         "width": "182",
-        "height": "332"
+        "height": "337"
       },
       "jar": {
         "fontSize": {
@@ -1007,21 +1007,22 @@
       "type": "activity",
       "slug": "bitugi-14-kico572",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 3,
           "12": 4
         },
         "strokeWidth": {
-          "1": 13
+          "1": 11,
+          "1.5": 2
         },
         "rx": {
           "12.5": 4
         },
         "textCount": 7,
-        "width": "359",
+        "width": "300",
         "height": "335"
       },
       "jar": {
@@ -1045,8 +1046,8 @@
       "type": "activity",
       "slug": "bixece-33-baja570",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -1063,7 +1064,7 @@
         },
         "textCount": 11,
         "width": "283",
-        "height": "261"
+        "height": "241"
       },
       "jar": {
         "fontSize": {
@@ -1271,11 +1272,11 @@
       "type": "activity",
       "slug": "bofaxe-86-mizu331",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "11": 35,
+          "11": 38,
           "12": 21,
           "13": 6,
           "14": 1
@@ -1287,9 +1288,9 @@
         "rx": {
           "12.5": 9
         },
-        "textCount": 63,
-        "width": "906",
-        "height": "1550"
+        "textCount": 66,
+        "width": "1051",
+        "height": "1580"
       },
       "jar": {
         "fontSize": {
@@ -1314,14 +1315,14 @@
       "type": "activity",
       "slug": "bokida-76-fega767",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
           "11": 30,
           "12": 17,
           "13": 19,
-          "14": 4
+          "14": 6
         },
         "strokeWidth": {
           "1": 68
@@ -1330,9 +1331,9 @@
           "12.5": 8,
           "(absent)": 4
         },
-        "textCount": 70,
+        "textCount": 72,
         "width": "755",
-        "height": "1448"
+        "height": "1476"
       },
       "jar": {
         "fontSize": {
@@ -1478,11 +1479,11 @@
       "type": "activity",
       "slug": "bosada-42-voti559",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 35,
+          "11": 34,
           "12": 16,
           "13": 6,
           "14": 1
@@ -1494,9 +1495,9 @@
         "rx": {
           "12.5": 7
         },
-        "textCount": 58,
-        "width": "905",
-        "height": "1391"
+        "textCount": 57,
+        "width": "1050",
+        "height": "1431"
       },
       "jar": {
         "fontSize": {
@@ -1570,14 +1571,15 @@
       "type": "activity",
       "slug": "botani-09-fova158",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "10": 2,
+          "11": 1,
           "12": 7,
           "13": 5,
-          "14": 6
+          "14": 5
         },
         "strokeWidth": {
           "1": 7,
@@ -1591,7 +1593,7 @@
         },
         "textCount": 20,
         "width": "359",
-        "height": "708"
+        "height": "705"
       },
       "jar": {
         "fontSize": {
@@ -1620,23 +1622,23 @@
       "type": "activity",
       "slug": "botuge-46-jese647",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "11": 2,
           "12": 4
         },
         "strokeWidth": {
-          "1": 9,
+          "1": 8,
           "2.5": 2
         },
         "rx": {
           "12.5": 1
         },
-        "textCount": 5,
-        "width": "186",
-        "height": "239"
+        "textCount": 6,
+        "width": "151",
+        "height": "210"
       },
       "jar": {
         "fontSize": {
@@ -1850,11 +1852,11 @@
       "type": "activity",
       "slug": "bucoru-71-gapi371",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 11,
           "12": 2
         },
         "strokeWidth": {
@@ -1863,9 +1865,9 @@
         "rx": {
           "12.5": 2
         },
-        "textCount": 5,
+        "textCount": 13,
         "width": "189",
-        "height": "132"
+        "height": "168"
       },
       "jar": {
         "fontSize": {
@@ -2055,11 +2057,11 @@
       "type": "activity",
       "slug": "bunefa-86-juna432",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "11": 2,
           "12": 1
         },
         "strokeWidth": {
@@ -2068,9 +2070,9 @@
         "rx": {
           "12.5": 1
         },
-        "textCount": 2,
+        "textCount": 3,
         "width": "136",
-        "height": "134"
+        "height": "145"
       },
       "jar": {
         "fontSize": {
@@ -2338,8 +2340,8 @@
       "type": "activity",
       "slug": "cajexu-16-lanu149",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 3,
@@ -2355,7 +2357,7 @@
         },
         "textCount": 7,
         "width": "287",
-        "height": "310"
+        "height": "321"
       },
       "jar": {
         "fontSize": {
@@ -2416,11 +2418,11 @@
       "type": "activity",
       "slug": "cajore-10-sodu905",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 4,
           "12": 4
         },
         "strokeWidth": {
@@ -2429,9 +2431,9 @@
         "rx": {
           "12.5": 4
         },
-        "textCount": 7,
+        "textCount": 8,
         "width": "289",
-        "height": "325"
+        "height": "346"
       },
       "jar": {
         "fontSize": {
@@ -2681,8 +2683,8 @@
       "type": "activity",
       "slug": "cedero-01-sutu624",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
           "12": 5
@@ -2691,7 +2693,8 @@
           "1": 3
         },
         "rx": {
-          "12.5": 3
+          "12.5": 3,
+          "(absent)": 1
         },
         "textCount": 5,
         "width": "118",
@@ -2875,8 +2878,8 @@
       "type": "activity",
       "slug": "cepivu-60-lobe416",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
           "12": 2
@@ -2889,8 +2892,8 @@
           "12.5": 3
         },
         "textCount": 2,
-        "width": "73",
-        "height": "247"
+        "width": "277",
+        "height": "287"
       },
       "jar": {
         "fontSize": {
@@ -2912,11 +2915,11 @@
       "type": "activity",
       "slug": "cepizi-90-jaja810",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 6,
+          "11": 7,
           "12": 4
         },
         "strokeWidth": {
@@ -2925,9 +2928,9 @@
         "rx": {
           "12.5": 4
         },
-        "textCount": 10,
+        "textCount": 11,
         "width": "257",
-        "height": "342"
+        "height": "357"
       },
       "jar": {
         "fontSize": {
@@ -3103,11 +3106,11 @@
       "type": "activity",
       "slug": "cidibe-55-gavi744",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
       "ours": {
         "fontSize": {
-          "11": 9,
+          "11": 10,
           "12": 7
         },
         "strokeWidth": {
@@ -3116,8 +3119,8 @@
         "rx": {
           "12.5": 7
         },
-        "textCount": 16,
-        "width": "286",
+        "textCount": 17,
+        "width": "266",
         "height": "403"
       },
       "jar": {
@@ -3913,8 +3916,8 @@
       "type": "activity",
       "slug": "dacato-89-cala164",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 6,
@@ -3928,8 +3931,8 @@
           "12.5": 7
         },
         "textCount": 14,
-        "width": "451",
-        "height": "321"
+        "width": "609",
+        "height": "317"
       },
       "jar": {
         "fontSize": {
@@ -4453,21 +4456,21 @@
       "type": "activity",
       "slug": "dejuko-37-pida698",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
-          "12": 4
+          "12": 2
         },
         "strokeWidth": {
           "1": 1
         },
         "rx": {
-          "12.5": 2
+          "12.5": 1
         },
-        "textCount": 4,
-        "width": "226",
-        "height": "127"
+        "textCount": 2,
+        "width": "83",
+        "height": "128"
       },
       "jar": {
         "fontSize": {
@@ -4572,8 +4575,8 @@
       "type": "activity",
       "slug": "denono-78-vaje778",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -4581,15 +4584,15 @@
           "14": 2
         },
         "strokeWidth": {
-          "1": 11
+          "1": 12
         },
         "rx": {
           "12.5": 6,
           "(absent)": 1
         },
         "textCount": 11,
-        "width": "370",
-        "height": "478"
+        "width": "307",
+        "height": "502"
       },
       "jar": {
         "fontSize": {
@@ -4730,18 +4733,20 @@
       "type": "activity",
       "slug": "dezobu-34-ligo070",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "10": 2,
+          "11": 5,
           "12": 7,
           "13": 5,
-          "14": 6
+          "14": 1
         },
         "strokeWidth": {
           "1": 7,
-          "1.5": 3,
+          "3": 2,
+          "1.5": 1,
           "2.5": 2
         },
         "rx": {
@@ -4751,7 +4756,7 @@
         },
         "textCount": 20,
         "width": "359",
-        "height": "708"
+        "height": "693"
       },
       "jar": {
         "fontSize": {
@@ -4781,8 +4786,8 @@
       "type": "activity",
       "slug": "didixe-34-solo921",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 19,
@@ -4790,8 +4795,8 @@
           "14": 1
         },
         "strokeWidth": {
-          "1": 26,
-          "1.5": 12
+          "1": 35,
+          "1.5": 17
         },
         "rx": {
           "12.5": 4,
@@ -5270,8 +5275,8 @@
       "type": "activity",
       "slug": "dovoda-34-tepi908",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
           "12": 4
@@ -5283,8 +5288,8 @@
           "12.5": 2
         },
         "textCount": 4,
-        "width": "203",
-        "height": "160"
+        "width": "207",
+        "height": "167"
       },
       "jar": {
         "fontSize": {
@@ -5418,24 +5423,24 @@
       "type": "activity",
       "slug": "dukocu-46-mibo641",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
-          "11": 6,
+          "11": 10,
           "12": 7,
-          "14": 2
+          "14": 5
         },
         "strokeWidth": {
-          "1": 21
+          "1": 65
         },
         "rx": {
           "12.5": 2,
           "(absent)": 2
         },
-        "textCount": 15,
-        "width": "898",
-        "height": "540"
+        "textCount": 22,
+        "width": "585",
+        "height": "563"
       },
       "jar": {
         "fontSize": {
@@ -6442,8 +6447,8 @@
       "type": "activity",
       "slug": "filize-93-riju662",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -6456,7 +6461,7 @@
           "12.5": 4
         },
         "textCount": 12,
-        "width": "146",
+        "width": "180",
         "height": "302"
       },
       "jar": {
@@ -6756,8 +6761,8 @@
       "type": "activity",
       "slug": "fokopi-22-mife166",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 6,
@@ -6770,7 +6775,7 @@
           "12.5": 6
         },
         "textCount": 18,
-        "width": "267",
+        "width": "310",
         "height": "325"
       },
       "jar": {
@@ -7135,10 +7140,45 @@
     {
       "type": "activity",
       "slug": "fuficu-36-caga441",
-      "status": "error",
-      "reason": "the jar accepts '#green:Activity 1;' via CommandActivityLong3.java:78-84 (registered ActivityDiagramFactory3.java:159): CommandActivity3 (CommandActivity3.java:66-77) has no colour leaf, so the line starts CommandActivityLong3, whose start regex is color().getRegex() + `:` + DATA `(.*)`; CommandMultilines3.isValid returns OK_PARTIAL on a single line without testing the END pattern (CommandMultilines3.java:78-79), so the block runs to the next line ending `;` + stereogroup, ':Activity 2; <<redactivity>>' (END, CommandActivityLong3.java:61-68), and executeNow emits the deprecation warning for the leading colour (:125-127) -- the jar draws one two-line box 'Activity 1;' / ':Activity 2'; our activity engine refuses that line (node-dispatch.ts:155-156 tryMultilineAction returns null unless the line starts with ':', and RE_ACTION (dispatch-support.ts:50) has no colour prefix), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'partition \"My Partition\" <<bluepartition>> {'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "10": 1,
+          "12": 2,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 1,
+          "(absent)": 1,
+          "12.5": 1
+        },
+        "textCount": 4,
+        "width": "421",
+        "height": "221"
+      },
+      "jar": {
+        "fontSize": {
+          "10": 1,
+          "12": 2,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 1,
+          "(absent)": 1,
+          "12.5": 1
+        },
+        "textCount": 4,
+        "width": "421",
+        "height": "221"
+      }
     },
     {
       "type": "activity",
@@ -7257,8 +7297,8 @@
       "type": "activity",
       "slug": "fukobu-92-deje468",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -7275,7 +7315,7 @@
         },
         "textCount": 8,
         "width": "620",
-        "height": "401"
+        "height": "391"
       },
       "jar": {
         "fontSize": {
@@ -7345,15 +7385,15 @@
       "type": "activity",
       "slug": "furutu-44-daxu731",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 4,
           "12": 3
         },
         "strokeWidth": {
-          "1": 4,
+          "1": 10,
           "2": 2,
           "1.5": 4
         },
@@ -7394,20 +7434,22 @@
       "type": "activity",
       "slug": "fuximi-08-dovo257",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
+          "11": 3,
           "12": 2
         },
         "strokeWidth": {
-          "1": 7
+          "1": 7,
+          "1.5": 6
         },
         "rx": {
           "12.5": 2
         },
-        "textCount": 2,
-        "width": "138",
+        "textCount": 5,
+        "width": "142",
         "height": "247"
       },
       "jar": {
@@ -7790,8 +7832,8 @@
       "type": "activity",
       "slug": "gateti-51-lasi768",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
       "ours": {
         "fontSize": {
           "12": 2,
@@ -7801,8 +7843,8 @@
           "1": 1
         },
         "rx": {
-          "(absent)": 2,
-          "12.5": 2
+          "12.5": 3,
+          "(absent)": 1
         },
         "textCount": 4,
         "width": "142",
@@ -7936,23 +7978,23 @@
       "type": "activity",
       "slug": "gebeke-27-tace678",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "11": 2,
           "12": 4
         },
         "strokeWidth": {
-          "1": 9,
+          "1": 8,
           "2.5": 2
         },
         "rx": {
           "12.5": 1
         },
-        "textCount": 5,
-        "width": "186",
-        "height": "239"
+        "textCount": 6,
+        "width": "151",
+        "height": "210"
       },
       "jar": {
         "fontSize": {
@@ -8047,14 +8089,14 @@
       "type": "activity",
       "slug": "gefomi-83-fifi398",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "12": 2
         },
         "strokeWidth": {
-          "1": 4
+          "1": 5
         },
         "rx": {
           "2.5": 2,
@@ -8193,8 +8235,8 @@
       "type": "activity",
       "slug": "gelizi-30-kole759",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -8210,8 +8252,8 @@
           "12.5": 3
         },
         "textCount": 11,
-        "width": "283",
-        "height": "261"
+        "width": "270",
+        "height": "241"
       },
       "jar": {
         "fontSize": {
@@ -9880,8 +9922,8 @@
       "type": "activity",
       "slug": "jazuco-34-fake306",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -9898,7 +9940,7 @@
         },
         "textCount": 6,
         "width": "227",
-        "height": "317"
+        "height": "307"
       },
       "jar": {
         "fontSize": {
@@ -10007,10 +10049,11 @@
       "type": "activity",
       "slug": "jeseke-77-vovo768",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
+          "11": 3,
           "12": 3,
           "14": 1
         },
@@ -10022,9 +10065,9 @@
           "12.5": 3,
           "(absent)": 1
         },
-        "textCount": 4,
-        "width": "126",
-        "height": "375"
+        "textCount": 7,
+        "width": "215",
+        "height": "392"
       },
       "jar": {
         "fontSize": {
@@ -10131,22 +10174,22 @@
       "type": "activity",
       "slug": "jexavu-72-bixa676",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
-          "12": 3,
+          "12": 4,
           "30": 1
         },
         "strokeWidth": {
           "1": 4
         },
         "rx": {
-          "12.5": 4
+          "12.5": 1
         },
-        "textCount": 4,
-        "width": "363",
-        "height": "333"
+        "textCount": 5,
+        "width": "366",
+        "height": "282"
       },
       "jar": {
         "fontSize": {
@@ -10244,14 +10287,14 @@
       "type": "activity",
       "slug": "jigalo-17-kuve815",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
           "11": 30,
           "12": 17,
           "13": 19,
-          "14": 4
+          "14": 6
         },
         "strokeWidth": {
           "1": 68
@@ -10260,9 +10303,9 @@
           "12.5": 8,
           "(absent)": 4
         },
-        "textCount": 70,
+        "textCount": 72,
         "width": "755",
-        "height": "1448"
+        "height": "1476"
       },
       "jar": {
         "fontSize": {
@@ -10287,23 +10330,23 @@
       "type": "activity",
       "slug": "jigocu-99-bala189",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
           "11": 5,
           "12": 4
         },
         "strokeWidth": {
-          "1": 8
+          "2": 7
         },
         "rx": {
           "12.5": 4,
           "2.5": 2
         },
         "textCount": 9,
-        "width": "296",
-        "height": "243"
+        "width": "302",
+        "height": "271"
       },
       "jar": {
         "fontSize": {
@@ -10500,21 +10543,22 @@
       "type": "activity",
       "slug": "jofaru-38-poje814",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 9,
           "12": 5
         },
         "strokeWidth": {
-          "1": 25
+          "1": 37,
+          "1.5": 14
         },
         "rx": {
           "12.5": 3
         },
         "textCount": 14,
-        "width": "163",
+        "width": "171",
         "height": "553"
       },
       "jar": {
@@ -10595,11 +10639,11 @@
       "type": "activity",
       "slug": "jomobo-52-zigu811",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 7,
+          "11": 9,
           "12": 3
         },
         "strokeWidth": {
@@ -10608,9 +10652,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 10,
+        "textCount": 12,
         "width": "211",
-        "height": "315"
+        "height": "344"
       },
       "jar": {
         "fontSize": {
@@ -10669,12 +10713,12 @@
       "type": "activity",
       "slug": "joxini-32-pube064",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "11": 1,
-          "12": 2
+          "12": 2,
+          "15": 1
         },
         "strokeWidth": {
           "1": 1
@@ -10683,8 +10727,8 @@
           "12.5": 2
         },
         "textCount": 3,
-        "width": "93",
-        "height": "139"
+        "width": "94",
+        "height": "144"
       },
       "jar": {
         "fontSize": {
@@ -11724,15 +11768,15 @@
       "type": "activity",
       "slug": "kicofo-41-fazi136",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 7,
           "12": 5
         },
         "strokeWidth": {
-          "1": 22
+          "1": 32
         },
         "rx": {
           "12.5": 5
@@ -11890,8 +11934,8 @@
       "type": "activity",
       "slug": "kimobe-21-buce484",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 9,
@@ -11905,8 +11949,8 @@
           "12.5": 1
         },
         "textCount": 11,
-        "width": "240",
-        "height": "149"
+        "width": "249",
+        "height": "231"
       },
       "jar": {
         "fontSize": {
@@ -12009,14 +12053,15 @@
       "type": "activity",
       "slug": "kiveda-60-robo606",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "10": 2,
+          "10": 1,
           "11": 4,
           "12": 4,
-          "13": 13
+          "13": 13,
+          "18": 1
         },
         "strokeWidth": {
           "1": 13
@@ -12130,10 +12175,39 @@
     {
       "type": "activity",
       "slug": "kizofi-56-mibi017",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B; <<MyGreen>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 1,
+          "12": 2
+        },
+        "strokeWidth": {
+          "1": 5
+        },
+        "rx": {
+          "12.5": 2
+        },
+        "textCount": 3,
+        "width": "120",
+        "height": "185"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 1,
+          "12": 2
+        },
+        "strokeWidth": {
+          "1": 5
+        },
+        "rx": {
+          "12.5": 2
+        },
+        "textCount": 3,
+        "width": "120",
+        "height": "185"
+      }
     },
     {
       "type": "activity",
@@ -12361,12 +12435,12 @@
       "type": "activity",
       "slug": "kozete-82-voce373",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "11": 1,
-          "12": 2
+          "12": 2,
+          "15": 1
         },
         "strokeWidth": {
           "1": 1
@@ -12375,8 +12449,8 @@
           "12.5": 2
         },
         "textCount": 3,
-        "width": "93",
-        "height": "139"
+        "width": "94",
+        "height": "144"
       },
       "jar": {
         "fontSize": {
@@ -12488,11 +12562,11 @@
       "type": "activity",
       "slug": "kuxigo-12-vove044",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "11": 4,
           "12": 4
         },
         "strokeWidth": {
@@ -12501,9 +12575,9 @@
         "rx": {
           "12.5": 4
         },
-        "textCount": 5,
-        "width": "131",
-        "height": "419"
+        "textCount": 8,
+        "width": "147",
+        "height": "428"
       },
       "jar": {
         "fontSize": {
@@ -12599,8 +12673,8 @@
       "type": "activity",
       "slug": "labuxo-17-coxo240",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "11": 46,
@@ -12609,14 +12683,14 @@
           "14": 2
         },
         "strokeWidth": {
-          "1": 61
+          "1": 58
         },
         "rx": {
           "12.5": 21
         },
         "textCount": 81,
-        "width": "1475",
-        "height": "1287"
+        "width": "1641",
+        "height": "1232"
       },
       "jar": {
         "fontSize": {
@@ -12714,21 +12788,22 @@
       "type": "activity",
       "slug": "lagive-89-noto058",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 9,
           "12": 5
         },
         "strokeWidth": {
-          "1": 25
+          "1": 37,
+          "1.5": 14
         },
         "rx": {
           "12.5": 3
         },
         "textCount": 14,
-        "width": "163",
+        "width": "171",
         "height": "553"
       },
       "jar": {
@@ -12752,11 +12827,11 @@
       "type": "activity",
       "slug": "laguja-32-nufa224",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 7,
           "12": 3
         },
         "strokeWidth": {
@@ -12765,9 +12840,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 6,
-        "width": "154",
-        "height": "399"
+        "textCount": 10,
+        "width": "195",
+        "height": "440"
       },
       "jar": {
         "fontSize": {
@@ -13314,11 +13389,11 @@
       "type": "activity",
       "slug": "lidumi-54-moza355",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
-          "11": 34,
+          "11": 53,
           "12": 11
         },
         "strokeWidth": {
@@ -13329,9 +13404,9 @@
           "12.5": 11,
           "2.5": 1
         },
-        "textCount": 45,
-        "width": "322",
-        "height": "850"
+        "textCount": 64,
+        "width": "234",
+        "height": "1059"
       },
       "jar": {
         "fontSize": {
@@ -13501,11 +13576,11 @@
       "type": "activity",
       "slug": "linene-56-duxo821",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 2,
+          "11": 8,
           "12": 2
         },
         "strokeWidth": {
@@ -13514,9 +13589,9 @@
         "rx": {
           "12.5": 2
         },
-        "textCount": 4,
-        "width": "120",
-        "height": "283"
+        "textCount": 10,
+        "width": "171",
+        "height": "331"
       },
       "jar": {
         "fontSize": {
@@ -13612,11 +13687,11 @@
       "type": "activity",
       "slug": "liteta-29-zufa478",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "11": 5,
           "12": 3
         },
         "strokeWidth": {
@@ -13625,9 +13700,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 4,
+        "textCount": 8,
         "width": "207",
-        "height": "252"
+        "height": "284"
       },
       "jar": {
         "fontSize": {
@@ -13745,13 +13820,14 @@
       "type": "activity",
       "slug": "lobiki-30-cija465",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "7": 2,
+          "7": 1,
           "11": 4,
-          "12": 4
+          "12": 4,
+          "20": 1
         },
         "strokeWidth": {
           "1": 14
@@ -13760,7 +13836,7 @@
           "12.5": 4
         },
         "textCount": 10,
-        "width": "182",
+        "width": "197",
         "height": "494"
       },
       "jar": {
@@ -13828,8 +13904,8 @@
       "type": "activity",
       "slug": "lokulo-09-coko477",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "13": 1,
@@ -13837,13 +13913,14 @@
         },
         "strokeWidth": {
           "1": 1,
+          "2": 1,
           "2.5": 2
         },
         "rx": {
           "(absent)": 1
         },
         "textCount": 2,
-        "width": "118",
+        "width": "119",
         "height": "187"
       },
       "jar": {
@@ -13907,10 +13984,11 @@
       "type": "activity",
       "slug": "loriki-95-kavi777",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
+          "11": 2,
           "12": 2
         },
         "strokeWidth": {
@@ -13919,9 +13997,9 @@
         "rx": {
           "12.5": 2
         },
-        "textCount": 2,
-        "width": "116",
-        "height": "169"
+        "textCount": 4,
+        "width": "155",
+        "height": "162"
       },
       "jar": {
         "fontSize": {
@@ -14072,8 +14150,8 @@
       "type": "activity",
       "slug": "lucoke-82-xugo231",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 5,
@@ -14087,8 +14165,8 @@
           "12.5": 3
         },
         "textCount": 8,
-        "width": "330",
-        "height": "220"
+        "width": "374",
+        "height": "242"
       },
       "jar": {
         "fontSize": {
@@ -14156,8 +14234,8 @@
       "type": "activity",
       "slug": "lugicu-06-xefo673",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -14172,7 +14250,7 @@
         },
         "textCount": 4,
         "width": "104",
-        "height": "270"
+        "height": "265"
       },
       "jar": {
         "fontSize": {
@@ -14321,24 +14399,22 @@
       "slug": "lulavi-01-fose679",
       "status": "baseline",
       "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "78ad396b",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "5": 1,
-          "18": 2,
-          "19": 6
+          "19": 8
         },
         "strokeWidth": {
-          "1": 16,
-          "1.5": 3
+          "4": 19
         },
         "rx": {
           "(absent)": 2,
           "7.5": 6
         },
         "textCount": 9,
-        "width": "357",
-        "height": "363"
+        "width": "360",
+        "height": "364"
       },
       "jar": {
         "fontSize": {
@@ -14361,8 +14437,8 @@
       "type": "activity",
       "slug": "lunusi-20-nate529",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 7,
@@ -14375,7 +14451,7 @@
           "12.5": 5
         },
         "textCount": 12,
-        "width": "227",
+        "width": "273",
         "height": "348"
       },
       "jar": {
@@ -14921,19 +14997,19 @@
       "type": "activity",
       "slug": "mapuru-01-dizu860",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 4
+          "11": 5
         },
         "strokeWidth": {
           "1": 13
         },
         "rx": {},
-        "textCount": 4,
+        "textCount": 5,
         "width": "281",
-        "height": "239"
+        "height": "259"
       },
       "jar": {
         "fontSize": {
@@ -15548,10 +15624,39 @@
     {
       "type": "activity",
       "slug": "mivipi-10-lebe104",
-      "status": "error",
-      "reason": "the jar accepts '[[http://plantuml.com/sequence]] if (?) then (x) <<#ff8822>>' via CommandIf2.java:68-89 (registered ActivityDiagramFactory3.java:119): the regex opens with UrlBuilder.OPTIONAL (:70) before `if`, and executeArg reads that URL_KEY into the diamond's url (:140-145); our activity engine refuses that line (dispatch-support.ts:118 RE_IF is anchored `^if` with no URL leaf (a probe of the same if without the [[...]] prefix and with the <<#ff8822>> tail is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine 'else (2)'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 6,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 12
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 7,
+        "width": "241",
+        "height": "207"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 6,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 12
+        },
+        "rx": {
+          "12.5": 1
+        },
+        "textCount": 7,
+        "width": "241",
+        "height": "207"
+      }
     },
     {
       "type": "activity",
@@ -15608,22 +15713,22 @@
       "type": "activity",
       "slug": "mojacu-63-fade855",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 2,
           "12": 1
         },
         "strokeWidth": {
-          "1": 9
+          "1": 7
         },
         "rx": {
           "12.5": 1
         },
-        "textCount": 4,
-        "width": "244",
-        "height": "194"
+        "textCount": 3,
+        "width": "188",
+        "height": "134"
       },
       "jar": {
         "fontSize": {
@@ -15887,14 +15992,15 @@
       "type": "activity",
       "slug": "mubojo-03-zeda630",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "10": 2,
+          "11": 2,
           "12": 7,
           "13": 5,
-          "14": 6
+          "14": 4
         },
         "strokeWidth": {
           "1": 9,
@@ -15908,7 +16014,7 @@
         },
         "textCount": 20,
         "width": "359",
-        "height": "708"
+        "height": "702"
       },
       "jar": {
         "fontSize": {
@@ -16264,10 +16370,41 @@
     {
       "type": "activity",
       "slug": "munovo-17-voji978",
-      "status": "error",
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine '-> Comment for the line before the forkend;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "ours": {
+        "fontSize": {
+          "11": 1,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 2,
+          "12.5": 1
+        },
+        "textCount": 2,
+        "width": "283",
+        "height": "131"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 1,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 2,
+          "12.5": 1
+        },
+        "textCount": 2,
+        "width": "283",
+        "height": "131"
+      }
     },
     {
       "type": "activity",
@@ -16364,10 +16501,47 @@
     {
       "type": "activity",
       "slug": "nabako-16-gefo071",
-      "status": "error",
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 12,
+          "12": 8,
+          "13": 8,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 33,
+          "2.5": 2
+        },
+        "rx": {
+          "(absent)": 1,
+          "12.5": 5
+        },
+        "textCount": 29,
+        "width": "1417",
+        "height": "559"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 12,
+          "12": 8,
+          "13": 8,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 33,
+          "2.5": 2
+        },
+        "rx": {
+          "(absent)": 1,
+          "12.5": 5
+        },
+        "textCount": 29,
+        "width": "1417",
+        "height": "559"
+      }
     },
     {
       "type": "activity",
@@ -16814,15 +16988,15 @@
       "type": "activity",
       "slug": "nevavo-98-cenu680",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
       "ours": {
         "fontSize": {
           "18": 3,
           "16.5": 2
         },
         "strokeWidth": {
-          "1.5": 2
+          "(absent)": 2
         },
         "rx": {
           "(absent)": 1,
@@ -16927,8 +17101,8 @@
       "type": "activity",
       "slug": "nijezu-72-fato566",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 91,
@@ -16945,7 +17119,7 @@
           "12.5": 23
         },
         "textCount": 142,
-        "width": "1267",
+        "width": "1318",
         "height": "2513"
       },
       "jar": {
@@ -17341,8 +17515,8 @@
       "type": "activity",
       "slug": "nisigo-68-ledo444",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 4,
@@ -17356,8 +17530,8 @@
           "12.5": 2
         },
         "textCount": 6,
-        "width": "212",
-        "height": "134"
+        "width": "221",
+        "height": "173"
       },
       "jar": {
         "fontSize": {
@@ -17458,12 +17632,12 @@
       "type": "activity",
       "slug": "nizifu-81-guse322",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "11": 1,
-          "12": 2
+          "12": 2,
+          "15": 1
         },
         "strokeWidth": {
           "1": 1
@@ -17472,8 +17646,8 @@
           "12.5": 2
         },
         "textCount": 3,
-        "width": "93",
-        "height": "139"
+        "width": "94",
+        "height": "144"
       },
       "jar": {
         "fontSize": {
@@ -17540,14 +17714,14 @@
       "type": "activity",
       "slug": "nokixe-72-poki730",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "10": 2,
+          "11": 1,
           "12": 2,
-          "13": 1,
-          "14": 1
+          "13": 1
         },
         "strokeWidth": {
           "1": 2,
@@ -17560,7 +17734,7 @@
         },
         "textCount": 6,
         "width": "359",
-        "height": "236"
+        "height": "233"
       },
       "jar": {
         "fontSize": {
@@ -17700,8 +17874,8 @@
       "type": "activity",
       "slug": "nomimi-19-lopi544",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 13,
@@ -17710,8 +17884,8 @@
           "14": 6
         },
         "strokeWidth": {
-          "1": 16,
-          "1.5": 6
+          "1": 26,
+          "1.5": 8
         },
         "rx": {
           "(absent)": 1,
@@ -18043,22 +18217,22 @@
       "type": "activity",
       "slug": "nuluji-89-xebu820",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "11": 18,
           "12": 4
         },
         "strokeWidth": {
-          "1": 22
+          "1": 24
         },
         "rx": {
           "12.5": 4
         },
         "textCount": 22,
-        "width": "387",
-        "height": "682"
+        "width": "380",
+        "height": "738"
       },
       "jar": {
         "fontSize": {
@@ -18384,11 +18558,11 @@
       "type": "activity",
       "slug": "pabope-47-pito596",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
-          "11": 5,
+          "11": 8,
           "12": 3
         },
         "strokeWidth": {
@@ -18397,9 +18571,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 8,
-        "width": "185",
-        "height": "376"
+        "textCount": 11,
+        "width": "222",
+        "height": "382"
       },
       "jar": {
         "fontSize": {
@@ -18612,25 +18786,25 @@
       "type": "activity",
       "slug": "panuna-76-xofu486",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "9": 26,
-          "11": 20,
           "12": 29,
           "13": 4,
-          "14": 2
+          "14": 2,
+          "15": 20
         },
         "strokeWidth": {
-          "1": 61
+          "1": 58
         },
         "rx": {
           "12.5": 21
         },
         "textCount": 81,
-        "width": "1353",
-        "height": "1287"
+        "width": "1499",
+        "height": "1239"
       },
       "jar": {
         "fontSize": {
@@ -18813,8 +18987,8 @@
       "type": "activity",
       "slug": "pedulu-06-xomo122",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
           "12": 1
@@ -18828,7 +19002,7 @@
         },
         "textCount": 1,
         "width": "212",
-        "height": "201"
+        "height": "199"
       },
       "jar": {
         "fontSize": {
@@ -18850,21 +19024,21 @@
       "type": "activity",
       "slug": "pegimu-03-duli081",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 1,
           "12": 2
         },
         "strokeWidth": {
-          "1": 2
+          "1": 5
         },
         "rx": {
           "12.5": 2
         },
         "textCount": 3,
-        "width": "85",
+        "width": "100",
         "height": "178"
       },
       "jar": {
@@ -19385,8 +19559,8 @@
       "type": "activity",
       "slug": "pitifi-09-vabo013",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 6,
@@ -19402,7 +19576,7 @@
         },
         "textCount": 10,
         "width": "287",
-        "height": "331"
+        "height": "352"
       },
       "jar": {
         "fontSize": {
@@ -19941,8 +20115,8 @@
       "type": "activity",
       "slug": "povupi-07-zedu796",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fontSize": {
           "12": 6
@@ -19951,11 +20125,12 @@
           "1": 5
         },
         "rx": {
+          "(absent)": 6,
           "12.5": 2
         },
         "textCount": 6,
         "width": "162",
-        "height": "328"
+        "height": "329"
       },
       "jar": {
         "fontSize": {
@@ -20434,19 +20609,19 @@
       "type": "activity",
       "slug": "raneku-06-labe982",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "5fe7ab2a",
       "ours": {
         "fontSize": {
-          "12": 1
+          "12": 18
         },
         "strokeWidth": {},
         "rx": {
           "12.5": 1
         },
-        "textCount": 1,
-        "width": "354",
-        "height": "68"
+        "textCount": 18,
+        "width": "148",
+        "height": "104"
       },
       "jar": {
         "fontSize": {
@@ -20621,8 +20796,8 @@
       "type": "activity",
       "slug": "rejala-47-xeni909",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 91,
@@ -20639,7 +20814,7 @@
           "12.5": 23
         },
         "textCount": 142,
-        "width": "1267",
+        "width": "1318",
         "height": "2513"
       },
       "jar": {
@@ -20871,21 +21046,22 @@
       "type": "activity",
       "slug": "renefi-68-safo849",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
       "ours": {
         "fontSize": {
           "11": 10,
           "12": 5
         },
         "strokeWidth": {
-          "1": 19
+          "1": 16,
+          "1.5": 3
         },
         "rx": {
           "12.5": 5
         },
         "textCount": 15,
-        "width": "541",
+        "width": "357",
         "height": "224"
       },
       "jar": {
@@ -21062,10 +21238,41 @@
     {
       "type": "activity",
       "slug": "rikegu-37-maze985",
-      "status": "error",
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Empty;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "ours": {
+        "fontSize": {
+          "11": 1,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 2,
+          "12.5": 1
+        },
+        "textCount": 2,
+        "width": "255",
+        "height": "131"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 1,
+          "12": 1
+        },
+        "strokeWidth": {
+          "1": 2
+        },
+        "rx": {
+          "2.5": 2,
+          "12.5": 1
+        },
+        "textCount": 2,
+        "width": "255",
+        "height": "131"
+      }
     },
     {
       "type": "activity",
@@ -21673,15 +21880,14 @@
       "slug": "rutaji-30-suda150",
       "status": "baseline",
       "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "78ad396b",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "5": 1,
-          "18": 2,
-          "19": 6
+          "19": 8
         },
         "strokeWidth": {
-          "1": 16,
+          "4": 16,
           "5": 3
         },
         "rx": {
@@ -21689,8 +21895,8 @@
           "7.5": 6
         },
         "textCount": 9,
-        "width": "357",
-        "height": "363"
+        "width": "360",
+        "height": "364"
       },
       "jar": {
         "fontSize": {
@@ -22204,11 +22410,12 @@
       "type": "activity",
       "slug": "sezizo-64-fexa652",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 1,
+          "8": 1,
+          "11": 2,
           "12": 1
         },
         "strokeWidth": {
@@ -22217,8 +22424,8 @@
         "rx": {
           "12.5": 1
         },
-        "textCount": 2,
-        "width": "159",
+        "textCount": 4,
+        "width": "166",
         "height": "256"
       },
       "jar": {
@@ -22636,8 +22843,8 @@
       "type": "activity",
       "slug": "sizoce-41-muvu721",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "12": 3,
@@ -22645,7 +22852,7 @@
           "18": 2
         },
         "strokeWidth": {
-          "1": 8,
+          "1": 16,
           "1.5": 3
         },
         "rx": {
@@ -23024,8 +23231,8 @@
       "type": "activity",
       "slug": "sprite-SVG-fill-management-2",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -23040,7 +23247,7 @@
         },
         "textCount": 4,
         "width": "104",
-        "height": "270"
+        "height": "265"
       },
       "jar": {
         "fontSize": {
@@ -23219,8 +23426,8 @@
       "type": "activity",
       "slug": "suniro-51-reva442",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 19,
@@ -23228,8 +23435,8 @@
           "14": 1
         },
         "strokeWidth": {
-          "1": 26,
-          "1.5": 12
+          "1": 35,
+          "1.5": 17
         },
         "rx": {
           "12.5": 4,
@@ -23262,15 +23469,15 @@
       "type": "activity",
       "slug": "surefo-98-fata672",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "12": 2,
           "14": 1
         },
         "strokeWidth": {
-          "1": 4,
+          "1": 5,
           "1.5": 2
         },
         "rx": {
@@ -23374,10 +23581,41 @@
     {
       "type": "activity",
       "slug": "suxeji-23-soro189",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:Entering a password; <<input>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Entering your username; <<input>>'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 12,
+          "12": 15,
+          "13": 1
+        },
+        "strokeWidth": {
+          "1": 43
+        },
+        "rx": {
+          "12.5": 11
+        },
+        "textCount": 28,
+        "width": "1152",
+        "height": "832"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 12,
+          "12": 15,
+          "13": 1
+        },
+        "strokeWidth": {
+          "1": 43
+        },
+        "rx": {
+          "12.5": 11
+        },
+        "textCount": 28,
+        "width": "1152",
+        "height": "832"
+      }
     },
     {
       "type": "activity",
@@ -23517,22 +23755,23 @@
       "type": "activity",
       "slug": "takupu-75-xego596",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
       "ours": {
         "fontSize": {
           "11": 10,
           "12": 5
         },
         "strokeWidth": {
-          "1": 19,
-          "2.5": 2
+          "1": 16,
+          "2.5": 2,
+          "1.5": 3
         },
         "rx": {
           "12.5": 5
         },
         "textCount": 15,
-        "width": "526",
+        "width": "357",
         "height": "278"
       },
       "jar": {
@@ -23814,21 +24053,21 @@
       "type": "activity",
       "slug": "temeku-00-noga270",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 1,
           "12": 2
         },
         "strokeWidth": {
-          "1": 2
+          "1": 5
         },
         "rx": {
           "12.5": 2
         },
         "textCount": 3,
-        "width": "85",
+        "width": "91",
         "height": "178"
       },
       "jar": {
@@ -24015,8 +24254,8 @@
       "type": "activity",
       "slug": "tetesi-04-gici603",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 6,
@@ -24033,7 +24272,7 @@
         },
         "textCount": 13,
         "width": "316",
-        "height": "607"
+        "height": "598"
       },
       "jar": {
         "fontSize": {
@@ -24058,8 +24297,8 @@
       "type": "activity",
       "slug": "tibedu-29-ticu124",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
       "ours": {
         "fontSize": {
           "12": 2,
@@ -24069,8 +24308,8 @@
           "1": 1
         },
         "rx": {
-          "5": 2,
-          "12.5": 2
+          "5": 1,
+          "12.5": 3
         },
         "textCount": 4,
         "width": "142",
@@ -24175,13 +24414,12 @@
       "type": "activity",
       "slug": "tinupo-67-piva038",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "11": 1,
           "12": 3,
-          "13": 1,
           "18": 2
         },
         "strokeWidth": {
@@ -24193,9 +24431,9 @@
           "12.5": 3,
           "2.5": 2
         },
-        "textCount": 7,
-        "width": "322",
-        "height": "321"
+        "textCount": 6,
+        "width": "255",
+        "height": "302"
       },
       "jar": {
         "fontSize": {
@@ -24221,11 +24459,11 @@
       "type": "activity",
       "slug": "tirixa-64-zixu880",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 4,
           "12": 2,
           "18": 2
         },
@@ -24237,9 +24475,9 @@
           "(absent)": 1,
           "12.5": 2
         },
-        "textCount": 7,
+        "textCount": 8,
         "width": "245",
-        "height": "317"
+        "height": "316"
       },
       "jar": {
         "fontSize": {
@@ -24307,22 +24545,22 @@
       "type": "activity",
       "slug": "tisese-63-joga831",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 2,
           "12": 1
         },
         "strokeWidth": {
-          "1": 10
+          "1": 8
         },
         "rx": {
           "12.5": 1
         },
         "textCount": 3,
-        "width": "152",
-        "height": "234"
+        "width": "157",
+        "height": "189"
       },
       "jar": {
         "fontSize": {
@@ -24695,15 +24933,16 @@
       "type": "activity",
       "slug": "tovuka-43-kere263",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
       "ours": {
         "fontSize": {
           "12": 4
         },
         "strokeWidth": {
           "1": 4,
-          "1.5": 2
+          "(absent)": 1,
+          "1.5": 1
         },
         "rx": {
           "12.5": 4
@@ -25038,8 +25277,8 @@
       "type": "activity",
       "slug": "vakibi-34-jesa596",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 6,
@@ -25053,8 +25292,8 @@
           "12.5": 3
         },
         "textCount": 10,
-        "width": "355",
-        "height": "210"
+        "width": "466",
+        "height": "238"
       },
       "jar": {
         "fontSize": {
@@ -25350,8 +25589,8 @@
       "type": "activity",
       "slug": "vejori-69-bapu208",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "12": 2
@@ -25364,7 +25603,7 @@
           "12.5": 2
         },
         "textCount": 2,
-        "width": "212",
+        "width": "230",
         "height": "129"
       },
       "jar": {
@@ -25430,8 +25669,8 @@
       "type": "activity",
       "slug": "vemeno-50-zevi632",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "12": 2,
@@ -25447,7 +25686,7 @@
           "12.5": 2
         },
         "textCount": 122,
-        "width": "544",
+        "width": "553",
         "height": "567"
       },
       "jar": {
@@ -26101,15 +26340,15 @@
       "type": "activity",
       "slug": "vosede-84-jise753",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
           "11": 11,
           "14": 1
         },
         "strokeWidth": {
-          "1": 8
+          "1": 10
         },
         "rx": {
           "(absent)": 1
@@ -26138,11 +26377,11 @@
       "type": "activity",
       "slug": "votidu-40-mudo522",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 4,
           "12": 2,
           "18": 2
         },
@@ -26154,9 +26393,9 @@
           "(absent)": 1,
           "12.5": 2
         },
-        "textCount": 7,
+        "textCount": 8,
         "width": "245",
-        "height": "317"
+        "height": "316"
       },
       "jar": {
         "fontSize": {
@@ -26180,17 +26419,48 @@
     {
       "type": "activity",
       "slug": "votigi-61-nite269",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B; <<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 1,
+          "12": 3
+        },
+        "strokeWidth": {
+          "1": 6
+        },
+        "rx": {
+          "12.5": 1,
+          "(absent)": 2
+        },
+        "textCount": 4,
+        "width": "120",
+        "height": "236"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 1,
+          "12": 3
+        },
+        "strokeWidth": {
+          "1": 6
+        },
+        "rx": {
+          "12.5": 1,
+          "(absent)": 2
+        },
+        "textCount": 4,
+        "width": "120",
+        "height": "236"
+      }
     },
     {
       "type": "activity",
       "slug": "vovemi-32-cobo474",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 5,
@@ -26203,7 +26473,7 @@
           "12.5": 3
         },
         "textCount": 8,
-        "width": "376",
+        "width": "372",
         "height": "273"
       },
       "jar": {
@@ -26318,22 +26588,23 @@
       "type": "activity",
       "slug": "vujufe-00-mamu262",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 4,
           "12": 4
         },
         "strokeWidth": {
-          "1": 9
+          "1": 7,
+          "1.5": 2
         },
         "rx": {
           "12.5": 4
         },
-        "textCount": 7,
-        "width": "348",
-        "height": "325"
+        "textCount": 8,
+        "width": "289",
+        "height": "346"
       },
       "jar": {
         "fontSize": {
@@ -26356,12 +26627,12 @@
       "type": "activity",
       "slug": "vupecu-35-tisa672",
       "status": "baseline",
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "29322602",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fontSize": {
-          "10": 1,
-          "11": 6,
+          "10": 2,
+          "11": 5,
           "12": 1
         },
         "strokeWidth": {
@@ -26395,8 +26666,8 @@
       "type": "activity",
       "slug": "vupefo-81-jane512",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
       "ours": {
         "fontSize": {
           "12": 2,
@@ -26406,8 +26677,8 @@
           "1": 1
         },
         "rx": {
-          "(absent)": 2,
-          "12.5": 2
+          "12.5": 3,
+          "(absent)": 1
         },
         "textCount": 4,
         "width": "142",
@@ -26804,11 +27075,11 @@
       "type": "activity",
       "slug": "xemaxo-17-digi735",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 3,
+          "11": 4,
           "12": 4
         },
         "strokeWidth": {
@@ -26817,9 +27088,9 @@
         "rx": {
           "12.5": 4
         },
-        "textCount": 7,
+        "textCount": 8,
         "width": "289",
-        "height": "325"
+        "height": "346"
       },
       "jar": {
         "fontSize": {
@@ -26921,14 +27192,15 @@
       "type": "activity",
       "slug": "xicopo-62-kidi376",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fontSize": {
           "10": 2,
+          "11": 1,
           "12": 7,
           "13": 5,
-          "14": 6
+          "14": 5
         },
         "strokeWidth": {
           "1": 7,
@@ -26942,7 +27214,7 @@
         },
         "textCount": 20,
         "width": "359",
-        "height": "708"
+        "height": "705"
       },
       "jar": {
         "fontSize": {
@@ -27065,8 +27337,8 @@
       "type": "activity",
       "slug": "ximelo-07-kusu416",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 7,
@@ -27079,7 +27351,7 @@
           "12.5": 1
         },
         "textCount": 8,
-        "width": "136",
+        "width": "142",
         "height": "397"
       },
       "jar": {
@@ -28078,8 +28350,8 @@
       "type": "activity",
       "slug": "zejido-43-xedu370",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 11,
@@ -28096,7 +28368,7 @@
         },
         "textCount": 20,
         "width": "722",
-        "height": "668"
+        "height": "645"
       },
       "jar": {
         "fontSize": {
@@ -28121,11 +28393,11 @@
       "type": "activity",
       "slug": "zejogu-00-mefi592",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
-          "11": 6,
+          "11": 8,
           "12": 3
         },
         "strokeWidth": {
@@ -28134,9 +28406,9 @@
         "rx": {
           "12.5": 3
         },
-        "textCount": 9,
+        "textCount": 11,
         "width": "190",
-        "height": "315"
+        "height": "344"
       },
       "jar": {
         "fontSize": {
@@ -28296,10 +28568,41 @@
     {
       "type": "activity",
       "slug": "zesoto-64-xeda685",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B;<<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 1,
+          "12": 3
+        },
+        "strokeWidth": {
+          "1": 6
+        },
+        "rx": {
+          "12.5": 1,
+          "(absent)": 2
+        },
+        "textCount": 4,
+        "width": "120",
+        "height": "236"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 1,
+          "12": 3
+        },
+        "strokeWidth": {
+          "1": 6
+        },
+        "rx": {
+          "12.5": 1,
+          "(absent)": 2
+        },
+        "textCount": 4,
+        "width": "120",
+        "height": "236"
+      }
     },
     {
       "type": "activity",
@@ -28348,8 +28651,8 @@
       "type": "activity",
       "slug": "zifaza-86-tigo119",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
       "ours": {
         "fontSize": {
           "11": 2,
@@ -28365,8 +28668,8 @@
           "12.5": 3
         },
         "textCount": 11,
-        "width": "283",
-        "height": "261"
+        "width": "270",
+        "height": "241"
       },
       "jar": {
         "fontSize": {
@@ -28436,22 +28739,22 @@
       "type": "activity",
       "slug": "zikebe-71-cuge624",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 1,
           "12": 3
         },
         "strokeWidth": {
-          "1": 8,
+          "1": 20,
           "1.5": 2
         },
         "rx": {
           "12.5": 3
         },
         "textCount": 4,
-        "width": "146",
+        "width": "148",
         "height": "224"
       },
       "jar": {
@@ -28602,8 +28905,8 @@
       "type": "activity",
       "slug": "zitefu-56-gire564",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
       "ours": {
         "fontSize": {
           "11": 24,
@@ -28617,8 +28920,8 @@
           "12.5": 5
         },
         "textCount": 30,
-        "width": "302",
-        "height": "473"
+        "width": "356",
+        "height": "620"
       },
       "jar": {
         "fontSize": {
@@ -29037,22 +29340,22 @@
       "type": "activity",
       "slug": "zugeri-38-puri632",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fontSize": {
           "11": 6,
           "12": 1
         },
         "strokeWidth": {
-          "1": 16
+          "1": 14
         },
         "rx": {
           "12.5": 1
         },
         "textCount": 7,
-        "width": "176",
-        "height": "306"
+        "width": "187",
+        "height": "265"
       },
       "jar": {
         "fontSize": {
@@ -29073,17 +29376,54 @@
     {
       "type": "activity",
       "slug": "zugoco-10-pexu073",
-      "status": "error",
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fontSize": {
+          "11": 12,
+          "12": 8,
+          "13": 8,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 33,
+          "2.5": 2
+        },
+        "rx": {
+          "(absent)": 1,
+          "12.5": 5
+        },
+        "textCount": 29,
+        "width": "1417",
+        "height": "559"
+      },
+      "jar": {
+        "fontSize": {
+          "11": 12,
+          "12": 8,
+          "13": 8,
+          "14": 1
+        },
+        "strokeWidth": {
+          "1": 33,
+          "2.5": 2
+        },
+        "rx": {
+          "(absent)": 1,
+          "12.5": 5
+        },
+        "textCount": 29,
+        "width": "1417",
+        "height": "559"
+      }
     },
     {
       "type": "activity",
       "slug": "zujopo-40-gosi452",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
       "ours": {
         "fontSize": {
           "11": 13,
@@ -29092,8 +29432,8 @@
           "14": 6
         },
         "strokeWidth": {
-          "1": 16,
-          "1.5": 6
+          "1": 26,
+          "1.5": 8
         },
         "rx": {
           "(absent)": 1,
@@ -29164,11 +29504,11 @@
       "type": "activity",
       "slug": "zuledo-15-maga388",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fontSize": {
-          "11": 6,
+          "11": 7,
           "12": 12,
           "14": 2
         },
@@ -29180,9 +29520,9 @@
           "12.5": 7,
           "(absent)": 1
         },
-        "textCount": 20,
+        "textCount": 21,
         "width": "332",
-        "height": "596"
+        "height": "611"
       },
       "jar": {
         "fontSize": {
@@ -29252,8 +29592,8 @@
       "type": "activity",
       "slug": "zuseke-31-xepi502",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "98e54b80",
       "ours": {
         "fontSize": {
           "11": 46,
@@ -29262,14 +29602,14 @@
           "14": 2
         },
         "strokeWidth": {
-          "1": 61
+          "1": 58
         },
         "rx": {
           "12.5": 21
         },
         "textCount": 81,
-        "width": "1475",
-        "height": "1287"
+        "width": "1641",
+        "height": "1232"
       },
       "jar": {
         "fontSize": {

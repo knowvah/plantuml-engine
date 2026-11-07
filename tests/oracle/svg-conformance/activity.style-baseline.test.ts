@@ -31,7 +31,7 @@
  * silently vanished from the histogram would read as "nothing changed".
  *
  * MEASURED THROUGH THE IDENTICAL SEAMS THE RATCHET GATE USES --
- * `renderFixtureActivity` + `DeterministicMeasurer` + `fixtureIncludeStore()`,
+ * `renderFixtureActivity` + `DeterministicMeasurer` + `activityRatchetOptions()`,
  * then `normalizeSvg`. NORMALIZED, not raw: `normalize.ts` expands
  * `style="font-size:12px"` into a `font-size` attribute before comparing
  * (adaptation #1), so the histogram counts exactly what the comparator sees
@@ -77,10 +77,9 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { normalizeSvg } from './normalize.js';
 import type { NormalizedNode } from './normalize.js';
-import { renderFixtureActivity } from './render-fixture-activity.js';
+import { activityRatchetOptions, renderFixtureActivity } from './render-fixture-activity.js';
 
 /** Histogram of one attribute's values. `(absent)` counts elements that
  * carry no such attribute -- see the file doc comment. */
@@ -310,8 +309,12 @@ describe('svg-activity style census — corpus presence', () => {
     // ogc/T6 (2026-11-04): +301 promoted, +128 error (ledgered). Derivation: 434 + 301 = 735 / 1 + 128 = 129 / 14.
     // ubt/T1a (2026-11-06): dadelu-44, gigefo-15, tusaxu-17 render once start/while take a stereogroup
     // (CommandStart3.java:63, CommandWhile3.java:76-78) -- promoted error -> baseline. Derivation: 735 + 3 = 738 / 129 - 3 = 126.
-    expect(baselineFixtures.length).toBe(738);
-    expect(errorFixtures.length).toBe(126);
+    // aar/T1b (2026-11-06): fuficu-36, kizofi-56, mivipi-10, munovo-17, nabako-16, rikegu-37, suxeji-23, votigi-61, zesoto-64, zugoco-10 render once the activity3 parser takes
+    // `repeat:`, `fork end`, a `#color:` long activity, an empty `floating note:` and `[[url]] if`
+    // (CommandRepeat3.java:64-77, CommandForkEnd3.java:57-81, CommandActivityLong3.java:78-84,
+    // CommandNote3.java:81, CommandIf2.java:70-72) -- promoted error -> baseline. Derivation: 738 + 10 = 748 / 126 - 10 = 116.
+    expect(baselineFixtures.length).toBe(748);
+    expect(errorFixtures.length).toBe(116);
     expect(jarErrorFixtures.length).toBe(14);
   });
 });
@@ -326,9 +329,7 @@ describe('svg-activity style census', () => {
       const dir = fixtureDir(f);
       const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
       const golden = readFileSync(join(dir, 'in.svg'), 'utf8');
-      const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), {
-        includeStore: fixtureIncludeStore(),
-      });
+      const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
 
       const oursCheck = checkCensus(f, 'ours', f.ours, censusOf(ours));
       expect(oursCheck.ok, oursCheck.message).toBe(true);
@@ -434,7 +435,7 @@ describe('svg-activity style census — recorded parser-gap errors', () => {
       const markup = readFileSync(join(dir, 'in.puml'), 'utf8');
       let threw = false;
       try {
-        renderFixtureActivity(markup, new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+        renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
       } catch {
         threw = true;
       }

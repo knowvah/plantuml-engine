@@ -1,7 +1,7 @@
 {
   "$comment": "Text census (fill, anchor, inset) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): insets move where a label's box shifted with the compressed geometry; no fill/anchor change is expected.",
   "measuredAt": "2026-11-06",
-  "measuredAgainstCommit": "78ad396b",
+  "measuredAgainstCommit": "1450db03",
   "fixtures": [
     {
       "type": "activity",
@@ -728,19 +728,19 @@
       "type": "activity",
       "slug": "bineki-51-zedo397",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 8
+          "#000": 12
         },
         "anchor": {
-          "(absent)": 8
+          "(absent)": 12
         },
         "inset": {
           "10": 3
         },
-        "textCount": 8
+        "textCount": 12
       },
       "jar": {
         "fill": {
@@ -1030,19 +1030,19 @@
       "type": "activity",
       "slug": "bofaxe-86-mizu331",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
-          "#000": 63
+          "#000": 66
         },
         "anchor": {
-          "(absent)": 63
+          "(absent)": 66
         },
         "inset": {
           "10": 9
         },
-        "textCount": 63
+        "textCount": 66
       },
       "jar": {
         "fill": {
@@ -1061,19 +1061,19 @@
       "type": "activity",
       "slug": "bokida-76-fega767",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 70
+          "#000": 72
         },
         "anchor": {
-          "(absent)": 70
+          "(absent)": 72
         },
         "inset": {
           "10": 8
         },
-        "textCount": 70
+        "textCount": 72
       },
       "jar": {
         "fill": {
@@ -1193,19 +1193,19 @@
       "type": "activity",
       "slug": "bosada-42-voti559",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 58
+          "#000": 57
         },
         "anchor": {
-          "(absent)": 58
+          "(absent)": 57
         },
         "inset": {
           "10": 7
         },
-        "textCount": 58
+        "textCount": 57
       },
       "jar": {
         "fill": {
@@ -1300,19 +1300,19 @@
       "type": "activity",
       "slug": "botuge-46-jese647",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
-          "#000": 5
+          "#000": 6
         },
         "anchor": {
-          "(absent)": 5
+          "(absent)": 6
         },
         "inset": {
           "10": 1
         },
-        "textCount": 5
+        "textCount": 6
       },
       "jar": {
         "fill": {
@@ -1488,20 +1488,20 @@
       "type": "activity",
       "slug": "bucoru-71-gapi371",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 3,
+          "#000": 11,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 5
+          "(absent)": 13
         },
         "inset": {
           "10": 2
         },
-        "textCount": 5
+        "textCount": 13
       },
       "jar": {
         "fill": {
@@ -1655,19 +1655,19 @@
       "type": "activity",
       "slug": "bunefa-86-juna432",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 3
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 3
         },
         "inset": {
           "10": 1
         },
-        "textCount": 2
+        "textCount": 3
       },
       "jar": {
         "fill": {
@@ -1942,19 +1942,19 @@
       "type": "activity",
       "slug": "cajore-10-sodu905",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 8
         },
         "inset": {
           "10": 4
         },
-        "textCount": 7
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -2159,8 +2159,8 @@
       "type": "activity",
       "slug": "cedero-01-sutu624",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fill": {
           "#000": 5
@@ -2169,6 +2169,7 @@
           "(absent)": 5
         },
         "inset": {
+          "0": 1,
           "10": 3
         },
         "textCount": 5
@@ -2346,19 +2347,19 @@
       "type": "activity",
       "slug": "cepizi-90-jaja810",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 10
+          "#000": 11
         },
         "anchor": {
-          "(absent)": 10
+          "(absent)": 11
         },
         "inset": {
           "10": 4
         },
-        "textCount": 10
+        "textCount": 11
       },
       "jar": {
         "fill": {
@@ -2509,19 +2510,19 @@
       "type": "activity",
       "slug": "cidibe-55-gavi744",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
       "ours": {
         "fill": {
-          "#000": 16
+          "#000": 17
         },
         "anchor": {
-          "(absent)": 16
+          "(absent)": 17
         },
         "inset": {
           "10": 7
         },
-        "textCount": 16
+        "textCount": 17
       },
       "jar": {
         "fill": {
@@ -3625,21 +3626,19 @@
       "type": "activity",
       "slug": "dejuko-37-pida698",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fill": {
-          "#000": 2,
-          "#00F": 2
+          "#000": 2
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 2
         },
         "inset": {
-          "10": 1,
-          "28": 1
+          "10": 1
         },
-        "textCount": 4
+        "textCount": 2
       },
       "jar": {
         "fill": {
@@ -3856,8 +3855,8 @@
       "type": "activity",
       "slug": "dezobu-34-ligo070",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fill": {
           "#000": 15,
@@ -3869,7 +3868,7 @@
         "inset": {
           "7": 1,
           "10": 7,
-          "81.797": 1
+          "88.557": 1
         },
         "textCount": 20
       },
@@ -4430,19 +4429,19 @@
       "type": "activity",
       "slug": "dukocu-46-mibo641",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 15
+          "#000": 22
         },
         "anchor": {
-          "(absent)": 15
+          "(absent)": 22
         },
         "inset": {
           "10": 2
         },
-        "textCount": 15
+        "textCount": 22
       },
       "jar": {
         "fill": {
@@ -5881,10 +5880,35 @@
     {
       "type": "activity",
       "slug": "fuficu-36-caga441",
-      "status": "error",
-      "reason": "the jar accepts '#green:Activity 1;' via CommandActivityLong3.java:78-84 (registered ActivityDiagramFactory3.java:159): CommandActivity3 (CommandActivity3.java:66-77) has no colour leaf, so the line starts CommandActivityLong3, whose start regex is color().getRegex() + `:` + DATA `(.*)`; CommandMultilines3.isValid returns OK_PARTIAL on a single line without testing the END pattern (CommandMultilines3.java:78-79), so the block runs to the next line ending `;` + stereogroup, ':Activity 2; <<redactivity>>' (END, CommandActivityLong3.java:61-68), and executeNow emits the deprecation warning for the leading colour (:125-127) -- the jar draws one two-line box 'Activity 1;' / ':Activity 2'; our activity engine refuses that line (node-dispatch.ts:155-156 tryMultilineAction returns null unless the line starts with ':', and RE_ACTION (dispatch-support.ts:50) has no colour prefix), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'partition \"My Partition\" <<bluepartition>> {'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "7": 1,
+          "10": 1
+        },
+        "textCount": 4
+      },
+      "jar": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "7": 1,
+          "10": 1
+        },
+        "textCount": 4
+      }
     },
     {
       "type": "activity",
@@ -6096,19 +6120,19 @@
       "type": "activity",
       "slug": "fuximi-08-dovo257",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 5
         },
         "inset": {
           "10": 2
         },
-        "textCount": 2
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -6548,19 +6572,19 @@
       "type": "activity",
       "slug": "gebeke-27-tace678",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
-          "#000": 5
+          "#000": 6
         },
         "anchor": {
-          "(absent)": 5
+          "(absent)": 6
         },
         "inset": {
           "10": 1
         },
-        "textCount": 5
+        "textCount": 6
       },
       "jar": {
         "fill": {
@@ -6672,11 +6696,11 @@
       "type": "activity",
       "slug": "gefuni-32-ruli676",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "673ee212",
       "ours": {
         "fill": {
-          "#000": 1
+          "#F00": 1
         },
         "anchor": {
           "(absent)": 1
@@ -8253,19 +8277,19 @@
       "type": "activity",
       "slug": "jeseke-77-vovo768",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 7
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 7
         },
         "inset": {
           "10": 3
         },
-        "textCount": 4
+        "textCount": 7
       },
       "jar": {
         "fill": {
@@ -8346,21 +8370,19 @@
       "type": "activity",
       "slug": "jexavu-72-bixa676",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 5
         },
         "inset": {
-          "10": 1,
-          "28": 1,
-          "67.3": 1
+          "10": 1
         },
-        "textCount": 4
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -8441,19 +8463,19 @@
       "type": "activity",
       "slug": "jigalo-17-kuve815",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 70
+          "#000": 72
         },
         "anchor": {
-          "(absent)": 70
+          "(absent)": 72
         },
         "inset": {
           "10": 8
         },
-        "textCount": 70
+        "textCount": 72
       },
       "jar": {
         "fill": {
@@ -8725,19 +8747,19 @@
       "type": "activity",
       "slug": "jomobo-52-zigu811",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 10
+          "#000": 12
         },
         "anchor": {
-          "(absent)": 10
+          "(absent)": 12
         },
         "inset": {
           "10": 3
         },
-        "textCount": 10
+        "textCount": 12
       },
       "jar": {
         "fill": {
@@ -9865,13 +9887,13 @@
       "type": "activity",
       "slug": "kiveda-60-robo606",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
           "#000": 19,
-          "#00F": 3,
-          "#F00": 1
+          "#00F": 2,
+          "#F00": 2
         },
         "anchor": {
           "(absent)": 23
@@ -9957,10 +9979,33 @@
     {
       "type": "activity",
       "slug": "kizofi-56-mibi017",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B; <<MyGreen>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 3
+        },
+        "anchor": {
+          "(absent)": 3
+        },
+        "inset": {
+          "10": 2
+        },
+        "textCount": 3
+      },
+      "jar": {
+        "fill": {
+          "#000": 3
+        },
+        "anchor": {
+          "(absent)": 3
+        },
+        "inset": {
+          "10": 2
+        },
+        "textCount": 3
+      }
     },
     {
       "type": "activity",
@@ -10253,19 +10298,19 @@
       "type": "activity",
       "slug": "kuxigo-12-vove044",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 5
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 5
+          "(absent)": 8
         },
         "inset": {
           "10": 4
         },
-        "textCount": 5
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -10476,19 +10521,19 @@
       "type": "activity",
       "slug": "laguja-32-nufa224",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 6
+          "#000": 10
         },
         "anchor": {
-          "(absent)": 6
+          "(absent)": 10
         },
         "inset": {
           "10": 3
         },
-        "textCount": 6
+        "textCount": 10
       },
       "jar": {
         "fill": {
@@ -10932,20 +10977,20 @@
       "type": "activity",
       "slug": "lidumi-54-moza355",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 43,
+          "#000": 62,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 45
+          "(absent)": 64
         },
         "inset": {
           "10": 11
         },
-        "textCount": 45
+        "textCount": 64
       },
       "jar": {
         "fill": {
@@ -11087,19 +11132,19 @@
       "type": "activity",
       "slug": "linene-56-duxo821",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 10
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 10
         },
         "inset": {
           "10": 2
         },
-        "textCount": 4
+        "textCount": 10
       },
       "jar": {
         "fill": {
@@ -11182,19 +11227,19 @@
       "type": "activity",
       "slug": "liteta-29-zufa478",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 8
         },
         "inset": {
           "10": 3
         },
-        "textCount": 4
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -11293,12 +11338,13 @@
       "type": "activity",
       "slug": "lobiki-30-cija465",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
           "#000": 8,
-          "#F00": 2
+          "#00F": 1,
+          "#F00": 1
         },
         "anchor": {
           "(absent)": 10
@@ -11424,19 +11470,19 @@
       "type": "activity",
       "slug": "loriki-95-kavi777",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 4
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 4
         },
         "inset": {
           "10": 2
         },
-        "textCount": 2
+        "textCount": 4
       },
       "jar": {
         "fill": {
@@ -12154,12 +12200,13 @@
       "type": "activity",
       "slug": "makage-63-rilo111",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
           "#000": 8,
-          "#00F": 2
+          "#F00": 1,
+          "#00F": 1
         },
         "anchor": {
           "(absent)": 10
@@ -12250,17 +12297,17 @@
       "type": "activity",
       "slug": "mapuru-01-dizu860",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 5
         },
         "inset": {},
-        "textCount": 4
+        "textCount": 5
       },
       "jar": {
         "fill": {
@@ -12767,10 +12814,33 @@
     {
       "type": "activity",
       "slug": "mivipi-10-lebe104",
-      "status": "error",
-      "reason": "the jar accepts '[[http://plantuml.com/sequence]] if (?) then (x) <<#ff8822>>' via CommandIf2.java:68-89 (registered ActivityDiagramFactory3.java:119): the regex opens with UrlBuilder.OPTIONAL (:70) before `if`, and executeArg reads that URL_KEY into the diamond's url (:140-145); our activity engine refuses that line (dispatch-support.ts:118 RE_IF is anchored `^if` with no URL leaf (a probe of the same if without the [[...]] prefix and with the <<#ff8822>> tail is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine 'else (2)'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 7
+        },
+        "anchor": {
+          "(absent)": 7
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 7
+      },
+      "jar": {
+        "fill": {
+          "#000": 7
+        },
+        "anchor": {
+          "(absent)": 7
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 7
+      }
     },
     {
       "type": "activity",
@@ -12823,19 +12893,19 @@
       "type": "activity",
       "slug": "mojacu-63-fade855",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 4
+          "#000": 3
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 3
         },
         "inset": {
           "10": 1
         },
-        "textCount": 4
+        "textCount": 3
       },
       "jar": {
         "fill": {
@@ -13368,10 +13438,33 @@
     {
       "type": "activity",
       "slug": "munovo-17-voji978",
-      "status": "error",
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine '-> Comment for the line before the forkend;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 2
+        },
+        "anchor": {
+          "(absent)": 2
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 2
+      },
+      "jar": {
+        "fill": {
+          "#000": 2
+        },
+        "anchor": {
+          "(absent)": 2
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 2
+      }
     },
     {
       "type": "activity",
@@ -13454,10 +13547,33 @@
     {
       "type": "activity",
       "slug": "nabako-16-gefo071",
-      "status": "error",
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 29
+        },
+        "anchor": {
+          "(absent)": 29
+        },
+        "inset": {
+          "10": 6
+        },
+        "textCount": 29
+      },
+      "jar": {
+        "fill": {
+          "#000": 29
+        },
+        "anchor": {
+          "(absent)": 29
+        },
+        "inset": {
+          "10": 6
+        },
+        "textCount": 29
+      }
     },
     {
       "type": "activity",
@@ -13933,8 +14049,8 @@
       "type": "activity",
       "slug": "nijezu-72-fato566",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
           "#000": 142
@@ -13943,8 +14059,7 @@
           "(absent)": 142
         },
         "inset": {
-          "13.3": 32,
-          "13.31": 2
+          "13.3": 34
         },
         "textCount": 142
       },
@@ -15099,19 +15214,19 @@
       "type": "activity",
       "slug": "pabope-47-pito596",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 8
+          "#000": 11
         },
         "anchor": {
-          "(absent)": 8
+          "(absent)": 11
         },
         "inset": {
           "10": 3
         },
-        "textCount": 8
+        "textCount": 11
       },
       "jar": {
         "fill": {
@@ -16782,19 +16897,19 @@
       "type": "activity",
       "slug": "raneku-06-labe982",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "5fe7ab2a",
       "ours": {
         "fill": {
-          "#000": 1
+          "#000": 18
         },
         "anchor": {
-          "(absent)": 1
+          "(absent)": 18
         },
         "inset": {
           "10": 1
         },
-        "textCount": 1
+        "textCount": 18
       },
       "jar": {
         "fill": {
@@ -16937,8 +17052,8 @@
       "type": "activity",
       "slug": "rejala-47-xeni909",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
           "#000": 142
@@ -16947,8 +17062,7 @@
           "(absent)": 142
         },
         "inset": {
-          "13.3": 35,
-          "13.31": 2
+          "13.3": 37
         },
         "textCount": 142
       },
@@ -17298,10 +17412,33 @@
     {
       "type": "activity",
       "slug": "rikegu-37-maze985",
-      "status": "error",
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Empty;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 2
+        },
+        "anchor": {
+          "(absent)": 2
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 2
+      },
+      "jar": {
+        "fill": {
+          "#000": 2
+        },
+        "anchor": {
+          "(absent)": 2
+        },
+        "inset": {
+          "10": 1
+        },
+        "textCount": 2
+      }
     },
     {
       "type": "activity",
@@ -18223,19 +18360,20 @@
       "type": "activity",
       "slug": "sezizo-64-fexa652",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 2
+          "#000": 3,
+          "#F00": 1
         },
         "anchor": {
-          "(absent)": 2
+          "(absent)": 4
         },
         "inset": {
           "10": 1
         },
-        "textCount": 2
+        "textCount": 4
       },
       "jar": {
         "fill": {
@@ -19153,10 +19291,33 @@
     {
       "type": "activity",
       "slug": "suxeji-23-soro189",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:Entering a password; <<input>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Entering your username; <<input>>'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 28
+        },
+        "anchor": {
+          "(absent)": 28
+        },
+        "inset": {
+          "10": 11
+        },
+        "textCount": 28
+      },
+      "jar": {
+        "fill": {
+          "#000": 28
+        },
+        "anchor": {
+          "(absent)": 28
+        },
+        "inset": {
+          "10": 11
+        },
+        "textCount": 28
+      }
     },
     {
       "type": "activity",
@@ -19831,19 +19992,19 @@
       "type": "activity",
       "slug": "tinupo-67-piva038",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 6
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 6
         },
         "inset": {
           "10": 3
         },
-        "textCount": 7
+        "textCount": 6
       },
       "jar": {
         "fill": {
@@ -19862,19 +20023,19 @@
       "type": "activity",
       "slug": "tirixa-64-zixu880",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 8
         },
         "inset": {
           "10": 2
         },
-        "textCount": 7
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -21400,19 +21561,19 @@
       "type": "activity",
       "slug": "votidu-40-mudo522",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 8
         },
         "inset": {
           "10": 2
         },
-        "textCount": 7
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -21430,10 +21591,33 @@
     {
       "type": "activity",
       "slug": "votigi-61-nite269",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B; <<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "10": 3
+        },
+        "textCount": 4
+      },
+      "jar": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "10": 3
+        },
+        "textCount": 4
+      }
     },
     {
       "type": "activity",
@@ -21548,19 +21732,19 @@
       "type": "activity",
       "slug": "vujufe-00-mamu262",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 8
         },
         "inset": {
           "10": 4
         },
-        "textCount": 7
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -21579,12 +21763,12 @@
       "type": "activity",
       "slug": "vupecu-35-tisa672",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "ours": {
         "fill": {
-          "#00F": 1,
-          "#000": 7
+          "#00F": 2,
+          "#000": 6
         },
         "anchor": {
           "(absent)": 8
@@ -21943,19 +22127,19 @@
       "type": "activity",
       "slug": "xemaxo-17-digi735",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 8
         },
         "inset": {
           "10": 4
         },
-        "textCount": 7
+        "textCount": 8
       },
       "jar": {
         "fill": {
@@ -22044,8 +22228,8 @@
       "type": "activity",
       "slug": "xicopo-62-kidi376",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
       "ours": {
         "fill": {
           "#000": 19,
@@ -22057,7 +22241,7 @@
         "inset": {
           "7": 1,
           "10": 7,
-          "81.797": 1
+          "88.557": 1
         },
         "textCount": 20
       },
@@ -23031,19 +23215,19 @@
       "type": "activity",
       "slug": "zejogu-00-mefi592",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
       "ours": {
         "fill": {
-          "#000": 9
+          "#000": 11
         },
         "anchor": {
-          "(absent)": 9
+          "(absent)": 11
         },
         "inset": {
           "10": 3
         },
-        "textCount": 9
+        "textCount": 11
       },
       "jar": {
         "fill": {
@@ -23166,10 +23350,33 @@
     {
       "type": "activity",
       "slug": "zesoto-64-xeda685",
-      "status": "error",
-      "reason": "the jar accepts 'repeat:B;<<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "10": 3
+        },
+        "textCount": 4
+      },
+      "jar": {
+        "fill": {
+          "#000": 4
+        },
+        "anchor": {
+          "(absent)": 4
+        },
+        "inset": {
+          "10": 3
+        },
+        "textCount": 4
+      }
     },
     {
       "type": "activity",
@@ -23781,10 +23988,33 @@
     {
       "type": "activity",
       "slug": "zugoco-10-pexu073",
-      "status": "error",
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "baseline",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "ours": {
+        "fill": {
+          "#000": 29
+        },
+        "anchor": {
+          "(absent)": 29
+        },
+        "inset": {
+          "10": 6
+        },
+        "textCount": 29
+      },
+      "jar": {
+        "fill": {
+          "#000": 29
+        },
+        "anchor": {
+          "(absent)": 29
+        },
+        "inset": {
+          "10": 6
+        },
+        "textCount": 29
+      }
     },
     {
       "type": "activity",
@@ -23852,19 +24082,19 @@
       "type": "activity",
       "slug": "zuledo-15-maga388",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "ours": {
         "fill": {
-          "#000": 20
+          "#000": 21
         },
         "anchor": {
-          "(absent)": 20
+          "(absent)": 21
         },
         "inset": {
           "10": 7
         },
-        "textCount": 20
+        "textCount": 21
       },
       "jar": {
         "fill": {

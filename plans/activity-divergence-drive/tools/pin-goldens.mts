@@ -54,7 +54,7 @@ import { pathToFileURL } from 'node:url';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { fixtureIncludeStore } from '../../../tests/helpers/fixture-include-store.js';
 import { compareSvg } from '../../../tests/oracle/svg-conformance/compare.js';
-import { renderFixtureActivity } from '../../../tests/oracle/svg-conformance/render-fixture-activity.js';
+import { activityRatchetOptions, renderFixtureActivity } from '../../../tests/oracle/svg-conformance/render-fixture-activity.js';
 
 const CACHE_DIR = 'test-results/dot-cache/activity';
 const GOLDEN_DIR = 'oracle/goldens/svg-activity';
@@ -118,7 +118,7 @@ export function findBaselineRow(data: DiffBaselineFile, slug: string): DiffBasel
  *  eligibility check this tool exists to enforce before anything is
  *  written. */
 export function renderIsZeroDiff(markup: string, golden: string): boolean {
-  const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+  const ours = renderFixtureActivity(markup, new DeterministicMeasurer(), activityRatchetOptions());
   return compareSvg(ours, golden, 'deterministic').pass;
 }
 

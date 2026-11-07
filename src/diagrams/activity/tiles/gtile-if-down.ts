@@ -1,3 +1,4 @@
+import type { MergeLabels } from './gtile-if-with-links-merge-labels.js';
 import type { GPoint, HookName } from './points.js';
 import { EAST_HOOK, NORTH_BORDER, NORTH_HOOK, SOUTH_BORDER, SOUTH_HOOK, WEST_HOOK } from './points.js';
 import type { Tile } from './tile.js';
@@ -66,9 +67,8 @@ interface IfDownFlags {
   /** `ConditionalBuilder#getShape2` (`:285-311`): `skinparam
    *  ConditionEndStyle hline` -- see this constant's own doc below. */
   readonly conditionEndStyle: 'diamond' | 'hline';
-  /** The bare `skinparam padding` (`SkinParam.java:1147-1150`) --
-   *  {@link diamond2North}. */
-  readonly padding: number;
+  /** diamond2's north block height, `tbout1` (`mergeNorthHeight`) -- {@link diamond2North}. */
+  readonly mergeNorth: number;
 }
 
 /**
@@ -115,7 +115,7 @@ function diamond2Geo(flags: IfDownFlags): AlignedGeo {
  */
 function diamond2North(flags: IfDownFlags): number {
   const isRhombus = !flags.hasOptionalStop && flags.conditionEndStyle !== 'hline' && flags.hasTwoBranches;
-  return isRhombus ? 2 * flags.padding : 0;
+  return isRhombus ? flags.mergeNorth : 0;
 }
 
 interface CoreGeometry {
@@ -233,9 +233,9 @@ function resolveIfDownFlags(
   conditionEndStyle: 'diamond' | 'hline',
 ): ResolvedIfDownFlags {
   const hasOptionalStop = optionalStop !== null;
-  const padding = options.padding ?? 0;
+  const mergeNorth = options.mergeLabels?.first.height ?? 2 * (options.padding ?? 0);
   return {
-    flags: { hasOptionalStop, hasTwoBranches: options.hasTwoBranches, conditionEndStyle, padding },
+    flags: { hasOptionalStop, hasTwoBranches: options.hasTwoBranches, conditionEndStyle, mergeNorth },
     hasMergeNode: !hasOptionalStop && options.hasTwoBranches && conditionEndStyle !== 'hline',
   };
 }
@@ -380,8 +380,10 @@ interface GtileIfDownOptions {
    *  (`conditional-builder.ts#buildIfDown`, via `measureIfOwnNote`).
    *  `activity-divergence-drive-3` T2a, family IFNOTE. */
   readonly opale?: IfOwnNote | null;
-  /** `theme.padding` (`skinparam padding`) -- {@link diamond2North}. */
+  /** `theme.padding` (`skinparam padding`) -- {@link diamond2North}, when no {@link mergeLabels}. */
   readonly padding?: number | undefined;
+  /** diamond2's north (`tbout1`, the main flow's trailing arrow text) and east (`tbout2`, the side branch's) blocks. */
+  readonly mergeLabels?: MergeLabels | undefined;
 }
 
 /**
@@ -406,6 +408,8 @@ export class GtileIfDown extends TileComposite {
   readonly useElse1: boolean;
   readonly hasThenPointOut: boolean;
   readonly hasMergeNode: boolean;
+  /** {@link GtileIfDownOptions.mergeLabels}. */
+  readonly mergeLabels: MergeLabels | undefined;
   /** T1p-a: `skinparam ConditionEndStyle` -- see `theme.ts
    *  #conditionEndStyle`'s own doc comment. */
   readonly conditionEndStyle: 'diamond' | 'hline';
@@ -449,6 +453,7 @@ export class GtileIfDown extends TileComposite {
     this.hasThenPointOut = mainTile.hasPointOut();
     const { flags, hasMergeNode } = resolveIfDownFlags(optionalStop, options, conditionEndStyle);
     this.hasMergeNode = hasMergeNode;
+    this.mergeLabels = options.mergeLabels;
     const opale = options.opale ?? null;
     this.opale = opale;
     const core = computeGeometry(diamond1, mainTile, flags, { optionalStopWidth: optionalStop?.width ?? 0, opale });

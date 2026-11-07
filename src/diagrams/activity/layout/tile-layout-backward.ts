@@ -10,6 +10,7 @@
  */
 
 import type { ActivityBackward, ActivityNode, ActivityNote, ActivityRepeat } from '../ast.js';
+import type { PendingInLabel } from './tile-layout-inlabel.js';
 
 /**
  * Pulls `backward:LABEL;` OUT of a repeat/while body, mirroring
@@ -83,8 +84,30 @@ export function extractBackward(body: readonly ActivityNode[]): {
 export function withBackLabels<T extends object>(
   ctx: T,
   backward: ActivityBackward | undefined,
-): T & { backIncoming: string | undefined; backOutgoing: string | undefined } {
-  return { ...ctx, backIncoming: backward?.incoming, backOutgoing: backward?.outgoing };
+  pending?: PendingInLabel,
+): T & {
+  backIncoming: string | undefined;
+  backOutgoing: string | undefined;
+  backIncomingColor?: string;
+  backOutgoingColor?: string;
+} {
+  if (backward !== undefined) {
+    return {
+      ...ctx,
+      backIncoming: backward.incoming,
+      backOutgoing: backward.outgoing,
+      ...(backward.incomingColor !== undefined ? { backIncomingColor: backward.incomingColor } : {}),
+      ...(backward.outgoingColor !== undefined ? { backOutgoingColor: backward.outgoingColor } : {}),
+    };
+  }
+  // aar-T2a: no `backward:`, so `endwhile` hands the pending arrow to `incoming(nextLinkRenderer())`
+  // (`ActivityDiagram3.java:403-405`), which sets BOTH `incoming1` and `incoming2` (`InstructionWhile.java:208-212`).
+  return {
+    ...ctx,
+    backIncoming: pending?.label,
+    backOutgoing: undefined,
+    ...(pending?.color !== undefined ? { backIncomingColor: pending.color } : {}),
+  };
 }
 
 /**
@@ -157,4 +180,33 @@ export function selectRepeatConditionLabels(
   return conditionStyle === 'insideDiamond'
     ? repeatConditionLabelsSquare(node)
     : repeatConditionLabels(node, backward, laneOrder);
+}
+
+/**
+ * `InstructionRepeat`'s `incoming1`/`incoming2` (aar-T2a): `backward:`'s own decorations (`setBackward`, `:124-132`),
+ * replaced by `repeat while ... -> LABEL`'s `back` link when that is not none (`setTest`, `:201-202`); a repeat never
+ * closed takes the pending link instead, when nothing set `incoming1` (`createFtile`, `:167-168`).
+ */
+export function repeatBackLabels<T extends object>(
+  ctx: T,
+  node: ActivityRepeat,
+  backward: ActivityBackward | undefined,
+  trailing: PendingInLabel | undefined,
+): T & {
+  backIncoming: string | undefined;
+  backOutgoing: string | undefined;
+  backIncomingColor?: string;
+  backOutgoingColor?: string;
+} {
+  const base = withBackLabels(ctx, backward);
+  const pending = node.unclosed === true && base.backIncoming === undefined ? trailing : undefined;
+  const link = node.backLink ?? pending;
+  if (link === undefined) return base;
+  // A pending `-[#c]->` with no text has a null `Display`; only `repeat while ... ->` (`backLink`) carries an empty one.
+  const label = link === pending && link.label === '' ? undefined : link.label;
+  return {
+    ...base,
+    backIncoming: label,
+    ...(link.color !== undefined ? { backIncomingColor: link.color } : {}),
+  };
 }

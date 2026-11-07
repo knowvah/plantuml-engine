@@ -5,6 +5,7 @@
  * No DOM, no async.
  */
 
+import { PAINT_NONE } from '../../core/svg.js';
 import { activityShadowFilterDef, anyShadowed } from './activity-shadow.js';
 import type { ActivityGeometry, ActivityEdgeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
@@ -16,13 +17,11 @@ import { activityTextFontConfiguration, drawActivityTextBlock } from './activity
 import { ASCENT_FRACTION } from './activity-renderer-shapes.js';
 import { renderSwimlaneChrome, renderSwimlaneTitles } from './activity-renderer-swimlanes.js';
 import { activityArrowHeadColor } from './activity-scoped-colors.js';
-import { defaultEdgeLook, type EdgeLook, type LineStroke } from './activity-edge-look.js';
+import { type LineStroke } from './activity-edge-look.js';
+import { planEdgeDraw, withSeparationSpace, type WormCopy } from './activity-rainbow.js';
 import { edgeLabelBlock, edgeLabelLayout } from './layout/compress/edge-label-anchor.js';
 import { arrowDirection, arrowHeadPointsFor, type ArrowDir } from './arrows-regular.js';
 import type { Paint } from '../../core/paint.js';
-import { LinkStyle } from '../../core/decoration/LinkStyle.js';
-import { edgeColorTokens, edgeLinkStyle } from './layout/edge-link-style.js';
-import { parseColor, toSvgHex } from '../../core/klimt/color/HColorSet.js';
 import {
   applyColorMapperToFragment,
   colorMapperOf,
@@ -55,9 +54,6 @@ const DIAGRAM_TYPE_ACTIVITY = 'ACTIVITY';
  *  stroke every start/end decoration draws through (`Worm.java:159,166`). */
 const SIMPLE_STROKE_WIDTH = 1;
 
-/** `Snake#drawInternal`'s single-colour stroke value (`Snake.java:193`). */
-const SNAKE_STROKE_VALUE = 1.5;
-
 /**
  * Draw the `ArrowsRegular`/`ArrowsTriangle` decoration (`arrows-regular.ts`,
  * D4) at `tip`, oriented by the segment direction `vector`. Bundled into
@@ -73,7 +69,7 @@ function arrowTip(
   vector: { dx: number; dy: number },
   color: Paint,
   theme: Theme,
-  strokeWidth = SIMPLE_STROKE_WIDTH,
+  stroke: LineStroke = { width: SIMPLE_STROKE_WIDTH },
 ): string {
   const { x, y } = tip;
   const { dx, dy } = vector;
@@ -90,7 +86,15 @@ function arrowTip(
     // the foreground and the background (`Worm.java:153-154`), so the
     // decoration is filled AND stroked in the same colour; this port drew a
     // fill alone.
-    { fill: color, stroke: color, strokeWidth },
+    // An unstroked (`none`) decoration carries no width, as the jar writes it (aar-T6a `nevavo-98`).
+    color === PAINT_NONE
+      ? { fill: color, stroke: color }
+      : {
+          fill: color,
+          stroke: color,
+          strokeWidth: stroke.width,
+          ...(stroke.dash === undefined ? {} : { strokeDasharray: stroke.dash }),
+        },
   );
 }
 
@@ -113,14 +117,14 @@ function arrowTip(
  * (`CommandArrow3.java:61-71`), whose `AtomText` back colour becomes the
  * `<text filter>` flood (`SvgGraphics.java:732-735`).
  */
-function renderEdgeLabel(edge: ActivityEdgeGeo, theme: Theme): string {
+function renderEdgeLabel(edge: ActivityEdgeGeo, theme: Theme, labelDx = 0): string {
   const layout = edgeLabelLayout(edge, theme);
   if (layout === undefined) return '';
   const { lines, size, x, baselineY } = layout;
   const label = lines.join('\n');
   const fc = activityTextFontConfiguration(theme, size, 'arrow');
   const tb = edgeLabelBlock(label, theme, edge.labelWrapped === true);
-  return drawActivityTextBlock(tb, { x, y: baselineY - size * ASCENT_FRACTION }, theme, fc);
+  return drawActivityTextBlock(tb, { x: x + labelDx, y: baselineY - size * ASCENT_FRACTION }, theme, fc);
 }
 
 /**
@@ -205,11 +209,14 @@ function renderEdgeSegments(
       // (`:126-127`) and the worm's own stroke (`:128-131`). The
       // `arrowHeadColor` / `UStroke.simple()` re-applies (`:152-166`) come
       // AFTER the loop and reach the start/end decorations only.
-      out += arrowTip(anchor, DIR_VECTOR[emphasis.dir], colors.line, theme, stroke.width);
+      out += arrowTip(anchor, DIR_VECTOR[emphasis.dir], colors.line, theme, stroke);
       emphasisDrawn = true;
     }
     const dash = stroke.dash === undefined ? {} : { strokeDasharray: stroke.dash };
-    out += orderedLine(p1.x, p1.y, p2.x, p2.y, { stroke: colors.line, strokeWidth: stroke.width, ...dash });
+    out +=
+      colors.line === PAINT_NONE
+        ? orderedLine(p1.x, p1.y, p2.x, p2.y, { stroke: colors.line })
+        : orderedLine(p1.x, p1.y, p2.x, p2.y, { stroke: colors.line, strokeWidth: stroke.width, ...dash });
   }
   return out;
 }
@@ -235,73 +242,61 @@ function renderMidArrow(midArrowAt: { x: number; y: number; dir: ArrowDir }, hea
 }
 
 /**
- * `HtmlColorAndStyle.build` over `CommandArrow3`'s COLOR group
- * (`edge.color`, `-[#red,bold]->`; `HtmlColorAndStyle.java:86-106`): each
- * comma token is either a `LinkStyle` keyword (`LinkStyle.fromString1`) or
- * a colour replacing the style's `LineColor`. The head colour is `null`
- * there, so it is the arrow colour (`:66`), not `ArrowHeadColor`. A
- * non-normal style strokes at `goThickness(1.5).getStroke3()`
- * (`Worm.java:130-131`, `Snake.java:193`; `LinkStyle.java:98-109`). Only
- * the first `;` colour is drawn: `Snake#drawRainbow` (`Snake.java:200-224`)
- * is not ported.
+ * One worm copy (`Worm#drawInternalOneColor`, `Worm.java:119-172`): its segments, then its end decoration,
+ * both in this copy's own colour and stroke. A rainbow copy's emphasize arrowhead sits at the midpoint of
+ * its own (moved) segment, so the pre-compression anchor shifts with it.
  */
-function edgeLook(edge: ActivityEdgeGeo, theme: Theme): EdgeLook {
-  const base = defaultEdgeLook(theme, edge);
-  if (edge.color === undefined) return base;
-  const style = edgeLinkStyle(edge);
-  let line = base.line;
-  for (const token of edgeColorTokens(edge)) {
-    if (LinkStyle.fromString1(token).isNormal()) line = colorTokenHex(token) ?? line;
-  }
-  return { line, head: line, stroke: linkStroke(style, base.stroke), invisible: style.isInvisible() };
-}
+function renderEdgeCopy(
+  edge: ActivityEdgeGeo,
+  copy: WormCopy,
+  emphasis: { dir: ArrowDir; at: { x: number; y: number } | undefined } | undefined,
+  theme: Theme,
+): string {
+  const { look } = copy;
+  if (look.invisible) return '';
+  const shifted = emphasis === undefined ? undefined : shiftEmphasis(emphasis, edge.points, copy.points);
+  const segments = renderEdgeSegments(copy.points, look, look.stroke, shifted, theme);
 
-/** `HColorSet#getColor` as SVG hex; `undefined` for a non-colour (upstream throws). */
-function colorTokenHex(token: string): string | undefined {
-  const parsed = parseColor(token);
-  return parsed === undefined ? undefined : toSvgHex(parsed);
-}
-
-/** `Worm.java:128-131`: the style's own stroke when normal, else
- *  `goThickness(1.5).getStroke3()` (`Snake.java:193` passes 1.5). */
-function linkStroke(style: LinkStyle, normal: LineStroke): LineStroke {
-  if (style.isNormal()) return normal;
-  const s = style.goThickness(SNAKE_STROKE_VALUE).getStroke3();
-  const dash = s.getDashVisible() === 0 ? undefined : `${s.getDashVisible()},${s.getDashSpace()}`;
-  return dash === undefined ? { width: s.getThickness() } : { width: s.getThickness(), dash };
-}
-
-function renderEdge(edge: ActivityEdgeGeo, theme: Theme): string {
-  const pts = edge.points;
-  if (pts.length < 2) return '';
-  const look = edgeLook(edge, theme);
-  if (look.invisible) return renderEdgeLabel(edge, theme);
-
-  // The `emphasize` arrowhead (`Snake#emphasizeDirection`, D6) is
-  // interleaved INTO this segment run, immediately before its matching
-  // segment's own line -- `renderEdgeSegments`' own doc comment quotes the
-  // exact `Worm.java:138-143` loop body this ports.
-  const emphasis = edge.emphasize === undefined ? undefined : { dir: edge.emphasize, at: edge.emphasizeAt };
-  const segments = renderEdgeSegments(pts, look, look.stroke, emphasis, theme);
-
-  // Terminal arrowhead, drawn AFTER the full segment loop --
-  // `Worm#drawInternalOneColor`'s `startDecoration`/`endDecoration` draws
-  // sit below the `for` loop that draws every segment (`ftile/Worm.java:
-  // 134-171`), never interleaved with it. Direction is second-to-last point
-  // to last, skipping a zero-length last segment: upstream draws the end
-  // decoration whatever that segment's length (`:161-168`, no length test;
-  // `edgeDecorationVector`'s own doc). `edge.arrowhead === false`
-  // mirrors a `null` end decoration (`if (endDecoration != null)` never
-  // firing).
-  const last = pts[pts.length - 1]!;
+  // Terminal arrowhead, drawn AFTER the full segment loop (`Worm.java:134-171`). Direction is second-to-last
+  // point to last, skipping a zero-length last segment: upstream draws the end decoration whatever that
+  // segment's length (`:161-168`, no length test; `edgeDecorationVector`'s own doc). `edge.arrowhead === false`
+  // mirrors a `null` end decoration.
+  const last = copy.points[copy.points.length - 1]!;
   const vector = edgeDecorationVector(edge);
   const arrow = edge.arrowhead === false || vector === undefined ? '' : arrowTip(last, vector, look.head, theme);
+  return segments + arrow;
+}
 
-  // D4/T3h: `edge.midArrowAt` is drawn by `renderCrossLaneDecorations`.
-  // The label is positioned by `Snake#getTextBlockPosition`.
-  const labelEl = renderEdgeLabel(edge, theme);
+/** The emphasize anchor moved by however far the copy's matching segment midpoint moved. */
+function shiftEmphasis(
+  emphasis: { dir: ArrowDir; at: { x: number; y: number } | undefined },
+  base: ReadonlyArray<{ x: number; y: number }>,
+  copy: ReadonlyArray<{ x: number; y: number }>,
+): { dir: ArrowDir; at: { x: number; y: number } | undefined } {
+  if (emphasis.at === undefined || base === copy) return emphasis;
+  for (let i = 0; i < base.length - 1; i++) {
+    if (arrowDirection(base[i + 1]!.x - base[i]!.x, base[i + 1]!.y - base[i]!.y) !== emphasis.dir) continue;
+    const dx = (copy[i]!.x + copy[i + 1]!.x - base[i]!.x - base[i + 1]!.x) / 2;
+    const dy = (copy[i]!.y + copy[i + 1]!.y - base[i]!.y - base[i + 1]!.y) / 2;
+    return { dir: emphasis.dir, at: { x: emphasis.at.x + dx, y: emphasis.at.y + dy } };
+  }
+  return emphasis;
+}
 
-  return segments + arrow + labelEl;
+/**
+ * `Snake#drawInternal` (`Snake.java:189-198`): every worm copy of the edge in order (`activity-rainbow.ts`),
+ * then the label once, shifted by the rainbow's `getTextTranslate` (`:222-223`). The `emphasize` arrowhead
+ * (`Snake#emphasizeDirection`, D6) is interleaved INTO each copy's segment run, immediately before its
+ * matching segment's own line -- `renderEdgeSegments`' own doc quotes the `Worm.java:138-143` loop body.
+ * D4/T3h: `edge.midArrowAt` is drawn by `renderCrossLaneDecorations`.
+ */
+function renderEdge(edge: ActivityEdgeGeo, theme: Theme): string {
+  if (edge.points.length < 2) return '';
+  const plan = planEdgeDraw(edge, theme);
+  const emphasis = edge.emphasize === undefined ? undefined : { dir: edge.emphasize, at: edge.emphasizeAt };
+  let out = '';
+  for (const copy of plan.copies) out += renderEdgeCopy(edge, copy, emphasis, theme);
+  return out + renderEdgeLabel(edge, theme, plan.labelDx);
 }
 
 /**
@@ -406,7 +401,8 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
   // resolves a label's `<$sprite>` exactly as the sizer did.
   const spriteTheme = geo.sprites === undefined ? skinTheme : { ...skinTheme, sprites: geo.sprites };
   // isw-T2-act F1: draw through the layout's own bounder (`Swimlanes.java:239,246`).
-  const measuredTheme = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
+  const measured = geo.measurer === undefined ? spriteTheme : withActivityMeasurer(spriteTheme, geo.measurer);
+  const measuredTheme = withSeparationSpace(measured, geo.colorArrowSeparationSpace);
   // ubt-T2a: `SvgGraphics#ensureVisible` over every drawn text block (`activity-draw-extent.ts`).
   const drawExtent = { maxX: 0, maxY: 0 };
   const theme = withActivityDrawExtent(measuredTheme, drawExtent);

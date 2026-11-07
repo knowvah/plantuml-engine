@@ -1,0 +1,7 @@
+@startuml
+start
+:a;
+:<latex>set $x = \sqrt{y+z}$ and $i = 1$</latex>;
+:b <latex>set $x = \sqrt{y+z}$ and $i = 2$</latex>;
+end
+@enduml

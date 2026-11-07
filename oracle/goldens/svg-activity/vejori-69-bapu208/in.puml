@@ -1,0 +1,9 @@
+@startuml
+fork
+  :action 1;
+-> missing arrow label;
+fork again
+  :action 2;
+-> missing arrow label;
+end merge
+@enduml

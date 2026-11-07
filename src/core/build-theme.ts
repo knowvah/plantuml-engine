@@ -4,6 +4,7 @@
  * change).
  */
 
+import { withActivityDebugOption } from './activity-debug-option.js';
 import type { RenderOptions } from '../index.js';
 import type { DiagramType } from './block-extractor.js';
 import { documentBackColor, documentStyleBuilder, type DocumentBackColor } from './document-back-color.js';
@@ -27,8 +28,13 @@ import { parseClockwise } from './annotations/annotation-clockwise.js';
 import { withActivityCircleStyle } from './activity-circle-style.js';
 import { withClassShadowing } from './class-style-facts.js';
 import { withStateNameFont, withStateShadowing } from './state-style-facts.js';
-import { withActivityBoxStyle } from './activity-box-style.js';
+import { withActivityBoxStyle, withActivityCompositeStyle } from './activity-box-style.js';
+import { withActivityDiamondStyle } from './activity-diamond-style.js';
+import { withThemeAt } from './activity-theme-at.js';
+import { declaredBefore, lastDeclarationPosition } from './activity-box-builder-at.js';
 import { withActivityDocumentStyle } from './activity-document-style.js';
+import { withActivitySwimlaneStyle } from './activity-swimlane-style.js';
+import { withArrowMessageAlignment } from './arrow-message-alignment.js';
 import { withNoteRoundCorner, withNoteStyleFacts } from './note-style-facts.js';
 import { ROOT_LINE_COLOR_KEY } from './skinparam-key-handlers-shared.js';
 import { OptionKey } from './tim/EaterOption.js';
@@ -122,7 +128,19 @@ export function buildTheme(
   // ubt-T1b: a stereotyped box's merged style (`activity-box-style.ts`), activity only.
   const withStyleMap =
     diagramType === 'activity'
-      ? withActivityDocumentStyle(withActivityBoxStyle(withCircles, preprocessed), preprocessed)
+      ? withArrowMessageAlignment(
+          withActivitySwimlaneStyle(
+            withActivityDocumentStyle(
+              withActivityDiamondStyle(
+                withActivityCompositeStyle(withActivityBoxStyle(withCircles, preprocessed), preprocessed),
+                preprocessed,
+              ),
+              preprocessed,
+            ),
+            preprocessed,
+          ),
+          preprocessed,
+        )
       : withCircles;
   // The note's merged `Shadowing` and `LineThickness` (`note-style-facts.ts`), the engines whose notes read them.
   const withNotes = NOTE_FACT_ENGINES.has(diagramType)
@@ -191,7 +209,23 @@ export function buildTheme(
   // `buildTheme` (unchanged five-stage structure); was
   // never flagged in index.ts because that file's 500-line gate short-
   // circuited the per-function check first.
-  return { theme, styleMap };
+  return {
+    theme:
+      diagramType === 'activity'
+        ? withActivityThemeAt(withActivityDebugOption(theme, preprocessed), preprocessed, options)
+        : theme,
+    styleMap,
+  };
+}
+
+/** aar-T6b: `buildTheme` over the declarations before a line, for the diamonds that keep their opener's builder
+ *  (`activity-theme-at.ts`). Unchanged when no declaration lies at or after the line (or none is located). */
+function withActivityThemeAt(theme: Theme, pre: PreprocessorResult, options: RenderOptions | undefined): Theme {
+  const last = lastDeclarationPosition(pre);
+  if (last === undefined) return theme;
+  return withThemeAt(theme, (position) =>
+    last < position ? theme : buildTheme(declaredBefore(pre, position), options, 'activity').theme,
+  );
 }
 
 /**

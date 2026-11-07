@@ -1,0 +1,14 @@
+@startuml
+
+skinparam ActivityDiamondFontSize 8
+skinparam ActivityDiamondFontColor #ff0000
+
+start
+repeat
+  :Eat Hot Wings;
+repeat while (Still  Hungry?) -> yes
+-> no;
+stop
+
+
+@enduml

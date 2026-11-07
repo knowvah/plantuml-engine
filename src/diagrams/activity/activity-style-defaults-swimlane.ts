@@ -15,6 +15,7 @@
  */
 import { noGradient, type Paint } from '../../core/paint.js';
 import type { Theme } from '../../core/theme.js';
+import { activitySwimlaneStyleOf } from '../../core/activity-swimlane-style.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { resolveSolidBucketColor, swimlaneFontSize, swimlaneLineThickness } from './activity-style-defaults.js';
 
@@ -79,7 +80,11 @@ export function swimlaneTitleFontColor(theme: Theme): string {
  * constant — `swimlaneLineThickness` already owns that value.
  */
 export function swimlaneBorderThickness(theme: Theme): number {
-  return theme.colors.graph.activity?.swimlaneBorderThickness ?? swimlaneLineThickness(theme);
+  return (
+    theme.colors.graph.activity?.swimlaneBorderThickness ??
+    activitySwimlaneStyleOf(theme)?.lineThickness ??
+    swimlaneLineThickness(theme)
+  );
 }
 
 /**
@@ -91,7 +96,11 @@ export function swimlaneBorderThickness(theme: Theme): number {
  * this size produces; this resolver supplies the size, not the height).
  */
 export function swimlaneTitleFontSize(theme: Theme): number {
-  return theme.colors.graph.activity?.swimlaneTitleFontSize ?? swimlaneFontSize(theme);
+  return (
+    theme.colors.graph.activity?.swimlaneTitleFontSize ??
+    activitySwimlaneStyleOf(theme)?.fontSize ??
+    swimlaneFontSize(theme)
+  );
 }
 
 /**

@@ -1,0 +1,8 @@
+@startuml
+fork
+:a;
+-> done;
+fork again
+:b;
+end fork
+@enduml

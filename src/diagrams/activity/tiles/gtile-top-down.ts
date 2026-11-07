@@ -22,6 +22,21 @@ function sequentialGap(nextChild: Tile, bounder: StringBounder, theme: Theme): n
   return SEQUENTIAL_ASSEMBLY_GAP + measureSide(nextChild.inLabel.label, bounder, theme).height;
 }
 
+/**
+ * `FtileMargedRight(result, maxX)` (`FtileFactoryDelegatorAssembly.java:80-93`): when the arrow into `next` carries a
+ * label, the assembly is widened to `ConnectionVerticalDown#getMaxX` -- the label block's right edge, at
+ * `max(p1.x, p2.x) + 4` (`Snake.java:234-248`), where both points sit on the merged `left` here. No connection, so no
+ * widening, when the upper tile has no point out (`:68-70`). aar-T2a, `ximelo-07-kusu416`.
+ */
+function labelMaxX(previous: Tile | undefined, next: Tile, left: number, bounder: StringBounder, theme: Theme): number {
+  if (previous === undefined || next.inLabel === undefined || !previous.hasPointOut()) return 0;
+  const width = measureSide(next.inLabel.label, bounder, theme).width;
+  return width === 0 ? 0 : left + SNAKE_LABEL_DX + width;
+}
+
+/** `Snake#getTextBlockPosition`'s `x = max(pt1.x, pt2.x) + 4` (`Snake.java:248`). */
+const SNAKE_LABEL_DX = 4;
+
 export class GtileTopDown extends TileComposite {
   readonly kind = 'gtile-top-down' as const;
   readonly width: number;
@@ -67,7 +82,10 @@ export class GtileTopDown extends TileComposite {
     const lefts = children.map((c) => c.getCoord(NORTH_HOOK).x);
     const left = Math.max(...lefts);
     this.left = left;
-    this.width = Math.max(...children.map((c, i) => left - lefts[i]! + c.width));
+    this.width = Math.max(
+      ...children.map((c, i) => left - lefts[i]! + c.width),
+      ...children.map((c, i) => labelMaxX(children[i - 1], c, left, bounder, theme)),
+    );
     this.childOffsetsX = lefts.map((l) => left - l);
     const offsets: number[] = [];
     let y = 0;

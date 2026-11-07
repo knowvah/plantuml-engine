@@ -1,0 +1,15 @@
+@startuml
+<style>
+.r {
+  BackgroundColor red
+}
+.b {
+  BackgroundColor blue
+}
+</style>
+start
+repeat :Enter data; <<r>>
+backward :Warning; 
+repeat while (Valid?) is (No) not (Yes) <<b>>
+stop
+@enduml

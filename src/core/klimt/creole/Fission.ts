@@ -250,6 +250,7 @@ export function getSplitted(
   atoms: readonly CreoleAtom[],
   maxWidth: number,
   measureAtomWidth: (atom: CreoleAtom) => number,
+  headerWidth = 0,
 ): readonly (readonly CreoleAtom[])[] {
   const valueMaxWidth = Math.abs(maxWidth);
   if (valueMaxWidth === 0) return [atoms];
@@ -260,6 +261,9 @@ export function getSplitted(
 
   const result: WrapLineBuilder[] = [newLine(false)];
   let line = result[0] as WrapLineBuilder;
+  // `StripeSimpleInternal`'s constructor: `width += header.calculateDimension(stringBounder).getWidth()` (Fission.java:121-122);
+  // `blank(header)` is the same width, so every line of the stripe starts at it.
+  line.width = headerWidth;
 
   while (deque.length > 0) {
     const current = deque.shift() as AtomNeutron;
@@ -268,6 +272,7 @@ export function getSplitted(
       const removed = slightyShorten(line, measureAtomWidth);
       for (let i = removed.length - 1; i >= 0; i--) deque.unshift(removed[i] as AtomNeutron);
       line = newLine(true);
+      line.width = headerWidth;
       result.push(line);
     } else {
       addNeutron(line, current, measureAtomWidth);

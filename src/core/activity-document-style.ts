@@ -27,9 +27,18 @@ export interface ActivityShadowing {
   readonly box: number;
 }
 
+/** The ring `UStroke` thickness of each terminal circle (`Style#getStroke`, `CircleStart.java:79`, `CircleEnd.java:83`,
+ *  `FtileCircleEndCross.java:106`); absent where the merged style is. */
+export interface ActivityCircleThickness {
+  readonly start: number | undefined;
+  readonly stop: number | undefined;
+  readonly end: number | undefined;
+}
+
 /** The facts {@link withActivityDocumentStyle} stores. */
 export interface ActivityDocumentStyle {
   readonly shadowing: ActivityShadowing;
+  readonly thickness: ActivityCircleThickness;
 }
 
 const DOCUMENT_STYLE_KEY: unique symbol = Symbol('activity.documentStyle');
@@ -50,6 +59,10 @@ function shadowingOf(signature: StyleSignatureBasic, builder: StyleBuilder): num
   return signature.getMergedStyle(builder)?.getShadowing() ?? 0;
 }
 
+function thicknessOf(signature: StyleSignatureBasic, builder: StyleBuilder): number | undefined {
+  return signature.getMergedStyle(builder)?.getStroke().getThickness();
+}
+
 /** The facts of one builder. */
 export function resolveActivityDocumentStyle(builder: StyleBuilder): ActivityDocumentStyle {
   return {
@@ -59,6 +72,7 @@ export function resolveActivityDocumentStyle(builder: StyleBuilder): ActivityDoc
       end: shadowingOf(END, builder),
       box: shadowingOf(BOX, builder),
     },
+    thickness: { start: thicknessOf(START, builder), stop: thicknessOf(STOP, builder), end: thicknessOf(END, builder) },
   };
 }
 

@@ -81,8 +81,10 @@ describe('branch exit label -- split (rows 27/28)', () => {
   // a `ParallelBuilderFork`/`Split`-specific width/height formula this
   // port's generic ink-extension does not replicate. Not re-derived this
   // pass (same write-set boundary T1b's own fork-entry finding named).
-  it('canvas size is a known residual (fork/split-specific gap, not re-derived this pass)', () => {
-    expect(svgAttr(ours, 'width')).not.toBe(svgAttr(golden, 'width'));
+  // aar-T2b: `getSuppForIncomingArrow` (`AbstractParallelFtilesBuilder.java:138-156`) now widens the branch for its
+  // exit label, so the canvas matches the jar.
+  it('canvas width matches the jar (getSuppForIncomingArrow)', () => {
+    expect(svgAttr(ours, 'width')).toBe(svgAttr(golden, 'width'));
   });
 });
 

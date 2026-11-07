@@ -16,8 +16,13 @@ export function edgeColorTokens(edge: Pick<ActivityEdgeGeo, 'color'>): readonly 
 }
 
 export function edgeLinkStyle(edge: Pick<ActivityEdgeGeo, 'color'>): LinkStyle {
+  return tokensLinkStyle(edgeColorTokens(edge));
+}
+
+/** `HtmlColorAndStyle.build`'s style scan over one member's comma tokens. */
+export function tokensLinkStyle(tokens: readonly string[]): LinkStyle {
   let style = LinkStyle.NORMAL();
-  for (const token of edgeColorTokens(edge)) {
+  for (const token of tokens) {
     const tmp = LinkStyle.fromString1(token);
     if (!tmp.isNormal()) style = tmp;
   }

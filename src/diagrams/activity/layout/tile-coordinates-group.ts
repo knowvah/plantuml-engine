@@ -84,6 +84,7 @@ export function walkTileGroup(tile: GtileGroup, x: number, y: number, myLane: st
         ...(tile.backColor !== undefined ? { color: tile.backColor } : {}),
         ...(tile.usymbol !== undefined ? { usymbol: tile.usymbol } : {}),
         ...(tile.stereotype !== undefined ? { stereotype: tile.stereotype } : {}),
+        ...(tile.compositeStyle !== undefined ? { compositeStyle: tile.compositeStyle } : {}),
       },
       lane,
     );

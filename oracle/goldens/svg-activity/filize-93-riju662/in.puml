@@ -1,0 +1,20 @@
+@startuml
+start
+if (test1) then
+	 :ins1;
+'	 -> label which is very very long;
+'	 -> labelwhichii xwlk sfdmlkjsfdkj sdfkjsqdflkjs sdfsqdf;
+	 -> labelwhichii;
+	 :ins2;
+else
+	 :ins3
+	 sqfd
+	 sqdf
+	 sqfd
+	 sqfd
+	 sqfd
+	 ;
+'	 -> l;
+	 :ins4;
+endif
+@enduml
