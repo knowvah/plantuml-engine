@@ -1,0 +1,3 @@
+@startuml
+hexagon "Very long" as H #pink
+@enduml

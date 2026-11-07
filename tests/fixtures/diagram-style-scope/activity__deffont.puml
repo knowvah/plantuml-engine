@@ -1,0 +1,7 @@
+@startuml
+skinparam defaultFontColor #00AA00
+start
+:a;
+note right: n
+stop
+@enduml

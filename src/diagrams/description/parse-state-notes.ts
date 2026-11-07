@@ -93,7 +93,10 @@ function attachNoteToEntity(
     const slot = resolvePosition(position, state.ast.rankdir);
     if (slot === 'top' || slot === 'bottom') {
       target.kermorNotes ??= {};
-      target.kermorNotes[slot] ??= resolveNewlineEscapes(text);
+      if (target.kermorNotes[slot] === undefined) {
+        target.kermorNotes[slot] = resolveNewlineEscapes(text);
+        if (decor.color !== undefined) (target.kermorNoteColors ??= {})[slot] = decor.color;
+      }
     }
     return;
   }

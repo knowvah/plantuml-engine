@@ -1,0 +1,7 @@
+@startuml
+<style>
+arrow { HeadColor #FF0000 }
+</style>
+state S
+S -[#0000FF]-> T
+@enduml

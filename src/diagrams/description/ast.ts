@@ -50,6 +50,9 @@ export interface DescriptiveNode {
    *  `withRankdir`-resolved; LEFT/RIGHT notes are stored upstream but read by
    *  nothing in the kermor DOT path, so they are not kept here. */
   kermorNotes?: { top?: string; bottom?: string };
+  /** The `#colour` of the note that took each {@link kermorNotes} slot: the `colors` of `Entity.addNote(display,
+   *  position, colors)` (`CommandFactoryNoteOnEntity.java:322`), handed to `EntityImageNoteLink` (`Cluster.java:398`). */
+  kermorNoteColors?: { top?: string; bottom?: string };
   /** Auto-vivified `GroupType.PACKAGE` wrapper synthesized ONLY at layout
    *  time from a dotted (`set separator`-qualified) declaration id that has
    *  no explicit `{ }` block of its own — mirrors upstream

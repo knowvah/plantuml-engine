@@ -1,0 +1,6 @@
+@startuml
+<style>
+arrow { HeadColor #FF0000 }
+</style>
+A -[#0000FF]-> B
+@enduml

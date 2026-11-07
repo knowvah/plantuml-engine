@@ -2,18 +2,18 @@
  * A leaf state whose `name` and `description` zones differ (dss T3c), drawn the
  * way `EntityImageState#drawU` does it: through `RoundedContainer`.
  *
- *   northBackcolor = styleName.value(BackGroundColor)          EntityImageState.java:131
- *   southBackcolor = styleDescription.value(BackGroundColor)   EntityImageState.java:132
- *   equal      -> one filled shape                              EntityImageState.java:134-135
+ *   northBackcolor = styleName.value(BackGroundColor)          EntityImageState.java:138
+ *   southBackcolor = styleDescription.value(BackGroundColor)   EntityImageState.java:139
+ *   equal      -> one filled shape                              EntityImageState.java:141-142
  *   otherwise  -> RoundedContainer(.., yLine, 0, north, south, south, ..)
- *                                                               EntityImageState.java:137-142
+ *                                                               EntityImageState.java:143-150
  *
  * Neither zone reads the inline `#color` (`applyColor` feeds only the single
  * shape), so a differing pair ignores it. `RoundedContainer#drawU`
  * (`RoundedContainer.java:76-95`) draws, in order: the shadow rect, `RoundedNorth`,
  * `RoundedSouth`, the transparent outline and a divider at `nameHeight`;
  * `EntityImageState#drawU` then draws its own divider at the same y
- * (`EntityImageState.java:144`), which is why the jar emits two identical `<line>`s.
+ * (`EntityImageState.java:152`), which is why the jar emits two identical `<line>`s.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageState.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/RoundedContainer.java
@@ -41,7 +41,7 @@ export interface LeafZoneFills {
 
 /**
  * The `name` and `description` fills, or `undefined` when they are equal (the single-shape branch).
- * No `color`: the zones read the style alone (`EntityImageState.java:131-132`).
+ * No `color`: the zones read the style alone (`EntityImageState.java:138-139`).
  *
  * Two gradients are never equal (`EntityImageState.java:141`): `HColorGradient` declares no `equals`
  * (`HColorSimple.java:85` is the only one), and `ValueImpl#asColor` (`ValueImpl.java:92-103`) parses a new one per read
@@ -59,7 +59,7 @@ export interface ZonedLeafGeometry {
   readonly zones: LeafZoneFills;
   readonly border: Paint;
   readonly radius: number;
-  /** The y of the name/description divider (`yLine`, `EntityImageState.java:125`). */
+  /** The y of the name/description divider (`yLine`, `EntityImageState.java:136`). */
   readonly dividerY: number;
   /** stdd T3b: for the state style's `LineThickness` (`stateBorderStrokeAttrs`). */
   readonly theme: Pick<Theme, 'colors'>;
@@ -108,7 +108,7 @@ const STATE_DEFAULT_ROUND_CORNER = 25;
  * stdd T3c: a leaf's name block is created with the `state` style's `HorizontalAlignment`
  * (`EntityImageStateCommon.java:75-78`), `root { HorizontalAlignment left }` (`plantuml.skin:12`),
  * so its lines start at the block's left edge, and the block is centred in the box
- * (`EntityImageState.java:150-152`, `EntityImageStateEmptyDescription.java:88-90`): one x for every line.
+ * (`EntityImageState.java:160-162`, `EntityImageStateEmptyDescription.java:88-90`): one x for every line.
  */
 export function nameBlockLeft(node: Pick<StateNodeGeo, 'x' | 'width'>, lines: readonly StateTextLine[]): number {
   let blockWidth = 0;
@@ -118,7 +118,7 @@ export function nameBlockLeft(node: Pick<StateNodeGeo, 'x' | 'width'>, lines: re
 
 /**
  * Whether the leaf's `RoundedSouth` is drawn as a path: the zones differ
- * (`EntityImageState.java:134-142`), the south colour is not transparent
+ * (`EntityImageState.java:141-150`), the south colour is not transparent
  * (`RoundedSouth.java:60-61`) and the corner is not 0 (`RoundedSouth.java:62-64`
  * draws a `URectangle`, whose ink has the `-1` inset). `<<sdlreceive>>` is
  * `EntityImageState2`, which has no zones (`GeneralImageBuilder.java:138-141`).

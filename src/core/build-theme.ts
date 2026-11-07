@@ -27,7 +27,7 @@ import { parseConditionalColor } from './klimt/color/HColorSet.js';
 import { parseClockwise } from './annotations/annotation-clockwise.js';
 import { withActivityCircleStyle } from './activity-circle-style.js';
 import { withClassShadowing } from './class-style-facts.js';
-import { withStateNameFont, withStateShadowing } from './state-style-facts.js';
+import { withStateArrowHead, withStateNameFont, withStateShadowing } from './state-style-facts.js';
 import { withActivityBoxStyle, withActivityCompositeStyle } from './activity-box-style.js';
 import { withActivityDiamondStyle } from './activity-diamond-style.js';
 import { withThemeAt } from './activity-theme-at.js';
@@ -154,7 +154,10 @@ export function buildTheme(
   // The state box's merged `Shadowing` replaces the flat root tier the state sites read (`state-style-facts.ts`).
   const withEngineFacts =
     diagramType === 'state'
-      ? withStateNameFont(withStateShadowing(withClassFacts, preprocessed), preprocessed)
+      ? withStateArrowHead(
+          withStateNameFont(withStateShadowing(withClassFacts, preprocessed), preprocessed),
+          preprocessed,
+        )
       : withClassFacts;
 
   // G2 N39: position-scoped classifier `.tagname` cascade generations --

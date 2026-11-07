@@ -1,0 +1,4 @@
+@startuml
+skinparam objectStereotypeFontColor #0000FF
+object O <<s>>
+@enduml

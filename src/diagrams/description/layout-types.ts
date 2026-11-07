@@ -32,6 +32,8 @@ export interface ContainerDesc {
   parentAstId?: string;
   /** `!pragma kermor on` TOP/BOTTOM group notes (`DescriptiveNode.kermorNotes`). */
   kermorNotes?: { top?: string; bottom?: string };
+  /** `DescriptiveNode.kermorNoteColors`: each slot's note `#colour`. */
+  kermorNoteColors?: { top?: string; bottom?: string };
 }
 
 export interface ClassifyCtx {

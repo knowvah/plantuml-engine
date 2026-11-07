@@ -1,0 +1,6 @@
+@startuml
+<style>
+element { HeadColor #FF0000 }
+</style>
+[A] --> [B]
+@enduml

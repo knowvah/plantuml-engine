@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2162 modules · 7567 exported names.
+2162 modules · 7570 exported names.
 
 ## `src/`
 
@@ -148,7 +148,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `sprite-prefetch.ts` | `scanSpriteNames` | Scan a diagram source for the `<$name>` sprite references it contains. |
 | `sprite-registry.ts` | `SpriteRegistry`, `createSpriteRegistry`, `addSprite`, `surfaceSpriteWarnings`, `getSprite`, `spriteDimsLookupFor`, `getSpriteMonochrome`, `isSpriteColor4096`, `getSpriteColor4096`, `getSpriteImage`, `getSpriteSvg` | `SpriteRegistry` — the per-diagram sprite map and its lookup seams, split out of `sprite-commands.ts` (which owns the sprite-DEFINITION grammar) purely to keep that file under this repo's 500-line module cap; the same split precedent as `op |
 | `sprite-split-stdlib.ts` | `SpriteSplitManifest`, `SpriteNotBundledError`, `spriteSplitNamesOf`, `spriteSplitStdlib`, `assembleSpriteSplitContent` | si11b T4 -- per-sprite stdlib bundle registration, and the prefetch-side assembly it enables. |
-| `state-style-facts.ts` | `withStateNameFont`, `stateNameFontSizeOf`, `withStateShadowing` | The merged state style's `Shadowing` (smc T4c). |
+| `state-style-facts.ts` | `withStateNameFont`, `stateNameFontSizeOf`, `withStateShadowing`, `StateArrowHead`, `withStateArrowHead`, `stateArrowHeadOf` | The merged state style's `Shadowing` (smc T4c), name `FontSize` and arrow `HeadColor` (scr T1b). |
 | `stdlib-content.ts` | `stdlibContentFor` | Resolving a `<bundle/thing>` include target to its CONTENT, for the prefetch walk's third channel (`include-resolver.ts#prefetchInner`). |
 | `stereotype-decoration.ts` | `GuillemetPair`, `DEFAULT_GUILLEMET`, `wrapGuillemet`, `hasMultipleLabel`, `splitStereotypeLabels`, `splitStereotypeStyleTags`, `CircledCharDecoration`, `parseCircledCharDecoration`, `CircledSpriteDecoration`, `parseCircledSpriteDecoration`, `DEFAULT_CIRCLED_CHARACTER_FONT_SIZE`, `resolveBadgeRadius` | stereotype-decoration.ts — the port of `StereotypeDecoration#buildComplex` (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/stereo/ StereotypeDecoration.java:143-182`): how a `<<...>>` run splits into the label(s) a diagram DISPLAYS |
 | `style-cascade-class-arrow-font.ts` | `computeCardinalityFontOverride`, `computeArrowFontOverride` | D3/T11 (cdd3, Q-5): the arrow-label and cardinality font cascades -- split out of `style-cascade-class.ts` (500-line cap), mirrors `style-cascade- visibility-icon.ts`'s own split-for-size precedent (same import shape: `cascadeHex`/`cascadeF |

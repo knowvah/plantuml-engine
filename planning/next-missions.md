@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## style-colour-reads (scr) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #122; per-task history on the local tag `style-colour-reads/pre-squash`)
+
+dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagram-style-scope/`, pinned): 15 open in 4 families, all to 0. Kermor group note as `EntityImageNoteLink` (T1a), state arrow `HeadColor` off the merged arrow style (T1b), state notes under `skinparam noteBackgroundColor` (T1c), sequence `FontColor transparent` measured but not drawn (T1d). dss rows `1172 open 39` (54 at T0). 0 verdict movers in every engine vs `8fe32c695`; no corpus row was open on these mechanisms. `dist/*.d.ts` identical.
+
+### Follow-ons (mechanism, owner)
+
+1. **Ruling #156** — drop the unread `businessActorFill`/`businessUsecaseFill` public `Theme` fields (a d.ts change), or keep them.
+2. **State arrow tag tier `HeadColor`** — `withStateArrowHead` reads the untagged merged arrow style; `arrow { .tag { HeadColor } }` (`withTOBECHANGED(stereotype)`, `SvekEdge.java:816-821`) is not read. No row.
+3. **Captured spot glyph 0.001 off** — the class `C` spot path differs from the jar at two coordinates and a trailing space, within `compareSvg` normalization (`.agent-notes/scr-T2a.md`). No row measures it.
+
+---
+
 ## activity-authored-rows (aar) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #121; per-task history on the local tag `activity-authored-rows/pre-squash`)
 
 Activity survey 610/35/233 → 755/4/119 (conformant/structural-match/diverged); 145 of the 154 in-scope corpus rows conformant and pinned, `unknown/dijapi-54` pinned in the unknown tree, every authored and `loops-*` dss row at 0. The other 9 are named: 3 LaTeX rows (KaTeX), `nomave-73` (QR codes, MIT edition), `rekefe-90` (#155), 4 legacy-engine rows (#123). 0 conformant rows lost in any engine; `dist/*.d.ts` identical.
@@ -123,12 +135,12 @@ Layout and parser, not colour reads:
 
 Colour reads still open, each small:
 16. ~~**A group whose body starts with an inline colour arrow**~~ — **struck by aar (2026-11-06, `activity-authored-rows/pre-squash`, #121):** T3c: `FtileGroup#getInLinkRendering` returns the body's (`FtileGroup.java:124-126`); `groupin-*` rows at 0. Was: `FtileGroup` reads the inner colour on a merge's in-connector; we mark it decorated and take the default (TE1).
-17. ~~**`note on link` attribute colour**~~ — description side DONE by ddd (`note-grammar.ts`, `COLORS_REGEXP`, line and back, text ignored as the jar does). `#blue;line:red;text:x` unparsed; `renderer-cluster-note.ts#drawKermorGroupNote` reads `note`, not `note.link`. — **state side struck by stdd T5b (2026-11-04):** `CucaNote.build(display, position, colors)` (`CommandFactoryNoteOnLink.java:217-218`) reaches the rose note fill (`fotigo-12`); the description/component `drawKermorGroupNote` read stays open (#122).
-18. **`note { FontColor #111 } root { FontColor #?black:white }`** keeps a stale flat value (`component__probe-cond-root` 1).
-19. **`#RRGGBBAA` font colour** (`xeziki-47`, 6 left); `element { HeadColor }`; `##00FFFF` line colour on a state (`fikuga-98`, 16 left). — **`xeziki-47` and `fikuga-98` struck by stdd T3d/T3a (2026-11-04);** `element { HeadColor }` stays (#122).
-20. **Class notes ignore `skinparam noteBackgroundColor`**; a nested class diagram draws an extra `#000` path `compareSvg` cannot see (`.agent-notes/dss-execution.md`).
+17. ~~**`note on link` attribute colour**~~ — description side DONE by ddd, state side by stdd T5b. — **struck by scr (2026-11-06, `style-colour-reads/pre-squash`, #122):** T1a, the kermor group note draws through `buildLinkNoteBlock` (`EntityImageNoteLink`, `ComponentType.NOTE`) with its own `#colour` (`Cluster.java:393-399`); `component__kgn-*` at 0. `#blue;line:red;text:x` stays unparsed (no row).
+18. ~~**`note { FontColor #111 } root { FontColor #?black:white }`**~~ — **struck by scr (2026-11-06, `style-colour-reads/pre-squash`, #122):** re-measured at planning, `component__probe-cond-root` 0 and pinned.
+19. ~~**`#RRGGBBAA` font colour; `element { HeadColor }`; `##00FFFF` state line**~~ — `xeziki-47`, `fikuga-98` struck by stdd. — **struck by scr (2026-11-06, `style-colour-reads/pre-squash`, #122):** T1b, state reads `HeadColor` from the merged `{root, element, stateDiagram, arrow}` style (`Rainbow.java:84-95`), transparent head drawn as a line; `state__head-*` at 0.
+20. ~~**Class notes ignore `skinparam noteBackgroundColor`; nested class `#000` path**~~ — **struck by scr (2026-11-06, `style-colour-reads/pre-squash`, #122):** the class half re-measured 0 at planning; T1c fixed the state half (fill falls back to `theme.colors.noteBackground`). The nested `<text>` spot is a seam artefact (T2a, `DIVERGENCES.md` "Embedded `{{ }}` sub-diagrams").
 21. ~~**chart prints `theme.colors.background` raw**~~ — chart part DONE by chart-engine-port (#116), the file is deleted. ~~Board's body (`board__selector-activitydiagram` 15)~~ DONE by board-engine-port (#118): 0; packet's DONE by packet-engine-port (#117).
-22. **Tidying** — `businessActorFill`, `businessUsecaseFill` now unread; `EntityImageState.java:131-135` comments cite stale lines; `sacupe-57`, `zonamu-61`, `fupumu-08` conformant by ddd; 0.167 px map/object stereotype y offset. `.agent-notes/dss-T3*.md`, `dss-T4a.md`, `dss-TE*.md` hold the rest.
+22. ~~**Tidying**~~ — **struck by scr (2026-11-06, `style-colour-reads/pre-squash`, #122):** T2a corrected the `EntityImageState.java` citations; `sacupe-57`, `zonamu-61`, `fupumu-08` closed by ddd; `object__stereo-*` at 0. `businessActorFill`/`businessUsecaseFill` (public d.ts) are on the ruling issue #156.
 
 ## unknown-bucket-triage (ubt) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #119)
 

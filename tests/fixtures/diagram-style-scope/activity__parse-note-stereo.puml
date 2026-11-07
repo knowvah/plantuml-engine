@@ -1,0 +1,6 @@
+@startuml
+start
+:a;
+note left <<foo>> : n
+stop
+@enduml

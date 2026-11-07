@@ -1,0 +1,6 @@
+@startuml
+skinparam noteFontColor #0000FF
+actor U
+U --> (x)
+note left of U : n
+@enduml

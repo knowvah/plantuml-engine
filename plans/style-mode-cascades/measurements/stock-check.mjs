@@ -29,3 +29,5 @@ for (const file of files) {
   const label = /label=(.*)/.exec(err)?.[1] ?? err.split('\n')[0] ?? '';
   console.log(`${basename(file, '.puml')}\texit=${String(r.status)}\t${status}\t${label}`);
 }
+// scr T2a: the rendered `.svg` files stay in `out`; print it so a caller can read them.
+console.log(`out\t${out}`);

@@ -1,0 +1,5 @@
+@startuml
+skinparam defaultFontColor #00AA00
+state S
+note left of S : n
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+map M <<s>> {
+  k => v
+}
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+skinparam usecaseStereotypeFontColor #0000FF
+actor U <<s>>
+U --> (x)
+@enduml

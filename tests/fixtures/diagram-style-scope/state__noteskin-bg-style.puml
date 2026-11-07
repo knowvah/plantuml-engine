@@ -1,0 +1,8 @@
+@startuml
+skinparam noteBackgroundColor #BBBBBB
+<style>
+stateDiagram { note { FontColor #0000FF } }
+</style>
+state S
+note left of S : n
+@enduml

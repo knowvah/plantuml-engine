@@ -1,0 +1,4 @@
+@startuml
+skinparam defaultFontColor #00AA00
+object O <<s>>
+@enduml

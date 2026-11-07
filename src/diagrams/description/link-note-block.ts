@@ -6,8 +6,8 @@
  *
  * The signature is `ComponentType.NOTE`'s `{root, element, sequenceDiagram, note}` (`EntityImageNoteLink.java:63-64`,
  * `ComponentType.java:98-99`), not the document's: `style-element-scope.ts` writes it to {@link LINK_NOTE_BUCKET}, read
- * before the free note's `note` bucket (D2a). Same draw as `renderer-cluster-note.ts#drawKermorGroupNote`, which reads
- * `note` for the same upstream class (follow-on, left as is).
+ * before the free note's `note` bucket (D2a). `renderer-cluster-note.ts#drawKermorGroupNote` draws through this block:
+ * `Cluster#getCucaNote` builds the same class from the group note's display and `Colors` (`Cluster.java:393-399`).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageNoteLink.java:61-76
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/rose/ComponentRoseNote.java:81-133

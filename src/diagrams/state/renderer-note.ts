@@ -112,13 +112,6 @@ import { OPALE_MARGIN_Y as NOTE_MARGIN_Y } from '../../core/svek/image/Opale.js'
 /** `Opale.java`'s `cornersize` — the folded-corner triangle size, SAME
  *  constant `../class/note-opale.ts#OPALE_CORNER_SIZE` already uses. */
 import { OPALE_CORNERSIZE as NOTE_FOLD } from '../../core/svek/image/Opale.js';
-/** `ColorParam.noteBackground`'s plantuml.skin default — the fallback when
- *  a note has no `#color` override (mission G4 S12: resolved via
- *  `resolveStateFill`, the SAME fill-only override precedent
- *  `state-render-colors.ts` already establishes for state boxes/
- *  pseudostates — `<style>`-bucket override support remains out of scope,
- *  module doc comment). */
-const NOTE_FILL = '#FEFFDD';
 const NOTE_STROKE_WIDTH = 0.5;
 /** `UStroke`'s bare default width — `drawNormal`'s UN-stroked corner draw
  *  call (module doc comment's freestanding-shape derivation). */
@@ -239,11 +232,16 @@ function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): str
 /** dss T3c sites 10-11: `EntityImageNote.java:100-108` -- the inline `#color`
  *  wins the fill, else the `note` style's BackGroundColor; the border is that
  *  style's LineColor (`:108`). The `note` bucket holds the builder's merge of
- *  every selector (`EntityImageNote.java:188-189`); the defaults are the
- *  note's own. */
+ *  every selector (`EntityImageNote.java:188-189`) when a `<style>` gate opens
+ *  it; otherwise the flat path holds the merged `note { BackGroundColor }`
+ *  (`skinparam noteBackgroundColor`, `FromSkinparamToStyle.java:125`) in
+ *  `theme.colors.noteBackground`, as every other engine's note reads it. */
 function noteInk(node: StateNodeGeo, theme: Theme): { fill: Paint; stroke: Paint } {
   return {
-    fill: resolveStateFill(node, stateBucketPaint(theme, STATE_NOTE_BUCKET, 'background') ?? NOTE_FILL),
+    fill: resolveStateFill(
+      node,
+      stateBucketPaint(theme, STATE_NOTE_BUCKET, 'background') ?? theme.colors.noteBackground,
+    ),
     stroke: stateBucketPaint(theme, STATE_NOTE_BUCKET, 'border') ?? theme.colors.border,
   };
 }
@@ -356,10 +354,11 @@ const ROSE_NOTE_PADDING = 5;
 
 /** dss T3e site 13: `EntityImageNoteLink.java:64` signs `ComponentType.NOTE`'s `root, element,
  *  sequenceDiagram, note` (`ComponentType.java:98-99`), so `stateDiagram { }` never reaches it; the
- *  `note.link` bucket holds the builder's merge of that signature (`style-element-scope.ts`). */
+ *  `note.link` bucket holds the builder's merge of that signature (`style-element-scope.ts`); the flat
+ *  `theme.colors.noteBackground` holds a bare `note { BackGroundColor }` (`FromSkinparamToStyle.java:125`). */
 function linkNoteInk(theme: Theme): { fill: Paint; stroke: Paint } {
   return {
-    fill: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'background') ?? NOTE_FILL,
+    fill: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'background') ?? theme.colors.noteBackground,
     stroke: stateBucketPaint(theme, STATE_LINK_NOTE_BUCKET, 'border') ?? theme.colors.border,
   };
 }

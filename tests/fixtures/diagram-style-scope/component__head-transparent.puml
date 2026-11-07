@@ -1,0 +1,6 @@
+@startuml
+<style>
+arrow { HeadColor transparent }
+</style>
+[A] --> [B]
+@enduml

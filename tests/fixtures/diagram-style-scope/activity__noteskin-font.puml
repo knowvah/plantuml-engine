@@ -1,0 +1,7 @@
+@startuml
+skinparam noteFontColor #0000FF
+start
+:a;
+note right: n
+stop
+@enduml
