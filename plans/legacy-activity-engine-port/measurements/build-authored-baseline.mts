@@ -32,7 +32,7 @@ const today = new Date().toISOString().slice(0, 10);
 
 /** The oracle's error: the crash line, else the last red line after its `[From ... (line N) ]` echo. */
 function jarErrorOf(golden: string): { line: number | null; message: string } {
-  const texts = [...golden.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]!.replaceAll(' ', ' '));
+  const texts = [...golden.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]!.replaceAll('\u00A0', ' '));
   const crash = texts.find((t) => t.startsWith('An error has occurred : '));
   if (crash !== undefined) return { line: null, message: crash.slice('An error has occurred : '.length) };
   const from = /\(line (\d+)\)/.exec(golden);
