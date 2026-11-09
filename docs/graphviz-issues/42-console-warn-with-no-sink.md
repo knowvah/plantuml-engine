@@ -1,5 +1,8 @@
 # Engine warnings reach `console.warn` with no way to redirect them
 
+**Fixed in `dot-engine` 2.12.0 (2026-11-06)** by the public `agseterrf`; plantuml-ts uses it in
+`src/core/dot-engine-messages.ts`. Ticked in `TRACKER.md`.
+
 **Impact:** `@knowvah/dot-engine` 2.10.3 writes to the console of anyone using
 plantuml-ts, on valid diagrams. No SVG changes: the verdicts of all 28 surveyed types
 are unaffected. Every diagram with a titled cluster that was tried prints this:

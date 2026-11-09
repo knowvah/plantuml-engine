@@ -29,6 +29,14 @@ object ratchets and census re-run instantly against an updated `.tgz`).
      writes `console.warn` on any titled cluster (issue 42). Measurements are in
      .agent-notes/dot-engine-2.10.2-bump.md. -->
 
+<!-- NOTE 2026-11-09: plantuml-ts pins @knowvah/dot-engine 2.12.0, up from 2.10.3,
+     closing issues 41 and 42. Surveyed one type at a time at 122daf4e9 on both
+     versions: no row of 5,927 changed in any field. Re-surveyed activity, unknown
+     and network at cb5af17a8 (the 124 legacy activity rows): no row changed.
+     Engine messages are dropped around svek layout and restored after
+     (`src/core/dot-engine-messages.ts`); `@startdot` prints them before the SVG,
+     as the jar does. -->
+
 `[~]` marks an issue closed without an upstream fix to wait for —
 either diagnosed as correct-by-oracle, or reclassified as our work.
 
@@ -756,6 +764,8 @@ either diagnosed as correct-by-oracle, or reclassified as our work.
         2026-11-04: NOT a dot-engine defect, reclassified as our work. Our builder and text emitter put the border-point anchor in `i`; the jar declares it in `ee` (ClusterDotString.java:148-152). `dotEqual` folds both wrappers, so it stayed true. Moving only the anchor reproduces native on all six viroxo-69 nodes. FIXED here 2026-11-04 (`borderPointAnchorDecl`); viroxo-69 and the state__hist-* rows are conformant. -->
 - [x] 40-getlayout-loses-labels-after-render.md  <!-- FILED 2026-11-04: regression from 2.8.0 to at least 2.10.2. dot cleanup clears every label record during `render`'s free, so getLayout after render reports no label positions and state falls 298 -> 154 conformant. Blocks the pin bump. With only those frees removed, 2.10.2 loses no verdict across 28 types and fixes issues 36 and 37.
         TICKED 2026-11-05: fixed in 2.10.3 (PR #124, merge bf0c19ae, commit 35cfd33f). 184f4eac, first in 2.8.0, ported the label frees into each engine cleanup; they now happen at the next layout. All five label kinds present after render; state stays 298 of 299. -->
-- [ ] 41-parallel-port-edges-second-route.md  <!-- FILED 2026-11-05 (odd-T4a): five parallel edges between two port nodes, the second routed as a tight arc where native takes the long route. Probe only, no corpus row; dot-engine 2.4.0 vs native 16.1.0 on the jar's DOT.
-        RE-MEASURED 2026-11-05: unchanged on 2.10.3; the second edge is still the tight arc where native takes the long route. -->
-- [ ] 42-console-warn-with-no-sink.md  <!-- FILED 2026-11-05: 2.10.3 writes the graphviz table-size warning with console.warn on every titled cluster, and the public API has no way to redirect it. Faithful to native's stderr, but the jar never shows it, so plantuml-ts now writes to a consumer's console on valid diagrams. Output is unaffected. -->
+- [x] 41-parallel-port-edges-second-route.md  <!-- FILED 2026-11-05 (odd-T4a): five parallel edges between two port nodes, the second routed as a tight arc where native takes the long route. Probe only, no corpus row; dot-engine 2.4.0 vs native 16.1.0 on the jar's DOT.
+        RE-MEASURED 2026-11-05: unchanged on 2.10.3; the second edge is still the tight arc where native takes the long route.
+        TICKED 2026-11-06: fixed in 2.12.0. With the label as a fixed-size table (no font metrics), 2.12.0's `-Tdot` equals native 16.1.0 on all five edges; 2.10.3 still draws the second as the 4-point arc. The probe `ports-decors` is now an odd-T4a fixture at 0 diffs, 177 wide as the jar (184 on 2.10.3). -->
+- [x] 42-console-warn-with-no-sink.md  <!-- FILED 2026-11-05: 2.10.3 writes the graphviz table-size warning with console.warn on every titled cluster, and the public API has no way to redirect it. Faithful to native's stderr, but the jar never shows it, so plantuml-ts now writes to a consumer's console on valid diagrams. Output is unaffected.
+        TICKED 2026-11-06: 2.12.0 exports `agseterrf` (lib/cgraph/agerror.c), which returns the previous sink. plantuml-ts drops engine messages around each engine call and restores the host's sink (`src/core/dot-engine-messages.ts`), as the jar's merged `dot` stream keeps them out of a rendered diagram (ProcessRunner.java:69, DotStringFactory.java:323-343). `tests/unit/core/dot-engine-messages.test.ts`: state/bemena-23 and an unknown @startdot shape render with no console call. -->

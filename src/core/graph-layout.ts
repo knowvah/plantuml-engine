@@ -38,6 +38,7 @@ import type { DotInputEdge, DotInputGraph, DotLayoutResult } from './graph-layou
 // There is now exactly one install point.
 import './dot-engine-measurer.js';
 import { swimlanePointIds, withSwimlanePoints } from './svek-dot-swimlane.js';
+import { withEngineMessagesDropped } from './dot-engine-messages.js';
 import { withSameContainerConstraints } from './graph-layout-build-constraint.js';
 import { edgeLabelTables, svekCluster, svekEdge, svekFrame, type SvekFrame } from './graph-layout-svek-read.js';
 import { svekNodePolygon } from './graph-layout-polygon.js';
@@ -401,8 +402,9 @@ export function layoutGraph(
   // here for tail/head label positions, the one thing the snapshot could not
   // report (G2/N25); `EdgeGeometry.tailLabel`/`.headLabel` publish them
   // directly now, so that whole read-the-output-as-text path is gone --
-  // filed as docs/graphviz-issues/13, landed in 1.3.0.
-  render(b.graph, 'svg', { engine });
+  // filed as docs/graphviz-issues/13, landed in 1.3.0. Graphviz's messages
+  // never reach the user, as in the jar (`dot-engine-messages.ts`).
+  withEngineMessagesDropped(() => render(b.graph, 'svg', { engine }));
   // cdd3-T-D3: Svek parses graphviz's 2-dp SVG text (`graph-layout-svek-
   // read.ts`); `read: 'exact'` is for callers whose jar path is Smetana.
   const svek = (opts?.read ?? 'svek') === 'svek';
