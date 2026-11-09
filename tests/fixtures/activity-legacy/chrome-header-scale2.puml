@@ -1,0 +1,6 @@
+@startuml
+scale 2
+header H
+(*) --> A
+A --> (*)
+@enduml

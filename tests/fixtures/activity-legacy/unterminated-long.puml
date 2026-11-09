@@ -1,0 +1,5 @@
+@startuml
+(*) --> "Line one
+line two
+A --> (*)
+@enduml

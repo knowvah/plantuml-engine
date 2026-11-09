@@ -1,0 +1,9 @@
+@startuml
+<style>
+root { FontColor #0000AA
+  FontName Courier }
+</style>
+(*) --> A
+note right: n
+A --> (*)
+@enduml

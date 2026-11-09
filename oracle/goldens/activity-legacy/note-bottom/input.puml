@@ -1,0 +1,5 @@
+@startuml
+(*) --> A
+note bottom: b
+A --> (*)
+@enduml

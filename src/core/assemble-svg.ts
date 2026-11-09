@@ -38,6 +38,7 @@
  * `core/klimt/color/HColorSet.ts#resolveColorToSvgHex`) was already core,
  * imported by the per-engine shell files only for historical reasons.
  */
+import { printedDiagramTypeOf } from './printed-diagram-type.js';
 import { formatShiftedCoordinates } from './annotations/coord-shift.js';
 import type { AssembledSvg, RenderFragment } from './dispatcher.js';
 import { svgRoot, group, rect } from './svg.js';
@@ -69,6 +70,8 @@ const DIAGRAM_TYPE_WBS = 'WBS';
 const DIAGRAM_TYPE_GANTT = 'GANTT';
 const DIAGRAM_TYPE_BOARD = 'BOARD';
 const DIAGRAM_TYPE_FILES = 'FILES';
+/** laep D4: legacy activity's routing key (`diagrams/activity-legacy/renderer.ts`); it prints `ACTIVITY`. */
+const DIAGRAM_TYPE_ACTIVITY_LEGACY = 'ACTIVITY_LEGACY';
 const DIAGRAM_TYPE_PACKET = 'PACKET';
 const DIAGRAM_TYPE_CHART = 'CHART';
 
@@ -317,6 +320,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_CHART:
     case DIAGRAM_TYPE_PACKET:
     case DIAGRAM_TYPE_BOARD:
+    case DIAGRAM_TYPE_ACTIVITY_LEGACY:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:
       return finalizeGenericRootFragment(fragment);
@@ -348,7 +352,7 @@ function assembleDocument(fragment: AssembledSvg): string {
   if ('completeSvg' in fragment) return fragment.completeSvg;
   if (fragment.diagramType !== undefined) {
     const finalized = finalizeShellFragment(fragment);
-    return assembleDocumentShell(withFormattedBody(finalized), fragment.diagramType);
+    return assembleDocumentShell(withFormattedBody(finalized), printedDiagramTypeOf(fragment, fragment.diagramType));
   }
   const formatted = withFormattedBody(fragment);
   return svgRoot(formatted.width, formatted.height, [formatted.body], formatted.background, formatted.extraDefs);

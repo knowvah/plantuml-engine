@@ -1,0 +1,5 @@
+@startuml
+(*) --> "A long label" as A1
+A1 --> "Other" as A2
+A2 --> (*)
+@enduml

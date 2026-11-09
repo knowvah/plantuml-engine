@@ -43,6 +43,7 @@ import { rootTops, topsFirstClusters } from './svek-dot-top.js';
 import { togetherClusters } from './svek-dot-together.js';
 import { orderLines0Edges } from './svek-dot-lines0.js';
 import { borderPointAnchorDecl } from './svek-dot-wrappers.js';
+import { swimlaneEncounterHead } from './svek-dot-swimlane.js';
 
 /** Collector: appends an id the first time it is seen, ignoring ids that are
  *  not real nodes (a dangling edge endpoint, or a `portAnchorId` naming a
@@ -167,6 +168,8 @@ export function firstEncounterOrder(input: DotInputGraph): DotInputNode[] {
   // cdd3-T18: the together subgraphs nest members as the emitter prints them.
   const tree = buildClusterTree(topsFirstClusters({ ...input, clusters: togetherClusters(input) }));
   const rootIds = input.nodes.filter((n) => !tree.clusteredIds.has(n.id)).map((n) => n.id);
+  // `manageMinMaxCluster` precedes everything (DotStringFactory.java:176); swimlane clusters only.
+  for (const id of swimlaneEncounterHead(input)) enc.push(id);
   for (const id of rootTops(input, rootIds)) enc.push(id);
   batch(true);
   if (kermor) batch(false);

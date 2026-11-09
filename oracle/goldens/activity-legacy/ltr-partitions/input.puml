@@ -1,0 +1,10 @@
+@startuml
+left to right direction
+partition P1 {
+(*) --> A
+}
+partition P2 #LightBlue {
+A --> B
+}
+B --> (*)
+@enduml

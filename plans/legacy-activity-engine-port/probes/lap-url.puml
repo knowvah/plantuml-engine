@@ -1,0 +1,5 @@
+@startuml
+(*) --> [[http://example.com]] A
+A --> "B [[http://plantuml.com]]"
+"B [[http://plantuml.com]]" --> (*)
+@enduml

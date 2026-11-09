@@ -1,0 +1,7 @@
+@startuml
+!theme plain
+(*) --> A
+A --> ===S===
+--> B
+B --> (*)
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+<style>
+activityDiagram {
+  activityBar { BackgroundColor #FFEEAA
+    LineColor #AA0000
+    LineThickness 3 }
+}
+</style>
+(*) --> ===B===
+--> A
+A --> (*)
+@enduml

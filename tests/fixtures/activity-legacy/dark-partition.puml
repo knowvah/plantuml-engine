@@ -1,0 +1,7 @@
+@startuml
+skinparam mode dark
+partition P #LightBlue {
+(*) --> A
+}
+A --> (*)
+@enduml

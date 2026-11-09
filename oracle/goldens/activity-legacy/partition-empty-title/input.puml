@@ -1,0 +1,7 @@
+@startuml
+title T
+partition "A long partition name" #pink {
+}
+(*) --> A
+A --> (*)
+@enduml

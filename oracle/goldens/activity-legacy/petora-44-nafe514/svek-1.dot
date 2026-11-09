@@ -1,0 +1,29 @@
+digraph unix {
+nodesep=0.277778;
+ranksep=0.555556;
+remincross=true;
+searchsize=500;
+sh0018->sh0019[arrowtail=none,arrowhead=none,minlen=0,color="#000025"];
+sh0016->sh0020[arrowtail=none,arrowhead=none,minlen=0,color="#000029",label=<<TABLE BGCOLOR="#00002A" FIXEDSIZE="TRUE" WIDTH="25" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+subgraph cluster6p0 {label="";subgraph cluster6 {style=solid;color="#000006";labeljust="c";label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="9" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+subgraph cluster6p1 {label="";
+sh0010 [shape=circle,label="",width=0.277778,height=0.277778,color="#00000A"];
+sh0011 [shape=rect,style=rounded,label="",width=1.149653,height=0.444444,color="#00000B"];
+subgraph cluster12p0 {label="";subgraph cluster12 {style=solid;color="#00000C";labeljust="c";label=<<TABLE BGCOLOR="#00000D" FIXEDSIZE="TRUE" WIDTH="9" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+subgraph cluster12p1 {label="";
+sh0016 [shape=diamond,label="",width=0.333333,height=0.333333,color="#000010"];
+sh0017 [shape=rect,style=rounded,label="",width=1.287153,height=0.444444,color="#000011"];
+sh0018 [shape=rect,style=rounded,label="",width=1.416319,height=0.444444,color="#000012"];
+sh0019 [shape=circle,label="",width=0.305556,height=0.305556,color="#000013"];
+sh0020 [shape=rect,style=rounded,label="",width=1.426736,height=0.444444,color="#000014"];
+
+}}}
+
+}}}
+sh0010->sh0011[arrowtail=none,arrowhead=none,minlen=1,color="#000015"];
+sh0011->sh0016[arrowtail=none,arrowhead=none,minlen=1,color="#000019",headlabel=<<TABLE BGCOLOR="#00001C" FIXEDSIZE="TRUE" WIDTH="53" HEIGHT="11"><TR><TD></TD></TR></TABLE>>];
+sh0016->sh0017[arrowtail=none,arrowhead=none,minlen=1,color="#00001D",label=<<TABLE BGCOLOR="#00001E" FIXEDSIZE="TRUE" WIDTH="20" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+sh0017->sh0018[arrowtail=none,arrowhead=none,minlen=1,color="#000021"];
+sh0020->sh0019[arrowtail=none,arrowhead=none,minlen=1,color="#00002D",label=<<TABLE BGCOLOR="#00002E" FIXEDSIZE="TRUE" WIDTH="77" HEIGHT="13"><TR><TD></TD></TR></TABLE>>];
+
+}

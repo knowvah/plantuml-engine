@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-04T01:05:52.695Z",
-  "measuredAgainstCommit": "f31b2eac9",
+  "generatedAt": "2026-11-07T08:23:29.956Z",
+  "measuredAgainstCommit": "105adf32f",
   "type": "network",
   "measurer": "deterministic",
   "fixtures": [
@@ -13,14 +13,14 @@
     {
       "slug": "janezo-95-zale345",
       "status": "ok",
-      "diffCount": 46,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "rozemi-46-vuli505",
       "status": "ok",
-      "diffCount": 46,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     }
   ]
 }

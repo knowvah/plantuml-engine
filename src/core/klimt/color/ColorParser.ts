@@ -1,5 +1,6 @@
 import { Colors } from '../../abel/Colors.js';
 import type { ColorType } from '../../abel/ColorType.js';
+import { RegexLeaf } from '../../regex/RegexLeaf.js';
 import type { HColorSet } from './HColorSet.js';
 
 /**
@@ -9,8 +10,8 @@ import type { HColorSet } from './HColorSet.js';
  * (upstream's `RegexLeaf`, whose single capture group is named `name`), and
  * `getColor` takes the captured string (upstream's `RegexResult.getLazzy`).
  *
- * Left out: `exp1`..`exp7` (the "old parsers", `ColorParser.java:78-100`),
- * which return `RegexLeaf` objects for engines not yet on this port.
+ * `exp1`, `exp2` and `exp3` (the "old parsers", `ColorParser.java:89-99`) return `RegexLeaf`; `exp4`, `exp6` and
+ * `exp7` are left out until an engine on this port needs them.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/ColorParser.java:41-112
  */
@@ -65,5 +66,25 @@ export class ColorParser {
   /** `simpleColor(optPrefix, mainType)`. @see ColorParser.java:82-85 */
   static simpleColorWithPrefix(optPrefix: string, mainType: ColorType): ColorParser {
     return new ColorParser('COLOR', `(?:${optPrefix} (${COLORS_REGEXP}))?`, mainType);
+  }
+
+  /** `getRegex()`: the `RegexLeaf(1, name, pattern)` `simpleColor` built. @see ColorParser.java:113-115 */
+  getRegex(): RegexLeaf {
+    return new RegexLeaf(1, this.name, this.regexSource);
+  }
+
+  /** `exp1()`: `simpleColor(null).regex`, a `COLOR` group (the old parsers' name for it). @see ColorParser.java:89-91 */
+  static exp1(): RegexLeaf {
+    return new RegexLeaf(1, 'COLOR', `(${COLORS_REGEXP})?`);
+  }
+
+  /** `BACKCOLOR`, one group. @see ColorParser.java:93-95 */
+  static exp2(): RegexLeaf {
+    return new RegexLeaf(1, 'BACKCOLOR', `(${COLOR_REGEXP})?`);
+  }
+
+  /** `BACKCOLOR2`, one group. @see ColorParser.java:97-99 */
+  static exp3(): RegexLeaf {
+    return new RegexLeaf(1, 'BACKCOLOR2', `(${COLOR_REGEXP})?`);
   }
 }

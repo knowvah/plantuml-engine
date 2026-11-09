@@ -1,0 +1,8 @@
+@startuml
+skinparam handwritten true
+(*) --> A
+A --> if "x?" then
+--> B
+endif
+B --> (*)
+@enduml

@@ -213,6 +213,11 @@ conformance bars, rather than silently excluding them from the denominator.
 baseline is now component 253/262, usecase 84/90, class 708/708, object
 78/80, state 266/267 with oracle-blind reduced to the elk residue.*
 
+**Legacy activity (2026-11-09, laep):** the authored fixture
+`tests/fixtures/activity-legacy/pragma-smetana` (16 diffs, height 174 against
+the jar's 180) is this entry's delta on the legacy activity engine
+(`CucaDiagram.java:478-479`); it is recorded, not chased.
+
 **Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
 pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
 against 262x161). Their node order is mirrored

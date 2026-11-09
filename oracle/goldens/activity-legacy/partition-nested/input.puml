@@ -1,0 +1,9 @@
+@startuml
+partition P {
+partition Q {
+(*) --> A
+}
+A --> B
+}
+B --> (*)
+@enduml

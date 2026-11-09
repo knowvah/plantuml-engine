@@ -1,0 +1,17 @@
+@startuml
+title Lanes
+skinparam swimlane true
+partition "A lane" #lightblue {
+(*) --> "one"
+if "ok?" then
+-->[yes] "two"
+else
+-->[no] "three"
+endif
+}
+partition B {
+"two" --> "four"
+"three" --> "four"
+}
+"four" --> (*)
+@enduml

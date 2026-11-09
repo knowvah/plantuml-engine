@@ -23,7 +23,7 @@
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
 import type { UStroke } from '../klimt/UStroke.js';
-import type { Paint } from '../paint.js';
+import type { HColorOrPaint } from '../klimt/color/ColorMapper.js';
 import type { UTranslate } from '../klimt/UTranslate.js';
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { USymbol } from '../decoration/symbol/USymbol.js';
@@ -39,6 +39,12 @@ export interface ClusterGeometry {
   readonly position: UTranslate;
   readonly width: number;
   readonly height: number;
+  /**
+   * laep T3b-2: present when the diagram draws swimlanes (`skinParam.useSwimlanes(type)`), the x of the title block
+   * (`Cluster#xyTitle.x`, the title table's min x in the solved layout, `DotStringFactory.java:446-448`). Opt-in:
+   * `Cluster#drawU` then draws `drawSwinLinesState` instead of the decoration (`Cluster.java:347-350`).
+   */
+  readonly swimlaneTitleX?: number;
 }
 
 /** Upstream: `ClusterDecoration#guess(USymbol, PackageStyle)` (private
@@ -77,8 +83,8 @@ export class ClusterDecoration {
 
   drawU(
     ug: UGraphic,
-    backColor: Paint | null,
-    borderColor: Paint | null,
+    backColor: HColorOrPaint | null,
+    borderColor: HColorOrPaint | null,
     shadowing: number,
     roundCorner: number,
     titleAlignment: HorizontalAlignment,
@@ -101,8 +107,8 @@ export class ClusterDecoration {
   }
 
   getTextBlock(
-    backColor: Paint | null,
-    borderColor: Paint | null,
+    backColor: HColorOrPaint | null,
+    borderColor: HColorOrPaint | null,
     shadowing: number,
     roundCorner: number,
     titleAlignment: HorizontalAlignment,

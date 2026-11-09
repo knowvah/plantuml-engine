@@ -1,0 +1,6 @@
+@startuml
+partition P {
+}
+(*) --> A
+A --> (*)
+@enduml

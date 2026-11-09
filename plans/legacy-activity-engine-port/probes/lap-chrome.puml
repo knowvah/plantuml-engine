@@ -1,0 +1,11 @@
+@startuml
+title Legacy title
+header h
+footer f
+legend
+ legend text
+end legend
+caption c
+(*) --> A
+A --> (*)
+@enduml

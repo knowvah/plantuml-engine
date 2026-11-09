@@ -229,7 +229,9 @@ describe('several plugins share the sequence candidate type; registration order 
   });
 
   it("a 4-line source: the gate's refusals never outrank the UML factories'", () => {
+    // Sequence and class both refuse at `foo` with the same trace, so the earlier-registered one owns the page
+    // (`PSystemErrorUtils.java:140-147`, strict `<`); sequence reported the body index until laep T3c.
     const resolution = registry().resolve(sourceOf('@startuml\nfoo\nbar\n@enduml'));
-    expect(resolution.plugin).toBe(classPlugin);
+    expect(resolution.plugin).toBe(sequencePlugin);
   });
 });

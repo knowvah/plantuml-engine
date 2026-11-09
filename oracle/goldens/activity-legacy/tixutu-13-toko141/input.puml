@@ -1,0 +1,5 @@
+@startuml
+partition accentué
+(*) --> "mon activité" as azé
+azé --> (*)
+@enduml

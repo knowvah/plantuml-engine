@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2162 modules · 7570 exported names.
+2237 modules · 7754 exported names.
 
 ## `src/`
 
@@ -57,7 +57,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `creole-table.ts` | `TableCell`, `TableToken`, `parseTableRow`, `isTableLine`, `DEFAULT_LINE_HEIGHT`, `measureTable`, `tableTokenToSvg` | Creole table parsing, measurement, and SVG rendering. |
 | `creole.ts` | `CreoleSpan`, `TableCell`, `TableToken`, `measureTable`, `tableTokenToSvg`, `spansToTspan`, `CreoleToken`, `parseCreole`, `parseCreoleTokens`, `creoleToSvg` | Creole markup parser for PlantUML labels. |
 | `descriptive-keywords.ts` | `USymbol`, `ALL_TYPES`, `KEYWORD_TO_SYMBOL`, `stripSpriteRegions` | Shared descriptive-keyword table — single source of truth for the descriptive diagram engine (component / use-case / deployment). |
-| `diagram-type-set.ts` | `DiagramType`, `findStartTypes` | Faithful port of `net.sourceforge.plantuml.core.DiagramType`'s start-tag candidate set — `findStartTypes` only. |
+| `diagram-type-set.ts` | `DiagramType`, `humanReadableName`, `findStartTypes` | Faithful port of `net.sourceforge.plantuml.core.DiagramType`'s start-tag candidate set — `findStartTypes` only. |
 | `dispatcher-types.ts` | `ParseOptions`, `RenderFragment`, `CompleteSvg`, `AssembledSvg`, `PaginatedPlugin`, `PSystemFactoryBase`, `SyncPlugin`, `AsyncPlugin`, `DiagramPlugin` | The plugin contract and the fragment shapes the dispatcher resolves to: `ParseOptions`, `RenderFragment`, `CompleteSvg`, `AssembledSvg`, `PaginatedPlugin`, `SyncPlugin`, `AsyncPlugin`, `DiagramPlugin`. |
 | `dispatcher.ts` | `ParseOptions`, `RenderFragment`, `CompleteSvg`, `AssembledSvg`, `PaginatedPlugin`, `SyncPlugin`, `AsyncPlugin`, `DiagramPlugin`, `PSystemFactoryBase`, `parseRefusalOf`, `Resolution`, `DiagramRegistry`, `registry` | Dispatcher: holds a registry of DiagramPlugin instances and resolves which one owns a given UmlSource **by attempting the parse**, exactly as upstream does (`PSystemBuilder#createPSystem`, `:257-283`). |
 | `document-back-color.ts` | `DocumentBackColor`, `styleNameOf`, `currentStyleBuilderOf`, `documentStyleBuilder`, `defaultFontStyleBuilder`, `isDark`, `documentBackColor` | The document background through the style engine (dss T1a, D1, D3, D4, D6): upstream's one read, `TitledDiagram#calculateBackColor`, over the ported `StyleBuilder`: StyleSignatureBasic.of(SName.root, SName.document, getDiagramType().getStyl |
@@ -72,9 +72,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `graph-layout-build-edges.ts` | `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `edgeKey`, `addEdges` | `addEdges` — split out of ./graph-layout-build.ts (500-line file-cap compliance, forced by G7 T14b's border-point wiring additions; pure move, no behavior change). |
 | `graph-layout-build-kermor.ts` | `kermorHasAlpha`, `KermorNoteSlot`, `kermorNoteClusterId`, `registerKermorClusterIds`, `buildKermorClusterHandles`, `placeKermorMembers`, `addNodesWithKermorRootEmpty`, `KERMOR_ROOT_EMPTY_ID` | `!pragma kermor on` cluster nesting for the layout builder -- the `ClusterDotStringKermor.printInternal` shape (`svek/ClusterDotStringKermor.java:67-165`): [alpha {label=<note TOP table or "">] only if the group has a TOP or BOTTOM note (:8 |
 | `graph-layout-build-portcluster.ts` | `isHasPortCluster`, `addTitledAnchorNode`, `buildHasPortClusterHandles`, `placeHasPortMembers` | cdd4-T6 (E3-10b): the layout-builder half of `ClusterDotString`'s `hasPort()` branch. |
+| `graph-layout-build-special-nodes.ts` | `LAYOUT_LABEL_BGCOLOR`, `addRowPortNode`, `addShieldNode`, `addRecordNode` | The layout copies of the HTML-label node shapes (row ports, shield tables, records), split out of ./graph-layout-build.ts for its 500-line cap (laep T3b-2; a pure move, no behavior change). |
 | `graph-layout-build.ts` | `PX_PER_INCH`, `addEdges`, `edgeKey`, `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `applyGraphAttrs`, `firstEncounterOrder`, `addNodes`, `ClusterIndex`, `addClusters` | @knowvah/dot-engine builder construction for `layoutGraph()` — split from `graph-layout.ts` (500-line file cap). |
 | `graph-layout-cluster.types.ts` | `DotInputCluster` | `DotInputCluster` — the cluster half of the layout input contract. |
 | `graph-layout-node-corner.ts` | `portNodeSize`, `shieldCorner`, `cornerSize`, `svekCornerOf` | A laid-out node's top-left corner — split from `graph-layout.ts` (file-size cap) with no behaviour change: the HTML-sized node boxes (G9/T9, cdd-T15) and, for the Svek read, the parsed corner (cdd3-T-D3). |
+| `graph-layout-polygon.ts` | `PolygonVertex`, `polygonVertices`, `svekNodePolygon` | The vertices graphviz gives a regular-sided polygon node (`shape=octagon`/`hexagon`), which the jar reads back off the node's `<polygon points=...>` (`DotStringFactory.java:411-421`, `SvekNode#setPolygon`, `SvekNode.java:412-420`) and `Enti |
 | `graph-layout-result.types.ts` | `DotLayoutResult` | `DotLayoutResult` — the layout engine's OUTPUT shape. |
 | `graph-layout-svek-read.ts` | `svgDouble`, `SvekFrame`, `svekFrame`, `svekY`, `svekPoint`, `SvekNodeBox`, `svekNodeCorner`, `LabelTable`, `EdgeLabelTables`, `edgeLabelTables`, `svekEdge`, `svekCluster` | cdd3-T-D3 (D3): read the layout the way the jar's Svek reads it. |
 | `graph-layout.ts` | `CARDINALITY_FONT_SIZE`, `LayoutInputEvent`, `setLayoutInputObserver`, `enterNestedDiagramLayout`, `exitNestedDiagramLayout`, `layoutGraph`, `DotInputNode`, `DotInputNodeShape`, `DotInputEdge`, `DotInputCluster`, `DotInputGraph`, `DotInputTogether`, `DotLayoutResult` |  |
@@ -92,8 +94,9 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `java-whitespace.ts` | `isJavaWhitespaceAt` | `Character.isWhitespace(char)`, enumerated. |
 | `latex-metrics.ts` | `TeXIconSize`, `texIconDimension`, `measureTeXIcon` | The size of a `<latex>` image, by the rule upstream sizes it with. |
 | `latex.ts` | `measureNodeLabel`, `renderNodeLabel`, `LabelSpan`, `parseLatexLabel`, `stripMathModeDollars`, `measureLatex`, `renderLatexMathML`, `renderLatexAsImage` | LaTeX label parsing, sizing, and rendering utilities. |
+| `Lazy.ts` | `Lazy` | `Lazy<T>`: a value computed on first `get()` and kept. |
 | `legacy-stereotype-font.ts` | `CLASS_STEREOTYPE_BUCKET`, `OBJECT_STEREOTYPE_BUCKET`, `legacyStereotypeFonts` | The colour of a class or object stereotype label (dss T3b, D8). |
-| `link-style-regex.ts` | `STYLE_KEY1`, `STYLE_KEY2`, `LINE_STYLE`, `LINE_STYLE_MULTIPLES` | The link line-style grammar shared by every engine whose arrows take a `[#red,dashed]` style/colour bracket. |
+| `link-style-regex.ts` | `STYLE_KEY1`, `STYLE_KEY2`, `LINE_STYLE`, `LINE_STYLE_MULTIPLES`, `UBREX_KEY1`, `UBREX_KEY2`, `UBREX_LINE_STYLE` | The link line-style grammar shared by every engine whose arrows take a `[#red,dashed]` style/colour bracket. |
 | `magma.ts` | `computeBranch`, `MagmaGroupInput`, `buildMagmaEdges` | "Magma" standalone chaining — the shared cucadiagram/svek layout feature that arranges link-less ("standalone") leaves into a square grid of INVISIBLE edges so graphviz packs them compactly. |
 | `measurer-bounder.ts` | `MeasurerStringBounder` | measurer-bounder.ts — `StringMeasurer` -> `StringBounder` adapter (description-leaf-sizing-audit T6 / ADR-6). |
 | `measurer-deterministic.ts` | `DeterministicMeasurer` | Deterministic string measurer (dual-measurer conformance/ratchet seam). |
@@ -113,6 +116,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `preprocessor-collector.ts` | `StyleAndSkinparamCollector` | preprocessor-collector.ts -- the `<style>` / `skinparam` / `skin` line collector `preprocessor.ts#resultOf` runs over the interpreter's finished result list. |
 | `preprocessor-first-page.ts` | `firstPageAssignments`, `firstPageOf` | `CommandNewpage` starts a brand-new diagram (`CommandNewpage.java:68-73`, `NewpagedDiagram.java:60-73`), so a `skinparam` or `<style>` after it belongs to a later page. |
 | `preprocessor.ts` | `SkinDirective`, `PreprocessorResult`, `SkinparamAssignment`, `SkinparamForm`, `DeclarationOrder`, `PreprocessOptions`, `preprocess`, `PreprocessorFailure`, `PreprocessOutcome`, `preprocessOrError`, `preprocessLinesOrError` | Preprocessor -- a thin wrapper over the TIM interpreter (`src/core/tim/`). |
+| `printed-diagram-type.ts` | `withPrintedDiagramType`, `printedDiagramTypeOf` | The `data-diagram-type` a fragment prints when it differs from its routing key (`RenderFragment.diagramType`). |
 | `remote-image-prefetch.ts` | `prefetchRemoteImages`, `withRemoteImages` | The async half of remote images: `render()` asks the host's {@link ImageProvider} for every `<img:http(s)://...>` url in a block and hands the successes to the synchronous pipeline as an {@link AssetStore} (key scheme and read side: `remote |
 | `remote-image-store.ts` | `REMOTE_IMAGE_ASSET_PREFIX`, `remoteImageKey`, `remoteImageStoreFrom`, `isRemoteImageSrc`, `scanRemoteImageSrcs`, `inlineRemoteImages`, `inlineRemoteImageLines` | The remote-image half of `<img:http(s)://...>`: the asset-store key scheme, the scan that finds the urls, and the rewrite that hands a served image to the existing `AtomImg.java:153-161` decode paths. |
 | `render-options.ts` | `RenderOptions`, `getDefaultMeasurer`, `resolveMeasurer` | `RenderOptions` and measurer resolution — extracted from `src/index.ts` (mission A5 / T4). |
@@ -151,6 +155,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `state-style-facts.ts` | `withStateNameFont`, `stateNameFontSizeOf`, `withStateShadowing`, `StateArrowHead`, `withStateArrowHead`, `stateArrowHeadOf` | The merged state style's `Shadowing` (smc T4c), name `FontSize` and arrow `HeadColor` (scr T1b). |
 | `stdlib-content.ts` | `stdlibContentFor` | Resolving a `<bundle/thing>` include target to its CONTENT, for the prefetch walk's third channel (`include-resolver.ts#prefetchInner`). |
 | `stereotype-decoration.ts` | `GuillemetPair`, `DEFAULT_GUILLEMET`, `wrapGuillemet`, `hasMultipleLabel`, `splitStereotypeLabels`, `splitStereotypeStyleTags`, `CircledCharDecoration`, `parseCircledCharDecoration`, `CircledSpriteDecoration`, `parseCircledSpriteDecoration`, `DEFAULT_CIRCLED_CHARACTER_FONT_SIZE`, `resolveBadgeRadius` | stereotype-decoration.ts — the port of `StereotypeDecoration#buildComplex` (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/stereo/ StereotypeDecoration.java:143-182`): how a `<<...>>` run splits into the label(s) a diagram DISPLAYS |
+| `string-utils-arrow.ts` | `manageArrowForCuca`, `getArrowDirection`, `getQueueDirection` | The arrow helpers of `StringUtils` that the cuca link commands share: `manageArrowForCuca`, `getArrowDirection`, `getQueueDirection`. |
 | `style-cascade-class-arrow-font.ts` | `computeCardinalityFontOverride`, `computeArrowFontOverride` | D3/T11 (cdd3, Q-5): the arrow-label and cardinality font cascades -- split out of `style-cascade-class.ts` (500-line cap), mirrors `style-cascade- visibility-icon.ts`'s own split-for-size precedent (same import shape: `cascadeHex`/`cascadeF |
 | `style-cascade-class-font.ts` | `applyFontCascadeOverrides` | cdd-B7FU-R3 (`ropera-76-jico895`): the class-diagram FontSize/FontStyle `<style>` cascade — split out of `style-cascade-class.ts` (500-line cap), a pure addition, not a move. |
 | `style-cascade-class-generic.ts` | `applyGenericCascadeOverrides` | T11 (cdd3, Q-4): the generic type-parameter tag's own ancestor cascade -- split out of `style-cascade-class.ts` (500-line cap), mirrors `style-cascade-visibility-icon.ts`'s own split-for-size precedent (a pure addition, same import shape: ` |
@@ -177,6 +182,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `svek-dot-lines0.ts` | `orderLines0Edges` | `Bibliotekon#addLine`'s `lines0` insertion tie-break (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Bibliotekon .java:87-106`): a note-labelled edge (`hasNoteLabelText()`, `SvekEdge.java :383-385` -- this port's `label` + `lab |
 | `svek-dot-order.ts` | `firstEncounterOrder` | The order Svek's DOT text declares nodes in — the single definition of "which node does graphviz's parser meet first", shared by the two consumers of one `DotInputGraph`. |
 | `svek-dot-sequence.ts` | `Seq`, `NodeRec`, `ClusterColors`, `EdgeColors`, `ClusterTree`, `buildClusterTree`, `SeqAssignment`, `assignSequence` |  |
+| `svek-dot-swimlane.ts` | `SwimlaneNames`, `swimlaneNames`, `swimlaneClusters`, `swimlaneRankLines`, `swimlaneClusterLines`, `swimlanePointIds`, `swimlaneEncounterHead`, `withSwimlanePoints`, `addSwimlaneRanks` | The swimlane DOT of a cluster, shared by the three consumers of one `DotInputGraph` (the text emitter, the node encounter order and the layout builder), opt-in per cluster: only an engine that sets `DotInputCluster.swimlane` gets any of it, |
 | `svek-dot-together.ts` | `ROOT_TOGETHER_PREFIX`, `togetherClusters` | `together { }` blocks as svek prints them: an unlabelled `subgraph <clusterId>t<k> { ... |
 | `svek-dot-top.ts` | `IsNormalPosition`, `nodesOrderedTop`, `nodesOrderedWithoutTop`, `normalPositionOf`, `topsFirstClusters`, `rootTops` | `Cluster#getNodesOrderedTop` / `getNodesOrderedWithoutTop` — the split `printCluster1` / `printCluster2` make of one cluster's own nodes. |
 | `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `BorderPointAnchorDecl`, `borderPointAnchorDecl`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
@@ -254,7 +260,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `LinkStrategy.ts` | `LinkStrategy` | LinkStrategy — how link extremity decoration is realised: `LEGACY` draws arrow tail/head in the graphviz-generated dot and recovers the decoration angle from the produced SVG (fragile — graphviz sometimes omits them); `SIMPLEST` emits no ta |
 | `Neighborhood.ts` | `Neighborhood` | Neighborhood — ADR-2 consumed-interface stub for `dot/Neighborhood.java` (the same-tail link bundle drawn around a leaf). |
 | `NoteLinkStrategy.ts` | `NoteLinkStrategy`, `computeDimension` | NoteLinkStrategy — how a note attached to a link contributes to layout sizing: fully, as a half-width placeholder that is still printed, or not at all. |
-| `Position.ts` | `Position`, `fromString`, `reverseDirection` |  |
+| `Position.ts` | `Position`, `fromString`, `reverseDirection`, `withRankdir` |  |
 | `Removeable.ts` | `Removeable` | Removeable — implemented by anything a `remove` command can remove. |
 | `SingleStrategy.ts` | `SingleStrategy`, `computeBranch` | SingleStrategy — how standalone (unlinked) leaves are arranged (`svek/SingleStrategy.java`). |
 | `SpecificBackcolorable.ts` | `SpecificBackcolorable` |  |
@@ -315,10 +321,25 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandCreateElementFull.ts` | `ALL_TYPES`, `CODE`, `CODE_WITH_QUOTE`, `DISPLAY`, `DISPLAY_WITHOUT_QUOTE`, `optionalStereotype`, `elementTail`, `compileUpstream` | The public regex constants of `CommandCreateElementFull`, which upstream's `CommandCreateElementFull2` (class factory) reads as well. |
 | `CommandCreateJson.ts` | `JSON_MULTILINE_DECL_RE`, `JSON_SINGLE_LINE_RE`, `parseJsonNode`, `finalizeJsonBody`, `JsonCommandHost`, `applyJsonMultilineOpen`, `applyJsonSingleLine`, `jsonCommands` | `json` declaration command shared by the class and state diagram parsers (`CommandCreateJson` + `CommandCreateJsonSingleLine` + `BodierJSon`). |
 | `CommandExecutionResult.ts` | `AbstractDiagram`, `CommandExecutionResult` | CommandExecutionResult — the ok/error outcome every command returns. |
+| `CommandMultilines2.ts` | `MultilineCommand`, `HasNbMaxLines`, `CommandMultilines2` | `CommandMultilines2`: a command spanning several lines: a start pattern on the first line (`RegexConcat`), an end pattern on the last (`Pattern2`), and the lines between kept verbatim. |
 | `JsonNode.ts` | `JsonNode` | Parsed value of a `json Name { ... |
+| `multiline-candidate.ts` | `MultilineStep`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
+| `MultilinesStrategy.ts` | `MultilinesStrategy`, `cleanList` | `MultilinesStrategy`: what `BlocLines#cleanList` does to the lines of a multi-line command before it is matched or run. |
 | `ParserPass.ts` | `ParserPass` | ParserPass — which of the (up to) three parsing passes is running. |
 | `PSystemSingleLineFactory.ts` | `SingleLineType`, `RenderContext`, `SingleLineSpec`, `SingleLineGeometry`, `singleLinePlugin` | `PSystemSingleLineFactory` as a plugin helper: every `@startuml` utility page (`license`, `colors`, `sudoku`, the eggs, ...) is a factory that accepts a source of exactly one line between `@startuml` and `@enduml`, after the noise directly |
+| `SingleLineCommand2.ts` | `SingleLineCommand2` | SingleLineCommand2 -- base class of the commands whose syntax is one `RegexConcat` matched against one source line. |
+| `Trim.ts` | `Trim`, `trimWith` | `Trim`: how a multi-line command trims the last line before matching its end pattern. |
+| `UBrexCommandFootboxIgnored.ts` | `UBrexCommandFootboxIgnored` |  |
+| `UBrexCommandHideShow2.ts` | `UBrexCommandHideShow2` |  |
+| `UBrexCommandRankDir.ts` | `RankdirTarget`, `UBrexCommandRankDir` |  |
 | `UBrexSingleLineCommand2.ts` | `UBrexSingleLineCommand2` | UBrexSingleLineCommand2 -- base class of the commands whose syntax is a single `UnicodeBracketedExpression` matched against one source line. |
+
+## `src/core/command/note/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandFactoryNoteOnLink.ts` | `NoteOnLinkDiagram`, `CommandFactoryNoteOnLink` | `CommandFactoryNoteOnLink`: `note [position] on link [#color] : text`, and the block form closed by `end note`. |
+| `SingleMultiFactoryCommand.ts` | `SingleMultiFactoryCommand` | `SingleMultiFactoryCommand`: a note command factory that builds the one-line flavour (`note right: text`) and the block flavour (`note right` ... |
 
 ## `src/core/common/`
 
@@ -556,6 +577,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `HColorSimple.ts` | `HColorSimple` |  |
 | `HUSLColorConverter.ts` | `xyzToRgb`, `rgbToXyz`, `xyzToLuv`, `luvToXyz`, `luvToLch`, `lchToLuv`, `hsluvToLch`, `lchToHsluv`, `hpluvToLch`, `lchToHpluv`, `rgbToHex`, `hexToRgb`, `lchToRgb`, `rgbToLch`, `hsluvToRgb`, `rgbToHsluv`, `hpluvToRgb`, `rgbToHpluv`, `hsluvToHex`, `hpluvToHex`, `hexToHsluv`, `hexToHpluv` | HUSLColorConverter -- the HSLuv / HPLuv colour-space conversions (Alexei Boronine's reference implementation, as vendored upstream). |
 | `NoSuchColorException.ts` | `NoSuchColorException` | NoSuchColorException — thrown by `HColorSet#getColor` for a token that resolves to no colour. |
+| `UBrexColorParser.ts` | `UBrexColorParser` | `UBrexColorParser`: the `#color` token as a `UnicodeBracketedExpression` part, for the commands written in UBrex (the `ColorParser` of the regex commands has `ColorParser.ts`). |
 
 ## `src/core/klimt/creole/`
 
@@ -647,6 +669,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `AbstractUGraphicHorizontalLine.ts` | `AbstractUGraphicHorizontalLine` |  |
+| `ink-walk.ts` | `klimtStringBounderFor`, `runInkWalk`, `driverBounderFor` | The `LimitFinder` ink walk every svek engine's `SvekResult#calculateDimension` runs (`TextBlockUtils.getMinMax`, klimt/shape/TextBlockUtils.java), with the string-bounder adapters the real draw pass uses. |
 | `LimitFinder.ts` | `LimitFinder` |  |
 | `UGraphicDelegator.ts` | `UGraphicDelegator` |  |
 | `UGraphicNo.ts` | `UGraphicNo` |  |
@@ -879,6 +902,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `IRegex.ts` | `IRegex` | `IRegex` -- one node of a command grammar (`RegexLeaf`, `RegexOptional`, `RegexOr`, `RegexConcat`). |
+| `Pattern2.ts` | `transform`, `toJsPattern`, `compileInternal` | `Pattern2` -- the `%`-token expander and the CASE_INSENSITIVE compile every `RegexLeaf` grammar goes through. |
+| `RegexComposed.ts` | `RegexComposed` | `RegexComposed` -- the base of the composite nodes: it concatenates its children's sources, counts their groups and, as a root, compiles and runs the whole pattern. |
+| `RegexConcat.ts` | `RegexConcat` | `RegexConcat` -- the sequence of its children; as a root it is a whole command grammar, bracketed by `RegexLeaf.start()` and `RegexLeaf.end()`. |
+| `RegexLeaf.ts` | `RegexLeaf` | `RegexLeaf` -- a named piece of regex source with a declared capture-group count. |
+| `RegexOptional.ts` | `RegexOptional` | `RegexOptional` -- `(?:child)?`. |
+| `RegexOr.ts` | `RegexOr` | `RegexOr` -- the alternation of its children, one capture group when it is named (`arg.get(name, 0)` is then the whole alternative, or `undefined` when the `or` did not take part). |
 | `RegexPartialMatch.ts` | `RegexPartialMatch` | `RegexPartialMatch` -- the ordered captured strings of one named regex leaf. |
 | `RegexResult.ts` | `RegexResult` | `RegexResult` -- result of a command pattern match, backed either by a `Map<String, RegexPartialMatch>` (the regex/`RegexConcat` world) or by a ubrex {@link UMatcher}. |
 
@@ -924,6 +954,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `Stereotype.ts` | `CircledFont`, `Stereotype`, `isStereotype` | `Stereotype` — a `<<label>>` decoration attached to a classifier/entity, and one of the `CharSequence`-typed element kinds a `Display`'s element list can hold (`Display.create0`'s `get(0) instanceof Stereotype` / `get(size()-1) instanceof S |
 | `StereotypeDecoration.ts` | `GuillemetPair`, `GUILLEMET_NONE`, `GUILLEMET_DOUBLE_COMPARATOR`, `StereotypeDecoration`, `cutLabels` | `StereotypeDecoration` — the resolved `<<...>>` blob a {@link Stereotype} wraps: the raw label text plus any circled-character/circled-sprite decoration (`<<(X,red)Foo>>` / `<<($name,red)Foo>>`) folded out of it. |
+| `StereotypePattern.ts` | `optional`, `mandatory` | `StereotypePattern` -- the `<<stereo>>` slot of the regex command grammars (`optional`, `mandatory`). |
 
 ## `src/core/style/`
 
@@ -975,17 +1006,22 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CircleInterface2.ts` | `CircleInterface2` |  |
 | `Cluster.ts` | `ClusterGeometry`, `ClusterUrl`, `ClusterGroupInfo`, `ClusterStyleDefaults`, `ClusterHeaderInfo`, `ClusterSymbolInfo`, `resolveBorderColor`, `resolveRoundCorner`, `getStrokeInternal`, `resolveBackColor`, `Cluster` | Cluster — the DRAWING half of a description/component/usecase-diagram container (a `package`, `frame`, `node`, or component/interface acting as a group): the `<!--cluster X-->` comment, the `<g class="cluster" data-qualified-name="..." id=" |
 | `ClusterDecoration.ts` | `ClusterGeometry`, `ClusterDecoration` | ClusterDecoration — resolves a Cluster's `USymbol` (an explicit one, or a `PackageStyle` fallback) and draws its `asBig` chrome (body outline + title + stereotype) at the cluster's own geometry. |
+| `ClusterHeader.ts` | `ClusterHeaderResult`, `createClusterHeader` | `ClusterHeader` — the title block of a group and the `(int)` size of the title table the DOT reserves for it (`ClusterDotString` writes `getTitleAndAttributeWidth()` by `getTitleAndAttributeHeight() - 5`). |
 | `Control.ts` | `Control` |  |
 | `DecorateEntityImage.ts` | `UGraphicWithGroups`, `DecorateEntityImage`, `EntityDecorationInfo`, `decorateEntityDrawing` |  |
+| `diagram-type-style-name.ts` | `getStyleName` | `DiagramType#getStyleName`: the `SName` a diagram kind's style signatures carry (`activityDiagram` for every kind the table does not list, as upstream's trailing `return`). |
 | `EntityDomain.ts` | `EntityDomain` |  |
 | `FrontierCalculator.ts` | `RectangleArea`, `Point`, `ENTITY_POSITION_RADIUS`, `FrontierRankdir`, `frontierCalculator`, `ensureMinWidth`, `ProjectionClusterSpec`, `entryExitPointRect`, `ClusterRectangles`, `projectionClusterOf` | FrontierCalculator — the post-layout box-correction jar applies to a cluster's own graphviz-assigned rectangle before drawing it, whenever the cluster carries `<<entrypoint>>`/`<<exitpoint>>` (port) members alongside or instead of normal-po |
+| `GeneralImageBuilder.ts` | `LegacyLeafImage`, `createEntityImageBlockInternal` | `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only: `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in upstream's order. |
 | `hexagon-polygon.ts` | `hexagonPolygonPoints` | hexagon-polygon.ts -- the svek node polygon of a `USymbols.HEXAGON` leaf, shared by the engines that draw `EntityImageDescription#drawHexagon`. |
 | `IEntityImage.ts` | `ENTITY_IMAGE_MARGIN`, `ENTITY_IMAGE_MARGIN_LINE` | `IEntityImage` — the margins every svek entity image insets its content by. |
+| `InnerActivity.ts` | `THICKNESS_BORDER`, `InnerImage`, `InnerActivity` | `InnerActivity` — the image of an autarkic activity group: the nested svek result inside a rounded rectangle filled with the group's back colour and framed in its border colour (`THICKNESS_BORDER` 1.5). |
 | `PackageStyle.ts` | `PackageStyle`, `PackageStyleName`, `packageStyleToUSymbol` | PackageStyle — the container "shape family" a group falls back to when it has no explicit `USymbol` (e.g. |
 | `PortGeometry.ts` | `PortGeometry` | PortGeometry — one named port's resolved (position, height) box on its owning entity's left edge, plus the `score` `Ports#add` uses to prefer a higher-confidence match when the same port id is reported twice. |
 | `Ports.ts` | `Ports` | Ports — the id-keyed collection of `PortGeometry` a `WithPorts` implementor reports (`SheetBlock2#getPorts`, `MethodsOrFieldsArea`'s member-row port lookups, SI1 scope, not this task) so an edge targeting `entity::portName` can resolve a pr |
 | `quantifier-block.ts` | `QuantifierBlockBox`, `measureQuantifierBlock` | `Display.getWithNewlines(pragma, quantifier).create(cardinalityFont, CENTER, skinParam)` (`SvekEdge.java:329-340`): a quantifier is a creole block, so `<size:12>` sizes it and takes no width of its own. |
 | `quantifier-collision.ts` | `manageCollision` | `SvekEdge#manageCollision` (`svek/SvekEdge.java:1205-1218`): a quantifier that overlaps a node, plus a margin of 8, is moved away from it. |
+| `ShapeType.ts` | `ShapeType` | `ShapeType` — the geometric family svek and the DOT emitter branch on. |
 | `svek-edge-extremity.ts` | `PlacedExtremity`, `place`, `placeTailExtremity`, `placeHeadExtremity` |  |
 | `svek-edge-geometry.ts` | `buildDotPathFromSplinePoints`, `edgeMidpoint` |  |
 | `svek-edge-stroke.ts` | `strokeForStyle`, `strokeOfLink` |  |
@@ -1028,12 +1064,19 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `AbstractEntityImage.ts` | `LeafImageSkinParam`, `AbstractEntityImage` | `AbstractEntityImage` — the base of every svek leaf image built from an `Entity` (the legacy activity images of laep T2a). |
 | `Circle.ts` | `Circle` |  |
+| `CircleEnd.ts` | `CircleEnd` | `CircleEnd` — the end circle of a legacy activity diagram: an empty ring and a filled 12×12 core. |
+| `CircleStart.ts` | `CircleStart` | `CircleStart` — the filled start circle of a legacy activity diagram. |
 | `ContainingEllipse.ts` | `ContainingEllipse` |  |
 | `creole-run-sprite.ts` | `CreoleRunSpriteImage`, `creoleRunSpriteImage`, `creoleRunImageHref` | creole-run-sprite — the drawable image of a creole `<$sprite>` atom for the `creole-text-lines.ts` seam (unwind2-S11). |
 | `creole-sea-line.ts` | `ATOM_TEXT_MIN_HEIGHT`, `SeaLineOps`, `SeaLineLayout`, `bulletDimension`, `creoleAtomStartingAltitude`, `verticalAtomBox`, `layoutLineThroughSea`, `measurerSeaLineOps` | creole-sea-line — the vertical half of one physical (post-word-wrap) creole line: `Sea` placement, the line's own height, and the per-run baseline offset a `<sup>`/`<sub>` run needs (SI30 `decisions.md#D2`). |
 | `creole-text-lines.ts` | `CreoleRunImage`, `CreoleTextLine`, `CreoleTextRun`, `FontStyleFlags`, `CreoleHyperlinkStyle`, `creoleTextLines` | creole-text-lines — the ONE core creole-text seam shared by the state sizer (T6) and the state renderer (T7), per `plans/state-declared-size-fix/ decisions.md#D1`. |
 | `creole-text-run-types.ts` | `FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleRunBullet`, `CreoleTextLine` | creole-text-run-types — the public run/line shape `creole-text-lines.ts` reports (`FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleTextLine`). |
+| `EntityImageActivity.ts` | `OctagonPolygon`, `NodePolygons`, `CORNER`, `EntityImageActivity` | `EntityImageActivity` — an activity box of a legacy activity diagram: a rounded rect (`CORNER` 25 → `rx` 12.5) with its text, drawn with no `<g>` around either (the jar's own quirk, D9). |
+| `EntityImageBranch.ts` | `EntityImageBranch` | `EntityImageBranch` — the `if` diamond of a legacy activity diagram, in an `entity` group with no `data-source-line` (upstream builds `new UGroup()`). |
+| `EntityImageCircleEnd.ts` | `EntityImageCircleEnd` | `EntityImageCircleEnd` — the end leaf of a legacy activity diagram, in an `end_entity` group. |
+| `EntityImageCircleStart.ts` | `EntityImageCircleStart` | `EntityImageCircleStart` — the start leaf of a legacy activity diagram, in a `start_entity` group. |
 | `EntityImageDescription.ts` | `ShapeType`, `Margins`, `resolveDescriptionUSymbol`, `HexagonPolygon`, `EntityUrl`, `EntityImageDescriptionEntity`, `EntityImageDescriptionSymbol`, `EntityImageDescriptionLabels`, `EntityImageDescriptionStereotypeSprite`, `EntityImageDescriptionPaint`, `EntityImageDescriptionLinkInfo`, `EntityImageDescriptionParams`, `EntityImageDescription` | EntityImageDescription — draws a descriptive/deployment leaf entity (`component`, `usecase`, `database`, `interface`, `rectangle`, ...): the `<!--entity NAME--><g class="entity" ...>` wrapper, the resolved `USymbol`'s `asSmall` chrome, an o |
 | `EntityImageDescriptionClusterTitle.ts` | `ClusterTitleOptions`, `buildClusterTitle` | A group's title block: `ClusterHeader#getTitleBlock` builds it with `label.create(fontConfiguration, alignment, g.getSkinParam())` (`ClusterHeader.java:128`) -- `Display#create` -> `DisplayCreole` -> the creole `Sheet` (`SheetBlock1`/`Sheet |
 | `EntityImageDescriptionDelegates.ts` | `hasSomeHorizontalLinkVisible`, `isThereADoubleLink`, `hasSomeHorizontalLinkDoubleDecorated`, `computeShieldMargins`, `hideTextOffsets`, `requireGroups`, `descAtomOps`, `buildLocalSkinSimple`, `buildDesc`, `resolveStereotypeSprite`, `labelsForGuillemet`, `buildStereo` | EntityImageDescriptionDelegates — every private-instance-method body `EntityImageDescription` delegates to (`buildDesc`, `buildStereo`, the three link-scanning helpers, `computeShieldMargins`, `hideTextOffsets`, `requireGroups`). |
@@ -1046,9 +1089,14 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `EntityImageDescriptionSupport.ts` | `measureLine`, `buildTextBlock`, `ShapeType`, `Margins`, `HexagonPolygon`, `resolveDescriptionUSymbol`, `resolveUSymbol`, `resolveShapeType` | EntityImageDescriptionSupport — module-level helpers for `EntityImageDescription.ts`, extracted purely to stay under this project's 500-line complexity-hook ceiling (see this project's established "500-line splits" workaround — `EntityImage |
 | `EntityImageDescriptionTextBlock.ts` | `measureLine`, `drawWithAtomUrl`, `buildTextBlock` | EntityImageDescriptionTextBlock — the text-construction seam split out of `EntityImageDescriptionSupport.ts` (E2r/L1's own home for it) purely to stay under this project's 500-line complexity-hook ceiling once T9 (svg-sprite-nanoparser) wid |
 | `EntityImageDescriptionTextMeasure.ts` | `ResolvedAtomImageWithRaster`, `MIN_TEXT_RUN_HEIGHT`, `measureLine`, `LineMetrics`, `SEPARATOR_SIZE_HEIGHT`, `SEPARATOR_DRAW_ADVANCE`, `SEPARATOR_WIDTH_CONTRIBUTION`, `SEPARATOR_DEFAULT_THICKNESS`, `LineBuild`, `buildLine`, `measuringFont`, `measureAtomsWidthHeight`, `measureBuiltLine`, `measureSingleAtomWidth`, `buildWrappedLines` | EntityImageDescriptionTextMeasure -- the measuring half of `EntityImageDescriptionTextBlock.ts` (`measureLine`, the per-line atom build, `LineMetrics`, the wrap), split out by a pure move only to keep both files under this project's 500-lin |
+| `EntityImageEmptyPackage.ts` | `EmptyPackageSkinParam`, `EntityImageEmptyPackage` | `EntityImageEmptyPackage` — a package with no content, drawn as one node: `ClusterDecoration` over the title block (a partition that holds nothing is muted to `LeafType.EMPTY_PACKAGE`, `GraphvizImageBuilder.java:416-418`). |
 | `EntityImageJson.ts` | `JSON_NAME_MARGIN`, `JSON_CELL_MARGIN_X`, `JSON_CELL_MARGIN_Y`, `JSON_X_MARGIN_CIRCLE`, `JSON_EMPTY_HEIGHT_FALLBACK` | `EntityImageJson` / `TextBlockCucaJSon` — the margins a `json` leaf embedded in a cuca diagram insets its cells and title by. |
-| `EntityImageNoteLink.ts` | `PureNoteTextDim`, `PureNoteTextMeasurer`, `measureLinkNoteDim` | ONE port of `EntityImageNoteLink`'s dimension -- collapses the FOUR former copies (`class/class-note-link-box.ts:70`, `state/state-dot-graph.ts:172`, `state/state-composite-edge-label.ts:49` -- the last two byte-identical private duplicates |
+| `EntityImageNote.ts` | `OpaleLine`, `EntityImageNote` | `EntityImageNote` — a note leaf (`note right: text` of a legacy activity diagram): the sizing half (`GraphvizImageBuilder` writes the note's DOT node from it) and `drawU`: the plain folded box, or the Opale notched towards the one entity it |
+| `EntityImageNoteLink.ts` | `PureNoteTextDim`, `PureNoteTextMeasurer`, `measureLinkNoteDim`, `EntityImageNoteLink` | ONE port of `EntityImageNoteLink`'s dimension -- collapses the FOUR former copies (`class/class-note-link-box.ts:70`, `state/state-dot-graph.ts:172`, `state/state-composite-edge-label.ts:49` -- the last two byte-identical private duplicates |
+| `EntityImageState.ts` | `EntityImageState` | `EntityImageState` (with `EntityImageStateCommon`) — a state box: the entity's name over a separator line and its raw body as fields. |
+| `EntityImageSynchroBar.ts` | `EntityImageSynchroBar` | `EntityImageSynchroBar` — the `===B===` bar of a legacy activity diagram: an 80×8 rect (8×80 in left to right), filled with the style's `BackGroundColor`, no line, no group. |
 | `Footprint.ts` | `Footprint` |  |
+| `leaf-image-support.ts` | `PaintColor`, `mergedStyleOf`, `asPaintColor`, `styleColor`, `colorsGetColor`, `applyFore`, `applyBack`, `entityGroup`, `inGroup` | Helpers the legacy activity leaf images share: the merged style (`getMergedStyle` is nullable here, upstream dereferences it), `Colors#getColor(Style, PName, HColorSet)`, the colour narrowing the klimt `Fore`/`Back` need, and the `<g>` the |
 | `leaf-sizing-consts.ts` | `ComponentStyle`, `BoxSizingOpts`, `ACTOR_WIDTH`, `ACTOR_HEIGHT`, `ACTOR_STICKMAN_WIDTH`, `ACTOR_STICKMAN_HEIGHT`, `USECASE_HEIGHT`, `USECASE_ELLIPSE_BIGGER`, `USECASE_ALPHA_MIN`, `USECASE_ALPHA_MAX`, `BOX_MIN_WIDTH_DEFAULT`, `DEFAULT_SIZING_STROKE_THICKNESS`, `SYMBOL_BOX_MARGIN`, `DEFAULT_BOX_MARGIN`, `SYMBOL_ICON_ALLOWANCE`, `STEREO_MARGIN`, `LINE_HEIGHT_FACTOR`, `PORT_SIZE`, `FOLDER_FAMILY_SHOW_TITLE`, `FOLDER_TAB_WIDTH`, `FOLDER_TAB_HEIGHT`, `INTERFACE_CIRCLE_SIZE`, `NOTE_FONT_SIZE`, `NOTE_MARGIN_H`, `NOTE_MARGIN_V`, `Dim` | Shared constants + context types for description leaf sizing. |
 | `leaf-sizing-entity.ts` | `sizingAtomImageResolverFor`, `titleAlignmentFor`, `measureEntityLeaf`, `measureEntityLeafShield`, `measureUsecaseOrActorLeaf`, `LeafSymbolInk`, `measureUsecaseOrActorLeafInk`, `measureEntityLeafInk` | `EntityImageDescription.calculateDimensionSlow` routing for the description engine's leaf sizer (T6/ADR-6). |
 | `leaf-sizing-folder-title.ts` | `measureShownFolderTitle` | The SHOWN folder-family title block (`package`) — the faithful `BodyFactory.create2` → `BodyEnhanced1` route (SI1 T12, ADR-4). |
@@ -1347,13 +1395,14 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `inline-links.ts` | `resolveInlineLinks` | Inline `[[url label]]` hyperlink-token resolution (`UrlBuilder`/ `CommandCreoleUrl`) -- originally split out of `parse-helpers- strings.ts` purely to stay under the project's 500-line cap, then moved here (add3 T0b, D9) to the shared url se |
 | `UbrexUrlBuilder.ts` | `UMatchNone`, `UbrexUrlBuilder` | UbrexUrlBuilder -- the ubrex-based sibling of {@link UrlBuilder}: parses the PlantUML `[[...]]` hyperlink syntax into a {@link Url}. |
 | `Url.ts` | `Url`, `eventuallyRemoveStartingAndEndingDoubleQuote` |  |
-| `UrlBuilder.ts` | `transform`, `URL_KEY`, `getRegexp`, `UrlBuilder` |  |
+| `UrlBuilder.ts` | `transform`, `URL_KEY`, `getRegexp`, `MANDATORY`, `OPTIONAL`, `UrlBuilder` |  |
 | `UrlMode.ts` | `UrlMode` | UrlMode — how `UrlBuilder#getUrl` matches its patterns against the input: `STRICT` requires the whole string to be a `[[...]]` form (`Matcher#matches`), `ANYWHERE` accepts one embedded anywhere in the string (`Matcher#find`). |
 
 ## `src/core/utils/`
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `BlocLines.ts` | `isSpaceOrTab`, `nbStartingSpace`, `BlocLines` | `BlocLines`: the lines one command spans, immutable (every "mutator" answers a fresh copy). |
 | `CharHidder.ts` | `CharHidder` | CharHidder — the '~' tile escape: `~X` (where X is a creole-active character) and `\~` are remapped into the Unicode private-use area (U+E000 + charCode) by {@link CharHidder.hide} so the creole layer never sees them as markup, then restore |
 | `I18nTimeData.ts` | `Locale`, `newLocale`, `dayOfWeekLong`, `dayOfWeekShort`, `monthShort`, `monthLong` | I18nTimeData — generated day/month name tables per language. |
 | `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, and (license/keygen, out of this port's roadmap) `version/PLSSignature`, `version/Lice |
@@ -1427,6 +1476,47 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `swimlane-strategy.ts` | `SwimlaneStrategy`, `SWIMLANE_AT_START_MESSAGE`, `manageSwimlaneStrategy`, `enterSwimlane`, `isInstructionHandler` | Upstream's one-way swimlane gate: the first thing added to the diagram decides whether lanes are still legal. |
 | `switch-dispatch.ts` | `extractLeadingCaseNotes`, `tryOpenSwitch` | `switch (test) / case (v) / endswitch` dispatch (mission ubrr-T10 M2). |
 | `worm-mutation.ts` | `WormPoint`, `WormTranslate`, `WormMutation`, `getDirectionsCode`, `createWormMutation`, `moveFirstPoint`, `moveLastPoint` | `WormMutation` and the two `Worm` end-point moves a rainbow arrow is drawn with: each extra colour is the worm shifted sideways by one `mutation` step. |
+
+## `src/diagrams/activity-legacy/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `activity-legacy-dot.ts` | `ActivityLegacyDotScope`, `rootScope`, `ActivityLegacyDotContext`, `ActivityLegacyDotNode`, `ActivityLegacyDotEdge`, `ActivityLegacyDotCluster`, `ActivityLegacyDot`, `NodePolygonStore`, `dotShapeOf`, `buildActivityLegacyDot` | The DOT input of a legacy activity diagram: `GraphvizImageBuilder#buildImage`'s `printGroups` / `printEntities` (one `SvekNode` per leaf, one `Cluster` per partition, created in that order) and the `SvekEdge` of each link of `getOrderedLink |
+| `activity-legacy-edge-text.ts` | `EdgeTexts`, `EdgeTextContext`, `labelFontOf`, `cardinalityFontOf`, `buildEdgeTexts`, `LABEL_SHIELD` | The texts a `SvekEdge` builds in its constructor and that the DOT reserves a box for: the label (with the `note on link` merged onto it), the quantifiers (the `if` condition is the second one) and the roles. |
+| `activity-legacy-links.ts` | `getOrderedLinks` | `CucaDiagramFileMakerSvek#getOrderedLinks`: the links svek lays out and draws, regrouped so that links with the same two entities (in either direction) sit next to each other, a new one after the last of its group. |
+| `activity-legacy-skin-param.ts` | `SkinParamSource`, `SkinParam`, `ActivityLegacySkinParam` | The legacy activity engine's `SkinParam` -- the slice of upstream's `skin/SkinParam.java` an `ActivityDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, the rank di |
+| `activity-legacy-spacing.ts` | `DzetaEdge`, `getHorizontalDzeta`, `getVerticalDzeta`, `getMinRankSep`, `getMinNodeSep`, `getSeparators` | The graph spacing `DotStringFactory#createDotString` writes (`nodesep`, `ranksep`): the largest dzeta of any link divided by ten, floored at the activity minimum, replaced outright by a non-zero `skinparam nodesep`/`ranksep`. |
+| `ActivityDiagram.ts` | `ActivityDiagram` | `ActivityDiagram`: the legacy (`(*) --> "act"`) activity diagram, a `CucaDiagram` drawn through svek. |
+| `ActivityDiagramFactory.ts` | `CommandInput`, `LegacyCommand`, `initCommandsList`, `createEmptyDiagram`, `parseActivityLegacy` | `ActivityDiagramFactory`: the legacy activity diagram's command list, in upstream's order, and `PSystemCommandFactory#createSystem`'s per-line loop over it. |
+| `common-commands-1.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `ActivityDiagramFactory` registers it (second, after `UBrexCommandFootboxIgnored`): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `ConditionalContext.ts` | `ConditionalContext` |  |
+| `CucaDiagramSimplifierActivity.ts` | `CucaDiagramSimplifierActivity` | `CucaDiagramSimplifierActivity`: turns every autarkic group (an `INNER_ACTIVITY`, a `CONCURRENT_ACTIVITY`) into a leaf. |
+| `GroupMakerActivity.ts` | `GroupMakerActivity` | `GroupMakerActivity`: the image of an autarkic activity group. |
+| `index.ts` | `ActivityLegacyLayout`, `activityLegacyPlugin` | Legacy activity diagram plugin (`(*) --> "act"`): `ActivityDiagramFactory` (parse) and the svek DOT and layout (`layout.ts`, T2b); and the render (`renderer.ts`, T2c). |
+| `layout-geometry.ts` | `ActivityLegacyNodeGeo`, `ActivityLegacyEdgeGeo`, `ActivityLegacyClusterGeo`, `ActivityLegacyGeometry`, `solveActivityLegacy` | The solved geometry of one `GraphvizImageBuilder#buildImage` pass: the DOT of a scope goes through the one dot-engine seam, and what comes back is mapped onto the leaves, links and partitions it was built from. |
+| `layout.ts` | `ActivityLegacyClusterGeo`, `ActivityLegacyEdgeGeo`, `ActivityLegacyGeometry`, `ActivityLegacyNodeGeo`, `layoutActivityLegacy` | Layout of a legacy activity diagram: `CucaDiagramFileMakerSvek#getTextBlock` up to `DotStringFactory#solve`. |
+| `legacy-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `renderer-cluster.ts` | `drawCluster` | One legacy activity partition as `Cluster#drawU` draws it: the solved {@link ActivityLegacyClusterGeo} becomes the inputs of the shared drawing half (`core/svek/Cluster.ts`). |
+| `renderer-document.ts` | `calculateBackColor`, `muteColorMapper`, `calculateMargin` | The document-level reads of `TitledDiagram` for the legacy activity export: the back colour, the colour mapper and the exporter's margin. |
+| `renderer-edge.ts` | `EdgeContext`, `edgeInputOf`, `drawEdge` | One legacy activity link as `SvekEdge#drawU` draws it: the solved {@link ActivityLegacyEdgeGeo} becomes the `SvekEdgeInput` the shared klimt drawing half (`core/svek/SvekEdge.ts`) takes. |
+| `renderer-opale.ts` | `bindOpaleNotes` | The notes `GraphvizImageBuilder#buildImage` opalises: a `note` leaf with exactly one visible link, to a non-note, is drawn notched towards that entity and its link is not drawn (`SvekEdge#drawU` returns when `opale`). |
+| `renderer-svek-result.ts` | `InkWalk`, `SvekResultInput`, `ActivityLegacySvekResult` | `SvekResult` for the legacy activity engine: the text block `GraphvizImageBuilder#buildImage` returns. |
+| `renderer.ts` | `ACTIVITY_LEGACY_ROUTE`, `DIAGRAM_TYPE_ACTIVITY`, `ActivityLegacyRenderInput`, `renderActivityLegacy` | Legacy activity export: `TextBlockExporter`'s export of the {@link ActivityLegacySvekResult} on the klimt substrate (the board plugin's shape, `board/index.ts`). |
+
+## `src/diagrams/activity-legacy/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `command-link-activity-entity.ts` | `removeQuotes`, `getEntity`, `ubrexGetEntityForIfOnly` | `CommandLinkActivity#getEntity` and `#ubrexGetEntityForIfOnly`, split from `CommandLinkActivity.ts` (D11): which `Entity` one end of a link names, creating the leaf (and, for `in <partition>`, the group) on the way. |
+| `command-link-activity-explain.ts` | `notNull`, `describeSource`, `describeTarget`, `describeDirection`, `explainArg` | `CommandLinkActivity#explainArg` and the `describe*` helpers it calls, split from `CommandLinkActivity.ts` (D11). |
+| `CommandFactoryNoteActivity.ts` | `CommandFactoryNoteActivity` | `CommandFactoryNoteActivity`: `note right: text` and the block `note right` ... |
+| `CommandLinkActivity.ts` | `CommandLinkActivity` | `CommandLinkActivity`: the legacy activity link, `(*) --> A`, `A --> ===B===`, `--> "label" as C in "lane"`. |
+| `CommandLinkLongActivity.ts` | `CommandLinkLongActivity` | `CommandLinkLongActivity`: a link to an activity whose quoted text spans several lines: `(*) --> "Line one` / `line two` / `line three" as code <<stereo>> in P #color`. |
+| `UBrexCommandElse.ts` | `UBrexCommandElse` | `UBrexCommandElse`: `else`, which makes the enclosing `if`'s branch the last entity again, so the next link leaves the diamond a second time. |
+| `UBrexCommandEndif.ts` | `UBrexCommandEndif` | `UBrexCommandEndif`: `endif` / `end if`, which closes the enclosing `if` (the context goes back to its parent). |
+| `UBrexCommandEndPartition.ts` | `UBrexCommandEndPartition` | `UBrexCommandEndPartition`: `}` or `end partition`, which closes the group the last `partition` opened. |
+| `UBrexCommandIf.ts` | `UBrexCommandIf` | `UBrexCommandIf`: `[source] [-->] if "test" [as code] [then]`, which opens a branch (a diamond) linked from the source, or from the last activity when none is written. |
+| `UBrexCommandPartition.ts` | `UBrexCommandPartition` | `UBrexCommandPartition`: `partition Name [#color] [<<stereo>>] [{]`, which opens a `PACKAGE` group around the following activities. |
 
 ## `src/diagrams/activity/ftile/`
 
@@ -1980,7 +2070,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `renderer-draw-sequence.ts` | `collectByKind`, `drawClusters`, `drawEntities`, `drawEdges`, `buildEdgeMagnets` | renderer-draw-sequence.ts — G1b/J1 write-set expansion (journaled, mechanism C): the `SvekResult#drawU` draw-order sequence (cluster, then leaf, then edge), extracted verbatim out of `renderer.ts` so it can be shared with `layout-ink-shift. |
 | `renderer-edge.ts` | `arrowLabelFontConfig`, `EdgeMagnets`, `drawEdge` | renderer-edge.ts — T17: adapts one `DescriptionEdgeGeo` (this port's layout output) into `SvekEdgeInput` (T13's decoupled drawing-half contract — see `SvekEdge.ts`'s "Adapter boundary" doc comment, which explicitly names this as a later tas |
 | `renderer-entity.ts` | `buildEntityParams`, `drawEntity`, `leafMagneticBorder` | renderer-entity.ts — T17: assembles `EntityImageDescription` (T14) for one leaf `DescriptionNodeGeo` and draws it through klimt, translated to its absolute layout position (`SvekResult.java:87`'s `image.drawU(ug2.apply(new UTranslate(minX, |
-| `renderer-ink-extent.ts` | `klimtStringBounderFor`, `runInkWalk`, `driverBounderFor`, `DocumentDimResult`, `computeDocumentDims` | renderer-ink-extent.ts — G0/T3 (LimitFinder mission): the SvekResult document-dimension recipe (svek/SvekResult.java:70-140), lifted out of `renderer.ts` to keep that file under the project's complexity cap. |
+| `renderer-ink-extent.ts` | `driverBounderFor`, `klimtStringBounderFor`, `runInkWalk`, `DocumentDimResult`, `computeDocumentDims` | renderer-ink-extent.ts — G0/T3 (LimitFinder mission): the SvekResult document-dimension recipe (svek/SvekResult.java:70-140), lifted out of `renderer.ts` to keep that file under the project's complexity cap. |
 | `renderer-note-opale.ts` | `NOTE_STROKE_WIDTH`, `NotePaints`, `opalePolygonNormal`, `drawNoteShape` | renderer-note-opale.ts — T1e (opale note port): draws a `symbol === 'note'` leaf's Opale fold-outline + corner triangle instead of a plain box, when `DescriptionNodeGeo.opale` resolved (`layout-geo-post.ts#applyOpaleNote`, the SAME `Opale.t |
 | `renderer-note.ts` | `buildNoteBlock`, `resolveNotePaints`, `drawNote` | renderer-note.ts -- `EntityImageNote#drawU` for a description `note` leaf, split out of `renderer-entity.ts` (at the 500-line cap). |
 | `renderer-uid.ts` | `UidPlan`, `buildUidPlan` | renderer-uid.ts — entity/cluster/link uid assignment for the klimt-backed description renderer. |

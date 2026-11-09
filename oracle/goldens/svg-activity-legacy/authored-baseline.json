@@ -1,0 +1,966 @@
+{
+  "fixtures": [
+    {
+      "type": "activity",
+      "slug": "chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-caption-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-footer-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-header-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-legend-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "chrome-title-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "dark-mode",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "dark-partition",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "dark-reversecolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "else-without-if",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No if for this else (Assumed diagram type: activity)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "embedded-diagram",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "empty-inner-brace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "empty-inner-brace-then-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "end-n",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "end-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "endif-without-if",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No if for this endif (Assumed diagram type: activity)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "hide-circle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "hide-empty-description",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "hide-footbox",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "hide-stereotype",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "inner-brace-colored",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "inner-brace-nested",
+      "status": "baseline",
+      "weightedScore": 407,
+      "diffCount": 96,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.UnsupportedOperationException"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-arrow-dirs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-arrow-label",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-chrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-dotted-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-end-variants",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-hide",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-if-as",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-if-else",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-if-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-implicit-source",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-in-partition",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-inner-brace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-lone-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-long-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-ltr",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-note-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-note-on-link",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-partition",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-partition-end",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-quoted-as",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-stereotype",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-swimlane-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-sync-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "lap-url",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "ltr-partitions",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "magic-arrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "newpage",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: activity)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-all-sides",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-bottom",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-left",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-multiline-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-on-link-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-on-link-first",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: state)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-on-link-stereotype-hide",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "note-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-brace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-empty-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-empty-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-empty-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-empty-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-end-keyword",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-link",
+      "status": "baseline",
+      "weightedScore": 201,
+      "diffCount": 21,
+      "reason": "#157: a link to a partition needs the zaent point and ltail/lhead (ClusterDotString.java:149, SvekEdge.java:252-258)",
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "partition-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "pragma-elk",
+      "status": "baseline",
+      "weightedScore": 74,
+      "diffCount": 15,
+      "reason": "#158: `!pragma layout elk` draws through CucaDiagramFileMakerElk over the legacy model, not ported yet",
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "pragma-elk-if",
+      "status": "baseline",
+      "weightedScore": 210,
+      "diffCount": 33,
+      "reason": "#158: `!pragma layout elk` draws through CucaDiagramFileMakerElk over the legacy model, not ported yet",
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "pragma-smetana",
+      "status": "baseline",
+      "weightedScore": 62,
+      "diffCount": 16,
+      "reason": "library-forced: dot-engine instead of Smetana (CLAUDE.md ruling 2026-08-09, DIVERGENCES.md \"!pragma layout smetana\")",
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "show-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "show-stereotype",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "start-top",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-activity",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-arrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-diamond",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-end",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-partition",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-root",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-start",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "style-start-selector",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "swimlane-kermor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "swimlane-no-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "theme-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "top-to-bottom",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    },
+    {
+      "type": "activity",
+      "slug": "unterminated-long",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-09",
+      "measuredAgainstCommit": "a61a11b87"
+    }
+  ]
+}

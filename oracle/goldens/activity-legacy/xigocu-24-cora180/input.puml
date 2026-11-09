@@ -1,0 +1,26 @@
+@startuml
+
+(*) --> VerifyReservation
+if "test if correct" then
+  -> [incorrect] sendToAirport
+  --> (*)
+else
+  --> [correct] getPreference
+  --> ===Y1===
+  
+  if "bagage?" then
+    --> [bagage] ReceiveBaggage
+    --> ===Y2===
+  else
+    --> [nobagage] ===Y2===
+  endif
+  
+  ===Y1=== --> PrintBoadingboard
+  --> ===Y2===
+  
+  --> GiveTravelDocumentation
+  --> (*)
+endif
+
+
+@enduml

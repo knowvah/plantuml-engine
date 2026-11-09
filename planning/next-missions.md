@@ -47,6 +47,32 @@ dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagra
 
 ---
 
+## legacy-activity-engine-port (laep) — DONE 2026-11-09 (one commit on `feature/parity-queue`, #123; per-task history on the local tag `legacy-activity-engine-port/pre-squash`)
+
+The legacy activity engine (`net/sourceforge/plantuml/activitydiagram/`, the `(*) -->` syntax) is ported file for file
+in `src/diagrams/activity-legacy/` and registered at `PSystemBuilder.java:137`. All 124 legacy rows went from diverged
+to conformant (activity 118, unknown 4, network 2) and are pinned in `svg-activity-legacy`, with 102 authored fixtures
+(90 at zero, 8 jar error pages we also refuse, 4 named open rows) and a DOT-parity gate of 214 structurally equal
+fixtures. Activity 755 → 873, unknown 860 → 864, network 1 → 3 conformant; 0 lost in any engine; `dist/*.d.ts`
+identical to the base.
+
+### Follow-ons (mechanism, owner)
+
+1. **A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
+   `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.
+2. **`!pragma layout elk` on the legacy model** (`pragma-elk` 15, `pragma-elk-if` 33): `CucaDiagramFileMakerElk` over
+   an adapter for the legacy diagram. Filed as #158.
+3. **State keeps its own start, end, choice and bar drawings** where `src/core/svek/image/` now has the shared
+   `EntityImageCircleStart`/`CircleEnd`/`Branch`/`SynchroBar` (D2): switching state is a refactor, not a port fix.
+4. **No shared `GraphvizImageBuilder`**: description, state and legacy activity each compose the svek pieces (D2).
+5. **State and description size a `note on link` from its raw text** (`state-dot-graph.ts:195`,
+   `state-transition-label.ts:272`, `state-composite-edge-label.ts:63`, description via `link-edge-attrs.ts:340`),
+   where `SvekEdge.java:311-312` measures the drawn `EntityImageNoteLink`; laep fixed the legacy engine
+   (`.agent-notes/laep-T4.md`). Author a probe (a stereotype under `ShowStereotype false`) before changing either.
+6. **`pragma-smetana`** (16 diffs) stays the library-forced Smetana delta (DIVERGENCES.md).
+
+---
+
 ## activity-authored-rows (aar) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #121; per-task history on the local tag `activity-authored-rows/pre-squash`)
 
 Activity survey 610/35/233 → 755/4/119 (conformant/structural-match/diverged); 145 of the 154 in-scope corpus rows conformant and pinned, `unknown/dijapi-54` pinned in the unknown tree, every authored and `loops-*` dss row at 0. The other 9 are named: 3 LaTeX rows (KaTeX), `nomave-73` (QR codes, MIT edition), `rekefe-90` (#155), 4 legacy-engine rows (#123). 0 conformant rows lost in any engine; `dist/*.d.ts` identical.

@@ -5,6 +5,8 @@ import { TextBlockUtils } from '../klimt/shape/TextBlockUtils.js';
 import { VerticalAlignment } from '../klimt/geom/VerticalAlignment.js';
 import type { Point2D } from '../klimt/UTranslate.js';
 import type { Paint } from '../paint.js';
+import { HColorSimple } from '../klimt/color/HColorSimple.js';
+import type { HColorOrPaint } from '../klimt/color/ColorMapper.js';
 import type { FontConfiguration } from '../klimt/shape/UText.js';
 import { UTranslate } from '../klimt/UTranslate.js';
 import { UText } from '../klimt/shape/UText.js';
@@ -81,7 +83,8 @@ import type { LinkDecorName } from './extremity/link-decor.js';
 export type SvekLinkStyle = 'solid' | 'dashed' | 'dotted' | 'bold';
 
 /** `HColor#isTransparent` over the spellings a `Paint` can hold (`HColorSet.java:82-83`). */
-function isTransparentPaint(paint: Paint): boolean {
+function isTransparentPaint(paint: HColorOrPaint): boolean {
+  if (paint instanceof HColorSimple) return paint.isTransparent();
   if (typeof paint !== 'string') return false;
   const lower = paint.toLowerCase();
   return lower === 'none' || lower === 'transparent' || lower === '#00000000';
@@ -123,6 +126,8 @@ export interface SvekEdgeLabel {
 /** A quantifier text, at the corner the layout resolved (`SvekEdge.java:750-767,1205-1218`). */
 export interface SvekEdgeEndText {
   readonly text: string;
+  /** The block the engine measured (`SvekEdge#startTailText`/`endHeadText`); drawn as is when given, `text` unread. */
+  readonly block?: TextBlock;
   readonly x: number;
   readonly y: number;
   readonly font: FontConfiguration;
@@ -156,6 +161,13 @@ export interface SvekEdgeInput {
    *  emitted by upstream under `-codeLine`-style tracing; optional). */
   readonly codeLine?: string;
   readonly style: SvekLinkStyle;
+  /** `link.getUrl()` (`SvekEdge.java:857-859`, `:992-993`): the anchor around the path, arrowheads and labels. */
+  readonly url?: { readonly url: string; readonly tooltip: string };
+  /**
+   * The stroke `SvekEdge#drawU` applies, already resolved by an engine that holds the real `LinkType`
+   * (`SvekEdge.java:895-905`). When given, {@link style} and the thickness inputs below are not read.
+   */
+  readonly stroke?: UStroke;
   /** `DescriptiveLink.thicknessOverride` (bracket `thickness=N`) — see
    *  `svek-edge-stroke.ts#strokeForStyle`'s doc comment for the per-style
    *  override semantics (BOLD ignores this, matching upstream). */
@@ -165,9 +177,9 @@ export interface SvekEdgeInput {
   /** `styleLine.getStroke()` (`SvekEdge.java:876`): the `arrow` style's thickness and dash. */
   readonly suggestedStroke?: UStroke;
   /** `Rainbow#getArrowHeadColor` (`HeadColor`, `Rainbow.java:83-90`); absent means {@link color}. */
-  readonly headColor?: Paint;
+  readonly headColor?: HColorOrPaint;
   /** `link.getSupplementaryColors()`: extra paths drawn offset (`SvekEdge.java:1141-1145`). */
-  readonly supplementaryColors?: readonly Paint[];
+  readonly supplementaryColors?: readonly HColorOrPaint[];
   /** `Link.inverted`: a left or up arrow runs the other way (`Link.java:145-147,423-428`). */
   readonly linkInverted?: boolean;
   /** `wrapWidth` (`SvekEdge.java:291-294`): the arrow style's `MaximumWidth`, else `skinparam maxMessageSize`. */
@@ -192,7 +204,7 @@ export interface SvekEdgeInput {
   /** Line/arrowhead-fill color — upstream's `Rainbow#getColor()`
    *  (this port has no multi-color `Rainbow`, so one color serves both
    *  the line and every filled extremity). */
-  readonly color: Paint;
+  readonly color: HColorOrPaint;
   /** Diagram background paint — upstream's `skinParam.getBackgroundColor()`,
    *  used by hollow decors (`CIRCLE`, `SQUARE`, `SVEK_CIRCLE_CONNECT`, …)
    *  to punch a background-colored hole. */
@@ -218,6 +230,8 @@ export interface SvekEdgeInput {
 interface GroupCapableUGraphic {
   startGroup?(group: UGroup): void;
   closeGroup?(): void;
+  startUrl?(url: { readonly url: string; readonly tooltip: string }): void;
+  closeUrl?(): void;
 }
 
 /**
@@ -347,13 +361,16 @@ export class SvekEdge implements UDrawable {
     ug.draw(this.commentForSvg());
     const groupable = ug as UGraphic & GroupCapableUGraphic;
     groupable.startGroup?.(this.buildGroup());
+    if (this.input.url !== undefined) groupable.startUrl?.(this.input.url);
 
-    const stroke = strokeOfLink(
-      this.input.style,
-      this.input.styleThickness,
-      this.input.defaultThickness,
-      this.input.suggestedStroke,
-    );
+    const stroke =
+      this.input.stroke ??
+      strokeOfLink(
+        this.input.style,
+        this.input.styleThickness,
+        this.input.defaultThickness,
+        this.input.suggestedStroke,
+      );
     const lined = ug.apply(new Fore(this.input.color)).apply(new Back('none')).apply(stroke);
     // `SvekEdge.java:950`: labels and the middle decor draw under `UStroke.simple()`.
     const simple = ug.apply(new Fore(this.input.color)).apply(new Back('none')).apply(UStroke.simple());
@@ -379,6 +396,7 @@ export class SvekEdge implements UDrawable {
     this.drawEndText(simple, this.input.headQuantifier);
     this.drawMiddle(simple);
 
+    if (this.input.url !== undefined) groupable.closeUrl?.();
     groupable.closeGroup?.();
   }
 
@@ -413,7 +431,7 @@ export class SvekEdge implements UDrawable {
   /** `SvekEdge.java:956-980`: the text block at the placed table's corner. */
   private drawEndText(ug: UGraphic, end: SvekEdgeEndText | undefined): void {
     if (end === undefined) return;
-    const block = buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER);
+    const block = end.block ?? buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER);
     block.drawU(ug.apply(new UTranslate(end.x, end.y)));
   }
 

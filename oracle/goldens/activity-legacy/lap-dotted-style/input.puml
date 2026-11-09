@@ -1,0 +1,6 @@
+@startuml
+(*) ..> A
+A -[#red]-> B
+B -[dashed]-> C
+C -[bold,#blue]-> (*)
+@enduml

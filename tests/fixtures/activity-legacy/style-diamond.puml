@@ -1,0 +1,16 @@
+@startuml
+<style>
+activityDiagram {
+  diamond { BackgroundColor #FFEEAA
+    LineColor #AA0000
+    LineThickness 3
+    FontColor #00AA00 }
+}
+</style>
+(*) --> if "c?" then
+--> A
+else
+--> B
+endif
+A --> (*)
+@enduml

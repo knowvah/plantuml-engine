@@ -1,0 +1,5 @@
+@startuml
+footer F
+(*) --> A
+A --> (*)
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+legend
+ L1
+ L2
+end legend
+(*) --> A
+A --> (*)
+@enduml

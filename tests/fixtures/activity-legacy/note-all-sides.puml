@@ -1,0 +1,8 @@
+@startuml
+(*) --> A
+note top: t
+note bottom: b
+note left: l
+note right: r
+A --> (*)
+@enduml

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-04T03:56:30.697Z",
-  "measuredAgainstCommit": "35faffdad",
+  "generatedAt": "2026-11-07T08:23:37.497Z",
+  "measuredAgainstCommit": "105adf32f",
   "type": "class",
   "measurer": "deterministic",
   "fixtures": [
@@ -1457,7 +1457,7 @@
       "slug": "dulone-62-neri182",
       "tree": "unknown",
       "status": "ok",
-      "diffCount": 6,
+      "diffCount": 5,
       "bucket": "4-10"
     },
     {
@@ -1888,13 +1888,6 @@
       "bucket": "0"
     },
     {
-      "slug": "fubuja-64-vane162",
-      "tree": "unknown",
-      "status": "ok",
-      "diffCount": 179,
-      "bucket": "31+"
-    },
-    {
       "slug": "fugexa-12-zoti674",
       "tree": "class",
       "status": "ok",
@@ -2073,8 +2066,8 @@
       "slug": "gazizi-80-fula677",
       "tree": "class",
       "status": "ok",
-      "diffCount": 30,
-      "bucket": "11-30"
+      "diffCount": 33,
+      "bucket": "31+"
     },
     {
       "slug": "gecaxa-13-jedi612",
@@ -2145,13 +2138,6 @@
       "status": "ok",
       "diffCount": 23,
       "bucket": "11-30"
-    },
-    {
-      "slug": "gepuko-44-gizi401",
-      "tree": "unknown",
-      "status": "ok",
-      "diffCount": 199,
-      "bucket": "31+"
     },
     {
       "slug": "gerima-02-fade831",
@@ -2304,8 +2290,8 @@
       "slug": "godage-48-foro407",
       "tree": "class",
       "status": "ok",
-      "diffCount": 84,
-      "bucket": "31+"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "godego-76-casa114",
@@ -3207,7 +3193,7 @@
       "slug": "kofogo-67-jiju461",
       "tree": "class",
       "status": "ok",
-      "diffCount": 86,
+      "diffCount": 85,
       "bucket": "31+"
     },
     {
@@ -3466,8 +3452,8 @@
       "slug": "lefoli-46-noje667",
       "tree": "class",
       "status": "ok",
-      "diffCount": 2,
-      "bucket": "1-3"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "lejenu-55-paso269",
@@ -3704,7 +3690,7 @@
       "slug": "losote-76-beki147",
       "tree": "unknown",
       "status": "ok",
-      "diffCount": 6,
+      "diffCount": 7,
       "bucket": "4-10"
     },
     {
@@ -3790,13 +3776,6 @@
       "status": "ok",
       "diffCount": 0,
       "bucket": "0"
-    },
-    {
-      "slug": "luzida-92-gebi610",
-      "tree": "unknown",
-      "status": "ok",
-      "diffCount": 37,
-      "bucket": "31+"
     },
     {
       "slug": "luzive-62-zote562",
@@ -4021,13 +4000,6 @@
       "status": "ok",
       "diffCount": 0,
       "bucket": "0"
-    },
-    {
-      "slug": "minece-51-xape147",
-      "tree": "unknown",
-      "status": "ok",
-      "diffCount": 181,
-      "bucket": "31+"
     },
     {
       "slug": "minuko-19-pobo264",
@@ -7960,7 +7932,7 @@
       "slug": "zemeco-27-kaje686",
       "tree": "class",
       "status": "ok",
-      "diffCount": 188,
+      "diffCount": 177,
       "bucket": "31+"
     },
     {
@@ -8263,13 +8235,6 @@
       "status": "ok",
       "diffCount": 0,
       "bucket": "0"
-    },
-    {
-      "slug": "zuzura-28-telu962",
-      "tree": "unknown",
-      "status": "ok",
-      "diffCount": 199,
-      "bucket": "31+"
     }
   ]
 }

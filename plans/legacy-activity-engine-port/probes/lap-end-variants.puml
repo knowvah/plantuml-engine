@@ -1,0 +1,7 @@
+@startuml
+(*) --> A
+A --> (*top)
+(*top) --> B
+B --> (*1)
+A --> (*2)
+@enduml

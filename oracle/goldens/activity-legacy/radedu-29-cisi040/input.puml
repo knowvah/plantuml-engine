@@ -1,0 +1,10 @@
+@startuml
+ (*) --> A
+	--> if "some test" as st then
+   -->[true] B
+   --> C
+else
+   ->[false] D
+   --> st
+endif
+@enduml

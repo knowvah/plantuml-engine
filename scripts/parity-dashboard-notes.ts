@@ -61,8 +61,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'notBuilt',
     detail:
       'This bucket is filled by a keyword match and holds no nwdiag diagrams: one description diagram, which conforms, ' +
-      'and two in the legacy `(*) -->` activity syntax, which we do not parse. Real nwdiag fixtures are counted under ' +
-      '`unknown`.',
+      'and two in the legacy `(*) -->` activity syntax, drawn by the legacy activity engine (#123) and pinned in ' +
+      '`svg-activity-legacy`. Real nwdiag fixtures are counted under `unknown`.',
   },
   regex: { noteClass: 'notBuilt' },
   timing: { noteClass: 'notBuilt' },
@@ -70,10 +70,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   activity: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: every row short of conformant is one of the 429 fixtures #109 captured on 2026-11-04 ' +
-      '(the 449 measured before all still conform). 127 of them draw our error page where PlantUML draws a ' +
-      'diagram: 114 use the legacy `(*) -->` activity syntax, which we do not parse, and 13 use activity3 ' +
-      'constructs our parser refuses. The rest differ mostly in stroke, fill, child counts and text widths.',
+      'Not a regression: the 5 rows short of conformant are named. Three are LaTeX under KaTeX and one is a QR ' +
+      'code under the MIT edition (DIVERGENCES.md); `rekefe-90` prints `%version()` and waits on #155. The ' +
+      'legacy `(*) -->` syntax is drawn by the legacy activity engine (#123), pinned in `svg-activity-legacy`.',
   },
   class: {
     noteClass: 'openDefect',

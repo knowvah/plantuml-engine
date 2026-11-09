@@ -36,8 +36,10 @@ const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind
 
 const PINS: Readonly<Record<string, number>> = {
   'error-arecibo-short': 5,
-  'error-arecibo': 10,
-  'error-long': 9,
+  // 10 -> 8 and 9 -> 7 at laep T3c: sequence reports the line's whole-source position, so it wins the first-line tie
+  // as in the jar and the page names the jar's assumed type.
+  'error-arecibo': 8,
+  'error-long': 7,
   'error-preprocessor-short': 5,
   'error-short': 5,
   'welcome-empty-uml': 0,

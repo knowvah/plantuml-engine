@@ -285,12 +285,12 @@ function trimNonBlank(lines: readonly string[]): { text: string; origIndex: numb
  * report whichever of the two refusal points it hit, or `null` on success.
  * See `runDispatchLoop`'s own doc comment for the upstream citations.
  */
-function dispatchOrdinaryLine(state: ParseState, line: string, origIndex: number): ParseRefusal | null {
+function dispatchOrdinaryLine(state: ParseState, line: string, at: number): ParseRefusal | null {
   if (!dispatchCommand(state, line)) {
-    return refuse('syntax', origIndex, origIndex, 'Syntax Error?');
+    return refuse('syntax', at, at, 'Syntax Error?');
   }
   if (state.executionError !== undefined) {
-    return refuse('execution', origIndex, origIndex, state.executionError);
+    return refuse('execution', at, at, state.executionError);
   }
   return null;
 }
@@ -323,6 +323,17 @@ function dispatchViews(lines: readonly string[]): {
 function documentPositionOf(source: UmlSource, origIndex: number): number {
   if (source.linePositions === undefined) return Number.POSITIVE_INFINITY;
   return source.linePositions[origIndex] ?? -1;
+}
+
+/**
+ * The failing line's position in the whole source, `@startuml` included, which is what every other
+ * `PSystemCommandFactory` port reports (class: `ParseState#currentLine`, state, legacy activity) and what upstream's
+ * `it.getTrace()` counts (`PSystemCommandFactory.java:169-175`), so the max-score tie-break
+ * (`PSystemErrorUtils.java:140-147`) sees the same numbers for every engine. A hand-built source (no
+ * `linePositions`) keeps the body index.
+ */
+function refusalLineOf(source: UmlSource, origIndex: number): number {
+  return source.linePositions?.[origIndex] ?? origIndex;
 }
 
 /**
@@ -395,7 +406,7 @@ function runDispatchLoop(state: ParseState, source: UmlSource): ParseRefusal | n
       continue;
     }
 
-    const refusal = dispatchOrdinaryLine(state, line, origIndex);
+    const refusal = dispatchOrdinaryLine(state, line, refusalLineOf(source, origIndex));
     if (refusal !== null) return refusal;
   }
   drainOpenFrames(state);

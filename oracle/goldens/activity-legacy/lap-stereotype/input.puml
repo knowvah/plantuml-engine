@@ -1,0 +1,7 @@
+@startuml
+(*) --> "A" <<foo>>
+"A" --> (*)
+skinparam activity {
+  BackgroundColor<<foo>> Yellow
+}
+@enduml

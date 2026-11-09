@@ -795,8 +795,8 @@
       "diffCount": 0
     },
     "activity__probe-legacy": {
-      "conformant": false,
-      "diffCount": 21
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__probe-swim": {
       "conformant": true,

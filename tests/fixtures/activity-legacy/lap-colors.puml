@@ -1,0 +1,5 @@
+@startuml
+(*) --> "red" #red
+"red" --> "blue" #LightBlue
+"blue" --> (*)
+@enduml

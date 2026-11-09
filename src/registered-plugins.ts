@@ -14,6 +14,7 @@
 import type { DiagramRegistry } from './core/dispatcher.js';
 import { listArchimateSpritesPlugin } from './core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
 import { activityPlugin } from './diagrams/activity/index.js';
+import { activityLegacyPlugin } from './diagrams/activity-legacy/index.js';
 import { boardPlugin } from './diagrams/board/index.js';
 import { chartPlugin } from './diagrams/chart/index.js';
 import { chronologyPlugin } from './diagrams/chronology/index.js';
@@ -58,6 +59,7 @@ function registerUmlRun(registry: PluginRegistrar): void {
   registry.register(colorsPlugin); // java:134
   registry.register(sequencePlugin); // java:135
   registry.register(classPlugin); // java:136
+  registry.register(activityLegacyPlugin); // java:137
   registry.register(descriptionPlugin); // java:138
   registry.register(statePlugin); // java:139
   registry.register(activityPlugin); // java:140 (ActivityDiagramFactory3)
@@ -110,17 +112,17 @@ function registerFromSalt(registry: PluginRegistrar): void {
 // ActivityDiagramFactory, DescriptionDiagramFactory, StateDiagramFactory,
 // ActivityDiagramFactory3, BpmDiagramFactory.
 //
-// THIS PORT'S ACTIVITY ENGINE SITS AT ActivityDiagramFactory3's SLOT, after
-// state -- not at the legacy factory's slot, which is where T12's own brief
-// put it. The engine mirrors `ActivityDiagramFactory3`: `trySwimlane`,
-// `tryAction`, `tryIf`, `tryRepeat`, `tryFork`, `trySplit` map 1:1 onto
-// `CommandSwimlane`, `CommandActivity3`, `CommandIf4`, `CommandRepeat3`,
-// `CommandFork3`, `CommandSplit3` (`ActivityDiagramFactory3.java:105-165`),
-// while the legacy factory's arrow-based `UBrexCommandIf` /
-// `CommandLinkActivity` / `CommandLinkLongActivity`
-// (`ActivityDiagramFactory.java:76-97`) have no counterpart anywhere here.
-// Putting it at slot 5 would let it claim `@startuml` sources upstream gives
-// to description or state.
+// Both activity factories are ported, each at its own slot. The legacy
+// `ActivityDiagramFactory` (`(*) -->` syntax, `UBrexCommandIf`,
+// `CommandLinkActivity`, `CommandLinkLongActivity`;
+// `ActivityDiagramFactory.java:75-100`) is `activityLegacyPlugin`
+// (`diagrams/activity-legacy/`), registered at java:137 between class and
+// description, so it claims exactly the `@startuml` sources the jar's
+// factory claims before description and state are tried (laep D3).
+// `ActivityDiagramFactory3` (`trySwimlane`, `tryAction`, `tryIf`, ...
+// mapping onto `CommandSwimlane`, `CommandActivity3`, `CommandIf4`, ...;
+// `ActivityDiagramFactory3.java:105-165`) is `activityPlugin`, at java:140
+// after state.
 //
 // The utility factories (ufp, decisions.md D2) are single-line `@startuml`
 // pages typed SEQUENCE (`PSystemSingleLineFactory.java:61`), so their place

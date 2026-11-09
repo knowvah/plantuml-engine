@@ -1,0 +1,5 @@
+@startuml
+hide empty
+(*) --> A
+A --> (*)
+@enduml

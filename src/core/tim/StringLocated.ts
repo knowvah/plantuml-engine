@@ -222,6 +222,15 @@ export class StringLocated {
   }
 
   /**
+   * `substring(int start, int end)` and `substring(int start)`: the same location and preprocessor error, a
+   * fresh (lazily classified) line. `BlocLines` reads it.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/text/StringLocated.java:181-188
+   */
+  substring(start: number, end?: number): StringLocated {
+    return new StringLocated(this.s.substring(start, end), this.location, undefined, this.preprocessorError);
+  }
+
+  /**
    * Batch SI5a-2b addition: `CodeIteratorInnerComment` strips `/' ... '/`
    * inline comments from every line before the rest of the chain sees it.
    * Ported faithfully, including the `"""`-fenced special-case

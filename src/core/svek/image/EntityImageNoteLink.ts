@@ -44,6 +44,29 @@
 import type { StringMeasurer } from '../../measurer.js';
 import { roseNoteDim, type RoseNoteDim } from '../../rose-note-dim.js';
 import { NOTE_FONT_SIZE } from '../../klimt/font/FontParam.js';
+import type { Colors } from '../../abel/Colors.js';
+import { BodyFactory } from '../../cucadiagram/BodyFactory.js';
+import { bridgeFontConfiguration } from '../../klimt/font/FontConfigurationBridge.js';
+import type { StringBounder } from '../../klimt/font/StringBounder.js';
+import type { Display } from '../../klimt/creole/Display.js';
+import { UGraphicStencil } from '../../klimt/drawing/UGraphicStencil.js';
+import { HorizontalAlignment } from '../../klimt/geom/HorizontalAlignment.js';
+import { XDimension2D } from '../../klimt/geom/XDimension2D.js';
+import type { TextBlock } from '../../klimt/shape/TextBlock.js';
+import { TextBlockMemoized } from '../../klimt/shape/TextBlockMemoized.js';
+import { TextBlockUtils } from '../../klimt/shape/TextBlockUtils.js';
+import type { UGraphic } from '../../klimt/UGraphic.js';
+import { UStroke } from '../../klimt/UStroke.js';
+import { UTranslate } from '../../klimt/UTranslate.js';
+import type { Style } from '../../style/Style.js';
+import { StyleSignatureBasic } from '../../style/StyleSignatureBasic.js';
+import type { StyleBuilder } from '../../style/StyleBuilder.js';
+import { ValueNull } from '../../style/ValueNull.js';
+import { ShapeType } from '../ShapeType.js';
+import type { LeafImageSkinParam } from './AbstractEntityImage.js';
+import { OPALE_CORNERSIZE } from './Opale.js';
+import { corner, polygonNormal } from './OpalePolygons.js';
+import { applyBack, applyFore, colorsGetColor, mergedStyleOf } from './leaf-image-support.js';
 
 /** The un-padded ("pure") note-body dimension a caller's own text engine
  *  produces -- `roseNoteDim`'s own operand shape, restated here as this
@@ -96,4 +119,110 @@ export function measureLinkNoteDim(
 ): RoseNoteDim {
   const pure = pureText === undefined ? naivePureTextDim(text, font, measurer) : pureText(text, measurer);
   return roseNoteDim(pure);
+}
+
+/** `Rose.java:65-66`: the `paddingX`/`paddingY` `Rose#createComponentNote` passes. */
+const ROSE_NOTE_PADDING = 5;
+/** `ComponentRoseNote.java:66-70`, text not centred: `topRightBottomLeft(5, 15, 5, 6)`. */
+const PAD_TOP = 5;
+const PAD_RIGHT = 15;
+const PAD_BOTTOM = 5;
+const PAD_LEFT = 6;
+
+/**
+ * `EntityImageNoteLink`: the `note on link` block `SvekEdge` merges with the label and draws beside it. It wraps the
+ * `ComponentRoseNote` `Rose#createComponentNote` builds from `ComponentType.NOTE`'s signature
+ * `{root, element, sequenceDiagram, note}` (`ComponentType.java:98-99`); the component's `getPreferredWidth/Height`
+ * and `drawInternalU` are inlined here (the component has no other caller in the shared core). `position` is
+ * `noteTextAlignment`'s answer, null by default (`Rose.java:110-111`): not the centred branch.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageNoteLink.java:57-77
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/rose/ComponentRoseNote.java:56-133
+ */
+export class EntityImageNoteLink extends TextBlockMemoized {
+  private readonly style: Style;
+  private readonly textBlock: TextBlock;
+  private readonly colors: Colors;
+  private readonly skinParam: LeafImageSkinParam;
+
+  /** @see EntityImageNoteLink.java:61-66 */
+  constructor(note: Display, colors: Colors, skinParam: LeafImageSkinParam, styleBuilder: StyleBuilder) {
+    super();
+    this.colors = colors;
+    this.skinParam = skinParam;
+    const signature = StyleSignatureBasic.of('root', 'element', 'sequenceDiagram', 'note');
+    this.style = mergedStyleOf(signature, styleBuilder);
+    // `display.withoutStereotypeIfNeeded(style)` (`AbstractTextualComponent.java:80`): only a style that hides
+    // stereotypes changes the display, and the `Display` port has no stereotype-less copy yet.
+    const showStereotype = this.style.value('ShowStereotype');
+    if (!(showStereotype instanceof ValueNull) && !showStereotype.asBoolean())
+      throw new Error('unported: ShowStereotype false on a note on link (Display#withoutStereotypeIfNeeded)');
+    if (note.size() === 1 && note.get(0).toString().length === 0) this.textBlock = TextBlockUtils.empty(0, 0);
+    else
+      this.textBlock = BodyFactory.create3(
+        note,
+        {
+          skinParam,
+          align: this.style.getHorizontalAlignment() ?? HorizontalAlignment.LEFT,
+          titleConfig: bridgeFontConfiguration(this.style.getFontConfiguration(skinParam.getIHtmlColorSet())),
+          lineBreakStrategy: this.style.wrapWidth(),
+        },
+        {
+          defaultThickness: this.style.value('LineThickness').asDouble(),
+          minimumWidth: this.style.value('MinimumWidth').asDoubleDefaultTo(0),
+        },
+        skinParam.atomOps,
+      );
+  }
+
+  /** `getTextWidth`: the text plus `getOldPaddingX1/X2`. @see AbstractTextualComponent.java:100-102 */
+  private getTextWidth(stringBounder: StringBounder): number {
+    return this.textBlock.calculateDimension(stringBounder).getWidth() + PAD_LEFT + PAD_RIGHT;
+  }
+
+  /** @see AbstractTextualComponent.java:104-107 */
+  private getTextHeight(stringBounder: StringBounder): number {
+    return this.textBlock.calculateDimension(stringBounder).getHeight() + PAD_TOP + PAD_BOTTOM;
+  }
+
+  /** `symbolContext.getDeltaShadow()`. @see Style.java:277 */
+  private deltaShadow(): number {
+    return this.style.getShadowing();
+  }
+
+  /** @see EntityImageNoteLink.java:69-73, ComponentRoseNote.java:81-90 */
+  protected calculateDimensionSlow(stringBounder: StringBounder): XDimension2D {
+    const height = this.getTextHeight(stringBounder) + 2 * ROSE_NOTE_PADDING + this.deltaShadow();
+    const width = this.getTextWidth(stringBounder) + 2 * ROSE_NOTE_PADDING + this.deltaShadow();
+    return new XDimension2D(width, height);
+  }
+
+  /** `comp.drawU(ug, Area(dim), ...)`: `AbstractComponent#drawU` translates by the padding, then
+   *  `ComponentRoseNote#drawInternalU` with `diffX = 0`. @see ComponentRoseNote.java:97-133, AbstractComponent.java:142-149 */
+  drawU(ug: UGraphic): void {
+    const stringBounder = ug.getStringBounder();
+    const padded = ug.apply(new UTranslate(ROSE_NOTE_PADDING, ROSE_NOTE_PADDING));
+    const textHeight = Math.trunc(this.getTextHeight(stringBounder));
+    const x2 = Math.trunc(this.getTextWidth(stringBounder));
+    const roundCorner = this.style.value('RoundCorner').asInt();
+    const set = this.skinParam.getIHtmlColorSet();
+    const back = colorsGetColor(this.colors, this.style, 'BackGroundColor', set);
+    const fore = colorsGetColor(this.colors, this.style, 'LineColor', set);
+    const polygon = polygonNormal(x2, textHeight, roundCorner, OPALE_CORNERSIZE);
+    polygon.setDeltaShadow(this.deltaShadow());
+    const ug1 = applyFore(applyBack(padded, back), fore).apply(this.style.getStroke());
+    ug1.draw(polygon);
+    ug1.draw(corner(x2, roundCorner, OPALE_CORNERSIZE));
+    const stencil = {
+      getStartingX: (_sb: StringBounder, _y: number): number => 0,
+      getEndingX: (sb: StringBounder, _y: number): number => this.getTextWidth(sb),
+    };
+    const ug2 = UGraphicStencil.create(ug1, stencil, UStroke.simple());
+    this.textBlock.drawU(ug2.apply(new UTranslate(PAD_LEFT, PAD_TOP)));
+  }
+
+  /** @see EntityImageNoteLink.java:79-81 */
+  getShapeType(): ShapeType {
+    return ShapeType.RECTANGLE;
+  }
 }

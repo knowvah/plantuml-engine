@@ -794,7 +794,13 @@ describe('routing conformance — jar-error classification', () => {
     // 10067 -> 10073 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
     // 10073 -> 10074 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
     // 10074 -> 10083 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
-    expect(pinnedAgree.length).toBe(10083);
+    // 10083 -> 10194 at laep/T3a (2026-11-07): 111 legacy `(*) -->` rows flip to agree, the legacy
+    // ActivityDiagramFactory is registered at PSystemBuilder.java:137. Derivation: 10083 + 111 = 10194.
+    // 10194 -> 10198 at laep/T3b-1 (2026-11-07): the 4 note-on-link rows flip to agree. Derivation: 10194 + 4 = 10198.
+    // 10198 -> 10200 at laep/T3b-2 (2026-11-07): the 2 swimlane rows flip to agree. Derivation: 10198 + 2 = 10200.
+    // 10200 -> 10201 at laep/T3b-4 (2026-11-07): radute-87-nize199 flips to agree. Derivation: 10200 + 1 = 10201.
+    // 10201 -> 10325 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones of agree rows. Derivation: 10201 + 124 = 10325.
+    expect(pinnedAgree.length).toBe(10325);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -810,7 +816,11 @@ describe('routing conformance — jar-error classification', () => {
     // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
     // 490 -> 480 at aar/T1b (2026-11-06): 10 activity3 parser gaps close (fuficu-36 ... zugoco-10).
     // 480 -> 478 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 (stale ubt pins) flip to agree.
-    expect(pinnedMisroutes.length).toBe(478);
+    // 478 -> 367 at laep/T3a (2026-11-07): the same 111 legacy rows. Derivation: 478 - 111 = 367.
+    // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows. Derivation: 367 - 4 = 363.
+    // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows. Derivation: 363 - 2 = 361.
+    // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row. Derivation: 361 - 1 = 360.
+    expect(pinnedMisroutes.length).toBe(360);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -908,7 +918,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10707 -> 10713 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
     // 10713 -> 10714 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
     // 10714 -> 10723 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
-    expect(manifest.fixtures.length).toBe(10723);
+    // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
+    expect(manifest.fixtures.length).toBe(10847);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -991,7 +1002,11 @@ describe('routing conformance — jar-error classification', () => {
     // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
     // 490 -> 480 at aar/T1b (2026-11-06): 10 activity3 parser gaps close.
     // 480 -> 478 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 flip to agree.
-    expect(censused.length).toBe(478);
+    // 478 -> 367 at laep/T3a (2026-11-07): 111 legacy rows flip to agree.
+    // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows.
+    // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows.
+    // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row.
+    expect(censused.length).toBe(360);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

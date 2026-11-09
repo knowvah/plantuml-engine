@@ -1,0 +1,5 @@
+@startuml
+(*) --> A
+A --> B in P2
+B --> (*)
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+<style>
+activityDiagram {
+  partition { BackgroundColor #FFEEAA
+    LineColor #AA0000 }
+}
+</style>
+partition P {
+}
+(*) --> A
+A --> (*)
+@enduml
