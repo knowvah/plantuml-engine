@@ -1,0 +1,6 @@
+@startuml
+skinparam defaultFontColor #00AA00
+actor U
+U --> (x)
+note left of U : n
+@enduml

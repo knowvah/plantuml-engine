@@ -1,0 +1,9 @@
+@startuml
+<style>
+element { FontColor transparent }
+</style>
+start
+:a;
+note right: n
+stop
+@enduml

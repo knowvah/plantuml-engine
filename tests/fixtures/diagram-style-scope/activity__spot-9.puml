@@ -1,0 +1,7 @@
+@startuml
+:a;
+(9)
+detach
+(9)
+:b;
+@enduml

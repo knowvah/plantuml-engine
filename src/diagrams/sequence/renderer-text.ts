@@ -42,7 +42,7 @@ import { SvgAttributes } from '../../core/klimt/SvgAttributes.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { UImage } from '../../core/klimt/shape/UImage.js';
 import { FontStyle, UText, type FontConfiguration } from '../../core/klimt/shape/UText.js';
-import type { TextRun } from './text-block-geo.js';
+import { TRANSPARENT_SVG, type TextRun } from './text-block-geo.js';
 
 /** What a run falls back to where creole set nothing: the block's font and
  *  ink (`DriverTextSvg#draw` reads one `FontConfiguration` per `UText`,
@@ -115,6 +115,11 @@ function svgAttributesOf(run: TextRun): SvgAttributes | undefined {
   return [...run.svgAttributes].reduce((all, [name, value]) => all.add(name, value), SvgAttributes.empty());
 }
 
+/** {@link TRANSPARENT_SVG} as the driver's transparent font colour, `null`. */
+function transparentToNull(color: string): string | null {
+  return color === TRANSPARENT_SVG ? null : color;
+}
+
 /**
  * The `FontConfiguration` `DriverTextSvg#draw` read the run's fields off, as
  * far as the draw depends on it (module header, "The `FontConfiguration` is
@@ -126,7 +131,8 @@ export function fontConfigurationOf(run: TextRun, ambient: RunAmbient): FontConf
   return {
     family: run.fontFamily ?? ambient.fontFamily,
     size: run.fontSize ?? ambient.fontSize,
-    color: run.color ?? ambient.color,
+    // `HColors.transparent()` draws no `<text>` (`DriverTextSvg.java:92-93`): `null` is the driver's transparent.
+    color: transparentToNull(run.color ?? ambient.color),
     styles: stylesOf(run, ambient),
     ...(run.fontWeight === undefined ? {} : { fontFace: { cssWeight: Number(run.fontWeight), italic: false } }),
     ...(extendedColor === undefined ? {} : { extendedColor }),

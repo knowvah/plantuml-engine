@@ -1,0 +1,4 @@
+@startuml
+skinparam stateStereotypeFontColor #0000FF
+state S <<s>>
+@enduml

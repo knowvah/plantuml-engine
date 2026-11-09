@@ -5,7 +5,8 @@ import { TileComposite } from './tile.js';
 import type { DiamondConditionTile } from './gtile-diamond-inside.js';
 import type { Theme } from '../../../core/theme.js';
 import { HEXAGON_HALF_SIZE } from '../layout/hexagon-reservations.js';
-import { activityFontSize } from '../activity-style-defaults.js';
+import { measureSide } from './gtile-diamond-inside.js';
+import { CreoleMode } from '../../../core/klimt/creole/CreoleMode.js';
 
 /**
  * `bounder`/`theme` are bundled into one trailing object solely to keep
@@ -25,6 +26,13 @@ export interface GtileWhileContext {
    *  via `WhileFrame`. Unread when {@link backward} is unset. */
   readonly backIncoming?: string | undefined;
   readonly backOutgoing?: string | undefined;
+  /** `incoming1.getRainbow()` (`FtileWhile.java:151,155`) when no `backward:` set it: the pending `-[#c]->` before
+   *  `endwhile` (aar-T2a), drawn on `ConnectionBackSimple`/`ConnectionBackEmpty`. */
+  readonly backIncomingColor?: string | undefined;
+  /** `incoming2.getRainbow(...)`: `backward:`'s trailing `(-[#c]->...)` (aar-T2a). */
+  readonly backOutgoingColor?: string | undefined;
+  /** `outColor.getRainbow()`: `ConnectionOut`/`ConnectionOutSpecial`'s colour (`FtileWhile.java:163-166`, aar-T2a). */
+  readonly outColor?: string | undefined;
   /**
    * `FtileWhile`'s own `specialOut` field (`FtileWhile.java:84,120,143-
    * 144,163-166`): a bare `stop`/`end` immediately after this while's
@@ -103,6 +111,9 @@ export class GtileWhile extends TileComposite {
    *  carried onto the instance. */
   readonly backIncoming: string | undefined;
   readonly backOutgoing: string | undefined;
+  readonly backIncomingColor: string | undefined;
+  readonly backOutgoingColor: string | undefined;
+  readonly outColor: string | undefined;
   /** `getTranslateBackward`'s `x`/`y` (`FtileWhile.java:566-573`): `x =
    *  dimTotal.width - backward.width`, `y = (dimTotal.height -
    *  backward.height) / 2` -- flush to the tile's own right edge,
@@ -158,10 +169,16 @@ export class GtileWhile extends TileComposite {
     this.backward = ctx.backward;
     this.backIncoming = ctx.backIncoming;
     this.backOutgoing = ctx.backOutgoing;
+    this.backIncomingColor = ctx.backIncomingColor;
+    this.backOutgoingColor = ctx.backOutgoingColor;
+    this.outColor = ctx.outColor;
     this.specialOut = ctx.specialOut;
+    // `back1 = incoming1.getDisplay().create(fontArrow, LEFT, skinParam)` (`FtileWhile.java:147`, `Display#create` is
+    // `create7(..., CreoleMode.FULL)`): the whole block,
+    // every line of a multi-line label (aar-T2a, `liteta-29-zufa478`), not one raw string.
     this.labelHeight =
       ctx.backIncoming !== undefined && ctx.backIncoming !== ''
-        ? ctx.bounder.getDimension(ctx.backIncoming, activityFontSize(ctx.theme, 'arrow')).height
+        ? measureSide(ctx.backIncoming, ctx.bounder, ctx.theme, CreoleMode.FULL).height
         : 0;
     this.headerInY = header.getCoord(NORTH_HOOK).y;
     const headerLeft = header.getCoord(NORTH_HOOK).x;

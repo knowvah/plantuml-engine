@@ -1,4 +1,7 @@
 import { Url } from './Url.js';
+import { RegexLeaf } from '../regex/RegexLeaf.js';
+import { RegexOptional } from '../regex/RegexOptional.js';
+import { transform } from '../regex/Pattern2.js';
 import { UrlMode } from './UrlMode.js';
 
 /**
@@ -12,14 +15,10 @@ import { UrlMode } from './UrlMode.js';
  * the ... parsing that calls it" — that caller is SI1/T7's
  * `cucadiagram/Member.ts` (Member.java:93/:115).
  *
- * ## Deferred (journaled — SI1 decision journal, T7)
+ * ## Command-grammar constants
  *
- * `MANDATORY`/`OPTIONAL` (java:48-49) are `IRegex` values built from
- * `RegexLeaf`/`RegexOptional` — the `net.sourceforge.plantuml.regex`
- * command-grammar composer, which this port has not ported anywhere
- * (`stereo/StereotypeDecoration.ts`'s module doc records the same
- * omission). Their only consumers are command classes outside SI1's
- * scope; they land with whichever mission ports the composer.
+ * `MANDATORY`/`OPTIONAL` (java:48-49) are `RegexLeaf`/`RegexOptional` values of the regex composer
+ * (`src/core/regex/`, ported by laep T1b for `CommandLinkActivity`).
  *
  * ## Pattern2 translation
  *
@@ -38,22 +37,10 @@ import { UrlMode } from './UrlMode.js';
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/url/UrlBuilder.java
  */
 
-/** `Pattern2`'s `%`-token substitution table (regex/Pattern2.java:51-61,
- *  non-TeaVM branch; `%g`'s trailing char is `Jaws.BLOCK_E1_INVISIBLE_QUOTE`,
- *  jaws/Jaws.java:55). Exported for `cucadiagram/Member.ts`'s own
- *  `Pattern2.cmpile` translation.
+/** `Pattern2.transform` lives with `Pattern2` (`../regex/Pattern2.ts`, so the regex composer can use it without an import
+ *  cycle through this file); re-exported for its existing importers.
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/Pattern2.java (transform) */
-const QUOTED_REPLACEMENTS: Readonly<Record<string, string>> = {
-  pLN: '\\p{L}\\p{N}',
-  s: '\\s\\u00A0',
-  q: "'\\u2018\\u2019",
-  g: '"\\u201C\\u201D\\uE121',
-};
-
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/Pattern2.java (TRANSFORM_PATTERN + transform) */
-export function transform(patternString: string): string {
-  return patternString.replace(/%(pLN|s|q|g)/g, (_m, key: string) => QUOTED_REPLACEMENTS[key] as string);
-}
+export { transform };
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/url/UrlBuilder.java:46 */
 export const URL_KEY = 'URL';
@@ -115,6 +102,13 @@ export function getRegexp(): string {
     S_LINK_WITH_OPTIONAL_TOOLTIP_WITH_OPTIONAL_LABEL
   );
 }
+
+/** `new RegexLeaf(12, URL_KEY, "(" + getRegexp() + ")")`: 1 outer group plus 3+1+2+2+3 of the five alternatives.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/url/UrlBuilder.java:48 */
+export const MANDATORY: RegexLeaf = new RegexLeaf(12, URL_KEY, '(' + getRegexp() + ')');
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/url/UrlBuilder.java:49 */
+export const OPTIONAL: RegexOptional = new RegexOptional(MANDATORY);
 
 /** One `Pattern2` compiled both ways: `anchored` backs `Matcher#matches`
  *  (STRICT), `anywhere` backs `Matcher#find` (ANYWHERE) — the `(?:...)`

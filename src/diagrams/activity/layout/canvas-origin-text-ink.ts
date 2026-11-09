@@ -19,8 +19,10 @@ import { TextBlockUtils } from '../../../core/klimt/shape/TextBlockUtils.js';
 import { klimtStringBounder } from '../activity-creole-sheet.js';
 import { activityMeasurer } from '../activity-string-bounder.js';
 
+import { withActivityBox } from '../activity-box-theme.js';
+import { EmojiBoxBlock, emojiBoxBlocks, emojiBoxBounder } from '../activity-box-emoji.js';
 import { TITLE_ASCENT_FRACTION } from './swimlane-placement.js';
-import { DEFAULT_LABEL_ALIGN, getTextBlockPosition } from './snake-text-position.js';
+import { arrowHorizontalAlignment, getTextBlockPosition } from './snake-text-position.js';
 import type { MutableInkBounds } from './canvas-origin.js';
 
 /**
@@ -131,7 +133,7 @@ export function extendForLaneDivider(
  * floating outside it) -- this is the WIDER mechanism that makes that
  * true in both axes, not just X.
  */
-export function extendForEdgeLabelText(acc: MutableInkBounds, edge: ActivityEdgeGeo, theme: Theme): void {
+export function extendForEdgeLabelText(acc: MutableInkBounds, edge: ActivityEdgeGeo, theme: Theme, labelDx = 0): void {
   // No `labelAlign` = the jar's default `arrowHorizontalAlignment()`, LEFT
   // (`AbstractFtile.java:108-110`, `AlignmentParam.java:42`); the renderer
   // resolves the SAME default, so ink and draw agree.
@@ -146,10 +148,26 @@ export function extendForEdgeLabelText(acc: MutableInkBounds, edge: ActivityEdge
   const sb = klimtStringBounder(activityMeasurer(theme), { family: fc.family, size: fc.size });
   const tb = edgeLabelBlock(edge.label, theme, wrapped);
   const dim = edgeLabelBlockSize(edge.label, theme, undefined, wrapped);
-  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? DEFAULT_LABEL_ALIGN);
+  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? arrowHorizontalAlignment(theme));
   const mm = TextBlockUtils.getMinMax(tb, sb, false);
-  acc.minX = Math.min(acc.minX, position.x + mm.getMinX());
-  acc.maxX = Math.max(acc.maxX, position.x + mm.getMaxX());
+  // `Snake#drawRainbow` draws the label through `ug.apply(textTranslate)` (`Snake.java:222-223`).
+  acc.minX = Math.min(acc.minX, position.x + labelDx + mm.getMinX());
+  acc.maxX = Math.max(acc.maxX, position.x + labelDx + mm.getMaxX());
   acc.minY = Math.min(acc.minY, position.y + mm.getMinY());
   acc.maxY = Math.max(acc.maxY, position.y + mm.getMaxY());
+}
+
+/**
+ * An `<<icon>>` box (`FtileBoxEmoji#drawU`) draws no outline: its ink is its emoji and name blocks', as
+ * `LimitFinder` (`klimt/drawing/LimitFinder.java`) records them.
+ * @see net/sourceforge/plantuml/activitydiagram3/ftile/vertical/FtileBoxEmoji.java:134-153
+ */
+export function extendForEmojiBox(acc: MutableInkBounds, node: ActivityNodeGeo, theme: Theme): void {
+  const boxTheme = withActivityBox(theme, node.boxStyle);
+  const tb = new EmojiBoxBlock(emojiBoxBlocks(node.label ?? '', boxTheme));
+  const mm = TextBlockUtils.getMinMax(tb, emojiBoxBounder(boxTheme), false);
+  acc.minX = Math.min(acc.minX, node.x + mm.getMinX());
+  acc.maxX = Math.max(acc.maxX, node.x + mm.getMaxX());
+  acc.minY = Math.min(acc.minY, node.y + mm.getMinY());
+  acc.maxY = Math.max(acc.maxY, node.y + mm.getMaxY());
 }

@@ -1,0 +1,6 @@
+@startuml
+(*) --> StartingActivity in "First partition"
+--> "Other activity"
+--> "Last activity" in "Last Partition"
+
+@enduml

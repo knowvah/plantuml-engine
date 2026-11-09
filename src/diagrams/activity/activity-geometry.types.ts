@@ -13,6 +13,7 @@ import type { SnakeTextAlign } from './layout/snake-text-position.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { Style } from '../../core/style/Style.js';
+import type { ActivityDiamondStyle } from '../../core/activity-diamond-style.js';
 
 // ---------------------------------------------------------------------------
 // Public geometry types
@@ -21,11 +22,27 @@ import type { Style } from '../../core/style/Style.js';
 export interface ActivityNodeGeo {
   id: string;
   kind: string;
+  /** The raw `[[url]]` an `FtileWithUrl` draws this node inside (`FtileWithUrl.java:56-60`); consecutive nodes
+   *  sharing it render inside one `<a>`. */
+  url?: string;
+  /** A terminal circle's stereogroup `line:` colour (`start <<#c;line:red>>`). */
+  lineColor?: string;
+  /** An action box's stereogroup `text:` colour (`text:red`), its `FontColor`. */
+  textColor?: string;
   label?: string;
   color?: string;
   stereotype?: string;
   /** The box's ONE merged style (`activity-box-theme.ts`), absent where the flat tiers hold its values. */
   boxStyle?: Style;
+  /** An `<<icon>>` box (`FtileBoxEmoji`): no outline, the label drawn as emoji + name blocks. */
+  emojiBox?: boolean;
+  /** A group frame's merged style (`CommandPartition3.java:160-161`), absent where the flat tiers hold its values. */
+  compositeStyle?: Style;
+  /** The opener's document line, on the nodes of an `if`/`while`/`repeat`: its diamonds read the builder current there
+   *  (`layout/style-position.ts`). */
+  position?: number;
+  /** The diamond's merged style at that opener (`FtileFactoryDelegatorIf.java:79-80`), when it reads other than the flat tiers. */
+  diamondStyle?: ActivityDiamondStyle;
   x: number;
   y: number;
   width: number;
@@ -96,6 +113,15 @@ export interface ActivityNodeGeo {
    * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/ParallelBuilderMerge.java:96-101
    */
   diamondSName?: 'activity';
+  /**
+   * aar-T6b: how far compression moved each shape of a `group`/`partition` frame title off the rigid translate the
+   * frame rect took, in draw order. The plain branch draws the title through `UGraphicCompressOnXorY` (`USymbolFrame
+   * .java:153-154`), which maps every non-line shape by `ct()` of its own draw point
+   * (`klimt/compress/UGraphicCompressOnXorY.java:107-108`), so a sprite's shapes move one by one. Set by
+   * `compress/frame-title-deltas.ts`; read by `activity-renderer-composite.ts`. Absent = every delta zero.
+   * @see net/sourceforge/plantuml/klimt/compress/UGraphicCompressOnXorY.java:100-135
+   */
+  titleShapeDeltas?: Array<{ dx: number; dy: number }>;
 }
 
 /** The three container keywords that do NOT draw a `USymbolFrame`:
@@ -197,6 +223,16 @@ export interface ActivityEdgeGeo {
    * compress axes by `transformEdge`, same as {@link midArrowAt}.
    */
   emphasizeAt?: { x: number; y: number };
+  /**
+   * aar-T6b: a rainbow arrow's worm copies already through the compressing `UGraphic`. `Snake#drawRainbow`
+   * mutates the RAW worm (`Worm#moveFirstPoint`, `WormMutation#mute`) and every copy is drawn through the
+   * `ct()` of `UGraphicCompressOnXorY#drawLine`, so mutating the compressed {@link points} instead differs
+   * wherever compression removed part of the offset. Set by `compress-geometry.ts#withRainbowCopies`, one
+   * point list per colour in `Snake#drawRainbow`'s order; read by `activity-rainbow.ts#planEdgeDraw`.
+   * @see net/sourceforge/plantuml/activitydiagram3/ftile/Snake.java:200-224
+   * @see net/sourceforge/plantuml/klimt/compress/UGraphicCompressOnXorY.java:130-135
+   */
+  rainbowCopies?: Array<Array<{ x: number; y: number }>>;
   /**
    * add4-T3a (R2): how far compression moved this edge's label off the
    * position `Snake#getTextBlockPosition` gives on `points`. Upstream places
@@ -303,6 +339,8 @@ export interface SwimlaneDividerY {
 }
 
 export interface ActivityGeometry {
+  /** {@link ActivityDiagramAST.colorArrowSeparationSpace}, carried to the renderer. */
+  colorArrowSeparationSpace?: number;
   totalWidth: number;
   totalHeight: number;
   nodes: ActivityNodeGeo[];

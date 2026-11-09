@@ -1,0 +1,12 @@
+@startuml
+!pragma kermor on
+skinparam swimlane true
+title T
+partition P {
+(*) --> A
+}
+partition Q {
+A --> B
+}
+B --> (*)
+@enduml

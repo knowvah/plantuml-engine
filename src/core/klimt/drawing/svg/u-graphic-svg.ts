@@ -215,6 +215,19 @@ export class UGraphicSvg extends AbstractCommonUGraphic {
     return result;
   }
 
+  /** `DriverTextSvg.java:126-127` reads `dim.getHeight()` off the real bounder:
+   *  the width stays the driver bounder's, the height is the measurer's. */
+  private textDriverBounder(): DriverStringBounder {
+    const driverBounder = this.stringBounder;
+    const measurer = this.measurer;
+    return {
+      calculateDimension(font, text) {
+        const width = driverBounder.calculateDimension(font, text).width;
+        return measurer === undefined ? { width } : { width, height: measurer.measure(text, font).height };
+      },
+    };
+  }
+
   private register(): void {
     this.registerDriver(asShapeCtor<URectangle>(URectangle), new DriverRectangleSvg(this.svg));
     this.registerDriver(UEllipse, new DriverEllipseSvg(this.svg));
@@ -223,7 +236,7 @@ export class UGraphicSvg extends AbstractCommonUGraphic {
     this.registerDriver(UPolygon, new DriverPolygonSvg(this.svg));
     this.registerDriver(UPath, new DriverPathSvg(this.svg));
     this.registerDriver(DotPath, new DriverDotPathSvg(this.svg));
-    this.registerDriver(asShapeCtor<UText>(UText), new DriverTextSvg(this.svg, this.stringBounder));
+    this.registerDriver(asShapeCtor<UText>(UText), new DriverTextSvg(this.svg, this.textDriverBounder()));
     // SI5b+E2r T7 write-set expansion (journaled, additive-only): sprite/img
     // inline-atom rendering (D7) needs a shape/driver upstream's own minimal
     // driver set (T1-T7 of the earlier klimt-SVG mission) never provisioned --

@@ -1,0 +1,8 @@
+@startuml
+start
+group G
+-[#blue]->
+:a;
+end group
+stop
+@enduml

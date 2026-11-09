@@ -1,0 +1,10 @@
+@startuml
+skinparam swimlane true
+partition P {
+(*) --> A
+}
+partition Q {
+A --> B
+}
+B --> (*)
+@enduml

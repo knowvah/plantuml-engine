@@ -1,0 +1,15 @@
+@startuml
+<style>
+activityDiagram {
+  diamond {
+    HorizontalAlignment center
+    BackgroundColor pink
+    Fontcolor red
+  }
+}
+</style>
+if (a\na a\na a a?) is (red) then
+:print red;
+else 
+:print not red;
+@enduml

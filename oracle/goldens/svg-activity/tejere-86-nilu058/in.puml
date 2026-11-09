@@ -1,0 +1,6 @@
+@startuml
+:<back:red>Comment1</back>;
+:<back:green>Comment2</back>;
+:<back:red>Comment3</back>;
+:<back:white>impacted font alias</back>, standard font alias ;
+@enduml

@@ -9,7 +9,7 @@
 import type { DotLayoutResult } from '../../core/graph-layout.js';
 import type { RectangleArea } from '../../core/svek/FrontierCalculator.js';
 import type { PortClusterInfo } from './frontier-cluster-bbox.js';
-import { type Bbox, type DescriptionNodeGeo, type KermorNotesGeo } from './layout-helpers.js';
+import { type Bbox, type DescriptionNodeGeo, type KermorNoteGeo, type KermorNotesGeo } from './layout-helpers.js';
 import { kermorNoteClusterId, type KermorNoteSlot } from '../../core/graph-layout-build-kermor.js';
 import type { ClassifyCtx } from './layout-types.js';
 import type { ClusterTitleDims } from './layout-dot-tree.js';
@@ -84,11 +84,12 @@ function kermorNoteAt(
   byClusterId: ReadonlyMap<string, NonNullable<DotLayoutResult['clusters']>[number]>,
   clusterId: string,
   slot: KermorNoteSlot,
-  text: string | undefined,
-): { text: string; x: number; y: number } | undefined {
+  note: { text: string | undefined; color: string | undefined },
+): KermorNoteGeo | undefined {
   const label = byClusterId.get(kermorNoteClusterId(clusterId, slot))?.label;
-  if (text === undefined || label === undefined) return undefined;
-  return { text, x: label.x - label.width / 2, y: label.y - label.height / 2 };
+  if (note.text === undefined || label === undefined) return undefined;
+  const at = { text: note.text, x: label.x - label.width / 2, y: label.y - label.height / 2 };
+  return note.color === undefined ? at : { ...at, color: note.color };
 }
 
 /**
@@ -101,8 +102,12 @@ export function kermorNotesByAstId(ctx: ClassifyCtx, result: DotLayoutResult): M
   const out = new Map<string, KermorNotesGeo>();
   for (const c of ctx.containers) {
     if (c.kermorNotes === undefined || byClusterId.get(c.clusterId)?.label === undefined) continue;
-    const top = kermorNoteAt(byClusterId, c.clusterId, 'top', c.kermorNotes.top);
-    const bottom = kermorNoteAt(byClusterId, c.clusterId, 'bottom', c.kermorNotes.bottom);
+    const colors = c.kermorNoteColors;
+    const top = kermorNoteAt(byClusterId, c.clusterId, 'top', { text: c.kermorNotes.top, color: colors?.top });
+    const bottom = kermorNoteAt(byClusterId, c.clusterId, 'bottom', {
+      text: c.kermorNotes.bottom,
+      color: colors?.bottom,
+    });
     if (top !== undefined || bottom !== undefined) {
       out.set(c.astId, { ...(top === undefined ? {} : { top }), ...(bottom === undefined ? {} : { bottom }) });
     }

@@ -18,6 +18,7 @@ import { setErrorPageObserver } from '../../src/core/error/error-renderer.js';
 import { DeterministicMeasurer } from '../../src/core/measurer-deterministic.js';
 import { listArchimateSpritesPlugin } from '../../src/core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
 import { activityPlugin } from '../../src/diagrams/activity/index.js';
+import { activityLegacyPlugin } from '../../src/diagrams/activity-legacy/index.js';
 import { boardPlugin } from '../../src/diagrams/board/index.js';
 import { chartPlugin } from '../../src/diagrams/chart/index.js';
 import { chronologyPlugin } from '../../src/diagrams/chronology/index.js';
@@ -69,6 +70,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [colorsPlugin, 134],
   [sequencePlugin, 135],
   [classPlugin, 136],
+  [activityLegacyPlugin, 137],
   [descriptionPlugin, 138],
   [statePlugin, 139],
   [activityPlugin, 140], // ActivityDiagramFactory3 (src/index.ts order comment)

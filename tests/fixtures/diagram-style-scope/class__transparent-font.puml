@@ -1,0 +1,7 @@
+@startuml
+<style>
+element { FontColor transparent }
+</style>
+class A
+note left of A : n
+@enduml

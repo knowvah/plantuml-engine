@@ -1,0 +1,12 @@
+@startuml
+start
+repeat
+  :taskA;
+  -> dataaaa;
+  if (check) is (OK) then
+    break;
+  else (NG)
+  endif
+repeat while (retry?) is (true) not (false)
+stop
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+<style>
+title { FontColor #FF0000 }
+</style>
+package P {
+  [a]
+}
+rectangle R {
+  [b]
+}
+@enduml

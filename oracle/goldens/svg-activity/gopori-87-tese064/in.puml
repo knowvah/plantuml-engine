@@ -1,0 +1,13 @@
+@startuml
+start
+switch (test?)
+case ( condition A )
+  :Text 1;
+-[#red]->
+case ( <color:red>condition C )
+-[#blue]-> Long text C;
+case ( condition E )
+  :Text E;
+endswitch
+stop
+@enduml

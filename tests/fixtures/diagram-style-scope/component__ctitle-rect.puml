@@ -1,0 +1,8 @@
+@startuml
+<style>
+rectangle { title { FontColor #FF0000 } }
+</style>
+rectangle R {
+  [b]
+}
+@enduml

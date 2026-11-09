@@ -1,0 +1,7 @@
+@startuml
+!pragma kermor on
+component C {
+  [x]
+}
+note bottom of C #pink : n
+@enduml

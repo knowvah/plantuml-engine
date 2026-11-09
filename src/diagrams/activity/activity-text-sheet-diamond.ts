@@ -76,7 +76,9 @@ export function diamondTestBlock(label: string, theme: Theme, wrapped = false): 
   const fc = activityTextFontConfiguration(theme, activityFontSize(theme, 'diamond'), 'diamond');
   const sheet = activitySheet(label, theme, {
     fontConfiguration: fc,
-    horizontalAlignment: ALIGNMENT_MAP[activityHorizontalAlignment(theme)],
+    // `styleDiamond.getHorizontalAlignment()` (`ConditionalBuilder.java:241`): the diamond signature's own value,
+    // else the merged `root` one (`plantuml.skin:12`).
+    horizontalAlignment: ALIGNMENT_MAP[activityHorizontalAlignment(theme, 'diamond')],
     creoleMode: CreoleMode.FULL,
   });
   const lineBreak = wrapped ? activityWrapWidth(theme, 'diamond') : LineBreakStrategy.NONE;

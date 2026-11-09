@@ -18,11 +18,12 @@
  * and the `:` (`StereotypePattern.optional("STEREO")`, `CommandNote3.java:69`).
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandNote3.java:60-71
  *   -- `TYPE (note|floating note)`, `POSITION (left|right)?`,
- *   `color().getRegex()`, then the literal `:`.
+ *   `color().getRegex()`, then the literal `:`, then `NOTE (.*)` (`:81`): an
+ *   empty note text matches (aar-T1b, `nabako-16-gefo071`'s `floating note: `).
  * @see net/sourceforge/plantuml/klimt/color/ColorParser.java:43-46
  */
 export const RE_NOTE_SINGLE =
-  /^(?:(floating)\s+)?note(?:\s+(left|right))?\s*(#\w+[-\\|/]?\w+)?\s*(?<stereo><<.+?>>)?\s*:\s*(?<text>.+)$/i;
+  /^(?:(floating)\s+)?note(?:\s+(left|right))?\s*(#\w+[-\\|/]?\w+)?\s*(?<stereo><<.+?>>)?\s*:\s*(?<text>.*)$/i;
 
 /**
  * `(floating )?note (left|right)?` (multi-line, closed by {@link

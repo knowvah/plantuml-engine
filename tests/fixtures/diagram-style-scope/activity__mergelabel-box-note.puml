@@ -1,0 +1,6 @@
+@startuml
+:a;
+-> x;
+:b;
+note right: n
+@enduml

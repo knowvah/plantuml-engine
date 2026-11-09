@@ -1,0 +1,8 @@
+@startuml
+<style>
+package { title { FontColor #FF0000 } }
+</style>
+package P {
+  [a]
+}
+@enduml

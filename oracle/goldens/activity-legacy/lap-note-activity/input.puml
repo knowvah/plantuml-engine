@@ -1,0 +1,10 @@
+@startuml
+(*) --> A
+note right: a note
+A --> B
+note left
+  multi
+  line
+end note
+B --> (*)
+@enduml

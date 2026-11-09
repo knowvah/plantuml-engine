@@ -1,0 +1,10 @@
+@startuml
+skinparam mode dark
+(*) --> A
+A --> if "x?" then
+--> B
+else
+--> C
+endif
+B --> (*)
+@enduml

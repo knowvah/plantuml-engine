@@ -1,0 +1,7 @@
+@startuml
+<style>
+root { FontColor #FF0000 }
+</style>
+actor U <<s>>
+U --> (x)
+@enduml

@@ -213,6 +213,11 @@ conformance bars, rather than silently excluding them from the denominator.
 baseline is now component 253/262, usecase 84/90, class 708/708, object
 78/80, state 266/267 with oracle-blind reduced to the elk residue.*
 
+**Legacy activity (2026-11-09, laep):** the authored fixture
+`tests/fixtures/activity-legacy/pragma-smetana` (16 diffs, height 174 against
+the jar's 180) is this entry's delta on the legacy activity engine
+(`CucaDiagram.java:478-479`); it is recorded, not chased.
+
 **Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
 pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
 against 262x161). Their node order is mirrored
@@ -361,6 +366,752 @@ fixture is a portable gap tracked by a sub-mission, not a divergence.
 
 ## Output format
 
+**Activity rows named here (aar-T5c, 2026-11-06, D5).** Every remaining diff of these three corpus rows follows from
+the `<latex>` image's size alone: the image `width`/`height`, the box around it (image + the activity padding), and
+every x/y the wider or taller box shifts; no padding, font or structure diff remains.
+`bigobe-53-denu394` (16; image 170×51 vs the jar's 153×47), `xexuxu-81-kuni702` (16; 531.25×159.375 vs
+478.125×146.875), `xuzovi-55-doze473` (16; 680×204 vs 612×188). Two other `<latex>` rows are NOT named here because
+their diffs did not follow from image size: `pedulu-06-xomo122` (a 2 px y offset with identical image sizes) and
+`cepivu-60-lobe416` (our image was an 8×8 error box for `set $x = \sqrt{y+z}$ and $i = 1# Intentional Divergences from Upstream PlantUML
+
+Upstream behavior is preserved by default. Entries here are deliberate
+exceptions — places where this port produces different output for a
+documented reason. Each entry records what changed, why, and the category
+of divergence so reviewers can judge whether to adopt, revert, or escalate.
+
+Categories:
+- **clarity** — same information, presented more clearly
+- **aesthetic** — visual improvement with no semantic change
+- **limitation** — upstream has a known gap; we fill it
+
+---
+
+## General
+
+### Smetana-backed diagram types — laid out by dot-engine, geometry differs (measured: graphviz 2.38 vs modern arithmetic)
+
+**Standing decision (maintainer, 2026-08-09), not a per-case exception.** See
+the project README, "Layout: one engine, always", and CLAUDE.md. For the history,
+see [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
+
+**Upstream:** uses two layout implementations. Most diagram types shell out to a
+real graphviz binary; `@startjson`, `@startyaml`, `@starthcl` (all three via
+`jsondiagram/SmetanaForJson.java`), `@startgit` (`gitlog/SmetanaForGit.java`)
+and any `!pragma layout smetana` diagram use **Smetana**, its in-JVM Java
+transpile of graphviz. None of those shells out, which is why the jar emits no
+`svek-N.dot` for them and why they have no DOT-parity gate here.
+
+**This port:** uses `@knowvah/dot-engine` for all layout, including these.
+
+**Reason:** one layout implementation rather than two. Keeping agreement with
+both would mean two sets of layout behaviour to reason about, test and fix.
+dot-engine is a port of the graphviz C that this project maintains and
+publishes, so it is also the one we can change. Smetana is additionally awkward
+as a porting target on mechanics: it cannot measure text the way graphviz does,
+so `SmetanaForJson` smuggles cell dimensions through a `_dim_` sentinel in the
+record label (decoded by `smetana/core/Macro.java#hackInitDimensionFromLabel`) —
+behaviour that exists to work around a constraint this port does not have.
+
+**Affects:** edge routing and node spacing on the types above. Diagram
+structure, element set, labels, colours and node sizing are unaffected and
+remain held to upstream. **Priority on these types is readability first, SVG
+fidelity to upstream second** — an ordering that is inverted from every other
+diagram type and applies only to this closed set.
+
+**Worked example (A5/T7).** graphviz pads every `shape=record` field — `XPAD`
+= 4·GAP = 16 and `YPAD` = 2·GAP = 8 (`graphviz/lib/common/macros.h:27-29`).
+Upstream compensates only the `YPAD` half (`SmetanaForJson`'s `colAwidth - 8`),
+which is right *for Smetana*, because Smetana does not apply `XPAD`. This port
+compensates both, because its engine applies both — verified against the
+installed `dot` 15.1.1, which returns byte-identical record geometry for the
+same label. Result: same-rank sibling spacing differs from the jar, while
+child-to-parent-row alignment measures closer here (mean |Δy| 64.34 vs 73.92
+without ports, over 277 edges).
+
+
+**Measured result (json-family-parity, 2026-10-30).** Every non-conformant
+json/yaml/hcl row (json 36, yaml 32, hcl 2) was diagnosed to its mechanism
+(`plans/json-family-parity/diagnosis/ledger.md`; D3 proof standard in that
+mission's `decisions.md`): our engine INPUT equals the jar's, and dot-engine
+equals real `dot -Tdot` 16.1.0 on that input. The upstream placement arithmetic
+(`SmetanaForJson#getPosition` + `Mirror`, `:97-102,158-215`) is now ported
+literally (`src/diagrams/json/json-node-position.ts`) — it changed no byte,
+because the root is alone in rank 0 so graphviz's bounding box already IS the
+jar's `max`. Two port-controlled defects were fixed (`scale` applied at emit;
+an empty container's engine size from `calculateDimension`); json-family-followons
+(2026-10-30) then moved `scale` onto the chromed block, as `UgDiagram#getExporter`
+→ `TextBlockExporter#exportTo` does (`UgDiagram.java:123-131`,
+`TextBlockExporter.java:159-177`), so a title scales with the body and
+`scale max` reads the titled, margined width. What remains is
+graphviz 2.38 (Smetana) vs modern graphviz arithmetic, four named sources:
+
+| source | Smetana (2.38) | graphviz (dot-engine, 16.1.0) | graphviz change |
+|---|---|---|---|
+| U-REC record size | `record_init` rounds the declared size (`shapes__c.java:1807-1808`, `POINTS`), no field PAD (`:1636-1644`) | unrounded `INCH2PS` (`shapes.c:3688-3689`) | `aee7eda7d` (8.0.4) |
+| U-CLIP spline clip | `bezier_clip` keeps the last point OUTSIDE (`splines__c.java:213-220`) | last point INSIDE (`splines.c:136-142`) | `b03040389` (7.0.0) |
+| U-ARROW arrow length | 10·0.75 = 7.5 (`arrows__c.java:231-248`) | penwidth-aware ≈ 9.0 (`arrows.c:1190-1227`) | `cfb1cc1a3` (7.0.0) |
+| U-NS in-rank position | network-simplex result (tie-sensitive) | same algorithm, different ties | — (D3 only) |
+
+Plus two smaller items, measured and left by ruling: the empty-container
+**label** half (the jar sets no label, `SmetanaForJson.java:253-254`; Smetana
+sizes the default `\N` as (0,16) with no PAD, `labels__c.java:119-122`, while
+graphviz sizes it as the node name + PAD — omitting the label here also needs a
+`src/core/` change and measured worse; closed without code, json-family-followons
+D2: the explicit `''` label already reproduces Smetana's outcome, no text extent,
+where the labelless call would import a node-name width Smetana never computes), and 6-dp inch strings in core's
+`inches()` (`svek-dot-emit-clusters.ts:33` vs the jar's full-precision
+`"" + dim/72`, `SmetanaForJson.java:235-236`; json/kusule + 10 rows by ≤ 1 pt).
+Magnitudes (positional ceiling `oracle/goldens/json-family-positional.json`,
+max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligned rows; in-rank
+(U-NS) up to 127 px (json/nofuvo-36-muxe040); the gate is shrink-only.
+
+<details><summary>Row-level table (70 rows)</summary>
+
+| row | residue (node / path / dw / dh) | mechanisms | ledger |
+|---|---|---|---|
+| hcl/jubete-32-sutu417 | 0.800 / 1.923 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| hcl/vocago-35-xodu446 | 0.525 / 1.476 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| json/bavize-88-jumu158 | 0.225 / 1.938 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/bogiku-88-nano204 | 4.375 / 6.233 / 3 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/cilemo-38-fafi313 | 17.058 / 17.058 / 3 / 0 | U-REC, U-NS | `json-large.md` |
+| json/civofu-04-loku952 | 47.102 / 47.102 / 0 / 34 | U-REC, U-NS | `json-large.md` |
+| json/conigu-03-cuzu022 | 0.025 / 1.308 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/derele-19-poni229 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/devime-19-toze896 | 1.190 / 4.300 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/gagebi-92-vere937 | 0.720 / 1.980 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/gavomi-49-koco364 | 0.287 / 1.512 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/gejena-99-veme626 | 12.000 / 12.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/gibego-39-pelu609 | 12.000 / 16.586 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/jaramo-16-doxa994 | 0.450 / 1.860 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/jekaju-28-gulo479 | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/jidata-48-kire666 | 4.375 / 6.308 / 3 / 5 | M4, U-REC, U-NS | `json-large.md` |
+| json/json-escaped | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/kidoki-70-fala224 | 78.000 / 80.711 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/kusule-69-jada088 | 1.000 / 1.021 / 1 / 1 | M4, U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/moseba-10-naza079 | 0.675 / 1.875 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/mudumo-73-foli040 | 0.725 / 2.369 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/najixi-88-javo178 | 0.513 / 1.462 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nanegu-88-boba399 | 0.450 / 1.272 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nofuvo-36-muxe040 | 127.000 / 127.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/noleta-28-nutu456 | 0.275 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nopoku-31-cisi925 | 94.000 / 94.000 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/nuviro-48-sice969 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/pijume-87-gufu868 | 0.287 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/timafu-94-bixe774 | unaligned (structural ceiling) | U-REC, U-NS | `json-large.md` |
+| json/tivuru-65-vezu313 | 0.187 / 3.438 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/zasitu-09-lise302 | 4.375 / 6.145 / 3 / 0 | U-REC, U-NS | `json-large.md` |
+| json/zevaka-35-zova441 | 0.838 / 2.156 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| yaml/YAML-attribute-hierarchy | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/YAML-list-key-value-pair | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/YAML-space-indent | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/bafemu-96-luji978 | unaligned (structural ceiling) | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gabalo-23-tefe408 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gatuva-87-futo104 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gobavi-45-guna544 | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jozapu-14-datu953 | 5.000 / 6.350 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jukejo-54-pope427 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/ketunu-15-poli031 | 0.151 / 1.283 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/kotize-70-nuze855 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/lelofi-17-cafo004 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/lipoka-75-rigo326 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/litife-43-novo083 | 0.237 / 1.410 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/medosa-24-jugi124 | 0.750 / 1.302 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/mudeno-46-rado553 | 0.263 / 1.277 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/najoba-05-nino350 | unaligned (structural ceiling) | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/nuzaje-74-kenu009 | 1.475 / 2.820 / 2 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/polela-38-mopu631 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/poxedu-72-bite327 | 0.413 / 2.021 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/sozafu-05-xeka661 | 0.088 / 1.534 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/sudabi-56-dedu341 | 0.737 / 1.409 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/tadari-70-nare798 | unaligned (structural ceiling) | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vaceci-80-lezo436 | 1.100 / 2.583 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vapoda-87-piku740 | 1.000 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vugalo-43-mose807 | 0.713 / 0.829 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xacali-26-mazu431 | 0.400 / 1.433 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xofilu-53-tazi162 | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xubife-72-runi076 | 0.470 / 1.720 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zebapi-77-zasu051 | 0.869 / 0.910 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zeduse-06-fidi174 | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zomime-61-sase339 | 0.087 / 1.505 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+
+</details>
+
+`unknown/jubete-32-sutu417` and `unknown/vocago-35-xodu446` are the rows `hcl/jubete-32-sutu417` and
+`hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
+2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
+names them (#119).
+
+**Category:** limitation (one engine, by choice).
+
+---
+
+### `!pragma layout smetana|vizjs` — always laid out with graphviz
+
+**Upstream:** `!pragma layout` selects the layout engine. `smetana` uses
+PlantUML's in-JVM engine (`sdot/`, driving the transpiled `gen/lib/dotgen/`);
+`vizjs` uses Viz.js; the default shells out to the graphviz `dot` binary.
+
+**This port:** the pragma is accepted and **ignored** — every graph diagram is
+laid out with `@knowvah/dot-engine`. We do not implement smetana or vizjs as
+distinct engines, and we do not conform to their output.
+
+**Measured consequence (2026-08-08):** "we do not conform to their output"
+has a sub-pixel price, now quantified — see *Edge geometry follows modern
+graphviz* below. It also explains why the conformance harness's 0.01pt
+tolerance is load-bearing rather than arbitrary.
+
+**Why (maintainer decision, 2026-07-12):** all three are *the same algorithm*.
+Smetana is a mechanical Java transpile of graphviz 2.38 (`gen/lib/dotgen/` —
+`acyclic__c.java`, `mincross__c.java`, `dotsplines__c.java` are line-for-line
+transpiles of `acyclic.c`, `mincross.c`, `dotsplines.c`). Viz.js is graphviz
+compiled to JS via Emscripten. `@knowvah/dot-engine` is a faithful TypeScript
+port of the same graphviz source. Conforming to Smetana's *output* would mean faithfully
+reproducing the divergences its transpilation introduced — porting the bugs of
+a copy rather than the behavior of the original. Real graphviz is the correct
+oracle, and it is the one we already match.
+
+**Testing consequence (DONE 2026-07-13, mission G0):** the corpus fixtures carrying
+`!pragma layout smetana|vizjs` are re-captured **with the pragma stripped**, so
+the jar shells out to real graphviz and emits the `svek-N.dot` our DOT oracle
+needs. This *removes* them from the oracle-blind bucket (the jar dumps no svek
+DOT on the smetana/vizjs paths) and brings them under the normal DOT + SVG
+conformance bars, rather than silently excluding them from the denominator.
+*Executed in mission G0 (`plans/g0-limitfinder/`): 42 fixtures re-captured,
+41 arrived DOT-EQUAL and 39 are pinned in ratchet goldens; the DOT gate
+baseline is now component 253/262, usecase 84/90, class 708/708, object
+78/80, state 266/267 with oracle-blind reduced to the elk residue.*
+
+**Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
+pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
+against 262x161). Their node order is mirrored
+(`CucaDiagramFileMakerSmetana.java:283,589,636`). Two structural residues sit on
+Smetana's own edge, not chased: `SmetanaEdge` writes no path `id`, and it draws
+some extremities before the path.
+
+**Category:** limitation (upstream's alternate engines are redundant copies of
+the one we implement).
+
+**See also:** `!pragma layout elk`, below — supported through `ElkBackend`
+since 2026-10-11 (cdd8). It is not a graphviz copy and is not covered by this
+entry.
+
+**Ledgered rows (cdd7 D8, 2026-09-30; updated cdd8 T0b, 2026-10-11):** five
+unknown-tree fixtures had been captured *with* the pragma (before the G0
+re-capture), so the jar never shelled out to graphviz. cdd8 T0b re-captured
+them with the pragma stripped (`scripts/capture-oracle-cache.ts` now applies
+`stripLayoutPragma`): `vakovo-25-licu237`, `fakone-16-boro774`,
+`japode-92-famo984` and `tikiti-02-bagu049` are conformant and pinned, and
+`xagomi-49-caki729` became conformant once the class svek hexagon was ported
+(cdd8 T1e); their acceptances are retired. Two entries still carry the ruling
+one level down: `svg-unknown/gubeca-19-lemu434` and
+`svg-unknown/jixibu-01-xave465` embed a `{{yaml}}` diagram whose 1 px
+`<image>` size delta is the nested JsonDiagram's Smetana geometry (cdd6
+journal row 73). Neither entry changes a bar: the survey and census keep
+printing the rows' real verdicts.
+
+### ~~`!pragma layout elk` — not supported~~ — RETIRED (cdd8, 2026-10-11)
+
+ELK is supported through the swappable `ElkBackend` (`src/core/elk/`), which
+mirrors upstream's own `net/sourceforge/plantuml/elk/proxy/` layer, and the
+cuca-level maker is a 1:1 port of `CucaDiagramFileMakerElk`, `MyElkDrawing`,
+`MyElkCluster` and `MyElkEdge`. The default backend is `elkjs@0.12.0`, the
+same ELK 0.12.0 the jar bundles, laid out synchronously through its worker
+dispatcher, so the jar's ELK geometry is a target like graphviz's.
+`renderSync` needs `options.elk` (`await loadElk()`, exported) and throws
+without it; `render()` lazy-loads elkjs only for a diagram carrying the
+pragma. ELK is a different algorithm with a different drawing path (straight
+`ULine` sections, not splines), so it is ported rather than deferred to
+dot-engine. License note: elkjs is EPL-2.0 OR GPL-3.0-or-later and stays an
+external runtime dependency, as dot-engine (EPL-2.0) does.
+
+
+### External `!import` / `!include` deferred (scope) — UPDATED, see below
+
+**Upstream:** `!include`/`!import` resolve local files, URLs, and the
+PlantUML stdlib inline during preprocessing.
+
+**This port (updated — see the two sections below):** URL-based
+`!include` resolves through `prepareIncludeStore()`/`options.fetcher`
+(`src/core/include-resolver.ts`, `docs-site/guide/api.md`'s "include-resolver
+seam"), gated by `RenderOptions.securityProfile`. PlantUML's bundled stdlib
+(`!include <bundle/thing>`) resolves once a host supplies bundle data —
+mission SI5b, see "`!include <bundle/thing>` is a typed error, not a silent
+skip" below; this library still vendors no stdlib content itself. There is
+still **no built-in local-filesystem `!include` resolver** — a Node host
+supplies its own `options.fetcher` reading from `node:fs` for that. The
+`!procedure`/`!function` macro family (TIM subsystem) is in scope and
+being ported.
+
+**Reason:** scope control for v1.0; the design question (how a JS/TS
+consumer supplies includable sources) deserved its own decision rather
+than an implicit port — SI5a (URL includes) and SI5b (stdlib) are that
+decision, landed.
+
+---
+
+### ~~`mainframe <label>` — rendered via a ported `BigFrame` (CDD T34); non-class engines carry a sizing residual~~ — RETIRED (lgm-T1a/T1c, 2026-10-08)
+
+Every engine now sizes the frame as the jar does. `UgDiagram#getExporter` (`UgDiagram.java:124-128`) composes chrome around the margin-less block and `TextBlockExporter` adds the document margin after (`core/TextBlockExporter.java:159-203`); `core/document-margin.ts` + `core/annotations/chrome-export.ts#applyExportedChrome` apply that order once. The frame is sized from the block's `LimitFinder` ink (`BigFrame.java:77-91`, `DiagramChromeFactory.java:332-337`; `core/annotations/body-ink.ts`, mindmap `RenderFragment.frameInk`). Under a frame `decorateWithFrame` never runs `SvekResult.java:130-135`'s `moveDelta`, so state and description draw the raw svek frame (`state/layout.ts#applyMainframePlacement`, `description/layout-ink-shift.ts#placeBody`, composite `originShift`). Pinned by `tests/oracle/svg-conformance/lgm-t1a-mainframe.test.ts` and `lgm-t1c-svek-chrome.test.ts`. Residual: `sequence/decace-28-majo724`'s frame is 1 px narrow because its `note left` is 1 px narrow — a sequence-note mechanism, not the frame.
+
+### ~~Default element skin — grey (`#F1F1F1`), not legacy yellow (`#FEFECE`)~~ — RETIRED (unwind-U4, 2026-10-08)
+
+Not a divergence: the pinned jar draws `#F1F1F1`/`#181818` elements and a `#FEFFDD` note (`plantuml.skin:2-3,16-17,324`); pinned by `tests/oracle/svg-conformance/unwind-u4-skin.test.ts`.
+
+### LaTeX rendering engine — KaTeX, not JLaTeXMath (permanent)
+
+**Upstream:** a `<latex>expr</latex>` creole tag is rendered by JLaTeXMath
+(a Java library) and embedded in the SVG as a raster image of that
+library's output.
+
+**This port:** the same tag renders through KaTeX (`src/core/latex.ts`,
+`renderLatexAsImage` — mission E2r L2). The element structure (an image
+atom in the text flow, positioned and sized like the jar's) is conformant;
+the image bytes and exact glyph metrics never will be, because the two
+typesetting engines rasterize differently.
+
+**Correction, 2026-10-11 (cdd8 T1d) — the oracles are JLaTeXMath now.** The
+2026-09-02 finding that every latex oracle was a monospace rollback
+(`ScientificEquationSafe#getRollback()`) predates `scripts/oracle-render.sh`
+putting Batik on the classpath. Decoding all 537 latex/math `<image>`
+payloads across the 40 fixtures that carry `<latex>`/`<math>`: **519 are
+JLaTeXMath (Batik) SVG and 18 are rollbacks** (cunotu 1, kebadi 1, marese 7,
+pecafo 3, roxita 1, rozesu 3, vocalo 1, xanuke 1). **Sizing rule (cdd8 D6):**
+the image is sized by JLaTeXMath's TeXIcon rule — `TeXIconBuilder.java:64-70`
+(`STYLE_DISPLAY`, size 20, insets 1, widened by `TeXIcon.java:141-157`) and
+`TeXIcon.java:195,210` — over a box built with JLaTeXMath 1.0.7's rules from
+KaTeX's parse tree and Computer Modern metrics (`src/core/latex-metrics/`);
+every `<latex>` formula in the corpus sizes exactly; `array`/matrix nodes are
+sized by `MatrixAtom`'s rules since sdd3 (D6, T7a: `hsep`/`semihsep` column
+separators, row maxima, `vsep`, axis centring, decompiled from the 1.0.7
+jar — mefeke-43's 150×56 derives, nothing fitted). **Signed D11.3 residues:
+none.** The library-forced candidates (KaTeX has no text kern pairs and
+collapses text-mode spaces, e.g. `\text{mod}` −1 px) occur in no fixture that
+renders today.
+
+**Category:** permanent, maintainer-approved (2026-07-15: "100% right on
+the latex decision").
+
+**Rationale:** JLaTeXMath is a Java library with no JS port; KaTeX is the
+ecosystem-standard equivalent and keeps the library browser-pure (no JVM,
+no server round-trip). Structural conformance is asserted; byte
+conformance is permanently out of scope for latex-bearing fixtures
+(`component/sunuju-01-pote718`, `component/vimulo-11-buni641` carry this
+entry in the census accounting).
+
+**Affects:** any diagram using `<latex>` (or `<math>`) creole tags. The
+`<math>` half has its own instances, named here because they were previously
+carried as undifferentiated work items: `state/corumi-91-mizo869` and
+`state/gupeto-19-mesa256` both label a state with
+`<math>S<=1/(F+(1-F)/N)</math>` and both pinned at an identical 1.106597 in
+`oracle/goldens/state/size-backlog.json` — one shared inherent cause, not two
+defects.
+
+**Correction, 2026-09-02 — that 1.106597 was never this divergence.** When the
+pin was taken, `CommandCreoleMath` did not exist in this port, so
+`<math>S<=1/(F+(1-F)/N)</math>` measured as 33 characters of literal,
+tag-inclusive TEXT: `measure(that string, 14pt).width` = 206.675, `+20`
+margins = 226.675px = 3.148in, less the jar's 2.041667in = **1.106597
+exactly**. The pin recorded a missing creole command, not a typesetting
+divergence. `CommandCreoleMath` is ported now and both entries fell to
+0.305555, whose residual IS this divergence. They are shrink-only pins for non-regression, excluded from that
+suite's conformant denominator.
+
+This is also the one exclusion from the S1L description size-`conformant`
+denominator:
+`gevozu-46-sasu860` and `sunuju-01-pote718` carry a ~4.67in node-size delta
+because the math label is sized by KaTeX, not JLaTeXMath. They remain pinned
+(shrink-only) in `oracle/goldens/description/size-backlog.json` for
+non-regression but are excluded from the reported conformant percentage
+(`plans/s1l-leaf-sizing/ledger.md`). Every other non-conformant description
+fixture is a portable gap tracked by a sub-mission, not a divergence.
+
+---
+
+## Output format
+
+**Activity rows named here (aar-T5c, 2026-11-06, D5).** Every remaining diff of these three corpus rows follows from
+the `<latex>` image's size alone: the image `width`/`height`, the box around it (image + the activity padding), and
+every x/y the wider or taller box shifts; no padding, font or structure diff remains.
+`bigobe-53-denu394` (16; image 170×51 vs the jar's 153×47), `xexuxu-81-kuni702` (16; 531.25×159.375 vs
+478.125×146.875), `xuzovi-55-doze473` (16; 680×204 vs 612×188). Two other `<latex>` rows are NOT named here because
+, which JLaTeXMath
+typesets). Both were port defects and are conformant since aar-T6a: an image-only label leaves no compression slot
+(`SlotFinder.java:84-109`), and JLaTeXMath skips a `# Intentional Divergences from Upstream PlantUML
+
+Upstream behavior is preserved by default. Entries here are deliberate
+exceptions — places where this port produces different output for a
+documented reason. Each entry records what changed, why, and the category
+of divergence so reviewers can judge whether to adopt, revert, or escalate.
+
+Categories:
+- **clarity** — same information, presented more clearly
+- **aesthetic** — visual improvement with no semantic change
+- **limitation** — upstream has a known gap; we fill it
+
+---
+
+## General
+
+### Smetana-backed diagram types — laid out by dot-engine, geometry differs (measured: graphviz 2.38 vs modern arithmetic)
+
+**Standing decision (maintainer, 2026-08-09), not a per-case exception.** See
+the project README, "Layout: one engine, always", and CLAUDE.md. For the history,
+see [Why no Smetana support?](docs-site/guide/why-no-smetana.md).
+
+**Upstream:** uses two layout implementations. Most diagram types shell out to a
+real graphviz binary; `@startjson`, `@startyaml`, `@starthcl` (all three via
+`jsondiagram/SmetanaForJson.java`), `@startgit` (`gitlog/SmetanaForGit.java`)
+and any `!pragma layout smetana` diagram use **Smetana**, its in-JVM Java
+transpile of graphviz. None of those shells out, which is why the jar emits no
+`svek-N.dot` for them and why they have no DOT-parity gate here.
+
+**This port:** uses `@knowvah/dot-engine` for all layout, including these.
+
+**Reason:** one layout implementation rather than two. Keeping agreement with
+both would mean two sets of layout behaviour to reason about, test and fix.
+dot-engine is a port of the graphviz C that this project maintains and
+publishes, so it is also the one we can change. Smetana is additionally awkward
+as a porting target on mechanics: it cannot measure text the way graphviz does,
+so `SmetanaForJson` smuggles cell dimensions through a `_dim_` sentinel in the
+record label (decoded by `smetana/core/Macro.java#hackInitDimensionFromLabel`) —
+behaviour that exists to work around a constraint this port does not have.
+
+**Affects:** edge routing and node spacing on the types above. Diagram
+structure, element set, labels, colours and node sizing are unaffected and
+remain held to upstream. **Priority on these types is readability first, SVG
+fidelity to upstream second** — an ordering that is inverted from every other
+diagram type and applies only to this closed set.
+
+**Worked example (A5/T7).** graphviz pads every `shape=record` field — `XPAD`
+= 4·GAP = 16 and `YPAD` = 2·GAP = 8 (`graphviz/lib/common/macros.h:27-29`).
+Upstream compensates only the `YPAD` half (`SmetanaForJson`'s `colAwidth - 8`),
+which is right *for Smetana*, because Smetana does not apply `XPAD`. This port
+compensates both, because its engine applies both — verified against the
+installed `dot` 15.1.1, which returns byte-identical record geometry for the
+same label. Result: same-rank sibling spacing differs from the jar, while
+child-to-parent-row alignment measures closer here (mean |Δy| 64.34 vs 73.92
+without ports, over 277 edges).
+
+
+**Measured result (json-family-parity, 2026-10-30).** Every non-conformant
+json/yaml/hcl row (json 36, yaml 32, hcl 2) was diagnosed to its mechanism
+(`plans/json-family-parity/diagnosis/ledger.md`; D3 proof standard in that
+mission's `decisions.md`): our engine INPUT equals the jar's, and dot-engine
+equals real `dot -Tdot` 16.1.0 on that input. The upstream placement arithmetic
+(`SmetanaForJson#getPosition` + `Mirror`, `:97-102,158-215`) is now ported
+literally (`src/diagrams/json/json-node-position.ts`) — it changed no byte,
+because the root is alone in rank 0 so graphviz's bounding box already IS the
+jar's `max`. Two port-controlled defects were fixed (`scale` applied at emit;
+an empty container's engine size from `calculateDimension`); json-family-followons
+(2026-10-30) then moved `scale` onto the chromed block, as `UgDiagram#getExporter`
+→ `TextBlockExporter#exportTo` does (`UgDiagram.java:123-131`,
+`TextBlockExporter.java:159-177`), so a title scales with the body and
+`scale max` reads the titled, margined width. What remains is
+graphviz 2.38 (Smetana) vs modern graphviz arithmetic, four named sources:
+
+| source | Smetana (2.38) | graphviz (dot-engine, 16.1.0) | graphviz change |
+|---|---|---|---|
+| U-REC record size | `record_init` rounds the declared size (`shapes__c.java:1807-1808`, `POINTS`), no field PAD (`:1636-1644`) | unrounded `INCH2PS` (`shapes.c:3688-3689`) | `aee7eda7d` (8.0.4) |
+| U-CLIP spline clip | `bezier_clip` keeps the last point OUTSIDE (`splines__c.java:213-220`) | last point INSIDE (`splines.c:136-142`) | `b03040389` (7.0.0) |
+| U-ARROW arrow length | 10·0.75 = 7.5 (`arrows__c.java:231-248`) | penwidth-aware ≈ 9.0 (`arrows.c:1190-1227`) | `cfb1cc1a3` (7.0.0) |
+| U-NS in-rank position | network-simplex result (tie-sensitive) | same algorithm, different ties | — (D3 only) |
+
+Plus two smaller items, measured and left by ruling: the empty-container
+**label** half (the jar sets no label, `SmetanaForJson.java:253-254`; Smetana
+sizes the default `\N` as (0,16) with no PAD, `labels__c.java:119-122`, while
+graphviz sizes it as the node name + PAD — omitting the label here also needs a
+`src/core/` change and measured worse; closed without code, json-family-followons
+D2: the explicit `''` label already reproduces Smetana's outcome, no text extent,
+where the labelless call would import a node-name width Smetana never computes), and 6-dp inch strings in core's
+`inches()` (`svek-dot-emit-clusters.ts:33` vs the jar's full-precision
+`"" + dim/72`, `SmetanaForJson.java:235-236`; json/kusule + 10 rows by ≤ 1 pt).
+Magnitudes (positional ceiling `oracle/goldens/json-family-positional.json`,
+max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligned rows; in-rank
+(U-NS) up to 127 px (json/nofuvo-36-muxe040); the gate is shrink-only.
+
+<details><summary>Row-level table (70 rows)</summary>
+
+| row | residue (node / path / dw / dh) | mechanisms | ledger |
+|---|---|---|---|
+| hcl/jubete-32-sutu417 | 0.800 / 1.923 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| hcl/vocago-35-xodu446 | 0.525 / 1.476 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| json/bavize-88-jumu158 | 0.225 / 1.938 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/bogiku-88-nano204 | 4.375 / 6.233 / 3 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/cilemo-38-fafi313 | 17.058 / 17.058 / 3 / 0 | U-REC, U-NS | `json-large.md` |
+| json/civofu-04-loku952 | 47.102 / 47.102 / 0 / 34 | U-REC, U-NS | `json-large.md` |
+| json/conigu-03-cuzu022 | 0.025 / 1.308 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/derele-19-poni229 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/devime-19-toze896 | 1.190 / 4.300 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/gagebi-92-vere937 | 0.720 / 1.980 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/gavomi-49-koco364 | 0.287 / 1.512 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/gejena-99-veme626 | 12.000 / 12.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/gibego-39-pelu609 | 12.000 / 16.586 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/jaramo-16-doxa994 | 0.450 / 1.860 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/jekaju-28-gulo479 | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/jidata-48-kire666 | 4.375 / 6.308 / 3 / 5 | M4, U-REC, U-NS | `json-large.md` |
+| json/json-escaped | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/kidoki-70-fala224 | 78.000 / 80.711 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/kusule-69-jada088 | 1.000 / 1.021 / 1 / 1 | M4, U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/moseba-10-naza079 | 0.675 / 1.875 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/mudumo-73-foli040 | 0.725 / 2.369 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/najixi-88-javo178 | 0.513 / 1.462 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nanegu-88-boba399 | 0.450 / 1.272 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nofuvo-36-muxe040 | 127.000 / 127.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
+| json/noleta-28-nutu456 | 0.275 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/nopoku-31-cisi925 | 94.000 / 94.000 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
+| json/nuviro-48-sice969 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/pijume-87-gufu868 | 0.287 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/timafu-94-bixe774 | unaligned (structural ceiling) | U-REC, U-NS | `json-large.md` |
+| json/tivuru-65-vezu313 | 0.187 / 3.438 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/zasitu-09-lise302 | 4.375 / 6.145 / 3 / 0 | U-REC, U-NS | `json-large.md` |
+| json/zevaka-35-zova441 | 0.838 / 2.156 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
+| yaml/YAML-attribute-hierarchy | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/YAML-list-key-value-pair | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/YAML-space-indent | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/bafemu-96-luji978 | unaligned (structural ceiling) | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gabalo-23-tefe408 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gatuva-87-futo104 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/gobavi-45-guna544 | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jozapu-14-datu953 | 5.000 / 6.350 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jukejo-54-pope427 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/ketunu-15-poli031 | 0.151 / 1.283 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/kotize-70-nuze855 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/lelofi-17-cafo004 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/lipoka-75-rigo326 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/litife-43-novo083 | 0.237 / 1.410 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/medosa-24-jugi124 | 0.750 / 1.302 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/mudeno-46-rado553 | 0.263 / 1.277 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/najoba-05-nino350 | unaligned (structural ceiling) | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/nuzaje-74-kenu009 | 1.475 / 2.820 / 2 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/polela-38-mopu631 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/poxedu-72-bite327 | 0.413 / 2.021 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/sozafu-05-xeka661 | 0.088 / 1.534 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/sudabi-56-dedu341 | 0.737 / 1.409 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/tadari-70-nare798 | unaligned (structural ceiling) | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vaceci-80-lezo436 | 1.100 / 2.583 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vapoda-87-piku740 | 1.000 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/vugalo-43-mose807 | 0.713 / 0.829 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xacali-26-mazu431 | 0.400 / 1.433 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xofilu-53-tazi162 | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/xubife-72-runi076 | 0.470 / 1.720 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zebapi-77-zasu051 | 0.869 / 0.910 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zeduse-06-fidi174 | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/zomime-61-sase339 | 0.087 / 1.505 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+
+</details>
+
+`unknown/jubete-32-sutu417` and `unknown/vocago-35-xodu446` are the rows `hcl/jubete-32-sutu417` and
+`hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
+2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
+names them (#119).
+
+**Category:** limitation (one engine, by choice).
+
+---
+
+### `!pragma layout smetana|vizjs` — always laid out with graphviz
+
+**Upstream:** `!pragma layout` selects the layout engine. `smetana` uses
+PlantUML's in-JVM engine (`sdot/`, driving the transpiled `gen/lib/dotgen/`);
+`vizjs` uses Viz.js; the default shells out to the graphviz `dot` binary.
+
+**This port:** the pragma is accepted and **ignored** — every graph diagram is
+laid out with `@knowvah/dot-engine`. We do not implement smetana or vizjs as
+distinct engines, and we do not conform to their output.
+
+**Measured consequence (2026-08-08):** "we do not conform to their output"
+has a sub-pixel price, now quantified — see *Edge geometry follows modern
+graphviz* below. It also explains why the conformance harness's 0.01pt
+tolerance is load-bearing rather than arbitrary.
+
+**Why (maintainer decision, 2026-07-12):** all three are *the same algorithm*.
+Smetana is a mechanical Java transpile of graphviz 2.38 (`gen/lib/dotgen/` —
+`acyclic__c.java`, `mincross__c.java`, `dotsplines__c.java` are line-for-line
+transpiles of `acyclic.c`, `mincross.c`, `dotsplines.c`). Viz.js is graphviz
+compiled to JS via Emscripten. `@knowvah/dot-engine` is a faithful TypeScript
+port of the same graphviz source. Conforming to Smetana's *output* would mean faithfully
+reproducing the divergences its transpilation introduced — porting the bugs of
+a copy rather than the behavior of the original. Real graphviz is the correct
+oracle, and it is the one we already match.
+
+**Testing consequence (DONE 2026-07-13, mission G0):** the corpus fixtures carrying
+`!pragma layout smetana|vizjs` are re-captured **with the pragma stripped**, so
+the jar shells out to real graphviz and emits the `svek-N.dot` our DOT oracle
+needs. This *removes* them from the oracle-blind bucket (the jar dumps no svek
+DOT on the smetana/vizjs paths) and brings them under the normal DOT + SVG
+conformance bars, rather than silently excluding them from the denominator.
+*Executed in mission G0 (`plans/g0-limitfinder/`): 42 fixtures re-captured,
+41 arrived DOT-EQUAL and 39 are pinned in ratchet goldens; the DOT gate
+baseline is now component 253/262, usecase 84/90, class 708/708, object
+78/80, state 266/267 with oracle-blind reduced to the elk residue.*
+
+**Rows, ddd-T5e (2026-11-04):** `unknown/zomoba-18`, `unknown/revezi-19` keep the
+pragma in their oracle. Geometry is the ruling's delta (`zomoba-18` canvas 303x178
+against 262x161). Their node order is mirrored
+(`CucaDiagramFileMakerSmetana.java:283,589,636`). Two structural residues sit on
+Smetana's own edge, not chased: `SmetanaEdge` writes no path `id`, and it draws
+some extremities before the path.
+
+**Category:** limitation (upstream's alternate engines are redundant copies of
+the one we implement).
+
+**See also:** `!pragma layout elk`, below — supported through `ElkBackend`
+since 2026-10-11 (cdd8). It is not a graphviz copy and is not covered by this
+entry.
+
+**Ledgered rows (cdd7 D8, 2026-09-30; updated cdd8 T0b, 2026-10-11):** five
+unknown-tree fixtures had been captured *with* the pragma (before the G0
+re-capture), so the jar never shelled out to graphviz. cdd8 T0b re-captured
+them with the pragma stripped (`scripts/capture-oracle-cache.ts` now applies
+`stripLayoutPragma`): `vakovo-25-licu237`, `fakone-16-boro774`,
+`japode-92-famo984` and `tikiti-02-bagu049` are conformant and pinned, and
+`xagomi-49-caki729` became conformant once the class svek hexagon was ported
+(cdd8 T1e); their acceptances are retired. Two entries still carry the ruling
+one level down: `svg-unknown/gubeca-19-lemu434` and
+`svg-unknown/jixibu-01-xave465` embed a `{{yaml}}` diagram whose 1 px
+`<image>` size delta is the nested JsonDiagram's Smetana geometry (cdd6
+journal row 73). Neither entry changes a bar: the survey and census keep
+printing the rows' real verdicts.
+
+### ~~`!pragma layout elk` — not supported~~ — RETIRED (cdd8, 2026-10-11)
+
+ELK is supported through the swappable `ElkBackend` (`src/core/elk/`), which
+mirrors upstream's own `net/sourceforge/plantuml/elk/proxy/` layer, and the
+cuca-level maker is a 1:1 port of `CucaDiagramFileMakerElk`, `MyElkDrawing`,
+`MyElkCluster` and `MyElkEdge`. The default backend is `elkjs@0.12.0`, the
+same ELK 0.12.0 the jar bundles, laid out synchronously through its worker
+dispatcher, so the jar's ELK geometry is a target like graphviz's.
+`renderSync` needs `options.elk` (`await loadElk()`, exported) and throws
+without it; `render()` lazy-loads elkjs only for a diagram carrying the
+pragma. ELK is a different algorithm with a different drawing path (straight
+`ULine` sections, not splines), so it is ported rather than deferred to
+dot-engine. License note: elkjs is EPL-2.0 OR GPL-3.0-or-later and stays an
+external runtime dependency, as dot-engine (EPL-2.0) does.
+
+
+### External `!import` / `!include` deferred (scope) — UPDATED, see below
+
+**Upstream:** `!include`/`!import` resolve local files, URLs, and the
+PlantUML stdlib inline during preprocessing.
+
+**This port (updated — see the two sections below):** URL-based
+`!include` resolves through `prepareIncludeStore()`/`options.fetcher`
+(`src/core/include-resolver.ts`, `docs-site/guide/api.md`'s "include-resolver
+seam"), gated by `RenderOptions.securityProfile`. PlantUML's bundled stdlib
+(`!include <bundle/thing>`) resolves once a host supplies bundle data —
+mission SI5b, see "`!include <bundle/thing>` is a typed error, not a silent
+skip" below; this library still vendors no stdlib content itself. There is
+still **no built-in local-filesystem `!include` resolver** — a Node host
+supplies its own `options.fetcher` reading from `node:fs` for that. The
+`!procedure`/`!function` macro family (TIM subsystem) is in scope and
+being ported.
+
+**Reason:** scope control for v1.0; the design question (how a JS/TS
+consumer supplies includable sources) deserved its own decision rather
+than an implicit port — SI5a (URL includes) and SI5b (stdlib) are that
+decision, landed.
+
+---
+
+### ~~`mainframe <label>` — rendered via a ported `BigFrame` (CDD T34); non-class engines carry a sizing residual~~ — RETIRED (lgm-T1a/T1c, 2026-10-08)
+
+Every engine now sizes the frame as the jar does. `UgDiagram#getExporter` (`UgDiagram.java:124-128`) composes chrome around the margin-less block and `TextBlockExporter` adds the document margin after (`core/TextBlockExporter.java:159-203`); `core/document-margin.ts` + `core/annotations/chrome-export.ts#applyExportedChrome` apply that order once. The frame is sized from the block's `LimitFinder` ink (`BigFrame.java:77-91`, `DiagramChromeFactory.java:332-337`; `core/annotations/body-ink.ts`, mindmap `RenderFragment.frameInk`). Under a frame `decorateWithFrame` never runs `SvekResult.java:130-135`'s `moveDelta`, so state and description draw the raw svek frame (`state/layout.ts#applyMainframePlacement`, `description/layout-ink-shift.ts#placeBody`, composite `originShift`). Pinned by `tests/oracle/svg-conformance/lgm-t1a-mainframe.test.ts` and `lgm-t1c-svek-chrome.test.ts`. Residual: `sequence/decace-28-majo724`'s frame is 1 px narrow because its `note left` is 1 px narrow — a sequence-note mechanism, not the frame.
+
+### ~~Default element skin — grey (`#F1F1F1`), not legacy yellow (`#FEFECE`)~~ — RETIRED (unwind-U4, 2026-10-08)
+
+Not a divergence: the pinned jar draws `#F1F1F1`/`#181818` elements and a `#FEFFDD` note (`plantuml.skin:2-3,16-17,324`); pinned by `tests/oracle/svg-conformance/unwind-u4-skin.test.ts`.
+
+### LaTeX rendering engine — KaTeX, not JLaTeXMath (permanent)
+
+**Upstream:** a `<latex>expr</latex>` creole tag is rendered by JLaTeXMath
+(a Java library) and embedded in the SVG as a raster image of that
+library's output.
+
+**This port:** the same tag renders through KaTeX (`src/core/latex.ts`,
+`renderLatexAsImage` — mission E2r L2). The element structure (an image
+atom in the text flow, positioned and sized like the jar's) is conformant;
+the image bytes and exact glyph metrics never will be, because the two
+typesetting engines rasterize differently.
+
+**Correction, 2026-10-11 (cdd8 T1d) — the oracles are JLaTeXMath now.** The
+2026-09-02 finding that every latex oracle was a monospace rollback
+(`ScientificEquationSafe#getRollback()`) predates `scripts/oracle-render.sh`
+putting Batik on the classpath. Decoding all 537 latex/math `<image>`
+payloads across the 40 fixtures that carry `<latex>`/`<math>`: **519 are
+JLaTeXMath (Batik) SVG and 18 are rollbacks** (cunotu 1, kebadi 1, marese 7,
+pecafo 3, roxita 1, rozesu 3, vocalo 1, xanuke 1). **Sizing rule (cdd8 D6):**
+the image is sized by JLaTeXMath's TeXIcon rule — `TeXIconBuilder.java:64-70`
+(`STYLE_DISPLAY`, size 20, insets 1, widened by `TeXIcon.java:141-157`) and
+`TeXIcon.java:195,210` — over a box built with JLaTeXMath 1.0.7's rules from
+KaTeX's parse tree and Computer Modern metrics (`src/core/latex-metrics/`);
+every `<latex>` formula in the corpus sizes exactly; `array`/matrix nodes are
+sized by `MatrixAtom`'s rules since sdd3 (D6, T7a: `hsep`/`semihsep` column
+separators, row maxima, `vsep`, axis centring, decompiled from the 1.0.7
+jar — mefeke-43's 150×56 derives, nothing fitted). **Signed D11.3 residues:
+none.** The library-forced candidates (KaTeX has no text kern pairs and
+collapses text-mode spaces, e.g. `\text{mod}` −1 px) occur in no fixture that
+renders today.
+
+**Category:** permanent, maintainer-approved (2026-07-15: "100% right on
+the latex decision").
+
+**Rationale:** JLaTeXMath is a Java library with no JS port; KaTeX is the
+ecosystem-standard equivalent and keeps the library browser-pure (no JVM,
+no server round-trip). Structural conformance is asserted; byte
+conformance is permanently out of scope for latex-bearing fixtures
+(`component/sunuju-01-pote718`, `component/vimulo-11-buni641` carry this
+entry in the census accounting).
+
+**Affects:** any diagram using `<latex>` (or `<math>`) creole tags. The
+`<math>` half has its own instances, named here because they were previously
+carried as undifferentiated work items: `state/corumi-91-mizo869` and
+`state/gupeto-19-mesa256` both label a state with
+`<math>S<=1/(F+(1-F)/N)</math>` and both pinned at an identical 1.106597 in
+`oracle/goldens/state/size-backlog.json` — one shared inherent cause, not two
+defects.
+
+**Correction, 2026-09-02 — that 1.106597 was never this divergence.** When the
+pin was taken, `CommandCreoleMath` did not exist in this port, so
+`<math>S<=1/(F+(1-F)/N)</math>` measured as 33 characters of literal,
+tag-inclusive TEXT: `measure(that string, 14pt).width` = 206.675, `+20`
+margins = 226.675px = 3.148in, less the jar's 2.041667in = **1.106597
+exactly**. The pin recorded a missing creole command, not a typesetting
+divergence. `CommandCreoleMath` is ported now and both entries fell to
+0.305555, whose residual IS this divergence. They are shrink-only pins for non-regression, excluded from that
+suite's conformant denominator.
+
+This is also the one exclusion from the S1L description size-`conformant`
+denominator:
+`gevozu-46-sasu860` and `sunuju-01-pote718` carry a ~4.67in node-size delta
+because the math label is sized by KaTeX, not JLaTeXMath. They remain pinned
+(shrink-only) in `oracle/goldens/description/size-backlog.json` for
+non-regression but are excluded from the reported conformant percentage
+(`plans/s1l-leaf-sizing/ledger.md`). Every other non-conformant description
+fixture is a portable gap tracked by a sub-mission, not a divergence.
+
+---
+
+## Output format
+
+**Activity rows named here (aar-T5c, 2026-11-06, D5).** Every remaining diff of these three corpus rows follows from
+the `<latex>` image's size alone: the image `width`/`height`, the box around it (image + the activity padding), and
+every x/y the wider or taller box shifts; no padding, font or structure diff remains.
+`bigobe-53-denu394` (16; image 170×51 vs the jar's 153×47), `xexuxu-81-kuni702` (16; 531.25×159.375 vs
+478.125×146.875), `xuzovi-55-doze473` (16; 680×204 vs 612×188). Two other `<latex>` rows are NOT named here because
+ in a formula's default math mode.
+
 ### SVG emission tracks upstream's reduced form (0.2.0) — no longer a divergence
 
 **Status:** resolved — this entry exists so a reader of the old output does
@@ -502,7 +1253,7 @@ ported") and `.agent-notes/cdd-T25.md`, which traced the same finding from the
 
 ### ~~Embedded `{{ }}` sub-diagrams — SVG source, not a re-encoded raster~~ — RETIRED (unwind-U4, 2026-10-08)
 
-The payload is now `UImageSvg#getSvg` plus the `SvgGraphics#svgImage` wrapper (`UImageSvg.java:65-146`; `SvgGraphics.java:1015-1029`; `src/core/klimt/shape/UImageSvg.ts`), byte-identical in structure to the jar's; the nested bytes are this port's own render of the nested diagram and differ only where that engine differs at top level. (The 42x42 slot was an instrument artefact of the deterministic oracle, retired by oracle seam #3 / lgm-T1e; the `<text>` spot letter in nested class diagrams is unverified since.)
+The payload is now `UImageSvg#getSvg` plus the `SvgGraphics#svgImage` wrapper (`UImageSvg.java:65-146`; `SvgGraphics.java:1015-1029`; `src/core/klimt/shape/UImageSvg.ts`), byte-identical in structure to the jar's; the nested bytes are this port's own render of the nested diagram and differ only where that engine differs at top level. (The 42x42 slot was an instrument artefact of the deterministic oracle, retired by oracle seam #3 / lgm-T1e; the `<text>` spot letter in nested class diagrams is a seam artefact, verified 2026-11-06 (scr-T2a): the oracle's nested export takes `stringBounder.getFileFormat()` (`EmbeddedDiagram.java:130,171`), which the seam bounder reports as `SVG_DETERMINISTIC` (`FileFormat.java:185-191`), so `DriverCenteredCharacterSvg.java:65-69` writes a monospace `<text>`; the stock jar draws the spot as a glyph `<path>`, the same path this port draws, which differs from the stock one only as the top-level class spot does (two coordinates 0.001 apart and a trailing space, within `compareSvg`'s normalization).)
 
 ### `!includedef` reads the store; `!import` registers a lookup prefix
 
@@ -1236,6 +1987,15 @@ An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar 
 ### Sudoku is not included
 
 **Category:** edition mirrored by user ruling (2026-10-13, ufp D13: mirror the MIT edition). Upstream registers `PSystemSudokuFactory` only outside `__MIT__ __EPL__ __BSD__ __ASL__ __LGPL__` (`PSystemBuilder.java:161-164`, `// ::comment when __MIT__`) and strips the `sudoku/` package from every non-GPL edition, so in the MIT edition no factory accepts `sudoku <seed>` and the `@startuml` candidates refuse it. We draw that syntax-error page; the GPL oracle draws a puzzle. Rows: `unknown/gazale-13-tadu312` (`sudoku 5678`) and `unknown/lazama-75-loli189` (`sudoku 1234`). Checked 2026-11-06 against an oracle of a line no factory accepts (`nosuchkeyword 1234`): our page differs from the jar's only in the echoed line, the version line (kept by ruling, `README.md`) and the `[From …]` file name. `README.md` ("Mirrors upstream's MIT edition") says the same.
+
+### QR codes draw blank (MIT edition)
+
+**Category:** edition mirrored by user ruling (2026-10-13, ufp D13: mirror the MIT edition). The zxing encoder is
+removed from every non-GPL edition (`FlashCodeUtilsZxing.java:54`, `// ::remove file when __MIT__ …`), so
+`FlashCodeFactory#getFlashCodeUtils` (`FlashCodeFactory.java:42-58`) falls back to `FlashCodeUtilsNone`, which draws a
+blank 10×10 image at the requested scale (`<qrcode:…>` defaults to scale 3: 30×30). The oracle is the GPL build, whose
+zxing encodes a real code (29 modules × 3 = 87×87). Row: `nomave-73-kuro838` (53 diffs, aar-T6a, 2026-11-06): every one
+is geometric — the image size and the title and box sizes and x/y it shifts — with no colour, font or structure diff.
 
 ### Chronology draws, though the jar has no such diagram
 

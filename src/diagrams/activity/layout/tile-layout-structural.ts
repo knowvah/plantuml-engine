@@ -167,7 +167,7 @@ export function tileNote(tiles: Tile[], node: ActivityNote, bounder: StringBound
   }
   const noteTile = tileSimpleLeaf(node, bounder, theme) as GtileNote;
   if (isMergeableNoteWrap(last)) {
-    tiles[tiles.length - 1] = mergeIntoWithNotes(last, node, bounder, theme);
+    tiles[tiles.length - 1] = withInLabel(mergeIntoWithNotes(last, node, bounder, theme), last.inLabel);
     return;
   }
   if (!isFirstWrapTarget(last)) {
@@ -177,7 +177,9 @@ export function tileNote(tiles: Tile[], node: ActivityNote, bounder: StringBound
   // add4-T1c: `FtileWithNoteOpale.java:132-133` -- a `FLOATING_NOTE` forces
   // `withLink = false` whatever the wrapped tile's own kind allows.
   const withLink = !WRAP_NO_LINK_KINDS.has(last.kind) && node.floating !== true;
-  tiles[tiles.length - 1] = new GtileNoteOpale(last, noteTile, withLink);
+  // `FtileWithNoteOpale#getInLinkRendering` delegates to the wrapped tile (`FtileWithNoteOpale.java:251-253`): the
+  // arrow into a noted box keeps its label and gap (aar-T2b, `activity__mergelabel-box-note`).
+  tiles[tiles.length - 1] = withInLabel(new GtileNoteOpale(last, noteTile, withLink), last.inLabel);
 }
 
 /**
@@ -222,6 +224,9 @@ function buildBranchTopDown(
 ): GtileTopDown {
   const { tiles, trailing } = tileNodes(b, bounder, theme, laneOrder, pragma);
   const topDown = new GtileTopDown(tiles, bounder, theme);
+  // "Not a typo, in that case, we decide to decorate the entry link": an EMPTY list's out rendering becomes its IN
+  // link (`InstructionList.java:136-143`, `factory.decorateIn(result, outlinkRendering)`).
+  if (tiles.length === 0) return withInLabel(topDown, trailing);
   withInLabel(topDown, tiles[0]?.inLabel);
   return withOutLabel(topDown, trailing);
 }
@@ -234,11 +239,18 @@ export function tileFork(
   pragma: Pragma,
 ): GtileFork {
   const branches = node.branches.map((b) => buildBranchTopDown(b, bounder, theme, laneOrder, pragma));
+  // `InstructionFork`'s lists are all `InstructionList.empty()` (`InstructionFork.java:90,140`): a note opening one has no lane.
+  // Only `drawWhenSwimlanes` filters by lane (`swimlanes().size() > 1`, `Swimlanes.java:252-259`); one lane or none
+  // draws the whole ftile, the note included.
+  for (const branch of laneOrder.length > 1 ? branches : []) {
+    const first = branch.children[0];
+    if (first instanceof GtileNote) first.undrawn = true;
+  }
   // N (add2 T3i): `node.label` is only ever set for `style !== 'merge'`
   // (`ActivityFork.label`'s own doc, ast.ts) -- `GtileMerge` never reads it.
   const built =
     node.style === 'merge'
-      ? new GtileMerge(branches, bounder)
+      ? new GtileMerge(branches, bounder, theme)
       : new GtileFork(branches, bounder, undefined, theme, node.label);
   built.barColor = node.color;
   return withSwimlaneOut(withSwimlane(built, node.swimlane), node.swimlaneOut);
@@ -252,7 +264,7 @@ export function tileSplit(
   pragma: Pragma,
 ): GtileSplit {
   const branches = node.branches.map((b) => buildBranchTopDown(b, bounder, theme, laneOrder, pragma));
-  return withSwimlaneOut(withSwimlane(new GtileSplit(branches, bounder), node.swimlane), node.swimlaneOut);
+  return withSwimlaneOut(withSwimlane(new GtileSplit(branches, bounder, theme), node.swimlane), node.swimlaneOut);
 }
 
 /**
@@ -397,6 +409,8 @@ function groupOptions(node: ActivityGroup, body: Tile, theme: Theme): GtileGroup
     ...(innerInkMaxX !== undefined ? { innerInkMaxX } : {}),
     ...(node.backColor !== undefined ? { backColor: node.backColor } : {}),
     ...(usymbol !== undefined ? { usymbol } : {}),
+    symbol: t,
+    ...(node.position !== undefined ? { position: node.position } : {}),
   };
 }
 
@@ -407,11 +421,18 @@ export function tileGroup(
   laneOrder: readonly string[],
   pragma: Pragma,
 ): Tile {
-  const rawBody = new GtileTopDown(tileNodes(node.body, bounder, theme, laneOrder, pragma).tiles, bounder, theme);
+  const { tiles, trailing } = tileNodes(node.body, bounder, theme, laneOrder, pragma);
+  const rawBody = new GtileTopDown(tiles, bounder, theme);
   const body = wrapGroupNote(rawBody, node.note, bounder, theme);
   const tile =
     node.groupType === 'group'
       ? new GtileGroup(node.title, body, bounder, theme, groupOptions(node, body, theme))
       : new GtilePartition(node.title, body, bounder, theme, groupOptions(node, body, theme));
-  return withSwimlane(tile, node.swimlane);
+  // `FtileGroup#getInLinkRendering` is `inner.getInLinkRendering()` (`FtileGroup.java:124-126`): the arrow INTO the
+  // group takes the body's first arrow (aar-T3c, item 16, `activity__groupin-*`).
+  withInLabel(withSwimlane(tile, node.swimlane), tiles[0]?.inLabel);
+  // `closeGroup` (`ActivityDiagram3.java:429-435`) leaves `swimlanes.nextLinkRenderer` as set: an arrow pending at
+  // `}` is the next instruction's in-link, or the enclosing branch's out-link. `tileNodes` reads it back from here.
+  if (trailing !== undefined) tile.outLabel = trailing;
+  return tile;
 }

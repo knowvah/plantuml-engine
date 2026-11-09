@@ -190,7 +190,9 @@ describe('generic -> label; -- label-in-fork (ParallelBuilderFork ConnectionIn, 
   // 35px/label-height term (`tiles/gtile-top-down.ts#sequentialGap`) --
   // NOT extended for a label this pass (`.agent-notes/add3-T1b.md`), so
   // canvas size here is a KNOWN, documented residual, not jar-equal.
-  it('canvas size is a known residual (fork-specific gap, not re-derived this pass)', () => {
-    expect(attr(ours, 'width')).not.toBe(attr(golden, 'width'));
+  // aar-T2b: `getSuppSpace1`/`getSuppForIncomingArrow` (`AbstractParallelFtilesBuilder.java:100-156`) now size the
+  // branch for its entry label, so the canvas matches the jar.
+  it('canvas width matches the jar (getSuppSpace1 / getSuppForIncomingArrow)', () => {
+    expect(attr(ours, 'width')).toBe(attr(golden, 'width'));
   });
 });

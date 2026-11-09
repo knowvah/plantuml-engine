@@ -292,21 +292,21 @@ describe('renderSpot (mission add2-T2g)', () => {
     expect(svg).toContain('fill="#000"');
   });
 
-  it('resolves the letter case-insensitively (lowercase parses to the same captured glyph)', () => {
+  it('draws the letter as written: lowercase is its own glyph (FtileCircleSpot.java:111)', () => {
     const upper = renderSpot(makeNode({ kind: 'spot', x: 50, y: 50, width: 20, height: 20, label: 'A' }), theme);
     const lower = renderSpot(makeNode({ kind: 'spot', x: 50, y: 50, width: 20, height: 20, label: 'a' }), theme);
-    expect(lower).toBe(upper);
+    expect(lower).not.toBe(upper);
   });
 
   // An UNCAPTURED letter falls back to upstream's own deterministic-text
   // branch geometry (`DriverCenteredCharacterSvg.java:64-69`) rather than
   // drawing nothing -- `activity-spot-glyph.ts`'s own doc comment.
   it("falls back to upstream's deterministic <text> geometry for an uncaptured letter", () => {
-    const node = makeNode({ kind: 'spot', x: 50, y: 50, width: 20, height: 20, label: 'Z' });
+    const node = makeNode({ kind: 'spot', x: 50, y: 50, width: 20, height: 20, label: '*' });
     const svg = renderSpot(node, theme);
     expect(svg).not.toContain('<path');
     expect(svg).toContain('<text x="55" y="65" font-family="monospace" font-size="14"');
-    expect(svg).toContain('>Z</text>');
+    expect(svg).toContain('>*</text>');
   });
 
   it('draws no glyph element at all when the character is empty', () => {

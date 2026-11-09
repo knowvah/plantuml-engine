@@ -1,0 +1,14 @@
+@startuml
+title Activity Diagram PlantUML New Syntax
+start
+split
+:FeatureDetection;
+:FeatureTracking;
+->t1;
+split again
+:EgoMotion;
+->t2;
+end split
+->t3;
+stop
+@enduml

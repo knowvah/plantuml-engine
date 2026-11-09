@@ -186,4 +186,9 @@ export interface DotInputCluster {
    *  (`svek/Cluster.java:528-547`). No caller builds one, and none reaches
    *  `DotLayoutResult.clusters`: `addClusters` registers no name for it. */
   isTogether?: true;
+  /** laep T3b-2: this cluster is a swimlane (`skinParam.useSwimlanes(type)`, `SkinParam.java:850-859`): it gets the
+   *  `minPoint`/`maxPoint` and `sourceIn`/`sinkIn` rank scaffolding and no `p0`/`p1` wrappers
+   *  (`svek-dot-swimlane.ts`, `ClusterDotString.java:157-170, 299-315`). Opt-in: only the legacy activity engine
+   *  sets it. */
+  swimlane?: true;
 }

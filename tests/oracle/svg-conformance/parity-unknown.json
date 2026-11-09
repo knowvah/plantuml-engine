@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T03:14:12.629Z",
+  "generatedAt": "2026-11-07T08:20:14.479Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -366,12 +366,9 @@
     {
       "slug": "bitabu-34-lota947",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 243,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "bitora-60-sopi379",
@@ -868,12 +865,9 @@
     {
       "slug": "coruvi-63-vuzu133",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 25,
-      "firstDiff": "svg/g[1][childCount]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "covipu-77-jimo313",
@@ -1171,10 +1165,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 42.980999999999995,
-      "firstDiff": "svg/g[1]/polygon[1]/@fill",
-      "maxDeltaPath": "svg/g[1]/polygon[1]/@points[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "dikubo-27-cica403",
@@ -4205,12 +4196,9 @@
     {
       "slug": "nezaxe-99-mumo948",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 25,
-      "firstDiff": "svg/g[1][childCount]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "nezimo-68-jabo300",
@@ -6231,12 +6219,9 @@
     {
       "slug": "tiseze-53-gace410",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 139,
-      "firstDiff": "svg/g[1][childCount]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "titafe-19-sela022",

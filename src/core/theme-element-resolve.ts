@@ -89,6 +89,20 @@ export function stereotypePaint(
   return firstTaggedValue<Paint>(theme, sname, field, stereotypes);
 }
 
+/** The stereotype tier of an element's `LineThickness` (`.x { LineThickness }`, `Style#getStroke` of the re-signed style). */
+export function stereotypeLineThickness(
+  theme: Theme,
+  sname: string,
+  stereotypes: readonly string[],
+): number | undefined {
+  return firstTaggedValue<number>(theme, sname, 'lineThicknessByStereo', stereotypes);
+}
+
+/** The stereotype tier of an element's `RoundCorner` (`skinparam <sname>RoundCorner<<x>>` / `.x { RoundCorner }`). */
+export function stereotypeRoundCorner(theme: Theme, sname: string, stereotypes: readonly string[]): number | undefined {
+  return firstTaggedValue<number>(theme, sname, 'roundCornerByStereo', stereotypes);
+}
+
 /**
  * The stereotype tier of an element's FONT colour: `skinparam <sname>FontColor<<label>>` (`addConFont(sname)`,
  * FromSkinparamToStyle.java:149,270-283 re-signed at +1000, :292-302,396-408). It colours the element's title AND, by

@@ -9,6 +9,9 @@
  * 500-line cap; its `renderComposite` now just calls into here.
  */
 
+import { stereotypeRoundCorner } from '../../core/theme-element-resolve.js';
+import { Fore } from '../../core/klimt/Fore.js';
+import { Back } from '../../core/klimt/Back.js';
 import type { ActivityNodeGeo } from './layout/tile-layout.js';
 import { compositeBucketOf } from '../../core/style-element-scope.js';
 import type { Theme } from '../../core/theme.js';
@@ -23,6 +26,7 @@ import { rect, path } from '../../core/svg.js';
 import { fmt } from '../../core/svg-format.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { activityDisplayBlock, activityTextFontConfiguration, drawActivityTextBlock } from './activity-text-sheet.js';
+import { withTitleShapeDeltas } from './activity-title-compress-ug.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
 import { activityFontSize, activityLineThickness, resolveSolidBucketColor } from './activity-style-defaults.js';
@@ -37,6 +41,7 @@ import {
   stereotypeFont,
 } from './activity-scoped-colors.js';
 import { frameTitleDimension } from './tiles/gtile-group.js';
+import { withCompositeStyle } from './activity-composite-theme.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 
 /** The root `FontColor black` a frame's title inherits. @see ~/git/plantuml/src/main/resources/skin/plantuml.skin:9 */
@@ -109,7 +114,12 @@ function compositeBucket(node: CompositeSubject): string {
 
 /** The signature's back: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
 function compositeBack(node: CompositeSubject, theme: Theme): Paint | undefined {
-  return stereotypeBack(theme, compositeSymbolOf(node), node.stereotype) ?? scopedBack(theme, compositeBucket(node));
+  return (
+    stereotypeBack(theme, compositeSymbolOf(node), node.stereotype) ??
+    // `skinparam partition { BackgroundColor<<x>> }` is `composite<<x>>` (`FromSkinparamToStyle.java:132`).
+    stereotypeBack(theme, 'composite', node.stereotype) ??
+    scopedBack(theme, compositeBucket(node))
+  );
 }
 
 /** The signature's line: its stereotype (`CommandPartition3.java:160`, `withTOBECHANGED`), else the merged value. */
@@ -158,6 +168,14 @@ interface SymbolInk {
  * `partition` -> none (its `Partition*` skinparams sit on `composite` itself,
  * `:131-132`, and are read by {@link compositeInk} for every keyword).
  */
+/** `style.value(PName.RoundCorner)` of the frame's style re-signed with its stereotype (`FtileGroup.java:89-92,103`):
+ *  the stereotype tier first, else the symbol's own block. */
+function roundCornerSpread(node: ActivityNodeGeo, theme: Theme, own: number | undefined): { roundCorner?: number } {
+  const labels = node.stereotype === undefined ? [] : [node.stereotype];
+  const value = stereotypeRoundCorner(theme, node.usymbol ?? 'rectangle', labels) ?? own;
+  return value === undefined ? {} : { roundCorner: value };
+}
+
 function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
   const g = theme.colors.graph;
   if (node.usymbol === 'card' || node.usymbol === 'rectangle') {
@@ -168,7 +186,7 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
       ...(b?.background !== undefined ? { fill: b.background } : {}),
       ...(border !== undefined ? { stroke: border } : {}),
       ...(strokeWidth !== undefined ? { strokeWidth } : {}),
-      ...(b?.roundCorner !== undefined ? { roundCorner: b.roundCorner } : {}),
+      ...roundCornerSpread(node, theme, b?.roundCorner),
     };
   }
   if (node.usymbol !== 'package' && node.kind !== 'group') return {};
@@ -219,7 +237,8 @@ function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
  * branch only changes the compression footprint, which
  * `layout/compress/shapes-of-frame.ts#frameTitleShapes` ports.
  */
-export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
+export function renderComposite(node: ActivityNodeGeo, flatTheme: Theme): string {
+  const theme = withCompositeStyle(flatTheme, node.compositeStyle);
   const ink = compositeInk(node, theme);
   const { fill, strokeWidth } = ink;
   const style = { borderColor: ink.stroke };
@@ -244,10 +263,11 @@ export function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
 
   if (title === '') return body + tab;
   // `USymbolFrame.java:154`: `title.drawU(ug.apply(new UTranslate(3, 1)))`.
+  const paint = { color: compositeTitleColor(node, theme), strokeWidth, fore: ink.stroke, back: fill };
   const titleEl = drawCompositeTitle(
     title,
     { x: node.x + 3, y: node.y + 1 },
-    { color: compositeTitleColor(node, theme), strokeWidth },
+    { ...paint, deltas: node.titleShapeDeltas },
     theme,
   );
   return body + tab + titleEl;
@@ -270,7 +290,12 @@ function renderSymbolComposite(
   const frame = drawCompositeSymbol(node, usymbol, dim, ink);
   if (title === '') return frame;
   const origin = compositeSymbolTitleOrigin(node, usymbol, dim.width);
-  const paint = { color: compositeTitleColor(node, theme), strokeWidth: ink.strokeWidth };
+  const paint = {
+    color: compositeTitleColor(node, theme),
+    strokeWidth: ink.strokeWidth,
+    fore: ink.stroke,
+    back: ink.fill,
+  };
   return frame + drawCompositeTitle(title, origin, paint, theme);
 }
 
@@ -286,7 +311,13 @@ function renderSymbolComposite(
 function drawCompositeTitle(
   title: string,
   at: { readonly x: number; readonly y: number },
-  paint: { readonly color: string; readonly strokeWidth: number },
+  paint: {
+    readonly color: string;
+    readonly strokeWidth: number;
+    readonly fore: Paint;
+    readonly back: Paint;
+    readonly deltas?: ActivityNodeGeo['titleShapeDeltas'];
+  },
   theme: Theme,
 ): string {
   const color = paint.color;
@@ -301,5 +332,11 @@ function drawCompositeTitle(
     creoleMode: CreoleMode.FULL,
     ambientStroke: stroke,
   });
-  return drawActivityTextBlock(tb, at, theme, fc, [stroke]);
+  // aar-T6a: `Fashion#apply` (`Fashion.java:67-83`) colours the ug too: a creole `----` rule in the title, which
+  // sets no colour (`CreoleHorizontalLine.java:92-97`), strokes the frame's fore colour.
+  return drawActivityTextBlock(withTitleShapeDeltas(tb, paint.deltas), at, theme, fc, [
+    new Fore(paint.fore),
+    new Back(paint.back),
+    stroke,
+  ]);
 }

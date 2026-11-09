@@ -27,6 +27,7 @@ import {
 } from './svek-dot-wrappers.js';
 
 import { PX_PER_INCH } from './graph-layout-build.js';
+import { swimlaneClusterLines } from './svek-dot-swimlane.js';
 
 /** Pixels -> the inches string graphviz is given, at jar's own 6-decimal
  *  precision. Exported (and re-exported from ./svek-dot-emit.ts, the import
@@ -402,6 +403,8 @@ export function clusterBlock(
   const out = [
     ...outerWrapperLines(cluster.id, w),
     `subgraph ${cluster.id} {style=solid;color="${hex(cc.color)}";${label}`,
+    // ClusterDotString.java:157-170: the lane's rank groups follow the title (swimlane clusters only).
+    ...(cluster.swimlane === true ? swimlaneClusterLines(String(cc.color)) : []),
   ];
   const emit = (id: string): void => {
     const node = nodeById.get(id);

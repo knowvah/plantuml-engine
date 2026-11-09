@@ -20,6 +20,7 @@
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/Display.java:614-701
  */
+import { arrowFontConfiguration, diamondFontConfiguration } from './activity-diamond-theme.js';
 import type { Theme } from '../../core/theme.js';
 import type { ActivitySName } from './activity-style-defaults.js';
 import { activityFontColor, activityFontFamily, activityHyperlinkColor } from './activity-text-style.js';
@@ -50,7 +51,7 @@ import { extractFlatContent, extractViewBoxDims } from '../../core/klimt/documen
 import { reportActivityDrawExtent } from './activity-draw-extent.js';
 import { activityMeasurer } from './activity-string-bounder.js';
 import { fontConfigurationColor } from './activity-scoped-colors.js';
-import { backColorFilterDef } from '../../core/svg-defs.js';
+import { backColorFilterDef, withContentGradientIds } from '../../core/svg-defs.js';
 import { getSprite } from '../../core/sprite-registry.js';
 import type { UStroke } from '../../core/klimt/UStroke.js';
 
@@ -123,7 +124,21 @@ export function styleFontConfiguration(
 /** {@link styleFontConfiguration} for one activity SName. */
 export function activityTextFontConfiguration(theme: Theme, fontSize: number, sname: ActivitySName): FontConfiguration {
   const font = { family: activityFontFamily(theme, sname), size: fontSize, color: activityFontColor(theme, sname) };
-  return styleFontConfiguration(theme, font, activityHyperlinkColor(theme, sname));
+  const fc = styleFontConfiguration(theme, font, activityHyperlinkColor(theme, sname));
+  // `ConditionalBuilder.java:117-118`: the diamond style's whole font configuration (face and style included).
+  const diamondFont =
+    sname === 'diamond'
+      ? diamondFontConfiguration(theme)
+      : sname === 'arrow'
+        ? arrowFontConfiguration(theme)
+        : undefined;
+  if (diamondFont === undefined) return fc;
+  return {
+    ...fc,
+    family: diamondFont.family,
+    styles: diamondFont.styles,
+    ...(diamondFont.fontFace === undefined ? {} : { fontFace: diamondFont.fontFace }),
+  };
 }
 
 /** The `Display#create0` arguments every caller here supplies. */
@@ -186,8 +201,8 @@ const KLIMT_BACK_FILTER_RE = /<filter id="([^"]*)"[^>]*><feFlood flood-color="([
  * The throwaway graphic's own `filterUid` (`'b' + seed`) is 0 for every
  * fragment, so its ids would collide across labels.
  */
-function withBackColorFilters(body: string, extraDefs: string): string {
-  let out = body;
+export function withBackColorFilters(body: string, extraDefs: string): string {
+  let out = withLiftableGradients(body, extraDefs);
   let defs = '';
   for (const m of extraDefs.matchAll(KLIMT_BACK_FILTER_RE)) {
     const { id, def } = backColorFilterDef(m[2]!);
@@ -226,4 +241,19 @@ export function drawActivityTextBlock(
   reportActivityDrawExtent(theme, extractViewBoxDims(document));
   const { body, extraDefs } = extractFlatContent(document);
   return withBackColorFilters(body, extraDefs);
+}
+
+const KLIMT_GRADIENT_RE = /<linearGradient\b[\s\S]*?<\/linearGradient>/g;
+
+/**
+ * A `<back:c1/c2>` gradient (`DriverTextSvg.java:163-168` `createSvgGradient`)
+ * moved from the throwaway document's `<defs>` into the body, content-keyed
+ * (`svg-defs.ts#withContentGradientIds`) so `collectDocumentDefs` lifts it
+ * back and the seeded pass numbers it in first-use order.
+ */
+function withLiftableGradients(body: string, extraDefs: string): string {
+  const gradients = extraDefs.match(KLIMT_GRADIENT_RE);
+  if (gradients === null) return body;
+  const keyed = withContentGradientIds(gradients.join(''), body);
+  return keyed.defs + keyed.body;
 }

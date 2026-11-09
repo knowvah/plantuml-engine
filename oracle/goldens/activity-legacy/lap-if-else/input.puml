@@ -1,0 +1,10 @@
+@startuml
+(*) --> "check"
+if "ok?" then
+  -->[true] "yes"
+  --> (*)
+else
+  -->[false] "no"
+  --> (*)
+endif
+@enduml

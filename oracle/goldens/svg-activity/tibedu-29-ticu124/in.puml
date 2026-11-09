@@ -1,0 +1,18 @@
+@startuml
+skinparam  rectangle {
+    RoundCorner<<action>> 25
+    BackgroundColor<<action>> blue
+    BorderColor<<action>> red
+}
+skinparam  rectangle {
+    RoundCorner 10
+    BackgroundColor yellow
+    BorderColor green
+}
+rectangle outerAction1 <<action>> {
+:innerAction1;
+}
+rectangle outerAction2 {
+:innerAction2;
+}
+@enduml

@@ -38,7 +38,7 @@ import type { CreoleAtomUrl } from '../../core/klimt/creole/atom/Atom.js';
 import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
 import { textRenderDecorations } from '../../core/klimt/drawing/svg/driver-text-svg-decorations.js';
 import { runDrawMetrics } from './run-draw-metrics.js';
-import type { TextRun } from './text-block-geo.js';
+import { TRANSPARENT_SVG, type TextRun } from './text-block-geo.js';
 
 /**
  * One drawn element of a sequence label, relative to its block's top-left.
@@ -154,7 +154,9 @@ function styleFieldsOf(font: FontConfiguration, drawnSize: number): Partial<Text
     ...(bold ? { bold: true } : {}),
     ...(weight !== undefined ? { fontWeight: weight } : {}),
     ...(deco.fontStyle !== null ? { italic: true } : {}),
-    ...(font.color !== null ? { color: font.color } : {}),
+    // A transparent colour stays on the run, so the draw skips it (`DriverTextSvg.java:92-93`) and an ambient never
+    // stands in for it.
+    color: font.color ?? TRANSPARENT_SVG,
     ...(deco.textDecoration !== null ? { decoration: deco.textDecoration } : {}),
     ...(deco.backColor !== null ? { textBackColor: deco.backColor } : {}),
     ...(deco.extraLines.length > 0 ? { extraLines: deco.extraLines } : {}),

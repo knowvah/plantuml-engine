@@ -118,6 +118,8 @@ function renderJoinBarLabel(node: ActivityNodeGeo, theme: Theme): string {
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vertical/FtileThinSplit.java:87-96
  */
 export function renderSplitLine(node: ActivityNodeGeo, theme: Theme): string {
+  // A `null` thin colour (`ParallelBuilderSplit.java:114-125`) draws the line unstroked: `stroke="none"`, no width.
+  if (node.color === 'none') return line(node.x, node.y, node.x + node.width, node.y, { stroke: 'none' });
   return line(node.x, node.y, node.x + node.width, node.y, {
     stroke: arrowLineColor(theme),
     strokeWidth: SPLIT_LINE_THICKNESS,

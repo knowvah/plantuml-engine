@@ -1,0 +1,15 @@
+@startuml
+skinparam activityBackgroundColor #EEEEEE
+skinparam activityBorderColor #333333
+skinparam activityStartColor red
+skinparam activityEndColor blue
+skinparam activityBarColor green
+skinparam activityDiamondBackgroundColor pink
+(*) --> ===B===
+--> if "c" then
+ --> A
+else
+ --> B
+endif
+B --> (*)
+@enduml

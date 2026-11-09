@@ -24,7 +24,7 @@ import { NORTH_HOOK, SOUTH_HOOK, WEST_HOOK, EAST_HOOK } from '../tiles/points.js
 import { laneIn, laneOut } from './swimlane-placement.js';
 import { collectTouchedLanes } from './tile-coordinates-group.js';
 import type { Out } from './tile-coordinates.js';
-import { pushEdge, pushNode, walkTile } from './tile-coordinates.js';
+import { markUrl, pushEdge, pushNode, walkTile } from './tile-coordinates.js';
 import { applyInColor, applyOutColor } from './tile-layout-inlabel.js';
 import { diamondBackOf } from './diamond-labels.js';
 import type { LoopTranslate } from './swimlane-loop-translate.js';
@@ -154,6 +154,7 @@ function pushDiamondOwnLabel(diamond: DiamondConditionTile, origin: GPoint, lane
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vertical/FtileDiamond.java:85-105 */
 function pushDiamond1(ctx: IfLinksCtx): void {
   const { t, x, y, myLane, out } = ctx;
+  const first = out.nodes.length;
   const dX = x + t.diamond1X;
   const dY = y + t.diamond1Y;
   pushNode(
@@ -182,15 +183,40 @@ function pushDiamond1(ctx: IfLinksCtx): void {
   pushDiamondLabel(t.diamond1, 'north', origin, myLane, out);
   pushDiamondLabel(t.diamond1, 'west', origin, myLane, out);
   pushDiamondLabel(t.diamond1, 'east', origin, myLane, out);
+  markUrl(out, first, t.diamondUrl);
 }
 
 /** The merge rhombus (`diamond2`, D2) -- omitted entirely when
- *  `!hasTwoBranches()`. Never carries a west/east `if-label`: our AST has
- *  no out-link-label field (`ast.ts`'s `ActivityIf`), so `tbout1`/`tbout2`
- *  (`ConditionalBuilder.java:292-303`) are always empty in this port. */
+ *  `!hasTwoBranches()`. Its west/east blocks are the branches' trailing arrow texts, `tbout1`/`tbout2`
+ *  (`ConditionalBuilder.java:292-303`), drawn after the polygon (`FtileDiamond#drawU`, `:99-104`):
+ *  west at `(-w, -h + hexagonHalfSize)`, east at `(2 * hexagonHalfSize, -h + hexagonHalfSize)`. */
 function pushMerge(ctx: IfLinksCtx): void {
   const { t, x, y, myLane, out } = ctx;
   if (!t.hasMerge) return;
+  pushMergeNode(ctx);
+  const origin = { x: x + t.mergeX, y: y + t.mergeY };
+  for (const side of ['first', 'second'] as const) {
+    const label = t.mergeLabels?.[side];
+    if (label === undefined || label.text === '') continue;
+    const dx = side === 'first' ? -label.width : t.mergeSize;
+    pushNode(
+      out,
+      {
+        id: out.nextId('if-label'),
+        kind: 'if-label',
+        x: origin.x + dx,
+        y: origin.y - label.height + t.mergeSize / 2,
+        width: label.width,
+        height: label.height,
+        label: label.text,
+      },
+      myLane,
+    );
+  }
+}
+
+function pushMergeNode(ctx: IfLinksCtx): void {
+  const { t, x, y, myLane, out } = ctx;
   pushNode(
     out,
     {

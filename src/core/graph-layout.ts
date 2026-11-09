@@ -37,8 +37,10 @@ import type { DotInputEdge, DotInputGraph, DotLayoutResult } from './graph-layou
 // sized from the literal label text (231.5px wide against an expected 36).
 // There is now exactly one install point.
 import './dot-engine-measurer.js';
+import { swimlanePointIds, withSwimlanePoints } from './svek-dot-swimlane.js';
 import { withSameContainerConstraints } from './graph-layout-build-constraint.js';
 import { edgeLabelTables, svekCluster, svekEdge, svekFrame, type SvekFrame } from './graph-layout-svek-read.js';
+import { svekNodePolygon } from './graph-layout-polygon.js';
 import { cornerSize, portNodeSize, shieldCorner, svekCornerOf } from './graph-layout-node-corner.js';
 
 /** Right/bottom canvas padding, matching the in-house engine's old extractResult. */
@@ -120,7 +122,8 @@ function mapNodes(snap: LayoutSnapshot, input: DotInputGraph, frame: SvekFrame |
     const [cornerW, cornerH] = cornerSize(d, width, height);
     if (frame !== undefined) {
       const [x, y] = svekCornerOf(frame, n, d, width, height);
-      return { id: n.name, x, y, width, height };
+      const polygon = svekNodePolygon(frame, n, d?.shape);
+      return { id: n.name, x, y, width, height, ...(polygon !== undefined ? { polygon } : {}) };
     }
     const [shieldDx, shieldDy] = shieldCorner(d, width, height);
     if (d?.shieldMargins !== undefined) {
@@ -381,6 +384,9 @@ export function layoutGraph(
   if (input.nodes.length === 0) {
     return { nodes: [], edges: [], width: 0, height: 0 };
   }
+  // The swimlane scaffolding is layout-only: added after the observer saw the graph, dropped from the result.
+  const scaffolding = swimlanePointIds(input);
+  input = withSwimlanePoints(input);
   const engine = opts?.engine ?? 'dot';
 
   const b = createGraph({ directed: true });
@@ -404,9 +410,9 @@ export function layoutGraph(
   const frame = svek ? svekFrame(raw.bounds.height) : undefined;
   const snap = frame === undefined ? raw : { ...raw, clusters: raw.clusters.map((c) => svekCluster(frame, c)) };
 
-  const nodes = mapNodes(snap, input, frame);
+  const nodes = mapNodes(snap, input, frame).filter((n) => !scaffolding.has(n.id));
   const matched = matchEdgeIds(snap, idx);
-  const edges = mapEdges(snap, matched, idx, frame);
+  const edges = mapEdges(snap, matched, idx, frame).filter((e) => !scaffolding.has(e.id));
   const clusters = mapClusters(snap, clusterIdx);
   const originShift = shiftToOrigin(nodes, edges, clusters);
   const { width, height } = canvasSize(nodes, edges);

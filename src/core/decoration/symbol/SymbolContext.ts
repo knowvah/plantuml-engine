@@ -3,6 +3,9 @@ import { UStroke } from '../../klimt/UStroke.js';
 import { Fore } from '../../klimt/Fore.js';
 import { Back } from '../../klimt/Back.js';
 import type { Paint } from '../../paint.js';
+import { HColorGradient } from '../../klimt/color/HColorGradient.js';
+import { HColorSimple } from '../../klimt/color/HColorSimple.js';
+import type { HColorOrPaint } from '../../klimt/color/ColorMapper.js';
 
 /**
  * SymbolContext — stroke + fore/back paint + shadow/corner styling for a
@@ -55,16 +58,16 @@ import type { Paint } from '../../paint.js';
  * `withForeColor`, `withCorner`, all getters, `isShadowing`, `toString`.
  */
 export class SymbolContext {
-  private readonly backColor: Paint | null;
-  private readonly foreColor: Paint | null;
+  private readonly backColor: HColorOrPaint | null;
+  private readonly foreColor: HColorOrPaint | null;
   private readonly stroke: UStroke;
   private readonly deltaShadow: number;
   private readonly roundCorner: number;
   private readonly diagonalCorner: number;
 
   constructor(
-    backColor: Paint | null,
-    foreColor: Paint | null,
+    backColor: HColorOrPaint | null,
+    foreColor: HColorOrPaint | null,
     stroke: UStroke = UStroke.simple(),
     deltaShadow = 0,
     roundCorner = 0,
@@ -90,9 +93,10 @@ export class SymbolContext {
    * solid color as-is and a gradient/`null` without risking the default
    * `[object Object]` stringification `@typescript-eslint/no-base-to-
    * string` flags. */
-  private static paintToString(paint: Paint | null): string {
+  private static paintToString(paint: HColorOrPaint | null): string {
     if (paint === null) return 'null';
     if (typeof paint === 'string') return paint;
+    if (paint instanceof HColorSimple || paint instanceof HColorGradient) return paint.asString();
     return `${paint.color1}${paint.policy}${paint.color2}`;
   }
 
@@ -178,11 +182,11 @@ export class SymbolContext {
     );
   }
 
-  getBackColor(): Paint | null {
+  getBackColor(): HColorOrPaint | null {
     return this.backColor;
   }
 
-  getForeColor(): Paint | null {
+  getForeColor(): HColorOrPaint | null {
     return this.foreColor;
   }
 

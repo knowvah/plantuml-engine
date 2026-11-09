@@ -11,7 +11,18 @@
  */
 
 export interface DotLayoutResult {
-  nodes: Array<{ id: string; x: number; y: number; width: number; height: number; xlabelX?: number; xlabelY?: number }>;
+  nodes: Array<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    xlabelX?: number;
+    xlabelY?: number;
+    /** `SvekNode#getPolygon`: an `octagon`/`hexagon` node's closed polygon in the jar's frame, translated by `-min`
+     *  (`DotStringFactory.java:411-421`). Only in the Svek read; absent for every other shape. */
+    polygon?: Array<{ x: number; y: number }>;
+  }>;
   edges: Array<{
     id: string;
     points: Array<{ x: number; y: number }>;

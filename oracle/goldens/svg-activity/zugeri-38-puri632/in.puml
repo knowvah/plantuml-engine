@@ -1,0 +1,13 @@
+@startuml
+start
+while( while 1 ) is( true1 )
+-[#LightGreen]->
+	while( while 2 ) is (true2)
+	-[#Yellow]->
+		:action3;
+	endwhile (false2)
+	-[#Blue]->
+endwhile (false1)
+-[#Grey]->
+stop
+@enduml

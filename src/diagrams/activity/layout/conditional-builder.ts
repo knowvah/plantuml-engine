@@ -25,13 +25,14 @@ import { GtileDiamondSquare } from '../tiles/gtile-diamond-square.js';
 import { GtileDiamondEmpty } from '../tiles/gtile-diamond-empty.js';
 import { GtileIfDown } from '../tiles/gtile-if-down.js';
 import { GtileIfWithLinks } from '../tiles/gtile-if-with-links.js';
+import { mergeLabelsOf } from '../tiles/gtile-if-with-links-merge-labels.js';
 import type { IfWithLinksBranch } from '../tiles/gtile-if-with-links.js';
 import { GtileTopDown } from '../tiles/gtile-top-down.js';
 import { markDecoratedSoleChild } from '../tiles/gtile-goto.js';
 import { measureIfOwnNote } from '../tiles/gtile-note.js';
 import { tileNodes } from './tile-layout.js';
 import { instructionsOf, withBranchArrowLabels } from './conditional-builder-arrows.js';
-import { withInLabel, withOutColor } from './tile-layout-inlabel.js';
+import { withEmptyBranchInColor, withInLabel, withOutColor } from './tile-layout-inlabel.js';
 import { laneOut } from './swimlane-lanes.js';
 import { buildIfLongHorizontal, buildIfLongVertical } from './conditional-builder-long.js';
 
@@ -219,7 +220,9 @@ function toBranchTile(
   const { tiles, trailing } = tileNodes([...nodes], bounder, theme, ctx.laneOrder, ctx.pragma);
   markDecoratedSoleChild(tiles);
   const body = withInLabel(new GtileTopDown(tiles, bounder, theme), tiles[0]?.inLabel);
-  return { tile: withOutColor(body, trailing), isEmpty: instructionsOf(nodes).length === 0 };
+  const isEmpty = instructionsOf(nodes).length === 0;
+  const tile = withOutColor(body, trailing);
+  return { tile: isEmpty ? withEmptyBranchInColor(tile, trailing) : tile, isEmpty };
 }
 
 /**
@@ -277,11 +280,14 @@ function buildIfWithLinks(node: ActivityIf, bounder: StringBounder, theme: Theme
   const branch2 = toBranchTile(node.elseBranch, bounder, theme, ctx);
   const laneCount = countIfSwimlanes(node);
   const notes = (node.notes ?? []).map((n) => measureIfOwnNote(n, bounder, theme));
-  return GtileIfWithLinks.create(diamond1, branch1, branch2, laneCount, {
+  const tile = GtileIfWithLinks.create(diamond1, branch1, branch2, laneCount, {
     conditionEndStyle: theme.conditionEndStyle,
     notes,
     padding: theme.padding,
+    mergeLabels: mergeLabelsOf(branch1.tile, branch2.tile, bounder, theme),
   });
+  if (node.url !== undefined) tile.diamondUrl = node.url; // `ConditionalBuilder.java:215-216`
+  return tile;
 }
 
 // `longHorizontalBranches`/`buildIfLongHorizontal`/`buildIfLongVertical`
@@ -440,6 +446,7 @@ function buildIfDown(
     conditionEndStyle: theme.conditionEndStyle,
     opale,
     padding: theme.padding,
+    mergeLabels: mergeLabelsOf(parts.mainTile, parts.sideTile, bounder, theme),
   });
   result.elseColor = parts.sideTile.outLabel?.color;
   applyIfDownSwimlaneOut(result, optionalStop, parts.mainTile);
@@ -465,7 +472,12 @@ export function buildIf(
   const node = withBranchArrowLabels(source);
   const dispatch = ifBuilderOf(node, pragma);
   const ctx: IfLayoutCtx = { laneOrder, pragma };
-  return withDiamondColors(buildIfTile(node, bounder, theme, dispatch, ctx), ifDiamondColors(source, dispatch));
+  const tile = withDiamondColors(
+    buildIfTile(node, bounder, theme, dispatch, ctx),
+    ifDiamondColors(source, dispatch, theme),
+  );
+  if (source.outColor !== undefined) tile.hlineColor = source.outColor; // read by the elseif builder only
+  return tile;
 }
 
 function buildIfTile(

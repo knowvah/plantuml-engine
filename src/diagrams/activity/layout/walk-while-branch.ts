@@ -12,7 +12,7 @@
  */
 
 import { colorSpread } from './diamond-colors.js';
-import type { ActivityNodeGeo } from '../activity-geometry.types.js';
+import type { ActivityEdgeGeo, ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { GtileWhile } from '../tiles/gtile-while.js';
 import type { DiamondConditionTile } from '../tiles/gtile-diamond-inside.js';
 import type { GPoint, HookName } from '../tiles/points.js';
@@ -207,6 +207,9 @@ export interface WhileFrame {
    *  as a separate parameter (same rationale as {@link backward} itself). */
   readonly backIncoming: string | undefined;
   readonly backOutgoing: string | undefined;
+  readonly backIncomingColor: string | undefined;
+  readonly backOutgoingColor: string | undefined;
+  readonly outColor: string | undefined;
   /**
    * `FtileWhile`'s own `specialOut` field (`FtileWhile.java:84,120`,
    * mission add2-T3b, family WSPEC): the while's `ConnectionOutSpecial`
@@ -252,8 +255,19 @@ function pushWhileBackNonEmpty(frame: WhileFrame): void {
     emphasize: 'up',
     loop: buildWhileBackLoop(header, hX, hY, backFrom, { originX: xx - dimTotalWidth, dimTotalWidth }),
   });
+  withBackSimpleLabel(out.edges[out.edges.length - 1]!, frame);
   // Drawn in the body's out lane (`ConnectionBackSimple`, `FtileWhile.java:271,302`).
   pushLaneReservation(out.reservations, whileHexagonReservation(backFrom.x, backFrom.y, bodyBottomY), bodyOutLane);
+}
+
+/** `ConnectionBackSimple(incoming1.getRainbow(), back1)`: `withLabel(back, VerticalAlignment.BOTTOM)` and the colour
+ *  (`FtileWhile.java:155,261-262`). */
+function withBackSimpleLabel(edge: ActivityEdgeGeo, frame: WhileFrame): void {
+  if (frame.backIncoming !== undefined && frame.backIncoming !== '') {
+    edge.label = frame.backIncoming;
+    edge.labelAlign = { vertical: 'BOTTOM' };
+  }
+  if (frame.backIncomingColor !== undefined) edge.color = frame.backIncomingColor;
 }
 
 /**
@@ -272,6 +286,8 @@ function pushWhileBack(frame: WhileFrame): void {
     pushEdgeFlagged(out, backEdgePoints(headerSouth, headerEast, bodyBottomY, xx), [headerOutLane, headerOutLane], {
       emphasize: 'up',
     });
+    const empty = out.edges[out.edges.length - 1]!; // `ConnectionBackEmpty(incoming1.getRainbow())`, no label (`:151`)
+    if (frame.backIncomingColor !== undefined) empty.color = frame.backIncomingColor;
     // `ConnectionBackEmpty(diamond1, diamond1)`: the header's lane (`FtileWhile.java:414,459`).
     pushLaneReservation(
       out.reservations,
@@ -310,9 +326,11 @@ function pushWhileOut(frame: WhileFrame): void {
     [headerOutLane, headerOutLane],
     { emphasize: 'down', arrowhead: false, mergeable: 'LIMITED' },
   );
+  if (frame.outColor !== undefined) out.edges[out.edges.length - 1]!.color = frame.outColor;
   pushEdgeFlagged(out, [{ x: elbowX, y: southHook.y }, southHook], [headerOutLane, headerOutLane], {
     arrowhead: false,
   });
+  if (frame.outColor !== undefined) out.edges[out.edges.length - 1]!.color = frame.outColor;
 }
 
 /**
@@ -382,10 +400,23 @@ function buildWhileSpecialFields(
   x: number,
   y: number,
   myLane: string | undefined,
-): Pick<WhileFrame, 'specialOut' | 'specialPos' | 'specialInLane' | 'backIncoming' | 'backOutgoing'> {
+): Pick<
+  WhileFrame,
+  | 'specialOut'
+  | 'specialPos'
+  | 'specialInLane'
+  | 'backIncoming'
+  | 'backOutgoing'
+  | 'backIncomingColor'
+  | 'backOutgoingColor'
+  | 'outColor'
+> {
   return {
     backIncoming: t.backIncoming,
     backOutgoing: t.backOutgoing,
+    backIncomingColor: t.backIncomingColor,
+    backOutgoingColor: t.backOutgoingColor,
+    outColor: t.outColor,
     specialOut: t.specialOut,
     specialPos: { x: x + t.specialOffsetX, y: y + t.specialOffsetY },
     specialInLane: t.specialOut !== undefined ? laneIn(t.specialOut, myLane) : undefined,

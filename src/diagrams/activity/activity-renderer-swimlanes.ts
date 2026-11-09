@@ -20,6 +20,7 @@ import type { Theme } from '../../core/theme.js';
 import { parseColor } from '../../core/paint.js';
 import { line, rect } from '../../core/svg.js';
 import { renderNode } from './activity-renderer-shapes.js';
+import { wrapUrlRuns } from './activity-node-urls.js';
 import { drawActivityTextBlock } from './activity-text-sheet.js';
 import { swimlaneTitleBlock } from './layout/swimlane-title.js';
 import { klimtStringBounder } from './activity-creole-sheet.js';
@@ -101,6 +102,15 @@ function bucketNodesByLane(geo: ActivityGeometry): {
  * titles are drawn separately by `renderActivity` (D5): edges after every
  * divider, titles last.
  */
+/** Each node drawn, with `FtileWithUrl` runs inside their link ({@link wrapUrlRuns}). */
+function renderNodeRuns(nodes: readonly ActivityNodeGeo[], theme: Theme): string {
+  return wrapUrlRuns(
+    nodes,
+    nodes.map((n) => renderNode(n, theme)),
+    theme,
+  ).join('');
+}
+
 export function renderSwimlaneChrome(geo: ActivityGeometry, theme: Theme): string {
   if (geo.swimlaneDividerY === undefined) return renderSwimlaneBand(geo, theme);
   const { y1, y2 } = geo.swimlaneDividerY;
@@ -109,10 +119,10 @@ export function renderSwimlaneChrome(geo: ActivityGeometry, theme: Theme): strin
   const { before, byLane } = bucketNodesByLane(geo);
 
   let out = renderSwimlaneBand(geo, theme);
-  for (const n of before) out += renderNode(n, theme);
+  out += renderNodeRuns(before, theme);
   for (const lane of geo.swimlanes) {
     out += renderSwimlaneBackground(lane, y1, y2);
-    for (const n of byLane.get(lane.name) ?? []) out += renderNode(n, theme);
+    out += renderNodeRuns(byLane.get(lane.name) ?? [], theme);
     out += line(lane.x, y1, lane.x, y2, { stroke, strokeWidth });
   }
   const xs = dividerXs(geo.swimlanes);

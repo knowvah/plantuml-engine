@@ -1,0 +1,9 @@
+@startuml
+<style>
+arrow { HeadColor #FF0000 }
+</style>
+start
+:a;
+:b;
+stop
+@enduml

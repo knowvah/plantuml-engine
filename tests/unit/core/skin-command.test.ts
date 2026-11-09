@@ -49,7 +49,7 @@ describe('skinCutOf', () => {
       },
       sourceOf(['a', 'b', 'c'], [2, 4, 6]),
     );
-    expect(cut).toEqual({ index: 1, refusal: refuse('execution', 3, 1, 'Cannot find style reddress') });
+    expect(cut).toEqual({ index: 1, refusal: refuse('execution', 3, 3, 'Cannot find style reddress') });
   });
 
   it('counts no body line when the source carries no positions', () => {

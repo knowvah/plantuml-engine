@@ -1,0 +1,6 @@
+@startuml
+(*) --> "Line one
+line two
+line three"
+--> (*)
+@enduml

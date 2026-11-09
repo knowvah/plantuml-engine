@@ -27,7 +27,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   yaml: ['svg-yaml'],
   hcl: ['svg-hcl'],
   dot: ['svg-dot'],
-  activity: ['svg-activity'],
+  // laep D7: legacy activity pins carry `type`, so the family serves three buckets.
+  activity: ['svg-activity', 'svg-activity-legacy'],
   mindmap: ['svg-mindmap'],
   salt: ['svg-salt'],
   wbs: ['svg-wbs'],
@@ -36,7 +37,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   chart: ['svg-chart'],
   packet: ['svg-packet'],
   board: ['svg-board'],
-  unknown: ['svg-utility', 'svg-description'],
+  unknown: ['svg-utility', 'svg-description', 'svg-activity-legacy'],
+  network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],
 };

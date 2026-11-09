@@ -1,0 +1,9 @@
+@startuml
+split
+-> s;
+:a;
+split again
+:b;
+-> t;
+end split
+@enduml

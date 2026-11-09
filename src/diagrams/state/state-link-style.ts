@@ -17,6 +17,7 @@ import type { Paint } from '../../core/paint.js';
 import { cleanStereotypeToken } from '../../core/style-map-tag-cascade.js';
 import type { Theme } from '../../core/theme.js';
 import { STATE_ARROW_BUCKET, stateBucketPaint } from './state-bucket-colors.js';
+import { stateArrowHeadOf } from '../../core/state-style-facts.js';
 import type { TransitionGeo } from './state-geo-types.js';
 import { resolveStateArrowLineColor } from './state-render-colors.js';
 
@@ -92,7 +93,11 @@ function rainbow(transition: TransitionGeo, theme: Theme): { color: Paint; headC
   const scopedLine = stateBucketPaint(theme, STATE_ARROW_BUCKET, 'border');
   const flatFallback = theme.colors.arrow;
   const color = tag?.color ?? scopedLine ?? resolveStateArrowLineColor(theme, flatFallback);
-  // `HeadColor` unset (`ValueNull`) -> the merged LineColor, tag tier included (`Rainbow.java:88-89`).
+  // The merged `{root, element, stateDiagram, arrow}` HeadColor (`state-style-facts.ts#withStateArrowHead`).
+  const merged = stateArrowHeadOf(theme);
+  if (merged !== undefined) return { color, headColor: merged === 'transparent' ? undefined : merged.paint };
+  // A hand-built theme's `stateArrowHeadColor`; `HeadColor` unset (`ValueNull`) -> the merged LineColor, tag tier
+  // included (`Rainbow.java:88-89`).
   const headRaw = theme.colors.graph.stateArrowHeadColor;
   if (headRaw === undefined) return { color, headColor: color };
   const lower = headRaw.trim().toLowerCase();

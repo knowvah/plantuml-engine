@@ -1,0 +1,6 @@
+@startuml
+skinparam ShowStereotype false
+(*) --> A
+note on link: link note <<foo>>
+A --> (*)
+@enduml

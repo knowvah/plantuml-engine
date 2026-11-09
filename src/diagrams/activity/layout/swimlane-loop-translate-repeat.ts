@@ -45,8 +45,11 @@ export function routeRepeatOut(loop: RepeatOutLoop, edge: ActivityEdgeGeo, dx1: 
   const mp1a = { x: loop.p1.x + dx1, y: loop.p1.y };
   const mp2b = { x: loop.p2.x + dx2, y: loop.p2.y };
   const middle = (mp1a.y + mp2b.y) / 2;
+  // The elbow is `Snake.create(skinParam(), arrowColor)` with NO `withLabel` (`:316`): `tbout` rides `small` only
+  // (`:323-324`; aar-T2a, `tirixa-64-zixu880` drew `yes1` twice).
+  const { label: _label, labelAlign: _labelAlign, labelWrapped: _labelWrapped, ...unlabelled } = edge;
   const elbow: ActivityEdgeGeo = {
-    ...edge,
+    ...unlabelled,
     points: [mp1a, { x: mp1a.x, y: middle }, { x: mp2b.x, y: middle }],
     arrowhead: false,
   };

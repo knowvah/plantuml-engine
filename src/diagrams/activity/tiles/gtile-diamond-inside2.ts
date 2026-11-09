@@ -75,6 +75,8 @@ function hexagonAlone(dimLabel: { width: number; height: number }): { width: num
  */
 export class GtileDiamondInside2 extends TileLeaf {
   readonly kind = 'gtile-diamond-inside2' as const;
+  /** The elseif's `(-[#c]->...)` style: the `ConnectionHorizontal` into this diamond (`FtileIfLongHorizontal.java:237`). */
+  incomingColor?: string;
   readonly label: string;
   readonly wrapped: boolean;
   readonly width: number;

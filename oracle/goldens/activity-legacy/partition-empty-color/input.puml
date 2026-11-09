@@ -1,0 +1,6 @@
+@startuml
+partition P #LightBlue {
+}
+(*) --> A
+A --> (*)
+@enduml

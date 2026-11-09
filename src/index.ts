@@ -17,7 +17,8 @@ import { registerPlugins } from './registered-plugins.js';
 import type { Theme } from './core/theme.js';
 import type { StyleMap } from './core/skinparam.js';
 import type { StringMeasurer } from './core/measurer.js';
-import type { DiagramType, UmlSource } from './core/block-extractor.js';
+import { upstreamTypeOf, type DiagramType, type UmlSource } from './core/block-extractor.js';
+import { humanReadableName } from './core/diagram-type-set.js';
 import { prepareIncludeStore } from './core/include-resolver.js';
 import { surfaceSpriteWarnings, type SpriteRegistry } from './core/sprite-commands.js';
 import { surfaceParseWarnings } from './diagrams/json/ast.js';
@@ -205,7 +206,9 @@ function astOf(resolution: Resolution, options?: RenderOptions): unknown {
   if (resolution.refusal === undefined) return resolution.ast;
   const { message, line } = resolution.refusal;
   void options;
-  throw new DiagramRefusal(message, line, resolution.plugin.type);
+  // The page names the factory's `DiagramType#humanReadableName`, not this port's routing key
+  // (`activity-legacy` prints `activity`, `description` prints `component`).
+  throw new DiagramRefusal(message, line, humanReadableName(upstreamTypeOf(resolution.plugin.type)));
 }
 
 /**

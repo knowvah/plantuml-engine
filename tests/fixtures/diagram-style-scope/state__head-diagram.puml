@@ -1,0 +1,7 @@
+@startuml
+<style>
+stateDiagram { arrow { HeadColor #FF0000 } }
+</style>
+state S
+S --> T
+@enduml

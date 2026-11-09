@@ -1,0 +1,5 @@
+@startuml
+scale 2
+(*) --> A
+A --> (*)
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+(*) --> #LightBlue {
+A --> B
+}
+--> (*)
+@enduml

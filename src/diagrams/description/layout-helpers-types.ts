@@ -150,6 +150,8 @@ export interface KermorNoteGeo {
   readonly text: string;
   readonly x: number;
   readonly y: number;
+  /** The note's own `#colour` (`CucaNote#getColors`, `Cluster.java:398`). */
+  readonly color?: string;
 }
 
 export interface KermorNotesGeo {

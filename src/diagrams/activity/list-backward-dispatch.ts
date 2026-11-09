@@ -23,6 +23,7 @@ import {
   type DispatchResult,
   type ParseContext,
 } from './dispatch-support.js';
+import { parenArrowStyle, parenArrowText } from './dispatch-paren-arrow.js';
 import { stereogroupStereotype, stereotypesSpread } from './dispatch-stereogroup.js';
 import { readMultilineActionBody } from './node-dispatch.js';
 import { unescapeLabelNewlines } from './if-dispatch.js';
@@ -95,9 +96,18 @@ function redirectToWhileSpecialOut(
   nodes: ActivityNode[],
   node: Extract<ActivityNode, { kind: 'stop' | 'end' }>,
 ): boolean {
-  const last = nodes[nodes.length - 1];
+  // `current.getLast()` (`:182`) is the last INSTRUCTION: a `-> label;` between `endwhile` and `stop` is no
+  // instruction (`CommandArrow3.java:96-110`), so it does not hide the while (aar-T2a, `mojacu-63-fade855`). The
+  // special stop leaves the pending link in place (`stop()`, `ActivityDiagram3.java:159-166`, resets nothing), so the
+  // arrow node stays for whatever instruction comes next.
+  let at = nodes.length - 1;
+  // `kill`/`detach` are no instruction either (`InstructionList.java:169-174`, `ActivityDiagram3.java:414-419`: they
+  // mutate `getLast()` and add nothing), so they do not hide the while (aar-T6b, `botuge-46-jese647`).
+  while (at >= 0 && (nodes[at]!.kind === 'arrow-label' || nodes[at]!.kind === 'kill' || nodes[at]!.kind === 'detach'))
+    at--;
+  const last = nodes[at];
   if (last === undefined || last.kind !== 'while' || nodeListContainsBreak(last.body)) return false;
-  nodes[nodes.length - 1] = { ...last, specialOut: node };
+  nodes[at] = { ...last, specialOut: node };
   return true;
 }
 
@@ -145,6 +155,11 @@ function redirectNoteOntoIf(nodes: ActivityNode[], node: ActivityNote): boolean 
 function killLastOf(branch: readonly ActivityNode[], killer: ActivityNode): ActivityNode[] {
   // `getLast() != null` (`InstructionIf.java:204`): an arrow is no instruction (`CommandArrow3.java:96-110`).
   if (branch.every((n) => n.kind === 'arrow-label')) return [...branch];
+  // Killing a branch whose last instruction is ALREADY killed flips the same flag again (`InstructionSimple.java:
+  // 123-127`): one instruction, so it stays `[action, detach]` for `isOnlySingleStopOrSpot` (aar-T6b, `zuseke-31`).
+  const instructions = branch.filter((n) => n.kind !== 'arrow-label');
+  const lastKind = instructions[instructions.length - 1]?.kind;
+  if (lastKind === 'kill' || lastKind === 'detach') return [...branch];
   return [...branch, killer];
 }
 
@@ -197,16 +212,46 @@ function clearSpeculativeNoOut(nodes: ActivityNode[]): void {
  *  file's limit. `true` when one fired (the node is fully consumed). */
 function redirectOntoIf(nodes: ActivityNode[], node: ActivityNode): boolean {
   if (node.kind === 'note')
-    return redirectNoteOntoIf(nodes, node) || redirectNoteOntoSwitch(nodes, node, pushParsedNode);
+    return (
+      redirectNoteOntoIf(nodes, node) ||
+      redirectNoteOntoSwitch(nodes, node, pushParsedNode) ||
+      redirectNoteOntoSplit(nodes, node)
+    );
   if (node.kind === 'kill' || node.kind === 'detach') return redirectKillOntoIf(nodes, node);
   return false;
 }
 
-export function pushParsedNode(nodes: ActivityNode[], node: ActivityNode | undefined): void {
+/**
+ * `InstructionSplit#addNote` (`InstructionSplit.java:155-158`): `getLast().addNote(...)`, the last branch's list,
+ * whose own `addNote` hands the note to ITS last instruction (`InstructionList.java:190-196`). So a note after
+ * `end split` is the last branch's note, never the split's (aar-T2b, item 9, `activity__splitnote-*`, `loops-*`).
+ */
+function redirectNoteOntoSplit(nodes: ActivityNode[], node: ActivityNote): boolean {
+  const last = nodes[nodes.length - 1];
+  if (last?.kind !== 'split' || last.branches.length === 0) return false;
+  const branches = last.branches.map((b) => [...b]);
+  pushParsedNode(branches[branches.length - 1]!, node);
+  nodes[nodes.length - 1] = { ...last, branches };
+  return true;
+}
+
+/** `setNextLink`'s `InstructionCollection` arm (`ActivityDiagram3.java:445-450`): the last instruction -- arrows are
+ *  none -- a closed `while` or `if` takes the arrow's rainbow as its out colour. */
+function colorClosedWhileOut(nodes: ActivityNode[], style: string): void {
+  let at = nodes.length - 1;
+  while (at >= 0 && nodes[at]!.kind === 'arrow-label') at--;
+  const last = nodes[at];
+  if (last?.kind === 'while' || last?.kind === 'if') nodes[at] = { ...last, outColor: style };
+}
+
+export function pushParsedNode(nodes: ActivityNode[], node: ActivityNode | undefined, atRoot = false): void {
   if (node === undefined) return;
   if (redirectOntoIf(nodes, node)) return;
   clearSpeculativeNoOut(nodes);
-  if ((node.kind === 'stop' || node.kind === 'end') && redirectToWhileSpecialOut(nodes, node)) return;
+  // `current() instanceof InstructionList` (`ActivityDiagram3.java:178`): only the document's root list is one; inside an
+  // `if`/`while`/group/... `current()` is that `Instruction` itself (aar-T6b, `nuluji-89-xebu820`).
+  if (atRoot && (node.kind === 'stop' || node.kind === 'end') && redirectToWhileSpecialOut(nodes, node)) return;
+  if (node.kind === 'arrow-label' && node.style !== undefined) colorClosedWhileOut(nodes, node.style);
   nodes.push(node.kind === 'repeat' ? { ...node, noOut: true } : node);
 }
 
@@ -216,7 +261,15 @@ export function pushParsedNode(nodes: ActivityNode[], node: ActivityNode | undef
 export function tryActivityList(ctx: ParseContext, idx: number, line: string): DispatchResult | null {
   const m = RE_ACTIVITY_LIST.exec(line);
   if (m === null) return null;
-  const node: ActivityAction = { kind: 'action', label: m[1]!, ...swimlaneSpread(ctx) };
+  // `CommandActivityList.executeArg` (java:100-111): the stereogroup and the `[[url]]` ride on the activity.
+  const url = m.groups?.url;
+  const node: ActivityAction = {
+    kind: 'action',
+    label: m[1]!,
+    ...swimlaneSpread(ctx),
+    ...stereotypesSpread(m[2]),
+    ...(url !== undefined ? { url } : {}),
+  };
   return { idx: idx + 1, node };
 }
 
@@ -232,9 +285,17 @@ export function tryActivityList(ctx: ParseContext, idx: number, line: string): D
  *  optional label capture in this module uses, pre-spread so callers
  *  never re-invoke this (and re-trigger `exactOptionalPropertyTypes` on
  *  a freshly-widened `string | undefined` call result). */
+/** `INCOMING_COLOR`/`OUTCOMING_COLOR` (`CommandBackward3.java:71,84`): the bracketed style of the parens' arrow. */
+function backColorSpread<K extends string>(key: K, raw: string | undefined): { [P in K]?: string } {
+  const color = raw === undefined ? undefined : parenArrowStyle(raw);
+  return color === undefined ? {} : ({ [key]: color } as { [P in K]?: string });
+}
+
 function backArrowSpread<K extends string>(key: K, raw: string | undefined): { [P in K]?: string } {
   if (raw === undefined) return {};
-  const label = unescapeLabelNewlines(raw);
+  // `\(` then an optional `->` | `STYLE_COLORS_MULTIPLES` (INCOMING_COLOR/OUTCOMING_COLOR) then the text (`(.*?)`):
+  // the arrow is no part of the label (`CommandBackward3.java:67-73,80-86`; aar-T2a, `cajore-10-sodu905`).
+  const label = unescapeLabelNewlines(parenArrowText(raw));
   return label === '' ? {} : ({ [key]: label } as { [P in K]?: string });
 }
 
@@ -252,6 +313,8 @@ export function tryBackward(ctx: ParseContext, idx: number, line: string): Dispa
       ...swimlaneSpread(ctx),
       ...backArrowSpread('incoming', single[1]),
       ...backArrowSpread('outgoing', single[4]),
+      ...backColorSpread('incomingColor', single[1]),
+      ...backColorSpread('outgoingColor', single[4]),
       // `CommandBackward3.java:136-138`: `stereogroup.getBoxStyle()`.
       ...stereoSpread(stereogroupStereotype(single[3])),
       ...stereotypesSpread(single[3]),
@@ -269,6 +332,7 @@ export function tryBackward(ctx: ParseContext, idx: number, line: string): Dispa
     label: body.labelParts.join('\n'),
     ...swimlaneSpread(ctx),
     ...backArrowSpread('incoming', headMatch[1]),
+    ...backColorSpread('incomingColor', headMatch[1]),
     // `CommandBackwardLong3.java:112-115`: the closer's stereogroup.
     ...stereoSpread(body.multiStereo),
     ...stereotypesSpread(body.multiGroup),

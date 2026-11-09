@@ -1,0 +1,10 @@
+@startuml
+start
+while (data avaiable?)
+  :read data;
+  :generate diagrams;
+(-[#blue]->inc) backward:This is backward; (-[#green,dashed]->out)
+endwhile
+:end;
+stop
+@enduml

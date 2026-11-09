@@ -75,6 +75,15 @@ export const DiagramType = {
 
 export type DiagramType = (typeof DiagramType)[keyof typeof DiagramType];
 
+/**
+ * The name an error page prints after "Assumed diagram type:".
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/DiagramType.java:298-302
+ */
+export function humanReadableName(type: DiagramType): string {
+  if (type === DiagramType.DESCRIPTION) return 'component';
+  return type.toLowerCase();
+}
+
 // ---------------------------------------------------------------------------
 // The flattened `getTypes` switch (`DiagramType.java:94-218`)
 // ---------------------------------------------------------------------------

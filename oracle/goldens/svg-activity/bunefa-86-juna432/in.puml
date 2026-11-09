@@ -1,0 +1,6 @@
+@startuml
+while (test)
+  :task;
+  ->label;
+endwhile
+@enduml

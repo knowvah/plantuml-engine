@@ -1,0 +1,12 @@
+@startuml
+start
+partition P {
+-[#red]->
+fork
+:a;
+fork again
+:b;
+end merge
+}
+stop
+@enduml

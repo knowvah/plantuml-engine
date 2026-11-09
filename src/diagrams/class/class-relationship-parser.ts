@@ -186,13 +186,16 @@ const REL_STEREO = String.raw`<<[^<>]*>>`;
 const REL_HEADER_RE = /^@([\d.]+)\s+/;
 const REL_HEADER = String.raw`(?:@[\d.]+\s+)?`;
 
+// laep/T3b-4: both QUALIFIER brackets sit in `RegexConcat(spaceOneOrMore, "[", Q, "]",
+// spaceOneOrMore)` (CommandLinkClass.java:120-126 and :145-151), so an unspaced
+// `[..]` is no qualifier; the same shape is in the three twins below.
 const REL_RE = new RegExp(
   String.raw`^(${CLASS_ID})` +
-    String.raw`\s*(?:\[([^[\]]+)\])?` +
+    String.raw`\s*(?:\s+\[([^[\]]+)\]\s+)?` +
     String.raw`\s*(?:"([^"]*)")?${REL_ROLE}` +
     String.raw`\s*(${REL_ARROW})` +
     String.raw`\s*(?:"([^"]*)")?${REL_ROLE}` +
-    String.raw`\s*(?:\[([^[\]]+)\])?` +
+    String.raw`\s*(?:\s+\[([^[\]]+)\]\s+)?` +
     String.raw`\s*(${CLASS_ID})` +
     String.raw`\s*(?:${REL_COLOR})?` +
     // B7/M8: the link's `<<stereo>>` is CAPTURED (it was `(?:...)`) -- it is a
@@ -221,11 +224,11 @@ const REL_RE = new RegExp(
  */
 const REL_COLOR_CAPTURE_RE = new RegExp(
   String.raw`^(?:${CLASS_ID})` +
-    String.raw`\s*(?:\[[^[\]]+\])?` +
+    String.raw`\s*(?:\s+\[[^[\]]+\]\s+)?` +
     String.raw`\s*(?:"[^"]*")?${REL_ROLE}` +
     String.raw`\s*(?:${REL_ARROW})` +
     String.raw`\s*(?:"[^"]*")?${REL_ROLE}` +
-    String.raw`\s*(?:\[[^[\]]+\])?` +
+    String.raw`\s*(?:\s+\[[^[\]]+\]\s+)?` +
     String.raw`\s*(?:${CLASS_ID})` +
     // Named (not positional) capture -- REL_ROLE embeds its own capturing
     // group (used twice above), so a positional index here would be wrong
@@ -241,11 +244,11 @@ const REL_COLOR_CAPTURE_RE = new RegExp(
  */
 export const REL_DISPATCH_RE = new RegExp(
   String.raw`^${REL_HEADER}(?:${CLASS_ID})` +
-    String.raw`\s*(?:\[[^[\]]+\])?` +
+    String.raw`\s*(?:\s+\[[^[\]]+\]\s+)?` +
     String.raw`\s*(?:"[^"]*")?${REL_ROLE}` +
     String.raw`\s*(?:${REL_ARROW})` +
     String.raw`\s*(?:"[^"]*")?${REL_ROLE}` +
-    String.raw`\s*(?:\[[^[\]]+\])?` +
+    String.raw`\s*(?:\s+\[[^[\]]+\]\s+)?` +
     String.raw`\s*(?:${CLASS_ID})` +
     String.raw`\s*(?:${REL_COLOR})?` +
     String.raw`\s*(?:${REL_URL})?\s*(?:${REL_STEREO})?` +

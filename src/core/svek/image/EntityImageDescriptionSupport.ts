@@ -42,17 +42,9 @@ import type { EntityImageDescriptionSymbol } from './EntityImageDescription.js';
 
 export { measureLine, buildTextBlock } from './EntityImageDescriptionTextBlock.js';
 
-/** The geometric family svek/layout branches on. Upstream:
- *  svek/ShapeType.java (12-value `enum`); only the 5 values this file's
- *  sibling can produce are ported (as-const object — no `const enum`). */
-export const ShapeType = {
-  RECTANGLE: 'RECTANGLE',
-  RECTANGLE_WITH_CIRCLE_INSIDE: 'RECTANGLE_WITH_CIRCLE_INSIDE',
-  FOLDER: 'FOLDER',
-  HEXAGON: 'HEXAGON',
-  OVAL: 'OVAL',
-} as const;
-export type ShapeType = (typeof ShapeType)[keyof typeof ShapeType];
+/** `svek/ShapeType.java`, now ported in full at `svek/ShapeType.ts` (laep T2a); re-exported for its old importers. */
+import { ShapeType } from '../ShapeType.js';
+export { ShapeType };
 
 /** The (x1,x2,y1,y2) "shield" padding `getShield` reports so a
  *  magnetic-border-avoiding link steers clear of a lollipop interface's

@@ -1,0 +1,12 @@
+@startuml
+:previous
+ action; <<continuous>>
+  while (repeat\nforever)
+    :do it
+    again;
+  endwhile
+  ->exit
+  path;
+  detach
+  end
+@enduml

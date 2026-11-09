@@ -21,8 +21,9 @@ import { renderFixtureActivity } from '../../oracle/svg-conformance/render-fixtu
 const measurer = new DeterministicMeasurer();
 
 describe('spotGlyphPath — captured letters', () => {
-  it("CAPTURED_SPOT_LETTERS is exactly A/B/E/G (this corpus's full census)", () => {
-    expect([...CAPTURED_SPOT_LETTERS].sort()).toEqual(['A', 'B', 'E', 'G']);
+  it('CAPTURED_SPOT_LETTERS is every table key (62 after aar-T5a)', () => {
+    expect([...CAPTURED_SPOT_LETTERS].sort()).toEqual(Object.keys(SPOT_GLYPH_D).sort());
+    expect(CAPTURED_SPOT_LETTERS.size).toBe(62);
   });
 
   it("A translated to nipuxu-11-tefa314's first occurrence (cx=37.663, cy=117)", () => {
@@ -74,19 +75,20 @@ describe('spotGlyphPath — captured letters', () => {
     );
   });
 
-  it('resolves lowercase the same as uppercase', () => {
-    expect(spotGlyphPath('a', 10, 10)).toBe(spotGlyphPath('A', 10, 10));
-    expect(spotGlyphPath('b', 10, 10)).toBe(spotGlyphPath('B', 10, 10));
-    expect(spotGlyphPath('g', 10, 10)).toBe(spotGlyphPath('G', 10, 10));
+  // aar-T5a: `spot.charAt(0)` is drawn as written (`FtileCircleSpot.java:111`), so a lowercase letter has its own
+  // outline, never its capital's.
+  it('draws a lowercase letter with its own outline', () => {
+    expect(spotGlyphPath('a', 10, 10)).not.toBe(spotGlyphPath('A', 10, 10));
+    expect(spotGlyphPath('g', 10, 10)).not.toBe(spotGlyphPath('G', 10, 10));
   });
 
-  it('returns undefined for a letter with no captured outline', () => {
-    expect(spotGlyphPath('Z', 10, 10)).toBeUndefined();
-    expect(spotGlyphPath('1', 10, 10)).toBeUndefined();
+  it('returns undefined for a character with no captured outline', () => {
+    expect(spotGlyphPath('*', 10, 10)).toBeUndefined();
   });
 
-  it('every captured table entry is keyed to itself (no stray letters)', () => {
-    expect(Object.keys(SPOT_GLYPH_D).sort()).toEqual(['A', 'B', 'E', 'G']);
+  it('the table covers A-Z, a-z and 0-9 (aar-T5a authored rows)', () => {
+    const expected = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'].sort();
+    expect(Object.keys(SPOT_GLYPH_D).sort()).toEqual(expected);
   });
 });
 

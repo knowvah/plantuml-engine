@@ -184,6 +184,19 @@ function buildStyleMapPartialTheme(
 export function applyStyleMap(styleMap: StyleMap, base: Theme, diagramType: DiagramType | undefined): Theme {
   const graphOverride = computeGraphOverride(styleMap, base);
   const extras = computeStyleMapExtras(styleMap, base, diagramType);
-  if (styleMapHasNoOverrides(graphOverride, extras)) return base;
-  return deepMergeTheme(base, buildStyleMapPartialTheme(base, graphOverride, extras));
+  const themed = styleMapHasNoOverrides(graphOverride, extras)
+    ? base
+    : deepMergeTheme(base, buildStyleMapPartialTheme(base, graphOverride, extras));
+  return withElementMaximumWidth(themed, styleMap);
+}
+
+/**
+ * `skinparam wrapWidth` IS `element { MaximumWidth }` (`addConvert("wrapWidth", PName.MaximumWidth, SName.element)`,
+ * `FromSkinparamToStyle.java:250`), and `element` sits in every element signature: a bare `<style> element
+ * { MaximumWidth N }` is the same knob as `theme.wrapWidth` (aar-T4c, `raneku-06-labe982`).
+ */
+function withElementMaximumWidth(theme: Theme, styleMap: StyleMap): Theme {
+  const raw = styleMap.get('element')?.get('maximumwidth');
+  const width = raw === undefined ? Number.NaN : Number.parseFloat(raw);
+  return Number.isFinite(width) ? { ...theme, wrapWidth: width } : theme;
 }

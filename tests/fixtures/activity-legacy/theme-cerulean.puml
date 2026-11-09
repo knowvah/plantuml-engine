@@ -1,0 +1,10 @@
+@startuml
+!theme cerulean
+(*) --> A
+A --> if "x?" then
+--> B
+else
+--> C
+endif
+B --> (*)
+@enduml

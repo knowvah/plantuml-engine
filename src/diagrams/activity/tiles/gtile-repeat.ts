@@ -329,6 +329,10 @@ export interface GtileRepeatContext {
    *  unset. */
   readonly backIncoming?: string | undefined;
   readonly backOutgoing?: string | undefined;
+  /** `incoming1.getRainbow(arrowColor)` (`FtileRepeat.java:182,187,190,193`) when no `backward:` set it (aar-T2a). */
+  readonly backIncomingColor?: string | undefined;
+  /** `incoming2.getRainbow(...)`: `backward:`'s trailing `(-[#c]->...)` (aar-T2a). */
+  readonly backOutgoingColor?: string | undefined;
 }
 
 /**
@@ -372,6 +376,8 @@ export class GtileRepeat extends TileComposite {
    *  carried onto the instance. */
   readonly backIncoming: string | undefined;
   readonly backOutgoing: string | undefined;
+  readonly backIncomingColor: string | undefined;
+  readonly backOutgoingColor: string | undefined;
   /** `getTranslateBackward`'s `x`/`y` (`FtileRepeat.java:750-757`): `x =
    *  dimTotal.width - backward.width`, `y = (dimTotal.height -
    *  backward.height) / 2` -- flush to the tile's own right edge,
@@ -428,6 +434,8 @@ export class GtileRepeat extends TileComposite {
     super();
     this.backConnection = backConnection;
     ({ backward: this.backward, backIncoming: this.backIncoming, backOutgoing: this.backOutgoing } = ctx);
+    this.backIncomingColor = ctx.backIncomingColor;
+    this.backOutgoingColor = ctx.backOutgoingColor;
     const tbTestWidth = repeatTbTestWidth(condition, ctx.bounder, ctx.theme);
     const dims = computeRawDims(entry, body, condition, ctx.backward, tbTestWidth);
     const weld = computeWeldLayout(dims.rawLeft, dims.rawWidth, dims.rawHeight, countWeldingBreaks(body));

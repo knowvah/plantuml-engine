@@ -1,0 +1,5 @@
+@startuml
+skinparam noteBackgroundColor #BBBBBB
+state S
+note "n" as N
+@enduml

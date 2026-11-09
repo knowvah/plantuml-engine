@@ -1,0 +1,5 @@
+@startuml
+json J <<s>> {
+  "k": "v"
+}
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+fork
+     -[#red]->
+     :goo;
+fork again
+     :goo;
+     -[#green;#red]->
+end fork
+@enduml

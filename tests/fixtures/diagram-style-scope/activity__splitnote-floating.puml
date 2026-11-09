@@ -1,0 +1,8 @@
+@startuml
+split
+:a;
+split again
+:b;
+end split
+floating note right: n
+@enduml

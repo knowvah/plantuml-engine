@@ -1,0 +1,5 @@
+@startuml
+hide footbox
+(*) --> A
+A --> (*)
+@enduml

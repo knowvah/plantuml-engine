@@ -19,9 +19,11 @@ import {
   resolveSolidBucketColor,
 } from './activity-style-defaults.js';
 import { activityFontColor } from './activity-text-style.js';
+import { activityDocumentStyleOf } from '../../core/activity-document-style.js';
 import { inlineBack, scopedBack, scopedLine, svgBack } from './activity-scoped-colors.js';
 import { spotGlyphPath } from './activity-spot-glyph.js';
 import { actColors, renderNode } from './activity-renderer-shapes.js';
+import { wrapUrlRuns } from './activity-node-urls.js';
 import { activityShadowFilter, activityShadowingOf } from './activity-shadow.js';
 
 /**
@@ -66,8 +68,18 @@ function circleColors(
   return {
     // `colors.getColor(style, BackGroundColor)`: the stereogroup's BACK beats the style's (`CircleStart.java:72`, `CircleEnd.java:75`).
     back: ellipsePaint(inlineBack(node) ?? svgBack(merged?.back) ?? fallback.back),
-    line: ellipsePaint(merged?.line ?? fallback.line),
+    // `colors.getColor(style, LineColor)`: the stereogroup's `line:` beats the style's (aar, `tusaxu-17`).
+    line: ellipsePaint(node.lineColor ?? merged?.line ?? fallback.line),
   };
+}
+
+/**
+ * The circle's ring stroke: `style.getStroke()` (`CircleStart.java:79`, `CircleEnd.java:83`,
+ * `FtileCircleEndCross.java:106`) is the merged `LineThickness` of its signature -- `<style> start { LineThickness 5 }`
+ * (`core/activity-document-style.ts`) over `plantuml.skin:378`'s default.
+ */
+function circleStroke(theme: Theme, leaf: 'start' | 'stop' | 'end', fallback: number): number {
+  return activityDocumentStyleOf(theme)?.thickness[leaf] ?? fallback;
 }
 
 export function renderStart(node: ActivityNodeGeo, theme: Theme): string {
@@ -101,7 +113,7 @@ export function renderStart(node: ActivityNodeGeo, theme: Theme): string {
   return ellipse(cx, cy, r, r, {
     fill: back,
     stroke: line,
-    'stroke-width': CIRCLE_LINE_THICKNESS,
+    'stroke-width': circleStroke(theme, 'start', CIRCLE_LINE_THICKNESS),
     ...activityShadowFilter(activityShadowingOf(theme).start), // `CircleStart.java:79-81`
   });
 }
@@ -156,9 +168,9 @@ export function renderStop(node: ActivityNodeGeo, theme: Theme): string {
     ellipse(cx, cy, outerR, outerR, {
       fill: 'none',
       stroke: line,
-      'stroke-width': CIRCLE_LINE_THICKNESS,
+      'stroke-width': circleStroke(theme, 'stop', CIRCLE_LINE_THICKNESS),
       ...activityShadowFilter(activityShadowingOf(theme).stop), // `CircleEnd.java:83-85`: the outer ring only
-    }) + ellipse(cx, cy, innerR, innerR, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS })
+    }) + ellipse(cx, cy, innerR, innerR, { fill: back, stroke: line, 'stroke-width': CIRCLE_LINE_THICKNESS }) // inner disc: `ug` (never re-applied the style stroke, `CircleEnd.java:102`) keeps `UStroke.simple()`, thickness 1 (`UStroke.java:75-77`)
   );
 }
 
@@ -216,7 +228,7 @@ export function renderEnd(node: ActivityNodeGeo, theme: Theme): string {
     ellipse(cx, cy, r, r, {
       fill: 'none',
       stroke: ellipsePaint(endFill),
-      'stroke-width': CIRCLE_END_LINE_THICKNESS,
+      'stroke-width': circleStroke(theme, 'end', CIRCLE_END_LINE_THICKNESS),
       ...activityShadowFilter(activityShadowingOf(theme).end), // `FtileCircleEndCross.java:78,105`
     }) +
     orderedLine(node.x + delta, node.y + delta, node.x + delta + size2, node.y + delta + size2, crossStyle) +
@@ -357,7 +369,7 @@ function renderGoto(node: ActivityNodeGeo, dest: { x: number; y: number } | unde
  */
 export function renderNodesDispatchingGotos(nodes: readonly ActivityNodeGeo[], theme: Theme): string[] {
   const positions = new Map<string, { x: number; y: number }>();
-  return nodes.map((node) => {
+  const svgs = nodes.map((node) => {
     const svg = renderNode(node, theme);
     const name = node.label ?? '';
     if (node.dispatched === false) return svg;
@@ -365,4 +377,5 @@ export function renderNodesDispatchingGotos(nodes: readonly ActivityNodeGeo[], t
     if (node.kind === 'goto') return svg + renderGoto(node, positions.get(name), theme);
     return svg;
   });
+  return wrapUrlRuns(nodes, svgs, theme);
 }

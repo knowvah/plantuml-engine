@@ -23,7 +23,7 @@ export function lastDeclarationPosition(pre: PreprocessorResult): number | undef
 }
 
 /** `pre` without the declarations located at or after `position` (an unlocated one counts as executed before). */
-function declaredBefore(pre: PreprocessorResult, position: number): PreprocessorResult {
+export function declaredBefore(pre: PreprocessorResult, position: number): PreprocessorResult {
   const skinparam = new Map<string, string>();
   const skinparamOrder = new Map<string, number>();
   for (const assignment of pre.skinparamAssignments ?? []) {

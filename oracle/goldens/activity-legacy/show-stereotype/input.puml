@@ -1,0 +1,5 @@
+@startuml
+show stereotype
+(*) --> "A" <<foo>>
+A --> (*)
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+<style>
+participant { FontColor transparent }
+</style>
+A -> B
+@enduml

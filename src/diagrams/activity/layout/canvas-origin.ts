@@ -63,7 +63,9 @@
  * 55×55.
  */
 
+import { activityDebugOf } from '../../../core/activity-debug-option.js';
 import type { ActivityEdgeGeo, ActivityNodeGeo, SwimlaneGeo } from '../activity-geometry.types.js';
+import { planEdgeDraw } from '../activity-rainbow.js';
 import type { Reservation } from './hexagon-reservations.js';
 import { TITLE_ASCENT_FRACTION } from './swimlane-placement.js';
 import { bandReservationX, computeSwimlaneChrome, type SwimlaneChrome } from './swimlane-chrome.js';
@@ -76,11 +78,14 @@ import {
 import { arrowDirection, arrowHeadExtents, type ArrowDir } from '../arrows-regular.js';
 import { swimlaneTitleFontSize } from '../activity-style-defaults.js';
 import type { Theme } from '../../../core/theme.js';
+import { openerBuilderTheme } from './style-position.js';
 import { activityShadowingOf } from '../activity-shadow.js';
+import { extendForFrameTab } from './canvas-origin-frame-tab.js';
 import { shiftAll } from './canvas-origin-shift.js';
 import {
   SPLIT_LINE_KINDS,
   extendForEdgeLabelText,
+  extendForEmojiBox,
   extendForIfLabelText,
   extendForIfOwnLabelText,
   extendForLaneDivider,
@@ -94,7 +99,16 @@ export interface MutableInkBounds {
   maxY: number;
 }
 
-function extendForNode(acc: MutableInkBounds, node: ActivityNodeGeo, theme: Theme): void {
+/** The debug `URectangle` (`BoxStyle.java:141-145`): `LimitFinder#drawRectangle`'s `RECT_FUDGE` over the tile's box. */
+function extendForDebugRect(acc: MutableInkBounds, node: ActivityNodeGeo): void {
+  acc.minX = Math.min(acc.minX, node.x - RECT_FUDGE.near);
+  acc.maxX = Math.max(acc.maxX, node.x + node.width + RECT_FUDGE.far);
+  acc.minY = Math.min(acc.minY, node.y - RECT_FUDGE.near);
+  acc.maxY = Math.max(acc.maxY, node.y + node.height + RECT_FUDGE.far);
+}
+
+function extendForNode(acc: MutableInkBounds, node: ActivityNodeGeo, documentTheme: Theme): void {
+  const theme = openerBuilderTheme(node, documentTheme); // aar-T6b: a construct's diamonds read its opener's builder
   if (isInkless(node.kind)) return;
   if (node.kind === 'if-label') {
     extendForIfLabelText(acc, node, theme);
@@ -104,6 +118,11 @@ function extendForNode(acc: MutableInkBounds, node: ActivityNodeGeo, theme: Them
     extendForIfOwnLabelText(acc, node, theme);
     return;
   }
+  if (node.emojiBox === true) {
+    extendForEmojiBox(acc, node, theme);
+    return;
+  }
+  if (node.kind === 'action' && activityDebugOf(theme)) extendForDebugRect(acc, node); // `FtileBox.java:201-206`
   const { x: fx, y: fy } = nodeFudge(node, activityShadowingOf(theme));
   acc.minX = Math.min(acc.minX, node.x - fx.near);
   acc.maxX = Math.max(acc.maxX, node.x + node.width + fx.far);
@@ -114,6 +133,7 @@ function extendForNode(acc: MutableInkBounds, node: ActivityNodeGeo, theme: Them
   }
   acc.minY = Math.min(acc.minY, node.y - fy.near);
   acc.maxY = Math.max(acc.maxY, node.y + node.height + fy.far);
+  extendForFrameTab(acc, node, theme);
 }
 
 /**
@@ -187,7 +207,13 @@ export function edgeInkX(edge: ActivityEdgeGeo): { minX: number; maxX: number } 
   return { minX, maxX };
 }
 
-function extendForEdge(acc: MutableInkBounds, edge: ActivityEdgeGeo, theme: Theme): void {
+/**
+ * One drawn worm copy's ink: its `ULine` points and arrowheads. A rainbow
+ * (`Snake#drawRainbow`, `Snake.java:200-224`) draws one offset copy per colour,
+ * each a `LimitFinder` draw of its own; a hidden copy draws nothing
+ * (`Worm.java:123-124`). A plain edge is one copy, its ink as ever.
+ */
+function extendForWorm(acc: MutableInkBounds, edge: ActivityEdgeGeo): void {
   const { minX, maxX } = edgeInkX(edge);
   acc.minX = Math.min(acc.minX, minX);
   acc.maxX = Math.max(acc.maxX, maxX);
@@ -202,7 +228,15 @@ function extendForEdge(acc: MutableInkBounds, edge: ActivityEdgeGeo, theme: Them
     acc.minY = Math.min(acc.minY, tip.y + ext.minY);
     acc.maxY = Math.max(acc.maxY, tip.y + ext.maxY);
   }
-  extendForEdgeLabelText(acc, edge, theme); // T1b: `Snake#drawInternalLabel`.
+}
+
+function extendForEdge(acc: MutableInkBounds, edge: ActivityEdgeGeo, theme: Theme): void {
+  const plan = planEdgeDraw(edge, theme);
+  const rainbow = plan.copies.length > 1;
+  for (const copy of plan.copies) {
+    if (!(rainbow && copy.look.invisible)) extendForWorm(acc, { ...edge, points: copy.points });
+  }
+  extendForEdgeLabelText(acc, edge, theme, plan.labelDx); // T1b: `Snake#drawInternalLabel`.
 }
 
 /**

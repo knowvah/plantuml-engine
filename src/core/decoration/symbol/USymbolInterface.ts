@@ -3,6 +3,13 @@ import { USymbolSimpleAbstract } from './USymbolSimpleAbstract.js';
 import type { SName } from './USymbol.js';
 import type { SymbolContext } from './SymbolContext.js';
 import { CircleInterface2 } from '../../svek/CircleInterface2.js';
+import { ColorMapper, toSvgPaint, type HColorOrPaint } from '../../klimt/color/ColorMapper.js';
+import type { Paint } from '../../paint.js';
+
+/** `CircleInterface2` takes a `Paint`: the light colour, as before `SymbolContext` carried an `HColor`. */
+function lightPaintOf(color: HColorOrPaint | null): Paint | null {
+  return color === null ? null : toSvgPaint(color, ColorMapper.IDENTITY);
+}
 
 /**
  * USymbolInterface — the `interface`/`circle`/`()` descriptive/
@@ -46,8 +53,8 @@ export class USymbolInterface extends USymbolSimpleAbstract {
 
   protected getDrawing(symbolContext: SymbolContext): TextBlock {
     return new CircleInterface2(
-      symbolContext.getBackColor(),
-      symbolContext.getForeColor(),
+      lightPaintOf(symbolContext.getBackColor()),
+      lightPaintOf(symbolContext.getForeColor()),
       symbolContext.isShadowing() ? 4.0 : 0.0,
     );
   }

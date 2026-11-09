@@ -112,6 +112,14 @@ export class GtileNote extends TileLeaf {
    *  `FtileFactoryDelegatorAddNote.java:67-68` to `note.getType() ==
    *  NoteType.NOTE` -- `false` for a `FLOATING_NOTE` alone (add4-T2c). */
   readonly withOutPoint: boolean;
+  /**
+   * A note that opens a fork branch is built by `FtileFactoryDelegatorAddNote` with the branch list's own swimlane, which
+   * is null for `InstructionList.empty()` (`InstructionFork.java:90,140`, `InstructionList.java:78-80,146`). Its
+   * `getSwimlanes()` is then empty (`FtileNoteAlone.java:84-89`), so no lane's `UGraphicInterceptorOneSwimlane` draws it
+   * (`UGraphicInterceptorOneSwimlane.java:70-76`) while it still takes its box and its arrows (`:90-95`) -- and, drawing
+   * nothing, it leaves the ink-free band the compression pass closes. Set by `tile-layout-structural.ts#tileFork`.
+   */
+  undrawn = false;
 
   constructor(node: ActivityNote, bounder: StringBounder, theme: Theme, withOutPoint = true) {
     super();

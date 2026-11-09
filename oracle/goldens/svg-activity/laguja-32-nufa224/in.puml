@@ -1,0 +1,14 @@
+@startuml
+start
+-[#green]-> before repeat;
+repeat
+-[#pink]-> after repeat;
+:Write;
+-> send to review;
+:Reviews;
+-[#yellow]-> endrepeat;
+repeat while (was it proper?) -[#blue]-> no
+-[#red]->yes;
+:some action;
+stop
+@enduml

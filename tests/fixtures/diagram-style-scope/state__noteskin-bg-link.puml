@@ -1,0 +1,8 @@
+@startuml
+skinparam noteBackgroundColor #BBBBBB
+state S
+S --> T
+note on link
+  n
+end note
+@enduml

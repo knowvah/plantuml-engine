@@ -1,0 +1,5 @@
+@startuml
+hide circle
+(*) --> A
+A --> (*)
+@enduml

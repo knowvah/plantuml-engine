@@ -38,6 +38,7 @@ function classifyAsCluster(
   if (node.stereotypeSprite !== undefined) desc.stereotypeSprite = node.stereotypeSprite;
   if (node.entityStyle !== undefined) desc.entityStyle = node.entityStyle;
   if (node.kermorNotes !== undefined) desc.kermorNotes = node.kermorNotes;
+  if (node.kermorNoteColors !== undefined) desc.kermorNoteColors = node.kermorNoteColors;
   ctx.containers.push(desc);
   ctx.containerById.set(key, desc);
   classifyAst(node.children, ctx, removed, childAncestors, key);

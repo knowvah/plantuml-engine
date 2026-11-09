@@ -220,11 +220,11 @@
     {
       "type": "activity",
       "slug": "bineki-51-zedo397",
-      "status": "baseline",
-      "diffCount": 31,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 56
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -247,16 +247,16 @@
     {
       "type": "activity",
       "slug": "bitugi-14-kico572",
-      "status": "baseline",
-      "diffCount": 32,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 32
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "bixece-33-baja570",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 31,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -310,16 +310,16 @@
     {
       "type": "activity",
       "slug": "bofaxe-86-mizu331",
-      "status": "baseline",
-      "diffCount": 523,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 537
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "bokida-76-fega767",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 222,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -364,11 +364,11 @@
     {
       "type": "activity",
       "slug": "bosada-42-voti559",
-      "status": "baseline",
-      "diffCount": 380,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 401
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -391,7 +391,7 @@
     {
       "type": "activity",
       "slug": "botani-09-fova158",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 117,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -400,11 +400,11 @@
     {
       "type": "activity",
       "slug": "botuge-46-jese647",
-      "status": "baseline",
-      "diffCount": 59,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 191
+      "status": "pinned",
+      "diffCount": 69,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 89
     },
     {
       "type": "activity",
@@ -454,7 +454,7 @@
     {
       "type": "activity",
       "slug": "bucoru-71-gapi371",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 22,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -508,11 +508,11 @@
     {
       "type": "activity",
       "slug": "bunefa-86-juna432",
-      "status": "baseline",
-      "diffCount": 14,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 20
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -571,11 +571,11 @@
     {
       "type": "activity",
       "slug": "cajexu-16-lanu149",
-      "status": "baseline",
-      "diffCount": 25,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 25
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -589,11 +589,11 @@
     {
       "type": "activity",
       "slug": "cajore-10-sodu905",
-      "status": "baseline",
-      "diffCount": 32,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 38
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -652,11 +652,11 @@
     {
       "type": "activity",
       "slug": "cedero-01-sutu624",
-      "status": "baseline",
-      "diffCount": 7,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 37
+      "status": "pinned",
+      "diffCount": 6,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "756e4c2a",
+      "weightedScore": 23
     },
     {
       "type": "activity",
@@ -697,7 +697,7 @@
     {
       "type": "activity",
       "slug": "cepivu-60-lobe416",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 64,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -706,11 +706,11 @@
     {
       "type": "activity",
       "slug": "cepizi-90-jaja810",
-      "status": "baseline",
-      "diffCount": 50,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 56
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -760,11 +760,11 @@
     {
       "type": "activity",
       "slug": "cidibe-55-gavi744",
-      "status": "baseline",
-      "diffCount": 179,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 184
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1021,11 +1021,11 @@
     {
       "type": "activity",
       "slug": "dacato-89-cala164",
-      "status": "baseline",
-      "diffCount": 99,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 99
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1039,11 +1039,11 @@
     {
       "type": "activity",
       "slug": "dadelu-44-xuvu530",
-      "status": "baseline",
-      "diffCount": 5,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "e9a870d1",
-      "weightedScore": 5
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "dc7deee8",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1066,11 +1066,11 @@
     {
       "type": "activity",
       "slug": "dajuko-60-lozu517",
-      "status": "baseline",
-      "diffCount": 9,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 9
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "7f59d713",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1147,7 +1147,7 @@
     {
       "type": "activity",
       "slug": "dejuko-37-pida698",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 24,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -1174,11 +1174,11 @@
     {
       "type": "activity",
       "slug": "denono-78-vaje778",
-      "status": "baseline",
-      "diffCount": 185,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 191
+      "status": "pinned",
+      "diffCount": 3,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
+      "weightedScore": 3
     },
     {
       "type": "activity",
@@ -1219,7 +1219,7 @@
     {
       "type": "activity",
       "slug": "dezobu-34-ligo070",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 172,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -1228,11 +1228,11 @@
     {
       "type": "activity",
       "slug": "didixe-34-solo921",
-      "status": "baseline",
-      "diffCount": 411,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 570
+      "status": "pinned",
+      "diffCount": 16,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 16
     },
     {
       "type": "activity",
@@ -1345,7 +1345,7 @@
     {
       "type": "activity",
       "slug": "dorupa-68-vobi706",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 3,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -1372,11 +1372,11 @@
     {
       "type": "activity",
       "slug": "dovoda-34-tepi908",
-      "status": "baseline",
-      "diffCount": 29,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 31
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "1450db03",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1408,11 +1408,11 @@
     {
       "type": "activity",
       "slug": "dukocu-46-mibo641",
-      "status": "baseline",
-      "diffCount": 312,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 862
+      "status": "pinned",
+      "diffCount": 638,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 747
     },
     {
       "type": "activity",
@@ -1705,11 +1705,11 @@
     {
       "type": "activity",
       "slug": "filize-93-riju662",
-      "status": "baseline",
-      "diffCount": 60,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 60
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1795,11 +1795,11 @@
     {
       "type": "activity",
       "slug": "fokopi-22-mife166",
-      "status": "baseline",
-      "diffCount": 75,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 75
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1894,11 +1894,11 @@
     {
       "type": "activity",
       "slug": "foxobi-84-kuka636",
-      "status": "baseline",
-      "diffCount": 8,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 8
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1921,11 +1921,11 @@
     {
       "type": "activity",
       "slug": "fuficu-36-caga441",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts '#green:Activity 1;' via CommandActivityLong3.java:78-84 (registered ActivityDiagramFactory3.java:159): CommandActivity3 (CommandActivity3.java:66-77) has no colour leaf, so the line starts CommandActivityLong3, whose start regex is color().getRegex() + `:` + DATA `(.*)`; CommandMultilines3.isValid returns OK_PARTIAL on a single line without testing the END pattern (CommandMultilines3.java:78-79), so the block runs to the next line ending `;` + stereogroup, ':Activity 2; <<redactivity>>' (END, CommandActivityLong3.java:61-68), and executeNow emits the deprecation warning for the leading colour (:125-127) -- the jar draws one two-line box 'Activity 1;' / ':Activity 2'; our activity engine refuses that line (node-dispatch.ts:155-156 tryMultilineAction returns null unless the line starts with ':', and RE_ACTION (dispatch-support.ts:50) has no colour prefix), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'partition \"My Partition\" <<bluepartition>> {'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -1957,7 +1957,7 @@
     {
       "type": "activity",
       "slug": "fukobu-92-deje468",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 26,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -1984,11 +1984,11 @@
     {
       "type": "activity",
       "slug": "furutu-44-daxu731",
-      "status": "baseline",
-      "diffCount": 96,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 167
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2002,11 +2002,11 @@
     {
       "type": "activity",
       "slug": "fuximi-08-dovo257",
-      "status": "baseline",
-      "diffCount": 100,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 195
+      "status": "pinned",
+      "diffCount": 1,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 5
     },
     {
       "type": "activity",
@@ -2110,11 +2110,11 @@
     {
       "type": "activity",
       "slug": "gateti-51-lasi768",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2146,11 +2146,11 @@
     {
       "type": "activity",
       "slug": "gebeke-27-tace678",
-      "status": "baseline",
-      "diffCount": 59,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 191
+      "status": "pinned",
+      "diffCount": 69,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 89
     },
     {
       "type": "activity",
@@ -2173,20 +2173,20 @@
     {
       "type": "activity",
       "slug": "gefomi-83-fifi398",
-      "status": "baseline",
-      "diffCount": 40,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 53
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "gefuni-32-ruli676",
-      "status": "baseline",
-      "diffCount": 3,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 3
+      "status": "pinned",
+      "diffCount": 2,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "dc7deee8",
+      "weightedScore": 2
     },
     {
       "type": "activity",
@@ -2209,7 +2209,7 @@
     {
       "type": "activity",
       "slug": "gelizi-30-kole759",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 35,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -2281,11 +2281,11 @@
     {
       "type": "activity",
       "slug": "gexufa-76-paga835",
-      "status": "baseline",
-      "diffCount": 1,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "e9a870d1",
-      "weightedScore": 1
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "7f59d713",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2452,11 +2452,11 @@
     {
       "type": "activity",
       "slug": "gopori-87-tese064",
-      "status": "baseline",
-      "diffCount": 9,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 9
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2668,7 +2668,7 @@
     {
       "type": "activity",
       "slug": "jazuco-34-fake306",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 24,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -2704,11 +2704,11 @@
     {
       "type": "activity",
       "slug": "jeseke-77-vovo768",
-      "status": "baseline",
-      "diffCount": 98,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 118
+      "status": "pinned",
+      "diffCount": 21,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 27
     },
     {
       "type": "activity",
@@ -2731,7 +2731,7 @@
     {
       "type": "activity",
       "slug": "jexavu-72-bixa676",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 65,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -2758,7 +2758,7 @@
     {
       "type": "activity",
       "slug": "jigalo-17-kuve815",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 222,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -2767,11 +2767,11 @@
     {
       "type": "activity",
       "slug": "jigocu-99-bala189",
-      "status": "baseline",
-      "diffCount": 104,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 138
+      "status": "pinned",
+      "diffCount": 7,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "673ee212",
+      "weightedScore": 7
     },
     {
       "type": "activity",
@@ -2830,11 +2830,11 @@
     {
       "type": "activity",
       "slug": "jofaru-38-poje814",
-      "status": "baseline",
-      "diffCount": 309,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 625
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2866,11 +2866,11 @@
     {
       "type": "activity",
       "slug": "jomobo-52-zigu811",
-      "status": "baseline",
-      "diffCount": 47,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 60
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -2884,7 +2884,7 @@
     {
       "type": "activity",
       "slug": "joxini-32-pube064",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 17,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -2893,11 +2893,11 @@
     {
       "type": "activity",
       "slug": "jozagi-52-ralo640",
-      "status": "baseline",
-      "diffCount": 3,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 3
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3145,11 +3145,11 @@
     {
       "type": "activity",
       "slug": "kicofo-41-fazi136",
-      "status": "baseline",
-      "diffCount": 165,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 269
+      "status": "pinned",
+      "diffCount": 4,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 4
     },
     {
       "type": "activity",
@@ -3190,11 +3190,11 @@
     {
       "type": "activity",
       "slug": "kimobe-21-buce484",
-      "status": "baseline",
-      "diffCount": 32,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 32
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3217,7 +3217,7 @@
     {
       "type": "activity",
       "slug": "kiveda-60-robo606",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 29,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -3235,20 +3235,20 @@
     {
       "type": "activity",
       "slug": "kixuja-22-fuce419",
-      "status": "baseline",
-      "diffCount": 3,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 3
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "kizofi-56-mibi017",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'repeat:B; <<MyGreen>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "7f59d713",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3307,7 +3307,7 @@
     {
       "type": "activity",
       "slug": "kozete-82-voce373",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 18,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -3352,11 +3352,11 @@
     {
       "type": "activity",
       "slug": "kuxigo-12-vove044",
-      "status": "baseline",
-      "diffCount": 113,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 133
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3379,11 +3379,11 @@
     {
       "type": "activity",
       "slug": "labuxo-17-coxo240",
-      "status": "baseline",
-      "diffCount": 679,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 740
+      "status": "pinned",
+      "diffCount": 655,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 716
     },
     {
       "type": "activity",
@@ -3406,20 +3406,20 @@
     {
       "type": "activity",
       "slug": "lagive-89-noto058",
-      "status": "baseline",
-      "diffCount": 309,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 625
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "laguja-32-nufa224",
-      "status": "baseline",
-      "diffCount": 142,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 169
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3487,11 +3487,11 @@
     {
       "type": "activity",
       "slug": "lejanu-37-jiva325",
-      "status": "baseline",
-      "diffCount": 3,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 3
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3559,11 +3559,11 @@
     {
       "type": "activity",
       "slug": "lidumi-54-moza355",
-      "status": "baseline",
-      "diffCount": 556,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 680
+      "status": "pinned",
+      "diffCount": 271,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 322
     },
     {
       "type": "activity",
@@ -3604,11 +3604,11 @@
     {
       "type": "activity",
       "slug": "linene-56-duxo821",
-      "status": "baseline",
-      "diffCount": 95,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 136
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3631,11 +3631,11 @@
     {
       "type": "activity",
       "slug": "liteta-29-zufa478",
-      "status": "baseline",
-      "diffCount": 22,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 47
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3676,7 +3676,7 @@
     {
       "type": "activity",
       "slug": "lobiki-30-cija465",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 126,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -3703,11 +3703,11 @@
     {
       "type": "activity",
       "slug": "lokulo-09-coko477",
-      "status": "baseline",
-      "diffCount": 41,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 54
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3721,11 +3721,11 @@
     {
       "type": "activity",
       "slug": "loriki-95-kavi777",
-      "status": "baseline",
-      "diffCount": 19,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 46
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3775,11 +3775,11 @@
     {
       "type": "activity",
       "slug": "lucoke-82-xugo231",
-      "status": "baseline",
-      "diffCount": 104,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 104
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3802,7 +3802,7 @@
     {
       "type": "activity",
       "slug": "lugicu-06-xefo673",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 53,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -3838,20 +3838,20 @@
     {
       "type": "activity",
       "slug": "lulavi-01-fose679",
-      "status": "baseline",
-      "diffCount": 211,
+      "status": "pinned",
+      "diffCount": 78,
       "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "78ad396b",
-      "weightedScore": 211
+      "measuredAgainstCommit": "2e6d9557",
+      "weightedScore": 78
     },
     {
       "type": "activity",
       "slug": "lunusi-20-nate529",
-      "status": "baseline",
-      "diffCount": 56,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 56
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -3955,7 +3955,7 @@
     {
       "type": "activity",
       "slug": "makage-63-rilo111",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 1,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -3982,11 +3982,11 @@
     {
       "type": "activity",
       "slug": "mapuru-01-dizu860",
-      "status": "baseline",
-      "diffCount": 72,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 92
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4009,7 +4009,7 @@
     {
       "type": "activity",
       "slug": "mebake-09-voxo642",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 2,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4054,11 +4054,11 @@
     {
       "type": "activity",
       "slug": "metoco-66-kaxe903",
-      "status": "baseline",
-      "diffCount": 16,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 16
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4153,11 +4153,11 @@
     {
       "type": "activity",
       "slug": "mivipi-10-lebe104",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts '[[http://plantuml.com/sequence]] if (?) then (x) <<#ff8822>>' via CommandIf2.java:68-89 (registered ActivityDiagramFactory3.java:119): the regex opens with UrlBuilder.OPTIONAL (:70) before `if`, and executeArg reads that URL_KEY into the diamond's url (:140-145); our activity engine refuses that line (dispatch-support.ts:118 RE_IF is anchored `^if` with no URL leaf (a probe of the same if without the [[...]] prefix and with the <<#ff8822>> tail is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine 'else (2)'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4189,11 +4189,11 @@
     {
       "type": "activity",
       "slug": "mojacu-63-fade855",
-      "status": "baseline",
-      "diffCount": 37,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 64
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4261,7 +4261,7 @@
     {
       "type": "activity",
       "slug": "mubojo-03-zeda630",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 160,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4387,11 +4387,11 @@
     {
       "type": "activity",
       "slug": "munovo-17-voji978",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine '-> Comment for the line before the forkend;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4432,11 +4432,11 @@
     {
       "type": "activity",
       "slug": "nabako-16-gefo071",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4576,11 +4576,11 @@
     {
       "type": "activity",
       "slug": "nevavo-98-cenu680",
-      "status": "baseline",
-      "diffCount": 12,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 12
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4603,11 +4603,11 @@
     {
       "type": "activity",
       "slug": "nijezu-72-fato566",
-      "status": "baseline",
-      "diffCount": 1365,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 1365
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4720,11 +4720,11 @@
     {
       "type": "activity",
       "slug": "nisigo-68-ledo444",
-      "status": "baseline",
-      "diffCount": 73,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 73
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -4747,7 +4747,7 @@
     {
       "type": "activity",
       "slug": "nizifu-81-guse322",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 17,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4765,7 +4765,7 @@
     {
       "type": "activity",
       "slug": "nokixe-72-poki730",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 44,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4801,11 +4801,11 @@
     {
       "type": "activity",
       "slug": "nomimi-19-lopi544",
-      "status": "baseline",
-      "diffCount": 221,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 351
+      "status": "pinned",
+      "diffCount": 12,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 12
     },
     {
       "type": "activity",
@@ -4882,7 +4882,7 @@
     {
       "type": "activity",
       "slug": "nuluji-89-xebu820",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 266,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4927,7 +4927,7 @@
     {
       "type": "activity",
       "slug": "nutuzi-66-numo166",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 4,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -4963,7 +4963,7 @@
     {
       "type": "activity",
       "slug": "pabope-47-pito596",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 55,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -5017,11 +5017,11 @@
     {
       "type": "activity",
       "slug": "panuna-76-xofu486",
-      "status": "baseline",
-      "diffCount": 1132,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 1193
+      "status": "pinned",
+      "diffCount": 655,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
+      "weightedScore": 716
     },
     {
       "type": "activity",
@@ -5062,20 +5062,20 @@
     {
       "type": "activity",
       "slug": "pedulu-06-xomo122",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 28,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "b478793e",
       "weightedScore": 28
     },
     {
       "type": "activity",
       "slug": "pegimu-03-duli081",
-      "status": "baseline",
-      "diffCount": 28,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 69
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5134,11 +5134,11 @@
     {
       "type": "activity",
       "slug": "petaku-66-pusa558",
-      "status": "baseline",
-      "diffCount": 16,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 16
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5233,11 +5233,11 @@
     {
       "type": "activity",
       "slug": "pitifi-09-vabo013",
-      "status": "baseline",
-      "diffCount": 51,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 51
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5323,7 +5323,7 @@
     {
       "type": "activity",
       "slug": "ponija-89-kebo602",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 1,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -5395,7 +5395,7 @@
     {
       "type": "activity",
       "slug": "povupi-07-zedu796",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 60,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -5548,11 +5548,11 @@
     {
       "type": "activity",
       "slug": "raneku-06-labe982",
-      "status": "baseline",
-      "diffCount": 10,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 113
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "5fe7ab2a",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5593,11 +5593,11 @@
     {
       "type": "activity",
       "slug": "rejala-47-xeni909",
-      "status": "baseline",
-      "diffCount": 1351,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 1351
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5656,11 +5656,11 @@
     {
       "type": "activity",
       "slug": "renefi-68-safo849",
-      "status": "baseline",
-      "diffCount": 140,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 140
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5710,11 +5710,11 @@
     {
       "type": "activity",
       "slug": "rikegu-37-maze985",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'forkend' via CommandForkEnd3.java:57-81 (registered ActivityDiagramFactory3.java:142): the STYLE RegexOr has a `fork` + spaceZeroOrMore + `end` arm (:66-70) beside `end fork` and `end merge`; our activity engine refuses that line (parallel-dispatch.ts:49 RE_FORK_END `^end\\s*(fork|merge)...` has no `fork end` arm (a probe with `end fork` is accepted)), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Empty;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -5881,11 +5881,11 @@
     {
       "type": "activity",
       "slug": "rutaji-30-suda150",
-      "status": "baseline",
-      "diffCount": 208,
+      "status": "pinned",
+      "diffCount": 78,
       "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "78ad396b",
-      "weightedScore": 208
+      "measuredAgainstCommit": "2e6d9557",
+      "weightedScore": 78
     },
     {
       "type": "activity",
@@ -6016,11 +6016,11 @@
     {
       "type": "activity",
       "slug": "sezizo-64-fexa652",
-      "status": "baseline",
-      "diffCount": 11,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 24
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6124,11 +6124,11 @@
     {
       "type": "activity",
       "slug": "sizoce-41-muvu721",
-      "status": "baseline",
-      "diffCount": 87,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 170
+      "status": "pinned",
+      "diffCount": 8,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 8
     },
     {
       "type": "activity",
@@ -6214,7 +6214,7 @@
     {
       "type": "activity",
       "slug": "sprite-SVG-fill-management-2",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 53,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6259,20 +6259,20 @@
     {
       "type": "activity",
       "slug": "suniro-51-reva442",
-      "status": "baseline",
-      "diffCount": 411,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 570
+      "status": "pinned",
+      "diffCount": 16,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 16
     },
     {
       "type": "activity",
       "slug": "surefo-98-fata672",
-      "status": "baseline",
-      "diffCount": 45,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 58
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6295,11 +6295,11 @@
     {
       "type": "activity",
       "slug": "suxeji-23-soro189",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'repeat:Entering a password; <<input>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws activity's error page (trial firstLine ':Entering your username; <<input>>'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6340,11 +6340,11 @@
     {
       "type": "activity",
       "slug": "takupu-75-xego596",
-      "status": "baseline",
-      "diffCount": 146,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 146
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "f4b1c09b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6403,7 +6403,7 @@
     {
       "type": "activity",
       "slug": "tejere-86-nilu058",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 5,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6412,11 +6412,11 @@
     {
       "type": "activity",
       "slug": "temeku-00-noga270",
-      "status": "baseline",
-      "diffCount": 28,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 69
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6466,7 +6466,7 @@
     {
       "type": "activity",
       "slug": "tetesi-04-gici603",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 79,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6475,11 +6475,11 @@
     {
       "type": "activity",
       "slug": "tibedu-29-ticu124",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6511,20 +6511,20 @@
     {
       "type": "activity",
       "slug": "tinupo-67-piva038",
-      "status": "baseline",
-      "diffCount": 105,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 121
+      "status": "pinned",
+      "diffCount": 88,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e6d9557",
+      "weightedScore": 104
     },
     {
       "type": "activity",
       "slug": "tirixa-64-zixu880",
-      "status": "baseline",
-      "diffCount": 84,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 104
+      "status": "pinned",
+      "diffCount": 48,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 48
     },
     {
       "type": "activity",
@@ -6538,11 +6538,11 @@
     {
       "type": "activity",
       "slug": "tisese-63-joga831",
-      "status": "baseline",
-      "diffCount": 97,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 131
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6592,7 +6592,7 @@
     {
       "type": "activity",
       "slug": "tocoxa-40-pasa193",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 3,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6619,7 +6619,7 @@
     {
       "type": "activity",
       "slug": "tosepo-66-love279",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 1,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6628,20 +6628,20 @@
     {
       "type": "activity",
       "slug": "totave-53-fiju801",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "e9a870d1",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "7f59d713",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "tovuka-43-kere263",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "64f1293b",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6682,11 +6682,11 @@
     {
       "type": "activity",
       "slug": "tusaxu-17-rasi651",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "e9a870d1",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "dc7deee8",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6718,11 +6718,11 @@
     {
       "type": "activity",
       "slug": "vakibi-34-jesa596",
-      "status": "baseline",
-      "diffCount": 74,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 74
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6790,20 +6790,20 @@
     {
       "type": "activity",
       "slug": "vejeba-98-zosi447",
-      "status": "baseline",
-      "diffCount": 8,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 8
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "vejori-69-bapu208",
-      "status": "baseline",
-      "diffCount": 29,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 29
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -6826,7 +6826,7 @@
     {
       "type": "activity",
       "slug": "vemeno-50-zevi632",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 133,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -6898,7 +6898,7 @@
     {
       "type": "activity",
       "slug": "vikexo-00-zame595",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 4,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -7006,34 +7006,34 @@
     {
       "type": "activity",
       "slug": "vosede-84-jise753",
-      "status": "baseline",
-      "diffCount": 78,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 105
+      "status": "pinned",
+      "diffCount": 62,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 75
     },
     {
       "type": "activity",
       "slug": "votidu-40-mudo522",
-      "status": "baseline",
-      "diffCount": 84,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 104
+      "status": "pinned",
+      "diffCount": 48,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 48
     },
     {
       "type": "activity",
       "slug": "votigi-61-nite269",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'repeat:B; <<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "vovemi-32-cobo474",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 7,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -7078,29 +7078,29 @@
     {
       "type": "activity",
       "slug": "vujufe-00-mamu262",
-      "status": "baseline",
-      "diffCount": 46,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 52
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "vupecu-35-tisa672",
-      "status": "baseline",
-      "diffCount": 28,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "29322602",
-      "weightedScore": 28
+      "status": "pinned",
+      "diffCount": 26,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "7f59d713",
+      "weightedScore": 26
     },
     {
       "type": "activity",
       "slug": "vupefo-81-jane512",
-      "status": "baseline",
-      "diffCount": 2,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 2
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2e9230a5",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7195,11 +7195,11 @@
     {
       "type": "activity",
       "slug": "xemaxo-17-digi735",
-      "status": "baseline",
-      "diffCount": 28,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 34
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7231,7 +7231,7 @@
     {
       "type": "activity",
       "slug": "xicopo-62-kidi376",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 60,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -7276,11 +7276,11 @@
     {
       "type": "activity",
       "slug": "ximelo-07-kusu416",
-      "status": "baseline",
-      "diffCount": 10,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 10
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7573,7 +7573,7 @@
     {
       "type": "activity",
       "slug": "zejido-43-xedu370",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 93,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -7582,11 +7582,11 @@
     {
       "type": "activity",
       "slug": "zejogu-00-mefi592",
-      "status": "baseline",
-      "diffCount": 46,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 59
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7627,11 +7627,11 @@
     {
       "type": "activity",
       "slug": "zesoto-64-xeda685",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'repeat:B;<<task>>' via CommandRepeat3.java:64-77 (registered ActivityDiagramFactory3.java:116): `repeat` + spaceZeroOrMore (:67-68) + an optional `:LABEL;` (:69-74) + Stereogroup.optionalStereogroup() (:75), so `repeat:` with no space and a <<...>> tail is one command; our activity engine refuses that line (dispatch-support.ts:307 RE_REPEAT_HEAD `^repeat(?:\\s+(.*))?$` demands at least one space after `repeat`, so `repeat:` matches nothing), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine ':A;'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7654,7 +7654,7 @@
     {
       "type": "activity",
       "slug": "zifaza-86-tigo119",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 35,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",
@@ -7681,11 +7681,11 @@
     {
       "type": "activity",
       "slug": "zikebe-71-cuge624",
-      "status": "baseline",
-      "diffCount": 96,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 223
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7717,11 +7717,11 @@
     {
       "type": "activity",
       "slug": "zitefu-56-gire564",
-      "status": "baseline",
-      "diffCount": 196,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 196
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 0
     },
     {
       "type": "activity",
@@ -7789,10 +7789,10 @@
     {
       "type": "activity",
       "slug": "zovacu-12-zate765",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 15,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "47d2a6e1",
       "weightedScore": 93
     },
     {
@@ -7816,29 +7816,29 @@
     {
       "type": "activity",
       "slug": "zugeri-38-puri632",
-      "status": "baseline",
-      "diffCount": 151,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 171
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "4346d637",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "zugoco-10-pexu073",
-      "status": "error",
-      "diffCount": null,
-      "reason": "the jar accepts 'floating note:' via CommandNote3.java:69-83 (registered ActivityDiagramFactory3.java:156): TYPE `(note|floating note)` (:71), the `:` leaf (:79), then NOTE `(.*)` (:81), which accepts an empty note text; our activity engine refuses that line (dispatch-note-patterns.ts:24-25 RE_NOTE_SINGLE ends `:\\s*(?<text>.+)$`, requiring non-empty text, and RE_NOTE_MULTI (:36-37) admits no `:`), every other candidate refuses too, and the dispatcher draws class's error page (trial firstLine 'start'). Open -> #121.",
-      "measuredAt": "2026-11-04",
-      "measuredAgainstCommit": "85d5ca8e"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "783fba76",
+      "weightedScore": 0
     },
     {
       "type": "activity",
       "slug": "zujopo-40-gosi452",
-      "status": "baseline",
-      "diffCount": 221,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 351
+      "status": "pinned",
+      "diffCount": 12,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "285d5253",
+      "weightedScore": 12
     },
     {
       "type": "activity",
@@ -7852,11 +7852,11 @@
     {
       "type": "activity",
       "slug": "zuledo-15-maga388",
-      "status": "baseline",
-      "diffCount": 80,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 86
+      "status": "pinned",
+      "diffCount": 43,
+      "measuredAt": "2026-11-06",
+      "measuredAgainstCommit": "2cbb901d",
+      "weightedScore": 49
     },
     {
       "type": "activity",
@@ -7879,7 +7879,7 @@
     {
       "type": "activity",
       "slug": "zuseke-31-xepi502",
-      "status": "baseline",
+      "status": "pinned",
       "diffCount": 626,
       "measuredAt": "2026-11-03",
       "measuredAgainstCommit": "85d5ca8e",

@@ -1,0 +1,7 @@
+@startuml
+skinparam ArrowHeadColor #FF0000
+start
+:a;
+:b;
+stop
+@enduml

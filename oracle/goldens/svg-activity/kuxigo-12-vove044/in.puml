@@ -1,0 +1,13 @@
+@startuml
+skinparam style strictuml
+skinparam conditionStyle InsideDiamond
+start
+:Activity 1;
+repeat
+    :Activity 2;
+    :Activity 3;
+repeat while (condition) is (yes) -[#black]-> yes
+-> no;
+:Activity 4;
+stop
+@enduml

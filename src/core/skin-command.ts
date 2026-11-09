@@ -91,5 +91,8 @@ export function skinCutOf(
   if (failing === undefined) return undefined;
   const position = failing.directive.position ?? 0;
   const index = linesBefore(source, position);
-  return { index, refusal: refuse('execution', position, index, failing.message) };
+  // `consumed` is the line's position, as every engine's execution refusal reports it (`it.getTrace()` counts the
+  // start line and the failing command, `PSystemCommandFactory.java:180-186`), so a candidate that parsed the lines
+  // before the cut outranks one that refused earlier (`PSystemErrorUtils.java:140-147`).
+  return { index, refusal: refuse('execution', position, position, failing.message) };
 }

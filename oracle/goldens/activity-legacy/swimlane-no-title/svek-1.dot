@@ -1,0 +1,28 @@
+digraph unix {
+nodesep=0.277778;
+ranksep=0.555556;
+remincross=true;
+searchsize=500;
+{rank=min;minPoint6 [shape=point,width=.01,label=""];minPoint12 [shape=point,width=.01,label=""];}
+{rank=max;maxPoint6 [shape=point,width=.01,label=""];maxPoint12 [shape=point,width=.01,label=""];}
+sh0017 [shape=circle,label="",width=0.305556,height=0.305556,color="#000011"];
+subgraph cluster6 {style=solid;color="#000006";labeljust="c";label=<<TABLE BGCOLOR="#000007" FIXEDSIZE="TRUE" WIDTH="9" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn6 [shape=point,width=.01,label=""];minPoint6->sourceIn6  [weight=999];}
+{rank = sink; sinkIn6 [shape=point,width=.01,label=""];}sinkIn6->maxPoint6  [weight=999];
+
+sh0010 [shape=circle,label="",width=0.277778,height=0.277778,color="#00000A"];
+sh0011 [shape=rect,style=rounded,label="",width=0.389236,height=0.444444,color="#00000B"];
+
+}
+subgraph cluster12 {style=solid;color="#00000C";labeljust="c";label=<<TABLE BGCOLOR="#00000D" FIXEDSIZE="TRUE" WIDTH="10" HEIGHT="9"><TR><TD></TD></TR></TABLE>>;
+{rank = source; sourceIn12 [shape=point,width=.01,label=""];minPoint12->sourceIn12  [weight=999];}
+{rank = sink; sinkIn12 [shape=point,width=.01,label=""];}sinkIn12->maxPoint12  [weight=999];
+
+sh0016 [shape=rect,style=rounded,label="",width=0.389236,height=0.444444,color="#000010"];
+
+}
+sh0010->sh0011[arrowtail=none,arrowhead=none,minlen=1,color="#000012"];
+sh0011->sh0016[arrowtail=none,arrowhead=none,minlen=1,color="#000016"];
+sh0016->sh0017[arrowtail=none,arrowhead=none,minlen=1,color="#00001A"];
+
+}

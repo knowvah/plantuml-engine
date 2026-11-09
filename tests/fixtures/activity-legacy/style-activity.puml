@@ -1,0 +1,14 @@
+@startuml
+<style>
+activityDiagram {
+  activity { BackgroundColor #FFEEAA
+    LineColor #AA0000
+    LineThickness 3
+    RoundCorner 20
+    FontColor #00AA00
+    FontSize 18 }
+}
+</style>
+(*) --> A
+A --> (*)
+@enduml

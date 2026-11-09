@@ -23,7 +23,9 @@ import {
 } from '../../oracle/svg-conformance/diagram-style-scope.js';
 import { renderDbgMarkup } from '../../oracle/svg-conformance/document-background.js';
 
-const ROW_COUNT = 996;
+// 1070 -> 1072 at aar/T6a (2026-11-06): activity__title-sprite-{group,partition}, a lone-sprite group title.
+// 1072 -> 1172 at scr/T0 (2026-11-06): the 100 authored colour-read rows (#122).
+const ROW_COUNT = 1172;
 const SOLID = '@startuml\nskinparam backgroundColor black\nA -> B : hi\n@enduml\n';
 
 let root: string;

@@ -1,0 +1,7 @@
+@startuml
+<style>
+arrow { HeadColor transparent }
+</style>
+state S
+S --> T
+@enduml

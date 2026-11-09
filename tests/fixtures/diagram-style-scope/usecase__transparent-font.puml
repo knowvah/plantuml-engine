@@ -1,0 +1,8 @@
+@startuml
+<style>
+element { FontColor transparent }
+</style>
+actor U
+U --> (x)
+note left of U : n
+@enduml

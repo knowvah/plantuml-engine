@@ -634,7 +634,28 @@ describe('refusal coverage — baseline shape', () => {
     // 10571 -> 10572 at smc/T3a (2026-11-06): +1 svg-activity golden clone (gigefo-15-cami497).
     // 10572 -> 10574 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
     // 10574 -> 10576 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
-    expect(manifest.fixtures.length).toBe(10576);
+    // 10576 -> 10582 at aar/T1b (2026-11-06): +6 svg-activity golden clones.
+    // 10582 -> 10613 at aar/T2a (2026-11-06): +31 svg-activity golden clones.
+    // 10613 -> 10624 at aar/T2b (2026-11-06): +11 svg-activity golden clones.
+    // 10624 -> 10629 at aar/T3a (2026-11-06): +5 svg-activity golden clones.
+    // 10629 -> 10638 at aar/T3b (2026-11-06): +9 svg-activity golden clones.
+    // 10638 -> 10642 at aar/T4a (2026-11-06): +4 svg-activity golden clones.
+    // 10642 -> 10646 at aar/T4b (2026-11-06): +4 svg-activity golden clones.
+    // 10646 -> 10647 at aar/T4c (2026-11-06): +1 svg-activity golden clone.
+    // 10647 -> 10650 at aar/T6a (2026-11-06): +3 svg-activity golden clones.
+    // 10650 -> 10652 at aar/T6a (2026-11-06): +2 svg-activity golden clones.
+    // 10652 -> 10658 at aar/T6a (2026-11-06): +6 svg-activity golden clones.
+    // 10658 -> 10667 at aar/T6a (2026-11-06): +9 svg-activity golden clones (8 activity, 1 unknown tree), all rendering.
+    // 10667 -> 10668 at aar/T6a (2026-11-06): +1 svg-activity golden clone (bofaxe-86), rendering.
+    // 10668 -> 10684 at aar/T6a (2026-11-06): +16 svg-activity golden clones, all rendering.
+    // 10684 -> 10685 at aar/T6a (2026-11-06): +1 svg-activity golden clone (denono-78), rendering.
+    // 10685 -> 10697 at aar/T6a (2026-11-06): +12 svg-activity golden clones, all rendering.
+    // 10697 -> 10707 at aar/T6a (2026-11-06): +10 svg-activity golden clones, all rendering.
+    // 10707 -> 10713 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
+    // 10713 -> 10714 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
+    // 10714 -> 10723 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
+    // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
+    expect(manifest.fixtures.length).toBe(10847);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -690,7 +711,13 @@ describe('refusal coverage — baseline shape', () => {
     // 438 -> 440 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 438 + 2 = 440.
     // 440 -> 442 (2026-11-05): dulone-62 and losote-76 error as the jar does (#152).
     // 442 -> 441 at smc/T3a (2026-11-06): gigefo-15-cami497 no longer errors.
-    expect(pinnedErroring.length).toBe(441);
+    // 441 -> 431 at aar/T1b (2026-11-06): 10 activity3 parser gaps (fuficu-36 ... zugoco-10) no longer error.
+    // 431 -> 429 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 no longer error (stale ubt pins, flipped).
+    // 429 -> 318 at laep/T3a (2026-11-07): 111 legacy `(*) -->` rows no longer error (ActivityDiagramFactory
+    // registered at PSystemBuilder.java:137). Derivation: 429 - 111 = 318.
+    // 318 -> 314 at laep/T3b-1 (2026-11-07): the 4 note-on-link rows no longer error. Derivation: 318 - 4 = 314.
+    // 314 -> 312 at laep/T3b-2 (2026-11-07): the 2 swimlane rows no longer error. Derivation: 314 - 2 = 312.
+    expect(pinnedErroring.length).toBe(312);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -885,7 +912,31 @@ describe('refusal coverage — baseline shape', () => {
     // 10129 -> 10131 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to ok, plus its golden clone.
     // 10131 -> 10133 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
     // 10133 -> 10135 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
-    expect(pinnedRendering.length).toBe(10135);
+    // 10135 -> 10151 at aar/T1b (2026-11-06): 10 activity rows flip to ok, +6 svg-activity golden clones. Derivation: 10135 + 16 = 10151.
+    // 10151 -> 10182 at aar/T2a (2026-11-06): +31 svg-activity golden clones, all rendering.
+    // 10182 -> 10193 at aar/T2b (2026-11-06): +11 svg-activity golden clones, all rendering.
+    // 10193 -> 10198 at aar/T3a (2026-11-06): +5 svg-activity golden clones, all rendering.
+    // 10198 -> 10207 at aar/T3b (2026-11-06): +9 svg-activity golden clones, all rendering.
+    // 10207 -> 10211 at aar/T4a (2026-11-06): +4 svg-activity golden clones, all rendering.
+    // 10211 -> 10215 at aar/T4b (2026-11-06): +4 svg-activity golden clones, all rendering.
+    // 10215 -> 10216 at aar/T4c (2026-11-06): +1 svg-activity golden clone, rendering.
+    // 10216 -> 10219 at aar/T6a (2026-11-06): +3 svg-activity golden clones, all rendering.
+    // 10219 -> 10223 at aar/T6a (2026-11-06): +2 svg-activity golden clones, and dadelu-44/tusaxu-17 flip to ok.
+    // 10223 -> 10229 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
+    // 10229 -> 10238 at aar/T6a (2026-11-06): +9 svg-activity golden clones (8 activity, 1 unknown tree), all rendering.
+    // 10238 -> 10239 at aar/T6a (2026-11-06): +1 svg-activity golden clone (bofaxe-86), rendering.
+    // 10239 -> 10255 at aar/T6a (2026-11-06): +16 svg-activity golden clones, all rendering.
+    // 10255 -> 10256 at aar/T6a (2026-11-06): +1 svg-activity golden clone (denono-78), rendering.
+    // 10256 -> 10268 at aar/T6a (2026-11-06): +12 svg-activity golden clones, all rendering.
+    // 10268 -> 10278 at aar/T6a (2026-11-06): +10 svg-activity golden clones, all rendering.
+    // 10278 -> 10284 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
+    // 10284 -> 10285 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
+    // 10285 -> 10294 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
+    // 10294 -> 10405 at laep/T3a (2026-11-07): the same 111 legacy rows render. Derivation: 10294 + 111 = 10405.
+    // 10405 -> 10409 at laep/T3b-1 (2026-11-07): the same 4 rows render. Derivation: 10405 + 4 = 10409.
+    // 10409 -> 10411 at laep/T3b-2 (2026-11-07): the same 2 rows render. Derivation: 10409 + 2 = 10411.
+    // 10411 -> 10535 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering. Derivation: 10411 + 124 = 10535.
+    expect(pinnedRendering.length).toBe(10535);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -968,7 +1019,12 @@ describe('refusal coverage — baseline shape', () => {
     // 347 -> 344 at ddd/T1c (2026-11-04): 3 rows flip to agree, ported commands. Derivation: 347 - 3 = 344.
     // 344 -> 346 at ddd/close-b3 (2026-11-04): +104 svg-description golden clones. Derivation: 344 + 2 = 346.
     // 346 -> 345 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to ok (stale since ubt fixed its while-stereotype refusal).
-    expect(gaps.length).toBe(345);
+    // 345 -> 335 at aar/T1b (2026-11-06): 10 activity3 parser gaps flip to ok.
+    // 335 -> 333 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 flip to ok.
+    // 333 -> 222 at laep/T3a (2026-11-07): 111 legacy rows flip to ok.
+    // 222 -> 218 at laep/T3b-1 (2026-11-07): 4 note-on-link rows flip to ok.
+    // 218 -> 216 at laep/T3b-2 (2026-11-07): 2 swimlane rows flip to ok.
+    expect(gaps.length).toBe(216);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

@@ -36,6 +36,7 @@ import {
   scopedBack,
   stereotypeBack,
   stereotypeLine,
+  withInlineBoxColors,
   withStereotypeFont,
 } from './activity-scoped-colors.js';
 import {
@@ -51,6 +52,9 @@ import { renderBoxStyleAction } from './activity-renderer-signal-shapes.js';
 import { renderStart, renderStop, renderEnd, renderSpot } from './activity-renderer-terminals.js';
 import { boxStyleName } from './tiles/gtile-action.js';
 import { renderActionLabel, renderNoteLabel } from './activity-creole-sheet.js';
+import { activityDebugOf } from '../../core/activity-debug-option.js';
+import { drawEmojiBox, emojiBoxBlocks } from './activity-box-emoji.js';
+import { openerBuilderTheme } from './layout/style-position.js';
 import { boxFontConfiguration, boxPaintExtras, withActivityBox } from './activity-box-theme.js';
 
 // Pure-move re-exports (500-line splits T1c/T3f): these symbols now live in
@@ -193,15 +197,23 @@ export function renderAction(node: ActivityNodeGeo, theme: Theme): string {
   return box + renderActionLabel(node.label ?? '', theme, actionSize, node);
 }
 
+/** `BoxStyle#drawMeDebug` (`BoxStyle.java:141-145`): `URectangle.build(width, height)` under `HColors.BLUE`, thickness 2. */
+function debugBoxRect(node: ActivityNodeGeo): string {
+  return rect(node.x, node.y, node.width, node.height, { fill: 'none', stroke: '#00F', strokeWidth: 2 });
+}
+
 /** `FtileBox#drawU`'s `boxStyle.drawMe` (`FtileBox.java:222`): PLAIN is the
  *  rounded rectangle ({@link renderAction}); every other `BoxStyle`
  *  (`Stereogroup#getBoxStyle`, `BoxStyle.java:126-133`) draws its own
  *  outline (`activity-renderer-signal-shapes.ts`). */
 function renderActionBox(node: ActivityNodeGeo, skinTheme: Theme): string {
   // `FtileBox.create`'s ONE merged style (`activity-box-theme.ts`), the value `GtileAction` sized the box with.
-  const theme = withActivityBox(skinTheme, node.boxStyle);
+  const theme = withInlineBoxColors(withActivityBox(skinTheme, node.boxStyle), node);
+  if (node.emojiBox === true) return drawEmojiBox(emojiBoxBlocks(node.label ?? '', theme), node, theme);
   const style = boxStyleName(node.stereotype);
-  return style === undefined ? renderAction(node, theme) : renderBoxStyleAction(node, theme, style);
+  const box = style === undefined ? renderAction(node, theme) : renderBoxStyleAction(node, theme, style);
+  // `FtileBox.java:201-206`: `!option debug true` draws the tile's rectangle first, blue, 2px, unfilled.
+  return activityDebugOf(skinTheme) ? debugBoxRect(node) + box : box;
 }
 
 export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
@@ -210,7 +222,7 @@ export function renderNote(node: ActivityNodeGeo, theme: Theme): string {
   const stroke = noteLineOf(node, theme); // `FtileWithNoteOpale.java:89,141`
 
   const spike = node.spikeTip;
-  const paint = { fill: noteFill, stroke, strokeWidth: noteLineThickness(theme) };
+  const paint = { fill: noteFill, stroke, strokeWidth: noteLineThickness(theme, node.stereotype) };
   // `Opale.java:122`: `polygon.setDeltaShadow(shadowing)` on the outline; the fold is a separate, unshadowed path.
   const bodyPaint = { ...paint, ...noteShadowFilter(theme) };
   // `node.notePosition === 'left'` means the NOTE sits left of its target,
@@ -256,7 +268,9 @@ function renderComposite(node: ActivityNodeGeo, theme: Theme): string {
   return renderCompositeFrame(node, theme);
 }
 
-export function renderNode(node: ActivityNodeGeo, theme: Theme): string {
+export function renderNode(node: ActivityNodeGeo, documentTheme: Theme): string {
+  // aar-T6b: the diamonds of an `if`/`while`/`repeat` read the builder current at its opener.
+  const theme = openerBuilderTheme(node, documentTheme);
   switch (node.kind) {
     case 'start':
       return renderStart(node, theme);

@@ -339,7 +339,15 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
   // parses it via `parseNoteOnLinkColors`; text is group 3.
   {
     pattern: NOTE_ON_LINK_RE,
-    execute: (state, match) => applyNoteOnLink(state.ast, resolveLinkNotePosition(match[1]), match[3]!, match[2]),
+    execute: (state, match) => {
+      // `CommandFactoryNoteOnLink.java:204-206`: `getLastLink() == null` -> error("No link defined").
+      if (state.ast.relationships.length === 0) {
+        const at = state.currentLine ?? 0;
+        state.executionRefusal = refuse('execution', at, at, 'No link defined', 0);
+        return;
+      }
+      applyNoteOnLink(state.ast, resolveLinkNotePosition(match[1]), match[3]!, match[2]);
+    },
   },
 
   // 5e-multi. `note [pos] on|of link [#color]` (no colon) — opens a

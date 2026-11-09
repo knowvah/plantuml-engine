@@ -1,0 +1,6 @@
+@startuml
+<style>
+arrow { FontColor transparent }
+</style>
+A -> B : m
+@enduml

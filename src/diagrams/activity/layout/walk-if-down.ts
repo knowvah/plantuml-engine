@@ -16,7 +16,8 @@
 
 import { colorSpread } from './diamond-colors.js';
 import type { GtileIfDown } from '../tiles/gtile-if-down.js';
-import type { DiamondConditionTile, DiamondSide } from '../tiles/gtile-diamond-inside.js';
+import type { DiamondConditionTile, DiamondSide, LabelDim } from '../tiles/gtile-diamond-inside.js';
+import type { ActivityNodeGeo } from '../activity-geometry.types.js';
 import type { GPoint } from '../tiles/points.js';
 import { EAST_HOOK, NORTH_HOOK, SOUTH_HOOK, WEST_HOOK } from '../tiles/points.js';
 import { laneIn, laneOut } from './swimlane-lanes.js';
@@ -182,10 +183,33 @@ function pushDiamond1(ctx: IfDownCtx): void {
 }
 
 /** The merge rhombus (`diamond2`, D2) -- pushed only when `hasMergeNode`
- *  (both original branches have a point out, no `optionalStop`). */
+ *  (both original branches have a point out, no `optionalStop`) -- then its north and east blocks, `tbout1`/`tbout2`
+ *  (`ConditionalBuilder.java:292-303`; `createDown` passes `useNorth`), as `FtileDiamond#drawU` does: north at
+ *  `(1.5 * hexagonHalfSize, -suppY1)` and east at `(2 * hexagonHalfSize, -h + hexagonHalfSize)` from the polygon top.
+ * @see net/sourceforge/plantuml/activitydiagram3/ftile/vertical/FtileDiamond.java:85-105 */
 function pushMergeNode(ctx: IfDownCtx): void {
   const { t, x, y, myLane, out } = ctx;
   if (!t.hasMergeNode) return;
+  pushMergeRhombus(ctx);
+  const { first, second } = t.mergeLabels ?? {};
+  const left = x + t.offsets.diamond2X;
+  const top = y + t.offsets.diamond2Y;
+  if (first !== undefined && first.text !== '') {
+    const at = { x: left + HEXAGON_HALF_SIZE * 1.5, y: top - first.height };
+    pushNode(out, mergeLabelNode(out.nextId('if-label'), first, at), myLane);
+  }
+  if (second !== undefined && second.text !== '') {
+    const at = { x: left + HEXAGON_HALF_SIZE * 2, y: top - second.height + HEXAGON_HALF_SIZE };
+    pushNode(out, mergeLabelNode(out.nextId('if-label'), second, at), myLane);
+  }
+}
+
+function mergeLabelNode(id: string, l: LabelDim, at: { x: number; y: number }): ActivityNodeGeo {
+  return { id, kind: 'if-label', x: at.x, y: at.y, width: l.width, height: l.height, label: l.text };
+}
+
+function pushMergeRhombus(ctx: IfDownCtx): void {
+  const { t, x, y, myLane, out } = ctx;
   pushNode(
     out,
     {

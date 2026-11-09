@@ -1,0 +1,6 @@
+@startuml
+
+(*) -> "toto"
+note on link: this is a note
+
+@enduml

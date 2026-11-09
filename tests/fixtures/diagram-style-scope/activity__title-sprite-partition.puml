@@ -1,0 +1,9 @@
+@startuml
+sprite dot <svg viewBox="0 0 230 230">
+<circle cx="200" cy="200" r="20" fill="#61dafb"/>
+</svg>
+
+partition <$dot{scale=0.5}> {
+:inside;
+}
+@enduml

@@ -57,4 +57,5 @@ export function pushWhileOutSpecial(frame: WhileFrame, gate: ReadonlySet<string>
   const special = specialOut!;
   const p2 = { x: specialPos.x + special.getCoord(NORTH_HOOK).x, y: specialPos.y + special.getCoord(NORTH_HOOK).y };
   pushEdge(out, [headerWest, { x: p2.x, y: headerWest.y }, p2], headerOutLane, specialInLane);
+  if (frame.outColor !== undefined) out.edges[out.edges.length - 1]!.color = frame.outColor; // `:166`
 }

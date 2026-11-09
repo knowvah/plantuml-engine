@@ -31,8 +31,9 @@ import {
   type ParseContext,
   type ParseOutcome,
   type StopKeywords,
+  positionSpread,
 } from './dispatch-support.js';
-import { tryIf } from './if-dispatch.js';
+import { tryIf, unescapeLabel, unescapeLabelNewlines } from './if-dispatch.js';
 import { tryRepeat } from './repeat-dispatch.js';
 import { tryFork, trySplit } from './parallel-dispatch.js';
 import {
@@ -58,12 +59,16 @@ import {
   trySprite,
   tryScale,
 } from './dispatch-common-commands.js';
+import { COLORS_REGEXP } from '../../core/klimt/color/ColorParser.js';
 import {
   RE_TERMINAL,
   backColorSpread,
+  deprecatedColorWarning,
   stereogroupBackColor,
+  stereogroupLineColor,
   stereogroupStereotype,
   stereotypesSpread,
+  innerColorsSpread,
 } from './dispatch-stereogroup.js';
 
 // ---------------------------------------------------------------------------
@@ -115,7 +120,16 @@ function trySimpleKeyword(ctx: ParseContext, idx: number, line: string, lc: stri
   const terminal = RE_TERMINAL.exec(line);
   if (terminal !== null) {
     const kind = terminal[1]!.toLowerCase() as 'start' | 'stop' | 'end';
-    return { idx: idx + 1, node: { kind, ...backColorSpread(terminal[2]), ...swimlaneSpread(ctx) } };
+    const lineColor = stereogroupLineColor(terminal[2]);
+    return {
+      idx: idx + 1,
+      node: {
+        kind,
+        ...backColorSpread(terminal[2]),
+        ...(lineColor !== undefined ? { lineColor } : {}),
+        ...swimlaneSpread(ctx),
+      },
+    };
   }
   switch (lc) {
     case 'kill':
@@ -127,12 +141,6 @@ function trySimpleKeyword(ctx: ParseContext, idx: number, line: string, lc: stri
     default:
       return null;
   }
-}
-
-/** `ActivityAction.position` for the command at `idx`, absent when the source carries no line positions. */
-function positionSpread(ctx: ParseContext, idx: number): { position?: number } {
-  const position = ctx.positions?.[idx];
-  return position === undefined ? {} : { position };
 }
 
 // ---------------------------------------------------------------------------
@@ -149,6 +157,7 @@ function tryAction(ctx: ParseContext, idx: number, line: string): DispatchResult
     label,
     ...(stereotype !== undefined ? { stereotype } : {}),
     ...stereotypesSpread(actionMatch[2]),
+    ...innerColorsSpread(actionMatch[2]),
     ...(color !== undefined ? { color } : {}),
     ...swimlaneSpread(ctx),
     ...positionSpread(ctx, idx),
@@ -179,6 +188,39 @@ function tryMultilineAction(ctx: ParseContext, idx: number, line: string): Dispa
     label: body.labelParts.join('\n'),
     ...(body.multiStereo !== undefined ? { stereotype: body.multiStereo } : {}),
     ...stereotypesSpread(body.multiGroup),
+    ...innerColorsSpread(body.multiGroup),
+    ...(body.multiColor !== undefined ? { color: body.multiColor } : {}),
+    ...swimlaneSpread(ctx),
+    ...positionSpread(ctx, idx),
+  };
+  return { idx: body.cursor, node };
+}
+
+/** `CommandActivityLong3`'s opener with its COLOR leaf present: `ColorParser.simpleColor(BACK)` then `:` then `DATA`.
+ *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandActivityLong3.java:78-84 */
+/** `CommandExecutionResult`'s `Syntax Error?` (`PSystemCommandFactory#executeFewLines`). */
+const SYNTAX_ERROR = 'Syntax Error?';
+
+const RE_COLORED_MULTILINE_ACTION = new RegExp(`^(${COLORS_REGEXP}):(.*)$`);
+
+/** A multi-line action opened with a leading `#color:` (aar-T1b, `long3-colour`, `fuficu-36-caga441`): the colour is
+ *  warned about and dropped (`CommandActivityLong3.java:125-127`, "parsed but no longer applied", `:110-111`). Tried
+ *  where upstream registers the command (`ActivityDiagramFactory3.java:159`, after the notes): a single-line command
+ *  that takes the first line (`#c:repeat`, `CommandRepeat3`) wins over a multi-line one still waiting for its END.
+ *  The first line is never tested against END (`CommandMultilines2#isValid`), so `#red:a;` alone runs on, and with
+ *  no closing line upstream refuses the block (`CommandControl.NOT_OK`). */
+function tryColoredMultilineAction(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
+  const m = RE_COLORED_MULTILINE_ACTION.exec(line);
+  if (m === null) return null;
+  const body = readMultilineActionBody(ctx, idx + 1, [m[2]!]);
+  if (!body.closed) return refuse('syntax', idx, idx, SYNTAX_ERROR);
+  ctx.pragma.addWarning(deprecatedColorWarning(m[1]!));
+  const node: ActivityAction = {
+    kind: 'action',
+    label: body.labelParts.join('\n'),
+    ...(body.multiStereo !== undefined ? { stereotype: body.multiStereo } : {}),
+    ...stereotypesSpread(body.multiGroup),
+    ...innerColorsSpread(body.multiGroup),
     ...(body.multiColor !== undefined ? { color: body.multiColor } : {}),
     ...swimlaneSpread(ctx),
     ...positionSpread(ctx, idx),
@@ -199,8 +241,9 @@ function tryWhile(ctx: ParseContext, idx: number, line: string): DispatchResult 
   const whileMatch = RE_WHILE.exec(line);
   if (whileMatch === null) return null;
   const { lines } = ctx;
-  const condition = whileMatch[1]!;
-  const yesLabel = whileMatch[2];
+  // `CommandWhile3.java:114-115`: `Display.getWithNewlines` over the test and the `is (...)` label.
+  const condition = unescapeLabelNewlines(whileMatch[1]!);
+  const yesLabel = unescapeLabel(whileMatch[2]);
   // Mission `activity-lane-capture` D1/T4: read BEFORE the body parses, so
   // a lane switch inside the body never leaks into this node's own
   // `swimlane`.
@@ -215,16 +258,18 @@ function tryWhile(ctx: ParseContext, idx: number, line: string): DispatchResult 
   if (cursor < lines.length) {
     const endLine = lines[cursor]!.trim();
     const endwhileMatch = RE_ENDWHILE.exec(endLine);
-    if (endwhileMatch !== null) exitLabel = endwhileMatch[1];
+    if (endwhileMatch !== null) exitLabel = unescapeLabel(endwhileMatch[1]); // `CommandWhileEnd3.java:97`
     cursor++;
   }
   // `InstructionWhile#addNote` (`InstructionWhile.java:162-167`): a note
   // while `repeatList` is still empty is the while's OWN note.
-  const { body, notes } = extractLeadingCaseNotes(bodyResult.nodes);
+  const { body: rawBody, notes } = extractLeadingCaseNotes(bodyResult.nodes);
+  const { body, yes } = overwriteYes(rawBody, yesLabel);
   const node: ActivityWhile = {
     kind: 'while',
+    ...positionSpread(ctx, idx),
     condition,
-    ...(yesLabel !== undefined && yesLabel !== '' ? { yesLabel } : {}),
+    ...(yes !== undefined && yes !== '' ? { yesLabel: yes } : {}),
     ...(exitLabel !== undefined && exitLabel !== '' ? { exitLabel } : {}),
     ...backColorSpread(whileMatch[3]),
     body,
@@ -232,6 +277,26 @@ function tryWhile(ctx: ParseContext, idx: number, line: string): DispatchResult 
     ...openerSwimlane,
   };
   return { idx: cursor, node };
+}
+
+/**
+ * `setLabelNextArrow` while the `while` holds no instruction yet: the label OVERWRITES the while's `yes`
+ * (`ActivityDiagram3.java:462-465`, `InstructionWhile#overwriteYes`, `:91-93`) instead of riding the next arrow; the
+ * colour still does (`setColorNextArrow` has no such branch, `:470-476`). aar-T2a, `tisese-63-joga831`.
+ */
+function overwriteYes(
+  body: ActivityNode[],
+  yes: string | undefined,
+): { body: ActivityNode[]; yes: string | undefined } {
+  let result = yes;
+  const out = [...body];
+  for (let i = 0; i < out.length && out[i]!.kind === 'arrow-label'; i++) {
+    const arrow = out[i] as ActivityArrowLabel;
+    if (arrow.label === '') continue;
+    result = arrow.label;
+    out[i] = { ...arrow, label: '' };
+  }
+  return { body: out, yes: result };
 }
 
 /** `CommandArrow3` (`CommandArrow3.java:61-71`): `-> label;`,
@@ -294,7 +359,8 @@ const LINE_HANDLERS: readonly LineHandler[] = [
   // broad prefix (mission ubrr-T10 M1) and upstream itself registers
   // `CommandActivityList` after every other body command
   // (`ActivityDiagramFactory3.java:160`, right before `CommandLabel`/
-  // `CommandGoto`).
+  // `CommandGoto`). `CommandActivityLong3` sits right before it (`:159`).
+  tryColoredMultilineAction,
   tryActivityList,
   // `label NAME` / `goto NAME`: registered LAST upstream, after
   // ActivityList (`ActivityDiagramFactory3.java:160-161`).
@@ -315,6 +381,7 @@ const INSTRUCTION_HANDLERS: ReadonlySet<LineHandler> = new Set<LineHandler>([
   tryWhile,
   tryRepeat,
   tryFork,
+  tryColoredMultilineAction,
   tryActivityList,
 ]);
 
@@ -346,20 +413,20 @@ function dispatchLine(ctx: ParseContext, idx: number, line: string, lc: string):
     if (result !== null) return result;
     ctx.swimlaneStrategy = before;
   }
-  return refuse('syntax', idx, idx, 'Syntax Error?');
+  return refuse('syntax', idx, idx, SYNTAX_ERROR);
 }
 
 /** {@link pushParsedNode} plus the closed-group note redirect (add4-T2g,
  *  `note-dispatch.ts#redirectNoteOntoGroup`); kept here because
  *  `list-backward-dispatch.ts` is not this task's file and a cycle through
  *  `note-dispatch.ts` is avoided. */
-function pushNode(nodes: ActivityNode[], node: ActivityNode | undefined): void {
+function pushNode(nodes: ActivityNode[], node: ActivityNode | undefined, atRoot = false): void {
   if (
     node?.kind === 'note' &&
     (redirectNoteOntoGroup(nodes, node, pushNode) || redirectNoteOntoWhile(nodes, node, pushNode))
   )
     return;
-  pushParsedNode(nodes, node); // WSPEC/RNOOUT, list-backward-dispatch.ts
+  pushParsedNode(nodes, node, atRoot); // WSPEC/RNOOUT, list-backward-dispatch.ts
 }
 
 /** Read nodes from `ctx.lines` from `idx` until a trimmed lowercase line
@@ -401,7 +468,7 @@ export function parseNodes(ctx: ParseContext, idx: number, stops: StopKeywords):
 
     const result = dispatchLine(ctx, cursor, line, lc);
     if (isRefusal(result)) return result;
-    pushNode(nodes, result.node);
+    pushNode(nodes, result.node, stops.length === 0); // the one stop-less call is the document root (`parser.ts:122`)
     cursor = result.idx;
   }
 

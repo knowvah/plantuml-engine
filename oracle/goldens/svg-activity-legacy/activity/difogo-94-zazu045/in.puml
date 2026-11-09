@@ -1,0 +1,15 @@
+@startuml
+(*) --> if "" then
+-> "A"
+--> ==B===
+else
+if "" then
+-left-> "C"
+--> ==B===
+else
+-> "D"
+--> ==B===
+endif
+endif
+
+@enduml

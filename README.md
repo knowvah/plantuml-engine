@@ -86,7 +86,8 @@ included**: upstream strips its `sudoku/` package from every non-GPL edition
 registration is commented out for MIT in `PSystemBuilder.java`), so a
 `sudoku` line is a syntax error here, as it is in the MIT edition.
 The default (GPL) PlantUML jar draws a puzzle there; that difference is
-deliberate, not a missing feature.
+deliberate, not a missing feature. Likewise a `<qrcode:…>` draws the MIT edition's blank
+image: the zxing encoder is GPL-only upstream.
 
 `@startditaa` is not included either. Upstream's MIT edition disables it (the
 factory registration is commented out for MIT in `PSystemBuilder.java`), and

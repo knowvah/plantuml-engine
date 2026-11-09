@@ -24,6 +24,9 @@ function shiftNodeGeo(node: ActivityNodeGeo, dx: number, dy: number): ActivityNo
 
 function shiftEdgeGeo(edge: ActivityEdgeGeo, dx: number, dy: number): ActivityEdgeGeo {
   const next: ActivityEdgeGeo = { ...edge, points: edge.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) };
+  if (edge.rainbowCopies !== undefined) {
+    next.rainbowCopies = edge.rainbowCopies.map((copy) => copy.map((p) => ({ x: p.x + dx, y: p.y + dy })));
+  }
   if (edge.midArrowAt !== undefined) {
     next.midArrowAt = { ...edge.midArrowAt, x: edge.midArrowAt.x + dx, y: edge.midArrowAt.y + dy };
   }

@@ -774,7 +774,33 @@ describe('routing conformance — jar-error classification', () => {
     // 9918 -> 9920 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree, plus its golden clone.
     // 9920 -> 9922 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
     // 9922 -> 9924 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
-    expect(pinnedAgree.length).toBe(9924);
+    // 9924 -> 9940 at aar/T1b (2026-11-06): 10 dot-cache/activity rows flip to agree, +6 svg-activity golden clones.
+    // 9940 -> 9971 at aar/T2a (2026-11-06): +31 svg-activity golden clones.
+    // 9971 -> 9982 at aar/T2b (2026-11-06): +11 svg-activity golden clones.
+    // 9982 -> 9987 at aar/T3a (2026-11-06): +5 svg-activity golden clones.
+    // 9987 -> 9996 at aar/T3b (2026-11-06): +9 svg-activity golden clones.
+    // 9996 -> 10000 at aar/T4a (2026-11-06): +4 svg-activity golden clones.
+    // 10000 -> 10004 at aar/T4b (2026-11-06): +4 svg-activity golden clones.
+    // 10004 -> 10005 at aar/T4c (2026-11-06): +1 svg-activity golden clone.
+    // 10005 -> 10008 at aar/T6a (2026-11-06): +3 svg-activity golden clones.
+    // 10008 -> 10012 at aar/T6a (2026-11-06): +2 svg-activity golden clones, dadelu-44/tusaxu-17 flip to agree.
+    // 10012 -> 10018 at aar/T6a (2026-11-06): +6 svg-activity golden clones.
+    // 10018 -> 10027 at aar/T6a (2026-11-06): +9 svg-activity golden clones (8 activity, 1 unknown tree), all rendering.
+    // 10027 -> 10028 at aar/T6a (2026-11-06): +1 svg-activity golden clone (bofaxe-86), rendering.
+    // 10028 -> 10044 at aar/T6a (2026-11-06): +16 svg-activity golden clones, all rendering.
+    // 10044 -> 10045 at aar/T6a (2026-11-06): +1 svg-activity golden clone (denono-78), rendering.
+    // 10045 -> 10057 at aar/T6a (2026-11-06): +12 svg-activity golden clones, all rendering.
+    // 10057 -> 10067 at aar/T6a (2026-11-06): +10 svg-activity golden clones, all rendering.
+    // 10067 -> 10073 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
+    // 10073 -> 10074 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
+    // 10074 -> 10083 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
+    // 10083 -> 10194 at laep/T3a (2026-11-07): 111 legacy `(*) -->` rows flip to agree, the legacy
+    // ActivityDiagramFactory is registered at PSystemBuilder.java:137. Derivation: 10083 + 111 = 10194.
+    // 10194 -> 10198 at laep/T3b-1 (2026-11-07): the 4 note-on-link rows flip to agree. Derivation: 10194 + 4 = 10198.
+    // 10198 -> 10200 at laep/T3b-2 (2026-11-07): the 2 swimlane rows flip to agree. Derivation: 10198 + 2 = 10200.
+    // 10200 -> 10201 at laep/T3b-4 (2026-11-07): radute-87-nize199 flips to agree. Derivation: 10200 + 1 = 10201.
+    // 10201 -> 10325 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones of agree rows. Derivation: 10201 + 124 = 10325.
+    expect(pinnedAgree.length).toBe(10325);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -788,7 +814,13 @@ describe('routing conformance — jar-error classification', () => {
     // 501 -> 495 at pep/T4 (2026-11-05): the 6 packet rows flip to agree, the port stamps diagramType. Derivation: 501 - 6 = 495.
     // 495 -> 491 at bep/T4 (2026-11-05): the 4 board rows flip to agree, the port stamps diagramType. Derivation: 495 - 4 = 491.
     // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
-    expect(pinnedMisroutes.length).toBe(490);
+    // 490 -> 480 at aar/T1b (2026-11-06): 10 activity3 parser gaps close (fuficu-36 ... zugoco-10).
+    // 480 -> 478 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 (stale ubt pins) flip to agree.
+    // 478 -> 367 at laep/T3a (2026-11-07): the same 111 legacy rows. Derivation: 478 - 111 = 367.
+    // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows. Derivation: 367 - 4 = 363.
+    // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows. Derivation: 363 - 2 = 361.
+    // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row. Derivation: 361 - 1 = 360.
+    expect(pinnedMisroutes.length).toBe(360);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -866,7 +898,28 @@ describe('routing conformance — jar-error classification', () => {
     // 10571 -> 10572 at smc/T3a (2026-11-06): +1 svg-activity golden clone (gigefo-15-cami497).
     // 10572 -> 10574 at smc/T4c (2026-11-06): +2 svg-activity golden clones (finadu-74-duvi890, titope-07-cixa052).
     // 10574 -> 10576 at smc/T4c (2026-11-06): +2 svg-activity golden clones (ronovu-01-voku005, vifiba-70-repa468).
-    expect(manifest.fixtures.length).toBe(10576);
+    // 10576 -> 10582 at aar/T1b (2026-11-06): +6 svg-activity golden clones.
+    // 10582 -> 10613 at aar/T2a (2026-11-06): +31 svg-activity golden clones.
+    // 10613 -> 10624 at aar/T2b (2026-11-06): +11 svg-activity golden clones.
+    // 10624 -> 10629 at aar/T3a (2026-11-06): +5 svg-activity golden clones.
+    // 10629 -> 10638 at aar/T3b (2026-11-06): +9 svg-activity golden clones.
+    // 10638 -> 10642 at aar/T4a (2026-11-06): +4 svg-activity golden clones.
+    // 10642 -> 10646 at aar/T4b (2026-11-06): +4 svg-activity golden clones.
+    // 10646 -> 10647 at aar/T4c (2026-11-06): +1 svg-activity golden clone.
+    // 10647 -> 10650 at aar/T6a (2026-11-06): +3 svg-activity golden clones.
+    // 10650 -> 10652 at aar/T6a (2026-11-06): +2 svg-activity golden clones.
+    // 10652 -> 10658 at aar/T6a (2026-11-06): +6 svg-activity golden clones.
+    // 10658 -> 10667 at aar/T6a (2026-11-06): +9 svg-activity golden clones (8 activity, 1 unknown tree), all rendering.
+    // 10667 -> 10668 at aar/T6a (2026-11-06): +1 svg-activity golden clone (bofaxe-86), rendering.
+    // 10668 -> 10684 at aar/T6a (2026-11-06): +16 svg-activity golden clones, all rendering.
+    // 10684 -> 10685 at aar/T6a (2026-11-06): +1 svg-activity golden clone (denono-78), rendering.
+    // 10685 -> 10697 at aar/T6a (2026-11-06): +12 svg-activity golden clones, all rendering.
+    // 10697 -> 10707 at aar/T6a (2026-11-06): +10 svg-activity golden clones, all rendering.
+    // 10707 -> 10713 at aar/T6a (2026-11-06): +6 svg-activity golden clones, all rendering.
+    // 10713 -> 10714 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
+    // 10714 -> 10723 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
+    // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
+    expect(manifest.fixtures.length).toBe(10847);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -947,7 +1000,13 @@ describe('routing conformance — jar-error classification', () => {
     // 501 -> 495 at pep/T4 (2026-11-05): the 6 packet rows flip to agree. Derivation: 501 - 6 = 495.
     // 495 -> 491 at bep/T4 (2026-11-05): the 4 board rows flip to agree. Derivation: 495 - 4 = 491.
     // 491 -> 490 at smc/T3a (2026-11-06): gigefo-15-cami497 flips to agree.
-    expect(censused.length).toBe(490);
+    // 490 -> 480 at aar/T1b (2026-11-06): 10 activity3 parser gaps close.
+    // 480 -> 478 at aar/T6a (2026-11-06): dadelu-44, tusaxu-17 flip to agree.
+    // 478 -> 367 at laep/T3a (2026-11-07): 111 legacy rows flip to agree.
+    // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows.
+    // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows.
+    // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row.
+    expect(censused.length).toBe(360);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

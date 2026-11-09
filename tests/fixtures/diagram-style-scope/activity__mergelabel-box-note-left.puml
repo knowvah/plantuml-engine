@@ -1,0 +1,6 @@
+@startuml
+:a;
+-> a longer label;
+:b;
+note left: n
+@enduml

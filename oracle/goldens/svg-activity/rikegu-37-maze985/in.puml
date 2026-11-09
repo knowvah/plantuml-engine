@@ -1,0 +1,6 @@
+@startuml
+fork
+-> Comment for the line after the fork;
+:Empty;
+forkend
+@enduml

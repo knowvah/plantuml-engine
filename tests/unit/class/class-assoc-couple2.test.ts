@@ -365,12 +365,14 @@ describe('association-class couple: note-on-link split', () => {
     },
   );
 
-  it('note on link with no prior relationship is a silent no-op', () => {
-    const ast = parse(`
+  it('note on link with no prior relationship is the execution error "No link defined"', () => {
+    // CommandFactoryNoteOnLink.java:204-206; see class-note-on-link-no-link.test.ts.
+    expect(() =>
+      parse(`
       note on link: orphan note
       class A
-    `);
-    expect(ast.relationships).toHaveLength(0);
+    `),
+    ).toThrow('(execution): No link defined');
   });
 });
 

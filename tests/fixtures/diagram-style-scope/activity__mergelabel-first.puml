@@ -1,0 +1,8 @@
+@startuml
+fork
+-> hello;
+:a;
+fork again
+:b;
+end merge
+@enduml

@@ -20,9 +20,12 @@ import {
   type DispatchResult,
   type ParseContext,
   type StopKeywords,
+  positionSpread,
 } from './dispatch-support.js';
 import { parseNodes } from './node-dispatch.js';
-import { backColorSpread, stereogroupBackColor } from './dispatch-stereogroup.js';
+import { getRegexp, transform } from '../../core/url/UrlBuilder.js';
+import { parenArrowStyle, parenArrowText } from './dispatch-paren-arrow.js';
+import { backColorSpread, stereogroupBackColor, stereogroupLabels } from './dispatch-stereogroup.js';
 
 // ---------------------------------------------------------------------------
 // if / elseif / else / endif
@@ -54,6 +57,7 @@ interface IfClauses {
   elseIfBranches: ActivityElseIf[];
   elseBranch: ActivityNode[];
   elseLabel: string | undefined;
+  elseLabelColor?: string | undefined;
   /** The `else` keyword was written; `endif` alone creates the empty `else` branch (`InstructionIf.java:192-196`). */
   hadElse: boolean;
   /** The closing `endif`'s stereogroup (`CommandEndif3.java:93-96`). */
@@ -100,30 +104,46 @@ export function stripTrailingSemi(raw: string): string {
  * `renderIfLabel` -- a separate mechanism from "multiline branch label",
  * left for a fixture that actually needs it.
  */
-export function unescapeLabelNewlines(text: string): string {
-  let out = '';
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i]!;
-    if (c === '\\' && i < text.length - 1) {
-      const c2 = text[i + 1]!;
-      i++;
-      if (c2 === 'n') out += '\n';
-      else if (c2 === 't') out += '\t';
-      else if (c2 === '\\') out += '\\';
-      else out += c + c2;
-    } else {
-      out += c;
-    }
-  }
-  return out;
-}
+export { unescapeLabelNewlines } from './label-newlines.js';
+import { unescapeLabelNewlines } from './label-newlines.js';
 
 /** {@link unescapeLabelNewlines} applied only when the captured group
  *  matched. The capture is kept verbatim: upstream's `(.*?)` groups
  *  (`CommandIf2.java`, `CommandElseIf2.java`, `CommandElse3.java`, ...)
  *  reach `Display.getWithNewlines` untrimmed (isw-T2-act F2). */
+/** `{ [key]: style }` for a paren arrow leaf's style (`INCOMING_COLOR`/`WHEN_COLOR`), else `{}`. */
+function colorField<K extends string>(key: K, raw: string | undefined): { [P in K]?: string } {
+  const style = raw === undefined ? undefined : parenArrowStyle(raw);
+  return style === undefined ? {} : ({ [key]: style } as { [P in K]?: string });
+}
+
+/** `stereogroup.buildStereotype()` (`CommandIf2.java:147`): the labels the diamond style is re-signed with. */
+function labelsSpread(group: string | undefined): { labels?: readonly string[] } {
+  const labels = stereogroupLabels(group);
+  return labels.length > 0 ? { labels } : {};
+}
+
+/** {@link parenArrowText} over an optional capture (`CommandElse3.java:64-71`). */
+function parenText(raw: string | undefined): string | undefined {
+  return raw === undefined ? raw : parenArrowText(raw);
+}
+
 export function unescapeLabel(text: string | undefined): string | undefined {
   return text === undefined ? text : unescapeLabelNewlines(text);
+}
+
+/** `CommandElseIf3#getRegexConcat` (`CommandElseIf3.java:64-104`): exp4, `(INCOMING)`, `else if (TEST) is|equals
+ *  (WHEN)`, optional `then` with a colour-only `( )`. Groups as {@link RE_ELSEIF}'s: 1 INCOMING, 2 TEST, 3 the label
+ *  (WHEN, its colour leaf appended so {@link colorField} reads WHEN_COLOR), 4 no stereogroup. */
+const RE_ELSEIF3 =
+  /^(?:#\w+[-\\|/]?\w+:)?\s*(?:\((.*?)\))?\s*else\s*if\s*\((.*?)\)\s*(?:is|equals?)\s*\((.+?)\)\s*(?:then\s*(?:\((->|-\[[^\]]*\]->)?\))?)?\s*;?$/i;
+
+function elseIf3Match(line: string): RegExpExecArray | null {
+  const m = RE_ELSEIF3.exec(line);
+  if (m === null) return null;
+  // Re-shape to RE_ELSEIF's groups: the WHEN label, prefixed by the then-parens' arrow leaf (its colour), if any.
+  const shaped = [m[0], m[1], m[2], `${m[4] ?? ''}${m[3]!}`, undefined] as unknown as RegExpExecArray;
+  return shaped;
 }
 
 interface ElseifStep {
@@ -138,11 +158,14 @@ function consumeElseifClause(
   clauseLine: string,
   ifInnerStops: StopKeywords,
 ): ElseifStep | ParseRefusal {
-  const elseifMatch = RE_ELSEIF.exec(clauseLine)!;
+  // `CommandElseIf3` (`TEST (is|equals) (WHEN)`) is registered BEFORE `CommandElseIf2` (`ActivityDiagramFactory3.java
+  // :122-123`): its WHEN is the branch label, and its `then (...)` parens carry an arrow colour only (aar-T6a, `cidibe-55`).
+  const elseifMatch = elseIf3Match(clauseLine) ?? RE_ELSEIF.exec(clauseLine)!;
   // ELSEIFIN: group 1 is the leading `(incoming)` decoration -- shifts
   // condition/then-label to groups 2/3 (dispatch-support.ts's own doc).
-  const incomingLabel = unescapeLabel(elseifMatch[1]);
-  const eiLabel = unescapeLabel(elseifMatch[3]);
+  // `INCOMING`/`WHEN` after the optional arrow leaf (`CommandElseIf2.java:70-97`, aar-T3a `takupu-75`).
+  const incomingLabel = unescapeLabel(parenText(elseifMatch[1]));
+  const eiLabel = unescapeLabel(parenText(elseifMatch[3]));
   const eiResult = parseNodes(ctx, cursor + 1, ifInnerStops);
   if (isRefusal(eiResult)) return eiResult;
   return {
@@ -151,6 +174,8 @@ function consumeElseifClause(
       condition: unescapeLabelNewlines(elseifMatch[2]!),
       ...(eiLabel !== undefined && eiLabel !== '' ? { label: eiLabel } : {}),
       ...(incomingLabel !== undefined && incomingLabel !== '' ? { incomingLabel } : {}),
+      ...colorField('incomingColor', elseifMatch[1]),
+      ...colorField('labelColor', elseifMatch[3]),
       ...backColorSpread(elseifMatch[4]),
       body: eiResult.nodes,
     },
@@ -194,7 +219,15 @@ type ClauseStep =
   | { kind: 'unexpected'; cursor: number }
   | { kind: 'endif'; cursor: number; endGroup: string | undefined }
   | { kind: 'elseif'; cursor: number; branch: ActivityElseIf }
-  | { kind: 'else'; cursor: number; branch: ActivityNode[]; label: string | undefined; endGroup: string | undefined }
+  | {
+      kind: 'else';
+      cursor: number;
+      branch: ActivityNode[];
+      label: string | undefined;
+      endGroup: string | undefined;
+      /** `WHEN_COLOR` (`CommandElse3.java:68`). */
+      labelColor?: string;
+    }
   | ParseRefusal;
 
 /** Classifies and consumes exactly one clause-header line: `endif`
@@ -226,9 +259,18 @@ function classifyClauseLine(ctx: ParseContext, cursor: number, ifInnerStops: Sto
   }
 
   if (RE_ELSE.test(clauseLine)) {
-    const step = consumeElseClause(ctx, cursor, unescapeLabel(RE_ELSE.exec(clauseLine)![1]));
+    const raw = RE_ELSE.exec(clauseLine)![1];
+    const step = consumeElseClause(ctx, cursor, unescapeLabel(parenText(raw)));
     if (isRefusal(step)) return step;
-    return { kind: 'else', cursor: step.cursor, branch: step.branch, label: step.label, endGroup: step.endGroup };
+    const labelColor = raw === undefined ? undefined : parenArrowStyle(raw);
+    return {
+      kind: 'else',
+      cursor: step.cursor,
+      branch: step.branch,
+      label: step.label,
+      endGroup: step.endGroup,
+      ...(labelColor !== undefined ? { labelColor } : {}),
+    };
   }
 
   return { kind: 'unexpected', cursor: cursor + 1 };
@@ -261,6 +303,7 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
   const elseIfBranches: ActivityElseIf[] = [];
   let elseBranch: ActivityNode[] = [];
   let elseLabel: string | undefined;
+  let elseLabelColor: string | undefined;
   let hadElse = false;
   let endGroup: string | undefined;
 
@@ -279,6 +322,7 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
     if (step.kind === 'else') {
       elseBranch = step.branch;
       elseLabel = step.label;
+      elseLabelColor = step.labelColor;
       endGroup = step.endGroup;
       hadElse = true;
       break;
@@ -286,7 +330,7 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
     // 'unexpected' -- see this function's doc comment above.
   }
 
-  return { cursor, elseIfBranches, elseBranch, elseLabel, hadElse, endGroup };
+  return { cursor, elseIfBranches, elseBranch, elseLabel, elseLabelColor, hadElse, endGroup };
 }
 
 interface IfHeader {
@@ -294,7 +338,12 @@ interface IfHeader {
   thenLabel: string | undefined;
   /** `CommandIf2`'s stereogroup; `CommandIf4` reads none (`:101-104`, "currently ignored"). */
   group?: string | undefined;
+  /** `CommandIf2`'s `URL` group, raw (`[[...]]`), resolved against `topurl` at render (`CommandIf2.java:139-145`). */
+  url?: string;
 }
+
+/** `CommandIf2.java:70-72`: `UrlBuilder.OPTIONAL`, `spaceZeroOrMore`, `ColorParser.exp4()` -- always matches. */
+const RE_IF2_PREFIX = new RegExp(`^(?<url>${transform(getRegexp())})?\\s*(?:#\\w+[-\\\\|/]?\\w+:)?`, 'iu');
 
 /**
  * Tries the three `if`-opener spellings in upstream's registration order
@@ -308,9 +357,19 @@ interface IfHeader {
 function matchIfHeader(line: string): IfHeader | null {
   const if4 = RE_IF4.exec(line);
   if (if4 !== null) return { condition: unescapeLabelNewlines(if4[1]!), thenLabel: unescapeLabel(if4[2]) };
-  const if2 = RE_IF.exec(line);
-  if (if2 !== null)
-    return { condition: unescapeLabelNewlines(if2[1]!), thenLabel: unescapeLabel(if2[2]), group: if2[3] };
+  // `CommandIf2`'s leading `UrlBuilder.OPTIONAL`, `spaceZeroOrMore` and `ColorParser.exp4()` (`:70-72`): the URL
+  // rides on the diamond (`:139-145`), the colour is "currently ignored" (`:129-130`, `:120-121`).
+  const prefix = RE_IF2_PREFIX.exec(line)!;
+  const if2 = RE_IF.exec(line.slice(prefix[0].length));
+  if (if2 !== null) {
+    const url = prefix.groups?.url;
+    return {
+      condition: unescapeLabelNewlines(if2[1]!),
+      thenLabel: unescapeLabel(if2[2]),
+      group: if2[3],
+      ...(url !== undefined ? { url } : {}),
+    };
+  }
   const legacy = RE_IF_LEGACY.exec(line);
   if (legacy !== null) {
     return { condition: unescapeLabelNewlines(legacy[1]!), thenLabel: unescapeLabel(legacy[2]!.trim()) };
@@ -378,7 +437,7 @@ function extractIfOwnNotes(
 export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const header = matchIfHeader(line);
   if (header === null) return null;
-  const { condition, thenLabel, group } = header;
+  const { condition, thenLabel, group, url } = header;
 
   // Mission `activity-lane-capture` D1/T3: read BEFORE the then-branch
   // parses, so a lane switch inside the body never leaks into this node's
@@ -404,7 +463,7 @@ export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchRes
 
   const clauses = consumeIfClauses(ctx, thenResult.nextIdx, IF_INNER_STOPS);
   if (isRefusal(clauses)) return clauses;
-  const { cursor, elseIfBranches, elseLabel, endGroup } = clauses;
+  const { cursor, elseIfBranches, elseLabel, elseLabelColor, endGroup } = clauses;
   const elseBranch = clauses.hadElse ? clauses.elseBranch : endifArrowBranch(thenBranch, elseIfBranches);
   const extracted = extractIfOwnNotes(thenBranch, elseIfBranches, elseBranch);
 
@@ -412,16 +471,20 @@ export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchRes
   // Always push exactly one if node per `if (...)` opener
   const ifNode: ActivityIf = {
     kind: 'if',
+    ...positionSpread(ctx, idx),
     condition,
     ...(thenLabel !== undefined && thenLabel !== '' ? { thenLabel } : {}),
     ...(elseLabel !== undefined && elseLabel !== '' ? { elseLabel } : {}),
+    ...(elseLabelColor !== undefined ? { elseLabelColor } : {}),
     thenBranch: extracted.thenBranch,
     elseBranch: extracted.elseBranch,
     elseIfBranches: extracted.elseIfBranches,
     ...openerSwimlane,
     ...backColorSpread(group),
+    ...labelsSpread(group),
     ...(endColor !== undefined ? { endColor } : {}),
     ...(extracted.notes.length > 0 ? { notes: extracted.notes } : {}),
+    ...(url !== undefined ? { url } : {}),
   };
   return { idx: cursor, node: ifNode };
 }

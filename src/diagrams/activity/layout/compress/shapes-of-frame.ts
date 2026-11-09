@@ -13,6 +13,7 @@ import type { Theme } from '../../../../core/theme.js';
 import type { CompressShape } from './shapes-of.js';
 import { activityFontSize } from '../../activity-style-defaults.js';
 import { ASCENT_FRACTION } from '../../activity-renderer-shapes.js';
+import { withCompositeStyle } from '../../activity-composite-theme.js';
 import { compositeTitleDimension, compositeTitleWidth } from '../../activity-renderer-composite.js';
 import { compositeSymbolTitleOrigin } from '../../activity-renderer-composite-symbols.js';
 import { frameTitleBlock, frameTitleBounder } from '../../tiles/gtile-group.js';
@@ -66,30 +67,57 @@ export function frameTabShape(node: ActivityNodeGeo, theme: Theme): CompressShap
  * Empty only for an empty title on the plain-text branch.
  */
 export function frameTitleShapes(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape[] {
-  const title = node.label ?? '';
-  const titleWidth = compositeTitleWidth(theme, title);
-  const x = node.x + TITLE_INSET_X;
-  const y = node.y + TITLE_INSET_Y;
-  if (node.width - titleWidth < SPECIAL_TEXT_MIN_SPARE) {
-    // An empty `Display` draws nothing, so nothing reaches `SlotFinder`.
-    if (title === '' || titleWidth === 0) return [];
-    // ubt-T2a: the block's own drawn shapes (`shapes-of-frame-title.ts`): a
-    // `<$sprite>` atom's SVG shapes, and the title-wide text slot only when
-    // a text atom drew a `UText` (`SlotFinder.java:127-135`).
-    const drawn = titleDrawnShapes(
-      frameTitleBlock(title, theme),
-      { x, y },
-      frameTitleBounder(measurerAdapterOf(bounder), theme),
-    );
-    if (!drawn.drewText) return [...drawn.shapes];
-    const fontSize = activityFontSize(theme, 'composite');
-    const dim = bounder.getDimension(title, fontSize);
+  const drawn = plainFrameTitle(node, bounder, theme);
+  if (drawn === undefined) {
+    const title = node.label ?? '';
+    const titleWidth = compositeTitleWidth(theme, title);
+    if (node.width - titleWidth < SPECIAL_TEXT_MIN_SPARE) return []; // an empty `Display` draws nothing
     return [
-      ...drawn.shapes,
-      { kind: 'text', x, y: y + fontSize * ASCENT_FRACTION, width: titleWidth, height: dim.height },
+      {
+        kind: 'empty',
+        x: node.x + TITLE_INSET_X + titleWidth,
+        y: node.y + TITLE_INSET_Y,
+        width: SPECIAL_TEXT_SLOT,
+        height: SPECIAL_TEXT_SLOT,
+      },
     ];
   }
-  return [{ kind: 'empty', x: x + titleWidth, y, width: SPECIAL_TEXT_SLOT, height: SPECIAL_TEXT_SLOT }];
+  if (!drawn.drewText) return [...drawn.shapes];
+  const title = node.label ?? '';
+  const titleWidth = compositeTitleWidth(theme, title);
+  const fontSize = activityFontSize(theme, 'composite');
+  const dim = bounder.getDimension(title, fontSize);
+  return [
+    ...drawn.shapes,
+    {
+      kind: 'text',
+      x: node.x + TITLE_INSET_X,
+      y: node.y + TITLE_INSET_Y + fontSize * ASCENT_FRACTION,
+      width: titleWidth,
+      height: dim.height,
+    },
+  ];
+}
+
+/**
+ * What the `title.drawU(ug.apply(new UTranslate(3, 1)))` branch draws (`USymbolFrame.java:153-154`), or `undefined`
+ * for the `SpecialText` branch and an empty title. A `<$sprite>` atom's SVG shapes, and the title-wide text slot only
+ * when a text atom drew a `UText` (`SlotFinder.java:127-135`), are read off the block itself
+ * (`shapes-of-frame-title.ts`).
+ */
+export function plainFrameTitle(
+  node: ActivityNodeGeo,
+  bounder: StringBounder,
+  theme: Theme,
+): ReturnType<typeof titleDrawnShapes> | undefined {
+  const title = node.label ?? '';
+  const titleWidth = compositeTitleWidth(theme, title);
+  if (node.width - titleWidth >= SPECIAL_TEXT_MIN_SPARE || title === '' || titleWidth === 0) return undefined;
+  return titleDrawnShapes(
+    frameTitleBlock(title, theme),
+    { x: node.x + TITLE_INSET_X, y: node.y + TITLE_INSET_Y },
+    frameTitleBounder(measurerAdapterOf(bounder), theme),
+  );
 }
 
 /**
@@ -105,7 +133,8 @@ export function frameTitleShapes(node: ActivityNodeGeo, bounder: StringBounder, 
  *   (`activity-renderer-composite-symbols.ts#compositeSymbolTitleOrigin`).
  *   The `ULine`s draw no slot (`SlotFinder.java:84-109` has no `ULine` arm).
  */
-export function frameShapes(node: ActivityNodeGeo, bounder: StringBounder, theme: Theme): CompressShape[] {
+export function frameShapes(node: ActivityNodeGeo, bounder: StringBounder, flatTheme: Theme): CompressShape[] {
+  const theme = withCompositeStyle(flatTheme, node.compositeStyle);
   const box = { x: node.x, y: node.y, width: node.width, height: node.height };
   if (node.usymbol === undefined) {
     const shapes: CompressShape[] = [

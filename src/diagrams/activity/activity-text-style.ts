@@ -191,8 +191,9 @@ export function activityFontColor(theme: Theme, sname: ActivitySName): string {
  * consumer (`renderer-usymbol-entity-style.ts#rootHorizontalAlignment`,
  * class). This resolver only had to start reading the same bucket.
  */
-export function activityHorizontalAlignment(theme: Theme): 'left' | 'center' | 'right' {
-  const alignment = theme.colors.elements?.['root']?.horizontalAlignment;
+export function activityHorizontalAlignment(theme: Theme, bucket = 'root'): 'left' | 'center' | 'right' {
+  const alignment =
+    theme.colors.elements?.[bucket]?.horizontalAlignment ?? theme.colors.elements?.['root']?.horizontalAlignment;
   if (alignment === HorizontalAlignment.CENTER) return 'center';
   if (alignment === HorizontalAlignment.RIGHT) return 'right';
   return 'left';

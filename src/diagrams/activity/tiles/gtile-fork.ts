@@ -10,15 +10,13 @@ import {
 } from '../activity-layout-constants.js';
 import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
+import { measureSide } from './gtile-diamond-inside.js';
 
 /**
  * Tallest in/out-link label height across every branch (`ymargin1`/
  * `ymargin2`, computed ONCE over all branches, not per branch).
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/AbstractParallelFtilesBuilder.java:100-125
  *   -- `getSuppSpace1`/`getSuppSpace2`.
- * Our fork/split AST (`../ast.ts:97-106`) carries no per-branch link
- * labels yet, so the one call site below passes an empty array and this
- * always returns 0 until a link-label port fills the seam.
  */
 function tallestLabelHeight(labelHeights: readonly number[]): number {
   return Math.max(0, ...labelHeights);
@@ -30,13 +28,20 @@ function tallestLabelHeight(labelHeights: readonly number[]): number {
  * @see net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/AbstractParallelFtilesBuilder.java:138-156
  *   -- `getSuppForIncomingArrow`/`getXSuppForDisplay`:
  *   `pos2 = ftileDim.getLeft() + textWidth; return pos2 > ftileDim.getWidth() ? pos2 - ftileDim.getWidth() : 0;`.
- * Our fork/split AST tracks no label width yet, so the one call site
- * below passes 0 and this always returns 0 until a link-label port fills
- * the seam.
  */
 function suppForIncomingArrow(labelWidth: number, branchLeft: number, branchWidth: number): number {
   const pos2 = branchLeft + labelWidth;
   return pos2 > branchWidth ? pos2 - branchWidth : 0;
+}
+
+/** `getTextBlock(display).calculateDimension(...)`, zero for no label (`AbstractParallelFtilesBuilder.java:187-191`). */
+function linkLabelDim(
+  label: string | undefined,
+  bounder: StringBounder,
+  theme: Theme | undefined,
+): { width: number; height: number } {
+  if (label === undefined || label === '' || theme === undefined) return { width: 0, height: 0 };
+  return measureSide(label, bounder, theme);
 }
 
 export class GtileFork extends TileComposite {
@@ -115,15 +120,21 @@ export class GtileFork extends TileComposite {
     this.barHeight = barHeight;
     this.joinLabel = joinLabel;
 
-    // getSuppSpace1/getSuppSpace2 -- no per-branch link labels tracked yet.
-    const ymargin1 = tallestLabelHeight([]);
-    const ymargin2 = tallestLabelHeight([]);
+    // getSuppSpace1/getSuppSpace2: each branch's in/out link label (aar-T2b, item 10), the
+    // `create7(fc, LEFT, skinParam, SIMPLE_LINE)` arrow block (`AbstractParallelFtilesBuilder.java:187-195`).
+    const labels = branches.map((b) => ({
+      inDim: linkLabelDim(b.inLabel?.label, bounder, theme),
+      outDim: linkLabelDim(b.outLabel?.label, bounder, theme),
+    }));
+    const ymargin1 = tallestLabelHeight(labels.map((l) => l.inDim.height));
+    const ymargin2 = tallestLabelHeight(labels.map((l) => l.outDim.height));
 
     // computeNewFtile: each branch is independently margined by
     // PARALLEL_X_MARGIN on both sides (plus the label-overflow supplement
     // on the right), then packed with NO other gap (FtileForkInner).
-    const slots = branches.map((b) => {
-      const supp = suppForIncomingArrow(0, 0, b.width);
+    const slots = branches.map((b, i) => {
+      const textWidth = Math.max(labels[i]!.inDim.width, labels[i]!.outDim.width);
+      const supp = suppForIncomingArrow(textWidth, b.getCoord(NORTH_HOOK).x, b.width);
       return PARALLEL_X_MARGIN + b.width + PARALLEL_X_MARGIN + supp;
     });
     this.barWidth = slots.reduce((s, slot) => s + slot, 0);

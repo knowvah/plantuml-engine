@@ -15,6 +15,7 @@ import type { Pragma } from '../../core/skin/Pragma.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
 import type { ActivityNode } from './ast.js';
 import type { SwimlaneStrategy } from './swimlane-strategy.js';
+import { getRegexp as getUrlRegexp, transform } from '../../core/url/UrlBuilder.js';
 import { LINE_STYLE } from '../../core/link-style-regex.js';
 
 // ---------------------------------------------------------------------------
@@ -69,7 +70,10 @@ export const RE_ACTION_CLOSE = /^(.*?);\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/;
  * @see net/sourceforge/plantuml/activitydiagram3/ActivityDiagramFactory3.java:160
  *   -- registration.
  */
-export const RE_ACTIVITY_LIST = /^[-*]\s?(.*?)\s*(?:<<[^>]*>>(?:\s*<<[^>]*>>)*)?\s*$/;
+export const RE_ACTIVITY_LIST = new RegExp(
+  `^[-*]\\s?(.*?)\\s*(<<[^<>]+>>(?:\\s*<<[^<>]+>>)*)?\\s*(?<url>${transform(getUrlRegexp())})?$`,
+  'iu',
+);
 
 /**
  * `backward:LABEL;` -- base form only, see {@link ActivityBackward}'s own
@@ -255,14 +259,6 @@ export const RE_WHILE =
  */
 export const RE_ENDWHILE = /^(?:end\s*while|while\s*end)\s*(?:\(([^)]*)\))?\s*$/i;
 
-/** repeatwhile / repeat while (condition?) [is (yesLabel)] [not (noLabel)] [;]
- * `parseRepeatClose` reads the RAW closer line (not the keyword-stripped
- * one), so the optional trailing `;` is matched here.
- * @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeatWhile3.java:101
- *   -- `new RegexLeaf(";?")` before the end of the closer's regex. */
-export const RE_REPEATWHILE =
-  /^repeat\s*while(?:\s*\(([^)]*)\))?(?:\s*(?:is|equals?)\s*\(([^)]*)\))?(?:\s*not\s*\(([^)]*)\))?\s*;?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
-
 /** Shared head of `CommandArrow3` / `CommandArrowLong3`: `RegexOr("->",
  *  COLOR=STYLE_COLORS_MULTIPLES)` + `spaceZeroOrMore`; group 1 = COLOR. */
 const ARROW_HEAD = `(?:->|-\\[(${LINE_STYLE}(?:(?:;${LINE_STYLE})*)*)\\]->)[\\s\u00a0]*`;
@@ -289,6 +285,21 @@ const ARROW_HEAD = `(?:->|-\\[(${LINE_STYLE}(?:(?:;${LINE_STYLE})*)*)\\]->)[\\s\
  */
 export const RE_ARROW_LABEL = new RegExp(`^${ARROW_HEAD}(?:(.*);|)$`, 'i');
 
+/** repeatwhile / repeat while (condition?) [is (yesLabel)] [not (noLabel)] [-> label | -[#c]-> label] [;] [<<st>>]
+ * `parseRepeatClose` reads the RAW closer line (not the keyword-stripped
+ * one), so the optional trailing `;` is matched here. Groups: 1 TEST, 2 WHEN,
+ * 3 OUT, 4 XCOLOR, 5 LABEL, 6 stereogroup. LABEL is upstream's greedy `(.*)`
+ * (`:95`): it runs to the end of the line, `;` and stereogroup included, as
+ * the jar reads it (aar-T2a, `linene-56-duxo821`'s `-> back to foo`).
+ * @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeatWhile3.java:62-104
+ *   -- `new RegexLeaf(";?")` before the end of the closer's regex; the
+ *   optional `RegexOr("->", XCOLOR)` + `LABEL` link (`:89-97`). */
+export const RE_REPEATWHILE = new RegExp(
+  '^repeat\\s*while(?:\\s*\\(([^)]*)\\))?(?:\\s*(?:is|equals?)\\s*\\(([^)]*)\\))?(?:\\s*not\\s*\\(([^)]*)\\))?' +
+    `(?:\\s*${ARROW_HEAD}(.*))?\\s*;?\\s*(<<[^<>]+>>(?:\\s*<<[^<>]+>>)*)?\\s*$`,
+  'i',
+);
+
 /** `CommandArrowLong3`'s start pattern: the same head, then `LABEL=(.*)`
  *  (first line of a multi-line arrow label; its end is {@link
  *  RE_ARROW_LONG_END}).
@@ -300,12 +311,23 @@ export const RE_ARROW_LONG = new RegExp(`^${ARROW_HEAD}(.*)$`, 'i');
 export const RE_ARROW_LONG_END = new RegExp('^(.*);$');
 
 /** `repeat` head, optionally followed by an inline action on the same
- *  line (`repeat :foo;`). Built via `new RegExp` (not a `/.../ ` literal):
+ *  line (`repeat :foo;`) -- `CommandRepeat3#getRegexConcat` (`:64-77`)
+ *  verbatim. Group 1 is `ColorParser.exp4`'s leading `#color:` (`:66`,
+ *  warned and ignored, `:121-123`); group 2 the rest: an optional
+ *  `:LABEL;` (`:69-74`) then an optional stereogroup (`:75`), possibly
+ *  empty. `repeat` is followed by `spaceZeroOrMore` (`:68`), so
+ *  `repeat:B;` and `repeat<<x>>` need no space (aar-T1b,
+ *  `votigi-61-nite269`); any other rest (`repeat while (ok)`, an
+ *  unterminated `repeat :foo`) is no `repeat` line at all
+ *  (`zicejo-69-teko349`). Built via `new RegExp` (not a `/.../ ` literal):
  *  Lizard 1.23.0 miscounts brace depth for a trailing `$` inside a /regex/
  *  literal that sits INSIDE a function body -- this constant used to live
  *  inline in `parseNodes` and silently truncated that function's CCN/NLOC
  *  measurement (and defeated `#lizard forgives`) until hoisted here. */
-export const RE_REPEAT_HEAD = new RegExp('^repeat(?:\\s+(.*))?$', 'i');
+export const RE_REPEAT_HEAD = new RegExp(
+  `^(?:(${String.raw`#\w+[-\\|/]?\w+`}):)?repeat\\s*((?::.*?;\\s*)?(?:<<[^<>]+>>(?:\\s*<<[^<>]+>>)*)?)$`,
+  'i',
+);
 
 /** Trailing `;` (optionally `<<stereo>>`s: `Stereogroup.optionalStereogroup()` takes several) on a `repeat`'s inline action --
  *  same lizard brace-depth workaround as {@link RE_REPEAT_HEAD} above, and
@@ -403,6 +425,13 @@ export function setCurrentSwimlane(ctx: ParseContext, name: string, color?: stri
     ctx.swimlanes.push(name);
   }
   if (color !== undefined) ctx.swimlaneColors.set(name, color);
+}
+
+/** The document line of the command at `idx` (`ParseContext.positions`), absent when the source carries none: the
+ *  `position` of an action, `if`, `while` or `repeat`, whose builder is the one current there. */
+export function positionSpread(ctx: ParseContext, idx: number): { position?: number } {
+  const position = ctx.positions?.[idx];
+  return position === undefined ? {} : { position };
 }
 
 export function swimlaneSpread(ctx: ParseContext): { swimlane: string } | Record<string, never> {

@@ -77,10 +77,10 @@
  *    `PragmaKey.KERMOR`, orthogonal to component/package container
  *    drawing and not exercised by any of this task's acceptance
  *    criteria.
- *  - `drawSwinLinesState` and `drawU`'s `skinParam.useSwimlanes(...)`
- *    branch — diagram-type-gated to state-diagram swimlanes only
- *    (`skinParam.useSwimlanes` is never true for description/component/
- *    usecase diagrams).
+ *  - `drawU`'s `skinParam.useSwimlanes(...)` branch is ported, opt-in through
+ *    `ClusterGeometry.swimlaneTitleX` (laep T3b-2): only the legacy activity
+ *    engine sets it (`skinParam.useSwimlanes` is ACTIVITY-only, never true
+ *    for description/component/usecase diagrams).
  *  - `drawUState` and `drawU`'s `isState` branch — diagram-type-gated to
  *    `DiagramType.STATE` only; needs `RoundedContainer`/
  *    `EntityImageState`/`EntityImageStateCommon`, none of which are
@@ -113,10 +113,15 @@ import { textBlockMagneticBorder } from '../klimt/shape/TextBlock.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
 import type { UStroke } from '../klimt/UStroke.js';
 import type { Paint } from '../paint.js';
+import { HColorSimple } from '../klimt/color/HColorSimple.js';
+import type { HColorOrPaint } from '../klimt/color/ColorMapper.js';
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { USymbol } from '../decoration/symbol/USymbol.js';
 import { UComment } from '../klimt/shape/UComment.js';
+import { ULine } from '../klimt/shape/ULine.js';
+import { Fore } from '../klimt/Fore.js';
+import { UTranslate } from '../klimt/UTranslate.js';
 import { UGroup, UGroupType } from '../klimt/shape/UGroup.js';
 import type { UGraphicWithGroups } from './DecorateEntityImage.js';
 import type { PackageStyleName } from './PackageStyle.js';
@@ -164,8 +169,8 @@ export interface ClusterGroupInfo {
   readonly qualifiedName: string;
   readonly location: { readonly position: number } | null;
   readonly isRoot: boolean;
-  readonly lineColorOverride: Paint | null;
-  readonly backColorOverride: Paint | null;
+  readonly lineColorOverride: HColorOrPaint | null;
+  readonly backColorOverride: HColorOrPaint | null;
   readonly specificLineStroke: UStroke | null;
   /** `group.getUrl99()` (`Cluster.java:339`); `null`/absent draws no anchor. */
   readonly url?: ClusterUrl | null;
@@ -175,13 +180,13 @@ export interface ClusterGroupInfo {
  * Already-resolved style facts `Cluster#drawU` would otherwise pull off
  * a `Style` object via `getStyle()` (unported — see module doc comment).
  */
-export interface ClusterStyleDefaults {
+export interface ClusterStyleDefaults<C extends HColorOrPaint = Paint> {
   readonly shadowing: number;
   readonly roundCorner: number;
   readonly strictUmlStyle: boolean;
   readonly diagonalCorner: number;
-  readonly lineColorDefault: Paint;
-  readonly backGroundColorDefault: Paint | null;
+  readonly lineColorDefault: C;
+  readonly backGroundColorDefault: C | null;
   readonly strokeDefault: UStroke;
 }
 
@@ -212,14 +217,15 @@ const NONE_PAINT: Paint = 'none';
 /** Same equivalence class `driver-dot-path-svg.ts`'s own local
  * `isTransparentPaint` uses (duplicated per that file's own convention
  * of one small local helper per call site rather than a shared one). */
-function isTransparentPaint(p: Paint): boolean {
+function isTransparentPaint(p: HColorOrPaint): boolean {
+  if (p instanceof HColorSimple) return p.isTransparent();
   return p === 'none' || p === '#00000000';
 }
 
 /** Upstream: the border-color branch inside `Cluster#drawU` (`if
  * (group.getColors().getColor(LINE) != null) borderColor = ...; else
  * borderColor = style.value(LineColor).asColor(...);`). */
-export function resolveBorderColor(lineColorOverride: Paint | null, lineColorDefault: Paint): Paint {
+export function resolveBorderColor<T extends HColorOrPaint>(lineColorOverride: T | null, lineColorDefault: T): T {
   return lineColorOverride ?? lineColorDefault;
 }
 
@@ -248,11 +254,11 @@ export function getStrokeInternal(specificLineStroke: UStroke | null, styleStrok
  * caller's resolved style default, else "nothing painted" (upstream:
  * `HColors.transparent()`).
  */
-export function resolveBackColor(
+export function resolveBackColor<T extends HColorOrPaint>(
   isRoot: boolean,
-  backColorOverride: Paint | null,
-  backGroundColorDefault: Paint | null,
-): Paint {
+  backColorOverride: T | null,
+  backGroundColorDefault: T | null,
+): T | Paint {
   if (isRoot) return NONE_PAINT;
   const backColor = backColorOverride ?? backGroundColorDefault;
   if (backColor === null || isTransparentPaint(backColor)) return NONE_PAINT;
@@ -285,7 +291,7 @@ export class Cluster {
     private readonly group: ClusterGroupInfo,
     private readonly header: ClusterHeaderInfo,
     private readonly geometry: ClusterGeometry,
-    private readonly style: ClusterStyleDefaults,
+    private readonly style: ClusterStyleDefaults<HColorOrPaint>,
     private readonly symbolInfo: ClusterSymbolInfo,
   ) {}
 
@@ -341,7 +347,9 @@ export class Cluster {
     const linkable = grouped as UGraphic & Partial<{ startUrl(u: ClusterUrl): void; closeUrl(): void }>;
     if (url !== null) linkable.startUrl?.(url);
     try {
-      this.drawDecoration(grouped);
+      // `if (skinParam.useSwimlanes(diagramType)) { drawSwinLinesState(ug, borderColor); return; }` (Cluster.java:347-350)
+      if (this.geometry.swimlaneTitleX === undefined) this.drawDecoration(grouped);
+      else this.drawSwinLinesState(grouped, this.geometry.swimlaneTitleX);
     } catch (err) {
       // Upstream: `catch (Exception e) { e.printStackTrace(); }` — a
       // defensive catch so one broken cluster never aborts the whole
@@ -354,6 +362,21 @@ export class Cluster {
       if (url !== null) linkable.closeUrl?.();
       grouped.closeGroup();
     }
+  }
+
+  /**
+   * `Cluster#drawSwinLinesState`: the title at `xyTitle.x` on the top line, then the lane's two border lines, as tall
+   * as the cluster, at its min and max x. `ug` carries no stroke here, so the lines take the default one.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:438-446
+   */
+  private drawSwinLinesState(ug: UGraphic, titleX: number): void {
+    const borderColor = resolveBorderColor(this.group.lineColorOverride, this.style.lineColorDefault);
+    this.header.title.drawU(ug.apply(UTranslate.dx(titleX)));
+    const line = ULine.vline(this.geometry.height);
+    const colored = ug.apply(new Fore(borderColor));
+    const minX = this.geometry.position.getDx();
+    colored.apply(UTranslate.dx(minX)).draw(line);
+    colored.apply(UTranslate.dx(minX + this.geometry.width)).draw(line);
   }
 
   /** The body of `drawU`'s `try` block — split out to keep `drawU`

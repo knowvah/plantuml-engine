@@ -1905,9 +1905,9 @@ describe('notes — on link (CommandFactoryNoteOnLink, parsed and dropped)', () 
     expect(ast.links[1]!.linkNote).toBe('text');
   });
 
-  it('is a no-op when no link has been declared yet', () => {
-    const ast = parse('component a\nnote on link: text');
-    expect(ast.links).toEqual([]);
+  it('refuses "No link defined" when no link has been declared yet', () => {
+    // CommandFactoryNoteOnLink.java:204-206 (laep T3c): an execution error, not a no-op.
+    expect(() => parse('component a\nnote on link: text')).toThrow('No link defined');
   });
 });
 

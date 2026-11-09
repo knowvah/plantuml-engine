@@ -41,7 +41,7 @@ function maximumWidthOf(style: Style): number {
 }
 
 /** The `elements.activity` fields `FtileBox` reads off its style. */
-function activityBucketOf(style: Style, font: FontConfiguration): ElementColors {
+export function activityBucketOf(style: Style, font: FontConfiguration): ElementColors {
   const back = paintOf(style, 'BackGroundColor', false);
   const line = paintOf(style, 'LineColor', false);
   return {

@@ -134,6 +134,16 @@ function hasHorizontalRule(node: FudgeSubject): boolean {
  * USymbol cases, an action's full-width rule, else the kind's own
  * {@link fudgeX}/{@link fudgeY}.
  */
+/**
+ * An action's LEFT-aligned text ends at `width - padding.right`; `LimitFinder#drawText` adds that exact x
+ * (`LimitFinder.java:216-226`) while the rectangle stops at `x + width - 1` (`:184-188`), so the text is the far ink
+ * when the box style's right padding is below 1 (`skin debug` has none: aar-T6b, `rutaji-30-suda150`).
+ */
+function textInkFudgeX(node: FudgeSubject, rect: ShapeFudge): ShapeFudge {
+  if (node.kind !== 'action' || node.label === undefined) return rect;
+  return { near: rect.near, far: Math.max(rect.far, -boxPaddingOf(node).getRight()) };
+}
+
 /** `BoxStyle#drawMe`'s outline ink per style (`BoxStyle.java:153-500`) over
  *  the node box `[x, x + width]`, `W = width - shield`: a `UPolygon` gets
  *  `HACK_X_FOR_POLYGON` on X (Y exact), a `UPath` is exact, a `URectangle`
@@ -201,6 +211,6 @@ export function nodeFudge(node: FudgeSubject, plain?: ActivityShadowing): { x: S
   const boxStyle = boxStyleFudge(node);
   if (boxStyle !== undefined) return withBoxShadow(node, boxStyle, plain);
   if (hasHorizontalRule(node)) return withBoxShadow(node, { x: RECT_WITH_FULL_HLINE_X, y: RECT_FUDGE }, plain);
-  const base = { x: fudgeX(node.kind), y: fudgeY(node.kind) };
+  const base = { x: textInkFudgeX(node, fudgeX(node.kind)), y: fudgeY(node.kind) };
   return withCircleShadow(node.kind, withBoxShadow(node, base, plain), plain);
 }

@@ -18,7 +18,7 @@ import { parseRelationshipLine } from '../../../src/diagrams/class/class-relatio
 describe('withOptionalFields round-trip (via parseRelationshipLine)', () => {
   it('carries multiplicities, roles, ports, qualifiers, label, weight, ids, and #color/thickness overrides', () => {
     const r = parseRelationshipLine(
-      '@2.5 A[Q1] "1"/roleA <-[#blue,thickness=3]- "0..*"/roleB [Q2] B::member <<tag>> : mylabel',
+      '@2.5 A [Q1] "1"/roleA <-[#blue,thickness=3]- "0..*"/roleB [Q2] B::member <<tag>> : mylabel',
     )!;
     expect(r.fromMultiplicity).toBe('0..*');
     expect(r.toMultiplicity).toBe('1');

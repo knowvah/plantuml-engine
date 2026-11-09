@@ -1,0 +1,11 @@
+@startuml
+<style>
+sequenceDiagram { note { BackgroundColor #AAAAAA } }
+.s { BackgroundColor #FF0000 }
+</style>
+!pragma kermor on
+component C <<s>> {
+  [x]
+}
+note top of C : n
+@enduml

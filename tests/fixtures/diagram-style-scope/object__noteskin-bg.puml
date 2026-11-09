@@ -1,0 +1,5 @@
+@startuml
+skinparam noteBackgroundColor #BBBBBB
+object O
+note left of O : n
+@enduml

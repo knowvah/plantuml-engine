@@ -1,0 +1,8 @@
+@startuml
+repeat
+    if (Something went wrong?) then (no)
+      break
+    endif
+    ->NOK;
+repeat while (Something went wrong with long text?) is (yes)
+@enduml

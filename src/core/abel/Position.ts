@@ -1,3 +1,4 @@
+import { Rankdir } from '../klimt/geom/Rankdir.js';
 import { Direction } from './Direction.js';
 
 /**
@@ -8,10 +9,8 @@ import { Direction } from './Direction.js';
  * `CucaNote` carry one. Upstream home is `utils/` — move to
  * `src/core/utils/Position.ts` when that package fills out.
  *
- * Ported members: the 4 values, `fromString`, `reverseDirection`.
- * Omitted (batch-1 blocked-member precedent, revisit when consumers
- * land): `withRankdir` (needs `klimt/geom/Rankdir`, unported — the same
- * blocker batch-1 documented for `EntityPosition.drawSymbol`).
+ * Ported members: the 4 values, `fromString`, `reverseDirection`,
+ * `withRankdir` (laep-T1d, now that `klimt/geom/Rankdir` exists).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/utils/Position.java:43
  */
@@ -39,4 +38,18 @@ export function reverseDirection(position: Position): Direction {
   if (position === Position.LEFT) return Direction.RIGHT;
   if (position === Position.RIGHT) return Direction.LEFT;
   throw new Error('UnsupportedOperationException');
+}
+
+/** `Position.withRankdir(Rankdir)`: under `left to right direction` every position turns a quarter
+ * (RIGHT->BOTTOM, LEFT->TOP, BOTTOM->RIGHT, TOP->LEFT); top to bottom is the default and keeps it.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/utils/Position.java:49-66 */
+export function withRankdir(position: Position, rankdir: Rankdir): Position {
+  // Default
+  if (rankdir === Rankdir.TOP_TO_BOTTOM) return position;
+
+  if (position === Position.RIGHT) return Position.BOTTOM;
+  if (position === Position.LEFT) return Position.TOP;
+  if (position === Position.BOTTOM) return Position.RIGHT;
+  if (position === Position.TOP) return Position.LEFT;
+  throw new Error('IllegalStateException');
 }

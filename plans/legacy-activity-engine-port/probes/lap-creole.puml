@@ -1,0 +1,5 @@
+@startuml
+(*) --> "**bold** and //italic//"
+--> "<color:red>red</color>"
+--> (*)
+@enduml

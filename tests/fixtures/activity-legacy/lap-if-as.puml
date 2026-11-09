@@ -1,0 +1,8 @@
+@startuml
+(*) --> if "test" as T1 then
+  --> A
+else
+  --> B
+endif
+T1 --> C
+@enduml

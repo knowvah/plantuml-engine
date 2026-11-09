@@ -1,0 +1,12 @@
+@startuml
+<style>
+note { BackgroundColor #AAAAAA
+LineColor #FF0000
+FontColor #0000FF }
+</style>
+!pragma kermor on
+component C {
+  [x]
+}
+note top of C : n
+@enduml

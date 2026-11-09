@@ -25,6 +25,7 @@ export type DiagramType =
   | 'state'
   | 'description'
   | 'activity'
+  | 'activity-legacy'
   | 'object'
   | 'timing'
   | 'mindmap'
@@ -388,6 +389,8 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   state: UpstreamDiagramType.STATE,
   description: UpstreamDiagramType.DESCRIPTION,
   activity: UpstreamDiagramType.ACTIVITY,
+  // laep D3: activitydiagram's own plugin key; upstream's type is the same ACTIVITY (DiagramType.java:ACTIVITY).
+  'activity-legacy': UpstreamDiagramType.ACTIVITY,
   object: UpstreamDiagramType.OBJECT,
   timing: UpstreamDiagramType.TIMING,
   mindmap: UpstreamDiagramType.MINDMAP,

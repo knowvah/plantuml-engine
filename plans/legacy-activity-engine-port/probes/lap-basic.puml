@@ -1,0 +1,5 @@
+@startuml
+(*) --> First
+First --> Second
+Second --> (*)
+@enduml

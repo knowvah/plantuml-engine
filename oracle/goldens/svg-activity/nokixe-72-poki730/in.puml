@@ -1,0 +1,21 @@
+@startuml
+<style>
+.test {
+  LineColor red
+  BackgroundColor lightCyan
+  LineThickness 3.0
+  ArrowThickness 0.5
+  FontName Arial Narrow
+  FontColor green
+  FontSize 11
+  FontStyle regular
+}
+</style>
+
+:a;
+group Group <<test>>
+  :Activity;
+end group
+floating note: Note on Group
+end
+@enduml

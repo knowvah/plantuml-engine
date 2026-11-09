@@ -1,0 +1,44 @@
+@startuml
+<style>
+.test {
+  LineColor red
+  BackgroundColor lightCyan
+  LineThickness 3.0
+  ArrowThickness 0.5
+  FontName Arial Narrow
+  FontColor red
+  FontSize 11
+  FontStyle regular
+}
+</style>
+
+:a;
+card card_name {
+:b;
+}
+group Group <<test>>
+  :Activity;
+end group
+floating note: Note on Group
+
+partition Partition <<test>>{
+  :Activity;
+}
+floating note: Note on Partition
+
+package Package <<test>>{
+  :Activity;
+}
+floating note: Note on Package 
+
+rectangle Rectangle <<test>>{
+  :Activity;
+}
+floating note: Note on Rectangle 
+
+card Card <<test>>{
+  :Activity;
+}
+floating note: Note on Card
+end
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+(*) --> "[[http://www.google.com/note1]]
+This is
+my activity"
+
+note right
+[[http://www.google.com/note2]]
+example2
+end note
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+skinparam colorArrowSeparationSpace 5
+Start
+-[#green;#orange]->
+if (CondA) then (A?)
+  -[#green;#orange]->
+  :Do A;
+else (B?)
+  -[#green;#orange]->
+  :Do B;
+endif
+
+-[#green;#orange]->
+if (CondB) then (A?)
+  :Do A;
+elseif () then (B?)
+  :Do B;
+else (C?)
+  -[#green;#orange]->
+  :Do C;
+endif
+Stop
+@enduml

@@ -39,6 +39,7 @@ import { wrapperLevels, type WrapperLevels } from './svek-dot-wrappers.js';
 import { rootTops, topsFirstClusters } from './svek-dot-top.js';
 import { togetherClusters } from './svek-dot-together.js';
 import { orderLines0Edges } from './svek-dot-lines0.js';
+import { swimlaneClusters, swimlaneRankLines } from './svek-dot-swimlane.js';
 
 // Re-exported so callers keep reaching these through the emitter's own module
 // path: `inches` for the LAYOUT builder (`graph-layout-build.ts#addNodes`), and
@@ -217,6 +218,8 @@ function edgeBatches(input: DotInputGraph): { lines0: number[]; lines1: number[]
 function emitBody(input: DotInputGraph, seqs: SeqAssignment, tree: ClusterTree): string[] {
   const { recs, nodeById, clusterColors, edgeColors } = seqs;
   const body = [...graphAttrLines(input)];
+  // `manageMinMaxCluster`, before any node or edge (DotStringFactory.java:176); swimlane clusters only.
+  body.push(...swimlaneRankLines(swimlaneClusters(input).map((c) => String(clusterColors.get(c.id)!.color))));
   const kermor = input.kermor === true;
   const unclustered = input.nodes.filter((n) => !tree.clusteredIds.has(n.id));
   // cdd3-T16: the root's `printCluster1` (`DotStringFactory.java:188`) —

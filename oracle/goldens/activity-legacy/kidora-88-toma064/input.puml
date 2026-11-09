@@ -1,0 +1,4 @@
+@startuml
+(*) --> "A"
+-left-> "left"
+@enduml

@@ -50,9 +50,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { compareSvg } from './compare.js';
-import { renderFixtureActivity } from './render-fixture-activity.js';
+import { activityRatchetOptions, renderFixtureActivity } from './render-fixture-activity.js';
 
 /** A pin's survey bucket when it is not `activity` (ubt-T3c, D6). */
 type RatchetTree = 'unknown';
@@ -95,7 +94,7 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 }
 
 function renderPinned(f: RatchetFixture): string {
-  return renderFixtureActivity(readSource(f), new DeterministicMeasurer(), { includeStore: fixtureIncludeStore() });
+  return renderFixtureActivity(readSource(f), new DeterministicMeasurer(), activityRatchetOptions());
 }
 
 // ---------------------------------------------------------------------------

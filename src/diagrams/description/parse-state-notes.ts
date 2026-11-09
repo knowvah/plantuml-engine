@@ -93,7 +93,10 @@ function attachNoteToEntity(
     const slot = resolvePosition(position, state.ast.rankdir);
     if (slot === 'top' || slot === 'bottom') {
       target.kermorNotes ??= {};
-      target.kermorNotes[slot] ??= resolveNewlineEscapes(text);
+      if (target.kermorNotes[slot] === undefined) {
+        target.kermorNotes[slot] = resolveNewlineEscapes(text);
+        if (decor.color !== undefined) (target.kermorNoteColors ??= {})[slot] = decor.color;
+      }
     }
     return;
   }
@@ -192,8 +195,15 @@ function executeNoteOnEntityOpen(
   };
 }
 
+const NO_LINK_DEFINED = 'No link defined';
+
 export function executeNoteOpen(state: ParseState, m: NoteOpenMatch): void {
   if (m.kind === 'on-link-single') {
+    // `CommandFactoryNoteOnLink.java:204-206`: `getLastLink() == null` -> error("No link defined").
+    if (state.ast.links.length === 0) {
+      state.executionError = NO_LINK_DEFINED;
+      return;
+    }
     attachNoteToLastLink(state, m.text, m.position, m.color);
     return;
   }

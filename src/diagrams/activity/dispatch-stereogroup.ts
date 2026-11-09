@@ -11,6 +11,13 @@
  */
 import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import { boxStyleName } from './tiles/gtile-action.js';
+import { Warning } from '../../core/warning/Warning.js';
+
+/** The deprecation warning a leading `#color` earns (the colour itself is ignored):
+ *  `CommandRepeat3.java:121-123`, `CommandActivityLong3.java:125-127`, word for word. */
+export function deprecatedColorWarning(color: string): Warning {
+  return new Warning(`This syntax is deprecated, you must add <<${color}>> at the end of the line, after the ';'`);
+}
 
 /** `Stereogroup.java:70`'s `pattern`. */
 const STEREO_LABEL = /<<([^<>]+)>>/g;
@@ -43,10 +50,50 @@ const BACK_COLOR_LABEL = /^#\w+(?:[-\\|/]\w+)?$/;
  *  wins, `Colors#mergeWith`'s `putAll` (`klimt/color/Colors.java:80-90`). */
 export function stereogroupBackColor(group: string | undefined): string | undefined {
   if (group === undefined) return undefined;
-  const colors = [...group.matchAll(STEREO_LABEL)].map((m) => m[1]!.trim()).filter((l) => BACK_COLOR_LABEL.test(l));
+  const colors = stereogroupLabels(group)
+    .map((l) => (l.startsWith('#') && l.includes(';') ? l.split(';')[0]! : l))
+    .filter((l) => BACK_COLOR_LABEL.test(l));
   const last = colors.at(-1);
   // `new Colors(label, set, ColorType.BACK)` throws on an unknown one: `colorOrNeutral`'s doc.
   return last === undefined ? undefined : colorOrNeutral(last);
+}
+
+/**
+ * `Stereogroup#getInnerColors`' `#`-label arm: `new Colors(label, colorSet, ColorType.BACK)` (`Stereogroup.java:184-185`,
+ * `Colors.java:95-124`) also reads `line:<c>` and `text:<c>` tokens (`ColorType.getType`, `ColorType.java:41-47`);
+ * the LAST one of a type wins (`Colors#mergeWith`'s `putAll`, `:80-90`). `start <<#green;line:red>>` strokes red
+ * (aar, `tusaxu-17-rasi651`).
+ */
+function stereogroupTokenColor(group: string | undefined, type: 'line' | 'text'): string | undefined {
+  if (group === undefined) return undefined;
+  const wanted = new RegExp(`^${type}:(.+)$`, 'i');
+  let found: string | undefined;
+  for (const label of stereogroupLabels(group)) {
+    if (!label.startsWith('#')) continue;
+    for (const token of label.split(';')) {
+      const m = wanted.exec(token.trim());
+      if (m !== null) found = colorOrNeutral(m[1]!);
+    }
+  }
+  return found;
+}
+
+/** The `line:` colour of the stereogroup's `#` labels: a terminal circle's stroke, an action box's border. */
+export function stereogroupLineColor(group: string | undefined): string | undefined {
+  return stereogroupTokenColor(group, 'line');
+}
+
+/** The `text:` colour (`ColorType.TEXT`) of the stereogroup's `#` labels: an action box's `FontColor`
+ *  (`Style#eventuallyOverride(Colors)`, `Style.java:206-208`, called by `FtileBox.java:155`). */
+export function stereogroupTextColor(group: string | undefined): string | undefined {
+  return stereogroupTokenColor(group, 'text');
+}
+
+/** The `line:` and `text:` colours a box node carries, absent when there are none. */
+export function innerColorsSpread(group: string | undefined): { lineColor?: string; textColor?: string } {
+  const lineColor = stereogroupLineColor(group);
+  const textColor = stereogroupTextColor(group);
+  return { ...(lineColor === undefined ? {} : { lineColor }), ...(textColor === undefined ? {} : { textColor }) };
 }
 
 /** The `colour` a command's node carries: the BACK of its stereogroup, absent when there is none. */

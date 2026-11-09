@@ -17,6 +17,7 @@ import type { LoopTranslate } from './swimlane-loop-translate.js';
 import { HEXAGON_HALF_SIZE } from './hexagon-reservations.js';
 import type { RepeatFrame } from './walk-repeat.js';
 import { pushEdgeFlagged } from './walk-repeat.js';
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 /**
  * `ConnectionBackSimple2#drawU` (`FtileRepeat.java:626-648`), the no-lane
@@ -155,4 +156,12 @@ export function pushRepeatBack(frame: RepeatFrame): void {
         : complex1Points(frame);
   const loop = buildRepeatBackLoop(frame);
   pushEdgeFlagged(out, points, [conditionOutLane, entryInLane], { emphasize: 'up', loop });
+  // `ConnectionBackSimple1/2(incoming1.getRainbow(arrowColor), incomingText)`, `withLabel(tbback,
+  // arrowHorizontalAlignment())`; `ConnectionBackComplex1` takes the rainbow only (`FtileRepeat.java:186-193`).
+  const edge = out.edges[out.edges.length - 1]!;
+  if (frame.backIncomingColor !== undefined) edge.color = frame.backIncomingColor;
+  if (backConnection !== 'complex1' && frame.backIncoming !== undefined) {
+    edge.label = frame.backIncoming;
+    edge.labelAlign = arrowHorizontalAlignment(out.theme);
+  }
 }

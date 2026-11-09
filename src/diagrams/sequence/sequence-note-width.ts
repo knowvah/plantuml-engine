@@ -96,7 +96,6 @@ export function noteBodyBlock(
 ): LabelBlock {
   const style = noteStyleOf(note);
   const paint = paintOf(style, HColorSet.instance());
-  if (paint.font.color === null) throw new Error('note style resolved no FontColor');
   const enhanced = component === 'note';
   const opts = {
     align: paint.align ?? HorizontalAlignment.LEFT,

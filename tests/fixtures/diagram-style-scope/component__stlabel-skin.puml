@@ -1,0 +1,4 @@
+@startuml
+skinparam componentStereotypeFontColor #0000FF
+[C] <<s>>
+@enduml

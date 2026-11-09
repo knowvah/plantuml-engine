@@ -1,0 +1,5 @@
+@startuml
+skinparam noteFontColor #0000FF
+state S
+note left of S : n
+@enduml

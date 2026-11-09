@@ -173,6 +173,9 @@ function pushDiamondNode(ctx: LvCtx, i: number): void {
       width: diamond.hexWidth,
       height: diamond.hexHeight,
       label: diamond.label,
+      // `FtileDiamondInside2#drawU` always draws `Hexagon.asPolygon` (`FtileDiamondInside2.java:84`), whatever
+      // `conditionStyle` says (aar-T1b, `nabako-16-gefo071`'s `elseif ()` under `conditionStyle diamond`).
+      diamondShape: 'inside',
       ...colorSpread(ctx.t.diamondColors?.open),
     },
     ctx.myLane,

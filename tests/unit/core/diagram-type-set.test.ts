@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DiagramType, findStartTypes } from '../../../src/core/diagram-type-set.js';
+import { DiagramType, findStartTypes, humanReadableName } from '../../../src/core/diagram-type-set.js';
 
 // Every case exercises a branch of `DiagramType.findStartTypes`/`getTypes`
 // (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/
@@ -201,5 +201,17 @@ describe('findStartTypes -- check() folds ASCII only (:220-232)', () => {
 
   it('does NOT fold the Kelvin sign inside the "start" keyword either', () => {
     expect(findStartTypes(`@star${KELVIN}json`)).toEqual(new Set());
+  });
+});
+
+describe('humanReadableName (:298-302)', () => {
+  it('names DESCRIPTION "component"', () => {
+    expect(humanReadableName(DiagramType.DESCRIPTION)).toBe('component');
+  });
+
+  it('lower-cases every other type, so both activity factories print "activity"', () => {
+    expect(humanReadableName(DiagramType.ACTIVITY)).toBe('activity');
+    expect(humanReadableName(DiagramType.PACKET)).toBe('packet');
+    expect(humanReadableName(DiagramType.SEQUENCE)).toBe('sequence');
   });
 });

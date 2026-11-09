@@ -1,0 +1,9 @@
+@startuml
+(*) --> A
+note on link: link note
+A --> B
+note on link
+  multi line
+end note
+B --> (*)
+@enduml

@@ -27,12 +27,7 @@ import type { HlineCandidate } from './swimlane-hline.js';
 import { compositeLaneGate, nonTranslatableConnectionDrawn } from './swimlane-connection-gate.js';
 import { applyInColor, applyOutLabel } from './tile-layout-inlabel.js';
 import { wrappedSpread } from './diamond-wrap.js';
-
-/** `arrowHorizontalAlignment()`'s own resolved default (`AbstractFtile
- *  .java:108-110`, `AlignmentParam.java:42`) -- the alignment BOTH
- *  `ConnectionVerticalOut` and `ConnectionLastElseOut` pass to
- *  `withLabel` for a branch's own trailing `-> label;` (T1d rows 2/3). */
-const BRANCH_EXIT_LABEL_ALIGN = { horizontal: 'LEFT' } as const;
+import { arrowHorizontalAlignment } from './snake-text-position.js';
 
 interface LhCtx {
   readonly t: GtileIfLongHorizontal;
@@ -147,6 +142,9 @@ function pushDiamondNode(ctx: LhCtx, i: number): void {
       width: diamond.hexWidth,
       height: diamond.hexHeight,
       label: diamond.label,
+      // `FtileDiamondInside2#drawU` always draws `Hexagon.asPolygon` (`FtileDiamondInside2.java:84`), whatever
+      // `conditionStyle` says (aar-T1b, `nabako-16-gefo071`'s `elseif ()` under `conditionStyle diamond`).
+      diamondShape: 'inside',
       ...colorSpread(ctx.t.diamondColors?.branches?.[i]),
     },
     ctx.myLane,
@@ -216,7 +214,7 @@ function connectionVerticalOut(ctx: LhCtx, i: number): void {
   // add4-T1b: `super(tile, null)` -- see {@link connectionLastElseOut}.
   const lane = laneOut(t.tiles[i]!, myLane);
   pushEdge(out, [p1, p2], lane, lane);
-  applyOutLabel(out, t.tiles[i]!, BRANCH_EXIT_LABEL_ALIGN);
+  applyOutLabel(out, t.tiles[i]!, arrowHorizontalAlignment(out.theme));
 }
 
 /** A hexagon's own "right"/"left" mid point (`2*left`/`0`, `hexHeight/2`)
@@ -238,6 +236,9 @@ function connectionHorizontal(ctx: LhCtx, i: number): void {
   const p1 = hexMidPoint(ctx, i, 'right');
   const p2 = hexMidPoint(ctx, i + 1, 'left');
   pushNonTranslatableEdge(ctx, [p1, p2], laneOut(t.diamonds[i]!, myLane), laneIn(t.diamonds[i + 1]!, myLane));
+  const color = t.diamonds[i + 1]!.incomingColor; // `thens.get(i + 1).getInRainbow(arrowColor)`, `:237`
+  const edge = ctx.out.edges[ctx.out.edges.length - 1];
+  if (color !== undefined && edge !== undefined) edge.color = color;
 }
 
 /** `ConnectionIn` -- the tile's own `pointIn` elbowed down into diamond 0.
@@ -250,6 +251,9 @@ function connectionIn(ctx: LhCtx): void {
   // `super(null, diamonds.get(0))` (`:305`): no tile1, so no lane1 gate.
   if (!nonTranslatableConnectionDrawn(ctx.gate, undefined, laneIn(t.diamonds[0]!, myLane))) return;
   pushEdge(ctx.out, [p1, { x: p2.x, y: p1.y }, p2], myLane, laneIn(t.diamonds[0]!, myLane));
+  // `topInlinkRendering.getRainbow(arrowColor)` (`FtileIfLongHorizontal.java:230,239`): the `if`'s own in-link colour
+  // (`InstructionIf.java:102,146`), the same rendering `FtileFactoryDelegatorAssembly` draws the arrow INTO the tile with.
+  applyInColor(ctx.out, t);
 }
 
 /** `ConnectionLastElseIn` -- last diamond's hex right-mid -> `tile2.pointIn`.
@@ -288,7 +292,7 @@ function connectionLastElseOut(ctx: LhCtx): void {
   // back to the diamonds' `myLane`.
   const lane = laneOut(t.tile2, myLane);
   pushEdge(out, points, lane, lane);
-  applyOutLabel(out, t.tile2, BRANCH_EXIT_LABEL_ALIGN);
+  applyOutLabel(out, t.tile2, arrowHorizontalAlignment(out.theme));
 }
 
 /** Every branch/`tile2` out-point's own absolute X, per `getMinmaxSimple`
@@ -370,6 +374,7 @@ function connectionHline(ctx: LhCtx): void {
   // `mergeable`: `NONE` never reaches the merge pass, so `routeHline`'s
   // per-lane fan-out cannot lose it.
   const edge = out.edges[out.edges.length - 1]!;
+  if (t.hlineColor !== undefined) edge.color = t.hlineColor; // `afterEndwhile.getRainbow(arrowColor)`, `:253`
   edge.arrowhead = false;
   edge.mergeable = 'NONE';
 }
