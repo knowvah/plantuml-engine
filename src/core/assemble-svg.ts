@@ -74,6 +74,7 @@ const DIAGRAM_TYPE_FILES = 'FILES';
 const DIAGRAM_TYPE_ACTIVITY_LEGACY = 'ACTIVITY_LEGACY';
 const DIAGRAM_TYPE_PACKET = 'PACKET';
 const DIAGRAM_TYPE_NWDIAG = 'NWDIAG';
+const DIAGRAM_TYPE_EBNF = 'EBNF';
 const DIAGRAM_TYPE_CHART = 'CHART';
 
 // ---------------------------------------------------------------------------
@@ -321,6 +322,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_CHART:
     case DIAGRAM_TYPE_PACKET:
     case DIAGRAM_TYPE_NWDIAG:
+    case DIAGRAM_TYPE_EBNF:
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
       return finalizeTitledDiagramFragment(fragment);

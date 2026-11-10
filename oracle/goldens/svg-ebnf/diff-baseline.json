@@ -1,0 +1,18 @@
+{
+  "fixtures": [
+    {
+      "type": "ebnf",
+      "slug": "ladifa-97-keme950",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 5,
+        "message": "Syntax Error? (Assumed diagram type: ebnf)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T08:23:37.497Z",
-  "measuredAgainstCommit": "105adf32f",
+  "generatedAt": "2026-11-10T19:57:56.786Z",
+  "measuredAgainstCommit": "570284a92",
   "type": "class",
   "measurer": "deterministic",
   "fixtures": [
@@ -6931,8 +6931,8 @@
       "slug": "vamero-64-fore412",
       "tree": "class",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "vanadi-41-geru001",

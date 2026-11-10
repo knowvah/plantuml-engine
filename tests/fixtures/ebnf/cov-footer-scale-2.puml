@@ -1,0 +1,5 @@
+@startebnf
+scale 2
+footer My footer
+rule = "a", [ "b" ];
+@endebnf

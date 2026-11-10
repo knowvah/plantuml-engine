@@ -1970,7 +1970,7 @@ On 2026-10-10 all 57 such rows errored under v1.2026.8 (`149874a`): wbs 28, unkn
 
 Each row is signed in `oracle/accepted-divergences.json`. The survey still prints these rows `diverged` with `firstDiff: 'error-page'`. A new row of this kind needs the same release check before it is signed.
 
-Three signed rows await a second signature: `svg-ebnf/ladifa-97-keme950`, `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801`. Neither engine exists yet, so today we draw the unknown-diagram placeholder, not the diagram their reason describes. The maintainer re-signs them once the engines land (ruling 2026-11-03, #125, #126).
+Two signed rows await a second signature: `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801`. The regex engine does not exist yet, so today we draw the unknown-diagram placeholder, not the diagram their reason describes. The maintainer re-signs them once the engine lands (ruling 2026-11-03, #126). The third, `svg-ebnf/ladifa-97-keme950`, is no longer a divergence: the EBNF engine (#125) refuses its line 5 with the jar's `Syntax Error?`, so the jar errors and we error. Its entry moved to `retired`, unsigned, and #166 asks the maintainer to confirm.
 
 Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). Both give exit 200 under v1.2026.8 (`149874a`):
 - **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.

@@ -1,0 +1,8 @@
+@startebnf
+(* a single-line comment *)
+(* first line
+   second line *)
+(** doc line
+    another **)
+rule = "a";
+@endebnf

@@ -1,0 +1,4 @@
+@startebnf
+mainframe My frame
+rule = "a", [ "b" ];
+@endebnf

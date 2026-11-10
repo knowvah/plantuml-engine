@@ -36,6 +36,7 @@ import { eggPlugin } from '../../src/diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from '../../src/diagrams/eggs/PSystemRIPFactory.js';
 import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from '../../src/diagrams/files/index.js';
+import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
 import { jsonPlugin } from '../../src/diagrams/json/index.js';
 import { mindmapPlugin } from '../../src/diagrams/mindmap/index.js';
@@ -102,6 +103,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [boardPlugin, 193],
   [yamlPlugin, 194],
   [hclPlugin, 195],
+  [ebnfPlugin, 196],
 ]);
 
 const ASSET_STORE = combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore(), buildUtilityAssetsStore());
@@ -225,6 +227,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startboard\nWorld\n+Europe\n@endboard', boardPlugin],
   ['@startyaml\na: 1\n@endyaml', yamlPlugin],
   ['@starthcl\na = 1\n@endhcl', hclPlugin],
+  ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

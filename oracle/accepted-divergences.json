@@ -59,15 +59,6 @@
     },
     {
       "match": {
-        "id": "svg-ebnf/ladifa-97-keme950"
-      },
-      "scope": "svg-conformance ebnf ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-10-10",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 5, \"Syntax Error? (Assumed diagram type: ebnf)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
         "id": "svg-regex/bakuza-41-bulo451"
       },
       "scope": "svg-conformance regex ledger (jar errors, we draw -- ruling 2026-10-10)",
@@ -1171,6 +1162,18 @@
       "retiredAt": "2026-11-10",
       "retiredBy": "nwdiag-engine-port T3a, unsigned: the maintainer signs at review (#124)",
       "retiredReason": "The nwdiag engine (nwdiag-engine-port T3a, commit 6eac1ddfc) now parses this source and refuses it at the same command with the jar's own message, so the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone. Pinned by score in oracle/goldens/svg-nwdiag/diff-baseline.json."
+    },
+    {
+      "match": {
+        "id": "svg-ebnf/ladifa-97-keme950"
+      },
+      "scope": "svg-conformance ebnf ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-10-10",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 5, \"Syntax Error? (Assumed diagram type: ebnf)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
+      "retiredAt": "2026-11-10",
+      "retiredBy": "ebnf-engine-port T4a, unsigned: the maintainer signs at review (#125)",
+      "retiredReason": "The EBNF engine (ebnf-engine-port T4a) now parses this source and refuses line 5, `?t? = 'chaud';`, with the jar's own message, \"Syntax Error? (Assumed diagram type: ebnf)\": no EBNF command accepts an id starting with `?` -- the single-line rule's ID is `[%pLN_][-%pLN_]*` (CommandEBnfSingleLine.java:71) and the multi-line start is `「〴an_」` (UBrexCommandEbnfMultilines.java:65). So the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone."
     }
   ]
 }

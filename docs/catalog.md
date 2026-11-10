@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2266 modules · 7808 exported names.
+2310 modules · 7877 exported names.
 
 ## `src/`
 
@@ -332,6 +332,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `Trim.ts` | `Trim`, `trimWith` | `Trim`: how a multi-line command trims the last line before matching its end pattern. |
 | `UBrexCommandFootboxIgnored.ts` | `UBrexCommandFootboxIgnored` |  |
 | `UBrexCommandHideShow2.ts` | `UBrexCommandHideShow2` |  |
+| `UBrexCommandMultilines2.ts` | `UBrexCommandMultilines2` | `UBrexCommandMultilines2`: `CommandMultilines2` with its start and end patterns as `UnicodeBracketedExpression`s. |
 | `UBrexCommandRankDir.ts` | `RankdirTarget`, `UBrexCommandRankDir` |  |
 | `UBrexSingleLineCommand2.ts` | `UBrexSingleLineCommand2` | UBrexSingleLineCommand2 -- base class of the commands whose syntax is a single `UnicodeBracketedExpression` matched against one source line. |
 
@@ -1405,6 +1406,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `BlocLines.ts` | `isSpaceOrTab`, `nbStartingSpace`, `BlocLines` | `BlocLines`: the lines one command spans, immutable (every "mutator" answers a fresh copy). |
 | `CharHidder.ts` | `CharHidder` | CharHidder — the '~' tile escape: `~X` (where X is a creole-active character) and `\~` are remapped into the Unicode private-use area (U+E000 + charCode) by {@link CharHidder.hide} so the creole layer never sees them as markup, then restore |
+| `CharInspector.ts` | `CharInspector` | `CharInspector`: a cursor over a block's characters, one `peek`/`jump` at a time. |
+| `CharInspectorImpl.ts` | `CharInspectorImpl` | `CharInspectorImpl`: walks a `BlocLines` line by line over each line's trimmed text, skipping empty lines on `jump`. |
+| `i18n-bundles.ts` | `I18N_BUNDLES` | The eight `i18n*.properties` bundles `I18n.getLocalizedValue` reads through `ResourceBundle.getBundle("i18n", …)`, keyed by bundle suffix (`''` is the root bundle `i18n.properties`). |
+| `I18n.ts` | `forLanguageTag`, `getCandidateLocales`, `getLocalizedValue`, `I18n` | `I18n`: a localized value from the `i18n*.properties` bundles (`i18n-bundles.ts`). |
 | `I18nTimeData.ts` | `Locale`, `newLocale`, `dayOfWeekLong`, `dayOfWeekShort`, `monthShort`, `monthLong` | I18nTimeData — generated day/month name tables per language. |
 | `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, and (license/keygen, out of this port's roadmap) `version/PLSSignature`, `version/Lice |
 
@@ -1526,6 +1531,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AbstractFtile.ts` | `AbstractFtile` |  |
 | `BoxStyle.ts` | `BoxStyle` |  |
 | `FtileGeometry.ts` | `FtileGeometry` |  |
+
+## `src/diagrams/activity/ftile/vcompact/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `FloatingNote.ts` | `FloatingNoteSkinParam`, `FloatingNote` | `FloatingNote`: a note drawn on its own, an `Opale` around the note's creole sheet in the `root, element, <sname>, note` style. |
 
 ## `src/diagrams/activity/ftile/vertical/`
 
@@ -2099,6 +2110,49 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `layout.ts` | `layoutDot` |  |
 | `parser.ts` | `parseDot` |  |
 | `renderer.ts` | `renderDot` |  |
+
+## `src/diagrams/ebnf/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `Brace.ts` | `Brace` | `Brace`: a horizontal curly brace `width` wide, drawn at stroke 0.5 from four 5 px corners and two lines. |
+| `CommandCommentMultilines.ts` | `CommandCommentMultilines` | `CommandCommentMultilines`: a `(* … *)` comment over several lines, added as a note without its two-character delimiters (`removeFewChars(2)`). |
+| `CommandCommentMultilines2.ts` | `CommandCommentMultilines2` | `CommandCommentMultilines2`: a `(** … **)` documentation comment over several lines, added as a note without its three-character delimiters (`removeFewChars(3)`). |
+| `CommandEBnfSingleLine.ts` | `CommandEBnfSingleLine` | `CommandEBnfSingleLine`: a rule on one line, `[(* above *)] id [(* below *)] = … ;`, handed to `PSystemEbnf#addBlocLines` as `id + "=" + line`. |
+| `CommandNoteMultilines.ts` | `CommandNoteMultilines` | `CommandNoteMultilines`: `note [#color]` … `end note`, added as a note with its colour. |
+| `CornerCurved.ts` | `CornerCurved` | `CornerCurved`: a quarter-turn of the track as one cubic, optionally with an arrow on its vertical end. |
+| `ebnf-common-commands.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `PSystemEbnfFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `ebnf-klimt.ts` | `paintOf`, `fore`, `back` | PORT-ONLY: the `HColor` → paint casts the EBNF tiles need where Java applies a colour straight to a `UGraphic` (`ug.apply(color)`, `ug.apply(color.bg())`). |
+| `ebnf-skin-param.ts` | `SkinParamSource`, `SkinParam` | The EBNF engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `PSystemEbnf` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine's |
+| `ebnf-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `EbnfEngine.ts` | `ebnfStyleOf`, `EbnfEngine` | `EbnfEngine`: replays a rule's postfix queue on a stack of tiles. |
+| `EbnfExpression.ts` | `EbnfExpression` | `EbnfExpression`: one rule — tokenised from a `CharInspector` at construction, drawn as the bold name over its railroad (`withMargin(main, 0, 0, 10, 15)`), with the comments written before and after the name as notes. |
+| `ETile.ts` | `ArrowPlacement`, `ETile` | `ETile`: a railroad tile. |
+| `ETileAlternation.ts` | `ETileAlternation` | `ETileAlternation`: `a \| b \| …`, each branch stacked 10 apart between two vertical rails `marginx` in from each side; the first branch is the straight track. |
+| `ETileBox.ts` | `ETileBoxArgs`, `ETileBox` | `ETileBox`: one box on the track — a terminal (square, stroke 0.5, no fill), a special sequence (dashed), or a non-terminal (rounded 10, filled, stroke 1.5) — with an optional linked note above and below, centred in its width. |
+| `ETileConcatenation.ts` | `ETileConcatenation` | `ETileConcatenation`: tiles side by side on one track, 20 apart, joined by directed lines. |
+| `ETileEmpty.ts` | `ETileEmpty` | `ETileEmpty`: the empty rule body (`a = ;`), zero by zero, drawing nothing. |
+| `ETileLookAheadOrBehind.ts` | `ETileLookAheadOrBehind` | `ETileLookAheadOrBehind`: a regex lookaround `(?=x)`, `(?!x)`, `(?<=x)`, `(?<!x)` — `x` inside a dotted rounded frame, the lookaround's sign (`type`) at its left. |
+| `ETileNamedGroup.ts` | `ETileNamedGroup` | `ETileNamedGroup`: a regex named group `(?<name>x)` — a #E8E8FF panel behind `x`, with the name on a tab above. |
+| `ETileNot.ts` | `ETileNot` | `ETileNot`: `- x`, the text `NOT` before the tile, on its track. |
+| `ETileOneOrMore.ts` | `ETileOneOrMore` | `ETileOneOrMore`: a loop — `x` on the track with a return path above it, arrowed right to left. |
+| `ETileOptional.ts` | `ETileOptional` | `ETileOptional` (`@Deprecated` upstream): an optional bypass drawn *above* the tile with corners, superseded by `ETileOptional2`. |
+| `ETileOptional2.ts` | `ETileOptional2` | `ETileOptional2`: `[ x ]`, the straight track above with `x` below it, joined by two zigzags; comments above and below sit as unlinked notes. |
+| `ETileRegexGroup.ts` | `getTextDim`, `ETileRegexGroup` | `ETileRegexGroup`: a regex character class `[abc]` — its elements stacked in one dashed box, a 0.3 rule between two, centred in the tile. |
+| `ETileRegexGroupAllBut.ts` | `ETileRegexGroupAllBut` | `ETileRegexGroupAllBut`: a negated character class `[^abc]` — the first element (the `^` marker the regex engine puts first) in an open bracket at the left, the rest stacked in a dashed box at the right. |
+| `ETileWithCircles.ts` | `ETileWithCircles` | `ETileWithCircles`: a rule's body between its start circle (open, stroke 2) and end circle (filled, stroke 1), 30 px of directed track each side. |
+| `ETileZeroOrMore.ts` | `ETileZeroOrMore` | `ETileZeroOrMore`: `{ x }`, an optional bypass around a loop — `ETileOptional2` over `ETileOneOrMore`. |
+| `index.ts` | `EbnfGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderEbnf`, `ebnfPlugin` | EBNF plugin — `PSystemEbnfFactory` (parse), then `TextBlockExporter`'s export of `PSystemEbnf#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` plus `calculateMargin` (`TitledDiagram`'s `same(10)` by defau |
+| `PSystemEbnf.ts` | `PSystemEbnf` | `PSystemEbnf`: one `@startebnf` block — rules and notes in source order, stacked left-aligned. |
+| `PSystemEbnfFactory.ts` | `initCommandsList`, `parseEbnf` | `PSystemEbnfFactory`: `CommonCommands.addCommonCommands1` first, then the five EBNF commands in upstream order, and `PSystemCommandFactory#createSystem`'s per-line loop over them. |
+| `ShuntingYard.ts` | `ShuntingYard` | `ShuntingYard`: Dijkstra's shunting yard over a rule's tokens, producing the postfix queue `EbnfEngine` replays. |
+| `Symbol.ts` | `Symbol`, `getPriority`, `isOperator`, `isFunction` | `Symbol`: the EBNF token kinds (Wikipedia's EBNF table) plus `REGEX_GROUP` for the regex engine. |
+| `TextBlockable.ts` | `TextBlockable` | `TextBlockable`: what `PSystemEbnf` draws one entry through — a rule (`EbnfExpression`) or a note. |
+| `TitleBox.ts` | `TitleBox` | `TitleBox`: a rule's name in bold, its text drawn on the baseline (`height - descent`). |
+| `Token.ts` | `Token` | `Token`: one lexeme — a {@link Symbol} and, for literals, strings and comments, its text (`null` otherwise). |
+| `UBrexCommandComment.ts` | `UBrexCommandComment` | `UBrexCommandComment`: a standalone `(* … *)` on one line, added as a note (the text trimmed). |
+| `UBrexCommandEbnfMultilines.ts` | `getRegexConcat`, `UBrexCommandEbnfMultilines` | `UBrexCommandEbnfMultilines`: a rule over several lines, from `id =` to the first line ending in `;`, the whole block handed to `PSystemEbnf#addBlocLines` with no comments. |
+| `Zigzag.ts` | `Zigzag` | `Zigzag`: the S-shaped track between two heights, down or up, as two cubics through the midpoint. |
 
 ## `src/diagrams/eggs/`
 

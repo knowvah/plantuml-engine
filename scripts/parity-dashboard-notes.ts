@@ -56,7 +56,12 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'notBuilt',
     detail: 'Dropped on purpose: its library is LGPL-3.0 and the MIT edition disables it (`DIVERGENCES.md`).',
   },
-  ebnf: { noteClass: 'notBuilt' },
+  ebnf: {
+    noteClass: 'openDefect',
+    detail:
+      'The EBNF engine (#125) draws all 44 conformant: 43 byte-identical, pinned in `svg-ebnf`, and ' +
+      '`ladifa-97-keme950`, a jar error page where we also error (#166).',
+  },
   network: {
     noteClass: 'notBuilt',
     detail:

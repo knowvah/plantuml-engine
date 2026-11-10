@@ -1,0 +1,7 @@
+@startebnf
+scale 2
+legend
+My legend
+end legend
+rule = "a", [ "b" ];
+@endebnf

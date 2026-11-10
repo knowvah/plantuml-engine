@@ -1,0 +1,3 @@
+@startebnf
+digits = (* lead *) "0" (* trail *), { "1" (* inner *) };
+@endebnf

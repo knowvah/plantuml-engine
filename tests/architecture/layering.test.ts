@@ -161,6 +161,16 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       '(mission mindmap-engine-port D4; wbs ITFLeaf.java:38 shares it).',
   },
   {
+    from: 'src/diagrams/ebnf/',
+    to: 'src/diagrams/activity/ftile/',
+    why:
+      'upstream EbnfExpression.java:42, PSystemEbnf.java:43, ETileBox.java:41, ' +
+      'ETileOptional.java:38 and ETileOptional2.java:38 import ' +
+      'net.sourceforge.plantuml.activitydiagram3.ftile.vcompact.FloatingNote ' +
+      '-- every EBNF comment IS the activity FloatingNote, kept at its upstream ' +
+      'path (mission ebnf-engine-port D3).',
+  },
+  {
     from: 'src/diagrams/wbs/',
     to: 'src/diagrams/activity/ftile/',
     why:

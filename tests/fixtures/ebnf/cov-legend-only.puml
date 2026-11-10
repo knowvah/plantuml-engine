@@ -1,0 +1,6 @@
+@startebnf
+legend
+My legend
+end legend
+rule = "a", [ "b" ];
+@endebnf

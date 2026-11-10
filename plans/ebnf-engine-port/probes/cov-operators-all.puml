@@ -1,0 +1,3 @@
+@startebnf
+all = "a", [ "b" ], { "c" }, ( "d" | "e" ), ? spec ?, 'single', lit, { "f" }-;
+@endebnf

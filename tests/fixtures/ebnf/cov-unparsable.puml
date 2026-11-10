@@ -1,0 +1,3 @@
+@startebnf
+worse = "a" @ "b";
+@endebnf

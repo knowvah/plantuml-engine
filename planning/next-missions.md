@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## ebnf-engine-port (eep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #125; per-task history on the local tag `ebnf-engine-port/pre-squash`)
+
+`src/diagrams/ebnf/` is a file-for-file port of `net/sourceforge/plantuml/ebnf/` (all 32 classes, the five regex-only tiles included) on klimt, registered at `PSystemBuilder.java:196`. Its seams went to their upstream homes: `CharInspector`/`CharInspectorImpl` and `I18n` (with the eight `i18n*.properties` bundles) in `src/core/utils/`, `UBrexCommandMultilines2` in `src/core/command/`, `FloatingNote` in `src/diagrams/activity/ftile/vcompact/`, and `UText#getDescent`/`#calculateDimension`. All 44 `@startebnf` rows are conformant: 43 byte-identical and pinned in `svg-ebnf`, and `ladifa-97-keme950`, a jar error page where we now also error, pinned by score. `class/vamero-64-fore412` (`{{ebnf}}` in a component) moved to conformant. Overall 5,423 → 5,468 conformant of 5,927. 70 authored fixtures in `tests/fixtures/ebnf`: 64 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. `ladifa`'s signed "jar errors, we draw" acceptance moved to `retired`, unsigned; #166 asks for the maintainer's confirmation (with #165).
+
+Follow-ons:
+
+1. **Regex engine (#126)** can now import the tiles from `src/diagrams/ebnf/` (`ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`, `ETileRegexGroupAllBut`, `ETileLookAheadOrBehind` are tested against cached regex rows), `UBrexCommandMultilines2` and `I18n`; it needs its own layering allowlist entry, as `src/diagrams/ebnf/` → `src/diagrams/activity/ftile/` has.
+2. **A `ProtectedCommand` page names the Java class.** The jar prints `t.toString()` (`java.lang.IllegalStateException`), the port the thrown `Error`'s message (`IllegalStateException`), in nwdiag's and EBNF's `protectedMessage`. An error pair either way (`cov-unterminated`).
+3. **The empty-source Welcome page** (nwp follow-on 2) shows in `tests/fixtures/ebnf/cov-empty` too.
+
 ## nwdiag-engine-port (nwp) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #124; per-task history on the local tag `nwdiag-engine-port/pre-squash`)
 
 `src/diagrams/nwdiag/` is a file-for-file port of `net/sourceforge/plantuml/nwdiag/` on klimt (root commands, `core/` model, `next/` layout and drawing), registered at `PSystemBuilder.java:155`. All 68 `@startnwdiag` rows are conformant: 64 byte-identical and pinned in `svg-nwdiag`, and 4 jar error pages where we also error, pinned by score. `unknown` went from 864/4/180 to 932/4/112. There are 57 authored fixtures in `tests/fixtures/nwdiag`: 51 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. The four signed "jar errors, we draw" acceptances for those rows moved to `retired`, unsigned; #165 asks for the maintainer's confirmation.
@@ -236,7 +246,7 @@ the brief, by user ruling (D7): chrome blocks paint an inherited gradient, and
 gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
-1. **Unported engines' document background** — timing, ebnf and regex. ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. Arrives with each port.
+1. **Unported engines' document background** — timing and regex. ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. ~~ebnf~~ DONE by ebnf-engine-port (#125): `ebnf: 'ebnf'` (java:280-281). Arrives with each port.
 2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).

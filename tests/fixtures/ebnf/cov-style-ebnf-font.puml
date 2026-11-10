@@ -1,0 +1,10 @@
+@startebnf
+<style>
+ebnf {
+  FontName serif
+  FontSize 18
+  FontColor blue
+}
+</style>
+rule = "a", [ "b" ];
+@endebnf

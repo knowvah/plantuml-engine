@@ -1,0 +1,4 @@
+@startebnf
+(* first\nsecond *)
+rule = "a" (* x\ny *);
+@endebnf

@@ -1,0 +1,8 @@
+@startebnf
+<style>
+ebnf {
+  LineThickness 3
+}
+</style>
+rule = a, "b";
+@endebnf

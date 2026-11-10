@@ -1,0 +1,5 @@
+@startebnf
+short = "a";
+much_longer_rule = "aaaa", "bbbb", "cccc", "dddd";
+mid = "x" | "y";
+@endebnf

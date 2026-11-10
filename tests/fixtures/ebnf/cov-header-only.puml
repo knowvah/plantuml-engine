@@ -1,0 +1,4 @@
+@startebnf
+header My header
+rule = "a", [ "b" ];
+@endebnf

@@ -1,0 +1,5 @@
+@startebnf
+!option useDescriptiveNames true
+!option language fr
+rule = ".", "\d", "x";
+@endebnf

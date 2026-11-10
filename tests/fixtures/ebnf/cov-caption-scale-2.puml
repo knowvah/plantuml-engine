@@ -1,0 +1,5 @@
+@startebnf
+scale 2
+caption My caption
+rule = "a", [ "b" ];
+@endebnf

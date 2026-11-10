@@ -130,17 +130,15 @@ that a custom implementation is safer.
 
 ---
 
-### Track SI-3 — `src/core/railroad/` (Railroad Diagram Renderer)
+### Track SI-3 — railroad tiles (superseded: no shared IR upstream)
 
-**Needed by:** Phase 5f (EBNF), Phase 5m (Regex)
-
-**Java source:** `ebnf/` (~20 files), `regexdiagram/`
-
-**What it is:** Both EBNF and Regex produce railroad diagrams. The intermediate
-representation (terminal/non-terminal, sequence, choice, optional, repetition,
-group) is shared; only the grammar → IR translation differs. Building the
-railroad renderer as a standalone `src/core/railroad/` module lets Phase 5f
-produce the renderer and Phase 5m add only a regex-to-IR translation layer.
+**Corrected 2026-11-10 by ebnf-engine-port (#125, decisions.md D1).** Upstream has no railroad intermediate
+representation: `ebnf/` builds `ETile`s directly, and `regexdiagram/PSystemRegex.java` imports eleven of the same
+classes from `ebnf/`. The port mirrors that. The tiles live in `src/diagrams/ebnf/` (`ETile`, `ETileBox`,
+`ETileConcatenation`, `ETileAlternation`, `ETileOptional2`, `ETileOneOrMore`, `ETileZeroOrMore`, `ETileNot`,
+`ETileWithCircles`, and the regex-only `ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`,
+`ETileRegexGroupAllBut`, `ETileLookAheadOrBehind`), and the regex engine (#126) imports them from there with its own
+layering allowlist entry. There is no `src/core/railroad/` and no grammar → IR translation layer.
 
 ---
 
@@ -480,90 +478,17 @@ more appropriate.
 
 ---
 
-## Phase 5f — EBNF Railroad Diagrams
+## Phase 5f — EBNF Railroad Diagrams — DONE (ebnf-engine-port, #125)
 
-**Java source:** `ebnf/`
+**Java source:** `ebnf/` (33 files), ported file for file into `src/diagrams/ebnf/`.
 
-**Reuse:** `src/core/railroad/` (Track SI-3 — must build first);
-`src/core/svg.ts`; `src/core/theme.ts`.
+**Architecture (corrected 2026-11-10, D1):** no railroad IR. `PSystemEbnf` extends `TitledDiagram`; each rule is an
+`EbnfExpression` whose tokens go through `ShuntingYard` into `EbnfEngine`, which builds `ETile`s directly. Comments are
+the activity package's `FloatingNote`. The seams it needed went to their upstream homes: `CharInspector` and `I18n` in
+`src/core/utils/`, `UBrexCommandMultilines2` in `src/core/command/`.
 
-**Architecture constraint:** Phase 5f builds the railroad renderer in
-`src/core/railroad/` and then adds the EBNF grammar → railroad IR translation.
-Phase 5m adds only a regex-to-railroad-IR translation layer on top.
-
-**Watch-outs:**
-- Terminal literals (quoted strings) vs non-terminals (unquoted names)
-- Choice (`|`), sequence (concatenation), optional (`[…]`), repetition (`{…}`)
-- `+` one-or-more, `*` zero-or-more in extended EBNF
-- Named rules separated by `::=` or `=`
-- Comments (`(*…*)`)
-- The start rule is rendered at the top; referenced rules expand below
-- Loop-back arrows for repetition constructs
-- Text direction: LR by default; `direction=TB` supported
-
----
-
-## Phase 5g — DITAA
-
-> **Dropped by ruling 2026-11-04 (#111).** The library is LGPL-3.0, so it can't be ported into
-> this MIT package; see `DIVERGENCES.md`, "Ditaa is not included". Kept as a record.
-
-See **`planning/ditaa-deepdive.md`** for the full brief. This is the
-highest-complexity phase in Phase 5.
-
-**Java source:** `ditaa/` (3 files), `asciiart/` (external ditaa library
-bundled as Java source)
-
-**Reuse:** `src/core/svg.ts`; `src/core/svg-sanitize.ts`. No graph engine.
-
-**Architecture constraint:** ASCII art grid → SVG. The input is a 2D character
-grid; the output is rendered shapes detected by cell pattern analysis.
-
----
-
-## Phase 5h — Chen EER Diagrams
-
-**Java source:** `cheneer/`
-
-**Reuse:** `dot`/`auto-layout` for layout (already built); `src/core/svg.ts`.
-
-**Architecture constraint:** Uses the `dot` engine for layout. The renderer
-draws entity-specific shapes on top of the dot-computed positions.
-
-**Watch-outs:**
-- Entity: plain rectangle
-- Weak entity: double rectangle
-- Attribute: ellipse
-- Multi-valued attribute: double ellipse
-- Derived attribute: dashed ellipse
-- Key attribute: underlined label inside ellipse
-- Relationship: diamond
-- Identifying relationship (weak): double diamond
-- Cardinality notation: `1`, `N`, `M` on edges
-- Participation: total (double line) vs partial (single line)
-- `[=]` syntax for total participation on both sides
-
----
-
-## Phase 5l — Wire Diagram
-
-**Java source:** `wire/`
-
-**Reuse:** `src/core/svg.ts`; `src/core/theme.ts`. Built-in schematic layout.
-
-**Architecture constraint:** Components are placed on a 2D grid declared in
-the source. Connections are routed as horizontal/vertical segments. No graph
-engine. Evaluate whether `src/core/golem/` (Track SI-4) can serve as the
-grid substrate.
-
-**Watch-outs:**
-- `component` declarations with grid position
-- Horizontal (`-`) and vertical (`|`) connection segments
-- Junction dots at crossings
-- Labels on connections
-- `port` declarations with named connection points
-- This is the most niche diagram type — the Java source is thin but contains
-  all the edge cases
+**Result:** 44/44 `@startebnf` rows conformant (one a jar error page where we also error), pinned in `svg-ebnf`; 70
+authored fixtures in `tests/fixtures/ebnf/`.
 
 ---
 
@@ -571,12 +496,9 @@ grid substrate.
 
 **Java source:** `regexdiagram/`, `regex/`
 
-**Reuse:** `src/core/railroad/` (Track SI-3 — already built for Phase 5f);
-**Must develop after Phase 5f.** The regex parser produces the same railroad
-intermediate representation that the EBNF renderer consumes.
-
-**Architecture constraint:** Phase 5m adds only a regex-to-railroad-IR
-translation layer. No new renderer code.
+**Reuse (corrected 2026-11-10, ebnf-engine-port D1):** the tiles in `src/diagrams/ebnf/`, imported as
+`PSystemRegex.java` imports them from `ebnf/`; `UBrexCommandMultilines2` (`src/core/command/`) and `I18n`
+(`src/core/utils/`) are ported. There is no railroad IR: `PSystemRegex` builds `ETile`s on its own stack.
 
 **Watch-outs:**
 - Character classes (`[a-z]`, `[^abc]`, `.`)

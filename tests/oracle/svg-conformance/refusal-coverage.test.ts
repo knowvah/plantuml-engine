@@ -656,7 +656,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10714 -> 10723 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
     // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
     // 10847 -> 10911 at nwp/T4 (2026-11-10): +64 svg-nwdiag golden clones, all rendering. Derivation: 10847 + 64 = 10911.
-    expect(manifest.fixtures.length).toBe(10911);
+    // 10911 -> 10954 at eep/T5 (2026-11-10): +43 svg-ebnf golden clones, all rendering. Derivation: 10911 + 43 = 10954.
+    expect(manifest.fixtures.length).toBe(10954);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -720,7 +721,9 @@ describe('refusal coverage — baseline shape', () => {
     // 314 -> 312 at laep/T3b-2 (2026-11-07): the 2 swimlane rows no longer error. Derivation: 314 - 2 = 312.
     // 312 -> 316 at nwp/T4 (2026-11-10): the 4 nwdiag jar-error rows (jifoke-84, ligalo-62, torazi-09, zeceme-22)
     // now error as the jar does. Derivation: 312 + 4 = 316.
-    expect(pinnedErroring.length).toBe(316);
+    // 316 -> 317 at eep/T5 (2026-11-10): ladifa-97-keme950 (a jar error page) now errors as the jar does.
+    // Derivation: 316 + 1 = 317.
+    expect(pinnedErroring.length).toBe(317);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -941,7 +944,9 @@ describe('refusal coverage — baseline shape', () => {
     // 10411 -> 10535 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering. Derivation: 10411 + 124 = 10535.
     // 10535 -> 10595 at nwp/T4 (2026-11-10): +64 svg-nwdiag golden clones, all rendering; the 4 nwdiag rows whose
     // golden is a jar error page now error here too. Derivation: 10535 + 64 - 4 = 10595.
-    expect(pinnedRendering.length).toBe(10595);
+    // 10595 -> 10637 at eep/T5 (2026-11-10): +43 svg-ebnf golden clones, all rendering; ladifa-97-keme950, whose
+    // golden is a jar error page, now errors here too. Derivation: 10595 + 43 - 1 = 10637.
+    expect(pinnedRendering.length).toBe(10637);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

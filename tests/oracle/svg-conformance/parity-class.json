@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T17:23:34.547Z",
+  "generatedAt": "2026-11-10T19:38:15.841Z",
   "fixtures": [
     {
       "slug": "bajotu-30-soku184",
@@ -5273,9 +5273,7 @@
       "type": "class",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 124,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "vanadi-41-geru001",

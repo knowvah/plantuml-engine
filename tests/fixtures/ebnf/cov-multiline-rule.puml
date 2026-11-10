@@ -1,0 +1,6 @@
+@startebnf
+rule =
+  "a",
+  "b" |
+  "c";
+@endebnf

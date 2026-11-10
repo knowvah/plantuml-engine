@@ -1,0 +1,5 @@
+@startebnf
+scale 2
+title My title
+rule = "a", [ "b" ];
+@endebnf
