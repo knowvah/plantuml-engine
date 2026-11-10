@@ -1,0 +1,8 @@
+@startnwdiag
+nwdiag {
+  network dmz {
+    web01;
+  }
+  ghost -- web01;
+}
+@endnwdiag

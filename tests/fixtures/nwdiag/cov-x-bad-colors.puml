@@ -1,0 +1,9 @@
+@startnwdiag
+nwdiag {
+  network dmz {
+    color = "notacolour"
+    web01 [color = "notacolour"];
+    web02 [color = "#ABC"];
+  }
+}
+@endnwdiag

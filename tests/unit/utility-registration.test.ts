@@ -26,6 +26,7 @@ import { classPlugin } from '../../src/diagrams/class/index.js';
 import { dedicationPlugin } from '../../src/diagrams/dedication/PSystemDedicationFactory.js';
 import { descriptionPlugin } from '../../src/diagrams/description/index.js';
 import { dotPlugin } from '../../src/diagrams/dot/index.js';
+import { nwdiagPlugin } from '../../src/diagrams/nwdiag/index.js';
 import { donorsPlugin } from '../../src/diagrams/donors/PSystemDonorsFactory.js';
 import { skinparameterListPlugin } from '../../src/diagrams/donors/PSystemSkinparameterListFactory.js';
 import { appleTwoPlugin } from '../../src/diagrams/eggs/PSystemAppleTwoFactory.js';
@@ -84,6 +85,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [listArchimateSpritesPlugin, 152],
   [saltPlugin, 153],
   [dotPlugin, 154],
+  [nwdiagPlugin, 155],
   [mindmapPlugin, 156],
   [wbsPlugin, 157],
   [chartPlugin, 158],
@@ -212,6 +214,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startuml\nstart\n:step;\nstop\n@enduml', activityPlugin],
   ['@startsalt\n{\n[OK]\n}\n@endsalt', saltPlugin],
   ['@startdot\ndigraph G {\n  a -> b\n}\n@enddot', dotPlugin],
+  ['@startnwdiag\nnwdiag {\n  network dmz {\n    web01;\n  }\n}\n@endnwdiag', nwdiagPlugin],
   ['@startmindmap\n* root\n** child\n@endmindmap', mindmapPlugin],
   ['@startwbs\n* root\n** child\n@endwbs', wbsPlugin],
   ['@startchart\nh-axis [Q1, Q2]\nv-axis 0 --> 100\nbar "R" [45, 62]\n@endchart', chartPlugin],

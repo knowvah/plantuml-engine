@@ -1,0 +1,16 @@
+@startnwdiag
+nwdiag {
+  network dmz {
+    address = "10.0.0.0/8"
+    color = "#AAFFAA"
+    width = "full"
+    description = "Quoted"
+    web01;
+  }
+  group {
+    color = "#FFAAAA"
+    description = "G quoted"
+    web01;
+  }
+}
+@endnwdiag

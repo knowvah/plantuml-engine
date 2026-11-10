@@ -1,0 +1,10 @@
+@startnwdiag
+nwdiag {
+  network a {
+    s1 [address = "1.1.1.1"];
+    s2 [address = "2.2.2.2"];
+  }
+  s1 -- s2;
+  s2 -- s3;
+}
+@endnwdiag

@@ -1,0 +1,9 @@
+@startnwdiag
+skinparam monochrome reverse
+nwdiag {
+  network dmz {
+    color = "red"
+    web01 [color = "yellow"];
+  }
+}
+@endnwdiag

@@ -1,0 +1,574 @@
+{
+  "fixtures": [
+    {
+      "type": "nwdiag",
+      "slug": "cov-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-comments",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-desc-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-desc-sprite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-description-outside",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.nwdiag.core.Network.setDescription(String)\" because the return value of \"net.sourceforge.plantuml.nwdiag.NwDiagram.currentNetwork()\" is null (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-document-margin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-embedded-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-footbox",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-group-color-desc",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-group-no-desc",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-group-two-networks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-legend-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-link-chain-after",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-link-chain-before",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-link-unknown",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "what about ghost (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-monochrome-reverse",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-multi-address",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-nested-group",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Cannot nest group (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-net-address-semicolon",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-network-name-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-no-wrapper",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-peer-links",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-properties-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-properties-unquoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-reversecolor-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-reversecolor-order",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-shapes-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-style-arrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-style-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-style-network",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-style-network-font",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-style-server",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-theme-sketchy",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-three-networks-addresses",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-title-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-unknown-line",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 5,
+        "message": "Syntax Error? (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-width-full-middle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-bad-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-desc-group-in-network",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-empty-middle-network",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-full-first",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-group-before-networks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-link-existing-address",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-long-names",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-many-columns",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Syntax Error? (Assumed diagram type: nwdiag)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-stdlib-sprite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    },
+    {
+      "type": "nwdiag",
+      "slug": "cov-x-two-groups-shapes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "c04140202"
+    }
+  ]
+}

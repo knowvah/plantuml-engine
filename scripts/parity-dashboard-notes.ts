@@ -62,7 +62,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     detail:
       'This bucket is filled by a keyword match and holds no nwdiag diagrams: one description diagram, which conforms, ' +
       'and two in the legacy `(*) -->` activity syntax, drawn by the legacy activity engine (#123) and pinned in ' +
-      '`svg-activity-legacy`. Real nwdiag fixtures are counted under `unknown`.',
+      '`svg-activity-legacy`. The 68 real nwdiag fixtures are counted under `unknown`: the nwdiag engine (#124) draws ' +
+      'all 68 conformant (4 are jar error pages where we also error), pinned in `svg-nwdiag`.',
   },
   regex: { noteClass: 'notBuilt' },
   timing: { noteClass: 'notBuilt' },

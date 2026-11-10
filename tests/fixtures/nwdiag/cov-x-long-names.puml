@@ -1,0 +1,12 @@
+@startnwdiag
+nwdiag {
+  network a_very_long_network_name {
+    address = "192.168.100.0/24"
+    server_with_a_long_name [address = "192.168.100.250"];
+    x;
+  }
+  network b {
+    server_with_a_long_name [address = "10.0.0.1"];
+  }
+}
+@endnwdiag

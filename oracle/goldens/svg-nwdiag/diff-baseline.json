@@ -1,0 +1,60 @@
+{
+  "fixtures": [
+    {
+      "type": "unknown",
+      "slug": "jifoke-84-jude859",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 40,
+        "message": "Syntax Error? (Assumed diagram type: nwdiag)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "47a18c0b9"
+    },
+    {
+      "type": "unknown",
+      "slug": "ligalo-62-suvu444",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: nwdiag)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "47a18c0b9"
+    },
+    {
+      "type": "unknown",
+      "slug": "torazi-09-gago377",
+      "status": "baseline",
+      "weightedScore": 51,
+      "diffCount": 44,
+      "jarError": {
+        "line": 13,
+        "message": "Element already in another group. (Assumed diagram type: nwdiag)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "47a18c0b9"
+    },
+    {
+      "type": "unknown",
+      "slug": "zeceme-22-rade890",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "jarError": {
+        "line": 6,
+        "message": "Cannot nest group (Assumed diagram type: nwdiag)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "47a18c0b9"
+    }
+  ]
+}

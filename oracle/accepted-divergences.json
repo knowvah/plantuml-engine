@@ -113,30 +113,12 @@
     },
     {
       "match": {
-        "id": "svg-unknown/jifoke-84-jude859"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-10-10",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 40, \"Syntax Error? (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
         "id": "svg-unknown/kijaro-77-vomi552"
       },
       "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
       "acceptedAt": "2026-10-10",
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), no line or label; stdrpt prints only \"Some diagram description contains errors\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
-        "id": "svg-unknown/ligalo-62-suvu444"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-10-10",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 3, \"Syntax Error? (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
     },
     {
       "match": {
@@ -173,24 +155,6 @@
       "acceptedAt": "2026-10-10",
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 2, \"No such internal sprite: archimate/strategy-value-stream (Assumed diagram type: sequence)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
-        "id": "svg-unknown/torazi-09-gago377"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-10-10",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 13, \"Element already in another group. (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
-    },
-    {
-      "match": {
-        "id": "svg-unknown/zeceme-22-rade890"
-      },
-      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
-      "acceptedAt": "2026-10-10",
-      "acceptedBy": "maintainer",
-      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 6, \"Cannot nest group (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it."
     },
     {
       "match": {
@@ -1159,6 +1123,54 @@
       "reason": "ORIGINAL (2026-10-10): Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 8, \"No group to be closed (Assumed diagram type: gantt)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it. -- RETIRED (2026-10-26): the ported gantt engine (feat/gantt-engine-port, T7c merge e3b9bf4de) now errors where the jar errors, so the row is conformant by the 2026-10-10 error-page rule; the emitter ledger gate flagged it as closed by a fix.",
       "retiredAt": "2026-10-26",
       "retiredBy": "gep b7 turn-on (orchestrator; user review at squash)"
+    },
+    {
+      "match": {
+        "id": "svg-unknown/jifoke-84-jude859"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-10-10",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 40, \"Syntax Error? (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
+      "retiredAt": "2026-11-10",
+      "retiredBy": "nwdiag-engine-port T3a, unsigned: the maintainer signs at review (#124)",
+      "retiredReason": "The nwdiag engine (nwdiag-engine-port T3a, commit 6eac1ddfc) now parses this source and refuses it at the same command with the jar's own message, so the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone. Pinned by score in oracle/goldens/svg-nwdiag/diff-baseline.json."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/ligalo-62-suvu444"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-10-10",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 3, \"Syntax Error? (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
+      "retiredAt": "2026-11-10",
+      "retiredBy": "nwdiag-engine-port T3a, unsigned: the maintainer signs at review (#124)",
+      "retiredReason": "The nwdiag engine (nwdiag-engine-port T3a, commit 6eac1ddfc) now parses this source and refuses it at the same command with the jar's own message, so the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone. Pinned by score in oracle/goldens/svg-nwdiag/diff-baseline.json."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/torazi-09-gago377"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-10-10",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 13, \"Element already in another group. (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
+      "retiredAt": "2026-11-10",
+      "retiredBy": "nwdiag-engine-port T3a, unsigned: the maintainer signs at review (#124)",
+      "retiredReason": "The nwdiag engine (nwdiag-engine-port T3a, commit 6eac1ddfc) now parses this source and refuses it at the same command with the jar's own message, so the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone. Pinned by score in oracle/goldens/svg-nwdiag/diff-baseline.json."
+    },
+    {
+      "match": {
+        "id": "svg-unknown/zeceme-22-rade890"
+      },
+      "scope": "svg-conformance unknown ledger (jar errors, we draw -- ruling 2026-10-10)",
+      "acceptedAt": "2026-10-10",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 6, \"Cannot nest group (Assumed diagram type: nwdiag)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
+      "retiredAt": "2026-11-10",
+      "retiredBy": "nwdiag-engine-port T3a, unsigned: the maintainer signs at review (#124)",
+      "retiredReason": "The nwdiag engine (nwdiag-engine-port T3a, commit 6eac1ddfc) now parses this source and refuses it at the same command with the jar's own message, so the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone. Pinned by score in oracle/goldens/svg-nwdiag/diff-baseline.json."
     }
   ]
 }

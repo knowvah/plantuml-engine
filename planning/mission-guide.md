@@ -286,24 +286,25 @@ but the layout step should call the same infrastructure.
 
 ## Phase 4f — Network Diagram (nwdiag)
 
-**Java source:** `nwdiag/`
+**DONE** by nwdiag-engine-port (#124, 2026-11-10); see `planning/next-missions.md`.
 
-**Reuse:** `src/core/svg.ts`; `src/core/theme.ts`. No graph engine — built-in
-row-based layout.
+**Java source:** `nwdiag/` (root commands, `core/` model, `next/` layout and drawing).
 
-**Architecture constraint:** Networks render as horizontal rows; devices render
-as column nodes placed on the network rows they belong to. A device can appear
-on multiple networks (vertical connection across rows).
+**Reuse:** klimt, `TitledDiagram`, `USymbols` for server shapes. No graph engine: nwdiag lays out its own grid.
+
+**Architecture constraint:** each network is a stage (a grid line). Each server is an `NBar` spanning the stages it
+joins, packed into columns by `NTetris` over a `BooleanGrid`. A group is one `NBox`. The layout is columns of server
+cells in a networks × servers grid (`GridTextBlockDecorated`), not row-based nodes.
 
 **Watch-outs:**
-- `network` blocks with named networks
-- `address` attribute per device-per-network
-- Devices shared across multiple networks (multi-row placement)
-- `group` blocks with color fills
+- `network` blocks, named or nameless (a null name draws no text)
+- `address` per device per network; an unquoted property value keeps a trailing `;` (`CommandProperty`)
+- Devices shared across multiple networks (one bar over several stages)
+- `group` blocks with color fills and description headers
 - `color` attribute on networks and devices
 - `description` labels on network rows
-- `rack` / `rackdiag` variant — a completely separate visual mode
-  (rack units, components stacked vertically)
+- No `rack` / `rackdiag` engine exists upstream: `grep -rli rackdiag ~/git/plantuml/src/main/java/net` finds only
+  `packetdiag/readme.md`
 - `packetdiag` prefix shares the same Java package — keep separate
 
 ---

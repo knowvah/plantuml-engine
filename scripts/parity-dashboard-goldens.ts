@@ -37,7 +37,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   chart: ['svg-chart'],
   packet: ['svg-packet'],
   board: ['svg-board'],
-  unknown: ['svg-utility', 'svg-description', 'svg-activity-legacy'],
+  // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
+  unknown: ['svg-utility', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag'],
   network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],
@@ -54,7 +55,8 @@ export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> =
   salt: ['svg-salt'],
   wbs: ['svg-wbs'],
   gantt: ['svg-gantt'],
-  unknown: ['svg-utility', 'svg-description'],
+  // nwp D7: the 4 nwdiag jar-error rows, pinned by score.
+  unknown: ['svg-utility', 'svg-description', 'svg-nwdiag'],
 };
 
 /** `oracle/goldens/svg-*` families that are NOT one bucket's pins, each with

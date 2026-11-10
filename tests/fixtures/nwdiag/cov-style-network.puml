@@ -1,0 +1,14 @@
+@startnwdiag
+<style>
+nwdiagDiagram {
+  network { Shadowing 3 }
+  server { RoundCorner 10 }
+  document { BackGroundColor #EEEEFF }
+}
+</style>
+nwdiag {
+  network dmz {
+    web01;
+  }
+}
+@endnwdiag

@@ -1,0 +1,16 @@
+@startnwdiag
+nwdiag {
+  network a {
+    s1;
+    s2;
+    s3;
+  }
+  network b {
+    width = full
+    s2;
+  }
+  network c {
+    s3;
+  }
+}
+@endnwdiag

@@ -1,0 +1,8 @@
+@startnwdiag
+nwdiag {
+  network dmz {
+    description = "<b>Bold</b> <i>net</i>"
+    web01;
+  }
+}
+@endnwdiag

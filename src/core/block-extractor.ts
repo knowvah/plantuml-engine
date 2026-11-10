@@ -38,6 +38,7 @@ export type DiagramType =
   | 'chronology'
   | 'files'
   | 'packetdiag'
+  | 'nwdiag'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -153,6 +154,7 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   chronology: 'chronology',
   files: 'files',
   packetdiag: 'packetdiag',
+  nwdiag: 'nwdiag',
   chart: 'chart',
   dot: 'dot',
 };
@@ -376,7 +378,7 @@ export function finalizeBlock(
 /**
  * This port's plugin type -> upstream's enum member. Total in that direction:
  * every type in this port's union has an upstream counterpart. The reverse is
- * NOT true -- upstream's enum has 39 members and this port registers 14
+ * NOT true -- upstream's enum has 39 members and this port registers 15
  * engines, so most of it maps to nothing here (D5's "the enum is the spec; a
  * missing engine is this port's gap").
  *
@@ -403,6 +405,7 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   chronology: UpstreamDiagramType.CHRONOLOGY,
   files: UpstreamDiagramType.FILES,
   packetdiag: UpstreamDiagramType.PACKET,
+  nwdiag: UpstreamDiagramType.NWDIAG,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

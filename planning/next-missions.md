@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## nwdiag-engine-port (nwp) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #124; per-task history on the local tag `nwdiag-engine-port/pre-squash`)
+
+`src/diagrams/nwdiag/` is a file-for-file port of `net/sourceforge/plantuml/nwdiag/` on klimt (root commands, `core/` model, `next/` layout and drawing), registered at `PSystemBuilder.java:155`. All 68 `@startnwdiag` rows are conformant: 64 byte-identical and pinned in `svg-nwdiag`, and 4 jar error pages where we also error, pinned by score. `unknown` went from 864/4/180 to 932/4/112. There are 57 authored fixtures in `tests/fixtures/nwdiag`: 51 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. The four signed "jar errors, we draw" acceptances for those rows moved to `retired`, unsigned; #165 asks for the maintainer's confirmation.
+
+Follow-ons:
+
+1. **Klimt factories crash where the jar reports an execution error.** Upstream wraps every command in `ProtectedCommand` (`AbstractDiagram.java:174`, `ProtectedCommand.java:54-77`), so a `Throwable` becomes `error("You should send a mail … " + t)` at the command's line. Only `NwDiagramFactory#protectedDispatch` mirrors it. Packet, chart and board let the throw escape and draw a whole-source crash page. Error pairs either way, so no gate sees it (`.agent-notes/nwp-T3a.md`).
+2. **The empty-source Welcome page** names line 1 and omits the `@end` line from the echoed source. The jar names line 2 (`PSystemCommandFactory.java:116-120`). This is shared by every klimt engine and is an error pair.
+3. **Scaled chrome text rounds twice** (bep follow-on 1) is fixed for nwdiag by board's `numbersDeferred` shape (`cov-legend-scale-2`). Packet, chart, mindmap, wbs, salt and gantt still carry it.
+
 ## style-colour-reads (scr) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #122; per-task history on the local tag `style-colour-reads/pre-squash`)
 
 dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagram-style-scope/`, pinned): 15 open in 4 families, all to 0. Kermor group note as `EntityImageNoteLink` (T1a), state arrow `HeadColor` off the merged arrow style (T1b), state notes under `skinparam noteBackgroundColor` (T1c), sequence `FontColor transparent` measured but not drawn (T1d). dss rows `1172 open 39` (54 at T0). 0 verdict movers in every engine vs `8fe32c695`; no corpus row was open on these mechanisms. `dist/*.d.ts` identical.
@@ -226,7 +236,7 @@ the brief, by user ruling (D7): chrome blocks paint an inherited gradient, and
 gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
-1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
+1. **Unported engines' document background** — timing, ebnf and regex. ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. Arrives with each port.
 2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).

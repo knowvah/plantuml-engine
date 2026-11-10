@@ -1,0 +1,8 @@
+@startnwdiag
+skinparam reversecolor dark
+nwdiag {
+  network dmz {
+    web01;
+  }
+}
+@endnwdiag

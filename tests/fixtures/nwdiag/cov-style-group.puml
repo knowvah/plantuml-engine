@@ -1,0 +1,23 @@
+@startnwdiag
+<style>
+nwdiagDiagram {
+  group {
+    FontColor white
+    FontSize 15
+    BackGroundColor navy
+    LineColor orange
+  }
+}
+</style>
+nwdiag {
+  group {
+    description = "Group header"
+    web01;
+    web02;
+  }
+  network dmz {
+    web01;
+    web02;
+  }
+}
+@endnwdiag

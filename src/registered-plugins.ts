@@ -38,6 +38,7 @@ import { mindmapPlugin } from './diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from './diagrams/openiconic/PSystemListOpenIconicFactory.js';
 import { openIconicPlugin } from './diagrams/openiconic/PSystemOpenIconicFactory.js';
 import { packetdiagPlugin } from './diagrams/packetdiag/index.js';
+import { nwdiagPlugin } from './diagrams/nwdiag/index.js';
 import { saltPlugin } from './diagrams/salt/index.js';
 import { sequencePlugin } from './diagrams/sequence/index.js';
 import { statePlugin } from './diagrams/state/index.js';
@@ -80,6 +81,7 @@ function registerUmlRun(registry: PluginRegistrar): void {
 function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(saltPlugin); // java:153
   registry.register(dotPlugin); // java:154
+  registry.register(nwdiagPlugin); // java:155
   registry.register(mindmapPlugin); // java:156
   registry.register(wbsPlugin); // java:157
   registry.register(chartPlugin); // java:158

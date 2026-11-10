@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2238 modules · 7756 exported names.
+2266 modules · 7808 exported names.
 
 ## `src/`
 
@@ -2444,8 +2444,46 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `NwDiagram.ts` | `NwDiagram` | NwDiagram — only the static `toSet` attribute parser, which `packetdiag`'s `CommandNumRange` calls (`CommandNumRange.java:118`). |
+| `CommandComment.ts` | `COMMENT_RE`, `applyComment` | `CommandComment`: a `//` line, ignored. |
+| `CommandElement.ts` | `ELEMENT_RE`, `applyElement` | `CommandElement`: a server name, an optional `[definition]`, an optional `;`. |
+| `CommandEndSomething.ts` | `END_SOMETHING_RE`, `applyEndSomething` | `CommandEndSomething`: `}` closes the innermost open block. |
+| `CommandGroup.ts` | `GROUP_RE`, `applyGroup` | `CommandGroup`: `group`, an optional name, then `{`. |
+| `CommandLink.ts` | `LINK_RE`, `applyLink` | `CommandLink`: `a -- b`, an optional `;`. |
+| `CommandNetwork.ts` | `NETWORK_RE`, `applyNetwork` | `CommandNetwork`: `network`, an optional name, then `{`. |
+| `CommandNwDiagInit.ts` | `NWDIAG_INIT_RE`, `applyNwDiagInit` | `CommandNwDiagInit`: an optional `nwdiag`, then an optional `{`. |
+| `CommandProperty.ts` | `PROPERTY_RE`, `applyProperty` | `CommandProperty`: `address`, `color`, `width` or `description`, `=`, then a value. |
+| `index.ts` | `NwdiagGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderNwdiag`, `nwdiagPlugin` | Nwdiag plugin — `NwDiagramFactory` (parse), then `TextBlockExporter`'s export of `NwDiagram#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` (NwDiagram.java:334-340) plus `calculateMargin` (`none()` by de |
+| `nwdiag-command-text.ts` | `SP0`, `concat`, `group` | The regex leaves the nwdiag commands share. |
+| `nwdiag-klimt.ts` | `NwdiagSName`, `nwdiagStyle`, `fore`, `back`, `paintOf`, `symbolContextOf`, `SpriteSeam`, `createDisplay` | PORT-ONLY — the three klimt seams every nwdiag class crosses, kept in one place so each ported method reads as its Java line does: - `StyleSignatureBasic.of(root, element, nwdiagDiagram, sname) .getMergedStyle(skinParam.getCurrentStyleBuild |
+| `nwdiag-skin-param.ts` | `SkinParamSource`, `SkinParam` | The nwdiag engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `NwDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine's |
+| `NwDiagram.ts` | `NwDiagram` | NwDiagram — one `@startnwdiag` block: networks (one stage each), servers joined to them, groups of servers, and the stack of open `network`/`group` blocks the commands push and pop. |
+| `NwDiagramFactory.ts` | `parseNwdiag` | `NwDiagramFactory`: `CommonCommands.addCommonCommands1` first, then the nwdiag commands and `CommandFootboxIgnored` in `initCommandsList` order, then `finalizeDiagram`'s `makeDiagramReady`. |
 | `VerticalLine.ts` | `VerticalLine` | VerticalLine — a vertical `UPath` from `y1` to `y2` at x = 0, broken by an arc around each `skip` ordinate (a network bus crossing it). |
+
+## `src/diagrams/nwdiag/core/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `Network.ts` | `Network` | Network — one horizontal bus: its stage, its name or description, its own address, its colour and the x range the grid fills in at draw time. |
+| `NServer.ts` | `NServer` | NServer — one element: its connections (network → address, in `LinkedHashMap` order), its shape, description and colour, and the bar that spans the stages it joins. |
+| `NStackable.ts` | `NStackable` | NStackable — what `NwDiagram`'s open-block stack holds: a network or a group. |
+| `NwGroup.ts` | `NwGroup` | NwGroup — a named set of servers drawn as one box behind them, with an optional description as its header. |
+
+## `src/diagrams/nwdiag/next/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `BooleanGrid.ts` | `BooleanGrid` | BooleanGrid — the burned cells of a Tetris packing, keyed `x + (y << 16)`. |
+| `GridTextBlockDecorated.ts` | `NETWORK_THIN`, `GridTextBlockDecorated` | GridTextBlockDecorated — the grid with its decoration drawn first: every group's box, every network's tube, then every server's links. |
+| `GridTextBlockSimple.ts` | `GridTextBlockSimple` | GridTextBlockSimple — the networks × columns grid of server cells: a column as wide as its widest cell, a line as tall as its tallest (at least 50). |
+| `NBar.ts` | `NBar` | NBar — a server's vertical extent: the stages of the networks it joins. |
+| `NBox.ts` | `NBox` | NBox — bars packed together as one block: a single server, or a group. |
+| `NPlayField.ts` | `NPlayField` | NPlayField — the stages (one per network) and the boxes packed across them. |
+| `NServerDraw.ts` | `NServerDraw` | NServerDraw — one server in one grid cell: its box centred, the link up to its main network with that link's address, and one link down to each other network it joins, spaced `seven` apart. |
+| `NStage.ts` | `NStage` | NStage — one row of the nwdiag play field: a network's ordinal. |
+| `NTetris.ts` | `NTetris` | NTetris — packs `Staged` elements into the leftmost free column run. |
+| `NwArray.ts` | `NwArray` | NwArray — the networks × columns grid of server cells. |
+| `Staged.ts` | `Staged` | Staged — anything that spans a range of stages and a number of columns. |
 
 ## `src/diagrams/openiconic/`
 

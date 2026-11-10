@@ -1,0 +1,13 @@
+@startnwdiag
+nwdiag {
+  group {
+    web01;
+    web02;
+  }
+  network dmz {
+    web01;
+    web02;
+    web03;
+  }
+}
+@endnwdiag

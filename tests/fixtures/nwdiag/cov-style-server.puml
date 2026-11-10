@@ -1,0 +1,27 @@
+@startnwdiag
+<style>
+nwdiagDiagram {
+  server {
+    FontColor green
+    FontSize 14
+    FontStyle bold
+    LineColor red
+    LineThickness 2
+    BackGroundColor lightblue
+    Shadowing 3
+    RoundCorner 10
+  }
+}
+</style>
+nwdiag {
+  network dmz {
+    address = "210.x.x.x/24"
+    web01 [address = "210.x.x.1"];
+    web02 [address = "210.x.x.2"];
+  }
+  network internal {
+    web01 [address = "172.x.x.1"];
+    db01;
+  }
+}
+@endnwdiag

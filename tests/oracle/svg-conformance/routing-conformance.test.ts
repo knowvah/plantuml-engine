@@ -800,7 +800,9 @@ describe('routing conformance — jar-error classification', () => {
     // 10198 -> 10200 at laep/T3b-2 (2026-11-07): the 2 swimlane rows flip to agree. Derivation: 10198 + 2 = 10200.
     // 10200 -> 10201 at laep/T3b-4 (2026-11-07): radute-87-nize199 flips to agree. Derivation: 10200 + 1 = 10201.
     // 10201 -> 10325 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones of agree rows. Derivation: 10201 + 124 = 10325.
-    expect(pinnedAgree.length).toBe(10325);
+    // 10325 -> 10453 at nwp/T4 (2026-11-10): the 64 nwdiag rows flip to agree, plus their 64 svg-nwdiag golden
+    // clones. Derivation: 10325 + 64 + 64 = 10453.
+    expect(pinnedAgree.length).toBe(10453);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -820,7 +822,9 @@ describe('routing conformance — jar-error classification', () => {
     // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows. Derivation: 367 - 4 = 363.
     // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows. Derivation: 363 - 2 = 361.
     // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row. Derivation: 361 - 1 = 360.
-    expect(pinnedMisroutes.length).toBe(360);
+    // 360 -> 296 at nwp/T4 (2026-11-10): the 64 nwdiag rows flip to agree (NwDiagramFactory registered at
+    // PSystemBuilder.java:155). Derivation: 360 - 64 = 296.
+    expect(pinnedMisroutes.length).toBe(296);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -919,7 +923,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10713 -> 10714 at aar/T6a (2026-11-06): +1 svg-activity golden clone (dovoda-34, conformant since b0, pinnable once the ratchet renders with the survey's asset store), rendering.
     // 10714 -> 10723 at aar/T6a (2026-11-06): +9 svg-activity golden clones, all rendering.
     // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
-    expect(manifest.fixtures.length).toBe(10847);
+    // 10847 -> 10911 at nwp/T4 (2026-11-10): +64 svg-nwdiag golden clones, all agree. Derivation: 10847 + 64 = 10911.
+    expect(manifest.fixtures.length).toBe(10911);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1006,7 +1011,8 @@ describe('routing conformance — jar-error classification', () => {
     // 367 -> 363 at laep/T3b-1 (2026-11-07): the same 4 rows.
     // 363 -> 361 at laep/T3b-2 (2026-11-07): the same 2 rows.
     // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row.
-    expect(censused.length).toBe(360);
+    // 360 -> 296 at nwp/T4 (2026-11-10): the 64 nwdiag rows flip to agree.
+    expect(censused.length).toBe(296);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);
