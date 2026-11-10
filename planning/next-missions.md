@@ -35,13 +35,23 @@ post-D7 measurements.
 
 ---
 
+## regex-engine-port (rep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #126; per-task history on the local tag `regex-engine-port/pre-squash`)
+
+`src/diagrams/regex/` is a file-for-file port of `net/sourceforge/plantuml/regexdiagram/` (all nine classes) on the tiles of `src/diagrams/ebnf/`, registered at `PSystemBuilder.java:197`. `StyleExtractor#applyStyles` went to its upstream home `src/diagrams/json/StyleExtractor.ts`, so the tile style is frozen in the constructor from the skin and `<style>` blocks before any `skinparam` runs (`PSystemRegex.java:82-97`). The preprocessor now hands its artifact's warnings to the diagram beside its options (`PreprocessorResult.warnings`), so `No such !option foo` draws as the jar's does. All 46 `@startregex` rows are conformant: 44 byte-identical and pinned in `svg-regex`, and `bakuza-41-bulo451` and `tajefa-31-pefi801`, jar error pages where we now also error, pinned by score. Overall 5,468 → 5,514 conformant of 5,927. 94 authored fixtures in `tests/fixtures/regex`: 74 at 0 diffs and 20 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. The two signed "jar errors, we draw" acceptances moved to `retired`, unsigned; #167 asks for the maintainer's confirmation (with #165, #166).
+
+Follow-ons:
+
+1. **Preprocessor warnings in the other engines.** Only `regex/index.ts#preprocessingArtifactOf` adds `styleSource.warnings`; every engine that rebuilds its artifact from `styleSource.options` (ebnf, nwdiag, board, …) still drops `No such !option` / `No default value for` (`.agent-notes/rep-T3a.md`). No corpus row outside regex shows it today.
+2. **The gates' 4096-byte golden head** misreads 46 Welcome-style jar error pages as jar-rendered (`PSystemError.java:217-218` puts the banner at byte ~5353): `refusal-coverage-gate.ts` and `routing-conformance-gate.ts`. Rows are pinned `known-gap` with the mechanism (wbs, regex precedent); raising `HEAD_BYTES` would reclassify all 46 (`.agent-notes/rep-T3a.md`).
+3. **A `ProtectedCommand` page names the Java class** (eep follow-on 2) shows in eight regex fixtures (`NoSuchElementException`, `IllegalStateException`, `IndexOutOfBoundsException`): error pairs either way.
+
 ## ebnf-engine-port (eep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #125; per-task history on the local tag `ebnf-engine-port/pre-squash`)
 
 `src/diagrams/ebnf/` is a file-for-file port of `net/sourceforge/plantuml/ebnf/` (all 32 classes, the five regex-only tiles included) on klimt, registered at `PSystemBuilder.java:196`. Its seams went to their upstream homes: `CharInspector`/`CharInspectorImpl` and `I18n` (with the eight `i18n*.properties` bundles) in `src/core/utils/`, `UBrexCommandMultilines2` in `src/core/command/`, `FloatingNote` in `src/diagrams/activity/ftile/vcompact/`, and `UText#getDescent`/`#calculateDimension`. All 44 `@startebnf` rows are conformant: 43 byte-identical and pinned in `svg-ebnf`, and `ladifa-97-keme950`, a jar error page where we now also error, pinned by score. `class/vamero-64-fore412` (`{{ebnf}}` in a component) moved to conformant. Overall 5,423 → 5,468 conformant of 5,927. 70 authored fixtures in `tests/fixtures/ebnf`: 64 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. `ladifa`'s signed "jar errors, we draw" acceptance moved to `retired`, unsigned; #166 asks for the maintainer's confirmation (with #165).
 
 Follow-ons:
 
-1. **Regex engine (#126)** can now import the tiles from `src/diagrams/ebnf/` (`ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`, `ETileRegexGroupAllBut`, `ETileLookAheadOrBehind` are tested against cached regex rows), `UBrexCommandMultilines2` and `I18n`; it needs its own layering allowlist entry, as `src/diagrams/ebnf/` → `src/diagrams/activity/ftile/` has.
+1. ~~**Regex engine (#126)**~~ DONE by regex-engine-port (#126). It can now import the tiles from `src/diagrams/ebnf/` (`ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`, `ETileRegexGroupAllBut`, `ETileLookAheadOrBehind` are tested against cached regex rows), `UBrexCommandMultilines2` and `I18n`; it needs its own layering allowlist entry, as `src/diagrams/ebnf/` → `src/diagrams/activity/ftile/` has.
 2. **A `ProtectedCommand` page names the Java class.** The jar prints `t.toString()` (`java.lang.IllegalStateException`), the port the thrown `Error`'s message (`IllegalStateException`), in nwdiag's and EBNF's `protectedMessage`. An error pair either way (`cov-unterminated`).
 3. **The empty-source Welcome page** (nwp follow-on 2) shows in `tests/fixtures/ebnf/cov-empty` too.
 
@@ -246,7 +256,7 @@ the brief, by user ruling (D7): chrome blocks paint an inherited gradient, and
 gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
-1. **Unported engines' document background** — timing and regex. ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. ~~ebnf~~ DONE by ebnf-engine-port (#125): `ebnf: 'ebnf'` (java:280-281). Arrives with each port.
+1. **Unported engines' document background** — timing. ~~regex~~ DONE by regex-engine-port (#126): `regex: 'regex'` (java:283-284). ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. ~~ebnf~~ DONE by ebnf-engine-port (#125): `ebnf: 'ebnf'` (java:280-281). Arrives with each port.
 2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).

@@ -171,6 +171,25 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'path (mission ebnf-engine-port D3).',
   },
   {
+    from: 'src/diagrams/regex/',
+    to: 'src/diagrams/ebnf/',
+    why:
+      'upstream PSystemRegex.java:50-61 imports twelve classes from ' +
+      'net.sourceforge.plantuml.ebnf (ETile, ETileAlternation, ETileBox, ' +
+      'ETileConcatenation, ETileLookAheadOrBehind, ETileNamedGroup, ETileOneOrMore, ' +
+      'ETileOptional2, ETileRegexGroup, ETileRegexGroupAllBut, ETileZeroOrMore, ' +
+      'Symbol) -- the regex railroad IS the ebnf tile set (mission regex-engine-port D1).',
+  },
+  {
+    from: 'src/diagrams/regex/',
+    to: 'src/diagrams/json/',
+    why:
+      'upstream PSystemRegex.java:62 imports ' +
+      'net.sourceforge.plantuml.jsondiagram.StyleExtractor and its constructor calls ' +
+      'applyStyles (PSystemRegex.java:84-91) -- kept at its upstream home ' +
+      '(mission regex-engine-port D3).',
+  },
+  {
     from: 'src/diagrams/wbs/',
     to: 'src/diagrams/activity/ftile/',
     why:

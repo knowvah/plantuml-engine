@@ -1,0 +1,5 @@
+@startregex
+scale 2
+footer The footer
+a(b|c)+\d
+@endregex

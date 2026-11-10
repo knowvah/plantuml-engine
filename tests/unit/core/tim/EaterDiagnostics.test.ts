@@ -46,6 +46,7 @@ describe('EaterOption', () => {
         addWarning: vi.fn(),
         getOption: () => ({ define }),
         getOptions: () => new Map(),
+        getWarnings: () => [],
       }),
     });
     new EaterOption(new StringLocated('!option language "fr"', LOC)).analyze(ctx, memory);
@@ -60,6 +61,7 @@ describe('EaterOption', () => {
         addWarning: vi.fn(),
         getOption: () => ({ define }),
         getOptions: () => new Map(),
+        getWarnings: () => [],
       }),
     });
     new EaterOption(new StringLocated('!option handwritten', LOC)).analyze(ctx, memory);
@@ -74,6 +76,7 @@ describe('EaterOption', () => {
         addWarning,
         getOption: () => ({ define: vi.fn() }),
         getOptions: () => new Map(),
+        getWarnings: () => [],
       }),
     });
     new EaterOption(new StringLocated('!option notarealkey', LOC)).analyze(ctx, memory);
@@ -88,6 +91,7 @@ describe('EaterOption', () => {
         addWarning,
         getOption: () => ({ define: vi.fn() }),
         getOptions: () => new Map(),
+        getWarnings: () => [],
       }),
     });
     new EaterOption(new StringLocated('!option language', LOC)).analyze(ctx, memory);

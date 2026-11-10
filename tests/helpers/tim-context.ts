@@ -69,6 +69,7 @@ export function fakeContext(overrides: Partial<TContext> = {}): TContext {
       addWarning: () => undefined,
       getOption: () => ({ define: () => undefined }),
       getOptions: () => new Map(),
+      getWarnings: () => [],
     }),
     ...overrides,
   };

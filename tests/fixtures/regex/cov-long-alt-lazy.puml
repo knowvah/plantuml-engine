@@ -1,0 +1,3 @@
+@startregex
+(a|bb|ccc|dddd)+?e
+@endregex

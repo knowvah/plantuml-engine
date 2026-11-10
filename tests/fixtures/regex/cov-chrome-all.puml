@@ -1,0 +1,10 @@
+@startregex
+title The Title
+caption The caption
+legend
+A legend
+endlegend
+header The header
+footer The footer
+a(b|c)*
+@endregex

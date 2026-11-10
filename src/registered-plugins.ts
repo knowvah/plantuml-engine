@@ -33,6 +33,7 @@ import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from './diagrams/files/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
+import { regexPlugin } from './diagrams/regex/index.js';
 import { hclPlugin } from './diagrams/hcl/index.js';
 import { jsonPlugin } from './diagrams/json/index.js';
 import { mindmapPlugin } from './diagrams/mindmap/index.js';
@@ -100,6 +101,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(yamlPlugin); // java:194
   registry.register(hclPlugin); // java:195
   registry.register(ebnfPlugin); // java:196
+  registry.register(regexPlugin); // java:197
 }
 
 // Registration order IS upstream's factory order (`PSystemBuilder.java:133-200`),

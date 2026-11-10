@@ -1,0 +1,4 @@
+@startregex
+scale 2
+a[bc]+d
+@endregex

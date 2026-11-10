@@ -1,0 +1,8 @@
+@startuml
+class A
+note right of A
+{{regex
+(ab|c)*[d-f]
+}}
+end note
+@enduml

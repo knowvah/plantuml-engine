@@ -1,0 +1,9 @@
+@startregex
+<style>
+element {
+  LineColor green
+  RoundCorner 0
+}
+</style>
+a(b|c)+\d
+@endregex

@@ -1,0 +1,950 @@
+{
+  "fixtures": [
+    {
+      "type": "regex",
+      "slug": "cov-alt-in-lookbehind",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-anchor-between",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-anchors-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-backref",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-bad-quantifier",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {x} (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-blank-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-empty",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {} (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-empty-both",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-empty-min",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-overflow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-three",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-braced-unclosed",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {12 (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-caption-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-footer-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-header-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-legend-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-chrome-title-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-creole-bold",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-creole-html",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-descriptive-names",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-descriptive-names-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-descriptive-names-de",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-descriptive-names-fr",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-descriptive-names-zh-cn",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-document-margin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-email",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-embedded-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-escape-truncated",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Unexpected end of data (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-escaped-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-empty",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0 (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-escaped-close",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-leading-dash",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-not-empty",
+      "status": "baseline",
+      "weightedScore": 326,
+      "diffCount": 126,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException: height=0.0"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-posix-inside",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-ranges",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-group-trailing-dash",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-lazy",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {2,3}? (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-long-alt-lazy",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-lookahead-in-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-lookbehind-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-merge-boxes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-merge-into-concat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-mode-dark-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-multi-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-named-empty",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-neg-noncap",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-nested-alt",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-nested-quant",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-posix-all",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-pragma-compact",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-quant-on-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-quant-on-lookahead",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-quant-on-named",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-quote-escape",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-reversecolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-background",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-fontcolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-fontname",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-linethickness",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-roundcorner",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-element-shadowing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-style-regex",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-theme",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-theme-sketchy",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-title-only",
+      "status": "baseline",
+      "weightedScore": 297,
+      "diffCount": 123,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.ebnf.ETile.calculateDimension(net.sourceforge.plantuml.klimt.font.StringBounder)\" because \"this.val$peekFirst\" is null"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-titlex",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-two-lines-last-error",
+      "status": "baseline",
+      "weightedScore": 75,
+      "diffCount": 36,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Error parsing: Bad quantifier {x} (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unbalanced-close",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unbalanced-open",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: PARENTHESIS_OPEN[(] (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unclosed-comment",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Unclosed comment (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unclosed-named",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-underflow-alt",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-underflow-star",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unicode-brace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unicode-is-latin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unicode-text",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-unicode-unclosed",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Unexpected end of data (Assumed diagram type: regex)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "cov-whitespace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    }
+  ]
+}

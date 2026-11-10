@@ -1,0 +1,5 @@
+@startregex
+abc
+
+x|y
+@endregex

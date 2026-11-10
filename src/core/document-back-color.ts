@@ -30,8 +30,7 @@ import type { Value } from './style/Value.js';
 
 /**
  * `getStyleName`'s branches for the engines this port routes
- * (`block-extractor.ts#DiagramType`). `REGEX` (java:283-284) has no member in
- * that union.
+ * (`block-extractor.ts#DiagramType`).
  */
 const STYLE_NAMES: Readonly<Partial<Record<DiagramType, SName>>> = {
   sequence: 'sequenceDiagram', // java:235-236
@@ -50,6 +49,7 @@ const STYLE_NAMES: Readonly<Partial<Record<DiagramType, SName>>> = {
   timing: 'timingDiagram', // java:274-275
   nwdiag: 'nwdiagDiagram', // java:277-278
   ebnf: 'ebnf', // java:280-281
+  regex: 'regex', // java:283-284
   chronology: 'ganttDiagram', // java:286-287
   chart: 'chartDiagram', // java:289-290
   packetdiag: 'packetdiagDiagram', // java:292-293

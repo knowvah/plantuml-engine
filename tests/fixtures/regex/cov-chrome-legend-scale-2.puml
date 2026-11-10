@@ -1,0 +1,7 @@
+@startregex
+scale 2
+legend
+A legend
+endlegend
+a(b|c)+\d
+@endregex

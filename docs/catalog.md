@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2310 modules · 7877 exported names.
+2323 modules · 7912 exported names.
 
 ## `src/`
 
@@ -2464,7 +2464,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `renderer-pen.ts` | `PenInk`, `JsonPen`, `penFor` | The seam between "which shapes this diagram draws" and "how they are drawn". |
 | `renderer-style.ts` | `BoxStyleJson`, `TextStyleJson`, `CellPaint`, `ArrowStyleJson`, `NodeStyleJson`, `SVG_CORNER_DIVISOR`, `JSON_SKIN_BLACK`, `resolveNodeStyle` | The json family's styles, read once per diagram into plain values the renderer only draws with. |
 | `renderer.ts` | `renderJson` | JSON diagram SVG renderer. |
-| `StyleExtractor.ts` | `StyleExtractor`, `extractStyle`, `payloadOf`, `upstreamSourceLines` | Port of upstream's `StyleExtractor` -- the json family's ONLY directive handling. |
+| `StyleExtractor.ts` | `StyleExtractor`, `extractStyle`, `payloadOf`, `upstreamSourceLines`, `skinErrorOf`, `applyDeclarations`, `AppliedStyles`, `applyStyles` | Port of upstream's `StyleExtractor` -- the json family's ONLY directive handling. |
 | `tab-stops.ts` | `tabString`, `tabStopWidth`, `TabToken`, `splitOnTabs`, `hasTab`, `tabAwareWidth`, `TabRun`, `walkTabs` | `\t` inside a drawn cell — tab-stop expansion, ported from `AtomText` (`klimt/creole/legacy/AtomText.java`). |
 | `text-block-style.ts` | `CellFont`, `CellMeasure`, `RowMeasure`, `cellMeasureOf`, `rowMeasureOf` | The measuring half of `TextBlockJson#getTextBlock`: the font and wrap width a cell is built with come from the cell's own merged `Style` (`getStyleToUse`), not from one diagram-wide font. |
 | `TextBlockJson.ts` | `JsonRowGeo`, `CellAtom`, `MeasuredNode`, `buildRows`, `measureNode` | Node sizing for the json family — the port of upstream's `TextBlockJson`. |
@@ -2573,6 +2573,24 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandScaleDirection.ts` | `SCALE_DIRECTION_RE`, `applyScaleDirection` | `CommandScaleDirection`: `scale_direction = ltr\|rtl`. |
 | `CommandScaleInterval.ts` | `SCALE_INTERVAL_RE`, `applyScaleInterval` | `CommandScaleInterval`: `scale_interval = N`, how often a bit is numbered. |
 | `packet-command-text.ts` | `JAVA_S`, `JAVA_DOT`, `SP0`, `parseJavaInt`, `directive` | The regex fragments and Java text helpers the packet commands share. |
+
+## `src/diagrams/regex/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandRegexfSingleLine.ts` | `CommandRegexfSingleLine` | `CommandRegexfSingleLine`: any line, handed to `PSystemRegex#addBlocLines` as one `StringLocated`. |
+| `GroupSplitter.ts` | `GroupSplitter` | `GroupSplitter`: splits the text of a `[…]` group into the items `ETileRegexGroup` draws — a range `a-z`, an escape (`\s` kept, `\]` reduced to `]`), or one character. |
+| `index.ts` | `RegexGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderRegex`, `regexPlugin` | Regex plugin — `PSystemRegexFactory` (parse), then `TextBlockExporter`'s export of `PSystemRegex#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` plus `calculateMargin` (`TitledDiagram`'s `same(10)` by de |
+| `PSystemRegex.ts` | `PSystemRegex`, `parseBracedMin`, `parseBracedMax`, `isBracedMaxUnbounded` | `PSystemRegex`: one `@startregex` block. |
+| `PSystemRegexFactory.ts` | `initCommandsList`, `parseRegex` | `PSystemRegexFactory`: `CommonCommands.addCommonCommands1` first, then `CommandRegexfSingleLine`, and `PSystemCommandFactory#createSystem`'s per-line loop over them. |
+| `regex-common-commands.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `PSystemRegexFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `regex-skin-param.ts` | `SkinParam`, `SkinParamSource`, `tileStyleBuilder` | The regex engine's `SkinParam`, and the style its tiles freeze in `PSystemRegex`'s constructor. |
+| `regex-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `RegexExpression.ts` | `parse`, `RegexExpression` | `RegexExpression`: the regex tokenizer. |
+| `RegexParsingException.ts` | `RegexParsingException` | `RegexParsingException`: a checked exception in Java, a named `Error` here so `PSystemRegex#addBlocLines` can tell it from any other throw (an `Error parsing: …` result rather than `ProtectedCommand`'s message). |
+| `ReToken.ts` | `ReToken` | `ReToken`: one regex lexeme, a {@link ReTokenType} and its text. |
+| `ReTokenType.ts` | `ReTokenType`, `isNamedGroupOrLookAheadOrLookBehind`, `needImplicitConcatenation` | `ReTokenType`: the kinds of regex token, in Java's declaration order. |
+| `ShuntingYard.ts` | `ShuntingYard` | `ShuntingYard`: the regex engine's own shunting yard (not ebnf's), from the implicitly concatenated tokens to the postfix queue `PSystemRegex#addBlocLines` replays. |
 
 ## `src/diagrams/salt/`
 

@@ -1,0 +1,7 @@
+@startregex
+<style>
+root { BackGroundColor black }
+</style>
+skinparam handwritten true
+a|b
+@endregex

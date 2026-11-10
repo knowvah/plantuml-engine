@@ -1,0 +1,11 @@
+@startregex
+<style>
+regex {
+  LineColor red
+  FontColor blue
+  BackGroundColor yellow
+  FontSize 16
+}
+</style>
+a(b|c)+[d-f]
+@endregex

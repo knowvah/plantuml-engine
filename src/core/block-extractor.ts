@@ -40,6 +40,7 @@ export type DiagramType =
   | 'packetdiag'
   | 'nwdiag'
   | 'ebnf'
+  | 'regex'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -121,7 +122,7 @@ export interface UmlSource {
    */
   readonly styleSource?: Pick<
     PreprocessorResult,
-    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder' | 'options'
+    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder' | 'options' | 'warnings'
   >;
 }
 
@@ -157,6 +158,7 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   packetdiag: 'packetdiag',
   nwdiag: 'nwdiag',
   ebnf: 'ebnf',
+  regex: 'regex',
   chart: 'chart',
   dot: 'dot',
 };
@@ -409,6 +411,7 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   packetdiag: UpstreamDiagramType.PACKET,
   nwdiag: UpstreamDiagramType.NWDIAG,
   ebnf: UpstreamDiagramType.EBNF,
+  regex: UpstreamDiagramType.REGEX,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

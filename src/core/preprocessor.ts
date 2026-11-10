@@ -19,6 +19,7 @@
 
 import { EaterException } from './tim/EaterException.js';
 import type { IncludeStore } from './tim/IncludeStore.js';
+import type { TWarning } from './tim/TFunction.js';
 import { readLines } from './tim/ReadLineReader.js';
 import { foldStdlibSprites } from './tim/stdlib-sprite-compile.js';
 import { StringLocated } from './tim/StringLocated.js';
@@ -141,6 +142,15 @@ export interface PreprocessorResult {
    * hand-built result.
    */
   readonly options?: ReadonlyMap<string, string>;
+  /**
+   * The warnings the run added to the same `PreprocessingArtifact`
+   * (`EaterOption.java:64-67`: `No such !option <key>`, `No default value for
+   * <key>`), in order. Upstream's `TitledDiagram#getWarnings` joins them with
+   * the pragma's (`AbstractDiagram.java:259-261`), so a diagram that rebuilds
+   * its artifact from {@link options} adds these too. Absent on a hand-built
+   * result.
+   */
+  readonly warnings?: readonly TWarning[];
 }
 
 /** See {@link PreprocessorResult.skinparamAssignments}. */
@@ -409,6 +419,7 @@ function resultOf(context: TContext): PreprocessorResult {
     declarationOrder: { skinparam: collector.skinparamOrder, styles: collector.styleOrder },
     skinparamAssignments: collector.skinparamAssignments,
     options: new Map(context.getPreprocessingArtifact().getOptions()),
+    warnings: [...context.getPreprocessingArtifact().getWarnings()],
   };
 }
 

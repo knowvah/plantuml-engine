@@ -1,0 +1,5 @@
+@startregex
+scale 2
+caption The caption
+a(b|c)+\d
+@endregex

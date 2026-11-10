@@ -70,7 +70,12 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       '`svg-activity-legacy`. The 68 real nwdiag fixtures are counted under `unknown`: the nwdiag engine (#124) draws ' +
       'all 68 conformant (4 are jar error pages where we also error), pinned in `svg-nwdiag`.',
   },
-  regex: { noteClass: 'notBuilt' },
+  regex: {
+    noteClass: 'openDefect',
+    detail:
+      'The regex engine (#126) draws all 46 conformant: 44 byte-identical, pinned in `svg-regex`, and ' +
+      '`bakuza-41-bulo451` and `tajefa-31-pefi801`, jar error pages where we also error (#167).',
+  },
   timing: { noteClass: 'notBuilt' },
   wire: { noteClass: 'notBuilt' },
   activity: {

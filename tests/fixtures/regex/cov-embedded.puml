@@ -1,0 +1,8 @@
+@startuml
+Alice -> Bob : hi
+note right
+{{regex
+a(b|c)+\d{2}
+}}
+end note
+@enduml

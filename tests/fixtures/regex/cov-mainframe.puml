@@ -1,0 +1,4 @@
+@startregex
+mainframe The frame
+a(b|c)+\d
+@endregex

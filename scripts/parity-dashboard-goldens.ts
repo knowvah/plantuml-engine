@@ -39,6 +39,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   board: ['svg-board'],
   // eep D9: ebnf is its own bucket, pinned flat as board's are.
   ebnf: ['svg-ebnf'],
+  // rep D7: regex is its own bucket, pinned flat as ebnf's are.
+  regex: ['svg-regex'],
   // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
   unknown: ['svg-utility', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag'],
   network: ['svg-activity-legacy'],
@@ -61,6 +63,8 @@ export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> =
   unknown: ['svg-utility', 'svg-description', 'svg-nwdiag'],
   // eep D9: ladifa-97-keme950, the one ebnf jar-error row, pinned by score.
   ebnf: ['svg-ebnf'],
+  // rep D7: bakuza-41-bulo451 and tajefa-31-pefi801, the two regex jar-error rows, pinned by score.
+  regex: ['svg-regex'],
 };
 
 /** `oracle/goldens/svg-*` families that are NOT one bucket's pins, each with

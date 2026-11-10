@@ -492,9 +492,13 @@ authored fixtures in `tests/fixtures/ebnf/`.
 
 ---
 
-## Phase 5m — Regex Railroad Diagrams
+## Phase 5m — Regex Railroad Diagrams — DONE (regex-engine-port, #126)
 
-**Java source:** `regexdiagram/`, `regex/`
+**Java source:** `regexdiagram/` (9 classes), ported file for file into `src/diagrams/regex/`.
+
+**Result:** 46/46 `@startregex` rows conformant (two jar error pages where we also error), pinned in `svg-regex`; 94
+authored fixtures in `tests/fixtures/regex/`. The tile style freezes in the constructor from the skin and `<style>`
+blocks only (`PSystemRegex.java:82-97`), through `StyleExtractor#applyStyles` at its upstream home.
 
 **Reuse (corrected 2026-11-10, ebnf-engine-port D1):** the tiles in `src/diagrams/ebnf/`, imported as
 `PSystemRegex.java` imports them from `ebnf/`; `UBrexCommandMultilines2` (`src/core/command/`) and `I18n`

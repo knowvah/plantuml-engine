@@ -1,0 +1,4 @@
+@startregex
+header The header
+a(b|c)+\d
+@endregex

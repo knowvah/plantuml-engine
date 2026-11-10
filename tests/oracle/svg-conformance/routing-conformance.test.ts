@@ -804,7 +804,9 @@ describe('routing conformance — jar-error classification', () => {
     // clones. Derivation: 10325 + 64 + 64 = 10453.
     // 10453 -> 10539 at eep/T5 (2026-11-10): the 43 ebnf rows flip to agree, plus their 43 svg-ebnf golden
     // clones. Derivation: 10453 + 43 + 43 = 10539.
-    expect(pinnedAgree.length).toBe(10539);
+    // 10539 -> 10627 at rep/T4 (2026-11-10): the 44 regex rows the jar draws flip to agree (REGEX/REGEX), plus their
+    // 44 svg-regex golden clones. Derivation: 10539 + 44 + 44 = 10627.
+    expect(pinnedAgree.length).toBe(10627);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -828,7 +830,8 @@ describe('routing conformance — jar-error classification', () => {
     // PSystemBuilder.java:155). Derivation: 360 - 64 = 296.
     // 296 -> 253 at eep/T5 (2026-11-10): the 43 ebnf rows flip to agree (PSystemEbnfFactory registered at
     // PSystemBuilder.java:196). Derivation: 296 - 43 = 253.
-    expect(pinnedMisroutes.length).toBe(253);
+    // 253 -> 209 at rep/T4 (2026-11-10): the 44 regex rows flip to agree. Derivation: 253 - 44 = 209.
+    expect(pinnedMisroutes.length).toBe(209);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -929,7 +932,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
     // 10847 -> 10911 at nwp/T4 (2026-11-10): +64 svg-nwdiag golden clones, all agree. Derivation: 10847 + 64 = 10911.
     // 10911 -> 10954 at eep/T5 (2026-11-10): +43 svg-ebnf golden clones, all agree. Derivation: 10911 + 43 = 10954.
-    expect(manifest.fixtures.length).toBe(10954);
+    // 10954 -> 10998 at rep/T4 (2026-11-10): +44 svg-regex golden clones, all agree. Derivation: 10954 + 44 = 10998.
+    expect(manifest.fixtures.length).toBe(10998);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1018,7 +1022,8 @@ describe('routing conformance — jar-error classification', () => {
     // 361 -> 360 at laep/T3b-4 (2026-11-07): the same row.
     // 360 -> 296 at nwp/T4 (2026-11-10): the 64 nwdiag rows flip to agree.
     // 296 -> 253 at eep/T5 (2026-11-10): the 43 ebnf rows flip to agree.
-    expect(censused.length).toBe(253);
+    // 253 -> 209 at rep/T4 (2026-11-10): the 44 regex rows flip to agree.
+    expect(censused.length).toBe(209);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

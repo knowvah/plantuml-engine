@@ -1,0 +1,6 @@
+@startregex
+<style>
+document { Margin 30 }
+</style>
+a(b|c)+
+@endregex

@@ -34,9 +34,10 @@ export interface TPreprocessingOptionStore {
 
 /**
  * Narrow structural stand-in for
- * `net.sourceforge.plantuml.preproc.PreprocessingArtifact` -- only the two
- * members `EaterOption` calls (`addWarning`, `getOption`). The real class
- * also implements `WarningHandler#getWarnings`; omitted (unused by `tim/`).
+ * `net.sourceforge.plantuml.preproc.PreprocessingArtifact` -- the two
+ * members `EaterOption` calls (`addWarning`, `getOption`), plus the two the
+ * preprocessor reads back after the run (`getOptions`, and
+ * `WarningHandler#getWarnings` for `PreprocessorResult.warnings`).
  * `Warning`/`OptionKey`/`PreprocessingArtifact`/`ConfigurationStore` belong
  * to the `preproc`/`warning` packages, entirely out of scope for this
  * mission (see `TContext#getPreprocessingArtifact` below) -- these are
@@ -51,6 +52,9 @@ export interface TPreprocessingArtifact {
    *  `OptionKey` name), read after the run: `PreprocessorResult.options`
    *  (`UgDiagram.java:117-121` reads one back with `isTrue`). */
   getOptions(): ReadonlyMap<string, string>;
+  /** `WarningHandler#getWarnings`: what `addWarning` collected, in order.
+   *  @see PreprocessingArtifact.java:60-62 */
+  getWarnings(): readonly TWarning[];
 }
 
 /**

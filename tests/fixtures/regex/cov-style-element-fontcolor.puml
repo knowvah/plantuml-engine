@@ -1,0 +1,6 @@
+@startregex
+<style>
+element { FontColor red }
+</style>
+a(b|c)+\d
+@endregex

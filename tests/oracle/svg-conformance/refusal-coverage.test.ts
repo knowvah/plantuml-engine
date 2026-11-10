@@ -657,7 +657,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10723 -> 10847 at laep/T4 (2026-11-09): +124 svg-activity-legacy golden clones, all rendering.
     // 10847 -> 10911 at nwp/T4 (2026-11-10): +64 svg-nwdiag golden clones, all rendering. Derivation: 10847 + 64 = 10911.
     // 10911 -> 10954 at eep/T5 (2026-11-10): +43 svg-ebnf golden clones, all rendering. Derivation: 10911 + 43 = 10954.
-    expect(manifest.fixtures.length).toBe(10954);
+    // 10954 -> 10998 at rep/T4 (2026-11-10): +44 svg-regex golden clones, all rendering. Derivation: 10954 + 44 = 10998.
+    expect(manifest.fixtures.length).toBe(10998);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -723,7 +724,9 @@ describe('refusal coverage — baseline shape', () => {
     // now error as the jar does. Derivation: 312 + 4 = 316.
     // 316 -> 317 at eep/T5 (2026-11-10): ladifa-97-keme950 (a jar error page) now errors as the jar does.
     // Derivation: 316 + 1 = 317.
-    expect(pinnedErroring.length).toBe(317);
+    // 317 -> 319 at rep/T3a (2026-11-10): bakuza-41-bulo451 and tajefa-31-pefi801 (jar error pages) now error as the
+    // jar does. Derivation: 317 + 2 = 319.
+    expect(pinnedErroring.length).toBe(319);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -946,7 +949,10 @@ describe('refusal coverage — baseline shape', () => {
     // golden is a jar error page now error here too. Derivation: 10535 + 64 - 4 = 10595.
     // 10595 -> 10637 at eep/T5 (2026-11-10): +43 svg-ebnf golden clones, all rendering; ladifa-97-keme950, whose
     // golden is a jar error page, now errors here too. Derivation: 10595 + 43 - 1 = 10637.
-    expect(pinnedRendering.length).toBe(10637);
+    // 10637 -> 10635 at rep/T3a (2026-11-10): bakuza-41-bulo451 and tajefa-31-pefi801 (jar ErrorUml pages past the
+    // head window) now error here too, pinned known-gap. Derivation: 10637 - 2 = 10635.
+    // 10635 -> 10679 at rep/T4 (2026-11-10): +44 svg-regex golden clones, all rendering. Derivation: 10635 + 44 = 10679.
+    expect(pinnedRendering.length).toBe(10679);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1034,7 +1040,9 @@ describe('refusal coverage — baseline shape', () => {
     // 333 -> 222 at laep/T3a (2026-11-07): 111 legacy rows flip to ok.
     // 222 -> 218 at laep/T3b-1 (2026-11-07): 4 note-on-link rows flip to ok.
     // 218 -> 216 at laep/T3b-2 (2026-11-07): 2 swimlane rows flip to ok.
-    expect(gaps.length).toBe(216);
+    // 216 -> 218 at rep/T3a (2026-11-10): bakuza-41-bulo451, tajefa-31-pefi801 -- jar ErrorUml pages past the head
+    // window, which the regex factory refuses with the jar's string (the wbs tojixi/zecavo precedent).
+    expect(gaps.length).toBe(218);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

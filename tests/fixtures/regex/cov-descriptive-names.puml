@@ -1,0 +1,4 @@
+@startregex
+!option useDescriptiveNames true
+.\d\D\w\W\s\S\b^$[[:digit:]]\p{L}\uFFFF\0377
+@endregex

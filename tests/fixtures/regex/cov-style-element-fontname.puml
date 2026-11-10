@@ -1,0 +1,6 @@
+@startregex
+<style>
+element { FontName Courier }
+</style>
+a(b|c)+\d
+@endregex

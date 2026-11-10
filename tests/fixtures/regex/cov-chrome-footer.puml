@@ -1,0 +1,4 @@
+@startregex
+footer The footer
+a(b|c)+\d
+@endregex
