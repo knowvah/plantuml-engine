@@ -1,0 +1,10 @@
+@startwire
+sprite $s {
+FFFFFFFF
+F000000F
+F000000F
+FFFFFFFF
+}
+print("x <$s> y")
+* a [20x20]
+@endwire

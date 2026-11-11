@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2403 modules · 8049 exported names.
+2425 modules · 8096 exported names.
 
 ## `src/`
 
@@ -3013,6 +3013,33 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `WBSLink.ts` | `WElementGeometry`, `WBSLink` |  |
 | `WBSTextBlock.ts` | `WElementSlice`, `WBSTextBlock` |  |
 | `WElement.ts` | `STEP_BY_PARENT`, `WElementDecoration`, `WElement` | WElement — one node of a WBS tree: label, level, LEFT/RIGHT children, style resolution and recorded geometry. |
+
+## `src/diagrams/wire/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandComponent.ts` | `CommandComponent` | `CommandComponent`. |
+| `CommandGoto.ts` | `CommandGoto` | `CommandGoto`. |
+| `CommandMove.ts` | `CommandMove` | `CommandMove`. |
+| `CommandNewColumn.ts` | `CommandNewColumn` | `CommandNewColumn`. |
+| `CommandPrint.ts` | `CommandPrint` | `CommandPrint`. |
+| `CommandSpot.ts` | `CommandSpot` | `CommandSpot`. |
+| `CommandWLink.ts` | `CommandWLink` | `CommandWLink`. |
+| `index.ts` | `WireGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderWire`, `wirePlugin` | Wire plugin — `WireDiagramFactory` (parse), then `TextBlockExporter`'s export of `WireDiagram#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` plus `calculateMargin` (`TitledDiagram`'s `same(10)` by defau |
+| `Spot.ts` | `Spot` | `Spot`: a filled circle on a block, red by default. |
+| `WArrowDirection.ts` | `WArrowDirection` | `WArrowDirection`: which ends of a wire link carry a head. |
+| `WBlock.ts` | `WBlock` | `WBlock`: a named rectangle holding child blocks and printed lines, laid out at a cursor. |
+| `wire-common-commands.ts` | `DispatchOutcome`, `JAVA_INDENT`, `hasUnicodeFold`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `WireDiagramFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `wire-klimt.ts` | `WireSkinParam`, `getBlack`, `getWhite`, `fore`, `back`, `blackBlueTrueChanged`, `createFontConfiguration`, `createLeft`, `PathPoint`, `polygon` | PORT-ONLY: the klimt seams every wire class crosses, in one place so each ported method reads as its Java line does (as `nwdiag-klimt.ts` and `timing-klimt.ts` do; a copy, not an import, per wrp D2): - `ug.apply(color)` / `ug.apply(color.bg |
+| `wire-skin-param.ts` | `SkinParamSource`, `SkinParam` | The wire engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `WireDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine's |
+| `wire-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `WireDiagram.ts` | `WireLinkArgs`, `WireDiagram` | `WireDiagram`: one `@startwire` block, a tree of `WBlock`s plus the spots and links drawn over it. |
+| `WireDiagramFactory.ts` | `initCommandsList`, `parseWire` | `WireDiagramFactory`: `CommonCommands.addCommonCommands1` first, then the seven wire commands in upstream order (order decides: `CommandNewColumn` is `-+`), and `PSystemCommandFactory#createSystem`'s per-line loop over them. |
+| `WLinkHorizontal.ts` | `WLinkHorizontalArgs`, `WLinkHorizontal` | `WLinkHorizontal`: a horizontal link or bus between two blocks. |
+| `WLinkType.ts` | `WLinkType` | `WLinkType`: a thin link (`-`) or a bus (`=`). |
+| `WLinkVertical.ts` | `WLinkVerticalArgs`, `WLinkVertical` | `WLinkVertical`: a vertical link or bus between two blocks. |
+| `WOrientation.ts` | `WOrientation` | `WOrientation`: a doubled `--` or `==` anywhere in the style makes the link vertical, so `<=>` is horizontal and `<==>` vertical (wrp D4). |
+| `WPrint.ts` | `WPrint` | `WPrint`: a line of `print("…")` text, at the cursor position it was given. |
 
 ## `src/diagrams/yaml/`
 

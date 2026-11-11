@@ -1,0 +1,13 @@
+@startwire
+* a [300x60]
+goto(10,200)
+* b [300x60]
+a --> b : n
+a <--> b : b
+a <-- b : r
+a -- b : p
+a ==> b : bn
+a <==> b : bb
+a <== b : br
+a == b : bp
+@endwire

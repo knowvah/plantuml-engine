@@ -1,0 +1,6 @@
+@startwire
+* p [30x30]
+	* c [100x100]
+* q
+	* d [10x10]
+@endwire

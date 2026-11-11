@@ -1,0 +1,7 @@
+@startwire
+* a [40x40]
+move(30,5)
+* b [40x40]
+move(-10,-5)
+* c [40x40]
+@endwire

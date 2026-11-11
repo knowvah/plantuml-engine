@@ -1,0 +1,7 @@
+@startwire
+* a
+	* b
+		* c [10x10]
+		--
+		* d [10x10]
+@endwire

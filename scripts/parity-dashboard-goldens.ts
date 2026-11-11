@@ -41,6 +41,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   ebnf: ['svg-ebnf'],
   // rep D7: regex is its own bucket, pinned flat as ebnf's are.
   regex: ['svg-regex'],
+  // wrp D7: wire is its own bucket, pinned flat as regex's are.
+  wire: ['svg-wire'],
   // tep D12: timing is its own bucket, pinned flat as regex's are; 13 drawn rows of `unknown` carry `bucket: 'unknown'`.
   timing: ['svg-timing'],
   // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
@@ -67,6 +69,8 @@ export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> =
   ebnf: ['svg-ebnf'],
   // rep D7: bakuza-41-bulo451 and tajefa-31-pefi801, the two regex jar-error rows, pinned by score.
   regex: ['svg-regex'],
+  // wrp D7: every wire row is drawn by the jar and pinned; no score-pinned rows.
+  wire: ['svg-wire'],
   // tep D12: the 6 timing jar-error rows, pinned by score.
   timing: ['svg-timing'],
 };

@@ -581,7 +581,7 @@ describe('D9 drift gate', () => {
 describe('matrix notes: why a row falls short', () => {
   it('marks a row with a recorded reason when the survey shows a shortfall', () => {
     expect(noteSymbolOf('json', '14 / 35 / 1')).toBe('†');
-    expect(noteSymbolOf('wire', 'n/a (no engine (D1 todo))')).toBe('‡');
+    expect(noteSymbolOf('ditaa', 'n/a (no engine (D1 todo))')).toBe('‡');
     expect(noteSymbolOf('state', '99 / 14 / 160 (4 error)')).toBe('§');
     expect(noteSymbolOf('unknown', '557 / 19 / 249 (25 error)')).toBe('¶');
     expect(noteSymbolOf('chronology', 'n/a (plantuml-ts only)')).toBe('‖');

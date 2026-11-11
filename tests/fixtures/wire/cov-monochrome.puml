@@ -1,0 +1,7 @@
+@startwire
+skinparam monochrome true
+* a [20x20] #red
+* b [20x20] #red
+a -> b #blue : l
+spot a #green
+@endwire

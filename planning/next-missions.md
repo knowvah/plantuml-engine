@@ -35,13 +35,23 @@ post-D7 measurements.
 
 ---
 
+## wire-engine-port (wrp) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #128; per-task history on the local tag `wire-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/wire/` ported file for file into `src/diagrams/wire/` and registered at `PSystemBuilder.java:189`. `wire` went 0/0/18 to 18/0/0, byte-identical on the first survey and pinned in `svg-wire`. 113 authored fixtures, one open. No divergence added; 0 rows lost in any engine.
+
+**What remains:**
+
+1. **A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.
+2. **Bold on the creole atom path never reaches `jarMeasurer`** (`.agent-notes/wrp-T3.md`): every production bold creole run measures plain, because `FontSpec.weight` is what `JarMeasurer` reads and the atom path passes `styles`. The deterministic survey cannot see it, and wire's `print` translates locally. A shared fix is unpinned work.
+3. **`SkinParam#sheet`'s parser cache** (`SkinParam.java:1291-1303`) is ported only in `wire-skin-param.ts`; other engines' skin params build a parser per call, which differs only where one bounder measures and another draws.
+
 ## timing-engine-port (tep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #127; per-task history on the local tag `timing-engine-port/pre-squash`)
 
 `src/diagrams/timing/` is a file-for-file port of `net/sourceforge/plantuml/timingdiagram/` (the 68 files minus `package-info.java` and the unreachable `CommandStopAt`), registered at `PSystemBuilder.java:187`. `@starttiming` stays unsupported (D10). New shared pieces: `src/core/decimal/BigDecimal.ts`, `src/core/time/GregorianCalendarGmt.ts`, `checkSimpleDateFormatPattern`, `CommandFootboxIgnored`. Two shared fixes: the single-line title commands now match the trimmed line (`SingleLineCommand2.java:94`), and `WithLinkType#applyStyle` resolves colours through `HColorSet#getColorOrWhite` (`WithLinkType.java:162`). All 158 rows are conformant: 145 in `timing` (139 byte-identical and pinned in `svg-timing`; 6 jar error pages where we also error, pinned by score) and 13 in `unknown`, pinned in `svg-timing`. Overall 5,514 → 5,666 conformant of 5,927. 141 authored fixtures in `tests/fixtures/timing`: 131 at 0 diffs, 9 error pairs, 1 open. Nothing was lost in any engine, and no divergence was added.
 
 Follow-ons:
 
-1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Issue body in `.agent-notes/tep-T4d.md` (`gh issue create` was denied); #136 needs its "Blocked by" line once filed.
+1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port.
 2. **A trailing space in other single-line commands**: the title commands are fixed at `src/core/annotations/commands.ts`; other engines' hand-rolled matchers should be checked against `SingleLineCommand2`'s `doTrim` if a corpus row shows a half-space offset.
 
 ## regex-engine-port (rep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #126; per-task history on the local tag `regex-engine-port/pre-squash`)

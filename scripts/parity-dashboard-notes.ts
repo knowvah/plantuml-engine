@@ -83,7 +83,13 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'error pages where we also error, pinned by score. 13 more `@startuml` timing rows are counted under `unknown`: ' +
       'all conformant and pinned in `svg-timing`.',
   },
-  wire: { noteClass: 'notBuilt' },
+  wire: {
+    noteClass: 'openDefect',
+    detail:
+      'The wire engine (#128) draws all 18 conformant, byte-identical and pinned in `svg-wire`. 113 authored ' +
+      'fixtures in `tests/fixtures/wire` hold at 0 diffs or jar error pairs; `cov-embedded-state-note` waits on a ' +
+      'state-engine gap (#168).',
+  },
   activity: {
     noteClass: 'openDefect',
     detail:

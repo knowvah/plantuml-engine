@@ -1,0 +1,14 @@
+@startwire
+sprite $s {
+FFFFFFFF
+F000000F
+F000000F
+FFFFFFFF
+}
+* a [100x100]
+--
+move(100,0)
+* b [100x100]
+a -> b : x <$s> y
+a => b : <$s>
+@endwire

@@ -31,6 +31,7 @@ export class HColors {
   private static black: HColorSimple | undefined;
   private static white: HColorSimple | undefined;
   private static lightGray: HColorSimple | undefined;
+  private static red: HColorSimple | undefined;
   /** `TRANSPARENT = HColorSimple.create(new XColor(0, 0, 0, 0))`. @see HColors.java:121 */
   private static transparentColor: HColorSimple | undefined;
 
@@ -44,6 +45,12 @@ export class HColors {
   static get WHITE(): HColorSimple {
     HColors.white ??= asSimple(HColorSet.instance().getColorOrWhite('#FFFFFF'));
     return HColors.white;
+  }
+
+  /** `set.getColorOrWhite("#FF0000")`, a wire `Spot`'s default. @see HColors.java:90 */
+  static get RED(): HColorSimple {
+    HColors.red ??= asSimple(HColorSet.instance().getColorOrWhite('#FF0000'));
+    return HColors.red;
   }
 
   /**

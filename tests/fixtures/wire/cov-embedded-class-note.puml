@@ -1,0 +1,10 @@
+@startuml
+class X
+note right of X
+{{wire
+* a [40x30]
+* b [40x30]
+a -> b : l
+}}
+end note
+@enduml

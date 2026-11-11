@@ -1,0 +1,5 @@
+@startwire
+scale 2
+title T
+* a [30x30]
+@endwire

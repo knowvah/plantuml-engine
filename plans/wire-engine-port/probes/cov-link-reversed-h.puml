@@ -1,0 +1,8 @@
+@startwire
+* a [100x100]
+--
+move(100,0)
+* b [100x100]
+b -> a : back
+b => a : bus
+@endwire

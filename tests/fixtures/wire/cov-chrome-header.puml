@@ -1,0 +1,4 @@
+@startwire
+header H
+* a [30x30]
+@endwire

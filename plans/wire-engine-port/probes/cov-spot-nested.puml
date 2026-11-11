@@ -1,0 +1,5 @@
+@startwire
+* p
+	* q [40x40]
+spot p.q(100%,100%) #blue
+@endwire

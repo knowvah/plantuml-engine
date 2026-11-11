@@ -1,0 +1,8 @@
+@startwire
+* p [40x20]
+	print("line 1")
+	print("line 2")
+	print("line 3")
+	print("line 4")
+* q [40x20]
+@endwire

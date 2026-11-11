@@ -1,0 +1,5 @@
+@startwire
+* a [0x50]
+* b [50x0]
+* c [0x0]
+@endwire

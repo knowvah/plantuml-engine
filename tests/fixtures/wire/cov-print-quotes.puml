@@ -1,0 +1,5 @@
+@startwire
+print("a "quoted" b")
+print ( "spaced" )
+* a [20x20]
+@endwire

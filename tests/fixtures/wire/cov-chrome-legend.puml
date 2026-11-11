@@ -1,0 +1,6 @@
+@startwire
+legend
+L
+endlegend
+* a [30x30]
+@endwire

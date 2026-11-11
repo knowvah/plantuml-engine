@@ -1,0 +1,5 @@
+@startwire
+* p [200x200]
+	goto(50,60)
+	* a [20x20]
+@endwire

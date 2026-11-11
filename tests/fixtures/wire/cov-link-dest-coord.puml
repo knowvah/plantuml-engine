@@ -1,0 +1,5 @@
+@startwire
+* a [20x20]
+* b [20x20]
+a -> b(10,10)
+@endwire

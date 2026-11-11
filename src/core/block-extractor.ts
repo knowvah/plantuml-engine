@@ -41,6 +41,7 @@ export type DiagramType =
   | 'nwdiag'
   | 'ebnf'
   | 'regex'
+  | 'wire'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -158,6 +159,7 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   nwdiag: 'nwdiag',
   ebnf: 'ebnf',
   regex: 'regex',
+  wire: 'wire',
   chart: 'chart',
   dot: 'dot',
 };
@@ -411,6 +413,7 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   nwdiag: UpstreamDiagramType.NWDIAG,
   ebnf: UpstreamDiagramType.EBNF,
   regex: UpstreamDiagramType.REGEX,
+  wire: UpstreamDiagramType.WIRE,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

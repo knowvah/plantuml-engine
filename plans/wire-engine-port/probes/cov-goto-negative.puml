@@ -1,0 +1,4 @@
+@startwire
+goto(-5,5)
+* a
+@endwire

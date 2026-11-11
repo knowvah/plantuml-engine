@@ -1,0 +1,6 @@
+@startwire
+* a [40x40] #automatic
+* b [40x40]
+a -> b #automatic : t
+spot a #automatic
+@endwire

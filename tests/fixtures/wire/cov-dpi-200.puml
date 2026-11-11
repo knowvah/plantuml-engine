@@ -1,0 +1,7 @@
+@startwire
+skinparam dpi 200
+* a [80x40]
+print("p")
+* b [80x40]
+a -> b : l
+@endwire

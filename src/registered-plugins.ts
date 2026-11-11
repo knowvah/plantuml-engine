@@ -34,6 +34,7 @@ import { filesPlugin } from './diagrams/files/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
 import { regexPlugin } from './diagrams/regex/index.js';
+import { wirePlugin } from './diagrams/wire/index.js';
 import { hclPlugin } from './diagrams/hcl/index.js';
 import { jsonPlugin } from './diagrams/json/index.js';
 import { mindmapPlugin } from './diagrams/mindmap/index.js';
@@ -97,6 +98,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
   registry.register(dedicationPlugin); // java:186
   registry.register(timingPlugin); // java:187
+  registry.register(wirePlugin); // java:189
   registry.register(jsonPlugin); // java:190
   registry.register(filesPlugin); // java:192
   registry.register(boardPlugin); // java:193

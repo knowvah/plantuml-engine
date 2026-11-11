@@ -1,0 +1,4 @@
+@startwire
+move(-20,-20)
+* a [40x40]
+@endwire

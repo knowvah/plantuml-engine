@@ -144,16 +144,18 @@ layering allowlist entry. There is no `src/core/railroad/` and no grammar → IR
 
 ### Track SI-4 — `src/core/golem/` (2D Tile Grid Layout)
 
-**Needed by:** Phase 5p (Flow), evaluate for Phase 5e (Salt), Phase 5l (Wire)
+**Needed by:** Phase 5p (Flow), evaluate for Phase 5e (Salt). Not Phase 5l (Wire): `wire/` imports nothing from
+`golem/` (wrp D1).
 
 **Java source:** `golem/` (~15 files): TilesField.java, Position.java,
 TileGeometry.java, TileUtils.java
 
 **What it is:** The `golem` package is a 2D integer tile grid where each node
 occupies a tile position and edges connect tile centers. Flow diagrams use it
-directly. Salt and Wire use simpler grid logic but share the concept of
-rectangular cells at integer coordinates. Port golem first; evaluate if Salt
-and Wire can reuse the infrastructure or need a lighter variant.
+directly. Salt uses simpler grid logic but shares the concept of rectangular
+cells at integer coordinates. Port golem first; evaluate if Salt can reuse the
+infrastructure or needs a lighter variant. Wire lays its blocks out on a cursor
+(`wire/WBlock.java`) and needs none of it.
 
 ---
 
@@ -170,6 +172,19 @@ registration requires the preprocessor to handle `!define SPRITE_NAME` and
 preprocessor handles these cases.
 
 ---
+
+## Phase 5l — Wire Diagrams — DONE (wire-engine-port, #128)
+
+**Java source:** `wire/` (20 files, 2,216 lines), ported file for file into `src/diagrams/wire/`; `Block.java` and
+`WCursor.java` stay unported (referenced nowhere upstream, wrp D1).
+
+**Result:** all 18 corpus rows are conformant and pinned in `svg-wire`, drawn byte-identical on the first survey after
+registration at `PSystemBuilder.java:189`. 113 authored fixtures in `tests/fixtures/wire/`: 112 at 0 diffs or jar error
+pairs; `cov-embedded-state-note` waits on a state-engine gap (#168). No divergence added.
+
+**Reuse:** nothing from `golem/`. The klimt shapes, `Display`, `SingleLineCommand2` and the `regex` engine's plugin
+shape. `print` measures with `jarMeasurer` in every render, because `FileFormat.PNG` is outside the deterministic seam
+(wrp D3).
 
 ## Phase 4b — Timing Diagrams — DONE (timing-engine-port, #127)
 

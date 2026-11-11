@@ -1,0 +1,7 @@
+@startwire
+* a [40x40] #transparent
+* b [40x40]
+a -> b #transparent : t
+a => b #transparent
+spot a #transparent
+@endwire

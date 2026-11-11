@@ -77,6 +77,7 @@ const DIAGRAM_TYPE_NWDIAG = 'NWDIAG';
 const DIAGRAM_TYPE_TIMING = 'TIMING';
 const DIAGRAM_TYPE_EBNF = 'EBNF';
 const DIAGRAM_TYPE_REGEX = 'REGEX';
+const DIAGRAM_TYPE_WIRE = 'WIRE';
 const DIAGRAM_TYPE_CHART = 'CHART';
 
 // ---------------------------------------------------------------------------
@@ -327,6 +328,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_TIMING:
     case DIAGRAM_TYPE_EBNF:
     case DIAGRAM_TYPE_REGEX:
+    case DIAGRAM_TYPE_WIRE:
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
       return finalizeTitledDiagramFragment(fragment);
