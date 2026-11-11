@@ -1166,7 +1166,7 @@
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 2, \"Error parsing: Bad quantifier {([^{} (Assumed diagram type: regex)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
       "retiredAt": "2026-11-10",
-      "retiredBy": "regex-engine-port T3a, unsigned: the maintainer signs at review (#126)",
+      "retiredBy": "regex-engine-port T3a (#126); maintainer confirmed 2026-11-11 (#167)",
       "retiredReason": "The regex engine (regex-engine-port T3a) now parses this source and refuses document line 1 (the jar's line 2) with the jar's own message, \"Error parsing: Bad quantifier {([^{}\": `readQuantifier` reads a `{` to the next `}` or the end of the line and rejects any braced text that is not `^\\\\{[0-9,]+\\\\}$` (RegexExpression.java:244-265), and `PSystemRegex#addBlocLines` turns the `RegexParsingException` into `Error parsing: ` + its message (PSystemRegex.java:172-174). So the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone."
     },
     {
@@ -1178,7 +1178,7 @@
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-10-10: where the jar errors and we draw, the row is an accepted divergence once the primary PlantUML release also errors, because the diagram parses fine for us. Verified 2026-10-10 against the official release plantuml-1.2026.8.jar (GitHub release v1.2026.8, 149874a; no -D flags, -stdrpt:1): exit 200 (ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR), line 2, \"Error parsing: Bad quantifier {([^{} (Assumed diagram type: regex)\". Same result as the stock record (oracle/goldens/stock-error-pages.json, built from 97a5992). The survey still prints it diverged with firstDiff 'error-page'; this entry declares it, it does not special-case it.",
       "retiredAt": "2026-11-10",
-      "retiredBy": "regex-engine-port T3a, unsigned: the maintainer signs at review (#126)",
+      "retiredBy": "regex-engine-port T3a (#126); maintainer confirmed 2026-11-11 (#167)",
       "retiredReason": "The regex engine (regex-engine-port T3a) now parses this source and refuses document line 1 (the jar's line 2) with the jar's own message, \"Error parsing: Bad quantifier {([^{}\": `readQuantifier` reads a `{` to the next `}` or the end of the line and rejects any braced text that is not `^\\\\{[0-9,]+\\\\}$` (RegexExpression.java:244-265), and `PSystemRegex#addBlocLines` turns the `RegexParsingException` into `Error parsing: ` + its message (PSystemRegex.java:172-174). So the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone."
     }
   ]
