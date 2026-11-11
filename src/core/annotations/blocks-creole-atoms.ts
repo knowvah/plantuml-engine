@@ -26,6 +26,8 @@ import type { Atom } from '../klimt/creole/SheetBlock1.js';
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
 import { spriteHrefOver } from '../klimt/sprite/sprite-tint.js';
+import { UImageSvg } from '../klimt/shape/UImageSvg.js';
+import { rollbackSvg } from '../math/ScientificEquationSafe.js';
 
 /** `'kind' in x` duck-typing of the plain-data `CreoleAtom` union vs a
  *  composite OOP `Atom` (`AtomTable`/`AtomTree`/`AtomMath`/…) —
@@ -107,6 +109,10 @@ export function atomDim(
   if (atom.kind === 'text') return textDim(atom, stringBounder);
   if (atom.kind === 'space') return new XDimension2D(atom.width, SPACE_ATOM_HEIGHT);
   if (atom.kind === 'latex') {
+    if (atom.rollback !== undefined) {
+      const image = new UImageSvg(rollbackSvg(atom.rollback, stringBounder), 1);
+      return new XDimension2D(image.getWidth(), image.getHeight());
+    }
     const r = renderLatexAsImage(atom.expr, atom.color ?? LATEX_DEFAULT_COLOR);
     return new XDimension2D(r.width, r.height);
   }
@@ -194,6 +200,11 @@ export function drawAtom(atom: CreoleAtom, ug: UGraphic, resolveAtomImage: AtomI
     return;
   }
   if (atom.kind === 'latex') {
+    // `AtomMath#drawU`'s `ug.draw(math.getSvg(1, fore, back))`: the rollback is a `UImageSvg` (cmf D5).
+    if (atom.rollback !== undefined) {
+      ug.draw(new UImageSvg(rollbackSvg(atom.rollback, ug.getStringBounder()), 1));
+      return;
+    }
     const r = renderLatexAsImage(atom.expr, atom.color ?? LATEX_DEFAULT_COLOR);
     ug.draw(UImage.build(r.width, r.height, r.href));
     return;

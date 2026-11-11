@@ -10,6 +10,7 @@
  * NOT upstream's JLaTeXMath — see that function's doc comment for why this
  * can never be byte-conformant, only structurally present).
  */
+import { ScientificEquationSafe } from '../../../math/ScientificEquationSafe.js';
 import type { Command } from './Command.js';
 
 const LATEX_TAG_SOURCE = '<latex>(.+?)</latex>';
@@ -26,7 +27,11 @@ export function createLatexCommand(): Command {
     executeAndAdvance(line, pos, stripe) {
       const m = re.exec(line.slice(pos));
       if (m === null) return 0;
-      stripe.pushLatexAtom(m[1]!);
+      // `ScientificEquationSafe.fromLatex(formula)` through `AtomMath`: the
+      // rollback when JLaTeXMath would throw (`ScientificEquationSafe.java:91-115`, cmf D5).
+      const equation = ScientificEquationSafe.fromLatex(m[1]!);
+      if (equation.typesets()) stripe.pushLatexAtom(m[1]!);
+      else stripe.pushLatexAtom(m[1]!, equation.getFormula());
       return m[0].length;
     },
   };

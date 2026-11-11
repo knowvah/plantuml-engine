@@ -1,0 +1,3 @@
+@startdef(id=abc)
+x
+@enddef

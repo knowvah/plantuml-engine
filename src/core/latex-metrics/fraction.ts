@@ -3,7 +3,7 @@
  * `DelimiterFactory` they size delimiters with (JLaTeXMath 1.0.7,
  * `~/git/plantuml/gradle/libs.versions.toml:12`).
  */
-import type { BuildBox, Delimiter, FencedAtom, FractionAtom, NthRootAtom } from './atoms.js';
+import type { BuildBox, Delimiter, FontGlyph, FencedAtom, FractionAtom, NthRootAtom } from './atoms.js';
 import { leftType, rightType } from './atoms.js';
 import type { Box } from './box.js';
 import { ALIGN_CENTER, VBox, hbox, hboxAligned, strutBox } from './box.js';
@@ -107,10 +107,19 @@ export function fractionBox(atom: FractionAtom, style: number, build: BuildBox):
   return hboxAligned(v.box, v.box.width + 2 * f, ALIGN_CENTER);
 }
 
+/** The repeat pieces `DelimiterFactory#create(String, TeXEnvironment, float)`
+ *  stacks (java 253-341) while `height + depth <= minHeight`; a delimiter
+ *  whose extension has only a repeat piece has no top, middle or bottom. */
+function extensionBox(repeat: FontGlyph, style: number, minHeight: number): Box {
+  const v = new VBox();
+  do v.add(scaledCharBox(repeat, style));
+  while (v.box.height + v.box.depth <= minHeight);
+  return v.box;
+}
+
 /** `DelimiterFactory.create(symbol, env, minHeight)` (`DelimiterFactory.java`):
- *  the smallest successor tall enough, else the tallest. Extensible
- *  delimiters (`Extension` pieces) are not modelled: past the largest
- *  glyph KaTeX exposes, the largest is returned. */
+ *  the smallest successor tall enough; past the last glyph, the extension
+ *  when the chain ends in one, else the last glyph. */
 export function delimiterBox(delim: Delimiter, style: number, minHeight: number): Box {
   let chosen = scaledCharBox(
     delim.sizes[0] ?? { glyph: { width: 0, height: 0, depth: 0, italic: 0 }, xHeight: 0 },
@@ -119,6 +128,9 @@ export function delimiterBox(delim: Delimiter, style: number, minHeight: number)
   for (const size of delim.sizes.slice(1)) {
     if (chosen.height + chosen.depth >= minHeight) break;
     chosen = scaledCharBox(size, style);
+  }
+  if (delim.repeat !== undefined && chosen.height + chosen.depth < minHeight) {
+    return extensionBox(delim.repeat, style, minHeight);
   }
   return chosen;
 }

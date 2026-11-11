@@ -4,6 +4,7 @@
  * `~/git/plantuml/gradle/libs.versions.toml:12`).
  */
 import type { Atom, MatrixAtom } from './atoms.js';
+import { accentGlyph } from './accent.js';
 import type { Align } from './box.js';
 import { ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT } from './box.js';
 import type { Context } from './convert.js';
@@ -21,11 +22,17 @@ import {
 } from './convert.js';
 import type { KNode } from './katex-glyphs.js';
 import { nodeField, nodeList, stringField, toKNode } from './katex-glyphs.js';
-import { TYPE_BIG_OPERATOR, TYPE_INNER, TYPE_ORDINARY, unitFactor } from './tex-font.js';
+import { VDOTS_GLYPH, jlmCharSymbol, jlmSymbol, negationAtom, vdotsAtom } from './jlm-symbols.js';
+import { STACK_SPACES, stackParts } from './stack.js';
+import type { StackParts } from './stack.js';
+import { TYPE_BIG_OPERATOR, TYPE_INNER, TYPE_ORDINARY, TYPE_RELATION, unitFactor } from './tex-font.js';
 
 type NodeHandler = (n: KNode, ctx: Context) => Atom | undefined;
 
-const converter: AtomConverter = new AtomConverter((n, ctx) => convertNode(n, ctx));
+const converter: AtomConverter = new AtomConverter(
+  (n, ctx) => convertNode(n, ctx),
+  (n) => vdotsGroup(n),
+);
 
 /** `RomanAtom`/`BoldAtom`/`TextStyleAtom`: ORDINARY wrappers. */
 const wrap = (body: Atom | undefined, style?: number): Atom => ({
@@ -120,6 +127,17 @@ function columns(n: KNode): KNode[] {
   return nodeList(n, 'cols');
 }
 
+/** `MatrixAtom`'s `vlines`: KaTeX lists each `|` as a `separator` between
+ *  the `align` entries; consecutive ones are one `VlineAtom(n)`. */
+function verticalLines(n: KNode): number[] {
+  const lines: number[] = [0];
+  for (const c of columns(n)) {
+    if (c.type === 'align') lines.push(0);
+    else lines[lines.length - 1] = (lines.at(-1) ?? 0) + 1;
+  }
+  return lines;
+}
+
 /** The rules and environments `matrix.ts` does not size, by the name
  *  `unsupported` reports; `undefined` when the node is fully modelled. */
 function unmodelled(n: KNode): string | undefined {
@@ -128,7 +146,7 @@ function unmodelled(n: KNode): string | undefined {
   // separation type or per-column gaps; JLaTeXMath builds them as other
   // `MatrixAtom` types (ALIGN, SMALLMATRIX, ...).
   if (n.raw['colSeparationType'] !== undefined || cols.some((c) => c.raw['pregap'] !== undefined)) return 'array';
-  if (cols.some((c) => c.type === 'separator')) return 'array vline';
+  if (cols.some((c) => c.type === 'separator' && stringField(c, 'separator') !== '|')) return 'array vline';
   const hlines = n.raw['hLinesBeforeRow'];
   if (Array.isArray(hlines) && hlines.some((l) => Array.isArray(l) && l.length > 0)) return 'array hline';
   return undefined;
@@ -154,13 +172,89 @@ function convertArray(n: KNode, ctx: Context): Atom | undefined {
     .filter((c) => c.type === 'align')
     .map((c) => COLUMN_ALIGN[stringField(c, 'align') ?? ''] ?? ALIGN_CENTER);
   const env: MatrixAtom['env'] = n.raw['hskipBeforeAndAfter'] === true ? 'array' : 'matrix';
-  return { kind: 'matrix', type: TYPE_ORDINARY, env, rows, align };
+  return { kind: 'matrix', type: TYPE_ORDINARY, env, rows, align, vlines: verticalLines(n) };
+}
+
+/** `PredefMacros#accent_macros`: `\\hat{…}` → `AccentedAtom(root, "hat")`,
+ *  `underbase` the root, or a nested accent's own. A label it does not
+ *  build (`\\widehat`, a text-mode accent) is noted and sized by its base. */
+function convertAccent(n: KNode, ctx: Context): Atom | undefined {
+  const base = converter.argument(nodeField(n, 'base'), ctx);
+  const accent = accentGlyph((stringField(n, 'label') ?? '').replace(/^\\/, ''));
+  if (accent === undefined) {
+    ctx.unsupported.add('accent');
+    return base;
+  }
+  const underbase = base?.kind === 'accent' ? base.underbase : base;
+  return { kind: 'accent', type: TYPE_ORDINARY, accent, base, underbase };
+}
+
+/** `\\underbrace`/`\\overbrace` → `OverUnderDelimiter(root, null, brace, …)`. */
+const convertHorizBrace = (n: KNode, ctx: Context): Atom => ({
+  kind: 'overunder',
+  type: TYPE_INNER,
+  base: converter.argument(nodeField(n, 'base'), ctx),
+  over: n.raw['isOver'] === true,
+});
+
+/** KaTeX's `\\vdots`: `\\mathord{\\varvdots\\rule{0pt}{15pt}}`, an ordgroup of a
+ *  `\\varvdots` glyph and a rule; JLaTeXMath's is `VdotsAtom`. */
+function vdotsGroup(n: KNode): Atom | undefined {
+  const [glyph, rule, ...rest] = nodeList(n, 'body');
+  const isVdots =
+    glyph?.type === 'textord' && text(glyph) === VDOTS_GLYPH && rule?.type === 'rule' && rest.length === 0;
+  return isVdots ? vdotsAtom() : undefined;
+}
+
+/** A negation macro as JLaTeXMath builds it, else KaTeX's HTML branch
+ *  sized by its children and noted. */
+function convertHtmlMathml(n: KNode, ctx: Context): Atom | undefined {
+  const negation = negationAtom(n);
+  if (negation !== undefined) return negation;
+  ctx.unsupported.add(n.type);
+  return converter.formula(nodeList(n, 'html'), ctx);
+}
+
+const EMPTY_FORMULA: Atom = { kind: 'row', elements: [] };
+
+/** `\\stackrel`/`\\overset`/`\\underset` → `TypedAtom(REL, REL,
+ *  UnderOverAtom(...))` (`PredefMacros#stackrel_macro` and siblings). An
+ *  empty argument is an `EmptyAtom` (`TeXParser#parse`), never null. */
+function convertStack(parts: StackParts, ctx: Context): Atom {
+  const spaces = STACK_SPACES[parts.kind];
+  const script = converter.argument(parts.script, ctx) ?? EMPTY_FORMULA;
+  const body: Atom = {
+    kind: 'underover',
+    base: converter.formula(parts.base, ctx) ?? EMPTY_FORMULA,
+    over: parts.kind === 'underset' ? undefined : script,
+    under: parts.kind === 'stackrel' ? EMPTY_FORMULA : parts.kind === 'underset' ? script : undefined,
+    overSpace: spaces.over,
+    underSpace: spaces.under,
+  };
+  return { kind: 'typed', left: TYPE_RELATION, right: TYPE_RELATION, limits: 'nolimits', body };
+}
+
+/** `\mathrel{…}` and friends → `TypedAtom`; the stack macros' expansion is
+ *  recognised first. */
+function convertMclass(n: KNode, ctx: Context): Atom {
+  const stack = stackParts(n);
+  if (stack !== undefined) return convertStack(stack, ctx);
+  const t = FAMILY_TYPES[stringField(n, 'mclass') ?? ''] ?? TYPE_ORDINARY;
+  return {
+    kind: 'typed',
+    left: t,
+    right: t,
+    limits: 'nolimits',
+    body: wrap(converter.formula(nodeList(n, 'body'), ctx)),
+  };
 }
 
 const HANDLERS: Readonly<Record<string, NodeHandler>> = {
-  mathord: (n, ctx) => leafAtom(text(n), TYPE_ORDINARY, ctx),
-  textord: (n, ctx) => leafAtom(text(n), TYPE_ORDINARY, ctx),
-  atom: (n, ctx) => leafAtom(text(n), FAMILY_TYPES[stringField(n, 'family') ?? ''] ?? TYPE_ORDINARY, ctx),
+  mathord: (n, ctx) => jlmCharSymbol(text(n)) ?? leafAtom(text(n), TYPE_ORDINARY, ctx),
+  textord: (n, ctx) => jlmCharSymbol(text(n)) ?? leafAtom(text(n), TYPE_ORDINARY, ctx),
+  atom: (n, ctx) =>
+    jlmSymbol(text(n)) ?? leafAtom(text(n), FAMILY_TYPES[stringField(n, 'family') ?? ''] ?? TYPE_ORDINARY, ctx),
+  htmlmathml: convertHtmlMathml,
   op: convertOp,
   operatorname: (n, ctx) => mathop(converter.formula(nodeList(n, 'body'), { ...ctx, font: 'mathrm' }), n),
   genfrac: convertGenfrac,
@@ -177,22 +271,25 @@ const HANDLERS: Readonly<Record<string, NodeHandler>> = {
     right: delimiter(stringField(n, 'right')),
   }),
   array: convertArray,
+  accent: convertAccent,
+  horizBrace: convertHorizBrace,
+  overline: (n, ctx) => ({
+    kind: 'overline',
+    type: TYPE_ORDINARY,
+    base: converter.argument(nodeField(n, 'body'), ctx),
+  }),
+  underline: (n, ctx) => ({
+    kind: 'underline',
+    type: TYPE_ORDINARY,
+    base: converter.argument(nodeField(n, 'body'), ctx),
+  }),
   text: convertText,
   font: convertFont,
   spacing: () => ({ kind: 'space', space: { blank: true } }),
   kern: convertKern,
   styling: (n, ctx) => wrap(converter.formula(nodeList(n, 'body'), ctx), STYLES[stringField(n, 'style') ?? '']),
   color: (n, ctx) => asRow(converter.formula(nodeList(n, 'body'), ctx)),
-  mclass: (n, ctx) => {
-    const t = FAMILY_TYPES[stringField(n, 'mclass') ?? ''] ?? TYPE_ORDINARY;
-    return {
-      kind: 'typed',
-      left: t,
-      right: t,
-      limits: 'nolimits',
-      body: wrap(converter.formula(nodeList(n, 'body'), ctx)),
-    };
-  },
+  mclass: convertMclass,
 };
 
 /** Convert one node; an unmodelled kind is noted and sized by its body. */

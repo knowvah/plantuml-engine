@@ -1,0 +1,8 @@
+@startuml
+a -> b
+note left
+{{def
+x^2
+}}
+end note
+@enduml

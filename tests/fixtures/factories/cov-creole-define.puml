@@ -1,0 +1,4 @@
+@startcreole
+!$x="yo"
+$x
+@endcreole

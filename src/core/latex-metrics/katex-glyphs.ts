@@ -24,6 +24,9 @@ export interface Glyph {
   height: number;
   depth: number;
   italic: number;
+  /** KaTeX's `skew` (the TFM kern against the font's skew char, which
+   *  `DefaultTeXFont#getSkew` reads); absent when KaTeX gives none. */
+  skew?: number;
 }
 
 /** The fields this module reads from a KaTeX parse node. Every other field
@@ -53,7 +56,15 @@ export interface KNode {
  * latex/math expressions that KaTeX rejects, and with this mapping none is
  * rejected. Add an entry when a fixture needs it, not speculatively.
  */
-export const KATEX_MACROS: Readonly<Record<string, string>> = { '\\mbox': '\\text' };
+export const KATEX_MACROS: Readonly<Record<string, string>> = {
+  '\\mbox': '\\text',
+  // cmf T3f: JLaTeXMath's own definitions of commands KaTeX lacks, copied from the jar
+  // (javap): `PredefinedTeXFormulas.<clinit>` puts `sech`/`csch` as these strings, and
+  // `PredefinedCommands` registers `\-` as `insertBreakMark_macro` (PredefMacroInfo case 271), a `BreakMarkAtom` with no extent.
+  '\\sech': '\\mathop{\\mathrm{sech}}\\nolimits',
+  '\\csch': '\\mathop{\\mathrm{csch}}\\nolimits',
+  '\\-': '',
+};
 
 type KatexEntry = (expr: string, options: Record<string, unknown>) => unknown;
 
@@ -104,10 +115,10 @@ const isNumber = (v: unknown): v is number => typeof v === 'number';
 
 /** A KaTeX `SymbolNode` with visible text, as a {@link Glyph}. */
 function asSymbol(v: Readonly<Record<string, unknown>>): Glyph | undefined {
-  const { text, width, height, depth, italic } = v;
+  const { text, width, height, depth, italic, skew } = v;
   if (typeof text !== 'string' || text === '' || text === ZERO_WIDTH_SPACE) return undefined;
   if (!isNumber(width) || !isNumber(height) || !isNumber(depth) || !isNumber(italic)) return undefined;
-  return { width, height, depth, italic };
+  return isNumber(skew) ? { width, height, depth, italic, skew } : { width, height, depth, italic };
 }
 
 function findSymbol(v: unknown): Glyph | undefined {

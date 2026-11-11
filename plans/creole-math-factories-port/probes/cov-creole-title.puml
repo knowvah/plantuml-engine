@@ -1,0 +1,9 @@
+@startcreole
+title foo
+scale 2
+skinparam backgroundColor yellow
+<style>
+root { BackGroundColor red }
+</style>
+hello
+@endcreole

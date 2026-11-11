@@ -2118,3 +2118,44 @@ internal `jarCompatibleStyleInput` option is set (`src/core/
 internal-render-options.ts`, not exported from `src/index.ts`, no public
 `RenderOptions` field). Every conformance renderer passes it, so scores and
 pins compare the jar's behaviour with ours, never the extension.
+
+---
+
+## LaTeX rendering engine — rows named by creole-math-factories-port (cmf, 2026-11-11)
+
+This extends "LaTeX rendering engine — KaTeX, not JLaTeXMath (permanent)" above: the forcing library is KaTeX in
+every row below. Each row is named with its own mechanism; rows whose remaining diff is not KaTeX's are on the
+`needs-ruling` issues #169 and #170, not here.
+
+**`@startmath` / `@startlatex`: glyph paths versus KaTeX's MathML.** These diagrams write Batik's document of the
+JLaTeXMath icon (`math/ScientificEquationSafe.java:149`, decisions.md D4). The port reproduces Batik's envelope byte for
+byte (prolog, root style, size, comment, `genericDefs`, the background paint group); the canvas size follows
+JLaTeXMath's rules exactly (`latex-metrics/`). Only the glyph group differs: JLaTeXMath writes its glyphs as `<path>`s
+in a `<g transform=… style=…>`, and the port writes KaTeX's MathML in a `<foreignObject>`. Each row below differs only
+under `svg/g[1]` (11 diffs; 9 to 15 where the foreground colour or opacity sits in the glyph group's style):
+`unknown/caruta-83-deta919`, `unknown/cukuba-10-cipo394`, `unknown/geravi-79-nafu641`,
+`unknown/kunuja-48-ropa074`, `unknown/losizo-97-tiki566`, `unknown/renice-72-peda344`,
+`unknown/savudo-32-lopu722`, `unknown/sozeke-50-rilu829`, `unknown/tijica-43-sesu519`,
+`unknown/velono-84-vude605`, `unknown/zoziko-62-toko934` (math), `unknown/fajagi-98-funo863`,
+`unknown/seluva-39-xebe172` (latex). The authored `tests/fixtures/factories/cov-math-*` and `cov-latex-*` documents
+are the same case.
+
+**A formula KaTeX cannot parse but JLaTeXMath typesets.** Each image is sized as the empty formula (8×8) because
+KaTeX throws; the jar typesets it:
+- `unknown/rozesu-56-suve592`: `^` alone, "KaTeX parse error: Expected group after '^' at position 1" (jar 9×22),
+  and `_` alone, "Expected group after '_' at position 1" (jar 8×25). The row's other diffs are its three
+  rollbacks (#170).
+- `unknown/kebadi-11-fula439`: `\boxempty` (AsciiMath `square`), "Undefined control sequence: \boxempty", which
+  JLaTeXMath draws from `stmary10` code 63 (jar 24×22). The row's other diff is its one rollback (#170).
+- `tests/fixtures/factories/cov-latex-syntax`: `\frac{a`, "Unexpected end of input in a macro argument, expected '}'"
+  (jar 24×45).
+
+**KaTeX's parse tree drops what the rule needs.** `unknown/mimumu-93-fota059`: KaTeX's lexer folds a run of spaces
+inside `\text{…}` into one space node, while JLaTeXMath typesets each space. `\ \text{  a}` is 38×17 in the jar and
+32×17 here; `\ \text{  a  }\ {b}` is 67×22 against 54×22. These two image widths are the row's only diffs.
+
+**Not KaTeX, on ruling issues instead.** `unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`,
+`unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237`, `unknown/xanuke-94-tope429` (and part of `kebadi`,
+`rozesu`, `roxita`): a creole rollback is laid out by its PNG export, which host AWT fonts measure (#170).
+`unknown/raxanu-33-xuzu111` and `roxita` image 34: JLaTeXMath's shared `SymbolAtom` state across formulas (#170).
+`unknown/cikoge-60-riti614` (`help font`): host font list (#169).

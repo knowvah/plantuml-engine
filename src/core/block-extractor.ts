@@ -42,6 +42,11 @@ export type DiagramType =
   | 'ebnf'
   | 'regex'
   | 'wire'
+  | 'creole'
+  | 'math'
+  | 'latex'
+  | 'def'
+  | 'help'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -160,6 +165,11 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   ebnf: 'ebnf',
   regex: 'regex',
   wire: 'wire',
+  // cmf D2: the four `PSystemBasicFactory` tags (`DiagramType.java:107-108, :124-125, :162-163, :167-168`).
+  creole: 'creole',
+  math: 'math',
+  latex: 'latex',
+  def: 'def',
   chart: 'chart',
   dot: 'dot',
 };
@@ -414,6 +424,12 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   ebnf: UpstreamDiagramType.EBNF,
   regex: UpstreamDiagramType.REGEX,
   wire: UpstreamDiagramType.WIRE,
+  creole: UpstreamDiagramType.CREOLE,
+  math: UpstreamDiagramType.MATH,
+  latex: UpstreamDiagramType.LATEX,
+  def: UpstreamDiagramType.DEFINITION,
+  // `HelpFactory` is `DiagramType.HELP` (HelpFactory.java:51), a member of `@startuml`'s set (DiagramType.java:198-201).
+  help: UpstreamDiagramType.HELP,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

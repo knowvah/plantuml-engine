@@ -79,6 +79,8 @@ const DIAGRAM_TYPE_EBNF = 'EBNF';
 const DIAGRAM_TYPE_REGEX = 'REGEX';
 const DIAGRAM_TYPE_WIRE = 'WIRE';
 const DIAGRAM_TYPE_CHART = 'CHART';
+/** cmf T3a: `Help` is a `TitledDiagram` (`help/Help.java:58`). */
+const DIAGRAM_TYPE_HELP = 'HELP';
 
 // ---------------------------------------------------------------------------
 // class finalize (formerly class/renderer-shell.ts#assembleClassShell)
@@ -331,6 +333,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_WIRE:
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
+    case DIAGRAM_TYPE_HELP:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:
       return finalizeGenericRootFragment(fragment);

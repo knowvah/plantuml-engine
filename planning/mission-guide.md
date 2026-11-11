@@ -563,6 +563,14 @@ SI-4 ports golem as a standalone module before this phase begins.
 
 ---
 
+## Phase 5q — Creole, Math, LaTeX, Definition and Help factories — DONE (creole-math-factories-port, #129)
+
+**Java source:** `klimt/creole/legacy/PSystemCreole*.java`, `math/PSystem{Math,Latex}*.java`, `math/ScientificEquationSafe.java`,
+`definition/`, `help/`, `syntax/LanguageDescriptor.java`, `command/PSystemBasicFactory.java`, `DirectOsDiagram.java`. Ported into
+`src/core/klimt/creole/legacy/`, `src/diagrams/{math,definition,help}/`, `src/core/syntax/`, `src/core/command/PSystemBasicFactory.ts`,
+`src/core/DirectOsDiagram.ts`, with JLaTeXMath's rollback (`src/core/latex-metrics/jlm-*.ts`) and sizing rules in `src/core/latex-metrics/`.
+Ratchet `svg-factories`. Remaining rows are on #169 and #170 or named in `DIVERGENCES.md`.
+
 ## Phase 6 — Markdown Integration
 
 **Java source:** None — this is a JS/TS-ecosystem feature with no upstream

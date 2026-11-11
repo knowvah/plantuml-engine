@@ -1,0 +1,752 @@
+{
+  "fixtures": [
+    {
+      "type": "factories",
+      "slug": "cov-creole-arg",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `hello`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-blank-first",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `hello`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-blank-mid",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `hello`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-code",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `<code>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-color",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `<color:red>x</color> <back:yellow>y</back> <font color=blue>z</font> <size:20>s</size> <u>u</u> <s>t</s> <w>w</w> <plain>p</plain>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-define",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `!$x=\"yo\"`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-embedded",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `{{`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-emoji",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `<:sunny:> <&check>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-empty",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: creole)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-handwritten",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `!option handwritten true`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-latex-block",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `<latex>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-latex-inline",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `a <latex>x^2</latex> b`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-lists",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `* one`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-mono-cjk",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `\"\"mono\"\" 日本語 ~~tilde~~ --st-- ^^w^^`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-tab",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `a\tb`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-table",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `|= h1 |= h2 |`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-theme",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `!theme amiga`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-title",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `title foo`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-tree",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `|_ a`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-creole-url",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): `[[http://a.b c]]`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-def-creole",
+      "topic": "DefinitionFactory (PSystemBuilder.java:169): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-def-empty",
+      "topic": "DefinitionFactory (PSystemBuilder.java:169): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-def-id",
+      "topic": "DefinitionFactory (PSystemBuilder.java:169): `x`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-def-newline",
+      "topic": "DefinitionFactory (PSystemBuilder.java:169): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-def-plain",
+      "topic": "DefinitionFactory (PSystemBuilder.java:169): `x`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-embedded-note-creole",
+      "topic": "embedded note in a diagram: `a -> b`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-embedded-note-def",
+      "topic": "embedded note in a diagram: `a -> b`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-embedded-note-latex",
+      "topic": "embedded note in a diagram: `a -> b`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-embedded-note-math",
+      "topic": "embedded note in a diagram: `a -> b`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-bad",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help foo`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-bare",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-colors",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help colors`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-comment",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `' c`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-fonts",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help fonts`",
+      "status": "baseline",
+      "weightedScore": 2716,
+      "diffCount": 16,
+      "reason": "host font list, ruling #169",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-keywords",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help keywords`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-scale",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `scale 2`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-skinparam",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `skinparam backgroundColor yellow`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-style",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `<style>`",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 5,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-theme",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help theme`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-theme-cmd",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `!theme amiga`",
+      "status": "baseline",
+      "weightedScore": 223,
+      "diffCount": 147,
+      "reason": "shared !theme error-page source listing (.agent-notes/cmf-T3b.md)",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-title",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `title foo`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-trailing",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help type`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-two",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help type`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-types",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `help types`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-help-upper",
+      "topic": "HelpFactory (PSystemBuilder.java:188): `HELP   COLOR`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-color",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `color blue`",
+      "status": "baseline",
+      "weightedScore": 67,
+      "diffCount": 15,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-dollar",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `$$x^2$$`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-empty",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: latex)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-matrix",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}`",
+      "status": "baseline",
+      "weightedScore": 141,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-syntax",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `\\frac{a`",
+      "status": "baseline",
+      "weightedScore": 53,
+      "diffCount": 16,
+      "reason": "KaTeX parse error on \\frac{a (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-text",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `\\text{hello world}`",
+      "status": "baseline",
+      "weightedScore": 151,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-latex-unknown",
+      "topic": "LatexFactory (PSystemBuilder.java:173): `\\notacommand{x}`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-back",
+      "topic": "MathFactory (PSystemBuilder.java:172): `backgroundcolor #AABBCC`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-back-transparent",
+      "topic": "MathFactory (PSystemBuilder.java:172): `backgroundcolor transparent`",
+      "status": "baseline",
+      "weightedScore": 70,
+      "diffCount": 13,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-color",
+      "topic": "MathFactory (PSystemBuilder.java:172): `color red`",
+      "status": "baseline",
+      "weightedScore": 68,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-color-bad",
+      "topic": "MathFactory (PSystemBuilder.java:172): `color notacolor`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 9,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-color-hex",
+      "topic": "MathFactory (PSystemBuilder.java:172): `color #123456`",
+      "status": "baseline",
+      "weightedScore": 68,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-dpi-zero",
+      "topic": "MathFactory (PSystemBuilder.java:172): `dpi 0`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-empty",
+      "topic": "MathFactory (PSystemBuilder.java:172): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: math)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-last-wins",
+      "topic": "MathFactory (PSystemBuilder.java:172): `a`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-only-directive",
+      "topic": "MathFactory (PSystemBuilder.java:172): `color red`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-scale-bad",
+      "topic": "MathFactory (PSystemBuilder.java:172): `scale abc`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-scale-zero",
+      "topic": "MathFactory (PSystemBuilder.java:172): `scale 0`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-title",
+      "topic": "MathFactory (PSystemBuilder.java:172): `title foo`",
+      "status": "baseline",
+      "weightedScore": 118,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-trim",
+      "topic": "MathFactory (PSystemBuilder.java:172): `x^2`",
+      "status": "baseline",
+      "weightedScore": 66,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-unknown",
+      "topic": "MathFactory (PSystemBuilder.java:172): `glb x`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-math-upper",
+      "topic": "MathFactory (PSystemBuilder.java:172): `COLOR red`",
+      "status": "baseline",
+      "weightedScore": 68,
+      "diffCount": 11,
+      "reason": "KaTeX glyph group (DIVERGENCES.md cmf section)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-note-math",
+      "topic": "note in a diagram: `note \"<math>x^2</math>\" as N`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "9cf459148"
+    }
+  ]
+}

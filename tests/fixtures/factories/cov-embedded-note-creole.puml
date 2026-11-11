@@ -1,0 +1,8 @@
+@startuml
+a -> b
+note left
+{{creole
+x^2
+}}
+end note
+@enduml

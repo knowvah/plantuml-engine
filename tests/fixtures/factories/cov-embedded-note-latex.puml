@@ -1,0 +1,8 @@
+@startuml
+a -> b
+note left
+{{latex
+x^2
+}}
+end note
+@enduml

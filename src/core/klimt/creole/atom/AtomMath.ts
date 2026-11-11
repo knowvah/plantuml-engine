@@ -97,6 +97,7 @@ import type { ScientificEquationSafe } from '../../../math/ScientificEquationSaf
 import type { UGraphic } from '../../UGraphic.js';
 import type { StringBounder } from '../../font/StringBounder.js';
 import type { Atom } from '../SheetBlock1.js';
+import { UImageSvg } from '../../shape/UImageSvg.js';
 
 /** Upstream's own `getColor` default when `foreground` is `null`
  *  (`XColor.BLACK`, java:88) — this port has no `XColor`, so the
@@ -116,7 +117,18 @@ export class AtomMath extends AbstractAtom implements Atom {
     this.background = background;
   }
 
-  protected calculateDimensionSlow(_stringBounder: StringBounder): XDimension2D {
+  /**
+   * `math.getImage(BLACK, WHITE)`'s size. When JLaTeXMath throws,
+   * `getImage` exports the rollback instead (`ScientificEquationSafe.java:116-129`);
+   * its PNG and SVG exports share `calculateFinalDimension`, so the rollback
+   * document's size is the image's (corpus: `glb` 29x25, `Lim` 33x25).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/atom/AtomMath.java:63-70
+   */
+  protected calculateDimensionSlow(stringBounder: StringBounder): XDimension2D {
+    if (!this.math.typesets()) {
+      const rollback = new UImageSvg(this.math.rollbackSvg(stringBounder), 1);
+      return new XDimension2D(rollback.getWidth(), rollback.getHeight());
+    }
     const { width, height } = measureLatex(this.math.getSource());
     return new XDimension2D(width, height);
   }
@@ -126,6 +138,13 @@ export class AtomMath extends AbstractAtom implements Atom {
   }
 
   drawU(ug: UGraphic): void {
+    // `math.getSvg(1, fore, back)` falls back to the rollback document when
+    // JLaTeXMath throws (ScientificEquationSafe.java:91-115), drawn as the
+    // `UImageSvg` it is (AtomMath.java:88-90).
+    if (!this.math.typesets()) {
+      ug.draw(new UImageSvg(this.math.rollbackSvg(ug.getStringBounder()), 1));
+      return;
+    }
     // `background` is stored for structural fidelity with upstream's
     // constructor shape but is not applied -- see this file's own module
     // doc comment.

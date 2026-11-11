@@ -200,8 +200,9 @@ class StripeAtomBuilder implements StripeBuilder {
     this.built.push({ kind: 'inline', atom: createQrcode(src, scale), ambientFont: this.font });
   }
 
-  pushLatexAtom(expr: string): void {
-    this.built.push({ kind: 'latex', expr, color: this.font.color });
+  /** `rollback`: the formula drawn monospaced when JLaTeXMath would throw (cmf D5). */
+  pushLatexAtom(expr: string, rollback?: string): void {
+    this.built.push({ kind: 'latex', expr, color: this.font.color, ...(rollback === undefined ? {} : { rollback }) });
   }
 
   /** Upstream: `StripeSimple#addEmoji` (java:245-266) — unknown name ->

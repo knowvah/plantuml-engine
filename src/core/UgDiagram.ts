@@ -55,6 +55,10 @@ import type { PreprocessingArtifact } from './tim/PreprocessingArtifact.js';
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:206 */
 const NO_SKIN_PARAM_DPI = 96;
 
+/** `getSvgLinkTarget()` with no skin param and no option is `null` (TextBlockExporter.java:372-378), which
+ *  `SvgGraphics.LinkData` writes as `target=""` (SvgGraphics.java:1164; jar: `cov-creole-url`). */
+const NO_SKIN_PARAM_LINK_TARGET = '';
+
 /**
  * The settings `TextBlockExporter.Builder` collects for a non-titled diagram
  * (UgDiagram.java:137-145): the decorated block, `backcolor` (the builder's
@@ -114,6 +118,15 @@ function backcolorOf(textBlock: TextBlock): HColorOrPaint | undefined {
 }
 
 /**
+ * `TextBlockExporter.Builder`'s `backcolor`: the block's own `getBackcolor()`
+ * when it has one, else `HColors.WHITE.withDark(HColors.BLACK)`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:407, :421-423
+ */
+export function builderBackcolor(textBlock: TextBlock): HColorOrPaint {
+  return backcolorOf(textBlock) ?? builderDefaultBackcolor();
+}
+
+/**
  * `TextBlockExporter#exportTo` for SVG, with `skinParam == null` (so no
  * border, `maybeDrawBorder` java:216-218): `calculateFinalDimension` (the block
  * plus the margins, java:198-202) is the canvas `minDim`, the scale resolves
@@ -135,6 +148,7 @@ export function exportTo(exporter: TextBlockExporter, stringBounder: StringBound
     backcolor: exporter.backcolor,
     scale: scaleFactor,
     colorMapper: exporter.colorMapper,
+    linkTarget: NO_SKIN_PARAM_LINK_TARGET,
   });
   const svg = UGraphicSvg.build(0, option, VERSION_PLACEHOLDER, driverBounderFor(measurer), measurer);
   let ug: UGraphic = svg.apply(new UTranslate(margin.getLeft(), margin.getTop()));
@@ -206,7 +220,7 @@ export abstract class UgDiagram {
     if (backColor !== undefined) result = TextBlockUtils.addBackcolor();
     return {
       textBlock: result,
-      backcolor: backcolorOf(result) ?? builderDefaultBackcolor(),
+      backcolor: builderBackcolor(result),
       margin: this.getDefaultMargins(),
       scale: this.getScale(),
       colorMapper: this.muteColorMapper(ColorMapper.IDENTITY),

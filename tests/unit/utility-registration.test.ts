@@ -59,6 +59,11 @@ import { buildSpriteAssetsStore } from '../helpers/sprite-assets-store.js';
 import { buildUtilityAssetsStore } from '../helpers/utility-assets-store.js';
 import { sourceOf } from '../helpers/utility-single-line.js';
 import { CI_RENDER_BUDGET_MS } from '../helpers/ci-test-budgets.js';
+import { creolePlugin } from '../../src/core/klimt/creole/legacy/PSystemCreoleFactory.js';
+import { definitionPlugin } from '../../src/diagrams/definition/PSystemDefinitionFactory.js';
+import { helpPlugin } from '../../src/diagrams/help/index.js';
+import { latexPlugin } from '../../src/diagrams/math/PSystemLatexFactory.js';
+import { mathPlugin } from '../../src/diagrams/math/PSystemMathFactory.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // rubeku-92-vefi942 rendered three times, 2,723ms);
@@ -94,6 +99,10 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [wbsPlugin, 157],
   [chartPlugin, 158],
   [packetdiagPlugin, 159],
+  [definitionPlugin, 169],
+  [mathPlugin, 172],
+  [latexPlugin, 173],
+  [creolePlugin, 174],
   [eggPlugin, 175],
   [appleTwoPlugin, 176],
   [ripPlugin, 177],
@@ -102,6 +111,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [chronologyPlugin, 184],
   [dedicationPlugin, 186],
   [timingPlugin, 187],
+  [helpPlugin, 188],
   [wirePlugin, 189],
   [jsonPlugin, 190],
   [filesPlugin, 192],

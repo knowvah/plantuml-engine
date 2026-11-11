@@ -809,7 +809,9 @@ describe('routing conformance — jar-error classification', () => {
     // 10627 -> 10931 at tep/T5 (2026-11-11): the 152 timing rows the jar draws flip to agree (TIMING/TIMING,
     // PSystemTimingFactory registered), plus their 152 svg-timing golden clones. Derivation: 10627 + 152 + 152 = 10931.
     // 10931 -> 10967 at wrp/T4 (2026-11-11): the 18 wire rows flip to agree, +18 svg-wire golden clones.
-    expect(pinnedAgree.length).toBe(10967);
+    // 10967 -> 10989 at cmf/T4 (2026-11-11): the 5 help rows flip to agree (HELP/HELP), +17 svg-factories golden
+    // clones. Derivation: 10967 + 5 + 17 = 10989.
+    expect(pinnedAgree.length).toBe(10989);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -836,7 +838,8 @@ describe('routing conformance — jar-error classification', () => {
     // 253 -> 209 at rep/T4 (2026-11-10): the 44 regex rows flip to agree. Derivation: 253 - 44 = 209.
     // 209 -> 57 at tep/T5 (2026-11-11): the 152 timing rows flip to agree (139 timing + 13 unknown). Derivation: 209 - 152 = 57.
     // 57 -> 39 at wrp/T4 (2026-11-11): the 18 wire rows flip to agree.
-    expect(pinnedMisroutes.length).toBe(39);
+    // 39 -> 34 at cmf/T4 (2026-11-11): the 5 help rows flip to agree (the help engine registers).
+    expect(pinnedMisroutes.length).toBe(34);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -940,7 +943,8 @@ describe('routing conformance — jar-error classification', () => {
     // 10954 -> 10998 at rep/T4 (2026-11-10): +44 svg-regex golden clones, all agree. Derivation: 10954 + 44 = 10998.
     // 10998 -> 11150 at tep/T5 (2026-11-11): +152 svg-timing golden clones, all agree. Derivation: 10998 + 152 = 11150.
     // 11150 -> 11168 at wrp/T4 (2026-11-11): +18 svg-wire golden clones.
-    expect(manifest.fixtures.length).toBe(11168);
+    // 11168 -> 11185 at cmf/T4 (2026-11-11): +17 svg-factories golden clones, all agree.
+    expect(manifest.fixtures.length).toBe(11185);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1032,7 +1036,8 @@ describe('routing conformance — jar-error classification', () => {
     // 253 -> 209 at rep/T4 (2026-11-10): the 44 regex rows flip to agree.
     // 209 -> 57 at tep/T5 (2026-11-11): the 152 timing rows flip to agree.
     // 57 -> 39 at wrp/T4 (2026-11-11): the 18 wire rows flip to agree.
-    expect(censused.length).toBe(39);
+    // 39 -> 34 at cmf/T4 (2026-11-11): the 5 help rows flip to agree.
+    expect(censused.length).toBe(34);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

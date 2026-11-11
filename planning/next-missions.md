@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## creole-math-factories-port (cmf) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #129; per-task history on the local tag `creole-math-factories-port/pre-squash`)
+
+The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMathFactory`, `PSystemLatexFactory`, `PSystemCreoleFactory`, `HelpFactory`) plus `PSystemBasicFactory` and `LanguageDescriptor` are ported and registered at their `PSystemBuilder` lines. Of the 41 in-scope rows, 17 are conformant and pinned in the new `svg-factories` ratchet (def 2/2, help 4/5, creole 11/21); math and latex draw Batik's document byte for byte except the glyph group (KaTeX, named per row in `DIVERGENCES.md`). JLaTeXMath's rollback is mirrored from a names-only vocabulary generated from the jar, and `latex-metrics/` gained accents, over/under lines and braces, stacks, `\\` newlines, negations, dots and the kern/ligature loop: 503 of 510 creole `<math>` images size as the jar. 68 authored fixtures. 0 rows lost in any engine.
+
+**What remains:**
+
+1. **#169** (`help font` host font list, D8) and **#170** (creole rollbacks the jar sizes from a PNG export measured by host AWT fonts; JLaTeXMath's shared `SymbolAtom` state) need rulings. #136's `Blocked by #169/#170` lines could not be added from the session (`.agent-notes/cmf-T3g.md`).
+2. **KaTeX limits** named in `DIVERGENCES.md`: `^`/`_` alone, `\boxempty`, `\frac{a`, runs of spaces in `\text{}`.
+3. **`!theme` error pages** list the theme's expanded lines in the jar and not here (`.agent-notes/cmf-T3b.md`), in every engine.
+4. **`DIVERGENCES.md` is spliced into itself** since #121 (`.agent-notes/cmf-T3g.md`); a cleanup restores it.
+5. **svek and class label paths** still size `<latex>` atoms through KaTeX only; the rollback reaches the klimt creole path, `AtomMath` and the top-level diagrams.
+
 ## wire-engine-port (wrp) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #128; per-task history on the local tag `wire-engine-port/pre-squash`)
 
 `net/sourceforge/plantuml/wire/` ported file for file into `src/diagrams/wire/` and registered at `PSystemBuilder.java:189`. `wire` went 0/0/18 to 18/0/0, byte-identical on the first survey and pinned in `svg-wire`. 113 authored fixtures, one open. No divergence added; 0 rows lost in any engine.

@@ -1,0 +1,3 @@
+@startuml
+note "<math>x^2</math>" as N
+@enduml
