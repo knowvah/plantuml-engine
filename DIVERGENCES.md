@@ -1970,7 +1970,7 @@ On 2026-10-10 all 57 such rows errored under v1.2026.8 (`149874a`): wbs 28, unkn
 
 Each row is signed in `oracle/accepted-divergences.json`. The survey still prints these rows `diverged` with `firstDiff: 'error-page'`. A new row of this kind needs the same release check before it is signed.
 
-No signed row waits on an engine any more. `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801` are no longer divergences: the regex engine (#126) refuses their line 2 with the jar's `Error parsing: Bad quantifier {([^{}` (`RegexExpression.java:244-265`), so the jar errors and we error. Their entries moved to `retired`, unsigned, and #167 asks the maintainer to confirm. `svg-ebnf/ladifa-97-keme950` is the same case for the EBNF engine (#125): it refuses line 5 with the jar's `Syntax Error?`, its entry moved to `retired`, unsigned, and #166 asks the maintainer to confirm.
+No signed row waits on an engine any more. `svg-regex/bakuza-41-bulo451` and `svg-regex/tajefa-31-pefi801` are no longer divergences: the regex engine (#126) refuses their line 2 with the jar's `Error parsing: Bad quantifier {([^{}` (`RegexExpression.java:244-265`), so the jar errors and we error. Their entries are retired, confirmed by the maintainer on 2026-11-11 (#167). `svg-ebnf/ladifa-97-keme950` is the same case for the EBNF engine (#125): it refuses line 5 with the jar's `Syntax Error?`, and its entry is retired, confirmed on 2026-11-10 (#166). The four nwdiag rows `svg-unknown/jifoke-84-jude859`, `ligalo-62-suvu444`, `torazi-09-gago377` and `zeceme-22-rade890` are the same case for the nwdiag engine (#124), confirmed on 2026-11-10 (#165).
 
 Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). Both give exit 200 under v1.2026.8 (`149874a`):
 - **A gradient `LineColor` reaching `partition`** (`root { LineColor #0A0-#00A }`): the jar throws `UnsupportedOperationException` at `HColor.withDark` (`HColor.java:126`), from `ValueImpl.asColor` (`ValueImpl.java:106`) and `FtileGroup.<init>` (`FtileGroup.java:102`). We draw the partition.
@@ -1996,6 +1996,10 @@ removed from every non-GPL edition (`FlashCodeUtilsZxing.java:54`, `// ::remove 
 blank 10×10 image at the requested scale (`<qrcode:…>` defaults to scale 3: 30×30). The oracle is the GPL build, whose
 zxing encodes a real code (29 modules × 3 = 87×87). Row: `nomave-73-kuro838` (53 diffs, aar-T6a, 2026-11-06): every one
 is geometric — the image size and the title and box sizes and x/y it shifts — with no colour, font or structure diff.
+
+### `help font` lists no fonts
+
+**Category:** library-forced, by maintainer ruling (2026-11-11, #169): a browser-safe library has no API that enumerates the host's installed fonts. `CommandHelpFont#executeArg` (`help/CommandHelpFont.java:71-81`) writes `<b>Help on font`, a blank line and ` The possible font on your system are :`, then one `* <name>` line for each entry of `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`, the JVM host's font families. The port ports the command whole (`src/diagrams/help/CommandHelpFont.ts`). Its `availableFontFamilyNames()` seam returns no names, so the page is the three header lines only, 49 px tall, where the oracle host's jar lists 196 families on a 276×3137 page. Copying the oracle machine's list was rejected: it would pass the comparison by copying the test's own data, and would print a stranger's fonts. Rows: `unknown/cikoge-60-riti614` (`help font`) and `tests/fixtures/factories/cov-help-fonts.puml` (`help fonts`). `listfonts` (`PSystemListFontsFactory`, #135) reads the same list, and this ruling covers it when it is ported.
 
 ### Chronology draws, though the jar has no such diagram
 
@@ -2124,8 +2128,8 @@ pins compare the jar's behaviour with ours, never the extension.
 ## LaTeX rendering engine — rows named by creole-math-factories-port (cmf, 2026-11-11)
 
 This extends "LaTeX rendering engine — KaTeX, not JLaTeXMath (permanent)" above: the forcing library is KaTeX in
-every row below. Each row is named with its own mechanism; rows whose remaining diff is not KaTeX's are on the
-`needs-ruling` issues #169 and #170, not here.
+every row below. Each row is named with its own mechanism. Rows whose remaining diff is not KaTeX's are listed at
+the end of this section with the maintainer's rulings on #169 and #170 (2026-11-11).
 
 **`@startmath` / `@startlatex`: glyph paths versus KaTeX's MathML.** These diagrams write Batik's document of the
 JLaTeXMath icon (`math/ScientificEquationSafe.java:149`, decisions.md D4). The port reproduces Batik's envelope byte for
@@ -2154,8 +2158,21 @@ KaTeX throws; the jar typesets it:
 inside `\text{…}` into one space node, while JLaTeXMath typesets each space. `\ \text{  a}` is 38×17 in the jar and
 32×17 here; `\ \text{  a  }\ {b}` is 67×22 against 54×22. These two image widths are the row's only diffs.
 
-**Not KaTeX, on ruling issues instead.** `unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`,
-`unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237`, `unknown/xanuke-94-tope429` (and part of `kebadi`,
-`rozesu`, `roxita`): a creole rollback is laid out by its PNG export, which host AWT fonts measure (#170).
-`unknown/raxanu-33-xuzu111` and `roxita` image 34: JLaTeXMath's shared `SymbolAtom` state across formulas (#170).
-`unknown/cikoge-60-riti614` (`help font`): host font list (#169).
+**JLaTeXMath's shared symbol state (maintainer ruling 2026-11-11, #170).** **Category:** library-forced, by
+JLaTeXMath's process-wide state. `{\int_{{2}}^{{4}}}{2}{x}{\left.{d}{x}\right.}={x}^{{2}}{{\mid}_{{2}}^{{4}}}` is 155×57
+when the jar renders it alone, and the port gives the same. Inside `unknown/raxanu-33-xuzu111` (image 13) and
+`unknown/roxita-24-tixu731` (image 34) the jar draws it 149×57. For a one-symbol group, JLaTeXMath's `TeXParser.parse`
+`{` case sets `atom.type = 0` on the atom `getArgument` returns, and that atom is the cached `SymbolAtom` every formula
+in the JVM shares (`\mid` here). A formula's spacing therefore depends on which formulas the same JVM typeset before
+it, in which order (journal row 32, `plans/creole-math-factories-port/decision-journal.md`). A pure library renders each
+call from its inputs alone and keeps no state between formulas or renders, so the port types each formula as the jar
+does in a fresh JVM. Those two image sizes are this mechanism's only diffs.
+
+**Not a divergence: rollback atoms are sized by the PNG export (maintainer ruling 2026-11-11, #170, option 3).**
+`unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`, `unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237`,
+`unknown/xanuke-94-tope429` (and part of `kebadi`, `rozesu`, `roxita`): `AtomMath#calculateDimensionSlow` sizes a
+rollback with its PNG export (`AtomMath.java:63-70`), whose text the host's AWT fonts measure (`FileFormat.java:177-274`).
+The oracle's deterministic-text seam covers the SVG bounder only. The ruling extends the seam to the PNG bounder, so
+these rows are open work, not accepted deltas.
+
+`unknown/cikoge-60-riti614` (`help font`) is named under "`help font` lists no fonts" (#169).
