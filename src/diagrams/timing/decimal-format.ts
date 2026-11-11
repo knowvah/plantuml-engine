@@ -23,7 +23,9 @@ const EXPONENT_BIAS = 1075;
 const MANTISSA_BITS = 52n;
 const MANTISSA_MASK = (1n << MANTISSA_BITS) - 1n;
 const HIDDEN_BIT = 1n << MANTISSA_BITS;
-const EXPONENT_MASK = 0x7ffn;
+const EXPONENT_MASK = 0x7ff;
+/** The exponent field starts this many bits into a double's top 16 bits. */
+const EXPONENT_SHIFT_IN_TOP16 = 4;
 const TEN = 10n;
 
 /** What the pattern and the symbols say. `groupingSeparator` is `undefined` when grouping is not used. */
@@ -55,7 +57,7 @@ function exactBinary(abs: number): readonly [bigint, number] {
   const bits = new DataView(new ArrayBuffer(8));
   bits.setFloat64(0, abs);
   const raw = bits.getBigUint64(0);
-  const biased = Number((raw >> MANTISSA_BITS) & EXPONENT_MASK);
+  const biased = (bits.getUint16(0) >> EXPONENT_SHIFT_IN_TOP16) & EXPONENT_MASK;
   const fraction = raw & MANTISSA_MASK;
   return biased === 0 ? [fraction, 1 - EXPONENT_BIAS] : [fraction | HIDDEN_BIT, biased - EXPONENT_BIAS];
 }

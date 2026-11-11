@@ -197,7 +197,14 @@ function macroNames() {
 
 /** `<Symbol name="...">` outside XML comments. */
 function symbolNames(file) {
-  const xml = entry(file).toString('utf8').replace(/<!--[\s\S]*?-->/g, '');
+  const parts = entry(file).toString('utf8').split('<!--');
+  const xml = parts
+    .map((part, i) => {
+      if (i === 0) return part;
+      const end = part.indexOf('-->');
+      return end < 0 ? `<!--${part}` : part.slice(end + 3);
+    })
+    .join('');
   return [...xml.matchAll(/<Symbol\s+name="([^"]*)"/g)].map((m) => m[1]);
 }
 

@@ -33,7 +33,7 @@ function refusalMessage(text: string): string {
 function texts(diagram: Parameters<typeof drawBody>[0]): string[] {
   return drawBody(diagram)
     .filter((e) => e.startsWith('<text'))
-    .map((e) => e.replace(/<[^>]*>/g, ''));
+    .map((e) => e.split(/<[^>]*>/).join(''));
 }
 
 describe('PLAYER_CODE', () => {
