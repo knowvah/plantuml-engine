@@ -1,0 +1,8 @@
+@startuml
+caption Only caption
+concise "C" as C
+@0
+C is a
+@10
+C is b
+@enduml

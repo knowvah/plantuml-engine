@@ -1,0 +1,10 @@
+@startuml
+concise "C" as C
+@0
+C is x
+@50
+C is y
+C@0 <-[#red]-> @20 : red
+C@20 <-[dashed]-> @40 : dashed
+C@10 <-[bold]-> @30
+@enduml

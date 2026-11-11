@@ -1,0 +1,19 @@
+@startuml
+concise "C" as C
+robust "R" as R
+@0
+C is a
+R is b
+@10
+C is d
+R is e
+@30
+C is f
+R is g
+C@0 <-[#red]-> @10 : red
+R@10 <-[dashed]-> @30
+@C
+@10 <-[hidden]-> @+20 : hid
+@R
+@0 <-[#blue,dotted,bold]-> @10 : multi
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+clock "Clk" as C with period 10
+analog "Ana" between 0 and 10 as A
+@0
+A is 2
+@50
+A is 8
+C -> A : sampled
+A -> C : back
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+analog "A" between 5 and 5 as A
+@0
+A is 5
+@10
+A is 5
+@enduml

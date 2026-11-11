@@ -1,0 +1,12 @@
+@startuml
+robust "R" as R
+concise "C" as C
+@0
+R is a
+C is x
+@50
+R is b
+C is y
+@10 <-> @40 : {30 ms}
+@0 <-> @50
+@enduml

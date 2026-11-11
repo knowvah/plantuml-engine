@@ -1,0 +1,14 @@
+@startuml
+clock "Clk" as C with period 50 pulse 15 offset 10
+binary "B" as B
+analog "A" between 0 and 10 as A
+@0
+B is low
+A is 2
+@100
+B is high
+A is 8
+B@100 -> C@60 : high
+C@75 -> A@25 : low
+A@25 -> B@5 : mid
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+analog "A" between -10 and -2 as A
+@0
+A is -5
+@10
+A is -8
+@enduml

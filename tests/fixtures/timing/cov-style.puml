@@ -1,0 +1,18 @@
+@startuml
+<style>
+timingDiagram {
+  LineColor red
+  FontColor blue
+  robust { LineThickness 3 }
+  concise { BackGroundColor yellow }
+}
+</style>
+robust "R" as R
+concise "C" as C
+@0
+R is a
+C is b
+@10
+R is c
+C is d
+@enduml

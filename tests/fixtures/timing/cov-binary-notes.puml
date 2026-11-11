@@ -1,0 +1,13 @@
+@startuml
+binary "B" as B
+B is high
+@0
+B is {low,high}
+@10
+B is high : up
+@20
+B is low
+note top of B : top note
+note bottom of B : bottom note
+B@10 <-> @20 : {10 ms}
+@enduml

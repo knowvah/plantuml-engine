@@ -1,0 +1,13 @@
+@startuml
+clock "Fast" as F with period 10
+clock "Slow" as S with period 20 pulse 5 offset 3
+binary "B" as B
+@F*0
+B is low
+@F*3
+B is high
+@S*2
+B is low
+@F*8
+B is high
+@enduml

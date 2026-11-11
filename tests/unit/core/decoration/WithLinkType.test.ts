@@ -7,6 +7,8 @@ import { LinkStyle } from '../../../../src/core/decoration/LinkStyle.js';
 import { Colors } from '../../../../src/core/abel/Colors.js';
 import { ColorType } from '../../../../src/core/abel/ColorType.js';
 import { parseSimpleColor } from '../../../../src/core/klimt/color/HColorSet.js';
+import { HColors } from '../../../../src/core/klimt/color/HColors.js';
+import { HColorGradient } from '../../../../src/core/klimt/color/HColorGradient.js';
 
 /** Concrete subclass standing in for `abel/Link` (goNorank recorded). */
 class TestWithLinkType extends WithLinkType {
@@ -132,22 +134,36 @@ describe('WithLinkType', () => {
   it('applyStyle color tokens: segment 0 is the line color, later segments are supplementary', () => {
     const w = new TestWithLinkType();
     w.applyStyle('red;blue');
-    expect(w.getSpecificColor()).toEqual(parseSimpleColor('red'));
+    expect(w.getSpecificColor()).toEqual(HColors.simple(parseSimpleColor('red')!));
     expect(w.getSupplementaryColors()).toHaveLength(1);
-    expect(w.getSupplementaryColors()[0]!.getColor(ColorType.LINE)).toEqual(parseSimpleColor('blue'));
+    expect(w.getSupplementaryColors()[0]!.getColor(ColorType.LINE)).toEqual(HColors.simple(parseSimpleColor('blue')!));
   });
 
   it('applyStyle skips empty tokenizer segments (StringTokenizer semantics)', () => {
     const w = new TestWithLinkType();
     w.applyStyle('red;;blue');
-    expect(w.getSpecificColor()).toEqual(parseSimpleColor('red'));
+    expect(w.getSpecificColor()).toEqual(HColors.simple(parseSimpleColor('red')!));
     expect(w.getSupplementaryColors()).toHaveLength(1);
+  });
+
+  it('transparent and background are HColors.none() (HColorSet.java:82-83), not white', () => {
+    for (const token of ['#transparent', 'background']) {
+      const w = new TestWithLinkType();
+      w.applyStyle(token);
+      expect(w.getSpecificColor()).toBe(HColors.none());
+    }
+  });
+
+  it('a gradient token is an HColorGradient (HColorSet.java:109-117)', () => {
+    const w = new TestWithLinkType();
+    w.applyStyle('red-blue');
+    expect(w.getSpecificColor()).toBeInstanceOf(HColorGradient);
   });
 
   it('unknown color falls back to white (getColorOrWhite)', () => {
     const w = new TestWithLinkType();
     w.applyStyle('notarealcolorxyz');
-    expect(w.getSpecificColor()).toEqual({ r: 255, g: 255, b: 255, a: 255 });
+    expect(w.getSpecificColor()).toEqual(HColors.WHITE);
   });
 
   it('mixed style + color segment sequence (dashed;bold applies both)', () => {

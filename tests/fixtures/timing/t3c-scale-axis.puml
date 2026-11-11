@@ -1,0 +1,10 @@
+@startuml
+scale 2 d as 40 pixels
+hide footbox
+show footbox
+concise "C" as C
+@2020/01/01
+C is a
+@2020/01/05
+C is b
+@enduml

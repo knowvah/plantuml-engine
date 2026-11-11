@@ -108,7 +108,7 @@ contract; greenfield agents consume it.
 
 ---
 
-### Track SI-2 — `src/core/datetime.ts` (Date/Time Arithmetic)
+### Track SI-2 — `src/core/datetime.ts` (Date/Time Arithmetic) — REPLACED by `src/core/time` and `src/core/decimal`
 
 **Needed by:** Phase 4d (Gantt), Phase 4b (Timing)
 
@@ -171,20 +171,19 @@ preprocessor handles these cases.
 
 ---
 
-## Phase 4b — Timing Diagrams
+## Phase 4b — Timing Diagrams — DONE (timing-engine-port, #127)
 
-See **`planning/timing-deepdive.md`** for the full brief. This phase is blocked
-on Track SI-2 (datetime.ts).
+**Java source:** `timingdiagram/` (68 files), ported file for file into `src/diagrams/timing/`, `command/` and
+`graphic/`; `command/CommandStopAt.java` stays unported (its registration is commented out upstream,
+`TimingDiagramFactory.java:108`).
 
-**Java source:** `timingdiagram/` (25 files), `timingdiagram/command/` (24 files),
-`timingdiagram/graphic/` (17 files)
+**Result:** all 158 corpus rows reaching timing are conformant: 145 in `timing` (139 byte-identical, 6 jar error pages
+where we also error) and 13 in `unknown`, pinned in `svg-timing`. 141 authored fixtures in `tests/fixtures/timing/`:
+140 at 0 diffs or error pairs; `cov-embedded-state` waits on a state-engine gap (a `{{ }}` in a state note).
 
-**Reuse:** `src/core/datetime.ts` (SI-2); `src/core/svg.ts`; `src/core/theme.ts`;
-`src/core/creole.ts` for labels
-
-**Architecture constraint:** Built-in linear layout — do NOT use the dot engine.
-Time flows left-to-right; participants are horizontal lanes. Six rendering
-modes produce fundamentally different SVG output (see deep-dive doc).
+**Reuse:** `src/core/decimal/BigDecimal.ts` (a `java.math` subset), `src/core/time/` plus `GregorianCalendarGmt.ts`
+for lenient Julian dates, and the injected clock zone for `use date format` (timing-engine-port D3, D4). The dot engine
+is not involved: time runs left to right and players stack.
 
 ---
 

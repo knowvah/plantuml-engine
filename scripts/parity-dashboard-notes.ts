@@ -76,7 +76,13 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
       'The regex engine (#126) draws all 46 conformant: 44 byte-identical, pinned in `svg-regex`, and ' +
       '`bakuza-41-bulo451` and `tajefa-31-pefi801`, jar error pages where we also error (#167).',
   },
-  timing: { noteClass: 'notBuilt' },
+  timing: {
+    noteClass: 'openDefect',
+    detail:
+      'The timing engine (#127) draws all 145 conformant: 139 byte-identical, pinned in `svg-timing`, and six jar ' +
+      'error pages where we also error, pinned by score. 13 more `@startuml` timing rows are counted under `unknown`: ' +
+      'all conformant and pinned in `svg-timing`.',
+  },
   wire: { noteClass: 'notBuilt' },
   activity: {
     noteClass: 'openDefect',

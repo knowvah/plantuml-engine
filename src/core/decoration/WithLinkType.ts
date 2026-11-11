@@ -1,22 +1,8 @@
 import type { UStroke } from '../klimt/UStroke.js';
 import { ColorType } from '../abel/ColorType.js';
 import { Colors, type HColor } from '../abel/Colors.js';
-import { parseSimpleColor } from '../klimt/color/HColorSet.js';
+import { HColorSet } from '../klimt/color/HColorSet.js';
 import type { LinkType } from './LinkType.js';
-
-/**
- * `HColorSet.instance().getColorOrWhite(s)` adaptation: this port's
- * `HColorSet.ts` is free functions (`parseSimpleColor`), not the OOP
- * singleton (see `src/core/abel/Colors.ts`'s audit of the same
- * divergence). Upstream returns `HColors.WHITE` when the name/hex does
- * not resolve; `parseSimpleColor('white')` is that same white.
- *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java (getColorOrWhite)
- */
-const WHITE: HColor = parseSimpleColor('white') as HColor;
-function getColorOrWhite(s: string): HColor {
-  return parseSimpleColor(s) ?? WHITE;
-}
 
 /**
  * WithLinkType — the abstract base carrying a mutable `LinkType` plus
@@ -176,7 +162,7 @@ export abstract class WithLinkType {
       } else if (s.startsWith('thickness=')) {
         this.goThickness(Number.parseFloat(s.substring('thickness='.length)));
       } else {
-        const tmp = getColorOrWhite(s);
+        const tmp = HColorSet.instance().getColorOrWhite(s);
         this.setSpecificColor(tmp, i);
       }
     }

@@ -1,0 +1,12 @@
+@startuml
+robust "R" as R
+binary "B" as B
+@-30
+R is a
+B is low
+@-10
+R is b
+B is high
+@40
+R is c
+@enduml

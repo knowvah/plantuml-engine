@@ -1,0 +1,17 @@
+@startuml
+analog "P" between 0 and 10 as P
+@0
+P is 1
+@5
+P is {-}
+@10
+P is {hidden}
+@15
+P is {...}
+@20
+P is {?}
+@25
+P is {1,5}
+@30
+P is "7"
+@enduml

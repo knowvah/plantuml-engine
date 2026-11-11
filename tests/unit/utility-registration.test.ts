@@ -23,6 +23,7 @@ import { boardPlugin } from '../../src/diagrams/board/index.js';
 import { chartPlugin } from '../../src/diagrams/chart/index.js';
 import { chronologyPlugin } from '../../src/diagrams/chronology/index.js';
 import { classPlugin } from '../../src/diagrams/class/index.js';
+import { timingPlugin } from '../../src/diagrams/timing/index.js';
 import { dedicationPlugin } from '../../src/diagrams/dedication/PSystemDedicationFactory.js';
 import { descriptionPlugin } from '../../src/diagrams/description/index.js';
 import { dotPlugin } from '../../src/diagrams/dot/index.js';
@@ -99,6 +100,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
   [dedicationPlugin, 186],
+  [timingPlugin, 187],
   [jsonPlugin, 190],
   [filesPlugin, 192],
   [boardPlugin, 193],

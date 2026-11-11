@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2323 modules · 7912 exported names.
+2403 modules · 8049 exported names.
 
 ## `src/`
 
@@ -322,6 +322,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandCreateElementFull.ts` | `ALL_TYPES`, `CODE`, `CODE_WITH_QUOTE`, `DISPLAY`, `DISPLAY_WITHOUT_QUOTE`, `optionalStereotype`, `elementTail`, `compileUpstream` | The public regex constants of `CommandCreateElementFull`, which upstream's `CommandCreateElementFull2` (class factory) reads as well. |
 | `CommandCreateJson.ts` | `JSON_MULTILINE_DECL_RE`, `JSON_SINGLE_LINE_RE`, `parseJsonNode`, `finalizeJsonBody`, `JsonCommandHost`, `applyJsonMultilineOpen`, `applyJsonSingleLine`, `jsonCommands` | `json` declaration command shared by the class and state diagram parsers (`CommandCreateJson` + `CommandCreateJsonSingleLine` + `BodierJSon`). |
 | `CommandExecutionResult.ts` | `AbstractDiagram`, `CommandExecutionResult` | CommandExecutionResult — the ok/error outcome every command returns. |
+| `CommandFootboxIgnored.ts` | `CommandFootboxIgnored` |  |
 | `CommandMultilines2.ts` | `MultilineCommand`, `HasNbMaxLines`, `CommandMultilines2` | `CommandMultilines2`: a command spanning several lines: a start pattern on the first line (`RegexConcat`), an end pattern on the last (`Pattern2`), and the lines between kept verbatim. |
 | `JsonNode.ts` | `JsonNode` | Parsed value of a `json Name { ... |
 | `multiline-candidate.ts` | `MultilineStep`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
@@ -382,6 +383,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `SquareLinker.ts` | `SquareLinker` | SquareLinker — the two link-emitting callbacks `SquareMaker` drives while chaining items into a square grid. |
 | `SquareMaker.ts` | `SquareMaker` |  |
 | `TextBlockTracer.ts` | `isMember`, `fullInnerPosition`, `TextBlockTracer` |  |
+
+## `src/core/decimal/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `BigDecimal.ts` | `BigDecimal` |  |
 
 ## `src/core/decoration/`
 
@@ -1204,7 +1211,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `color-utils.ts` | `RgbColor`, `NoSuchColorError`, `parseColorString`, `requireColor`, `colorToString`, `Hsl`, `rgbToHsl`, `hslToRgb`, `lighten`, `darken`, `grayScale`, `isDark`, `reverseRgb`, `reverseHsluv` | Minimal color-math helpers for the seven color builtins (`Darken`, `Lighten`, `HslColor`, `IsDark`, `IsLight`, `ReverseColor`, `ReverseHsluvColor`). |
 | `context-ext.ts` | `WithGetFunctionSmart`, `WithXargs`, `WithResultList` | Local, widened structural extensions of `TContext` (`../TFunction.js`) for the handful of builtins that need one additional lookup upstream's real (36KB) `net.sourceforge.plantuml.tim.TContext` carries but the shared narrow stand-in omits p |
 | `Darken.ts` | `Darken` | `%darken(color, ratio)` -- reduces `color`'s HSL luminance by `ratio` percent (relative, not absolute). |
-| `date-format.ts` | `formatDate` | A disclosed subset of Java's `SimpleDateFormat` pattern language, used only by `DateFunction` (`%date`). |
+| `date-format.ts` | `formatDate`, `checkSimpleDateFormatPattern` | A disclosed subset of Java's `SimpleDateFormat` pattern language, used only by `DateFunction` (`%date`). |
 | `DateFunction.ts` | `DateFunction` | `%date([pattern[, epochSeconds[, timeZoneId]]])` -- formats a date/time. |
 | `Dec2hex.ts` | `Dec2hex` | `%dec2hex(n)` -- decimal to hex string. |
 | `Dirpath.ts` | `Dirpath` | `%dirpath()` -- the source file's directory path, resolved once at construction from the injected {@link TimEnvironment} (matching upstream's constructor-injected `Defines#getEnvironmentValue("dirpath")`). |
@@ -1324,6 +1331,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `DateTimeException.ts` | `DateTimeException` | `java.time.DateTimeException` -- thrown for a value outside a field's range or an impossible date. |
 | `DayOfWeek.ts` | `DayOfWeek` | `java.time.DayOfWeek` -- immutable singleton instances, Java ordinals (MONDAY = 0 ... |
 | `Duration.ts` | `Duration` | `java.time.Duration` -- seconds (number) + nano adjustment (0..999_999_999). |
+| `GregorianCalendarGmt.ts` | `epochSecondsOfLenientDate`, `monthDayOfEpochSeconds` |  |
 | `Instant.ts` | `Instant` | `java.time.Instant` -- epoch seconds + nano adjustment. |
 | `LocalDate.ts` | `LocalDate` | `java.time.LocalDate` -- proleptic Gregorian (ISO) date, epoch-day based. |
 | `LocalDateTime.ts` | `LocalDateTime` | `java.time.LocalDateTime` -- a `LocalDate` plus a `LocalTime`; no zone. |
@@ -2879,6 +2887,98 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `state-transition-geo-types.ts` | `LabelInkBox`, `LinkLabelGeo`, `TransitionGeo` | Transition geometry types of the state-diagram layout engine -- split out of ./state-geo-types.ts (which re-exports them, keeping every import path) when that file passed the repo's 500-line cap (stdd T6b). |
 | `state-transition-label.ts` | `computeReservedLabelBox`, `labelStyleOf`, `measureStateLabelBox`, `LabelStyle`, `transitionLabelAnchor`, `LabelFontOrCtx`, `attachTransitionLabel` | Transition label placement — shared by every state-layout pipeline (flat, T3; composite, T4) so antiparallel transitions don't overlap their labels. |
 | `state-transitions.ts` | `ParsedTransition`, `parseTransitionLine`, `isSyncBarId`, `stripSyncBarEquals` | Transition (arrow) grammar for the state parser — `A --> B`, the left-pointing reverse form `A <-- B`, and their decorations (cross-start, circle-end, `[style]` brackets, direction abbreviations, `<<stereotype>>`). |
+
+## `src/diagrams/timing/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `AbstractStatePlayer.ts` | `AbstractStatePlayerArgs`, `AbstractStatePlayer` |  |
+| `ChangeState.ts` | `ChangeState` |  |
+| `Clocks.ts` | `Clocks` |  |
+| `decimal-format.ts` | `DecimalFormatSpec`, `DecimalFormat` | The `java.text.DecimalFormat` subset `DeduceFormat#getDecimalFormat` can build (timing-engine-port D5): pattern `[+]?(0\|#,##0)(.0*)?`, `Locale.US` symbols with a replaceable decimal and grouping separator, `RoundingMode.HALF_EVEN`, explicit |
+| `DeduceFormat.ts` | `DeduceFormat` |  |
+| `Highlight.ts` | `Highlight` |  |
+| `index.ts` | `TimingGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderTiming`, `timingPlugin` | Timing plugin — `TimingDiagramFactory` (parse), then `TextBlockExporter`'s export of `TimingDiagram#getTextBlock` on the klimt substrate: canvas = the text block's `calculateDimension` plus `calculateMargin` (`TitledDiagram`'s default margi |
+| `Player.ts` | `PlayerBaseArgs`, `PlayerArgs`, `Player` |  |
+| `PlayerAnalog.ts` | `PlayerAnalogArgs`, `PlayerAnalog` |  |
+| `PlayerBinary.ts` | `PlayerBinaryArgs`, `PlayerBinary` |  |
+| `PlayerClock.ts` | `PlayerClockArgs`, `PlayerClock` |  |
+| `PlayerConcise.ts` | `PlayerConciseArgs`, `PlayerConcise` |  |
+| `PlayerRectangle.ts` | `PlayerRectangleArgs`, `PlayerRectangle` |  |
+| `PlayerRobust.ts` | `PlayerRobustArgs`, `PlayerRobust` |  |
+| `TickInPlayer.ts` | `TickInPlayer` |  |
+| `TimeAxisStategy.ts` | `TimeAxisStategy` | Misspelling kept (D1). |
+| `TimeConstraint.ts` | `TimeConstraintArgs`, `TimeConstraint` |  |
+| `TimeMessage.ts` | `TimeMessage` |  |
+| `TimeProjected.ts` | `TimeProjected` |  |
+| `TimeSeries.ts` | `TimeSeriesEntry`, `TimeSeries` |  |
+| `TimeTick.ts` | `TimeTick` |  |
+| `timing-common-commands.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `TimingDiagramFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `timing-diagram-layout.ts` | `getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth` | PORT-ONLY -- the player-stacking arithmetic of `TimingDiagram` (`getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth`) as functions over the players in declaration order, so `TimingDiagram.ts` stays under the file cap |
+| `timing-font-param.ts` | `FONT_PARAM_TIMING`, `timingFont`, `timingFontHtmlColor` | `SkinParam#getFont` / `#getFontHtmlColor` for the one legacy `FontParam` timing reaches, `FontParam.TIMING` (`Highlight#getCaption`, Highlight.java:99-100), with no stereotype. |
+| `timing-klimt.ts` | `TimingSkinParam`, `timingStyle`, `timingStyleFrom`, `timingStyleStereotyped`, `drawable`, `fore`, `timingFontParamConfiguration`, `specificColorOf`, `back`, `fontConfigurationOf`, `createDisplayWith`, `createDisplay` | PORT-ONLY -- the klimt seams a timing class crosses, in one place so each ported method reads as its Java line does (as `nwdiag-klimt.ts` does for nwdiag; copied, not imported, per timing-engine-port D2): - `StyleSignatureBasic.of(root, ele |
+| `timing-skin-param.ts` | `SkinParamSource`, `SkinParam` | The timing engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `TimingDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engin |
+| `timing-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `TimingChrome.ts` | `UmlSource`, `TimingChrome` | PORT-ONLY. |
+| `TimingDiagram.ts` | `CreatePlayerClockArgs`, `TimingDiagram` |  |
+| `TimingDiagramFactory.ts` | `initCommandsList`, `parseTiming` | `TimingDiagramFactory`: `CommonCommands.addCommonCommands1` first, then the timing commands in `initCommandsList` order (which decides the command that claims a line), and `PSystemCommandFactory#createSystem`'s per-line loop over them. |
+| `TimingFormat.ts` | `SimpleDateFormatSpec`, `TimingFormat` |  |
+| `TimingNote.ts` | `TimingNoteArgs`, `TimingNote` |  |
+| `TimingRuler.ts` | `TimeCodes`, `TimingRuler` |  |
+| `TimingStyle.ts` | `TimingStyle` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/timingdiagram/TimingStyle.java |
+| `tree-set.ts` | `Comparable`, `treeSetAdd`, `TreeMapEntry`, `treeMapPut` | An element that orders itself, as `java.lang.Comparable` does. |
+
+## `src/diagrams/timing/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandAnalog.ts` | `CommandAnalog` |  |
+| `CommandAtPlayer.ts` | `CommandAtPlayer` |  |
+| `CommandAtTime.ts` | `CommandAtTime` |  |
+| `CommandBinary.ts` | `CommandBinary` |  |
+| `CommandChangeState.ts` | `CommandChangeState` |  |
+| `CommandChangeStateByPlayerCode.ts` | `CommandChangeStateByPlayerCode` |  |
+| `CommandChangeStateByTime.ts` | `CommandChangeStateByTime` |  |
+| `CommandClock.ts` | `CommandClock` |  |
+| `CommandConstraint.ts` | `CommandConstraint` |  |
+| `CommandDefineStateLong.ts` | `CommandDefineStateLong` |  |
+| `CommandDefineStateShort.ts` | `CommandDefineStateShort` |  |
+| `CommandHideTimeAxis.ts` | `CommandHideTimeAxis` |  |
+| `CommandHighlight.ts` | `CommandHighlight` |  |
+| `CommandModeCompact.ts` | `CommandModeCompact` |  |
+| `CommandNote.ts` | `CommandNote` |  |
+| `CommandNoteLong.ts` | `CommandNoteLong` |  |
+| `CommandPixelHeight.ts` | `CommandPixelHeight` |  |
+| `CommandRobustConcise.ts` | `CommandRobustConcise` |  |
+| `CommandScalePixel.ts` | `CommandScalePixel` |  |
+| `CommandTicks.ts` | `CommandTicks` |  |
+| `CommandTimeMessage.ts` | `PLAYER_CODE`, `CommandTimeMessage` |  |
+| `CommandUseDateFormat.ts` | `CommandUseDateFormat` |  |
+| `parse-int32.ts` | `parseInt32` | PORT-ONLY. |
+| `player-code.ts` | `PLAYER_CODE` | PORT-ONLY home of `CommandTimeMessage.PLAYER_CODE`, which six commands of this package read (`CommandAtPlayer`, `CommandChangeStateByPlayerCode`, `CommandConstraint`, `CommandNote`, `CommandNoteLong`, `CommandTimeMessage`). |
+| `TimeTickBuilder.ts` | `TimeTickBuilder` |  |
+
+## `src/diagrams/timing/graphic/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `HexaShape.ts` | `HexaShape` |  |
+| `IntricatedPoint.ts` | `IntricatedPoint` |  |
+| `Panels.ts` | `PanelsArgs`, `Panels` |  |
+| `PanelsAnalog.ts` | `PanelsAnalogArgs`, `PanelsAnalog` |  |
+| `PanelsBinary.ts` | `PanelsBinaryArgs`, `PanelsBinary` |  |
+| `PanelsClock.ts` | `PanelsClockArgs`, `PanelsClock` |  |
+| `PanelsConcise.ts` | `PanelsConciseArgs`, `PanelsConcise` |  |
+| `PanelsNoLeft.ts` | `PanelsNoLeft` |  |
+| `PanelsRectangle.ts` | `PanelsRectangleArgs`, `PanelsRectangle` |  |
+| `PanelsRobust.ts` | `PanelsRobustArgs`, `PanelsRobust` |  |
+| `PanelsState.ts` | `PanelsState` |  |
+| `PentaAShape.ts` | `PentaAShape` |  |
+| `PentaAShapeRectangle.ts` | `PentaAShapeRectangle` |  |
+| `PentaBShape.ts` | `PentaBShape` |  |
+| `PentaBShapeRectangle.ts` | `PentaBShapeRectangle` |  |
+| `PlayerFrame.ts` | `TIMING_DIAGRAM_MARGIN_X1`, `PlayerFrame` |  |
+| `TimeArrow.ts` | `TimeArrow` |  |
 
 ## `src/diagrams/version/`
 

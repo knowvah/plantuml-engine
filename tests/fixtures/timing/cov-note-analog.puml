@@ -1,0 +1,12 @@
+@startuml
+analog "P" between 0 and 10 as P
+@0
+P is 2
+@10
+P is 8
+note top of P $tag1 : above
+note bottom of P
+  below
+  two lines
+end note
+@enduml

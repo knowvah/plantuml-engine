@@ -1,0 +1,12 @@
+@startuml
+concise "A" as A
+@0
+A is x
+@10
+A is y
+@30
+A is z
+@50
+highlight 5 to 15 #Gold;line:DimGrey : Caption
+highlight 25 to 35
+@enduml

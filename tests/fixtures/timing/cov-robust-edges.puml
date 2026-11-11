@@ -1,0 +1,19 @@
+@startuml
+robust "Short" as S
+concise "Longer title here" as L
+S is 40 pixels height
+L is "A very long initial label"
+S is Init
+@0
+S is A : first
+L is x
+@10
+S is {hidden}
+@20
+S is B
+L is y
+@30
+S is {-}
+@40
+S is C
+@enduml

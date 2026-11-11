@@ -1,0 +1,12 @@
+@startuml
+concise "A" as A
+concise "B" as B
+@0
+A is x
+B is y
+@5
+A -[dotted]> B : dotted
+A@7 -[#blue,bold]> B@9 : coloured
+@10
+A is z
+@enduml

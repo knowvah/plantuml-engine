@@ -1,0 +1,24 @@
+@startuml
+skinparam defaultFontColor navy
+skinparam backgroundColor #EEEEFF
+skinparam timingFontSize 18
+<style>
+timingDiagram {
+  LineColor red
+  robust { BackGroundColor pink }
+  concise { FontColor green }
+  note { BackGroundColor yellow }
+}
+</style>
+title Both
+robust "R" as R
+concise "C" as C
+@0
+R is a
+C is b
+@10
+R is c
+C is d
+note top of C : n
+R@0 -> C@10 : m
+@enduml

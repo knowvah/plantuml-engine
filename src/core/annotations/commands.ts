@@ -47,6 +47,7 @@
 
 import { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import { VerticalAlignment } from '../klimt/geom/VerticalAlignment.js';
+import { trin } from '../style/parser/StyleParser.js';
 import {
   type DiagramAnnotations,
   horizontalAlignmentFromString,
@@ -374,22 +375,32 @@ function matchFooterMultiline(lines: readonly string[], i: number, a: DiagramAnn
  *  list; a loop over data is both lower-complexity and easier to extend). */
 type AnnotationMatcher = (lines: readonly string[], i: number, a: DiagramAnnotations) => { consumed: number } | null;
 
+/** The line a single-line title command matches: `CommandTitle`, `CommandMainframe`, `CommandCaption`,
+ *  `CommandLegend`, `CommandFooter` and `CommandHeader` all call `super(getRegexConcat())`, so `doTrim` is true
+ *  and `SingleLineCommand2#isValid` matches `lines.getFirst().getTrimmed()` (`StringUtils#trin`): a trailing space
+ *  never reaches the title text.
+ * @see ~/git/plantuml/.../command/SingleLineCommand2.java:56-63, 76-80, 94
+ * @see ~/git/plantuml/.../command/CommandTitle.java:56 */
+function trimmedLine(lines: readonly string[], i: number): string {
+  return trin(lines[i] ?? '');
+}
+
 /** Registration order mirrors `CommonCommands.addTitleCommands` exactly:
  *  Title, Mainframe, Caption, MultilinesCaption, MultilinesTitle,
  *  MultilinesLegend, Legend, Footer, MultilinesFooter, Header,
  *  MultilinesHeader.
  * @see ~/git/plantuml/.../command/CommonCommands.java:109-124 */
 const ORDERED_MATCHERS: readonly AnnotationMatcher[] = [
-  (lines, i, a) => matchTitle(lines[i] ?? '', i, a),
-  (lines, i, a) => matchMainframe(lines[i] ?? '', i, a),
-  (lines, i, a) => matchCaption(lines[i] ?? '', i, a),
+  (lines, i, a) => matchTitle(trimmedLine(lines, i), i, a),
+  (lines, i, a) => matchMainframe(trimmedLine(lines, i), i, a),
+  (lines, i, a) => matchCaption(trimmedLine(lines, i), i, a),
   matchCaptionMultiline,
   matchTitleMultiline,
   matchLegendMultiline,
-  (lines, i, a) => matchLegend(lines[i] ?? '', i, a),
-  (lines, i, a) => matchFooter(lines[i] ?? '', i, a),
+  (lines, i, a) => matchLegend(trimmedLine(lines, i), i, a),
+  (lines, i, a) => matchFooter(trimmedLine(lines, i), i, a),
   matchFooterMultiline,
-  (lines, i, a) => matchHeader(lines[i] ?? '', i, a),
+  (lines, i, a) => matchHeader(trimmedLine(lines, i), i, a),
   matchHeaderMultiline,
 ];
 

@@ -1,0 +1,29 @@
+@startuml
+<style>
+timingDiagram {
+  constraintArrow { LineColor red ; LineThickness 3 ; FontColor blue ; FontSize 16 }
+}
+</style>
+robust "R" as R
+concise "C" as C
+binary "B" as B
+analog "A" between 0 and 10 as A
+rectangle "X" as X
+clock Clk with period 10
+@0
+R is a
+C is b
+B is low
+A is 2
+X is p
+@20
+R is c
+C is d
+B is high
+A is 8
+X is q
+note top of C : note
+highlight 5 to 12 : hl
+C@0 -> R@15 : msg
+R@20 <-> @30 : {10}
+@enduml

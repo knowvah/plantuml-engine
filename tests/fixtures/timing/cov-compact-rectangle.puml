@@ -1,0 +1,10 @@
+@startuml
+compact rectangle "Rc" as R
+compact robust "Rb" as B
+@0
+R is A
+B is x
+@10
+R is B
+B is y
+@enduml

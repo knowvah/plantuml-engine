@@ -41,6 +41,7 @@ import { listOpenIconicPlugin } from './diagrams/openiconic/PSystemListOpenIconi
 import { openIconicPlugin } from './diagrams/openiconic/PSystemOpenIconicFactory.js';
 import { packetdiagPlugin } from './diagrams/packetdiag/index.js';
 import { nwdiagPlugin } from './diagrams/nwdiag/index.js';
+import { timingPlugin } from './diagrams/timing/index.js';
 import { saltPlugin } from './diagrams/salt/index.js';
 import { sequencePlugin } from './diagrams/sequence/index.js';
 import { statePlugin } from './diagrams/state/index.js';
@@ -95,6 +96,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
   registry.register(dedicationPlugin); // java:186
+  registry.register(timingPlugin); // java:187
   registry.register(jsonPlugin); // java:190
   registry.register(filesPlugin); // java:192
   registry.register(boardPlugin); // java:193

@@ -1,0 +1,11 @@
+@startuml
+concise "A" as A
+concise "B" as B
+@0
+A is x
+B is y
+@5
+A@6 -[#transparent]> B@9 : transparent
+@10
+A is z
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+clock P with period 5
+@0
+P is low
+@5
+P is high
+@10
+P is {-}
+@15
+P is {hidden}
+@enduml

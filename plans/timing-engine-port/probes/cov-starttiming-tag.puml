@@ -1,0 +1,5 @@
+@starttiming
+concise "A" as A
+@0
+A is x
+@endtiming

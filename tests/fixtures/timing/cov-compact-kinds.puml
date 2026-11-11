@@ -1,0 +1,23 @@
+@startuml
+<style>
+timingDiagram {
+  .st { LineColor red }
+}
+</style>
+compact robust "R" as R <<st>>
+compact concise "C" as C <<st>>
+compact binary "B" as B <<st>>
+compact analog "A" between 0 and 10 as A <<st>>
+compact clock Clk with period 10 <<st>>
+@0
+R is a
+C is b
+B is high
+A is 2
+@10
+R is c
+C is d
+B is low
+A is 8
+@20
+@enduml

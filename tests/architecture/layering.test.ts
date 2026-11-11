@@ -57,6 +57,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'whose heads are ArrowsRegular (activitydiagram3/ftile/ArrowsRegular.java:41-86).',
   },
   {
+    from: 'src/diagrams/timing/',
+    to: 'src/diagrams/sequence/sequence-arrowhead.ts',
+    why:
+      'tep T2b — upstream timing constraints take net.sourceforge.plantuml.skin.ArrowConfiguration ' +
+      '(TimeConstraint.java:132-137 reads only its colour; Player.java#createConstraint), a shared ' +
+      'skin class the port keeps in sequence-arrowhead.ts. Type-only import.',
+  },
+  {
     from: 'src/index.ts',
     to: 'src/diagrams/',
     why:

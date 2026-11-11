@@ -1,0 +1,10 @@
+@startuml
+hide time-axis
+concise "C" as C
+@0
+C is a
+@10
+C is b
+@20
+C is c
+@enduml

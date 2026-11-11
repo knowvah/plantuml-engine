@@ -1,0 +1,15 @@
+@startuml
+skinparam monochrome true
+concise "C" as C
+robust "R" as R
+binary "B" as B
+@0
+C is a
+R is x
+B is low
+@10
+C is b
+R is y
+B is high
+C@0 -> R@10 : msg
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+concise "C" as C
+@1500/01/01
+C is A
+@1500/03/01
+C is B
+@enduml

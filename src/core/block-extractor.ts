@@ -148,7 +148,6 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   usecase: 'description',
   activity: 'activity',
   object: 'object',
-  timing: 'timing',
   json: 'json',
   yaml: 'yaml',
   hcl: 'hcl',
@@ -428,14 +427,16 @@ export function upstreamTypeOf(type: DiagramType): UpstreamDiagramType {
  *
  * Upstream's answer, `findStartTypes`, is authoritative wherever it has one.
  * Where it does not, this port keeps its own:
- * {@link START_SUFFIX_MAP} carries EIGHT tags upstream has never had --
+ * {@link START_SUFFIX_MAP} carries SEVEN tags upstream has never had --
  * `@startsequence`, `@startclass`, `@startstate`, `@startactivity`,
- * `@startobject`, `@starttiming`, `@startcomponent`, `@startusecase`. The jar
- * types all eight `UNKNOWN`, runs no factory for them, and renders
+ * `@startobject`, `@startcomponent`, `@startusecase`. The jar
+ * types all seven `UNKNOWN`, runs no factory for them, and renders
  * `PSystemUnsupported` (`PSystemBuilder.java:282-283`). That divergence is
  * PRE-EXISTING and is carried forward here unchanged rather than repaired:
  * removing it would move fixtures, and this task's whole property is that it
- * moves none. No corpus fixture uses any of the eight; four test sources do.
+ * moves none. No corpus fixture uses any of the seven; four test sources do.
+ * `@starttiming` was the eighth: the timing engine port (D10) drops it, so the
+ * jar's `UNKNOWN` error page now shows for it too.
  */
 function candidateTypes(suffix: string, type: DiagramType): ReadonlySet<UpstreamDiagramType> {
   const upstream = findStartTypes(`@start${suffix}`);

@@ -1,0 +1,13 @@
+@startuml
+
+concise "Bas" as bas
+
+bas is werken #LightCyan;line:Blue
+
+
+@bas
+
+16:00:00 is thuis #lightpink;line:red
+
+
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+concise "A" as A
+@0 as :start
+@5 as :en_high
+@:start
+A is x
+@:en_high
+A is y
+@:en_high+3
+A is z
+@enduml

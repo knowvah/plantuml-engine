@@ -1,0 +1,14 @@
+@startuml
+concise "A" as A
+robust "B" as B
+@0
+A is x
+B is y
+@10
+A -> B
+A -[hidden]> B@20 : hid
+A@5 --> B@15 : long
+B -[#green,dashed]> A@25 : colour
+@30
+A is z
+@enduml

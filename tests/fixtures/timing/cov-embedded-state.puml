@@ -1,0 +1,12 @@
+@startuml
+state S1
+note right of S1
+{{
+robust "R" as R
+@0
+R is a
+@10
+R is b
+}}
+end note
+@enduml

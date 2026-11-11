@@ -1,0 +1,12 @@
+@startuml
+rectangle "P" as P
+@0
+P is a
+@10
+P is b
+note top of P $tag1 : above
+note bottom of P
+  below
+  two lines
+end note
+@enduml

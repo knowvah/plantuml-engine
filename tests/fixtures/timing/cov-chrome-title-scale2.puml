@@ -1,0 +1,9 @@
+@startuml
+scale 2
+title Only title
+concise "C" as C
+@0
+C is a
+@10
+C is b
+@enduml

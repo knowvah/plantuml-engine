@@ -1,0 +1,9 @@
+@startuml
+concise "A" as A
+concise "B" as B
+@0
+A is x
+B is y
+A@6 -[#00AA00]> B@9 : hex
+A@7 -[#Orange,thickness=3]> B@10 : thick
+@enduml

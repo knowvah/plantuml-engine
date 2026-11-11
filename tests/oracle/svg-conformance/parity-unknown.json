@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T22:08:04.319Z",
+  "generatedAt": "2026-11-11T04:15:00.793Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -285,10 +285,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 354.75899999999996,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[8]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "bidafa-53-lufi179",
@@ -394,10 +391,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 11750.85,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "bobixe-18-riza923",
@@ -918,10 +912,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 196.972,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "cuvogo-40-duda901",
@@ -1064,10 +1055,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 196.972,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "delisi-38-bupi176",
@@ -1310,10 +1298,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 149,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "dunexe-27-rike921",
@@ -2119,10 +2104,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 90.88900000000001,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[2]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "gujeku-90-jisa609",
@@ -2373,10 +2355,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 454.3,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[5]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "jilodo-21-cifo618",
@@ -2588,10 +2567,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 185.334,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "jujuga-39-miva043",
@@ -6007,20 +5983,14 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 185.334,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "Timing-short-alias-6",
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 196.972,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "Timing-short-alias-7",
@@ -6200,10 +6170,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 11750.85,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "torazi-09-gago377",
@@ -6388,10 +6355,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 335.334,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[8]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "vaxolu-89-boxo515",
@@ -7041,10 +7005,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 1200.8500000000001,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[7]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "xozabi-32-tagi234",

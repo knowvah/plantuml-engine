@@ -1,0 +1,11 @@
+@startuml
+scale 2
+legend
+Only legend
+end legend
+concise "C" as C
+@0
+C is a
+@10
+C is b
+@enduml

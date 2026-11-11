@@ -1,0 +1,9 @@
+@startuml
+rectangle "Rect" as R
+@0
+R is A
+@10
+R is B
+@20
+R is {-}
+@enduml

@@ -50,7 +50,7 @@ export interface Style {
 /**
  * FontParam — consumed slice of `klimt/font/FontParam.java` (an enum of
  * ~80 per-element font selectors). `Entity#getTitleFontParam` uses only
- * `STATE` and `PACKAGE`; the full enum lands with the skinparam
+ * `STATE` and `PACKAGE` (timing adds `TIMING`); the full enum lands with the skinparam
  * missions.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/font/FontParam.java
@@ -58,6 +58,8 @@ export interface Style {
 export const FontParam = {
   STATE: 'STATE',
   PACKAGE: 'PACKAGE',
+  /** `FontParam.TIMING` (FontParam.java:49): timing-engine-port's `Highlight#getCaption`. */
+  TIMING: 'TIMING',
 } as const;
 export type FontParam = (typeof FontParam)[keyof typeof FontParam];
 

@@ -1,0 +1,17 @@
+@startuml
+analog "A" as A
+concise "C" as C
+robust "R" as R
+A is 60 pixels height
+A ticks num on multiple 3
+C is 40 pixels height
+R is 1 pixel height
+@0
+A is 1
+C is x
+R is y
+@10
+A is 4
+C is z
+R is w
+@enduml

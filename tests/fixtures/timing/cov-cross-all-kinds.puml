@@ -1,0 +1,33 @@
+@startuml
+scale 2
+robust "R" as R
+concise "C" as C
+binary "B" as B
+analog "A" between 0 and 10 as A
+rectangle "X" as X
+clock Clk with period 10
+@0
+R is a
+C is b
+B is low
+A is 2
+X is p
+@20
+R is c
+C is d
+B is high
+A is 8
+X is q
+@40
+R is a
+C is b
+B is low
+A is 4
+X is p
+R@0 -> C@10 : r to c
+Clk@10 -> B@25 : clk
+A@20 <-> @40 : {20 ms}
+note top of R : top
+note bottom of C : bottom
+highlight 10 to 30 #Gold;line:red : zone
+@enduml

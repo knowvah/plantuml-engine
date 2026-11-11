@@ -1,0 +1,26 @@
+@startuml
+<style>
+timingDiagram {
+  note {
+    .n1 { BackGroundColor pink }
+  }
+}
+</style>
+concise "C" as C
+robust "R" as R
+@0
+C is a
+R is b
+note top of C <<n1>> : styled
+note bottom of R : plain **bold**
+note top of R
+  first
+    indented
+  third
+end note
+@10
+C is d
+note bottom of C <<n1>>
+  long styled
+end note
+@enduml

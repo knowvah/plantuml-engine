@@ -1,0 +1,15 @@
+@startuml
+concise "C" as C
+robust "R" as R
+@0
+C is {hidden}
+R is {...}
+@10
+C is {-}
+R is {?}
+@20
+C is {A,B}
+R is {Idle,Busy}
+@30
+C is "quoted state"
+@enduml

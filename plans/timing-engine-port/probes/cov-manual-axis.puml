@@ -1,0 +1,8 @@
+@startuml
+manual time-axis
+concise "A" as A
+@0
+A is x
+@100
+A is y
+@enduml

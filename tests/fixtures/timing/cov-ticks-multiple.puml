@@ -1,0 +1,8 @@
+@startuml
+analog "A" between 0 and 10 as A
+A ticks num on multiple 2
+@0
+A is 1
+@10
+A is 9
+@enduml

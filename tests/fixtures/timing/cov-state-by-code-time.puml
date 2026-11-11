@@ -1,0 +1,14 @@
+@startuml
+robust "R" as R
+concise "C" as C
+@R
+0 is idle
+5 is busy : go
+@C
+0 is idle
++7 is busy : go
+@R
++10 is idle
+@C
++13 is idle
+@enduml

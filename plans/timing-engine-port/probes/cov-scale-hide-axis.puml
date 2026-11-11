@@ -1,0 +1,11 @@
+@startuml
+scale 100 as 50 pixels
+hide time-axis
+concise "A" as A
+@0
+A is x
+@100
+A is y
+@300
+A is z
+@enduml
