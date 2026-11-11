@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## bpm-engine-port (bpe) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #130; per-task history on the local tag `bpm-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/bpm/` ported file for file into `src/diagrams/bpm/` and registered at `PSystemBuilder.java:141`, drawing through activity's `FtileCircleStart`, `FtileDiamond` and `FtileBox`, ported at their upstream paths beside `FtileBoxOld`. All 7 `@startbpm` rows went diverged to conformant with zero diffs on the first survey and are pinned in `svg-bpm`; overall 5,701 to 5,708 of 5,927, 0 lost. 77 authored fixtures: 57 zero-diff, 20 jar error pages where we also error. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **Duplicate merge ids** (`cov-duplicate-merge-id`, D4): the jar's `HashMap` of identity hashes picks a different `getById` match from run to run (6 renders, 2 SVGs); the port picks the earliest-inserted. No fixture can pin a jar that disagrees with itself.
+2. **`AbstractFtile.ts` still has no `Ftile` graph members** (swimlanes, link renderings, `getMinMax`): the slice stops where `FtileBoxOld`'s did, and the first `Ftile`-graph consumer adds them.
+3. **The #130/#136 comments** are in `.agent-notes/bpe-T5.md`; `gh issue comment` was denied.
+
 ## creole-math-factories-port (cmf) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #129; per-task history on the local tag `creole-math-factories-port/pre-squash`)
 
 The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMathFactory`, `PSystemLatexFactory`, `PSystemCreoleFactory`, `HelpFactory`) plus `PSystemBasicFactory` and `LanguageDescriptor` are ported and registered at their `PSystemBuilder` lines. Of the 41 in-scope rows, 17 are conformant and pinned in the new `svg-factories` ratchet (def 2/2, help 4/5, creole 11/21); math and latex draw Batik's document byte for byte except the glyph group (KaTeX, named per row in `DIVERGENCES.md`). JLaTeXMath's rollback is mirrored from a names-only vocabulary generated from the jar, and `latex-metrics/` gained accents, over/under lines and braces, stacks, `\\` newlines, negations, dots and the kern/ligature loop: 503 of 510 creole `<math>` images size as the jar. 68 authored fixtures. 0 rows lost in any engine.

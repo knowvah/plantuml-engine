@@ -1,0 +1,10 @@
+@startbpm
+!option debug true
+:a;
+m:<+>
+new branch
+:b;
+else
+:c;
+end branch
+@endbpm

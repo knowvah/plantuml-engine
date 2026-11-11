@@ -1,0 +1,5 @@
+@startbpm
+:a;
+m:<+>
+goto m
+@endbpm

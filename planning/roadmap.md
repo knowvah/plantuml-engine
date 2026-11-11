@@ -123,6 +123,7 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 15. **EBNF** (`@startebnf`) — railroad renderer (Track SI-3).
 16. **Regex** (`@startregex`) — regex → railroad IR (after EBNF).
 17. ~~**Wire** (`@startwire`)~~ — schematic grid; DONE by wire-engine-port (#128): 18/18 conformant, no `golem` use.
+17b. ~~**BPM** (`@startbpm`)~~ — business-process grid; DONE by bpm-engine-port (#130): 7/7 conformant, 77 authored fixtures, no divergence added.
 17a. ~~**Creole / Math / LaTeX / Definition / Help** (`@startcreole`, `@startmath`, `@startlatex`, `@startdef`, `help`)~~ — DONE by creole-math-factories-port (#129): 17/41 rows conformant, the rest named per row or on rulings #169/#170.
 18. **Flow** (`@startflow`) — golem grid (Track SI-4); alpha-doc only.
 19. **DOT passthrough** (`@startdot`) — feeds user DOT straight to dot-engine;

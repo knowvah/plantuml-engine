@@ -19,6 +19,7 @@ import { DeterministicMeasurer } from '../../src/core/measurer-deterministic.js'
 import { listArchimateSpritesPlugin } from '../../src/core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
 import { activityPlugin } from '../../src/diagrams/activity/index.js';
 import { activityLegacyPlugin } from '../../src/diagrams/activity-legacy/index.js';
+import { bpmPlugin } from '../../src/diagrams/bpm/index.js';
 import { boardPlugin } from '../../src/diagrams/board/index.js';
 import { chartPlugin } from '../../src/diagrams/chart/index.js';
 import { chronologyPlugin } from '../../src/diagrams/chronology/index.js';
@@ -84,6 +85,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [descriptionPlugin, 138],
   [statePlugin, 139],
   [activityPlugin, 140], // ActivityDiagramFactory3 (src/index.ts order comment)
+  [bpmPlugin, 141], // BpmDiagramFactory
   [licensePlugin, 144],
   [versionPlugin, 145],
   [donorsPlugin, 146],
@@ -246,6 +248,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
   ['@startregex\na(b|c)+\n@endregex', regexPlugin],
   ['@startwire\n* a\n@endwire', wirePlugin],
+  ['@startbpm\n:login;\n@endbpm', bpmPlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

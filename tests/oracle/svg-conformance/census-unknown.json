@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-11T12:32:39.453Z",
-  "measuredAgainstCommit": "2a6feeeb7",
+  "generatedAt": "2026-11-11T19:39:47.089Z",
+  "measuredAgainstCommit": "5584b5c8b",
   "type": "unknown",
   "measurer": "deterministic",
   "fixtures": [
@@ -229,8 +229,8 @@
     {
       "slug": "bibuka-01-novu361",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "bicusa-63-cosu196",
@@ -355,8 +355,8 @@
     {
       "slug": "bogebu-46-deri191",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "bogide-54-buco992",
@@ -2059,8 +2059,8 @@
     {
       "slug": "jomege-63-guxe281",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "jopisi-58-rika067",
@@ -2815,8 +2815,8 @@
     {
       "slug": "loxeke-95-tita253",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "lozame-68-nale624",
@@ -4135,8 +4135,8 @@
     {
       "slug": "rikosu-08-foda496",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "rilere-84-seba785",
@@ -5917,8 +5917,8 @@
     {
       "slug": "zaxuce-77-ziti117",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "zecate-11-guta563",
@@ -6229,8 +6229,8 @@
     {
       "slug": "zufefe-09-fifa419",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 0,
+      "bucket": "0"
     },
     {
       "slug": "zugazo-84-raju675",

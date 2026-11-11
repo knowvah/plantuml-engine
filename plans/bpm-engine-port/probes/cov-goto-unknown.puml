@@ -1,0 +1,4 @@
+@startbpm
+:a;
+goto nope
+@endbpm

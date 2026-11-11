@@ -15,7 +15,7 @@ function asSimple(c: ParsedColor): HColorSimple {
 
 /**
  * HColors — the colour constants and factories the style engine reaches:
- * `BLACK`, `WHITE`, `LIGHT_GRAY`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`.
+ * `BLACK`, `WHITE`, `RED`, `BLUE`, `LIGHT_GRAY`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`.
  * The other constants (`RED_LIGHT` … `COL_BBBBBB`) and helpers (`noGradient`,
  * `changeBack`, `middle`) are not ported; `unlinear` is (gantt completion shading).
  *
@@ -32,6 +32,7 @@ export class HColors {
   private static white: HColorSimple | undefined;
   private static lightGray: HColorSimple | undefined;
   private static red: HColorSimple | undefined;
+  private static blue: HColorSimple | undefined;
   /** `TRANSPARENT = HColorSimple.create(new XColor(0, 0, 0, 0))`. @see HColors.java:121 */
   private static transparentColor: HColorSimple | undefined;
 
@@ -51,6 +52,12 @@ export class HColors {
   static get RED(): HColorSimple {
     HColors.red ??= asSimple(HColorSet.instance().getColorOrWhite('#FF0000'));
     return HColors.red;
+  }
+
+  /** `set.getColorOrWhite("#0000FF")`, `FtileBox`'s debug outline and a BPM puzzle's stubs. @see HColors.java:92 */
+  static get BLUE(): HColorSimple {
+    HColors.blue ??= asSimple(HColorSet.instance().getColorOrWhite('#0000FF'));
+    return HColors.blue;
   }
 
   /**

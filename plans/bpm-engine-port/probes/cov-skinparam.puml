@@ -1,0 +1,4 @@
+@startbpm
+skinparam backgroundColor yellow
+:a;
+@endbpm

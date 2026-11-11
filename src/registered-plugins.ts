@@ -16,6 +16,7 @@ import { listArchimateSpritesPlugin } from './core/klimt/sprite/PSystemListArchi
 import { activityPlugin } from './diagrams/activity/index.js';
 import { activityLegacyPlugin } from './diagrams/activity-legacy/index.js';
 import { boardPlugin } from './diagrams/board/index.js';
+import { bpmPlugin } from './diagrams/bpm/index.js';
 import { chartPlugin } from './diagrams/chart/index.js';
 import { chronologyPlugin } from './diagrams/chronology/index.js';
 import { classPlugin } from './diagrams/class/index.js';
@@ -60,7 +61,7 @@ import { yamlPlugin } from './diagrams/yaml/index.js';
 export type PluginRegistrar = Pick<DiagramRegistry, 'register'>;
 
 /**
- * `PSystemBuilder.java:133-152`: Colors, the UML run, then the utility pages
+ * `PSystemBuilder.java:133-152`: Colors, the UML run, BPM (java:141), then the utility pages
  * and listings up to (not including) Salt. Welcome (java:133) and ListFonts
  * (java:148) are not registered -- see {@link registerPlugins}.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/PSystemBuilder.java:133-152
@@ -73,6 +74,7 @@ function registerUmlRun(registry: PluginRegistrar): void {
   registry.register(descriptionPlugin); // java:138
   registry.register(statePlugin); // java:139
   registry.register(activityPlugin); // java:140 (ActivityDiagramFactory3)
+  registry.register(bpmPlugin); // java:141
   registry.register(licensePlugin); // java:144
   registry.register(versionPlugin); // java:145
   registry.register(donorsPlugin); // java:146

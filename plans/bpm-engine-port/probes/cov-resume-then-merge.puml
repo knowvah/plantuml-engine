@@ -1,0 +1,8 @@
+@startbpm
+:a;
+m:<+>
+:b;
+resume m
+n:<+>
+:c;
+@endbpm

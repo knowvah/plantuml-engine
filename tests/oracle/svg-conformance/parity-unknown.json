@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T12:29:27.010Z",
+  "generatedAt": "2026-11-11T20:26:41.833Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -269,10 +269,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 154,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "bicusa-63-cosu196",
@@ -420,10 +417,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 453,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "bogide-54-buco992",
@@ -2473,10 +2467,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 971,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "jopisi-58-rika067",
@@ -3401,10 +3392,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 971,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "lozame-68-nale624",
@@ -4998,10 +4986,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 251,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "rilere-84-seba785",
@@ -7147,10 +7132,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 251,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "zecate-11-guta563",
@@ -7527,10 +7509,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 100,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@width"
+      "verdict": "conformant"
     },
     {
       "slug": "zugazo-84-raju675",

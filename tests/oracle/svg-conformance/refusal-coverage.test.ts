@@ -661,7 +661,8 @@ describe('refusal coverage — baseline shape', () => {
     // 10998 -> 11150 at tep/T5 (2026-11-11): +152 svg-timing golden clones, all rendering. Derivation: 10998 + 152 = 11150.
     // 11150 -> 11168 at wrp/T4 (2026-11-11): +18 svg-wire golden clones, all rendering.
     // 11168 -> 11185 at cmf/T4 (2026-11-11): +17 svg-factories golden clones, all rendering.
-    expect(manifest.fixtures.length).toBe(11185);
+    // 11185 -> 11192 at bpe/T4 (2026-11-11): +7 svg-bpm golden clones, all rendering.
+    expect(manifest.fixtures.length).toBe(11192);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -962,7 +963,9 @@ describe('refusal coverage — baseline shape', () => {
     // 10983 -> 11001 at wrp/T4 (2026-11-11): +18 svg-wire golden clones.
     // 11001 -> 11024 at cmf/T4 (2026-11-11): the 6 known-gap rows above render now, +17 svg-factories golden clones.
     // Derivation: 11001 + 6 + 17 = 11024.
-    expect(pinnedRendering.length).toBe(11024);
+    // 11024 -> 11031 at bpe/T4 (2026-11-11): +7 svg-bpm golden clones; the 7 dot-cache bpm rows already rendered
+    // (engine none -> bpm, still ok). Derivation: 11024 + 7 = 11031.
+    expect(pinnedRendering.length).toBe(11031);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

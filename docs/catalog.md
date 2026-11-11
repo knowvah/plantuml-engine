@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2455 modules · 8194 exported names.
+2497 modules · 8251 exported names.
 
 ## `src/`
 
@@ -963,12 +963,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ActorHollow.ts` | `ActorHollow` |  |
 | `ActorStickMan.ts` | `ActorStickMan` |  |
 | `ActorStyle.ts` | `ActorStyle`, `actorStyleGetTextBlock` |  |
-| `ColorParam.ts` | `ColorParam` |  |
+| `ColorParam.ts` | `ColorParam`, `ActivityColorParam` |  |
 | `Pragma.ts` | `Pragma` | Pragma — the resolved `!pragma <key> <value>` table for one diagram, plus the `WarningHandler` capability every pragma-aware command shares. |
 | `PragmaKey.ts` | `PragmaKey`, `pragmaKeyDefaultValue`, `pragmaKeyLazyFrom` | PragmaKey — the fixed set of `!pragma <key> <value>` keys `Pragma` stores. |
 | `SkinParamColors.ts` | `SkinParamColors` |  |
 | `SkinParamDelegator.ts` | `SkinParamDelegator` |  |
-| `SkinParamFresh.ts` | `SkinParamClasspath`, `SkinParamFresh` | A fresh `SkinParam`: `SkinParam.create(md5map, pathSystem, type, Pragma.createEmpty(), option)` for a diagram whose source no command can reach -- `PSystemCreole#getTextBlock` (java:83-84) and `Help`, whose factory has only the five `help` |
+| `SkinParamFresh.ts` | `SkinParamClasspath`, `OptionStore`, `SkinParamFresh` | A fresh `SkinParam`: `SkinParam.create(md5map, pathSystem, type, Pragma.createEmpty(), option)` for a diagram whose source no command can reach -- `PSystemCreole#getTextBlock` (java:83-84) and `Help`, whose factory has only the five `help` |
+| `SkinParamUtils.ts` | `LegacyColorSkin`, `getColor` | `SkinParamUtils.getColor`: the legacy `ColorParam` read, through `Rose#getHtmlColor` -- the first param the skin answers, else the first param's default. |
 | `VisibilityModifier.ts` | `ColorParam`, `SName`, `StyleSignatureBasic`, `VisibilityModifier` |  |
 
 ## `src/core/stereo/`
@@ -1556,9 +1557,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `AbstractFtile.ts` | `AbstractFtile` |  |
+| `AbstractFtile.ts` | `FtileStyledSkin`, `AbstractFtile` |  |
 | `BoxStyle.ts` | `BoxStyle` |  |
 | `FtileGeometry.ts` | `FtileGeometry` |  |
+| `Hexagon.ts` | `Hexagon` |  |
 
 ## `src/diagrams/activity/ftile/vcompact/`
 
@@ -1570,7 +1572,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `FtileBox.ts` | `FtileBoxSkin`, `FtileBoxCreateArgs`, `FtileBox` |  |
 | `FtileBoxOld.ts` | `FtileBoxOld` |  |
+| `FtileCircleStart.ts` | `FtileCircleStart` |  |
+| `FtileDiamond.ts` | `FtileDiamondLabels`, `FtileDiamond` |  |
+| `FtileDiamondWIP.ts` | `FtileDiamondWIPArgs`, `FtileDiamondWIP` |  |
 
 ## `src/diagrams/activity/layout/`
 
@@ -1729,6 +1735,47 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `CommandBoardPlus.ts` | `BOARD_PLUS_RE`, `applyBoardPlus` | `CommandBoardPlus`: a run of `+` (empty starts an activity), optional spaces, then the label. |
+
+## `src/diagrams/bpm/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `AbstractConnectorPuzzle.ts` | `AbstractConnectorPuzzle` |  |
+| `bpm-export.ts` | `renderBpm` | `BpmDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `BpmDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefaultMa |
+| `BpmBranch.ts` | `BpmBranch` |  |
+| `BpmDiagram.ts` | `BpmDiagram` | BpmDiagram — `@startbpm`: the recorded events replay into a grid of lines and columns, three cleaners simplify it, and `GridArray` draws it. |
+| `BpmDiagramFactory.ts` | `initCommandsList`, `parseBpm` | `BpmDiagramFactory`: a `PSystemCommandFactory` with exactly the seven BPM commands and no `CommonCommands` (D3, D5), so a blank line, `title`, `skinparam`, `<style>`, `scale` or `sprite` is not a command here. |
+| `BpmElement.ts` | `BpmElement` |  |
+| `BpmElementType.ts` | `BpmElementType` | BpmElementType — what a `BpmElement` draws. |
+| `BpmEvent.ts` | `BpmEvent` | BpmEvent — a marker for one recorded BPM command, replayed by `BpmDiagram#createGrid`. |
+| `BpmEventAdd.ts` | `BpmEventAdd` |  |
+| `BpmEventGoto.ts` | `BpmEventGoto` |  |
+| `BpmEventResume.ts` | `BpmEventResume` |  |
+| `Cell.ts` | `Cell` |  |
+| `Chain.ts` | `Chain` |  |
+| `ChainImpl.ts` | `ChainImpl` |  |
+| `CleanerEmptyLine.ts` | `CleanerEmptyLine` |  |
+| `CleanerInterleavingLines.ts` | `CleanerInterleavingLines` |  |
+| `CleanerMoveBlock.ts` | `CleanerMoveBlock` |  |
+| `Col.ts` | `Col` | Col — an identity token for one column of the BPM grid; `Coord` and `ChainImpl` compare it by reference. |
+| `CommandDockedEvent.ts` | `CommandDockedEvent` | `CommandDockedEvent`: `:label;`, a docked event box in a new column. |
+| `CommandElseBranch.ts` | `CommandElseBranch` | `CommandElseBranch`: `else`, the next arm of the innermost branch. |
+| `CommandEndBranch.ts` | `CommandEndBranch` | `CommandEndBranch`: `end branch`, close the innermost branch at its exit merge. |
+| `CommandGoto.ts` | `CommandGoto` | `CommandGoto`: `goto id`, connect to `id` and continue on a new line under it. |
+| `CommandMerge.ts` | `CommandMerge` | `CommandMerge`: `id:<+>`, a merge diamond in a new column; the regex allows no space before `<+>`. |
+| `CommandNewBranch.ts` | `CommandNewBranch` | `CommandNewBranch`: `new branch`, open a branch at an entry merge. |
+| `CommandResume.ts` | `CommandResume` | `CommandResume`: `resume id`, continue on a new line under `id`. |
+| `ConnectorPuzzle.ts` | `Where`, `WHERE_VALUES`, `toShortString`, `getCoding`, `ConnectorPuzzle` |  |
+| `ConnectorPuzzleEmpty.ts` | `ConnectorPuzzleEmpty` |  |
+| `Coord.ts` | `Coord` |  |
+| `Grid.ts` | `Grid` |  |
+| `GridArray.ts` | `GridArray` |  |
+| `GridCleaner.ts` | `GridCleaner` |  |
+| `index.ts` | `BpmGeometry`, `bpmPlugin` | `BpmDiagramFactory` as a plugin: a `PSystemCommandFactory` on `@startbpm`, typed `BPM` (`BpmDiagramFactory.java:51`), registered at its upstream position right after `ActivityDiagramFactory3` (`PSystemBuilder.java:141`). |
+| `Line.ts` | `Line` | Line — an identity token for one row of the BPM grid; `Coord` and `ChainImpl` compare it by reference. |
+| `Navigator.ts` | `Navigator` | Navigator — a cursor over a `Chain`. |
+| `Navigators.ts` | `Navigators` |  |
+| `Placeable.ts` | `BpmSkinParam`, `Placeable` |  |
 
 ## `src/diagrams/chart/`
 

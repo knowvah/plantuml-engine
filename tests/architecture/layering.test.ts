@@ -169,6 +169,16 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       '(mission mindmap-engine-port D4; wbs ITFLeaf.java:38 shares it).',
   },
   {
+    from: 'src/diagrams/bpm/',
+    to: 'src/diagrams/activity/ftile/',
+    why:
+      'upstream BpmElement.java:37-40 imports ' +
+      'net.sourceforge.plantuml.activitydiagram3.ftile.BoxStyle and ' +
+      'activitydiagram3.ftile.vertical.{FtileBox,FtileCircleStart,FtileDiamond} ' +
+      '(toTextBlockInternal, BpmElement.java:150-170) -- every BPM element IS an ' +
+      'activity Ftile, kept at its upstream path (mission bpm-engine-port D2).',
+  },
+  {
     from: 'src/diagrams/ebnf/',
     to: 'src/diagrams/activity/ftile/',
     why:

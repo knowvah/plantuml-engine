@@ -42,6 +42,7 @@ export type DiagramType =
   | 'ebnf'
   | 'regex'
   | 'wire'
+  | 'bpm'
   | 'creole'
   | 'math'
   | 'latex'
@@ -165,6 +166,7 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   ebnf: 'ebnf',
   regex: 'regex',
   wire: 'wire',
+  bpm: 'bpm',
   // cmf D2: the four `PSystemBasicFactory` tags (`DiagramType.java:107-108, :124-125, :162-163, :167-168`).
   creole: 'creole',
   math: 'math',
@@ -424,6 +426,8 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   ebnf: UpstreamDiagramType.EBNF,
   regex: UpstreamDiagramType.REGEX,
   wire: UpstreamDiagramType.WIRE,
+  // `BpmDiagramFactory` is `DiagramType.BPM` (BpmDiagramFactory.java:51, DiagramType.java:98-99).
+  bpm: UpstreamDiagramType.BPM,
   creole: UpstreamDiagramType.CREOLE,
   math: UpstreamDiagramType.MATH,
   latex: UpstreamDiagramType.LATEX,

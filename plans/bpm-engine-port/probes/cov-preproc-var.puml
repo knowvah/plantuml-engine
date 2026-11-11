@@ -1,0 +1,4 @@
+@startbpm
+!$x = "hello"
+:$x;
+@endbpm

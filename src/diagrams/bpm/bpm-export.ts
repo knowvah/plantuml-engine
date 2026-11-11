@@ -1,0 +1,108 @@
+/**
+ * `BpmDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no
+ * chrome (no annotation command exists in `BpmDiagramFactory`) and no scale
+ * (no `scale` command): the warnings banner, the `{root, document}` margin
+ * (else `getDefaultMargins()`, `TitledDiagram`'s `same(10)`), the
+ * background of `TitledDiagram#calculateBackColor`, and
+ * `data-diagram-type="BPM"`. `help/help-export.ts` is the precedent (the
+ * other `TitledDiagram` with no `CommonCommands`).
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:159-209
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:279-289
+ */
+import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
+import type { RenderFragment } from '../../core/dispatcher.js';
+import { ColorMapper, toSvgPaint } from '../../core/klimt/color/ColorMapper.js';
+import { HColorGradient } from '../../core/klimt/color/HColorGradient.js';
+import { HColors } from '../../core/klimt/color/HColors.js';
+import { HColorSimple } from '../../core/klimt/color/HColorSimple.js';
+import { extractFlatContent, extractViewBoxDims, VERSION_PLACEHOLDER } from '../../core/klimt/document-shell.js';
+import { UGraphicHandwritten } from '../../core/klimt/drawing/hand/UGraphicHandwritten.js';
+import { basicSvgOption } from '../../core/klimt/drawing/svg/svg-graphics-core.js';
+import { UGraphicSvg } from '../../core/klimt/drawing/svg/u-graphic-svg.js';
+import type { ClockwiseTopRightBottomLeft } from '../../core/klimt/geom/ClockwiseTopRightBottomLeft.js';
+import type { UGraphic } from '../../core/klimt/UGraphic.js';
+import { UTranslate } from '../../core/klimt/UTranslate.js';
+import type { StringMeasurer } from '../../core/measurer.js';
+import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
+import { stringBounderFor } from '../../core/UgDiagram.js';
+import type { StringBounder as DriverStringBounder } from '../../core/klimt/drawing/svg/driver-text-svg.js';
+import type { BpmDiagram } from './BpmDiagram.js';
+
+/** `DiagramType.BPM`, the root's `data-diagram-type`. */
+const DIAGRAM_TYPE_BPM = 'BPM';
+
+/** `DiagramType.BPM.getStyleName()` has no branch and falls through to `SName.activityDiagram`.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/DiagramType.java:234-294 */
+const BPM_STYLE_NAME = 'activityDiagram';
+
+/** The width-only driver half of `UGraphicSvg`'s two text seams. */
+function driverBounderFor(measurer: StringMeasurer): DriverStringBounder {
+  return {
+    calculateDimension(font, text) {
+      return { width: measurer.measure(text, font).width };
+    },
+  };
+}
+
+/**
+ * `TitledDiagram#calculateBackColor`: the merged `{root, document, activityDiagram}`
+ * style's `BackGroundColor`, `transparent` when it has none.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/TitledDiagram.java:279-289
+ */
+function calculateBackColor(diagram: BpmDiagram): HColorSimple | HColorGradient {
+  const skinParam = diagram.getSkinParam();
+  const style = StyleSignatureBasic.of('root', 'document', BPM_STYLE_NAME).getMergedStyle(
+    skinParam.getCurrentStyleBuilder(),
+  );
+  const color = style?.value('BackGroundColor').asColor(skinParam.getIHtmlColorSet()) ?? HColors.transparent();
+  if (color instanceof HColorSimple || color instanceof HColorGradient) return color;
+  throw new Error('ClassCastException: a document BackGroundColor is a simple or gradient colour');
+}
+
+/** `TextBlockExporter.Builder#calculateMargin`.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:510-516 */
+function calculateMargin(diagram: BpmDiagram): ClockwiseTopRightBottomLeft {
+  const style = StyleSignatureBasic.of('root', 'document').getMergedStyle(
+    diagram.getSkinParam().getCurrentStyleBuilder(),
+  );
+  if (style?.hasValue('Margin') === true) return style.getMargin();
+  return diagram.getDefaultMargins();
+}
+
+/**
+ * The fragment `src/index.ts` assembles: the text block plus the margins as
+ * `minDim`, the margin translate, `UGraphicHandwritten` when handwritten.
+ * `muteColorMapper` is `IDENTITY`: no `skinparam` can set `mode`,
+ * `monochrome` or `reversecolor` here.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:159-209
+ */
+export function renderBpm(diagram: BpmDiagram, measurer: StringMeasurer): RenderFragment {
+  const mapper = ColorMapper.IDENTITY;
+  const textBlock = addWarnings(diagram.getTextBlock(), diagram.getWarnings(), mapper);
+  const dim = textBlock.calculateDimension(stringBounderFor(measurer));
+  const margin = calculateMargin(diagram);
+  const backcolor = calculateBackColor(diagram);
+  const option = basicSvgOption({
+    minDim: {
+      width: dim.getWidth() + margin.getLeft() + margin.getRight(),
+      height: dim.getHeight() + margin.getTop() + margin.getBottom(),
+    },
+    backcolor,
+    colorMapper: mapper,
+    scale: 1,
+    rootAttributes: new Map([['data-diagram-type', DIAGRAM_TYPE_BPM]]),
+  });
+  const ug = UGraphicSvg.build(0, option, VERSION_PLACEHOLDER, driverBounderFor(measurer), measurer);
+  let drawn: UGraphic = ug.apply(new UTranslate(margin.getLeft(), margin.getTop()));
+  if (diagram.isHandwritten()) drawn = new UGraphicHandwritten(drawn);
+  textBlock.drawU(drawn);
+  const svg = ug.getSvgString();
+  const { width, height } = extractViewBoxDims(svg);
+  const { body, extraDefs } = extractFlatContent(svg);
+  const paint = toSvgPaint(backcolor, mapper);
+  const fragment: RenderFragment = { body, width, height, diagramType: DIAGRAM_TYPE_BPM };
+  const withBackground =
+    typeof paint === 'string' ? { ...fragment, background: paint } : { ...fragment, backgroundGradient: paint };
+  return extraDefs.length > 0 ? { ...withBackground, extraDefs } : withBackground;
+}

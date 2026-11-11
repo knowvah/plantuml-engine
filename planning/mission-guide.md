@@ -571,6 +571,14 @@ SI-4 ports golem as a standalone module before this phase begins.
 `src/core/DirectOsDiagram.ts`, with JLaTeXMath's rollback (`src/core/latex-metrics/jlm-*.ts`) and sizing rules in `src/core/latex-metrics/`.
 Ratchet `svg-factories`. Remaining rows are on #169 and #170 or named in `DIVERGENCES.md`.
 
+## Phase 5r — BPM — DONE (bpm-engine-port, #130)
+
+**Java source:** `bpm/` (36 files), plus the activity Ftiles it draws through: `activitydiagram3/ftile/Hexagon.java` and
+`ftile/vertical/{FtileCircleStart,FtileDiamondWIP,FtileDiamond,FtileBox}.java`. Ported into `src/diagrams/bpm/` (file for
+file; `FootPrint`, the `cloneMe`s and `GridArray`'s uncalled privates are dead upstream and not ported) and
+`src/diagrams/activity/ftile/`. Registered at `PSystemBuilder.java:141`. Ratchet `svg-bpm`. All 7 corpus rows and every
+drawn authored fixture are zero-diff; no divergence.
+
 ## Phase 6 — Markdown Integration
 
 **Java source:** None — this is a JS/TS-ecosystem feature with no upstream

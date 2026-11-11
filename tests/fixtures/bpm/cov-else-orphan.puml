@@ -1,0 +1,5 @@
+@startbpm
+:a;
+else
+:b;
+@endbpm

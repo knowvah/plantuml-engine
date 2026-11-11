@@ -7,7 +7,13 @@
  * style builder is the default skin's (`createMindmapSkinParam` over no
  * source).
  *
- * The `ISkinParam` members no reader of these two diagrams reaches throw, as
+ * `BpmDiagram#getTextBlock` (BpmDiagram.java:181-186) builds one too, with
+ * the preprocessing artifact's options: no `BpmDiagramFactory` command can
+ * set a skinparam, a style or a pragma. The members its activity Ftiles
+ * read (`options`, `getHtmlColor`, `getDefaultTextAlignment`) answer
+ * `SkinParam`'s no-value result.
+ *
+ * The `ISkinParam` members no reader of these diagrams reaches throw, as
  * the engines' own `SkinParam` copies do (`wire-skin-param.ts`).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
@@ -26,6 +32,7 @@ import { MONOSPACED } from '../klimt/creole/Parser.js';
 import type { AtomOps } from '../klimt/creole/Sea.js';
 import type { SheetBuilder } from '../klimt/creole/SheetBuilder.js';
 import { ClockwiseTopRightBottomLeft } from '../klimt/geom/ClockwiseTopRightBottomLeft.js';
+import type { ParsedColor } from '../klimt/color/HColorSet.js';
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
 import { FontStyle } from '../klimt/shape/UText.js';
@@ -41,7 +48,10 @@ import type { SkinParam as StyleSkinParam } from '../style/mindmap-style-builder
 import type { StyleBuilder } from '../style/StyleBuilder.js';
 import { GUILLEMET_DEFAULT } from '../text/Guillemet.js';
 import type { GuillemetPair } from '../text/Guillemet.js';
+import type { OptionKey } from '../tim/EaterOption.js';
+import type { ColorParam } from './ColorParam.js';
 import { Pragma } from './Pragma.js';
+import type { LegacyColorSkin } from './SkinParamUtils.js';
 
 /** `getAsInt("tabsize", 8)`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:1096-1098 */
 const DEFAULT_TAB_SIZE = 8;
@@ -53,6 +63,15 @@ const DEFAULT_DPI = 96;
 export interface SkinParamClasspath {
   readonly sprites?: InternalSpriteStore | undefined;
   readonly emoji?: InternalEmojiStore | undefined;
+}
+
+/**
+ * The read half of `ConfigurationStore<OptionKey>` that `SkinParam#options()`
+ * hands out: `values.get(key)`, Java `null` when absent.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/preproc/ConfigurationStore.java:68-70
+ */
+export interface OptionStore {
+  getValue(key: OptionKey): string | null;
 }
 
 function unported(member: string): never {
@@ -77,17 +96,39 @@ function fontKey(fc: FontConfiguration): readonly unknown[] {
 }
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java */
-export class SkinParamFresh implements ISkinParamWithSimple {
+export class SkinParamFresh implements ISkinParamWithSimple, LegacyColorSkin {
   private readonly sprites: SpriteRegistry;
   private readonly params = new Map<string, string>();
   private readonly cache = new Map<string, CreoleParser>();
   private style: StyleSkinParam | undefined;
   /** The `Pragma.createEmpty()` the constructor receives, kept: warnings accumulate on it. */
   private readonly pragma = Pragma.createEmpty();
+  /** `SkinParam.create(..., option)`'s option store. @see SkinParam.java:1318-1320 */
+  private readonly option: OptionStore;
 
-  /** `classpath` is port-only (ADR-2). */
-  constructor(classpath?: SkinParamClasspath) {
+  /**
+   * `classpath` is port-only (ADR-2). `options` is the preprocessing
+   * artifact's option map (`getPreprocessingArtifact().getOption()`,
+   * BpmDiagram.java:184-185); creole and help pass none, an empty store.
+   */
+  constructor(classpath?: SkinParamClasspath, options?: ReadonlyMap<string, string>) {
     this.sprites = createSpriteRegistry(classpath?.sprites, classpath?.emoji);
+    const values = options ?? new Map<string, string>();
+    this.option = { getValue: (key) => values.get(key) ?? null };
+  }
+
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:1318-1320 */
+  options(): OptionStore {
+    return this.option;
+  }
+
+  /**
+   * Every `getValue` is `null`, so neither the stereotype loop nor the plain
+   * read finds a value.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:371-396
+   */
+  getHtmlColor(_param: ColorParam, _stereotype: Stereotype | undefined, _clickable: boolean): ParsedColor | null {
+    return null;
   }
 
   /** The default skin's builder: no `<style>`, `skinparam` or theme can reach this skin. */
@@ -204,8 +245,13 @@ export class SkinParamFresh implements ISkinParamWithSimple {
     return unported('useUnderlineForHyperlink');
   }
 
-  getDefaultTextAlignment(_defaultValue: HorizontalAlignment): HorizontalAlignment {
-    return unported('getDefaultTextAlignment');
+  /**
+   * `HorizontalAlignment.fromString(getValue("defaulttextalignment"))` is
+   * `null`, so the default (`FtileBox`'s constructor reaches this).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:731-738
+   */
+  getDefaultTextAlignment(defaultValue: HorizontalAlignment): HorizontalAlignment {
+    return defaultValue;
   }
 
   strictUmlStyle(): boolean {

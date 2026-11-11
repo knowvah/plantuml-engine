@@ -48,7 +48,8 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   timing: ['svg-timing'],
   // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
   // cmf T4: the creole/math/latex/definition/help factories' rows live in `unknown`, as the utility factories' do.
-  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag'],
+  // bpe D7: the 7 bpm rows live in `unknown`, pinned with `type: 'unknown'` as nwdiag's are.
+  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag', 'svg-bpm'],
   network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],

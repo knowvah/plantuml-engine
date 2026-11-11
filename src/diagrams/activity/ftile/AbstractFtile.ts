@@ -1,7 +1,19 @@
 import type { ISkinParamWithSimple } from '../../../core/abel/ISkinParam.js';
 import type { HColorSet } from '../../../core/klimt/color/HColorSet.js';
 import type { StringBounder } from '../../../core/klimt/font/StringBounder.js';
+import type { StyleBuilder } from '../../../core/style/StyleBuilder.js';
 import type { FtileGeometry } from './FtileGeometry.js';
+
+/**
+ * The `ISkinParam` surface the style-reading Ftiles (`FtileDiamondWIP`,
+ * `FtileBox`) need: the real style engine's
+ * builder, which the port's `ISkinParam` slice types opaquely (the
+ * `MindMapSkinParam` precedent).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/ISkinParam.java (getCurrentStyleBuilder)
+ */
+export interface FtileStyledSkin extends ISkinParamWithSimple {
+  getCurrentStyleBuilder(): StyleBuilder;
+}
 
 /**
  * AbstractFtile — base of every activity tile: holds the `ISkinParam` and

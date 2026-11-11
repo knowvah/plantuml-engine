@@ -1,0 +1,797 @@
+{
+  "fixtures": [
+    {
+      "type": "bpm",
+      "slug": "cov-blank-lines",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-empty-arm",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-first",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-five",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-four",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-nested-first",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-nested-last",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-nested-three",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-no-else",
+      "status": "baseline",
+      "weightedScore": 309,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-sequential",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-two",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-branch-unclosed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-comment",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-emoji",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-leading-space",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-long",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-one",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-semicolons",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-table",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-two",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-unicode",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-docked-url",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-else-orphan",
+      "status": "baseline",
+      "weightedScore": 40,
+      "diffCount": 27,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-end-orphan",
+      "status": "baseline",
+      "weightedScore": 38,
+      "diffCount": 31,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.util.NoSuchElementException (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-back",
+      "status": "baseline",
+      "weightedScore": 323,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.ClassCastException: class net.sourceforge.plantuml.bpm.BpmElement cannot be cast to class net.sourceforge.plantuml.bpm.ConnectorPuzzleEmpty (net.sourceforge.plantuml.bpm.BpmElement and net.sourceforge.plantuml.bpm.ConnectorPuzzleEmpty are in unnamed module of loader 'app')"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-forward-twice",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-merge-above",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-merge-below",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-resume-mixed",
+      "status": "baseline",
+      "weightedScore": 316,
+      "diffCount": 110,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-self-merge",
+      "status": "baseline",
+      "weightedScore": 297,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-goto-unknown",
+      "status": "baseline",
+      "weightedScore": 260,
+      "diffCount": 129,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-element-puzzle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-ns-ne",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-ns-ns",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-ns-nw",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-ns-over-element",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-ns-over-element-goto",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-puzzle-element",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-interleave-sw",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-keywords-case",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-after-goto",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-colon",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-creole-size-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-double-semicolon",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-newline-branch",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-label-unicode-escape",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-merge-forms",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-merge-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-merge-space",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-merge-two-adjacent",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-new-branch-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-option-debug",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-option-debug-branch",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-option-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-pragma",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-preproc-var",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-resume-chain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-resume-each-arm",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-resume-then-merge",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-resume-unknown",
+      "status": "baseline",
+      "weightedScore": 280,
+      "diffCount": 128,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-route-cross-horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-route-cross-vertical",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-scale",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-skinparam",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-sprite",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-start-only",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Empty description (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-style",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-syntax-error",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-theme",
+      "status": "baseline",
+      "weightedScore": 171,
+      "diffCount": 26,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 12,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-title",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: bpm)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    },
+    {
+      "type": "bpm",
+      "slug": "cov-trailing-space",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "e88ea8424"
+    }
+  ]
+}

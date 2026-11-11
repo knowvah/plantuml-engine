@@ -43,3 +43,17 @@ export const ColorParam = {
   iconPublicBackground: { name: 'iconPublicBackground', defaultValue: '#84BE84', isBackground: false },
   iconIEMandatory: { name: 'iconIEMandatory', defaultValue: '#000000', isBackground: false },
 } as const satisfies Record<string, ColorParam>;
+
+/**
+ * The two activity `ColorParam` constants a BPM merge diamond reads through
+ * `SkinParamUtils.getColor` (`BpmElement.java:161-162`). Their defaults are
+ * `HColors.MY_YELLOW` (`#FEFECE`) and `HColors.MY_RED` (`#A80036`)
+ * (`HColors.java:95-96`); `activityBackground` is a background
+ * (`ColorParam(HColor, boolean isBackground, ColorType)`).
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/ColorParam.java:45
+ */
+export const ActivityColorParam = {
+  activityBackground: { name: 'activityBackground', defaultValue: '#FEFECE', isBackground: true },
+  activityBorder: { name: 'activityBorder', defaultValue: '#A80036', isBackground: false },
+} as const satisfies Record<string, ColorParam>;
