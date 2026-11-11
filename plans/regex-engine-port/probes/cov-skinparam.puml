@@ -1,0 +1,6 @@
+@startregex
+skinparam backgroundColor yellow
+skinparam defaultFontColor red
+skinparam defaultFontSize 18
+a(b|c)+
+@endregex

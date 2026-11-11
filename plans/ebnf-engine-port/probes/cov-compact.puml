@@ -1,0 +1,4 @@
+@startebnf
+!pragma compact
+rule = "a", [ "b" ], { "c" | "d" };
+@endebnf

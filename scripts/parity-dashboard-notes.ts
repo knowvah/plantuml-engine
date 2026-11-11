@@ -56,17 +56,40 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'notBuilt',
     detail: 'Dropped on purpose: its library is LGPL-3.0 and the MIT edition disables it (`DIVERGENCES.md`).',
   },
-  ebnf: { noteClass: 'notBuilt' },
+  ebnf: {
+    noteClass: 'openDefect',
+    detail:
+      'The EBNF engine (#125) draws all 44 conformant: 43 byte-identical, pinned in `svg-ebnf`, and ' +
+      '`ladifa-97-keme950`, a jar error page where we also error (#166).',
+  },
   network: {
     noteClass: 'notBuilt',
     detail:
       'This bucket is filled by a keyword match and holds no nwdiag diagrams: one description diagram, which conforms, ' +
       'and two in the legacy `(*) -->` activity syntax, drawn by the legacy activity engine (#123) and pinned in ' +
-      '`svg-activity-legacy`. Real nwdiag fixtures are counted under `unknown`.',
+      '`svg-activity-legacy`. The 68 real nwdiag fixtures are counted under `unknown`: the nwdiag engine (#124) draws ' +
+      'all 68 conformant (4 are jar error pages where we also error), pinned in `svg-nwdiag`.',
   },
-  regex: { noteClass: 'notBuilt' },
-  timing: { noteClass: 'notBuilt' },
-  wire: { noteClass: 'notBuilt' },
+  regex: {
+    noteClass: 'openDefect',
+    detail:
+      'The regex engine (#126) draws all 46 conformant: 44 byte-identical, pinned in `svg-regex`, and ' +
+      '`bakuza-41-bulo451` and `tajefa-31-pefi801`, jar error pages where we also error (#167).',
+  },
+  timing: {
+    noteClass: 'openDefect',
+    detail:
+      'The timing engine (#127) draws all 145 conformant: 139 byte-identical, pinned in `svg-timing`, and six jar ' +
+      'error pages where we also error, pinned by score. 13 more `@startuml` timing rows are counted under `unknown`: ' +
+      'all conformant and pinned in `svg-timing`.',
+  },
+  wire: {
+    noteClass: 'openDefect',
+    detail:
+      'The wire engine (#128) draws all 18 conformant, byte-identical and pinned in `svg-wire`. 113 authored ' +
+      'fixtures in `tests/fixtures/wire` hold at 0 diffs or jar error pairs; `cov-embedded-state-note` waits on a ' +
+      'state-engine gap (#168).',
+  },
   activity: {
     noteClass: 'openDefect',
     detail:

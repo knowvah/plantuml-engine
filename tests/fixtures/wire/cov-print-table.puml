@@ -1,0 +1,4 @@
+@startwire
+print("|= a |= b |\n| 1 | 2 |")
+* a [20x20]
+@endwire

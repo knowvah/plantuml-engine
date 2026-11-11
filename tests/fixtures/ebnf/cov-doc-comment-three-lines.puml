@@ -1,0 +1,6 @@
+@startebnf
+(** first line
+    second line
+    third line **)
+rule = "a";
+@endebnf

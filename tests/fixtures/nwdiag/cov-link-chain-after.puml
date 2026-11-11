@@ -1,0 +1,10 @@
+@startnwdiag
+nwdiag {
+  network dmz {
+    web01;
+    web02;
+  }
+  web01 -- lb;
+  lb -- backend;
+}
+@endnwdiag

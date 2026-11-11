@@ -5,13 +5,15 @@
  *
  * Not ported, with the reason: `load(SFile | InputStream)` (file and stream IO, never reached from the
  * browser-safe library), `expandsNewline` (`StringLocated#expandsNewline`, the Jaws triple-separator split, has no
- * port), `getWithNewlines` (the `Display.getWithNewlines3` copy has no caller), `inspector` and
- * `inspectorWithNewlines` (`CharInspectorImpl` has no port). A caller that needs one ports it here.
+ * port), `getWithNewlines` (the `Display.getWithNewlines3` copy has no caller). A caller that needs one ports it
+ * here.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/utils/BlocLines.java:56-413
  */
 import { cleanList, type MultilinesStrategy } from '../command/MultilinesStrategy.js';
 import { Display } from '../klimt/creole/Display.js';
+import type { CharInspector } from './CharInspector.js';
+import { CharInspectorImpl } from './CharInspectorImpl.js';
 import { BackSlash } from '../text/BackSlash.js';
 import type { LineLocation } from '../tim/LineLocation.js';
 import { StringLocated } from '../tim/StringLocated.js';
@@ -262,6 +264,16 @@ export class BlocLines implements Iterable<StringLocated> {
     const last = this.getLast();
     result.push(last.substring(0, last.length() - nb).getTrimmed());
     return new BlocLines(result);
+  }
+
+  /** @see BlocLines.java:399-401 */
+  inspector(): CharInspector {
+    return new CharInspectorImpl(this, false);
+  }
+
+  /** @see BlocLines.java:403-405 */
+  inspectorWithNewlines(): CharInspector {
+    return new CharInspectorImpl(this, true);
   }
 
   /** `null` is `undefined`. @see BlocLines.java:407-411 */

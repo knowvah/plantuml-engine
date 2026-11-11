@@ -1,0 +1,4 @@
+@startuml
+skinparam backgroundColor yellow
+help type
+@enduml

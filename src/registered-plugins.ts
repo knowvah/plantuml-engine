@@ -32,12 +32,22 @@ import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from './diagrams/files/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
+import { ebnfPlugin } from './diagrams/ebnf/index.js';
+import { regexPlugin } from './diagrams/regex/index.js';
+import { wirePlugin } from './diagrams/wire/index.js';
+import { creolePlugin } from './core/klimt/creole/legacy/PSystemCreoleFactory.js';
+import { definitionPlugin } from './diagrams/definition/PSystemDefinitionFactory.js';
+import { helpPlugin } from './diagrams/help/index.js';
+import { latexPlugin } from './diagrams/math/PSystemLatexFactory.js';
+import { mathPlugin } from './diagrams/math/PSystemMathFactory.js';
 import { hclPlugin } from './diagrams/hcl/index.js';
 import { jsonPlugin } from './diagrams/json/index.js';
 import { mindmapPlugin } from './diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from './diagrams/openiconic/PSystemListOpenIconicFactory.js';
 import { openIconicPlugin } from './diagrams/openiconic/PSystemOpenIconicFactory.js';
 import { packetdiagPlugin } from './diagrams/packetdiag/index.js';
+import { nwdiagPlugin } from './diagrams/nwdiag/index.js';
+import { timingPlugin } from './diagrams/timing/index.js';
 import { saltPlugin } from './diagrams/salt/index.js';
 import { sequencePlugin } from './diagrams/sequence/index.js';
 import { statePlugin } from './diagrams/state/index.js';
@@ -80,10 +90,15 @@ function registerUmlRun(registry: PluginRegistrar): void {
 function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(saltPlugin); // java:153
   registry.register(dotPlugin); // java:154
+  registry.register(nwdiagPlugin); // java:155
   registry.register(mindmapPlugin); // java:156
   registry.register(wbsPlugin); // java:157
   registry.register(chartPlugin); // java:158
   registry.register(packetdiagPlugin); // java:159
+  registry.register(definitionPlugin); // java:169
+  registry.register(mathPlugin); // java:172
+  registry.register(latexPlugin); // java:173
+  registry.register(creolePlugin); // java:174
   registry.register(eggPlugin); // java:175
   registry.register(appleTwoPlugin); // java:176
   registry.register(ripPlugin); // java:177
@@ -91,11 +106,16 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
   registry.register(dedicationPlugin); // java:186
+  registry.register(timingPlugin); // java:187
+  registry.register(helpPlugin); // java:188
+  registry.register(wirePlugin); // java:189
   registry.register(jsonPlugin); // java:190
   registry.register(filesPlugin); // java:192
   registry.register(boardPlugin); // java:193
   registry.register(yamlPlugin); // java:194
   registry.register(hclPlugin); // java:195
+  registry.register(ebnfPlugin); // java:196
+  registry.register(regexPlugin); // java:197
 }
 
 // Registration order IS upstream's factory order (`PSystemBuilder.java:133-200`),
@@ -131,8 +151,8 @@ function registerFromSalt(registry: PluginRegistrar): void {
 // candidate refuses a single-line source, the first of the equal top scores
 // owns it (`PSystemErrorUtils.java:140-147`), and Colors is first.
 // Not registered by ufp: PSystemWelcomeFactory (java:133),
-// PSystemListFontsFactory (java:148) and HelpFactory (java:188), outside its
-// scope, and PSystemSudokuFactory (java:163), which the MIT edition removes
+// PSystemListFontsFactory (java:148), outside its scope (HelpFactory, java:188,
+// is registered by cmf), and PSystemSudokuFactory (java:163), which the MIT edition removes
 // (`PSystemBuilder.java:161-164`, decisions.md D13).
 //
 // The engines outside `@startuml`'s candidate set (`DiagramType.java:198-201`)

@@ -1,0 +1,10 @@
+@startuml
+scale 1Y as 40 pixels
+concise "C" as C
+@0
+C is a
+@31557600
+C is b
+@63115200
+C is c
+@enduml

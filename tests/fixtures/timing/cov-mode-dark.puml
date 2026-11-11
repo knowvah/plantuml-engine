@@ -1,0 +1,12 @@
+@startuml
+!pragma svgDarkMode true
+skinparam handwritten false
+<style>
+root { BackGroundColor black ; LineColor white ; FontColor white }
+</style>
+concise "C" as C
+@0
+C is a
+@10
+C is b
+@enduml

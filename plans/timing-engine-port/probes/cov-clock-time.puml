@@ -1,0 +1,10 @@
+@startuml
+clock clk with period 1
+binary "B" as B
+@clk*0
+B is low
+@clk*2
+B is high
+@clk*5
+B is low
+@enduml

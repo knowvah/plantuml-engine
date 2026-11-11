@@ -1,0 +1,16 @@
+@startnwdiag
+nwdiag {
+  group g {
+    description = "Spans"
+    web01;
+    db01;
+  }
+  network dmz {
+    web01;
+  }
+  network internal {
+    web01;
+    db01;
+  }
+}
+@endnwdiag

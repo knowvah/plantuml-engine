@@ -1,0 +1,32 @@
+{
+  "fixtures": [
+    {
+      "type": "regex",
+      "slug": "bakuza-41-bulo451",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {([^{} (Assumed diagram type: regex)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    },
+    {
+      "type": "regex",
+      "slug": "tajefa-31-pefi801",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "jarError": {
+        "line": 2,
+        "message": "Error parsing: Bad quantifier {([^{} (Assumed diagram type: regex)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "317e80fef"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+@startwire
+' a line comment
+
+* a [20x20]
+/' block
+comment '/
+
+* b [20x20]
+
+@endwire

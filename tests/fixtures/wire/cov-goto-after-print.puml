@@ -1,0 +1,5 @@
+@startwire
+print("p")
+goto(100,100)
+* a [20x20]
+@endwire

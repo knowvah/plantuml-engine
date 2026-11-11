@@ -1,0 +1,9 @@
+@startuml
+concise "C" as C
+@2020/07/04
+C is A
+@2020/07/10
+C is B
+@2020/07/20
+C is C
+@enduml

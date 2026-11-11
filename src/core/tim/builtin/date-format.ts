@@ -173,3 +173,32 @@ export function formatDate(epochMillis: number, pattern: string, timeZone: strin
   }
   return result;
 }
+
+/** `DateFormatSymbols.patternChars`: the letters `SimpleDateFormat#compile` accepts unquoted. */
+const SIMPLE_DATE_FORMAT_LETTERS = 'GyMdkHmsSEDFwWahKzZYuXL';
+
+const ASCII_LETTER = /[A-Za-z]/;
+
+/**
+ * `new SimpleDateFormat(pattern, Locale.US)`'s pattern validation, apart from formatting: throws an
+ * `Error` whose message is `Throwable#toString` of the `IllegalArgumentException` the JDK raises for an
+ * unquoted ASCII letter outside `GyMdkHmsSEDFwWahKzZYuXL` ("Illegal pattern character 'q'") or for an
+ * unterminated quote ("Unterminated quote"). `''` is a literal quote. Separate from {@link formatDate}
+ * so `%date`'s lenient behaviour does not move (timing-engine-port D4).
+ *
+ * @see java.text.SimpleDateFormat#compile
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/timingdiagram/TimingDiagram.java (useDateFormat, :409-415)
+ */
+export function checkSimpleDateFormatPattern(pattern: string): void {
+  let inQuote = false;
+  for (let i = 0; i < pattern.length; i++) {
+    const c = pattern.charAt(i);
+    if (c === "'") {
+      if (pattern.charAt(i + 1) === "'") i++;
+      else inQuote = !inQuote;
+    } else if (!inQuote && ASCII_LETTER.test(c) && !SIMPLE_DATE_FORMAT_LETTERS.includes(c)) {
+      throw new Error(`java.lang.IllegalArgumentException: Illegal pattern character '${c}'`);
+    }
+  }
+  if (inQuote) throw new Error('java.lang.IllegalArgumentException: Unterminated quote');
+}

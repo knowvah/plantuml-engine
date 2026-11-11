@@ -1,0 +1,8 @@
+@startuml
+class A
+note right of A
+{{ebnf
+r = "a" | "b";
+}}
+end note
+@enduml

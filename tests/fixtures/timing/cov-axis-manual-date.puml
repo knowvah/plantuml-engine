@@ -1,0 +1,8 @@
+@startuml
+manual time-axis
+concise "C" as C
+@2020/07/01
+C is a
+@2020/07/05
+C is b
+@enduml

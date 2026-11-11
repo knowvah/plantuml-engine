@@ -26,8 +26,11 @@
  * - `ArrayOfAtoms#checkDimensions`: `col` is the widest row; a shorter row
  *   is padded with `null` cells.
  *
- * Not modelled (the node converter flags them unsupported): vertical and
- * horizontal rules (`VlineAtom`, `HlineAtom`), `MulticolumnAtom`, and the
+ * `VlineAtom` (`|` in the column spec) widens its separator: `VlineAtom#getWidth`
+ * and `MatrixAtom#createBox` offsets 696-1123.
+ *
+ * Not modelled (the node converter flags them unsupported): dashed rules and
+ * horizontal rules (`HlineAtom`), `MulticolumnAtom`, and the
  * `align`/`alignat`/`flalign`/`smallmatrix` environments.
  */
 import type { BuildBox, MatrixAtom } from './atoms.js';
@@ -83,12 +86,23 @@ function measureGrid(atom: MatrixAtom, style: number, build: BuildBox): Grid {
   return grid;
 }
 
+/** `VlineAtom#getWidth`: `n` rules of `defaultrulethickness` with `2 *
+ *  thickness` struts between (`createBox`), i.e. `thickness * (3n - 2)`. */
+const vlineWidth = (n: number, style: number): number =>
+  n === 0 ? 0 : param('defaultrulethickness', style) * (3 * n - 2);
+
 /** `MatrixAtom#getColumnSep`, case ARRAY (`spaceAround`: `semihsep` at both
  *  ends) and case MATRIX (`nullBox` at both ends); `hsep` between columns. */
 function columnSeparators(atom: MatrixAtom, cols: number, style: number): Box[] {
   const hsep = strutBox(HSEP_EM * sizeFactor(style), 0, 0);
   const outer = atom.env === 'array' ? strutBox(SEMIHSEP_EM * sizeFactor(style), 0, 0) : nullBox();
-  return Array.from({ length: cols + 1 }, (_, j) => (j === 0 || j === cols ? { ...outer } : { ...hsep }));
+  // `MatrixAtom#createBox` (offsets 696-1123) pads each rule to `sep[j]`'s
+  // width plus its own: the separator becomes that much wider.
+  return Array.from({ length: cols + 1 }, (_, j) => {
+    const sep = j === 0 || j === cols ? { ...outer } : { ...hsep };
+    sep.width += vlineWidth(atom.vlines?.[j] ?? 0, style);
+    return sep;
+  });
 }
 
 /** One row's `HorizontalBox`: `sep[0]`, then each cell padded to its column

@@ -1,0 +1,4 @@
+@startwire
+goto(0,0)
+* a [40x40]
+@endwire

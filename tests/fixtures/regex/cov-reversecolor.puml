@@ -1,0 +1,4 @@
+@startregex
+skinparam reversecolor dark
+a(b|c)+\d
+@endregex

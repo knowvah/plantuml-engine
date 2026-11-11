@@ -1,0 +1,12 @@
+@startuml
+Alice -> Bob
+note right
+{{nwdiag
+nwdiag {
+  network dmz {
+    web01;
+  }
+}
+}}
+end note
+@enduml

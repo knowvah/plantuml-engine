@@ -10,6 +10,7 @@
  */
 import type { Atom, CharAtom, Delimiter, FontGlyph, Limits, RowAtom } from './atoms.js';
 import { isBigOperator, setOrdinary } from './atoms.js';
+import type { CharFont } from './kern.js';
 import type { Glyph, KNode } from './katex-glyphs.js';
 import { nodeField, nodeList, probeGlyph, stringField } from './katex-glyphs.js';
 import {
@@ -85,10 +86,33 @@ function leafProbe(text: string, ctx: Context): string {
   return ctx.font === undefined ? text : `\\${ctx.font}{${text}}`;
 }
 
+/** Text fonts typeset in `jlm_cmr10` (`\\text` and its roman aliases). */
+const ROMAN_TEXT_FONTS: ReadonlySet<string> = new Set(['\\text', '\\textrm', '\\textnormal']);
+
+/** `CharSymbol#getCharFont` for a leaf the kern tables cover: text-mode
+ *  roman is `jlm_cmr10`; in math mode a letter is `jlm_cmmi10` (`mathrm`
+ *  `jlm_cmr10`) and a digit `jlm_cmr10`. The code is the character's. */
+function charFont(text: string, ctx: Context): CharFont | undefined {
+  if (text.length !== 1 || ctx.bold) return undefined;
+  const code = text.charCodeAt(0);
+  if (ctx.mode === 'text') return ROMAN_TEXT_FONTS.has(ctx.font ?? '\\text') ? { font: 'jlm_cmr10', code } : undefined;
+  if (!CHAR_ATOM.test(text)) return undefined;
+  if (ctx.font === 'mathrm' || (ctx.font === undefined && /\d/.test(text))) return { font: 'jlm_cmr10', code };
+  return ctx.font === undefined ? { font: 'jlm_cmmi10', code } : undefined;
+}
+
 /** A `CharAtom`/`SymbolAtom` leaf. */
 function leafAtom(text: string, type: number, ctx: Context): CharAtom {
   const glyph = fontGlyph(leafProbe(text, ctx), ctx, text);
-  return { kind: 'char', type, limits: 'nolimits', glyph, mathChar: ctx.mode === 'math' && CHAR_ATOM.test(text) };
+  const atom: CharAtom = {
+    kind: 'char',
+    type,
+    limits: 'nolimits',
+    glyph,
+    mathChar: ctx.mode === 'math' && CHAR_ATOM.test(text),
+  };
+  const cf = charFont(text, ctx);
+  return cf === undefined ? atom : { ...atom, cf };
 }
 
 /** The TFM height of `jlm_cmex10`'s display-size operators
@@ -120,6 +144,18 @@ function bigOperatorSymbol(name: string, limits: Limits, ctx: Context): CharAtom
 /** `\big`…`\Bigg`: the delimiter's `NextLarger` chain as KaTeX sizes it. */
 const DELIMITER_SIZES = ['\\big', '\\Big', '\\bigg', '\\Bigg'] as const;
 
+/** `vert` and `Vert` (`jlm_cmsy10` codes 106 and 107, `fonts/maths/
+ *  jlm_cmsy10.xml:189-194`) have no sized glyphs: their `NextLarger` is a
+ *  `jlm_cmex10` extension char with only `Extension rep` (code 175 and 176,
+ *  `fonts/base/jlm_cmex10.xml:39-44`, `<Char>` width and depth, no height).
+ *  KaTeX's `\big|` is no glyph, so the sizes are the plain glyph alone. */
+const EXTENSION_ONLY: Readonly<Record<string, Glyph>> = {
+  '|': { width: 0.333334, height: 0, depth: 0.600006, italic: 0 },
+  '\\vert': { width: 0.333334, height: 0, depth: 0.600006, italic: 0 },
+  '\\|': { width: 0.555557, height: 0, depth: 0.600006, italic: 0 },
+  '\\Vert': { width: 0.555557, height: 0, depth: 0.600006, italic: 0 },
+};
+
 /** A `\left`/`\right` delimiter; `.` is none (`FencedAtom.java:89-94`). */
 export function delimiter(text: string | undefined): Delimiter | undefined {
   if (text === undefined || text === '.') return undefined;
@@ -131,7 +167,11 @@ export function delimiter(text: string | undefined): Delimiter | undefined {
     sizes.push({ glyph: g, xHeight: XHEIGHT_CM });
     prevTotal = g.height + g.depth;
   }
-  return sizes.length === 0 ? undefined : { sizes };
+  if (sizes.length === 0) return undefined;
+  const repeat = EXTENSION_ONLY[text];
+  return repeat === undefined
+    ? { sizes }
+    : { sizes: sizes.slice(0, 1), repeat: { glyph: repeat, xHeight: XHEIGHT_CM } };
 }
 
 /** KaTeX `op.limits`/`alwaysHandleSupSub` → `type_limits`: `\limits`
@@ -190,15 +230,32 @@ export class FormulaBuilder {
   }
 }
 
+/** KaTeX's node for `\\` and `\newline`. `PredefMacros#cr_macro` (outside
+ *  array mode) parses the rest of the formula into an `ArrayOfAtoms` whose
+ *  rows `getAsVRow` stacks: a row with no atom (`VRowAtom#append(null)`)
+ *  vanishes, so only non-empty rows are kept. */
+const CR_NODE = 'cr';
+
 /** Builds an atom tree from KaTeX parse nodes. */
 export class AtomConverter {
-  constructor(private readonly convertNode: Converter) {}
+  constructor(
+    private readonly convertNode: Converter,
+    private readonly groupAtom: Converter = () => undefined,
+  ) {}
 
   /** A formula's root from a node list (`new TeXFormula(tp, s).root`). */
   formula(nodes: readonly KNode[], ctx: Context): Atom | undefined {
-    const f = new FormulaBuilder();
-    for (const n of nodes) this.addNode(f, n, ctx);
-    return f.root;
+    const rows: Atom[] = [];
+    let f = new FormulaBuilder();
+    for (const n of nodes) {
+      if (n.type === CR_NODE) {
+        if (f.root !== undefined) rows.push(f.root);
+        f = new FormulaBuilder();
+      } else this.addNode(f, n, ctx);
+    }
+    if (rows.length === 0) return f.root;
+    if (f.root !== undefined) rows.push(f.root);
+    return { kind: 'vrow', type: TYPE_ORDINARY, rows };
   }
 
   /** A macro argument: KaTeX's argument `ordgroup` is the braces upstream
@@ -210,7 +267,7 @@ export class AtomConverter {
 
   private addNode(f: FormulaBuilder, n: KNode, ctx: Context): void {
     if (n.type === 'ordgroup') {
-      f.addGroup(this.formula(nodeList(n, 'body'), ctx));
+      f.addGroup(this.groupAtom(n, ctx) ?? this.formula(nodeList(n, 'body'), ctx));
       return;
     }
     if (n.type !== 'supsub') {
@@ -220,8 +277,12 @@ export class AtomConverter {
     const baseNode = nodeField(n, 'base');
     if (baseNode !== undefined) this.addNode(f, baseNode, ctx);
     const base = f.takeLast(ctx);
-    const sub = this.argument(nodeField(n, 'sub'), ctx);
-    const sup = this.argument(nodeField(n, 'sup'), ctx);
+    const supNode = nodeField(n, 'sup');
+    const primes = nodeField(n, 'sub') === undefined && isPrimes(supNode);
+    // `'` is `CumulativeScriptsAtom`: a `RowAtom` of primes over an empty
+    // `RowAtom` subscript, which `ScriptsAtom` lays out as both scripts.
+    const sub = primes ? asRow(undefined) : this.argument(nodeField(n, 'sub'), ctx);
+    const sup = primes ? asRow(this.argument(supNode, ctx)) : this.argument(supNode, ctx);
     if (isBigOperator(base)) f.add({ kind: 'bigop', type: TYPE_BIG_OPERATOR, base, under: sub, over: sup });
     else f.add({ kind: 'scripts', base, sub, sup });
   }
@@ -234,6 +295,16 @@ function phantomBase(ctx: Context): Atom {
     kind: 'phantom',
     body: { kind: 'row', elements: [leafAtom('M', TYPE_ORDINARY, { ...ctx, font: undefined })] },
   };
+}
+
+/** The superscript KaTeX's parser builds for `'` (`Parser#parseAtom`): an
+ *  `ordgroup` of `\\prime` with no source location, unlike a written
+ *  `^{\\prime}`. `TeXParser.parse`'s `'` case (java 666-723) is
+ *  `CumulativeScriptsAtom(lastAtom, null, SymbolAtom.get("prime"))`. */
+function isPrimes(n: KNode | undefined): boolean {
+  if (n?.type !== 'ordgroup' || n.raw['loc'] !== undefined) return false;
+  const body = nodeList(n, 'body');
+  return body.length > 0 && body.every((b) => b.type === 'textord' && stringField(b, 'text') === '\\prime');
 }
 
 /** A body as a row (`ColorAtom`'s `new RowAtom(atom)`, which flattens a

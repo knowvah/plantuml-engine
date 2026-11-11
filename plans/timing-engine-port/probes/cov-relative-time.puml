@@ -1,0 +1,9 @@
+@startuml
+concise "A" as A
+@0
+A is x
+@+10
+A is y
+@+5.5
+A is z
+@enduml

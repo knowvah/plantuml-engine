@@ -1,0 +1,4 @@
+@startregex
+abc
+a{x}
+@endregex

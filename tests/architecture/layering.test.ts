@@ -57,6 +57,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'whose heads are ArrowsRegular (activitydiagram3/ftile/ArrowsRegular.java:41-86).',
   },
   {
+    from: 'src/diagrams/timing/',
+    to: 'src/diagrams/sequence/sequence-arrowhead.ts',
+    why:
+      'tep T2b — upstream timing constraints take net.sourceforge.plantuml.skin.ArrowConfiguration ' +
+      '(TimeConstraint.java:132-137 reads only its colour; Player.java#createConstraint), a shared ' +
+      'skin class the port keeps in sequence-arrowhead.ts. Type-only import.',
+  },
+  {
     from: 'src/index.ts',
     to: 'src/diagrams/',
     why:
@@ -159,6 +167,35 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       '(createMindMap, FtileBoxOld.java:139-146) -- the mindmap node box IS ' +
       "the activity engine's FtileBoxOld, kept at its upstream path " +
       '(mission mindmap-engine-port D4; wbs ITFLeaf.java:38 shares it).',
+  },
+  {
+    from: 'src/diagrams/ebnf/',
+    to: 'src/diagrams/activity/ftile/',
+    why:
+      'upstream EbnfExpression.java:42, PSystemEbnf.java:43, ETileBox.java:41, ' +
+      'ETileOptional.java:38 and ETileOptional2.java:38 import ' +
+      'net.sourceforge.plantuml.activitydiagram3.ftile.vcompact.FloatingNote ' +
+      '-- every EBNF comment IS the activity FloatingNote, kept at its upstream ' +
+      'path (mission ebnf-engine-port D3).',
+  },
+  {
+    from: 'src/diagrams/regex/',
+    to: 'src/diagrams/ebnf/',
+    why:
+      'upstream PSystemRegex.java:50-61 imports twelve classes from ' +
+      'net.sourceforge.plantuml.ebnf (ETile, ETileAlternation, ETileBox, ' +
+      'ETileConcatenation, ETileLookAheadOrBehind, ETileNamedGroup, ETileOneOrMore, ' +
+      'ETileOptional2, ETileRegexGroup, ETileRegexGroupAllBut, ETileZeroOrMore, ' +
+      'Symbol) -- the regex railroad IS the ebnf tile set (mission regex-engine-port D1).',
+  },
+  {
+    from: 'src/diagrams/regex/',
+    to: 'src/diagrams/json/',
+    why:
+      'upstream PSystemRegex.java:62 imports ' +
+      'net.sourceforge.plantuml.jsondiagram.StyleExtractor and its constructor calls ' +
+      'applyStyles (PSystemRegex.java:84-91) -- kept at its upstream home ' +
+      '(mission regex-engine-port D3).',
   },
   {
     from: 'src/diagrams/wbs/',

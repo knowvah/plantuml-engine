@@ -1,0 +1,664 @@
+{
+  "fixtures": [
+    {
+      "type": "ebnf",
+      "slug": "cov-caption-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-caption-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-comment-above-below",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-comment-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-comment-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-comment-standalone",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-compact",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-descriptive-names",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-descriptive-names-fr",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-doc-comment-three-lines",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-document-margin",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-embedded-class",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-empty-rule",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-except-in-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-footer-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-footer-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-header-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-header-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-inline-comments",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-legend-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-legend-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-multiline-comments",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-multiline-rule",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-alt-in-optional",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-group-in-concat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-not-in-repeat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-one-or-more-in-optional",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-optional-in-repeat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nest-repeat-in-alt",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-nested-groups",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-no-equals",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-not",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-alternation",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-concat",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-group",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-literal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-one-or-more",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-optional",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-repetition",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-special",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-terminal2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-op-zero-or-more",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-operators-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-repetition-1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-repetition-10",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-repetition-symbol",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-font",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-linethickness",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-roundcorner",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-style-ebnf-shadowing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-syntax-error",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-theme-sketchy",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-three-widths",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-title-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-title-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-unicode-ids",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-unknown-line",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-unparsable",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Unparsable expression (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    },
+    {
+      "type": "ebnf",
+      "slug": "cov-unterminated",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException (Assumed diagram type: ebnf)"
+      },
+      "measuredAt": "2026-11-10",
+      "measuredAgainstCommit": "25caedf5b"
+    }
+  ]
+}

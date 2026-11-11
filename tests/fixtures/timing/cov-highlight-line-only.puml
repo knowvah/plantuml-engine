@@ -1,0 +1,8 @@
+@startuml
+concise "C" as C
+@0
+C is x
+@20
+C is y
+highlight 5 to 15 #Gold;line:DimGrey
+@enduml

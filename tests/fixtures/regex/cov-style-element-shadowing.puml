@@ -1,0 +1,6 @@
+@startregex
+<style>
+element { Shadowing 4 }
+</style>
+a(b|c)+\d
+@endregex

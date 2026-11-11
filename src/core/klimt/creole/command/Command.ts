@@ -34,7 +34,7 @@ export interface StripeBuilder {
    *  under the CURRENT font's color -- see `atom/Atom.ts`'s `'latex'`
    *  variant doc comment for why color (not the other font attributes)
    *  is the one piece of state a latex atom needs. */
-  pushLatexAtom(expr: string): void;
+  pushLatexAtom(expr: string, rollback?: string): void;
   /** A2s R2i: pushes a `<:name:>` emoji atom (upstream:
    *  `stripe.addEmoji(emoji, scale, colorName)`, StripeSimple.java:245-266)
    *  under the CURRENT font (factor + `#black`-family color fallback both

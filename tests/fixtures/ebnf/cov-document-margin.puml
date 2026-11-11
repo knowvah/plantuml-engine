@@ -1,0 +1,8 @@
+@startebnf
+<style>
+document {
+  Margin 20
+}
+</style>
+rule = "a", [ "b" ];
+@endebnf

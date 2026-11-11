@@ -35,6 +35,67 @@ post-D7 measurements.
 
 ---
 
+## creole-math-factories-port (cmf) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #129; per-task history on the local tag `creole-math-factories-port/pre-squash`)
+
+The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMathFactory`, `PSystemLatexFactory`, `PSystemCreoleFactory`, `HelpFactory`) plus `PSystemBasicFactory` and `LanguageDescriptor` are ported and registered at their `PSystemBuilder` lines. Of the 41 in-scope rows, 17 are conformant and pinned in the new `svg-factories` ratchet (def 2/2, help 4/5, creole 11/21); math and latex draw Batik's document byte for byte except the glyph group (KaTeX, named per row in `DIVERGENCES.md`). JLaTeXMath's rollback is mirrored from a names-only vocabulary generated from the jar, and `latex-metrics/` gained accents, over/under lines and braces, stacks, `\\` newlines, negations, dots and the kern/ligature loop: 503 of 510 creole `<math>` images size as the jar. 68 authored fixtures. 0 rows lost in any engine.
+
+**What remains:**
+
+1. **#169** (`help font` host font list, D8) and **#170** (creole rollbacks the jar sizes from a PNG export measured by host AWT fonts; JLaTeXMath's shared `SymbolAtom` state) need rulings. #136's `Blocked by #169/#170` lines could not be added from the session (`.agent-notes/cmf-T3g.md`).
+2. **KaTeX limits** named in `DIVERGENCES.md`: `^`/`_` alone, `\boxempty`, `\frac{a`, runs of spaces in `\text{}`.
+3. **`!theme` error pages** list the theme's expanded lines in the jar and not here (`.agent-notes/cmf-T3b.md`), in every engine.
+4. **`DIVERGENCES.md` is spliced into itself** since #121 (`.agent-notes/cmf-T3g.md`); a cleanup restores it.
+5. **svek and class label paths** still size `<latex>` atoms through KaTeX only; the rollback reaches the klimt creole path, `AtomMath` and the top-level diagrams.
+
+## wire-engine-port (wrp) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #128; per-task history on the local tag `wire-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/wire/` ported file for file into `src/diagrams/wire/` and registered at `PSystemBuilder.java:189`. `wire` went 0/0/18 to 18/0/0, byte-identical on the first survey and pinned in `svg-wire`. 113 authored fixtures, one open. No divergence added; 0 rows lost in any engine.
+
+**What remains:**
+
+1. **A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.
+2. **Bold on the creole atom path never reaches `jarMeasurer`** (`.agent-notes/wrp-T3.md`): every production bold creole run measures plain, because `FontSpec.weight` is what `JarMeasurer` reads and the atom path passes `styles`. The deterministic survey cannot see it, and wire's `print` translates locally. A shared fix is unpinned work.
+3. **`SkinParam#sheet`'s parser cache** (`SkinParam.java:1291-1303`) is ported only in `wire-skin-param.ts`; other engines' skin params build a parser per call, which differs only where one bounder measures and another draws.
+
+## timing-engine-port (tep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #127; per-task history on the local tag `timing-engine-port/pre-squash`)
+
+`src/diagrams/timing/` is a file-for-file port of `net/sourceforge/plantuml/timingdiagram/` (the 68 files minus `package-info.java` and the unreachable `CommandStopAt`), registered at `PSystemBuilder.java:187`. `@starttiming` stays unsupported (D10). New shared pieces: `src/core/decimal/BigDecimal.ts`, `src/core/time/GregorianCalendarGmt.ts`, `checkSimpleDateFormatPattern`, `CommandFootboxIgnored`. Two shared fixes: the single-line title commands now match the trimmed line (`SingleLineCommand2.java:94`), and `WithLinkType#applyStyle` resolves colours through `HColorSet#getColorOrWhite` (`WithLinkType.java:162`). All 158 rows are conformant: 145 in `timing` (139 byte-identical and pinned in `svg-timing`; 6 jar error pages where we also error, pinned by score) and 13 in `unknown`, pinned in `svg-timing`. Overall 5,514 → 5,666 conformant of 5,927. 141 authored fixtures in `tests/fixtures/timing`: 131 at 0 diffs, 9 error pairs, 1 open. Nothing was lost in any engine, and no divergence was added.
+
+Follow-ons:
+
+1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port.
+2. **A trailing space in other single-line commands**: the title commands are fixed at `src/core/annotations/commands.ts`; other engines' hand-rolled matchers should be checked against `SingleLineCommand2`'s `doTrim` if a corpus row shows a half-space offset.
+
+## regex-engine-port (rep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #126; per-task history on the local tag `regex-engine-port/pre-squash`)
+
+`src/diagrams/regex/` is a file-for-file port of `net/sourceforge/plantuml/regexdiagram/` (all nine classes) on the tiles of `src/diagrams/ebnf/`, registered at `PSystemBuilder.java:197`. `StyleExtractor#applyStyles` went to its upstream home `src/diagrams/json/StyleExtractor.ts`, so the tile style is frozen in the constructor from the skin and `<style>` blocks before any `skinparam` runs (`PSystemRegex.java:82-97`). The preprocessor now hands its artifact's warnings to the diagram beside its options (`PreprocessorResult.warnings`), so `No such !option foo` draws as the jar's does. All 46 `@startregex` rows are conformant: 44 byte-identical and pinned in `svg-regex`, and `bakuza-41-bulo451` and `tajefa-31-pefi801`, jar error pages where we now also error, pinned by score. Overall 5,468 → 5,514 conformant of 5,927. 94 authored fixtures in `tests/fixtures/regex`: 74 at 0 diffs and 20 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. The two signed "jar errors, we draw" acceptances moved to `retired`, unsigned; #167 asks for the maintainer's confirmation (with #165, #166).
+
+Follow-ons:
+
+1. **Preprocessor warnings in the other engines.** Only `regex/index.ts#preprocessingArtifactOf` adds `styleSource.warnings`; every engine that rebuilds its artifact from `styleSource.options` (ebnf, nwdiag, board, …) still drops `No such !option` / `No default value for` (`.agent-notes/rep-T3a.md`). No corpus row outside regex shows it today.
+2. **The gates' 4096-byte golden head** misreads 46 Welcome-style jar error pages as jar-rendered (`PSystemError.java:217-218` puts the banner at byte ~5353): `refusal-coverage-gate.ts` and `routing-conformance-gate.ts`. Rows are pinned `known-gap` with the mechanism (wbs, regex precedent); raising `HEAD_BYTES` would reclassify all 46 (`.agent-notes/rep-T3a.md`).
+3. **A `ProtectedCommand` page names the Java class** (eep follow-on 2) shows in eight regex fixtures (`NoSuchElementException`, `IllegalStateException`, `IndexOutOfBoundsException`): error pairs either way.
+
+## ebnf-engine-port (eep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #125; per-task history on the local tag `ebnf-engine-port/pre-squash`)
+
+`src/diagrams/ebnf/` is a file-for-file port of `net/sourceforge/plantuml/ebnf/` (all 32 classes, the five regex-only tiles included) on klimt, registered at `PSystemBuilder.java:196`. Its seams went to their upstream homes: `CharInspector`/`CharInspectorImpl` and `I18n` (with the eight `i18n*.properties` bundles) in `src/core/utils/`, `UBrexCommandMultilines2` in `src/core/command/`, `FloatingNote` in `src/diagrams/activity/ftile/vcompact/`, and `UText#getDescent`/`#calculateDimension`. All 44 `@startebnf` rows are conformant: 43 byte-identical and pinned in `svg-ebnf`, and `ladifa-97-keme950`, a jar error page where we now also error, pinned by score. `class/vamero-64-fore412` (`{{ebnf}}` in a component) moved to conformant. Overall 5,423 → 5,468 conformant of 5,927. 70 authored fixtures in `tests/fixtures/ebnf`: 64 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. `ladifa`'s signed "jar errors, we draw" acceptance moved to `retired`, unsigned; #166 asks for the maintainer's confirmation (with #165).
+
+Follow-ons:
+
+1. ~~**Regex engine (#126)**~~ DONE by regex-engine-port (#126). It can now import the tiles from `src/diagrams/ebnf/` (`ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`, `ETileRegexGroupAllBut`, `ETileLookAheadOrBehind` are tested against cached regex rows), `UBrexCommandMultilines2` and `I18n`; it needs its own layering allowlist entry, as `src/diagrams/ebnf/` → `src/diagrams/activity/ftile/` has.
+2. **A `ProtectedCommand` page names the Java class.** The jar prints `t.toString()` (`java.lang.IllegalStateException`), the port the thrown `Error`'s message (`IllegalStateException`), in nwdiag's and EBNF's `protectedMessage`. An error pair either way (`cov-unterminated`).
+3. **The empty-source Welcome page** (nwp follow-on 2) shows in `tests/fixtures/ebnf/cov-empty` too.
+
+## nwdiag-engine-port (nwp) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #124; per-task history on the local tag `nwdiag-engine-port/pre-squash`)
+
+`src/diagrams/nwdiag/` is a file-for-file port of `net/sourceforge/plantuml/nwdiag/` on klimt (root commands, `core/` model, `next/` layout and drawing), registered at `PSystemBuilder.java:155`. All 68 `@startnwdiag` rows are conformant: 64 byte-identical and pinned in `svg-nwdiag`, and 4 jar error pages where we also error, pinned by score. `unknown` went from 864/4/180 to 932/4/112. There are 57 authored fixtures in `tests/fixtures/nwdiag`: 51 at 0 diffs and 6 jar error pages where we also error. Nothing was lost in any engine, and no divergence was added. The four signed "jar errors, we draw" acceptances for those rows moved to `retired`, unsigned; #165 asks for the maintainer's confirmation.
+
+Follow-ons:
+
+1. **Klimt factories crash where the jar reports an execution error.** Upstream wraps every command in `ProtectedCommand` (`AbstractDiagram.java:174`, `ProtectedCommand.java:54-77`), so a `Throwable` becomes `error("You should send a mail … " + t)` at the command's line. Only `NwDiagramFactory#protectedDispatch` mirrors it. Packet, chart and board let the throw escape and draw a whole-source crash page. Error pairs either way, so no gate sees it (`.agent-notes/nwp-T3a.md`).
+2. **The empty-source Welcome page** names line 1 and omits the `@end` line from the echoed source. The jar names line 2 (`PSystemCommandFactory.java:116-120`). This is shared by every klimt engine and is an error pair.
+3. **Scaled chrome text rounds twice** (bep follow-on 1) is fixed for nwdiag by board's `numbersDeferred` shape (`cov-legend-scale-2`). Packet, chart, mindmap, wbs, salt and gantt still carry it.
+
 ## style-colour-reads (scr) — DONE 2026-11-06 (one commit on `feature/parity-queue`, #122; per-task history on the local tag `style-colour-reads/pre-squash`)
 
 dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagram-style-scope/`, pinned): 15 open in 4 families, all to 0. Kermor group note as `EntityImageNoteLink` (T1a), state arrow `HeadColor` off the merged arrow style (T1b), state notes under `skinparam noteBackgroundColor` (T1c), sequence `FontColor transparent` measured but not drawn (T1d). dss rows `1172 open 39` (54 at T0). 0 verdict movers in every engine vs `8fe32c695`; no corpus row was open on these mechanisms. `dist/*.d.ts` identical.
@@ -226,7 +287,7 @@ the brief, by user ruling (D7): chrome blocks paint an inherited gradient, and
 gantt/mindmap/salt/wbs lead with the rect at the final canvas (wbs family E).
 
 ### Follow-ons (mechanism, owner)
-1. **Unported engines' document background** — timing, ebnf, regex, and **nwdiag**: the planning matrix's "nwdiag OK" was false, `@startnwdiag` returns the "unknown diagram type" sentinel. Arrives with each port.
+1. **Unported engines' document background** — timing. ~~regex~~ DONE by regex-engine-port (#126): `regex: 'regex'` (java:283-284). ~~nwdiag~~ DONE by nwdiag-engine-port (#124): `nwdiagDiagram` is in `document-back-color.ts` and the engine draws the document background through `TitledDiagram#calculateBackColor`. ~~ebnf~~ DONE by ebnf-engine-port (#125): `ebnf: 'ebnf'` (java:280-281). Arrives with each port.
 2. **board / packet root background** — `background:black` is not normalised to `#000000`, and `red/blue` is written raw (invalid SVG), under large unrelated diffs. Rows pinned at 18/20, 36/21. Their engines have no fidelity gate yet. ~~chart~~ DONE by chart-engine-port (#116): its rows are 0/0. ~~packet~~ DONE by packet-engine-port (#117): its rows are 0/0. ~~board~~ DONE by board-engine-port (#118): its rows are 0/0.
 3. **chronology** — the pinned jar answers "@startchronology is not recognized"; ours draws. Not authored. Needs the error-page ruling's latest-release-jar check before it can be an accepted row.
 4. **Converge sequence/activity onto `svg-backcolor.ts`** (D2 kept their verified copies) and the two `LEADING_BACKGROUND_RECT_RE` copies (`TextBlockExporter.ts`, `description/renderer.ts`).

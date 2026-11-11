@@ -1,0 +1,8 @@
+@startuml
+scale 1 Y as 20 pixels
+concise "C" as C
+@2020/01/01
+C is a
+@2023/01/01
+C is b
+@enduml

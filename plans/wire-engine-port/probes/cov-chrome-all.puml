@@ -1,0 +1,10 @@
+@startwire
+title T
+caption C
+header H
+footer F
+legend
+L
+endlegend
+* a [30x30]
+@endwire

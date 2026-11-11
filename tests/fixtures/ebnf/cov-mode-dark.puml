@@ -1,0 +1,7 @@
+@startebnf
+<style>
+root { BackGroundColor black }
+</style>
+skinparam handwritten true
+rule = "a" | "b";
+@endebnf

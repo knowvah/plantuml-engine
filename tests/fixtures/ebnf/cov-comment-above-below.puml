@@ -1,0 +1,3 @@
+@startebnf
+(* above *) rule (* below *) = "a", "b";
+@endebnf

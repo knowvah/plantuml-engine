@@ -1,5 +1,9 @@
 # Timing Diagrams — Deep Dive
 
+> **SUPERSEDED 2026-11-10** by `plans/timing-engine-port/` (#127), which ported `timingdiagram/` file for file
+> (D1). The AST/parser/renderer split below was not built, and `src/core/datetime.ts` does not exist: time values use
+> `src/core/time/` and `src/core/decimal/`. Kept for context only.
+
 This document supplements the mission-guide entry for Phase 4b (Timing
 Diagrams). Read it before drafting any agent prompt for this phase.
 

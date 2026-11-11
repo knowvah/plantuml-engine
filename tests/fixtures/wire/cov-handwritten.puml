@@ -1,0 +1,9 @@
+@startwire
+skinparam handwritten true
+* a [80x40]
+print("p")
+* b [80x40]
+a -> b : l
+a => b
+spot a
+@endwire

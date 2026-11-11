@@ -1,0 +1,7 @@
+@startuml
+concise "C" as C
+@-20
+C is a
+@-5
+C is b
+@enduml

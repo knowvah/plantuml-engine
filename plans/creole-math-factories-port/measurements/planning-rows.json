@@ -1,0 +1,289 @@
+[
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "bibeso-63-kazo655",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "cunotu-47-bute165",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "fisoma-58-kobo261",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "gapeji-48-keze681",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "jugepi-77-xude968",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "kebadi-11-fula439",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "kurugo-90-pabi007",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "marese-34-xaro137",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "mimumu-93-fota059",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "nurile-03-kumi912",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "pecafo-64-rili177",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "pizepu-20-bero680",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "potezi-53-doku302",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "raxanu-33-xuzu111",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "roxita-24-tixu731",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "rozesu-56-suve592",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "sukuje-36-libo212",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "vocalo-20-dixu237",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "xanuke-94-tope429",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "xavefa-87-tabi094",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "creole",
+  "bucket": "unknown",
+  "slug": "ziboza-73-cexo876",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "def",
+  "bucket": "unknown",
+  "slug": "banire-12-feze162",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "def",
+  "bucket": "unknown",
+  "slug": "firiru-71-viki803",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "factory": "help",
+  "bucket": "unknown",
+  "slug": "cikoge-60-riti614",
+  "verdict": "diverged",
+  "firstDiff": "svg/g[1]/text[1]/@font-family"
+ },
+ {
+  "factory": "help",
+  "bucket": "unknown",
+  "slug": "ficame-31-lece592",
+  "verdict": "diverged",
+  "firstDiff": "svg/g[1]/text[1]/@font-family"
+ },
+ {
+  "factory": "help",
+  "bucket": "unknown",
+  "slug": "kesexi-71-dubu320",
+  "verdict": "diverged",
+  "firstDiff": "svg/g[1]/text[1]/@font-family"
+ },
+ {
+  "factory": "help",
+  "bucket": "unknown",
+  "slug": "mefure-90-gitu244",
+  "verdict": "diverged",
+  "firstDiff": "svg/g[1]/text[1]/@font-family"
+ },
+ {
+  "factory": "help",
+  "bucket": "unknown",
+  "slug": "xasanu-61-guze787",
+  "verdict": "diverged",
+  "firstDiff": "svg/g[1]/text[1]/@font-family"
+ },
+ {
+  "factory": "latex",
+  "bucket": "unknown",
+  "slug": "fajagi-98-funo863",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "latex",
+  "bucket": "unknown",
+  "slug": "seluva-39-xebe172",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "caruta-83-deta919",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "cukuba-10-cipo394",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "geravi-79-nafu641",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "kunuja-48-ropa074",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "losizo-97-tiki566",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "renice-72-peda344",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "savudo-32-lopu722",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "sozeke-50-rilu829",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "tijica-43-sesu519",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "velono-84-vude605",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ },
+ {
+  "factory": "math",
+  "bucket": "unknown",
+  "slug": "zoziko-62-toko934",
+  "verdict": "diverged",
+  "firstDiff": "svg/@color-interpolation"
+ }
+]

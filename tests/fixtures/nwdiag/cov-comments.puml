@@ -1,0 +1,9 @@
+@startnwdiag
+nwdiag {
+  // a comment
+  network dmz {
+    // another
+    web01;
+  }
+}
+@endnwdiag

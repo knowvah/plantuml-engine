@@ -1,0 +1,11 @@
+@startuml
+robust "R" as R
+R has Idle,Busy,Off
+R has "Long Label" as LL
+@0
+R is Idle
+@10
+R is LL
+@20
+R is Off
+@enduml

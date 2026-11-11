@@ -1,0 +1,3 @@
+@startregex
+(?=x)ab[c]de(f|g)hi
+@endregex

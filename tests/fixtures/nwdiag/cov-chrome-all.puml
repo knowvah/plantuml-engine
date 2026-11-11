@@ -1,0 +1,15 @@
+@startnwdiag
+title Title
+caption Caption
+legend
+Legend
+endlegend
+header Header
+footer Footer
+nwdiag {
+  network dmz {
+    web01;
+    web02;
+  }
+}
+@endnwdiag

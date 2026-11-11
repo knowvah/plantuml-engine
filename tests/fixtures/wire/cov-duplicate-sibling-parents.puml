@@ -1,0 +1,8 @@
+@startwire
+* p
+	* x
+* q
+	* x
+spot p.x
+spot q.x #blue
+@endwire

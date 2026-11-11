@@ -1,0 +1,9 @@
+@startnwdiag
+skinparam mode dark
+nwdiag {
+  network dmz {
+    color = "#AAFFAA"
+    web01;
+  }
+}
+@endnwdiag

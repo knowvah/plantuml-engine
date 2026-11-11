@@ -1,0 +1,10 @@
+@startuml
+compact concise "A" as A
+robust "B" as B
+@0
+A is x
+B is y
+@10
+A is z
+B is w
+@enduml

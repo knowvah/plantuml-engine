@@ -1,0 +1,5 @@
+@startregex
+!option language zh-CN
+!option useDescriptiveNames true
+.\b\B\d\D\w\W\s\S
+@endregex

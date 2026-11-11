@@ -1,0 +1,8 @@
+@startebnf
+<style>
+ebnf {
+  Shadowing 4
+}
+</style>
+rule = a, "b";
+@endebnf

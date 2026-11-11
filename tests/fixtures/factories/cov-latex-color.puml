@@ -1,0 +1,5 @@
+@startlatex
+color blue
+backgroundcolor gold
+\frac{a}{b}
+@endlatex

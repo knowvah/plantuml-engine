@@ -1,0 +1,8 @@
+@startebnf
+<style>
+ebnf {
+  RoundCorner 25
+}
+</style>
+rule = a, "b";
+@endebnf

@@ -45,14 +45,12 @@ export function createMathCommand(): Command {
       const m = re.exec(line.slice(pos));
       if (m === null) return 0;
       const equation = ScientificEquationSafe.fromAsciiMath(m[1]!);
-      // `fromAsciiMath` swallows a conversion failure and yields an instance
-      // whose equation is null (java:71-79). Upstream's DRAWING paths then
-      // fall back to `GraphicStrings.createBlackOnWhiteMonospaced(formula)`
-      // (`ScientificEquationSafe.java:118-127,137-144`) — the raw formula as
-      // text — rather than propagating it, so a malformed expression degrades
-      // to visible source instead of failing the render.
-      if (equation.hasEquation()) stripe.pushLatexAtom(equation.getSource());
-      else stripe.analyzeAndAddInline(equation.getFormula());
+      // `AtomMath#drawU` draws `math.getSvg(1, fore, back)`: the typeset
+      // formula, or -- when there is no equation or JLaTeXMath throws --
+      // the `GraphicStrings.createBlackOnWhiteMonospaced(formula)` rollback
+      // (`ScientificEquationSafe.java:91-115`, cmf D5).
+      if (equation.typesets()) stripe.pushLatexAtom(equation.getSource());
+      else stripe.pushLatexAtom(equation.getFormula(), equation.getFormula());
       return m[0].length;
     },
   };

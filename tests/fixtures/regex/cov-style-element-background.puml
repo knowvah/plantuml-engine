@@ -1,0 +1,6 @@
+@startregex
+<style>
+element { BackGroundColor yellow }
+</style>
+a[bc][^de]\d
+@endregex

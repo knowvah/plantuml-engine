@@ -1,0 +1,7 @@
+@startwire
+* a [100x60]
+goto(10,200)
+* b [100x60]
+b --> a
+b ==> a
+@endwire

@@ -282,7 +282,10 @@ export function stripMathModeDollars(expr: string): string {
  * (`latex-metrics.ts`). A `<latex>…</latex>` wrapper is stripped first.
  */
 export function measureLatex(raw: string): { width: number; height: number } {
-  const expr = stripMathModeDollars(raw.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1').trim());
+  // Not trimmed: JLaTeXMath ignores math-mode white space itself, and a
+  // trailing `\ ` (a control space, `AsciiMath` of a lone `\ `) is a glyph-less
+  // 0.333 em box that `trim()` would turn into a bare `\`.
+  const expr = stripMathModeDollars(raw.replace(/^<latex>([\s\S]*?)<\/latex>$/i, '$1'));
   const { width, height } = measureTeXIcon(expr);
   return { width, height };
 }

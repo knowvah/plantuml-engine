@@ -1,0 +1,6 @@
+@startebnf
+rule =
+  "a", (* first *)
+  "b" | (* second *)
+  "c"; (* third *)
+@endebnf

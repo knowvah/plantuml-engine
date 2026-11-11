@@ -1,0 +1,18 @@
+@startnwdiag
+sprite $s [8x8/16] {
+FFFFFFFF
+F000000F
+F0FFFF0F
+F0F00F0F
+F0F00F0F
+F0FFFF0F
+F000000F
+FFFFFFFF
+}
+nwdiag {
+  network dmz {
+    web01 [description = "<$s> web"];
+    web02 [description = "<&home> home"];
+  }
+}
+@endnwdiag

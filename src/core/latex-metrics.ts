@@ -26,16 +26,20 @@
  * library divergence (KaTeX draws, JLaTeXMath does not) is DIVERGENCES.md
  * "LaTeX rendering engine".
  */
+import { accentedBox, overlinedBox, underlinedBox } from './latex-metrics/accent.js';
+import { overUnderDelimiterBox } from './latex-metrics/brace.js';
 import type { Atom, Delimiter } from './latex-metrics/atoms.js';
 import type { Box } from './latex-metrics/box.js';
 import { strutBox } from './latex-metrics/box.js';
 import type { Context } from './latex-metrics/convert.js';
+import { dotsBox } from './latex-metrics/dots.js';
 import { fencedBox, fractionBox, nthRootBox } from './latex-metrics/fraction.js';
 import { parseLatex } from './latex-metrics/katex-glyphs.js';
 import { matrixBox } from './latex-metrics/matrix.js';
 import { formulaRoot } from './latex-metrics/nodes.js';
 import { charAtomBox, rowBox, spaceBox } from './latex-metrics/row.js';
 import { bigOperatorBox, scriptsBox } from './latex-metrics/scripts.js';
+import { underOverBox, vrowBox } from './latex-metrics/stack.js';
 import { STYLE_DISPLAY, TEX_ICON_SIZE, XHEIGHT_CM } from './latex-metrics/tex-font.js';
 
 /** `TeXIconBuilder.java:68`: `final int margin = 1`. */
@@ -80,6 +84,13 @@ const BUILDERS: Builders = {
   typed: (atom, style) => createBox(atom.body, style),
   wrap: (atom, style) => createBox(atom.body, atom.style ?? style),
   break: () => strutBox(0, 0, 0),
+  accent: (atom, style) => accentedBox(atom, style, createBox),
+  overline: (atom, style) => overlinedBox(atom, style, createBox),
+  underline: (atom, style) => underlinedBox(atom, style, createBox),
+  overunder: (atom, style) => overUnderDelimiterBox(atom, style, createBox),
+  dots: (atom, style) => dotsBox(atom, style, createBox),
+  vrow: (atom, style) => vrowBox(atom, style, createBox),
+  underover: (atom, style) => underOverBox(atom, style, createBox),
   phantom: (atom, style) => {
     const b = createBox(atom.body, style);
     return strutBox(0, b.height, b.depth, b.shift);

@@ -1,0 +1,4 @@
+@startwire
+print("p")
+spot p
+@endwire

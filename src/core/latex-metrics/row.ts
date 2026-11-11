@@ -6,6 +6,8 @@
 import type { Atom, BuildBox, CharAtom, FontGlyph, SpaceAtom } from './atoms.js';
 import { leftType, rightType } from './atoms.js';
 import type { Box } from './box.js';
+import type { Ligature } from './kern.js';
+import { kernBetween, ligatureOf } from './kern.js';
 import { HBox, addItalicCorrectionToWidth, charBox, hbox, strutBox } from './box.js';
 import {
   STYLE_TEXT,
@@ -81,7 +83,7 @@ const BIN_SET: ReadonlySet<number> = new Set([
 ]);
 
 /** `Dummy`: an element whose type `changeToOrd` may override. */
-interface Dummy {
+export interface Dummy {
   atom: Atom;
   type: number | undefined;
 }
@@ -106,27 +108,83 @@ function changeToOrd(cur: Dummy, prev: Dummy | undefined, next: Atom | undefined
 
 const isKern = (atom: Atom): boolean => atom.kind === 'space';
 
+/** `RowAtom.ligKernSet` (`RowAtom.<clinit>`): the left types of a next atom
+ *  that may ligate or kern with a glyph before it: 0 through 6. */
+const LIG_KERN_SET: ReadonlySet<number> = new Set([
+  TYPE_ORDINARY,
+  TYPE_BIG_OPERATOR,
+  TYPE_BINARY_OPERATOR,
+  TYPE_RELATION,
+  TYPE_OPENING,
+  TYPE_CLOSING,
+  TYPE_PUNCTUATION,
+]);
+
+/** `FixedCharAtom(CharFont)`: the glyph a ligature produced (type ORDINARY). */
+function fixedChar(prev: CharAtom, lig: Ligature): CharAtom {
+  return {
+    kind: 'char',
+    type: TYPE_ORDINARY,
+    limits: 'nolimits',
+    glyph: { glyph: lig.glyph, xHeight: prev.glyph.xHeight },
+    mathChar: false,
+    cf: lig.cf,
+  };
+}
+
+/** The ligature or kern between two glyphs: `RowAtom#createBox`'s inner loop
+ *  (java 269-434). `cur` is replaced by each ligature it forms with the atom
+ *  after it, which is consumed; the kern of the first pair that does not
+ *  ligate follows `cur`. Returns the final glyph, the kern, and how many
+ *  following atoms were consumed. */
+function ligKern(cur: Dummy, rest: readonly Atom[], style: number): { kern: number; consumed: number } {
+  let consumed = 0;
+  for (let next = rest[consumed]; next !== undefined; next = rest[consumed]) {
+    const at = cur.atom;
+    if (dummyRight(cur) !== TYPE_ORDINARY || at.kind !== 'char') break;
+    if (next.kind !== 'char' || !LIG_KERN_SET.has(leftType(next))) break;
+    const [left, right] = [at.cf, next.cf];
+    const lig = left === undefined || right === undefined ? undefined : ligatureOf(left, right);
+    if (lig === undefined) {
+      const kern = left === undefined || right === undefined ? 0 : kernBetween(left, right, sizeFactor(style));
+      return { kern, consumed };
+    }
+    cur.atom = fixedChar(at, lig);
+    cur.type = undefined;
+    consumed++;
+  }
+  return { kern: 0, consumed };
+}
+
 /**
  * `RowAtom#createBox` (`RowAtom.java:145-255`): glue between neighbours by
- * type, none around a kern, and a math-mode `CharAtom`'s italic correction
- * added to its width. The ligature/kern pass (java:191-216) reads kerning
- * pairs KaTeX's metrics do not carry, so it contributes nothing here.
+ * type, none around a kern, a math-mode `CharAtom`'s italic correction added
+ * to its width, and the ligatures and kerns of adjacent same-font glyphs
+ * (`ligKern`). A `RowAtom` element is handed the previous atom
+ * (`Dummy#setPreviousAtom`, java 492-498; `RowAtom` implements `Row`), so
+ * its first elements are glued to what precedes the nested row; `inherited`
+ * is that atom.
  */
-export function rowBox(elements: readonly Atom[], style: number, build: BuildBox): Box {
+export function rowBox(elements: readonly Atom[], style: number, build: BuildBox, inherited?: Dummy): Box {
   const h = new HBox();
-  let prev: Dummy | undefined;
-  elements.forEach((at, i) => {
+  let prev = inherited;
+  for (let i = 0; i < elements.length; i++) {
+    const at = elements[i] as Atom;
     // java:157-167: a break mark is skipped unless nothing follows it.
-    if (at.kind === 'break' && i + 1 < elements.length) return;
+    if (at.kind === 'break' && i + 1 < elements.length) continue;
     const cur: Dummy = { atom: at, type: undefined };
     changeToOrd(cur, prev, elements[i + 1]);
-    if (i !== 0 && prev !== undefined && !isKern(prev.atom) && !isKern(at)) {
+    const { kern, consumed } = ligKern(cur, elements.slice(i + 1), style);
+    i += consumed;
+    // java:437-440: `previousIndex() != 0`, the first element is never glued.
+    if (i !== 0 && prev !== undefined && !isKern(prev.atom) && !isKern(cur.atom)) {
       h.add(glueBox(dummyRight(prev), dummyLeft(cur), style));
     }
-    const b = build(at, style);
-    if (at.kind === 'char' && at.mathChar) addItalicCorrectionToWidth(b);
+    const b = cur.atom.kind === 'row' ? rowBox(cur.atom.elements, style, build, prev) : build(cur.atom, style);
+    if (cur.atom.kind === 'char' && cur.atom.mathChar) addItalicCorrectionToWidth(b);
     h.add(b);
-    if (!isKern(at)) prev = cur;
-  });
+    if (Math.abs(kern) > PREC) h.add(strutBox(kern, 0, 0));
+    if (!isKern(cur.atom)) prev = cur;
+  }
   return h.box;
 }

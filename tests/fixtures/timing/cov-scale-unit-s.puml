@@ -1,0 +1,8 @@
+@startuml
+scale 1 s as 20 pixels
+concise "C" as C
+@0:00:00
+C is a
+@0:00:30
+C is b
+@enduml

@@ -1,0 +1,7 @@
+@startwire
+* p [200x200]
+	print("in p")
+	* a [40x40]
+	print("after a")
+	* b [40x40]
+@endwire

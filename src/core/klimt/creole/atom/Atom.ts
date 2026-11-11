@@ -87,7 +87,14 @@ export type CreoleAtom =
    *  one stacked line per display line, each the atoms `createAtomTextForUrl`
    *  produced (`atom/AtomVerticalTexts.ts`). */
   | { readonly kind: 'vertical'; readonly lines: readonly (readonly CreoleAtom[])[] }
-  | { readonly kind: 'latex'; readonly expr: string; readonly color: string | null }
+  | {
+      readonly kind: 'latex';
+      readonly expr: string;
+      readonly color: string | null;
+      /** The formula `ScientificEquationSafe#getRollback` prints when JLaTeXMath would throw
+       *  (`ScientificEquationSafe.java:91-115`, cmf D5); absent when the formula typesets. */
+      readonly rollback?: string;
+    }
   /** A2s R2i: a `<:name:>` emoji (upstream `CommandCreoleEmoji` ->
    *  `StripeSimple#addEmoji` -> `AtomEmoji`). `name` is the RESOLVED
    *  registry name (`Emoji.ts#retrieveEmoji` already succeeded — an unknown

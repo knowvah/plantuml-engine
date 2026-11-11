@@ -1,0 +1,8 @@
+@startnwdiag
+scale 2
+nwdiag {
+  network dmz {
+    web01;
+  }
+}
+@endnwdiag

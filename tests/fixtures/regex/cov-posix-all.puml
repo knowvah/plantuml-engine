@@ -1,0 +1,3 @@
+@startregex
+[[:alpha:]][[:space:]]x[[:punct:]
+@endregex

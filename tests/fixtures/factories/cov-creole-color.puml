@@ -1,0 +1,3 @@
+@startcreole
+<color:red>x</color> <back:yellow>y</back> <font color=blue>z</font> <size:20>s</size> <u>u</u> <s>t</s> <w>w</w> <plain>p</plain>
+@endcreole

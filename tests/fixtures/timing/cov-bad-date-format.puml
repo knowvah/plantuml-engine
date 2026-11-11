@@ -1,0 +1,6 @@
+@startuml
+use date format "qq"
+concise "C" as C
+@0
+C is a
+@enduml

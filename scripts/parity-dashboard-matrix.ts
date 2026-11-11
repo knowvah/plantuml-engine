@@ -40,7 +40,6 @@ const NO_ENGINE_D_ID: Readonly<Record<string, string>> = {
   ditaa: 'dropped by ruling 2026-11-04',
   ebnf: 'D10 todo',
   regex: 'D11 todo',
-  wire: 'D12 todo',
 };
 
 /** Pure: which engine (if any) owns `bucket`. Throws rather than emitting a

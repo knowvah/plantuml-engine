@@ -1,0 +1,7 @@
+@startregex
+skinparam monochrome true
+<style>
+element { LineColor red }
+</style>
+a(b|c)+\d
+@endregex

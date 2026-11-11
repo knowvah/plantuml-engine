@@ -1,0 +1,9 @@
+@startnwdiag
+hide footbox
+nwdiag {
+  network dmz {
+    web01;
+  }
+}
+show footbox
+@endnwdiag

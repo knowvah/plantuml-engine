@@ -1,0 +1,4 @@
+@startwire
+* a [50x50]
+a --> a : s
+@endwire

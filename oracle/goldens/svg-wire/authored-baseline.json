@@ -1,0 +1,1162 @@
+{
+  "fixtures": [
+    {
+      "type": "wire",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-caption-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-footer-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-header-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-legend-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-mainframe-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-chrome-title-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-colour-automatic",
+      "status": "baseline",
+      "weightedScore": 379,
+      "diffCount": 75,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.UnsupportedOperationException: class net.sourceforge.plantuml.klimt.color.HColorAutomagic"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-colour-transparent",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-comments-blank",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-bad-colour",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "No such color (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-default",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-forms",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-no-space-bracket",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-nonascii",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-component-overflow",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NumberFormatException: For input string: \"99999999999\" (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-dpi-200",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-duplicate-name",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Component exists already (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-duplicate-nested-root-name",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 5,
+        "message": "Component exists already (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-duplicate-sibling-parents",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-embedded-class-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-embedded-state-note",
+      "status": "baseline",
+      "weightedScore": 53,
+      "diffCount": 1,
+      "reason": "state-engine gap, tracked in #168: a {{ }} embedded diagram in a state note draws as text",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 26,
+      "diffCount": 19,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-forced-with-children",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-goto",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-goto-after-print",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-goto-negative",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-goto-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-goto-zero",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-hlinks-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-hlinks-nolabel",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-2-spaces",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.wire.WBlock.addBlock(int, String, double, double, net.sourceforge.plantuml.klimt.color.HColor)\" because \"last\" is null (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-4-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-mixed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-nbsp",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-no-parent",
+      "status": "baseline",
+      "weightedScore": 12,
+      "diffCount": 12,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.wire.WBlock.addBlock(int, String, double, double, net.sourceforge.plantuml.klimt.color.HColor)\" because \"last\" is null (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-tab",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-indent-too-deep",
+      "status": "baseline",
+      "weightedScore": 12,
+      "diffCount": 12,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.wire.WBlock.addBlock(int, String, double, double, net.sourceforge.plantuml.klimt.color.HColor)\" because \"last\" is null (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-label-only-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-label-sprite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-label-table",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-bad-colour",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "No such color (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-bad-style",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-colour-bus",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-dest-coord",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-dotted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-label-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-label-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-label-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-only-empty-diagram",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such element p (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-percent",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-reversed-h",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-reversed-v",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-self",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-self-vertical",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-stacking",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-unknown-left",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such element z (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-unknown-nested",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such element a.z (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-link-unknown-right",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such element z (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-move",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-move-after-goto",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-move-after-print",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-move-negative-cursor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-move-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-name-kelvin",
+      "status": "baseline",
+      "weightedScore": 74,
+      "diffCount": 35,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-name-long-s",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-newcolumn-depth2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-newcolumn-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-newcolumn-long",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-newcolumn-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-newcolumn-too-deep",
+      "status": "baseline",
+      "weightedScore": 12,
+      "diffCount": 12,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.wire.WBlock.newColumn(int)\" because the return value of \"net.sourceforge.plantuml.wire.WBlock.getLastChild()\" is null (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-option-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-after-component",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-curly",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-empty-text",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-multiline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-overflow-forced",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-quotes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-size",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-sprite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-tab-escape",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-table",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-print-too-deep",
+      "status": "baseline",
+      "weightedScore": 12,
+      "diffCount": 12,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.wire.WBlock.print(net.sourceforge.plantuml.klimt.font.StringBounder, net.sourceforge.plantuml.style.ISkinParam, int, String)\" because the return value of \"net.sourceforge.plantuml.wire.WBlock.getLastChild()\" is null (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-bad-colour",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such color (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-dotted-bad",
+      "status": "baseline",
+      "weightedScore": 8,
+      "diffCount": 8,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "No such element a.z (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-forced-children",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-forms",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-nested",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-spot-unknown",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "No such element z (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-syntax-error",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: wire)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-theme",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-theme-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-title-after-components",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-title-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-vlinks-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    },
+    {
+      "type": "wire",
+      "slug": "cov-zero-dim",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "7bb5fbc72"
+    }
+  ]
+}

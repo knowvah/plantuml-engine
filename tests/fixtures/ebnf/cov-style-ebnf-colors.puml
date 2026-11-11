@@ -1,0 +1,9 @@
+@startebnf
+<style>
+ebnf {
+  BackGroundColor lightGreen
+  LineColor red
+}
+</style>
+rule = a, "b", ? c ?;
+@endebnf

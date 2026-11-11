@@ -1,0 +1,4 @@
+@startebnf
+été = "chaud" | hiver;
+hiver = "froid";
+@endebnf

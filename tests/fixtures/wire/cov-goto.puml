@@ -1,0 +1,8 @@
+@startwire
+goto(30,40)
+* a [40x40]
+goto(100, 10)
+* b [40x40]
+goto( 0 , 0 )
+* c [10x10]
+@endwire

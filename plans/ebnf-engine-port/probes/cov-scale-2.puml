@@ -1,0 +1,4 @@
+@startebnf
+scale 2
+rule = "a", { "b" };
+@endebnf

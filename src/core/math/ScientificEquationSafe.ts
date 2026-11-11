@@ -66,7 +66,29 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java
  */
 
+import { ColorMapper } from '../klimt/color/ColorMapper.js';
+import type { StringBounder } from '../klimt/font/StringBounder.js';
+import { ClockwiseTopRightBottomLeft } from '../klimt/geom/ClockwiseTopRightBottomLeft.js';
+import { GraphicStrings } from '../klimt/shape/GraphicStrings.js';
+import type { TextBlock } from '../klimt/shape/TextBlock.js';
+import { jlmAccepts } from '../latex-metrics/jlm-accepts.js';
+import type { StringMeasurer } from '../measurer.js';
+import { builderBackcolor, exportTo } from '../UgDiagram.js';
 import { AsciiMath } from './AsciiMath.js';
+import { mathDocument } from './math-document.js';
+import type { AwtColor } from './math-document.js';
+
+/** The `StringMeasurer` `UGraphicSvg` draws text with, read off the host's `StringBounder`, so the rollback
+ *  document measures its text as the diagram embedding it does. */
+function measurerOf(stringBounder: StringBounder): StringMeasurer {
+  return {
+    measure: (text, font) => {
+      const dim = stringBounder.calculateDimension(font, text);
+      return { width: dim.getWidth(), height: dim.getHeight() };
+    },
+    getDescent: (font, text) => stringBounder.getDescent?.(font, text) ?? 0,
+  };
+}
 
 export class ScientificEquationSafe {
   /** java:66-69. `source === null` models upstream's `equation == null`,
@@ -125,4 +147,62 @@ export class ScientificEquationSafe {
     }
     return this.source;
   }
+
+  /**
+   * `getSvg`'s typesetting succeeds: there is an equation, and JLaTeXMath parses
+   * its LaTeX (`latex-metrics/jlm-accepts.ts`). Otherwise `getSvg` and
+   * `getImage` catch the exception and draw {@link getRollback} (java:91-115,
+   * :116-129).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:91-104
+   */
+  typesets(): boolean {
+    return this.source !== null && jlmAccepts(this.source);
+  }
+
+  /** The rollback document for this formula; see {@link rollbackSvg}. */
+  rollbackSvg(stringBounder: StringBounder): string {
+    return rollbackSvg(this.formula, stringBounder);
+  }
+
+  /**
+   * `export`'s SVG branch: `getSvg(1, fg, bg).getSvg(true)`, written straight
+   * to the stream -- the typeset Batik document (`math-document.ts`), else the
+   * rollback's klimt document (`cov-math-unknown`, 40x25).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:145-151
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:91-115
+   */
+  exportSvg(foregroundColor: AwtColor, backgroundColor: AwtColor | null, stringBounder: StringBounder): string {
+    if (this.typesets()) return mathDocument(this.source!, foregroundColor, backgroundColor);
+    return this.rollbackSvg(stringBounder);
+  }
+}
+
+/** `getRollback()`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:137-139 */
+function getRollback(formula: string): TextBlock {
+  return GraphicStrings.createBlackOnWhiteMonospaced([formula]);
+}
+
+/**
+ * The rollback exported as `getSvg` does it: `TextBlockExporter.builder(getRollback(),
+ * SVG, false).build().exportTo(baos)` -- the builder's defaults (no skin
+ * param, margin `none()`, the block's own white back colour, no scale).
+ * Its size is the `<image>` an atom draws (`cov-math-unknown` 40x25; corpus
+ * `glb` 29x25).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:103-110
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:405-430
+ */
+export function rollbackSvg(formula: string, stringBounder: StringBounder): string {
+  const textBlock = getRollback(formula);
+  return exportTo(
+    {
+      textBlock,
+      backcolor: builderBackcolor(textBlock),
+      margin: ClockwiseTopRightBottomLeft.none(),
+      scale: undefined,
+      colorMapper: ColorMapper.IDENTITY,
+      isHandwritten: false,
+    },
+    stringBounder,
+    measurerOf(stringBounder),
+  );
 }

@@ -1,0 +1,15 @@
+@startebnf
+<style>
+ebnf {
+  LineColor red
+  FontColor blue
+  BackGroundColor yellow
+  FontSize 16
+  note {
+    BackGroundColor pink
+  }
+}
+</style>
+(* a note *)
+rule = "a", [ "b" ];
+@endebnf

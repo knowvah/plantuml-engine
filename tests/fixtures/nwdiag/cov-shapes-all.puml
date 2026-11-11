@@ -1,0 +1,36 @@
+@startnwdiag
+nwdiag {
+  network n1 {
+    a1 [shape = agent];
+    a2 [shape = artifact];
+    a3 [shape = boundary];
+    a4 [shape = card];
+    a5 [shape = cloud];
+    a6 [shape = collections];
+    a7 [shape = component];
+    a8 [shape = control];
+    a9 [shape = database];
+  }
+  network n2 {
+    b1 [shape = entity];
+    b2 [shape = file];
+    b3 [shape = folder];
+    b4 [shape = frame];
+    b5 [shape = hexagon];
+    b6 [shape = interface];
+    b7 [shape = label];
+    b8 [shape = node];
+    b9 [shape = package];
+  }
+  network n3 {
+    c1 [shape = person];
+    c2 [shape = queue];
+    c3 [shape = rectangle];
+    c4 [shape = stack];
+    c5 [shape = storage];
+    c6 [shape = usecase];
+    c7 [shape = actor];
+    c8 [shape = bogus];
+  }
+}
+@endnwdiag

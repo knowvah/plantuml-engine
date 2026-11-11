@@ -1,0 +1,13 @@
+@startnwdiag
+skinparam monochrome true
+nwdiag {
+  network dmz {
+    color = "red"
+    web01 [color = "yellow"];
+  }
+  group {
+    color = "pink"
+    web01;
+  }
+}
+@endnwdiag

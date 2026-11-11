@@ -1,0 +1,14 @@
+@startebnf
+sprite $dot [8x8/16] {
+FFFFFFFF
+F000000F
+F0FFFF0F
+F0F00F0F
+F0F00F0F
+F0FFFF0F
+F000000F
+FFFFFFFF
+}
+(* **bold** //italic// <$dot> *)
+rule = "a";
+@endebnf

@@ -1,0 +1,6 @@
+@startwire
+print("p")
+move(30,5)
+print("q")
+* a [20x20]
+@endwire

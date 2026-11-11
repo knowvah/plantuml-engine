@@ -1,0 +1,4 @@
+@startregex
+!pragma compact
+ab|c
+@endregex

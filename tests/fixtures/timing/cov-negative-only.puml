@@ -1,0 +1,5 @@
+@startuml
+concise "C" as C
+@-5
+C is a
+@enduml

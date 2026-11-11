@@ -1,0 +1,5 @@
+@startebnf
+!theme cerulean
+rule = "a", [ "b" ];
+(* a note *)
+@endebnf

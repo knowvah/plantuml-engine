@@ -17,19 +17,15 @@ import type { UmlSource } from '../../core/block-extractor.js';
 import { HColorSet } from '../../core/klimt/color/HColorSet.js';
 import {
   createMindmapSkinParam,
-  executeDeclaration,
   positionedDeclarationsOf,
   type ConvertSkinparam,
-  type PositionedDeclaration,
 } from '../../core/style/mindmap-style-builder.js';
 import { convertSkinparam } from '../../core/style/FromSkinparamToStyle.js';
-import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
 import { Style } from '../../core/style/Style.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
-import { getMissingRootProperties, loadSkin, NoStyleAvailableException } from '../../core/style/StyleLoader.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { isExtended } from './json-family-style-input.js';
-import { extractStyle, upstreamSourceLines } from './StyleExtractor.js';
+import { applyDeclarations, extractStyle, skinErrorOf, upstreamSourceLines } from './StyleExtractor.js';
 
 /** The style sources `createMindmapSkinParam` and the declaration loop read. */
 type StyleSource = NonNullable<UmlSource['styleSource']>;
@@ -59,8 +55,6 @@ export interface JsonSkinParam {
 const HANDWRITTEN = 'handwritten';
 /** A hand-built source's style sources: no skin, no skinparam, no style. */
 const EMPTY_STYLE_SOURCE: StyleSource = { skinparam: new Map<string, string>(), styles: [] };
-/** `skin <name>` names `<name>.skin`. @see StyleExtractor.java:116 */
-const SKIN_EXTENSION = '.skin';
 
 /**
  * `jsonDiagram` for a json block, `yamlDiagram` for yaml and hcl.
@@ -100,48 +94,6 @@ export function jsonFamilyJarStyleSource(source: UmlSource, type: JsonFamilyType
     styles: [],
     ...(kept.declarationOrder === undefined ? {} : { declarationOrder: { ...kept.declarationOrder, styles: [] } }),
   };
-}
-
-/**
- * The error `applyStyles` raises for the `skin` line before it touches a `<style>` block: a sheet that does not
- * load is "Cannot find style", one without every mandatory root property is "Incomplete style".
- * @see StyleExtractor.java:115-129
- */
-function skinErrorOf(skin: string | undefined): StyleParsingException | undefined {
-  if (skin === undefined) return undefined;
-  let loaded: StyleBuilder;
-  try {
-    loaded = loadSkin(skin + SKIN_EXTENSION);
-  } catch (e) {
-    if (e instanceof NoStyleAvailableException) return new StyleParsingException(`Cannot find style ${skin}`);
-    if (e instanceof StyleParsingException) return e;
-    throw e;
-  }
-  const missing = getMissingRootProperties(loaded);
-  if (missing.length === 0) return undefined;
-  return new StyleParsingException(`Incomplete style ${skin}: root does not define [${missing.join(', ')}]`);
-}
-
-/**
- * Executes `declarations` in source order; answers the first style error. The caller then discards the
- * builder: the jar collects every `<style>` line (a theme's included) into ONE `BlocLines` and parses it in
- * one `StyleParser#parse`, so a parse error throws before `muteStyle` and NO block applies.
- * @see StyleExtractor.java:132-136
- */
-function applyDeclarations(
-  style: ReturnType<typeof createMindmapSkinParam>,
-  declarations: readonly PositionedDeclaration[],
-  styleSource: StyleSource,
-): StyleParsingException | undefined {
-  for (const declaration of declarations) {
-    try {
-      executeDeclaration(style, declaration, styleSource.skinparam);
-    } catch (e) {
-      if (!(e instanceof StyleParsingException)) throw e;
-      return e;
-    }
-  }
-  return undefined;
 }
 
 /** The `skinparam` key `defaultFontColor`, as `SkinParam#cleanForKey` hands it to the converter. */

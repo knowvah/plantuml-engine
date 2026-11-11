@@ -1,0 +1,17 @@
+@startuml
+concise "P" as P
+@0
+P is {hidden}
+@5
+P is {...}
+@10
+P is {-}
+@15
+P is {?}
+@20
+P is {A,B}
+@25
+P is "quoted"
+@30
+P is code
+@enduml

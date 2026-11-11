@@ -1,0 +1,14 @@
+@startwire
+* a [100x100]
+--
+move(100,0)
+* b [100x100]
+a -> b : n
+a <-> b : b
+a <- b : r
+a - b : p
+a => b : bn
+a <=> b : bb
+a <= b : br
+a = b : bp
+@endwire

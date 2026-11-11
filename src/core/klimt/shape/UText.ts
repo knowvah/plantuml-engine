@@ -1,3 +1,5 @@
+import type { StringBounder } from '../font/StringBounder.js';
+import type { XDimension2D } from '../geom/XDimension2D.js';
 import type { UShape } from '../UShape.js';
 import type { UStroke } from '../UStroke.js';
 import type { HColorSimple } from '../color/HColorSimple.js';
@@ -285,12 +287,16 @@ function normalizeText(text: string): string {
  * substitution upstream's constructor performs (see `normalizeText`
  * above).
  *
+ * `getDescent(stringBounder)` and `calculateDimension(stringBounder)` are
+ * ported (ebnf-engine-port T2a/T2b: the EBNF tiles measure and place their
+ * text through them).
+ *
  * Deferred (out of D3' scope, reported):
- * - `getDescent(stringBounder)` / `calculateDimension(stringBounder)` /
- *   `createTextLayout()` — all three require `StringBounder` (text
- *   measurement) or AWT's `TextLayout`; measurement is a separate
- *   subsystem from shape data, not ported here.
+ * - `createTextLayout()` — requires AWT's `TextLayout`.
  */
+/** `StringBounder#getDescent`'s default divisor. @see StringBounder.java:48 */
+const STRING_BOUNDER_DESCENT_DIVISOR = 4.5;
+
 export class UText implements UShape {
   private readonly text: string;
   private readonly font: FontConfiguration;
@@ -320,6 +326,20 @@ export class UText implements UShape {
 
   getOrientation(): number {
     return this.orientation;
+  }
+
+  /**
+   * `stringBounder.getDescent(font.getFont(), text)`; a bounder without the optional member answers
+   * `StringBounder`'s interface default, `font.getSize2D() / 4.5` (StringBounder.java:47-50).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/UText.java:82-84
+   */
+  getDescent(stringBounder: StringBounder): number {
+    return stringBounder.getDescent?.(this.font, this.text) ?? this.font.size / STRING_BOUNDER_DESCENT_DIVISOR;
+  }
+
+  /** `stringBounder.calculateDimension(font.getFont(), text)`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/UText.java:90-92 */
+  calculateDimension(stringBounder: StringBounder): XDimension2D {
+    return stringBounder.calculateDimension(this.font, this.text);
   }
 
   toString(): string {

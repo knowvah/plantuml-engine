@@ -1,0 +1,8 @@
+@startuml
+analog "P" between 0 and 10 as P
+P is 40 pixels height
+@0
+P is 5
+@10
+P is 9
+@enduml

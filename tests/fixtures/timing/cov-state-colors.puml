@@ -1,0 +1,10 @@
+@startuml
+concise "C" as C
+robust "R" as R
+@0
+C is A #pink
+R is X #lightblue
+@10
+C is B : comment
+R is Y
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+concise "A" as A
+concise "B" as B
+@0
+A is x
+B is y
+@10
+A -> B@20 : **bold** //it// <color:blue>blue</color>
+A@12 -> B@18 : line1\nline2
+@enduml

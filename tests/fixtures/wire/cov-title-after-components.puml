@@ -1,0 +1,5 @@
+@startwire
+* a [40x40]
+title Late
+print("p")
+@endwire

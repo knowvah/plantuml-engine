@@ -38,6 +38,15 @@ export type DiagramType =
   | 'chronology'
   | 'files'
   | 'packetdiag'
+  | 'nwdiag'
+  | 'ebnf'
+  | 'regex'
+  | 'wire'
+  | 'creole'
+  | 'math'
+  | 'latex'
+  | 'def'
+  | 'help'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -119,7 +128,7 @@ export interface UmlSource {
    */
   readonly styleSource?: Pick<
     PreprocessorResult,
-    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder' | 'options'
+    'skin' | 'skinparam' | 'skinparamAssignments' | 'styles' | 'declarationOrder' | 'options' | 'warnings'
   >;
 }
 
@@ -145,7 +154,6 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   usecase: 'description',
   activity: 'activity',
   object: 'object',
-  timing: 'timing',
   json: 'json',
   yaml: 'yaml',
   hcl: 'hcl',
@@ -153,6 +161,15 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   chronology: 'chronology',
   files: 'files',
   packetdiag: 'packetdiag',
+  nwdiag: 'nwdiag',
+  ebnf: 'ebnf',
+  regex: 'regex',
+  wire: 'wire',
+  // cmf D2: the four `PSystemBasicFactory` tags (`DiagramType.java:107-108, :124-125, :162-163, :167-168`).
+  creole: 'creole',
+  math: 'math',
+  latex: 'latex',
+  def: 'def',
   chart: 'chart',
   dot: 'dot',
 };
@@ -376,7 +393,7 @@ export function finalizeBlock(
 /**
  * This port's plugin type -> upstream's enum member. Total in that direction:
  * every type in this port's union has an upstream counterpart. The reverse is
- * NOT true -- upstream's enum has 39 members and this port registers 14
+ * NOT true -- upstream's enum has 39 members and this port registers fewer
  * engines, so most of it maps to nothing here (D5's "the enum is the spec; a
  * missing engine is this port's gap").
  *
@@ -403,6 +420,16 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   chronology: UpstreamDiagramType.CHRONOLOGY,
   files: UpstreamDiagramType.FILES,
   packetdiag: UpstreamDiagramType.PACKET,
+  nwdiag: UpstreamDiagramType.NWDIAG,
+  ebnf: UpstreamDiagramType.EBNF,
+  regex: UpstreamDiagramType.REGEX,
+  wire: UpstreamDiagramType.WIRE,
+  creole: UpstreamDiagramType.CREOLE,
+  math: UpstreamDiagramType.MATH,
+  latex: UpstreamDiagramType.LATEX,
+  def: UpstreamDiagramType.DEFINITION,
+  // `HelpFactory` is `DiagramType.HELP` (HelpFactory.java:51), a member of `@startuml`'s set (DiagramType.java:198-201).
+  help: UpstreamDiagramType.HELP,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,
@@ -419,14 +446,16 @@ export function upstreamTypeOf(type: DiagramType): UpstreamDiagramType {
  *
  * Upstream's answer, `findStartTypes`, is authoritative wherever it has one.
  * Where it does not, this port keeps its own:
- * {@link START_SUFFIX_MAP} carries EIGHT tags upstream has never had --
+ * {@link START_SUFFIX_MAP} carries SEVEN tags upstream has never had --
  * `@startsequence`, `@startclass`, `@startstate`, `@startactivity`,
- * `@startobject`, `@starttiming`, `@startcomponent`, `@startusecase`. The jar
- * types all eight `UNKNOWN`, runs no factory for them, and renders
+ * `@startobject`, `@startcomponent`, `@startusecase`. The jar
+ * types all seven `UNKNOWN`, runs no factory for them, and renders
  * `PSystemUnsupported` (`PSystemBuilder.java:282-283`). That divergence is
  * PRE-EXISTING and is carried forward here unchanged rather than repaired:
  * removing it would move fixtures, and this task's whole property is that it
- * moves none. No corpus fixture uses any of the eight; four test sources do.
+ * moves none. No corpus fixture uses any of the seven; four test sources do.
+ * `@starttiming` was the eighth: the timing engine port (D10) drops it, so the
+ * jar's `UNKNOWN` error page now shows for it too.
  */
 function candidateTypes(suffix: string, type: DiagramType): ReadonlySet<UpstreamDiagramType> {
   const upstream = findStartTypes(`@start${suffix}`);

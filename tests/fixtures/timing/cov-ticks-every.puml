@@ -1,0 +1,10 @@
+@startuml
+analog "A" as A
+A ticks every 2
+@0
+A is 1
+@5
+A is 4
+@10
+A is 2
+@enduml

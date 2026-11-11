@@ -1,0 +1,17 @@
+@startebnf
+<style>
+ebnf {
+  note {
+    BackGroundColor pink
+    FontColor green
+    LineColor purple
+    LineThickness 2
+    Shadowing 4
+    RoundCorner 12
+    FontSize 16
+  }
+}
+</style>
+(* standalone *)
+rule = (* above *) "a" (* below *), { "b" (* loop *) };
+@endebnf

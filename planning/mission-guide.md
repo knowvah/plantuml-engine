@@ -108,7 +108,7 @@ contract; greenfield agents consume it.
 
 ---
 
-### Track SI-2 — `src/core/datetime.ts` (Date/Time Arithmetic)
+### Track SI-2 — `src/core/datetime.ts` (Date/Time Arithmetic) — REPLACED by `src/core/time` and `src/core/decimal`
 
 **Needed by:** Phase 4d (Gantt), Phase 4b (Timing)
 
@@ -130,32 +130,32 @@ that a custom implementation is safer.
 
 ---
 
-### Track SI-3 — `src/core/railroad/` (Railroad Diagram Renderer)
+### Track SI-3 — railroad tiles (superseded: no shared IR upstream)
 
-**Needed by:** Phase 5f (EBNF), Phase 5m (Regex)
-
-**Java source:** `ebnf/` (~20 files), `regexdiagram/`
-
-**What it is:** Both EBNF and Regex produce railroad diagrams. The intermediate
-representation (terminal/non-terminal, sequence, choice, optional, repetition,
-group) is shared; only the grammar → IR translation differs. Building the
-railroad renderer as a standalone `src/core/railroad/` module lets Phase 5f
-produce the renderer and Phase 5m add only a regex-to-IR translation layer.
+**Corrected 2026-11-10 by ebnf-engine-port (#125, decisions.md D1).** Upstream has no railroad intermediate
+representation: `ebnf/` builds `ETile`s directly, and `regexdiagram/PSystemRegex.java` imports eleven of the same
+classes from `ebnf/`. The port mirrors that. The tiles live in `src/diagrams/ebnf/` (`ETile`, `ETileBox`,
+`ETileConcatenation`, `ETileAlternation`, `ETileOptional2`, `ETileOneOrMore`, `ETileZeroOrMore`, `ETileNot`,
+`ETileWithCircles`, and the regex-only `ETileOptional`, `ETileNamedGroup`, `ETileRegexGroup`,
+`ETileRegexGroupAllBut`, `ETileLookAheadOrBehind`), and the regex engine (#126) imports them from there with its own
+layering allowlist entry. There is no `src/core/railroad/` and no grammar → IR translation layer.
 
 ---
 
 ### Track SI-4 — `src/core/golem/` (2D Tile Grid Layout)
 
-**Needed by:** Phase 5p (Flow), evaluate for Phase 5e (Salt), Phase 5l (Wire)
+**Needed by:** Phase 5p (Flow), evaluate for Phase 5e (Salt). Not Phase 5l (Wire): `wire/` imports nothing from
+`golem/` (wrp D1).
 
 **Java source:** `golem/` (~15 files): TilesField.java, Position.java,
 TileGeometry.java, TileUtils.java
 
 **What it is:** The `golem` package is a 2D integer tile grid where each node
 occupies a tile position and edges connect tile centers. Flow diagrams use it
-directly. Salt and Wire use simpler grid logic but share the concept of
-rectangular cells at integer coordinates. Port golem first; evaluate if Salt
-and Wire can reuse the infrastructure or need a lighter variant.
+directly. Salt uses simpler grid logic but shares the concept of rectangular
+cells at integer coordinates. Port golem first; evaluate if Salt can reuse the
+infrastructure or needs a lighter variant. Wire lays its blocks out on a cursor
+(`wire/WBlock.java`) and needs none of it.
 
 ---
 
@@ -173,20 +173,32 @@ preprocessor handles these cases.
 
 ---
 
-## Phase 4b — Timing Diagrams
+## Phase 5l — Wire Diagrams — DONE (wire-engine-port, #128)
 
-See **`planning/timing-deepdive.md`** for the full brief. This phase is blocked
-on Track SI-2 (datetime.ts).
+**Java source:** `wire/` (20 files, 2,216 lines), ported file for file into `src/diagrams/wire/`; `Block.java` and
+`WCursor.java` stay unported (referenced nowhere upstream, wrp D1).
 
-**Java source:** `timingdiagram/` (25 files), `timingdiagram/command/` (24 files),
-`timingdiagram/graphic/` (17 files)
+**Result:** all 18 corpus rows are conformant and pinned in `svg-wire`, drawn byte-identical on the first survey after
+registration at `PSystemBuilder.java:189`. 113 authored fixtures in `tests/fixtures/wire/`: 112 at 0 diffs or jar error
+pairs; `cov-embedded-state-note` waits on a state-engine gap (#168). No divergence added.
 
-**Reuse:** `src/core/datetime.ts` (SI-2); `src/core/svg.ts`; `src/core/theme.ts`;
-`src/core/creole.ts` for labels
+**Reuse:** nothing from `golem/`. The klimt shapes, `Display`, `SingleLineCommand2` and the `regex` engine's plugin
+shape. `print` measures with `jarMeasurer` in every render, because `FileFormat.PNG` is outside the deterministic seam
+(wrp D3).
 
-**Architecture constraint:** Built-in linear layout — do NOT use the dot engine.
-Time flows left-to-right; participants are horizontal lanes. Six rendering
-modes produce fundamentally different SVG output (see deep-dive doc).
+## Phase 4b — Timing Diagrams — DONE (timing-engine-port, #127)
+
+**Java source:** `timingdiagram/` (68 files), ported file for file into `src/diagrams/timing/`, `command/` and
+`graphic/`; `command/CommandStopAt.java` stays unported (its registration is commented out upstream,
+`TimingDiagramFactory.java:108`).
+
+**Result:** all 158 corpus rows reaching timing are conformant: 145 in `timing` (139 byte-identical, 6 jar error pages
+where we also error) and 13 in `unknown`, pinned in `svg-timing`. 141 authored fixtures in `tests/fixtures/timing/`:
+140 at 0 diffs or error pairs; `cov-embedded-state` waits on a state-engine gap (a `{{ }}` in a state note).
+
+**Reuse:** `src/core/decimal/BigDecimal.ts` (a `java.math` subset), `src/core/time/` plus `GregorianCalendarGmt.ts`
+for lenient Julian dates, and the injected clock zone for `use date format` (timing-engine-port D3, D4). The dot engine
+is not involved: time runs left to right and players stack.
 
 ---
 
@@ -286,24 +298,25 @@ but the layout step should call the same infrastructure.
 
 ## Phase 4f — Network Diagram (nwdiag)
 
-**Java source:** `nwdiag/`
+**DONE** by nwdiag-engine-port (#124, 2026-11-10); see `planning/next-missions.md`.
 
-**Reuse:** `src/core/svg.ts`; `src/core/theme.ts`. No graph engine — built-in
-row-based layout.
+**Java source:** `nwdiag/` (root commands, `core/` model, `next/` layout and drawing).
 
-**Architecture constraint:** Networks render as horizontal rows; devices render
-as column nodes placed on the network rows they belong to. A device can appear
-on multiple networks (vertical connection across rows).
+**Reuse:** klimt, `TitledDiagram`, `USymbols` for server shapes. No graph engine: nwdiag lays out its own grid.
+
+**Architecture constraint:** each network is a stage (a grid line). Each server is an `NBar` spanning the stages it
+joins, packed into columns by `NTetris` over a `BooleanGrid`. A group is one `NBox`. The layout is columns of server
+cells in a networks × servers grid (`GridTextBlockDecorated`), not row-based nodes.
 
 **Watch-outs:**
-- `network` blocks with named networks
-- `address` attribute per device-per-network
-- Devices shared across multiple networks (multi-row placement)
-- `group` blocks with color fills
+- `network` blocks, named or nameless (a null name draws no text)
+- `address` per device per network; an unquoted property value keeps a trailing `;` (`CommandProperty`)
+- Devices shared across multiple networks (one bar over several stages)
+- `group` blocks with color fills and description headers
 - `color` attribute on networks and devices
 - `description` labels on network rows
-- `rack` / `rackdiag` variant — a completely separate visual mode
-  (rack units, components stacked vertically)
+- No `rack` / `rackdiag` engine exists upstream: `grep -rli rackdiag ~/git/plantuml/src/main/java/net` finds only
+  `packetdiag/readme.md`
 - `packetdiag` prefix shares the same Java package — keep separate
 
 ---
@@ -479,103 +492,31 @@ more appropriate.
 
 ---
 
-## Phase 5f — EBNF Railroad Diagrams
+## Phase 5f — EBNF Railroad Diagrams — DONE (ebnf-engine-port, #125)
 
-**Java source:** `ebnf/`
+**Java source:** `ebnf/` (33 files), ported file for file into `src/diagrams/ebnf/`.
 
-**Reuse:** `src/core/railroad/` (Track SI-3 — must build first);
-`src/core/svg.ts`; `src/core/theme.ts`.
+**Architecture (corrected 2026-11-10, D1):** no railroad IR. `PSystemEbnf` extends `TitledDiagram`; each rule is an
+`EbnfExpression` whose tokens go through `ShuntingYard` into `EbnfEngine`, which builds `ETile`s directly. Comments are
+the activity package's `FloatingNote`. The seams it needed went to their upstream homes: `CharInspector` and `I18n` in
+`src/core/utils/`, `UBrexCommandMultilines2` in `src/core/command/`.
 
-**Architecture constraint:** Phase 5f builds the railroad renderer in
-`src/core/railroad/` and then adds the EBNF grammar → railroad IR translation.
-Phase 5m adds only a regex-to-railroad-IR translation layer on top.
-
-**Watch-outs:**
-- Terminal literals (quoted strings) vs non-terminals (unquoted names)
-- Choice (`|`), sequence (concatenation), optional (`[…]`), repetition (`{…}`)
-- `+` one-or-more, `*` zero-or-more in extended EBNF
-- Named rules separated by `::=` or `=`
-- Comments (`(*…*)`)
-- The start rule is rendered at the top; referenced rules expand below
-- Loop-back arrows for repetition constructs
-- Text direction: LR by default; `direction=TB` supported
+**Result:** 44/44 `@startebnf` rows conformant (one a jar error page where we also error), pinned in `svg-ebnf`; 70
+authored fixtures in `tests/fixtures/ebnf/`.
 
 ---
 
-## Phase 5g — DITAA
+## Phase 5m — Regex Railroad Diagrams — DONE (regex-engine-port, #126)
 
-> **Dropped by ruling 2026-11-04 (#111).** The library is LGPL-3.0, so it can't be ported into
-> this MIT package; see `DIVERGENCES.md`, "Ditaa is not included". Kept as a record.
+**Java source:** `regexdiagram/` (9 classes), ported file for file into `src/diagrams/regex/`.
 
-See **`planning/ditaa-deepdive.md`** for the full brief. This is the
-highest-complexity phase in Phase 5.
+**Result:** 46/46 `@startregex` rows conformant (two jar error pages where we also error), pinned in `svg-regex`; 94
+authored fixtures in `tests/fixtures/regex/`. The tile style freezes in the constructor from the skin and `<style>`
+blocks only (`PSystemRegex.java:82-97`), through `StyleExtractor#applyStyles` at its upstream home.
 
-**Java source:** `ditaa/` (3 files), `asciiart/` (external ditaa library
-bundled as Java source)
-
-**Reuse:** `src/core/svg.ts`; `src/core/svg-sanitize.ts`. No graph engine.
-
-**Architecture constraint:** ASCII art grid → SVG. The input is a 2D character
-grid; the output is rendered shapes detected by cell pattern analysis.
-
----
-
-## Phase 5h — Chen EER Diagrams
-
-**Java source:** `cheneer/`
-
-**Reuse:** `dot`/`auto-layout` for layout (already built); `src/core/svg.ts`.
-
-**Architecture constraint:** Uses the `dot` engine for layout. The renderer
-draws entity-specific shapes on top of the dot-computed positions.
-
-**Watch-outs:**
-- Entity: plain rectangle
-- Weak entity: double rectangle
-- Attribute: ellipse
-- Multi-valued attribute: double ellipse
-- Derived attribute: dashed ellipse
-- Key attribute: underlined label inside ellipse
-- Relationship: diamond
-- Identifying relationship (weak): double diamond
-- Cardinality notation: `1`, `N`, `M` on edges
-- Participation: total (double line) vs partial (single line)
-- `[=]` syntax for total participation on both sides
-
----
-
-## Phase 5l — Wire Diagram
-
-**Java source:** `wire/`
-
-**Reuse:** `src/core/svg.ts`; `src/core/theme.ts`. Built-in schematic layout.
-
-**Architecture constraint:** Components are placed on a 2D grid declared in
-the source. Connections are routed as horizontal/vertical segments. No graph
-engine. Evaluate whether `src/core/golem/` (Track SI-4) can serve as the
-grid substrate.
-
-**Watch-outs:**
-- `component` declarations with grid position
-- Horizontal (`-`) and vertical (`|`) connection segments
-- Junction dots at crossings
-- Labels on connections
-- `port` declarations with named connection points
-- This is the most niche diagram type — the Java source is thin but contains
-  all the edge cases
-
----
-
-## Phase 5m — Regex Railroad Diagrams
-
-**Java source:** `regexdiagram/`, `regex/`
-
-**Reuse:** `src/core/railroad/` (Track SI-3 — already built for Phase 5f);
-**Must develop after Phase 5f.** The regex parser produces the same railroad
-intermediate representation that the EBNF renderer consumes.
-
-**Architecture constraint:** Phase 5m adds only a regex-to-railroad-IR
-translation layer. No new renderer code.
+**Reuse (corrected 2026-11-10, ebnf-engine-port D1):** the tiles in `src/diagrams/ebnf/`, imported as
+`PSystemRegex.java` imports them from `ebnf/`; `UBrexCommandMultilines2` (`src/core/command/`) and `I18n`
+(`src/core/utils/`) are ported. There is no railroad IR: `PSystemRegex` builds `ETile`s on its own stack.
 
 **Watch-outs:**
 - Character classes (`[a-z]`, `[^abc]`, `.`)
@@ -621,6 +562,14 @@ SI-4 ports golem as a standalone module before this phase begins.
   already-placed target tile
 
 ---
+
+## Phase 5q — Creole, Math, LaTeX, Definition and Help factories — DONE (creole-math-factories-port, #129)
+
+**Java source:** `klimt/creole/legacy/PSystemCreole*.java`, `math/PSystem{Math,Latex}*.java`, `math/ScientificEquationSafe.java`,
+`definition/`, `help/`, `syntax/LanguageDescriptor.java`, `command/PSystemBasicFactory.java`, `DirectOsDiagram.java`. Ported into
+`src/core/klimt/creole/legacy/`, `src/diagrams/{math,definition,help}/`, `src/core/syntax/`, `src/core/command/PSystemBasicFactory.ts`,
+`src/core/DirectOsDiagram.ts`, with JLaTeXMath's rollback (`src/core/latex-metrics/jlm-*.ts`) and sizing rules in `src/core/latex-metrics/`.
+Ratchet `svg-factories`. Remaining rows are on #169 and #170 or named in `DIVERGENCES.md`.
 
 ## Phase 6 — Markdown Integration
 

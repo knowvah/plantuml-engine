@@ -11,7 +11,8 @@ import { join } from 'node:path';
 /** A bucket maps to the LIST of golden families whose pins it shows (D1,
  *  plans/parity-dashboard-repair). `component`/`usecase` share
  *  `svg-description`; `unknown` reads the utility factories' own family (ufp
- *  D9) plus the 145 `type: unknown` rows pinned under `svg-description`.
+ *  D9), the creole/math factories' (cmf T4) plus the 145 `type: unknown` rows
+ *  pinned under `svg-description`.
  *  Types absent from this map have no ratchet family at all (D8: `no ratchet
  *  yet`). Every `svg-*` directory must appear here, in
  *  `DIFF_BASELINE_FAMILY` or in `NON_BUCKET_FAMILIES`, or
@@ -37,7 +38,17 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   chart: ['svg-chart'],
   packet: ['svg-packet'],
   board: ['svg-board'],
-  unknown: ['svg-utility', 'svg-description', 'svg-activity-legacy'],
+  // eep D9: ebnf is its own bucket, pinned flat as board's are.
+  ebnf: ['svg-ebnf'],
+  // rep D7: regex is its own bucket, pinned flat as ebnf's are.
+  regex: ['svg-regex'],
+  // wrp D7: wire is its own bucket, pinned flat as regex's are.
+  wire: ['svg-wire'],
+  // tep D12: timing is its own bucket, pinned flat as regex's are; 13 drawn rows of `unknown` carry `bucket: 'unknown'`.
+  timing: ['svg-timing'],
+  // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
+  // cmf T4: the creole/math/latex/definition/help factories' rows live in `unknown`, as the utility factories' do.
+  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag'],
   network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],
@@ -54,7 +65,17 @@ export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> =
   salt: ['svg-salt'],
   wbs: ['svg-wbs'],
   gantt: ['svg-gantt'],
-  unknown: ['svg-utility', 'svg-description'],
+  // nwp D7: the 4 nwdiag jar-error rows, pinned by score.
+  // cmf T4: the factories rows not yet pinned, pinned by score.
+  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-nwdiag'],
+  // eep D9: ladifa-97-keme950, the one ebnf jar-error row, pinned by score.
+  ebnf: ['svg-ebnf'],
+  // rep D7: bakuza-41-bulo451 and tajefa-31-pefi801, the two regex jar-error rows, pinned by score.
+  regex: ['svg-regex'],
+  // wrp D7: every wire row is drawn by the jar and pinned; no score-pinned rows.
+  wire: ['svg-wire'],
+  // tep D12: the 6 timing jar-error rows, pinned by score.
+  timing: ['svg-timing'],
 };
 
 /** `oracle/goldens/svg-*` families that are NOT one bucket's pins, each with

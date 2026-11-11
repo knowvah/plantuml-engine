@@ -1,0 +1,4 @@
+@startebnf
+bad = "a" , , ;
+also = | "x";
+@endebnf

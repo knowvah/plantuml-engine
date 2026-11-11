@@ -45,8 +45,16 @@ describe('measureTeXIcon: array and matrix environments (MatrixAtom#createBox)',
     expect(measureTeXIcon(tex)).toEqual({ width, height, unsupported: [] });
   });
 
-  it('flags a column rule rather than sizing it silently', () => {
-    expect(measureTeXIcon('\\begin{array}{c|c} a & b \\end{array}').unsupported).toEqual(['array vline']);
+  it('flags a dashed column rule rather than sizing it silently', () => {
+    expect(measureTeXIcon('\\begin{array}{c:c} a & b \\end{array}').unsupported).toEqual(['array vline']);
+  });
+
+  it('sizes a `|` column rule (VlineAtom) without flagging it', () => {
+    const plain = measureTeXIcon('\\begin{array}{cc} a & b \\end{array}');
+    const ruled = measureTeXIcon('\\begin{array}{c|c} a & b \\end{array}');
+    expect(ruled.unsupported).toEqual([]);
+    expect(ruled.height).toBe(plain.height);
+    expect(ruled.width).toBeGreaterThanOrEqual(plain.width);
   });
 
   it('flags a row rule', () => {
@@ -223,6 +231,7 @@ describe('convertNode on an array node KaTeX shaped unusually', () => {
       env: 'array',
       rows: [],
       align: [],
+      vlines: [0],
     });
   });
 

@@ -1,0 +1,8 @@
+@startnwdiag
+nwdiag {
+  description = "orphan"
+  network dmz {
+    web01;
+  }
+}
+@endnwdiag

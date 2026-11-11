@@ -1,0 +1,4 @@
+@startebnf
+three = 3 * "x";
+zero = 0 * "y";
+@endebnf

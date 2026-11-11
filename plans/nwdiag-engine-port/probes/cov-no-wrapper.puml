@@ -1,0 +1,6 @@
+@startnwdiag
+network dmz {
+  web01;
+  web02;
+}
+@endnwdiag

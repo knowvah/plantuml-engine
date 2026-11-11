@@ -1,0 +1,10 @@
+@startnwdiag
+nwdiag {
+  inet -- router;
+  router -- fw;
+  network dmz {
+    fw;
+    web01;
+  }
+}
+@endnwdiag

@@ -1,5 +1,5 @@
 {
-  "$comment": "T1 fragment of the unknown-bucket-routing-repair ledger (mission unknown-bucket-routing-repair, task T1): one row per settled slug from cohorts/T1.tsv -- agreements, jar-error pages, no-engine misroutes/gaps (NWDIAG/BPM/GIT/FLOW/TIMING/HELP), and the FILES root-attribute gap. One row per slug, sorted by slug; consumed by scripts/pin-corpus-tree.ts (T0).",
+  "$comment": "T1 fragment of the unknown-bucket-routing-repair ledger (mission unknown-bucket-routing-repair, task T1): one row per settled slug from cohorts/T1.tsv -- agreements, jar-error pages, no-engine misroutes/gaps (NWDIAG/BPM/GIT/FLOW/TIMING/HELP), and the FILES root-attribute gap. One row per slug, sorted by slug; consumed by scripts/pin-corpus-tree.ts (T0). nwdiag-engine-port T4 (2026-11-10): the 64 no-engine-nwdiag rows are agree since NwDiagramFactory registers at PSystemBuilder.java:155 (routing-baseline re-pinned to match).",
   "rows": [
     {
       "slug": "Timing-short-alias-5",
@@ -41,10 +41,9 @@
     },
     {
       "slug": "bafega-98-puju017",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "baketu-62-cumu838",
@@ -108,10 +107,9 @@
     },
     {
       "slug": "befize-38-mine284",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "beguta-99-gixu960",
@@ -178,10 +176,9 @@
     },
     {
       "slug": "bijilu-89-dadu849",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "bijufi-98-xafa015",
@@ -277,10 +274,9 @@
     },
     {
       "slug": "bovagi-47-kago640",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "bujigu-81-nima035",
@@ -320,10 +316,9 @@
     },
     {
       "slug": "cagufu-48-kori236",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "cakutu-40-lece271",
@@ -460,10 +455,9 @@
     },
     {
       "slug": "codanu-59-titi616",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "cokuda-77-fesa475",
@@ -570,10 +564,9 @@
     },
     {
       "slug": "dalime-11-papi722",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "daroli-95-remo515",
@@ -583,10 +576,9 @@
     },
     {
       "slug": "decato-52-soki987",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "dedumo-33-paco879",
@@ -596,10 +588,9 @@
     },
     {
       "slug": "defici-02-texe585",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "degici-07-kura718",
@@ -658,10 +649,9 @@
     },
     {
       "slug": "dirado-96-bivo248",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "dobido-76-nugu008",
@@ -690,17 +680,15 @@
     },
     {
       "slug": "dojufe-85-xaru596",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "donaxa-34-gotu113",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "dosixi-10-vetu164",
@@ -735,10 +723,9 @@
     },
     {
       "slug": "dunexe-27-rike921",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "dunudu-55-zene634",
@@ -790,17 +777,15 @@
     },
     {
       "slug": "fecure-20-muca822",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "fedoxa-73-boje316",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "fefeza-33-xute344",
@@ -866,10 +851,9 @@
     },
     {
       "slug": "fikofu-31-tefa367",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "fimiku-32-firu782",
@@ -885,10 +869,9 @@
     },
     {
       "slug": "fipago-01-vuzi220",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "fipezo-93-zimi512",
@@ -1019,10 +1002,9 @@
     },
     {
       "slug": "genobe-17-dili872",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "geravi-79-nafu641",
@@ -1298,10 +1280,9 @@
     },
     {
       "slug": "jilodo-21-cifo618",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "jimizu-14-zole306",
@@ -1365,10 +1346,9 @@
     },
     {
       "slug": "jojoxo-29-zuko417",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "joliva-50-vuva261",
@@ -1483,10 +1463,9 @@
     },
     {
       "slug": "kakupi-00-lano640",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kaneke-33-nili717",
@@ -1496,10 +1475,9 @@
     },
     {
       "slug": "kavagu-15-poma470",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kebadi-11-fula439",
@@ -1565,10 +1543,9 @@
     },
     {
       "slug": "kicapi-47-naka074",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kicice-20-pacu211",
@@ -1602,10 +1579,9 @@
     },
     {
       "slug": "kipesi-54-sasi125",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kojuja-62-xesu266",
@@ -1621,10 +1597,9 @@
     },
     {
       "slug": "kubaca-07-dime602",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kuduba-74-taki821",
@@ -1634,10 +1609,9 @@
     },
     {
       "slug": "kufebo-74-sujo175",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "kumuti-42-tace851",
@@ -1683,10 +1657,9 @@
     },
     {
       "slug": "lacode-63-laji967",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "lafeze-33-ralu563",
@@ -1757,10 +1730,9 @@
     },
     {
       "slug": "lerecu-03-tudo825",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "liboma-63-gamu743",
@@ -1782,10 +1754,9 @@
     },
     {
       "slug": "lifuxe-94-xeto977",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "ligalo-62-suvu444",
@@ -1928,10 +1899,9 @@
     },
     {
       "slug": "marege-44-nifi894",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "marese-34-xaro137",
@@ -2039,10 +2009,9 @@
     },
     {
       "slug": "mivisa-94-rite657",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "mixavu-83-xale251",
@@ -2058,10 +2027,9 @@
     },
     {
       "slug": "modubu-02-zamo711",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "mofora-39-nole251",
@@ -2239,10 +2207,9 @@
     },
     {
       "slug": "nijiku-48-falu377",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "nijipa-25-pede639",
@@ -2302,10 +2269,9 @@
     },
     {
       "slug": "nucefo-27-tedu214",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "nufike-34-rila935",
@@ -2394,10 +2360,9 @@
     },
     {
       "slug": "pakisi-27-xaro239",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "palida-11-pexu992",
@@ -2413,10 +2378,9 @@
     },
     {
       "slug": "papola-00-nira696",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "pavozu-43-tone454",
@@ -2426,10 +2390,9 @@
     },
     {
       "slug": "pavuni-17-nifu306",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "pavuso-18-rusi688",
@@ -2463,10 +2426,9 @@
     },
     {
       "slug": "pekico-53-logi157",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "pemare-74-julo947",
@@ -2704,10 +2666,9 @@
     },
     {
       "slug": "reromi-71-nona507",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "revezi-19-kuki251",
@@ -2976,10 +2937,9 @@
     },
     {
       "slug": "sikove-75-lebe293",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "sinife-24-fise413",
@@ -2989,10 +2949,9 @@
     },
     {
       "slug": "sixoxu-07-neba246",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "sofobo-48-meme531",
@@ -3111,10 +3070,9 @@
     },
     {
       "slug": "tagiko-99-sulo647",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "taliti-27-vuzo488",
@@ -3124,10 +3082,9 @@
     },
     {
       "slug": "tamiku-72-fafu058",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "tamovu-79-fifo533",
@@ -3155,10 +3112,9 @@
     },
     {
       "slug": "temeca-88-zagi087",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "tenava-30-cele768",
@@ -3223,10 +3179,9 @@
     },
     {
       "slug": "tipibu-04-cufe371",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "tirabi-23-xoka079",
@@ -3278,10 +3233,9 @@
     },
     {
       "slug": "todotu-20-zelo085",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "todozi-34-jire490",
@@ -3340,10 +3294,9 @@
     },
     {
       "slug": "tuteda-60-toca657",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vabobu-24-temi990",
@@ -3359,17 +3312,15 @@
     },
     {
       "slug": "vacoli-38-suso931",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vagipe-25-jafo132",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vajaru-64-loni744",
@@ -3403,10 +3354,9 @@
     },
     {
       "slug": "vatifu-07-vaci182",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vaxodu-91-komu816",
@@ -3441,10 +3391,9 @@
     },
     {
       "slug": "vemuti-86-jiga057",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "venofe-94-vopu657",
@@ -3466,17 +3415,15 @@
     },
     {
       "slug": "vexebu-65-caxe283",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vilona-32-jusa967",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "vinefa-69-lufo631",
@@ -3631,10 +3578,9 @@
     },
     {
       "slug": "xazave-85-nare716",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "xefuma-94-cura811",
@@ -3644,17 +3590,15 @@
     },
     {
       "slug": "xejuke-02-vale981",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "xelumo-69-cuge217",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "xemeke-75-copu190",
@@ -3774,10 +3718,9 @@
     },
     {
       "slug": "xujebo-87-nade992",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "xukofa-63-ropa738",
@@ -3835,10 +3778,9 @@
     },
     {
       "slug": "zanaco-20-fudo468",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "zarelu-57-xika172",
@@ -3897,10 +3839,9 @@
     },
     {
       "slug": "zepoxo-18-kefi748",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "zevece-09-cono092",
@@ -3934,10 +3875,9 @@
     },
     {
       "slug": "zinisu-57-buma865",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "ziruri-42-maxo237",
@@ -4014,24 +3954,21 @@
     },
     {
       "slug": "zopebe-86-xusi460",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "zosacu-94-gico849",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "zovija-41-tocu113",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     },
     {
       "slug": "zovojo-65-gocu245",
@@ -4108,10 +4045,9 @@
     },
     {
       "slug": "zusubu-74-ruce269",
-      "cohort": "no-engine-nwdiag",
-      "disposition": "known-misroute",
-      "task": "T1",
-      "reason": "no plugin registers DiagramType.NWDIAG: NwDiagramFactory is never added to PSystemBuilder's factory list (PSystemBuilder.java:155, D5), so DiagramRegistry#resolve (src/core/dispatcher.ts:317-342) has zero NWDIAG candidates and returns the error sentinel; the document reads as NONE here while the golden says NWDIAG. Frozen registration order (D1) means this is a missing engine, not a heuristic to retune."
+      "cohort": "agree",
+      "disposition": "agree",
+      "task": "nwp-T4"
     }
   ]
 }

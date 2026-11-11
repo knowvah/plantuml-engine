@@ -1,0 +1,9 @@
+@startnwdiag
+skinparam reversecolor rgb
+nwdiag {
+  network dmz {
+    color = "#336699"
+    web01;
+  }
+}
+@endnwdiag

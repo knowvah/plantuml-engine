@@ -1,0 +1,10 @@
+@startwire
+skinparam mode dark
+* a [80x40] #red
+print("p")
+* b [80x40]
+a -> b : l
+a => b
+a <-> b : z
+spot a
+@endwire

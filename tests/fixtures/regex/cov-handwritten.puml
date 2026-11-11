@@ -1,0 +1,4 @@
+@startregex
+skinparam handwritten true
+a(b|c)+\d
+@endregex

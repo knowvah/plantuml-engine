@@ -1,0 +1,9 @@
+@startnwdiag
+nwdiag {
+  group g1 {
+    group g2 {
+      a;
+    }
+  }
+}
+@endnwdiag

@@ -1,0 +1,21 @@
+@startuml
+robust "R" as R
+concise "C" as C
+binary "B" as B
+analog "A" between 0 and 10 as A
+@0
+R is idle
+C is idle
+B is low
+A is 1
+@10
+R is busy : start
+C is busy : start
+B is high : up
+A is 9 : peak
+@20
+R is idle
+C is idle
+B is low
+A is 4
+@enduml

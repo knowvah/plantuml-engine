@@ -94,3 +94,8 @@ Not used by gantt, so not ported: `ZoneId`, `Locale`, `TextStyle`, `TemporalAdju
 
 ### time-math.ts (internal)
 - `Math.floorDiv` / `Math.floorMod`, `ChronoField.checkValidValue`, unit constants.
+
+### GregorianCalendarGmt.ts (`java.util.GregorianCalendar`, zone GMT; timing-engine-port D4)
+- `gc.setTimeInMillis(0); gc.set(y, m, d); gc.getTimeInMillis()` (lenient) -> `epochSecondsOfLenientDate(y, month0, d)`
+  (`timingdiagram/TimingFormat.java:95-101`); Julian before 1582-10-15, the cutover's gap and overlap as `computeTime`
+- `gc.setTimeInMillis(ms); gc.get(MONTH), gc.get(DAY_OF_MONTH)` -> `monthDayOfEpochSeconds(s)` (`TimingFormat.java:84-92`)

@@ -1,0 +1,7 @@
+@startuml
+concise "C" as C
+@2020/07/04
+C is A
+@+0.5
+C is B
+@enduml

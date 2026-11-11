@@ -1,0 +1,10 @@
+@startuml
+robust "R" as R
+concise "C" as C
+@0
+R is "**bold** state"
+C is "//italic// --strike--"
+@10
+R is "<color:red>red</color>"
+C is "<b>b</b> and <u>u</u>"
+@enduml

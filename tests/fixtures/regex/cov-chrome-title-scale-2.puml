@@ -1,0 +1,5 @@
+@startregex
+scale 2
+title The Title
+a(b|c)+\d
+@endregex

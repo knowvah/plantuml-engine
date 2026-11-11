@@ -1,0 +1,6 @@
+@startregex
+<style>
+element { RoundCorner 20 }
+</style>
+a[bc]d
+@endregex

@@ -1,0 +1,6 @@
+@startwire
+* a
+	* b
+	    * c
+    	* d
+@endwire

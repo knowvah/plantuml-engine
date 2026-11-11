@@ -1,0 +1,19 @@
+@startuml
+binary "P" as P
+@0
+P is low
+@5
+P is high
+@10
+P is {-}
+@15
+P is {hidden}
+@20
+P is {...}
+@25
+P is {?}
+@30
+P is {low,high}
+@35
+P is "high"
+@enduml

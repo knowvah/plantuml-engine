@@ -1,0 +1,11 @@
+@startuml
+!theme sketchy-outline
+concise "C" as C
+robust "R" as R
+@0
+C is a
+R is x
+@10
+C is b
+R is y
+@enduml

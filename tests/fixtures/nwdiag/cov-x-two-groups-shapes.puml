@@ -1,0 +1,23 @@
+@startnwdiag
+nwdiag {
+  group web {
+    color = "#FFCCCC"
+    description = "Web tier"
+    web01 [shape = node];
+    web02 [shape = database, description = "DB, replica"];
+  }
+  group app {
+    description = "App"
+    app01 [shape = queue];
+  }
+  network dmz {
+    address = "10.0.0.0/24"
+    web01 [address = "10.0.0.1"];
+    web02 [address = "10.0.0.2, 10.0.0.3"];
+  }
+  network internal {
+    web02 [address = "172.16.0.2"];
+    app01 [address = "172.16.0.9"];
+  }
+}
+@endnwdiag

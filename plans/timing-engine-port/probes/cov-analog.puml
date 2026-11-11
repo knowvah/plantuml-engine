@@ -1,0 +1,16 @@
+@startuml
+analog "Vcore" as VDD
+analog "Vcc" between -4.5 and 6.5 as VCC
+VCC ticks num on multiple 3
+VDD is 20 pixels height
+@0
+VDD is 0
+VCC is 3
+@2
+VDD is 0
+@3
+VDD is 6
+VCC is -1.5
+@5
+VDD is 0.5
+@enduml

@@ -1,0 +1,4 @@
+@startebnf
+footer My footer
+rule = "a", [ "b" ];
+@endebnf

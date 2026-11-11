@@ -110,9 +110,14 @@ function ganttReadsClock(source: string): boolean {
   return false;
 }
 
+const UML_START = /^\s*@startuml\b/im;
+/** `use date format "..."` (`CommandUseDateFormat.java`): ticks print in the JVM default zone (tep D4). */
+const USE_DATE_FORMAT = /^\s*use\s+date\s+format\b/im;
+
 /** True when the jar's output for this source depends on the wall clock. */
 export function isClockDependentSource(source: string): boolean {
   if (timReadsClock(source)) return true;
+  if (UML_START.test(source) && USE_DATE_FORMAT.test(source)) return true;
   return GANTT_START.test(source) && ganttReadsClock(source);
 }
 

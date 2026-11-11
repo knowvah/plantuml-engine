@@ -1,0 +1,4 @@
+@startwire
+print("only")
+print("two")
+@endwire

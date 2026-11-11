@@ -22,6 +22,21 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/jsondiagram/StyleExtractor.java:54-156
  */
 
+import type { UmlSource } from '../../core/block-extractor.js';
+import {
+  createMindmapSkinParam,
+  executeDeclaration,
+  positionedDeclarationsOf,
+  type PositionedDeclaration,
+  type SkinParam as StyleSkinParam,
+} from '../../core/style/mindmap-style-builder.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
+import { getMissingRootProperties, loadSkin, NoStyleAvailableException } from '../../core/style/StyleLoader.js';
+
+/** The preprocessor's style sources: `skin`, skinparams, `<style>` blocks (a theme's included). */
+type StyleSource = NonNullable<UmlSource['styleSource']>;
+
 /** What upstream's `StyleExtractor` exposes after construction. */
 export interface StyleExtractor {
   /** `StyleExtractor#list` -- every non-directive, non-blank line, untrimmed,
@@ -152,4 +167,81 @@ export function upstreamSourceLines(
   const head = RE_START.test(nonBlank[0] ?? '') ? [] : [`@start${type}`];
   const tail = RE_END.test(nonBlank[nonBlank.length - 1] ?? '') ? [] : [`@end${type}`];
   return [...head, ...source.lines, ...tail];
+}
+
+/** `skin <name>` names `<name>.skin`. @see StyleExtractor.java:116 */
+const SKIN_EXTENSION = '.skin';
+
+/**
+ * The error `applyStyles` raises for the `skin` line before it touches a `<style>` block: a sheet that does not
+ * load is "Cannot find style", one without every mandatory root property is "Incomplete style".
+ * @see StyleExtractor.java:115-129
+ */
+export function skinErrorOf(skin: string | undefined): StyleParsingException | undefined {
+  if (skin === undefined) return undefined;
+  let loaded: StyleBuilder;
+  try {
+    loaded = loadSkin(skin + SKIN_EXTENSION);
+  } catch (e) {
+    if (e instanceof NoStyleAvailableException) return new StyleParsingException(`Cannot find style ${skin}`);
+    if (e instanceof StyleParsingException) return e;
+    throw e;
+  }
+  const missing = getMissingRootProperties(loaded);
+  if (missing.length === 0) return undefined;
+  return new StyleParsingException(`Incomplete style ${skin}: root does not define [${missing.join(', ')}]`);
+}
+
+/**
+ * Executes `declarations` in source order; answers the first style error. The caller then discards the
+ * builder: the jar collects every `<style>` line (a theme's included) into ONE `BlocLines` and parses it in
+ * one `StyleParser#parse`, so a parse error throws before `muteStyle` and NO block applies.
+ * @see StyleExtractor.java:132-136
+ */
+export function applyDeclarations(
+  style: StyleSkinParam,
+  declarations: readonly PositionedDeclaration[],
+  styleSource: StyleSource,
+): StyleParsingException | undefined {
+  for (const declaration of declarations) {
+    try {
+      executeDeclaration(style, declaration, styleSource.skinparam);
+    } catch (e) {
+      if (!(e instanceof StyleParsingException)) throw e;
+      return e;
+    }
+  }
+  return undefined;
+}
+
+/** A hand-built source's style sources: no skin, no skinparam, no style. */
+const EMPTY_STYLE_SOURCE: StyleSource = { skinparam: new Map<string, string>(), styles: [] };
+
+/** What {@link applyStyles} leaves: the builder-holding style skin param, and the error it raised. */
+export interface AppliedStyles {
+  readonly style: StyleSkinParam;
+  readonly styleError: StyleParsingException | undefined;
+}
+
+/**
+ * `StyleExtractor#applyStyles` on a fresh default-skin builder: the `skin` line first (an unloadable or incomplete
+ * sheet throws before any `<style>` block, and the skin is not set), then every `<style>` block of the source — a
+ * theme's included — parsed as ONE `BlocLines`, so one bad block mutes none. No `skinparam` is ever applied: the
+ * extractor collects only `<style>` lines (`:69-75`). The caller decides what to do with the error (`PSystemRegex`
+ * prints it and carries on, `PSystemRegex.java:87-91`). The json family keeps its own mode-aware cut
+ * (`json-skin-param.ts#buildStyle`) on the same two helpers.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/jsondiagram/StyleExtractor.java:113-138
+ */
+export function applyStyles(source: Pick<UmlSource, 'styleSource' | 'stylePositions'>): AppliedStyles {
+  const styleSource = source.styleSource ?? EMPTY_STYLE_SOURCE;
+  const skinError = skinErrorOf(styleSource.skin);
+  if (skinError !== undefined) return { style: createMindmapSkinParam({}), styleError: skinError };
+  const blocks = positionedDeclarationsOf(styleSource, source.stylePositions ?? []).filter(
+    (declaration) => 'style' in declaration,
+  );
+  const style = createMindmapSkinParam(styleSource);
+  const styleError = applyDeclarations(style, blocks, styleSource);
+  if (styleError === undefined) return { style, styleError };
+  // StyleExtractor.java:132-135: `muteStyle(new StyleParser(...).parse(all <style> lines))`: all or nothing.
+  return { style: createMindmapSkinParam(styleSource), styleError };
 }

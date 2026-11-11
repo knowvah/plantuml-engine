@@ -1,0 +1,8 @@
+@startwire
+* a [100x100]
+spot a
+spot a(50%,50%)
+spot a(100%-5, 50%+20) #green
+spot a(-5,-5) #00FFFF
+spot a(10,10)
+@endwire

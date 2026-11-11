@@ -1,0 +1,5 @@
+@startwire
+goto(20,20)
+move(5,5)
+* a [10x10]
+@endwire

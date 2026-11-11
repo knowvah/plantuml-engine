@@ -1,0 +1,16 @@
+@startwire
+<style>
+root {
+ BackGroundColor yellow
+ FontColor blue
+ LineColor red
+}
+wireDiagram {
+ BackGroundColor pink
+}
+</style>
+* a [80x40]
+print("p")
+* b [80x40]
+a -> b : l
+@endwire

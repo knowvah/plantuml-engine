@@ -1,0 +1,10 @@
+@startuml
+state S
+note right of S
+{{wire
+* a [40x30]
+* b [40x30]
+a -> b : l
+}}
+end note
+@enduml

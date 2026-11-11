@@ -1,0 +1,1324 @@
+{
+  "fixtures": [
+    {
+      "type": "timing",
+      "slug": "cov-analog",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-analog-constraint",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-analog-negative-range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-analog-zero-range",
+      "status": "baseline",
+      "weightedScore": 393,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-anchors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-at-player",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-axis-hide-codes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-axis-hide-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-axis-manual-codes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-axis-manual-date",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-bad-date-format",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-binary-notes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-caption",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-caption-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-footer",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-footer-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-header",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-header-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-legend-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-chrome-title-scale2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-clock-analog-plain",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-clock-message",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-clock-pulse-offset",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-clock-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-clock-two",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-compact",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-compact-kinds",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-compact-player",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-compact-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-concise-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-constraint",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-constraint-no-part1",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-constraint-styles",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-creole-message",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-creole-state",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-cross-all-kinds",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-cross-style-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-date-format",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-date-fraction",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-date-julian",
+      "status": "baseline",
+      "weightedScore": 337,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-date-lenient",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-date-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-define-states",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-embedded",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-embedded-class-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-embedded-state",
+      "status": "baseline",
+      "weightedScore": 55,
+      "diffCount": 1,
+      "reason": "state-engine gap: a {{ }} embedded diagram in a state note draws as text (renderer-note.ts, state-note-layout.ts#measureNote have no nested renderer); separable queue:ready issue, body in .agent-notes/tep-T4d.md (tep journal row 14)",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "Welcome to PlantUML!"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-analog",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-clock",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-concise",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-height-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-highlight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-highlight-forms",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-highlight-line-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-hour-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-mainframe",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-mainframe-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-manual-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-message-dotted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-message-gradient",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "Syntax Error? (Assumed diagram type: timing)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-message-hexcolor",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-message-transparent",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-messages",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-mode-dark",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-negative-only",
+      "status": "baseline",
+      "weightedScore": 318,
+      "diffCount": 69,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-negative-only-two",
+      "status": "baseline",
+      "weightedScore": 337,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-negative-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-negative-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-analog",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-clock",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-concise",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-note-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-notes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-player-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-projections",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-relative-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-robust-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-robust-edges",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-hide-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-D-upper",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-Y-upper",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-d-lower",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-h",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-m",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-s",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-spaced",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-scale-unit-y-lower",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-special-states",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-starttiming-tag",
+      "status": "baseline",
+      "weightedScore": 145,
+      "diffCount": 11,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": ""
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-state-by-code",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-state-by-code-time",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-state-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-analog",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-clock",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.UnsupportedOperationException (Assumed diagram type: timing)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-concise",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-states-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-stereotype",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-analog",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-arrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-clock",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-concise",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-constraintarrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-highlight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-rectangle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-robust",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-timegrid",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-style-sname-timeline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-theme-cerulean",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-theme-sketchy",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-ticks-every",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-ticks-multiple",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "cov-unknown-player",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Unknown \"X\" (Assumed diagram type: timing)"
+      },
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-constraints",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-hide-axis-variants",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-messages",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-notes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-pixel-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-scale-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "t3c-scale-years",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-clock-decimal-period-offset",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-clock-message-from-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-clock-message-to-binary",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+@startebnf
+!theme sketchy-outline
+rule = "a", [ "b" ];
+(* a note *)
+@endebnf

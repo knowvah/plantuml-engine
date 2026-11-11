@@ -108,12 +108,12 @@ describe('measureTeXIcon: JLaTeXMath TeXIcon sizes over KaTeX metrics', () => {
   });
 
   it('flags a construct it does not size by JLaTeXMath rules', () => {
-    expect(measureTeXIcon('\\vec{x}').unsupported).toEqual(['accent']);
+    expect(measureTeXIcon('\\widehat{x}').unsupported).toEqual(['accent']);
   });
 
   it('sizes an unmodelled construct by its body alone', () => {
     const { width, height } = measureTeXIcon('x');
-    expect(measureTeXIcon('\\overline{x}')).toEqual({ width, height, unsupported: ['overline'] });
+    expect(measureTeXIcon('\\widehat{x}')).toEqual({ width, height, unsupported: ['accent'] });
   });
 
   it('flags a length unit JLaTeXMath does not know and sizes it as nothing', () => {

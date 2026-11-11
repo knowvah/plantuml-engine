@@ -1,0 +1,9 @@
+@startuml
+analog "A" between 0 and 10 as A
+A is 5
+@0
+A is 2
+@10
+A is 8
+A@0 <-> @10 : {10 ms}
+@enduml

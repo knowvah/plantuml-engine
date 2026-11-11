@@ -1,0 +1,5 @@
+@startebnf
+scale 2
+header My header
+rule = "a", [ "b" ];
+@endebnf

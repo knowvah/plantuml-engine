@@ -1,0 +1,88 @@
+{
+  "fixtures": [
+    {
+      "type": "timing",
+      "slug": "fuseva-46-zare084",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 10,
+        "message": "Syntax Error? (Assumed diagram type: timing)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "lamera-74-sago807",
+      "status": "baseline",
+      "weightedScore": 35,
+      "diffCount": 22,
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "pebecu-20-deci596",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 11,
+        "message": "No such element: A (Assumed diagram type: timing)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "pefana-89-modi000",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 5,
+        "message": "Syntax Error? (Assumed diagram type: timing)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "sezuvo-55-nose464",
+      "status": "baseline",
+      "weightedScore": 6,
+      "diffCount": 6,
+      "jarError": {
+        "line": 20,
+        "message": "No such participant WB (Assumed diagram type: timing)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    },
+    {
+      "type": "timing",
+      "slug": "vufija-57-xoda292",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "jarError": {
+        "line": 11,
+        "message": "What time? (Assumed diagram type: timing)"
+      },
+      "reason": "jar-error: the stock jar draws its error page and the port draws its own from the same command (ruling 2026-10-10); the score measures our page against the jar page.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "84532d458"
+    }
+  ]
+}

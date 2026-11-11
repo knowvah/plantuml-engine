@@ -1,0 +1,10 @@
+@startwire
+skinparam backgroundColor yellow
+skinparam defaultFontColor red
+skinparam defaultFontSize 18
+skinparam ArrowColor green
+* a [80x40]
+print("p")
+* b [80x40]
+a -> b : l
+@endwire

@@ -1,0 +1,9 @@
+@startnwdiag
+!include <tupadr3/common>
+!include <tupadr3/font-awesome/server>
+nwdiag {
+  network a {
+    s1 [description = "<$server>\n s1"];
+  }
+}
+@endnwdiag

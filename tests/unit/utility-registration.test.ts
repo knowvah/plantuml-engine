@@ -23,9 +23,11 @@ import { boardPlugin } from '../../src/diagrams/board/index.js';
 import { chartPlugin } from '../../src/diagrams/chart/index.js';
 import { chronologyPlugin } from '../../src/diagrams/chronology/index.js';
 import { classPlugin } from '../../src/diagrams/class/index.js';
+import { timingPlugin } from '../../src/diagrams/timing/index.js';
 import { dedicationPlugin } from '../../src/diagrams/dedication/PSystemDedicationFactory.js';
 import { descriptionPlugin } from '../../src/diagrams/description/index.js';
 import { dotPlugin } from '../../src/diagrams/dot/index.js';
+import { nwdiagPlugin } from '../../src/diagrams/nwdiag/index.js';
 import { donorsPlugin } from '../../src/diagrams/donors/PSystemDonorsFactory.js';
 import { skinparameterListPlugin } from '../../src/diagrams/donors/PSystemSkinparameterListFactory.js';
 import { appleTwoPlugin } from '../../src/diagrams/eggs/PSystemAppleTwoFactory.js';
@@ -35,6 +37,9 @@ import { eggPlugin } from '../../src/diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from '../../src/diagrams/eggs/PSystemRIPFactory.js';
 import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from '../../src/diagrams/files/index.js';
+import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
+import { regexPlugin } from '../../src/diagrams/regex/index.js';
+import { wirePlugin } from '../../src/diagrams/wire/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
 import { jsonPlugin } from '../../src/diagrams/json/index.js';
 import { mindmapPlugin } from '../../src/diagrams/mindmap/index.js';
@@ -54,6 +59,11 @@ import { buildSpriteAssetsStore } from '../helpers/sprite-assets-store.js';
 import { buildUtilityAssetsStore } from '../helpers/utility-assets-store.js';
 import { sourceOf } from '../helpers/utility-single-line.js';
 import { CI_RENDER_BUDGET_MS } from '../helpers/ci-test-budgets.js';
+import { creolePlugin } from '../../src/core/klimt/creole/legacy/PSystemCreoleFactory.js';
+import { definitionPlugin } from '../../src/diagrams/definition/PSystemDefinitionFactory.js';
+import { helpPlugin } from '../../src/diagrams/help/index.js';
+import { latexPlugin } from '../../src/diagrams/math/PSystemLatexFactory.js';
+import { mathPlugin } from '../../src/diagrams/math/PSystemMathFactory.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // rubeku-92-vefi942 rendered three times, 2,723ms);
@@ -84,10 +94,15 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [listArchimateSpritesPlugin, 152],
   [saltPlugin, 153],
   [dotPlugin, 154],
+  [nwdiagPlugin, 155],
   [mindmapPlugin, 156],
   [wbsPlugin, 157],
   [chartPlugin, 158],
   [packetdiagPlugin, 159],
+  [definitionPlugin, 169],
+  [mathPlugin, 172],
+  [latexPlugin, 173],
+  [creolePlugin, 174],
   [eggPlugin, 175],
   [appleTwoPlugin, 176],
   [ripPlugin, 177],
@@ -95,11 +110,16 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
   [dedicationPlugin, 186],
+  [timingPlugin, 187],
+  [helpPlugin, 188],
+  [wirePlugin, 189],
   [jsonPlugin, 190],
   [filesPlugin, 192],
   [boardPlugin, 193],
   [yamlPlugin, 194],
   [hclPlugin, 195],
+  [ebnfPlugin, 196],
+  [regexPlugin, 197],
 ]);
 
 const ASSET_STORE = combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore(), buildUtilityAssetsStore());
@@ -212,6 +232,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startuml\nstart\n:step;\nstop\n@enduml', activityPlugin],
   ['@startsalt\n{\n[OK]\n}\n@endsalt', saltPlugin],
   ['@startdot\ndigraph G {\n  a -> b\n}\n@enddot', dotPlugin],
+  ['@startnwdiag\nnwdiag {\n  network dmz {\n    web01;\n  }\n}\n@endnwdiag', nwdiagPlugin],
   ['@startmindmap\n* root\n** child\n@endmindmap', mindmapPlugin],
   ['@startwbs\n* root\n** child\n@endwbs', wbsPlugin],
   ['@startchart\nh-axis [Q1, Q2]\nv-axis 0 --> 100\nbar "R" [45, 62]\n@endchart', chartPlugin],
@@ -222,6 +243,9 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startboard\nWorld\n+Europe\n@endboard', boardPlugin],
   ['@startyaml\na: 1\n@endyaml', yamlPlugin],
   ['@starthcl\na = 1\n@endhcl', hclPlugin],
+  ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
+  ['@startregex\na(b|c)+\n@endregex', regexPlugin],
+  ['@startwire\n* a\n@endwire', wirePlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

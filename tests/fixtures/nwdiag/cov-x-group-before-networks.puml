@@ -1,0 +1,17 @@
+@startnwdiag
+nwdiag {
+  group {
+    description = "G"
+    s1;
+    s2;
+  }
+  s3;
+  network a {
+    s1;
+    s3;
+  }
+  network b {
+    s2;
+  }
+}
+@endnwdiag

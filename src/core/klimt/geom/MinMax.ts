@@ -1,4 +1,9 @@
-import type { UTranslate } from '../UTranslate.js';
+import { Back } from '../Back.js';
+import type { HColorOrPaint } from '../color/ColorMapper.js';
+import { Fore } from '../Fore.js';
+import { URectangle } from '../shape/URectangle.js';
+import type { UGraphic } from '../UGraphic.js';
+import { UTranslate } from '../UTranslate.js';
 import { XDimension2D } from './XDimension2D.js';
 import type { XPoint2D } from './XPoint2D.js';
 import type { MinMaxMutable } from './MinMaxMutable.js';
@@ -21,11 +26,9 @@ import type { MinMaxMutable } from './MinMaxMutable.js';
  * MAX corner only — the MIN corner is left untouched, matching upstream
  * exactly), `doesHorizontalCross`, `toString`.
  *
- * NOT ported: `draw`/`drawGray` — both need a REAL rendering `UGraphic`
- * plus `HColor`/`HColors`/`URectangle#build`-through-a-driver; `HColor`
- * is not ported anywhere in this port (see `UBackground.ts`/`Fore.ts`
- * seam notes), and drawing a diagnostic gray box is out of scope for
- * this task's ink-extent-measurement machinery.
+ * `draw` is ported for nwdiag's groups (`NwGroup#drawGroup`, nwp T1c).
+ * NOT ported: `drawGray` — the diagnostic gray box only
+ * `CollisionDetector`/`Zad` debug paths call.
  */
 export class MinMax {
   private readonly minX: number;
@@ -122,6 +125,17 @@ export class MinMax {
     if (pt1.getX() < this.minX && pt2.getX() > this.maxX) return true;
     if (pt2.getX() < this.minX && pt1.getX() > this.maxX) return true;
     return false;
+  }
+
+  /**
+   * The box as one rectangle: `borderColor` the foreground, `backgroundColor`
+   * the fill, at `(minX, minY)`.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/geom/MinMax.java:160-164
+   */
+  draw(ug: UGraphic, borderColor: HColorOrPaint, backgroundColor: HColorOrPaint): void {
+    ug = ug.apply(new Fore(borderColor)).apply(new Back(backgroundColor));
+    ug = ug.apply(new UTranslate(this.minX, this.minY));
+    ug.draw(URectangle.build(this.getWidth(), this.getHeight()));
   }
 
   toString(): string {

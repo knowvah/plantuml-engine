@@ -1,0 +1,10 @@
+@startuml
+Alice -> Bob : hi
+note right
+{{wire
+* a [40x30]
+* b [40x30]
+a -> b : l
+}}
+end note
+@enduml

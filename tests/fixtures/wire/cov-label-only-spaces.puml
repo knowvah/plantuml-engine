@@ -1,0 +1,8 @@
+@startwire
+* a [50x50]
+--
+move(40,0)
+* b [50x50]
+a -> b :    
+a => b :   
+@endwire

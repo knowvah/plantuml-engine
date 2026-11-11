@@ -1,0 +1,4 @@
+@startebnf
+rule = "a";
+this is not ebnf
+@endebnf

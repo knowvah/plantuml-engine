@@ -10,6 +10,7 @@
  * rather than a font id.
  */
 import type { Align, Box } from './box.js';
+import type { CharFont } from './kern.js';
 import type { Glyph } from './katex-glyphs.js';
 import { TYPE_BIG_OPERATOR, TYPE_INNER, TYPE_ORDINARY } from './tex-font.js';
 
@@ -33,6 +34,8 @@ export interface CharAtom {
   glyph: FontGlyph;
   mathChar: boolean;
   larger?: FontGlyph;
+  /** `CharSymbol#getCharFont`, where the kern/ligature tables know it. */
+  cf?: CharFont;
 }
 
 /** `RowAtom`. */
@@ -85,6 +88,10 @@ export interface NthRootAtom {
 /** A delimiter's glyph and its `NextLarger` successors, smallest first. */
 export interface Delimiter {
   sizes: FontGlyph[];
+  /** The `Extension rep` glyph of a delimiter whose `NextLarger` chain ends
+   *  in an extension char: stacked until tall enough
+   *  (`DelimiterFactory#create(String, TeXEnvironment, float)`). */
+  repeat?: FontGlyph;
 }
 
 /** `FencedAtom` (always INNER, `FencedAtom.java:96-102`). */
@@ -134,6 +141,9 @@ export interface MatrixAtom {
   env: MatrixEnv;
   rows: (Atom | undefined)[][];
   align: Align[];
+  /** `MatrixAtom.vlines`: the `|` count before column `j` (`VlineAtom(n)`,
+   *  absent = 0), one entry per separator `0..cols`. */
+  vlines?: number[];
 }
 
 /** `BreakMarkAtom`: `TeXFormula#add` (java:431-436) appends one after a
@@ -141,6 +151,79 @@ export interface MatrixAtom {
  *  `Atom` default ORDINARY and boxes as nothing. */
 export interface BreakMarkAtom {
   kind: 'break';
+}
+
+/** `AccentedAtom` built by `PredefMacros#accent_macros` (`\\hat`, `\\vec`,
+ *  ...): the `AccentedAtom(Atom, String)` constructor, which leaves `acc`
+ *  false. `underbase` is the atom whose skew positions the accent: `base`,
+ *  or a nested accent's own `underbase` (`AccentedAtom.java` constructor). */
+export interface AccentAtom {
+  kind: 'accent';
+  type: number;
+  accent: FontGlyph;
+  base: Atom | undefined;
+  underbase: Atom | undefined;
+}
+
+/** `OverlinedAtom` (type ORDINARY, `OverlinedAtom.<init>`). */
+export interface OverlinedAtom {
+  kind: 'overline';
+  type: number;
+  base: Atom | undefined;
+}
+
+/** `UnderlinedAtom` (type ORDINARY, `UnderlinedAtom.<init>`). */
+export interface UnderlinedAtom {
+  kind: 'underline';
+  type: number;
+  base: Atom | undefined;
+}
+
+/** `OverUnderDelimiter` as `PredefMacros#underbrace_macro`/`#overbrace_macro`
+ *  build it: no script, a brace symbol, kern 0; type INNER
+ *  (`OverUnderDelimiter.<init>`). */
+export interface OverUnderDelimiterAtom {
+  kind: 'overunder';
+  type: number;
+  base: Atom | undefined;
+  over: boolean;
+}
+
+/** `VRowAtom` as `ArrayOfAtoms#getAsVRow` builds it for a formula-level
+ *  `\\` (`PredefMacros#cr_macro`): one entry per row, `addInterline` set
+ *  (type ORDINARY, the `Atom` default). */
+export interface VRowAtom {
+  kind: 'vrow';
+  type: number;
+  rows: Atom[];
+}
+
+/** A `SpaceAtom(unit, 0, space, 0)` between the base and a script of
+ *  `UnderOverAtom`; `unit` is `TeXConstants.UNIT_MU` (5) or `UNIT_EM` (0). */
+export interface StackSpace {
+  amount: number;
+  unit: 'mu' | 'em';
+}
+
+/** `UnderOverAtom` as `stackrel_macro`, `overset_macro` and `underset_macro`
+ *  build it: a script is in script style; an absent script is `undefined`.
+ *  `under` and `over` carry their own space; `UnderOverAtom#createBox`
+ *  reads the under space's unit from the OVER unit field. */
+export interface UnderOverAtom {
+  kind: 'underover';
+  base: Atom;
+  over: Atom | undefined;
+  under: Atom | undefined;
+  overSpace: StackSpace;
+  underSpace: StackSpace;
+}
+
+/** `DdotsAtom`/`VdotsAtom` (`\\ddots`, `\\vdots`; type ORDINARY, the `Atom`
+ *  default): three `ldotp` dots stacked diagonally or vertically. */
+export interface DotsAtom {
+  kind: 'dots';
+  type: number;
+  shape: 'ddots' | 'vdots';
 }
 
 export type Atom =
@@ -156,7 +239,14 @@ export type Atom =
   | TypedAtom
   | WrapAtom
   | PhantomAtom
-  | BreakMarkAtom;
+  | BreakMarkAtom
+  | AccentAtom
+  | OverlinedAtom
+  | UnderlinedAtom
+  | OverUnderDelimiterAtom
+  | VRowAtom
+  | DotsAtom
+  | UnderOverAtom;
 
 /** `Atom#getLeftType` with every subclass override. */
 export function leftType(atom: Atom | undefined): number {
@@ -164,6 +254,8 @@ export function leftType(atom: Atom | undefined): number {
   switch (atom.kind) {
     case 'row':
       return leftType(atom.elements[0]);
+    case 'underover':
+      return leftType(atom.base);
     case 'scripts':
     case 'phantom':
       return leftType(atom.kind === 'scripts' ? atom.base : atom.body);
@@ -190,6 +282,8 @@ export function rightType(atom: Atom | undefined): number {
       return rightType(atom.kind === 'scripts' ? atom.base : atom.body);
     case 'typed':
       return atom.right;
+    case 'underover':
+      return rightType(atom.base);
     default:
       return leftType(atom);
   }

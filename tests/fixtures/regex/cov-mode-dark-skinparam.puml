@@ -1,0 +1,4 @@
+@startregex
+skinparam mode dark
+a(b|c)+
+@endregex

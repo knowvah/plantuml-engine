@@ -1,0 +1,4 @@
+@startregex
+!theme sketchy-outline
+a(b|c)+\d
+@endregex

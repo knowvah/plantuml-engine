@@ -1,0 +1,6 @@
+@startuml
+clock "Clock_0" as C0 with period 50
+clock "Clock_1" as C1 with period 50 pulse 15 offset 10
+@0
+@200
+@enduml

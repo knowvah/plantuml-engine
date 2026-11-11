@@ -1,0 +1,8 @@
+@startnwdiag
+skinparam handwritten true
+nwdiag {
+  network dmz {
+    web01 [shape = database];
+  }
+}
+@endnwdiag

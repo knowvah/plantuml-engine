@@ -1,0 +1,10 @@
+@startuml
+clock P with period 10
+@0
+@10
+note top of P $tag1 : above
+note bottom of P
+  below
+  two lines
+end note
+@enduml

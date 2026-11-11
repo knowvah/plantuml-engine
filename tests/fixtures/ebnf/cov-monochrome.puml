@@ -1,0 +1,5 @@
+@startebnf
+skinparam monochrome true
+rule = "a", [ "b" ];
+(* a note *)
+@endebnf

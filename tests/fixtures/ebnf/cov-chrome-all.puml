@@ -1,0 +1,10 @@
+@startebnf
+title The Title
+caption The caption
+legend
+A legend
+endlegend
+header The header
+footer The footer
+rule = "a" | "b";
+@endebnf
