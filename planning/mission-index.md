@@ -24,6 +24,8 @@ that file loops *within* one mission; this file loops *across* missions.
 > amending rather than rewriting dated entries. Read any `@plantuml-ts/x` in
 > a historical row as today's `@knowvah/plantuml-x`. Nothing is published:
 > the names are not reserved on the registry.
+> **2026-11-12:** the library itself became `@knowvah/plantuml-engine` (issue
+> #173); read `plantuml-ts` in older rows the same way.
 
 ## Grind protocol (meta-loop)
 

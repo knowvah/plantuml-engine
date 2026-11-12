@@ -13,7 +13,7 @@ output).
 | [T5](T5-scripts-identifiers-reports.md) | `scripts/`, D1 identifiers, generated reports | executor | 13 scripts, 7 tests/helpers, 3 reports | T4 | [x] |
 | [T6](T6-test-prose.md) | Remaining test comments | executor | 15 test files | T5 | [x] |
 | [T7a](T7a-user-facing-docs.md) | README, RELEASING, CLAUDE, CHANGELOG entry, docs-site, packages docs | executor | ~30 docs | T6 | [x] |
-| [T7b](T7b-internal-docs.md) | docs/, oracle README, planning current-state, D2 notes | executor | ~14 docs | T7a | [ ] |
+| [T7b](T7b-internal-docs.md) | docs/, oracle README, planning current-state, D2 notes | executor | ~14 docs | T7a | [x] |
 
 Close: full gate set green; `npm test` file/test counts = T1's close count (only pins changed, no tests added or
 removed after T1) — journal any difference.

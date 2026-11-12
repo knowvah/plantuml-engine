@@ -1,4 +1,4 @@
-# Conformance: what "match" means (plantuml-ts)
+# Conformance: what "match" means (plantuml-engine)
 
 Adopted from dot-engine (`~/git/knowvah/dot-engine/docs/conformance.md`). "Faithful"
 is not a feeling and not byte-identity — it is a **graded, code-enforced

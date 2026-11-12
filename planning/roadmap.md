@@ -1,4 +1,4 @@
-# plantuml-ts Roadmap — "everything PlantUML does, in TypeScript, SVG-only"
+# plantuml-engine Roadmap — "everything PlantUML does, in TypeScript, SVG-only"
 
 Written 2026-07-05, after ~1 day grinding the DOT-oracle-sync mission
 (description parity 7% → 90% component). This is the reflection the grind

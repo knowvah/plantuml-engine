@@ -3,14 +3,14 @@
 Per-repo internal structure. Each diagram is capped near 15 nodes; where a
 repo has more modules than that, the diagram shows the layers and the
 table below it names the modules. For *does a module for X exist* in
-plantuml-ts, `docs/catalog.md` (generated, drift-gated) is the authority —
+plantuml-engine, `docs/catalog.md` (generated, drift-gated) is the authority —
 2,032 modules, 7,036 exported names as of this writing.
 
-## plantuml-ts
+## plantuml-engine
 
 ```plantuml
 @startuml
-title plantuml-ts — internal pipeline and seams
+title plantuml-engine — internal pipeline and seams
 skinparam componentStyle rectangle
 
 package "src/index.ts" {
@@ -115,12 +115,12 @@ APISUB --> RENDER : getLayout() geometry\nafter render()
 @enduml
 ```
 
-plantuml-ts touches three exports: `createGraph` (`./api`) to build the
+plantuml-engine touches three exports: `createGraph` (`./api`) to build the
 graph without emitting DOT text for parsing, `render(g, 'svg', {engine})`
 (`./render`) to run layout, and `getLayout(g, {yAxis})` (`./api`) to read
 node/edge/cluster geometry in svek's coordinate convention. `@startdot`
 uses `renderSvg` from the root bundle. The text measurer is injected once
-by `core/dot-engine-measurer.ts` so label sizes match plantuml-ts's own.
+by `core/dot-engine-measurer.ts` so label sizes match plantuml-engine's own.
 
 ## plantuml-plugins
 
@@ -129,8 +129,8 @@ by `core/dot-engine-measurer.ts` so label sizes match plantuml-ts's own.
 title plantuml-plugins — adapters around one core
 skinparam componentStyle rectangle
 
-component "@knowvah/plantuml-ts\n(link: ../plantuml-ts)" as PTS
-component "@knowvah/plantuml-stdlib\n(link: ../plantuml-ts/packages/stdlib)" as STD
+component "@knowvah/plantuml-engine\n(link: sibling checkout)" as PTS
+component "@knowvah/plantuml-stdlib\n(link: sibling checkout, packages/stdlib)" as STD
 
 package "packages/core" {
   component "render.ts (Node)\nrenderPlantUmlSvg · renderPlantUmlHtml\nrenderInProcess · renderInChild(timeout)" as NODE
@@ -168,7 +168,7 @@ JB --> BROW : bundled IIFE
 title plantuml-grammar — from the jar's command classes to editor grammars
 skinparam componentStyle rectangle
 
-component "pinned PlantUML jar\n(plantuml-ts/oracle/dist/stock)" as JAR
+component "pinned PlantUML jar\n(plantuml-engine/oracle/dist/stock)" as JAR
 component "tools/extract\nExtract.java (javac vs jar)" as EXTRACT
 component "extracted/*.json\nraw command regex trees" as RAW
 component "tools/translate\nJava regex → Python/JS regex" as TRANS
@@ -198,14 +198,14 @@ PKG --> VAL : TS engine parity
 
 ```plantuml
 @startuml
-title ELK lineage as seen from plantuml-ts
+title ELK lineage as seen from plantuml-engine
 skinparam componentStyle rectangle
 
 component "knowvah/elk\nEclipse ELK Java mirror @ 8aaa3c14\n(0.13.0-SNAPSHOT, JavaSE-17)" as ELKJ
 component "org.eclipse.elk.alg.layered\nLayered.melk → option ids\norg.eclipse.elk.layered.*" as MELK
 component "elkjs 0.12.0 (npm)\nJava→JS transpile (kieler/elkjs)" as ELKJS
 component "elk-engine (knowvah)\nsrc/core · src/graph\nsrc/alg/common · src/alg/layered\n+ java/guava/gson/emf/xtext shims" as ELKE
-component "plantuml-ts core/elk/\nelkjs-options.ts (contract suite)\nelkjs-backend.ts · load-elk.ts" as PTSELK
+component "plantuml-engine core/elk/\nelkjs-options.ts (contract suite)\nelkjs-backend.ts · load-elk.ts" as PTSELK
 
 ELKJ --> MELK : contains
 ELKJ ..> ELKJS : transpiled upstream\n(not by knowvah)
@@ -222,5 +222,5 @@ Single package, no diagram needed. Exports: `.`/`./react`
 (`ThemeProvider`, `useTheme`, icons), `./css` (tokens keyed on
 `data-color-mode`/`data-contrast`), `./vitepress` (a hand-copied
 restatement mapping the palette onto `--vp-*`), `./assets/*` (logos).
-plantuml-ts's docs-site imports `@knowvah/theme/vitepress` and copies the
+plantuml-engine's docs-site imports `@knowvah/theme/vitepress` and copies the
 logo via `docs-site/copy-brand-assets.mjs`.

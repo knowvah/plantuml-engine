@@ -45,21 +45,7 @@ const ALLOWED_PREFIXES: readonly string[] = [
 ];
 
 /** Tracked files still awaiting the rename sweep (sorted, one per line). */
-const PENDING: readonly string[] = [
-  'docs/architecture/architecture.md',
-  'docs/architecture/components.md',
-  'docs/architecture/data-flow.md',
-  'docs/architecture/inventory.md',
-  'docs/architecture/overview.md',
-  'docs/architecture/tech-health.md',
-  'docs/stdlib-remote.md',
-  'docs/svg-conformance.md',
-  'oracle/README.md',
-  'planning/adr/ADR-001-text-measurement.md',
-  'planning/adr/ADR-002-mit-with-epl-dependency.md',
-  'planning/conformance.md',
-  'planning/roadmap.md',
-];
+const PENDING: readonly string[] = [];
 
 function isAllowed(path: string): boolean {
   return ALLOWED_PREFIXES.some((entry) => (entry.endsWith('/') ? path.startsWith(entry) : path === entry));

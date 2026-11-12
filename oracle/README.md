@@ -1,6 +1,6 @@
 # PlantUML oracle
 
-The reference implementation plantuml-ts is verified against: a **patched build
+The reference implementation plantuml-engine is verified against: a **patched build
 of upstream PlantUML** that can dump the exact DOT it feeds to graphviz, while
 otherwise behaving identically to stock.
 
@@ -8,7 +8,7 @@ One patched jar, one render pass, **two reference artifacts**:
 
 | Artifact | Captured how | Verifies | Applies to |
 |----------|--------------|----------|------------|
-| `svek-N.dot` | `-DPLANTUML_DUMP_DOT=<dir>` taps `DotStringFactory.getSvg` | plantuml-ts's **DOT generation** (Svek port): graph structure + attributes it hands graphviz | Svek-backed types only: class, component, state, object, usecase, activity |
+| `svek-N.dot` | `-DPLANTUML_DUMP_DOT=<dir>` taps `DotStringFactory.getSvg` | plantuml-engine's **DOT generation** (Svek port): graph structure + attributes it hands graphviz | Svek-backed types only: class, component, state, object, usecase, activity |
 | `*.svg` | normal `-tsvg` output | the **end-to-end picture** (layout + draw) | every diagram type |
 
 The verdict vocabulary (`conformant` / `structural-match` / `diverged`
@@ -40,8 +40,8 @@ The stage that fails **is** the triage bucket:
   attrs (`width`/`height`/label box — tolerant; they bake in Java-measured text
   sizes, the text-metrics sub-problem). Only structural divergence fails fast.
 - **SVG gate** — only reached when the layout input already matched, so a failure
-  here isolates cleanly to plantuml-ts's **drawing** layer. Keep it **tolerant**:
-  plantuml-ts lays out via dot-engine while the oracle lays out via PlantUML's
+  here isolates cleanly to plantuml-engine's **drawing** layer. Keep it **tolerant**:
+  plantuml-engine lays out via dot-engine while the oracle lays out via PlantUML's
   own graphviz, so small layout deltas leak in even when the DOT matches. For
   non-Svek types (sequence + bespoke renderers) the SVG gate is the only gate.
 
@@ -91,9 +91,9 @@ component/usecase description engine, distinct from the harness-health check
 in `class-dot-parity.test.ts`. `tests/oracle/description-parity.ratchet.test.ts`
 *asserts* `compareStructural(...).structurallyEqual` per fixture (including
 the tightened rankdir/nodesep/ranksep checks) — a fixture only enters this set
-once plantuml-ts's DOT output is a real structural match, and any later
+once plantuml-engine's DOT output is a real structural match, and any later
 regression fails `npm test` by name. The set starts empty (or near-empty): the
-tightened bar catches nodesep/ranksep defaults plantuml-ts does not yet match.
+tightened bar catches nodesep/ranksep defaults plantuml-engine does not yet match.
 Grow it by re-running the selection pass over the warm
 `test-results/dot-cache/{component,usecase}/<slug>/` cache (`in.puml` +
 `svek-N.dot` + `.done`), and for every newly-qualifying slug copying

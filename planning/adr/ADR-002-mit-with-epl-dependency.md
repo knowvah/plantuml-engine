@@ -11,7 +11,7 @@ the SI20 code review (`code-review-tasks.md`).
 runtime dependencies, is **EPL-2.0**. This package declares **MIT**. A code
 review flagged the combination, and at the time the flag was raised it was
 sharper than it is now: the engine's code was being **inlined into
-`dist/plantuml-ts.js` and `.cjs`**, so the published artifact physically
+`dist/plantuml-engine.js` and `.cjs`**, so the published artifact physically
 contained EPL-2.0 code while advertising MIT.
 
 Two things changed before this decision was taken:

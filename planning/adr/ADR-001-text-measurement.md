@@ -44,7 +44,7 @@ PlantUML has the exact analog of graphviz's `textspan_lut.c`:
 
 This is dot-engine's play one-to-one:
 
-| | dot-engine | plantuml-ts (this ADR) |
+| | dot-engine | plantuml-engine (this ADR) |
 |---|---|---|
 | Portable estimator in the reference | `textspan_lut.c` | `UnicodeFontWidthSansSerif` + `StringBounderFromWidthTable` |
 | Port it into the TS engine | `EstimateTextMeasurer` | new `WidthTableMeasurer` |
