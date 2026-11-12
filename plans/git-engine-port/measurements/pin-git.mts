@@ -11,7 +11,6 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { join } from 'node:path';
 
 import { diffVerdict } from '../../../scripts/svg-parity-survey.js';
-import { compareSvg } from '../../../tests/oracle/svg-conformance/compare.js';
 import { renderFixtureGit } from '../../../tests/oracle/svg-conformance/render-fixture-git.js';
 
 const GOLDEN_TYPE = 'svg-git';

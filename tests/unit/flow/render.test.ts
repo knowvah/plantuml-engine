@@ -99,7 +99,7 @@ describe('renderFlow', () => {
   it('draws the boxes in insertion order, then the paths in source order (flp D4)', () => {
     const labels = elements(fragment(BEMIXO).body)
       .filter((e) => e.startsWith('<text'))
-      .map((e) => e.replace(/<[^>]*>/g, ''));
+      .map((e) => e.split(/<[^>]*>/).join(''));
     expect(labels.slice(0, 3)).toEqual(['START', 'FINDHW()', 'GetTable()']);
     const firstLine = elements(fragment(BEMIXO).body).findIndex((e) => e.startsWith('<line'));
     expect(firstLine).toBe(18);
