@@ -1,5 +1,5 @@
 /**
- * `n/a (plantuml-ts only)` — the D8 word added after the mission closed
+ * `n/a (plantuml-engine only)` — the D8 word added after the mission closed
  * (decisions.md D8, journal row 30): a type whose every cached jar SVG is
  * PlantUML's own "Diagram not supported by this release" page.
  *
@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { isJarUnsupportedPage, jarUnsupportedCountsOf } from '../../../scripts/parity-dashboard-inputs.js';
-import { isPlantumlTsOnly, PLANTUML_TS_ONLY } from '../../../scripts/parity-dashboard-matrix.js';
+import { isPlantumlEngineOnly, PLANTUML_ENGINE_ONLY } from '../../../scripts/parity-dashboard-matrix.js';
 
 /** The element exactly as the jar wrote it for chronology/lenudo-53-nade902. */
 const UNSUPPORTED_ELEMENT =
@@ -38,7 +38,7 @@ describe('isJarUnsupportedPage', () => {
   });
 });
 
-describe('jarUnsupportedCountsOf + isPlantumlTsOnly', () => {
+describe('jarUnsupportedCountsOf + isPlantumlEngineOnly', () => {
   let cache = '';
   beforeAll(() => {
     cache = mkdtempSync(join(tmpdir(), 'pdr-jar-unsupported-'));
@@ -64,15 +64,15 @@ describe('jarUnsupportedCountsOf + isPlantumlTsOnly', () => {
   it('flags a type only when EVERY cached golden is the unsupported page', () => {
     const unsupported = jarUnsupportedCountsOf(cache);
     const oracle = { chronology: 1, board: 2, mixed: 2, pending: 0 };
-    expect(isPlantumlTsOnly('chronology', oracle, unsupported)).toBe(true);
-    expect(isPlantumlTsOnly('board', oracle, unsupported)).toBe(false);
-    expect(isPlantumlTsOnly('mixed', oracle, unsupported)).toBe(false);
-    // Nothing captured is still "no oracle captured", never "plantuml-ts only".
-    expect(isPlantumlTsOnly('pending', oracle, unsupported)).toBe(false);
-    expect(isPlantumlTsOnly('salt', oracle, unsupported)).toBe(false);
+    expect(isPlantumlEngineOnly('chronology', oracle, unsupported)).toBe(true);
+    expect(isPlantumlEngineOnly('board', oracle, unsupported)).toBe(false);
+    expect(isPlantumlEngineOnly('mixed', oracle, unsupported)).toBe(false);
+    // Nothing captured is still "no oracle captured", never "plantuml-engine only".
+    expect(isPlantumlEngineOnly('pending', oracle, unsupported)).toBe(false);
+    expect(isPlantumlEngineOnly('salt', oracle, unsupported)).toBe(false);
   });
 
   it('the cell carries the D8 word and no freshness date', () => {
-    expect(PLANTUML_TS_ONLY).toEqual({ cell: 'n/a (plantuml-ts only)', freshness: undefined });
+    expect(PLANTUML_ENGINE_ONLY).toEqual({ cell: 'n/a (plantuml-engine only)', freshness: undefined });
   });
 });

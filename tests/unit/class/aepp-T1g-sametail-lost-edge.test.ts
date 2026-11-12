@@ -7,7 +7,7 @@ import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { buildEmojiAssetsStore } from '../../../scripts/emoji-assets-store.js';
 import { buildSpriteAssetsStore } from '../../../scripts/sprite-assets-store.js';
 
-const ERROR_BANNER = 'plantuml-ts version';
+const ERROR_BANNER = 'plantuml-engine version';
 const CLASS_TYPE = 'data-diagram-type="CLASS"';
 const LOST_EDGE_MESSAGE = 'no route was found';
 const deNbsp = (svg: string): string => svg.split('\u00a0').join(' ');

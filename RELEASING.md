@@ -9,7 +9,7 @@ Bump root and every workspace package **together, in the same commit**:
 
 - `package.json` `version`
 - Every `packages/*/package.json` `version`
-- Every `packages/*/package.json` `peerDependencies["@knowvah/plantuml-ts"]`
+- Every `packages/*/package.json` `peerDependencies["@knowvah/plantuml-engine"]`
   — keep the caret range's floor equal to the new root version (e.g. root
   `0.3.0` → peer range `^0.3.0`). `tests/architecture/packages-peer-range.test.ts`
   fails the build if any workspace package's peer range does not cover the
@@ -58,11 +58,11 @@ changed, run `npm run catalog` first and commit the result.
 ## 5. Publish order
 
 Publish the root package first — every workspace package's `peerDependencies`
-requires it, and `devDependencies["@knowvah/plantuml-ts"]: "file:../.."`
+requires it, and `devDependencies["@knowvah/plantuml-engine"]: "file:../.."`
 locally satisfies the peer during development but not after publish. Then
 publish workspace packages in dependency order:
 
-1. `npm publish` (root, `@knowvah/plantuml-ts`) — `prepublishOnly` runs
+1. `npm publish` (root, `@knowvah/plantuml-engine`) — `prepublishOnly` runs
    `npm run build` first.
 2. `npm publish -w packages/stdlib -w packages/stdlib-aws -w packages/stdlib-tupadr3 -w packages/emoji -w packages/sprites-archimate`
    (leaf packages — no dependency on each other).
@@ -84,7 +84,7 @@ git push origin v<version>
 ## 7. Deprecating a bad release
 
 ```
-npm deprecate @knowvah/plantuml-ts@<version> "<reason; point at the fixed version>"
+npm deprecate @knowvah/plantuml-engine@<version> "<reason; point at the fixed version>"
 ```
 
 Repeat per affected workspace package if the defect also shipped there.

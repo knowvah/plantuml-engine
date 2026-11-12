@@ -28,7 +28,7 @@ const MARKER_SUFFIX = '.__data_shim__.ts';
 
 function libraryDataFileShim(): Plugin {
   return {
-    name: 'plantuml-ts-data-file-shim',
+    name: 'plantuml-engine-data-file-shim',
     enforce: 'pre',
     resolveId(source, importer) {
       if (!importer || !DATA_FILE_RE.test(source)) return null;
@@ -50,7 +50,7 @@ export default defineConfig({
   // what would break first if the site ever moved back to a subdirectory:
   // the page would still load and every stylesheet would 404.
   base: '/',
-  title: 'plantuml-ts',
+  title: 'plantuml-engine',
   description: 'PlantUML in pure TypeScript — no Java, no server, browser-native. ' + 'PlantUML source in, SVG out.',
   lang: 'en-US',
   cleanUrls: true,
@@ -68,7 +68,7 @@ export default defineConfig({
     // The social card is the corporate site's existing PlantUML banner,
     // referenced where it already lives rather than committed here.
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'plantuml-ts' }],
+    ['meta', { property: 'og:site_name', content: 'plantuml-engine' }],
     ['meta', { property: 'og:image', content: 'https://knowvah.com/images/og-plantuml.png' }],
     ['meta', { property: 'og:image:width', content: '1200' }],
     ['meta', { property: 'og:image:height', content: '630' }],
@@ -106,7 +106,7 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [{ icon: 'github', link: 'https://github.com/knowvah/plantuml-ts' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/knowvah/plantuml-engine' }],
   },
   vite: {
     plugins: [libraryDataFileShim()],
@@ -114,7 +114,7 @@ export default defineConfig({
       alias: {
         // The playground imports the *real* engine source (D2), so docs
         // stay in lockstep with the library rather than a copied bundle.
-        '@knowvah/plantuml-ts': fileURLToPath(new URL('../../src/index.ts', import.meta.url)),
+        '@knowvah/plantuml-engine': fileURLToPath(new URL('../../src/index.ts', import.meta.url)),
       },
     },
   },

@@ -1,4 +1,4 @@
-# plantuml-ts — Claude Code Instructions
+# plantuml-engine — Claude Code Instructions
 
 A faithful TypeScript port of PlantUML. The Java at `~/git/plantuml` is the
 **canonical specification**. Ships as a browser-safe library.

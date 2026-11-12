@@ -21,7 +21,7 @@ const VIOLATION_PREFIX = '(reported by the browser) ';
 /** The warning text the spec fixes (T6d "Observability"). */
 function blockedText(origin: string, directive: string): string {
   return (
-    `plantuml-ts: image from ${origin} blocked by Content-Security-Policy ` +
+    `plantuml-engine: image from ${origin} blocked by Content-Security-Policy ` +
     `directive ${directive}; add ${origin} to connect-src (or pass a ` +
     `different imageProvider)`
   );

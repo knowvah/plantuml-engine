@@ -8,6 +8,27 @@ grouped by mission/PR until a first tagged release exists.
 
 ## [Unreleased]
 
+### Changed — renamed to plantuml-engine (BREAKING for importers)
+
+**What changed:** the library is now `plantuml-engine` (issue #173):
+
+- npm name `@knowvah/plantuml-ts` → `@knowvah/plantuml-engine`, and the
+  subpath `@knowvah/plantuml-engine/image-providers`;
+- dist files `dist/plantuml-ts.{js,cjs,d.ts}` →
+  `dist/plantuml-engine.{js,cjs,d.ts}`;
+- the version string on the `version`, `about` and `authors` pages and the
+  error-page banner reads `plantuml-engine version …`;
+- the repository is `https://github.com/knowvah/plantuml-engine` (GitHub
+  redirects the old URL).
+
+The workspace packages keep their names; their peer and dev dependencies
+now name `@knowvah/plantuml-engine`. Nothing was published under the old
+name, so there is no compatibility shim. **If you import the library, change
+the specifier.** On the `about`/`authors` page the wider version line moves
+the page width (393 → 410 px).
+
+Refs: #173
+
 ### Changed — SVG output is smaller, and its bytes differ (BREAKING for byte-comparers)
 
 **What changed:** every SVG this library emits is now smaller. Six emission

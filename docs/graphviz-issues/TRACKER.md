@@ -1,5 +1,9 @@
 # dot-engine issue tracker
 
+> **Rename, 2026-11-12.** The library is now `plantuml-engine`
+> (`@knowvah/plantuml-engine`, issue #173). Rows below name it `plantuml-ts`
+> and are left as written.
+
 One checklist item per issue file in this folder — nothing else. Check
 the box only when the fix has landed in the pinned dot-engine `.tgz`
 AND the affected plantuml-ts fixtures re-measure clean (the class /

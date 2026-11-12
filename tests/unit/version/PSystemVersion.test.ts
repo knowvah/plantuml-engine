@@ -94,16 +94,18 @@ const JAR_ABOUT =
   '<image width="80" height="71" x="317.075" y="162" xlink:href="HREF"/></g></svg>';
 
 /** What the version string moves, and the edition name (D13: the port is the
- *  MIT edition, `License.java:66-68`; the oracle jar the GPL one): [path, ours, jar]. */
+ *  MIT edition, `License.java:66-68`; the oracle jar the GPL one): [path, ours, jar].
+ *  Re-pinned for issue #173 ruling 2026-11-11 (`plantuml-engine version`, four
+ *  characters wider than the old name): the same eight paths, values only. */
 const VERSION_DIFFS = [
-  ['svg/@viewBox[2]', '393', '403'],
-  ['svg/@width', '393', '403'],
-  ['svg/g[1]/text[1]/@textLength', '130.575', '150.075'],
-  ['svg/g[1]/text[1]/text()[1]', `plantuml-ts version ${VERSION}`, 'PlantUML version $version$'],
-  ['svg/g[1]/text[2]/@x', '138.875', '158.375'],
+  ['svg/@viewBox[2]', '410', '403'],
+  ['svg/@width', '410', '403'],
+  ['svg/g[1]/text[1]/@textLength', '157.35', '150.075'],
+  ['svg/g[1]/text[1]/text()[1]', `plantuml-engine version ${VERSION}`, 'PlantUML version $version$'],
+  ['svg/g[1]/text[2]/@x', '165.65', '158.375'],
   ['svg/g[1]/text[3]/@textLength', '129.225', '132.6'],
   ['svg/g[1]/text[3]/text()[1]', '(MIT source distribution)', '(GPL source distribution)'],
-  ['svg/g[1]/image[1]/@x', '307.325', '317.075'],
+  ['svg/g[1]/image[1]/@x', '324.35', '317.075'],
 ];
 
 /** The port-author credit appended after everything the jar prints (user ruling 2026-10-14,
@@ -138,7 +140,8 @@ describe('PSystemVersion.createShowAuthors — the jar about page', () => {
   });
 
   it('embeds the PlantUML logo at its 80x71 size, one line lower than the jar (162 + 12)', () => {
-    expect(svg).toContain(`<image width="80" height="71" x="307.325" y="174" xlink:href="${PLANTUML_LOGO.href}"/>`);
+    // x re-pinned for issue #173 ruling 2026-11-11: the wider version line moves the page edge.
+    expect(svg).toContain(`<image width="80" height="71" x="324.35" y="174" xlink:href="${PLANTUML_LOGO.href}"/>`);
   });
 
   it('renders the same document three times', () => {
@@ -175,7 +178,7 @@ describe('PSystemVersion.createStdLib — govuca-53-mili511', () => {
 describe('getAuthorsStrings (java:219-245)', () => {
   it('opens with this port version, the compile-time placeholder and the MIT edition (D13)', () => {
     expect(getAuthorsStrings(true).slice(0, 4)).toEqual([
-      `<b>plantuml-ts version ${VERSION}</b> (Unknown compile time)`,
+      `<b>plantuml-engine version ${VERSION}</b> (Unknown compile time)`,
       '(MIT source distribution)',
       ' ',
       '<u>Original idea</u>: Arnaud Roques',
@@ -191,7 +194,7 @@ describe('getAuthorsStrings (java:219-245)', () => {
 
   it('strips <tag> and </tag> without the tags (java:248-249)', () => {
     const lines = getAuthorsStrings(false);
-    expect(lines[0]).toBe(`plantuml-ts version ${VERSION} (Unknown compile time)`);
+    expect(lines[0]).toBe(`plantuml-engine version ${VERSION} (Unknown compile time)`);
     expect(lines[4]).toBe('Word Macro: Alain Bertucat & Matthieu Sabatier');
     expect(lines[7]).toBe('Official Eclipse Plugin: Hallvard Trætteberg');
   });
@@ -296,7 +299,7 @@ function versionPage(): PSystemVersion {
 describe('PSystemVersion.createShowVersion — lines (java:172-202, D14)', () => {
   it("prints this port's values and its layout engine's file-generation test", () => {
     expect(versionPage().getLines()).toEqual([
-      `<b>plantuml-ts</b> ""${VERSION}""`,
+      `<b>plantuml-engine</b> ""${VERSION}""`,
       `<b>Git Commit</b> ""${COMMIT}""`,
       '<b>Build Time</b> ""Unknown compile time""',
       `<b>License</b> ""${License.getCurrent().toString()}""`,
@@ -370,9 +373,9 @@ describe('PSystemVersion.createShowVersion — geometry against the jar probe', 
     expect(texts[8]).toBe(JAR_VERSION_TEXTS[8]);
   });
 
-  it("line 1 (`plantuml-ts`): the jar's bold label at x=5, a space run after it, then the monospace value", () => {
+  it("line 1 (`plantuml-engine`): the jar's bold label at x=5, a space run after it, then the monospace value", () => {
     const [label, space, value] = texts.slice(0, 3).map(runOf);
-    expect(label?.text).toBe('plantuml-ts');
+    expect(label?.text).toBe('plantuml-engine');
     expect({ ...label?.attrs, textLength: undefined }).toEqual({
       ...runOf(JAR_VERSION_TEXTS[0]).attrs,
       textLength: undefined,

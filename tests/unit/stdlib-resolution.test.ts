@@ -199,7 +199,7 @@ describe('withStdlib() wiring -- IncludeExecutor consults the store before throw
     expect(err?.registrySupplied).toBe(false);
     expect(err?.message).toBe(
       "Cannot resolve !include <tupadr3/thing>: no stdlib bundle named 'tupadr3' is available.\n" +
-        'plantuml-ts vendors no PlantUML stdlib, so a host must supply the bundle. Either:\n' +
+        'plantuml-engine vendors no PlantUML stdlib, so a host must supply the bundle. Either:\n' +
         '  - render(): pass options.stdlibRegistry --\n' +
         "      stdlibRegistry({ 'tupadr3': () => import('@knowvah/plantuml-stdlib/tupadr3') })\n" +
         '  - renderSync(): it cannot await, so warm the store up first --\n' +

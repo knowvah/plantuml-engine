@@ -33,7 +33,7 @@ const GENERATED_HEADER =
 
 // Scoped package name, matching the declared peer dependency -- see
 // `emit-module.ts`'s DTS_IMPORT for why the specifier must be exact.
-const DTS_IMPORT = `import type { StdlibRemoteManifest } from '@knowvah/plantuml-ts';\n`;
+const DTS_IMPORT = `import type { StdlibRemoteManifest } from '@knowvah/plantuml-engine';\n`;
 
 function isPumlFile(relPath: string): boolean {
   return relPath.toLowerCase().endsWith(PUML_SUFFIX);

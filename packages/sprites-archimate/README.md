@@ -1,7 +1,7 @@
 # @knowvah/plantuml-sprites-archimate
 
 Vendored [ArchiMate](https://www.opengroup.org/archimate-forum) sprite artwork
-for [plantuml-ts](https://github.com/knowvah/plantuml-ts), so
+for [plantuml-engine](https://github.com/knowvah/plantuml-engine), so
 `<<$archimate/technology-device>>` stereotypes and
 `sprite $x jar:archimate/name` resolve to real icons.
 
@@ -10,7 +10,7 @@ jar-internal `/sprites/` resource root.
 
 ## Why a separate package
 
-Icon libraries are opt-in. Installing `@knowvah/plantuml-ts` gets you the
+Icon libraries are opt-in. Installing `@knowvah/plantuml-engine` gets you the
 renderer; it does not drag every icon set into your bundle. Take only the
 libraries you use — or take everything with
 [`@knowvah/plantuml-all`](../all).
@@ -18,7 +18,7 @@ libraries you use — or take everything with
 ## Install
 
 ```sh
-npm install @knowvah/plantuml-ts @knowvah/plantuml-sprites-archimate
+npm install @knowvah/plantuml-engine @knowvah/plantuml-sprites-archimate
 ```
 
 ## Use

@@ -1,6 +1,6 @@
 # Getting started
 
-plantuml-ts is a TypeScript port of [PlantUML](https://plantuml.com). It
+plantuml-engine is a TypeScript port of [PlantUML](https://plantuml.com). It
 parses PlantUML source and renders directly to SVG — no Java, no PlantUML
 server, no DOM — so it runs the same way in the browser and in Node.js.
 
@@ -9,15 +9,15 @@ server, no DOM — so it runs the same way in the browser and in Node.js.
 The library is not yet published to npm. For now, clone and build:
 
 ```bash
-git clone https://github.com/knowvah/plantuml-ts.git
-cd plantuml-ts
+git clone https://github.com/knowvah/plantuml-engine.git
+cd plantuml-engine
 npm install
-npm run build         # → dist/plantuml-ts.js (ESM) + dist/plantuml-ts.cjs
+npm run build         # → dist/plantuml-engine.js (ESM) + dist/plantuml-engine.cjs
 ```
 
 `npm run build` runs the Vite library build, producing an ESM bundle
-(`dist/plantuml-ts.js`), a CJS bundle (`dist/plantuml-ts.cjs`), and type
-declarations (`dist/plantuml-ts.d.ts`), wired through `package.json`'s
+(`dist/plantuml-engine.js`), a CJS bundle (`dist/plantuml-engine.cjs`), and type
+declarations (`dist/plantuml-engine.d.ts`), wired through `package.json`'s
 `exports` map.
 
 ## Render a diagram
@@ -41,7 +41,7 @@ Bob --> Alice: hi
 Pass it to `renderSync` and you get the SVG back as a string:
 
 ```ts
-import { renderSync } from '@knowvah/plantuml-ts';
+import { renderSync } from '@knowvah/plantuml-engine';
 
 const source = `
 @startuml
@@ -98,5 +98,5 @@ back to `FormulaMeasurer` automatically; pass a custom `measurer` in
   seam, the include-resolver seam, the stdlib seam, and the asset seam.
 - [Playground](/playground) — edit PlantUML source and see SVG live, in your
   browser.
-- [Known divergences](/divergences) — where plantuml-ts intentionally
+- [Known divergences](/divergences) — where plantuml-engine intentionally
   differs from upstream PlantUML, including preprocessor scope.

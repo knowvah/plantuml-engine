@@ -1,7 +1,7 @@
 # @knowvah/plantuml-stdlib-all
 
 Meta-package: depends on and re-exports every non-GPL
-[plantuml-ts](https://github.com/knowvah/plantuml-ts) stdlib package
+[plantuml-engine](https://github.com/knowvah/plantuml-engine) stdlib package
 (`@knowvah/plantuml-stdlib`, `@knowvah/plantuml-stdlib-aws`,
 `@knowvah/plantuml-stdlib-tupadr3`) as a single discovery surface. `adaml`
 (GPL) is deliberately never included — see [`LICENSES.md`](./LICENSES.md).
@@ -22,7 +22,7 @@ package exports two different kinds of thing:
 ## Install
 
 ```sh
-npm install plantuml-ts @knowvah/plantuml-stdlib-all
+npm install @knowvah/plantuml-engine @knowvah/plantuml-stdlib-all
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ npm install plantuml-ts @knowvah/plantuml-stdlib-all
 Eager bundles register the same way they always have:
 
 ```ts
-import { renderSync, stdlibStore, withStdlib, MapIncludeStore } from '@knowvah/plantuml-ts';
+import { renderSync, stdlibStore, withStdlib, MapIncludeStore } from '@knowvah/plantuml-engine';
 import { c4, archimate, cloudinsight, cloudogu, bootstrap, bootstrap1_13_1 } from '@knowvah/plantuml-stdlib-all';
 
 const includeStore = withStdlib(

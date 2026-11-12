@@ -81,7 +81,7 @@ registry would serve file PATHS as file CONTENT; the wrap is what supplies
 `baseUrl` and turns it into a real `RemoteBundle`):
 
 ```ts
-import { remoteStdlib, stdlibRegistry, render } from '@knowvah/plantuml-ts';
+import { remoteStdlib, stdlibRegistry, render } from '@knowvah/plantuml-engine';
 import { tupadr3Remote } from '@knowvah/plantuml-stdlib-tupadr3/tupadr3.remote';
 
 const registry = stdlibRegistry({
@@ -97,7 +97,7 @@ const registry = stdlibRegistry({
 await render(source, { stdlibRegistry: registry });
 ```
 
-`stdlibRegistry` and `render` are both exported from `plantuml-ts`, and
+`stdlibRegistry` and `render` are both exported from `plantuml-engine`, and
 `stdlibRegistry`'s result is a valid `RenderOptions.stdlibRegistry`.
 
 **Publish status:** the `.remote` subpaths above exist in-repo today but
@@ -129,7 +129,7 @@ import {
   remoteStdlib,
   renderSync,
   stdlibRegistry,
-} from '@knowvah/plantuml-ts';
+} from '@knowvah/plantuml-engine';
 import { tupadr3Remote } from '@knowvah/plantuml-stdlib-tupadr3/tupadr3.remote';
 
 // Resolve the installed package's assets/tupadr3/ directory rather than
@@ -174,7 +174,7 @@ in `require.resolve`, and the `assets/awslib14/` path.
 This never opens a socket: `fsFetcher` reads `node:fs` off the package's
 vendored `assets/` directory, and the fake `local://` `baseUrl` is only ever
 passed to that fetcher, never to a network client. It only works where
-`node:fs` is available; `plantuml-ts` itself stays browser-safe (no `fs`, no
+`node:fs` is available; `plantuml-engine` itself stays browser-safe (no `fs`, no
 DOM) regardless of how a consumer configures the fetcher — the filesystem
 access lives entirely in `fsFetcher`, outside the library.
 
@@ -196,7 +196,7 @@ const tupadr3 = remoteStdlib({
 });
 ```
 
-**plantuml-ts ships no default `baseUrl` and operates no CDN.** There is no
+**plantuml-engine ships no default `baseUrl` and operates no CDN.** There is no
 fallback URL anywhere in this library — if you don't configure one, remote
 resolution simply never fires (the bundle isn't registered, or `resolve()`
 returns `undefined`, exactly as if the bundle were absent). Pin the version
@@ -210,8 +210,8 @@ not gated behind the generator. A third party hosting their own icon set
 writes one directly, with zero `@knowvah/plantuml-stdlib*` dependency:
 
 ```ts
-import { remoteStdlib } from '@knowvah/plantuml-ts';
-import type { StdlibRemoteManifest } from '@knowvah/plantuml-ts';
+import { remoteStdlib } from '@knowvah/plantuml-engine';
+import type { StdlibRemoteManifest } from '@knowvah/plantuml-engine';
 
 const myIcons: StdlibRemoteManifest = {
   name: 'my-icons',
@@ -326,7 +326,7 @@ generated name manifest (`@knowvah/plantuml-stdlib/bootstrap1.13.1/sprites.json`
 and derives each fragment's path by convention as `sprites/<name>.puml`:
 
 ```ts
-import { spriteSplitStdlib, stdlibRegistry, render } from '@knowvah/plantuml-ts';
+import { spriteSplitStdlib, stdlibRegistry, render } from '@knowvah/plantuml-engine';
 import manifest from '@knowvah/plantuml-stdlib/bootstrap1.13.1/sprites.json' with { type: 'json' };
 
 const registry = stdlibRegistry({

@@ -80,7 +80,7 @@ function extractTextLengths(svg: string): number[] {
 }
 
 function main(): void {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'plantuml-ts-deterministic-verify-'));
+  const tmpDir = mkdtempSync(join(tmpdir(), 'plantuml-engine-deterministic-verify-'));
   const pumlPath = join(tmpDir, 'verify.puml');
   writeFileSync(pumlPath, buildPuml(CASES));
 

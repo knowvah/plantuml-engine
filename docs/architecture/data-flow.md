@@ -135,7 +135,7 @@ participant "VitePress / Eleventy\nbuild" as SSG
 participant "markdown-it\n@knowvah/plantuml-markdown-it" as MDI
 participant "core/render.ts\n(@knowvah/plantuml-core)" as CORE
 participant "child process\n(renderInChild, optional)" as CHILD
-participant "@knowvah/plantuml-ts\nrenderAll" as PTS
+participant "@knowvah/plantuml-engine\nrenderAll" as PTS
 participant "@knowvah/plantuml-stdlib\n(eager bundles)" as STD
 participant "filesystem\n(fetcher by basePath)" as FS
 
@@ -183,7 +183,7 @@ participant "scripts/oracle-render.sh" as ORS
 participant "patched upstream jar\n(oracle/dist, -DPLANTUML_DETERMINISTIC_TEXT)" as JAR
 participant "real `dot`\n(graphviz 16.1)" as GV
 participant "tests/oracle\nsvg-conformance ratchets" as TO
-participant "plantuml-ts\nrenderSync + DeterministicMeasurer" as PTS
+participant "plantuml-engine\nrenderSync + DeterministicMeasurer" as PTS
 participant "svg:survey /\nparity:dashboard" as SURVEY
 participant "docs-site parity page" as DOCS
 

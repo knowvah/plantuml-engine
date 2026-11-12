@@ -1,5 +1,5 @@
 /**
- * Construction-time seams for {@link TContext}. Both are plantuml-ts additions
+ * Construction-time seams for {@link TContext}. Both are plantuml-engine additions
  * with no upstream counterpart (upstream's `TContext` constructor takes a
  * `PathSystem` / `Defines` / `Charset` / `DefinitionsContainer` instead, none
  * of which a browser-safe, synchronous port can use).

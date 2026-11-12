@@ -19,7 +19,7 @@
  *   npx tsx scripts/vendor-sprites.ts --verify                        # bytes vs manifest
  *
  * Node `fs` is fine here — this module lives under `scripts/`, never `src/`
- * (plantuml-ts must stay browser-safe, CLAUDE.md).
+ * (plantuml-engine must stay browser-safe, CLAUDE.md).
  */
 
 import { createHash } from 'node:crypto';

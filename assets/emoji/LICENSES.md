@@ -19,7 +19,7 @@ npx tsx scripts/vendor-emoji.ts --verify
 > Graphics licensed under **CC-BY 4.0**:
 > <https://creativecommons.org/licenses/by/4.0/>
 
-This artwork is **not** MIT-licensed. `@knowvah/plantuml-ts` itself is MIT; this
+This artwork is **not** MIT-licensed. `@knowvah/plantuml-engine` itself is MIT; this
 asset tree is not, which is why it ships as a **separate, opt-in package**
 (`@knowvah/plantuml-emoji`) rather than inside the core package.
 

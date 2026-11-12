@@ -1,5 +1,5 @@
 /**
- * @knowvah/plantuml-all — one install for every plantuml-ts asset package.
+ * @knowvah/plantuml-all — one install for every plantuml-engine asset package.
  *
  * Re-exports the stdlib meta-package plus the icon/emoji asset packages, so
  * `<<$archimate/...>>` stereotypes, `<:emoji:>` glyphs and the stdlib bundles

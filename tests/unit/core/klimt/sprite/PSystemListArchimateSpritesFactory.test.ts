@@ -3,7 +3,8 @@
  * render of `unknown/xucoma-93-jeko861` (1.2026.8beta1, 844x667).
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { buildBlockUmls } from '../../../../../src/core/BlockUmlBuilder.js';
 import type { UmlSource } from '../../../../../src/core/block-extractor.js';
@@ -21,11 +22,9 @@ import { compareSvg } from '../../../../oracle/svg-conformance/compare.js';
 import { surveyAssetStore } from '../../../../oracle/svg-conformance/render-fixture-utility.js';
 
 const SLUG = 'xucoma-93-jeko861';
-const CACHE_DIRS = [
-  join(process.cwd(), 'test-results/dot-cache/unknown', SLUG),
-  join('/Users/scottseely/git/knowvah/plantuml-ts/test-results/dot-cache/unknown', SLUG),
-];
-const CACHE = CACHE_DIRS.find((d) => existsSync(join(d, 'in.svg')));
+const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..');
+const CACHE_DIR = join(REPO, 'test-results/dot-cache/unknown', SLUG);
+const CACHE = existsSync(join(CACHE_DIR, 'in.svg')) ? CACHE_DIR : undefined;
 const SEEDED = 3;
 
 function sourceOf(text: string): UmlSource {

@@ -196,7 +196,7 @@ function buildTypePage(type: string, entries: FixtureEntry[]): string {
 
   const renderScript = isImplemented
     ? `  <script type="module">
-    import { render } from '/dist/plantuml-ts.js';
+    import { render } from '/dist/plantuml-engine.js';
     document.addEventListener('DOMContentLoaded', async () => {
       const containers = document.querySelectorAll('.svg-container[data-markup]');
       for (const el of containers) {

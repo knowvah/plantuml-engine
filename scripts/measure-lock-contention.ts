@@ -230,7 +230,7 @@ function runNpmTest(env: NodeJS.ProcessEnv, label: string): Promise<number | nul
 }
 
 function makeTraceDir(): string {
-  return mkdtempSync(join(tmpdir(), 'plantuml-ts-lock-trace-'));
+  return mkdtempSync(join(tmpdir(), 'plantuml-engine-lock-trace-'));
 }
 
 async function measureSingle(): Promise<LockContentionSummary> {

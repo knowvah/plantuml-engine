@@ -19,7 +19,7 @@ engines.
 
 ## What the system does
 
-**plantuml-ts** (`@knowvah/plantuml-ts`) is a faithful TypeScript port of
+**plantuml-engine** (`@knowvah/plantuml-engine`) is a faithful TypeScript port of
 PlantUML. It takes PlantUML source text and returns an SVG **string**,
 synchronously, with no server, DOM, canvas or Java at runtime, so it runs
 unchanged in a browser, a Node build step, a VS Code extension host or a
@@ -39,7 +39,7 @@ Alice -> Bob : hello
 
 ```plantuml
 @startuml
-title knowvah org — repos around plantuml-ts (runtime and build-time relationships)
+title knowvah org — repos around plantuml-engine (runtime and build-time relationships)
 skinparam componentStyle rectangle
 
 package "Specifications (read, never shipped)" {
@@ -49,7 +49,7 @@ package "Specifications (read, never shipped)" {
 }
 
 package "knowvah libraries" {
-  component "plantuml-ts\n@knowvah/plantuml-ts" as PTS
+  component "plantuml-engine\n@knowvah/plantuml-engine" as PTS
   component "dot-engine\n@knowvah/dot-engine" as DOT
   component "elk-engine\n(pre-alpha, no API yet)" as ELKE
   component "plantuml-grammar\n@knowvah/plantuml-grammar" as GRAM
@@ -78,7 +78,7 @@ GRAM ..> PTS : reads oracle jar + corpus\n(tooling only, reverse direction)
 @enduml
 ```
 
-- **plantuml-ts** owns block splitting, the TIM preprocessor, diagram-type
+- **plantuml-engine** owns block splitting, the TIM preprocessor, diagram-type
   dispatch, 24 diagram engines, theme/skinparam/style resolution, text
   measurement, document chrome and SVG assembly. It owns layout for every
   non-graph diagram (sequence, activity, gantt, mindmap, wbs, salt, …).
@@ -92,15 +92,15 @@ GRAM ..> PTS : reads oracle jar + corpus\n(tooling only, reverse direction)
   boundary) and only for class and description diagrams.
 - **elk** (Java mirror) is the specification for both elkjs's option ids
   and for **elk-engine**, a pure-TS ELK port that is not yet consumable and
-  has no stated plan to replace elkjs in plantuml-ts.
+  has no stated plan to replace elkjs in plantuml-engine.
 - **plantuml-plugins** is the integration layer: one `core` package wraps
   `renderAll` (Node, with stdlib bundles and a filesystem fetcher) and
   `renderSync` (browser), and thin adapters bind it to each host. Nothing
   is published yet; it links to the sibling checkout.
 - **common** publishes `@knowvah/theme`, consumed only by the docs sites.
 - **plantuml-grammar** is a sibling tool, not a dependency: it extracts the
-  command grammar from the same pinned jar plantuml-ts uses as its oracle,
-  and ships a TextMate grammar + TS engine for editors. plantuml-ts has its
+  command grammar from the same pinned jar plantuml-engine uses as its oracle,
+  and ships a TextMate grammar + TS engine for editors. plantuml-engine has its
   own hand-ported parsers and does not import it.
 
 ### Referenced but not in the org
@@ -128,7 +128,7 @@ GRAM ..> PTS : reads oracle jar + corpus\n(tooling only, reverse direction)
    `loadElk()` only when the diagram asks for ELK.
 3. **Plugin build-time render** (plantuml-plugins): markdown-it fence →
    async pre-render into a cache via `core.renderPlantUmlHtml` →
-   plantuml-ts `renderAll` (eager stdlib registry, FS fetcher, optional
+   plantuml-engine `renderAll` (eager stdlib registry, FS fetcher, optional
    child-process timeout) → SVG validation/inlining → synchronous fence
    emit.
 4. **Oracle loop** (how fidelity is measured): `scripts/oracle-render.sh`
@@ -143,9 +143,9 @@ Full sequence diagrams: [data-flow.md](data-flow.md).
 
 | Repo | Language | Runtime | Framework | Database | External deps |
 |------|----------|---------|-----------|----------|---------------|
-| plantuml-ts | TypeScript 6.0.3 | Node ≥26 / browser | Vite 8, Vitest 5, VitePress 1 | — | dot-engine 2.4.0, elkjs 0.12.0, katex 0.19, pako 3, xmldom 0.9.12; dev: Graphviz 16.1, OpenJDK 21 (oracle), Playwright |
+| plantuml-engine | TypeScript 6.0.3 | Node ≥26 / browser | Vite 8, Vitest 5, VitePress 1 | — | dot-engine 2.4.0, elkjs 0.12.0, katex 0.19, pako 3, xmldom 0.9.12; dev: Graphviz 16.1, OpenJDK 21 (oracle), Playwright |
 | dot-engine | TypeScript | Node ≥22 / browser | esbuild, peggy, Vitest 4 | — | none at runtime; dev: `@hpcc-js/wasm-graphviz` oracle |
-| plantuml-plugins | TypeScript 5.9, Kotlin 2.4 | Node ≥22, VS Code ^1.125, JCEF | pnpm, tsup, Vitest 4, IntelliJ Platform Gradle 2.18 | — | plantuml-ts + stdlib (link), markdown-it 15, React 19 |
+| plantuml-plugins | TypeScript 5.9, Kotlin 2.4 | Node ≥22, VS Code ^1.125, JCEF | pnpm, tsup, Vitest 4, IntelliJ Platform Gradle 2.18 | — | plantuml-engine + stdlib (link), markdown-it 15, React 19 |
 | common | TypeScript, CSS | Node 22 | tsup, Vitest 5 | — | @heroicons/react |
 | plantuml-grammar | Python 3.11–3.13, Java 21, TypeScript 6 | CPython, JVM, Node ≥26 | uv/pytest, Vitest 5, semantic-release | — | PlantUML jar (pinned), vscode-textmate |
 | elk-engine | TypeScript 7.0.2 | Node ≥22 / browser | esbuild, Vitest 5 | — | none at runtime; dev: ELK Java oracle |
@@ -157,10 +157,10 @@ Version health and CVEs: [tech-health.md](tech-health.md).
 
 - `@knowvah/dot-engine` is pinned at 2.4.0 while upstream tagged v2.7.1 on
   2026-10-27; a 2.6.10 bump branch (`chore/dot-engine-2-6-10`) is parked.
-- plantuml-plugins `README.md:63` clones `sseely/plantuml-ts`; the repo now
-  lives at `knowvah/plantuml-ts`.
+- plantuml-plugins `README.md:63` clones the pre-transfer `sseely/` URL; the
+  repo now lives at `knowvah/plantuml-engine`.
 - `vite.config.ts:44` still externalises `jsonc-parser`, which is no longer a
   dependency (`src/diagrams/json/JsonParser.ts:4` says it was replaced).
 - elk-engine and plantuml-grammar are both org siblings with no code
-  relationship to plantuml-ts today; neither is a dependency to document
+  relationship to plantuml-engine today; neither is a dependency to document
   as such until one is wired in.

@@ -159,7 +159,7 @@ describe('class-actor-bare-no-allowmixing (actor, no allowmixing, alongside clas
    */
   it("is REFUSED, as upstream refuses it, with upstream's own message", () => {
     const svg = renderSync(readSource(slug));
-    expect(deNbsp(svg)).toContain('plantuml-ts version');
+    expect(deNbsp(svg)).toContain('plantuml-engine version');
     expect(deNbsp(svg)).toContain("Use 'allowmixing' if you want to mix classes and other UML elements.");
     // The element the jar rejects must NOT be drawn.
     expect(svg).not.toMatch(/>Bob</);
@@ -168,7 +168,7 @@ describe('class-actor-bare-no-allowmixing (actor, no allowmixing, alongside clas
   it('renders normally once `allowmixing` is present', () => {
     const withMixing = readSource(slug).replace('@startuml', '@startuml\nallowmixing');
     const svg = renderSync(withMixing);
-    expect(deNbsp(svg)).not.toContain('plantuml-ts version');
+    expect(deNbsp(svg)).not.toContain('plantuml-engine version');
     expect(svg).toMatch(/>Bob</);
   });
 

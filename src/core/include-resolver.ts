@@ -448,7 +448,7 @@ export interface IncludeWarmupOptions {
  * Three failure modes, each with a DIFFERENT fix, deliberately not collapsed
  * into one error: `StdlibNotBundledError` (no bundle of that name is
  * registered — add a thunk for it); `StdlibChunkLoadError` (it IS registered,
- * its chunk failed to load — fix the bundler/CDN, not a plantuml-ts bug);
+ * its chunk failed to load — fix the bundler/CDN, not a plantuml-engine bug);
  * `CircularIncludeError` (the `!include` chain loops — break it in the source).
  */
 export async function prepareIncludeStore(source: string, options?: IncludeWarmupOptions): Promise<IncludeStore> {

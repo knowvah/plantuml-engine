@@ -94,7 +94,7 @@ SOFTWARE.
 ArchiMate® is a registered trademark of The Open Group.
 
 The mark is used here referentially and adjectivally, to identify sprites that
-depict the ArchiMate® notation. Neither plantuml-ts nor this bundle is
+depict the ArchiMate® notation. Neither plantuml-engine nor this bundle is
 endorsed by, certified by, accredited by, or affiliated with The Open Group.
 No trademark licence is granted by the MIT licences above, which cover
 copyright only.

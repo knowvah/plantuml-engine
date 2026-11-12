@@ -28,7 +28,7 @@
  *     acquisitions would reopen a torn-read window between them. That
  *     forces the raw accessors into plain (non-locking) helper functions
  *     -- `generatedDtsFiles`/`collectUndeclaredSpecifiers`/
- *     `collectUnscopedSpecifierOffenders` -- invoked from a single
+ *     `collectTypeImports` -- invoked from a single
  *     `withStdlibBuildLock(...)` at the test. `safeContainers` covers this:
  *     an accessor is also approved if it sits inside a named container's
  *     body, PROVIDED every call site of that container (except its own
@@ -219,7 +219,7 @@ const FILE_CHECKS: readonly FileCheck[] = [
       /readdirSync\(join\(PACKAGES_DIR,[^,]*,\s*'generated'/g,
       /readFileSync\(join\(PACKAGES_DIR,[^,]*,\s*'generated'/g,
     ],
-    safeContainers: ['generatedDtsFiles', 'collectUndeclaredSpecifiers', 'collectUnscopedSpecifierOffenders'],
+    safeContainers: ['generatedDtsFiles', 'collectUndeclaredSpecifiers', 'collectTypeImports'],
   },
   {
     file: 'tests/unit/stdlib-all-exports.test.ts',

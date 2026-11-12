@@ -14,19 +14,19 @@ Action values: `OK`, `Update available`, `EOL — upgrade required`,
 
 | Repo | Component | Version | EOL Date | CVEs (High+) | Action |
 |------|-----------|---------|----------|--------------|--------|
-| plantuml-ts | Node.js (engines `>=26`; dev box 26.9.0; CI resolves latest 26.x via `node-version-file`) | 26.x | 2029-04-30 (Node 26 entered Active LTS 2026-10-28) | CVE-2026-111497 Brotli decoder OOB write / RCE (High; vendor write-ups score 9.2), CVE-2026-105483 TLS hostname bypass (High) — fixed in 26.12.1 | CVE — patch required (any 26.x < 26.12.1) |
-| plantuml-ts | TypeScript | 6.0.3 | — (6.0 is the last JS-based compiler; 7.0 Go-native is GA) | none | Update available |
-| plantuml-ts | Vite (lib build) | 8.3.5 | — | none (Oct-2026 batch fixed in 8.3.3; `npm audit` clean) | OK |
-| plantuml-ts | Vitest / @vitest/coverage-v8 | 5.0.5 | — | none (CVE-2026-53633 fixed in 5.0.0-beta.4; `@vitest/ui` not installed) | OK |
-| plantuml-ts | ESLint | 10.13.0 | — | none | OK |
-| plantuml-ts | VitePress (docs-site) | 1.6.4, with `overrides.vitepress.vite = ^7.3.6` | — | none (the override keeps VitePress on a patched Vite 7 line; see dot-engine row for the un-overridden case) | OK |
-| plantuml-ts | katex | 0.19.0 | — | none (CVE-2026-103923, Low 2.1, affects < 0.18.2) | OK |
-| plantuml-ts | elkjs | 0.12.0 | — | none found | OK |
-| plantuml-ts | @xmldom/xmldom | 0.9.12 | — | none at 0.9.12 (CVE-2026-83609/-83612/-83614/-83616 fixed **in** 0.9.12; 0.9.11 and below carry CVE-2026-83607 XSS) | OK — at the fix version exactly; do not downgrade |
-| plantuml-ts | pako | 3.0.2 | — | none (the "pako-js" malicious-package report is a different package name) | OK |
-| plantuml-ts | @knowvah/dot-engine | 2.4.0 (pinned tarball) | — | none | Update available (upstream tagged v2.7.1 on 2026-10-27; a 2.6.10 bump is parked on `chore/dot-engine-2-6-10`) |
-| plantuml-ts | OpenJDK (oracle jar + `scripts/oracle-render.sh` only; not shipped) | 21.0.1 | Temurin 21: 2029-12-31 | none relevant (dev tooling) | OK |
-| plantuml-ts | Graphviz `dot` (oracle + test shell-out only) | 16.1.0 | — | none relevant (dev tooling) | OK |
+| plantuml-engine | Node.js (engines `>=26`; dev box 26.9.0; CI resolves latest 26.x via `node-version-file`) | 26.x | 2029-04-30 (Node 26 entered Active LTS 2026-10-28) | CVE-2026-111497 Brotli decoder OOB write / RCE (High; vendor write-ups score 9.2), CVE-2026-105483 TLS hostname bypass (High) — fixed in 26.12.1 | CVE — patch required (any 26.x < 26.12.1) |
+| plantuml-engine | TypeScript | 6.0.3 | — (6.0 is the last JS-based compiler; 7.0 Go-native is GA) | none | Update available |
+| plantuml-engine | Vite (lib build) | 8.3.5 | — | none (Oct-2026 batch fixed in 8.3.3; `npm audit` clean) | OK |
+| plantuml-engine | Vitest / @vitest/coverage-v8 | 5.0.5 | — | none (CVE-2026-53633 fixed in 5.0.0-beta.4; `@vitest/ui` not installed) | OK |
+| plantuml-engine | ESLint | 10.13.0 | — | none | OK |
+| plantuml-engine | VitePress (docs-site) | 1.6.4, with `overrides.vitepress.vite = ^7.3.6` | — | none (the override keeps VitePress on a patched Vite 7 line; see dot-engine row for the un-overridden case) | OK |
+| plantuml-engine | katex | 0.19.0 | — | none (CVE-2026-103923, Low 2.1, affects < 0.18.2) | OK |
+| plantuml-engine | elkjs | 0.12.0 | — | none found | OK |
+| plantuml-engine | @xmldom/xmldom | 0.9.12 | — | none at 0.9.12 (CVE-2026-83609/-83612/-83614/-83616 fixed **in** 0.9.12; 0.9.11 and below carry CVE-2026-83607 XSS) | OK — at the fix version exactly; do not downgrade |
+| plantuml-engine | pako | 3.0.2 | — | none (the "pako-js" malicious-package report is a different package name) | OK |
+| plantuml-engine | @knowvah/dot-engine | 2.4.0 (pinned tarball) | — | none | Update available (upstream tagged v2.7.1 on 2026-10-27; a 2.6.10 bump is parked on `chore/dot-engine-2-6-10`) |
+| plantuml-engine | OpenJDK (oracle jar + `scripts/oracle-render.sh` only; not shipped) | 21.0.1 | Temurin 21: 2029-12-31 | none relevant (dev tooling) | OK |
+| plantuml-engine | Graphviz `dot` (oracle + test shell-out only) | 16.1.0 | — | none relevant (dev tooling) | OK |
 | dot-engine | Node.js (engines `>=22`; volta 26.3.1; CI 26) | 22.x–26.x | Node 22: 2027-04-30; Node 26: 2029-04-30 | same Node CVEs — fixed in 22.23.4 / 24.22.1 / 26.12.1 | CVE — patch required |
 | dot-engine | TypeScript (+ `@typescript/native-preview` 7.0-dev) | ^6.0 | — | none | OK |
 | dot-engine | Vitest | 4.1.11 | — | none High; `vitest` / `@vitest/mocker` Moderate (fixed 4.1.12) | Update available |
@@ -65,22 +65,22 @@ The 2026-10-21 Node.js security release fixed 10 CVEs across the 22.x,
 24.x and 26.x lines (fixed versions 22.23.4, 24.22.1, 26.12.1). The
 headline item, CVE-2026-111497, is an out-of-bounds write in the Brotli
 decoder reachable from `zlib`; the official advisory rates it High, several
-vendor write-ups score it 9.2. plantuml-ts does **not** call `zlib` at
+vendor write-ups score it 9.2. plantuml-engine does **not** call `zlib` at
 runtime in `src/` (deflate is via `pako`, a pure-JS port), so the exposure
 is the toolchain and any host application, not the library — but every
 repo's dev box and CI runner should move to a patched line. The dev box
-reported `node v26.9.0` on 2026-10-29. plantuml-ts CI uses
+reported `node v26.9.0` on 2026-10-29. plantuml-engine CI uses
 `node-version-file: package.json`, which resolves the newest 26.x the
 runner image offers; whether that is already ≥ 26.12.1 is not knowable
 from the repo.
 
 ### Vite
 
-- plantuml-ts: 8.3.5 (≥ 8.3.3) — the three 2026-10-06/10-21 advisories
+- plantuml-engine: 8.3.5 (≥ 8.3.3) — the three 2026-10-06/10-21 advisories
   (CVE-2026-112945/-112946/-112947) are fixed; the April file-read
   advisories (CVE-2026-39363/-39364, fixed 8.0.5) do not apply.
   `overrides` pins VitePress's own Vite to `^7.3.6`, which is why
-  plantuml-ts's audit is clean while dot-engine's VitePress 1.6.4 still
+  plantuml-engine's audit is clean while dot-engine's VitePress 1.6.4 still
   resolves a Vite ≤ 6.4.3 and audits High.
 - plantuml-plugins and common: transitive Vite 8.3.0–8.3.2 (via tsup /
   vitest toolchains); `pnpm update vite` to 8.3.3+ clears the High.
@@ -95,11 +95,11 @@ the installed versions are affected. The remaining `@vitest/mocker`
 findings (code injection via manual mock registration; fixed 4.1.12 and
 5.0.3) are Moderate and dev-only. The Vulert entry CVE-2026-112948
 against `@vitest/ui` 5.0.5 could not be verified against a primary source
-and `@vitest/ui` is not installed in plantuml-ts.
+and `@vitest/ui` is not installed in plantuml-engine.
 
 ### @xmldom/xmldom 0.9.12
 
-plantuml-ts sits exactly on the version that closed the 2026 series
+plantuml-engine sits exactly on the version that closed the 2026 series
 (CVE-2026-83605/-83606/-83607 fixed in 0.9.11; -83609/-83612/-83614/-83616
 fixed in 0.9.12). The library is used to parse SVG sprites and `<img>`
 data URIs, i.e. attacker-influenced XML in a browser context, so this
@@ -108,7 +108,7 @@ dependency warrants a Dependabot watch rather than a one-off check.
 ### katex 0.19.0
 
 CVE-2026-103923 (prototype-pollution-assisted `trust` escalation, CVSS 4
-= 2.1) affects < 0.18.2 only. plantuml-ts renders `<latex>`/`<math>` via
+= 2.1) affects < 0.18.2 only. plantuml-engine renders `<latex>`/`<math>` via
 KaTeX as a documented divergence from JLaTeXMath (`DIVERGENCES.md`).
 
 ### TypeScript

@@ -1,6 +1,6 @@
-# plantuml-ts
+# plantuml-engine
 
-[![CI](https://github.com/knowvah/plantuml-ts/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/knowvah/plantuml-ts/actions/workflows/ci.yml)
+[![CI](https://github.com/knowvah/plantuml-engine/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/knowvah/plantuml-engine/actions/workflows/ci.yml)
 
 A TypeScript port of [PlantUML](https://plantuml.com), producing SVG
 diagrams synchronously in the browser and Node.js with no server
@@ -172,8 +172,8 @@ emitted as `href=""`, as the jar does, unless `allowJavascriptInLink: true`.
 loads network code:
 
 ```ts
-import { render } from '@knowvah/plantuml-ts';
-import { createNetworkImageProvider } from '@knowvah/plantuml-ts/image-providers';
+import { render } from '@knowvah/plantuml-engine';
+import { createNetworkImageProvider } from '@knowvah/plantuml-engine/image-providers';
 
 await render(source, { imageProvider: createNetworkImageProvider(), securityProfile: 'INTERNET' });
 ```

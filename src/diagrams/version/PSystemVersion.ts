@@ -3,7 +3,7 @@
  * lines of creole drawn black on white with the PlantUML logo in the
  * bottom-right corner (`PlainStringsDiagram`).
  *
- * This port prints its own name and version string (`plantuml-ts version
+ * This port prints its own name and version string (`plantuml-engine version
  * <v>`, matching the error banner's `fullDescription()`) where the jar prints
  * `PlantUML version ` + `Version.versionString()` (`core/version.ts`; user ruling 2026-10-08, "keep
  * own version string", DIVERGENCES.md "Error pages print this port's
@@ -118,9 +118,9 @@ function add(result: string[], s: string, withTag: boolean): void {
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:219-245 */
 export function getAuthorsStrings(withTag: boolean): string[] {
   const strings: string[] = [];
-  // `PlantUML version` → `plantuml-ts version` (ufp journal row 24a): the
+  // `PlantUML version` → `plantuml-engine version` (ufp journal row 24a): the
   // 2026-10-08 ruling's reason — never tell a user they ran PlantUML.
-  add(strings, `<b>plantuml-ts version ${versionString()}</b> (${COMPILE_TIME_STRING})`, withTag);
+  add(strings, `<b>plantuml-engine version ${versionString()}</b> (${COMPILE_TIME_STRING})`, withTag);
   add(strings, `(${License.getCurrent().toString()} source distribution)`, withTag);
   add(strings, BLANK, withTag);
   for (const line of AUTHORS) add(strings, line, withTag);
@@ -204,7 +204,7 @@ export class PSystemVersion extends PlainStringsDiagram {
   static createShowVersion(source: UmlSource, preprocessing: PreprocessingArtifact): PSystemVersion {
     const strings: string[] = [];
     // java:174 `<b>PlantUML</b>` → this port's name (journal row 24a, D14).
-    strings.push(`<b>plantuml-ts</b> ""${versionString()}""`);
+    strings.push(`<b>plantuml-engine</b> ""${versionString()}""`);
     // java:175-176 `CompilationInfo.COMMIT`, `Version.compileTimeString()`:
     // this port's own build constants (`core/version.ts`).
     strings.push(`<b>Git Commit</b> ""${COMMIT}""`);

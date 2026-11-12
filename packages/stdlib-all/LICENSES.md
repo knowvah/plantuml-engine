@@ -11,7 +11,7 @@ third-party content directly. It depends on and re-exports:
 
 `adaml` (GPL) is deliberately **excluded** from this package and from every
 other `@knowvah/plantuml-stdlib*` package (maintainer ruling,
-`plans/si5b-stdlib/decisions.md` D2, in the plantuml-ts source repo) —
+`plans/si5b-stdlib/decisions.md` D2, in the plantuml-engine source repo) —
 GPL code must never ship inside an MIT-licensed aggregate. It will be
 published later as its own separately GPL-licensed package, if at all.
 

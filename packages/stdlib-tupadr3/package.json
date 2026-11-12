@@ -1,13 +1,13 @@
 {
   "name": "@knowvah/plantuml-stdlib-tupadr3",
   "version": "0.1.0",
-  "description": "Vendored tupadr3 PlantUML icon-font sprite bundle for plantuml-ts",
+  "description": "Vendored tupadr3 PlantUML icon-font sprite bundle for plantuml-engine",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/knowvah/plantuml-ts.git",
+    "url": "https://github.com/knowvah/plantuml-engine.git",
     "directory": "packages/stdlib-tupadr3"
   },
   "scripts": {
@@ -37,10 +37,10 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@knowvah/plantuml-ts": "^0.2.0"
+    "@knowvah/plantuml-engine": "^0.2.0"
   },
   "devDependencies": {
-    "@knowvah/plantuml-ts": "file:../.."
+    "@knowvah/plantuml-engine": "file:../.."
   },
   "publishConfig": {
     "access": "public",

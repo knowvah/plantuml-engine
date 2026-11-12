@@ -3,7 +3,7 @@
  * Build an oracle corpus from real PlantUML bug-report fixtures.
  *
  * Samples ~/git/pdiff/dbhum (thousands of real user submissions), tags each by
- * plantuml-ts's OWN dispatcher type (the filename buckets in tests/corpus are
+ * plantuml-engine's OWN dispatcher type (the filename buckets in tests/corpus are
  * unreliable), runs the oracle, and keeps every fixture that emits svek-*.dot —
  * i.e. the graphviz-backed diagrams DOT parity applies to. Output lands in the
  * gitignored oracle/corpus-cache/<type>/<humhash>/ (regenerable; not committed).
@@ -48,7 +48,7 @@ function sample(all: string[], n: number): string[] {
   return picks;
 }
 
-/** plantuml-ts's own diagram type for a fixture, or 'none'/'unknown'. */
+/** plantuml-engine's own diagram type for a fixture, or 'none'/'unknown'. */
 function detectType(puml: string): string {
   const blocks = buildBlockUmls(puml);
   const first = blocks[0];
@@ -139,7 +139,7 @@ function main(): void {
 
   console.log(
     `sampled ${picks.length}, kept ${kept} graphviz-backed (svek DOT) into ` +
-      `oracle/corpus-cache\n  by plantuml-ts type: ${dist}`,
+      `oracle/corpus-cache\n  by plantuml-engine type: ${dist}`,
   );
 }
 

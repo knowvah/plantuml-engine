@@ -103,8 +103,8 @@ function readHead(path: string): string {
 }
 
 /** Per dot-cache type: how many cached (`.done`) fixtures' `in.svg` is the jar's
- *  own unsupported-diagram page. `plantuml-ts only` in the matrix means this
- *  equals the type's whole oracle count (`parity-dashboard-matrix.ts#isPlantumlTsOnly`). */
+ *  own unsupported-diagram page. `plantuml-engine only` in the matrix means this
+ *  equals the type's whole oracle count (`parity-dashboard-matrix.ts#isPlantumlEngineOnly`). */
 export function jarUnsupportedCountsOf(cacheDir: string): Record<string, number> {
   if (!existsSync(cacheDir)) return {};
   const out: Record<string, number> = {};

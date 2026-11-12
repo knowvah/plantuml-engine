@@ -27,7 +27,7 @@ describe('SignatureUtils.getMD5Hex', () => {
   });
 
   it('cross-checks against node:crypto for an arbitrary string', () => {
-    const s = 'plantuml-ts SignatureUtils relocation (T8b)';
+    const s = 'plantuml-engine SignatureUtils relocation (T8b)';
     expect(SignatureUtils.getMD5Hex(s)).toBe(createHash('md5').update(s, 'utf8').digest('hex'));
   });
 });

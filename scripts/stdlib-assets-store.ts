@@ -22,7 +22,7 @@
  *
  * Node `fs` is fine here — this module lives under `scripts/` (and is
  * re-exported from `tests/helpers/stdlib-assets-store.ts`), never `src/`
- * (`plantuml-ts` must stay browser-safe — CLAUDE.md).
+ * (`plantuml-engine` must stay browser-safe — CLAUDE.md).
  */
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs';

@@ -8,7 +8,7 @@
  * is the consumer's choice; this module only fixes the NAMING so every loader
  * agrees with the core resolver (`core/internal-sprite-store.ts`).
  *
- * Separate opt-in package so `@knowvah/plantuml-ts` stays a code-only install
+ * Separate opt-in package so `@knowvah/plantuml-engine` stays a code-only install
  * and you pull only the icon libraries you actually use.
  */
 

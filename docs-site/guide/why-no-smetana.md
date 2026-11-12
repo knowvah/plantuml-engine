@@ -1,6 +1,6 @@
 # Why no Smetana support?
 
-PlantUML has a second layout engine, Smetana, and plantuml-ts does not port it.
+PlantUML has a second layout engine, Smetana, and plantuml-engine does not port it.
 `!pragma layout smetana` is accepted, but every diagram is laid out by
 [`@knowvah/dot-engine`](https://dot-engine.knowvah.com/), our own TypeScript port
 of Graphviz. This is a settled decision (maintainer ruling, 2026-08-09), and it's
@@ -32,8 +32,8 @@ to real Graphviz. Smetana handles `@startjson`, `@startyaml`, `@starthcl` and
 changed the arithmetic that decides sizes, arrowheads and spline ends, so the two
 engines no longer agree to the pixel, even though they share an algorithm.
 
-**plantuml-ts began in April 2026** with in-house layout code, ported in part from
-Smetana. In June 2026 we replaced it with a new port made directly from the
+**plantuml-engine began in April 2026** (under its first name) with in-house
+layout code, ported in part from Smetana. In June 2026 we replaced it with a new port made directly from the
 Graphviz C source, named `@knowvah/dot-engine` since July 2026. It has no native
 binary and no WASM, so it runs in a browser, and it's checked against native
 Graphviz with coordinates matching to within 0.01.

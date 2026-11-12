@@ -1,7 +1,7 @@
 /**
  * The single install point for `@knowvah/dot-engine`'s text measurer.
  *
- * plantuml-ts is a pure SVG library — no DOM, no canvas. @knowvah/dot-engine
+ * plantuml-engine is a pure SVG library — no DOM, no canvas. @knowvah/dot-engine
  * otherwise auto-selects a canvas-backed text measurer when a `document` is
  * present (jsdom, browsers), which both violates that guarantee and is
  * unimplemented under jsdom. Pin its built-in lookup-table measurer:

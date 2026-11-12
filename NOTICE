@@ -1,4 +1,4 @@
-plantuml-ts
+plantuml-engine
 Copyright (c) 2026 Scott Seely
 
 This product is licensed under the MIT License; see LICENSE for the full text.
@@ -12,7 +12,7 @@ Runtime dependencies — imported by dist/, NOT contained in it
 ================================================================================
 
 All three are listed in this package's `dependencies` and are marked external
-in vite.config.ts, so `dist/plantuml-ts.js` and `dist/plantuml-ts.cjs` import
+in vite.config.ts, so `dist/plantuml-engine.js` and `dist/plantuml-engine.cjs` import
 them at runtime rather than carrying their code. npm installs them alongside
 this package, and each reaches the consumer under its own license, from its
 own publisher.
@@ -51,7 +51,7 @@ Upstream works this project ports or derives from
 PlantUML
     Source:   https://github.com/plantuml/plantuml
 
-    plantuml-ts is a port of PlantUML to TypeScript. No PlantUML source is
+    plantuml-engine is a port of PlantUML to TypeScript. No PlantUML source is
     redistributed here; the Java is used as the specification the port is
     written against. PlantUML itself is multi-licensed -- see its LICENSES.md.
 

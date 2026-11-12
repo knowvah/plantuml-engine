@@ -4,7 +4,7 @@ Diagrams can reference remote images (`<img:https://â€¦>`, `<img src="https://â€
 `renderSync()` cannot fetch, so `render()` and friends take an
 `imageProvider`: an object with `fetch(url): Promise<ImageFetchResult>` that
 never rejects. Two ready-made providers ship in a separate entry point,
-`@knowvah/plantuml-ts/image-providers`, so code that only uses the core never
+`@knowvah/plantuml-engine/image-providers`, so code that only uses the core never
 loads network code.
 
 ```ts
@@ -20,8 +20,8 @@ type ImageFetchResult =
 ## Node (and any host with `fetch`)
 
 ```ts
-import { render } from '@knowvah/plantuml-ts';
-import { createNetworkImageProvider } from '@knowvah/plantuml-ts/image-providers';
+import { render } from '@knowvah/plantuml-engine';
+import { createNetworkImageProvider } from '@knowvah/plantuml-engine/image-providers';
 
 const imageProvider = createNetworkImageProvider({
   timeoutMs: 5000,          // default 5000
@@ -37,7 +37,7 @@ and `onWarning` (called once per failed URL).
 ## Browser
 
 ```ts
-import { createBrowserImageProvider } from '@knowvah/plantuml-ts/image-providers';
+import { createBrowserImageProvider } from '@knowvah/plantuml-engine/image-providers';
 
 const imageProvider = createBrowserImageProvider({ onWarning: console.warn });
 ```

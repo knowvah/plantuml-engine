@@ -15,7 +15,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/Version.java
  */
 
-/** plantuml-ts's own version — kept in step with `package.json#version`. */
+/** plantuml-engine's own version — kept in step with `package.json#version`. */
 export const VERSION = '0.2.0';
 
 /** Build-stamped at release; the placeholder is what a dev build reports. */
@@ -35,5 +35,5 @@ export function versionString(): string {
 
 /** @see ~/git/plantuml/.../version/Version.java#fullDescription */
 export function fullDescription(): string {
-  return `plantuml-ts version ${versionString()} / ${COMMIT} [${COMPILE_TIME_STRING}]`;
+  return `plantuml-engine version ${versionString()} / ${COMMIT} [${COMPILE_TIME_STRING}]`;
 }

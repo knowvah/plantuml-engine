@@ -9,7 +9,7 @@
  * loader agrees with the core resolver.
  *
  * Separate package because the artwork is **CC-BY 4.0**, not MIT like
- * `@knowvah/plantuml-ts` itself. See LICENSE and LICENSES.md — attribution is
+ * `@knowvah/plantuml-engine` itself. See LICENSE and LICENSES.md — attribution is
  * required when you ship it.
  */
 

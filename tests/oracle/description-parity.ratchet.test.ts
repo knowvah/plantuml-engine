@@ -147,7 +147,7 @@ describe.skipIf(fixtures.length === 0)('oracle DOT-parity ratchet — descriptio
 
 // Explicit note for the zero-goldens state (this is expected to persist for a
 // while: the tightened bar in svek-dot.ts asserts rankdir/nodesep/ranksep,
-// which plantuml-ts does not yet match for any cached description fixture).
+// which plantuml-engine does not yet match for any cached description fixture).
 if (fixtures.length === 0) {
   it('has no pinned description goldens yet (skip gracefully, not a failure)', () => {
     expect(fixtures).toHaveLength(0);

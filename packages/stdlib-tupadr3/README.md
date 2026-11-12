@@ -2,9 +2,9 @@
 
 The `tupadr3` PlantUML stdlib bundle (Font Awesome 4/5/6, Devicons,
 Devicons2, Material, Weather, Govicons — ~6,850 icon-font sprites) —
-packaged as a single [plantuml-ts](https://github.com/knowvah/plantuml-ts)
+packaged as a single [plantuml-engine](https://github.com/knowvah/plantuml-engine)
 `StdlibRemoteManifest` value plus the raw `.puml` assets it describes, for
-use with `plantuml-ts`'s `remoteStdlib()` / `stdlibRegistry()` include seam.
+use with `plantuml-engine`'s `remoteStdlib()` / `stdlibRegistry()` include seam.
 **There is no eager `BundleData` export** — see "Usage" below.
 
 Only an index export is provided (no per-category subpaths): `tupadr3` is a
@@ -19,10 +19,10 @@ the package-export level.
 ## Install
 
 ```sh
-npm install plantuml-ts @knowvah/plantuml-stdlib-tupadr3
+npm install @knowvah/plantuml-engine @knowvah/plantuml-stdlib-tupadr3
 ```
 
-`plantuml-ts` is a peer dependency — this package supplies data, not the
+`@knowvah/plantuml-engine` is a peer dependency — this package supplies data, not the
 renderer.
 
 ## Usage
@@ -41,7 +41,7 @@ recipes, plus the full `baseUrl` contract, are documented once in
 assets" and "Recipe: pinned CDN" — and are not duplicated here.
 
 ```ts
-import { renderSync, remoteStdlib, stdlibRegistry } from '@knowvah/plantuml-ts';
+import { renderSync, remoteStdlib, stdlibRegistry } from '@knowvah/plantuml-engine';
 import { tupadr3Remote } from '@knowvah/plantuml-stdlib-tupadr3/tupadr3.remote';
 
 const registry = stdlibRegistry({

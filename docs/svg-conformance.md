@@ -1,6 +1,6 @@
 # SVG conformance: what "conformant" means
 
-plantuml-ts's klimt SVG emitter (`src/core/klimt/**`) is validated against
+plantuml-engine's klimt SVG emitter (`src/core/klimt/**`) is validated against
 upstream PlantUML's Java `SvgGraphics` emitter as an oracle. When this
 project says an emitter render **conforms** with the jar's output, it means
 a specific, mechanically-checked property — not literal equality of the SVG
@@ -184,7 +184,7 @@ the oracle jar with no `-D` flags exits 0 and (2) the oracle jar with only
 `provenance: 'oracle-widths'` (today `class/zuduxu-90-kosi876`,
 `unknown/rubebe-45-sura795`); the upstream NPE is mirrored, so ours errors too.
 
-**Production is unchanged.** Error pages still print `plantuml-ts version`
+**Production is unchanged.** Error pages still print `plantuml-engine version`
 and source name `string` (DIVERGENCES.md, "Error pages print this port's
 version"); that ruling holds, and is now moot for conformance because the
 error page is not compared.
@@ -246,7 +246,7 @@ The SVG-conformance oracle corpus (`test-results/dot-cache/`, captured via
 `-DPLANTUML_DETERMINISTIC_TEXT=true` — a flag that swaps the jar's text
 measurement from real AWT font metrics to a fixed
 `UnicodeFontWidthSansSerif` width table (height=size). Production
-plantuml-ts, by design (decision D12), measures text with **AWT-faithful**
+plantuml-engine, by design (decision D12), measures text with **AWT-faithful**
 metrics (`jarMeasurer`, `src/core/measurer-jar.ts`) so that real (non-flag)
 jar output — what actual users see — is what the port matches.
 

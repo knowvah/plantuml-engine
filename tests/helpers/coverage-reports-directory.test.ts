@@ -44,13 +44,13 @@ describe('resolveCoverageReportsDirectory -- default (single-run) behaviour', ()
 describe('resolveCoverageReportsDirectory -- isolated (concurrent) behaviour', () => {
   it('returns a per-process directory outside the repo when the flag is set', () => {
     expect(resolveCoverageReportsDirectory({ isolate: '1', pid: 4242, tmpDir: TMP })).toBe(
-      join(TMP, 'plantuml-ts-coverage-4242'),
+      join(TMP, 'plantuml-engine-coverage-4242'),
     );
   });
 
   it.each(['1', 'true', 'yes', 'on'])('treats %o as "isolating"', (value) => {
     expect(resolveCoverageReportsDirectory({ isolate: value, pid: 7, tmpDir: TMP })).toBe(
-      join(TMP, 'plantuml-ts-coverage-7'),
+      join(TMP, 'plantuml-engine-coverage-7'),
     );
   });
 
@@ -79,7 +79,7 @@ describe('resolveCoverageReportsDirectory -- isolated (concurrent) behaviour', (
 
     // Rooted at the OS temp dir, and NOT the repo-relative default -- a
     // substring check for 'coverage' would pass trivially against
-    // 'plantuml-ts-coverage-9', so assert the path shape instead.
+    // 'plantuml-engine-coverage-9', so assert the path shape instead.
     expect(resolved.startsWith(`${TMP}/`)).toBe(true);
     expect(resolved).not.toBe(DEFAULT_COVERAGE_REPORTS_DIRECTORY);
     expect(resolved.split('/').includes(DEFAULT_COVERAGE_REPORTS_DIRECTORY)).toBe(false);

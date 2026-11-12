@@ -3,7 +3,7 @@
  * `preprocess()` does not exercise on its own (`getXargs`, `getDebug`,
  * `appendEndOfLine`, `getPreprocessingArtifact`, the JSON-path branch of
  * `asKnowledge`, RETURN_FUNCTION execution) plus each documented
- * plantuml-ts divergence, so that a future change to one of them fails HERE
+ * plantuml-engine divergence, so that a future change to one of them fails HERE
  * rather than silently three layers downstream in a DOT-parity fixture.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java
@@ -150,7 +150,7 @@ describe('TContext — side-effect directives', () => {
   });
 });
 
-describe('TContext — plantuml-ts divergences (each preserves pre-TIM behavior)', () => {
+describe('TContext — plantuml-engine divergences (each preserves pre-TIM behavior)', () => {
   it('DIVERGENCE 1: an !include with no store supplied is a typed error, not a silent skip', () => {
     expect(() => run(['!include foo.iuml', 'class Foo'])).toThrow(IncludeNotFoundError);
   });

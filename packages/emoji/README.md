@@ -1,7 +1,7 @@
 # @knowvah/plantuml-emoji
 
 Vendored [Twemoji](https://github.com/jdecked/twemoji) artwork for
-[plantuml-ts](https://github.com/knowvah/plantuml-ts), so `<:name:>` creole
+[plantuml-engine](https://github.com/knowvah/plantuml-engine), so `<:name:>` creole
 emoji render as real glyphs instead of measuring as text.
 
 **1,174 SVG files**, copied byte-for-byte from upstream PlantUML's own emoji
@@ -10,12 +10,12 @@ resources. No re-encoding, no optimisation — verifiable, see
 
 ## ⚠️ This package is CC-BY 4.0, not MIT
 
-`@knowvah/plantuml-ts` is MIT. **This package is not.** The artwork is
+`@knowvah/plantuml-engine` is MIT. **This package is not.** The artwork is
 licensed **CC BY 4.0** and carries an attribution requirement that flows to
 you when you redistribute it.
 
 That licence difference is exactly why the artwork lives here instead of in
-the core package: installing `plantuml-ts` does not silently pull a CC-BY
+the core package: installing `@knowvah/plantuml-engine` does not silently pull a CC-BY
 obligation into your project. You opt in.
 
 If you ship this package, you must attribute. The Twemoji project accepts
@@ -31,7 +31,7 @@ See [`LICENSE`](./LICENSE) for the full licence and
 ## Install
 
 ```sh
-npm install @knowvah/plantuml-ts @knowvah/plantuml-emoji
+npm install @knowvah/plantuml-engine @knowvah/plantuml-emoji
 ```
 
 Or take everything at once with

@@ -1,23 +1,23 @@
 # @knowvah/plantuml-stdlib
 
 Vendored PlantUML stdlib bundles — C4, Archimate, Cloudinsight, Cloudogu, and
-Bootstrap Icons — packaged as [plantuml-ts](https://github.com/knowvah/plantuml-ts)
-`BundleData` values, for use with `plantuml-ts`'s `stdlibStore()` /
+Bootstrap Icons — packaged as [plantuml-engine](https://github.com/knowvah/plantuml-engine)
+`BundleData` values, for use with `plantuml-engine`'s `stdlibStore()` /
 `withStdlib()` include seam.
 
 ## Install
 
 ```sh
-npm install plantuml-ts @knowvah/plantuml-stdlib
+npm install @knowvah/plantuml-engine @knowvah/plantuml-stdlib
 ```
 
-`plantuml-ts` is a peer dependency — this package supplies data, not the
+`@knowvah/plantuml-engine` is a peer dependency — this package supplies data, not the
 renderer.
 
 ## Usage
 
 ```ts
-import { renderSync, stdlibStore, withStdlib, MapIncludeStore } from '@knowvah/plantuml-ts';
+import { renderSync, stdlibStore, withStdlib, MapIncludeStore } from '@knowvah/plantuml-engine';
 import { c4, archimate, cloudinsight, cloudogu, bootstrap } from '@knowvah/plantuml-stdlib';
 
 const includeStore = withStdlib(

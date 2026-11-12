@@ -48,9 +48,9 @@ import {
 import {
   engineCell,
   oracleColumn,
-  isPlantumlTsOnly,
+  isPlantumlEngineOnly,
   noEngineColumn,
-  PLANTUML_TS_ONLY,
+  PLANTUML_ENGINE_ONLY,
   type ColumnResult,
   dotColumn,
   surveyColumn,
@@ -181,10 +181,10 @@ interface RowColumns {
   refusal: ReturnType<typeof refusalColumn>;
 }
 
-/** Every comparison cell of a `plantuml-ts only` type: the jar declined the
+/** Every comparison cell of a `plantuml-engine only` type: the jar declined the
  *  source, so there is nothing to compare and no source date to report. */
-function plantumlTsOnlyColumns(): RowColumns {
-  const c = PLANTUML_TS_ONLY;
+function plantumlEngineOnlyColumns(): RowColumns {
+  const c = PLANTUML_ENGINE_ONLY;
   return { oracle: c, dot: c, survey: c, layout: c, census: c, ratchet: c, diffBaseline: c, routing: c, refusal: c };
 }
 
@@ -195,7 +195,7 @@ function noEngineColumns(c: ColumnResult, oracle: ColumnResult): RowColumns {
 }
 
 function columnsFor(type: string, inputs: RawInputs, dotByType: ReadonlyMap<string, TypeRow>): RowColumns {
-  if (isPlantumlTsOnly(type, inputs.oracleCounts, inputs.jarUnsupportedCounts)) return plantumlTsOnlyColumns();
+  if (isPlantumlEngineOnly(type, inputs.oracleCounts, inputs.jarUnsupportedCounts)) return plantumlEngineOnlyColumns();
   const noEngine = noEngineColumn(engineCell(type, inputs.registeredEngines));
   if (noEngine !== undefined) return noEngineColumns(noEngine, oracleColumn(type, inputs.oracleCounts));
   return {
@@ -315,7 +315,7 @@ const PREAMBLE = [
     "layout graph against the jar's svek DOT, `tests/oracle/layout-parity.ts`; fixtures with no " +
     'comparison are not counted); **ratchet pins**, **diff-baseline**, **routing** and **refusal** read the ' +
     'committed goldens under `oracle/goldens/`. Every empty cell names why it is empty, per the ' +
-    'vocabulary in decisions.md D8 — a bare `n/a` never appears. `n/a (plantuml-ts only)` marks ' +
+    'vocabulary in decisions.md D8 — a bare `n/a` never appears. `n/a (plantuml-engine only)` marks ' +
     'a type whose every cached jar SVG is PlantUML\'s own "Diagram not supported by this ' +
     'release" page: the port draws it, the pinned jar declines it, so nothing can be compared ' +
     'until a jar that supports the type is pinned. A bucket with no engine keeps its real ' +

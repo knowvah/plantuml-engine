@@ -75,7 +75,7 @@ describe('readStdlibAssetsStore', () => {
   });
 
   function makeAssetsDir(): string {
-    dir = mkdtempSync(join(tmpdir(), 'plantuml-ts-stdlib-assets-'));
+    dir = mkdtempSync(join(tmpdir(), 'plantuml-engine-stdlib-assets-'));
     return dir;
   }
 
@@ -119,7 +119,7 @@ describe('readStdlibAssetsStore', () => {
   });
 
   it('throws a remediation-bearing error when the assets directory is absent', () => {
-    const missing = join(tmpdir(), 'plantuml-ts-stdlib-assets-does-not-exist');
+    const missing = join(tmpdir(), 'plantuml-engine-stdlib-assets-does-not-exist');
     expect(() => readStdlibAssetsStore(missing)).toThrow(/does not exist.*npx tsx scripts\/vendor-stdlib\.ts/s);
   });
 });

@@ -1,9 +1,9 @@
 # @knowvah/plantuml-stdlib-aws
 
 Vendored AWS Architecture Icons for PlantUML (`awslib14`, plus the `awslib`
-alias) — packaged as [plantuml-ts](https://github.com/knowvah/plantuml-ts)
+alias) — packaged as [plantuml-engine](https://github.com/knowvah/plantuml-engine)
 `StdlibRemoteManifest` values plus the raw `.puml` assets they describe, for
-use with `plantuml-ts`'s `remoteStdlib()` / `stdlibRegistry()` include seam.
+use with `plantuml-engine`'s `remoteStdlib()` / `stdlibRegistry()` include seam.
 There is no eager `BundleData` export — see "Usage" below.
 
 ## Attribution and license
@@ -21,10 +21,10 @@ affiliates. Full text: [`LICENSE`](./LICENSE).
 
 This package vendors those files **byte-verbatim** (copy + sha256 checksum,
 never a transform — see `plans/si5b-stdlib/decisions.md` D1/D3 in the
-plantuml-ts source repo). The ND (No-Derivatives) term forbids modifying,
+plantuml-engine source repo). The ND (No-Derivatives) term forbids modifying,
 re-encoding, or recoloring the artwork; verbatim reproduction inside this
 "Collective Work" is permitted (CC BY-ND 2.0 §3(a)/§4(a) — see
-`planning/s4-stdlib-audit.md`'s license analysis in the plantuml-ts source
+`planning/s4-stdlib-audit.md`'s license analysis in the plantuml-engine source
 repo). This package's own glue code (the `.puml` macro definitions that
 accompany each sprite, and the generated `BundleData` wrapper) is MIT —
 see [`LICENSE-CODE`](./LICENSE-CODE), matching upstream's own split between
@@ -33,10 +33,10 @@ see [`LICENSE-CODE`](./LICENSE-CODE), matching upstream's own split between
 ## Install
 
 ```sh
-npm install plantuml-ts @knowvah/plantuml-stdlib-aws
+npm install @knowvah/plantuml-engine @knowvah/plantuml-stdlib-aws
 ```
 
-`plantuml-ts` is a peer dependency — this package supplies data, not the
+`@knowvah/plantuml-engine` is a peer dependency — this package supplies data, not the
 renderer.
 
 ## Usage
@@ -55,7 +55,7 @@ recipes, plus the full `baseUrl` contract, are documented once in
 assets" and "Recipe: pinned CDN" — and are not duplicated here.
 
 ```ts
-import { renderSync, remoteStdlib, stdlibRegistry } from '@knowvah/plantuml-ts';
+import { renderSync, remoteStdlib, stdlibRegistry } from '@knowvah/plantuml-engine';
 import { awslib14Remote } from '@knowvah/plantuml-stdlib-aws/awslib14.remote';
 
 const registry = stdlibRegistry({

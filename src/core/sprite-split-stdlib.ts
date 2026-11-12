@@ -25,7 +25,7 @@
  *   // single "." entry, so `src/index.ts` is the ONLY surface a consumer of
  *   // the built library can import from -- a deep path into `core/` is not
  *   // reachable, however tidy it looks.
- *   import { spriteSplitStdlib, stdlibRegistry } from '@knowvah/plantuml-ts';
+ *   import { spriteSplitStdlib, stdlibRegistry } from '@knowvah/plantuml-engine';
  *   import manifest from './bootstrap1.13.1/sprites.json' with { type: 'json' };
  *
  *   const registry = stdlibRegistry({
@@ -109,7 +109,7 @@ export class SpriteNotBundledError extends Error {
 
 /** Unique property key marking a {@link BundleData} as sprite-split. Never
  *  serialized, never collides with a real bundle field. */
-const SPRITE_SPLIT_NAMES = Symbol('plantuml-ts:sprite-split-names');
+const SPRITE_SPLIT_NAMES = Symbol('plantuml-engine:sprite-split-names');
 
 interface SpriteSplitBundleData extends BundleData {
   readonly [SPRITE_SPLIT_NAMES]: readonly string[];

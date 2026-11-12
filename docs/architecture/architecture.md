@@ -21,7 +21,7 @@ package "Host (one of)" {
 
 component "plantuml-plugins/core\nrender.ts (Node) · browser.ts" as CORE
 
-package "@knowvah/plantuml-ts" {
+package "@knowvah/plantuml-engine" {
   component "index.ts\nrenderSync · render · renderAll" as API
   component "core/\nBlockUmlBuilder · TIM preprocessor\nblock-extractor · dispatcher" as FRONT
   component "diagrams/*\n24 plugins (parse · layoutSync · render)" as PLUGINS
@@ -58,7 +58,7 @@ Communication is entirely **in-process and synchronous** except where a
 host opts into the async API: `render`/`renderAll` await an injected
 `fetcher` (for `!include` URLs and stdlib chunks, filtered by
 `SecurityProfile`), an `imageProvider` (for remote `<img>`), and the lazy
-`loadElk()`. There are no network calls plantuml-ts makes on its own, no
+`loadElk()`. There are no network calls plantuml-engine makes on its own, no
 databases, and no queues anywhere in the system. The only inter-process
 hop is plantuml-plugins' optional `renderInChild` (a Node child process
 used to enforce a render timeout at build time) and the VS Code
@@ -88,7 +88,7 @@ component "graphviz C\n~/git/graphviz/lib/dotgen" as GVC
 component "real `dot` 16.1\n(on PATH)" as GVBIN
 component "elk (Java mirror)\nknowvah/elk @ 8aaa3c14" as ELKJ
 
-component "plantuml-ts\ntests/oracle · tests/conformance" as PTS
+component "plantuml-engine\ntests/oracle · tests/conformance" as PTS
 component "dot-engine\ntest/corpus survey" as DOT
 component "elk-engine\ntools/oracle · test/golden" as ELKE
 component "plantuml-grammar\ntools/extract · tools/validate" as GRAM
@@ -124,7 +124,7 @@ There is no deployed service. Artifacts are:
 
 | Artifact | Built by | Published to |
 |----------|----------|--------------|
-| `@knowvah/plantuml-ts` (`dist/plantuml-ts.{js,cjs}` + `image-providers`) | `npm run build` (Vite lib) | npmjs (manual, `RELEASING.md`; not yet published) |
+| `@knowvah/plantuml-engine` (`dist/plantuml-engine.{js,cjs}` + `image-providers`) | `npm run build` (Vite lib) | npmjs (manual, `RELEASING.md`; not yet published) |
 | `@knowvah/plantuml-stdlib*`, `-sprites-archimate`, `-emoji`, `-all` | `npm run build:stdlib` | npmjs (manual) |
 | `@knowvah/dot-engine` | esbuild + `tsc` declarations | npmjs via semantic-release; mirrored to GitHub Packages |
 | `@knowvah/theme` | tsup | GitHub Packages on `theme/v*` tags |

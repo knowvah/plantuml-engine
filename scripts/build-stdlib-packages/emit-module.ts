@@ -17,10 +17,10 @@ const GENERATED_HEADER =
   '// Regenerate with: npm run build:stdlib\n';
 
 // Must match the package NAME every stdlib package declares as its peer
-// dependency (`@knowvah/plantuml-ts`), not the pre-scope specifier: this
+// dependency (`@knowvah/plantuml-engine`), not the pre-scope specifier: this
 // string is emitted verbatim into every generated `.d.ts`, so a consumer
 // resolves `BundleData` through it.
-const DTS_IMPORT = `import type { BundleData } from '@knowvah/plantuml-ts';\n`;
+const DTS_IMPORT = `import type { BundleData } from '@knowvah/plantuml-engine';\n`;
 
 function emitConcreteJs(bundle: ConcreteBundleExport, assetsStdlibDir: string): string {
   const files = readBundleFiles(assetsStdlibDir, bundle.assetFolder);

@@ -37,7 +37,7 @@ import { renderSync } from '../../../src/index.js';
 const deNbsp = (svg: string): string => svg.split('\u00a0').join(' ');
 
 const ERR = "Use 'allowmixing' if you want to mix classes and other UML elements.";
-const ERROR_BANNER = 'plantuml-ts version';
+const ERROR_BANNER = 'plantuml-engine version';
 
 function render(body: string): string {
   return renderSync(`@startuml\n${body}\n@enduml`);

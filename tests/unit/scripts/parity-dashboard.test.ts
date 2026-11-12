@@ -137,7 +137,7 @@ describe('buildMatrix', () => {
     expect(row('sequence').refusal).toBe('1132/1141');
   });
 
-  it('turns every comparison cell of a jar-unsupported type into n/a (plantuml-ts only)', () => {
+  it('turns every comparison cell of a jar-unsupported type into n/a (plantuml-engine only)', () => {
     const inputs = baseInputs();
     inputs.buckets = [...inputs.buckets, 'chronology'].sort();
     inputs.corpusCounts['chronology'] = 1;
@@ -151,7 +151,7 @@ describe('buildMatrix', () => {
     expect(r.engine).toBe('chronology');
     expect(r.corpus).toBe(1);
     for (const cell of [r.oracle, r.dot, r.survey, r.census, r.ratchet, r.diffBaseline, r.routing, r.refusal]) {
-      expect(cell).toBe('n/a (plantuml-ts only)');
+      expect(cell).toBe('n/a (plantuml-engine only)');
     }
     const f = buildFreshness(inputs).find((x) => x.type === 'chronology')!;
     expect([f.dot, f.survey, f.routing]).toEqual([undefined, undefined, undefined]);
@@ -305,7 +305,7 @@ describe('renderReport', () => {
   it('AC2: every n/a in the Matrix table matches the D8 vocabulary, no bare n/a', () => {
     const tableBlock = out.slice(out.indexOf('## Matrix'), out.indexOf('## Freshness'));
     const vocab =
-      /^n\/a \((no engine \((?:D\d+ todo|dropped by ruling \d{4}-\d{2}-\d{2})\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-ts only|engine, unclassifiable corpus|accounting bucket)\)$/;
+      /^n\/a \((no engine \((?:D\d+ todo|dropped by ruling \d{4}-\d{2}-\d{2})\)|no DOT stage \(non-svek\)|no oracle captured|no ratchet yet|no survey yet|no layoutEqual survey yet|no comparable fixture|no census yet|no diff-baseline yet|no data-diagram-type classification|plantuml-engine only|engine, unclassifiable corpus|accounting bucket)\)$/;
     for (const line of tableBlock.split('\n').filter((l) => l.startsWith('| '))) {
       for (const cell of line.split('|').map((c) => c.trim())) {
         if (cell.startsWith('n/a')) expect(cell).toMatch(vocab);
@@ -584,7 +584,7 @@ describe('matrix notes: why a row falls short', () => {
     expect(noteSymbolOf('ditaa', 'n/a (no engine (D1 todo))')).toBe('‡');
     expect(noteSymbolOf('state', '99 / 14 / 160 (4 error)')).toBe('§');
     expect(noteSymbolOf('unknown', '557 / 19 / 249 (25 error)')).toBe('¶');
-    expect(noteSymbolOf('chronology', 'n/a (plantuml-ts only)')).toBe('‖');
+    expect(noteSymbolOf('chronology', 'n/a (plantuml-engine only)')).toBe('‖');
   });
 
   it('drops the mark once the row is fully conformant, an error suffix included', () => {

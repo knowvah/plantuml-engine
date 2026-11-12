@@ -75,7 +75,7 @@ const NOT_STARTED = (cell: string): ColumnResult => ({ cell, freshness: undefine
  *  comparison cell says so instead of reporting a verdict against a placeholder.
  *  Requires at least one cached fixture — an uncaptured type is still
  *  `no oracle captured`. */
-export const PLANTUML_TS_ONLY: ColumnResult = NOT_STARTED('n/a (plantuml-ts only)');
+export const PLANTUML_ENGINE_ONLY: ColumnResult = NOT_STARTED('n/a (plantuml-engine only)');
 
 /** A bucket with no engine at all (engine cell `n/a (no engine (Dn todo))`)
  *  can have an oracle -- the jar renders it -- but every comparison against
@@ -98,7 +98,7 @@ export function noEngineColumn(engineCell: string): ColumnResult | undefined {
   return engineCell.startsWith(NO_ENGINE_PREFIX) ? NOT_STARTED(engineCell) : undefined;
 }
 
-export function isPlantumlTsOnly(
+export function isPlantumlEngineOnly(
   bucket: string,
   oracleCounts: Readonly<Record<string, number>>,
   jarUnsupportedCounts: Readonly<Record<string, number>>,

@@ -4,7 +4,7 @@
  * excludes them) — a classifier's own `<...>` generic clause, and a
  * discarded trailing generic on an `extends`/`implements` parent reference,
  * are matched by a SEPARATE bounded-recursion (4-level) regex
- * (`GenericRegexProducer`). plantuml-ts's original single-level
+ * (`GenericRegexProducer`). plantuml-engine's original single-level
  * `/^(\w+)<([^>]+)>$/` failed on any nested `<...>` inside the generic body
  * (`Foo<List <? extends GENERIC>>`) and on dotted self-qualified ids
  * (`issues.MySupplier<T>`, `\w+` excludes `.`), falling back to the whole
