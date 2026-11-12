@@ -1,13 +1,13 @@
 {
   "name": "@knowvah/plantuml-sprites-archimate",
   "version": "0.1.0",
-  "description": "Vendored ArchiMate sprite artwork (MIT) for plantuml-ts <<$archimate/...>> stereotypes",
+  "description": "Vendored ArchiMate sprite artwork (MIT) for plantuml-engine <<$archimate/...>> stereotypes",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/knowvah/plantuml-ts.git",
+    "url": "https://github.com/knowvah/plantuml-engine.git",
     "directory": "packages/sprites-archimate"
   },
   "scripts": {
@@ -34,10 +34,10 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@knowvah/plantuml-ts": "^0.2.0"
+    "@knowvah/plantuml-engine": "^0.2.0"
   },
   "devDependencies": {
-    "@knowvah/plantuml-ts": "file:../.."
+    "@knowvah/plantuml-engine": "file:../.."
   },
   "publishConfig": {
     "access": "public",

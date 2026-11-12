@@ -5,6 +5,6 @@ task shrinks `PENDING`; T8 deletes it.
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T1](T1-legacy-name-ratchet.md) | `tests/architecture/legacy-name.test.ts` with `ALLOWED` + `PENDING` | executor | `tests/architecture/legacy-name.test.ts` | T0 | [ ] |
+| [T1](T1-legacy-name-ratchet.md) | `tests/architecture/legacy-name.test.ts` with `ALLOWED` + `PENDING` | executor | `tests/architecture/legacy-name.test.ts` | T0 | [x] |
 
 Close: full gate set green.

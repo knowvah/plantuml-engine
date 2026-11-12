@@ -1,5 +1,5 @@
 /**
- * Public entry for `@knowvah/plantuml-ts/image-providers` (decisions.md D3).
+ * Public entry for `@knowvah/plantuml-engine/image-providers` (decisions.md D3).
  * A separate bundle so core consumers never load network code.
  */
 export type { ImageFetchResult, ImageProvider } from '../core/image-provider.js';

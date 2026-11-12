@@ -1,6 +1,6 @@
 /**
  * Code review (2026-09-21) — Must fix: every workspace `package.json` pinned
- * `peerDependencies["@knowvah/plantuml-ts"]` at `^0.1.0` while the root
+ * its `peerDependencies` range on the root package at `^0.1.0` while the root
  * package was already `0.2.0`. `^0.1.0` excludes `0.2.0` under npm's own
  * caret semantics (a leading-zero major locks the minor too), so the very
  * first publish of a workspace package would fail `npm install` for any
@@ -22,7 +22,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const PEER_NAME = '@knowvah/plantuml-ts';
+const PEER_NAME = '@knowvah/plantuml-engine';
 
 interface Version {
   readonly major: number;
@@ -97,7 +97,7 @@ describe('workspace peer ranges are satisfied by the root package version', () =
     expect(workspacePaths.length).toBeGreaterThan(0);
   });
 
-  it.each(workspacePaths)('%s peer range for @knowvah/plantuml-ts covers the root version', (relPath) => {
+  it.each(workspacePaths)('%s peer range for @knowvah/plantuml-engine covers the root version', (relPath) => {
     const pkg = readJson(join(REPO, relPath));
     const peerDeps = pkg.peerDependencies as Record<string, string> | undefined;
     const range = peerDeps?.[PEER_NAME];

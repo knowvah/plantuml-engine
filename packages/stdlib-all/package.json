@@ -1,13 +1,13 @@
 {
   "name": "@knowvah/plantuml-stdlib-all",
   "version": "0.1.0",
-  "description": "Meta-package: every non-GPL plantuml-ts stdlib package, re-exported",
+  "description": "Meta-package: every non-GPL plantuml-engine stdlib package, re-exported",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/knowvah/plantuml-ts.git",
+    "url": "https://github.com/knowvah/plantuml-engine.git",
     "directory": "packages/stdlib-all"
   },
   "scripts": {
@@ -34,10 +34,10 @@
     "@knowvah/plantuml-stdlib-tupadr3": "^0.1.0"
   },
   "peerDependencies": {
-    "@knowvah/plantuml-ts": "^0.2.0"
+    "@knowvah/plantuml-engine": "^0.2.0"
   },
   "devDependencies": {
-    "@knowvah/plantuml-ts": "file:../.."
+    "@knowvah/plantuml-engine": "file:../.."
   },
   "publishConfig": {
     "access": "public",

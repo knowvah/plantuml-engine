@@ -5,8 +5,8 @@
  * This is not hypothetical tidiness. `chore: move all packages to the
  * @knowvah scope` (9f189912) renamed every package but missed
  * `emit-module.ts`/`emit-remote-manifest.ts`'s `DTS_IMPORT` constants, so
- * every generated declaration file kept emitting the pre-scope specifier
- * `'plantuml-ts'` while the packages declared `@knowvah/plantuml-ts`. A
+ * every generated declaration file kept emitting the bare, pre-scope package
+ * name while the packages declared the scoped one. A
  * consumer's TypeScript could not resolve `BundleData` or
  * `StdlibRemoteManifest` from any of the four packages.
  *
@@ -36,6 +36,9 @@ const PACKAGES_DIR = join(REPO_ROOT, 'packages');
 /** Every package that emits a `generated/` tree containing `.d.ts` files. */
 const GENERATED_PACKAGES = ['stdlib', 'stdlib-aws', 'stdlib-tupadr3', 'stdlib-all'] as const;
 
+/** The peer every generated package declares: the root package's name. */
+const PEER_NAME = '@knowvah/plantuml-engine';
+
 interface PackageJson {
   readonly dependencies?: Record<string, string>;
   readonly peerDependencies?: Record<string, string>;
@@ -45,7 +48,7 @@ interface PackageJson {
  * Every package name this package's manifest declares. A bare specifier in
  * its `.d.ts` must be one of these or a consumer cannot resolve it --
  * `stdlib-all` legitimately re-exports from its three `dependencies`, while
- * the other three reach `@knowvah/plantuml-ts` through `peerDependencies`.
+ * the other three reach `@knowvah/plantuml-engine` through `peerDependencies`.
  */
 function declaredPackageNames(packageDir: string): string[] {
   const pkg = JSON.parse(readFileSync(join(PACKAGES_DIR, packageDir, 'package.json'), 'utf8')) as PackageJson;
@@ -93,19 +96,28 @@ function collectUndeclaredSpecifiers(packageDir: string, declared: readonly stri
   return undeclared;
 }
 
+/** Every `import type … from '<specifier>'` in a generated `.d.ts` -- the
+ * `DTS_IMPORT` lines of `emit-module.ts` / `emit-remote-manifest.ts`.
+ * `stdlib-all`'s `export … from` re-exports of its dependencies are not
+ * type imports and are covered by the declared-dependency check above. */
+function typeImportSpecifiers(dtsSource: string): string[] {
+  return [...dtsSource.matchAll(/^import type .* from '([^']+)';$/gm)].map((m) => m[1] as string);
+}
+
 /** stdlib-run-isolation T4: same shape as {@link collectUndeclaredSpecifiers},
- * scanning every `GENERATED_PACKAGES` package inside one lock hold. */
-function collectUnscopedSpecifierOffenders(): string[] {
-  const offenders: string[] = [];
+ * scanning every `GENERATED_PACKAGES` package inside one lock hold. Returns
+ * each type import as `<package>/<file>: '<specifier>'`. */
+function collectTypeImports(): string[] {
+  const typeImports: string[] = [];
   for (const packageDir of GENERATED_PACKAGES) {
     for (const fileName of generatedDtsFiles(packageDir)) {
       const source = readFileSync(join(PACKAGES_DIR, packageDir, 'generated', fileName), 'utf8');
-      if (source.includes(`from 'plantuml-ts'`)) {
-        offenders.push(`${packageDir}/${fileName}`);
+      for (const specifier of typeImportSpecifiers(source)) {
+        typeImports.push(`${packageDir}/${fileName}: '${specifier}'`);
       }
     }
   }
-  return offenders;
+  return typeImports;
 }
 
 describe('generated .d.ts files import from the declared peer dependency', () => {
@@ -122,7 +134,7 @@ describe('generated .d.ts files import from the declared peer dependency', () =>
     '%s: every bare specifier is a declared dependency',
     (packageDir) => {
       const declared = declaredPackageNames(packageDir);
-      expect(declared).toContain('@knowvah/plantuml-ts');
+      expect(declared).toContain(PEER_NAME);
 
       const undeclared = withStdlibBuildLock(() => collectUndeclaredSpecifiers(packageDir, declared));
 
@@ -132,10 +144,15 @@ describe('generated .d.ts files import from the declared peer dependency', () =>
   );
 
   it(
-    'the unscoped pre-rename specifier appears in no generated .d.ts',
+    'every type import in a generated .d.ts names the scoped peer exactly',
     () => {
-      const offenders = withStdlibBuildLock(() => collectUnscopedSpecifierOffenders());
+      // Exact equality, not "is declared": a bare `'plantuml-engine'`, the
+      // pre-rename name or the pre-scope name each fail here, whatever the
+      // manifests say.
+      const typeImports = withStdlibBuildLock(() => collectTypeImports());
+      const offenders = typeImports.filter((entry) => !entry.endsWith(`: '${PEER_NAME}'`));
 
+      expect(typeImports.length).toBeGreaterThan(0);
       expect(offenders).toEqual([]);
     },
     LOCK_PRESSURE_BUDGET_MS,

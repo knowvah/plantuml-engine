@@ -13,8 +13,8 @@ const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const DIST = resolve(ROOT, 'dist');
 const BUILD_TIMEOUT_MS = 180_000;
 const PROVIDERS_FILES = ['image-providers.js', 'image-providers.cjs', 'image-providers.d.ts'] as const;
-const ROOT_BUNDLE = 'plantuml-ts.js';
-const SUBPATH = '@knowvah/plantuml-ts/image-providers';
+const ROOT_BUNDLE = 'plantuml-engine.js';
+const SUBPATH = '@knowvah/plantuml-engine/image-providers';
 const FACTORIES = ['createBrowserImageProvider', 'createNetworkImageProvider'];
 
 function dist(name: string): string {

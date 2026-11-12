@@ -1,11 +1,11 @@
 {
-  "name": "@knowvah/plantuml-ts",
+  "name": "@knowvah/plantuml-engine",
   "version": "0.2.0",
   "description": "A TypeScript port of PlantUML: parse PlantUML source and render SVG synchronously, in the browser or Node, with no server and no Java",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/knowvah/plantuml-ts.git"
+    "url": "https://github.com/knowvah/plantuml-engine.git"
   },
   "keywords": [
     "plantuml",
@@ -24,17 +24,17 @@
     "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
-  "main": "./dist/plantuml-ts.cjs",
-  "module": "./dist/plantuml-ts.js",
-  "types": "./dist/plantuml-ts.d.ts",
+  "main": "./dist/plantuml-engine.cjs",
+  "module": "./dist/plantuml-engine.js",
+  "types": "./dist/plantuml-engine.d.ts",
   "files": [
     "dist",
     "NOTICE"
   ],
   "exports": {
     ".": {
-      "import": "./dist/plantuml-ts.js",
-      "require": "./dist/plantuml-ts.cjs"
+      "import": "./dist/plantuml-engine.js",
+      "require": "./dist/plantuml-engine.cjs"
     },
     "./image-providers": {
       "types": "./dist/image-providers.d.ts",

@@ -75,8 +75,8 @@ journal why.
 
 | Batch | Tasks | Status |
 |---|---|---|
-| [batch-0](batch-0/overview.md) | T0 branch, brief, pycache | [ ] |
-| [batch-1](batch-1/overview.md) | T1 ratchet test | [ ] |
+| [batch-0](batch-0/overview.md) | T0 branch, brief, pycache | [x] |
+| [batch-1](batch-1/overview.md) | T1 ratchet test | [x] |
 | [batch-2](batch-2/overview.md) | T2 package · T3 version · T4 src · T5 scripts · T6 tests · T7a user docs · T7b internal docs | [ ] |
 | [batch-3](batch-3/overview.md) | T8 close ratchet, verify, draft PR body | [ ] |
 

@@ -3,7 +3,7 @@
 import { ref, onMounted, watch } from 'vue';
 // Aliased in .vitepress/config.ts to the real library source (src/index.ts,
 // D2), so the playground always runs exactly what ships.
-import { renderSync } from '@knowvah/plantuml-ts';
+import { renderSync } from '@knowvah/plantuml-engine';
 // Client-side PlantUML syntax highlighting, reusing the SAME grammar the docs
 // code blocks use (single source of truth). Shiki runs in the browser here
 // over a transparent-textarea overlay with its pure-JS regex engine (no

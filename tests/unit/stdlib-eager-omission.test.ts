@@ -151,11 +151,17 @@ describe('acceptance 1: stdlib-tupadr3 ships no eager module', () => {
 // they cover the inlined `.puml` content, which no change here may re-encode.
 //
 // The five bundle `.d.ts` digests were RE-PINNED once, deliberately, after
-// SI12 closed: fixing the generated import specifier from the pre-scope
-// `'plantuml-ts'` to the declared `'@knowvah/plantuml-ts'` changes exactly
+// SI12 closed: fixing the generated import specifier from the bare
+// pre-scope package name to the declared scoped name changes exactly
 // one line of every `.d.ts` and nothing else. That this guard fired on those
 // five files and on NOTHING else -- not one `.js`, not `index.d.ts`, which
 // has no bare import -- is the evidence the fix was as narrow as claimed.
+//
+// RE-PINNED a second time for the plantuml-engine rename (issue #173,
+// 2026-11-12): the peer became `'@knowvah/plantuml-engine'`, again one line
+// per `.d.ts`. Each new digest was checked to equal the sha256 of the old
+// file with only that specifier replaced; every `.js` and `index.*` digest
+// stayed put (plans/rename-plantuml-engine/decision-journal.md).
 // See `tests/unit/stdlib-dts-import-specifier.test.ts` for why the specifier
 // was wrong and why no gate caught it.
 // ---------------------------------------------------------------------------
@@ -166,15 +172,15 @@ interface PinnedFile {
 }
 
 const STDLIB_PINNED_DIGESTS: readonly PinnedFile[] = [
-  { fileName: 'archimate.d.ts', sha256: '854c36873a504bcb2722cb8825de7ed536647ec4fa0eae729a59410d691821f5' },
+  { fileName: 'archimate.d.ts', sha256: '017374e9e1c83036b1b8e0b93aa90b5d33ae02596fc512723b5153338bf46052' },
   { fileName: 'archimate.js', sha256: '2b7cc62394934490272f23307517ed21b05c4534f92758369bf2d7ec0e08878f' },
-  { fileName: 'bootstrap.d.ts', sha256: 'eae58032689977aa6307e4d805affc1c604d0ab81f91d855c546bc65419ade37' },
+  { fileName: 'bootstrap.d.ts', sha256: '6f6d5e3bcbb2be5694635771957466b63179b00ddbaea5475a5b20b82b0609ea' },
   { fileName: 'bootstrap.js', sha256: '29fefcebde1e4896d5687c8ad1fc57213e9d2690213048d899846d0de392ea5f' },
-  { fileName: 'c4.d.ts', sha256: '05d164a72731551a3af48dba27ef1999c6be0f902a38032eec1dd5d446744d4f' },
+  { fileName: 'c4.d.ts', sha256: '62f0377675512dc1c551ee131a7fbccbb6f1755466b4a05f767e4e6e5fd4bfd8' },
   { fileName: 'c4.js', sha256: 'f7929a5a2efdfd453e7889677ffc89f3fd050a4915139f2149838c8fd65cb0c7' },
-  { fileName: 'cloudinsight.d.ts', sha256: '17127c221eed82136e5b9d302123f6e9e9568d2a1a911a0b658e624bd6f9ed51' },
+  { fileName: 'cloudinsight.d.ts', sha256: 'f233da1446164a1fcad41e6a6d871d8b85c86284bf5e2459fae420abd2331bd8' },
   { fileName: 'cloudinsight.js', sha256: '26edf20eef9bc3b79bd8affdc1d2f16f2ffa3ee14c7837c50ee2ba223fbe1c5b' },
-  { fileName: 'cloudogu.d.ts', sha256: '5f35aa2b09e79c70f335bf11ffffb95183fc309333b9bf9c822f50849a40bf28' },
+  { fileName: 'cloudogu.d.ts', sha256: '1854d89413259217b6703765ced310f525cc930007863770128fa94951e48c64' },
   { fileName: 'cloudogu.js', sha256: '23ab67b8cc4a5795d32a37da1a3aa0c689a78fbe6580ce42460cbcaa0c1c860f' },
   { fileName: 'index.d.ts', sha256: 'fec566ad9aa65360b47900983a6643e79430e0ee25b1ea4c0908d82d09761b48' },
   { fileName: 'index.js', sha256: 'fec566ad9aa65360b47900983a6643e79430e0ee25b1ea4c0908d82d09761b48' },
