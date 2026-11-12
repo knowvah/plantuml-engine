@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T07:57:11.649Z",
+  "generatedAt": "2026-11-12T19:09:03.375Z",
   "fixtures": [
     {
       "slug": "bacupi-77-fuke586",
@@ -6752,7 +6752,7 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 200,
+      "maxDelta": 226,
       "firstDiff": "svg/@background",
       "maxDeltaPath": "svg/@viewBox[2]"
     },

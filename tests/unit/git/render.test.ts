@@ -11,7 +11,7 @@ function render(body: string): string {
 }
 
 /** Our own error page carries the port's version banner (ruling 2026-10-10). */
-const OWN_ERROR_PAGE = /plantuml-ts version [^<]*<\/text>/;
+const OWN_ERROR_PAGE = /plantuml-engine version [^<]*<\/text>/;
 
 describe('git plugin', () => {
   it('draws a GIT document on a white background', () => {

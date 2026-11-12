@@ -7,8 +7,8 @@ output).
 
 | ID | Description | Agent | Writes (plus `PENDING`, `docs/catalog.md` when drifted) | Depends On | Done |
 |---|---|---|---|---|---|
-| [T2](T2-package-identity.md) | Package name, dist filenames, workspace refs, lockfile | executor | root config, `packages/*/package.json`, demo, docs-site config, stdlib emitters, 4 tests | T1 | [ ] |
-| [T3](T3-version-string.md) | `plantuml-engine version …` and its pins | executor | `version.ts`, `PSystemVersion.ts`, 3 tests, svg-utility baseline, `DIVERGENCES.md` | T2 | [ ] |
+| [T2](T2-package-identity.md) | Package name, dist filenames, workspace refs, lockfile | executor | root config, `packages/*/package.json`, demo, docs-site config, stdlib emitters, 4 tests | T1 | [x] |
+| [T3](T3-version-string.md) | `plantuml-engine version …` and its pins | executor | `version.ts`, `PSystemVersion.ts`, 3 tests, svg-utility baseline, `DIVERGENCES.md` | T2 | [x] |
 | [T4](T4-src-prose-and-messages.md) | Rest of `src/`: prose, message prefixes, Symbol | executor | 15 `src` files, 3 tests | T3 | [ ] |
 | [T5](T5-scripts-identifiers-reports.md) | `scripts/`, D1 identifiers, generated reports | executor | 13 scripts, 7 tests/helpers, 3 reports | T4 | [ ] |
 | [T6](T6-test-prose.md) | Remaining test comments | executor | 15 test files | T5 | [ ] |

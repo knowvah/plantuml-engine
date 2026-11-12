@@ -78,7 +78,8 @@ describe('versionPlugin', () => {
   it('renders the about page as a complete document', () => {
     const svg = renderOf('about');
     // 239 (the jar's page) + 12: the port-author credit line (user ruling 2026-10-14).
-    expect(svg).toContain('width="393px" height="251px"');
+    // Width re-pinned 393 -> 410 for issue #173 ruling 2026-11-11: the version line is the widest.
+    expect(svg).toContain('width="410px" height="251px"');
     expect(svg).toContain('text-decoration="underline">Original idea</text>');
   });
 

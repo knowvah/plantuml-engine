@@ -27,7 +27,7 @@
       "status": "baseline",
       "weightedScore": 138,
       "diffCount": 124,
-      "reason": "D13 + the kept label (journal row 24a; memory keep-own-version-string): \"plantuml-ts version 0.2.0\" vs \"PlantUML version $version$\" (src/diagrams/version/PSystemVersion.ts:114) and \"(MIT source distribution)\" vs \"(GPL source distribution)\" (:115, License.java:63-68). Controlled experiment: both set to the jar's -> 0 (experiment-about-gpl.json); label alone -> 2 (experiment-about-label-only.json): 6 diffs are the label and the width it drives, 2 the edition. Plus the port-author credit line appended after the jar's closing blank (user ruling 2026-10-14, DIVERGENCES.md \"`about`, `authors` and `version` credit the TypeScript port\"): without it the score is 8; with it compareSvg re-aligns the page on the changed element count, so one added line costs the rest.",
+      "reason": "D13 + the kept label (journal row 24a; memory keep-own-version-string): \"plantuml-engine version 0.2.0\" vs \"PlantUML version $version$\" (src/diagrams/version/PSystemVersion.ts:114) and \"(MIT source distribution)\" vs \"(GPL source distribution)\" (:115, License.java:63-68). Controlled experiment: both set to the jar's -> 0 (experiment-about-gpl.json); label alone -> 2 (experiment-about-label-only.json): 6 diffs are the label and the width it drives, 2 the edition. Plus the port-author credit line appended after the jar's closing blank (user ruling 2026-10-14, DIVERGENCES.md \"`about`, `authors` and `version` credit the TypeScript port\"): without it the score is 8; with it compareSvg re-aligns the page on the changed element count, so one added line costs the rest.",
       "measuredAt": "2026-10-14",
       "measuredAgainstCommit": "650f08bcc"
     },
@@ -63,7 +63,7 @@
       "status": "baseline",
       "weightedScore": 138,
       "diffCount": 124,
-      "reason": "D13 + the kept label (journal row 24a; memory keep-own-version-string): \"plantuml-ts version 0.2.0\" vs \"PlantUML version $version$\" (src/diagrams/version/PSystemVersion.ts:114) and \"(MIT source distribution)\" vs \"(GPL source distribution)\" (:115, License.java:63-68). Controlled experiment: both set to the jar's -> 0 (experiment-about-gpl.json); label alone -> 2 (experiment-about-label-only.json): 6 diffs are the label and the width it drives, 2 the edition. Plus the port-author credit line appended after the jar's closing blank (user ruling 2026-10-14, DIVERGENCES.md \"`about`, `authors` and `version` credit the TypeScript port\"): without it the score is 8; with it compareSvg re-aligns the page on the changed element count, so one added line costs the rest.",
+      "reason": "D13 + the kept label (journal row 24a; memory keep-own-version-string): \"plantuml-engine version 0.2.0\" vs \"PlantUML version $version$\" (src/diagrams/version/PSystemVersion.ts:114) and \"(MIT source distribution)\" vs \"(GPL source distribution)\" (:115, License.java:63-68). Controlled experiment: both set to the jar's -> 0 (experiment-about-gpl.json); label alone -> 2 (experiment-about-label-only.json): 6 diffs are the label and the width it drives, 2 the edition. Plus the port-author credit line appended after the jar's closing blank (user ruling 2026-10-14, DIVERGENCES.md \"`about`, `authors` and `version` credit the TypeScript port\"): without it the score is 8; with it compareSvg re-aligns the page on the changed element count, so one added line costs the rest.",
       "measuredAt": "2026-10-14",
       "measuredAgainstCommit": "650f08bcc"
     },
@@ -578,7 +578,7 @@
       "status": "baseline",
       "weightedScore": 120,
       "diffCount": 79,
-      "reason": "D14 (+D13 License row): the port prints its own page (src/diagrams/version/PSystemVersion.ts, PSystemVersion.java:172-202) -- plantuml-ts / 0.2.0 / unknown for PlantUML / $version$ / $git.commit.id$, MIT for GPL, \"@knowvah/dot-engine library is used!\" (GraphvizUtils.java:94 arm) for the oracle host's \"dot - graphviz version 16.1.0 (20260904.0139)\", and no JVM/env block (OptionPrint.java:62-63/:85 omit it under TeaVM too): 8 text rows vs the jar's 15. No cheap experiment: the jar rows are the oracle host's state, which D14 forbids printing. Plus the port-author credit line appended last (user ruling 2026-10-14, DIVERGENCES.md).",
+      "reason": "D14 (+D13 License row): the port prints its own page (src/diagrams/version/PSystemVersion.ts, PSystemVersion.java:172-202) -- plantuml-engine / 0.2.0 / unknown for PlantUML / $version$ / $git.commit.id$, MIT for GPL, \"@knowvah/dot-engine library is used!\" (GraphvizUtils.java:94 arm) for the oracle host's \"dot - graphviz version 16.1.0 (20260904.0139)\", and no JVM/env block (OptionPrint.java:62-63/:85 omit it under TeaVM too): 8 text rows vs the jar's 15. No cheap experiment: the jar rows are the oracle host's state, which D14 forbids printing. Plus the port-author credit line appended last (user ruling 2026-10-14, DIVERGENCES.md).",
       "measuredAt": "2026-10-14",
       "measuredAgainstCommit": "650f08bcc"
     },

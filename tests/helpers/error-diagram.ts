@@ -18,7 +18,7 @@ import { expect } from 'vitest';
  * `PSystemError#header()` — the version banner, drawn above every error
  * diagram's source listing and nowhere else.
  */
-export const ERROR_BANNER = 'plantuml-ts version';
+export const ERROR_BANNER = 'plantuml-engine version';
 
 /**
  * `PSystemWelcome` — what a source with no `@start…@end` block renders (the

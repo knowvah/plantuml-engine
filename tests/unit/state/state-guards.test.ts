@@ -202,7 +202,7 @@ describe('G24 dotted-phantom guard — CommandLinkStateCommon.java:277-278 (quar
 });
 
 describe('G24 guards, full pipeline — renderSync produces the jar-shaped error diagram, not a phantom render', () => {
-  const ERROR_BANNER = 'plantuml-ts version';
+  const ERROR_BANNER = 'plantuml-engine version';
 
   it('cagego-53-vemo516 shape renders the error diagram (banner + message), never a phantom "d" node', () => {
     const svg = renderSync('@startuml\nstate S {\nstate a\n--\nstate b {\nstate c\n}\nc -> d\n}\n@enduml');
