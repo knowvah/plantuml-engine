@@ -66,6 +66,51 @@ The klimt emitter is a deterministic serializer (no iterative/force-directed
 layout math in this layer), so every comparison uses the `deterministic`
 band. ±0.01 absorbs decimal-formatting noise only; it is not a loose bound.
 
+## Flow box order
+
+Ruling #174 (2026-11-12) adds one comparison rule. It applies when the
+**reference** is a jar `@startflow` document (root
+`data-diagram-type="FLOW"`), and only then.
+
+**Why:** `FlowDiagram#drawU` draws the boxes by iterating `tilesBoxes`, a
+`HashMap<Tile, ActivityBox>` (`FlowDiagram.java:77`, `129-140`). `Tile` does
+not override `hashCode`, so the jar's box order follows JVM identity hashes and
+changes from run to run: six renders of `bemixo-79-xulu250` gave six SVGs and
+one multiset of elements (flow-engine-port D4). The port iterates in insertion order,
+which is an order the jar can produce. A positional compare could therefore
+only pass by chance: 10 of the 38 multi-box authored fixtures did.
+
+**The rule** (`tests/oracle/svg-conformance/flow-box-order.ts`, applied by
+`compareSvg` after normalization):
+
+1. The drawing `<g>`'s children are split into the leading run of **box
+   groups** and a **tail**. A box group is one `ActivityBox.drawU`
+   (`ActivityBox.java:88-100`): the rounded rectangle (fill `MY_YELLOW`
+   `#FEFECE`, stroke `MY_RED` `#A80036`, width 1.5; a `polygon` under
+   `!option handwritten`), then every element of its text block. The tail
+   starts at the first connector element (`MY_RED` paint), which
+   `FlowDiagram.java:141-152` draws after every box, in source order.
+2. Both sides' box groups are sorted by tile: row, then column. The tile is
+   the box centre divided by `SINGLE_SIZE_X` 100 and `SINGLE_SIZE_Y` 35
+   (`FlowDiagram.java:73-74`), rounded, because `drawU` centres each box in its
+   tile (`FlowDiagram.java:136-139`). The serialized group breaks a tie.
+3. Groups move whole, so a text never pairs with another box's rectangle. The
+   tail stays positional, so connectors drawn out of order still fail.
+   Everything is still compared under the normal tolerance.
+4. A drawing that does not have this shape (no leading box, or a box after a
+   connector) is compared positionally, unchanged.
+
+**What it does not cover:** the jar's run-to-run *layout* changes
+(`TilesField#moveAllToEast`, `TilesField.java:158-173`). Reordering cannot
+reconcile different coordinates. The three authored fixtures whose layout
+varies (`cov-shift-east`, `cov-shift-three`, `cov-many-shift`) keep each
+recorded jar layout as `<slug>.vN.svg`, held by the `svg-flow` multiset
+tier. A corpus row that hits a layout shift needs a new ruling.
+
+This is a comparison rule, **not** an accepted divergence: nothing is entered
+in `oracle/accepted-divergences.json`, because the rows it passes are output
+the jar itself can produce.
+
 ## The divergence accounting model
 
 The target is **100% conformance**. Any residue — a case that does not

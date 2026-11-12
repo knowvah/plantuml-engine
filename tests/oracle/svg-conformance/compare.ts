@@ -17,6 +17,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import { canonicalizeFlowBoxOrder, isFlowDocument } from './flow-box-order.js';
 import { normalizeSvg } from './normalize.js';
 import type { NormalizedNode } from './normalize.js';
 
@@ -592,8 +593,12 @@ export function compareSvg(
     0.01;
   const diffs: Diff[] = [];
 
-  const actualNorm = normalizeSvg(actual);
-  const refNorm = normalizeSvg(reference);
+  // Ruling #174: a jar `@startflow` document draws its boxes in identity-hash
+  // order, so both sides' box groups are put in one canonical order first
+  // (flow-box-order.ts). Every other diagram type compares as parsed.
+  const canonical = isFlowDocument(reference) ? canonicalizeFlowBoxOrder : (n: NormalizedNode): NormalizedNode => n;
+  const actualNorm = canonical(normalizeSvg(actual));
+  const refNorm = canonical(normalizeSvg(reference));
 
   // normalizeSvg always returns a type: 'element' root (the <svg> tag),
   // so `tag` is always set; `?? 'svg'` is unreachable via this entry point.

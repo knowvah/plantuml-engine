@@ -1,3 +1,10 @@
 {
-  "fixtures": []
+  "fixtures": [
+    {
+      "slug": "bemixo-79-xulu250",
+      "type": "unknown",
+      "addedAt": "2026-11-12",
+      "source": "dot-cache"
+    }
+  ]
 }

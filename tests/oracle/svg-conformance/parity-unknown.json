@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T07:58:50.739Z",
+  "generatedAt": "2026-11-12T16:59:48.006Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -202,10 +202,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 376.90000000000003,
-      "firstDiff": "svg/g[1]/text[1]/@textLength",
-      "maxDeltaPath": "svg/g[1]/rect[5]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "benogu-57-mefi213",
