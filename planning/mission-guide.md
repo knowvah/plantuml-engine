@@ -347,6 +347,15 @@ and `!include <stdlib>`; `dot`/`auto-layout` for layout.
 
 ---
 
+## ListSprite — DONE (listsprite-factory-port, #134)
+
+`klimt/sprite/{ListSpriteDiagramFactory,ListSpriteDiagram,CommandListSprite}.java` ported into
+`src/core/klimt/sprite/`, registered at `PSystemBuilder.java:170`; `@startsprites` routes to `'sprites'`
+(`DiagramType.java:193-200`). The page prints `data-diagram-type="HELP"` (`ListSpriteDiagram.java:60`) and draws each
+sprite through the creole sprite atom (`sprite-text-block.ts`, `Sprite#asTextBlock`).
+
+---
+
 ## Phase 4h — Full Creole + Sprite Registry
 
 **Java source (Creole):** `klimt/creole/`, `klimt/creole/atom/`,

@@ -1,0 +1,21 @@
+@startsprites
+title Sprite catalogue
+caption figure 1
+header page header
+footer page footer
+legend
+the legend
+endlegend
+sprite $foo1 {
+FFFFFFFFFFFFFFF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+F0123456789ABCF
+FFFFFFFFFFFFFFF
+}
+@endsprites

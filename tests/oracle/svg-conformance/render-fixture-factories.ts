@@ -40,13 +40,16 @@ import { compareSvg, weightedScore } from './compare.js';
 import { remoteImageFixtureStore } from './remote-image-fixtures.js';
 
 /**
- * The 41 in-scope `test-results/dot-cache/unknown/<slug>` rows, in the order
+ * The 43 in-scope `test-results/dot-cache/unknown/<slug>` rows, in the order
  * of `plans/creole-math-factories-port/measurements/factory-rows.mjs` (factory,
- * then slug).
+ * then slug); the two ListSprite rows joined at lsp T3
+ * (`plans/listsprite-factory-port/measurements/corpus-rows.mts`).
  */
 export const FACTORIES_SLUGS: readonly string[] = [
   'banire-12-feze162', // Definition (PSystemBuilder.java:169)
   'firiru-71-viki803',
+  'folutu-01-xuzo995', // ListSprite (PSystemBuilder.java:170)
+  'nujapi-78-mota753',
   'caruta-83-deta919', // Math       (PSystemBuilder.java:172)
   'cukuba-10-cipo394',
   'geravi-79-nafu641',

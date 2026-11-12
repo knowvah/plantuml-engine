@@ -51,6 +51,7 @@ export type DiagramType =
   | 'latex'
   | 'def'
   | 'help'
+  | 'sprites'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -181,6 +182,8 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   math: 'math',
   latex: 'latex',
   def: 'def',
+  // lsp D2: `@startsprites` (`DiagramType.java:193-194`), `ListSpriteDiagramFactory`'s own tag.
+  sprites: 'sprites',
   chart: 'chart',
   dot: 'dot',
 };
@@ -448,6 +451,9 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   def: UpstreamDiagramType.DEFINITION,
   // `HelpFactory` is `DiagramType.HELP` (HelpFactory.java:51), a member of `@startuml`'s set (DiagramType.java:198-201).
   help: UpstreamDiagramType.HELP,
+  // `ListSpriteDiagramFactory` is `DiagramType.SPRITES` (ListSpriteDiagramFactory.java:48-50), a member of `@startuml`'s
+  // set too (DiagramType.java:198-201); the diagram it builds prints `HELP` (ListSpriteDiagram.java:60).
+  sprites: UpstreamDiagramType.SPRITES,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

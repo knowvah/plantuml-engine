@@ -817,7 +817,9 @@ describe('routing conformance — jar-error classification', () => {
     // PSystemBuilder.java:191), +4 svg-git golden clones. Derivation: 11003 + 4 + 4 = 11011.
     // 11011 -> 11013 at flp/T4 (2026-11-12): bemixo-79-xulu250 flips to agree (FLOW/FLOW, FlowDiagramFactory
     // registered at PSystemBuilder.java:185), +1 svg-flow golden clone (its multiset-tier golden). 11011 + 1 + 1 = 11013.
-    expect(pinnedAgree.length).toBe(11013);
+    // 11013 -> 11017 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip to agree (HELP/HELP,
+    // ListSpriteDiagramFactory registered at PSystemBuilder.java:170), +2 svg-factories golden clones. 11013 + 2 + 2 = 11017.
+    expect(pinnedAgree.length).toBe(11017);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -848,7 +850,8 @@ describe('routing conformance — jar-error classification', () => {
     // 34 -> 27 at bpe/T4 (2026-11-11): the 7 bpm rows flip to agree (the bpm engine registers).
     // 27 -> 23 at gip/T4 (2026-11-11): the 4 git rows flip to agree (the git engine registers).
     // 23 -> 22 at flp/T4 (2026-11-12): bemixo-79-xulu250 flips to agree (the flow engine registers).
-    expect(pinnedMisroutes.length).toBe(22);
+    // 22 -> 20 at lsp/T3 (2026-11-12): the 2 listsprite rows flip to agree (the listsprite factory registers).
+    expect(pinnedMisroutes.length).toBe(20);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -956,7 +959,8 @@ describe('routing conformance — jar-error classification', () => {
     // 11185 -> 11192 at bpe/T4 (2026-11-11): +7 svg-bpm golden clones, all agree.
     // 11192 -> 11196 at gip/T4 (2026-11-11): +4 svg-git golden clones, all agree.
     // 11196 -> 11197 at flp/T4 (2026-11-12): +1 svg-flow golden clone, agree.
-    expect(manifest.fixtures.length).toBe(11197);
+    // 11197 -> 11199 at lsp/T3 (2026-11-12): +2 svg-factories golden clones, agree.
+    expect(manifest.fixtures.length).toBe(11199);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1052,7 +1056,8 @@ describe('routing conformance — jar-error classification', () => {
     // 34 -> 27 at bpe/T4 (2026-11-11): the 7 bpm rows flip to agree.
     // 27 -> 23 at gip/T4 (2026-11-11): the 4 git rows flip to agree.
     // 23 -> 22 at flp/T4 (2026-11-12): bemixo-79-xulu250 flips to agree.
-    expect(censused.length).toBe(22);
+    // 22 -> 20 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip to agree.
+    expect(censused.length).toBe(20);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

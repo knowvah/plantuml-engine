@@ -1,12 +1,12 @@
 /**
- * Diff-count BASELINE ratchet for the 41 creole/math/latex/definition/help
+ * Diff-count BASELINE ratchet for the 43 creole/math/latex/definition/listsprite/help
  * factory oracle rows (creole-math-factories-port / T4).
  *
  * Copies `utility.diff-baseline.ratchet.test.ts` (weighted-score-never-rises
  * gate over `oracle/goldens/svg-factories/diff-baseline.json`, `diffCount`
  * informational, `status: "error"` rows never silently read as "0 diffs") over
  * a different population: the FIXED `FACTORIES_SLUGS` list
- * (`render-fixture-factories.ts`), 41 rows of `test-results/dot-cache/unknown/`.
+ * (`render-fixture-factories.ts`), 43 rows of `test-results/dot-cache/unknown/`.
  * Unlike the utility rows none of these is an error page, so no row is
  * expected to be recorded `error`; the recorded-error block stays as the guard
  * should one ever be.
@@ -14,7 +14,7 @@
  * AUTHORED ROOT. `tests/fixtures/factories/` holds original fixtures
  * (`<slug>.puml` + the jar's `<slug>.svg` beside it, flat) tracked by a
  * SEPARATE manifest, `authored-baseline.json`, so the cached invariant ("rows
- * + pins = the 41 FACTORIES_SLUGS") is untouched and the pin tool never sees an
+ * + pins = the 43 FACTORIES_SLUGS") is untouched and the pin tool never sees an
  * authored row. Invariant: authored rows = the `.puml` files on disk, each with
  * its `.svg`, disjoint from the cached slugs. A row is `baseline` (never-rises;
  * 0 is conformant and gated at 0; nonzero carries its mechanism) or
@@ -76,7 +76,7 @@ const RATCHET_PATH = join(GOLDENS_DIR, 'ratchet.json');
 const CACHE_ROOT = join(HERE, '../../../test-results/dot-cache');
 
 /** The in-scope population size (`plans/creole-math-factories-port/measurements/factory-rows.mjs`). */
-const FACTORIES_SLUG_COUNT = 41;
+const FACTORIES_SLUG_COUNT = 43;
 const RENDERS_PER_ROW = 3;
 
 const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as BaselineManifest;
@@ -133,7 +133,7 @@ const errorFixtures = manifest.fixtures.filter((f) => f.status === 'error');
 
 // ---------------------------------------------------------------------------
 // AC0 -- corpus presence AND manifest shape: diff-baseline rows plus golden
-// ratchet pins = the 41 FACTORIES_SLUGS, exactly, disjoint.
+// ratchet pins = the 43 FACTORIES_SLUGS, exactly, disjoint.
 // ---------------------------------------------------------------------------
 
 describe('svg-factories weighted-score baseline ratchet — corpus presence and manifest shape', () => {

@@ -68,6 +68,7 @@ import { definitionPlugin } from '../../src/diagrams/definition/PSystemDefinitio
 import { helpPlugin } from '../../src/diagrams/help/index.js';
 import { latexPlugin } from '../../src/diagrams/math/PSystemLatexFactory.js';
 import { mathPlugin } from '../../src/diagrams/math/PSystemMathFactory.js';
+import { listSpritePlugin } from '../../src/core/klimt/sprite/ListSpriteDiagramFactory.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // rubeku-92-vefi942 rendered three times, 2,723ms);
@@ -105,6 +106,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [chartPlugin, 158],
   [packetdiagPlugin, 159],
   [definitionPlugin, 169],
+  [listSpritePlugin, 170],
   [mathPlugin, 172],
   [latexPlugin, 173],
   [creolePlugin, 174],
@@ -258,6 +260,8 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startbpm\n:login;\n@endbpm', bpmPlugin],
   ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],
   ['@startflow\n10 "A"\n@endflow', flowPlugin],
+  ['@startsprites\nsprite $a {\nF0\n0F\n}\n@endsprites', listSpritePlugin],
+  ['@startuml\nsprite $a {\nF0\n0F\n}\nlistsprite\n@enduml', listSpritePlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

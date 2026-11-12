@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T06:24:27.222Z",
+  "generatedAt": "2026-11-12T07:58:50.739Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1593,10 +1593,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 420.344,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "fomopo-28-fabe385",
@@ -4227,10 +4224,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 420.344,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[6]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "nulevu-49-bovi390",

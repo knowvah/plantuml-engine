@@ -440,12 +440,11 @@
       "slug": "cov-refuse-listsprite",
       "topic": "refusal parity: `listsprite` twice -- PSystemListArchimateSpritesFactory returns null and the jar falls through to ListSpriteDiagramFactory",
       "status": "baseline",
-      "weightedScore": 192,
-      "diffCount": 5,
-      "reason": "jar draws, we error (a defect; the 2026-10-10 rule does not cover it): ListSpriteDiagramFactory (PSystemBuilder.java:170) accepts `listsprites?` and ignores it (CommandListSprite.java:58 regex, :69-70 executeArg ok()), drawing an empty 21x21 page; the port has no ListSpriteDiagramFactory (no match in src/), so every candidate refuses. A new plugin + src/index.ts registration, outside T3-cov's write-set. 5 diffs / weighted 192 (g childCount 27 vs 0 = 188).",
-      "parityGap": "ListSpriteDiagramFactory (PSystemBuilder.java:170) is unported",
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "reason": "jar draws and we draw, 0 diffs: PSystemListArchimateSpritesFactory refuses the 2-line source (PSystemSingleLineFactory.java:75-76) and ListSpriteDiagramFactory (PSystemBuilder.java:170, ported by lsp T2a, src/core/klimt/sprite/ListSpriteDiagramFactory.ts) claims `listsprite` twice (CommandListSprite.java:58, :69-70 ok()) and draws the empty 21x21 HELP page. Was 5 diffs / weighted 192 while the factory was unported (parityGap, ufp follow-on 4).",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "b8812f2bb"
     },
     {
       "type": "utility",

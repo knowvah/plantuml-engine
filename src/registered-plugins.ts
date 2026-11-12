@@ -13,6 +13,7 @@
  */
 import type { DiagramRegistry } from './core/dispatcher.js';
 import { listArchimateSpritesPlugin } from './core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
+import { listSpritePlugin } from './core/klimt/sprite/ListSpriteDiagramFactory.js';
 import { activityPlugin } from './diagrams/activity/index.js';
 import { activityLegacyPlugin } from './diagrams/activity-legacy/index.js';
 import { boardPlugin } from './diagrams/board/index.js';
@@ -101,6 +102,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(chartPlugin); // java:158
   registry.register(packetdiagPlugin); // java:159
   registry.register(definitionPlugin); // java:169
+  registry.register(listSpritePlugin); // java:170
   registry.register(mathPlugin); // java:172
   registry.register(latexPlugin); // java:173
   registry.register(creolePlugin); // java:174

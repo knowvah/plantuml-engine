@@ -1,5 +1,5 @@
 /**
- * T11 (mission sequence-command-coverage): `command-sprite.ts` —
+ * T11 (mission sequence-command-coverage): `core/sprite-command-base64.ts` (was `sequence/command-sprite.ts`) —
  * `matchSpriteBase64Command`, the port of `CommandSpriteBase64`
  * (`command/CommandSpriteBase64.java:59-92`, registered by
  * `CommonCommands.java:79`).
@@ -10,7 +10,7 @@
  * the fixture this closes (`liguma-77-mume567`) is a whole-document one.
  */
 import { describe, it, expect } from 'vitest';
-import { matchSpriteBase64Command } from '../../../src/diagrams/sequence/command-sprite.js';
+import { matchSpriteBase64Command } from '../../../src/core/sprite-command-base64.js';
 import { parseSequence } from '../../../src/diagrams/sequence/parser.js';
 import { SpriteImage } from '../../../src/core/klimt/sprite/SpriteImage.js';
 import { createSpriteRegistry } from '../../../src/core/sprite-commands.js';

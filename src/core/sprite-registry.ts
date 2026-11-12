@@ -135,6 +135,16 @@ export function getSprite(
   return registry.byName.get(name) ?? (internalStore ?? registry.internal)?.get(name);
 }
 
+/**
+ * `SkinParam#getAllSpriteNames`: `new TreeSet<>(sprites.keySet())`, the diagram's own sprites in natural `String`
+ * order. `getSprite`'s `SpriteImage.fromInternal` fallback (java:810-816) is not listed: only `addSprite` fills the
+ * map. The default `sort` compares UTF-16 code units, as `String#compareTo` does (lsp D5).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:801-804
+ */
+export function getAllSpriteNames(registry: SpriteRegistry): readonly string[] {
+  return [...registry.byName.keys()].sort();
+}
+
 // ---------------------------------------------------------------------------
 // T7 seam (b) reconciliation (SI5b+E2r batch-2 decision-journal row):
 // bridges this registry's `getSprite(name)` to T6's `SpriteDimsLookup.get`

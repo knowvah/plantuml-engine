@@ -7,14 +7,13 @@
  * `CommandFactorySprite` forms (`:76-77`) that `core/sprite-commands.ts`
  * already ports, and `SequenceDiagramFactory#initCommandsList:100` reaches it
  * through `addCommonCommands1` (`CommonCommands.java:54-56`). It is therefore
- * a SHARED command, not a sequence one; it lives under `src/diagrams/
- * sequence/` only because this task's write-set excludes `src/core/`. The
- * signature deliberately mirrors `matchSpriteCommand`'s
- * `(lines, i, registry) => { consumed } | null`, so moving the body into
- * `core/sprite-commands.ts` later is a file move plus one call-site deletion —
- * see the mission report's `sprite-base64-command-to-core` follow-on.
+ * a SHARED command, not a sequence one. It began under `src/diagrams/sequence/`
+ * (that task's write-set excluded `src/core/`); lsp T2c1 moved it here when
+ * `ListSpriteDiagramFactory`'s common commands needed it too. The signature
+ * mirrors `matchSpriteCommand`'s `(lines, i, registry) => { consumed } | null`.
  *
- * Dispatch position: `parser.ts#dispatchAnnotationOrSprite` runs it directly
+ * Dispatch position: `sequence/parser.ts#dispatchAnnotationOrSprite` (and
+ * `klimt/sprite/listsprite-common-commands.ts`) run it directly
  * after `matchSpriteCommand`, i.e. after the multiline/single-line/SVG/`jar:`
  * grammars rather than between the single-line and SVG ones as upstream's
  * list orders them (`:77` then `:79` then `:82`). Not observable: the four
@@ -46,10 +45,10 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/sprite/SpriteImage.java:61-99
  */
 
-import { SpriteImage } from '../../core/klimt/sprite/SpriteImage.js';
-import { readPng } from '../../core/internal-sprite-store.js';
-import type { SpriteRegistry } from '../../core/sprite-commands.js';
-import { addSprite } from '../../core/sprite-registry.js';
+import { SpriteImage } from './klimt/sprite/SpriteImage.js';
+import { readPng } from './internal-sprite-store.js';
+import type { SpriteRegistry } from './sprite-commands.js';
+import { addSprite } from './sprite-registry.js';
 
 /** `data:image/png;base64,` — the literal `RegexLeaf` between `NAME` and
  *  `DATA` (`CommandSpriteBase64.java:67`). */

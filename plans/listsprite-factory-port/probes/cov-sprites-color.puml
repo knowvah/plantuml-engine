@@ -1,0 +1,8 @@
+@startsprites
+sprite $c [4x4/color] {
+zz..zz..
+..zz..zz
+GGabGGab
+ab~~ab~~
+}
+@endsprites

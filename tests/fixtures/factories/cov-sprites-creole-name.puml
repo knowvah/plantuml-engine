@@ -1,0 +1,14 @@
+@startsprites
+sprite $foo__bar__ {
+F0
+0F
+}
+sprite $x--y--z {
+F0
+0F
+}
+sprite $a.b.c {
+F0
+0F
+}
+@endsprites

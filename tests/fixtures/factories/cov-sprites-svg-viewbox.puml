@@ -1,0 +1,3 @@
+@startsprites
+sprite $vb <svg viewBox="0 0 24 12"><rect x="2" y="2" width="20" height="8" fill="#AA2200"/></svg>
+@endsprites

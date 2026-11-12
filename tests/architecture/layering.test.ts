@@ -89,6 +89,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'the core home mirrors the Java package.',
   },
   {
+    from: 'src/core/klimt/sprite/listsprite-skin-param.ts',
+    to: 'src/diagrams/ebnf/ebnf-skin-param.ts',
+    why:
+      'lsp D1 — upstream keeps ListSpriteDiagram in klimt/sprite, and its TitledDiagram builds the shared ' +
+      'skin/SkinParam (TitledDiagram.java:107); the port slice of that class for the common-command engines is ' +
+      'ebnf-skin-param.ts (regex-skin-param.ts re-exports it too). Re-export only; the core home mirrors the Java package.',
+  },
+  {
     from: 'src/diagrams/class/class-state-leaf.ts',
     to: 'src/diagrams/state/',
     why:

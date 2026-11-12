@@ -35,6 +35,17 @@ post-D7 measurements.
 
 ---
 
+## listsprite-factory-port (lsp) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #134; per-task history on the local tag `listsprite-factory-port/pre-squash`)
+
+`klimt/sprite/{ListSpriteDiagramFactory,ListSpriteDiagram,CommandListSprite}.java` ported file for file into `src/core/klimt/sprite/`, registered at `PSystemBuilder.java:170` between Definition and Math; `@startsprites` gets its own `'sprites'` tag (`DiagramType.java:193-200`). The page is a `HELP`-typed `TitledDiagram` that draws each sprite through the creole sprite atom wrapped as `Sprite#asTextBlock` (`sprite-text-block.ts`, lsp D4), over its creole name, in upstream's 1024-wide flow. Both corpus rows (`folutu-01-xuzo995`, `nujapi-78-mota753`) go diverged → conformant and are pinned in `svg-factories` (41 → 43 slugs, 19 pins); 47 authored `cov-sprites-*` fixtures, 42 zero-diff and 5 error pairs, 0 open, all byte-stable over three jar renders. `cov-refuse-listsprite` (svg-utility) closes ufp's parity gap: 192 → 0. Shared fix: `CommandSpriteBase64` moved from the sequence engine to `src/core/sprite-command-base64.ts`. Overall: 0 lost, +2 conformant. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains (follow-ons, none blocks #134):**
+
+1. **Hoist the copied command-factory plumbing** (lsp D1): `src/core/klimt/sprite/{listsprite-common-commands,listsprite-style-dispatch}.ts` are copies of regex's, and `listsprite-skin-param.ts` re-exports ebnf's `SkinParam` (a layering allowlist entry). `CommonCommands`/`SkinParam` belong in `src/core/`; the same follow-on as ceep 1.
+2. **`CommandSpriteBase64` in every engine**: `CommonCommands.java:79` registers it for every command factory, but only sequence and listsprite call `matchSpriteBase64Command`; 22 other dispatchers refuse a `data:image/png;base64,` sprite line (`.agent-notes/lsp-T2c.md`). An undecodable payload is also consumed silently where the jar errors (`CommandSpriteBase64.java:90`).
+3. **`scripts/parity-dashboard.ts#D7_FOOTNOTE_MEMBERS`** still names `SPRITES` (and `HELP`, `BPM`, `CREOLE`, `MATH`, `LATEX`, `DEFINITION`, `FLOW`, which have engines too); `tests/unit/scripts/parity-dashboard.test.ts:323-340` pins the list, so the footnote needs its own edit with the test.
+4. **Stale `diagram-type-set.ts` doc comment**: its "no engine for" list (`:23-25`) names engines that now exist.
+
 ## chen-eer-engine-port (ceep) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #133; per-task history on the local tag `chen-eer-engine-port/pre-squash`)
 
 `net/sourceforge/plantuml/cheneer/` ported file for file into `src/diagrams/cheneer/` on the `CucaDiagram` base, the four `EntityImageChen*` images and `MiddleSubset` into `src/core/svek/`, registered at `PSystemBuilder.java:199`. Drawn through real graphviz (one-leaf diagrams through the new shared `src/core/svek/EntityImageDegenerated.ts`) and through ELK under `!pragma layout elk`. The corpus has no `@startchen` row: 91 authored fixtures (upstream's 4 vega Chen fixtures, 44 planning probes, 43 authored), 78 zero-diff and 13 error pairs, 0 open; 66 jar `svek-1.dot` files structurally equal and size-exact. Shared fixes on the way: the "Empty description" page lists the start line and the next one and names the upstream type (`packetdiag` prints `packet`), and `DotInputGraph` carries `!pragma ratio`/`aspect`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.
@@ -998,7 +1009,7 @@ and 27 are ticked; every other 28–35 entry carries a dated measurement
 1. **Error-page source label** (`PSystemError.java:239` prints `[From <file>.puml`; `src/core/tim/ReadLineReader.ts:37` prints `[From string`). This costs 3 diffs on every jar-errors-and-we-error page. The other 2 are our own version string, which the ruling keeps.
 2. **Sequence refusal index off by one** (`src/diagrams/sequence/parser.ts:266`). It reports line/consumed as an index into `source.lines`, which excludes `@startuml`, so the class engine wins the `PSystemErrorUtils.java:140-147` tie that sequence wins in the jar. The page then names class where the jar names sequence (+2 diffs). Skinparam-stripped sources need the full-source position.
 3. **Tab stops in the error listing**: `TileText.java:82-84,94-104` moves a tab to the next 8-space stop, but `src/core/error/error-page-exact.ts:178-198` handles only leading spaces.
-4. **`ListSpriteDiagramFactory` unported** (`PSystemBuilder.java:170`, `klimt/sprite/ListSpriteDiagram*.java`, 250 lines). It serves `@startuml` AND `@startsprites` (`DiagramType.java:194-200`). The jar draws where we error on `listsprite` that falls past the single-line gate. It is core plus the out-of-scope `@startsprites`, so it needs its own mission.
+4. ~~**`ListSpriteDiagramFactory` unported**~~ — DONE by listsprite-factory-port (#134): registered at `PSystemBuilder.java:170`; `cov-refuse-listsprite` now draws, 0 diffs (was weighted 192).
 5. **Asset packaging**: ship `assets/{eggs,dedication}` to library consumers. Today the refusal gate (no asset store) errors on `kavama-92`, and so does a library user by default.
 6. **Rendering gaps**:
    - No RGB PNG encoder path (`PixelImage.java:72-73`; `png-encoder.ts` writes RGBA). This affects only the href bytes of qrcode at scale 1.

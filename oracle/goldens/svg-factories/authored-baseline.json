@@ -747,6 +747,501 @@
       "diffCount": 0,
       "measuredAt": "2026-11-11",
       "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-4z",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $bug4 [15x15/4z] POz94W0X20Ep_F_FHf0fhK4Fq1A8020yeGVH_4f9begSHnM4FT8Ias6vR9swFzeeC1Ix1DDR2RmvbNE6P5CD6azPhSkgoTkrVt_eM000`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-8z",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $bug8 [15x15/8z] POzH3i0W348B6zp_oCFg5iqQVtX5nAegrJ4w4CrFIhBKP2rL22nx6H00aM4v7FU6daiBHO0hBHAuudK3Cvetu-u6oM07lPtojBQg9lVM_lrXpWC0`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-base64",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $b64 data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALHRFWHRDcmVhdGlvbiBUaW1lAE1vbiAxNSBGZWIgMjAxMCAxMDo1OTozNyAtMDAwMIUrdykAAAAHdElNRQfaAhILCheKyNsxAAAACXBIWXMAAArwAAAK8AFCrDSYAAAABGdBTUEAALGPC/xhBQAAAClJREFUeNpjYKAQMJKg9j+F+rEbyESuRmoAkl1ANZsHzs+jNg9qmykCADikCP6lImpRAAAAAElFTkSuQmCC`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-caption-multiline",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `caption`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-chrome",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `title Sprite catalogue`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-color",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $c [4x4/color] {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-creole-name",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo__bar__ {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-dpi",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `skinparam dpi 192`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-encoded",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $HD [64x64/16z] xS61400000CXXFdRpkElMXu0001m`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-err-garbage",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 14,
+        "message": "Syntax Error? (Assumed diagram type: sprites)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-err-listsprite-arg",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 14,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-gray-levels",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $g4 [8x4/4] {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-handwritten",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `!option handwritten true`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-jar-png",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $acc jar:archimate/access`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-jar-sprite",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $app jar:archimate/application-component`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-legend-left",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `legend left`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-mainframe",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `mainframe The frame`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-mixed-order",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $HD [64x64/16z] xS61400000CXXFdRpkElMXu0001m`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-name-narrow",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $x {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-pragma-monochrome",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `skinparam monochrome true`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-redefine",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $dup {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-scale",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `scale 2`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-scale-half",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `scale 0.5`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-scale-max",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `scale max 100 width`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-scale-width",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `scale 200 width`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-skinparam-bg",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `skinparam backgroundColor #EEEEFF`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-startsprites-blank",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: sprites)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-startsprites-empty",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: sprites)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-startsprites-listsprite",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-startsprites-mono",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-stdlib",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `!include <tupadr3/common>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-style-activity",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `<style>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-style-doc",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `<style>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-svg",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite mdiHeadset <svg width=\"48\" height=\"48\"><g transform=\"scale(2)\"><path d=\"M12,1C7,1 3,5 3,10V17A3,3 0 0,0 6,20H9V12H5V10A7,7 0 0,1 12,3A7,7 0 0,1 19,10V12H15V20H19V21H12V23H18A3,3 0 0,0 21,20V10C21,5 16.97,1 12,1Z\" /></g></svg>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-svg-multiline",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $tri <svg width=\"20\" height=\"16\">`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-svg-viewbox",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $vb <svg viewBox=\"0 0 24 12\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" fill=\"#AA2200\"/></svg>`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-title-only",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `title Only a title`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-case",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-empty",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `listsprite`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-garbage-then-listsprite",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 15,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-listsprites",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-mono",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $foo1 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-uml-nosprites-title",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `title No sprites here`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-wrap",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $wide_sprite_number_01 {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-wrap-exact",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $a {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-wrap-heights",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $tall {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-sprites-wrap-past",
+      "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $a {`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "9c4670646"
     }
   ]
 }
