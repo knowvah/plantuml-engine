@@ -10,8 +10,9 @@
  * rewritten dated record disagrees with what it describes) and the oracle
  * seam patches (D3: they are exports pinned by `oracle/pin.json`).
  *
- * `PENDING` is the mission's work queue: files not yet swept. Each sweep task
- * removes its lines; a stale entry fails, so the list can only shrink.
+ * The sweep that emptied the old name from every other file (2026-11-12,
+ * plans/rename-plantuml-engine) used a shrinking PENDING list; it closed
+ * empty and was removed, so any new match fails outright.
  */
 import { describe, it, expect } from 'vitest';
 import { execFileSync } from 'node:child_process';
@@ -43,9 +44,6 @@ const ALLOWED_PREFIXES: readonly string[] = [
   'oracle/accepted-divergences.json', // D2: retired[] reasons quote 0.1.0 output
   'tests/architecture/legacy-name.test.ts', // self: holds the pattern and lists
 ];
-
-/** Tracked files still awaiting the rename sweep (sorted, one per line). */
-const PENDING: readonly string[] = [];
 
 function isAllowed(path: string): boolean {
   return ALLOWED_PREFIXES.some((entry) => (entry.endsWith('/') ? path.startsWith(entry) : path === entry));
@@ -82,24 +80,8 @@ function scanLegacyMatches(): Map<string, number> {
 }
 
 describe('legacy name plantuml-ts (issue #173, D4)', () => {
-  const matches = scanLegacyMatches();
-  const pending = new Set(PENDING);
-
-  it('appears in no tracked file outside ALLOWED_PREFIXES and PENDING', () => {
-    const offenders = [...matches].filter(([path]) => !pending.has(path)).map(([path, line]) => `${path}:${line}`);
+  it('appears in no tracked file outside ALLOWED_PREFIXES', () => {
+    const offenders = [...scanLegacyMatches()].map(([path, line]) => `${path}:${line}`);
     expect(offenders, `legacy name found in:\n${offenders.join('\n')}`).toEqual([]);
-  });
-
-  it('has no stale PENDING entry', () => {
-    const stale = PENDING.filter((path) => !matches.has(path)).map((path) => `stale PENDING entry: ${path}`);
-    expect(stale, stale.join('\n')).toEqual([]);
-  });
-
-  it('lists no PENDING entry under ALLOWED_PREFIXES', () => {
-    expect(PENDING.filter(isAllowed)).toEqual([]);
-  });
-
-  it('keeps PENDING sorted so each sweep task removes clean lines', () => {
-    expect([...PENDING]).toEqual([...PENDING].sort());
   });
 });

@@ -77,8 +77,8 @@ journal why.
 |---|---|---|
 | [batch-0](batch-0/overview.md) | T0 branch, brief, pycache | [x] |
 | [batch-1](batch-1/overview.md) | T1 ratchet test | [x] |
-| [batch-2](batch-2/overview.md) | T2 package · T3 version · T4 src · T5 scripts · T6 tests · T7a user docs · T7b internal docs | [ ] |
-| [batch-3](batch-3/overview.md) | T8 close ratchet, verify, draft PR body | [ ] |
+| [batch-2](batch-2/overview.md) | T2 package · T3 version · T4 src · T5 scripts · T6 tests · T7a user docs · T7b internal docs | [x] |
+| [batch-3](batch-3/overview.md) | T8 close ratchet, verify, draft PR body | [x] |
 
 ## Other docs
 
@@ -86,3 +86,18 @@ journal why.
 - [diagrams/component-map.md](diagrams/component-map.md), [diagrams/data-flow.md](diagrams/data-flow.md)
 - [settings.autonomous.json](settings.autonomous.json) — installed into `.claude/` by P0
 - [decision-journal.md](decision-journal.md)
+
+## Session summary (2026-11-12)
+
+- **Tasks:** 10 planned (T0, T1, T2, T3, T4, T5, T6, T7a, T7b, T8), 10 completed; 11 commits on
+  `chore/rename-plantuml-engine`, unsigned, not pushed.
+- **Decisions:** 19 journal rows. Flagged for review: row 5 (re-pinned 5 generated `.d.ts` digests the brief missed —
+  confirmed by the user in-session, with a byte-level proof), row 13 (archimate test now uses a repo-relative path —
+  user-directed), row 16 (plantuml-plugins still links `@knowvah/plantuml-ts` — another repo, not editable here).
+- **Brief deviations:** 4 banner assertions moved T6 → T3 (T6's own rule); `stdlib-read-lock.test.ts` allowlist and
+  `PSystemVersionFactory.test.ts` were outside the planned write-sets; DIVERGENCES.md cleared in T3, not T7a;
+  `oracle/GAP.md` co-edited (generator input `oracle/corpus-cache/` absent).
+- **Gates:** every batch close green; final clean run (`npm ci` → test → typecheck → lint → build → format →
+  catalog → docs:build → e2e → pack) all exit 0; survey lost 0 conformant rows.
+- **Follow-ups:** user steps in [pre-mission.md](pre-mission.md) "Post-mission"; a plantuml-plugins PR for the
+  dependency rename (`.agent-notes/rpe-plugins-link.md`).
