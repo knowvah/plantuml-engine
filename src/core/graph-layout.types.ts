@@ -406,7 +406,12 @@ export interface DotInputGraph {
    *  `omitSepAttrs` rather than an extension: that flag drops BOTH sep lines,
    *  this one keeps ranksep verbatim. Absent = prior behavior. */
   smetanaRankSep?: string;
-  aspect?: number;
+  /** ceep T3c1: also `getDotStringSkek`'s `aspect=` value, verbatim as a string (`!pragma aspect`, every `,`
+   *  replaced by `.`; `net/atmp/CucaDiagram.java:405-409`). */
+  aspect?: number | string;
+  /** ceep T3c1: `CucaDiagram#getDotStringSkek`'s `ratio=` line, verbatim (`!pragma ratio`; a number, `fill`,
+   *  `compress`, ...). @see ~/git/plantuml/src/main/java/net/atmp/CucaDiagram.java:410-412 */
+  ratio?: string;
   /** Cluster structure for Svek-DOT emission. Layout ignores it (clusters are
    *  still resolved post-layout); only the emitter reads it. Emitter-only. */
   clusters?: DotInputCluster[];

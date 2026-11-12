@@ -14,7 +14,8 @@
  */
 import type { PreprocessorFailure } from '../preprocessor.js';
 import type { BlockUmlOk } from '../BlockUmlBuilder.js';
-import type { DiagramType } from '../block-extractor.js';
+import { upstreamTypeOf, type DiagramType } from '../block-extractor.js';
+import { humanReadableName } from '../diagram-type-set.js';
 import type { StringMeasurer } from '../measurer.js';
 import type { StringLocated } from '../tim/StringLocated.js';
 import { readLines } from '../tim/ReadLineReader.js';
@@ -127,7 +128,7 @@ export function welcomeSvg(options?: RenderOptions): string {
  * error, and `PSystemErrorUtils#merge` keeps the first of the equal-scoring
  * ones) -- jar-verified, `Empty description (Assumed diagram type: sequence)`.
  * For a typed block (`@startjson`, ...) it is that block's own type.
- * The listing is the `@start` line alone, waved, which is what the jar draws.
+ * The listing is the trace: the `@start` line and the line after it, waved.
  * @see ~/git/plantuml/.../command/PSystemAbstractFactory.java#buildEmptyError
  */
 export function emptySvg(block: BlockUmlOk, options?: RenderOptions): string {
@@ -136,9 +137,15 @@ export function emptySvg(block: BlockUmlOk, options?: RenderOptions): string {
     return renderPSystemWelcome(welcome, errorMeasurer(options));
   }
   const startLine = block.rawSource[0]!;
-  const assumed: DiagramType = block.suffix === 'uml' ? UML_EMPTY_ASSUMED_TYPE : block.source.type;
+  // `getDiagramType()`'s human-readable name, not this port's routing key (`chen` prints `chen_eer`,
+  // `packetdiag` prints `packet`). @see PSystemAbstractFactory.java:59-65, DiagramType.java:298-302
+  const assumed =
+    block.suffix === 'uml' ? UML_EMPTY_ASSUMED_TYPE : humanReadableName(upstreamTypeOf(block.source.type));
   const error = new ErrorUml('SYNTAX_ERROR', EMPTY_DESCRIPTION, 0, startLine, assumed);
-  const system = new PSystemErrorEmpty(block.rawSource, [startLine], error);
+  // The trace is the start line and the line after it: `if (it.hasNext()) it.next();` before
+  // `buildEmptyError(source, startLine, it.getTrace(), ...)`. @see PSystemCommandFactory.java:117-121
+  const trace = block.rawSource.slice(0, EMPTY_TRACE_LINES);
+  const system = new PSystemErrorEmpty(block.rawSource, trace, error);
   return renderPSystemError(system, errorMeasurer(options));
 }
 
@@ -161,6 +168,9 @@ const EMPTY_DESCRIPTION = 'Empty description';
 
 /** The first factory `@startuml` selects -- see {@link emptySvg}. */
 const UML_EMPTY_ASSUMED_TYPE: DiagramType = 'sequence';
+
+/** `it.next()` for the start line, then once more. @see PSystemCommandFactory.java:112, 118-119 */
+const EMPTY_TRACE_LINES = 2;
 
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);

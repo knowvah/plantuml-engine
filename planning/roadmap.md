@@ -119,7 +119,7 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 11. ~~**Git log** (`@startgit`)~~ — a `git log --graph` character grid laid out through dot-engine, not a lane layout; DONE by git-engine-port (#131): 4/4 rows drawn, 2 structural-match + 2 diverged on curve piece counts only, all named in `DIVERGENCES.md`.
 12. **Salt** (`@startsalt`) — grid layout (evaluate golem reuse).
 13. ~~**DITAA** (`@startditaa`)~~ — dropped by ruling 2026-11-04 (#111, `DIVERGENCES.md`).
-14. **Chen EER** (`@startchen`) — dot layout + EER shapes.
+14. ~~**Chen EER** (`@startchen`)~~ — dot layout + EER shapes; DONE by chen-eer-engine-port (#133): no corpus row, 91 authored fixtures (78 zero-diff, 13 error pairs), 66 jar DOTs structurally equal, the `!pragma layout elk` path through ELK; no divergence added.
 15. **EBNF** (`@startebnf`) — railroad renderer (Track SI-3).
 16. **Regex** (`@startregex`) — regex → railroad IR (after EBNF).
 17. ~~**Wire** (`@startwire`)~~ — schematic grid; DONE by wire-engine-port (#128): 18/18 conformant, no `golem` use.

@@ -1,0 +1,9 @@
+@startchen
+skinparam monochrome true
+entity A #pink {
+  X <<key>>
+}
+relationship R {
+}
+A -1- R
+@endchen

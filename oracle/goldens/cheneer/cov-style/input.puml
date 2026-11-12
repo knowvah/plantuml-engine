@@ -1,0 +1,20 @@
+@startchen
+<style>
+chenEntity {
+  BackgroundColor #FFCCCC
+  LineThickness 2
+}
+chenAttribute {
+  FontColor blue
+}
+chenRelationship {
+  BackgroundColor #CCFFCC
+}
+</style>
+entity A {
+  X
+}
+relationship R {
+}
+R -1- A
+@endchen

@@ -44,6 +44,7 @@ export type DiagramType =
   | 'wire'
   | 'bpm'
   | 'flow'
+  | 'chen'
   | 'git'
   | 'creole'
   | 'math'
@@ -167,6 +168,8 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   nwdiag: 'nwdiag',
   ebnf: 'ebnf',
   regex: 'regex',
+  // ceep T3a: `@startchen` (`DiagramType.java:111-112`).
+  chen: 'chen',
   wire: 'wire',
   bpm: 'bpm',
   // flp T3a: `@startflow` (`DiagramType.java:134-135`).
@@ -436,6 +439,7 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   bpm: UpstreamDiagramType.BPM,
   // `FlowDiagramFactory` is `DiagramType.FLOW` (FlowDiagramFactory.java:51, DiagramType.java:134-135).
   flow: UpstreamDiagramType.FLOW,
+  chen: UpstreamDiagramType.CHEN_EER,
   // `GitDiagramFactory` is `DiagramType.GIT` (GitDiagramFactory.java:52, DiagramType.java:143-144).
   git: UpstreamDiagramType.GIT,
   creole: UpstreamDiagramType.CREOLE,

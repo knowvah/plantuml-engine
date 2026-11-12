@@ -1,0 +1,8 @@
+@startchen
+entity A {
+  "Phone" as P <<multi>> #line:red {
+    Area
+    Number <<key>>
+  }
+}
+@endchen

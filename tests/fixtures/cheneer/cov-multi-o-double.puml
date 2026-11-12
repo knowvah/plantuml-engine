@@ -1,0 +1,11 @@
+@startchen
+entity P {
+}
+entity A {
+}
+entity B {
+}
+entity C {
+}
+P =>= o { A, B, C } #yellow
+@endchen

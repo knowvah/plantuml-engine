@@ -40,6 +40,7 @@ import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactor
 import { filesPlugin } from '../../src/diagrams/files/index.js';
 import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
 import { regexPlugin } from '../../src/diagrams/regex/index.js';
+import { chenPlugin } from '../../src/diagrams/cheneer/index.js';
 import { wirePlugin } from '../../src/diagrams/wire/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
 import { gitPlugin } from '../../src/diagrams/git/index.js';
@@ -126,6 +127,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [hclPlugin, 195],
   [ebnfPlugin, 196],
   [regexPlugin, 197],
+  [chenPlugin, 199],
 ]);
 
 const ASSET_STORE = combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore(), buildUtilityAssetsStore());
@@ -251,6 +253,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@starthcl\na = 1\n@endhcl', hclPlugin],
   ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
   ['@startregex\na(b|c)+\n@endregex', regexPlugin],
+  ['@startchen\nentity A {\n}\n@endchen', chenPlugin],
   ['@startwire\n* a\n@endwire', wirePlugin],
   ['@startbpm\n:login;\n@endbpm', bpmPlugin],
   ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],

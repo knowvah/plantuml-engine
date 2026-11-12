@@ -57,6 +57,7 @@ export function applyGraphAttrs(b: GvGraphBuilder, input: DotInputGraph): void {
     b.setAttr('ranksep', (input.rankSep / PX_PER_INCH).toString());
   }
   if (input.aspect !== undefined) b.setAttr('aspect', input.aspect.toString());
+  if (input.ratio !== undefined) b.setAttr('ratio', input.ratio);
   // cdd3-T19 (E3-11): `DotStringFactory.java:154` `sb.append("searchsize=500;")`
   // -- unconditional, every graph, same as `remincross=true;` the line above
   // it. `svek-dot-emit.ts#graphAttrLines` already writes both into the DOT

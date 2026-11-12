@@ -1,0 +1,8 @@
+@startchen
+entity A {
+}
+relationship R {
+}
+R -(1, N)- A
+R =(0,1)= A
+@endchen

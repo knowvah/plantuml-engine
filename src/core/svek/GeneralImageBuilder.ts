@@ -1,7 +1,8 @@
 /**
  * `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only:
  * `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in
- * upstream's order. Every other branch of the Java chain (`isLikeClass`, `PORTIN`/`PORTOUT`, `STATE`,
+ * upstream's order, then the four Chen EER leaves (`CHEN_ENTITY`, `CHEN_RELATIONSHIP`, `CHEN_ATTRIBUTE`,
+ * `CHEN_CIRCLE`, java:222-232, cheneer T2a). Every other branch of the Java chain (`isLikeClass`, `PORTIN`/`PORTOUT`, `STATE`,
  * lollipops, `CIRCLE`, `DESCRIPTION`, `USECASE`, `OBJECT`, `MAP`, `JSON`, `ARC_CIRCLE`,
  * `POINT_FOR_ASSOCIATION`, groups) belongs to an engine that does not use this builder yet; `NOTE` is
  * `EntityImageNote`, sized here (laep T2b) and drawn through `Opale` by the renderer task T2c. Each of those throws, naming the owner,
@@ -18,6 +19,10 @@ import { EntityImageActivity, type NodePolygons } from './image/EntityImageActiv
 import { EntityImageBranch } from './image/EntityImageBranch.js';
 import { EntityImageCircleEnd } from './image/EntityImageCircleEnd.js';
 import { EntityImageCircleStart } from './image/EntityImageCircleStart.js';
+import { EntityImageChenAttribute } from './image/EntityImageChenAttribute.js';
+import { EntityImageChenCircle } from './image/EntityImageChenCircle.js';
+import { EntityImageChenEntity } from './image/EntityImageChenEntity.js';
+import { EntityImageChenRelationship } from './image/EntityImageChenRelationship.js';
 import { EntityImageEmptyPackage, type EmptyPackageSkinParam } from './image/EntityImageEmptyPackage.js';
 import type { PortionShower } from '../cucadiagram/PortionShower.js';
 import type { EntityImageState } from './image/EntityImageState.js';
@@ -34,6 +39,10 @@ export type LegacyLeafImage =
   | EntityImageSynchroBar
   | EntityImageNote
   | EntityImageEmptyPackage
+  | EntityImageChenEntity
+  | EntityImageChenRelationship
+  | EntityImageChenAttribute
+  | EntityImageChenCircle
   /** An empty inner activity's image, stored by `Entity#overrideImage` (`GroupMakerActivity.java:113-114`). */
   | EntityImageState
   /** An autarkic group's image, stored by `Entity#overrideImage` (`GroupMakerActivity`), never built here. */
@@ -67,6 +76,15 @@ export function createEntityImageBlockInternal(
     if (leaf.getUSymbol() !== undefined) throw new Error('unported: EntityImageDescription for an empty package');
     return new EntityImageEmptyPackage(leaf, skinParam, portionShower);
   }
+
+  // The Chen EER leaves, after `TIPS` and before the `DOMAIN` chain (GeneralImageBuilder.java:222-232).
+  if (leafType === LeafType.CHEN_ENTITY) return new EntityImageChenEntity(leaf, skinParam);
+
+  if (leafType === LeafType.CHEN_RELATIONSHIP) return new EntityImageChenRelationship(leaf, skinParam);
+
+  if (leafType === LeafType.CHEN_ATTRIBUTE) return new EntityImageChenAttribute(leaf, skinParam);
+
+  if (leafType === LeafType.CHEN_CIRCLE) return new EntityImageChenCircle(leaf, skinParam);
 
   throw new Error(`unported: GeneralImageBuilder has no image for leaf type ${String(leafType)} yet`);
 }

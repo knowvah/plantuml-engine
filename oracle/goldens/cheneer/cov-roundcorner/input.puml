@@ -1,0 +1,9 @@
+@startchen
+skinparam roundCorner 15
+entity A {
+  X
+}
+entity B <<weak>> {
+}
+A -1- B
+@endchen

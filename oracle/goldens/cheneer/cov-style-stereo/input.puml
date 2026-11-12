@@ -1,0 +1,10 @@
+@startchen
+<style>
+.big {
+  FontSize 20
+}
+</style>
+entity A <<big>> {
+  X <<big>>
+}
+@endchen

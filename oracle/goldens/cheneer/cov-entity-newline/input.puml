@@ -1,0 +1,8 @@
+@startchen
+entity "First\nSecond" as A {
+  X
+}
+relationship "Has\nMany" as R {
+}
+A -N- R
+@endchen

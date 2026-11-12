@@ -1,0 +1,7 @@
+@startchen
+entity A {
+  X #red
+  Y #line:blue
+  Z #line:green;text:red
+}
+@endchen

@@ -523,6 +523,16 @@ blocks only (`PSystemRegex.java:82-97`), through `StyleExtractor#applyStyles` at
 
 ---
 
+## Phase 5h — Chen EER — DONE (chen-eer-engine-port, #133)
+
+**Java source:** `cheneer/` (9 files), `svek/image/EntityImageChen{Entity,Relationship,Attribute,Circle}.java`,
+`svek/extremity/MiddleSubset.java`/`MiddleFactorySubset.java`. Ported file for file into `src/diagrams/cheneer/` on the
+`CucaDiagram` base (no `AbstractEntityDiagram` class; only its `getDotStrings` is reached, via `getDotStringSkek`), the
+leaf images and the subset decor into `src/core/svek/`, registered at `PSystemBuilder.java:199`. Drawn through real
+graphviz (DOT-parity gate `oracle/goldens/cheneer/`), with `EntityImageDegenerated` for one-leaf diagrams and an ELK
+adapter for `!pragma layout elk`. The corpus has no `@startchen` row, so the `svg-cheneer` ratchet holds 91 authored
+fixtures (upstream's four vega Chen fixtures among them): 78 zero-diff, 13 error pairs.
+
 ## Phase 5p — Flow — DONE (flow-engine-port, #132)
 
 **Java source:** `flowdiagram/`, `golem/`. Ported file for file into `src/diagrams/flow/` and `src/core/golem/` (the

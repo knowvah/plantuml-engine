@@ -1,0 +1,14 @@
+@startchen
+<style>
+.dashed {
+  LineStyle 5
+  LineColor red
+}
+</style>
+entity A <<dashed>> {
+  X <<dashed>>
+}
+relationship R <<dashed>> {
+}
+A -1- R
+@endchen

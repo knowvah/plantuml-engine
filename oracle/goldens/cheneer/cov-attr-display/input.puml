@@ -1,0 +1,6 @@
+@startchen
+entity A {
+  "Full name" as Name
+  Born : DATE
+}
+@endchen

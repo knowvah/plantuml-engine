@@ -1,0 +1,9 @@
+@startchen
+top to bottom direction
+entity A {
+  X
+}
+entity B {
+}
+A ->- B
+@endchen

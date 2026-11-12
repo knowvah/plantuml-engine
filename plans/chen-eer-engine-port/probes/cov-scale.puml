@@ -1,0 +1,6 @@
+@startchen
+scale 2
+entity A {
+  X
+}
+@endchen

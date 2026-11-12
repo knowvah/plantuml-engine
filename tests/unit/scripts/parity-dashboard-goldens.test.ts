@@ -52,7 +52,7 @@ describe('RATCHET_FAMILY / DIFF_BASELINE_FAMILY (D1)', () => {
     expect(RATCHET_FAMILY.chart).toEqual(['svg-chart']);
   });
 
-  it('maps unknown to the utility, factories, shared description, legacy activity, nwdiag, bpm, git and flow families', () => {
+  it('maps unknown to the utility, factories, shared description, legacy activity, nwdiag, bpm, git, flow and cheneer families', () => {
     expect(RATCHET_FAMILY.unknown).toEqual([
       'svg-utility',
       'svg-factories',
@@ -62,6 +62,7 @@ describe('RATCHET_FAMILY / DIFF_BASELINE_FAMILY (D1)', () => {
       'svg-bpm',
       'svg-git',
       'svg-flow',
+      'svg-cheneer',
     ]);
     expect(RATCHET_FAMILY.network).toEqual(['svg-activity-legacy']);
     expect(DIFF_BASELINE_FAMILY.unknown).toEqual([

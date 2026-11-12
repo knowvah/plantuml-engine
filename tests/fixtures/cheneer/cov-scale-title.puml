@@ -1,0 +1,10 @@
+@startchen
+scale 1.5
+title Scaled and titled
+entity A {
+  X
+}
+relationship R {
+}
+A -1- R
+@endchen

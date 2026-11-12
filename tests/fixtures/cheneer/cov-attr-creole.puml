@@ -1,0 +1,6 @@
+@startchen
+entity A {
+  "**Bold** and //it//\nsecond line" as X
+  Plain
+}
+@endchen

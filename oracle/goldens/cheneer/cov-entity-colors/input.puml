@@ -1,0 +1,8 @@
+@startchen
+entity A #lightblue;line:blue {
+  X #lime;line:orange
+}
+relationship R #pink;line:red {
+}
+R -1- A #green
+@endchen

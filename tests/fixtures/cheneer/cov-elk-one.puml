@@ -1,0 +1,6 @@
+@startchen
+!pragma layout elk
+entity A {
+  X
+}
+@endchen

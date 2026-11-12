@@ -1,0 +1,13 @@
+@startchen
+!pragma aspect 0,8
+entity A {
+  X
+  Y
+}
+entity B {
+}
+relationship R {
+}
+A -1- R
+R -N- B
+@endchen

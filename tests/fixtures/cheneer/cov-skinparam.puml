@@ -1,0 +1,7 @@
+@startchen
+skinparam backgroundColor #EEEEEE
+skinparam defaultFontName Courier
+entity A {
+  X
+}
+@endchen

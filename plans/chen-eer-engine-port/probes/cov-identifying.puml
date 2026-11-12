@@ -1,0 +1,10 @@
+@startchen
+entity P {
+}
+entity C <<weak>> {
+}
+relationship PO <<identifying>> {
+}
+PO -1- P
+PO =N= C
+@endchen

@@ -1,0 +1,11 @@
+@startchen
+title My ER
+header H
+footer F
+legend
+L
+endlegend
+caption C
+entity A {
+}
+@endchen

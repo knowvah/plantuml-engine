@@ -36,6 +36,7 @@ import { flowPlugin } from './diagrams/flow/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
 import { regexPlugin } from './diagrams/regex/index.js';
+import { chenPlugin } from './diagrams/cheneer/index.js';
 import { wirePlugin } from './diagrams/wire/index.js';
 import { creolePlugin } from './core/klimt/creole/legacy/PSystemCreoleFactory.js';
 import { definitionPlugin } from './diagrams/definition/PSystemDefinitionFactory.js';
@@ -122,6 +123,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(hclPlugin); // java:195
   registry.register(ebnfPlugin); // java:196
   registry.register(regexPlugin); // java:197
+  registry.register(chenPlugin); // java:199
 }
 
 // Registration order IS upstream's factory order (`PSystemBuilder.java:133-200`),

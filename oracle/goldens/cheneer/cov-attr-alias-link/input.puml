@@ -1,0 +1,8 @@
+@startchen
+entity A {
+  "Full name" as Name
+}
+entity B {
+}
+A -1- B
+@endchen

@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2525 modules · 8291 exported names.
+2560 modules · 8385 exported names.
 
 ## `src/`
 
@@ -325,6 +325,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandExecutionResult.ts` | `AbstractDiagram`, `CommandExecutionResult` | CommandExecutionResult — the ok/error outcome every command returns. |
 | `CommandFootboxIgnored.ts` | `CommandFootboxIgnored` |  |
 | `CommandMultilines2.ts` | `MultilineCommand`, `HasNbMaxLines`, `CommandMultilines2` | `CommandMultilines2`: a command spanning several lines: a start pattern on the first line (`RegexConcat`), an end pattern on the last (`Pattern2`), and the lines between kept verbatim. |
+| `CommandRankDir.ts` | `CommandRankDir` |  |
 | `JsonNode.ts` | `JsonNode` | Parsed value of a `json Name { ... |
 | `multiline-candidate.ts` | `MultilineStep`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
 | `MultilinesStrategy.ts` | `MultilinesStrategy`, `cleanList` | `MultilinesStrategy`: what `BlocLines#cleanList` does to the lines of a multi-line command before it is matched or run. |
@@ -397,7 +398,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `LinkDecor.ts` | `LinkDecor`, `getMargin`, `isFill`, `getArrowSize`, `isExtendsLike`, `lookupDecors1`, `lookupDecors2`, `getRegexDecors1`, `getRegexDecors2`, `getExtremityFactoryComplete`, `getExtremityFactoryLegacy` | LinkDecor — the 25-value link-extremity decoration enum: which arrowhead/diamond/crowfoot/circle a link end carries, its dot-emit data (margin, fill, arrowsize), the raw-token lookup tables the arrow grammar uses, and the extremity-factory |
-| `LinkMiddleDecor.ts` | `LinkMiddleDecor`, `getInversed` | LinkMiddleDecor — the mid-link decoration (lollipop circles for provided/required interfaces, subset/superset markers). |
+| `LinkMiddleDecor.ts` | `LinkMiddleDecor`, `getInversed`, `getMiddleFactory` |  |
 | `LinkStyle.ts` | `javaDoubleToString`, `LinkStyle` | LinkStyle — the line style of a link (normal/dashed/dotted/bold/ invisible) plus an optional thickness override, and its `UStroke` derivation. |
 | `LinkType.ts` | `LinkType` | LinkType — the immutable decor1/style/decor2/middle-decor bundle a `Link` carries (via `WithLinkType.type` — T6's write-set), with the copy-on-write mutators the command layer uses and the svek dot attribute emission. |
 | `WithLinkType.ts` | `WithLinkType` |  |
@@ -1047,8 +1048,9 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `DecorateEntityImage.ts` | `UGraphicWithGroups`, `DecorateEntityImage`, `EntityDecorationInfo`, `decorateEntityDrawing` |  |
 | `diagram-type-style-name.ts` | `getStyleName` | `DiagramType#getStyleName`: the `SName` a diagram kind's style signatures carry (`activityDiagram` for every kind the table does not list, as upstream's trailing `return`). |
 | `EntityDomain.ts` | `EntityDomain` |  |
+| `EntityImageDegenerated.ts` | `DEGENERATED_DELTA`, `EntityImageDegenerated` | `EntityImageDegenerated`: what `GraphvizImageBuilder#buildImage` returns for a diagram with exactly one leaf, no link and no group: the leaf's own image, translated by `delta` and padded by `delta` on every side, with no graphviz pass. |
 | `FrontierCalculator.ts` | `RectangleArea`, `Point`, `ENTITY_POSITION_RADIUS`, `FrontierRankdir`, `frontierCalculator`, `ensureMinWidth`, `ProjectionClusterSpec`, `entryExitPointRect`, `ClusterRectangles`, `projectionClusterOf` | FrontierCalculator — the post-layout box-correction jar applies to a cluster's own graphviz-assigned rectangle before drawing it, whenever the cluster carries `<<entrypoint>>`/`<<exitpoint>>` (port) members alongside or instead of normal-po |
-| `GeneralImageBuilder.ts` | `LegacyLeafImage`, `createEntityImageBlockInternal` | `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only: `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in upstream's order. |
+| `GeneralImageBuilder.ts` | `LegacyLeafImage`, `createEntityImageBlockInternal` | `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only: `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in upstream's order, |
 | `hexagon-polygon.ts` | `hexagonPolygonPoints` | hexagon-polygon.ts -- the svek node polygon of a `USymbols.HEXAGON` leaf, shared by the engines that draw `EntityImageDescription#drawHexagon`. |
 | `IEntityImage.ts` | `ENTITY_IMAGE_MARGIN`, `ENTITY_IMAGE_MARGIN_LINE` | `IEntityImage` — the margins every svek entity image insets its content by. |
 | `InnerActivity.ts` | `THICKNESS_BORDER`, `InnerImage`, `InnerActivity` | `InnerActivity` — the image of an autarkic activity group: the nested svek result inside a rounded rectangle filled with the group's back colour and framed in its border colour (`THICKNESS_BORDER` 1.5). |
@@ -1092,7 +1094,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ExtremitySquare.ts` | `ExtremitySquare`, `ExtremityFactorySquare` |  |
 | `ExtremityTriangle.ts` | `TriangleGeom`, `ExtremityTriangle`, `ExtremityFactoryTriangle` |  |
 | `link-decor.ts` | `LinkDecorName`, `lookupDecors1`, `lookupDecors2`, `isFillDecor`, `buildExtremityFactory`, `looksLikeRevertedForSvg`, `looksLikeNoDecorAtAllSvg`, `getLinkTypeName` |  |
-| `MiddleCircleDecor.ts` | `MiddleDecor`, `LABEL_SHIELD`, `drawMiddleDecor` | The mid-link decoration (`-0)-` and its three siblings), for every engine that draws one (D5 of description-divergence-drive): `LinkMiddleDecor#getMiddleFactory`'s `MiddleCircle` and `MiddleCircleCircled`. |
+| `MiddleCircleDecor.ts` | `CircleMiddleDecor`, `MiddleDecor`, `LABEL_SHIELD`, `drawMiddleDecor` | The mid-link decoration (`-0)-` and its three siblings), for every engine that draws one (D5 of description-divergence-drive): `LinkMiddleDecor#getMiddleFactory`'s `MiddleCircle` and `MiddleCircleCircled`. |
+| `MiddleFactory.ts` | `MiddleFactory` |  |
+| `MiddleFactorySubset.ts` | `MiddleFactorySubset` |  |
+| `MiddleSubset.ts` | `MiddleSubset` |  |
 | `rotate-point.ts` | `rotatePoint`, `rotateAndTranslate` |  |
 | `Side.ts` | `Side` | Side — the four cardinal sides `ExtremityCrowfoot` clamps its left/right wing endpoints against when the link approaches a node from directly N/E/S/W (see `ExtremityCrowfoot.ts`). |
 
@@ -1111,6 +1116,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `creole-text-run-types.ts` | `FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleRunBullet`, `CreoleTextLine` | creole-text-run-types — the public run/line shape `creole-text-lines.ts` reports (`FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleTextLine`). |
 | `EntityImageActivity.ts` | `OctagonPolygon`, `NodePolygons`, `CORNER`, `EntityImageActivity` | `EntityImageActivity` — an activity box of a legacy activity diagram: a rounded rect (`CORNER` 25 → `rx` 12.5) with its text, drawn with no `<g>` around either (the jar's own quirk, D9). |
 | `EntityImageBranch.ts` | `EntityImageBranch` | `EntityImageBranch` — the `if` diamond of a legacy activity diagram, in an `entity` group with no `data-source-line` (upstream builds `new UGroup()`). |
+| `EntityImageChenAttribute.ts` | `EntityImageChenAttribute` | `EntityImageChenAttribute` — the ellipse of a Chen EER attribute, sized by `TextBlockInEllipse`. |
+| `EntityImageChenCircle.ts` | `EntityImageChenCircle` | `EntityImageChenCircle` — the fixed 25x25 circle of a Chen EER subclass connector, its title centred. |
+| `EntityImageChenEntity.ts` | `EntityImageChenEntity` | `EntityImageChenEntity` — the rectangle of a Chen EER entity; `<<weak>>` adds an inner rectangle at `+3,+3`, `delta(-6)`. |
+| `EntityImageChenRelationship.ts` | `EntityImageChenRelationship` | `EntityImageChenRelationship` — the diamond of a Chen EER relationship, sized around its title at aspect ratio 2; `<<identifying>>` adds an inner diamond at `+10,+5`, `delta(-20, -10)`. |
+| `EntityImageChenSupport.ts` | `ChenLeafName`, `hasStereotype`, `getChenStyle`, `createChenTitle`, `getStroke`, `applyChenColor`, `startChenGroup`, `closeChenGroup` | What the four `EntityImageChen*` images share. |
 | `EntityImageCircleEnd.ts` | `EntityImageCircleEnd` | `EntityImageCircleEnd` — the end leaf of a legacy activity diagram, in an `end_entity` group. |
 | `EntityImageCircleStart.ts` | `EntityImageCircleStart` | `EntityImageCircleStart` — the start leaf of a legacy activity diagram, in a `start_entity` group. |
 | `EntityImageDescription.ts` | `ShapeType`, `Margins`, `resolveDescriptionUSymbol`, `HexagonPolygon`, `EntityUrl`, `EntityImageDescriptionEntity`, `EntityImageDescriptionSymbol`, `EntityImageDescriptionLabels`, `EntityImageDescriptionStereotypeSprite`, `EntityImageDescriptionPaint`, `EntityImageDescriptionLinkInfo`, `EntityImageDescriptionParams`, `EntityImageDescription` | EntityImageDescription — draws a descriptive/deployment leaf entity (`component`, `usecase`, `database`, `interface`, `rectangle`, ...): the `<!--entity NAME--><g class="entity" ...>` wrapper, the resolved `USymbol`'s `asSmall` chrome, an o |
@@ -1827,6 +1837,41 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandChartScatter.ts` | `CHART_SCATTER_RE`, `applyChartScatter` | `CommandChartScatter`: only the trailing `MARKER` group sets the shape, so `scatter <<triangle>> [1]` is a stereotype named triangle and draws a circle. |
 | `CommandChartStackMode.ts` | `CHART_STACK_MODE_RE`, `applyChartStackMode` | `CommandChartStackMode`: `stackMode grouped\|stacked`. |
 | `CommandChartVAxis.ts` | `CHART_V_AXIS_RE`, `parseCustomTicks`, `applyChartVAxis` | `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`. |
+
+## `src/diagrams/cheneer/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `cheneer-dot.ts` | `NO_POLYGONS`, `ChenDotContext`, `ChenDotNode`, `ChenDotEdge`, `ChenDot`, `dotShapeOf`, `buildChenDot` | The DOT input of a Chen EER diagram: `GraphvizImageBuilder#buildImage`'s `printEntities` (one `SvekNode` per leaf, in leaf order) and the `SvekEdge` of each link of `getOrderedLinks`, handed to the one dot-engine seam as a `DotInputGraph`. |
+| `cheneer-edge-text.ts` | `STYLE_NAME`, `ChenEdgeTexts`, `ChenEdgeTextContext`, `labelFontOf`, `cardinalityFontOf`, `createLabelBlock`, `buildEdgeTexts` | The texts a `SvekEdge` builds in its constructor and that the DOT reserves a box for: the label (a Chen cardinality, `CommandAssociate.java:112-117`), the quantifiers and the roles. |
+| `cheneer-elk-adapter.ts` | `ChenEerElkAdapter` | `ElkDiagramAdapter` over the Chen engine (ceep T3d). |
+| `cheneer-links.ts` | `getOrderedLinks` | `CucaDiagramFileMakerSvek#getOrderedLinks`: the links svek lays out and draws, regrouped so that links with the same two entities (in either direction) sit next to each other, a new one after the last of its group. |
+| `cheneer-skin-param.ts` | `SkinParamSource`, `SkinParam`, `ChenEerSkinParam` | The Chen EER engine's `SkinParam` -- the slice of upstream's `skin/SkinParam.java` a `ChenEerDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, the rank direction ` |
+| `cheneer-spacing.ts` | `DzetaEdge`, `getHorizontalDzeta`, `getVerticalDzeta`, `getSeparators` | The graph spacing `DotStringFactory#createDotString` writes (`nodesep`, `ranksep`) for a diagram that is not `DiagramType.ACTIVITY`: the largest dzeta of any link divided by ten, floored at 35 and 60 (40 under kermor), replaced outright by |
+| `cheneer-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `ChenEerDiagram.ts` | `ChenEerDiagram` | `ChenEerDiagram`: the Chen entity-relationship diagram (`@startchen`), a `CucaDiagram` drawn through svek. |
+| `ChenEerDiagramFactory.ts` | `CommandInput`, `ChenCommand`, `initCommandsList`, `createEmptyDiagram`, `parseChen` | `ChenEerDiagramFactory`: the Chen diagram's command list, in upstream's order, and `PSystemCommandFactory#createSystem`'s per-line loop over it. |
+| `common-commands-1.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `ChenEerDiagramFactory` registers it (first, java:58): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `index.ts` | `ChenLayout`, `chenPlugin` | Chen EER diagram plugin (`@startchen`): `ChenEerDiagramFactory` (parse). |
+| `layout-elk.ts` | `layoutChenElk` | Layout of a Chen diagram under `!pragma layout elk`: `CucaDiagram#getTextBlock` picks `CucaDiagramFileMakerElk` (`CucaDiagram.java:478-479`), whose `getTextBlock` (`CucaDiagramFileMakerElk.java:477-499`) lays the leaves out with ELK and mea |
+| `layout-geometry.ts` | `ChenNodeGeo`, `ChenEdgeGeo`, `ChenGeometry`, `solveChen` | The solved geometry of the one `GraphvizImageBuilder#buildImage` pass of a Chen diagram: the DOT goes through the one dot-engine seam, and what comes back is mapped onto the leaves and links it was built from. |
+| `layout.ts` | `ChenEdgeGeo`, `ChenGeometry`, `ChenNodeGeo`, `layoutChen` | Layout of a Chen EER diagram: `CucaDiagramFileMakerSvek#getTextBlock` up to `DotStringFactory#solve`, as `GraphvizImageBuilder#buildImage` runs it. |
+| `renderer-document.ts` | `calculateBackColor`, `muteColorMapper`, `calculateMargin` | The document-level reads of `TitledDiagram` for the Chen export: the back colour, the colour mapper and the exporter's margin, over this diagram. |
+| `renderer-edge.ts` | `lightPaintOf`, `edgeInputOf`, `drawEdge` | One Chen link as `SvekEdge#drawU` draws it: the solved {@link ChenEdgeGeo} becomes the `SvekEdgeInput` the shared klimt drawing half (`core/svek/SvekEdge.ts`) takes. |
+| `renderer-svek-result.ts` | `InkWalk`, `SvekResultInput`, `ChenSvekResult` | `SvekResult` for the Chen engine: the text block `GraphvizImageBuilder#buildImage` returns. |
+| `renderer.ts` | `CHEN_EER_ROUTE`, `ChenRenderInput`, `renderChen` | Chen EER export: `TextBlockExporter`'s export of the {@link ChenSvekResult} on the klimt substrate (the board plugin's shape, `board/index.ts`). |
+
+## `src/diagrams/cheneer/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `chen-command-support.ts` | `NO_SUCH_ENTITY`, `NAME_PATTERN`, `PARTICIPATION_PATTERN`, `DOUBLE_PARTICIPATION`, `plainLinkType`, `entityNamed`, `javaSplitComma`, `LinkEnds`, `newLink` | What the Chen commands repeat between Java files: the error text of a missing entity, the `NAME` leaf grammar of `CommandAssociate`, `CommandSimpleSubclass` and `CommandMultiSubclass`, the entity lookup they each inline, and `String#split(" |
+| `CommandAssociate.ts` | `CommandAssociate` | `CommandAssociate`: `NAME1 -[CARDINALITY]- NAME2 [#color]`, a length-3 link between two existing leaves; `=` on the first participation draws it bold. |
+| `CommandCreateAttribute.ts` | `CommandCreateAttribute` | `CommandCreateAttribute`: `[ "display" as ] CODE [<<stereo>>] [#color] [{]`, an attribute of the entity, relationship or composite attribute on top of the owner stack. |
+| `CommandCreateEntity.ts` | `CommandCreateEntity` | `CommandCreateEntity`: `entity [ "display" as ] CODE [<<stereo>>] [#color] {` and the `relationship` form. |
+| `CommandEndGroup.ts` | `UNBALANCED_BRACKETS`, `CommandEndGroup` | `CommandEndGroup`: the `}` that closes an entity, relationship or attribute body. |
+| `CommandMultiSubclass.ts` | `CommandMultiSubclass` | `CommandMultiSubclass`: `SUPER ->- d\|o\|U { A, B }`, a circle between a superclass and its subclasses. |
+| `CommandSimpleSubclass.ts` | `CommandSimpleSubclass` | `CommandSimpleSubclass`: `NAME1 -<- NAME2` / `NAME1 ->- NAME2`, a length-3 link whose middle decor is the subset (`<`) or superset (`>`) sign; `=` on the first participation draws it bold. |
 
 ## `src/diagrams/chronology/`
 

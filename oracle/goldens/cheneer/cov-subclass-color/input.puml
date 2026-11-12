@@ -1,0 +1,10 @@
+@startchen
+entity A {
+}
+entity B {
+}
+entity C {
+}
+A ->- B #red
+A =<= C #line:blue
+@endchen

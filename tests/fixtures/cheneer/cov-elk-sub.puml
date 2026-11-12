@@ -1,0 +1,11 @@
+@startchen
+!pragma layout elk
+entity P {
+}
+entity A {
+}
+entity B {
+}
+A -<- B #line:purple
+P ->- o { A, B }
+@endchen

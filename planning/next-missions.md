@@ -35,6 +35,17 @@ post-D7 measurements.
 
 ---
 
+## chen-eer-engine-port (ceep) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #133; per-task history on the local tag `chen-eer-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/cheneer/` ported file for file into `src/diagrams/cheneer/` on the `CucaDiagram` base, the four `EntityImageChen*` images and `MiddleSubset` into `src/core/svek/`, registered at `PSystemBuilder.java:199`. Drawn through real graphviz (one-leaf diagrams through the new shared `src/core/svek/EntityImageDegenerated.ts`) and through ELK under `!pragma layout elk`. The corpus has no `@startchen` row: 91 authored fixtures (upstream's 4 vega Chen fixtures, 44 planning probes, 43 authored), 78 zero-diff and 13 error pairs, 0 open; 66 jar `svek-1.dot` files structurally equal and size-exact. Shared fixes on the way: the "Empty description" page lists the start line and the next one and names the upstream type (`packetdiag` prints `packet`), and `DotInputGraph` carries `!pragma ratio`/`aspect`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains (follow-ons, none blocks #133):**
+
+1. **Hoist the duplicated cuca-engine plumbing** (ceep D2): `src/diagrams/cheneer/{cheneer-skin-param,common-commands-1,cheneer-style-dispatch}.ts` are copies of activity-legacy's; `CommonCommands`/`SkinParam` belong in `src/core/`. A refactor touching an engine with 124 pinned rows, so its own mission.
+2. **`!pragma ratio`/`aspect` in the other svek engines**: only Chen's DOT build reads `getDotStringSkek`'s two lines (`net/atmp/CucaDiagram.java:405-412`); class, description, state, object and activity-legacy never pass them (`.agent-notes/ceep-T3c.md`). Author a fixture per engine and spread the same attributes.
+3. **`Style#getStroke(Colors)`** (`Style.java:322-328`) is inlined in `src/core/svek/image/EntityImageChenSupport.ts`; hoist it onto `Style.ts` when a second caller appears.
+4. **ELK arrow style under a diagram-name `<style>` rule**: `MyElkDrawing.java:202` styles the line from `classDiagram` while the label uses the diagram's own name (`.agent-notes/ceep-T3d.md`); no fixture exercises an `activityDiagram { arrow {...} }` rule under ELK.
+
 ## flow-engine-port (flp) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #132; per-task history on the local tag `flow-engine-port/pre-squash`)
 
 `net/sourceforge/plantuml/flowdiagram/` ported file for file into `src/diagrams/flow/`, and the reachable part of `golem/` into `src/core/golem/`, registered at `PSystemBuilder.java:185`. The one `@startflow` row, `bemixo-79-xulu250`, left the unknown-type sentinel and is multiset-equal to its oracle (605×421), but stays `diverged`: the jar draws its boxes in `HashMap<Tile, …>` identity-hash order, which changes per run (6 renders, 6 SVGs), and the port draws in insertion order, one order the jar can produce. 69 authored fixtures: 17 one-box and `cov-embedded` zero-diff, 13 error pairs (all also error on release 1.2026.8), 38 multi-box fixtures each multiset-equal to the oracle or a recorded layout (3 shift fixtures have 2-4 jar layouts). `svg-flow` ratchet with a multiset tier; routing re-pinned `agree`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.

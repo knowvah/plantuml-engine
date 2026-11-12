@@ -1,0 +1,7 @@
+@startchen
+entity A {
+  title Foo
+  header Bar
+  Baz
+}
+@endchen

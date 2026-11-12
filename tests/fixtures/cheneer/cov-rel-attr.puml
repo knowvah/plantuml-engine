@@ -1,0 +1,9 @@
+@startchen
+entity A {
+}
+relationship R {
+  Since
+  Until <<derived>>
+}
+A -N- R
+@endchen

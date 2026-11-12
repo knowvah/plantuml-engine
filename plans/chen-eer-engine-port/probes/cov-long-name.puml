@@ -1,0 +1,5 @@
+@startchen
+entity A_very_long_entity_name_here {
+  an_extremely_long_attribute_name_for_width
+}
+@endchen

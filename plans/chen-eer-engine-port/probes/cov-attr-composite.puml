@@ -1,0 +1,10 @@
+@startchen
+entity A {
+  Name {
+    First
+    Last {
+      Prefix
+    }
+  }
+}
+@endchen

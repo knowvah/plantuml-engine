@@ -1,0 +1,9 @@
+@startchen
+skinparam shadowing true
+entity A {
+  X
+}
+relationship R {
+}
+A -1- R
+@endchen
