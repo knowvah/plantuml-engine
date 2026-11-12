@@ -19,7 +19,7 @@ upstream license, independent of tupadr3's MIT glue:
 | `govicons` | Government icon font | Not independently re-verified in this packaging pass — no license metadata is embedded in the vendored `.puml` sprites | (bundled via tupadr3; no separate upstream repo was traced) |
 
 **Verdict** (per `planning/s4-stdlib-audit.md`'s 2026-07-12 license audit in
-the plantuml-ts source repo): VENDOR-OK, attribution required. CC BY 4.0 and
+the plantuml-engine source repo): VENDOR-OK, attribution required. CC BY 4.0 and
 Apache-2.0 both permit redistribution with attribution inside an
 MIT-licensed package as mixed-license assets; this file is that attribution.
 The `weather` and `govicons` categories were captured under the same D1
@@ -31,5 +31,5 @@ already covers.
 Source: https://github.com/tupadr3/plantuml-icon-font-sprites (vendored via
 https://github.com/plantuml/plantuml-stdlib, commit
 `bdbb819f76c75e7a23af582b2a63ea7dc43eed7c`). Per-file sha256 checksums are
-committed at `assets/manifests/tupadr3.json` in the plantuml-ts source repo
+committed at `assets/manifests/tupadr3.json` in the plantuml-engine source repo
 and are re-verified by `tests/unit/stdlib-packages.test.ts`.

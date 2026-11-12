@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: plantuml-ts
+  name: plantuml-engine
   text: PlantUML, in pure TypeScript
   tagline: PlantUML in pure TypeScript — no Java, no server, browser-native.
   actions:
@@ -13,7 +13,7 @@ hero:
       link: /playground
     - theme: alt
       text: View on GitHub
-      link: https://github.com/knowvah/plantuml-ts
+      link: https://github.com/knowvah/plantuml-engine
 features:
   - title: Faithful to upstream PlantUML
     details: A deep port of the Java implementation's parsing, layout, and rendering rules — including the long tail of special cases. The class-diagram dot pipeline matches the upstream oracle on 680/680 comparable fixtures.

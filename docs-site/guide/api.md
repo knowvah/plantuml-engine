@@ -166,7 +166,7 @@ interface RenderOptions {
 - **`imageProvider`** — fetches remote images (`<img:https://…>`) for
   `render()`/`renderAll()`/`renderPages()`; `renderSync()` never fetches.
   Gated by `securityProfile`. Ready-made providers live in
-  `@knowvah/plantuml-ts/image-providers`; see [Remote images](/guide/image-providers).
+  `@knowvah/plantuml-engine/image-providers`; see [Remote images](/guide/image-providers).
 - **`filename`** — the source file name that the `%filename()` builtin
   reports (`Defines.java:89-94`).
 
@@ -210,7 +210,7 @@ interface StringMeasurer {
 }
 ```
 
-If `options.measurer` is omitted, plantuml-ts picks a default per diagram
+If `options.measurer` is omitted, plantuml-engine picks a default per diagram
 type:
 
 - **Description diagrams** (component, usecase, node, deployment, …) default

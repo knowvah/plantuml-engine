@@ -19,5 +19,5 @@ Source: https://github.com/awslabs/aws-icons-for-plantuml (vendored via
 https://github.com/plantuml/plantuml-stdlib, commit
 `bdbb819f76c75e7a23af582b2a63ea7dc43eed7c`). Per-file sha256 checksums are
 committed at `assets/manifests/awslib14.json` and `assets/manifests/awslib.json`
-in the plantuml-ts source repo and are re-verified by
+in the plantuml-engine source repo and are re-verified by
 `tests/unit/stdlib-packages.test.ts`.

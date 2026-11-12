@@ -7,7 +7,7 @@ JSON, YAML and files, `<style>` blocks and `skin`; HCL ignores `<style>`,
 `skin` and `!theme` altogether (`StyleExtractor.java:88-96`,
 `HclDiagramFactory.java:86-92`).
 
-plantuml-ts **honours more of it by default**. This is a deliberate,
+plantuml-engine **honours more of it by default**. This is a deliberate,
 documented extension (maintainer ruling 2026-10-23, see
 [Divergences](/divergences#extensions-user-ruling-2026-10-23)). A diagram that
 carries none of these directives renders exactly as the jar renders it.

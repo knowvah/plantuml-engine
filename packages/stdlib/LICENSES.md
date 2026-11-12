@@ -3,7 +3,7 @@
 This package's own glue code (the generated `BundleData` wrapper modules) is
 MIT-licensed — see `LICENSE`. It bundles five vendored PlantUML stdlib
 folders verbatim (copy + sha256 checksum, never a transform — see
-`plans/si5b-stdlib/decisions.md` D1/D3 in the plantuml-ts source repo). Each
+`plans/si5b-stdlib/decisions.md` D1/D3 in the plantuml-engine source repo). Each
 bundle keeps its own upstream license.
 
 | Bundle | Subpath export | License | Source | Notes |
@@ -16,7 +16,7 @@ bundle keeps its own upstream license.
 
 Vendored at plantuml-stdlib commit `bdbb819f76c75e7a23af582b2a63ea7dc43eed7c`
 (https://github.com/plantuml/plantuml-stdlib). Per-file sha256 checksums are
-committed at `assets/manifests/<bundle>.json` in the plantuml-ts source repo
+committed at `assets/manifests/<bundle>.json` in the plantuml-engine source repo
 and are re-verified by this repo's `tests/unit/stdlib-packages.test.ts`.
 
 License texts above were fetched directly from each bundle's own upstream

@@ -1,11 +1,11 @@
 # @knowvah/plantuml-all
 
-One install for every [plantuml-ts](https://github.com/knowvah/plantuml-ts)
+One install for every [plantuml-engine](https://github.com/knowvah/plantuml-engine)
 asset package: the stdlib bundles, the ArchiMate sprites, and the Twemoji
 emoji artwork.
 
 ```sh
-npm install @knowvah/plantuml-ts @knowvah/plantuml-all
+npm install @knowvah/plantuml-engine @knowvah/plantuml-all
 ```
 
 ## ⚠️ Not an MIT-only dependency tree
