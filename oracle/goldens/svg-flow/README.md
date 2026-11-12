@@ -9,9 +9,11 @@ holds it forever. See `tests/oracle/svg-conformance/flow.golden.ratchet.test.ts`
 
 The 1 `@startflow` row of `plans/flow-engine-port/measurements/planning-rows.json`, `bemixo-79-xulu250`, in the
 `unknown` survey bucket. It draws 9 boxes, and the jar draws boxes in Java identity-hash order (flp D4: 6 renders, 6
-SVGs, 1 multiset), so it is not zero-diff and `ratchet.json` is empty until ruling #174 decides how such rows count.
-Its golden lives at `unknown/bemixo-79-xulu250/{in.puml,golden.svg}`, listed in `multiset.json`, not `ratchet.json`.
-There is no `diff-baseline.json` (flp D7: written only for a row nonzero for a reason other than order).
+SVGs, 1 multiset). Ruling #174 (2026-11-12) made `compareSvg` put a FLOW document's box groups in one canonical order
+(`tests/oracle/svg-conformance/flow-box-order.ts`; `docs/svg-conformance.md` "Flow box order"), so the row is
+zero-diff and pinned in `ratchet.json`. Its golden lives at `unknown/bemixo-79-xulu250/{in.puml,golden.svg}`;
+`multiset.json` is empty. There is no `diff-baseline.json` (flp D7: written only for a row nonzero for a reason other
+than order).
 
 ## Multiset tier
 
@@ -29,7 +31,9 @@ npx jiti plans/flow-engine-port/measurements/pin-flow.mts [--write]
 
 A pin copies `in.puml` and `in.svg` to `unknown/<slug>/`, adds `{ slug, type, addedAt, source }` to `ratchet.json`,
 and appends `goldens` twins (slug `unknown/<slug>`) to the routing and refusal baselines. A row that moves from
-`multiset.json` to `ratchet.json` keeps its golden directory and twins.
+`multiset.json` to `ratchet.json` keeps its golden directory and twins. `pin-flow.mts --write` does not know this and
+appends a second twin to each baseline; revert both baselines after pinning such a row (it did so for
+`bemixo-79-xulu250` on 2026-11-12).
 
 ## Authored root
 

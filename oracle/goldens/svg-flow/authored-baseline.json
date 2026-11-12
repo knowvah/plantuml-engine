@@ -12,47 +12,43 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-chain-east-nonroot",
       "status": "baseline",
-      "weightedScore": 20,
-      "diffCount": 20,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-chain-north-nonroot",
       "status": "baseline",
-      "weightedScore": 18,
-      "diffCount": 18,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-chain-south-nonroot",
       "status": "baseline",
-      "weightedScore": 15,
-      "diffCount": 15,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-chain-west-nonroot",
       "status": "baseline",
-      "weightedScore": 12,
-      "diffCount": 12,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -66,7 +62,7 @@
         "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalArgumentException (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -75,7 +71,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -89,17 +85,16 @@
         "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalArgumentException (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-east",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -108,31 +103,30 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-empty",
       "status": "baseline",
-      "weightedScore": 26,
-      "diffCount": 19,
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 2,
         "message": "Empty description (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-id-word",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -141,7 +135,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -150,7 +144,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -159,7 +153,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -168,7 +162,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -177,17 +171,16 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-label-curly-mixed",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -196,7 +189,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -210,7 +203,7 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -219,7 +212,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -228,7 +221,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -237,27 +230,25 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-label-newline-neighbour",
       "status": "baseline",
-      "weightedScore": 44,
-      "diffCount": 12,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-label-newline-three",
       "status": "baseline",
-      "weightedScore": 46,
-      "diffCount": 14,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -266,7 +257,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -275,7 +266,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -284,7 +275,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -293,7 +284,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -302,7 +293,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -311,37 +302,34 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-leading-space",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-link-back",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-link-explicit-back",
       "status": "baseline",
-      "weightedScore": 15,
-      "diffCount": 15,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -355,17 +343,16 @@
         "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalArgumentException: 10 (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-link-four",
       "status": "baseline",
-      "weightedScore": 47,
-      "diffCount": 47,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -379,17 +366,16 @@
         "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalArgumentException (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-link-same-row-far",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -398,7 +384,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -407,7 +393,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -421,7 +407,7 @@
         "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalArgumentException: 99 (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -430,27 +416,25 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-loop",
       "status": "baseline",
-      "weightedScore": 15,
-      "diffCount": 15,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-many-shift",
       "status": "baseline",
-      "weightedScore": 19,
-      "diffCount": 19,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -464,47 +448,43 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-north",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-north-chain",
       "status": "baseline",
-      "weightedScore": 27,
-      "diffCount": 27,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-north-west",
       "status": "baseline",
-      "weightedScore": 13,
-      "diffCount": 13,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-option-handwritten",
       "status": "baseline",
-      "weightedScore": 150,
-      "diffCount": 150,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -513,7 +493,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -522,17 +502,16 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-ring",
       "status": "baseline",
-      "weightedScore": 24,
-      "diffCount": 24,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -546,37 +525,35 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-shift-east",
       "status": "baseline",
-      "weightedScore": 8,
-      "diffCount": 8,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-shift-one",
       "status": "baseline",
-      "weightedScore": 17,
-      "diffCount": 17,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-shift-three",
       "status": "baseline",
-      "weightedScore": 50,
-      "diffCount": 50,
+      "weightedScore": 18,
+      "diffCount": 18,
       "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -585,7 +562,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -599,7 +576,7 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -613,7 +590,7 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -627,17 +604,16 @@
         "message": "Syntax Error? (Assumed diagram type: flow)"
       },
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-trailing-space",
       "status": "baseline",
-      "weightedScore": 6,
-      "diffCount": 6,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -646,7 +622,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -655,7 +631,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -664,37 +640,34 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-west-chain",
       "status": "baseline",
-      "weightedScore": 13,
-      "diffCount": 13,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-wide-both",
       "status": "baseline",
-      "weightedScore": 10,
-      "diffCount": 10,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
       "slug": "cov-wide-east",
       "status": "baseline",
-      "weightedScore": 10,
-      "diffCount": 10,
-      "reason": "jar draws its boxes in identity-hash order (flp D4); multiset-equal to the oracle or a recorded layout, ruling #174",
+      "weightedScore": 0,
+      "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -703,7 +676,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     },
     {
       "type": "flow",
@@ -712,7 +685,7 @@
       "weightedScore": 0,
       "diffCount": 0,
       "measuredAt": "2026-11-12",
-      "measuredAgainstCommit": "2e7b35d05"
+      "measuredAgainstCommit": "c9f2f362d"
     }
   ]
 }

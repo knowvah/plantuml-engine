@@ -10,8 +10,10 @@
  * multiset of tags.
  *
  * This tier is a regression test of our output, NOT a conformance verdict.
- * The survey's verdict stays `compareSvg`'s, and how these rows count is the
- * ruling asked in #174.
+ * The survey's verdict stays `compareSvg`'s. Since ruling #174, `compareSvg`
+ * itself orders flow box groups canonically (`flow-box-order.ts`), so a row
+ * whose layout is stable is conformant there; this tier still holds the
+ * fixtures whose LAYOUT varies, which only a recorded `.vN.svg` can match.
  *
  * Inputs: every authored fixture under `tests/fixtures/flow/` whose source
  * draws two or more boxes (`countFlowBoxes`, flp D6) and whose oracle is a
@@ -54,7 +56,9 @@ function explain(ours: string, oracles: readonly string[]): string {
 describe('svg-flow multiset tier — population', () => {
   it(`holds the ${MULTI_BOX_FIXTURES} multi-box authored fixtures and the cached rows of multiset.json`, () => {
     expect(multiBox).toHaveLength(MULTI_BOX_FIXTURES);
-    expect(manifest.fixtures.map((f) => `${f.type}/${f.slug}`)).toEqual(['unknown/bemixo-79-xulu250']);
+    // Empty since ruling #174: bemixo-79-xulu250 is compareSvg-conformant and
+    // pinned in ratchet.json. Its golden still feeds the tamper test below.
+    expect(manifest.fixtures.map((f) => `${f.type}/${f.slug}`)).toEqual([]);
   });
 });
 
