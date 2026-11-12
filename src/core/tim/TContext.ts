@@ -321,7 +321,7 @@ export class TContext implements TContextInterface {
     if (result === undefined) return undefined;
 
     // Upstream gates this split on `Pragma.legacyReplaceBackslashNByNewline()`.
-    // plantuml-ts always splits: `PreprocessorResult.lines` is a flat list of
+    // plantuml-engine always splits: `PreprocessorResult.lines` is a flat list of
     // single lines with no Jaws/Creole layer downstream, and the pre-TIM
     // preprocessor split substituted newlines the same way.
     if (!result.includes('\n')) return [new StringLocated(result, located.getLocation())];

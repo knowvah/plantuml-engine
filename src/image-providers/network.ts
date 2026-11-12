@@ -24,7 +24,7 @@ export interface NetworkProviderOptions {
 const DEFAULT_TIMEOUT_MS = 5000;
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const DEFAULT_MIME_TYPE = 'application/octet-stream';
-const WARNING_PREFIX = 'plantuml-ts network image provider: ';
+const WARNING_PREFIX = 'plantuml-engine network image provider: ';
 
 class FetchFailure extends Error {}
 

@@ -1,9 +1,9 @@
 /**
- * String measurement implementations for plantuml-ts.
+ * String measurement implementations for plantuml-engine.
  *
  * All layout engines receive a StringMeasurer via dependency injection so that
  * text dimension calculation can be swapped between environments (browser,
- * Node/test, fixed-width). Nothing in this file imports from other plantuml-ts
+ * Node/test, fixed-width). Nothing in this file imports from other plantuml-engine
  * modules — it is a leaf dependency.
  */
 
@@ -138,7 +138,7 @@ class UnicodeBlock {
 }
 
 /**
- * Deterministic width-table measurer — the plantuml-ts analog of @knowvah/dot-engine's
+ * Deterministic width-table measurer — the plantuml-engine analog of @knowvah/dot-engine's
  * EstimateTextMeasurer. Reproduces StringBounderFromWidthTable.calculateDimension:
  *
  *   width  = Σ charWidth(cp) × (size / 16),   charWidth via the SANS_SERIF table

@@ -54,7 +54,7 @@ type MatchedEdges = ReadonlyArray<{ index: number; id: string }>;
 
 // Instrumentation seam for the oracle DOT-parity workstream. When set, every
 // layoutGraph() call hands its input here before layout — letting the parity
-// tests capture the exact graph plantuml-ts feeds graphviz, for one fixture, to
+// tests capture the exact graph plantuml-engine feeds graphviz, for one fixture, to
 // compare against the oracle's svek-*.dot. Undefined (no-op) by default and in
 // every production path. See oracle/README.md and tests/oracle/.
 // Code review: layoutInputObserver is a shared module-level global set via setLayoutInputObserver; concurrent render() calls from the same process that both install an observer will race. Revisit if oracle/parity tests are ever parallelized within a single worker.

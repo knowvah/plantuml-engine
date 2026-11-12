@@ -1,5 +1,5 @@
 /**
- * Theme system for plantuml-ts.
+ * Theme system for plantuml-engine.
  * Defines the visual appearance of all diagram types via a single Theme
  * interface. The resolveTheme helper normalises string aliases and deep-merges
  * partial overrides without mutating the built-in theme objects.

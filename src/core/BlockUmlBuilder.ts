@@ -16,7 +16,7 @@
  * ...) runs afterwards, per block, over that block's own lines -- `BlockUml`'s
  * constructor, which hands them to `TimLoader#load`.
  *
- * plantuml-ts had this inverted (TIM over the whole document, then split), and
+ * plantuml-engine had this inverted (TIM over the whole document, then split), and
  * the inversion is load-bearing, not cosmetic: an unclosed `!ifdef` ate the
  * `@enduml`, no block survived, and a document the jar renders (forum.plantuml.
  * net/6808 -- pdiff `buveco-86-tibo673`) came out as the Welcome screen. This

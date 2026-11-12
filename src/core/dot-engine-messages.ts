@@ -12,7 +12,7 @@
  *
  * {@link withEngineMessagesDropped} installs a sink that drops every message
  * for one synchronous engine call and puts back whatever sink was there
- * before, so plantuml-ts never leaves a host's own sink replaced.
+ * before, so plantuml-engine never leaves a host's own sink replaced.
  *
  * `@startdot` writes the merged stream as its image (`PSystemDot.java:97-98`),
  * so the jar's output starts with the warning text; that caller uses
@@ -24,7 +24,7 @@
  */
 import { agseterrf, type AgUserErrF } from '@knowvah/dot-engine';
 
-/** The sink in force during a plantuml-ts engine call: every message is dropped. */
+/** The sink in force while plantuml-engine calls the layout engine: every message is dropped. */
 const DROP_ENGINE_MESSAGE = (): void => {};
 
 /**

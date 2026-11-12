@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createNetworkImageProvider } from '../../../src/image-providers/network.js';
 
 const URL_ = 'https://example.test/a.svg';
-const PREFIX = 'plantuml-ts network image provider: ';
+const PREFIX = 'plantuml-engine network image provider: ';
 
 function respond(body: Uint8Array, init: ResponseInit = {}): typeof fetch {
   return () => Promise.resolve(new Response(body as BodyInit, init));

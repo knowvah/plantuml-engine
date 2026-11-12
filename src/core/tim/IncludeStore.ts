@@ -153,7 +153,7 @@ export class IncludeNotFoundError extends IncludeError {
  * `!include <bundle/thing>` -- PlantUML's bundled-stdlib form -- with no bundle
  * supplied.
  *
- * plantuml-ts vendors NO stdlib asset (a licensing question the maintainer owns;
+ * plantuml-engine vendors NO stdlib asset (a licensing question the maintainer owns;
  * mission SI5b). Before this seam existed, `include-resolver.ts` SILENTLY DROPPED
  * these lines, so every macro the bundle defines stayed unexpanded and the
  * diagram quietly rendered wrong. Failing loudly, and naming the bundle a host
@@ -202,7 +202,7 @@ function remedyFor(what: string, stdlibPath: string, bundle: string, registrySup
     );
   }
   return (
-    `plantuml-ts vendors no PlantUML stdlib, so a host must supply the bundle. Either:\n` +
+    `plantuml-engine vendors no PlantUML stdlib, so a host must supply the bundle. Either:\n` +
     `  - render(): pass options.stdlibRegistry --\n      ${thunk}\n` +
     `  - renderSync(): it cannot await, so warm the store up first --\n` +
     `      const includeStore = await prepareIncludeStore(source, { stdlibRegistry });\n` +

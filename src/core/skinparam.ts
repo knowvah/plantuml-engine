@@ -1,5 +1,5 @@
 /**
- * Skinparam resolution pipeline for plantuml-ts.
+ * Skinparam resolution pipeline for plantuml-engine.
  *
  * Provides two public entry points:
  *   - resolveSkinparam: maps a raw skinparam map onto a Theme

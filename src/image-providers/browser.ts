@@ -76,7 +76,7 @@ const DEFAULT_MIME = 'application/octet-stream';
 /** The text the host sees: what was blocked, by what, and the fix. */
 function blockedMessage(origin: string, directive: string): string {
   return (
-    `plantuml-ts: image from ${origin} blocked by Content-Security-Policy ` +
+    `plantuml-engine: image from ${origin} blocked by Content-Security-Policy ` +
     `directive ${directive}; add ${origin} to ${CONNECT_SRC} (or pass a ` +
     `different imageProvider)`
   );

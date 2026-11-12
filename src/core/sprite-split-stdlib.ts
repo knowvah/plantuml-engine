@@ -109,7 +109,7 @@ export class SpriteNotBundledError extends Error {
 
 /** Unique property key marking a {@link BundleData} as sprite-split. Never
  *  serialized, never collides with a real bundle field. */
-const SPRITE_SPLIT_NAMES = Symbol('plantuml-ts:sprite-split-names');
+const SPRITE_SPLIT_NAMES = Symbol('plantuml-engine:sprite-split-names');
 
 interface SpriteSplitBundleData extends BundleData {
   readonly [SPRITE_SPLIT_NAMES]: readonly string[];

@@ -29,7 +29,7 @@
  * `has()`/`fetch()` answer with no network round-trip at all.
  *
  * `baseUrl` has NO default (si11a ADR-4). The packages ship to npm; there is
- * no plantuml-ts-operated CDN, and this module does not create one. The
+ * no plantuml-engine-operated CDN, and this module does not create one. The
  * library never makes a network call a consumer did not explicitly configure.
  *
  * Caching mirrors `StdlibRegistry.ts` exactly (si11a ADR-5): the in-flight
