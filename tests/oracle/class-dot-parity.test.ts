@@ -4,7 +4,7 @@
  * fixture carries:
  *
  * - HARNESS-HEALTH (fixtures with `input.svg`): the original hand-authored
- *   goldens (`01-assoc`, `02-members`, …). plantuml-ts is not yet faithful to
+ *   goldens (`01-assoc`, `02-members`, …). plantuml-engine is not yet faithful to
  *   PlantUML for these, so this suite only asserts the comparison harness is
  *   healthy (each golden renders, the layout seam is captured, and a
  *   well-formed structural diff is produced) — not that the diff is EQUAL.
@@ -75,7 +75,7 @@ const allDirs = existsSync(GOLDENS)
   : [];
 
 /** Harness-health goldens: hand-authored, carry an `input.svg` end-to-end
- *  reference. plantuml-ts is not yet faithful for these — see file doc. */
+ *  reference. plantuml-engine is not yet faithful for these — see file doc. */
 const harnessFixtures = allDirs.filter((name) => existsSync(join(GOLDENS, name, 'input.svg')));
 
 /** Ratchet-pinned goldens: selected because the current engine is already

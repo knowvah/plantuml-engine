@@ -17,7 +17,7 @@
  * regression, which stayed green through the whole suite.
  *
  * Full write-up, including why no sequence oracle corpus exists to have
- * caught this: https://github.com/sseely/plantuml-ts/issues/25
+ * caught this: https://github.com/knowvah/plantuml-engine/issues/25
  *
  * Second defect pinned here: `else <condition>` captured its label and threw
  * it away (`command-grouping.ts`'s handler took `(state)` and ignored

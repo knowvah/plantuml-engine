@@ -87,17 +87,6 @@ const PENDING: readonly string[] = [
   'planning/adr/ADR-002-mit-with-epl-dependency.md',
   'planning/conformance.md',
   'planning/roadmap.md',
-  'tests/oracle/class-dot-parity.test.ts',
-  'tests/oracle/description-parity.ratchet.test.ts',
-  'tests/oracle/svek-dot.ts',
-  'tests/unit/class/class-arrow-length.test.ts',
-  'tests/unit/class/class-nested-generics.test.ts',
-  'tests/unit/core/graph-layout-svek-read.test.ts',
-  'tests/unit/core/klimt/sprite/PSystemListArchimateSpritesFactory.test.ts',
-  'tests/unit/core/tim/TContext.test.ts',
-  'tests/unit/core/utils/SignatureUtils.test.ts',
-  'tests/unit/preprocessor.test.ts',
-  'tests/unit/sequence/group-routing.test.ts',
 ];
 
 function isAllowed(path: string): boolean {

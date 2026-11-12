@@ -10,7 +10,7 @@
  * but `A ..> B` + `A -* B` together (same pair, oracle jar probe) emits
  * `minlen=0` on BOTH edges.
  *
- * plantuml-ts had no equivalent pass, so a second relationship between an
+ * plantuml-engine had no equivalent pass, so a second relationship between an
  * already-length-1 pair kept its own default length
  * (givoli-70-rade072, nadepi-13-mufu566, tedeba-19-lisi250).
  *

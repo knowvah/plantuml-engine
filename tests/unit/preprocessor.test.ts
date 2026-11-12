@@ -252,7 +252,7 @@ describe('preprocessor', () => {
   });
 
   // SI6 (was: "!else with no enclosing conditional is a no-op"). That no-op was
-  // a documented plantuml-ts divergence, held open only because a faithful
+  // a documented plantuml-engine divergence, held open only because a faithful
   // throw had nowhere to land -- there was no error-diagram path, so it would
   // have escaped `renderSync`. SI6 ported `net/sourceforge/plantuml/error/`, so
   // the orphan now errors exactly as upstream does and the DOCUMENT still
@@ -296,7 +296,7 @@ describe('preprocessor', () => {
   });
 
   // SI6 (was: "wrong arg count leaves call-site unchanged"). The passthrough was
-  // a plantuml-ts divergence held open only because a faithful throw had nowhere
+  // a plantuml-engine divergence held open only because a faithful throw had nowhere
   // to land. The jar errors -- live-oracle verified, `!define BOLD(x)` called as
   // `BOLD(x,y)` renders the error diagram with `Function not found BOLD` -- and
   // now so does this port. The DOCUMENT still renders: `renderSync` draws that

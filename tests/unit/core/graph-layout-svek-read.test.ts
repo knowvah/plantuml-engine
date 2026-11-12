@@ -159,7 +159,7 @@ describe('svekEdge — SvekEdge#solveLine parsed values', () => {
 /**
  * T11 (docs/graphviz-issues/25-edge-label-published-when-unplaced.md;
  * cdd4 T0d already found delasa class-conformant on dot-engine 1.6.1 with
- * no plantuml-ts change -- this pins that finding through the real read).
+ * no plantuml-engine change -- this pins that finding through the real read).
  *
  * Real graphviz's force-search (`searchsize`) can fail to find a spot for a
  * centre edge label; when it does, `ED_label(e)->set` stays false and

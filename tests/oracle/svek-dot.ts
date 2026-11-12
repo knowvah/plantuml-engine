@@ -7,7 +7,7 @@
  * emitter and is genuinely apples-to-apples. Synthetic ids/colors are ignored;
  * we compare graph attrs, node count + shape multiset, edge topology + minlen +
  * label presence + reserved LABEL BOX sizes + ENDPOINT PORTS, and cluster membership. `width`/`height` are
- * tolerant metrics (Java vs plantuml-ts text measurement) — reported, not
+ * tolerant metrics (Java vs plantuml-engine text measurement) — reported, not
  * asserted.
  *
  * ## Why endpoint ports are compared (object-close, 2026-08-11)
@@ -373,7 +373,7 @@ export function parseSvekDot(dot: string): StructuralGraph {
   };
 }
 
-/** Project plantuml-ts's layout input through the emitter, then parse — so the
+/** Project plantuml-engine's layout input through the emitter, then parse — so the
  *  candidate model is exactly what our Svek DOT says (and the emitter is tested). */
 export function dotInputToStructural(input: DotInputGraph): StructuralGraph {
   return parseSvekDot(toSvekDot(input));
