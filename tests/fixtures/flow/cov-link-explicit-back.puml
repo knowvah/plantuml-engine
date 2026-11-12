@@ -1,0 +1,6 @@
+@startflow
+10 "A"
+s 20 "B"
+s 30 "C"
+n 20
+@endflow

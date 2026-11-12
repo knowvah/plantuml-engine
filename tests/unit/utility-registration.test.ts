@@ -53,6 +53,7 @@ import { sequencePlugin } from '../../src/diagrams/sequence/index.js';
 import { statePlugin } from '../../src/diagrams/state/index.js';
 import { licensePlugin } from '../../src/diagrams/version/PSystemLicenseFactory.js';
 import { versionPlugin } from '../../src/diagrams/version/PSystemVersionFactory.js';
+import { flowPlugin } from '../../src/diagrams/flow/index.js';
 import { ganttPlugin } from '../../src/diagrams/gantt/index.js';
 import { wbsPlugin } from '../../src/diagrams/wbs/index.js';
 import { yamlPlugin } from '../../src/diagrams/yaml/index.js';
@@ -112,6 +113,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [charliePlugin, 181],
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
+  [flowPlugin, 185],
   [dedicationPlugin, 186],
   [timingPlugin, 187],
   [helpPlugin, 188],
@@ -252,6 +254,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startwire\n* a\n@endwire', wirePlugin],
   ['@startbpm\n:login;\n@endbpm', bpmPlugin],
   ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],
+  ['@startflow\n10 "A"\n@endflow', flowPlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

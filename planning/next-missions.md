@@ -35,6 +35,15 @@ post-D7 measurements.
 
 ---
 
+## flow-engine-port (flp) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #132; per-task history on the local tag `flow-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/flowdiagram/` ported file for file into `src/diagrams/flow/`, and the reachable part of `golem/` into `src/core/golem/`, registered at `PSystemBuilder.java:185`. The one `@startflow` row, `bemixo-79-xulu250`, left the unknown-type sentinel and is multiset-equal to its oracle (605×421), but stays `diverged`: the jar draws its boxes in `HashMap<Tile, …>` identity-hash order, which changes per run (6 renders, 6 SVGs), and the port draws in insertion order, one order the jar can produce. 69 authored fixtures: 17 one-box and `cov-embedded` zero-diff, 13 error pairs (all also error on release 1.2026.8), 38 multi-box fixtures each multiset-equal to the oracle or a recorded layout (3 shift fixtures have 2-4 jar layouts). `svg-flow` ratchet with a multiset tier; routing re-pinned `agree`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **Ruling #174**: how a row whose jar output follows identity-hash order counts (sign per row, an order-insensitive FLOW compare, or leave open). It names bemixo and the 38 multi-box fixtures, and blocks #132's close for those rows only.
+2. **The #136 "Blocked by #174" comment and the #132/#136 close-out comments** are in `.agent-notes/flp-T3c.md` and `.agent-notes/flp-T5.md`; `gh issue comment` was denied.
+
 ## git-engine-port (gip) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #131; per-task history on the local tag `git-engine-port/pre-squash`)
 
 `net/sourceforge/plantuml/gitlog/` ported file for file into `src/diagrams/git/` and registered at `PSystemBuilder.java:191`, laid out through `core/graph-layout` with `SmetanaForGit`'s graph (a new `box` node kind and a raw `smetanaRankSep`, byte-neutral for every other engine) and drawn through klimt (new `json/Arrow.ts`). The 4 `@startgit` rows left the unknown-type sentinel: juzane-95 and mebafo-26 reach `structural-match`, lagapi-44 and figagi-40 differ only in numbers and in 1 / 10 curves' cubic-piece counts. Every residue is proven Smetana arithmetic (our DOT = SmetanaForGit's graph; dot-engine = `dot -Tdot` 16.1.0; real dot at the jar's box sizes reproduces the jar) and named in `DIVERGENCES.md`'s git table: U-BOX (`poly_init` rounding, graphviz `2b255ca79`), the `\N` label, U-ARROW, U-CLIP, U-NS. Overall 5,708 of 5,927 conformant (unchanged), structural-match 120 → 122, 0 lost. 55 authored fixtures: 1 zero-diff, 8 jar crash pages paired with ours, 46 pinned at verdict + `maxDelta` ceiling. `svg-git` ratchet with a structural tier. No divergence added; `dist/*.d.ts` unchanged.

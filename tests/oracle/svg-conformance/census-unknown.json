@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-11T19:39:47.089Z",
-  "measuredAgainstCommit": "5584b5c8b",
+  "generatedAt": "2026-11-12T01:52:26.168Z",
+  "measuredAgainstCommit": "028c79c9c",
   "type": "unknown",
   "measurer": "deterministic",
   "fixtures": [
@@ -175,8 +175,8 @@
     {
       "slug": "bemixo-79-xulu250",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 61,
+      "bucket": "31+"
     },
     {
       "slug": "benogu-57-mefi213",
@@ -1273,8 +1273,8 @@
     {
       "slug": "figagi-40-mila236",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 22688,
+      "bucket": "31+"
     },
     {
       "slug": "fikaka-55-jeva969",
@@ -2155,8 +2155,8 @@
     {
       "slug": "juzane-95-fose365",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 94,
+      "bucket": "31+"
     },
     {
       "slug": "juzica-68-kava475",
@@ -2569,8 +2569,8 @@
     {
       "slug": "lagapi-44-lemu042",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 987,
+      "bucket": "31+"
     },
     {
       "slug": "lakivi-73-vuko958",
@@ -2965,8 +2965,8 @@
     {
       "slug": "mebafo-26-fupu096",
       "status": "ok",
-      "diffCount": 11,
-      "bucket": "11-30"
+      "diffCount": 158,
+      "bucket": "31+"
     },
     {
       "slug": "mebeva-33-bafu201",

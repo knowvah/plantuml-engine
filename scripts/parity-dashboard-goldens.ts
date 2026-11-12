@@ -50,6 +50,7 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   // cmf T4: the creole/math/latex/definition/help factories' rows live in `unknown`, as the utility factories' do.
   // bpe D7: the 7 bpm rows live in `unknown`, pinned with `type: 'unknown'` as nwdiag's are.
   // gip D8: the 4 git rows live in `unknown`, pinned with `type: 'unknown'` as bpm's are.
+  // flp D7: the flow row lives in `unknown`, pinned with `type: 'unknown'` as git's are (none pinned until #174).
   unknown: [
     'svg-utility',
     'svg-factories',
@@ -58,6 +59,7 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
     'svg-nwdiag',
     'svg-bpm',
     'svg-git',
+    'svg-flow',
   ],
   network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.

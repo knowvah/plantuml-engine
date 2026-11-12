@@ -82,6 +82,8 @@ const DIAGRAM_TYPE_CHART = 'CHART';
 /** cmf T3a: `Help` is a `TitledDiagram` (`help/Help.java:58`). */
 const DIAGRAM_TYPE_HELP = 'HELP';
 const DIAGRAM_TYPE_BPM = 'BPM';
+/** flp T3a: `FlowDiagram` is a `TitledDiagram` (`flowdiagram/FlowDiagram.java:71`). */
+const DIAGRAM_TYPE_FLOW = 'FLOW';
 /** gip T3a: `GitDiagram` is a `TitledDiagram` (`gitlog/GitDiagram.java:50`). */
 const DIAGRAM_TYPE_GIT = 'GIT';
 
@@ -338,6 +340,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
     case DIAGRAM_TYPE_HELP:
     case DIAGRAM_TYPE_BPM:
+    case DIAGRAM_TYPE_FLOW:
     case DIAGRAM_TYPE_GIT:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:

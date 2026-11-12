@@ -1,0 +1,347 @@
+{
+  "cov-blank-line": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-chain-east-nonroot": {
+    "kind": "order-only",
+    "rawVariants": 7,
+    "layoutVariants": 1
+  },
+  "cov-chain-north-nonroot": {
+    "kind": "order-only",
+    "rawVariants": 6,
+    "layoutVariants": 1
+  },
+  "cov-chain-south-nonroot": {
+    "kind": "order-only",
+    "rawVariants": 8,
+    "layoutVariants": 1
+  },
+  "cov-chain-west-nonroot": {
+    "kind": "order-only",
+    "rawVariants": 8,
+    "layoutVariants": 1
+  },
+  "cov-collision-vertical": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-default-south": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-duplicate-id": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-east": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-embedded": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-empty": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-id-word": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-label-backslash-quote": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-color": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-creole-two": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-label-creole": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-curly-mixed": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-label-curly": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-empty": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-guillemets": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-long": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-newline-fn": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-newline-neighbour": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-label-newline-three": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-label-newline": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-openiconic": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-quotes": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-size": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-sprite": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-unicode-code": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-label-unicode": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-leading-space": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-link-back": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-link-explicit-back": {
+    "kind": "order-only",
+    "rawVariants": 4,
+    "layoutVariants": 1
+  },
+  "cov-link-first": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-link-four": {
+    "kind": "order-only",
+    "rawVariants": 8,
+    "layoutVariants": 1
+  },
+  "cov-link-nonadjoining": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-link-same-row-far": {
+    "kind": "order-only",
+    "rawVariants": 5,
+    "layoutVariants": 1
+  },
+  "cov-link-self": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-link-twice": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-link-unknown": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-link-west-adjacent": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-loop": {
+    "kind": "order-only",
+    "rawVariants": 6,
+    "layoutVariants": 1
+  },
+  "cov-many-shift": {
+    "kind": "geometry",
+    "rawVariants": 7,
+    "layoutVariants": 4
+  },
+  "cov-no-space": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-north-chain": {
+    "kind": "order-only",
+    "rawVariants": 8,
+    "layoutVariants": 1
+  },
+  "cov-north-west": {
+    "kind": "order-only",
+    "rawVariants": 5,
+    "layoutVariants": 1
+  },
+  "cov-north": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-option-handwritten-link": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-option-handwritten": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-orientation-only": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-ring": {
+    "kind": "order-only",
+    "rawVariants": 8,
+    "layoutVariants": 1
+  },
+  "cov-scale": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-shift-east": {
+    "kind": "geometry",
+    "rawVariants": 4,
+    "layoutVariants": 2
+  },
+  "cov-shift-one": {
+    "kind": "order-only",
+    "rawVariants": 7,
+    "layoutVariants": 1
+  },
+  "cov-shift-three": {
+    "kind": "geometry",
+    "rawVariants": 8,
+    "layoutVariants": 4
+  },
+  "cov-single": {
+    "kind": "stable",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-skinparam": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-title-after": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-title": {
+    "kind": "error",
+    "rawVariants": 1,
+    "layoutVariants": 1
+  },
+  "cov-trailing-space": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-two-south": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-upper-orientation": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-west-chain": {
+    "kind": "order-only",
+    "rawVariants": 7,
+    "layoutVariants": 1
+  },
+  "cov-west": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-wide-both": {
+    "kind": "order-only",
+    "rawVariants": 5,
+    "layoutVariants": 1
+  },
+  "cov-wide-east": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-wide-south": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  },
+  "cov-wide-west": {
+    "kind": "order-only",
+    "rawVariants": 2,
+    "layoutVariants": 1
+  }
+}

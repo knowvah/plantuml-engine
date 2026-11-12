@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2511 modules · 8272 exported names.
+2525 modules · 8291 exported names.
 
 ## `src/`
 
@@ -546,6 +546,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `Failable.ts` | `Failable` | Failable — upstream's ok-or-error result carrier (an ad-hoc `Result<O, string>` living in the gantt package but consumed across the codebase; `CucaDiagram#quarkInContextSafe` returns one). |
+
+## `src/core/golem/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `MinMaxGolem.ts` | `MinMaxGolem` | `MinMaxGolem`: the integer bounding box of golem positions. |
+| `Path.ts` | `Path` | `Path`: a link from one `TileArea` to another. |
+| `Position.ts` | `Position` | `Position`: an immutable golem rectangle `(xmin,ymin)-(xmax,ymax)` in half-cell units; every tile is 2 wide. |
+| `Tile.ts` | `Tile` | `Tile`: a golem cell identity with its five `TileArea`s, built once. |
+| `TileArea.ts` | `TileArea` | `TileArea`: one side (or the centre) of a tile, the end of a `Path`. |
+| `TileGeometry.ts` | `TileGeometry`, `TILE_GEOMETRY_VALUES`, `opposite`, `fromString` | `TileGeometry`: the four sides of a golem tile plus `CENTER`. |
+| `TilesField.ts` | `TilesField` | `TilesField`: the golem grid. |
 
 ## `src/core/klimt/`
 
@@ -2276,6 +2288,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `layout.ts` | `ROW_GAP`, `CHILD_INDENT`, `getTextBlock`, `calculateDimension` |  |
 | `parser.ts` | `FilesDiagram`, `parseFiles` |  |
 | `renderer.ts` | `drawAndMove`, `FilesListing` |  |
+
+## `src/diagrams/flow/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `ActivityBox.ts` | `ActivityBox` | `ActivityBox`: a flow box — the label in serif 14, black, inside a 25-rounded `MY_YELLOW` rectangle stroked `MY_RED` at 1.5, inset 10. |
+| `CommandLineSimple.ts` | `CommandLineSimple` | `CommandLineSimple`: `[orientation ]id "label"`, a new box `orientation` of the last one (`SOUTH` by default). |
+| `CommandLink.ts` | `CommandLink` | `CommandLink`: `[orientation ]id`, a path from the last box's `orientation` side to box `id` (`SOUTH` by default). |
+| `flow-export.ts` | `renderFlow` | `FlowDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `FlowDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefault |
+| `FlowDiagram.ts` | `FlowDiagram` | FlowDiagram — `@startflow`: each `CommandLineSimple` adds an `ActivityBox` on a golem `TilesField`, each `CommandLink` adds a path, and the diagram is its own `TextBlock`. |
+| `FlowDiagramFactory.ts` | `initCommandsList`, `parseFlow` | `FlowDiagramFactory`: a `PSystemCommandFactory` with exactly the two flow commands and no `CommonCommands` (flp D3, D5), so a blank line, `title`, `skinparam` or `scale` is not a command here and yields `Syntax Error?`. |
+| `index.ts` | `FlowGeometry`, `flowPlugin` | `FlowDiagramFactory` as a plugin: a `PSystemCommandFactory` on `@startflow`, typed `FLOW` (`FlowDiagramFactory.java:51`), registered at its upstream position after `GanttDiagramFactory` and the commented-out `ChronologyDiagramFactory` (`PSy |
 
 ## `src/diagrams/gantt/`
 

@@ -125,14 +125,14 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 17. ~~**Wire** (`@startwire`)~~ — schematic grid; DONE by wire-engine-port (#128): 18/18 conformant, no `golem` use.
 17b. ~~**BPM** (`@startbpm`)~~ — business-process grid; DONE by bpm-engine-port (#130): 7/7 conformant, 77 authored fixtures, no divergence added.
 17a. ~~**Creole / Math / LaTeX / Definition / Help** (`@startcreole`, `@startmath`, `@startlatex`, `@startdef`, `help`)~~ — DONE by creole-math-factories-port (#129): 17/41 rows conformant, the rest named per row or on rulings #169/#170.
-18. **Flow** (`@startflow`) — golem grid (Track SI-4); alpha-doc only.
+18. ~~**Flow** (`@startflow`)~~ — golem grid; DONE by flow-engine-port (#132): `flowdiagram/` + reachable `golem/` ported, the 1 row and 38 multi-box fixtures multiset-equal to the jar, whose box order follows Java identity hashes (ruling #174 pending); 69 authored fixtures, no divergence added.
 19. **DOT passthrough** (`@startdot`) — feeds user DOT straight to dot-engine;
     needs `common/{arrows,shapes,htmltable,labels}.c` for shape/arrow attrs.
 
 ### C. Shared infrastructure tracks (unblock multiple types)
 20. **datetime.ts** (SI-2) — blocks Timing + Gantt.
 21. **railroad renderer** (SI-3) — blocks EBNF + Regex.
-22. **golem grid** (SI-4) — blocks Flow (+ maybe Salt/Wire).
+22. ~~**golem grid** (SI-4)~~ — DONE by flow-engine-port (#132): the reachable part of `golem/` at `src/core/golem/`; Salt and Wire never import it.
 23. **preprocessor completion + stdlib bundling** (SI-5) — blocks C4, AWS,
     archimate, `!procedure`-heavy fixtures. This is the single biggest
     breadth-unblocker; probably the largest infra mission.

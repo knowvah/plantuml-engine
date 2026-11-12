@@ -523,9 +523,13 @@ blocks only (`PSystemRegex.java:82-97`), through `StyleExtractor#applyStyles` at
 
 ---
 
-## Phase 5p — Flow Diagram
+## Phase 5p — Flow — DONE (flow-engine-port, #132)
 
-**Java source:** `flowdiagram/`, `golem/`
+**Java source:** `flowdiagram/`, `golem/`. Ported file for file into `src/diagrams/flow/` and `src/core/golem/` (the
+`TextBlock` half of `Tile`/`TilesField`, `Square`, `Magnet` and `MinMaxDouble` are unreachable from `@startflow` and not
+ported), registered at `PSystemBuilder.java:185`. Ratchet `svg-flow` with a multiset tier: the jar draws boxes, and
+after a shift places them, in `HashMap` identity-hash order, so multi-box rows wait on ruling #174. The notes below are
+the pre-port plan; the commands are `[nsew ]id "label"` and `[nsew ]id`, not the ones listed.
 
 **Reuse:** `src/core/golem/` (Track SI-4 — must build first);
 `src/core/svg.ts` primitives; `src/core/theme.ts`.

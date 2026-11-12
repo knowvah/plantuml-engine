@@ -1,0 +1,6 @@
+{
+  "$comment": "flp D4/D7: cached @startflow rows held by flow.multiset.ratchet.test.ts until ruling #174; goldens at <type>/<slug>/. A row that pins into ratchet.json leaves this list.",
+  "fixtures": [
+    { "slug": "bemixo-79-xulu250", "type": "unknown", "addedAt": "2026-11-12", "source": "dot-cache" }
+  ]
+}

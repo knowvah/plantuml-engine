@@ -2097,6 +2097,18 @@ Oracle seam #3 (fork `37c07dce45a`, `oracle/patches/0003-oracle-svg-property.pat
 
 Oracle seam #4 (fork `eb0f3cff7df`, `oracle/patches/0004-oracle-space-width.patch`) measures each U+0020 as U+0021 — the table's own 44-tenth advance, the one `!` and U+00A0 already have, and the one Helvetica (Core14 AFM `WX 278` for both) and Arial (569/2048) give the space — and rounds the width to float like the stock SVG bounder (`FileFormat.getJavaDimension` reads `FontMetrics.getStringBounds`, a `Rectangle2D.Float`). `DeterministicMeasurer` mirrors both; `WidthTableMeasurer` stays the verbatim table. The whole oracle was re-captured one JVM per fixture (`scripts/recapture-oracles.ts`): 47,920 of 47,920 unscaled space-bearing oracle text runs now equal our measurement, the 33 crash pages of the old instrument fell to the 6 that pre-date it (all four named above now render real diagrams, deterministically, and are gated again), and every port defect the zero-wide space had hidden was fixed in the same mission (`plans/instrument-space-width/`). The production measurer is unaffected by the instrument change itself (b0 → b1 manifest: 0 changes).
 
+### `@startflow` box order follows Java identity hashes — PENDING ruling #174 (not accepted)
+
+**Category:** open, pending a maintainer ruling; no acceptance is recorded in `oracle/accepted-divergences.json`.
+`FlowDiagram#tilesBoxes` and `TilesField#positions` are `HashMap`s keyed by `Tile`, which has no `hashCode`
+(`flowdiagram/FlowDiagram.java:77`, `golem/TilesField.java:59`). The jar draws the boxes, and after a `moveAllToEast`
+shift places them, in identity-hash order, which changes per run: `bemixo-79-xulu250` rendered 6 times gave 6 SVGs and
+1 multiset, and `cov-shift-east`/`cov-many-shift`/`cov-shift-three` gave 2/4/4 layouts in 8 renders. The port
+(flow-engine-port, #132) iterates in insertion order, one order the jar can produce, so every multi-box row is
+multiset-equal to its oracle or a recorded layout (`flow.multiset.ratchet.test.ts`) but matches the positional compare
+only by chance. **Rows:** `unknown/bemixo-79-xulu250` (`diverged`) and the 38 multi-box fixtures in
+`tests/fixtures/flow/` listed on #174. No library forces this; the JVM does, so it is a ruling, not a divergence.
+
 ## Extensions (user ruling 2026-10-23)
 
 **Category: limitation (upstream drops styling the port can honour).**

@@ -32,6 +32,7 @@ import { eggPlugin } from './diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from './diagrams/files/index.js';
+import { flowPlugin } from './diagrams/flow/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
 import { regexPlugin } from './diagrams/regex/index.js';
@@ -108,6 +109,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(charliePlugin); // java:181
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
+  registry.register(flowPlugin); // java:185
   registry.register(dedicationPlugin); // java:186
   registry.register(timingPlugin); // java:187
   registry.register(helpPlugin); // java:188
