@@ -1,0 +1,17 @@
+@startgit
+* fa01a5b after3
+* 9bc7567 after2
+* d10292a after1
+*-.   4a987e7 octopus
+|\ \  
+| | * 41608ba side 3
+| * | 14c2009 side 2
+| |/  
+* | 56309db main tip
+|/  
+* ac35230 base4
+* fd27614 base3
+* 750c35d base2
+* 7fcaadb base1
+* d1994ed root
+@endgit

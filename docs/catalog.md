@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2497 modules · 8251 exported names.
+2511 modules · 8272 exported names.
 
 ## `src/`
 
@@ -74,7 +74,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `graph-layout-build-edges.ts` | `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `edgeKey`, `addEdges` | `addEdges` — split out of ./graph-layout-build.ts (500-line file-cap compliance, forced by G7 T14b's border-point wiring additions; pure move, no behavior change). |
 | `graph-layout-build-kermor.ts` | `kermorHasAlpha`, `KermorNoteSlot`, `kermorNoteClusterId`, `registerKermorClusterIds`, `buildKermorClusterHandles`, `placeKermorMembers`, `addNodesWithKermorRootEmpty`, `KERMOR_ROOT_EMPTY_ID` | `!pragma kermor on` cluster nesting for the layout builder -- the `ClusterDotStringKermor.printInternal` shape (`svek/ClusterDotStringKermor.java:67-165`): [alpha {label=<note TOP table or "">] only if the group has a TOP or BOTTOM note (:8 |
 | `graph-layout-build-portcluster.ts` | `isHasPortCluster`, `addTitledAnchorNode`, `buildHasPortClusterHandles`, `placeHasPortMembers` | cdd4-T6 (E3-10b): the layout-builder half of `ClusterDotString`'s `hasPort()` branch. |
-| `graph-layout-build-special-nodes.ts` | `LAYOUT_LABEL_BGCOLOR`, `addRowPortNode`, `addShieldNode`, `addRecordNode` | The layout copies of the HTML-label node shapes (row ports, shield tables, records), split out of ./graph-layout-build.ts for its 500-line cap (laep T3b-2; a pure move, no behavior change). |
+| `graph-layout-build-special-nodes.ts` | `LAYOUT_LABEL_BGCOLOR`, `addRowPortNode`, `addShieldNode`, `addRecordNode`, `addSmetanaBoxNode`, `addSpecialShapeNode` | The layout copies of the HTML-label node shapes (row ports, shield tables, records), split out of ./graph-layout-build.ts for its 500-line cap (laep T3b-2; a pure move, no behavior change). |
 | `graph-layout-build.ts` | `PX_PER_INCH`, `addEdges`, `edgeKey`, `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `applyGraphAttrs`, `firstEncounterOrder`, `addNodes`, `ClusterIndex`, `addClusters` | @knowvah/dot-engine builder construction for `layoutGraph()` — split from `graph-layout.ts` (500-line file cap). |
 | `graph-layout-cluster.types.ts` | `DotInputCluster` | `DotInputCluster` — the cluster half of the layout input contract. |
 | `graph-layout-node-corner.ts` | `portNodeSize`, `shieldCorner`, `cornerSize`, `svekCornerOf` | A laid-out node's top-left corner — split from `graph-layout.ts` (file-size cap) with no behaviour change: the HTML-sized node boxes (G9/T9, cdd-T15) and, for the Svek read, the parsed corner (cdd3-T-D3). |
@@ -2512,6 +2512,24 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `VerbPhraseAction.ts` | `VerbPhraseAction` |  |
 | `VerbPhraseMatcher.ts` | `VerbPhraseMatcher` |  |
 
+## `src/diagrams/git/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `Commit.ts` | `Commit` |  |
+| `CursorPosition.ts` | `DownRule`, `DOWN_RULES`, `CursorPosition` |  |
+| `git-export.ts` | `renderGit` | `GitDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `GitDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefaultMa |
+| `git-klimt.ts` | `back` |  |
+| `GitCurve.ts` | `GitCurve` |  |
+| `GitDiagram.ts` | `GitDiagram` |  |
+| `GitDiagramFactory.ts` | `parseGit` |  |
+| `GitTextArea.ts` | `GitTextArea` |  |
+| `GNode.ts` | `GNode` |  |
+| `GNodeBuilder.ts` | `GNodeBuilder` |  |
+| `index.ts` | `GitGeometry`, `gitPlugin` | `GitDiagramFactory` as a plugin: a `PSystemAbstractFactory` on `@startgit`, typed `GIT` (`GitDiagramFactory.java:52`), registered at its upstream position (`PSystemBuilder.java:191`). |
+| `MagicBox.ts` | `GitSkinParam`, `gitStyleOf`, `MagicBox` |  |
+| `SmetanaForGit.ts` | `SmetanaForGit` |  |
+
 ## `src/diagrams/hcl/`
 
 | Module | Exports | Purpose |
@@ -2537,6 +2555,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `Arrow.ts` | `Arrow` |  |
 | `ast.ts` | `HighlightDirective`, `JsonDiagramAST`, `surfaceParseWarnings` | AST types for PlantUML JSON diagrams (@startjson / @endjson). |
 | `color-form.ts` | `canonicalColor`, `canonicalColorOpt` | The FORM a color takes in the emitted SVG, as distinct from which color it is. |
 | `document-dimensions.ts` | `DocumentDimensions`, `documentDimensions` | The json block's own width/height -- `JsonDiagram#calculateDimension`. |

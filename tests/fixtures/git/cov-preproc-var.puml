@@ -1,0 +1,5 @@
+@startgit
+!$h = "a1"
+* $h msg
+* r0 root
+@endgit

@@ -43,6 +43,7 @@ export type DiagramType =
   | 'regex'
   | 'wire'
   | 'bpm'
+  | 'git'
   | 'creole'
   | 'math'
   | 'latex'
@@ -167,6 +168,8 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   regex: 'regex',
   wire: 'wire',
   bpm: 'bpm',
+  // gip T3a: `@startgit` (`DiagramType.java:143-144`).
+  git: 'git',
   // cmf D2: the four `PSystemBasicFactory` tags (`DiagramType.java:107-108, :124-125, :162-163, :167-168`).
   creole: 'creole',
   math: 'math',
@@ -428,6 +431,8 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   wire: UpstreamDiagramType.WIRE,
   // `BpmDiagramFactory` is `DiagramType.BPM` (BpmDiagramFactory.java:51, DiagramType.java:98-99).
   bpm: UpstreamDiagramType.BPM,
+  // `GitDiagramFactory` is `DiagramType.GIT` (GitDiagramFactory.java:52, DiagramType.java:143-144).
+  git: UpstreamDiagramType.GIT,
   creole: UpstreamDiagramType.CREOLE,
   math: UpstreamDiagramType.MATH,
   latex: UpstreamDiagramType.LATEX,

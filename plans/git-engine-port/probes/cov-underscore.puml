@@ -1,0 +1,10 @@
+@startgit
+*   m1 merge
+|\  
+| | * c1 c
+| |/  
+| * b1 b
+* | a1 a
+|/  
+* r0 root
+@endgit

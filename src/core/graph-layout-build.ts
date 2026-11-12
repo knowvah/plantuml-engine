@@ -26,12 +26,7 @@ import {
 } from './graph-layout-build-portcluster.js';
 import { dotSplinesAttrs } from './dot-splines.js';
 import { portTable } from './svek-dot-emit-labels.js';
-import {
-  addRecordNode,
-  addRowPortNode,
-  addShieldNode,
-  LAYOUT_LABEL_BGCOLOR,
-} from './graph-layout-build-special-nodes.js';
+import { addSpecialShapeNode, LAYOUT_LABEL_BGCOLOR } from './graph-layout-build-special-nodes.js';
 import { addSwimlaneRanks } from './svek-dot-swimlane.js';
 import { inches } from './svek-dot-emit.js';
 import { firstEncounterOrder } from './svek-dot-order.js';
@@ -49,6 +44,11 @@ export const PX_PER_INCH = 72;
 export { addEdges, edgeKey, CARDINALITY_FONT_SIZE, type EdgeIndex } from './graph-layout-build-edges.js';
 
 export function applyGraphAttrs(b: GvGraphBuilder, input: DotInputGraph): void {
+  // gip T1c: a Smetana-path graph's whole attribute set (`SmetanaForGit.java:152`).
+  if (input.smetanaRankSep !== undefined) {
+    b.setAttr('ranksep', input.smetanaRankSep);
+    return;
+  }
   if (input.rankDir !== undefined) b.setAttr('rankdir', input.rankDir);
   if (input.nodeSep !== undefined) {
     b.setAttr('nodesep', (input.nodeSep / PX_PER_INCH).toString());
@@ -115,18 +115,7 @@ function addOneNode(b: GvGraphBuilder, n: DotInputNode): void {
     addTitledAnchorNode(b, n);
     return;
   }
-  if (n.shape === 'record' && n.recordLabel !== undefined) {
-    addRecordNode(b, n, n.recordLabel);
-    return;
-  }
-  if (n.portRows !== undefined) {
-    addRowPortNode(b, n);
-    return;
-  }
-  if (n.shieldMargins !== undefined) {
-    addShieldNode(b, n);
-    return;
-  }
+  if (addSpecialShapeNode(b, n)) return;
   if (n.isPort === true && n.shape === 'plaintext') {
     // G9/T9: an entry/exit point whose own label is wider than 40px is a
     // `shape=plaintext` HTML port table upstream

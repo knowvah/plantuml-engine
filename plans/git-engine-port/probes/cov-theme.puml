@@ -1,0 +1,5 @@
+@startgit
+!theme cerulean
+* a1 msg
+* r0 root
+@endgit

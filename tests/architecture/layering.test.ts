@@ -114,6 +114,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'by json/yaml/hcl.',
   },
   {
+    from: 'src/diagrams/git/',
+    to: 'src/diagrams/json/',
+    why:
+      'upstream GitCurve.java:40-41 imports net.sourceforge.plantuml.jsondiagram.Arrow ' +
+      'and jsondiagram.Mirror, and SmetanaForGit.java:57 imports jsondiagram.Mirror -- ' +
+      'both kept at their upstream home (mission git-engine-port D3).',
+  },
+  {
     from: 'src/diagrams/yaml/',
     to: 'src/diagrams/json/',
     why:

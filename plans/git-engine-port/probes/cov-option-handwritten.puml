@@ -1,0 +1,5 @@
+@startgit
+!option handwritten true
+* a1 msg
+* r0 root
+@endgit

@@ -24,7 +24,12 @@ export type DotInputNodeShape =
   /** A5/T7: graphviz `shape=record`. The ONLY shape whose geometry the layout
    *  actually derives from a label rather than from the caller's measured
    *  `width`/`height` — see `DotInputNode.recordLabel`. */
-  | 'record';
+  | 'record'
+  /** gip T1c: graphviz `shape=box` as `SmetanaForGit#createNode` declares it --
+   *  `width`/`height` are minimums (no `fixedsize`) and there is no `label`, so
+   *  graphviz sizes and pads the default `\N` label. Inches are Java's
+   *  `"" + double`. @see SmetanaForGit.java:199-212 */
+  | 'box';
 
 /**
  * One `PortGeometry` band on a `RECTANGLE_HTML_FOR_PORTS` node — the DOT-input
@@ -393,6 +398,14 @@ export interface DotInputGraph {
    *  explicit value always printed) — additive, no existing caller sets
    *  this (D3; class/object/description sibling ratchets unaffected). */
   omitSepAttrs?: true;
+  /** gip T1c: a Smetana-path graph whose ONLY attribute is this raw `ranksep`
+   *  string, in inches (`SmetanaForGit.java:152`: `agsafeset(g, "ranksep",
+   *  "0.35")`). The builder then sets no `nodesep`, no svek floor (svek's
+   *  `DotStringFactory.java:117-133` never runs on a Smetana path) and none of
+   *  the svek-only graph lines (`searchsize`, `splines`). A sibling of
+   *  `omitSepAttrs` rather than an extension: that flag drops BOTH sep lines,
+   *  this one keeps ranksep verbatim. Absent = prior behavior. */
+  smetanaRankSep?: string;
   aspect?: number;
   /** Cluster structure for Svek-DOT emission. Layout ignores it (clusters are
    *  still resolved post-layout); only the emitter reads it. Emitter-only. */

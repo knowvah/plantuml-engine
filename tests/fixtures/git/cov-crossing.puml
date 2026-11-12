@@ -1,0 +1,12 @@
+@startgit
+*   m2 Merge b
+|\  
+| *   m1 Merge master into b
+| |\  
+| |/  
+|/|   
+* | a2 main
+| * b1 b
+|/  
+* r0 root
+@endgit

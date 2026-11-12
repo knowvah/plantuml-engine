@@ -1,0 +1,6 @@
+@startgit
+* a2 top a
+| * b2 top b
+|/  
+* r0 root
+@endgit

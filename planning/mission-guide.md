@@ -412,31 +412,23 @@ renderer is modified per task.
 
 ---
 
-## Phase 5a — Git Graph
+## Phase 5a — Git log — DONE (git-engine-port, #131)
 
-**Java source:** `gitlog/`
+**Java source:** `gitlog/` (10 files: `GitTextArea`, `CursorPosition`, `Commit`, `GNode`, `GNodeBuilder`,
+`MagicBox`, `GitCurve`, `SmetanaForGit`, `GitDiagram`, `GitDiagramFactory`), ported file for file into
+`src/diagrams/git/` and registered at `PSystemBuilder.java:191`.
 
-**Reuse:** `src/core/svg.ts` primitives; `src/core/theme.ts`. No graph
-engine — built-in DAG-lane layout.
+**What `@startgit` is:** pasted `git log --graph --oneline` output read as a character grid — not Mermaid's
+`gitGraph` (there is no `commit id:`, `branch`, `checkout`, `cherry-pick`, `order` or lane colour). Every line with a
+`*` is a commit named by its first token; parents are found by walking `|`, `\`, `/`, `_` down from it
+(`CursorPosition#getDownFromInternal`'s 23 ordered rules; rule 178 is unreachable) and from `.` cells of an octopus
+`*-.`; `(…)` after the `*` is a comment drawn on top nodes only; linear runs fold into one box. Layout is
+`SmetanaForGit`'s graph handed to dot-engine (`ranksep=0.35`, `shape=box` with no `fixedsize`/`label`). No command
+parser: `skinparam`, `<style>`, `title`, `scale`, `!theme` change nothing; `!option handwritten` does.
 
-**Architecture constraint:** Branches render as horizontal lanes; commits
-render as circles on lanes; merge commits have two incoming arrows. Layout
-is custom, not dot-based. The lane layout pattern is similar to Timing —
-consider whether Track SI-4 (golem) or a new `src/core/lane-layout/` module
-makes sense after building this phase and Phase 4b.
-
-**Watch-outs:**
-- `gitGraph` and `gitGraph LR` / `gitGraph TB` directions
-- `commit`, `commit id:"…"`, `commit type: HIGHLIGHT`, `commit type: REVERSE`
-- `branch <name>`, `checkout <name>`
-- `merge <name>` — renders a merge commit connecting two lanes
-- `cherry-pick id:"…"` — copies a commit to the current branch
-- `tag "…"` — label attached to the most recent commit
-- `order` directive controlling lane order
-- `show-commitLabel` / `hide commitLabel`
-- `show-branches` / `hide branches` (hide empty branches)
-- Commit message truncation at `maxMessageSize`
-- Lane colors derived from theme (cycle through a palette)
+**Watch-outs (measured):** modern git prints octopus children as `* / x`, which the jar cannot parse
+(`UnsupportedOperationException`); a commit directly above `*-.` crashes it too; `*---.` gives the walk only 3 of 4
+parents. The residue against the jar is Smetana arithmetic (`DIVERGENCES.md`, git row table).
 
 ---
 

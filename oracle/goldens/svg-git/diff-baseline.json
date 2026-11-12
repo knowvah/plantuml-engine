@@ -1,0 +1,28 @@
+{
+  "fixtures": [
+    {
+      "type": "unknown",
+      "slug": "figagi-40-mila236",
+      "status": "baseline",
+      "weightedScore": 22688,
+      "diffCount": 22688,
+      "verdict": "diverged",
+      "maxDelta": 216.40000000000146,
+      "reason": "diverged on curve cubic-piece counts only: U-NS routing under the Smetana ruling (DIVERGENCES.md, git row table; plans/git-engine-port/diagnosis/). Every other element differs numerically.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "eca291bc3"
+    },
+    {
+      "type": "unknown",
+      "slug": "lagapi-44-lemu042",
+      "status": "baseline",
+      "weightedScore": 987,
+      "diffCount": 987,
+      "verdict": "diverged",
+      "maxDelta": 65.768,
+      "reason": "diverged on curve cubic-piece counts only: U-NS routing under the Smetana ruling (DIVERGENCES.md, git row table; plans/git-engine-port/diagnosis/). Every other element differs numerically.",
+      "measuredAt": "2026-11-11",
+      "measuredAgainstCommit": "eca291bc3"
+    }
+  ]
+}

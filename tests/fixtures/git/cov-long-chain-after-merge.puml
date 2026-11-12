@@ -1,0 +1,9 @@
+@startgit
+*   m1 Merge
+|\  
+| * f1 f
+|/  
+* c3 three
+* c2 two
+* c1 one
+@endgit

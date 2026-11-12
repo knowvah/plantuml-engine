@@ -1,0 +1,10 @@
+@startgit
+<style>
+gitDiagram {
+  LineColor red
+  FontColor blue
+}
+</style>
+* a1 msg
+* r0 root
+@endgit

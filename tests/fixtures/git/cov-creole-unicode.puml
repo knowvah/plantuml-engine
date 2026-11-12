@@ -1,0 +1,5 @@
+@startgit
+* a<U+00E9>1 (<U+263A> <b>bold</b>)
+* <i>it</i> msg
+* r0 root
+@endgit

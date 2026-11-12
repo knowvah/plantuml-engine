@@ -1,0 +1,5 @@
+@startgit
+scale 2
+* a1 msg
+* r0 root
+@endgit

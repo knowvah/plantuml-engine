@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## git-engine-port (gip) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #131; per-task history on the local tag `git-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/gitlog/` ported file for file into `src/diagrams/git/` and registered at `PSystemBuilder.java:191`, laid out through `core/graph-layout` with `SmetanaForGit`'s graph (a new `box` node kind and a raw `smetanaRankSep`, byte-neutral for every other engine) and drawn through klimt (new `json/Arrow.ts`). The 4 `@startgit` rows left the unknown-type sentinel: juzane-95 and mebafo-26 reach `structural-match`, lagapi-44 and figagi-40 differ only in numbers and in 1 / 10 curves' cubic-piece counts. Every residue is proven Smetana arithmetic (our DOT = SmetanaForGit's graph; dot-engine = `dot -Tdot` 16.1.0; real dot at the jar's box sizes reproduces the jar) and named in `DIVERGENCES.md`'s git table: U-BOX (`poly_init` rounding, graphviz `2b255ca79`), the `\N` label, U-ARROW, U-CLIP, U-NS. Overall 5,708 of 5,927 conformant (unchanged), structural-match 120 → 122, 0 lost. 55 authored fixtures: 1 zero-diff, 8 jar crash pages paired with ours, 46 pinned at verdict + `maxDelta` ceiling. `svg-git` ratchet with a structural tier. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **No conformant git row is possible under the Smetana ruling** while boxes carry the `\N` label minimum and `poly_init` rounding; the rows sit at their ceilings. A future ruling to emulate Smetana sizing (rejected here, D9) would be the only route.
+2. **`DIVERGENCES.md` holds its first ~1100 lines three times** (pre-existing): a docs cleanup PR should drop copies 2-3 (`.agent-notes/gip-T3c.md`).
+3. **`CLAUDE.md` still says "`@startgit` (`SmetanaForGit`, unbuilt)"**: the user's call to edit.
+
 ## bpm-engine-port (bpe) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #130; per-task history on the local tag `bpm-engine-port/pre-squash`)
 
 `net/sourceforge/plantuml/bpm/` ported file for file into `src/diagrams/bpm/` and registered at `PSystemBuilder.java:141`, drawing through activity's `FtileCircleStart`, `FtileDiamond` and `FtileBox`, ported at their upstream paths beside `FtileBoxOld`. All 7 `@startbpm` rows went diverged to conformant with zero diffs on the first survey and are pinned in `svg-bpm`; overall 5,701 to 5,708 of 5,927, 0 lost. 77 authored fixtures: 57 zero-diff, 20 jar error pages where we also error. No divergence added; `dist/*.d.ts` unchanged.

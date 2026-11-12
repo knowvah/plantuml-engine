@@ -42,6 +42,7 @@ import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
 import { regexPlugin } from '../../src/diagrams/regex/index.js';
 import { wirePlugin } from '../../src/diagrams/wire/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
+import { gitPlugin } from '../../src/diagrams/git/index.js';
 import { jsonPlugin } from '../../src/diagrams/json/index.js';
 import { mindmapPlugin } from '../../src/diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from '../../src/diagrams/openiconic/PSystemListOpenIconicFactory.js';
@@ -116,6 +117,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [helpPlugin, 188],
   [wirePlugin, 189],
   [jsonPlugin, 190],
+  [gitPlugin, 191],
   [filesPlugin, 192],
   [boardPlugin, 193],
   [yamlPlugin, 194],
@@ -249,6 +251,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startregex\na(b|c)+\n@endregex', regexPlugin],
   ['@startwire\n* a\n@endwire', wirePlugin],
   ['@startbpm\n:login;\n@endbpm', bpmPlugin],
+  ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

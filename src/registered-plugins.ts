@@ -42,6 +42,7 @@ import { helpPlugin } from './diagrams/help/index.js';
 import { latexPlugin } from './diagrams/math/PSystemLatexFactory.js';
 import { mathPlugin } from './diagrams/math/PSystemMathFactory.js';
 import { hclPlugin } from './diagrams/hcl/index.js';
+import { gitPlugin } from './diagrams/git/index.js';
 import { jsonPlugin } from './diagrams/json/index.js';
 import { mindmapPlugin } from './diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from './diagrams/openiconic/PSystemListOpenIconicFactory.js';
@@ -112,6 +113,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(helpPlugin); // java:188
   registry.register(wirePlugin); // java:189
   registry.register(jsonPlugin); // java:190
+  registry.register(gitPlugin); // java:191
   registry.register(filesPlugin); // java:192
   registry.register(boardPlugin); // java:193
   registry.register(yamlPlugin); // java:194

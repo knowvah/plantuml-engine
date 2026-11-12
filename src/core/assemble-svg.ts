@@ -82,6 +82,8 @@ const DIAGRAM_TYPE_CHART = 'CHART';
 /** cmf T3a: `Help` is a `TitledDiagram` (`help/Help.java:58`). */
 const DIAGRAM_TYPE_HELP = 'HELP';
 const DIAGRAM_TYPE_BPM = 'BPM';
+/** gip T3a: `GitDiagram` is a `TitledDiagram` (`gitlog/GitDiagram.java:50`). */
+const DIAGRAM_TYPE_GIT = 'GIT';
 
 // ---------------------------------------------------------------------------
 // class finalize (formerly class/renderer-shell.ts#assembleClassShell)
@@ -336,6 +338,7 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
     case DIAGRAM_TYPE_HELP:
     case DIAGRAM_TYPE_BPM:
+    case DIAGRAM_TYPE_GIT:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:
       return finalizeGenericRootFragment(fragment);

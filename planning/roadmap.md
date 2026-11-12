@@ -116,7 +116,7 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 8. **WBS** (`@startwbs`) — reuses mind-map layout.
 9. **Gantt** (`@startgantt`) — blocked on `datetime.ts`; constraint solver.
 10. **Network / nwdiag / rackdiag** (`@startnwdiag`) — row-based layout.
-11. **Git graph** (`@startgitgraph`) — lane layout.
+11. ~~**Git log** (`@startgit`)~~ — a `git log --graph` character grid laid out through dot-engine, not a lane layout; DONE by git-engine-port (#131): 4/4 rows drawn, 2 structural-match + 2 diverged on curve piece counts only, all named in `DIVERGENCES.md`.
 12. **Salt** (`@startsalt`) — grid layout (evaluate golem reuse).
 13. ~~**DITAA** (`@startditaa`)~~ — dropped by ruling 2026-11-04 (#111, `DIVERGENCES.md`).
 14. **Chen EER** (`@startchen`) — dot layout + EER shapes.

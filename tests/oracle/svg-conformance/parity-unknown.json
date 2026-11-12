@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T20:26:41.833Z",
+  "generatedAt": "2026-11-11T23:59:58.649Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1510,12 +1510,12 @@
     {
       "slug": "figagi-40-mila236",
       "type": "unknown",
-      "dotEqual": true,
+      "dotEqual": false,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 38989,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "maxDelta": 216.40000000000146,
+      "firstDiff": "svg/g[1]/path[19]/@d",
+      "maxDeltaPath": "svg/g[1]/path[1154]/@d[5]"
     },
     {
       "slug": "fikaka-55-jeva969",
@@ -2579,12 +2579,11 @@
     {
       "slug": "juzane-95-fose365",
       "type": "unknown",
-      "dotEqual": true,
+      "dotEqual": false,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 159,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "verdict": "structural-match",
+      "maxDelta": 1.847999999999999,
+      "maxDeltaPath": "svg/g[1]/path[4]/@d[0]"
     },
     {
       "slug": "juzica-68-kava475",
@@ -3083,12 +3082,12 @@
     {
       "slug": "lagapi-44-lemu042",
       "type": "unknown",
-      "dotEqual": true,
+      "dotEqual": false,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 1569,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "maxDelta": 65.768,
+      "firstDiff": "svg/g[1]/path[31]/@d",
+      "maxDeltaPath": "svg/g[1]/path[32]/@d[4]"
     },
     {
       "slug": "lakivi-73-vuko958",
@@ -3570,12 +3569,11 @@
     {
       "slug": "mebafo-26-fupu096",
       "type": "unknown",
-      "dotEqual": true,
+      "dotEqual": false,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 104,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "verdict": "structural-match",
+      "maxDelta": 3.8810000000000002,
+      "maxDeltaPath": "svg/g[1]/path[2]/@d[0]"
     },
     {
       "slug": "mebeva-33-bafu201",
