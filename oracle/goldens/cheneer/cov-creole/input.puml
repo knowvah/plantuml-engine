@@ -1,0 +1,5 @@
+@startchen
+entity "**Bold** //it//\nline2" as A {
+  "<color:red>red</color>" as X
+}
+@endchen

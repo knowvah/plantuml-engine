@@ -4,8 +4,12 @@
  */
 import type { GvGraphBuilder } from '@knowvah/dot-engine';
 import type { DotInputNode } from './graph-layout.types.js';
+import { javaDoubleToString } from './java-number-format.js';
 import { rowPortTable, shieldTable } from './svek-dot-emit-labels.js';
 import { inches } from './svek-dot-emit.js';
+
+/** graphviz sizes are inches; callers pass points (`SmetanaForGit.java:200-201` divides by 72). */
+const POINTS_PER_INCH = 72;
 
 /** Sizing-irrelevant BGCOLOR for the layout copy of a row-port table — see
  *  {@link addRowPortNode}. */
@@ -64,4 +68,36 @@ export function addShieldNode(b: GvGraphBuilder, n: DotInputNode): void {
  *  keeps its pre-cdd-T15 NLOC once the shield branch joined it. */
 export function addRecordNode(b: GvGraphBuilder, n: DotInputNode, label: string): void {
   b.addNode(n.id, { shape: 'record', label, width: inches(n.width), height: inches(n.height) });
+}
+
+/**
+ * gip T1c: `SmetanaForGit#createNode`'s box -- `shape`, `height`, `width`, in
+ * that order, and nothing else: no `fixedsize`, so the sizes are minimums, and
+ * no `label`, so graphviz sizes its default `\N` label (the node name) with
+ * the engine's lookup-table measurer (`dot-engine-measurer.ts`) and pads it
+ * (`shapes.c#poly_init`). The inch strings are Java's `"" + double`, full
+ * precision, not {@link inches}' 6 dp.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/gitlog/SmetanaForGit.java:199-212
+ */
+export function addSmetanaBoxNode(b: GvGraphBuilder, n: DotInputNode): void {
+  b.addNode(n.id, {
+    shape: 'box',
+    height: javaDoubleToString(n.height / POINTS_PER_INCH),
+    width: javaDoubleToString(n.width / POINTS_PER_INCH),
+  });
+}
+
+/**
+ * The node kinds whose graphviz declaration is not the caller's fixed-size
+ * box, in `addOneNode`'s original test order; false when `n` is none of them.
+ * Split out of `graph-layout-build.ts#addOneNode` for the complexity hook (gip
+ * D11; a pure move, plus the `box` kind).
+ */
+export function addSpecialShapeNode(b: GvGraphBuilder, n: DotInputNode): boolean {
+  if (n.shape === 'record' && n.recordLabel !== undefined) addRecordNode(b, n, n.recordLabel);
+  else if (n.portRows !== undefined) addRowPortNode(b, n);
+  else if (n.shieldMargins !== undefined) addShieldNode(b, n);
+  else if (n.shape === 'box') addSmetanaBoxNode(b, n);
+  else return false;
+  return true;
 }

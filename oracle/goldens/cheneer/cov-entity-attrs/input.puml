@@ -1,0 +1,6 @@
+@startchen
+entity Person {
+  Name
+  Age
+}
+@endchen

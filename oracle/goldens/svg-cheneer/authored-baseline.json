@@ -1,0 +1,888 @@
+{
+  "fixtures": [
+    {
+      "type": "chen",
+      "slug": "cov-arrow-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-assoc-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-after-close",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Attribute must be inside an entity, relationship or another attribute (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-alias-link",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-composite",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-deep",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-derived",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-display",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-display-multi",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-key",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-key-multi",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-multi",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-attr-title-keyword",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-cardinality",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-cardinality-space",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-chrome-all",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-creole",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-dash-names",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-double",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-card",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-one",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-rankdir",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-self",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-elk-sub",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-empty",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-attrs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-back-stereo",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-display",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-empty",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-newline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-entity-relname",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Bad name (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-handwritten",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-identifying",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-linetype-ortho",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-linetype-polyline",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-long-name",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-many-entities",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-mixed-order",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-monochrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-U",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-d",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-double",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-o",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-o-double",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-trailing-comma",
+      "status": "baseline",
+      "weightedScore": 323,
+      "diffCount": 82,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalArgumentException"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-multi-trailing-comma-tight",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-namespace",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-nodesep",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-port",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "Syntax Error? (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-pragma-aspect",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-pragma-ratio",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-rankdir",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-rankdir-two-spaces",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Attribute must be inside an entity, relationship or another attribute (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-redefine",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-rel-attr",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-rel-link",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-relationship",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-roundcorner",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-scale",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-scale-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-self-link",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-shadowing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-skinparam",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-stereo-linestyle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-style-stereo",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-subclass-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-subclass-double",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-subclass-sub",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-subclass-super",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-title-chrome",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-top-to-bottom",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-unclosed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-weak",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "cov-weak-big",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-attr-outside",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Attribute must be inside an entity, relationship or another attribute (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-dup-attr",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Attribute already exists (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-multi-missing",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "No such entity: Q (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-no-brace",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "Attribute must be inside an entity, relationship or another attribute (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-no-such-entity",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "No such entity: B (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "err-unbalanced",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "Unbalanced brackets (Assumed diagram type: chen_eer)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "vega-chen-movie",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "vega-chen-moviealias",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "vega-chen-movieextended",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    },
+    {
+      "type": "chen",
+      "slug": "vega-chen-rankdir",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "410a7a10e"
+    }
+  ]
+}

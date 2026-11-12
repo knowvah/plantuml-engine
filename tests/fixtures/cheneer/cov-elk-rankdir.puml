@@ -1,0 +1,10 @@
+@startchen
+!pragma layout elk
+left to right direction
+entity A {
+  X
+}
+relationship R {
+}
+R -1- A
+@endchen

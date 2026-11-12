@@ -1,0 +1,7 @@
+@startgit
+       * c1 top
+       | 
+    _|/
+  /
+ * a1 base
+@endgit

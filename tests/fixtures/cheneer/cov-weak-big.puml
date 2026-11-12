@@ -1,0 +1,12 @@
+@startchen
+<style>
+.big {
+  FontSize 18
+}
+</style>
+entity A <<weak>><<big>> {
+}
+relationship R <<identifying>><<big>> {
+}
+A =1= R
+@endchen

@@ -1,0 +1,7 @@
+@startbpm
+' a comment
+:a;
+/' block
+comment '/
+:b;
+@endbpm

@@ -1,0 +1,9 @@
+@startchen
+!pragma layout elk
+entity A {
+  X
+}
+relationship R {
+}
+R -1- A
+@endchen

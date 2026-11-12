@@ -89,6 +89,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'the core home mirrors the Java package.',
   },
   {
+    from: 'src/core/klimt/sprite/listsprite-skin-param.ts',
+    to: 'src/diagrams/ebnf/ebnf-skin-param.ts',
+    why:
+      'lsp D1 — upstream keeps ListSpriteDiagram in klimt/sprite, and its TitledDiagram builds the shared ' +
+      'skin/SkinParam (TitledDiagram.java:107); the port slice of that class for the common-command engines is ' +
+      'ebnf-skin-param.ts (regex-skin-param.ts re-exports it too). Re-export only; the core home mirrors the Java package.',
+  },
+  {
     from: 'src/diagrams/class/class-state-leaf.ts',
     to: 'src/diagrams/state/',
     why:
@@ -112,6 +120,14 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       'CLAUDE.md JsonDiagram ruling — hcl renders VIA the json engine ' +
       '(parser/layout/renderer); upstream JsonDiagram is one class shared ' +
       'by json/yaml/hcl.',
+  },
+  {
+    from: 'src/diagrams/git/',
+    to: 'src/diagrams/json/',
+    why:
+      'upstream GitCurve.java:40-41 imports net.sourceforge.plantuml.jsondiagram.Arrow ' +
+      'and jsondiagram.Mirror, and SmetanaForGit.java:57 imports jsondiagram.Mirror -- ' +
+      'both kept at their upstream home (mission git-engine-port D3).',
   },
   {
     from: 'src/diagrams/yaml/',
@@ -167,6 +183,16 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       '(createMindMap, FtileBoxOld.java:139-146) -- the mindmap node box IS ' +
       "the activity engine's FtileBoxOld, kept at its upstream path " +
       '(mission mindmap-engine-port D4; wbs ITFLeaf.java:38 shares it).',
+  },
+  {
+    from: 'src/diagrams/bpm/',
+    to: 'src/diagrams/activity/ftile/',
+    why:
+      'upstream BpmElement.java:37-40 imports ' +
+      'net.sourceforge.plantuml.activitydiagram3.ftile.BoxStyle and ' +
+      'activitydiagram3.ftile.vertical.{FtileBox,FtileCircleStart,FtileDiamond} ' +
+      '(toTextBlockInternal, BpmElement.java:150-170) -- every BPM element IS an ' +
+      'activity Ftile, kept at its upstream path (mission bpm-engine-port D2).',
   },
   {
     from: 'src/diagrams/ebnf/',

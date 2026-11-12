@@ -15,7 +15,7 @@ function asSimple(c: ParsedColor): HColorSimple {
 
 /**
  * HColors — the colour constants and factories the style engine reaches:
- * `BLACK`, `WHITE`, `LIGHT_GRAY`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`.
+ * `BLACK`, `WHITE`, `RED`, `BLUE`, `LIGHT_GRAY`, `MY_YELLOW`, `MY_RED`, `transparent()` (both overloads), `none()`, `gradient()`, `simple()`.
  * The other constants (`RED_LIGHT` … `COL_BBBBBB`) and helpers (`noGradient`,
  * `changeBack`, `middle`) are not ported; `unlinear` is (gantt completion shading).
  *
@@ -32,6 +32,9 @@ export class HColors {
   private static white: HColorSimple | undefined;
   private static lightGray: HColorSimple | undefined;
   private static red: HColorSimple | undefined;
+  private static blue: HColorSimple | undefined;
+  private static myYellow: HColorSimple | undefined;
+  private static myRed: HColorSimple | undefined;
   /** `TRANSPARENT = HColorSimple.create(new XColor(0, 0, 0, 0))`. @see HColors.java:121 */
   private static transparentColor: HColorSimple | undefined;
 
@@ -53,6 +56,12 @@ export class HColors {
     return HColors.red;
   }
 
+  /** `set.getColorOrWhite("#0000FF")`, `FtileBox`'s debug outline and a BPM puzzle's stubs. @see HColors.java:92 */
+  static get BLUE(): HColorSimple {
+    HColors.blue ??= asSimple(HColorSet.instance().getColorOrWhite('#0000FF'));
+    return HColors.blue;
+  }
+
   /**
    * `set.getColorOrWhite("#C0C0C0")`, the board card's fill. Declared `HColor`
    * upstream; a `#RRGGBB` literal always resolves to an `HColorSimple`, so the
@@ -62,6 +71,18 @@ export class HColors {
   static get LIGHT_GRAY(): HColorSimple {
     HColors.lightGray ??= asSimple(HColorSet.instance().getColorOrWhite('#C0C0C0'));
     return HColors.lightGray;
+  }
+
+  /** `set.getColorOrWhite("#FEFECE")`, a flow `ActivityBox`'s fill. @see HColors.java:95 */
+  static get MY_YELLOW(): HColorSimple {
+    HColors.myYellow ??= asSimple(HColorSet.instance().getColorOrWhite('#FEFECE'));
+    return HColors.myYellow;
+  }
+
+  /** `set.getColorOrWhite("#A80036")`, a flow `ActivityBox`'s border and path colour. @see HColors.java:96 */
+  static get MY_RED(): HColorSimple {
+    HColors.myRed ??= asSimple(HColorSet.instance().getColorOrWhite('#A80036'));
+    return HColors.myRed;
   }
 
   /** `transparent()` is the shared `TRANSPARENT`; `transparent(fillBehavior)` is a

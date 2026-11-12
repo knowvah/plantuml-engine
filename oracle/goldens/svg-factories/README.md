@@ -1,8 +1,9 @@
 # svg-factories conformance ratchet
 
-Regression-proof gate for the creole, math, latex, definition and help
-factories (`PSystemBuilder.java:169` Definition, `:172` Math, `:173` Latex,
-`:174` Creole, `:188` Help; mission `creole-math-factories-port`), a copy of
+Regression-proof gate for the creole, math, latex, definition, listsprite and
+help factories (`PSystemBuilder.java:169` Definition, `:170` ListSprite, `:172`
+Math, `:173` Latex, `:174` Creole, `:188` Help; missions
+`creole-math-factories-port` and `listsprite-factory-port`), a copy of
 `oracle/goldens/svg-utility/` in shape and procedure. A fixture ratchets in once
 it renders byte-for-byte identical to the jar oracle under a **deterministic**
 text measurer; the ratchet test then holds it forever. See
@@ -10,11 +11,12 @@ text measurer; the ratchet test then holds it forever. See
 
 ## Population: a FIXED list, not a cache dir
 
-The 41 rows are `FACTORIES_SLUGS` (`tests/oracle/svg-conformance/
+The 43 rows are `FACTORIES_SLUGS` (`tests/oracle/svg-conformance/
 render-fixture-factories.ts`; source
-`plans/creole-math-factories-port/measurements/factory-rows.mjs`), all in
-`test-results/dot-cache/unknown/`: 2 definition, 11 math, 2 latex, 21 creole and
-5 help. Every tool reads and writes only those rows; the other `unknown` rows are
+`plans/creole-math-factories-port/measurements/factory-rows.mjs`, plus the two
+ListSprite rows of `plans/listsprite-factory-port/measurements/corpus-rows.mts`),
+all in `test-results/dot-cache/unknown/`: 2 definition, 2 listsprite, 11 math,
+2 latex, 21 creole and 5 help. Every tool reads and writes only those rows; the other `unknown` rows are
 never touched.
 
 ## Rendering: the survey's options
@@ -27,12 +29,12 @@ capture clock where a row has one (`oracle/capture-clock.json`, e.g.
 
 ## Pins and the baseline
 
-`ratchet.json` pins the 17 rows that render zero-diff: both definition rows,
-11 creole rows and 4 help rows. `diff-baseline.json` carries the other 24 with
+`ratchet.json` pins the 19 rows that render zero-diff: both definition rows,
+both listsprite rows, 11 creole rows and 4 help rows. `diff-baseline.json` carries the other 24 with
 their weighted score: 11 math and 2 latex rows sit at their KaTeX glyph-group
 residual, 10 creole rows at small residuals, and `cikoge-60-riti614` at its
 help-font residual. None is an error page, so no row is recorded `error`. The
-two manifests are disjoint and together cover the 41 slugs.
+two manifests are disjoint and together cover the 43 slugs.
 
 ## Authored root
 
@@ -50,7 +52,7 @@ Regenerate the manifest from a fresh measurement (it refuses a nonzero row
 without a mechanism):
 
 ```
-npx jiti plans/creole-math-factories-port/measurements/build-authored-baseline.mts <commit> [--write]
+npx jiti plans/listsprite-factory-port/measurements/build-authored-baseline.mts <commit> [--write]
 ```
 
 ## No DOT-parity gate

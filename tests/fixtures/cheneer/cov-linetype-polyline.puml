@@ -1,0 +1,12 @@
+@startchen
+skinparam linetype polyline
+entity A {
+  X
+}
+entity B {
+}
+relationship R {
+}
+A -1- R
+R -N- B
+@endchen

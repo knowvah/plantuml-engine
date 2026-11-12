@@ -1,0 +1,5 @@
+@startbpm
+!option debug true
+:a;
+m:<+>
+@endbpm

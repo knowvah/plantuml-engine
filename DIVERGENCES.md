@@ -40,7 +40,10 @@ behaviour that exists to work around a constraint this port does not have.
 
 **Affects:** edge routing and node spacing on the types above. Diagram
 structure, element set, labels, colours and node sizing are unaffected and
-remain held to upstream. **Priority on these types is readability first, SVG
+remain held to upstream — except `@startgit`'s node sizing: `SmetanaForGit`
+draws each box at the engine's own size, read back (`getSize` = `data.width * 72`
+× `data.height * 72`, `SmetanaForGit.java:129-134`), so a git box's size follows
+the engine (U-BOX and the `\N` label below). **Priority on these types is readability first, SVG
 fidelity to upstream second** — an ordering that is inverted from every other
 diagram type and applies only to this closed set.
 
@@ -172,6 +175,87 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligne
 `hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
 2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
 names them (#119).
+
+**`@startgit` (git-engine-port, 2026-11-11).** `src/diagrams/git/` ports `gitlog/` file for file and lays out
+through dot-engine with `SmetanaForGit`'s graph, attribute for attribute (`ranksep=0.35`; `shape=box`,
+`height`/`width` = `getBigDim`/72, no `fixedsize`, no `label`; edges `arrowsize=.7`). Proof per row in
+`plans/git-engine-port/diagnosis/` (json-family-parity D3 standard): our DOT equals a hand trace of
+`SmetanaForGit#initGraph`, and dot-engine equals real `dot -Tdot` 16.1.0 on it (every coordinate within dot's own
+printed precision, 11 184 values on figagi). Real `dot` given the JAR's box sizes on the same graph reproduces the
+jar's node x and curve piece counts on every drawn fixture and on juzane/mebafo, so the residue is the box size plus
+U-ARROW / U-CLIP; on lagapi/figagi it adds U-NS. One source beyond the json four, and the json label item in its git
+form:
+
+| source | Smetana (2.38) | graphviz (dot-engine, 16.1.0) | graphviz change |
+|---|---|---|---|
+| U-BOX box size (the `poly_init` analog of U-REC) | `width = POINTS(ND_width(n))`, rounded (`shapes__c.java:253-254`, `Macro.java:1560-1562`): the jar draws 119 for a declared 119.3125 | unrounded `INCH2PS` (`shapes.c:1975-1976`) | `2b255ca79` (8.0.4) |
+| `\N` label (git sets no label, both sides) | `storeline` never measures: (0, 16) + `PAD` → a 16 × 24 minimum (`labels__c.java:117-122`, `shapes__c.java:290`) | the node name `N<num>` measured + `PAD` → 32.5 × 24.5 for `N0` (`labels.c:26-42`, `shapes.c:2006-2008`) | — |
+
+Effects: every comment-less box is 24.5 tall here and 24 in the jar (0.5 per rank in `svg/@height`); a name narrower
+than about 24.5 pt (1-2 characters, the authored probes' `a1`/`r0`, no corpus row) gets the 32.5 minimum width.
+Three rows have curves whose cubic-piece count differs, so they read `diverged` in the survey, not
+`structural-match` (json's "unaligned" precedent): `authored/cov-long-chain-after-merge` (the `\N` width moves a
+2-rank edge's virtual node off the straight line that 2.38's routing collapses to one cubic; at jar sizes real dot
+emits the jar's single cubic), and `unknown/lagapi-44-lemu042` (1 path) / `unknown/figagi-40-mila236` (9 of 10
+paths; the 10th is the sizing case) by U-NS routing. Upstream rows reachable only through the jar's crash page — modern
+git's `* /` octopus lines and a commit directly above `*-.` — are error pairs, not divergences.
+
+<details><summary>git row-level table (50 rows: residue node / path / dw / dh)</summary>
+
+| row | residue (node / path / dw / dh) | mechanisms | ledger |
+|---|---|---|---|
+| authored/cov-bad-grid | 13.750 / 0.000 / 19 / 0 | U-BOX, `\N` label | `authored.md` |
+| authored/cov-blank-lines | 13.750 / 0.000 / 19 / 0 | U-BOX, `\N` label | `authored.md` |
+| authored/cov-chain-four | 1.000 / 1.101 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-chain-six | 16.500 / 8.827 / 16 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-chain-two | 1.000 / 0.625 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-empty | 11.500 / 4.048 / 7 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-folded | 12.500 / 4.318 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-in-message | 11.500 / 1.548 / 2 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-not-top | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-paren-before | 11.500 / 0.876 / 1 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-tag | 11.500 / 0.876 / 1 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-two-groups | 11.500 / 1.548 / 2 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-comment-unclosed | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-creole-comment | 11.500 / 3.548 / 6 / 0 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-creole-name | 11.500 / 0.673 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-creole-unicode | 11.500 / 0.876 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-crossing | 11.750 / 10.782 / 13 / 2 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-dash-merge | 11.500 / 7.117 / 11 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-duplicate-name | 11.500 / 9.271 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-ellipsis | 13.750 / 0.000 / 19 / 0 | U-BOX, `\N` label | `authored.md` |
+| authored/cov-fold-octopus | 2.000 / 2.343 / 0 / 2 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-indent | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-indent-shift | 21.750 / 0.000 / 27 / 0 | U-BOX, `\N` label | `authored.md` |
+| authored/cov-long-chain-after-merge | 12.500 / 11.652 (+1 unaligned paths) / 11 / 2 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-long-name | 11.500 / 0.657 / 1 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-merge-simple | 16.250 / 15.040 / 20 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-no-message | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-octopus | 20.250 / 18.101 / 24 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-octopus-3 | 1.500 / 2.211 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-octopus-4 | 1.500 / 2.359 / 1 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-octopus-5 | 1.500 / 1.921 / 2 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-octopus-dashes | 11.500 / 6.919 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-one | 0.500 / 0.000 / 0 / 0 | U-BOX, `\N` label | `authored.md` |
+| authored/cov-option-handwritten | polygons (handwritten) | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-pragma-dark | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-preproc-var | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-rule-162 | 8.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-scale | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-scale-200 | 67.500 / 67.121 / 0 / 67 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-skinparam | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-style | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-theme | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-title | 11.500 / 4.220 / 7 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-two-tops | 11.750 / 10.782 / 15 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-underscore | 11.500 / 10.720 / 12 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| authored/cov-unicode | 11.500 / 2.220 / 3 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `authored.md` |
+| unknown/figagi-40-mila236 | 215.000 / 216.427 (+10 unaligned paths) / 92 / 80 | U-NS, U-BOX, `\N` label, U-ARROW, U-CLIP | `unknown-figagi-40-mila236.md` |
+| unknown/juzane-95-fose365 | 0.750 / 1.848 / 0 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `unknown-juzane-95-fose365.md` |
+| unknown/lagapi-44-lemu042 | 61.188 / 65.768 (+1 unaligned paths) / 2 / 5 | U-NS, U-BOX, `\N` label, U-ARROW, U-CLIP | `unknown-lagapi-44-lemu042.md` |
+| unknown/mebafo-26-fupu096 | 1.359 / 3.881 / 1 / 1 | U-BOX, `\N` label, U-ARROW, U-CLIP | `unknown-mebafo-26-fupu096.md` |
+
+</details>
 
 **Category:** limitation (one engine, by choice).
 
@@ -2012,6 +2096,18 @@ Oracle seam #3 (fork `37c07dce45a`, `oracle/patches/0003-oracle-svg-property.pat
 ### ~~Deterministic-text oracle crashes on a lone space (measurement artefact)~~ — RETIRED (instrument-space-width, oracle seam #4, 2026-10-09)
 
 Oracle seam #4 (fork `eb0f3cff7df`, `oracle/patches/0004-oracle-space-width.patch`) measures each U+0020 as U+0021 — the table's own 44-tenth advance, the one `!` and U+00A0 already have, and the one Helvetica (Core14 AFM `WX 278` for both) and Arial (569/2048) give the space — and rounds the width to float like the stock SVG bounder (`FileFormat.getJavaDimension` reads `FontMetrics.getStringBounds`, a `Rectangle2D.Float`). `DeterministicMeasurer` mirrors both; `WidthTableMeasurer` stays the verbatim table. The whole oracle was re-captured one JVM per fixture (`scripts/recapture-oracles.ts`): 47,920 of 47,920 unscaled space-bearing oracle text runs now equal our measurement, the 33 crash pages of the old instrument fell to the 6 that pre-date it (all four named above now render real diagrams, deterministically, and are gated again), and every port defect the zero-wide space had hidden was fixed in the same mission (`plans/instrument-space-width/`). The production measurer is unaffected by the instrument change itself (b0 → b1 manifest: 0 changes).
+
+### `@startflow` box order follows Java identity hashes — PENDING ruling #174 (not accepted)
+
+**Category:** open, pending a maintainer ruling; no acceptance is recorded in `oracle/accepted-divergences.json`.
+`FlowDiagram#tilesBoxes` and `TilesField#positions` are `HashMap`s keyed by `Tile`, which has no `hashCode`
+(`flowdiagram/FlowDiagram.java:77`, `golem/TilesField.java:59`). The jar draws the boxes, and after a `moveAllToEast`
+shift places them, in identity-hash order, which changes per run: `bemixo-79-xulu250` rendered 6 times gave 6 SVGs and
+1 multiset, and `cov-shift-east`/`cov-many-shift`/`cov-shift-three` gave 2/4/4 layouts in 8 renders. The port
+(flow-engine-port, #132) iterates in insertion order, one order the jar can produce, so every multi-box row is
+multiset-equal to its oracle or a recorded layout (`flow.multiset.ratchet.test.ts`) but matches the positional compare
+only by chance. **Rows:** `unknown/bemixo-79-xulu250` (`diverged`) and the 38 multi-box fixtures in
+`tests/fixtures/flow/` listed on #174. No library forces this; the JVM does, so it is a ruling, not a divergence.
 
 ## Extensions (user ruling 2026-10-23)
 

@@ -1,0 +1,5 @@
+@startgit
+skinparam ArrowColor red
+* a1 msg
+* r0 root
+@endgit

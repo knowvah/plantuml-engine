@@ -1,0 +1,6 @@
+@startflow
+!option handwritten true
+10 "A"
+e 20 "B"
+w 10
+@endflow

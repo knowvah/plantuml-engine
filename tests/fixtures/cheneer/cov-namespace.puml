@@ -1,0 +1,8 @@
+@startchen
+entity a.b {
+  X
+}
+entity c {
+}
+a.b -1- c
+@endchen

@@ -1,0 +1,11 @@
+@startchen
+relationship R {
+}
+entity B {
+}
+entity A {
+  X <<key>>
+}
+R -N- B
+A -1- R
+@endchen

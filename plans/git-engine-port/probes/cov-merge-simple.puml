@@ -1,0 +1,8 @@
+@startgit
+*   m1 Merge
+|\  
+| * f2 feature
+* | b2 main
+|/  
+* r0 root
+@endgit

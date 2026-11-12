@@ -1,0 +1,4 @@
+@startflow
+10 "A"
+e 20 "A very long label that is certainly wider than two hundred units"
+@endflow

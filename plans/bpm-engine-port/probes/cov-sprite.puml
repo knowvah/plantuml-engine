@@ -1,0 +1,9 @@
+@startbpm
+sprite $s [4x4/16] {
+FFFF
+F00F
+F00F
+FFFF
+}
+:<$s> sprite;
+@endbpm

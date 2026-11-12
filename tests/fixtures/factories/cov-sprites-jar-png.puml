@@ -1,0 +1,3 @@
+@startsprites
+sprite $acc jar:archimate/access
+@endsprites

@@ -81,6 +81,13 @@ const DIAGRAM_TYPE_WIRE = 'WIRE';
 const DIAGRAM_TYPE_CHART = 'CHART';
 /** cmf T3a: `Help` is a `TitledDiagram` (`help/Help.java:58`). */
 const DIAGRAM_TYPE_HELP = 'HELP';
+const DIAGRAM_TYPE_BPM = 'BPM';
+/** flp T3a: `FlowDiagram` is a `TitledDiagram` (`flowdiagram/FlowDiagram.java:71`). */
+const DIAGRAM_TYPE_FLOW = 'FLOW';
+/** gip T3a: `GitDiagram` is a `TitledDiagram` (`gitlog/GitDiagram.java:50`). */
+const DIAGRAM_TYPE_GIT = 'GIT';
+/** ceep T2d: `ChenEerDiagram` is a `TitledDiagram` (`cheneer/ChenEerDiagram.java`); it prints `CHEN_EER` (D4). */
+const DIAGRAM_TYPE_CHEN_EER = 'CHEN_EER';
 
 // ---------------------------------------------------------------------------
 // class finalize (formerly class/renderer-shell.ts#assembleClassShell)
@@ -334,6 +341,10 @@ function finalizeShellFragment(fragment: RenderFragment): RenderFragment {
     case DIAGRAM_TYPE_BOARD:
     case DIAGRAM_TYPE_ACTIVITY_LEGACY:
     case DIAGRAM_TYPE_HELP:
+    case DIAGRAM_TYPE_BPM:
+    case DIAGRAM_TYPE_FLOW:
+    case DIAGRAM_TYPE_GIT:
+    case DIAGRAM_TYPE_CHEN_EER:
       return finalizeTitledDiagramFragment(fragment);
     case DIAGRAM_TYPE_FILES:
       return finalizeGenericRootFragment(fragment);

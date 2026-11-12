@@ -1,0 +1,11 @@
+@startchen
+skinparam ArrowColor red
+skinparam ArrowThickness 3
+entity A {
+  X
+}
+relationship R {
+}
+A -N- R
+A =1= R
+@endchen

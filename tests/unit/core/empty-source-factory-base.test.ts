@@ -128,3 +128,37 @@ describe('renderSync on an empty body -- each engine as its jar factory does', (
     expect(texts(ours)[0]).toBe('Welcome to PlantUML!');
   });
 });
+
+describe('emptySvg -- PSystemCommandFactory#createSystem on an empty source (ceep T3c3)', () => {
+  // The trace is the start line plus the line after it (`if (it.hasNext()) it.next();`,
+  // PSystemCommandFactory.java:117-121), and the page names `getDiagramType()`'s human-readable name
+  // (PSystemAbstractFactory.java:59-65, DiagramType.java:298-302). Values from scripts/oracle-render.sh.
+  const render = (src: string): string => renderSync(src, withJarCompatibleStyleInput({ measurer: measurer() }));
+  const tail = (svg: string): string[] => texts(svg).slice(-3);
+
+  it('@startchen with a blank line lists the blank line, names chen_eer, 532x284', () => {
+    const ours = render('@startchen\n\n@endchen\n');
+    expect(rootSize(ours)).toBe('532x284');
+    expect(tail(ours)).toEqual(['@startchen', NBSP, 'Empty description (Assumed diagram type: chen_eer)']);
+  });
+
+  it('@startchen/@endchen lists both lines (the @end line is the second trace line)', () => {
+    expect(tail(render('@startchen\n@endchen\n'))).toEqual([
+      '@startchen',
+      '@endchen',
+      'Empty description (Assumed diagram type: chen_eer)',
+    ]);
+  });
+
+  it('@startpacketdiag names packet, the upstream type, not the routing key', () => {
+    expect(tail(render('@startpacketdiag\n\n@endpacketdiag\n'))[2]).toBe(
+      'Empty description (Assumed diagram type: packet)',
+    );
+  });
+
+  it('@startuml with a blank line lists the blank line too, 532x284', () => {
+    const ours = render('@startuml\n\n@enduml\n');
+    expect(rootSize(ours)).toBe('532x284');
+    expect(tail(ours)).toEqual(['@startuml', NBSP, 'Empty description (Assumed diagram type: sequence)']);
+  });
+});

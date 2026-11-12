@@ -1,0 +1,6 @@
+@startbpm
+<style>
+root { BackGroundColor yellow }
+</style>
+:a;
+@endbpm

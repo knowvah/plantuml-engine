@@ -1,0 +1,6 @@
+@startchen
+entity A {
+  Id <<key>><<multi>>
+  Tag <<multi>> <<derived>>
+}
+@endchen

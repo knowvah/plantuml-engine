@@ -1,17 +1,18 @@
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
 import { URectangle } from '../../../core/klimt/shape/URectangle.js';
+import { Stereotype } from '../../../core/stereo/Stereotype.js';
 
 /**
  * BoxStyle — the outline an activity/mindmap/wbs box is drawn with
  * (`PLAIN` rounded rectangle, the SDL/UML shapes).
  *
- * Ported slice (what `FtileBoxOld` reaches): the abstract base (`values`
- * registry, `stereotype`, `shield`, `getShield`, `name`, abstract
- * `drawMe`) and `PLAIN` (`BoxStylePlain`). The thirteen SDL/UML styles
- * (`SDL_INPUT` ... `UML_TIME_EVENT`, java:61-97), `fromString`,
- * `getStereotype` and `drawMeDebug` serve the activity `:label<<stereo>>`
+ * Ported slice (what `FtileBoxOld` and `FtileBox` reach): the abstract base
+ * (`values` registry, `stereotype`, `shield`, `getShield`, `name`, abstract
+ * `drawMe`, `getStereotype`, `drawMeDebug`) and `PLAIN` (`BoxStylePlain`).
+ * The thirteen SDL/UML styles (`SDL_INPUT` ... `UML_TIME_EVENT`,
+ * java:61-97) and `fromString` serve the activity `:label<<stereo>>`
  * shapes, which the port's activity engine draws through its own `tiles/`
- * renderer; they land with the first `FtileBox` consumer.
+ * renderer; BPM's `FtileBox` passes only `PLAIN`.
  *
  * `PLAIN` is a static getter over a module constant declared after
  * `BoxStylePlain`: a TS class field cannot construct a subclass declared
@@ -47,6 +48,19 @@ export abstract class BoxStyle {
   /** @see BoxStyle.java:122-124 */
   getShield(): number {
     return this.shield;
+  }
+
+  /** `null` -> `undefined`. @see BoxStyle.java:135-139 */
+  getStereotype(): Stereotype | undefined {
+    if (this.stereotype === null) return undefined;
+    return Stereotype.build('<<' + this.stereotype + '>>');
+  }
+
+  /** @see BoxStyle.java:141-145 */
+  drawMeDebug(ug: UGraphic, width: number, height: number, shadowing: number, _roundCorner: number): void {
+    const s = URectangle.build(width, height);
+    s.setDeltaShadow(shadowing);
+    ug.draw(s);
   }
 
   /** @see BoxStyle.java:146-148 */

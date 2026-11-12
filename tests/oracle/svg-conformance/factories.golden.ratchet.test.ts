@@ -7,7 +7,7 @@
  * goldens, `DeterministicMeasurer` so both sides measure text in the SAME
  * system, a fixture ratchets in once and never regresses. NO DOT-parity
  * eligibility check (none of these factories shells out to Graphviz) and the
- * population is the FIXED `FACTORIES_SLUGS` list of 41
+ * population is the FIXED `FACTORIES_SLUGS` list of 43
  * `test-results/dot-cache/unknown/` rows, not a whole cache dir. Renders use
  * the survey's own options (`renderFixtureFactories`).
  *

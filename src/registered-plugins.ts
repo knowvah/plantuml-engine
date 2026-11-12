@@ -13,9 +13,11 @@
  */
 import type { DiagramRegistry } from './core/dispatcher.js';
 import { listArchimateSpritesPlugin } from './core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
+import { listSpritePlugin } from './core/klimt/sprite/ListSpriteDiagramFactory.js';
 import { activityPlugin } from './diagrams/activity/index.js';
 import { activityLegacyPlugin } from './diagrams/activity-legacy/index.js';
 import { boardPlugin } from './diagrams/board/index.js';
+import { bpmPlugin } from './diagrams/bpm/index.js';
 import { chartPlugin } from './diagrams/chart/index.js';
 import { chronologyPlugin } from './diagrams/chronology/index.js';
 import { classPlugin } from './diagrams/class/index.js';
@@ -31,9 +33,11 @@ import { eggPlugin } from './diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
 import { filesPlugin } from './diagrams/files/index.js';
+import { flowPlugin } from './diagrams/flow/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
 import { regexPlugin } from './diagrams/regex/index.js';
+import { chenPlugin } from './diagrams/cheneer/index.js';
 import { wirePlugin } from './diagrams/wire/index.js';
 import { creolePlugin } from './core/klimt/creole/legacy/PSystemCreoleFactory.js';
 import { definitionPlugin } from './diagrams/definition/PSystemDefinitionFactory.js';
@@ -41,6 +45,7 @@ import { helpPlugin } from './diagrams/help/index.js';
 import { latexPlugin } from './diagrams/math/PSystemLatexFactory.js';
 import { mathPlugin } from './diagrams/math/PSystemMathFactory.js';
 import { hclPlugin } from './diagrams/hcl/index.js';
+import { gitPlugin } from './diagrams/git/index.js';
 import { jsonPlugin } from './diagrams/json/index.js';
 import { mindmapPlugin } from './diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from './diagrams/openiconic/PSystemListOpenIconicFactory.js';
@@ -60,7 +65,7 @@ import { yamlPlugin } from './diagrams/yaml/index.js';
 export type PluginRegistrar = Pick<DiagramRegistry, 'register'>;
 
 /**
- * `PSystemBuilder.java:133-152`: Colors, the UML run, then the utility pages
+ * `PSystemBuilder.java:133-152`: Colors, the UML run, BPM (java:141), then the utility pages
  * and listings up to (not including) Salt. Welcome (java:133) and ListFonts
  * (java:148) are not registered -- see {@link registerPlugins}.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/PSystemBuilder.java:133-152
@@ -73,6 +78,7 @@ function registerUmlRun(registry: PluginRegistrar): void {
   registry.register(descriptionPlugin); // java:138
   registry.register(statePlugin); // java:139
   registry.register(activityPlugin); // java:140 (ActivityDiagramFactory3)
+  registry.register(bpmPlugin); // java:141
   registry.register(licensePlugin); // java:144
   registry.register(versionPlugin); // java:145
   registry.register(donorsPlugin); // java:146
@@ -96,6 +102,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(chartPlugin); // java:158
   registry.register(packetdiagPlugin); // java:159
   registry.register(definitionPlugin); // java:169
+  registry.register(listSpritePlugin); // java:170
   registry.register(mathPlugin); // java:172
   registry.register(latexPlugin); // java:173
   registry.register(creolePlugin); // java:174
@@ -105,17 +112,20 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(charliePlugin); // java:181
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
+  registry.register(flowPlugin); // java:185
   registry.register(dedicationPlugin); // java:186
   registry.register(timingPlugin); // java:187
   registry.register(helpPlugin); // java:188
   registry.register(wirePlugin); // java:189
   registry.register(jsonPlugin); // java:190
+  registry.register(gitPlugin); // java:191
   registry.register(filesPlugin); // java:192
   registry.register(boardPlugin); // java:193
   registry.register(yamlPlugin); // java:194
   registry.register(hclPlugin); // java:195
   registry.register(ebnfPlugin); // java:196
   registry.register(regexPlugin); // java:197
+  registry.register(chenPlugin); // java:199
 }
 
 // Registration order IS upstream's factory order (`PSystemBuilder.java:133-200`),

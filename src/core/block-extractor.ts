@@ -42,11 +42,16 @@ export type DiagramType =
   | 'ebnf'
   | 'regex'
   | 'wire'
+  | 'bpm'
+  | 'flow'
+  | 'chen'
+  | 'git'
   | 'creole'
   | 'math'
   | 'latex'
   | 'def'
   | 'help'
+  | 'sprites'
   | 'chart'
   | 'dot'
   | 'salt'
@@ -164,12 +169,21 @@ const START_SUFFIX_MAP: Readonly<Record<string, DiagramType>> = {
   nwdiag: 'nwdiag',
   ebnf: 'ebnf',
   regex: 'regex',
+  // ceep T3a: `@startchen` (`DiagramType.java:111-112`).
+  chen: 'chen',
   wire: 'wire',
+  bpm: 'bpm',
+  // flp T3a: `@startflow` (`DiagramType.java:134-135`).
+  flow: 'flow',
+  // gip T3a: `@startgit` (`DiagramType.java:143-144`).
+  git: 'git',
   // cmf D2: the four `PSystemBasicFactory` tags (`DiagramType.java:107-108, :124-125, :162-163, :167-168`).
   creole: 'creole',
   math: 'math',
   latex: 'latex',
   def: 'def',
+  // lsp D2: `@startsprites` (`DiagramType.java:193-194`), `ListSpriteDiagramFactory`'s own tag.
+  sprites: 'sprites',
   chart: 'chart',
   dot: 'dot',
 };
@@ -424,12 +438,22 @@ const PORT_TO_UPSTREAM: Readonly<Record<DiagramType, UpstreamDiagramType>> = {
   ebnf: UpstreamDiagramType.EBNF,
   regex: UpstreamDiagramType.REGEX,
   wire: UpstreamDiagramType.WIRE,
+  // `BpmDiagramFactory` is `DiagramType.BPM` (BpmDiagramFactory.java:51, DiagramType.java:98-99).
+  bpm: UpstreamDiagramType.BPM,
+  // `FlowDiagramFactory` is `DiagramType.FLOW` (FlowDiagramFactory.java:51, DiagramType.java:134-135).
+  flow: UpstreamDiagramType.FLOW,
+  chen: UpstreamDiagramType.CHEN_EER,
+  // `GitDiagramFactory` is `DiagramType.GIT` (GitDiagramFactory.java:52, DiagramType.java:143-144).
+  git: UpstreamDiagramType.GIT,
   creole: UpstreamDiagramType.CREOLE,
   math: UpstreamDiagramType.MATH,
   latex: UpstreamDiagramType.LATEX,
   def: UpstreamDiagramType.DEFINITION,
   // `HelpFactory` is `DiagramType.HELP` (HelpFactory.java:51), a member of `@startuml`'s set (DiagramType.java:198-201).
   help: UpstreamDiagramType.HELP,
+  // `ListSpriteDiagramFactory` is `DiagramType.SPRITES` (ListSpriteDiagramFactory.java:48-50), a member of `@startuml`'s
+  // set too (DiagramType.java:198-201); the diagram it builds prints `HELP` (ListSpriteDiagram.java:60).
+  sprites: UpstreamDiagramType.SPRITES,
   chart: UpstreamDiagramType.CHART,
   dot: UpstreamDiagramType.DOT,
   salt: UpstreamDiagramType.SALT,

@@ -347,6 +347,15 @@ and `!include <stdlib>`; `dot`/`auto-layout` for layout.
 
 ---
 
+## ListSprite — DONE (listsprite-factory-port, #134)
+
+`klimt/sprite/{ListSpriteDiagramFactory,ListSpriteDiagram,CommandListSprite}.java` ported into
+`src/core/klimt/sprite/`, registered at `PSystemBuilder.java:170`; `@startsprites` routes to `'sprites'`
+(`DiagramType.java:193-200`). The page prints `data-diagram-type="HELP"` (`ListSpriteDiagram.java:60`) and draws each
+sprite through the creole sprite atom (`sprite-text-block.ts`, `Sprite#asTextBlock`).
+
+---
+
 ## Phase 4h — Full Creole + Sprite Registry
 
 **Java source (Creole):** `klimt/creole/`, `klimt/creole/atom/`,
@@ -412,31 +421,23 @@ renderer is modified per task.
 
 ---
 
-## Phase 5a — Git Graph
+## Phase 5a — Git log — DONE (git-engine-port, #131)
 
-**Java source:** `gitlog/`
+**Java source:** `gitlog/` (10 files: `GitTextArea`, `CursorPosition`, `Commit`, `GNode`, `GNodeBuilder`,
+`MagicBox`, `GitCurve`, `SmetanaForGit`, `GitDiagram`, `GitDiagramFactory`), ported file for file into
+`src/diagrams/git/` and registered at `PSystemBuilder.java:191`.
 
-**Reuse:** `src/core/svg.ts` primitives; `src/core/theme.ts`. No graph
-engine — built-in DAG-lane layout.
+**What `@startgit` is:** pasted `git log --graph --oneline` output read as a character grid — not Mermaid's
+`gitGraph` (there is no `commit id:`, `branch`, `checkout`, `cherry-pick`, `order` or lane colour). Every line with a
+`*` is a commit named by its first token; parents are found by walking `|`, `\`, `/`, `_` down from it
+(`CursorPosition#getDownFromInternal`'s 23 ordered rules; rule 178 is unreachable) and from `.` cells of an octopus
+`*-.`; `(…)` after the `*` is a comment drawn on top nodes only; linear runs fold into one box. Layout is
+`SmetanaForGit`'s graph handed to dot-engine (`ranksep=0.35`, `shape=box` with no `fixedsize`/`label`). No command
+parser: `skinparam`, `<style>`, `title`, `scale`, `!theme` change nothing; `!option handwritten` does.
 
-**Architecture constraint:** Branches render as horizontal lanes; commits
-render as circles on lanes; merge commits have two incoming arrows. Layout
-is custom, not dot-based. The lane layout pattern is similar to Timing —
-consider whether Track SI-4 (golem) or a new `src/core/lane-layout/` module
-makes sense after building this phase and Phase 4b.
-
-**Watch-outs:**
-- `gitGraph` and `gitGraph LR` / `gitGraph TB` directions
-- `commit`, `commit id:"…"`, `commit type: HIGHLIGHT`, `commit type: REVERSE`
-- `branch <name>`, `checkout <name>`
-- `merge <name>` — renders a merge commit connecting two lanes
-- `cherry-pick id:"…"` — copies a commit to the current branch
-- `tag "…"` — label attached to the most recent commit
-- `order` directive controlling lane order
-- `show-commitLabel` / `hide commitLabel`
-- `show-branches` / `hide branches` (hide empty branches)
-- Commit message truncation at `maxMessageSize`
-- Lane colors derived from theme (cycle through a palette)
+**Watch-outs (measured):** modern git prints octopus children as `* / x`, which the jar cannot parse
+(`UnsupportedOperationException`); a commit directly above `*-.` crashes it too; `*---.` gives the walk only 3 of 4
+parents. The residue against the jar is Smetana arithmetic (`DIVERGENCES.md`, git row table).
 
 ---
 
@@ -531,9 +532,23 @@ blocks only (`PSystemRegex.java:82-97`), through `StyleExtractor#applyStyles` at
 
 ---
 
-## Phase 5p — Flow Diagram
+## Phase 5h — Chen EER — DONE (chen-eer-engine-port, #133)
 
-**Java source:** `flowdiagram/`, `golem/`
+**Java source:** `cheneer/` (9 files), `svek/image/EntityImageChen{Entity,Relationship,Attribute,Circle}.java`,
+`svek/extremity/MiddleSubset.java`/`MiddleFactorySubset.java`. Ported file for file into `src/diagrams/cheneer/` on the
+`CucaDiagram` base (no `AbstractEntityDiagram` class; only its `getDotStrings` is reached, via `getDotStringSkek`), the
+leaf images and the subset decor into `src/core/svek/`, registered at `PSystemBuilder.java:199`. Drawn through real
+graphviz (DOT-parity gate `oracle/goldens/cheneer/`), with `EntityImageDegenerated` for one-leaf diagrams and an ELK
+adapter for `!pragma layout elk`. The corpus has no `@startchen` row, so the `svg-cheneer` ratchet holds 91 authored
+fixtures (upstream's four vega Chen fixtures among them): 78 zero-diff, 13 error pairs.
+
+## Phase 5p — Flow — DONE (flow-engine-port, #132)
+
+**Java source:** `flowdiagram/`, `golem/`. Ported file for file into `src/diagrams/flow/` and `src/core/golem/` (the
+`TextBlock` half of `Tile`/`TilesField`, `Square`, `Magnet` and `MinMaxDouble` are unreachable from `@startflow` and not
+ported), registered at `PSystemBuilder.java:185`. Ratchet `svg-flow` with a multiset tier: the jar draws boxes, and
+after a shift places them, in `HashMap` identity-hash order, so multi-box rows wait on ruling #174. The notes below are
+the pre-port plan; the commands are `[nsew ]id "label"` and `[nsew ]id`, not the ones listed.
 
 **Reuse:** `src/core/golem/` (Track SI-4 — must build first);
 `src/core/svg.ts` primitives; `src/core/theme.ts`.
@@ -570,6 +585,14 @@ SI-4 ports golem as a standalone module before this phase begins.
 `src/core/klimt/creole/legacy/`, `src/diagrams/{math,definition,help}/`, `src/core/syntax/`, `src/core/command/PSystemBasicFactory.ts`,
 `src/core/DirectOsDiagram.ts`, with JLaTeXMath's rollback (`src/core/latex-metrics/jlm-*.ts`) and sizing rules in `src/core/latex-metrics/`.
 Ratchet `svg-factories`. Remaining rows are on #169 and #170 or named in `DIVERGENCES.md`.
+
+## Phase 5r — BPM — DONE (bpm-engine-port, #130)
+
+**Java source:** `bpm/` (36 files), plus the activity Ftiles it draws through: `activitydiagram3/ftile/Hexagon.java` and
+`ftile/vertical/{FtileCircleStart,FtileDiamondWIP,FtileDiamond,FtileBox}.java`. Ported into `src/diagrams/bpm/` (file for
+file; `FootPrint`, the `cloneMe`s and `GridArray`'s uncalled privates are dead upstream and not ported) and
+`src/diagrams/activity/ftile/`. Registered at `PSystemBuilder.java:141`. Ratchet `svg-bpm`. All 7 corpus rows and every
+drawn authored fixture are zero-diff; no divergence.
 
 ## Phase 6 — Markdown Integration
 

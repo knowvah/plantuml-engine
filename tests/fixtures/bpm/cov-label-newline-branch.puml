@@ -1,0 +1,8 @@
+@startbpm
+:a;
+new branch
+:one%newline()two;
+else
+:three\nfour;
+end branch
+@endbpm

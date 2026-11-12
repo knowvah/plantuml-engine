@@ -5,6 +5,11 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/extremity/MiddleCircle.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/extremity/MiddleCircleCircled.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/decoration/LinkMiddleDecor.java:49-60
+ *
+ * `getMiddleFactory(...).createUDrawable(angle).drawU(ug)` is {@link drawMiddleDecor}: the `CIRCLE*` arms are drawn
+ * here (`drawCircleMiddleDecor`), the `SUBSET`/`SUPERSET` arms by `LinkMiddleDecor.ts#getMiddleFactory`
+ * (`MiddleFactorySubset`, cheneer T2b).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/decoration/LinkMiddleDecor.java:63-66
  */
 import type { UGraphic } from '../../klimt/UGraphic.js';
 import { Back } from '../../klimt/Back.js';
@@ -13,9 +18,13 @@ import { UStroke } from '../../klimt/UStroke.js';
 import { UTranslate } from '../../klimt/UTranslate.js';
 import { UEllipse } from '../../klimt/shape/UEllipse.js';
 import type { Paint } from '../../paint.js';
+import { getMiddleFactory, LinkMiddleDecor } from '../../decoration/LinkMiddleDecor.js';
 
 /** `decoration/LinkMiddleDecor.java`'s four INSIDE-reachable members; `NONE` is `undefined` (`CommandLinkElement.java:149-157`). */
-export type MiddleDecor = 'circle' | 'circleCircled' | 'circleCircled1' | 'circleCircled2';
+export type CircleMiddleDecor = 'circle' | 'circleCircled' | 'circleCircled1' | 'circleCircled2';
+
+/** `CircleMiddleDecor` plus `SUBSET` and `SUPERSET` (`LinkMiddleDecor.java:63-66`), which only Chen EER links carry. */
+export type MiddleDecor = CircleMiddleDecor | 'subset' | 'superset';
 
 /** `SvekEdge.java:353-356`: `labelShield` when the link has a middle decor. */
 export const LABEL_SHIELD = 7;
@@ -27,13 +36,33 @@ const MIDDLE_RADIUS_OUTER = 10;
 const MIDDLE_STROKE_WIDTH = 1.5;
 
 /**
- * `MiddleCircleCircled#drawU`/`MiddleCircle#drawU`: the arc(s) for the three `CIRCLE_CIRCLED*` members, then the
- * always-drawn filled inner circle. `base` carries the line colour and the translate to the path's middle; `angle` is
- * upstream's `angleDeg - 45` (`SvekEdge.java:984-987`).
+ * `LinkMiddleDecor#getMiddleFactory(backColor, diagramBackColor).createUDrawable(angle).drawU(base)` for every
+ * decor: `SUBSET`/`SUPERSET` through `MiddleFactorySubset`, which reads neither colour (the line colour is `base`'s),
+ * the rest through {@link drawCircleMiddleDecor}.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekEdge.java:982-989
  */
 export function drawMiddleDecor(
   base0: UGraphic,
   middleDecor: MiddleDecor,
+  angle: number,
+  colors: { readonly backColor: Paint; readonly diagramBackColor: Paint },
+): void {
+  if (middleDecor === 'subset' || middleDecor === 'superset') {
+    const decor = middleDecor === 'subset' ? LinkMiddleDecor.SUBSET : LinkMiddleDecor.SUPERSET;
+    getMiddleFactory(decor).createUDrawable(angle).drawU(base0);
+    return;
+  }
+  drawCircleMiddleDecor(base0, middleDecor, angle, colors);
+}
+
+/**
+ * `MiddleCircleCircled#drawU`/`MiddleCircle#drawU`: the arc(s) for the three `CIRCLE_CIRCLED*` members, then the
+ * always-drawn filled inner circle. `base` carries the line colour and the translate to the path's middle; `angle` is
+ * upstream's `angleDeg - 45` (`SvekEdge.java:984-987`).
+ */
+function drawCircleMiddleDecor(
+  base0: UGraphic,
+  middleDecor: CircleMiddleDecor,
   angle: number,
   colors: { readonly backColor: Paint; readonly diagramBackColor: Paint },
 ): void {

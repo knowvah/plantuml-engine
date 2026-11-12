@@ -116,22 +116,24 @@ Each has a mission-guide.md entry with Java sources and reuse targets.
 8. **WBS** (`@startwbs`) — reuses mind-map layout.
 9. **Gantt** (`@startgantt`) — blocked on `datetime.ts`; constraint solver.
 10. **Network / nwdiag / rackdiag** (`@startnwdiag`) — row-based layout.
-11. **Git graph** (`@startgitgraph`) — lane layout.
+11. ~~**Git log** (`@startgit`)~~ — a `git log --graph` character grid laid out through dot-engine, not a lane layout; DONE by git-engine-port (#131): 4/4 rows drawn, 2 structural-match + 2 diverged on curve piece counts only, all named in `DIVERGENCES.md`.
 12. **Salt** (`@startsalt`) — grid layout (evaluate golem reuse).
 13. ~~**DITAA** (`@startditaa`)~~ — dropped by ruling 2026-11-04 (#111, `DIVERGENCES.md`).
-14. **Chen EER** (`@startchen`) — dot layout + EER shapes.
+14. ~~**Chen EER** (`@startchen`)~~ — dot layout + EER shapes; DONE by chen-eer-engine-port (#133): no corpus row, 91 authored fixtures (78 zero-diff, 13 error pairs), 66 jar DOTs structurally equal, the `!pragma layout elk` path through ELK; no divergence added.
 15. **EBNF** (`@startebnf`) — railroad renderer (Track SI-3).
 16. **Regex** (`@startregex`) — regex → railroad IR (after EBNF).
 17. ~~**Wire** (`@startwire`)~~ — schematic grid; DONE by wire-engine-port (#128): 18/18 conformant, no `golem` use.
+17b. ~~**BPM** (`@startbpm`)~~ — business-process grid; DONE by bpm-engine-port (#130): 7/7 conformant, 77 authored fixtures, no divergence added.
 17a. ~~**Creole / Math / LaTeX / Definition / Help** (`@startcreole`, `@startmath`, `@startlatex`, `@startdef`, `help`)~~ — DONE by creole-math-factories-port (#129): 17/41 rows conformant, the rest named per row or on rulings #169/#170.
-18. **Flow** (`@startflow`) — golem grid (Track SI-4); alpha-doc only.
+17c. ~~**ListSprite** (`@startsprites`, and `listsprite` past the single-line gate)~~ — DONE by listsprite-factory-port (#134): `ListSpriteDiagramFactory` registered at `PSystemBuilder.java:170`, both corpus rows conformant, 47 authored fixtures (42 zero-diff, 5 error pairs); no divergence added.
+18. ~~**Flow** (`@startflow`)~~ — golem grid; DONE by flow-engine-port (#132): `flowdiagram/` + reachable `golem/` ported, the 1 row and 38 multi-box fixtures multiset-equal to the jar, whose box order follows Java identity hashes (ruling #174 pending); 69 authored fixtures, no divergence added.
 19. **DOT passthrough** (`@startdot`) — feeds user DOT straight to dot-engine;
     needs `common/{arrows,shapes,htmltable,labels}.c` for shape/arrow attrs.
 
 ### C. Shared infrastructure tracks (unblock multiple types)
 20. **datetime.ts** (SI-2) — blocks Timing + Gantt.
 21. **railroad renderer** (SI-3) — blocks EBNF + Regex.
-22. **golem grid** (SI-4) — blocks Flow (+ maybe Salt/Wire).
+22. ~~**golem grid** (SI-4)~~ — DONE by flow-engine-port (#132): the reachable part of `golem/` at `src/core/golem/`; Salt and Wire never import it.
 23. **preprocessor completion + stdlib bundling** (SI-5) — blocks C4, AWS,
     archimate, `!procedure`-heavy fixtures. This is the single biggest
     breadth-unblocker; probably the largest infra mission.

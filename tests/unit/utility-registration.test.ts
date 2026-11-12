@@ -19,6 +19,7 @@ import { DeterministicMeasurer } from '../../src/core/measurer-deterministic.js'
 import { listArchimateSpritesPlugin } from '../../src/core/klimt/sprite/PSystemListArchimateSpritesFactory.js';
 import { activityPlugin } from '../../src/diagrams/activity/index.js';
 import { activityLegacyPlugin } from '../../src/diagrams/activity-legacy/index.js';
+import { bpmPlugin } from '../../src/diagrams/bpm/index.js';
 import { boardPlugin } from '../../src/diagrams/board/index.js';
 import { chartPlugin } from '../../src/diagrams/chart/index.js';
 import { chronologyPlugin } from '../../src/diagrams/chronology/index.js';
@@ -39,8 +40,10 @@ import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactor
 import { filesPlugin } from '../../src/diagrams/files/index.js';
 import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
 import { regexPlugin } from '../../src/diagrams/regex/index.js';
+import { chenPlugin } from '../../src/diagrams/cheneer/index.js';
 import { wirePlugin } from '../../src/diagrams/wire/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
+import { gitPlugin } from '../../src/diagrams/git/index.js';
 import { jsonPlugin } from '../../src/diagrams/json/index.js';
 import { mindmapPlugin } from '../../src/diagrams/mindmap/index.js';
 import { listOpenIconicPlugin } from '../../src/diagrams/openiconic/PSystemListOpenIconicFactory.js';
@@ -51,6 +54,7 @@ import { sequencePlugin } from '../../src/diagrams/sequence/index.js';
 import { statePlugin } from '../../src/diagrams/state/index.js';
 import { licensePlugin } from '../../src/diagrams/version/PSystemLicenseFactory.js';
 import { versionPlugin } from '../../src/diagrams/version/PSystemVersionFactory.js';
+import { flowPlugin } from '../../src/diagrams/flow/index.js';
 import { ganttPlugin } from '../../src/diagrams/gantt/index.js';
 import { wbsPlugin } from '../../src/diagrams/wbs/index.js';
 import { yamlPlugin } from '../../src/diagrams/yaml/index.js';
@@ -64,6 +68,7 @@ import { definitionPlugin } from '../../src/diagrams/definition/PSystemDefinitio
 import { helpPlugin } from '../../src/diagrams/help/index.js';
 import { latexPlugin } from '../../src/diagrams/math/PSystemLatexFactory.js';
 import { mathPlugin } from '../../src/diagrams/math/PSystemMathFactory.js';
+import { listSpritePlugin } from '../../src/core/klimt/sprite/ListSpriteDiagramFactory.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // rubeku-92-vefi942 rendered three times, 2,723ms);
@@ -84,6 +89,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [descriptionPlugin, 138],
   [statePlugin, 139],
   [activityPlugin, 140], // ActivityDiagramFactory3 (src/index.ts order comment)
+  [bpmPlugin, 141], // BpmDiagramFactory
   [licensePlugin, 144],
   [versionPlugin, 145],
   [donorsPlugin, 146],
@@ -100,6 +106,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [chartPlugin, 158],
   [packetdiagPlugin, 159],
   [definitionPlugin, 169],
+  [listSpritePlugin, 170],
   [mathPlugin, 172],
   [latexPlugin, 173],
   [creolePlugin, 174],
@@ -109,17 +116,20 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [charliePlugin, 181],
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
+  [flowPlugin, 185],
   [dedicationPlugin, 186],
   [timingPlugin, 187],
   [helpPlugin, 188],
   [wirePlugin, 189],
   [jsonPlugin, 190],
+  [gitPlugin, 191],
   [filesPlugin, 192],
   [boardPlugin, 193],
   [yamlPlugin, 194],
   [hclPlugin, 195],
   [ebnfPlugin, 196],
   [regexPlugin, 197],
+  [chenPlugin, 199],
 ]);
 
 const ASSET_STORE = combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore(), buildUtilityAssetsStore());
@@ -245,7 +255,13 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@starthcl\na = 1\n@endhcl', hclPlugin],
   ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
   ['@startregex\na(b|c)+\n@endregex', regexPlugin],
+  ['@startchen\nentity A {\n}\n@endchen', chenPlugin],
   ['@startwire\n* a\n@endwire', wirePlugin],
+  ['@startbpm\n:login;\n@endbpm', bpmPlugin],
+  ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],
+  ['@startflow\n10 "A"\n@endflow', flowPlugin],
+  ['@startsprites\nsprite $a {\nF0\n0F\n}\n@endsprites', listSpritePlugin],
+  ['@startuml\nsprite $a {\nF0\n0F\n}\nlistsprite\n@enduml', listSpritePlugin],
 ];
 
 describe('every engine keeps its own sources', () => {

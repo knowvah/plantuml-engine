@@ -1,0 +1,7 @@
+@startchen
+entity A {
+}
+entity B {
+}
+A ->- B
+@endchen

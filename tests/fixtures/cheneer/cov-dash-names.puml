@@ -1,0 +1,7 @@
+@startchen
+entity my-entity {
+}
+relationship rel.x {
+}
+my-entity -N- rel.x
+@endchen

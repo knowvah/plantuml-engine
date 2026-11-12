@@ -1,0 +1,13 @@
+@startchen
+skinparam linetype ortho
+entity A {
+  X
+}
+entity B {
+}
+relationship R {
+}
+A -1- R
+R -N- B
+A ->- B
+@endchen

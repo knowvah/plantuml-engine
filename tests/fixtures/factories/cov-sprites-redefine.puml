@@ -1,0 +1,11 @@
+@startsprites
+sprite $dup {
+F0
+0F
+}
+sprite $dup {
+FFF
+F0F
+FFF
+}
+@endsprites

@@ -1,0 +1,4 @@
+@startbpm
+!pragma teoz true
+:a;
+@endbpm

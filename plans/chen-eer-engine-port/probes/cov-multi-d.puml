@@ -1,0 +1,9 @@
+@startchen
+entity P {
+}
+entity A {
+}
+entity B {
+}
+P =>= d { A, B }
+@endchen

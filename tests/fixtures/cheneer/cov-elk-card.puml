@@ -1,0 +1,15 @@
+@startchen
+!pragma layout elk
+entity A {
+  X
+}
+entity B {
+}
+entity C {
+}
+relationship R {
+}
+R -1- A
+R =N= B #blue
+R -(0,N)- C #line:green;line.dashed
+@endchen

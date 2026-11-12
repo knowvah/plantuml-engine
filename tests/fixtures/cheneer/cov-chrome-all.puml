@@ -1,0 +1,15 @@
+@startchen
+title T
+header H
+footer F
+caption C
+legend
+L
+endlegend
+entity A {
+  X
+}
+relationship R {
+}
+A -1- R
+@endchen

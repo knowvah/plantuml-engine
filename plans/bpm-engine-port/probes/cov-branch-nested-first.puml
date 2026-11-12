@@ -1,0 +1,13 @@
+@startbpm
+:a;
+new branch
+new branch
+:b;
+else
+:c;
+end branch
+else
+:d;
+end branch
+:e;
+@endbpm

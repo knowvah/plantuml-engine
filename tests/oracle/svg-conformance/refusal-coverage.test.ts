@@ -661,7 +661,11 @@ describe('refusal coverage — baseline shape', () => {
     // 10998 -> 11150 at tep/T5 (2026-11-11): +152 svg-timing golden clones, all rendering. Derivation: 10998 + 152 = 11150.
     // 11150 -> 11168 at wrp/T4 (2026-11-11): +18 svg-wire golden clones, all rendering.
     // 11168 -> 11185 at cmf/T4 (2026-11-11): +17 svg-factories golden clones, all rendering.
-    expect(manifest.fixtures.length).toBe(11185);
+    // 11185 -> 11192 at bpe/T4 (2026-11-11): +7 svg-bpm golden clones, all rendering.
+    // 11192 -> 11196 at gip/T4 (2026-11-11): +4 svg-git golden clones, all rendering.
+    // 11196 -> 11197 at flp/T4 (2026-11-12): +1 svg-flow golden clone, rendering.
+    // 11197 -> 11199 at lsp/T3 (2026-11-12): +2 svg-factories golden clones, rendering.
+    expect(manifest.fixtures.length).toBe(11199);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -731,7 +735,9 @@ describe('refusal coverage — baseline shape', () => {
     // jar does. Derivation: 317 + 2 = 319.
     // 319 -> 167 at tep/T5 (2026-11-11): the 152 timing rows the jar draws now render. Derivation: 319 - 152 = 167.
     // 167 -> 161 at cmf/T4 (2026-11-11): the 5 help rows and firiru-71-viki803 render now. Derivation: 167 - 6 = 161.
-    expect(pinnedErroring.length).toBe(161);
+    // 161 -> 159 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 render now (the listsprite factory,
+    // PSystemBuilder.java:170). Derivation: 161 - 2 = 159.
+    expect(pinnedErroring.length).toBe(159);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -962,7 +968,15 @@ describe('refusal coverage — baseline shape', () => {
     // 10983 -> 11001 at wrp/T4 (2026-11-11): +18 svg-wire golden clones.
     // 11001 -> 11024 at cmf/T4 (2026-11-11): the 6 known-gap rows above render now, +17 svg-factories golden clones.
     // Derivation: 11001 + 6 + 17 = 11024.
-    expect(pinnedRendering.length).toBe(11024);
+    // 11024 -> 11031 at bpe/T4 (2026-11-11): +7 svg-bpm golden clones; the 7 dot-cache bpm rows already rendered
+    // (engine none -> bpm, still ok). Derivation: 11024 + 7 = 11031.
+    // 11031 -> 11035 at gip/T4 (2026-11-11): +4 svg-git golden clones; the 4 dot-cache git rows already rendered
+    // (engine none -> git, still ok). Derivation: 11031 + 4 = 11035.
+    // 11035 -> 11036 at flp/T4 (2026-11-12): +1 svg-flow golden clone; the dot-cache bemixo row already rendered
+    // (engine none -> flow, still ok). Derivation: 11035 + 1 = 11036.
+    // 11036 -> 11040 at lsp/T3 (2026-11-12): the 2 listsprite rows flip known-gap -> ok, +2 svg-factories golden
+    // clones. Derivation: 11036 + 2 + 2 = 11040.
+    expect(pinnedRendering.length).toBe(11040);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1055,7 +1069,8 @@ describe('refusal coverage — baseline shape', () => {
     // 218 -> 66 at tep/T5 (2026-11-11): the 152 timing rows flip known-gap -> ok. Derivation: 218 - 152 = 66.
     // 66 -> 60 at cmf/T4 (2026-11-11): the 5 help rows and the @startdef row (firiru-71-viki803) flip known-gap -> ok.
     // Derivation: 66 - 6 = 60.
-    expect(gaps.length).toBe(60);
+    // 60 -> 58 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip known-gap -> ok.
+    expect(gaps.length).toBe(58);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

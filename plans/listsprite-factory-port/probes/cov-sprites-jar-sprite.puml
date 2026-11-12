@@ -1,0 +1,3 @@
+@startsprites
+sprite $app jar:archimate/application-component
+@endsprites

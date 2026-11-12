@@ -1,0 +1,42 @@
+@startchen
+entity E1 {
+}
+entity E2 {
+}
+entity E3 {
+}
+entity E4 {
+}
+entity E5 {
+}
+entity E6 {
+}
+entity E7 {
+}
+entity E8 {
+}
+entity E9 {
+}
+entity E10 {
+}
+entity E11 {
+}
+relationship R1 {
+}
+relationship R2 {
+}
+relationship R3 {
+}
+R1 -1- E1
+R1 -N- E2
+R1 -N- E3
+R2 -1- E3
+R2 -N- E4
+R2 -N- E5
+R2 -N- E6
+R3 =1= E6
+R3 -N- E7
+E8 ->- E1
+E9 -<- E2
+E1 ->- d { E10, E11 }
+@endchen

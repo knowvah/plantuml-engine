@@ -1,0 +1,30 @@
+[
+ {
+  "bucket": "unknown",
+  "slug": "figagi-40-mila236",
+  "kind": "drawn",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "bucket": "unknown",
+  "slug": "juzane-95-fose365",
+  "kind": "drawn",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "bucket": "unknown",
+  "slug": "lagapi-44-lemu042",
+  "kind": "drawn",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ },
+ {
+  "bucket": "unknown",
+  "slug": "mebafo-26-fupu096",
+  "kind": "drawn",
+  "verdict": "diverged",
+  "firstDiff": "svg/@background"
+ }
+]

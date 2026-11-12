@@ -1,0 +1,14 @@
+@startflow
+10 "W"
+n 20 "NW"
+e 30 "N"
+e 40 "NE"
+s 50 "E"
+s 60 "SE"
+w 70 "S"
+n 80 "X"
+n 30
+s 70
+e 50
+w 10
+@endflow

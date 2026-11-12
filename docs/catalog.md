@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2455 modules · 8194 exported names.
+2568 modules · 8407 exported names.
 
 ## `src/`
 
@@ -74,7 +74,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `graph-layout-build-edges.ts` | `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `edgeKey`, `addEdges` | `addEdges` — split out of ./graph-layout-build.ts (500-line file-cap compliance, forced by G7 T14b's border-point wiring additions; pure move, no behavior change). |
 | `graph-layout-build-kermor.ts` | `kermorHasAlpha`, `KermorNoteSlot`, `kermorNoteClusterId`, `registerKermorClusterIds`, `buildKermorClusterHandles`, `placeKermorMembers`, `addNodesWithKermorRootEmpty`, `KERMOR_ROOT_EMPTY_ID` | `!pragma kermor on` cluster nesting for the layout builder -- the `ClusterDotStringKermor.printInternal` shape (`svek/ClusterDotStringKermor.java:67-165`): [alpha {label=<note TOP table or "">] only if the group has a TOP or BOTTOM note (:8 |
 | `graph-layout-build-portcluster.ts` | `isHasPortCluster`, `addTitledAnchorNode`, `buildHasPortClusterHandles`, `placeHasPortMembers` | cdd4-T6 (E3-10b): the layout-builder half of `ClusterDotString`'s `hasPort()` branch. |
-| `graph-layout-build-special-nodes.ts` | `LAYOUT_LABEL_BGCOLOR`, `addRowPortNode`, `addShieldNode`, `addRecordNode` | The layout copies of the HTML-label node shapes (row ports, shield tables, records), split out of ./graph-layout-build.ts for its 500-line cap (laep T3b-2; a pure move, no behavior change). |
+| `graph-layout-build-special-nodes.ts` | `LAYOUT_LABEL_BGCOLOR`, `addRowPortNode`, `addShieldNode`, `addRecordNode`, `addSmetanaBoxNode`, `addSpecialShapeNode` | The layout copies of the HTML-label node shapes (row ports, shield tables, records), split out of ./graph-layout-build.ts for its 500-line cap (laep T3b-2; a pure move, no behavior change). |
 | `graph-layout-build.ts` | `PX_PER_INCH`, `addEdges`, `edgeKey`, `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `applyGraphAttrs`, `firstEncounterOrder`, `addNodes`, `ClusterIndex`, `addClusters` | @knowvah/dot-engine builder construction for `layoutGraph()` — split from `graph-layout.ts` (500-line file cap). |
 | `graph-layout-cluster.types.ts` | `DotInputCluster` | `DotInputCluster` — the cluster half of the layout input contract. |
 | `graph-layout-node-corner.ts` | `portNodeSize`, `shieldCorner`, `cornerSize`, `svekCornerOf` | A laid-out node's top-left corner — split from `graph-layout.ts` (file-size cap) with no behaviour change: the HTML-sized node boxes (G9/T9, cdd-T15) and, for the Svek read, the parsed corner (cdd3-T-D3). |
@@ -150,9 +150,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `skins-builtin.ts` | `BUILTIN_SKINS` | Built-in PlantUML skin stylesheets (`skin <name>` directive) -- skin-file-loading mission, Batches 1 (D1/D2) and 4; unwind2-S8. |
 | `spline-clip.ts` | `ClipRect`, `subdivide`, `clipSplineStart`, `clipSplineEnd` | spline-clip.ts — faithful port of upstream's compound-edge boundary clipping (`DotPath#simulateCompound`, klimt/shape/DotPath.java), applied when an edge endpoint is a container/group. |
 | `spot-glyph-data.ts` | `DEFAULT_SPOT_FONT_SIZE`, `spotGlyphPath` | Captured glyph outlines of the circled-character SPOT letter -- the `<path>` the jar draws inside a `CircledCharacter` badge. |
+| `sprite-command-base64.ts` | `matchSpriteBase64Command` | `CommandSpriteBase64` — `sprite $name data:image/png;base64,<payload>`, the inline-image sprite definition. |
 | `sprite-commands.ts` | `addSprite`, `createSpriteRegistry`, `getSprite`, `getSpriteMonochrome`, `getSpriteSvg`, `getSpriteColor4096`, `spriteDimsLookupFor`, `surfaceSpriteWarnings`, `SpriteRegistry`, `isSpriteMultilineOpenLine`, `isSpriteMultilineCloseLine`, `isSvgSpriteOpenLine`, `isSvgSpriteCloseLine`, `matchSpriteCommand` | `matchSpriteCommand` — the shared sprite-DEFINITION matcher parsers call at their own command-dispatch position, mirroring `matchAnnotationCommand` (`core/annotations/commands.ts`) exactly: extraction inside each parser, never a textual pre |
 | `sprite-prefetch.ts` | `scanSpriteNames` | Scan a diagram source for the `<$name>` sprite references it contains. |
-| `sprite-registry.ts` | `SpriteRegistry`, `createSpriteRegistry`, `addSprite`, `surfaceSpriteWarnings`, `getSprite`, `spriteDimsLookupFor`, `getSpriteMonochrome`, `isSpriteColor4096`, `getSpriteColor4096`, `getSpriteImage`, `getSpriteSvg` | `SpriteRegistry` — the per-diagram sprite map and its lookup seams, split out of `sprite-commands.ts` (which owns the sprite-DEFINITION grammar) purely to keep that file under this repo's 500-line module cap; the same split precedent as `op |
+| `sprite-registry.ts` | `SpriteRegistry`, `createSpriteRegistry`, `addSprite`, `surfaceSpriteWarnings`, `getSprite`, `getAllSpriteNames`, `spriteDimsLookupFor`, `getSpriteMonochrome`, `isSpriteColor4096`, `getSpriteColor4096`, `getSpriteImage`, `getSpriteSvg` | `SpriteRegistry` — the per-diagram sprite map and its lookup seams, split out of `sprite-commands.ts` (which owns the sprite-DEFINITION grammar) purely to keep that file under this repo's 500-line module cap; the same split precedent as `op |
 | `sprite-split-stdlib.ts` | `SpriteSplitManifest`, `SpriteNotBundledError`, `spriteSplitNamesOf`, `spriteSplitStdlib`, `assembleSpriteSplitContent` | si11b T4 -- per-sprite stdlib bundle registration, and the prefetch-side assembly it enables. |
 | `state-style-facts.ts` | `withStateNameFont`, `stateNameFontSizeOf`, `withStateShadowing`, `StateArrowHead`, `withStateArrowHead`, `stateArrowHeadOf` | The merged state style's `Shadowing` (smc T4c), name `FontSize` and arrow `HeadColor` (scr T1b). |
 | `stdlib-content.ts` | `stdlibContentFor` | Resolving a `<bundle/thing>` include target to its CONTENT, for the prefetch walk's third channel (`include-resolver.ts#prefetchInner`). |
@@ -325,6 +326,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandExecutionResult.ts` | `AbstractDiagram`, `CommandExecutionResult` | CommandExecutionResult — the ok/error outcome every command returns. |
 | `CommandFootboxIgnored.ts` | `CommandFootboxIgnored` |  |
 | `CommandMultilines2.ts` | `MultilineCommand`, `HasNbMaxLines`, `CommandMultilines2` | `CommandMultilines2`: a command spanning several lines: a start pattern on the first line (`RegexConcat`), an end pattern on the last (`Pattern2`), and the lines between kept verbatim. |
+| `CommandRankDir.ts` | `CommandRankDir` |  |
 | `JsonNode.ts` | `JsonNode` | Parsed value of a `json Name { ... |
 | `multiline-candidate.ts` | `MultilineStep`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
 | `MultilinesStrategy.ts` | `MultilinesStrategy`, `cleanList` | `MultilinesStrategy`: what `BlocLines#cleanList` does to the lines of a multi-line command before it is matched or run. |
@@ -397,7 +399,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `LinkDecor.ts` | `LinkDecor`, `getMargin`, `isFill`, `getArrowSize`, `isExtendsLike`, `lookupDecors1`, `lookupDecors2`, `getRegexDecors1`, `getRegexDecors2`, `getExtremityFactoryComplete`, `getExtremityFactoryLegacy` | LinkDecor — the 25-value link-extremity decoration enum: which arrowhead/diamond/crowfoot/circle a link end carries, its dot-emit data (margin, fill, arrowsize), the raw-token lookup tables the arrow grammar uses, and the extremity-factory |
-| `LinkMiddleDecor.ts` | `LinkMiddleDecor`, `getInversed` | LinkMiddleDecor — the mid-link decoration (lollipop circles for provided/required interfaces, subset/superset markers). |
+| `LinkMiddleDecor.ts` | `LinkMiddleDecor`, `getInversed`, `getMiddleFactory` |  |
 | `LinkStyle.ts` | `javaDoubleToString`, `LinkStyle` | LinkStyle — the line style of a link (normal/dashed/dotted/bold/ invisible) plus an optional thickness override, and its `UStroke` derivation. |
 | `LinkType.ts` | `LinkType` | LinkType — the immutable decor1/style/decor2/middle-decor bundle a `Link` carries (via `WithLinkType.type` — T6's write-set), with the copy-on-write mutators the command layer uses and the svek dot attribute emission. |
 | `WithLinkType.ts` | `WithLinkType` |  |
@@ -546,6 +548,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `Failable.ts` | `Failable` | Failable — upstream's ok-or-error result carrier (an ad-hoc `Result<O, string>` living in the gantt package but consumed across the codebase; `CucaDiagram#quarkInContextSafe` returns one). |
+
+## `src/core/golem/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `MinMaxGolem.ts` | `MinMaxGolem` | `MinMaxGolem`: the integer bounding box of golem positions. |
+| `Path.ts` | `Path` | `Path`: a link from one `TileArea` to another. |
+| `Position.ts` | `Position` | `Position`: an immutable golem rectangle `(xmin,ymin)-(xmax,ymax)` in half-cell units; every tile is 2 wide. |
+| `Tile.ts` | `Tile` | `Tile`: a golem cell identity with its five `TileArea`s, built once. |
+| `TileArea.ts` | `TileArea` | `TileArea`: one side (or the centre) of a tile, the end of a `Path`. |
+| `TileGeometry.ts` | `TileGeometry`, `TILE_GEOMETRY_VALUES`, `opposite`, `fromString` | `TileGeometry`: the four sides of a golem tile plus `CENTER`. |
+| `TilesField.ts` | `TilesField` | `TilesField`: the golem grid. |
 
 ## `src/core/klimt/`
 
@@ -822,12 +836,20 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AsciiEncoder.ts` | `AsciiEncoder` | PlantUML's own 6-bit encoding used for sprite/URL payloads -- NOT base64. |
 | `ColorPalette4096.ts` | `Rgb4096`, `colorForCode4096` | ColorPalette4096 — the 64-character alphabet + 2-char-code <-> 12-bit-RGB mapping `SpriteColorBuilder4096` reads a `/color` sprite body through. |
 | `ColorResolver.ts` | `GrayLevelRange`, `ColorResolver`, `colorResolverToSvgHex` | ColorResolver — resolves a raw SVG color token (from a decomposed `<$sprite>` `<path>`'s `fill`/`stroke` attribute) to a concrete color, honouring an optional "forced" override color and the sprite's own grey-level range. |
+| `CommandListSprite.ts` | `CommandListSprite` | `CommandListSprite`: `listsprite` or `listsprites` alone on the line. |
+| `listsprite-common-commands.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `ListSpriteDiagramFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `listsprite-export.ts` | `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderListSprite` | `ListSpriteDiagram`'s export: `TextBlockExporter`'s export of `ListSpriteDiagram#getTextBlock` on the klimt substrate, regex's (`regex/index.ts`) with the `HELP` root type and the `activityDiagram` style name (lsp D1, D8). |
+| `listsprite-skin-param.ts` | `SkinParam`, `SkinParamSource` | `ListSpriteDiagram`'s `SkinParam`: `TitledDiagram`'s `SkinParam.create(...)` (TitledDiagram.java:107), the slice the sprite page and its export read — the sprites, the colour set, the current style builder, `handwritten`, `monochrome`/`mode |
+| `listsprite-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `ListSpriteDiagram.ts` | `ListSpriteDiagram` | `ListSpriteDiagram`: the `@startsprites` page (or an `@startuml` block every earlier factory refused), a `TitledDiagram` typed `HELP` — upstream borrows the help type, so the root says `data-diagram-type="HELP"` (lsp D8). |
+| `ListSpriteDiagramFactory.ts` | `ListSpriteStores`, `initCommandsList`, `parseListSprite`, `ListSpriteGeometry`, `listSpritePlugin` | `ListSpriteDiagramFactory`: `CommonCommands.addCommonCommands1`, `addCommonCommands2` and `addCommonScaleCommands` (the last two add nothing the first did not, `listsprite-common-commands.ts`), then `CommandListSprite`, and `PSystemCommandF |
 | `png-encoder.ts` | `RGBA_BYTES_PER_PIXEL`, `crc32`, `encodePng`, `toBase64`, `toBase64DataUri` | Deterministic PNG writer, browser-safe, synchronous: the byte stream the jar's `javax.imageio` PNG writer produces for a sprite raster. |
 | `png-ihdr.ts` | `PngIhdr`, `parsePngIhdrFromDataUri` | PNG IHDR chunk reader for `data:image/png;base64,...` data URIs. |
 | `PSystemListArchimateSprites.ts` | `listArchimateSpritesLines`, `PSystemListArchimateSprites` | `PSystemListArchimateSprites` -- the `listsprite` page: every vendored `sprites/<folder>/` file drawn as `<$folder/name> name (fmt)`, split into 4 columns by `getCols`. |
 | `PSystemListArchimateSpritesFactory.ts` | `acceptsListArchimateSprites`, `listArchimateSpritesPlugin` | `PSystemListArchimateSpritesFactory` -- accepts a one-line source starting (case-insensitively) with `listsprite`. |
 | `sprite-bilinear.ts` | `scaledRasterSize`, `scaleBilinear` | The jar's sprite/img raster scale: `PortableImageAwt#scale` (`klimt/awt/PortableImageAwt.java:113-127`) builds a `round(w * scale) x round(h * scale)` `TYPE_INT_ARGB` destination and runs `java.awt.image.AffineTransformOp` with `TYPE_BILINE |
 | `sprite-raster.ts` | `SpriteLike`, `spriteMonochromeAsLike`, `RgbaBitmap`, `spriteToRgba`, `SpritePngResult`, `spriteToPngDataUri`, `spriteColor4096ToRgba`, `spriteColor4096ToPngDataUri`, `ArgbImage`, `getDarkerRgb`, `muteColor`, `monochrome`, `argbImageToPngDataUri` | Monochrome-sprite tint + PNG rasterization (T5 of SI5b/decisions.md D7). |
+| `sprite-text-block.ts` | `SpriteRef`, `asTextBlock` | `Sprite#asTextBlock(fontColor, forcedColor, scale, backColor)` as a `TextBlock`, reached through the creole sprite atom (lsp D4). |
 | `sprite-tint.ts` | `SpriteTint`, `spriteBackColor`, `spriteTintHref`, `spriteHrefOver` | sprite-tint.ts — a monochrome sprite's tint, deferred until the back colour it is drawn over is known (unwind2-S7). |
 | `Sprite.ts` | `Sprite` | The shared marker every sprite kind implements: pixel dimensions. |
 | `SpriteColor4096.ts` | `SpriteColor4096` |  |
@@ -963,12 +985,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ActorHollow.ts` | `ActorHollow` |  |
 | `ActorStickMan.ts` | `ActorStickMan` |  |
 | `ActorStyle.ts` | `ActorStyle`, `actorStyleGetTextBlock` |  |
-| `ColorParam.ts` | `ColorParam` |  |
+| `ColorParam.ts` | `ColorParam`, `ActivityColorParam` |  |
 | `Pragma.ts` | `Pragma` | Pragma — the resolved `!pragma <key> <value>` table for one diagram, plus the `WarningHandler` capability every pragma-aware command shares. |
 | `PragmaKey.ts` | `PragmaKey`, `pragmaKeyDefaultValue`, `pragmaKeyLazyFrom` | PragmaKey — the fixed set of `!pragma <key> <value>` keys `Pragma` stores. |
 | `SkinParamColors.ts` | `SkinParamColors` |  |
 | `SkinParamDelegator.ts` | `SkinParamDelegator` |  |
-| `SkinParamFresh.ts` | `SkinParamClasspath`, `SkinParamFresh` | A fresh `SkinParam`: `SkinParam.create(md5map, pathSystem, type, Pragma.createEmpty(), option)` for a diagram whose source no command can reach -- `PSystemCreole#getTextBlock` (java:83-84) and `Help`, whose factory has only the five `help` |
+| `SkinParamFresh.ts` | `SkinParamClasspath`, `OptionStore`, `SkinParamFresh` | A fresh `SkinParam`: `SkinParam.create(md5map, pathSystem, type, Pragma.createEmpty(), option)` for a diagram whose source no command can reach -- `PSystemCreole#getTextBlock` (java:83-84) and `Help`, whose factory has only the five `help` |
+| `SkinParamUtils.ts` | `LegacyColorSkin`, `getColor` | `SkinParamUtils.getColor`: the legacy `ColorParam` read, through `Rose#getHtmlColor` -- the first param the skin answers, else the first param's default. |
 | `VisibilityModifier.ts` | `ColorParam`, `SName`, `StyleSignatureBasic`, `VisibilityModifier` |  |
 
 ## `src/core/stereo/`
@@ -1034,8 +1057,9 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `DecorateEntityImage.ts` | `UGraphicWithGroups`, `DecorateEntityImage`, `EntityDecorationInfo`, `decorateEntityDrawing` |  |
 | `diagram-type-style-name.ts` | `getStyleName` | `DiagramType#getStyleName`: the `SName` a diagram kind's style signatures carry (`activityDiagram` for every kind the table does not list, as upstream's trailing `return`). |
 | `EntityDomain.ts` | `EntityDomain` |  |
+| `EntityImageDegenerated.ts` | `DEGENERATED_DELTA`, `EntityImageDegenerated` | `EntityImageDegenerated`: what `GraphvizImageBuilder#buildImage` returns for a diagram with exactly one leaf, no link and no group: the leaf's own image, translated by `delta` and padded by `delta` on every side, with no graphviz pass. |
 | `FrontierCalculator.ts` | `RectangleArea`, `Point`, `ENTITY_POSITION_RADIUS`, `FrontierRankdir`, `frontierCalculator`, `ensureMinWidth`, `ProjectionClusterSpec`, `entryExitPointRect`, `ClusterRectangles`, `projectionClusterOf` | FrontierCalculator — the post-layout box-correction jar applies to a cluster's own graphviz-assigned rectangle before drawing it, whenever the cluster carries `<<entrypoint>>`/`<<exitpoint>>` (port) members alongside or instead of normal-po |
-| `GeneralImageBuilder.ts` | `LegacyLeafImage`, `createEntityImageBlockInternal` | `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only: `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in upstream's order. |
+| `GeneralImageBuilder.ts` | `LegacyLeafImage`, `createEntityImageBlockInternal` | `GeneralImageBuilder#createEntityImageBlockInternal`, for the leaf types of the legacy activity engine only: `NOTE`, `ACTIVITY`, `CIRCLE_START`, `CIRCLE_END`, `BRANCH`/`STATE_CHOICE` and `SYNCHRO_BAR`/`STATE_FORK_JOIN`, in upstream's order, |
 | `hexagon-polygon.ts` | `hexagonPolygonPoints` | hexagon-polygon.ts -- the svek node polygon of a `USymbols.HEXAGON` leaf, shared by the engines that draw `EntityImageDescription#drawHexagon`. |
 | `IEntityImage.ts` | `ENTITY_IMAGE_MARGIN`, `ENTITY_IMAGE_MARGIN_LINE` | `IEntityImage` — the margins every svek entity image insets its content by. |
 | `InnerActivity.ts` | `THICKNESS_BORDER`, `InnerImage`, `InnerActivity` | `InnerActivity` — the image of an autarkic activity group: the nested svek result inside a rounded rectangle filled with the group's back colour and framed in its border colour (`THICKNESS_BORDER` 1.5). |
@@ -1079,7 +1103,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ExtremitySquare.ts` | `ExtremitySquare`, `ExtremityFactorySquare` |  |
 | `ExtremityTriangle.ts` | `TriangleGeom`, `ExtremityTriangle`, `ExtremityFactoryTriangle` |  |
 | `link-decor.ts` | `LinkDecorName`, `lookupDecors1`, `lookupDecors2`, `isFillDecor`, `buildExtremityFactory`, `looksLikeRevertedForSvg`, `looksLikeNoDecorAtAllSvg`, `getLinkTypeName` |  |
-| `MiddleCircleDecor.ts` | `MiddleDecor`, `LABEL_SHIELD`, `drawMiddleDecor` | The mid-link decoration (`-0)-` and its three siblings), for every engine that draws one (D5 of description-divergence-drive): `LinkMiddleDecor#getMiddleFactory`'s `MiddleCircle` and `MiddleCircleCircled`. |
+| `MiddleCircleDecor.ts` | `CircleMiddleDecor`, `MiddleDecor`, `LABEL_SHIELD`, `drawMiddleDecor` | The mid-link decoration (`-0)-` and its three siblings), for every engine that draws one (D5 of description-divergence-drive): `LinkMiddleDecor#getMiddleFactory`'s `MiddleCircle` and `MiddleCircleCircled`. |
+| `MiddleFactory.ts` | `MiddleFactory` |  |
+| `MiddleFactorySubset.ts` | `MiddleFactorySubset` |  |
+| `MiddleSubset.ts` | `MiddleSubset` |  |
 | `rotate-point.ts` | `rotatePoint`, `rotateAndTranslate` |  |
 | `Side.ts` | `Side` | Side — the four cardinal sides `ExtremityCrowfoot` clamps its left/right wing endpoints against when the link approaches a node from directly N/E/S/W (see `ExtremityCrowfoot.ts`). |
 
@@ -1098,6 +1125,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `creole-text-run-types.ts` | `FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleRunBullet`, `CreoleTextLine` | creole-text-run-types — the public run/line shape `creole-text-lines.ts` reports (`FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleTextLine`). |
 | `EntityImageActivity.ts` | `OctagonPolygon`, `NodePolygons`, `CORNER`, `EntityImageActivity` | `EntityImageActivity` — an activity box of a legacy activity diagram: a rounded rect (`CORNER` 25 → `rx` 12.5) with its text, drawn with no `<g>` around either (the jar's own quirk, D9). |
 | `EntityImageBranch.ts` | `EntityImageBranch` | `EntityImageBranch` — the `if` diamond of a legacy activity diagram, in an `entity` group with no `data-source-line` (upstream builds `new UGroup()`). |
+| `EntityImageChenAttribute.ts` | `EntityImageChenAttribute` | `EntityImageChenAttribute` — the ellipse of a Chen EER attribute, sized by `TextBlockInEllipse`. |
+| `EntityImageChenCircle.ts` | `EntityImageChenCircle` | `EntityImageChenCircle` — the fixed 25x25 circle of a Chen EER subclass connector, its title centred. |
+| `EntityImageChenEntity.ts` | `EntityImageChenEntity` | `EntityImageChenEntity` — the rectangle of a Chen EER entity; `<<weak>>` adds an inner rectangle at `+3,+3`, `delta(-6)`. |
+| `EntityImageChenRelationship.ts` | `EntityImageChenRelationship` | `EntityImageChenRelationship` — the diamond of a Chen EER relationship, sized around its title at aspect ratio 2; `<<identifying>>` adds an inner diamond at `+10,+5`, `delta(-20, -10)`. |
+| `EntityImageChenSupport.ts` | `ChenLeafName`, `hasStereotype`, `getChenStyle`, `createChenTitle`, `getStroke`, `applyChenColor`, `startChenGroup`, `closeChenGroup` | What the four `EntityImageChen*` images share. |
 | `EntityImageCircleEnd.ts` | `EntityImageCircleEnd` | `EntityImageCircleEnd` — the end leaf of a legacy activity diagram, in an `end_entity` group. |
 | `EntityImageCircleStart.ts` | `EntityImageCircleStart` | `EntityImageCircleStart` — the start leaf of a legacy activity diagram, in a `start_entity` group. |
 | `EntityImageDescription.ts` | `ShapeType`, `Margins`, `resolveDescriptionUSymbol`, `HexagonPolygon`, `EntityUrl`, `EntityImageDescriptionEntity`, `EntityImageDescriptionSymbol`, `EntityImageDescriptionLabels`, `EntityImageDescriptionStereotypeSprite`, `EntityImageDescriptionPaint`, `EntityImageDescriptionLinkInfo`, `EntityImageDescriptionParams`, `EntityImageDescription` | EntityImageDescription — draws a descriptive/deployment leaf entity (`component`, `usecase`, `database`, `interface`, `rectangle`, ...): the `<!--entity NAME--><g class="entity" ...>` wrapper, the resolved `USymbol`'s `asSmall` chrome, an o |
@@ -1556,9 +1588,10 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `AbstractFtile.ts` | `AbstractFtile` |  |
+| `AbstractFtile.ts` | `FtileStyledSkin`, `AbstractFtile` |  |
 | `BoxStyle.ts` | `BoxStyle` |  |
 | `FtileGeometry.ts` | `FtileGeometry` |  |
+| `Hexagon.ts` | `Hexagon` |  |
 
 ## `src/diagrams/activity/ftile/vcompact/`
 
@@ -1570,7 +1603,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `FtileBox.ts` | `FtileBoxSkin`, `FtileBoxCreateArgs`, `FtileBox` |  |
 | `FtileBoxOld.ts` | `FtileBoxOld` |  |
+| `FtileCircleStart.ts` | `FtileCircleStart` |  |
+| `FtileDiamond.ts` | `FtileDiamondLabels`, `FtileDiamond` |  |
+| `FtileDiamondWIP.ts` | `FtileDiamondWIPArgs`, `FtileDiamondWIP` |  |
 
 ## `src/diagrams/activity/layout/`
 
@@ -1730,6 +1767,47 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `CommandBoardPlus.ts` | `BOARD_PLUS_RE`, `applyBoardPlus` | `CommandBoardPlus`: a run of `+` (empty starts an activity), optional spaces, then the label. |
 
+## `src/diagrams/bpm/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `AbstractConnectorPuzzle.ts` | `AbstractConnectorPuzzle` |  |
+| `bpm-export.ts` | `renderBpm` | `BpmDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `BpmDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefaultMa |
+| `BpmBranch.ts` | `BpmBranch` |  |
+| `BpmDiagram.ts` | `BpmDiagram` | BpmDiagram — `@startbpm`: the recorded events replay into a grid of lines and columns, three cleaners simplify it, and `GridArray` draws it. |
+| `BpmDiagramFactory.ts` | `initCommandsList`, `parseBpm` | `BpmDiagramFactory`: a `PSystemCommandFactory` with exactly the seven BPM commands and no `CommonCommands` (D3, D5), so a blank line, `title`, `skinparam`, `<style>`, `scale` or `sprite` is not a command here. |
+| `BpmElement.ts` | `BpmElement` |  |
+| `BpmElementType.ts` | `BpmElementType` | BpmElementType — what a `BpmElement` draws. |
+| `BpmEvent.ts` | `BpmEvent` | BpmEvent — a marker for one recorded BPM command, replayed by `BpmDiagram#createGrid`. |
+| `BpmEventAdd.ts` | `BpmEventAdd` |  |
+| `BpmEventGoto.ts` | `BpmEventGoto` |  |
+| `BpmEventResume.ts` | `BpmEventResume` |  |
+| `Cell.ts` | `Cell` |  |
+| `Chain.ts` | `Chain` |  |
+| `ChainImpl.ts` | `ChainImpl` |  |
+| `CleanerEmptyLine.ts` | `CleanerEmptyLine` |  |
+| `CleanerInterleavingLines.ts` | `CleanerInterleavingLines` |  |
+| `CleanerMoveBlock.ts` | `CleanerMoveBlock` |  |
+| `Col.ts` | `Col` | Col — an identity token for one column of the BPM grid; `Coord` and `ChainImpl` compare it by reference. |
+| `CommandDockedEvent.ts` | `CommandDockedEvent` | `CommandDockedEvent`: `:label;`, a docked event box in a new column. |
+| `CommandElseBranch.ts` | `CommandElseBranch` | `CommandElseBranch`: `else`, the next arm of the innermost branch. |
+| `CommandEndBranch.ts` | `CommandEndBranch` | `CommandEndBranch`: `end branch`, close the innermost branch at its exit merge. |
+| `CommandGoto.ts` | `CommandGoto` | `CommandGoto`: `goto id`, connect to `id` and continue on a new line under it. |
+| `CommandMerge.ts` | `CommandMerge` | `CommandMerge`: `id:<+>`, a merge diamond in a new column; the regex allows no space before `<+>`. |
+| `CommandNewBranch.ts` | `CommandNewBranch` | `CommandNewBranch`: `new branch`, open a branch at an entry merge. |
+| `CommandResume.ts` | `CommandResume` | `CommandResume`: `resume id`, continue on a new line under `id`. |
+| `ConnectorPuzzle.ts` | `Where`, `WHERE_VALUES`, `toShortString`, `getCoding`, `ConnectorPuzzle` |  |
+| `ConnectorPuzzleEmpty.ts` | `ConnectorPuzzleEmpty` |  |
+| `Coord.ts` | `Coord` |  |
+| `Grid.ts` | `Grid` |  |
+| `GridArray.ts` | `GridArray` |  |
+| `GridCleaner.ts` | `GridCleaner` |  |
+| `index.ts` | `BpmGeometry`, `bpmPlugin` | `BpmDiagramFactory` as a plugin: a `PSystemCommandFactory` on `@startbpm`, typed `BPM` (`BpmDiagramFactory.java:51`), registered at its upstream position right after `ActivityDiagramFactory3` (`PSystemBuilder.java:141`). |
+| `Line.ts` | `Line` | Line — an identity token for one row of the BPM grid; `Coord` and `ChainImpl` compare it by reference. |
+| `Navigator.ts` | `Navigator` | Navigator — a cursor over a `Chain`. |
+| `Navigators.ts` | `Navigators` |  |
+| `Placeable.ts` | `BpmSkinParam`, `Placeable` |  |
+
 ## `src/diagrams/chart/`
 
 | Module | Exports | Purpose |
@@ -1768,6 +1846,41 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandChartScatter.ts` | `CHART_SCATTER_RE`, `applyChartScatter` | `CommandChartScatter`: only the trailing `MARKER` group sets the shape, so `scatter <<triangle>> [1]` is a stereotype named triangle and draws a circle. |
 | `CommandChartStackMode.ts` | `CHART_STACK_MODE_RE`, `applyChartStackMode` | `CommandChartStackMode`: `stackMode grouped\|stacked`. |
 | `CommandChartVAxis.ts` | `CHART_V_AXIS_RE`, `parseCustomTicks`, `applyChartVAxis` | `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`. |
+
+## `src/diagrams/cheneer/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `cheneer-dot.ts` | `NO_POLYGONS`, `ChenDotContext`, `ChenDotNode`, `ChenDotEdge`, `ChenDot`, `dotShapeOf`, `buildChenDot` | The DOT input of a Chen EER diagram: `GraphvizImageBuilder#buildImage`'s `printEntities` (one `SvekNode` per leaf, in leaf order) and the `SvekEdge` of each link of `getOrderedLinks`, handed to the one dot-engine seam as a `DotInputGraph`. |
+| `cheneer-edge-text.ts` | `STYLE_NAME`, `ChenEdgeTexts`, `ChenEdgeTextContext`, `labelFontOf`, `cardinalityFontOf`, `createLabelBlock`, `buildEdgeTexts` | The texts a `SvekEdge` builds in its constructor and that the DOT reserves a box for: the label (a Chen cardinality, `CommandAssociate.java:112-117`), the quantifiers and the roles. |
+| `cheneer-elk-adapter.ts` | `ChenEerElkAdapter` | `ElkDiagramAdapter` over the Chen engine (ceep T3d). |
+| `cheneer-links.ts` | `getOrderedLinks` | `CucaDiagramFileMakerSvek#getOrderedLinks`: the links svek lays out and draws, regrouped so that links with the same two entities (in either direction) sit next to each other, a new one after the last of its group. |
+| `cheneer-skin-param.ts` | `SkinParamSource`, `SkinParam`, `ChenEerSkinParam` | The Chen EER engine's `SkinParam` -- the slice of upstream's `skin/SkinParam.java` a `ChenEerDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, the rank direction ` |
+| `cheneer-spacing.ts` | `DzetaEdge`, `getHorizontalDzeta`, `getVerticalDzeta`, `getSeparators` | The graph spacing `DotStringFactory#createDotString` writes (`nodesep`, `ranksep`) for a diagram that is not `DiagramType.ACTIVITY`: the largest dzeta of any link divided by ten, floored at 35 and 60 (40 under kermor), replaced outright by |
+| `cheneer-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
+| `ChenEerDiagram.ts` | `ChenEerDiagram` | `ChenEerDiagram`: the Chen entity-relationship diagram (`@startchen`), a `CucaDiagram` drawn through svek. |
+| `ChenEerDiagramFactory.ts` | `CommandInput`, `ChenCommand`, `initCommandsList`, `createEmptyDiagram`, `parseChen` | `ChenEerDiagramFactory`: the Chen diagram's command list, in upstream's order, and `PSystemCommandFactory#createSystem`'s per-line loop over it. |
+| `common-commands-1.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `ChenEerDiagramFactory` registers it (first, java:58): the title commands, `addCommonCommands2`, the scale commands and the hides. |
+| `index.ts` | `ChenLayout`, `chenPlugin` | Chen EER diagram plugin (`@startchen`): `ChenEerDiagramFactory` (parse). |
+| `layout-elk.ts` | `layoutChenElk` | Layout of a Chen diagram under `!pragma layout elk`: `CucaDiagram#getTextBlock` picks `CucaDiagramFileMakerElk` (`CucaDiagram.java:478-479`), whose `getTextBlock` (`CucaDiagramFileMakerElk.java:477-499`) lays the leaves out with ELK and mea |
+| `layout-geometry.ts` | `ChenNodeGeo`, `ChenEdgeGeo`, `ChenGeometry`, `solveChen` | The solved geometry of the one `GraphvizImageBuilder#buildImage` pass of a Chen diagram: the DOT goes through the one dot-engine seam, and what comes back is mapped onto the leaves and links it was built from. |
+| `layout.ts` | `ChenEdgeGeo`, `ChenGeometry`, `ChenNodeGeo`, `layoutChen` | Layout of a Chen EER diagram: `CucaDiagramFileMakerSvek#getTextBlock` up to `DotStringFactory#solve`, as `GraphvizImageBuilder#buildImage` runs it. |
+| `renderer-document.ts` | `calculateBackColor`, `muteColorMapper`, `calculateMargin` | The document-level reads of `TitledDiagram` for the Chen export: the back colour, the colour mapper and the exporter's margin, over this diagram. |
+| `renderer-edge.ts` | `lightPaintOf`, `edgeInputOf`, `drawEdge` | One Chen link as `SvekEdge#drawU` draws it: the solved {@link ChenEdgeGeo} becomes the `SvekEdgeInput` the shared klimt drawing half (`core/svek/SvekEdge.ts`) takes. |
+| `renderer-svek-result.ts` | `InkWalk`, `SvekResultInput`, `ChenSvekResult` | `SvekResult` for the Chen engine: the text block `GraphvizImageBuilder#buildImage` returns. |
+| `renderer.ts` | `CHEN_EER_ROUTE`, `ChenRenderInput`, `renderChen` | Chen EER export: `TextBlockExporter`'s export of the {@link ChenSvekResult} on the klimt substrate (the board plugin's shape, `board/index.ts`). |
+
+## `src/diagrams/cheneer/command/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `chen-command-support.ts` | `NO_SUCH_ENTITY`, `NAME_PATTERN`, `PARTICIPATION_PATTERN`, `DOUBLE_PARTICIPATION`, `plainLinkType`, `entityNamed`, `javaSplitComma`, `LinkEnds`, `newLink` | What the Chen commands repeat between Java files: the error text of a missing entity, the `NAME` leaf grammar of `CommandAssociate`, `CommandSimpleSubclass` and `CommandMultiSubclass`, the entity lookup they each inline, and `String#split(" |
+| `CommandAssociate.ts` | `CommandAssociate` | `CommandAssociate`: `NAME1 -[CARDINALITY]- NAME2 [#color]`, a length-3 link between two existing leaves; `=` on the first participation draws it bold. |
+| `CommandCreateAttribute.ts` | `CommandCreateAttribute` | `CommandCreateAttribute`: `[ "display" as ] CODE [<<stereo>>] [#color] [{]`, an attribute of the entity, relationship or composite attribute on top of the owner stack. |
+| `CommandCreateEntity.ts` | `CommandCreateEntity` | `CommandCreateEntity`: `entity [ "display" as ] CODE [<<stereo>>] [#color] {` and the `relationship` form. |
+| `CommandEndGroup.ts` | `UNBALANCED_BRACKETS`, `CommandEndGroup` | `CommandEndGroup`: the `}` that closes an entity, relationship or attribute body. |
+| `CommandMultiSubclass.ts` | `CommandMultiSubclass` | `CommandMultiSubclass`: `SUPER ->- d\|o\|U { A, B }`, a circle between a superclass and its subclasses. |
+| `CommandSimpleSubclass.ts` | `CommandSimpleSubclass` | `CommandSimpleSubclass`: `NAME1 -<- NAME2` / `NAME1 ->- NAME2`, a length-3 link whose middle decor is the subset (`<`) or superset (`>`) sign; `=` on the first participation draws it bold. |
 
 ## `src/diagrams/chronology/`
 
@@ -2230,6 +2343,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `parser.ts` | `FilesDiagram`, `parseFiles` |  |
 | `renderer.ts` | `drawAndMove`, `FilesListing` |  |
 
+## `src/diagrams/flow/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `ActivityBox.ts` | `ActivityBox` | `ActivityBox`: a flow box — the label in serif 14, black, inside a 25-rounded `MY_YELLOW` rectangle stroked `MY_RED` at 1.5, inset 10. |
+| `CommandLineSimple.ts` | `CommandLineSimple` | `CommandLineSimple`: `[orientation ]id "label"`, a new box `orientation` of the last one (`SOUTH` by default). |
+| `CommandLink.ts` | `CommandLink` | `CommandLink`: `[orientation ]id`, a path from the last box's `orientation` side to box `id` (`SOUTH` by default). |
+| `flow-export.ts` | `renderFlow` | `FlowDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `FlowDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefault |
+| `FlowDiagram.ts` | `FlowDiagram` | FlowDiagram — `@startflow`: each `CommandLineSimple` adds an `ActivityBox` on a golem `TilesField`, each `CommandLink` adds a path, and the diagram is its own `TextBlock`. |
+| `FlowDiagramFactory.ts` | `initCommandsList`, `parseFlow` | `FlowDiagramFactory`: a `PSystemCommandFactory` with exactly the two flow commands and no `CommonCommands` (flp D3, D5), so a blank line, `title`, `skinparam` or `scale` is not a command here and yields `Syntax Error?`. |
+| `index.ts` | `FlowGeometry`, `flowPlugin` | `FlowDiagramFactory` as a plugin: a `PSystemCommandFactory` on `@startflow`, typed `FLOW` (`FlowDiagramFactory.java:51`), registered at its upstream position after `GanttDiagramFactory` and the commented-out `ChronologyDiagramFactory` (`PSy |
+
 ## `src/diagrams/gantt/`
 
 | Module | Exports | Purpose |
@@ -2465,6 +2590,24 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `VerbPhraseAction.ts` | `VerbPhraseAction` |  |
 | `VerbPhraseMatcher.ts` | `VerbPhraseMatcher` |  |
 
+## `src/diagrams/git/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `Commit.ts` | `Commit` |  |
+| `CursorPosition.ts` | `DownRule`, `DOWN_RULES`, `CursorPosition` |  |
+| `git-export.ts` | `renderGit` | `GitDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `GitDiagramFactory`) and no scale (no `scale` command): the warnings banner, the `{root, document}` margin (else `getDefaultMa |
+| `git-klimt.ts` | `back` |  |
+| `GitCurve.ts` | `GitCurve` |  |
+| `GitDiagram.ts` | `GitDiagram` |  |
+| `GitDiagramFactory.ts` | `parseGit` |  |
+| `GitTextArea.ts` | `GitTextArea` |  |
+| `GNode.ts` | `GNode` |  |
+| `GNodeBuilder.ts` | `GNodeBuilder` |  |
+| `index.ts` | `GitGeometry`, `gitPlugin` | `GitDiagramFactory` as a plugin: a `PSystemAbstractFactory` on `@startgit`, typed `GIT` (`GitDiagramFactory.java:52`), registered at its upstream position (`PSystemBuilder.java:191`). |
+| `MagicBox.ts` | `GitSkinParam`, `gitStyleOf`, `MagicBox` |  |
+| `SmetanaForGit.ts` | `SmetanaForGit` |  |
+
 ## `src/diagrams/hcl/`
 
 | Module | Exports | Purpose |
@@ -2490,6 +2633,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `Arrow.ts` | `Arrow` |  |
 | `ast.ts` | `HighlightDirective`, `JsonDiagramAST`, `surfaceParseWarnings` | AST types for PlantUML JSON diagrams (@startjson / @endjson). |
 | `color-form.ts` | `canonicalColor`, `canonicalColorOpt` | The FORM a color takes in the emitted SVG, as distinct from which color it is. |
 | `document-dimensions.ts` | `DocumentDimensions`, `documentDimensions` | The json block's own width/height -- `JsonDiagram#calculateDimension`. |
@@ -2749,7 +2893,6 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `command-page.ts` | `newpageCommand`, `minwidthOrPagingCommand` | The pagination block: `CommandNewpage` (`:139`), `CommandIgnoreNewpage` (`:140`) and `CommandAutoNewpage` (`:141`), the three commands that open `initCommandsList`'s trailing run. |
 | `command-participant.ts` | `participantCommand`, `createCommand`, `matchParticipantMultilineCommand` | The participant-declaration family: `CommandParticipantA` (`:106`), `CommandParticipantA2` (`:107`), `CommandParticipantA3` (`:108`), `CommandParticipantA4` (`:109`) and `CommandParticipantMultilines` (`:110`) — four single-line arities of |
 | `command-return.ts` | `returnCommand` | `CommandReturn` (`SequenceDiagramFactory.java:129`) -- split out of `command-arrow.ts` to keep that file under its size cap; see that file's header for why it is filed beside the arrow rules. |
-| `command-sprite.ts` | `matchSpriteBase64Command` | `CommandSpriteBase64` — `sprite $name data:image/png;base64,<payload>`, the inline-image sprite definition. |
 | `display-lines.ts` | `displayLines`, `AlignedDisplayLines`, `displayLinesAligned` | display-lines.ts -- a sequence display's LINES (`Display#getWithNewlines`). |
 | `divider-style.ts` | `DIVIDER_PADDING`, `DIVIDER_HEIGHT_ALLOWANCE`, `DIVIDER_WIDTH_ALLOWANCE`, `DIVIDER_LABEL_DELTA_X`, `DIVIDER_BAND_HEIGHT`, `dividerPreferredHeight`, `dividerPreferredWidth` | The sequence-diagram divider's (`== label ==`, and the empty `====` form) component GEOMETRY: the constants `ComponentRoseDivider` hard-codes rather than reads from its style. |
 | `frame-style.ts` | `HEADER_PADDING`, `CORNER_SIZE`, `groupingHeaderDisplay` | The grouping frame's header-tab constants that are NOT style: the padding and corner size `ComponentRoseGroupingHeader` hard-codes, and the tab's `Display` split `GroupingTile` makes. |

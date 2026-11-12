@@ -48,7 +48,21 @@ export const RATCHET_FAMILY: Readonly<Record<string, readonly string[]>> = {
   timing: ['svg-timing'],
   // nwp D7: the nwdiag rows live in `unknown`, pinned with `type: 'unknown'` as legacy activity's are.
   // cmf T4: the creole/math/latex/definition/help factories' rows live in `unknown`, as the utility factories' do.
-  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-activity-legacy', 'svg-nwdiag'],
+  // bpe D7: the 7 bpm rows live in `unknown`, pinned with `type: 'unknown'` as nwdiag's are.
+  // gip D8: the 4 git rows live in `unknown`, pinned with `type: 'unknown'` as bpm's are.
+  // flp D7: the flow row lives in `unknown`, pinned with `type: 'unknown'` as git's are (none pinned until #174).
+  // ceep D3: no `@startchen` corpus row exists, so `svg-cheneer` pins none; listed with `unknown` as flow's is.
+  unknown: [
+    'svg-utility',
+    'svg-factories',
+    'svg-description',
+    'svg-activity-legacy',
+    'svg-nwdiag',
+    'svg-bpm',
+    'svg-git',
+    'svg-flow',
+    'svg-cheneer',
+  ],
   network: ['svg-activity-legacy'],
   // c4dd D6: two engines own these rows; a c4 pin under `svg-class` carries `tree: 'c4'`.
   c4: ['svg-description', 'svg-class'],
@@ -67,7 +81,8 @@ export const DIFF_BASELINE_FAMILY: Readonly<Record<string, readonly string[]>> =
   gantt: ['svg-gantt'],
   // nwp D7: the 4 nwdiag jar-error rows, pinned by score.
   // cmf T4: the factories rows not yet pinned, pinned by score.
-  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-nwdiag'],
+  // gip D8: lagapi-44 and figagi-40, diverged on curve piece counts (U-NS), pinned by verdict, ceiling and score.
+  unknown: ['svg-utility', 'svg-factories', 'svg-description', 'svg-nwdiag', 'svg-git'],
   // eep D9: ladifa-97-keme950, the one ebnf jar-error row, pinned by score.
   ebnf: ['svg-ebnf'],
   // rep D7: bakuza-41-bulo451 and tajefa-31-pefi801, the two regex jar-error rows, pinned by score.

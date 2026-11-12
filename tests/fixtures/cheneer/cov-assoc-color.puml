@@ -1,0 +1,8 @@
+@startchen
+entity A {
+}
+relationship R {
+}
+R =N= A #blue
+R -1- A #line:green;line.dashed
+@endchen

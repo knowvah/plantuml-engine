@@ -1,0 +1,13 @@
+@startchen
+!pragma ratio 0.5
+entity A {
+  X
+  Y
+}
+entity B {
+}
+relationship R {
+}
+A -1- R
+R -N- B
+@endchen

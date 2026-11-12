@@ -1,0 +1,13 @@
+@startchen
+entity A {
+}
+entity B {
+}
+entity C {
+}
+relationship R {
+}
+R -1- A
+R -N- B
+R -(0,N)- C
+@endchen

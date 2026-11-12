@@ -1,0 +1,6 @@
+@startchen
+skinparam handwritten true
+entity A {
+  X
+}
+@endchen

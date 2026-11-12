@@ -35,6 +35,57 @@ post-D7 measurements.
 
 ---
 
+## listsprite-factory-port (lsp) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #134; per-task history on the local tag `listsprite-factory-port/pre-squash`)
+
+`klimt/sprite/{ListSpriteDiagramFactory,ListSpriteDiagram,CommandListSprite}.java` ported file for file into `src/core/klimt/sprite/`, registered at `PSystemBuilder.java:170` between Definition and Math; `@startsprites` gets its own `'sprites'` tag (`DiagramType.java:193-200`). The page is a `HELP`-typed `TitledDiagram` that draws each sprite through the creole sprite atom wrapped as `Sprite#asTextBlock` (`sprite-text-block.ts`, lsp D4), over its creole name, in upstream's 1024-wide flow. Both corpus rows (`folutu-01-xuzo995`, `nujapi-78-mota753`) go diverged → conformant and are pinned in `svg-factories` (41 → 43 slugs, 19 pins); 47 authored `cov-sprites-*` fixtures, 42 zero-diff and 5 error pairs, 0 open, all byte-stable over three jar renders. `cov-refuse-listsprite` (svg-utility) closes ufp's parity gap: 192 → 0. Shared fix: `CommandSpriteBase64` moved from the sequence engine to `src/core/sprite-command-base64.ts`. Overall: 0 lost, +2 conformant. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains (follow-ons, none blocks #134):**
+
+1. **Hoist the copied command-factory plumbing** (lsp D1): `src/core/klimt/sprite/{listsprite-common-commands,listsprite-style-dispatch}.ts` are copies of regex's, and `listsprite-skin-param.ts` re-exports ebnf's `SkinParam` (a layering allowlist entry). `CommonCommands`/`SkinParam` belong in `src/core/`; the same follow-on as ceep 1.
+2. **`CommandSpriteBase64` in every engine**: `CommonCommands.java:79` registers it for every command factory, but only sequence and listsprite call `matchSpriteBase64Command`; 22 other dispatchers refuse a `data:image/png;base64,` sprite line (`.agent-notes/lsp-T2c.md`). An undecodable payload is also consumed silently where the jar errors (`CommandSpriteBase64.java:90`).
+3. **`scripts/parity-dashboard.ts#D7_FOOTNOTE_MEMBERS`** still names `SPRITES` (and `HELP`, `BPM`, `CREOLE`, `MATH`, `LATEX`, `DEFINITION`, `FLOW`, which have engines too); `tests/unit/scripts/parity-dashboard.test.ts:323-340` pins the list, so the footnote needs its own edit with the test.
+4. **Stale `diagram-type-set.ts` doc comment**: its "no engine for" list (`:23-25`) names engines that now exist.
+
+## chen-eer-engine-port (ceep) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #133; per-task history on the local tag `chen-eer-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/cheneer/` ported file for file into `src/diagrams/cheneer/` on the `CucaDiagram` base, the four `EntityImageChen*` images and `MiddleSubset` into `src/core/svek/`, registered at `PSystemBuilder.java:199`. Drawn through real graphviz (one-leaf diagrams through the new shared `src/core/svek/EntityImageDegenerated.ts`) and through ELK under `!pragma layout elk`. The corpus has no `@startchen` row: 91 authored fixtures (upstream's 4 vega Chen fixtures, 44 planning probes, 43 authored), 78 zero-diff and 13 error pairs, 0 open; 66 jar `svek-1.dot` files structurally equal and size-exact. Shared fixes on the way: the "Empty description" page lists the start line and the next one and names the upstream type (`packetdiag` prints `packet`), and `DotInputGraph` carries `!pragma ratio`/`aspect`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains (follow-ons, none blocks #133):**
+
+1. **Hoist the duplicated cuca-engine plumbing** (ceep D2): `src/diagrams/cheneer/{cheneer-skin-param,common-commands-1,cheneer-style-dispatch}.ts` are copies of activity-legacy's; `CommonCommands`/`SkinParam` belong in `src/core/`. A refactor touching an engine with 124 pinned rows, so its own mission.
+2. **`!pragma ratio`/`aspect` in the other svek engines**: only Chen's DOT build reads `getDotStringSkek`'s two lines (`net/atmp/CucaDiagram.java:405-412`); class, description, state, object and activity-legacy never pass them (`.agent-notes/ceep-T3c.md`). Author a fixture per engine and spread the same attributes.
+3. **`Style#getStroke(Colors)`** (`Style.java:322-328`) is inlined in `src/core/svek/image/EntityImageChenSupport.ts`; hoist it onto `Style.ts` when a second caller appears.
+4. **ELK arrow style under a diagram-name `<style>` rule**: `MyElkDrawing.java:202` styles the line from `classDiagram` while the label uses the diagram's own name (`.agent-notes/ceep-T3d.md`); no fixture exercises an `activityDiagram { arrow {...} }` rule under ELK.
+
+## flow-engine-port (flp) — DONE 2026-11-12 (one commit on `feature/parity-queue`, #132; per-task history on the local tag `flow-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/flowdiagram/` ported file for file into `src/diagrams/flow/`, and the reachable part of `golem/` into `src/core/golem/`, registered at `PSystemBuilder.java:185`. The one `@startflow` row, `bemixo-79-xulu250`, left the unknown-type sentinel and is multiset-equal to its oracle (605×421), but stays `diverged`: the jar draws its boxes in `HashMap<Tile, …>` identity-hash order, which changes per run (6 renders, 6 SVGs), and the port draws in insertion order, one order the jar can produce. 69 authored fixtures: 17 one-box and `cov-embedded` zero-diff, 13 error pairs (all also error on release 1.2026.8), 38 multi-box fixtures each multiset-equal to the oracle or a recorded layout (3 shift fixtures have 2-4 jar layouts). `svg-flow` ratchet with a multiset tier; routing re-pinned `agree`. Overall conformant unchanged, 0 lost. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **Ruling #174**: how a row whose jar output follows identity-hash order counts (sign per row, an order-insensitive FLOW compare, or leave open). It names bemixo and the 38 multi-box fixtures, and blocks #132's close for those rows only.
+2. **The #136 "Blocked by #174" comment and the #132/#136 close-out comments** are in `.agent-notes/flp-T3c.md` and `.agent-notes/flp-T5.md`; `gh issue comment` was denied.
+
+## git-engine-port (gip) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #131; per-task history on the local tag `git-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/gitlog/` ported file for file into `src/diagrams/git/` and registered at `PSystemBuilder.java:191`, laid out through `core/graph-layout` with `SmetanaForGit`'s graph (a new `box` node kind and a raw `smetanaRankSep`, byte-neutral for every other engine) and drawn through klimt (new `json/Arrow.ts`). The 4 `@startgit` rows left the unknown-type sentinel: juzane-95 and mebafo-26 reach `structural-match`, lagapi-44 and figagi-40 differ only in numbers and in 1 / 10 curves' cubic-piece counts. Every residue is proven Smetana arithmetic (our DOT = SmetanaForGit's graph; dot-engine = `dot -Tdot` 16.1.0; real dot at the jar's box sizes reproduces the jar) and named in `DIVERGENCES.md`'s git table: U-BOX (`poly_init` rounding, graphviz `2b255ca79`), the `\N` label, U-ARROW, U-CLIP, U-NS. Overall 5,708 of 5,927 conformant (unchanged), structural-match 120 → 122, 0 lost. 55 authored fixtures: 1 zero-diff, 8 jar crash pages paired with ours, 46 pinned at verdict + `maxDelta` ceiling. `svg-git` ratchet with a structural tier. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **No conformant git row is possible under the Smetana ruling** while boxes carry the `\N` label minimum and `poly_init` rounding; the rows sit at their ceilings. A future ruling to emulate Smetana sizing (rejected here, D9) would be the only route.
+2. **`DIVERGENCES.md` holds its first ~1100 lines three times** (pre-existing): a docs cleanup PR should drop copies 2-3 (`.agent-notes/gip-T3c.md`).
+3. **`CLAUDE.md` still says "`@startgit` (`SmetanaForGit`, unbuilt)"**: the user's call to edit.
+
+## bpm-engine-port (bpe) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #130; per-task history on the local tag `bpm-engine-port/pre-squash`)
+
+`net/sourceforge/plantuml/bpm/` ported file for file into `src/diagrams/bpm/` and registered at `PSystemBuilder.java:141`, drawing through activity's `FtileCircleStart`, `FtileDiamond` and `FtileBox`, ported at their upstream paths beside `FtileBoxOld`. All 7 `@startbpm` rows went diverged to conformant with zero diffs on the first survey and are pinned in `svg-bpm`; overall 5,701 to 5,708 of 5,927, 0 lost. 77 authored fixtures: 57 zero-diff, 20 jar error pages where we also error. No divergence added; `dist/*.d.ts` unchanged.
+
+**What remains:**
+
+1. **Duplicate merge ids** (`cov-duplicate-merge-id`, D4): the jar's `HashMap` of identity hashes picks a different `getById` match from run to run (6 renders, 2 SVGs); the port picks the earliest-inserted. No fixture can pin a jar that disagrees with itself.
+2. **`AbstractFtile.ts` still has no `Ftile` graph members** (swimlanes, link renderings, `getMinMax`): the slice stops where `FtileBoxOld`'s did, and the first `Ftile`-graph consumer adds them.
+3. **The #130/#136 comments** are in `.agent-notes/bpe-T5.md`; `gh issue comment` was denied.
+
 ## creole-math-factories-port (cmf) — DONE 2026-11-11 (one commit on `feature/parity-queue`, #129; per-task history on the local tag `creole-math-factories-port/pre-squash`)
 
 The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMathFactory`, `PSystemLatexFactory`, `PSystemCreoleFactory`, `HelpFactory`) plus `PSystemBasicFactory` and `LanguageDescriptor` are ported and registered at their `PSystemBuilder` lines. Of the 41 in-scope rows, 17 are conformant and pinned in the new `svg-factories` ratchet (def 2/2, help 4/5, creole 11/21); math and latex draw Batik's document byte for byte except the glyph group (KaTeX, named per row in `DIVERGENCES.md`). JLaTeXMath's rollback is mirrored from a names-only vocabulary generated from the jar, and `latex-metrics/` gained accents, over/under lines and braces, stacks, `\\` newlines, negations, dots and the kern/ligature loop: 503 of 510 creole `<math>` images size as the jar. 68 authored fixtures. 0 rows lost in any engine.
@@ -958,7 +1009,7 @@ and 27 are ticked; every other 28–35 entry carries a dated measurement
 1. **Error-page source label** (`PSystemError.java:239` prints `[From <file>.puml`; `src/core/tim/ReadLineReader.ts:37` prints `[From string`). This costs 3 diffs on every jar-errors-and-we-error page. The other 2 are our own version string, which the ruling keeps.
 2. **Sequence refusal index off by one** (`src/diagrams/sequence/parser.ts:266`). It reports line/consumed as an index into `source.lines`, which excludes `@startuml`, so the class engine wins the `PSystemErrorUtils.java:140-147` tie that sequence wins in the jar. The page then names class where the jar names sequence (+2 diffs). Skinparam-stripped sources need the full-source position.
 3. **Tab stops in the error listing**: `TileText.java:82-84,94-104` moves a tab to the next 8-space stop, but `src/core/error/error-page-exact.ts:178-198` handles only leading spaces.
-4. **`ListSpriteDiagramFactory` unported** (`PSystemBuilder.java:170`, `klimt/sprite/ListSpriteDiagram*.java`, 250 lines). It serves `@startuml` AND `@startsprites` (`DiagramType.java:194-200`). The jar draws where we error on `listsprite` that falls past the single-line gate. It is core plus the out-of-scope `@startsprites`, so it needs its own mission.
+4. ~~**`ListSpriteDiagramFactory` unported**~~ — DONE by listsprite-factory-port (#134): registered at `PSystemBuilder.java:170`; `cov-refuse-listsprite` now draws, 0 diffs (was weighted 192).
 5. **Asset packaging**: ship `assets/{eggs,dedication}` to library consumers. Today the refusal gate (no asset store) errors on `kavama-92`, and so does a library user by default.
 6. **Rendering gaps**:
    - No RGB PNG encoder path (`PixelImage.java:72-73`; `png-encoder.ts` writes RGBA). This affects only the href bytes of qrcode at scale 1.

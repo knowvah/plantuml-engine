@@ -17,7 +17,7 @@ import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
 import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
-import { matchSpriteBase64Command } from './command-sprite.js';
+import { matchSpriteBase64Command } from '../../core/sprite-command-base64.js';
 import { matchParticipantMultilineCommand } from './command-participant.js';
 import { drainOpenFrames } from './command-grouping.js';
 import { EmbeddedDiagram, getEmbeddedType } from '../../core/EmbeddedDiagram.js';
@@ -191,7 +191,7 @@ function dispatchAnnotationOrSprite(
 
   // `CommandSpriteBase64` (`CommonCommands.java:79`), registered by the same
   // `addCommonCommands2` call as the two grammars above — see
-  // `command-sprite.ts` for why it is not inside `matchSpriteCommand` and why
+  // `core/sprite-command-base64.ts` for why it is not inside `matchSpriteCommand` and why
   // its position after (rather than between) them is not observable.
   const base64Match = matchSpriteBase64Command(trimmedLines, i, state.ast.sprites!);
   if (base64Match !== null) return base64Match.consumed;
