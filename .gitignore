@@ -32,6 +32,9 @@ sequence-*.png
 /*.png
 tests/corpus/
 
+# Python byte-cache (scripts/*.py); was once committed by accident.
+__pycache__/
+
 .serena/cache/
 
 # Corpus reference PNGs (generated locally, not committed)
