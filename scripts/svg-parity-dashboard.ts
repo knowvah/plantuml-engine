@@ -195,7 +195,7 @@ export function ledgerSection(report: ParityReport, ledger?: readonly LedgerEntr
 const DASHBOARD_PREAMBLE = [
   '# SVG parity dashboard',
   '',
-  'Differential survey of plantuml-ts vs the cached PlantUML jar SVG output',
+  'Differential survey of plantuml-engine vs the cached PlantUML jar SVG output',
   'over the surveyed corpus (`test-results/dot-cache/`). A report, not a',
   'gate. Regenerate: `npm run svg:survey && npm run svg:dashboard`.',
   '',

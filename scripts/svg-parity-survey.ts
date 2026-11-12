@@ -1,5 +1,5 @@
 /**
- * SVG parity survey — differential comparison of plantuml-ts's rendered SVG
+ * SVG parity survey — differential comparison of plantuml-engine's rendered SVG
  * against the cached PlantUML jar SVG (`in.svg`) over every cached diagram
  * type (`test-results/dot-cache/`, populated by scripts/dot-sync-report.ts).
  *

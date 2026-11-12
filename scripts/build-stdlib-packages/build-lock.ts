@@ -135,7 +135,7 @@ type LockObservation =
  * so no shared config and no repo-tracked file is needed. */
 function defaultLockPath(repoRoot: string): string {
   const digest = createHash('sha256').update(repoRoot).digest('hex').slice(0, 16);
-  return join(tmpdir(), `plantuml-ts-stdlib-build-${digest}.lock`);
+  return join(tmpdir(), `plantuml-engine-stdlib-build-${digest}.lock`);
 }
 
 /** Real liveness check: signal `0` sends no signal but still validates the

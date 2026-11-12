@@ -2,7 +2,7 @@
 
 # SVG parity dashboard
 
-Differential survey of plantuml-ts vs the cached PlantUML jar SVG output
+Differential survey of plantuml-engine vs the cached PlantUML jar SVG output
 over the surveyed corpus (`test-results/dot-cache/`). A report, not a
 gate. Regenerate: `npm run svg:survey && npm run svg:dashboard`.
 
@@ -23,7 +23,7 @@ byte-exact ratchets can cover.
 
 ## Summary
 
-- **Generated:** 2026-11-12T06:27:36.685Z
+- **Generated:** 2026-11-12T08:01:59.474Z
 - **Surveyed:** 360
 - **conformant:** 359 (99.7%)
 - **structural-match:** 0 (0.0%)

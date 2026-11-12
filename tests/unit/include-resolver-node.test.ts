@@ -138,7 +138,7 @@ describe('makeNodeFsFetcher — symlinks (real filesystem)', () => {
   let base = '';
 
   beforeAll(async () => {
-    root = await mkdtemp(join(tmpdir(), 'plantuml-ts-include-'));
+    root = await mkdtemp(join(tmpdir(), 'plantuml-engine-include-'));
     base = join(root, 'base');
     const outside = join(root, 'outside');
     await mkdir(base);

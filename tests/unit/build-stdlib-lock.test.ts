@@ -280,7 +280,7 @@ describe('acquireBuildLock -- on-disk representation', () => {
     'creates a lock file while held and removes it on release, at a deterministic default path',
     () => {
       const digest = createHash('sha256').update(REPO_ROOT).digest('hex').slice(0, 16);
-      const defaultLockPath = join(tmpdir(), `plantuml-ts-stdlib-build-${digest}.lock`);
+      const defaultLockPath = join(tmpdir(), `plantuml-engine-stdlib-build-${digest}.lock`);
       const ownerPidAt = (path: string): number | undefined => {
         if (!existsSync(path)) {
           return undefined;

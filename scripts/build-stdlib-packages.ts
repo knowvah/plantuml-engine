@@ -12,7 +12,7 @@
  * 'tsconfig or plain-JS emission, pick the simplest that yields working ESM
  * + .d.ts'). Each package's own `tsconfig.json` (extending
  * `packages/tsconfig.base.json`) type-checks the resulting `.d.ts` files
- * against `plantuml-ts`'s `BundleData` export -- see `npm run build:stdlib`
+ * against `plantuml-engine`'s `BundleData` export -- see `npm run build:stdlib`
  * in the root `package.json`.
  *
  * Usage:

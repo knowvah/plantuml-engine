@@ -76,5 +76,5 @@ export function resolveCoverageReportsDirectory(input: CoverageReportsDirectoryI
     return DEFAULT_COVERAGE_REPORTS_DIRECTORY;
   }
 
-  return join(input.tmpDir, `plantuml-ts-coverage-${input.pid}`);
+  return join(input.tmpDir, `plantuml-engine-coverage-${input.pid}`);
 }
