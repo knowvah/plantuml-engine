@@ -11,7 +11,7 @@ attribution notice, not legal advice.
 Runtime dependencies — imported by dist/, NOT contained in it
 ================================================================================
 
-All three are listed in this package's `dependencies` and are marked external
+All five are listed in this package's `dependencies` and are marked external
 in vite.config.ts, so `dist/plantuml-engine.js` and `dist/plantuml-engine.cjs` import
 them at runtime rather than carrying their code. npm installs them alongside
 this package, and each reaches the consumer under its own license, from its
@@ -32,17 +32,86 @@ own publisher.
     package depends on the component rather than redistributing its code, the
     EPL terms are satisfied by the component's own distribution.
 
-jsonc-parser
-    License:  MIT
-    Source:   https://github.com/microsoft/node-jsonc-parser
+elkjs
+    License:  Eclipse Public License 2.0 OR GPL-3.0-or-later
+    Source:   https://github.com/kieler/elkjs
 
-    JSON-with-comments parsing, used by the @startjson diagram path.
+    The ELK layout engine behind `!pragma layout elk`. It is loaded on demand
+    by a dynamic import of `elkjs/lib/elk-worker.min.js`
+    (src/core/elk/load-elk.ts), never inlined.
 
 katex
     License:  MIT
+    Copyright (c) 2013-2020 Khan Academy and other contributors
     Source:   https://github.com/KaTeX/KaTeX
 
-    Math typesetting for <latex>/<math> creole.
+    Math typesetting for <latex>/<math> creole and @startlatex/@startmath.
+
+pako
+    License:  MIT AND Zlib
+    Copyright (C) 2014-2017 by Vitaly Puzrin and Andrei Tuputcyn
+    Source:   https://github.com/nodeca/pako
+
+    Deflate for the PNG encoder that embeds sprites
+    (src/core/klimt/sprite/png-encoder.ts).
+
+@xmldom/xmldom
+    License:  MIT
+    Copyright 2019 - present Christopher J. Brody and other contributors
+    Source:   https://github.com/xmldom/xmldom
+
+    XML parsing for the SAX sprite parser
+    (src/core/klimt/sprite/sax/sax-events.ts).
+
+================================================================================
+Third-party material contained in dist/
+================================================================================
+
+These are compiled into `dist/plantuml-engine.js` and `dist/plantuml-engine.cjs`.
+Each came to this project through PlantUML, which ships the same material.
+
+ASCIIMathML (as ASCIIMathTeXImg)
+    License:  MIT
+    Copyright (c) Peter Jipsen (ASCIIMathML 1.4.7, 2005)
+              (c) David Lippman (TeX conversion, 2006)
+
+    src/core/math/ASCIIMathTeXImg.ts and ASCIIMathTeXImgSymbols.ts translate
+    PlantUML's ASCIIMathTeXImg.java, itself a port of ASCIIMathTeXImg.js. They
+    convert <math> and @startmath notation to LaTeX.
+
+Open Iconic
+    License:  MIT
+    Copyright (c) 2014 Waybury
+    Source:   https://github.com/iconic/open-iconic (ICON-LICENSE)
+
+    The glyph outlines behind <&name> creole and the openiconic pages
+    (src/core/openiconic-glyphs-data.ts).
+
+PlantUML themes
+    Source:   PlantUML's src/main/resources/themes/, embedded verbatim in
+              src/core/themes-source.ts
+
+    All 44 themes are included. Each states its own author and license in
+    its header, which is kept. By that header:
+    - MIT: 31 themes, by Brett Schwarz (22), Drakemor (8) and KingPlus-lang
+      (spacelab-white).
+    - Apache License 2.0: mars, toy and vibrant, by future-architect
+      (https://github.com/future-architect/puml-themes).
+    - GPL 3+: sunlust, by Artem V. Ageev.
+    - No license stated: amiga, blueprint, crt-amber, crt-green, mimeograph
+      and plain (Matthew Leather), mono (Denis Bondarenko with Matthew
+      Leather), carbon-gray (Bharat Rajagopalan) and _none_ (The-Lum, an
+      intentionally empty theme).
+
+================================================================================
+Optional packages
+================================================================================
+
+The packages under packages/ (stdlib, stdlib-aws, stdlib-tupadr3, stdlib-all,
+sprites-archimate, emoji, all) are published separately, and each carries its
+own LICENSE and LICENSES.md. Among them: the AWS Architecture Icons are
+CC BY-ND 2.0, the ArchiMate sprites are MIT, and the Twemoji artwork is
+CC BY 4.0.
 
 ================================================================================
 Upstream works this project ports or derives from
@@ -51,9 +120,10 @@ Upstream works this project ports or derives from
 PlantUML
     Source:   https://github.com/plantuml/plantuml
 
-    plantuml-engine is a port of PlantUML to TypeScript. No PlantUML source is
-    redistributed here; the Java is used as the specification the port is
-    written against. PlantUML itself is multi-licensed -- see its LICENSES.md.
+    plantuml-engine is a port of PlantUML to TypeScript, under the MIT option
+    PlantUML offers. No PlantUML Java source is redistributed here; the Java is
+    the specification the port is written against. PlantUML itself is
+    multi-licensed -- see its LICENSES.md.
 
 Graphviz
     License:  Eclipse Public License 2.0 (EPL-2.0)
