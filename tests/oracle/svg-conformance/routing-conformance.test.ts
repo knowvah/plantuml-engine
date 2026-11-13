@@ -819,7 +819,9 @@ describe('routing conformance — jar-error classification', () => {
     // registered at PSystemBuilder.java:185), +1 svg-flow golden clone (its multiset-tier golden). 11011 + 1 + 1 = 11013.
     // 11013 -> 11017 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip to agree (HELP/HELP,
     // ListSpriteDiagramFactory registered at PSystemBuilder.java:170), +2 svg-factories golden clones. 11013 + 2 + 2 = 11017.
-    expect(pinnedAgree.length).toBe(11017);
+    // 11017 -> 11019 at ftp/T3 (2026-11-12): +2 svg-factories golden clones (gujuga-46-vifa350, vesuzo-97-jelo022);
+    // the 6 Welcome/ListFonts dot-cache rows already agreed (NONE/NONE). 11017 + 2 = 11019.
+    expect(pinnedAgree.length).toBe(11019);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -960,7 +962,8 @@ describe('routing conformance — jar-error classification', () => {
     // 11192 -> 11196 at gip/T4 (2026-11-11): +4 svg-git golden clones, all agree.
     // 11196 -> 11197 at flp/T4 (2026-11-12): +1 svg-flow golden clone, agree.
     // 11197 -> 11199 at lsp/T3 (2026-11-12): +2 svg-factories golden clones, agree.
-    expect(manifest.fixtures.length).toBe(11199);
+    // 11199 -> 11201 at ftp/T3 (2026-11-12): +2 svg-factories golden clones (the Welcome rows), agree.
+    expect(manifest.fixtures.length).toBe(11201);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

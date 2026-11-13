@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { parseRefusalOf } from '../../../src/core/parse-refusal.js';
-import { availableFontFamilyNames } from '../../../src/diagrams/help/CommandHelpFont.js';
+import { availableFontFamilyNames } from '../../../src/core/available-font-family-names.js';
 import { getAllThemeNames } from '../../../src/diagrams/help/CommandHelpTheme.js';
 import { Help } from '../../../src/diagrams/help/Help.js';
 import { renderHelp } from '../../../src/diagrams/help/help-export.js';

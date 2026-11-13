@@ -36,11 +36,14 @@ import { charliePlugin } from '../../src/diagrams/eggs/PSystemCharlieFactory.js'
 import { colorsPlugin } from '../../src/diagrams/eggs/PSystemColorsFactory.js';
 import { eggPlugin } from '../../src/diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from '../../src/diagrams/eggs/PSystemRIPFactory.js';
+import { welcomePlugin } from '../../src/diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactory.js';
+import { listFontsPlugin } from '../../src/diagrams/font/PSystemListFontsFactory.js';
 import { filesPlugin } from '../../src/diagrams/files/index.js';
 import { ebnfPlugin } from '../../src/diagrams/ebnf/index.js';
 import { regexPlugin } from '../../src/diagrams/regex/index.js';
 import { chenPlugin } from '../../src/diagrams/cheneer/index.js';
+import { crashPlugin } from '../../src/diagrams/crash/index.js';
 import { wirePlugin } from '../../src/diagrams/wire/index.js';
 import { hclPlugin } from '../../src/diagrams/hcl/index.js';
 import { gitPlugin } from '../../src/diagrams/git/index.js';
@@ -82,6 +85,7 @@ vi.setConfig({ testTimeout: CI_RENDER_BUDGET_MS });
  * upstream ships unregistered, and keeps it at that slot.
  */
 const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, number>([
+  [welcomePlugin, 133],
   [colorsPlugin, 134],
   [sequencePlugin, 135],
   [classPlugin, 136],
@@ -94,6 +98,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [versionPlugin, 145],
   [donorsPlugin, 146],
   [skinparameterListPlugin, 147],
+  [listFontsPlugin, 148],
   [listEmojiPlugin, 149],
   [openIconicPlugin, 150],
   [listOpenIconicPlugin, 151],
@@ -130,6 +135,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [ebnfPlugin, 196],
   [regexPlugin, 197],
   [chenPlugin, 199],
+  [crashPlugin, 200],
 ]);
 
 const ASSET_STORE = combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore(), buildUtilityAssetsStore());
@@ -199,9 +205,10 @@ describe('registration order (PSystemBuilder.java:133-200)', () => {
     expect(lines).toEqual([...lines].sort((a, b) => (a ?? 0) - (b ?? 0)));
   });
 
-  it('puts colors immediately before sequence (java:134-135)', () => {
-    expect(REGISTERED_PLUGINS.indexOf(colorsPlugin)).toBe(0);
-    expect(REGISTERED_PLUGINS.indexOf(sequencePlugin)).toBe(1);
+  it('puts welcome first, then colors immediately before sequence (java:133-135)', () => {
+    expect(REGISTERED_PLUGINS.indexOf(welcomePlugin)).toBe(0);
+    expect(REGISTERED_PLUGINS.indexOf(colorsPlugin)).toBe(1);
+    expect(REGISTERED_PLUGINS.indexOf(sequencePlugin)).toBe(2);
   });
 });
 
@@ -227,9 +234,13 @@ describe('out-of-scope factories stay unregistered', () => {
     expect(resolved(corpusSource(slug)).refusal).toBeDefined();
     expect(render(corpusSource(slug)).errorPage).toBe(true);
   });
+});
 
-  it('listfonts (java:148) has no plugin', () => {
-    expect(resolved('@startuml\nlistfonts\n@enduml').refusal).toBeDefined();
+describe('listfonts (java:148, ftp T1b)', () => {
+  it('routes to listFontsPlugin', () => {
+    const resolution = resolved('@startuml\nlistfonts\n@enduml');
+    expect(resolution.refusal).toBeUndefined();
+    expect(resolution.plugin).toBe(listFontsPlugin);
   });
 });
 
@@ -256,6 +267,7 @@ const ENGINE_SAMPLES: readonly (readonly [text: string, plugin: DiagramPlugin])[
   ['@startebnf\na = "b";\n@endebnf', ebnfPlugin],
   ['@startregex\na(b|c)+\n@endregex', regexPlugin],
   ['@startchen\nentity A {\n}\n@endchen', chenPlugin],
+  ['@startcrash\nanything goes\n@endcrash', crashPlugin],
   ['@startwire\n* a\n@endwire', wirePlugin],
   ['@startbpm\n:login;\n@endbpm', bpmPlugin],
   ['@startgit\n* a1 msg\n* r0 root\n@endgit', gitPlugin],

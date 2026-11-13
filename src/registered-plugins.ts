@@ -31,13 +31,16 @@ import { charliePlugin } from './diagrams/eggs/PSystemCharlieFactory.js';
 import { colorsPlugin } from './diagrams/eggs/PSystemColorsFactory.js';
 import { eggPlugin } from './diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
+import { welcomePlugin } from './diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
+import { listFontsPlugin } from './diagrams/font/PSystemListFontsFactory.js';
 import { filesPlugin } from './diagrams/files/index.js';
 import { flowPlugin } from './diagrams/flow/index.js';
 import { ganttPlugin } from './diagrams/gantt/index.js';
 import { ebnfPlugin } from './diagrams/ebnf/index.js';
 import { regexPlugin } from './diagrams/regex/index.js';
 import { chenPlugin } from './diagrams/cheneer/index.js';
+import { crashPlugin } from './diagrams/crash/index.js';
 import { wirePlugin } from './diagrams/wire/index.js';
 import { creolePlugin } from './core/klimt/creole/legacy/PSystemCreoleFactory.js';
 import { definitionPlugin } from './diagrams/definition/PSystemDefinitionFactory.js';
@@ -65,12 +68,12 @@ import { yamlPlugin } from './diagrams/yaml/index.js';
 export type PluginRegistrar = Pick<DiagramRegistry, 'register'>;
 
 /**
- * `PSystemBuilder.java:133-152`: Colors, the UML run, BPM (java:141), then the utility pages
- * and listings up to (not including) Salt. Welcome (java:133) and ListFonts
- * (java:148) are not registered -- see {@link registerPlugins}.
+ * `PSystemBuilder.java:133-152`: Welcome, Colors, the UML run, BPM (java:141), then the
+ * utility pages and listings up to (not including) Salt.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/PSystemBuilder.java:133-152
  */
 function registerUmlRun(registry: PluginRegistrar): void {
+  registry.register(welcomePlugin); // java:133
   registry.register(colorsPlugin); // java:134
   registry.register(sequencePlugin); // java:135
   registry.register(classPlugin); // java:136
@@ -83,6 +86,7 @@ function registerUmlRun(registry: PluginRegistrar): void {
   registry.register(versionPlugin); // java:145
   registry.register(donorsPlugin); // java:146
   registry.register(skinparameterListPlugin); // java:147
+  registry.register(listFontsPlugin); // java:148
   registry.register(listEmojiPlugin); // java:149
   registry.register(openIconicPlugin); // java:150
   registry.register(listOpenIconicPlugin); // java:151
@@ -126,6 +130,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(ebnfPlugin); // java:196
   registry.register(regexPlugin); // java:197
   registry.register(chenPlugin); // java:199
+  registry.register(crashPlugin); // java:200
 }
 
 // Registration order IS upstream's factory order (`PSystemBuilder.java:133-200`),
@@ -160,9 +165,12 @@ function registerFromSalt(registry: PluginRegistrar): void {
 // the rest follow the UML run. A tie also names the error page: when every
 // candidate refuses a single-line source, the first of the equal top scores
 // owns it (`PSystemErrorUtils.java:140-147`), and Colors is first.
-// Not registered by ufp: PSystemWelcomeFactory (java:133),
-// PSystemListFontsFactory (java:148), outside its scope (HelpFactory, java:188,
-// is registered by cmf), and PSystemSudokuFactory (java:163), which the MIT edition removes
+// Welcome (java:133) is registered first, ahead of Colors (ftp D2): a bare
+// `PSystemFactory` that answers a two-line source and `null` otherwise.
+// ListFonts (java:148) is registered by ftp; its host font list is ruling #169's
+// empty seam (`available-font-family-names.ts`).
+// Outside ufp's scope: HelpFactory (java:188, registered by cmf). Never
+// registered: PSystemSudokuFactory (java:163), which the MIT edition removes
 // (`PSystemBuilder.java:161-164`, decisions.md D13).
 //
 // The engines outside `@startuml`'s candidate set (`DiagramType.java:198-201`)

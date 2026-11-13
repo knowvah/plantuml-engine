@@ -3,6 +3,7 @@
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/CommandHelpFont.java
  */
+import { availableFontFamilyNames } from '../../core/available-font-family-names.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
 import type { ParserPass } from '../../core/command/ParserPass.js';
 import { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.js';
@@ -12,19 +13,6 @@ import { RegexLeaf } from '../../core/regex/RegexLeaf.js';
 import type { RegexResult } from '../../core/regex/RegexResult.js';
 import type { LineLocation } from '../../core/tim/LineLocation.js';
 import type { Help } from './Help.js';
-
-/**
- * `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`:
- * the JVM host's font families. A browser-safe library has no such list, so
- * this seam answers none and the page draws its three header lines only.
- * D8: whether to keep this, name it a library-forced divergence, or define a
- * port-specific list is on a `needs-ruling` issue, never a bundled copy of
- * the oracle machine's fonts.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/CommandHelpFont.java:73
- */
-export function availableFontFamilyNames(): readonly string[] {
-  return [];
-}
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/CommandHelpFont.java:56-61 */
 function getRegexConcat(): IRegex {

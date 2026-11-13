@@ -2,6 +2,206 @@
   "fixtures": [
     {
       "type": "factories",
+      "slug": "cov-crash-banner",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `anything goes`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-blank-between",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when finalizing`",
+      "status": "baseline",
+      "weightedScore": 295,
+      "diffCount": 68,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar draws its ReportLog crash page (CrashReportHandler: JVM facts, a random quote, a stack trace), which stays unported: the crash report is our error page (src/core/UgDiagram.ts:22-24).",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException: This is a normal crash when DRAWING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-drawing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when drawing`",
+      "status": "baseline",
+      "weightedScore": 266,
+      "diffCount": 122,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar draws its ReportLog crash page (CrashReportHandler: JVM facts, a random quote, a stack trace), which stays unported: the crash report is our error page (src/core/UgDiagram.ts:22-24).",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException: This is a normal crash when DRAWING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-drawing-then-finalizing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when drawing`",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar's page is PSystemBuilder's catch (\"Fatal crash error, ... with: java.lang.IllegalStateException: This is a normal crash when FINALIZING\", PSystemBuilder.java:274-281, over the whole block); ours is errorSvg, because the port of that catch (ftp T1d) is reverted per D7 until the class and state engines run commands under ProtectedCommand (ftp follow-on).",
+      "jarError": {
+        "line": 4,
+        "message": "Fatal crash error, you should send a mail to plantuml@gmail.com with: java.lang.IllegalStateException: This is a normal crash when FINALIZING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-drawing-then-parsing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when drawing`",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 3,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException: This is a normal crash when PARSING (Assumed diagram type: crash)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-empty",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: crash)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-finalizing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when finalizing`",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar's page is PSystemBuilder's catch (\"Fatal crash error, ... with: java.lang.IllegalStateException: This is a normal crash when FINALIZING\", PSystemBuilder.java:274-281, over the whole block); ours is errorSvg, because the port of that catch (ftp T1d) is reverted per D7 until the class and state engines run commands under ProtectedCommand (ftp follow-on).",
+      "jarError": {
+        "line": 3,
+        "message": "Fatal crash error, you should send a mail to plantuml@gmail.com with: java.lang.IllegalStateException: This is a normal crash when FINALIZING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-finalizing-then-drawing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when finalizing`",
+      "status": "baseline",
+      "weightedScore": 265,
+      "diffCount": 128,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar draws its ReportLog crash page (CrashReportHandler: JVM facts, a random quote, a stack trace), which stays unported: the crash report is our error page (src/core/UgDiagram.ts:22-24).",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException: This is a normal crash when DRAWING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-parsing",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when parsing`",
+      "status": "baseline",
+      "weightedScore": 11,
+      "diffCount": 11,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException: This is a normal crash when PARSING (Assumed diagram type: crash)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-skinparam",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `skinparam backgroundColor #EEEEEE`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-spaces",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash   when   drawing`",
+      "status": "baseline",
+      "weightedScore": 266,
+      "diffCount": 122,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar draws its ReportLog crash page (CrashReportHandler: JVM facts, a random quote, a stack trace), which stays unported: the crash report is our error page (src/core/UgDiagram.ts:22-24).",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException: This is a normal crash when DRAWING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-tab",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash\twhen drawing`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-title",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `title Hello`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-unknown-type",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `crash when later`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-crash-upper",
+      "topic": "CrashDiagramFactory (PSystemBuilder.java:200): `CRASH WHEN DRAWING`",
+      "status": "baseline",
+      "weightedScore": 266,
+      "diffCount": 122,
+      "reason": "error-page: jar errors and we error (2026-10-10 rule: conformant). The jar draws its ReportLog crash page (CrashReportHandler: JVM facts, a random quote, a stack trace), which stays unported: the crash report is our error page (src/core/UgDiagram.ts:22-24).",
+      "jarError": {
+        "line": null,
+        "message": "java.lang.IllegalStateException: This is a normal crash when DRAWING"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
       "slug": "cov-creole-arg",
       "topic": "CreoleFactory (PSystemBuilder.java:174): `hello`",
       "status": "baseline",
@@ -573,6 +773,132 @@
     },
     {
       "type": "factories",
+      "slug": "cov-listfont-bare",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfont`",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfont-creole",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfont <b>Bold</b> <i>it</i>`",
+      "status": "baseline",
+      "weightedScore": 5998,
+      "diffCount": 24,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfont-text",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfont  padded text`",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-after-title",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `title T`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 3,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-bare",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfonts`",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-glued",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfontsX`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-tab",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfonts\tX`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-text",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfonts Hello world`",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-two-lines",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `listfonts`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-listfonts-upper",
+      "topic": "PSystemListFontsFactory (PSystemBuilder.java:148): `LISTFONTS Mixed`",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
       "slug": "cov-math-back",
       "topic": "MathFactory (PSystemBuilder.java:172): `backgroundcolor #AABBCC`",
       "status": "baseline",
@@ -747,6 +1073,51 @@
       "diffCount": 0,
       "measuredAt": "2026-11-11",
       "measuredAgainstCommit": "9cf459148"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-path-invalid",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path abc123`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-path-upper",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `PATH ABC`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-path-valid",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path ABCabc`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
     },
     {
       "type": "factories",
@@ -1242,6 +1613,81 @@
       "diffCount": 0,
       "measuredAt": "2026-11-12",
       "measuredAgainstCommit": "9c4670646"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-blank",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual = our own version string, kept by ruling (src/core/error/PSystemError.ts fullDescription() vs PSystemError.java:151 Version.fullDescription()) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string); the page width follows the longer jar lines.",
+      "jarError": {
+        "line": 2,
+        "message": "Empty description (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-comment",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `' nothing here`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-define",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `!define FOO bar`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-empty",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-named",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `(empty body)`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-preproc",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `!$a = 1`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-welcome-skinparam",
+      "topic": "PSystemWelcomeFactory (PSystemBuilder.java:133): `skinparam backgroundColor red`",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
     }
   ]
 }

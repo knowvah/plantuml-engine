@@ -135,11 +135,50 @@ function buildErrorSegments(system: PSystemError): readonly ErrorSegment[] {
   return [bannerSegment(system), bandSegment(system), allButLast, last, errorSegment(system)];
 }
 
+/** `"\t" + Jaws.BLOCK_E1_REAL_TABULATION`: `TileText`'s tokenizer delimiters.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/TileText.java (drawU, getWidth)
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/jaws/Jaws.java:53 */
+const TAB_DELIMITERS = /([\t\uE111])/;
+
+/** `TileText#getTabSize`: the width of eight spaces. @see TileText.java (getTabSize) */
+const TAB_STOP_TEXT = '        ';
+
+/** One `UText` a `TileText` draws: a non-tab token and its x from the line's start. */
+interface TilePiece {
+  readonly text: string;
+  readonly x: number;
+}
+
+/**
+ * `TileText#drawU`'s walk: `new StringTokenizer(text, "\t" + BLOCK_E1_REAL_TABULATION, true)`;
+ * a tab moves x to the next multiple of the tab size (`x += tabSize - x % tabSize`), any other
+ * token is drawn at x and advances it by its width. Returns the pieces and the final x, which is
+ * `TileText#getWidth`. A line with no tab is one piece (`calculateDimensionSlow` measures it whole).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/TileText.java (drawU, getWidth)
+ */
+function tilePieces(line: string, font: FontSpec, measurer: StringMeasurer): { pieces: TilePiece[]; width: number } {
+  if (!TAB_DELIMITERS.test(line)) return { pieces: [{ text: line, x: 0 }], width: measurer.measure(line, font).width };
+  const tabSize = measurer.measure(TAB_STOP_TEXT, font).width;
+  const pieces: TilePiece[] = [];
+  let x = 0;
+  // `StringTokenizer` never returns an empty token.
+  for (const token of line.split(TAB_DELIMITERS).filter((t) => t.length > 0)) {
+    if (TAB_DELIMITERS.test(token)) {
+      x += tabSize - (x % tabSize);
+    } else {
+      pieces.push({ text: token, x });
+      x += measurer.measure(token, font).width;
+    }
+  }
+  return { pieces, width: x };
+}
+
 /** A paragraph's own line width, measured on the RAW (untrimmed) string —
  *  `TileText#calculateDimensionSlow`'s `stringBounder.calculateDimension(…,
- *  text)`, BEFORE `DriverTextSvg`'s leading/trailing-whitespace strip. */
+ *  text)`, BEFORE `DriverTextSvg`'s leading/trailing-whitespace strip; with a
+ *  tab, `TileText#getWidth`'s tab-stop walk. */
 function segmentRawWidth(seg: ErrorSegment, measurer: StringMeasurer): number {
-  return Math.max(0, ...seg.lines.map((l) => measurer.measure(l, seg.font).width));
+  return Math.max(0, ...seg.lines.map((l) => tilePieces(l, seg.font, measurer).width));
 }
 
 /** `TextBlockRaw#getTextDimension`: height = Σ of each line's own box height,
@@ -181,20 +220,25 @@ function drawSegmentLines(seg: ErrorSegment, left: number, boxTop: number, measu
   let lineTop = boxTop + seg.marginTop;
   for (const line of seg.lines) {
     const baseline = lineTop + seg.font.size;
-    // DriverTextSvg.java:114-126 — leading spaces move x, textLength is the
-    // trimmed text's width.
-    const { text, dx } = driverTextPlacement(line, measurer.measure(' ', seg.font).width);
-    const run: Run = {
-      content: line,
-      font: seg.font,
-      fill: seg.fill,
-      textLength: measurer.measure(text, seg.font).width,
-      ...(seg.decoration === undefined ? {} : { decoration: seg.decoration }),
-    };
-    svg.push(drawRun(run, x + dx, baseline));
+    for (const piece of tilePieces(line, seg.font, measurer).pieces)
+      svg.push(drawPiece(seg, piece, x + piece.x, baseline, measurer));
     lineTop += seg.font.size;
   }
   return svg;
+}
+
+/** One `UText` of a line. DriverTextSvg.java:114-126 — leading spaces move x,
+ *  textLength is the trimmed text's width. */
+function drawPiece(seg: ErrorSegment, piece: TilePiece, x: number, baseline: number, measurer: StringMeasurer): string {
+  const { text, dx } = driverTextPlacement(piece.text, measurer.measure(' ', seg.font).width);
+  const run: Run = {
+    content: piece.text,
+    font: seg.font,
+    fill: seg.fill,
+    textLength: measurer.measure(text, seg.font).width,
+    ...(seg.decoration === undefined ? {} : { decoration: seg.decoration }),
+  };
+  return drawRun(run, x + dx, baseline);
 }
 
 /** One paragraph's own green band rect (when it has one) plus its lines,

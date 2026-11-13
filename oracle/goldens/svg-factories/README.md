@@ -1,9 +1,10 @@
 # svg-factories conformance ratchet
 
-Regression-proof gate for the creole, math, latex, definition, listsprite and
-help factories (`PSystemBuilder.java:169` Definition, `:170` ListSprite, `:172`
-Math, `:173` Latex, `:174` Creole, `:188` Help; missions
-`creole-math-factories-port` and `listsprite-factory-port`), a copy of
+Regression-proof gate for the welcome, listfonts, creole, math, latex,
+definition, listsprite and help factories (`PSystemBuilder.java:133` Welcome,
+`:148` ListFonts, `:169` Definition, `:170` ListSprite, `:172` Math, `:173`
+Latex, `:174` Creole, `:188` Help; missions `creole-math-factories-port`,
+`listsprite-factory-port` and `factories-tail-port`), a copy of
 `oracle/goldens/svg-utility/` in shape and procedure. A fixture ratchets in once
 it renders byte-for-byte identical to the jar oracle under a **deterministic**
 text measurer; the ratchet test then holds it forever. See
@@ -11,12 +12,13 @@ text measurer; the ratchet test then holds it forever. See
 
 ## Population: a FIXED list, not a cache dir
 
-The 43 rows are `FACTORIES_SLUGS` (`tests/oracle/svg-conformance/
+The 49 rows are `FACTORIES_SLUGS` (`tests/oracle/svg-conformance/
 render-fixture-factories.ts`; source
 `plans/creole-math-factories-port/measurements/factory-rows.mjs`, plus the two
-ListSprite rows of `plans/listsprite-factory-port/measurements/corpus-rows.mts`),
-all in `test-results/dot-cache/unknown/`: 2 definition, 2 listsprite, 11 math,
-2 latex, 21 creole and 5 help. Every tool reads and writes only those rows; the other `unknown` rows are
+ListSprite rows of `plans/listsprite-factory-port/measurements/corpus-rows.mts`
+and the six Welcome/ListFonts rows of factories-tail-port T3),
+all in `test-results/dot-cache/unknown/`: 2 welcome, 4 listfonts, 2 definition,
+2 listsprite, 11 math, 2 latex, 21 creole and 5 help. Every tool reads and writes only those rows; the other `unknown` rows are
 never touched.
 
 ## Rendering: the survey's options
@@ -29,12 +31,13 @@ capture clock where a row has one (`oracle/capture-clock.json`, e.g.
 
 ## Pins and the baseline
 
-`ratchet.json` pins the 19 rows that render zero-diff: both definition rows,
-both listsprite rows, 11 creole rows and 4 help rows. `diff-baseline.json` carries the other 24 with
-their weighted score: 11 math and 2 latex rows sit at their KaTeX glyph-group
-residual, 10 creole rows at small residuals, and `cikoge-60-riti614` at its
-help-font residual. None is an error page, so no row is recorded `error`. The
-two manifests are disjoint and together cover the 43 slugs.
+`ratchet.json` pins the 21 rows that render zero-diff: both welcome rows, both
+definition rows, both listsprite rows, 11 creole rows and 4 help rows.
+`diff-baseline.json` carries the other 28 with their weighted score: 11 math and
+2 latex rows sit at their KaTeX glyph-group residual, 10 creole rows at small
+residuals, `cikoge-60-riti614` at its help-font residual and the 4 listfonts
+rows at theirs (the host font list, ruling #169; their `reason` says so). None is an error page, so no row is recorded `error`. The
+two manifests are disjoint and together cover the 49 slugs.
 
 ## Authored root
 
@@ -44,15 +47,17 @@ the jar's `<slug>.svg` beside it, `cov-` prefix) tracked by
 pin tools. Gates (`factories.diff-baseline.ratchet.test.ts`, "authored" blocks):
 rows = the `.puml` files on disk, disjoint from the cached `unknown` slugs;
 weightedScore never rises; a nonzero row names its mechanism; `jarError` rows
-are exactly the jar error pages; we error exactly where the jar errors
-(2026-10-10 rule); three renders per row are byte-identical.
+are exactly the jar error pages -- a `[From … (line N) ]` page, or the jar's
+ReportLog crash page (`An error has occurred : …`), recorded `line: null` as the
+bpm family does (factories-tail-port, `cov-crash-drawing`); we error exactly
+where the jar errors (2026-10-10 rule); three renders per row are byte-identical.
 
 Render an authored oracle with `scripts/oracle-render.sh <abs dir> <abs puml>`.
 Regenerate the manifest from a fresh measurement (it refuses a nonzero row
 without a mechanism):
 
 ```
-npx jiti plans/listsprite-factory-port/measurements/build-authored-baseline.mts <commit> [--write]
+npx jiti plans/factories-tail-port/measurements/build-authored-baseline.mts <commit> [--write]
 ```
 
 ## No DOT-parity gate

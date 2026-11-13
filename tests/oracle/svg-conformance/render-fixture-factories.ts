@@ -40,12 +40,19 @@ import { compareSvg, weightedScore } from './compare.js';
 import { remoteImageFixtureStore } from './remote-image-fixtures.js';
 
 /**
- * The 43 in-scope `test-results/dot-cache/unknown/<slug>` rows, in the order
+ * The 49 in-scope `test-results/dot-cache/unknown/<slug>` rows, in the order
  * of `plans/creole-math-factories-port/measurements/factory-rows.mjs` (factory,
  * then slug); the two ListSprite rows joined at lsp T3
- * (`plans/listsprite-factory-port/measurements/corpus-rows.mts`).
+ * (`plans/listsprite-factory-port/measurements/corpus-rows.mts`), the two
+ * Welcome and four ListFonts rows at ftp T3 (decisions.md D3).
  */
 export const FACTORIES_SLUGS: readonly string[] = [
+  'gujuga-46-vifa350', // Welcome    (PSystemBuilder.java:133)
+  'vesuzo-97-jelo022',
+  'jivufi-79-simi298', // ListFonts  (PSystemBuilder.java:148)
+  'jodesa-24-lovo810',
+  'kubuju-35-neji041',
+  'vofomo-62-gure525',
   'banire-12-feze162', // Definition (PSystemBuilder.java:169)
   'firiru-71-viki803',
   'folutu-01-xuzo995', // ListSprite (PSystemBuilder.java:170)

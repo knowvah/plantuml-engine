@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2568 modules · 8407 exported names.
+2579 modules · 8426 exported names.
 
 ## `src/`
 
@@ -40,6 +40,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `assemble-svg.ts` | `assembleSvg`, `seedOfUmlSource` | The single central document-assembly choke point — extracted from `src/index.ts` (mission A5 / T4), which sits at the repo's 500-line hook cap. |
 | `asset-store.ts` | `AssetPayload`, `AssetStore`, `combineAssetStores` | ADR-2's asset store seam (`plans/s1l-tail-fix/decisions.md`) — the synchronous, pre-fillable channel for vendored binary/text asset payloads (the jar-internal `/sprites/**` bundle, F4-a; Twemoji artwork, F4-b). |
 | `assume-transparent.ts` | `RE_ASSUME_TRANSPARENT`, `isAssumeTransparent` | `CommandAssumeTransparent`: `!assume transparent dark\|light`, a historical directive every command factory registers through `CommonCommands#addCommonCommands2` (`command/CommonCommands.java:65`). |
+| `available-font-family-names.ts` | `availableFontFamilyNames` | `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`: the JVM host's font families. |
 | `block-extractor.ts` | `DiagramType`, `UmlSource`, `finalizeBlock`, `upstreamTypeOf`, `extractBlocks` | Block extractor: types a block's PREPROCESSED content, from the @start<type> keyword suffix or -- for plain @startuml -- by probing the first 20 non-empty content lines. |
 | `BlockUmlBuilder.ts` | `RawBlock`, `BlockUmlOk`, `BlockUmlErr`, `BlockUml`, `buildBlockUmls`, `rawBlocksOf`, `buildBlockUml`, `isBlockEmpty` | `BlockUmlBuilder` -- the document -> blocks stage, and the reason it runs BEFORE the preprocessor. |
 | `build-theme.ts` | `ResolvedThemeAndStyles`, `buildTheme` | Theme resolution -- extracted out of `src/index.ts` (this repo's `check-complexity.py` 500-line file cap; a MECHANICAL move, no behavior change). |
@@ -113,7 +114,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `openiconic-glyphs-data.ts` | `RawGlyph`, `RAW_GLYPHS` | `RAW_GLYPHS` -- the OpenIconic glyph data table, split out of `openiconic-glyphs.ts` purely to keep that file under this project's 500-line cap (F1-c, S1L tail-fix G11; mirrors the existing `svg.ts`->`svg-markers.ts` / `style-map-theme.ts`- |
 | `openiconic-glyphs.ts` | `OPENICONIC_NATURAL_SIZE`, `isKnownOpenIconicGlyph`, `OpenIconicOp`, `parsedOpsFor`, `openIconicFactor`, `openIconicDims`, `openIconicStartingAltitude`, `openIconicOriginY`, `buildOpenIconicPathD` | OpenIconic `<&glyph>` inline icons (G2 N41, extended to the full upstream set F1-c). |
 | `paint.ts` | `Gradient`, `LinearGradientStopPaint`, `LinearGradientPaint`, `isLinearGradientPaint`, `Paint`, `parseColor`, `isTransparentColor`, `hashString`, `paintToSvg`, `noGradient` | Paint — the color/gradient value model for the rendering layer. |
-| `parse-refusal.ts` | `ParseRefusalKind`, `ParseRefusal`, `refuse`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
+| `parse-refusal.ts` | `ParseRefusalKind`, `ParseRefusal`, `refuse`, `NULL_SYSTEM`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
 | `PlainStringsDiagram.ts` | `PlainStringsDiagram` | `PlainStringsDiagram` — a {@link UgDiagram} whose page is its `strings` drawn black on white, optionally with an `image` at `imagePosition` (`version`, the eggs). |
 | `preprocessor-collector.ts` | `StyleAndSkinparamCollector` | preprocessor-collector.ts -- the `<style>` / `skinparam` / `skin` line collector `preprocessor.ts#resultOf` runs over the interpreter's finished result list. |
 | `preprocessor-first-page.ts` | `firstPageAssignments`, `firstPageOf` | `CommandNewpage` starts a brand-new diagram (`CommandNewpage.java:68-73`, `NewpagedDiagram.java:60-73`), so a `skinparam` or `<style>` after it belongs to a later page. |
@@ -2148,6 +2149,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `renderer-usymbol-entity.ts` | `buildUSymbolEntityParams`, `usesClassUSymbolEntity`, `renderClassUSymbolEntity` | renderer-usymbol-entity.ts — SI14 T4: draws a class-diagram `usecase`/ `actor` leaf through the SAME faithful `EntityImageDescription.drawU` path the description engine's `renderer-entity.ts#drawEntity` already uses, replacing the hand-roll |
 | `renderer.ts` | `renderClass`, `renderClassPage` | Class diagram SVG renderer. |
 
+## `src/diagrams/crash/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `CommandCrashAny.ts` | `CommandCrashAny` | `CommandCrashAny` — any line at all (`〴.` zero or more times), accepted and ignored. |
+| `CommandSelectCrash.ts` | `PARSING_CRASH`, `CommandSelectCrash` | `CommandSelectCrash` — `crash when parsing\|finalizing\|drawing`: sets the diagram's crash type, and for `parsing` throws at once from `executeArg` (which `ProtectedCommand` turns into an execution error). |
+| `crash-export.ts` | `renderCrash` | `CrashDiagram`'s export: `TitledDiagram`'s `TextBlockExporter` path with no chrome (no annotation command exists in `CrashDiagramFactory`) and no scale: the warnings banner, the `{root, document}` margin (else `getDefaultMargins()`, `Titled |
+| `CrashDiagram.ts` | `DRAWING_CRASH`, `FINALIZING_CRASH`, `CrashDiagram` | `CrashDiagram` — the page `@startcrash` draws: an 18-line explanation, sans serif 14, unless a `crash when …` line has set a crash type. |
+| `CrashDiagramFactory.ts` | `initCommandsList`, `parseCrash` | `CrashDiagramFactory`: a `PSystemCommandFactory` on `DiagramType.CRASH` (`@startcrash` alone carries it, `DiagramType.java:113-114`) with exactly two commands and no `CommonCommands`, so `CommandCrashAny` swallows every line `CommandSelectC |
+| `CrashType.ts` | `CrashType`, `valueOf` | `CrashType` — the phase a `crash when …` line crashes in. |
+| `index.ts` | `CrashGeometry`, `crashPlugin` | `CrashDiagramFactory` as a plugin: a `PSystemCommandFactory` on `DiagramType.CRASH`, which `@startcrash` alone carries (`DiagramType.java:113-114`) and the `@startuml` candidate set omits (`DiagramType.java:198-200`), tried last (`PSystemBu |
+
 ## `src/diagrams/dedication/`
 
 | Module | Exports | Purpose |
@@ -2320,6 +2333,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `PSystemEggFactory.ts` | `PSystemEggFactory`, `eggPlugin` | `PSystemEggFactory` — a line that decrypts one of two stored payloads to printable text is an easter egg (`SentenceDecoder`). |
 | `PSystemRIP.ts` | `PSystemRIP` | `PSystemRIP` — a dedication to the author's grandfather over his picture. |
 | `PSystemRIPFactory.ts` | `PSystemRIPFactory`, `ripPlugin` | `PSystemRIPFactory` — one literal, compared to the raw line with `equalsIgnoreCase`. |
+| `PSystemWelcomeFactory.ts` | `createSystem`, `welcomePlugin` | `PSystemWelcomeFactory` — the FIRST factory `PSystemBuilder` tries (`PSystemBuilder.java:133`). |
 | `rip-image.ts` | `RIP_PNG` | `RIP_PNG` -- the image `jean canouet` draws under its text (`PSystemRIP.java:63`, `SImageIO.read(imm)`: the inline JPEG `imm`, java:71-435), as the pinned jar re-encodes it in SVG (the D4 approach). |
 | `SentenceDecoder.ts` | `SentenceDecoder` | `SentenceDecoder` — xor an encrypted easter-egg payload with the key a sentence spells (`EggUtils.fromSecretSentence`) and judge whether the result reads as text. |
 
@@ -2354,6 +2368,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `FlowDiagram.ts` | `FlowDiagram` | FlowDiagram — `@startflow`: each `CommandLineSimple` adds an `ActivityBox` on a golem `TilesField`, each `CommandLink` adds a path, and the diagram is its own `TextBlock`. |
 | `FlowDiagramFactory.ts` | `initCommandsList`, `parseFlow` | `FlowDiagramFactory`: a `PSystemCommandFactory` with exactly the two flow commands and no `CommonCommands` (flp D3, D5), so a blank line, `title`, `skinparam` or `scale` is not a command here and yields `Syntax Error?`. |
 | `index.ts` | `FlowGeometry`, `flowPlugin` | `FlowDiagramFactory` as a plugin: a `PSystemCommandFactory` on `@startflow`, typed `FLOW` (`FlowDiagramFactory.java:51`), registered at its upstream position after `GanttDiagramFactory` and the commented-out `ChronologyDiagramFactory` (`PSy |
+
+## `src/diagrams/font/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `PSystemListFonts.ts` | `PSystemListFonts` | `PSystemListFonts` — `listfonts`: a 16-pt bold header, a blank line, then one line per host font family, each naming the family and drawing `text` in it. |
+| `PSystemListFontsFactory.ts` | `PSystemListFontsFactory`, `listFontsPlugin` | `PSystemListFontsFactory` — `listfont`/`listfonts`, optionally followed by a space and the sample text: the `@startuml` single-line factory for {@link PSystemListFonts}, registered at `PSystemBuilder.java:148`. |
 
 ## `src/diagrams/gantt/`
 
@@ -2620,7 +2641,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `CommandHelpColor.ts` | `CommandHelpColor` | `help color`: three header lines, then one creole list item per name. |
-| `CommandHelpFont.ts` | `availableFontFamilyNames`, `CommandHelpFont` | `help font`: three header lines, then one creole list item per name. |
+| `CommandHelpFont.ts` | `CommandHelpFont` | `help font`: three header lines, then one creole list item per name. |
 | `CommandHelpKeyword.ts` | `CommandHelpKeyword` | `help keyword`: three header lines, then one creole list item per name. |
 | `CommandHelpTheme.ts` | `getAllThemeNames`, `CommandHelpTheme` | `help theme`: three header lines, then one creole list item per name. |
 | `CommandHelpType.ts` | `CommandHelpType` | `help type`: three header lines, then one creole list item per name. |

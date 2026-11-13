@@ -21,7 +21,7 @@
 import type { DiagramType, UmlSource } from '../block-extractor.js';
 import type { AssembledSvg, ParseOptions, SyncPlugin } from '../dispatcher.js';
 import type { StringMeasurer } from '../measurer.js';
-import { refuse } from '../parse-refusal.js';
+import { NULL_SYSTEM, refuse } from '../parse-refusal.js';
 import type { ParseRefusal } from '../parse-refusal.js';
 import { trin } from '../style/parser/StyleParser.js';
 import type { Theme } from '../theme.js';
@@ -50,16 +50,8 @@ const SYNTAX_ERROR = 'Syntax Error?';
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/UmlSource.java:253 */
 const COMMENT_LINE = /^[ \t\n\x0B\f\r]*'.*$/;
 
-/**
- * `createSystem` returning `null` (java:75-76): not a single-line source.
- * Upstream adds that `null` to the error list and `PSystemErrorUtils#merge`
- * skips it (`if (system == null) continue;`, PSystemErrorUtils.java:120-121),
- * so it can never own the error page. The registry merges `ParseRefusal`s
- * only; a `commandScore` of `-Infinity` makes this one lose to every real
- * refusal (`mergeRefusals` keeps the first maximum, so a later finite score
- * always replaces it).
- */
-const NOT_SINGLE_LINE: ParseRefusal = refuse('incomplete', 0, 0, '', Number.NEGATIVE_INFINITY);
+/** `createSystem` returning `null` (java:75-76): not a single-line source. See {@link NULL_SYSTEM}. */
+const NOT_SINGLE_LINE: ParseRefusal = NULL_SYSTEM;
 
 /** What `render` receives besides the diagram. */
 export interface RenderContext {

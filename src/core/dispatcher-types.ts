@@ -316,12 +316,16 @@ export interface PaginatedPlugin<AST = unknown, Geo = unknown> {
  * line-count test (`PSystemBasicFactory.java:77`, `:89-90`), which its plugin
  * mirrors in `parse`. `PSystemAbstractFactory` only defines `buildEmptyError`
  * (`PSystemAbstractFactory.java:59-65`); its direct subclasses never call it
- * and build their diagram from the empty source.
+ * and build their diagram from the empty source. `PSystemFactory` is the bare
+ * interface (`PSystemWelcomeFactory`): no empty test at all, so it runs on the
+ * empty source and either builds its diagram or answers `null`
+ * (`NULL_SYSTEM`), which the merge skips.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:107-122
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemBasicFactory.java:75-101
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemAbstractFactory.java:50-79
  */
-export type PSystemFactoryBase = 'PSystemCommandFactory' | 'PSystemBasicFactory' | 'PSystemAbstractFactory';
+export type PSystemFactoryBase =
+  'PSystemCommandFactory' | 'PSystemBasicFactory' | 'PSystemAbstractFactory' | 'PSystemFactory';
 
 /**
  * A plugin that performs layout synchronously.
