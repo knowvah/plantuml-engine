@@ -360,7 +360,7 @@ export function renderPagesSync(source: string, options?: RenderOptions): string
 
     const block = blocks[0]!;
     if (!block.ok) return [preprocessorErrorSvg(block.failure, options)];
-    if (isBlockEmpty(block) && registry.isEmptyDescription(block.source)) return [emptySvg(block, options)];
+    if (isBlockEmpty(block) && registry.isEmptyDescription(umlSourceOfBlock(block))) return [emptySvg(block, options)];
 
     const { ctx, ast } = prepareBlock(block, umlSourceOfBlock(block), options);
     if (!('layoutSync' in ctx.plugin))
@@ -472,7 +472,7 @@ async function renderBlock(block: BlockUml, options?: RenderOptions): Promise<st
  *  a "page" is and why only the sequence engine produces more than one. */
 async function renderBlockPages(block: BlockUml, options?: RenderOptions): Promise<string[]> {
   if (!block.ok) return [preprocessorErrorSvg(block.failure, options)];
-  if (isBlockEmpty(block) && registry.isEmptyDescription(block.source)) return [emptySvg(block, options)];
+  if (isBlockEmpty(block) && registry.isEmptyDescription(umlSourceOfBlock(block))) return [emptySvg(block, options)];
 
   const umlSource = umlSourceOfBlock(block);
   try {

@@ -181,3 +181,26 @@ describe('error page geometry — the band rect can also be the WIDER of the two
     expect(Number(rectMatch![1])).toBeGreaterThan(measurer.measure('x', font14bold).width + 20);
   });
 });
+
+/**
+ * ftp T2b1: a listing line with a tab is `TileText`'s tokenizer walk, one `UText` per non-tab token, a tab advancing
+ * x to the next multiple of eight spaces' width (`TileText.java` drawU/getWidth/getTabSize). Jar values from
+ * `tests/fixtures/factories/cov-listfonts-tab.svg`: `listfonts` at x=5, textLength 47.425; `X` at x=66.6.
+ */
+describe('a tab in the listing (TileText tab stops)', () => {
+  const font14bold = { family: 'sans-serif', size: 14, weight: 'bold' as const, style: 'normal' as const };
+  const tabSize = measurer.measure('        ', font14bold).width;
+
+  it('splits the line at the tab and draws the next token at the tab stop', () => {
+    const svg = renderPSystemError(failing('@startuml\na\nb\nc\nlistfonts\tX', 'Syntax Error?'), measurer);
+    expect(svg).toMatch(/<text x="5" [^>]*textLength="47\.425"[^>]*>listfonts<\/text>/);
+    expect(svg).toMatch(/<text x="66\.6" [^>]*>X<\/text>/);
+    // 47.425 is past the first stop (30.8), so `X` lands on the second.
+    expect(5 + 2 * tabSize).toBeCloseTo(66.6, 3);
+  });
+
+  it('a second tab past one stop goes to the next multiple, and the walk is the line width', () => {
+    const svg = renderPSystemError(failing('@startuml\na\nb\nc\nx\t\ty', 'e'), measurer);
+    expect(svg).toMatch(new RegExp(`<text x="${String(Number((5 + 2 * tabSize).toFixed(3)))}" [^>]*>y</text>`));
+  });
+});

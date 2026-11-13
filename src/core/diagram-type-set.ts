@@ -20,7 +20,7 @@ import { isJavaWhitespaceAt } from './java-whitespace.js';
 
 /**
  * Upstream's full `DiagramType` enum, preserved in full including members
- * this port has no engine for (`DEFINITION`, `CRASH`, `JCCKIT`,
+ * this port has no engine for (`DEFINITION`, `JCCKIT`,
  * `BPM`, `NWDIAG`, `WIRE`, `EBNF`, `REGEX`, `GIT`, `MATH`, `LATEX`, `CREOLE`,
  * `FLOW`, `DITAA`). The enum is the spec; a missing engine is this port's
  * gap, not a reason to trim the set (D5, `decisions.md#d5`).

@@ -356,6 +356,17 @@ sprite through the creole sprite atom (`sprite-text-block.ts`, `Sprite#asTextBlo
 
 ---
 
+## Welcome, ListFonts, Crash and Path factories — DONE (factories-tail-port, #135)
+
+`eggs/PSystemWelcomeFactory` is `src/diagrams/eggs/PSystemWelcomeFactory.ts`, registered first (java:133) as a bare
+`PSystemFactory` (`PSystemFactoryBase` `'PSystemFactory'`; the dispatcher's empty test merges its `null` away).
+`font/PSystemListFonts{,Factory}` are `src/diagrams/font/`, reading the #169 seam `src/core/available-font-family-names.ts`.
+`crash/` (5 of 9 files) is `src/diagrams/crash/` with `@startcrash` (`'crash'`); the ReportLog crash page stays unported.
+`PSystemBuilder`'s catch (T1d) was ported and reverted per D7: it unmasks class/state `ProtectedCommand` gaps
+(next-missions follow-on). Path: no port; its INSECURE branch is ruling issue #178.
+
+---
+
 ## Phase 4h — Full Creole + Sprite Registry
 
 **Java source (Creole):** `klimt/creole/`, `klimt/creole/atom/`,

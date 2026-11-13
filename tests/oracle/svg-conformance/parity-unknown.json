@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T16:59:48.006Z",
+  "generatedAt": "2026-11-13T00:10:47.242Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -2363,9 +2363,9 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 2199.997,
+      "maxDelta": 2328.886,
       "firstDiff": "svg/g[1]/text[1]/@font-family",
-      "maxDeltaPath": "svg/g[1]/text[1]/@y"
+      "maxDeltaPath": "svg/g[1]/text[2]/@y"
     },
     {
       "slug": "jixibu-01-xave465",
@@ -2417,9 +2417,9 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 2199.997,
+      "maxDelta": 2328.886,
       "firstDiff": "svg/g[1]/text[1]/@font-family",
-      "maxDeltaPath": "svg/g[1]/text[1]/@y"
+      "maxDeltaPath": "svg/g[1]/text[2]/@y"
     },
     {
       "slug": "jofetu-26-nofo513",
@@ -2939,9 +2939,9 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 2199.997,
+      "maxDelta": 2328.886,
       "firstDiff": "svg/g[1]/text[1]/@font-family",
-      "maxDeltaPath": "svg/g[1]/text[1]/@y"
+      "maxDeltaPath": "svg/g[1]/text[2]/@y"
     },
     {
       "slug": "kucije-25-rizo578",
@@ -6468,9 +6468,9 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 2199.997,
+      "maxDelta": 2328.886,
       "firstDiff": "svg/g[1]/text[1]/@font-family",
-      "maxDeltaPath": "svg/g[1]/text[1]/@y"
+      "maxDeltaPath": "svg/g[1]/text[2]/@y"
     },
     {
       "slug": "vofumu-22-juge103",

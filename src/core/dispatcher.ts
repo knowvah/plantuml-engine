@@ -22,7 +22,7 @@
 import type { UmlSource } from './block-extractor.js';
 import { upstreamTypeOf } from './block-extractor.js';
 import type { ParseRefusal } from './parse-refusal.js';
-import { mergeRefusals, parseRefusalOf } from './parse-refusal.js';
+import { mergeRefusals, NULL_SYSTEM, parseRefusalOf } from './parse-refusal.js';
 import type { SkinCut } from './skin-command.js';
 import { rect, text } from './svg.js';
 import type { Theme } from './theme.js';
@@ -149,15 +149,24 @@ export class DiagramRegistry {
    * (`PSystemBuilder.java:258-287`) when every candidate is a
    * `PSystemCommandFactory`: each answers `buildEmptyError`
    * (`PSystemCommandFactory.java:117-122`), so the block's page is the
-   * *Empty description* (or Welcome) page, never a diagram. False when any
+   * *Empty description* page, never a diagram. False when any
    * candidate has another base: that factory runs its own `createSystem` on
    * the empty source (`PSystemAbstractFactory`'s direct subclasses build
    * their diagram; `PSystemBasicFactory` raises its own empty error) and
-   * {@link resolve} hands it the block.
+   * {@link resolve} hands it the block. A bare `PSystemFactory`
+   * (`PSystemWelcomeFactory`, the first `@startuml` candidate) has no empty
+   * test either: it runs, and when it answers `null` (`NULL_SYSTEM`) the merge
+   * skips it (`PSystemErrorUtils.java:120-121`), so the page is still the
+   * command factories' *Empty description*; when it answers a diagram,
+   * {@link resolve} hands it the block. `source` must carry
+   * `seedSourceLines`: Welcome counts upstream's lines, blank ones included.
    * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemAbstractFactory.java:59-65
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/eggs/PSystemWelcomeFactory.java:49-56
    */
   isEmptyDescription(source: UmlSource): boolean {
-    return this.plugins.every((plugin) => !isCandidate(plugin, source) || testsEmpty(plugin));
+    return this.plugins.every(
+      (plugin) => !isCandidate(plugin, source) || testsEmpty(plugin) || answersNull(plugin, source),
+    );
   }
 }
 
@@ -173,6 +182,14 @@ const COMMAND_FACTORY: PSystemFactoryBase = 'PSystemCommandFactory';
 function testsEmpty(plugin: DiagramPlugin): boolean {
   return (plugin.factoryBase ?? COMMAND_FACTORY) === COMMAND_FACTORY;
 }
+
+/** A bare `PSystemFactory` whose `createSystem` is `null` on this source (see {@link NULL_SYSTEM}). */
+function answersNull(plugin: DiagramPlugin, source: UmlSource): boolean {
+  return plugin.factoryBase === BARE_FACTORY && plugin.parse(source) === NULL_SYSTEM;
+}
+
+/** `PSystemFactory` itself: no base class, so no empty test. */
+const BARE_FACTORY: PSystemFactoryBase = 'PSystemFactory';
 
 /** `source` with only its first `count` body lines. */
 function truncated(source: UmlSource, count: number): UmlSource {

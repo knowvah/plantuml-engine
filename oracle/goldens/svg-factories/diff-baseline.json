@@ -2,6 +2,46 @@
   "fixtures": [
     {
       "type": "unknown",
+      "slug": "jivufi-79-simi298",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "unknown",
+      "slug": "jodesa-24-lovo810",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "unknown",
+      "slug": "kubuju-35-neji041",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "unknown",
+      "slug": "vofomo-62-gure525",
+      "status": "baseline",
+      "weightedScore": 2910,
+      "diffCount": 21,
+      "reason": "host font list: DIVERGENCES.md \"`help font` lists no fonts\" (ruling #169 covers listfonts, ftp D4); the page is the two header lines, the jar lists the oracle host's families",
+      "measuredAt": "2026-11-12",
+      "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "unknown",
       "slug": "caruta-83-deta919",
       "status": "baseline",
       "weightedScore": 394,

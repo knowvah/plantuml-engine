@@ -1,0 +1,3 @@
+@startuml
+skinparam backgroundColor red
+@enduml

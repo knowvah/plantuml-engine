@@ -74,6 +74,20 @@ export function refuse(
 }
 
 /**
+ * A factory's `createSystem` returning `null`: not its source at all.
+ * Upstream adds that `null` to the error list and `PSystemErrorUtils#merge`
+ * skips it (`if (system == null) continue;`, PSystemErrorUtils.java:120-121),
+ * so it can never own the error page. The registry merges `ParseRefusal`s
+ * only; a `commandScore` of `-Infinity` makes this one lose to every real
+ * refusal (`mergeRefusals` keeps the first maximum, so a later finite score
+ * always replaces it). Returned by `PSystemSingleLineFactory` (java:75-76)
+ * and `PSystemWelcomeFactory` (java:55); the dispatcher's empty test tells it
+ * apart by identity (`dispatcher.ts#isEmptyDescription`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/error/PSystemErrorUtils.java:120-121
+ */
+export const NULL_SYSTEM: ParseRefusal = refuse('incomplete', 0, 0, '', Number.NEGATIVE_INFINITY);
+
+/**
  * `trace.size() * 10 + singleError.score()`, ported verbatim (D2).
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/error/PSystemError.java:382-384
  */
