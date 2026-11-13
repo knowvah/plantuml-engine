@@ -1,0 +1,8 @@
+@startuml
+partition p
+a->b
+note right: inside
+end
+note right: after
+a->c
+@enduml

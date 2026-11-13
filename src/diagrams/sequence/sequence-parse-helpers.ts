@@ -419,9 +419,9 @@ export function activationFlags(
   spec: string,
   from: string,
   to: string,
-): { activates?: string; deactivates?: string; destroys?: string } {
+): { activates?: string; deactivates?: string; destroys?: string; activatesFirst?: true } {
   const trimmed = spec.trim();
-  const flags: { activates?: string; deactivates?: string; destroys?: string } = {};
+  const flags: { activates?: string; deactivates?: string; destroys?: string; activatesFirst?: true } = {};
   switch (trimmed.charAt(0)) {
     case '+':
       flags.activates = to;
@@ -451,6 +451,8 @@ export function activationFlags(
   // `if (spec.length() == 4)` (`CommandArrow.java:457-466`) -- the second
   // life event of a doubled suffix such as `--++` / `++--`.
   if (trimmed.length === 4) {
+    // `++--`: charAt(0) is the activate, applied first (`:445-450`).
+    if (trimmed.charAt(0) === '+') flags.activatesFirst = true;
     switch (trimmed.charAt(2)) {
       case '+':
         flags.activates = to;

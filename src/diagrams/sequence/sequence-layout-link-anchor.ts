@@ -89,7 +89,9 @@ function exoMiddleX(event: MessageExoEvent, ctx: EventProcessingContext): number
 /** `Tile#getMiddleX` (`CommonTile.java:62-66`) of the tile `event` built. */
 function tileMiddleX(event: AnchoredTile, ctx: EventProcessingContext): number | undefined {
   if (event.kind === 'messageExo') return exoMiddleX(event, ctx);
-  const { minX, maxX } = messageExtent(event, ctx);
+  // A message carrying a note is its wrapper tile: `getMinX`/`getMaxX` of
+  // `CommunicationTileNoteRight`/`...NoteLeft` (`:242-250`/`:219-225`).
+  const { minX, maxX } = ctx.wrapperExtents?.get(event) ?? messageExtent(event, ctx);
   return ctx.participantMap.has(event.from) && ctx.participantMap.has(event.to) ? (minX + maxX) / 2 : undefined;
 }
 

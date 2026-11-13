@@ -1,0 +1,5 @@
+@startuml
+note left of Bob 
+[[javascript:alert(location.origin) CLICKME!!!!]]
+end note
+@enduml

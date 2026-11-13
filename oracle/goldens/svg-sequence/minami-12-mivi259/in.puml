@@ -1,0 +1,12 @@
+@startuml
+
+!$initial_string = "FOR_TEST"
+
+!$fst_pos = %strpos($initial_string, "_")
+!log tot is $fst_pos
+!$macroP1 = %substr($initial_string, 0, $fst_pos)
+!$macroP2 = %substr($initial_string, $fst_pos+1, %strlen($initial_string) - $fst_pos)
+
+$macroP1 --> $macroP2
+
+@enduml

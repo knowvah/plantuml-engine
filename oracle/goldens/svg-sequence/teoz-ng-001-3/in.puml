@@ -1,0 +1,25 @@
+@startuml
+<STYLE>
+sequenceDiagram {
+  .bob_style {
+    ShowStereotype false
+    Lifeline {
+      linecolor red
+      linestyle solid
+      lineThickness 3
+    }
+  }
+  .alice_style {
+    ShowStereotype false
+    Lifeline {
+      linecolor green
+      linestyle 2
+      lineThickness 10
+    }
+  }
+}
+</STYLE>
+participant Bob <<bob_style>>
+participant Alice <<alice_style>>
+Bob -> Alice : hello
+@enduml

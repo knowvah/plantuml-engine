@@ -65,6 +65,7 @@ import type {
   ElseGeo,
   EventGeo,
   FrameGeo,
+  LinkAnchorGeo,
   MessageGeo,
   NewpageGeo,
   NoteGeo,
@@ -328,6 +329,23 @@ function clipLifelines(
   return Object.fromEntries(Object.entries(lifelines).map(([id, segs]) => [id, clipSegments(segs, band)]));
 }
 
+/**
+ * A `{a1} <-> {a2}` link is drawn through the page's clipped `ugBody`
+ * (`PlayingSpace.java:129-134`), so its shaft, heads and label answer to the
+ * band like any other shape. The geometry moves into page coordinates here and
+ * carries the band, in those coordinates, for `renderer-link-anchor.ts` to
+ * apply: the heads' points are theme-dependent, which this module never sees.
+ */
+function clipLinkAnchor(l: LinkAnchorGeo, band: PageBand): LinkAnchorGeo {
+  return {
+    ...l,
+    yStart: shift(band, l.yStart),
+    yEnd: shift(band, l.yEnd),
+    labelRuns: l.labelRuns.map((r) => ({ ...r, y: shift(band, r.y) })),
+    clip: { top: shift(band, band.top), bottom: shift(band, band.bottom) },
+  };
+}
+
 function clipEvent(event: EventGeo, band: PageBand): EventGeo | undefined {
   switch (event.kind) {
     case 'message':
@@ -414,6 +432,7 @@ export function paginateSequence(geo: SequenceGeometry, pageIndex: number): Sequ
     events: geo.events.map((e) => clipEvent(e, band)).filter((e): e is EventGeo => e !== undefined),
     lifelineEndY,
     lifelineSegments: clipLifelines(geo.lifelineSegments, band),
+    ...(geo.linkAnchors !== undefined ? { linkAnchors: geo.linkAnchors.map((l) => clipLinkAnchor(l, band)) } : {}),
     footerShapeY,
     totalHeight,
     // `dolls.drawEnglobers` is handed `body.calculateDimension().getHeight()

@@ -154,9 +154,8 @@ function other(): LiveOther {
 }
 
 /** `addMessage` (`:199-215`), then the message's own life events in
- *  `manageActivations`' order (`spec.charAt(0)`, then `charAt(2)`). The two
- *  fields cannot tell `--++` from `++--`; `--++`, the corpus's form, is taken
- *  -- as `sequence-layout-message-self.ts` does. */
+ *  `manageActivations`' order (`spec.charAt(0)`, then `charAt(2)`);
+ *  `activatesFirst` marks `++--`, where the activate comes first. */
 function addMessage(b: Builder, event: MessageEvent | MessageExoEvent): void {
   const exo = event.kind === 'messageExo';
   const participants = exo ? [event.participant] : [event.from, event.to];
@@ -178,10 +177,20 @@ function addMessage(b: Builder, event: MessageEvent | MessageExoEvent): void {
 }
 
 function ownLifeEvents(b: Builder, event: MessageEvent): LiveLifeEvent[] {
+  const deactivate: [LifeEventType, string | undefined, string | undefined] = [
+    'DEACTIVATE',
+    event.deactivates,
+    undefined,
+  ];
+  // `activationColor` rides on the activate leg only (`CommandArrow.java:445-450`).
+  const activateLeg: [LifeEventType, string | undefined, string | undefined] = [
+    'ACTIVATE',
+    event.activates,
+    event.lifeColor,
+  ];
   const own: [LifeEventType, string | undefined, string | undefined][] = [
-    ['DEACTIVATE', event.deactivates, undefined],
-    // `activationColor` rides on the activate leg only (`CommandArrow.java:445-450`).
-    ['ACTIVATE', event.activates, event.lifeColor],
+    // `++--` applies charAt(0), the activate, first (`:445-466`).
+    ...(event.activatesFirst === true ? [activateLeg, deactivate] : [deactivate, activateLeg]),
     ['DESTROY', event.destroys, undefined],
   ];
   return own.flatMap(([type, participant, color]) =>

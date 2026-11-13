@@ -410,8 +410,10 @@ function executeExoArrow(state: ParseState, match: RegExpExecArray, getMessageEx
   const participant = getOrCreateParticipant(state, g);
   const activation = g['ACTIVATION'];
   if (activation?.startsWith('*') === true) {
-    emit(state, { kind: 'activate', participantId: participant, styleBuilder: currentStyleBuilder(state.style) });
-    activate(state.life, participant, 'CREATE'); // `CommandExoArrowAny.java:105-106`
+    // `CommandExoArrowAny.java:105-106`. The CREATE is `pendingCreate`, taken by
+    // the message below (`SequenceDiagram.java:374-377,207-214`); it is NOT a
+    // standalone activation event, which drew a white 10x24 box.
+    activate(state.life, participant, 'CREATE');
   }
 
   const msg = messageExoOf(state, g, type, participant);

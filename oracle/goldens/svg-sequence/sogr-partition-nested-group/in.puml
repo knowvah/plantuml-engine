@@ -1,0 +1,14 @@
+@startuml
+partition outer
+a->b
+group inner
+b->c
+end
+end
+
+group first
+partition second
+a->c
+end
+end
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+<style>
+sequenceDiagram {
+  partition {
+    header {
+      FontColor red
+    }
+  }
+}
+</style>
+partition p
+a->b
+end
+@enduml

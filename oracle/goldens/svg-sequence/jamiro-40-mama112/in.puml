@@ -1,0 +1,4 @@
+@startuml
+create a
+-> a : create
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+!pragma teoz true
+{start} Alice -> Bob: start
+{end} Bob -> Alice: finish
+note right: finished
+{start} <-> {end}: some time
+@enduml

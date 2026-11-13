@@ -1,0 +1,14 @@
+@startuml
+<style>
+sequenceDiagram {
+  partition {
+    BackGroundColor lightyellow
+    LineColor blue
+    LineThickness 2
+  }
+}
+</style>
+partition p
+a->b
+end
+@enduml

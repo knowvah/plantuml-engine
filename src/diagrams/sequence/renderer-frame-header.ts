@@ -76,7 +76,7 @@ function fashion(ug: UGraphic, paint: SequencePaint): UGraphic {
 /** `Fashion#applyStroke(ug).apply(getForeColor())`
  *  (`ComponentRoseGroupingHeader.java:128,144`): the outline's stroke, then
  *  its colour, and NO back colour. */
-function outline(ug: UGraphic, paint: SequencePaint): UGraphic {
+export function outline(ug: UGraphic, paint: SequencePaint): UGraphic {
   return ug.apply(strokeOf(paint)).apply(foreOf(paint));
 }
 

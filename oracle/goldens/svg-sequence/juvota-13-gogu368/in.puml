@@ -1,0 +1,8 @@
+@startuml
+[-->A : hello
+[-[#green]->A : hello
+A-[#green]->B : hello
+
+A-->] : hello
+A-[#green]->] : hello
+@enduml

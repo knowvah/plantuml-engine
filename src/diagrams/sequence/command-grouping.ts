@@ -133,7 +133,10 @@ function isPar2GroupStart(title: string): boolean {
   return title === 'par2';
 }
 
-// 10. Frame types (loop, alt, opt, par, par2, break, critical, group).
+// 10. Frame types (loop, alt, opt, par, par2, break, critical, group, partition).
+//     sogr T2a: `partition` (`CommandGrouping.java:67`) is `START_PARTITION`
+//     (`GroupingType.java:55-56`), built like `START` (`SequenceDiagram.java:
+//     426-428`); its tile is the layout's `createHeaderComponent` seam.
 //     T13: added `par2` (`GroupingType.getType`, a same-visual-class START
 //     alongside `par`) and a COLORS pair mirroring `CommandGrouping`'s
 //     `#header[ #body]` -- T2: now modelled on `FrameEvent.backColorElement`
@@ -153,7 +156,7 @@ function isPar2GroupStart(title: string): boolean {
 //     so that combination is left unported rather than guessed at.
 // @see sequencediagram/command/CommandGrouping.java:64-73,66,134-135,151-152
 export const groupingCommand: Command = {
-  pattern: /^(&\s*)?(loop|alt|opt|par2|par|break|critical|group)(#\w+)?(?:\s+(#\w+))?(?:\s+(.+))?\s*$/i,
+  pattern: /^(&\s*)?(loop|alt|opt|par2|par|break|critical|group|partition)(#\w+)?(?:\s+(#\w+))?(?:\s+(.+))?\s*$/i,
   execute(state, match) {
     // Upstream registers `CommandArrow` (`SequenceDiagramFactory.java:111`)
     // ahead of `CommandGrouping` (`:126`), so `LOOP -> X : hi` -- a
@@ -172,6 +175,7 @@ export const groupingCommand: Command = {
       label,
       ...(title !== undefined ? { title } : {}),
       branches: [[]],
+      ...(match[5] === undefined ? { commentIsNull: true as const } : {}),
       branchLabels: [label],
       branchColors: [backColorGeneral],
       styleBuilder,

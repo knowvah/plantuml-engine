@@ -1,0 +1,5 @@
+@startuml
+partition #pink #lightblue p
+a->b
+end
+@enduml

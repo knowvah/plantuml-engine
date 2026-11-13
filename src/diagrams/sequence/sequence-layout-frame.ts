@@ -29,19 +29,16 @@ import { UStroke } from '../../core/klimt/UStroke.js';
 import { alignedBlockRuns } from './sequence-block-align.js';
 import type { SequencePaint } from './sequence-skin-param.js';
 import {
-  buildTabRuns,
-  computeHeaderTab,
   conditionLines,
   ELSE_PADDING_X1,
   ELSE_PADDING_X2,
   elseComponentWidth,
   elsePaint,
   groupingPaints,
-  headerHeight,
-  headerWidth,
   type FramePaints,
   type HeaderTab,
 } from './sequence-frame-metrics.js';
+import { createHeaderComponent, type HeaderComponent } from './sequence-frame-component.js';
 import { createGauge } from './sequence-y-gauge.js';
 import { handleRefEvent } from './sequence-layout-ref.js';
 import { processEvents, type EventCursor, type EventProcessingContext } from './sequence-layout-events.js';
@@ -303,21 +300,20 @@ function resolveFrame(
     readonly endNotes: readonly EndNote[];
   },
   elses: readonly PendingElse[],
-  paints: FramePaints,
+  header: HeaderComponent,
   ctx: EventProcessingContext,
 ): void {
   const { event, frameGeo, start, endNotes } = pending;
-  const tab: HeaderTab = frameGeo;
   const span: XSpan = resolveFrameSpan({
     children: childTileSpans(event, start, ctx),
     elseWidths: elses.map((e) => e.width),
-    headerWidth: headerWidth(tab, paints.paint, ctx),
+    headerWidth: header.preferredWidth(),
     xOrigin: frameXOrigin(ctx),
     notesLeft: endNotesWidth(endNotes).left,
   });
   frameGeo.x = span.min;
   frameGeo.width = span.max - span.min;
-  frameGeo.tabRuns = buildTabRuns(tab, paints, span.min, frameGeo.y, ctx);
+  frameGeo.tabRuns = header.runs(span.min, frameGeo.y);
   for (const { geo, label } of elses) {
     geo.x = span.min;
     geo.width = frameGeo.width;
@@ -346,6 +342,8 @@ function openFrameGeo(event: FrameEvent, paints: FramePaints, tab: HeaderTab, y:
     refBody: [],
     ...tab,
     tabRuns: [], // placeholder -- `resolveFrame`
+    // `PartitionTile#getBorder1/2` (`:219-229`) -- `layout.ts#backfillPartitionSpan`.
+    ...(event.frameType === 'partition' ? { partitionSpan: { x: 0, width: 0 } } : {}),
   };
 }
 
@@ -395,15 +393,15 @@ export function handleFrameEvent(
   const previousMax = cursor.y;
   const frameStartY = event.parallel === true ? cursor.gauge.min : previousMax;
   const paints = groupingPaints(event);
-  const tab = computeHeaderTab(event, paints.headerPaint, ctx);
+  const header = createHeaderComponent(event, paints, ctx);
   // `h = dim1.getHeight() + MARGINY_MAGIC / 2 + EXTERNAL_MARGINY` (`:157`),
   // `dim1` the header's preferred height with the comment's supplement
   // (`ComponentRoseGroupingHeader.java:121-122`); the drawn corner stays at
   // `tab.tabHeight`.
-  cursor.y = frameStartY + headerHeight(tab, paints.paint, ctx) + FRAME_MARGINY_MAGIC / 2 + FRAME_EXTERNAL_MARGINY;
+  cursor.y = frameStartY + header.preferredHeight() + FRAME_MARGINY_MAGIC / 2 + FRAME_EXTERNAL_MARGINY;
   // `getFrameY()` (`:247-249`) -- the drawn border, one top margin below.
   const frameDrawnY = frameStartY + FRAME_EXTERNAL_MARGINY;
-  const frameGeo = openFrameGeo(event, paints, tab, frameDrawnY);
+  const frameGeo = openFrameGeo(event, paints, header.tab, frameDrawnY);
   ctx.eventGeos.push(frameGeo);
   // Drawn right after the frame component, before the children
   // (`GroupingTile#drawU`, `:275-276`): their slots are reserved here.
@@ -417,7 +415,7 @@ export function handleFrameEvent(
   // sum, which counts a `par2` `else` (a parallel tile) as a separate row.
   cursor.y = bodyStartY + computeBodyHeight(ctx.tileLog);
   ctx.tileLog = outerLog;
-  resolveFrame({ event, frameGeo, start, endNotes }, elses, paints, ctx);
+  resolveFrame({ event, frameGeo, start, endNotes }, elses, header, ctx);
   // `getTotalHeight = bodyHeight + dimIfEmpty.getHeight() + MARGINY_MAGIC / 2`
   // (`:349-352`), which `cursor.y - frameDrawnY` is exactly.
   frameGeo.height = cursor.y - frameDrawnY;

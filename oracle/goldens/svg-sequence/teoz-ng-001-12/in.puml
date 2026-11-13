@@ -1,0 +1,13 @@
+@startuml
+A -> C
+create B
+A -> B
+A <- B
+A <- B
+destroy B
+A -> C
+A -> B **
+B --> A
+A -> B !!
+A -> C
+@enduml

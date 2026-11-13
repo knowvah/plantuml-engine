@@ -1,0 +1,7 @@
+@startuml
+[->A : Works
+]->A : Does not work
+
+A->[ : direction1
+A<-[ : direction2
+@enduml

@@ -16,7 +16,7 @@
  */
 import { UEmpty } from '../../shape/UEmpty.js';
 import { AbstractAtom } from './AbstractAtom.js';
-import type { CreoleAtom } from './Atom.js';
+import type { CreoleAtom, CreoleAtomUrl } from './Atom.js';
 import { XDimension2D } from '../../geom/XDimension2D.js';
 import { UPath } from '../../shape/UPath.js';
 import { UTranslate } from '../../UTranslate.js';
@@ -36,6 +36,13 @@ import {
   type OpenIconicOp,
 } from '../../../openiconic-glyphs.js';
 import { RAW_GLYPHS } from '../../../openiconic-glyphs-data.js';
+
+/** `UGraphic#startUrl`/`#closeUrl` (`UGraphic.java:68-70`), duck-typed as `UrlCapableUGraphic` is
+ *  (`annotations/blocks-creole-atoms.ts`; not imported, which would cycle): only `UGraphicSvg` can emit an `<a>`. */
+interface UrlCapable {
+  startUrl(url: CreoleAtomUrl): void;
+  closeUrl(): void;
+}
 
 /** `TextBlockUtils.withMargin(…, 1, 0)`'s left margin (AtomOpenIconic.java:66). */
 const MARGIN_X = 1;
@@ -76,11 +83,21 @@ export class AtomOpenIconic extends AbstractAtom {
   private readonly openIconic: string;
   private readonly factor: number;
   private readonly color: string;
+  private readonly url: CreoleAtomUrl | undefined;
 
   /** @see AtomOpenIconic.java:55-61 — `factor = scale * size2D / 12`,
-   *  `color = newColor == null ? fontConfiguration.getColor() : newColor`. */
-  constructor(newColor: string | undefined, scale: number, openIconic: string, fontConfiguration: FontConfiguration) {
+   *  `color = newColor == null ? fontConfiguration.getColor() : newColor`; `url` is the 5th constructor argument,
+   *  `null` from `StripeSimple#addOpenIcon` (`StripeSimple.java:242`) and the url from `createAtomTextForUrl`
+   *  (`AtomTextUtils.java:117`). */
+  constructor(
+    newColor: string | undefined,
+    scale: number,
+    openIconic: string,
+    fontConfiguration: FontConfiguration,
+    url?: CreoleAtomUrl,
+  ) {
     super();
+    this.url = url;
     this.openIconic = openIconic;
     this.factor = openIconicFactor(scale, fontConfiguration.size);
     this.color = newColor ?? fontConfiguration.color ?? DEFAULT_COLOR;
@@ -97,9 +114,16 @@ export class AtomOpenIconic extends AbstractAtom {
     return openIconicStartingAltitude(this.factor);
   }
 
-  /** `asTextBlock().drawU(ug)` (java:76-84; `url` is always `null` from
-   *  `addOpenIcon`) → OpenIconic.java:198-202. */
+  /** `if (url != null) ug.startUrl(url); asTextBlock().drawU(ug); if (url != null) ug.closeUrl();` (java:77-82)
+   *  → OpenIconic.java:198-202. */
   drawU(ug: UGraphic): void {
+    const linkable = this.url === undefined ? undefined : (ug as Partial<UrlCapable>);
+    if (this.url !== undefined) linkable?.startUrl?.(this.url);
+    this.drawGlyph(ug);
+    if (this.url !== undefined) linkable?.closeUrl?.();
+  }
+
+  private drawGlyph(ug: UGraphic): void {
     // `withMargin(asTextBlock, 1, 0)`: `TextBlockMarged#drawU` first draws the whole box as a `UEmpty`, which `Footprint`
     // and `LimitFinder` fold in (`TextBlockMarged.java:81-87`).
     const { width, height } = openIconicDims(this.factor);
@@ -124,5 +148,5 @@ export function asAtomOpenIconic(atom: CreoleAtom, baseFont: FontConfiguration):
   const token = atom.atom;
   if (!isKnownOpenIconicGlyph(token.name)) return undefined;
   const forced = token.forcedColor === undefined ? undefined : resolveColorToSvgHex(token.forcedColor);
-  return new AtomOpenIconic(forced, token.scale, token.name, atom.ambientFont ?? baseFont);
+  return new AtomOpenIconic(forced, token.scale, token.name, atom.ambientFont ?? baseFont, atom.url);
 }

@@ -1,0 +1,8 @@
+@startuml
+Actor A3
+Actor A4
+Actor A5
+
+note over A3,A4 : common Role over A3 and A4a with much much more text and a little difference to others
+/ note over A5 : common Role over A5 and A6
+@enduml

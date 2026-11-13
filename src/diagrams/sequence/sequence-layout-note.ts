@@ -435,5 +435,8 @@ export function layoutNotesOnMessage(
     else if (owner.kind === 'message' && note.side !== undefined)
       chain = wrapTopBottom(owner, note, note.side, chain, inner.firstGeo, ctx);
   }
+  if (owner.kind === 'message' && notes.length > 0) {
+    (ctx.wrapperExtents ??= new Map()).set(owner, { minX: chain.minX, maxX: chain.maxX });
+  }
   return chain.gauge;
 }

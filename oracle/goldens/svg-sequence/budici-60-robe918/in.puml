@@ -1,0 +1,4 @@
+@startuml
+[-> Bob : hello
+note right : this is a note
+@enduml

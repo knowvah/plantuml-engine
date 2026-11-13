@@ -62,16 +62,16 @@ function levelAfterBoundEvents(
 ): number {
   // The message's own `++`/`--` come first, in `manageActivations`' order:
   // `spec.charAt(0)` then `spec.charAt(2)` (`CommandArrow.java:444-466`).
-  // This port stores them as two fields and so cannot tell `--++` from
-  // `++--`; deactivate-then-activate is taken, which is `--++`, the form the
-  // corpus writes. Recorded rather than silently assumed.
+  // `activatesFirst` marks `++--` (activate first); otherwise `--++`.
   // Both life events share the message's command, hence its builder
   // (`SequenceDiagram.java:371-372`).
   const { styleBuilder } = event;
-  const own: ActivationEvent[] = [
-    ...(event.deactivates === participantId ? [{ kind: 'deactivate' as const, participantId, styleBuilder }] : []),
-    ...(event.activates === participantId ? [{ kind: 'activate' as const, participantId, styleBuilder }] : []),
-  ];
+  const deactivate: ActivationEvent[] =
+    event.deactivates === participantId ? [{ kind: 'deactivate' as const, participantId, styleBuilder }] : [];
+  const activate: ActivationEvent[] =
+    event.activates === participantId ? [{ kind: 'activate' as const, participantId, styleBuilder }] : [];
+  const own: ActivationEvent[] =
+    event.activatesFirst === true ? [...activate, ...deactivate] : [...deactivate, ...activate];
 
   let level = activationLevel(ctx.activationStart, participantId);
   let seenActivate = false;

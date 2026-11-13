@@ -1,0 +1,5 @@
+@startuml
+!define link(a,b) a-->b
+link(Bob,Alice)
+link(Alice,Charles)
+@enduml

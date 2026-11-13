@@ -1,7 +1,8 @@
 /**
  * `RegexConcat` -- the sequence of its children; as a root it is a whole command grammar, bracketed by
  * `RegexLeaf.start()` and `RegexLeaf.end()`. Java's `foxRegex` signature pre-filter and `protectSize` are not
- * ported: the first never changes an answer, the second is never called by the engines ported so far.
+ * ported here: the first never changes an answer; the second's one caller, `CommandArrow`, is ported on a plain
+ * `RegExp` (`src/diagrams/sequence/sequence-arrow-compose.ts`, `SizeProtectedRegExp`).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexConcat.java:49-182
  */

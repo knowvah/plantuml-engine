@@ -308,9 +308,11 @@ describe('the trailing modifiers', () => {
   });
 
   it('emits `*` BEFORE the message and `+`/`-`/`!` after it', () => {
-    // `:106-108` runs CREATE before `addMessage`; `:148-166` runs the rest
-    // after it.
-    expect(events('[-> Bob *').map((e) => e.kind)).toEqual(['activate', 'messageExo']);
+    // `:103-106` files a CREATE that `addMessage` hands to the message
+    // (`SequenceDiagram.java:207-214,374-377`): it is `create` on the message,
+    // not an activation event (sogr T2c). `:148-166` runs the rest after it.
+    expect(events('[-> Bob *').map((e) => e.kind)).toEqual(['messageExo']);
+    expect(exo('[-> Bob *').create).toBe(true);
     expect(events('[-> Bob +').map((e) => e.kind)).toEqual(['messageExo', 'activate']);
     expect(events('[-> Bob -').map((e) => e.kind)).toEqual(['messageExo', 'deactivate']);
     expect(events('[-> Bob !').map((e) => e.kind)).toEqual(['messageExo', 'deactivate']);

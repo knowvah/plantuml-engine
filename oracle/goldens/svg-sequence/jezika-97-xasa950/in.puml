@@ -1,0 +1,10 @@
+@startuml
+[->> A: found message with left note
+note left #FFCCCC: left note 1
+[->> A: found message with right note
+note right #77FF77: right note 2
+A ->]: lost message with left note
+note left #FFCCCC: left note 3
+A ->]: lost message with right note
+note right #FFCCCC: right note 4
+@enduml

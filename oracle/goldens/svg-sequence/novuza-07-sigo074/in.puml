@@ -1,0 +1,6 @@
+@startuml
+Participant A
+ref over A : [[link does not work]]
+ref over A : [[link neither does this]] here
+ref over A : see [[link this works]]
+@enduml

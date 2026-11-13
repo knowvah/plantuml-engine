@@ -1,0 +1,7 @@
+@startuml
+A->B
+opt
+  B->C: test
+  |||
+end
+@enduml
