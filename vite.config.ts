@@ -41,7 +41,7 @@ export default defineConfig({
       // `src/core/elk/load-elk.ts`), so it is matched with its subpaths.
       // `@xmldom/xmldom` (MIT, plain JS) feeds the SAX sprite parser
       // (`src/core/klimt/sprite/sax/sax-events.ts`); it is imported, not inlined.
-      external: ['katex', '@knowvah/dot-engine', 'jsonc-parser', 'pako', /^elkjs(\/|$)/, /^@xmldom\/xmldom(\/|$)/],
+      external: ['katex', '@knowvah/dot-engine', 'pako', /^elkjs(\/|$)/, /^@xmldom\/xmldom(\/|$)/],
     },
     sourcemap: true,
   },
