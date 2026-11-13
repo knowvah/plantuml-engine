@@ -183,16 +183,13 @@ const COMPOSITE_SNAMES: Readonly<Record<string, SName>> = {
   card: 'card', // USymbolCard.java:56
 };
 
-/** The merged `Style` of a group frame of `symbol` (a {@link COMPOSITE_SNAMES} key) with `stereotype`'s label. */
+/** The merged `Style` of a group frame of `symbol` (`'group'`, `'partition'`, `'package'`, `'rectangle'` or `'card'`)
+ *  with `stereotype`'s label, at the command's document line `position`. @see CommandPartition3.java:160-161 */
 export type ActivityCompositeStyleResolver = (
   symbol: string,
   stereotype: string | undefined,
   position: number | undefined,
 ) => Style | undefined;
-
-const COMPOSITE_STYLE_KEY: unique symbol = Symbol('activity.compositeStyle');
-
-type ThemeWithCompositeStyle = Theme & { readonly [COMPOSITE_STYLE_KEY]?: ActivityCompositeStyleResolver };
 
 function compositeMerged(builder: StyleBuilder, symbol: string, stereotype: string | undefined): Style | undefined {
   const sname = COMPOSITE_SNAMES[symbol];
@@ -204,7 +201,8 @@ function compositeMerged(builder: StyleBuilder, symbol: string, stereotype: stri
 /**
  * `CommandPartition3.executeArg`'s `stylePartition` (`CommandPartition3.java:160-161`):
  * `FtileGroup.getStyleSignature(symbol).withTOBECHANGED(stereotype).getMergedStyle(getCurrentStyleBuilder())`, the builder
- * current at the command's `position` (as {@link withActivityBoxStyle}'s `boxStyleAt`).
+ * current at the command's `position` (as {@link withActivityBoxStyle}'s `boxStyleAt`). Set as
+ * `graph.activity.compositeStyleOf` (pso D4), beside `boxStyleOf`.
  */
 export function withActivityCompositeStyle(theme: Theme, pre: PreprocessorResult): Theme {
   let builder: StyleBuilder | null | undefined;
@@ -218,10 +216,9 @@ export function withActivityCompositeStyle(theme: Theme, pre: PreprocessorResult
     const at = builderAtPosition(pre, position);
     return at === null ? undefined : compositeMerged(at, symbol, stereotype);
   };
-  return { ...theme, [COMPOSITE_STYLE_KEY]: resolver } as ThemeWithCompositeStyle;
-}
-
-/** The resolver of {@link withActivityCompositeStyle}, absent on a hand-built theme. */
-export function activityCompositeStyleOf(theme: Theme): ActivityCompositeStyleResolver | undefined {
-  return (theme as ThemeWithCompositeStyle)[COMPOSITE_STYLE_KEY];
+  const graph = theme.colors.graph;
+  return {
+    ...theme,
+    colors: { ...theme.colors, graph: { ...graph, activity: { ...graph.activity, compositeStyleOf: resolver } } },
+  };
 }

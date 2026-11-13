@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2579 modules · 8426 exported names.
+2579 modules · 8425 exported names.
 
 ## `src/`
 
@@ -23,7 +23,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `activity-box-builder-at.ts` | `lastDeclarationPosition`, `declaredBefore`, `builderAtPosition` | The style builder as it stood at a document line (smc-T4b). |
-| `activity-box-style.ts` | `ActivityBoxStyleResolver`, `stereotypeOf`, `resolveActivityBoxStyle`, `builderOf`, `ActivityBoxStyleAtResolver`, `withActivityBoxStyle`, `activityBoxStyleAtOf`, `ActivityCompositeStyleResolver`, `withActivityCompositeStyle`, `activityCompositeStyleOf` | A stereotyped activity box's ONE merged style (mission ubt, T1b, D3). |
+| `activity-box-style.ts` | `ActivityBoxStyleResolver`, `stereotypeOf`, `resolveActivityBoxStyle`, `builderOf`, `ActivityBoxStyleAtResolver`, `withActivityBoxStyle`, `activityBoxStyleAtOf`, `ActivityCompositeStyleResolver`, `withActivityCompositeStyle` | A stereotyped activity box's ONE merged style (mission ubt, T1b, D3). |
 | `activity-circle-style.ts` | `ActivityCircleColors`, `ActivityCircleStyle`, `ActivityCircleStyleSource`, `paintOf`, `resolveActivityCircleStyle`, `withActivityCircleStyle` | The activity start/stop circles' merged-style colours (mission add4, T3f, `labala-74-juki864`). |
 | `activity-debug-option.ts` | `withActivityDebugOption`, `activityDebugOf` | `!option debug true` for an activity diagram: `FtileBox#drawU` draws a blue 2px `URectangle` of the tile's size under every box (`FtileBox.java:201-206`), read off the preprocessing artifact's options (`skinParam().options().getValue(Option |
 | `activity-diamond-style.ts` | `ActivityDiamondStyle`, `ActivityDiamondStyleResolver`, `withActivityDiamondStyle`, `activityDiamondStyleAt` | An `if`/`while`/`repeat` diamond's ONE merged style (aar-T6b). |

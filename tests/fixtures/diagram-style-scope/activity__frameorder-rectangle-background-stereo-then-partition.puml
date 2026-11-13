@@ -1,0 +1,7 @@
+@startuml
+skinparam rectangleBackgroundColor<<foo>> #AAAAAA
+skinparam PartitionBackgroundColor #BBBBBB
+rectangle F <<foo>> {
+  :a;
+}
+@enduml

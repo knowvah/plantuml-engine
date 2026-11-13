@@ -1,0 +1,10 @@
+@startuml
+<style>
+document { BackgroundColor white }
+</style>
+skinparam rectangleBackgroundColor #AAAAAA
+skinparam PartitionBackgroundColor #BBBBBB
+rectangle F {
+  :a;
+}
+@enduml

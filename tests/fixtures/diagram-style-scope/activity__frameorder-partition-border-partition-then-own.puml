@@ -1,0 +1,7 @@
+@startuml
+skinparam PartitionBorderColor #BBBBBB
+skinparam rectangleBorderColor #AAAAAA
+partition F {
+  :a;
+}
+@enduml

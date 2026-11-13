@@ -1,0 +1,7 @@
+@startuml
+skinparam PartitionFontColor #BBBBBB
+skinparam rectangleFontColor #AAAAAA
+rectangle R {
+  component C
+}
+@enduml

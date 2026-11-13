@@ -1,0 +1,7 @@
+@startuml
+skinparam cardBackgroundColor #AAAAAA
+skinparam PartitionBackgroundColor #BBBBBB
+card F {
+  :a;
+}
+@enduml

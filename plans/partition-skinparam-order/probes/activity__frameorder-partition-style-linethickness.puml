@@ -1,0 +1,12 @@
+@startuml
+<style>
+activityDiagram {
+  partition {
+    LineThickness 3
+  }
+}
+</style>
+partition P {
+  :x;
+}
+@enduml
