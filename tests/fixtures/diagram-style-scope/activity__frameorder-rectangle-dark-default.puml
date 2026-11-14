@@ -1,0 +1,6 @@
+@startuml
+skinparam mode dark
+rectangle F {
+  :a;
+}
+@enduml

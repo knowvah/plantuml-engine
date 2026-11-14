@@ -466,8 +466,20 @@ function applyMessageActivation(
   ctx: EventProcessingContext,
 ): void {
   recordMessageStep(ctx, event, arrow, cursor.y);
-  if (event.deactivates !== undefined) popActivation(ctx.activationStart, event.deactivates);
-  if (event.activates !== undefined) pushActivation(ctx.activationStart, event.activates);
+  const pop = (): void => {
+    if (event.deactivates !== undefined) popActivation(ctx.activationStart, event.deactivates);
+  };
+  const push = (): void => {
+    if (event.activates !== undefined) pushActivation(ctx.activationStart, event.activates);
+  };
+  // `++--`: `manageActivations` applies charAt(0), the activate, first.
+  if (event.activatesFirst === true) {
+    push();
+    pop();
+  } else {
+    pop();
+    push();
+  }
   if (event.destroys !== undefined) {
     popActivation(ctx.activationStart, event.destroys);
     handleDestroy(event.destroys, cursor, ctx);

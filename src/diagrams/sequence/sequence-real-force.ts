@@ -27,6 +27,8 @@ import type { BakedMargins, Dolls } from './sequence-dolls.js';
 import type {
   Anchor,
   DisjointConstraint,
+  NotePoint,
+  NotePointConstraint,
   RowConstraint,
   SpanConstraint,
 } from './sequence-layout-participant-constraints.js';
@@ -35,6 +37,7 @@ import {
   createOrigin,
   lineOf,
   max,
+  middle,
   PositiveForce,
   type Real,
   type RealMoveable,
@@ -203,7 +206,19 @@ function addDisjointForces(c: DisjointConstraint, spaces: readonly RowLivingSpac
 
 /** A `ref`'s force: registered when its tile is built, not by `addConstraints`. */
 function isRefConstraint(c: RowConstraint): c is SpanConstraint {
-  return !('disjoint' in c) && c.edge === true;
+  return !('disjoint' in c) && !('notePoints' in c) && c.edge === true;
+}
+
+/** One {@link NotePoint} as a `Real`: `getX` (`NotesTile.java:152-175`). */
+function notePointReal(spaces: readonly RowLivingSpace[], point: NotePoint): Real {
+  const [first, second] = point.anchors.map((anchor) => anchorReal(spaces, anchor));
+  const base = second === undefined ? first! : middle(first!, second);
+  return base.addFixed(point.offset);
+}
+
+/** `NotesTile#addConstraints` (`NotesTile.java:216-222`): `bigger >= than`. */
+function addNotePointForce(c: NotePointConstraint, spaces: readonly RowLivingSpace[]): void {
+  notePointReal(spaces, c.bigger).ensureBiggerThan(notePointReal(spaces, c.than));
 }
 
 /**
@@ -221,6 +236,7 @@ export function solveParticipantRow(env: RowForcesEnv): number[] {
   const shared = new Map<object, Real>();
   for (const c of env.constraints) {
     if ('disjoint' in c) addDisjointForces(c, spaces, shared);
+    else if ('notePoints' in c) addNotePointForce(c, spaces);
     else if (c.edge !== true) addSpanForce(c, spaces, origin);
   }
   origin.compileNow();

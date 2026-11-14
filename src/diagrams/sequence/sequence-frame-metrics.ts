@@ -57,10 +57,20 @@ export function groupingColor(raw: string | undefined): HColor | undefined {
 export function groupingPaints(event: FrameEvent): FramePaints {
   const set = HColorSet.instance();
   const builder = event.styleBuilder;
+  const type = groupingTypeOf(event);
   return {
-    paint: paintOf(groupingStyle(builder, 'START', false, groupingColor(event.backColorGeneral)), set),
-    headerPaint: paintOf(groupingStyle(builder, 'START', true, groupingColor(event.backColorElement)), set),
+    paint: paintOf(groupingStyle(builder, type, false, groupingColor(event.backColorGeneral)), set),
+    headerPaint: paintOf(groupingStyle(builder, type, true, groupingColor(event.backColorElement)), set),
   };
+}
+
+/**
+ * The `GroupingType` of a frame's opener: `partition` is `START_PARTITION`,
+ * every other opener `START` (`GroupingType.java:55-56`,
+ * `SequenceDiagram.java:426-428`).
+ */
+export function groupingTypeOf(event: Pick<FrameEvent, 'frameType'>): 'START' | 'START_PARTITION' {
+  return event.frameType === 'partition' ? 'START_PARTITION' : 'START';
 }
 
 /**
@@ -206,16 +216,6 @@ export function headerHeight(tab: HeaderTab, paint: SequencePaint, ctx: TextEnv)
   if (tab.tabComment === undefined) return tab.tabHeight;
   const height = commentBlock(tab.tabComment, paint, ctx).height;
   return tab.tabHeight + (height > COMMENT_FREE_HEIGHT ? height - COMMENT_FREE_HEIGHT : 0);
-}
-
-/**
- * A group's header component width, `getPreferredDimensionIfEmpty().getWidth()`
- * (`GroupingTile.java:257-259`), for a reader outside the walk: the participant
- * row's frame clearance (`ensureClearsTitleOf`, `:663-665`).
- */
-export function groupHeaderWidth(event: FrameEvent, env: TextEnv): number {
-  const paints = groupingPaints(event);
-  return headerWidth(computeHeaderTab(event, paints.headerPaint, env), paints.paint, env);
 }
 
 /**

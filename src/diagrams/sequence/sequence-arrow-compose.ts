@@ -100,7 +100,40 @@ export const UNDRESSED_ARROW_SOURCE = ARROW_SOURCE.replace(ARROW_DRESSING1, '');
  */
 export const DRESSED_ARROW_SOURCE = ARROW_SOURCE.replace(ARROW_DRESSING1, () => ARROW_DRESSING1.slice(0, -1));
 
+/**
+ * `getRegexConcat()` ends `.protectSize(2000)` (`CommandArrow.java:133`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/sequencediagram/command/CommandArrow.java:133
+ */
+const PROTECT_SIZE = 2000;
+
+/**
+ * A command regex carrying `RegexConcat`'s `limitSize`: `match` answers false,
+ * before running the pattern, for a line longer than it (`RegexConcat.java:
+ * 129-130`). The line it measures is the trimmed one (`SingleLineCommand2`
+ * trims by default, `SingleLineCommand2.java:56-57,93,102`), which is what
+ * `parser.ts` dispatches. Overriding `exec` covers `test` too, which calls
+ * it. Besides declining an over-long arrow, the guard keeps the jar's
+ * escape from this pattern's quadratic `-+` / `-*` backtracking on a long
+ * dash run (`borala-01-tepu803`: 65838 characters).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexConcat.java:126-131
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexConcat.java:168-171
+ */
+class SizeProtectedRegExp extends RegExp {
+  /** `RegexConcat.limitSize`; 0 means unprotected. @see RegexConcat.java:46 */
+  private readonly limitSize: number;
+
+  constructor(source: string, flags: string, limitSize: number) {
+    super(source, flags);
+    this.limitSize = limitSize;
+  }
+
+  override exec(s: string): RegExpExecArray | null {
+    if (this.limitSize !== 0 && s.length > this.limitSize) return null;
+    return super.exec(s);
+  }
+}
+
 /** `i` because upstream compiles every command with `Pattern.CASE_INSENSITIVE`
  *  (`regex/Pattern2.java:114`); `u` for `\p{L}`/`\p{N}`. */
-export const UNDRESSED_ARROW_RE = new RegExp(UNDRESSED_ARROW_SOURCE, 'iu');
-export const DRESSED_ARROW_RE = new RegExp(DRESSED_ARROW_SOURCE, 'iu');
+export const UNDRESSED_ARROW_RE: RegExp = new SizeProtectedRegExp(UNDRESSED_ARROW_SOURCE, 'iu', PROTECT_SIZE);
+export const DRESSED_ARROW_RE: RegExp = new SizeProtectedRegExp(DRESSED_ARROW_SOURCE, 'iu', PROTECT_SIZE);

@@ -8,7 +8,6 @@
  */
 import { bridgeFontConfiguration } from '../../core/klimt/font/FontConfigurationBridge.js';
 import { HColorSet } from '../../core/klimt/color/HColorSet.js';
-import { activityCompositeStyleOf } from '../../core/activity-box-style.js';
 import type { Style } from '../../core/style/Style.js';
 import type { Theme } from '../../core/theme.js';
 
@@ -19,7 +18,7 @@ export function compositeStyleOf(
   stereotype: string | undefined,
   position: number | undefined,
 ): Style | undefined {
-  return activityCompositeStyleOf(theme)?.(symbol, stereotype, position);
+  return theme.colors.graph.activity?.compositeStyleOf?.(symbol, stereotype, position);
 }
 
 /** `theme` as the frame with merged style `style` reads it; unchanged for none. */

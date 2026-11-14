@@ -666,7 +666,19 @@ describe('refusal coverage — baseline shape', () => {
     // 11196 -> 11197 at flp/T4 (2026-11-12): +1 svg-flow golden clone, rendering.
     // 11197 -> 11199 at lsp/T3 (2026-11-12): +2 svg-factories golden clones, rendering.
     // 11199 -> 11201 at ftp/T3 (2026-11-12): +2 svg-factories golden clones (the Welcome rows), rendering.
-    expect(manifest.fixtures.length).toBe(11201);
+    // 11201 -> 11287 at sogr/T1 (2026-11-13): +86 svg-sequence golden clones, all rendering.
+    // 11287 -> 11306 at sogr/T2a (2026-11-13): +10 svg-sequence golden clones (teoz-ng-001-11 and the 9 authored
+    // sogr-partition-* rows) and +9 authored dot-cache rows, all rendering. Derivation: 11287 + 10 + 9 = 11306.
+    // 11306 -> 11308 at sogr/T2b (2026-11-13): +2 svg-sequence golden clones. Derivation: 11306 + 2 = 11308.
+    // 11308 -> 11309 at sogr/T2c (2026-11-13): +1 svg-sequence golden clone. Derivation: 11308 + 1 = 11309.
+    // 11309 -> 11310 at sogr/T2d (2026-11-13): +1 svg-sequence golden clone. Derivation: 11309 + 1 = 11310.
+    // 11310 -> 11315 at sogr/T3a (2026-11-13): +3 svg-sequence golden clones and +2 authored dot-cache rows.
+    // Derivation: 11310 + 3 + 2 = 11315.
+    // 11315 -> 11316 at sogr/T3b (2026-11-13): +1 svg-sequence golden clone (teoz-ng-001-5).
+    // Derivation: 11315 + 1 = 11316.
+    // 11316 -> 11317 at sogr/T3c (2026-11-13): +1 svg-sequence golden clone (teoz-ng-001-1).
+    // Derivation: 11316 + 1 = 11317.
+    expect(manifest.fixtures.length).toBe(11317);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -740,7 +752,8 @@ describe('refusal coverage — baseline shape', () => {
     // PSystemBuilder.java:170). Derivation: 161 - 2 = 159.
     // 159 -> 153 at ftp/T3 (2026-11-12): the 2 Welcome and 4 ListFonts rows render now (PSystemWelcomeFactory
     // java:133, PSystemListFontsFactory java:148). Derivation: 159 - 6 = 153.
-    expect(pinnedErroring.length).toBe(153);
+    // 153 -> 152 at sogr/T2a (2026-11-13): teoz-ng-001-11 stops erroring here (known-gap -> ok). Derivation: 153 - 1 = 152.
+    expect(pinnedErroring.length).toBe(152);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -981,7 +994,21 @@ describe('refusal coverage — baseline shape', () => {
     // clones. Derivation: 11036 + 2 + 2 = 11040.
     // 11040 -> 11048 at ftp/T3 (2026-11-12): the 6 Welcome/ListFonts rows flip known-gap -> ok, +2 svg-factories
     // golden clones. Derivation: 11040 + 6 + 2 = 11048.
-    expect(pinnedRendering.length).toBe(11048);
+    // 11048 -> 11134 at sogr/T1 (2026-11-13): +86 svg-sequence golden clones, all ok. 11048 + 86 = 11134.
+    // 11134 -> 11154 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-gap -> ok, +9 authored sogr-partition-*
+    // dot-cache rows render, +10 svg-sequence golden clones. Derivation: 11134 + 1 + 9 + 10 = 11154.
+    // 11154 -> 11156 at sogr/T2b (2026-11-13): +2 svg-sequence golden clones, both rendering.
+    // Derivation: 11154 + 2 = 11156.
+    // 11156 -> 11157 at sogr/T2c (2026-11-13): +1 svg-sequence golden clone, rendering.
+    // Derivation: 11156 + 1 = 11157.
+    // 11157 -> 11158 at sogr/T2d (2026-11-13): +1 svg-sequence golden clone, rendering.
+    // 11158 -> 11163 at sogr/T3a (2026-11-13): +3 svg-sequence golden clones and +2 authored dot-cache rows, all rendering.
+    // Derivation: 11158 + 3 + 2 = 11163.
+    // 11163 -> 11164 at sogr/T3b (2026-11-13): +1 svg-sequence golden clone, rendering.
+    // Derivation: 11163 + 1 = 11164.
+    // 11164 -> 11165 at sogr/T3c (2026-11-13): +1 svg-sequence golden clone, rendering.
+    // Derivation: 11164 + 1 = 11165.
+    expect(pinnedRendering.length).toBe(11165);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1076,7 +1103,8 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 66 - 6 = 60.
     // 60 -> 58 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip known-gap -> ok.
     // 58 -> 52 at ftp/T3 (2026-11-12): the 2 Welcome and 4 ListFonts rows flip known-gap -> ok.
-    expect(gaps.length).toBe(52);
+    // 52 -> 51 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-gap -> ok (`partition`, CommandGrouping.java:67).
+    expect(gaps.length).toBe(51);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

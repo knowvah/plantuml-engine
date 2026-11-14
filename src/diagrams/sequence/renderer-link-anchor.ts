@@ -67,19 +67,51 @@ function shaftStroke(geo: LinkAnchorGeo): UStroke {
     : new UStroke(geo.dash[0], geo.dash[1], geo.thickness);
 }
 
-/** One link: the shaft, its two heads, then the label. */
+/** `UClip#isInside` reduced to its y half (`UClip.java:94-127`): closed at both ends. */
+function insideClip(geo: LinkAnchorGeo, y: number): boolean {
+  return geo.clip === undefined || (y >= geo.clip.top && y <= geo.clip.bottom);
+}
+
+/** `UClip#getClippedY` for a page's band. */
+function clippedY(geo: LinkAnchorGeo, y: number): number {
+  return geo.clip === undefined ? y : Math.min(Math.max(y, geo.clip.top), geo.clip.bottom);
+}
+
+/**
+ * `UClip#getClippedLine` (`UClip.java:131-157`) on the vertical shaft: both
+ * ends outside that clamp to one point is dropped (`newy1 != newy2`,
+ * `:137-140`). `undefined` is that `return null`.
+ */
+function clippedShaft(geo: LinkAnchorGeo): readonly [number, number] | undefined {
+  const y1 = clippedY(geo, geo.yStart);
+  const y2 = clippedY(geo, geo.yEnd);
+  const bothOutside = !insideClip(geo, geo.yStart) && !insideClip(geo, geo.yEnd);
+  return bothOutside && y1 === y2 ? undefined : [y1, y2];
+}
+
+/** `DriverPolygonSvg:57-61`: a head survives only when EVERY point is inside. */
+function headInsideClip(geo: LinkAnchorGeo, dir: ArrowDir, tipY: number, theme: PageTheme): boolean {
+  return arrowHeadPointsFor(theme, dir).every((p) => insideClip(geo, tipY + p.y));
+}
+
+/** One link: the shaft, its two heads, then the label. Under a page's clip
+ *  each shape answers for itself, as the `Driver*Svg`s do. */
 function drawLinkAnchor(ug: UGraphic, geo: LinkAnchorGeo, theme: PageTheme): void {
   const [x, yStart, yEnd] = [geo.x, geo.yStart, geo.yEnd];
+  const shaft = clippedShaft(geo);
   // `Worm.java:126-132,160-164`: colour, `.bg()`, stroke, then `drawLine`'s
   // `ug.apply(new UTranslate(x1, y1))` and `draw(new ULine(x2 - x1, y2 - y1))`.
-  ug.apply(new Fore(geo.stroke))
-    .apply(new Back(geo.stroke))
-    .apply(shaftStroke(geo))
-    .apply(new UTranslate(x, yStart))
-    .draw(new ULine(0, yEnd - yStart));
-  drawHead(ug, 'up', { x, y: yStart }, geo, theme);
-  drawHead(ug, 'down', { x, y: yEnd }, geo, theme);
-  drawCreoleRuns(ug, geo.labelRuns, theme, geo.font.size, geo.font.styles.has(FontStyle.BOLD));
+  if (shaft !== undefined)
+    ug.apply(new Fore(geo.stroke))
+      .apply(new Back(geo.stroke))
+      .apply(shaftStroke(geo))
+      .apply(new UTranslate(x, shaft[0]))
+      .draw(new ULine(0, shaft[1] - shaft[0]));
+  if (headInsideClip(geo, 'up', yStart, theme)) drawHead(ug, 'up', { x, y: yStart }, geo, theme);
+  if (headInsideClip(geo, 'down', yEnd, theme)) drawHead(ug, 'down', { x, y: yEnd }, geo, theme);
+  // `DriverTextSvg:88-90`: each run answers for its own anchor.
+  const runs = geo.labelRuns.filter((r) => insideClip(geo, r.y));
+  drawCreoleRuns(ug, runs, theme, geo.font.size, geo.font.styles.has(FontStyle.BOLD));
 }
 
 /** `PlayingSpace#drawUInternal:129-134`'s link loop, once. */

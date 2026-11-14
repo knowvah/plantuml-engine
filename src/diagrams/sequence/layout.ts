@@ -161,6 +161,7 @@ function assembleGeometry(
   );
   backfillDividerWidth(dividerGeos, totalWidth);
   backfillNewpageWidth(newpageGeos, totalWidth);
+  backfillPartitionSpan(eventGeos, totalWidth);
   anchorExoBorders(messageGeosOf(eventGeos), totalWidth - RIGHT_MARGIN);
   const boxGeos = computeBoxGeos(englobers, row, totalHeight, measurer, ast.sprites);
 
@@ -447,6 +448,30 @@ function backfillNewpageWidth(newpageGeos: NewpageGeo[], totalWidth: number): vo
     // Same `border1` as the divider (`NewpageTile.java:97-99`).
     n.bandX = LEFT_MARGIN;
     n.bandWidth = Math.max(0, totalWidth - LEFT_MARGIN - RIGHT_MARGIN);
+  }
+}
+
+/**
+ * Fill in each partition's drawn span and centre its title, alongside the
+ * dividers above.
+ *
+ * `PartitionTile#getWidth` is `getBorder2() - getBorder1()` (`:219-229`),
+ * drawn at `border1` (`:153-156`); those are the playing space's own borders,
+ * `LEFT_MARGIN` to `totalWidth - RIGHT_MARGIN`, as for a divider. The title
+ * is centred in that span: `delta = (getWidth() - titleWidth) / 2`, drawn at
+ * `border1 + delta` (`:150-151`). Jar-verified on `teoz-ng-001-11` (rect
+ * `x=10 width=111.287`, title `x=62.028`). The runs were built at x 0 by
+ * `sequence-frame-component.ts` at the group's own `x`; the shift moves them
+ * to `border1 + delta`.
+ */
+function backfillPartitionSpan(eventGeos: readonly EventGeo[], totalWidth: number): void {
+  for (const geo of eventGeos) {
+    if (geo.kind !== 'frame' || geo.partitionSpan === undefined) continue;
+    const span = geo.partitionSpan;
+    span.x = LEFT_MARGIN;
+    span.width = Math.max(0, totalWidth - LEFT_MARGIN - RIGHT_MARGIN);
+    const titleX = span.x + (span.width - geo.tabTextWidth) / 2;
+    geo.tabRuns = geo.tabRuns.map((r) => ({ ...r, x: r.x - geo.x + titleX }));
   }
 }
 

@@ -1,0 +1,7 @@
+@startuml
+'skin BlueModern
+Alive -[#red]-> Bob : ok1
+Alive -[#yellow]> Bob : ok2
+Alive <[#green]- Bob : ok3
+Alive <-- Bob : ok4
+@enduml

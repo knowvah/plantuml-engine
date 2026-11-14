@@ -1,0 +1,6 @@
+@startuml
+
+!define interact( a, b, c )  a -> b : start##c##end
+
+interact(Alice,Bob,foo)
+@enduml

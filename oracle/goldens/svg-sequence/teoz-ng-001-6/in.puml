@@ -1,0 +1,29 @@
+@startuml
+<STYLE>
+sequenceDiagram {
+    FontColor blue
+    LineColor blue
+    LineThickness 2
+    LineStyle 1-1
+    Lifeline {
+      linecolor red
+      linestyle solid
+      lineThickness 3
+    }
+  .alice_style {
+    FontColor green
+    LineColor green
+    LineStyle 1-4
+    lineThickness 10
+    Lifeline {
+      linecolor green
+      linestyle 2
+      lineThickness 10
+    }
+  }
+}
+</STYLE>
+participant Bob
+entity Alice <<alice_style>>
+Bob -> Alice : hello
+@enduml

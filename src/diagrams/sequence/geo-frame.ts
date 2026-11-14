@@ -82,6 +82,15 @@ export interface FrameGeo {
    * the runs for that reason.
    */
   tabRuns: readonly TextRun[];
+  /**
+   * A `partition`'s drawn span, `[getBorder1(), getBorder2()]` of the whole
+   * diagram rather than the frame's own `x`/`width`
+   * (`PartitionTile.java:219-229,153-156`). Placeholders until
+   * `layout.ts#backfillPartitionSpan` knows the document width; `x`/`width`
+   * stay the group span the `else` tiles and a parent group read
+   * (`ElseTile.java:117-131`). Absent on every other frame.
+   */
+  partitionSpan?: { x: number; width: number };
 }
 
 /**

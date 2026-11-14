@@ -1,0 +1,5 @@
+@startuml
+autoactivate on
+[-> Alice : request()
+[<-- Alice : ok
+@enduml

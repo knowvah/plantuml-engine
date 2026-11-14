@@ -254,6 +254,10 @@ describe('sequence diff census — the committed census against T2s baseline', (
     // > 0 until sdd2/close-b8, when the last three error rows (fonudu-70,
     // nuvoja-46, bomino-39; T8a-T8c) began to render. Pinned at 0 so a new
     // error row has to be explained here rather than slipping into the list.
+    // 0 -> 1 at sogr/T1 (2026-11-13): teoz-ng-001-11 is seeded "error" (`partition p` is refused until sogr T2a
+    // ports CommandGrouping's `partition` keyword, CommandGrouping.java:67).
+    // 1 -> 0 at sogr/T2a (2026-11-13): teoz-ng-001-11 renders now that `partition` is ported
+    // (CommandGrouping.java:67, PartitionTile.java), so no seeded row is an error.
     expect(census.errors).toHaveLength(0);
   });
 

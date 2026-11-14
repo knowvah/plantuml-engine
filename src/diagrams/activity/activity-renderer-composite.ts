@@ -42,6 +42,10 @@ import {
 } from './activity-scoped-colors.js';
 import { frameTitleDimension } from './tiles/gtile-group.js';
 import { withCompositeStyle } from './activity-composite-theme.js';
+import { paintOf } from '../../core/activity-circle-style.js';
+import { bridgeFontConfiguration } from '../../core/klimt/font/FontConfigurationBridge.js';
+import { HColorSet } from '../../core/klimt/color/HColorSet.js';
+import { svgBack } from './activity-scoped-colors.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 
 /** The root `FontColor black` a frame's title inherits. @see ~/git/plantuml/src/main/resources/skin/plantuml.skin:9 */
@@ -99,8 +103,35 @@ function compositeStyle(theme: Theme): CompositeStyle {
   };
 }
 
-/** What selects a frame's signature. */
-type CompositeSubject = Pick<ActivityNodeGeo, 'kind' | 'usymbol' | 'stereotype'>;
+/** What selects a frame's signature, and the merged style it resolved to. */
+type CompositeSubject = Pick<ActivityNodeGeo, 'kind' | 'usymbol' | 'stereotype' | 'compositeStyle'>;
+
+/**
+ * `ColorMapper.DARK_MODE`'s switch (`TitledDiagram.java:294`) for the merged-style reads. No theme field carries
+ * `skinparam mode dark` to the renderer, and none is needed here: under `mode dark` every `composite.<symbol>` bucket
+ * is written off the dark-scheme builder (`style-element-scope.ts#elementScopeColors`, smc D2), and those tiers answer
+ * before this read (pso D2). Rows `activity__frameorder-rectangle-{background-partition-then-own-dark,dark-default}`.
+ */
+const MERGED_IS_DARK = false;
+
+/** `FtileGroup.java:101-102`: `style.value(name).asColor(...)` of `stylePartition`, the frame's ONE merged style
+ *  (`CommandPartition3.java:160-161`); a transparent colour prints `none` (`SvgGraphics.java:517-525`). */
+function mergedPaint(node: CompositeSubject, name: 'BackGroundColor' | 'LineColor'): Paint | undefined {
+  const style = node.compositeStyle;
+  return style === undefined ? undefined : svgBack(paintOf(style, name, MERGED_IS_DARK));
+}
+
+/** `FtileGroup.java:99`: `style.getFontConfiguration(...)`'s colour; a transparent one draws no text
+ *  (`DriverTextSvg.java:92-93`, {@link fontConfigurationColor}). */
+function mergedTitleColor(node: CompositeSubject): string | undefined {
+  const style = node.compositeStyle;
+  if (style === undefined) return undefined;
+  const color = bridgeFontConfiguration(style.getFontConfiguration(HColorSet.instance())).color;
+  return color === null ? TRANSPARENT_TITLE : resolveColorToSvgHex(color);
+}
+
+/** What {@link fontConfigurationColor} reads as `isTransparent()`. */
+const TRANSPARENT_TITLE = 'transparent';
 
 /** `symbol.getSNames()` of `FtileGroup.java:90`: the node's USymbol, or the frame its kind is. */
 function compositeSymbolOf(node: CompositeSubject): string {
@@ -128,14 +159,17 @@ function compositeLine(node: CompositeSubject, theme: Theme): Paint | undefined 
 }
 
 /**
- * The title's colour, `style.getFontConfiguration` of `FtileGroup.java:99`: the stereotype's and merged values (D2);
- * with no `<style>`, `addConFont("Partition", SName.composite)` (`FromSkinparamToStyle.java:133`), then the symbol's
- * own `addMagic` font (`:278`, `:129,212,223`), then the root `FontColor black` (`plantuml.skin:9`).
+ * The title's colour, `style.getFontConfiguration` of `FtileGroup.java:99`: the stereotype's and bucket values (dss D2),
+ * then the frame's merged style (pso D2), where `addConFont("Partition", SName.composite)` (`FromSkinparamToStyle.java:133`)
+ * and the symbol's own `addMagic` font (`:278`, `:129,212,223`) meet and the later declaration wins
+ * (`DarkString.java:54-57`). A hand-built theme with no `compositeStyleOf` keeps the flat tiers, then the root
+ * `FontColor black` (`plantuml.skin:9`).
  */
 function compositeTitleColor(node: CompositeSubject, theme: Theme): string {
   return (
     stereotypeFont(theme, compositeSymbolOf(node), node.stereotype) ??
     resolveSolidBucketColor(theme.colors.elements?.[compositeBucket(node)]?.font) ??
+    mergedTitleColor(node) ??
     flatTitleColor(node, theme) ??
     COMPOSITE_TITLE_FONT_COLOR
   );
@@ -201,15 +235,22 @@ function symbolInk(node: ActivityNodeGeo, theme: Theme): SymbolInk {
 
 /** `FtileGroup.java:101`: the command's `#color`, else the style's `BackGroundColor`. */
 function compositeFill(node: ActivityNodeGeo, theme: Theme, flatFill: Paint): Paint {
-  return inlineBack(node) ?? compositeBack(node, theme) ?? theme.colors.graph.partitionBackground ?? flatFill;
+  return (
+    inlineBack(node) ??
+    compositeBack(node, theme) ??
+    mergedPaint(node, 'BackGroundColor') ??
+    theme.colors.graph.partitionBackground ??
+    flatFill
+  );
 }
 
-/** The resolved ink of one group frame: `Partition*` skinparams (on the
- *  `composite` signature itself), else the symbol's own block, else the
- *  `plantuml.skin` composite default. The jar takes whichever of those two
- *  skinparams came last (a value's priority, `DarkString.java:54-57`); with
- *  no `<style>` this flat path has lost the order and always takes `Partition*`
- *  (`.agent-notes/dss-T3d.md`). */
+/** The resolved ink of one group frame (`FtileGroup.java:101-102`): the gated
+ *  tiers, then the frame's merged style, where the `Partition*` skinparams (on
+ *  `composite`) and the symbol's own block meet and the later declaration wins
+ *  (a value's priority, `DarkString.java:54-57`; pso D2). The flat tiers below
+ *  it (`Partition*` first, then the symbol's block, then the `plantuml.skin`
+ *  composite default) answer only for a hand-built theme with no
+ *  `compositeStyleOf`, where the order is lost (`.agent-notes/dss-T3d.md`). */
 function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
   const base = compositeStyle(theme);
   const g = theme.colors.graph;
@@ -217,7 +258,12 @@ function compositeInk(node: ActivityNodeGeo, theme: Theme): CompositeInk {
   return {
     fill: compositeFill(node, theme, sym.fill ?? base.backColor),
     // `FtileGroup.java:102`: the merged `LineColor`, T2a's bucket (D2), over the flat tiers.
-    stroke: compositeLine(node, theme) ?? g.partitionBorder ?? sym.stroke ?? base.borderColor,
+    stroke:
+      compositeLine(node, theme) ??
+      mergedPaint(node, 'LineColor') ??
+      g.partitionBorder ??
+      sym.stroke ??
+      base.borderColor,
     strokeWidth: sym.strokeWidth ?? activityLineThickness(theme, 'composite'),
     // `FtileGroup.java:103`: `style.value(PName.RoundCorner).asDouble()`.
     roundCorner: sym.roundCorner ?? 0,

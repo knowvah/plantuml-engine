@@ -1,0 +1,8 @@
+@startuml
+skinparam mode dark
+skinparam PartitionBackgroundColor #BBBBBB
+skinparam rectangleBackgroundColor #AAAAAA
+rectangle F {
+  :a;
+}
+@enduml

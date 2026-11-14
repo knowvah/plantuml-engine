@@ -55,7 +55,17 @@ families, sequence's dot-cache tree is itself committed (D4), so this is a
 convenience for a small, hand-picked promotion set, not the mechanism that
 makes the suite offline.
 
-## Current state (sequence-divergence-drive / sdd1, 2026-10-20)
+## Current state (sequence-oracle-gap-rows / sogr T1, 2026-11-13)
+
+- **sogr T1 (2026-11-13):** the 94 rows #109 captured had no diff-baseline
+  row. `plans/sequence-oracle-gap-rows/tools/seed-baseline.mts` seeded all
+  94 (93 `baseline`, `teoz-ng-001-11` `error`), and the 86 zero-diff ones
+  were pinned as `sogr-T1`. `ratchet.json`: 1281 entries for 1257 slugs.
+  `diff-baseline.json`: 1237 rows, 1229 pinned, 7 baseline, 1 error.
+  jetigu-21 and nuzise-60 now have rows. The sdd1 paragraph below is kept
+  as history.
+
+## Earlier state (sequence-divergence-drive / sdd1, 2026-10-20)
 
 **419 fixtures pinned** (`ratchet.json`), each byte-for-byte zero-diff on the
 ratchet path (`renderFixtureSequence` + `DeterministicMeasurer` +

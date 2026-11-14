@@ -79,6 +79,11 @@ export interface MessageEvent extends AbstractMessageEvent {
   to: string; // participant id
   activates?: string; // participant id to auto-activate (++ shorthand)
   deactivates?: string; // participant id to auto-deactivate (-- shorthand)
+  /** A four-character `++--` suffix: `manageActivations` applies
+   *  `spec.charAt(0)` (the ACTIVATE) before `spec.charAt(2)` (the DEACTIVATE)
+   *  (`CommandArrow.java:445-466`). Absent for `--++` and every one-event
+   *  suffix, whose order is deactivate first. */
+  activatesFirst?: true;
   /** Participant id destroyed by the `!!` shorthand: a `LifeEventType.DESTROY`
    *  bound to this message (`CommandArrow.java`, `SequenceDiagram.java#activate`).
    *  sdd1: declared ahead of T3d, which sets and reads it. */

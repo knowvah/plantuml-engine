@@ -120,6 +120,11 @@ export interface EventProcessingContext extends MessageLabelEnv {
    *  read through `sequence-y-gauge.ts#messageTileGauge`. Created by
    *  {@link processEvents}. */
   messageTileGauges?: Map<AbstractMessageEvent, MessageTileGauge>;
+  /** The `getMinX`/`getMaxX` of the outermost note wrapper of each message
+   *  that carries a note (`CommunicationTileNoteRight.java:242-250`,
+   *  `...NoteLeft:219-225`), read by `LinkAnchor#drawAnchor` through
+   *  `getMiddleX` (`CommonTile.java:62-66`). Absent for a note-less message. */
+  wrapperExtents?: Map<MessageEvent, { readonly minX: number; readonly maxX: number }>;
   /** The tiles of the group being walked, in order -- what `GroupingTile`'s
    *  `tiles` list holds (`GroupingTile.java:178-182`) -- for its height-only
    *  cluster pass (`:1093-1146`). Set by `sequence-layout-frame.ts`. */

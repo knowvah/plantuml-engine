@@ -1,0 +1,7 @@
+@startuml
+skinparam PartitionBackgroundColor #BBBBBB
+skinparam packageBackgroundColor #AAAAAA
+package F {
+  :a;
+}
+@enduml

@@ -90,8 +90,30 @@ export interface DisjointConstraint {
   readonly highsOwner?: object;
 }
 
+/**
+ * One `NotesTile#getX` / `#getX2` (`teoz/NotesTile.java:152-178,228-230`): the
+ * centre of `anchors[0]`, or the MIDDLE of the two centres when there are two
+ * (`OVER_SEVERAL`, `:168-172`), plus `offset` (`-width / 2`, `-width`, ...).
+ */
+export interface NotePoint {
+  readonly anchors: readonly Anchor[];
+  readonly offset: number;
+}
+
+/**
+ * `NotesTile#addConstraints`'s `point2.ensureBiggerThan(point1b)`
+ * (`teoz/NotesTile.java:216-222`) where a member is `OVER_SEVERAL`: that
+ * member's `x` is a middle of two lifelines, so the demand is not between two
+ * centres a {@link SpanConstraint} can name.
+ */
+export interface NotePointConstraint {
+  readonly notePoints: true;
+  readonly bigger: NotePoint;
+  readonly than: NotePoint;
+}
+
 /** What a tile registers on the participant row, in registration order. */
-export type RowConstraint = SpanConstraint | DisjointConstraint;
+export type RowConstraint = SpanConstraint | DisjointConstraint | NotePointConstraint;
 
 /**
  * Each message's two live levels, `livingSpace1/2.getLevelAt(this,

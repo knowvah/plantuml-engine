@@ -1,0 +1,7 @@
+@startuml
+partition p
+a->b
+else other
+b->a
+end
+@enduml

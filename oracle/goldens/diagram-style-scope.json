@@ -160,6 +160,174 @@
       "conformant": true,
       "diffCount": 0
     },
+    "activity__frameorder-card-background-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-card-background-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-card-border-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-card-border-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-card-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-card-font-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-background-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-background-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-border-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-border-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-group-font-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-background-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-background-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-border-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-border-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-package-font-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-background-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-background-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-border-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-border-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-font-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-partition-style-linethickness": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-frame-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-own-then-frame-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-own-then-partition-styled": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-partition-then-frame-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-partition-then-own-dark": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-partition-then-own-styled": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-partition-then-own-transparent": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-background-stereo-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-border-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-border-own-then-partition-block": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-border-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-dark-default": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-font-partition-block-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "activity__frameorder-rectangle-font-partition-then-own": {
+      "conformant": true,
+      "diffCount": 0
+    },
     "activity__gradient-BackgroundColor-activity": {
       "conformant": true,
       "diffCount": 0
@@ -871,132 +1039,132 @@
       "diffCount": 0
     },
     "activity__spot-0": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-1": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-2": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-3": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-4": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-5": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-6": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-7": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-8": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-9": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-C": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-D": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-F": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-H": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-I": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-J": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-K": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-L": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-M": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-N": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-O": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-P": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-Q": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-R": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-S": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-T": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-U": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-V": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-W": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-X": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-Y": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-Z": {
-      "conformant": false,
-      "diffCount": 2
+      "conformant": true,
+      "diffCount": 0
     },
     "activity__spot-la": {
       "conformant": true,
@@ -1355,6 +1523,10 @@
       "diffCount": 0
     },
     "class__element-order-skin-then-default": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "class__frameorder-package-font-partition-only": {
       "conformant": true,
       "diffCount": 0
     },
@@ -2224,6 +2396,26 @@
       "diffCount": 0
     },
     "component__deffont": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__frameorder-package-font-partition-only": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__frameorder-rectangle-background-partition-only": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__frameorder-rectangle-font-own-then-partition": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__frameorder-rectangle-font-partition-only": {
+      "conformant": true,
+      "diffCount": 0
+    },
+    "component__frameorder-rectangle-font-partition-then-own": {
       "conformant": true,
       "diffCount": 0
     },

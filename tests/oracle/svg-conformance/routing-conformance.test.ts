@@ -821,7 +821,23 @@ describe('routing conformance — jar-error classification', () => {
     // ListSpriteDiagramFactory registered at PSystemBuilder.java:170), +2 svg-factories golden clones. 11013 + 2 + 2 = 11017.
     // 11017 -> 11019 at ftp/T3 (2026-11-12): +2 svg-factories golden clones (gujuga-46-vifa350, vesuzo-97-jelo022);
     // the 6 Welcome/ListFonts dot-cache rows already agreed (NONE/NONE). 11017 + 2 = 11019.
-    expect(pinnedAgree.length).toBe(11019);
+    // 11019 -> 11105 at sogr/T1 (2026-11-13): +86 svg-sequence golden clones of the #109 rows, all agree.
+    // Derivation: 11019 + 86 = 11105.
+    // 11105 -> 11125 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-misroute -> agree (SEQUENCE/SEQUENCE),
+    // +9 authored sogr-partition-* dot-cache rows agree, +10 svg-sequence golden clones (its golden and the 9
+    // authored goldens). Derivation: 11105 + 1 + 9 + 10 = 11125.
+    // 11125 -> 11127 at sogr/T2b (2026-11-13): two svg-sequence golden clones (tenibi-81-sede977,
+    // taduce-47-saka647). Derivation: 11125 + 2 = 11127.
+    // 11127 -> 11128 at sogr/T2c (2026-11-13): one svg-sequence golden clone (kikate-70-xevi302).
+    // 11128 -> 11129 at sogr/T2d (2026-11-13): one svg-sequence golden clone (tupema-84-tako461).
+    // 11129 -> 11134 at sogr/T3a (2026-11-13): three svg-sequence golden clones (dociti-46-podu738, sogr-anchor-note-left,
+    // sogr-anchor-end-note) and two authored dot-cache twins (the same two sogr-anchor-* rows).
+    // Derivation: 11129 + 3 + 2 = 11134.
+    // 11134 -> 11135 at sogr/T3b (2026-11-13): one svg-sequence golden clone (teoz-ng-001-5).
+    // Derivation: 11134 + 1 = 11135.
+    // 11135 -> 11136 at sogr/T3c (2026-11-13): one svg-sequence golden clone (teoz-ng-001-1).
+    // Derivation: 11135 + 1 = 11136.
+    expect(pinnedAgree.length).toBe(11136);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -853,7 +869,8 @@ describe('routing conformance — jar-error classification', () => {
     // 27 -> 23 at gip/T4 (2026-11-11): the 4 git rows flip to agree (the git engine registers).
     // 23 -> 22 at flp/T4 (2026-11-12): bemixo-79-xulu250 flips to agree (the flow engine registers).
     // 22 -> 20 at lsp/T3 (2026-11-12): the 2 listsprite rows flip to agree (the listsprite factory registers).
-    expect(pinnedMisroutes.length).toBe(20);
+    // 20 -> 19 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-misroute -> agree. Derivation: 20 - 1 = 19.
+    expect(pinnedMisroutes.length).toBe(19);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     expect(pinnedJarErrors.length).toBe(162);
@@ -963,7 +980,19 @@ describe('routing conformance — jar-error classification', () => {
     // 11196 -> 11197 at flp/T4 (2026-11-12): +1 svg-flow golden clone, agree.
     // 11197 -> 11199 at lsp/T3 (2026-11-12): +2 svg-factories golden clones, agree.
     // 11199 -> 11201 at ftp/T3 (2026-11-12): +2 svg-factories golden clones (the Welcome rows), agree.
-    expect(manifest.fixtures.length).toBe(11201);
+    // 11201 -> 11287 at sogr/T1 (2026-11-13): +86 svg-sequence golden clones, all agree.
+    // 11287 -> 11306 at sogr/T2a (2026-11-13): +10 svg-sequence golden clones and +9 authored dot-cache rows.
+    // Derivation: 11287 + 10 + 9 = 11306.
+    // 11306 -> 11308 at sogr/T2b (2026-11-13): +2 svg-sequence golden clones. Derivation: 11306 + 2 = 11308.
+    // 11308 -> 11309 at sogr/T2c (2026-11-13): +1 svg-sequence golden clone. Derivation: 11308 + 1 = 11309.
+    // 11309 -> 11310 at sogr/T2d (2026-11-13): +1 svg-sequence golden clone. Derivation: 11309 + 1 = 11310.
+    // 11310 -> 11315 at sogr/T3a (2026-11-13): +3 svg-sequence golden clones and +2 authored dot-cache rows.
+    // Derivation: 11310 + 3 + 2 = 11315.
+    // 11315 -> 11316 at sogr/T3b (2026-11-13): +1 svg-sequence golden clone (teoz-ng-001-5).
+    // Derivation: 11315 + 1 = 11316.
+    // 11316 -> 11317 at sogr/T3c (2026-11-13): +1 svg-sequence golden clone (teoz-ng-001-1).
+    // Derivation: 11316 + 1 = 11317.
+    expect(manifest.fixtures.length).toBe(11317);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1060,7 +1089,8 @@ describe('routing conformance — jar-error classification', () => {
     // 27 -> 23 at gip/T4 (2026-11-11): the 4 git rows flip to agree.
     // 23 -> 22 at flp/T4 (2026-11-12): bemixo-79-xulu250 flips to agree.
     // 22 -> 20 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip to agree.
-    expect(censused.length).toBe(20);
+    // 20 -> 19 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips to agree (`partition`, CommandGrouping.java:67).
+    expect(censused.length).toBe(19);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

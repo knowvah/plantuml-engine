@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T00:08:07.077Z",
+  "generatedAt": "2026-11-13T21:46:59.751Z",
   "fixtures": [
     {
       "slug": "bacupi-77-fuke586",
@@ -1245,9 +1245,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 18.394000000000005,
-      "maxDeltaPath": "svg/g[1]/line[1]/@x1"
+      "verdict": "conformant"
     },
     {
       "slug": "dofefe-55-kejo043",
@@ -3130,10 +3128,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 8,
-      "firstDiff": "svg/g[1]/g[1]/title[1][childCount]",
-      "maxDeltaPath": "svg/g[1]/g[1]/rect[1]/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "kikuba-19-varo358",
@@ -6363,6 +6358,83 @@
       "verdict": "conformant"
     },
     {
+      "slug": "sogr-anchor-end-note",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-anchor-note-left",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-colors",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-else",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-nested-group",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-parallel",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-skinparam",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-style-body",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-style-header",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-titled-long",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
+      "slug": "sogr-partition-with-notes",
+      "type": "sequence",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
+      "verdict": "conformant"
+    },
+    {
       "slug": "sojufi-84-bexi933",
       "type": "sequence",
       "dotEqual": true,
@@ -6584,9 +6656,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 318.6600000000001,
-      "maxDeltaPath": "svg/g[1]/g[3]/rect[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "taduka-03-kosu047",
@@ -6712,9 +6782,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 260.61300000000006,
-      "maxDeltaPath": "svg/g[1]/g[5]/rect[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "tenifo-99-roxi031",
@@ -6742,19 +6810,14 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 27,
-      "maxDeltaPath": "svg/g[1]/g[6]/rect[1]/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "teoz-ng-001-11",
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 226,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "teoz-ng-001-12",
@@ -6817,10 +6880,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 250.712,
-      "firstDiff": "svg/g[1]/line[5]/@stroke-dasharray",
-      "maxDeltaPath": "svg/g[1]/line[5]/@x2"
+      "verdict": "conformant"
     },
     {
       "slug": "teoz-ng-001-6",
@@ -7163,9 +7223,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/path[1]"
+      "verdict": "conformant"
     },
     {
       "slug": "tupogo-51-zeso391",

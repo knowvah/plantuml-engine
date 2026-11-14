@@ -21,8 +21,8 @@ import {
   FRAME_EXTERNAL_MARGIN_X1,
   FRAME_EXTERNAL_MARGIN_X2,
   FRAME_MARGIN_X,
-  groupHeaderWidth,
 } from './sequence-frame-metrics.js';
+import { groupHeaderWidth } from './sequence-frame-component.js';
 import { selfDrawnWidth } from './sequence-layout-frame-extent.js';
 import { messagePaint } from './sequence-arrow-paint.js';
 import { ARROW_DELTA_X } from './sequence-arrowhead.js';

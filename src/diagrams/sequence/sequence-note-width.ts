@@ -20,7 +20,12 @@ import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.j
 import { UStroke } from '../../core/klimt/UStroke.js';
 import { Stereotype } from '../../core/stereo/Stereotype.js';
 import type { LiveEvent, LiveEvents } from './sequence-live-events.js';
-import type { Scan, SpanConstraint } from './sequence-layout-participant-constraints.js';
+import type {
+  NotePoint,
+  NotePointConstraint,
+  Scan,
+  SpanConstraint,
+} from './sequence-layout-participant-constraints.js';
 import { componentLabelBlock, type LabelBlock } from './sequence-creole-sheet.js';
 import { LIVE_DELTA_SIZE } from './sequence-layout-shared.js';
 import { noteStyle, paintOf, type SequencePaint } from './sequence-skin-param.js';
@@ -202,6 +207,8 @@ function samePosition(a: NoteEvent, b: NoteEvent): boolean {
 interface Placed {
   readonly note: NoteEvent;
   readonly index: number;
+  /** The second lifeline of an `OVER_SEVERAL` member (`:168-172`). */
+  readonly index2?: number;
   readonly offset: number;
   readonly width: number;
 }
@@ -210,15 +217,16 @@ interface Placed {
  * `NotesTile#getX` (`:152-175`) reduced to its distance from the anchor's
  * `posC`, for the three single-anchor positions; `getStackingOffset`
  * (`:180-190`) sums the earlier members' widths on the same participant and
- * side. `OVER_SEVERAL` is `middle(posC1, posC2)` -- two lifelines, not a
- * fixed distance from one -- and is not placed.
+ * side. `OVER_SEVERAL` is `middle(posC1, posC2).addFixed(-width / 2)`
+ * (`:168-172`): two lifelines, so its `index2` names the second.
  */
 function placeMembers(members: readonly NoteEvent[], sorted: readonly Participant[], scan: Scan): Placed[] {
   const placed: Placed[] = [];
   const widths = members.map((m) => noteComponentWidth(m, scan));
   members.forEach((note, i) => {
     const index = sorted.findIndex((p) => p.id === note.participants[0]);
-    if (index < 0 || isSeveral(note)) return;
+    const index2 = isSeveral(note) ? sorted.findIndex((p) => p.id === note.participants[1]) : undefined;
+    if (index < 0 || (index2 !== undefined && index2 < 0)) return;
     let stack = 0;
     for (let j = 0; j < i; j++) {
       const other = members[j]!;
@@ -231,9 +239,18 @@ function placeMembers(members: readonly NoteEvent[], sorted: readonly Participan
         : note.position === 'right'
           ? noteLevel(note, note.participants[0]!, scan) * LIVE_DELTA_SIZE + stack
           : -width / 2;
-    placed.push({ note, index, offset, width });
+    placed.push({ note, index, ...(index2 !== undefined ? { index2 } : {}), offset, width });
   });
   return placed;
+}
+
+/** `getX` (`extra` 0) or `getX2` (`extra` the width, `:228-230`) of a member. */
+function notePointOf(member: Placed, extra: number): NotePoint {
+  const centre = (index: number): { index: number; offset: number; at: 'C' } => ({ index, offset: 0, at: 'C' });
+  return {
+    anchors: member.index2 === undefined ? [centre(member.index)] : [centre(member.index), centre(member.index2)],
+    offset: member.offset + extra,
+  };
 }
 
 /**
@@ -249,8 +266,8 @@ export function notesGroupConstraints(
   events: readonly SequenceEvent[],
   sorted: readonly Participant[],
   scan: Scan,
-): SpanConstraint[] {
-  const out: SpanConstraint[] = [];
+): (SpanConstraint | NotePointConstraint)[] {
+  const out: (SpanConstraint | NotePointConstraint)[] = [];
   for (const tile of noteTiles(events)) {
     if (tile.length < 2) continue;
     const placed = placeMembers(tile, sorted, scan);
@@ -260,6 +277,10 @@ export function notesGroupConstraints(
         const [left, right] = i.index < j.index ? [i, j] : [j, i];
         // `x(right) >= x2(left)`: the left-anchored note is the one whose
         // right edge `getX2` the other must clear (both branches, `:216-222`).
+        if (left.index2 !== undefined || right.index2 !== undefined) {
+          out.push({ notePoints: true, bigger: notePointOf(right, 0), than: notePointOf(left, left.width) });
+          continue;
+        }
         out.push({
           from: left.index,
           to: right.index,

@@ -1,0 +1,6 @@
+@startuml
+skinparam PartitionBackgroundColor #BBBBBB
+rectangle R {
+  component C
+}
+@enduml

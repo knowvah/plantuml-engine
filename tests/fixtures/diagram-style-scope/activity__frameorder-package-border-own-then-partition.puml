@@ -1,0 +1,7 @@
+@startuml
+skinparam packageBorderColor #AAAAAA
+skinparam PartitionBorderColor #BBBBBB
+package F {
+  :a;
+}
+@enduml

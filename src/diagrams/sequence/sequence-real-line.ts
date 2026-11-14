@@ -253,6 +253,40 @@ export class RealDeltaLive extends RealMoveable {
   }
 }
 
+/**
+ * `RealMiddle2.java:38-70`: the middle of two variables. A bound on it is one
+ * force on the middle (`:62-64`), and a push splits evenly between the two
+ * (`:67-70`).
+ */
+export class RealMiddle2 extends RealMoveable {
+  constructor(
+    private readonly p1: RealMoveable,
+    private readonly p2: RealMoveable,
+  ) {
+    super(lineOf(p1), 'middle');
+  }
+
+  getCurrentValueInternal(): number {
+    return (this.p1.getCurrentValue() + this.p2.getCurrentValue()) / 2;
+  }
+
+  /** `addAtLeast` (`:58-60`). */
+  addAtLeast(): Real {
+    throw new Error('RealMiddle2.addAtLeast is unsupported');
+  }
+
+  /** `ensureBiggerThan` (`:62-64`): `middle >= other`. */
+  ensureBiggerThan(other: Real): void {
+    this.getLine().addForce(new PositiveForce(other, this, 0));
+  }
+
+  /** `move` (`:67-70`). */
+  move(delta: number): void {
+    this.p1.move(delta / 2);
+    this.p2.move(delta / 2);
+  }
+}
+
 /** The nesting of `RealMax` evaluations on the stack: `RealMax.RECURSION_DEPTH` (`:62-67`). */
 let recursionDepth = 0;
 
@@ -403,6 +437,11 @@ export function createOrigin(): RealOrigin {
 /** `RealUtils.withLiveOffset` (`:57-59`). */
 export function withLiveOffset(base: Real, offset: () => number): Real {
   return new RealDeltaLive(base, offset);
+}
+
+/** `RealUtils.middle` (`:61-63`). */
+export function middle(r1: Real, r2: Real): Real {
+  return new RealMiddle2(r1 as RealMoveable, r2 as RealMoveable);
 }
 
 /** `RealUtils.max` (`:65-71`). */

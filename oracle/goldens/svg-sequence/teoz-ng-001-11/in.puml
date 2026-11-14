@@ -1,0 +1,9 @@
+@startuml
+partition p
+a->b
+end
+
+group
+a->c
+end group
+@enduml

@@ -32,6 +32,7 @@ import {
   framePaintsOf,
   svgFixColor,
 } from './renderer-frame-header.js';
+import { drawPartitionBackground, drawPartitionForeground } from './renderer-frame-partition.js';
 import { drawNote, drawNoteBackground } from './renderer-note.js';
 import { drawCreoleRuns } from './sequence-text.js';
 import { NEWPAGE_MARGIN_Y } from './newpage-style.js';
@@ -65,6 +66,7 @@ function drawRefBody(ug: UGraphic, frame: FrameGeo, theme: PageTheme): void {
  * the frame in the stream ({@link drawElse}).
  */
 function drawFrame(ug: UGraphic, frame: FrameGeo, theme: PageTheme): void {
+  if (frame.frameType === 'partition') return drawPartitionForeground(ug, frame, theme);
   drawGroupingHeaderForeground(ug, frame);
   drawRefBody(ug, frame, theme);
 }
@@ -76,8 +78,9 @@ function drawFrame(ug: UGraphic, frame: FrameGeo, theme: PageTheme): void {
  * A `ref` is a `ReferenceTile`, which draws nothing in this pass
  * (`ComponentRoseReference` declares only `drawInternalU`, `:83`).
  */
-function drawFrameBackground(ug: UGraphic, frame: FrameGeo): void {
+function drawFrameBackground(ug: UGraphic, frame: FrameGeo, theme: PageTheme): void {
   if (frame.frameType === 'ref') return;
+  if (frame.frameType === 'partition') return drawPartitionBackground(ug, frame, theme);
   drawFrameBlotter(ug, frame);
   drawGroupingHeaderBackground(ug, frame);
 }
@@ -165,7 +168,7 @@ function drawDelayText(ug: UGraphic, delay: DelayGeo, theme: PageTheme): void {
  */
 function drawEvent(ug: UGraphic, event: EventGeo, theme: PageTheme, isBackground: boolean): void {
   if (event.kind === 'frame') {
-    if (isBackground) drawFrameBackground(ug, event);
+    if (isBackground) drawFrameBackground(ug, event, theme);
     else drawFrame(ug, event, theme);
   } else if (!isBackground) drawForeground(ug, event, theme);
   else if (event.kind === 'note') drawNoteBackground(ug, event);

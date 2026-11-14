@@ -1,0 +1,6 @@
+@startuml
+skinparam PartitionFontColor #BBBBBB
+package R {
+  component C
+}
+@enduml

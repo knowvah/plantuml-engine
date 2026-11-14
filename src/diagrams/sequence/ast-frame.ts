@@ -21,10 +21,18 @@ export interface FrameEvent {
     | 'break'
     | 'critical'
     | 'group'
+    /** `partition` (`GroupingType.START_PARTITION`, `CommandGrouping.java:67`),
+     *  a `PartitionTile` (`teoz/TileBuilder.java:154-163`). */
+    | 'partition'
     /** `ref over A, B : text` (`CommandReferenceOverSeveral.java`) — modelled
      *  as a one-branch, label-only frame; see `command-misc.ts`. */
     | 'ref';
   label: string;
+  /** `Grouping#getComment()` is `null`: the optional COMMENT group did not
+   *  match (`CommandGrouping.java:69-73`, read at `:136`). `label` is `''`
+   *  then; only `PartitionTile#titleBlock` tells the two apart, by throwing
+   *  (`PartitionTile.java:85`). */
+  commentIsNull?: true;
   /** The header title `CommandGrouping` rewrote a `group T [c]` line to:
    *  `type = m.group(1)` (`CommandGrouping.java:143-148`), kept verbatim (its
    *  space before the bracket included, possibly empty). Absent where the

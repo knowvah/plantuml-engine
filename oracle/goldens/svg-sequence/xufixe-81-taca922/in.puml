@@ -1,0 +1,6 @@
+@startuml
+[-> Bob : message1 which is very long
+opt toto
+[-> Bob : message2
+end
+@enduml

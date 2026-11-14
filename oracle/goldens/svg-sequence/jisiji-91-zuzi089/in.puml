@@ -1,0 +1,7 @@
+@startuml
+[-> Alice : hello
+[-> Bob : hello
+?-> Bob : h
+Alice ->] : a
+Alice ->? : a
+@enduml

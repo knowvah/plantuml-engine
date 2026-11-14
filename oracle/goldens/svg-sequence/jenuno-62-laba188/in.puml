@@ -1,0 +1,4 @@
+@startuml
+Bob ->] : m
+Alice ->] : This is a very long message
+@enduml

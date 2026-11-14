@@ -35,6 +35,29 @@ post-D7 measurements.
 
 ---
 
+## sequence-oracle-gap-rows (sogr) — DONE 2026-11-13 (one commit on `feature/parity-queue`, #139; per-task history on the local tag `sequence-oracle-gap-rows/pre-squash`)
+
+The 94 sequence rows #109 captured had no `diff-baseline.json` row, so no gate held them. All 94 are now conformant and pinned (86 at T1, 8 by porting one upstream mechanism each), plus 11 authored rows (9 `sogr-partition-*`, 2 `sogr-anchor-*`). The sequence survey is 1248/1248 conformant; 0 conformant losses in any engine.
+
+**What remains (follow-ons, none blocks #139):**
+
+1. **`repin-sequence-baselines.ts` cannot add rows (sogr D2).** A capture that adds sequence rows needs `plans/sequence-oracle-gap-rows/tools/seed-baseline.mts` (mission-local) before pinning. Teaching the shared script to seed missing rows would remove the step.
+2. **Anchor on a `messageExo` that carries a note.** T3a records note-wrapped tile extents only for `message` owners (`sequence-layout-note.ts`); an exo owner's chain extent is (0,0), so an anchor on an exo message with a note still reads the bare `CommunicationExoTile`. Not checked against a jar oracle.
+3. **`--++` on a self message.** `AbstractMessage.addLifeEvent` (`:159-164`) rejects an ACTIVATE after a same-message DEACTIVATE on one participant; the port's default `--++` order is unprobed for self messages (T3c only fixed `++--`).
+4. **Note-group constraint order.** `scanEvents` pushes `/ note` group constraints before message constraints; Java registers them in tile order (T2b; no row moves today).
+5. **No `UClip` in the klimt port.** T3b reduced `UClip`'s line, polygon and text rules for link anchors in `renderer-link-anchor.ts`, following the port's geometry-space pagination (`sequence-page.ts`). A real `UClip` would let every shape answer to the page clip the way upstream's drivers do.
+6. **No page-2 differences** were found (`teoz-ng-001-5` page 2 is 0 diffs). No authored row was left open.
+
+## partition-skinparam-order (pso) — DONE 2026-11-13 (one commit on `feature/parity-queue`, #138; per-task history on the local tag `partition-skinparam-order/pre-squash`)
+
+An activity frame (`partition`, `group`, `package`, `rectangle`, `card`) takes its fill, line and title colour from ONE merged style, built at the command from the builder current there (`CommandPartition3.java:160-161`, `FtileGroup.java:99-102`). `Partition*` (on `composite`) and the symbol's own key are equally specific, so the later declaration wins (`DarkString.java:54-57`), and a key declared after the frame never reaches it. The existing hidden resolver became the public `graph.activity.compositeStyleOf` (beside `boxStyleOf`); `activity-renderer-composite.ts` reads the three colours off `node.compositeStyle` after the gated stereotype and bucket tiers and before the flat tiers (pso D2), which stay as the fallback for a hand-built theme. Rows: 43 planned + 5 authored `<engine>__frameorder-*` in `diagram-style-scope`; 15 open → 0, 33 guards stay at 0. d.ts: the field, `ActivityCompositeStyleResolver` and its JSDoc only. 0 verdicts moved in any engine (every survey file changed only `generatedAt`).
+
+**What remains (follow-ons, none blocks #138):**
+
+1. **Merged-style-first order for positional `<style>` (pso D2, dss-T3d).** The new read sits under the gated bucket tiers, which are snapshots of the document's final builder. Putting the merged read first would make `<style>` blocks positional for frames too. No authored row moves today; author one (a `<style>` after the frame) before reordering.
+2. **No Theme field carries `skinparam mode dark` to renderers.** Merged-style reads pass `isDark=false` and rely on the dark-mode buckets answering first (`.agent-notes/pso-T2.md`). A read placed before the bucket tiers would need its own dark source.
+3. **`rows.mts` measures `stockError` rows raw.** Pin tools fed a full measure must skip them (`plans/partition-skinparam-order/measurements/pin-rows.mjs`, `activity-authored-rows/measurements/lower-dss.mjs:17`).
+
 ## factories-tail-port (ftp) — DONE 2026-11-13 (one commit on `feature/parity-queue`, #135; per-task history on the local tag `factories-tail-port/pre-squash`)
 
 The last four `PSystemBuilder` factories are known types. **Welcome** (java:133) is `welcomePlugin` (`src/diagrams/eggs/PSystemWelcomeFactory.ts`), registered first as a bare `PSystemFactory`: `PSystemFactoryBase` gains `'PSystemFactory'`, and `isEmptyDescription` lets it run and merges its `null` (`NULL_SYSTEM`, hoisted to `parse-refusal.ts`) away, so `emptySvg` lost its `isWelcomeSource` special case. **ListFonts** (java:148) is `src/diagrams/font/`, reading the #169 seam now at `src/core/available-font-family-names.ts`. **Crash** (java:200) is `src/diagrams/crash/` with `@startcrash` (`'crash'` in `DiagramType`), a `BPM`-typed `TitledDiagram`. **Path** (java:179, INSECURE only) is not ported: under the default LEGACY profile both sides error; INSECURE is ruling issue #178. Shared fix: error-page listings expand tabs at `TileText` tab stops (`error-page-exact.ts#tilePieces`). Corpus: `gujuga-46-vifa350`, `vesuzo-97-jelo022` pinned (conformant); the 4 ListFonts rows 120 → 21 diffs, named under #169. `svg-factories` 43 → 49 slugs, 21 pins. 35 authored fixtures (`cov-{welcome,listfont,listfonts,crash,path}-*`): 11 zero-diff, 18 error pairs (2 of them the `finalizing` pages, whose body text needs follow-on 1), 6 #169 pages; all 17 drawn oracles byte-stable over three jar renders. 0 conformant lost in every engine.
@@ -271,7 +294,7 @@ Stays filed by the user's ruling (D8 did not reverse it):
 Needs a ruling only the user can sign:
 5. **A gradient `LineColor` reaching `partition`** — the jar throws `UnsupportedOperationException` at `HColor.java:126`, from `FtileGroup.java:102`; we draw. Check the latest release jar under the error-page ruling.
 6. **`:a| <<foo>>`** — jar error, ours draws: same check.
-7. **`skinparam Partition*` vs `rectangle*` last-wins** — needs D3 opened or a `Theme` field.
+7. ~~**`skinparam Partition*` vs `rectangle*` last-wins**~~ — **struck by partition-skinparam-order (pso, #138, 2026-11-13, `partition-skinparam-order/pre-squash`):** a frame's fill, line and title colour read off its merged positional style through the new `graph.activity.compositeStyleOf` (`FtileGroup.java:99-102`); 48 `__frameorder-` rows at 0. Was: needs D3 opened or a `Theme` field.
 8. **Stale `withDiagramBorderRect` comment on `RenderFragment`** (`dispatcher-types.ts`) — T3f split the helper to `diagramBorderRect`; the frozen d.ts holds the comment, so correcting it is a public d.ts change.
 
 Layout and parser, not colour reads:

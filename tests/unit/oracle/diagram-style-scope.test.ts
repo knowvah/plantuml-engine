@@ -25,7 +25,9 @@ import { renderDbgMarkup } from '../../oracle/svg-conformance/document-backgroun
 
 // 1070 -> 1072 at aar/T6a (2026-11-06): activity__title-sprite-{group,partition}, a lone-sprite group title.
 // 1072 -> 1172 at scr/T0 (2026-11-06): the 100 authored colour-read rows (#122).
-const ROW_COUNT = 1172;
+// 1172 -> 1215 at pso/T1 (2026-11-13): the 43 frame skinparam order rows (#138).
+// 1215 -> 1220 at pso/T2 (2026-11-13): 5 authored frameorder rows (partition block, stereotype, mode dark).
+const ROW_COUNT = 1220;
 const SOLID = '@startuml\nskinparam backgroundColor black\nA -> B : hi\n@enduml\n';
 
 let root: string;

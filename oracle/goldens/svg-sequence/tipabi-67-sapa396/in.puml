@@ -1,0 +1,5 @@
+@startuml
+autoactivate on
+A ->> B : ok1
+return ok2
+@enduml

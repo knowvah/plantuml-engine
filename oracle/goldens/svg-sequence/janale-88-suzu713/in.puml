@@ -1,0 +1,6 @@
+@startuml
+[-> Bob : m
+opt toto
+[-> Bob : message2
+end
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+skinparam sequenceGroupBorderThickness 3
+skinparam roundCorner 12
+skinparam sequenceGroupBodyBackgroundColor #eee
+partition p
+a->b
+end
+@enduml

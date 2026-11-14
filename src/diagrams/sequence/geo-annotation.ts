@@ -261,4 +261,9 @@ export interface LinkAnchorGeo {
   /** The label's font, which the renderer's fallbacks for a run that sets
    *  none (`renderer-divider.ts` precedent). */
   readonly font: FontConfiguration;
+  /** The page's `UClip` band, y only, in the same page-local coordinates as
+   *  `yStart`/`yEnd` (`sequence-page.ts#clipLinkAnchor`). Absent on a
+   *  single-page document, which upstream never clips
+   *  (`PlayingSpaceWithParticipants.java:218-221`). */
+  readonly clip?: { readonly top: number; readonly bottom: number };
 }

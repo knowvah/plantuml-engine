@@ -12,7 +12,8 @@
 import type { FrameEvent, MessageEvent, MessageExoEvent, NoteEvent, Participant, SequenceEvent } from './ast.js';
 import type { LiveLifeEvent } from './sequence-live-boxes.js';
 import type { Scan, SpanConstraint } from './sequence-layout-participant-constraints.js';
-import { FRAME_EXTERNAL_MARGIN_X2, FRAME_MARGIN_X, groupHeaderWidth } from './sequence-frame-metrics.js';
+import { FRAME_EXTERNAL_MARGIN_X2, FRAME_MARGIN_X } from './sequence-frame-metrics.js';
+import { groupHeaderWidth } from './sequence-frame-component.js';
 import { selfDrawnWidth } from './sequence-layout-frame-extent.js';
 import { notesOnMessages, type NoteOwner } from './sequence-note-folding.js';
 import { noteComponentWidth, noteLevel, noteTiles } from './sequence-note-width.js';
