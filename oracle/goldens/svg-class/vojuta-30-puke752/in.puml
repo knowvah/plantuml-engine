@@ -1,0 +1,8 @@
+@startuml
+rectangle r as "
+Text as top1
+{{
+alice->bob
+}}
+"
+@enduml

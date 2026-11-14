@@ -46,7 +46,11 @@ import { buildUSymbolEntityParams, usesClassUSymbolEntity } from './renderer-usy
 import { scaleClassTheme } from './class-scale-geo.js';
 import { splitStereotypeStyleTags } from './class-stereotype.js';
 import { packageBorderColor, packageBorderThickness, PACKAGE_ROUND_CORNER } from './class-package-style.js';
-import { namespaceColorFill } from './class-namespace-shape.js';
+import {
+  classElkGroupBackColor,
+  classElkGroupUSymbol,
+  classElkUSymbolClusterStyle,
+} from './class-elk-usymbol-cluster.js';
 import { classElkClusterTitle, classElkEndLabel, classElkLinkLabel } from './class-elk-text.js';
 
 /** `CucaDiagram#getRootGroup()`'s id: no namespace id is empty. */
@@ -172,7 +176,9 @@ function entityMembers(index: ClassElkIndex) {
       return inCreationOrder(leaves.filter((c) => isLeaf(index, c))).map((c) => c.id);
     },
     getParentContainer: (entityId: string): string => parentContainer(index, entityId),
-    getUSymbol: () => null,
+    // `Entity#getUSymbol()` of a group (`MyElkCluster.java:106,111`): its keyword's symbol, null for the folder family.
+    getUSymbol: (groupId: string) =>
+      classElkGroupUSymbol(requireValue(index.namespaces, groupId, 'group'), index.model.theme),
     getPackageStyle: () => null,
     getEntityColors: (): ElkColors => NO_COLORS,
   };
@@ -205,10 +211,17 @@ function imageMembers(index: ClassElkIndex) {
  */
 function clusterHeader(index: ClassElkIndex, groupId: string, stringBounder: StringBounder): ElkClusterHeader {
   const ns = requireValue(index.namespaces, groupId, 'group');
-  const title = classElkClusterTitle(ns, index.model.theme, namespaceTags(ns));
+  const title = classElkClusterTitle(
+    ns,
+    index.model.theme,
+    namespaceTags(ns),
+    classElkGroupUSymbol(ns, index.model.theme) !== null,
+  );
   const stereo = TextBlockUtils.empty(0, 0);
   const dimLabel = TextBlockUtils.mergeTB(stereo, title, HorizontalAlignment.CENTER).calculateDimension(stringBounder);
-  const height = dimLabel.getWidth() > 0 ? Math.trunc(dimLabel.getHeight()) : 0;
+  // `ClusterHeader.java:81-95`: `(int)(height + uSymbol.suppHeightBecauseOfShape())`, 0 for a symbol-less group.
+  const supp = classElkGroupUSymbol(ns, index.model.theme)?.suppHeightBecauseOfShape() ?? 0;
+  const height = dimLabel.getWidth() > 0 ? Math.trunc(dimLabel.getHeight() + supp) : 0;
   return { getTitleAndAttributeHeight: () => height, getTitle: () => title, getStereo: () => stereo };
 }
 
@@ -221,6 +234,8 @@ function clusterStyle(index: ClassElkIndex, groupId: string) {
   const theme = index.model.theme;
   const ns = requireValue(index.namespaces, groupId, 'group');
   const tags = namespaceTags(ns);
+  const symbolStyle = classElkUSymbolClusterStyle(ns, theme, tags);
+  if (symbolStyle !== undefined) return symbolStyle;
   return {
     shadowing: theme.shadowing ?? 0,
     stroke: UStroke.withThickness(packageBorderThickness(theme, tags, PACKAGE_LINE_THICKNESS)),
@@ -238,7 +253,8 @@ function clusterMembers(index: ClassElkIndex) {
     getClusterStyleForMagneticBorder: (groupId: string) => clusterStyle(index, groupId),
     // `getBackColor(diagramType)` is null (`MyElkCluster.java:128-130`), so the
     // group's own colour is never read: the style's `BackGroundColor`.
-    getClusterBackColor: () => namespaceColorFill(undefined, theme),
+    getClusterBackColor: (groupId: string) =>
+      classElkGroupBackColor(requireValue(index.namespaces, groupId, 'group'), theme),
     packageStyle: () => (theme.packageStyle === 'rect' ? PackageStyle.RECTANGLE : PackageStyle.FOLDER),
     // `AlignmentParam.packageTitleAlignment(CENTER)` (`AlignmentParam.java:44`).
     getPackageTitleAlignment: () => HorizontalAlignment.CENTER,
@@ -341,7 +357,6 @@ function assertSupported(ast: ClassDiagramAST): void {
     ast.namespaces.some((ns) => ns.stereotype !== undefined || ns.legend !== undefined)
       ? 'stereotyped packages'
       : undefined,
-    ast.namespaces.some((ns) => ns.usymbol !== undefined) ? 'USymbol packages' : undefined,
     ast.relationships.some((rel) => rel.linkNote !== undefined) ? 'notes on links' : undefined,
     (ast.togethers ?? []).length > 0 ? 'together groups' : undefined,
   ].filter((s) => s !== undefined);

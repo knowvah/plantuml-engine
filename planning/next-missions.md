@@ -35,6 +35,22 @@ post-D7 measurements.
 
 ---
 
+## class-oracle-gap-rows (cogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #140; per-task history on the local tag `class-oracle-gap-rows/pre-squash`)
+
+The 151 class rows #109 captured were in no ratchet. 148 are now conformant and pinned in `oracle/goldens/svg-class/ratchet.json`: 110 at T1, plus 38 driven to zero by porting the upstream mechanism each lacked (T1b, T2a-T2e, T3a-T3f, T4a-T4h, and the splits T4f2, T4f3, T4h2). The class survey reads 871 / 3 / 0 (was 834 / 19 / 21); 0 conformant losses in any engine.
+
+**What remains (follow-ons, none blocks #140):**
+
+1. **#185 (`needs-ruling`)**: `nacave-78-dijo807` and `subdiagram-theme-1` put `!theme` inside a `{{ }}` note embed. The jar never preprocesses an embed (`EmbeddedDiagram.java:87-90`, `BlockUml.java:146-148`), so it embeds its version-banner error page.
+2. **`vanadi-41-geru001`** is accepted under the Smetana ruling (nested yaml image 1 px, `oracle/accepted-divergences.json`, cogr D4). A yaml-engine fix that closes it retires the entry.
+3. **Three unpinned, non-#109 conformant class rows** (D1): `luzive-62-zote562`, `sadamo-18-siva346`, `zuduxu-90-kosi876`. Pin them with `plans/class-oracle-gap-rows/tools/pin-goldens.mts`.
+4. **No class `diff-baseline`** (D2): open class rows are not held shrink-only. The mission did not need one; the measurer was the record.
+5. **`compareSvg` never reads inside an embed's data URI**, so an embed row can hold wrong nested content at n=0 (T4f3 found the nested `<!--entity c1.comp12…-->` comment against the jar's `<!--entity comp1234-->`). `renderer-usymbol-entity.ts` names the entity comment by `classifier.id`; the jar uses the leaf name.
+6. **Description multiline openers drop their url** (`applyElementDecorations`), the twin of cogr T3d's class fix. No corpus row shows it.
+7. **Early links in description**: description's generation-count style thunk keeps every skinparam in every generation, so a description link made before a `skinparam` may be over-themed (cogr T4h2 ported positional builders for class only). No row shows it.
+8. **#149 (scale)**: cogr T4c fixed scaled USymbol *leaves*; the group-title path `class-namespace-usymbol-shape.ts#renderNamespaceUSymbol` has the same root (draws pre-scaled inputs at scale 1).
+9. **JSON/YAML cell creole**: size-tagged, linked, image, bullet and tab cells stay on the plain path (cogr T4e); no row uses them.
+
 ## sequence-oracle-gap-rows (sogr) — DONE 2026-11-13 (one commit on `feature/parity-queue`, #139; per-task history on the local tag `sequence-oracle-gap-rows/pre-squash`)
 
 The 94 sequence rows #109 captured had no `diff-baseline.json` row, so no gate held them. All 94 are now conformant and pinned (86 at T1, 8 by porting one upstream mechanism each), plus 11 authored rows (9 `sogr-partition-*`, 2 `sogr-anchor-*`). The sequence survey is 1248/1248 conformant; 0 conformant losses in any engine.

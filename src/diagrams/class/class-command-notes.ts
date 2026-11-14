@@ -49,6 +49,17 @@ const NOTE_TAGS_CAPTURE = '((?:\\s+\\$[^\\s{}"\'<>$]+)*)';
 const FREESTANDING_NOTE_CODE = '([\\w.]+|"[^"]+")';
 
 /**
+ * A target token ending in one `:` (`A:` in `note right of A: [[u t]]`). Upstream registers the single-line command
+ * before both multi-line ones (`ClassDiagramFactory.java:152` vs `:155-156`), and its `(.*)` text may be empty
+ * (`CommandFactoryNoteOnEntity.java:92-116`), so a line whose target backtracks to end in the `:` separator is
+ * always a single-line note. Our multi-line opener (6c) is tried first, so it refuses such a target here.
+ * `::member` targets (`CommandFactoryTipOnEntity`, registered earlier still, `:147-148`) end in `::` or a name and
+ * are unaffected.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/classdiagram/ClassDiagramFactory.java:147-156
+ */
+const NOT_SINGLE_LINE_TARGET = '(?![^\\s{}"\'<>]*[^:\\s{}"\'<>]:(?:\\s|$))';
+
+/**
  * Order matters: patterns are tested top-to-bottom; first match wins.
  */
 export const NOTE_COMMANDS: readonly Command[] = [
@@ -66,6 +77,7 @@ export const NOTE_COMMANDS: readonly Command[] = [
   {
     pattern: new RegExp(
       '^note\\s+(left|right|top|bottom)(?:\\s+of\\s+' +
+        NOT_SINGLE_LINE_TARGET +
         NOTE_TARGET +
         ')?' +
         NOTE_TAGS +
@@ -210,7 +222,9 @@ export const NOTE_COMMANDS: readonly Command[] = [
       const id = addFreestandingNote(
         state.ast,
         match[2]!,
-        match[1]!.trim(),
+        // CommandFactoryNote.java:124 -- `Display.getWithNewlines(.., arg.get("DISPLAY", 0))`, no trim: the
+        // first line keeps its leading whitespace (cogr T4g).
+        match[1]!,
         state.activeNamespace,
         match[5],
         state.creationCounter,

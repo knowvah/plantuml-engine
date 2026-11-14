@@ -6,7 +6,7 @@
  */
 import { spriteTintHref } from '../../core/klimt/sprite/sprite-tint.js';
 import type { EdgeLabelRun } from './class-edge-label-sprite-runs.js';
-import { text, attrs, image } from '../../core/svg.js';
+import { text, attrs, image, linkWrap } from '../../core/svg.js';
 import { formatDecimal, DEFAULT_SVG_DECIMALS } from '../../core/svg-format.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import type { ScaledTheme } from './class-scale-geo.js';
@@ -196,7 +196,13 @@ export function renderEdgeMainLabel(
   measurer?: StringMeasurer,
 ): string[] {
   const parts: string[] = [];
-  for (const line of geo.labelLines ?? []) {
+  const embeds = geo.labelEmbeds ?? [];
+  const lines = geo.labelLines ?? [];
+  // A `{{ }}` image sits between its neighbouring lines (`SheetBlock1` draws the stripes in order).
+  const embedsBefore = (i: number): string[] =>
+    embeds.filter((e) => e.before === i).map((e) => image(e.x, e.y, e.width, e.height, e.href));
+  for (const [i, line] of lines.entries()) {
+    parts.push(...embedsBefore(i));
     if (line.glyph !== undefined) {
       const glyph = magicArrowPolygon(line.glyph.points, labelColor);
       if (glyph !== undefined) parts.push(glyph);
@@ -204,6 +210,7 @@ export function renderEdgeMainLabel(
     }
     parts.push(...renderLabelLine(line, lineFontAttrs(labelFontAttrs, line), labelColor, measurer));
   }
+  parts.push(...embedsBefore(lines.length));
   if (geo.label !== undefined) parts.push(...renderEdgeSingleLabel(geo.label, labelFontAttrs, labelColor, measurer));
   // T2d (kexaba-26-kobu577): mutually exclusive with `geo.label` --
   // `attachEdgeLabel` sets at most one (`EdgeGeo.labelImage`'s own doc
@@ -279,14 +286,14 @@ function renderSpriteLabelRuns(
       const raw = { text: run.text, x, width: run.width };
       const drawn =
         measurer === undefined ? raw : placeLabelRun(raw, (t) => measurer.measure(t, labelFontSpec(font)).width);
-      parts.push(
-        text(drawn.x, label.y, drawn.text, {
-          fill: labelColor,
-          ...font,
-          lengthAdjust: 'spacing',
-          textLength: drawn.width,
-        }),
-      );
+      const drawnText = text(drawn.x, label.y, drawn.text, {
+        fill: run.link?.color ?? labelColor,
+        ...font,
+        ...(run.link !== undefined ? { textDecoration: 'underline' } : {}),
+        lengthAdjust: 'spacing',
+        textLength: drawn.width,
+      });
+      parts.push(run.link === undefined ? drawnText : linkWrap(drawnText, run.link.url));
     }
     x += run.width;
   }

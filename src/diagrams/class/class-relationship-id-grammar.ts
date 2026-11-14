@@ -75,11 +75,14 @@ export function stripQuotes(s: string): string {
  * @see ~/git/plantuml/.../classdiagram/command/CommandLinkClass.java:306-317
  */
 export function splitEndpointPort(
-  raw: string,
+  endpoint: string,
   nsSep: string | null = null,
   classifiers: readonly Classifier[] = [],
 ): { id: string; port?: string } {
-  if (raw.startsWith('"')) return { id: stripQuotes(raw) };
+  // `diagram.cleanId(arg.get("ENT1", 0))` strips the quotes BEFORE the `::` test
+  // (`CommandLinkClass.java:303-310`), so a quoted `"Customer::Account"` is split into entity and port just like a
+  // bare one.
+  const raw = endpoint.startsWith('"') ? stripQuotes(endpoint) : endpoint;
   if (nsSep === '::') return { id: raw };
   const sepIdx = raw.indexOf('::');
   if (sepIdx === -1) return { id: raw };

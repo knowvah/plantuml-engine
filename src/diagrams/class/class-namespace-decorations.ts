@@ -8,6 +8,7 @@
 import type { ParseState } from './parser.js';
 import { parseUrlBracket } from './class-url.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
+import { parseDeclarationColors } from './class-declaration-extractors.js';
 
 /**
  * T11 (diagnosis A2b E4): thread a namespace header's captured `[[url]]`
@@ -36,8 +37,12 @@ export function setNamespaceUrl(state: ParseState, nsId: string, bracket: string
  * compound spec.
  */
 export function setNamespaceColor(state: ParseState, nsId: string, colorSpec: string | undefined): void {
-  const color = resolveBareOrBackColor(colorSpec);
-  if (color === undefined) return;
   const ns = state.ast.namespaces.find((n) => n.id === nsId);
-  if (ns !== undefined) ns.color = color;
+  if (ns === undefined) return;
+  const color = resolveBareOrBackColor(colorSpec);
+  if (color !== undefined) ns.color = color;
+  if (colorSpec !== undefined) ns.colorSpec = colorSpec;
+  // cogr T2a: the rest of the same `Colors` map (`line:`, `text:`, `line.<style>`).
+  const colors = parseDeclarationColors(colorSpec);
+  if (Object.keys(colors).length > 0) ns.colors = colors;
 }

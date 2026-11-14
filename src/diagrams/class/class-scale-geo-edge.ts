@@ -131,6 +131,17 @@ function scaleEdgeGeoLabels(edge: EdgeGeo, k: number): Partial<EdgeGeo> {
           })),
         }
       : {}),
+    ...(edge.labelEmbeds !== undefined
+      ? {
+          labelEmbeds: edge.labelEmbeds.map((e) => ({
+            ...e,
+            x: e.x * k,
+            y: e.y * k,
+            width: e.width * k,
+            height: e.height * k,
+          })),
+        }
+      : {}),
     ...(edge.arrowGlyph !== undefined ? { arrowGlyph: { points: scalePoints(edge.arrowGlyph.points, k) } } : {}),
     ...(edge.tailLabel !== undefined
       ? {

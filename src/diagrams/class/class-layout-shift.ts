@@ -91,6 +91,9 @@ function shiftEdgeExtras(edge: EdgeGeo, dx: number, dy: number): Partial<EdgeGeo
     ...(edge.labelImage !== undefined
       ? { labelImage: { ...edge.labelImage, x: edge.labelImage.x + dx, y: edge.labelImage.y + dy } }
       : {}),
+    ...(edge.labelEmbeds !== undefined
+      ? { labelEmbeds: edge.labelEmbeds.map((e) => ({ ...e, x: e.x + dx, y: e.y + dy })) }
+      : {}),
     ...(edge.quantifierLines !== undefined
       ? {
           quantifierLines: [

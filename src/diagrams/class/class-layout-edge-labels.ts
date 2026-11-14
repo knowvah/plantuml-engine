@@ -204,7 +204,7 @@ function withLabelMargin(attrs: LabelAttrs, rel: Relationship, noteCtx: NoteBoxC
   if (attrs.labelWidth === undefined || attrs.labelHeight === undefined) return attrs;
   if (attrs.label === '') return attrs;
   if (rel.linkNote !== undefined && noteCtx !== undefined) return attrs;
-  if (rel.label !== undefined && isBareMagicArrowLabel(rel.label)) return attrs;
+  if (rel.label !== undefined && rel.labelVerbatim !== true && isBareMagicArrowLabel(rel.label)) return attrs;
   const m = 2 * labelMarginOf(rel);
   return { ...attrs, labelWidth: attrs.labelWidth + m, labelHeight: attrs.labelHeight + m };
 }
@@ -333,6 +333,7 @@ function computeRelLabelAttrs(
     sprites: noteCtx?.sprites,
     // cdd7 T2b: `SvekEdge.java:290-294`'s label wrap width.
     maxWidth: noteCtx?.theme.maxMessageSize,
+    labelVerbatim: rel.labelVerbatim,
   });
 }
 

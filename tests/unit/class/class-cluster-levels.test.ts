@@ -128,15 +128,9 @@ function oracleClusterLevels(dot: string): Array<1 | 2> {
 
 /**
  * Fixtures this comparison cannot read, each with its mechanism (ogc/T5,
- * 2026-11-04, when #109's capture brought 46 more clustered class rows):
+ * 2026-11-04, when #109's capture brought 46 more clustered class rows;
+ * `kofogo-67-jiju461` was listed until cogr T3a, when the class parser began to accept its `: label` couple):
  *
- * - `kofogo-67-jiju461`: line 3, `(ns1.classB, ns1.classA) .. ns1.Exception
- *   : Exception`, is an association-class link the jar accepts through
- *   `CommandLinkClass`'s COUPLE1 alternative (`CommandLinkClass.java:116`,
- *   `executeArgSpecial1` at :414) and this port's class parser refuses
- *   (`class-assoc-couple.ts` has no `: label` tail), so `parseFixture`
- *   throws before any level can be derived. Counted on the class parity
- *   issue; a parser gap, not a cluster-level question.
  * - `potatu-55-pave291`: three `card X [{{ ... }}]` leaves each embed a
  *   component diagram. `-DPLANTUML_DUMP_DOT` numbers every
  *   `DotStringFactory.getSvg` call, and the embedded diagrams render
@@ -146,7 +140,6 @@ function oracleClusterLevels(dot: string): Array<1 | 2> {
  *   it is not for a fixture with nested diagrams.
  */
 const UNREADABLE: ReadonlyMap<string, string> = new Map([
-  ['kofogo-67-jiju461', 'class parser refuses the association-class link on line 3'],
   ['potatu-55-pave291', 'svek-1.dot is an embedded {{ }} component diagram, not the class graph'],
 ]);
 
@@ -157,9 +150,9 @@ describe('clusterWrapperLevel — 169-fixture oracle agreement', () => {
   // says DESCRIPTION, so it is not a class fixture and the loader drops it.
   // 122 -> 166 at ogc/T5 (2026-11-04): #109's capture added 151 class rows,
   // 46 of them with a jar cluster, 2 of those unreadable here (`UNREADABLE`
-  // above). Derivation: 122 + 46 = 168, minus 2 = 166.
-  it('covers 166 class + 3 object fixtures', () => {
-    expect(fixtures.filter((f) => f.engine === 'class')).toHaveLength(166);
+  // above). Derivation: 122 + 46 = 168, minus 2 = 166. 166 -> 167 at cogr T3a: `kofogo-67-jiju461` parses now.
+  it('covers 167 class + 3 object fixtures', () => {
+    expect(fixtures.filter((f) => f.engine === 'class')).toHaveLength(167);
     expect(fixtures.filter((f) => f.engine === 'object')).toHaveLength(3);
   });
 

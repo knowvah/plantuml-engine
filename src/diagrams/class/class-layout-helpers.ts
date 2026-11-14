@@ -61,6 +61,7 @@ import {
   resolveGuillemetOption,
   resolveStereoFont,
 } from './class-layout-fonts.js';
+import { usecaseOrActorAlignment } from './class-usymbol-alignment.js';
 import { measureUsecaseOrActor, measureLollipop, measureAssociationDiamond } from './class-layout-leaf-shapes.js';
 import type { SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
 // Re-exported for existing external consumers (class-directives.ts, layout.ts,
@@ -369,7 +370,7 @@ function tryMeasureNonGenericClassifier(
   // description engine's leaf-sizing.ts. Every other descriptive leaf
   // (database/component/rectangle) keeps the generic box below unchanged.
   if (classifier.kind === 'usecase' || (classifier.kind === 'descriptive' && classifier.usymbol === 'actor')) {
-    return measureUsecaseOrActor(classifier, fontSpec, measurer, sprites);
+    return measureUsecaseOrActor(classifier, fontSpec, measurer, sprites, usecaseOrActorAlignment(classifier, theme));
   }
   // A2s F-D mechanism A2: every OTHER USymbol-bearing descriptive leaf
   // (allowmixing `database`/`component`/`rectangle`/... and an empty

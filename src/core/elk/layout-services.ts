@@ -10,7 +10,8 @@
  */
 import type { DiagramPlugin } from '../dispatcher.js';
 import { currentStyleBuilderOf } from '../document-back-color.js';
-import type { MindmapStyleSource } from '../style/mindmap-style-builder.js';
+import { builderAtPosition, lastDeclarationPosition } from '../activity-box-builder-at.js';
+import type { PositionedStyleSource } from '../activity-box-builder-at.js';
 import { StyleParsingException } from '../style/parser/StyleParser.js';
 import type { StyleBuilder } from '../style/StyleBuilder.js';
 import type { RenderOptions } from '../render-options.js';
@@ -27,13 +28,13 @@ const MODE_KEY = 'mode';
 const MODE_DARK = 'dark';
 
 /** `TitledDiagram#isSkinParamUsed`: `CommandSkinParam.java:102`, `CommandSkinParamMultilines.java:100`. */
-function isSkinParamUsed(source: MindmapStyleSource): boolean {
+function isSkinParamUsed(source: PositionedStyleSource): boolean {
   return (source.declarationOrder?.skinparam ?? source.skinparam).size > 0;
 }
 
 /** See `LayoutServices.styleBuilder`. */
 function styleBuilderThunk(
-  source: MindmapStyleSource | undefined,
+  source: PositionedStyleSource | undefined,
 ): ((generation?: number, positional?: boolean) => StyleBuilder | undefined) | undefined {
   if (source === undefined) return undefined;
   // `skinparam mode dark`: the port's style parser has no `@media` dark side (`theme-dark.ts`), so a merged style would
@@ -49,7 +50,20 @@ function styleBuilderThunk(
   };
 }
 
-function tryBuild(source: MindmapStyleSource): StyleBuilder | undefined {
+/** See `LayoutServices.styleBuilderAt`. */
+function styleBuilderAtThunk(
+  source: PositionedStyleSource | undefined,
+  styleBuilder: ((generation?: number, positional?: boolean) => StyleBuilder | undefined) | undefined,
+): ((position: number) => StyleBuilder | undefined) | undefined {
+  if (source === undefined || styleBuilder === undefined) return undefined;
+  const lastDeclaration = lastDeclarationPosition(source);
+  return (position) => {
+    if (lastDeclaration === undefined || lastDeclaration < position) return undefined;
+    return builderAtPosition(source, position) ?? undefined;
+  };
+}
+
+function tryBuild(source: PositionedStyleSource): StyleBuilder | undefined {
   try {
     return currentStyleBuilderOf(source);
   } catch (e) {
@@ -67,10 +81,11 @@ export function layoutServicesSync(
   plugin: DiagramPlugin,
   ast: unknown,
   options?: RenderOptions,
-  styleSource?: MindmapStyleSource,
+  styleSource?: PositionedStyleSource,
 ): LayoutServices {
   if (options?.elk === undefined && requiresElk(plugin, ast)) throw new Error(ELK_RENDER_SYNC_UNSUPPORTED);
-  return { elk: options?.elk, styleBuilder: styleBuilderThunk(styleSource) };
+  const styleBuilder = styleBuilderThunk(styleSource);
+  return { elk: options?.elk, styleBuilder, styleBuilderAt: styleBuilderAtThunk(styleSource, styleBuilder) };
 }
 
 /** `render()`'s services: the caller's backend, else elkjs loaded only for a diagram that requires ELK. */
@@ -78,9 +93,11 @@ export async function layoutServices(
   plugin: DiagramPlugin,
   ast: unknown,
   options?: RenderOptions,
-  styleSource?: MindmapStyleSource,
+  styleSource?: PositionedStyleSource,
 ): Promise<LayoutServices> {
   const styleBuilder = styleBuilderThunk(styleSource);
-  if (options?.elk !== undefined || !requiresElk(plugin, ast)) return { elk: options?.elk, styleBuilder };
-  return { elk: await loadElk(), styleBuilder };
+  const styleBuilderAt = styleBuilderAtThunk(styleSource, styleBuilder);
+  if (options?.elk !== undefined || !requiresElk(plugin, ast))
+    return { elk: options?.elk, styleBuilder, styleBuilderAt };
+  return { elk: await loadElk(), styleBuilder, styleBuilderAt };
 }

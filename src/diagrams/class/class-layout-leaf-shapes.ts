@@ -53,14 +53,24 @@ function measureUsecaseOrActorDim(
   classifier: Classifier,
   symbol: 'usecase' | 'actor',
   fontSpec: { family: string; size: number },
-  measurer: StringMeasurer,
-  sprites: SpriteDimsLookup | undefined,
+  ctx: {
+    measurer: StringMeasurer;
+    sprites: SpriteDimsLookup | undefined;
+    titleAlignment: HorizontalAlignment | undefined;
+  },
 ): { width: number; height: number } {
+  const { measurer, sprites, titleAlignment } = ctx;
+  // cogr-T4a: `defaultAlign = styleTitle.getHorizontalAlignment()` (`EntityImageDescription.java:175`) feeds `desc`
+  // (`:188-191`), so the ellipse fit measures the aligned block, not the default one.
+  const entitySizing = titleAlignment === undefined ? {} : { entitySizing: { titleAlignment } };
   if (classifier.kind !== 'usecase' || classifier.usymbol === undefined) {
-    return measureUsecaseOrActorLeaf(classifier.display, symbol, fontSpec, measurer, sprites);
+    if (titleAlignment === undefined)
+      return measureUsecaseOrActorLeaf(classifier.display, symbol, fontSpec, measurer, sprites);
+    const plain = { id: '', display: classifier.display, symbol, ...entitySizing };
+    return measureEntityLeaf(plain, fontSpec, { opts: undefined, sprites, measurer }, false);
   }
   const business = KEYWORD_TO_SYMBOL.get(classifier.usymbol) ?? 'usecase-business';
-  const subject = { id: '', display: classifier.display, symbol: business };
+  const subject = { id: '', display: classifier.display, symbol: business, ...entitySizing };
   return measureEntityLeaf(subject, fontSpec, { opts: undefined, sprites, measurer }, false);
 }
 
@@ -87,10 +97,11 @@ export function measureUsecaseOrActor(
   fontSpec: { family: string; size: number },
   measurer: StringMeasurer,
   sprites?: SpriteRegistry,
+  titleAlignment?: HorizontalAlignment,
 ): MeasuredClassifier {
   const symbol = classifier.kind === 'usecase' ? 'usecase' : 'actor';
   const spriteDims = sprites !== undefined ? spriteDimsLookupFor(sprites) : undefined;
-  const dim = measureUsecaseOrActorDim(classifier, symbol, fontSpec, measurer, spriteDims);
+  const dim = measureUsecaseOrActorDim(classifier, symbol, fontSpec, { measurer, sprites: spriteDims, titleAlignment });
   // The DRAWN ink extent, carried through to `class-ink-box.ts
   // #addClassifierInk` so an actor's ink is its own head/body/label union
   // rather than `addRectInk`'s `(x - 1, y - 1)` box corner — which sits 1.5

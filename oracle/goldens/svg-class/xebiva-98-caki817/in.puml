@@ -1,0 +1,5 @@
+@startuml
+    MoreComplex [x: String] ..> X
+    MoreComplex [y: int] --> Y
+    MoreComplex [z: boolean] ..> Z
+@enduml

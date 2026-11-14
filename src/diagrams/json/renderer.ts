@@ -28,6 +28,7 @@ import type { ArrowStyleJson, CellPaint, NodeStyleJson, TextStyleJson } from './
 import { highlightRect } from './json-renderer-highlight.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { CellRunStyle } from './json-cell-creole.js';
 import type { JsonGeometry, JsonNodeGeo, JsonEdgeGeo, JsonRowGeo } from './layout.js';
 
 // ---------------------------------------------------------------------------
@@ -138,6 +139,26 @@ function cellTextStyle(cell: CellPaint): TextStyle {
   };
 }
 
+/**
+ * A creole run's `<text>` attributes over its cell's: `AtomText#drawU` draws each run in its own
+ * `FontConfiguration` (colour, face, decoration), and `DriverTextSvg.java:106-108,134-139` writes them.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverTextSvg.java
+ */
+function runTextStyle(base: TextStyle, run: CellRunStyle | undefined): TextStyle {
+  if (run === undefined) return base;
+  const decoration = [run.underline ? 'underline' : '', run.strike ? 'line-through' : ''].filter(Boolean).join(' ');
+  return {
+    ...base,
+    ...(run.fill === undefined ? {} : { fill: run.fill }),
+    ...(run.bold ? { fontWeight: '700' as const } : {}),
+    ...(run.italic ? { fontStyle: 'italic' as const } : {}),
+    ...(run.family === undefined
+      ? {}
+      : { fontFamily: run.family.toLowerCase() === 'monospaced' ? 'monospace' : run.family }),
+    ...(decoration === '' ? {} : { textDecoration: decoration }),
+  };
+}
+
 /** Column A's cell then column B's, both as absolute-positioned `<text>`. */
 function renderRowText(node: JsonNodeGeo, row: JsonRowGeo, style: NodeStyleJson): string {
   const ts = style.text;
@@ -154,7 +175,7 @@ function renderRowText(node: JsonNodeGeo, row: JsonRowGeo, style: NodeStyleJson)
     for (const atom of row.keyAtoms) {
       parts.push(
         text(keyX + atom.dx, node.y + row.keyBaselineY, atom.text, {
-          ...keyStyle,
+          ...runTextStyle(keyStyle, atom.style),
           textLength: atom.textLength,
         }),
       );
@@ -179,7 +200,12 @@ function renderRowText(node: JsonNodeGeo, row: JsonRowGeo, style: NodeStyleJson)
     const lineX = cellTextX(colLeft, colWidth, row.valueLineWidths[li] ?? 0, ts.align);
     const baseline = node.y + (row.valueBaselineYs[li] ?? 0);
     for (const atom of row.valueAtoms[li] ?? []) {
-      parts.push(text(lineX + atom.dx, baseline, atom.text, { ...runStyle, textLength: atom.textLength }));
+      parts.push(
+        text(lineX + atom.dx, baseline, atom.text, {
+          ...runTextStyle(runStyle, atom.style),
+          textLength: atom.textLength,
+        }),
+      );
     }
   }
   return parts.join('');

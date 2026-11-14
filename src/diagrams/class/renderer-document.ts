@@ -12,6 +12,7 @@ import type { ClassGeometry } from './layout.js';
 import { resolveElementShadowing, type Theme } from '../../core/theme.js';
 import { scaleClassTheme, type ScaledTheme } from './class-scale-geo.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { applyColorMapperToFragment, colorMapperOf } from '../../core/klimt/color/fragment-color-mapper.js';
 import { buildClassShadowFilterDef } from './class-shadow.js';
@@ -127,7 +128,11 @@ export function beginClassDocument(geo: ClassGeometry, rawTheme: Theme): ClassDo
 /**
  * The fragment `renderClass` returns, from the document and its drawn body.
  */
-export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, drawn: ClassDocumentBody): RenderFragment {
+export function finishClassDocument(
+  doc: ClassDocument,
+  geo: ClassGeometry,
+  drawn: ClassDocumentBody,
+): RenderFragment & SvgDimensionStyleFlag {
   const extraDefs = doc.extraDefs + drawn.extraDefs;
   const theme = doc.theme;
   return {
@@ -175,6 +180,9 @@ export function finishClassDocument(doc: ClassDocument, geo: ClassGeometry, draw
     // document's `SvgOption` (`SkinParam.java:1258-1269`), read by
     // `SvgGraphics.java:155-158,699-705`. Spread only when defined (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
+    // cogr T2e: `TextBlockExporter.java:308`, `SvgGraphics.java:808-811`; the description engine's own spelling is
+    // `renderer.ts` (`svgDimensionStyle: theme.svgDimensionStyle !== false`).
+    ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
     diagramType: DIAGRAM_TYPE_CLASS,
   };
 }

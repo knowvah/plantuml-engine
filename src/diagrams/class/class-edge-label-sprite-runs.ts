@@ -30,12 +30,21 @@ import { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
 import { manageGuillemet } from '../../core/text/Guillemet.js';
 import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-commands.js';
 import type { SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
+import type { CreoleAtomUrl } from '../../core/klimt/creole/atom/Atom.js';
+import { FontStyle } from '../../core/klimt/shape/UText.js';
 import { resolveInlineAtom } from './class-member-atom-resolve.js';
 
 /** One run of a mixed label, in draw order. `dy` (images only) is the
  *  image top relative to the label baseline. */
 export type EdgeLabelRun =
-  | { readonly kind: 'text'; readonly text: string; readonly width: number }
+  | {
+      readonly kind: 'text';
+      readonly text: string;
+      readonly width: number;
+      /** A `[[url label]]` run (`CommandCreoleUrl`): drawn in `<a>`, in the
+       *  hyperlink colour, underlined (`CommandCreoleUrl.java:97-101`). */
+      readonly link?: { readonly url: CreoleAtomUrl; readonly color: string };
+    }
   | {
       readonly kind: 'image';
       readonly href: string;
@@ -58,11 +67,27 @@ function baseFontConfiguration(font: FontSpec): FontConfiguration {
   return { family: font.family, size: font.size, color: null, styles: new Set() };
 }
 
-/** A text atom drawn in the label's own base font: same size, no style,
- *  colour or link (this module's scope, module doc). */
+/** A text atom drawn in the label's own base font: same size, no style or
+ *  colour (this module's scope, module doc). */
 function isPlainText(atom: { font: FontConfiguration; url?: unknown }, font: FontSpec): boolean {
   return (
     atom.url === undefined && atom.font.size === font.size && atom.font.styles.size === 0 && atom.font.color == null
+  );
+}
+
+/** A `[[url label]]` text atom: the base font plus exactly the hyperlink
+ *  colour and underline `CommandCreoleUrl#applyHyperlinkStyleAndPush` adds. */
+function isLinkText(
+  atom: { font: FontConfiguration; url?: CreoleAtomUrl },
+  font: FontSpec,
+): atom is { font: FontConfiguration; url: CreoleAtomUrl } {
+  const { styles, color, size } = atom.font;
+  return (
+    atom.url !== undefined &&
+    typeof color === 'string' &&
+    size === font.size &&
+    styles.size === 1 &&
+    styles.has(FontStyle.UNDERLINE)
   );
 }
 
@@ -79,25 +104,32 @@ export function resolveSpriteLabelRuns(
   measurer: StringMeasurer,
   sprites: SpriteRegistry | undefined,
 ): EdgeLabelRuns | undefined {
-  if (sprites === undefined) return undefined;
   const base = baseFontConfiguration(font);
-  const dims = spriteDimsLookupFor(sprites);
+  const dims = sprites === undefined ? undefined : spriteDimsLookupFor(sprites);
   const runs: EdgeLabelRun[] = [];
   let textHeight = 0;
   for (const atom of buildLineAtoms(manageGuillemet(text), base, CreoleMode.SIMPLE_LINE).atoms) {
     if (atom.kind === 'text') {
-      if (!isPlainText(atom, font)) return undefined;
+      const link = isLinkText(atom, font);
+      if (!link && !isPlainText(atom, font)) return undefined;
       const m = measurer.measure(atom.text, font);
       textHeight = Math.max(textHeight, m.height);
-      runs.push({ kind: 'text', text: atom.text, width: m.width });
+      runs.push({
+        kind: 'text',
+        text: atom.text,
+        width: m.width,
+        ...(link ? { link: { url: atom.url, color: atom.font.color as string } } : {}),
+      });
       continue;
     }
-    if (atom.kind !== 'inline') return undefined;
+    if (atom.kind !== 'inline' || sprites === undefined || dims === undefined) return undefined;
     const img = resolveInlineAtom(atom.atom, base, sprites, dims);
     if (img === undefined || img.kind !== 'image') return undefined;
     runs.push({ kind: 'image', href: img.href, width: img.width, height: img.height, dy: 0, ...tintOf(img) });
   }
-  if (!runs.some((r) => r.kind === 'text') || !runs.some((r) => r.kind === 'image')) return undefined;
+  const hasLink = runs.some((r) => r.kind === 'text' && r.link !== undefined);
+  const hasSpriteBesideText = runs.some((r) => r.kind === 'text') && runs.some((r) => r.kind === 'image');
+  if (!hasLink && !hasSpriteBesideText) return undefined;
   return placeRuns(runs, textHeight, measurer.getDescent(font, text));
 }
 

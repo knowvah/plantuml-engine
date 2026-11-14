@@ -66,6 +66,9 @@ export const DIAGRAM_TYPE_ATTR = 'data-diagram-type';
  * own (see `class/renderer-shell.ts`'s doc comment for why the wrap
  * decision lives at the call site, not here).
  */
+/** The internal `svgDimensionStyle` flag a `RenderFragment` producer may add (see {@link ShellFragment}). */
+export type SvgDimensionStyleFlag = Pick<ShellFragment, 'svgDimensionStyle'>;
+
 export interface ShellFragment {
   readonly body: string;
   readonly width: number;
@@ -89,6 +92,14 @@ export interface ShellFragment {
   /** See `RenderFragment.lengthAdjust` (`dispatcher.ts`). `undefined` takes
    *  `LengthAdjust.defaultValue()` = `spacing` (`style/LengthAdjust.java:41`). */
   readonly lengthAdjust?: RootLengthAdjust;
+  /**
+   * `skinparam svgDimensionStyle false` (`SkinParam.java:1196`, `TextBlockExporter.java:308`): `false` omits the root
+   * `style`, `width` and `height` (`SvgGraphics.java:808-811`); unset = true. Deliberately NOT a `RenderFragment`
+   * field, which is reachable from the public `.d.ts` (cogr D5): a producer returns
+   * {@link SvgDimensionStyleFlag} on top of its fragment, and the shell finalizers' `{ ...fragment }` spreads carry it
+   * here.
+   */
+  readonly svgDimensionStyle?: false;
 }
 
 /**
@@ -229,6 +240,32 @@ function rootSizeAttributes(
   return { widthAttr: fmt(fragment.width), heightAttr: fmt(fragment.height) };
 }
 
+/**
+ * The root's `style`, `width` and `height`: written only when `SvgOption.svgDimensionStyle` is true
+ * (`SvgGraphics.java:808-811`; `skinparam svgDimensionStyle false` -> `TextBlockExporter.java:308`,
+ * `SkinParam.java:1196`). The `viewBox` after them is unconditional.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/SvgGraphics.java:808-811
+ */
+function dimensionAttributes(fragment: ShellFragment, style: string, widthAttr: string, heightAttr: string): string {
+  if (fragment.svgDimensionStyle === false) return '';
+  return (
+    ' style=' +
+    DQUOTE +
+    style +
+    DQUOTE +
+    ' width=' +
+    DQUOTE +
+    widthAttr +
+    'px' +
+    DQUOTE +
+    ' height=' +
+    DQUOTE +
+    heightAttr +
+    'px' +
+    DQUOTE
+  );
+}
+
 export function assembleDocumentShell(fragment: ShellFragment, diagramType?: string): string {
   const width = Math.trunc(fragment.width);
   const height = Math.trunc(fragment.height);
@@ -256,20 +293,7 @@ export function assembleDocumentShell(fragment: ShellFragment, diagramType?: str
     '1.1' +
     DQUOTE +
     diagramTypeAttr +
-    ' style=' +
-    DQUOTE +
-    style +
-    DQUOTE +
-    ' width=' +
-    DQUOTE +
-    widthAttr +
-    'px' +
-    DQUOTE +
-    ' height=' +
-    DQUOTE +
-    heightAttr +
-    'px' +
-    DQUOTE +
+    dimensionAttributes(fragment, style, widthAttr, heightAttr) +
     ' viewBox=' +
     DQUOTE +
     `0 0 ${String(width)} ${String(height)}` +

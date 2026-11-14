@@ -1,0 +1,17 @@
+@startuml
+
+package MyFoo {
+    class MyFoo.MyFoo
+}
+MyFoo -- Target
+
+package My.Module {
+    package My.Module.Defines {
+    }
+    class My.Module.Class {
+    }
+    My.Module.Class --> My.Module.Defines
+}
+My.Module --> MyFoo
+
+@enduml

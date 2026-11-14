@@ -91,7 +91,9 @@ export function buildClassMagmaEdges(ast: ClassDiagramAST, anchors: Map<string, 
   const isMagmaLeaf = (id: string): boolean => {
     if (anchors.has(id)) return false;
     const classifier = classifierById.get(id);
-    return classifier === undefined || !isCollapsedGroup(classifier);
+    // `collapsedGroup` also covers an empty USymbol group (`node X {}`), which `closeContainer` stamps with its
+    // `usymbol` after the mute -- upstream still sees a group there (`GraphvizImageBuilder.java:416-418`).
+    return classifier === undefined || !(isCollapsedGroup(classifier) || classifier.collapsedGroup === true);
   };
 
   // Root-level NOTE leaves count too: upstream `g.leafs()` yields every leaf

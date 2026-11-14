@@ -53,21 +53,24 @@ import { stripQuotes } from './class-relationship-parser.js';
 import { resolveArrow, parseArrowDecors } from './class-arrow-grammar.js';
 import { EDGE_DECORATION_MAP } from './class-dot-edges.js';
 import { EMPTY_SUBSUMED, subsumeExplicitAssociation } from './class-assoc-subsume.js';
+import { coupleEndName, placeCoupleCircle } from './class-assoc-circle-group.js';
 
 /**
- * `(A,B) <arrow> C` or `C <arrow> (A,B)`. Group 1-4 = leading couple (A, B,
- * ARROW, C); 5-8 = trailing couple (C, ARROW, A, B). G2 N8: the arrow token
+ * `(A,B) <arrow> C` or `C <arrow> (A,B)`, each with an optional `: label` tail
+ * (`CommandLinkClass.java:165-170`, `LABEL_LINK` `(.+)`). Group 1-4 = leading
+ * couple (A, B, ARROW, C), 5 = its label; 6-9 = trailing couple (C, ARROW, A,
+ * B), 10 = its label. G2 N8: the arrow token
  * is now its own capture group (was consumed but discarded) so
  * {@link applyAssocCouple} can resolve the couple's OWN decor/dashing for
  * its class-link edge (`Association#createNew`'s `linkType` param — see
  * `Relationship.dashed`'s doc comment, ast.ts).
  */
 export const ASSOC_COUPLE_RE =
-  /^\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*([-.=<>|*ox]+)\s*("[^"]*"|[^\s()]+)\s*$|^("[^"]*"|[^\s()]+)\s*([-.=<>|*ox]+)\s*\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*$/;
+  /^\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*([-.=<>|*ox]+)\s*("[^"]*"|[^\s()]+)(?:\s*:\s*(.+?))?\s*$|^("[^"]*"|[^\s()]+)\s*([-.=<>|*ox]+)\s*\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)(?:\s*:\s*(.+?))?\s*$/;
 
-/** `(A,B) <arrow> (C,D)` — a couple on both sides. Groups: A,B,C,D. */
+/** `(A,B) <arrow> (C,D)` — a couple on both sides. Groups: A,B,C,D, then the optional `: label`. */
 export const ASSOC_DOUBLE_COUPLE_RE =
-  /^\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*[-.=<>|*ox]+\s*\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*$/;
+  /^\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)\s*[-.=<>|*ox]+\s*\(\s*([^(),]+?)\s*,\s*([^(),]+?)\s*\)(?:\s*:\s*(.+?))?\s*$/;
 
 /**
  * G2 N19: shared parse-time creation counter, same shape as `ParseState
@@ -92,11 +95,15 @@ export function applyAssocCouple(
   ensure: (id: string) => Classifier,
   line: string,
   counter?: AssocCoupleCounter,
+  activeNamespace: string | null = null,
 ): boolean {
   const m = ASSOC_COUPLE_RE.exec(line);
   if (m === null) return false;
   const leading = m[1] !== undefined;
-  const [a, b, c, arrowToken] = leading ? [m[1]!, m[2]!, m[4]!, m[3]!] : [m[7]!, m[8]!, m[5]!, m[6]!];
+  const [a, b, c, arrowToken] = leading ? [m[1]!, m[2]!, m[4]!, m[3]!] : [m[8]!, m[9]!, m[6]!, m[7]!];
+  // `executeArgSpecial1/2`: `label = Display.getWithNewlines(pragma, arg.get("LABEL_LINK", 0))` goes to
+  // the point-to-associated link (`Association#createNew`, `LinkArg.build(label, length)`).
+  const label = leading ? m[5] : m[10];
   // G2 N19: the C endpoint may already be a declared NOTE (`note as N1` then
   // `N1 .. (A,B)`, temise-16-neco018) — reuse its id directly rather than
   // spawning a phantom classifier (mirrors class-commands.ts rule 6's
@@ -117,6 +124,7 @@ export function applyAssocCouple(
     true,
     counter,
   );
+  placeCoupleCircle(ast, circle, [a, b].map((n) => ensure(n).id) as [string, string], activeNamespace);
   // Leading `(A,B) arrow C` draws circle→C (executeArgSpecial1, mode 1);
   // trailing `C arrow (A,B)` draws C→circle (executeArgSpecial2, mode 2).
   // A REPEAT coupling on an already-coupled pair overrides this: its class
@@ -137,9 +145,32 @@ export function applyAssocCouple(
   const arrowInfo = resolveArrow(arrowToken) ?? { type: 'association' as const, swapDirection: false };
   const { sourceDecor, targetDecor } = parseArrowDecors(arrowToken, false);
   const dashed = EDGE_DECORATION_MAP[arrowInfo.type].dashed;
+  const cEndName = coupleEndName(ast, cId);
   const edge: Relationship = circleToClass
-    ? { from: circleId, to: cId, type: 'association', length: classEdgeLength, sourceDecor, targetDecor, dashed }
-    : { from: cId, to: circleId, type: 'association', length: classEdgeLength, sourceDecor, targetDecor, dashed };
+    ? {
+        from: circleId,
+        to: cId,
+        type: 'association',
+        length: classEdgeLength,
+        sourceDecor,
+        targetDecor,
+        dashed,
+        idEntity2: cEndName,
+      }
+    : {
+        from: cId,
+        to: circleId,
+        type: 'association',
+        length: classEdgeLength,
+        sourceDecor,
+        targetDecor,
+        dashed,
+        idEntity1: cEndName,
+      };
+  if (label !== undefined) {
+    edge.label = label;
+    edge.labelVerbatim = true;
+  }
   // G2 N19/N20: the couple's own class-link edge (`Association#createNew`'s
   // `pointToAssocied` / `createInSecond`'s own `pointToAssocied`) burns here
   // for BOTH the single-coupling and repeat-coupling paths -- no
@@ -271,6 +302,7 @@ export function makeCoupleCircle(
     sourceDecor: subsumed.aSideDecor ?? 'none',
     targetDecor: 'none',
     dashed: subsumedDashed,
+    idEntity1: coupleEndName(ast, entity1Id),
   };
   if (subsumed.a !== undefined) aEdge.fromMultiplicity = subsumed.a;
   // B2 (SI17): a `Class::member` port on the subsumed edge (pajoka-72-reju527)
@@ -288,6 +320,7 @@ export function makeCoupleCircle(
     sourceDecor: 'none',
     targetDecor: subsumed.bSideDecor ?? 'none',
     dashed: subsumedDashed,
+    idEntity2: coupleEndName(ast, entity2Id),
   };
   if (subsumed.b !== undefined) bEdge.toMultiplicity = subsumed.b;
   registerPersistentPort(ast, entity2Id, subsumed.portB);
@@ -480,6 +513,13 @@ function invertPriorClassEdge(
   const other = classEdge.to;
   classEdge.to = priorId;
   classEdge.from = other;
+  // The link's end names travel with its ends (`getInv()` builds the Link from the swapped entities,
+  // so `Link#idCommentForSvg` reads them in the new order, `abel/Link.java:106-113,145-156`).
+  const { idEntity1, idEntity2 } = classEdge;
+  delete classEdge.idEntity1;
+  delete classEdge.idEntity2;
+  if (idEntity2 !== undefined) classEdge.idEntity1 = idEntity2;
+  if (idEntity1 !== undefined) classEdge.idEntity2 = idEntity1;
   // cdd3-T16: `getInv()` sets `result.inverted = !this.inverted`
   // (`abel/Link.java:147`) on a `pointToAssocied` built by `new Link` (never
   // inverted), so the re-added edge IS inverted -- `Cluster#printCluster1`

@@ -20,6 +20,7 @@
  */
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
+import { groupBorderColor, groupTitleColor, groupSpecificStroke } from './class-namespace-colors.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import type { NamespaceGeo } from './layout.js';
 import { rect, text, PAINT_NONE } from '../../core/svg.js';
@@ -237,6 +238,7 @@ export function measureEmptyPackageLeafDim(
 function emptyPackagePaint(
   theme: ScaledTheme,
   tags: readonly string[],
+  geo: Pick<NamespaceGeo, 'colors'> = {},
 ): { strokeWidth: number; border: Paint; fill: Paint; dash: string | undefined } {
   const pkg = theme.colors.elements?.package;
   const plainBorder = pkg?.border ?? theme.colors.graph.packageBorder ?? theme.colors.border;
@@ -245,10 +247,21 @@ function emptyPackagePaint(
   // thickness.
   const dash = elementLineStyle(theme, ['package'], tags);
   const k = theme.scaleK;
+  // cogr T2c: `style.eventuallyOverride(colors)` puts `ColorType.LINE` over `LineColor` (`:107-108`), and
+  // `style.getStroke(colors)` returns `getSpecificLineStroke()` outright (`Style.java:322-328`).
+  const specific = groupSpecificStroke(geo, k);
+  if (specific !== undefined) {
+    return {
+      strokeWidth: specific.thickness * k,
+      border: groupBorderColor(geo, emptyPackageBorder(theme, tags, plainBorder)),
+      fill: emptyPackageFill(theme),
+      dash: specific.dasharray,
+    };
+  }
   return {
     // cdd-B8FU: both tiers scaled.
     strokeWidth: emptyPackageThickness(theme, tags, EMPTY_PACKAGE_STROKE_WIDTH) * k,
-    border: emptyPackageBorder(theme, tags, plainBorder),
+    border: groupBorderColor(geo, emptyPackageBorder(theme, tags, plainBorder)),
     fill: emptyPackageFill(theme),
     dash: dashArrayOf(
       dash === undefined ? undefined : { dashVisible: dash.dashVisible * k, dashSpace: dash.dashSpace * k },
@@ -326,13 +339,19 @@ function drawTitle(
     // unwind2-S11: `ClusterDecoration#drawU(ug, back, ...)` draws the title
     // over the leaf's back (`EntityImageEmptyPackage#drawU`) -- a sprite's
     // tint start.
-    { label: geo.label, theme, measurer, blockTopY: at.blockTopY, back: emptyPackagePaint(theme, draw.tags).fill },
+    {
+      label: geo.label,
+      theme,
+      measurer,
+      blockTopY: at.blockTopY,
+      back: emptyPackagePaint(theme, draw.tags, draw.geo).fill,
+    },
     {
       x: at.x,
       y: at.baselineY,
       fontFamily: packageTitleFontFamily(theme),
       fontSize: packageTitleFontSize(theme),
-      fontColor: packageTitleFontColor(theme, draw.tags),
+      fontColor: groupTitleColor(geo, packageTitleFontColor(theme, draw.tags)),
       textLength: titleTextLength,
     },
     (line) => at.xForLine(line.width),
@@ -352,7 +371,7 @@ function renderFolderLeaf(
   measurer: StringMeasurer | undefined,
 ): string {
   const { geo } = draw;
-  const { strokeWidth, border, fill, dash } = emptyPackagePaint(theme, draw.tags);
+  const { strokeWidth, border, fill, dash } = emptyPackagePaint(theme, draw.tags, draw.geo);
   const { outline, hline } = renderFolderTabShape(geo, {
     strictUml: false,
     // cdd6-T3d (fokudi-24-limo685): `style.getStroke(colors)`'s LineStyle
@@ -386,7 +405,7 @@ function renderFolderLeaf(
  */
 function renderRectLeaf(draw: EmptyPackageLeafDraw, theme: ScaledTheme, measurer: StringMeasurer | undefined): string {
   const { geo } = draw;
-  const { strokeWidth, border, fill, dash } = emptyPackagePaint(theme, draw.tags);
+  const { strokeWidth, border, fill, dash } = emptyPackagePaint(theme, draw.tags, draw.geo);
   const corner = ((draw.tab.roundCorner ?? PACKAGE_ROUND_CORNER) * theme.scaleK) / 2;
   const outline = rect(geo.x, geo.y, geo.width, geo.height, {
     stroke: isNoPaint(border) ? PAINT_NONE : border, // SvgGraphics.java:539-540 fixColor

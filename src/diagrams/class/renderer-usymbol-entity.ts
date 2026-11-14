@@ -191,6 +191,11 @@ export function buildUSymbolEntityParams(
     // cdd6 b2 (journal row 40): `SvgNanoParser.java:187-215` -- an unset
     // sprite `stroke-width` inherits the entity's own ambient stroke.
     atomImageResolverFor: makeAtomImageResolverFor(sprites, stroke),
+    // `AtomEmoji` draws the Twemoji artwork the registry holds (`EntityImageDescriptionEmoji#drawEmojiAtom`); the
+    // description engine wires the same store (`description/renderer-entity.ts`).
+    ...(sprites?.emoji === undefined
+      ? {}
+      : { emojiArtwork: (unicode: string): string | undefined => sprites.emoji?.get(unicode) }),
     // cdd8 T1e (`xagomi-49-caki729`): `EntityImageDescription.java:334-341`'s
     // `drawHexagon` draws `bibliotekon.getNode(entity).getPolygon()`, the
     // points `DotStringFactory.java:414-420` read back off graphviz for a
@@ -310,17 +315,44 @@ export function renderClassUSymbolEntity(
   sprites: SpriteRegistry | undefined,
   uid: string,
 ): DrawableFragment {
-  const params = buildUSymbolEntityParams(classifier, theme, sprites);
+  // `scale` multiplies every numeric on its way to text (`SvgGraphics.java:466-472`), so the entity is built and
+  // drawn in the unscaled units layout used and `SvgOption.scale` does the multiplying. The geometry reaching here is
+  // already scaled; building from it left every literal inside the symbol (`USymbolNode`'s 10 corner,
+  // `+4` heading size) unscaled (gazizi-80-fula677).
+  const k = theme.scaleK;
+  const unscaled = k === 1 ? { classifier, theme } : unscaleForDrawing(classifier, theme, k);
+  const params = buildUSymbolEntityParams(unscaled.classifier, unscaled.theme, sprites);
   const image = new EntityImageDescription({ ...params, entity: { ...params.entity, uid } });
   const drawable: UDrawable = {
     drawU(ug: UGraphic): void {
-      image.drawU(ug.apply(new UTranslate(classifier.x, classifier.y)));
+      image.drawU(ug.apply(new UTranslate(unscaled.classifier.x, unscaled.classifier.y)));
     },
   };
   return renderDrawableToFragment(drawable, {
-    width: classifier.x + classifier.width,
-    height: classifier.y + classifier.height,
+    width: unscaled.classifier.x + unscaled.classifier.width,
+    height: unscaled.classifier.y + unscaled.classifier.height,
     measurer,
     uid,
+    ...(k === 1 ? {} : { scale: k }),
   });
+}
+
+/** The leaf and theme in layout units: {@link scaleClassTheme}/{@link scaleClassifierGeo} undone. */
+function unscaleForDrawing(
+  classifier: ClassifierGeo,
+  theme: ScaledTheme,
+  k: number,
+): { classifier: ClassifierGeo; theme: ScaledTheme } {
+  const hexagon = classifier.hexagonPolygon?.map((p) => ({ x: p.x / k, y: p.y / k }));
+  return {
+    classifier: {
+      ...classifier,
+      x: classifier.x / k,
+      y: classifier.y / k,
+      width: classifier.width / k,
+      height: classifier.height / k,
+      ...(hexagon === undefined ? {} : { hexagonPolygon: hexagon }),
+    },
+    theme: { ...theme, fontSize: theme.fontSize / k, scaleK: 1 },
+  };
 }

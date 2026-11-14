@@ -82,12 +82,13 @@ export function addEdgeLabelMarginInk(box: InkBox, e: EdgeGeo): void {
  * geometry walk was never threaded with.
  */
 export function addMultiLineLabelMarginInk(box: InkBox, e: EdgeGeo): void {
-  const lines = e.labelLines;
-  if (lines === undefined || lines.length === 0) return;
-  const minX = Math.min(...lines.map((l) => l.x));
-  const maxX = Math.max(...lines.map((l) => l.x + l.width));
+  // A `{{ }}` image is a stripe of the same block (`class-edge-label-embed.ts`), as wide as its own `width`.
+  const spans = [...(e.labelLines ?? []), ...(e.labelEmbeds ?? [])];
+  if (spans.length === 0) return;
+  const minX = Math.min(...spans.map((l) => l.x));
+  const maxX = Math.max(...spans.map((l) => l.x + l.width));
   const m = labelMarginOf(e);
-  const y = lines[0]!.y;
+  const y = spans[0]!.y;
   addPoint(box, minX - m, y);
   addPoint(box, maxX + m, y);
 }

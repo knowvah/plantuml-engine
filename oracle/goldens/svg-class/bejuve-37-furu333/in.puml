@@ -1,0 +1,6 @@
+@startuml
+component "compA" as compA {
+}
+
+note right of compA: [[http://google.fr <img:foo.webp{scale=2}>]]
+@enduml

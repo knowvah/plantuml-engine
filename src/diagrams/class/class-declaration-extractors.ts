@@ -453,6 +453,21 @@ export function parseIdDisplay(rest: string): {
   // duplicated `Person` as a second, phantom classifier once `PersonRich
   // extends Person` referenced the correctly-spelled id.
   // @see ~/git/plantuml/.../classdiagram/command/CommandCreateClassMultilines.java:106-107 (RegexOptional(RegexConcat(spaceZeroOrMore(), GENERIC)))
+  // `CODE4` (`[%g]([^%g]+)[%g]`, `NameAndCodeParser.java:68`) is the QUOTED code, and the same optional GENERIC
+  // clause follows it (`CommandCreateClass.java:86-87`): `class "m3.Table1" <generic here>` names `m3.Table1`
+  // and carries the generic, quotes dropped like the bare quoted name below.
+  const quotedThenGeneric = /^"([^"]+)"\s*(<.*>)$/.exec(rest.trim());
+  if (quotedThenGeneric !== null) {
+    const genericMatch = GENERIC_CLAUSE_RE.exec(quotedThenGeneric[2]!);
+    if (genericMatch !== null) {
+      return {
+        display: quotedThenGeneric[1]!,
+        id: quotedThenGeneric[1]!,
+        typeParams: splitTopLevelCommas(genericMatch[1]!),
+        typeParamsRawText: genericMatch[1]!,
+      };
+    }
+  }
   const idThenGeneric = /^([^\s<>]+)\s*(<.*>)$/.exec(rest.trim());
   if (idThenGeneric !== null) {
     const genericMatch = GENERIC_CLAUSE_RE.exec(idThenGeneric[2]!);

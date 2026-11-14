@@ -19,6 +19,7 @@ import { emittedTextForm } from '../../core/svg.js';
 import { splitStripe } from './Fission.js';
 import { tabStopWidth, tabAwareWidth, walkTabs, hasTab } from './tab-stops.js';
 import { getDisplayValue, containerEntries } from './json-layout-prep.js';
+import { creoleCellLines, type CellRunStyle, type CreoleCellLine } from './json-cell-creole.js';
 import { splitDisplayLines } from '../../core/klimt/creole/DisplayNewlines.js';
 import type { FlatNode, BuildRowsOptions } from './json-layout-prep.js';
 import type { JsonStyleSet } from './json-style-resolve.js';
@@ -151,6 +152,8 @@ export interface CellAtom {
   dx: number;
   /** Width of the EMITTED form, for `textLength` — see `valueTextLengths`. */
   textLength: number;
+  /** A creole run's own style (`json-cell-creole.ts`); absent for a plain-text atom. */
+  style?: CellRunStyle;
 }
 
 export interface MeasuredNode {
@@ -238,7 +241,13 @@ function cellLines(
   v: unknown,
   measurer: StringMeasurer,
   { font, wrap }: CellMeasure,
-): { processed: string; valueLines: string[]; atomLines: string[][]; valueType: JsonRowGeo['valueType'] } {
+): {
+  processed: string;
+  valueLines: string[];
+  atomLines: string[][];
+  creole: (CreoleCellLine | undefined)[];
+  valueType: JsonRowGeo['valueType'];
+} {
   const { display, valueType } = getDisplayValue(v);
   // Split via upstream's own single pass, NOT by rewriting the escape to a
   // newline and splitting on that — a real U+000A in the value must stay
@@ -263,7 +272,18 @@ function cellLines(
   // (three spaces) each survive as one atom, and `splitStripe` with a 0
   // width returns its input untouched, which is the no-`MaximumWidth` case.
   const atomLines: string[][] = [];
+  // A segment with inline creole (`json-cell-creole.ts`) is drawn as its own styled runs; `creole` is
+  // index-aligned with `atomLines`.
+  const creole: (CreoleCellLine | undefined)[] = [];
   for (const segment of rawLines) {
+    const styled = valueType === 'string' ? creoleCellLines(segment, font, wrap, measurer) : undefined;
+    if (styled !== undefined) {
+      for (const line of styled) {
+        creole[atomLines.length] = line;
+        atomLines.push([line.text]);
+      }
+      continue;
+    }
     for (const atoms of splitStripe(segment, wrap, (t) => measurer.measure(t, font).width)) {
       atomLines.push(atoms);
     }
@@ -288,7 +308,23 @@ function cellLines(
   // `splitStripe('')` yields ONE empty atom, not none: an empty text builds no
   // atom upstream, so an all-empty list is the "no atoms" case.
   const blanked = atomLines.map((a) => (a.every((t) => t === '') ? [' '] : a));
-  return { processed, valueLines: blanked.map((a) => a.join('')), atomLines: blanked, valueType };
+  return { processed, valueLines: blanked.map((a) => a.join('')), atomLines: blanked, creole, valueType };
+}
+
+/** The one drawn line of a creole key, or `undefined` for a plain key and for a key that wraps. */
+function singleCreoleLine(key: string, cell: CellMeasure, measurer: StringMeasurer): CreoleCellLine | undefined {
+  const lines = creoleCellLines(key, cell.font, cell.wrap, measurer);
+  return lines?.length === 1 ? lines[0] : undefined;
+}
+
+/** A creole line's runs as the atoms the renderer draws. */
+function creoleAtoms(line: CreoleCellLine): CellAtom[] {
+  return line.runs.map((run) => ({ text: run.text, dx: run.dx, textLength: run.textLength, style: run.style }));
+}
+
+/** The `textLength` summed over a creole line, the value `valueTextLengths` carries per line. */
+function textLengthOf(line: CreoleCellLine): number {
+  return line.runs.reduce((sum, run) => sum + run.textLength, 0);
 }
 
 /**
@@ -302,6 +338,7 @@ function cellMetrics(
     key: string;
     valueLines: readonly string[];
     atomLines: readonly (readonly string[])[];
+    creole: readonly (CreoleCellLine | undefined)[];
     rowY: number;
     arrayEntry: boolean;
   },
@@ -359,17 +396,30 @@ function cellMetrics(
   };
   const tabStop = tabStopWidth(valMeasure, valFont.size, valFont.tabSize);
   const lineWidth = (l: string) => (hasTab(l) ? tabAwareWidth(l, valMeasure, tabStop) : valMeasure(l));
+  // A key is the same creole block as a value, and a single-line one is drawn as its styled runs too.
+  const keyCreole = cell.arrayEntry ? undefined : singleCreoleLine(cell.key, keyCell, measurer);
   return {
     // A key is the same creole block as a value (`TextBlockJson.java:123`,
     // `:341-345`), so `AtomText#getWidth`'s tab walk sizes it too.
     keyWidth: cell.arrayEntry
       ? 0
-      : tabAwareWidth(cell.key, keyMeasure, tabStopWidth(keyMeasure, keyFont.size, keyFont.tabSize)),
-    valueLineWidths: cell.valueLines.map(lineWidth),
-    keyTextLength: cell.arrayEntry ? 0 : emitted(cell.key, keyFont),
-    valueTextLengths: cell.valueLines.map((l) => emitted(l, valFont)),
-    valueAtoms: cell.atomLines.map((a) => atomsOf(a, valFont)),
-    keyAtoms: cell.arrayEntry ? [] : atomsOf(splitStripe(cell.key, keyCell.wrap, keyMeasure)[0] ?? [cell.key], keyFont),
+      : (keyCreole?.width ??
+        tabAwareWidth(cell.key, keyMeasure, tabStopWidth(keyMeasure, keyFont.size, keyFont.tabSize))),
+    valueLineWidths: cell.valueLines.map((l, i) => cell.creole[i]?.width ?? lineWidth(l)),
+    keyTextLength: cell.arrayEntry ? 0 : keyCreole === undefined ? emitted(cell.key, keyFont) : textLengthOf(keyCreole),
+    valueTextLengths: cell.valueLines.map((l, i) => {
+      const styled = cell.creole[i];
+      return styled === undefined ? emitted(l, valFont) : textLengthOf(styled);
+    }),
+    valueAtoms: cell.atomLines.map((a, i) => {
+      const styled = cell.creole[i];
+      return styled === undefined ? atomsOf(a, valFont) : creoleAtoms(styled);
+    }),
+    keyAtoms: cell.arrayEntry
+      ? []
+      : keyCreole !== undefined
+        ? creoleAtoms(keyCreole)
+        : atomsOf(splitStripe(cell.key, keyCell.wrap, keyMeasure)[0] ?? [cell.key], keyFont),
     keyBaselineY: cell.arrayEntry ? firstBaseline : baselineOf(heights.key, keyFont, cell.key),
     valueBaselineYs: cell.valueLines.map((_, i) => firstBaseline + heights.value * i),
   };
@@ -382,7 +432,7 @@ function buildRow(
   measure: RowMeasure,
   highlight: string | false,
 ): JsonRowGeo {
-  const { processed, valueLines, atomLines, valueType } = cellLines(cell.value, measurer, measure.value);
+  const { processed, valueLines, atomLines, creole, valueType } = cellLines(cell.value, measurer, measure.value);
   const heights = {
     key: measurer.measure(cell.key, measure.key.font).height,
     value: measurer.measure(cell.key, measure.value.font).height,
@@ -391,6 +441,7 @@ function buildRow(
     key: cell.key,
     valueLines,
     atomLines,
+    creole,
     rowY: cell.rowY,
     arrayEntry: cell.arrayEntry,
   };

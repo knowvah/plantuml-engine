@@ -323,12 +323,14 @@ them with the pragma stripped (`scripts/capture-oracle-cache.ts` now applies
 `stripLayoutPragma`): `vakovo-25-licu237`, `fakone-16-boro774`,
 `japode-92-famo984` and `tikiti-02-bagu049` are conformant and pinned, and
 `xagomi-49-caki729` became conformant once the class svek hexagon was ported
-(cdd8 T1e); their acceptances are retired. Two entries still carry the ruling
-one level down: `svg-unknown/gubeca-19-lemu434` and
-`svg-unknown/jixibu-01-xave465` embed a `{{yaml}}` diagram whose 1 px
-`<image>` size delta is the nested JsonDiagram's Smetana geometry (cdd6
-journal row 73). Neither entry changes a bar: the survey and census keep
-printing the rows' real verdicts.
+(cdd8 T1e); their acceptances are retired. Three entries still carry the
+ruling one level down: `svg-unknown/gubeca-19-lemu434`,
+`svg-unknown/jixibu-01-xave465` and `svg-class/vanadi-41-geru001` (cogr D4,
+2026-11-14) embed a `{{yaml}}` diagram whose 1 px `<image>` size delta is the
+nested JsonDiagram's Smetana geometry (cdd6 journal row 73; vanadi: the
+child-table x 128.237 vs 128, `image/@width` 184 vs 183, every text equal).
+None of these entries changes a bar: the survey and census keep printing the
+rows' real verdicts.
 
 ### ~~`!pragma layout elk` — not supported~~ — RETIRED (cdd8, 2026-10-11)
 
@@ -692,12 +694,14 @@ them with the pragma stripped (`scripts/capture-oracle-cache.ts` now applies
 `stripLayoutPragma`): `vakovo-25-licu237`, `fakone-16-boro774`,
 `japode-92-famo984` and `tikiti-02-bagu049` are conformant and pinned, and
 `xagomi-49-caki729` became conformant once the class svek hexagon was ported
-(cdd8 T1e); their acceptances are retired. Two entries still carry the ruling
-one level down: `svg-unknown/gubeca-19-lemu434` and
-`svg-unknown/jixibu-01-xave465` embed a `{{yaml}}` diagram whose 1 px
-`<image>` size delta is the nested JsonDiagram's Smetana geometry (cdd6
-journal row 73). Neither entry changes a bar: the survey and census keep
-printing the rows' real verdicts.
+(cdd8 T1e); their acceptances are retired. Three entries still carry the
+ruling one level down: `svg-unknown/gubeca-19-lemu434`,
+`svg-unknown/jixibu-01-xave465` and `svg-class/vanadi-41-geru001` (cogr D4,
+2026-11-14) embed a `{{yaml}}` diagram whose 1 px `<image>` size delta is the
+nested JsonDiagram's Smetana geometry (cdd6 journal row 73; vanadi: the
+child-table x 128.237 vs 128, `image/@width` 184 vs 183, every text equal).
+None of these entries changes a bar: the survey and census keep printing the
+rows' real verdicts.
 
 ### ~~`!pragma layout elk` — not supported~~ — RETIRED (cdd8, 2026-10-11)
 
@@ -1062,12 +1066,14 @@ them with the pragma stripped (`scripts/capture-oracle-cache.ts` now applies
 `stripLayoutPragma`): `vakovo-25-licu237`, `fakone-16-boro774`,
 `japode-92-famo984` and `tikiti-02-bagu049` are conformant and pinned, and
 `xagomi-49-caki729` became conformant once the class svek hexagon was ported
-(cdd8 T1e); their acceptances are retired. Two entries still carry the ruling
-one level down: `svg-unknown/gubeca-19-lemu434` and
-`svg-unknown/jixibu-01-xave465` embed a `{{yaml}}` diagram whose 1 px
-`<image>` size delta is the nested JsonDiagram's Smetana geometry (cdd6
-journal row 73). Neither entry changes a bar: the survey and census keep
-printing the rows' real verdicts.
+(cdd8 T1e); their acceptances are retired. Three entries still carry the
+ruling one level down: `svg-unknown/gubeca-19-lemu434`,
+`svg-unknown/jixibu-01-xave465` and `svg-class/vanadi-41-geru001` (cogr D4,
+2026-11-14) embed a `{{yaml}}` diagram whose 1 px `<image>` size delta is the
+nested JsonDiagram's Smetana geometry (cdd6 journal row 73; vanadi: the
+child-table x 128.237 vs 128, `image/@width` 184 vs 183, every text equal).
+None of these entries changes a bar: the survey and census keep printing the
+rows' real verdicts.
 
 ### ~~`!pragma layout elk` — not supported~~ — RETIRED (cdd8, 2026-10-11)
 

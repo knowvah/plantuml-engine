@@ -678,7 +678,53 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11315 + 1 = 11316.
     // 11316 -> 11317 at sogr/T3c (2026-11-13): +1 svg-sequence golden clone (teoz-ng-001-1).
     // Derivation: 11316 + 1 = 11317.
-    expect(manifest.fixtures.length).toBe(11317);
+    // 11317 -> 11427 at cogr/T1 (2026-11-14): +110 svg-class golden clones (the cogr-T1 rows).
+    // Derivation: 11317 + 110 = 11427.
+    // 11427 -> 11428 at cogr/T1b (2026-11-14): +1 svg-class golden clone (fosufo-93-kozi113).
+    // Derivation: 11427 + 1 = 11428.
+    // 11428 -> 11430 at cogr/T2a (2026-11-14): +2 svg-class golden clone(s) (mipuzo-23-saji028, tufuru-60-laxo740).
+    // Derivation: 11428 + 2 = 11430.
+    // 11430 -> 11435 at cogr/T2b (2026-11-14): +5 svg-class golden clone(s) (puboje-01-suna474, secomu-36-pabe790, cokute-29-gezu131, vacuso-72-faro236, mikepu-83-jono930).
+    // Derivation: 11430 + 5 = 11435.
+    // 11435 -> 11438 at cogr/T2c (2026-11-14): +3 svg-class golden clone(s) (beragu-30-zate466, zitene-13-xeda918, tegipa-83-bilu912).
+    // Derivation: 11435 + 3 = 11438.
+    // 11438 -> 11440 at cogr/T2d (2026-11-14): +2 svg-class golden clone(s) (bejuve-37-furu333, robuji-68-rise413).
+    // Derivation: 11438 + 2 = 11440.
+    // 11440 -> 11441 at cogr/T2e (2026-11-14): +1 svg-class golden clone(s) (bofebi-14-gano257).
+    // Derivation: 11440 + 1 = 11441.
+    // 11441 -> 11443 at cogr/T3a (2026-11-14): +2 svg-class golden clone(s) (kofogo-67-jiju461, zemeco-27-kaje686).
+    // Derivation: 11441 + 2 = 11443.
+    // 11443 -> 11444 at cogr/T3b (2026-11-14): +1 svg-class golden clone (kibinu-30-pese048).
+    // Derivation: 11443 + 1 = 11444.
+    // 11444 -> 11447 at cogr/T3c (2026-11-14): +3 svg-class golden clones (gemufi-65-riba175, vapasu-07-fajo818, botome-06-bera894).
+    // Derivation: 11444 + 3 = 11447.
+    // 11447 -> 11449 at cogr/T3d (2026-11-14): +2 svg-class golden clone(s) (volode-59-safa575, lolovi-23-loji748).
+    // Derivation: 11447 + 2 = 11449.
+    // 11449 -> 11450 at cogr/T3e (2026-11-14): +1 svg-class golden clone(s) (xupuzi-80-deri689).
+    // Derivation: 11449 + 1 = 11450.
+    // 11450 -> 11451 at cogr/T3f (2026-11-14): +1 svg-class golden clone(s) (style-stereotype-on-arrow-6).
+    // Derivation: 11450 + 1 = 11451.
+    // 11451 -> 11453 at cogr/T4a (2026-11-14): +2 svg-class golden clone(s) (bupabi-53-xedu278, nexeno-07-pike819).
+    // Derivation: 11451 + 2 = 11453.
+    // 11453 -> 11454 at cogr/T4b (2026-11-14): +1 svg-class golden clone(s) (gimumo-81-fuce233).
+    // Derivation: 11453 + 1 = 11454.
+    // 11454 -> 11455 at cogr/T4c (2026-11-14): +1 svg-class golden clone(s) (gazizi-80-fula677).
+    // Derivation: 11454 + 1 = 11455.
+    // 11455 -> 11456 at cogr/T4d (2026-11-14): +1 svg-class golden clone(s) (gecaxa-13-jedi612).
+    // Derivation: 11455 + 1 = 11456.
+    // 11456 -> 11458 at cogr/T4e (2026-11-14): +2 svg-class golden clone(s) (juxugu-89-beki062, mocatu-19-jivi646).
+    // Derivation: 11456 + 2 = 11458.
+    // 11458 -> 11459 at cogr/T4f (2026-11-14): +1 svg-class golden clone(s) (moxeku-98-gufi234).
+    // Derivation: 11458 + 1 = 11459.
+    // 11459 -> 11462 at cogr/T4g (2026-11-14): +3 svg-class golden clone(s) (gelefo-99-vexu215, sokivo-58-tijo947, tezefu-05-xuvi984).
+    // Derivation: 11459 + 3 = 11462.
+    // 11462 -> 11463 at cogr/T4h2 (2026-11-14): +1 svg-class golden clone(s) (sivoso-11-xabi195).
+    // Derivation: 11462 + 1 = 11463.
+    // 11463 -> 11464 at cogr/T4f2 (2026-11-14): +1 svg-class golden clone(s) (dobefe-98-moji323).
+    // Derivation: 11463 + 1 = 11464.
+    // 11464 -> 11465 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
+    // Derivation: 11464 + 1 = 11465.
+    expect(manifest.fixtures.length).toBe(11465);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1008,7 +1054,53 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11163 + 1 = 11164.
     // 11164 -> 11165 at sogr/T3c (2026-11-13): +1 svg-sequence golden clone, rendering.
     // Derivation: 11164 + 1 = 11165.
-    expect(pinnedRendering.length).toBe(11165);
+    // 11165 -> 11275 at cogr/T1 (2026-11-14): +110 svg-class golden clones (the cogr-T1 rows), rendering.
+    // Derivation: 11165 + 110 = 11275.
+    // 11275 -> 11276 at cogr/T1b (2026-11-14): +1 svg-class golden clone (fosufo-93-kozi113).
+    // Derivation: 11275 + 1 = 11276.
+    // 11276 -> 11278 at cogr/T2a (2026-11-14): +2 svg-class golden clone(s) (mipuzo-23-saji028, tufuru-60-laxo740).
+    // Derivation: 11276 + 2 = 11278.
+    // 11278 -> 11283 at cogr/T2b (2026-11-14): +5 svg-class golden clone(s) (puboje-01-suna474, secomu-36-pabe790, cokute-29-gezu131, vacuso-72-faro236, mikepu-83-jono930).
+    // Derivation: 11278 + 5 = 11283.
+    // 11283 -> 11286 at cogr/T2c (2026-11-14): +3 svg-class golden clone(s) (beragu-30-zate466, zitene-13-xeda918, tegipa-83-bilu912).
+    // Derivation: 11283 + 3 = 11286.
+    // 11286 -> 11288 at cogr/T2d (2026-11-14): +2 svg-class golden clone(s) (bejuve-37-furu333, robuji-68-rise413).
+    // Derivation: 11286 + 2 = 11288.
+    // 11288 -> 11289 at cogr/T2e (2026-11-14): +1 svg-class golden clone(s) (bofebi-14-gano257).
+    // Derivation: 11288 + 1 = 11289.
+    // 11289 -> 11291 at cogr/T3a (2026-11-14): +2 svg-class golden clone(s) (kofogo-67-jiju461, zemeco-27-kaje686).
+    // Derivation: 11289 + 2 = 11291.
+    // 11291 -> 11292 at cogr/T3b (2026-11-14): +1 svg-class golden clone (kibinu-30-pese048).
+    // Derivation: 11291 + 1 = 11292.
+    // 11292 -> 11295 at cogr/T3c (2026-11-14): +3 svg-class golden clones (gemufi-65-riba175, vapasu-07-fajo818, botome-06-bera894).
+    // Derivation: 11292 + 3 = 11295.
+    // 11295 -> 11297 at cogr/T3d (2026-11-14): +2 svg-class golden clone(s) (volode-59-safa575, lolovi-23-loji748).
+    // Derivation: 11295 + 2 = 11297.
+    // 11297 -> 11298 at cogr/T3e (2026-11-14): +1 svg-class golden clone(s) (xupuzi-80-deri689).
+    // Derivation: 11297 + 1 = 11298.
+    // 11298 -> 11299 at cogr/T3f (2026-11-14): +1 svg-class golden clone(s) (style-stereotype-on-arrow-6).
+    // Derivation: 11298 + 1 = 11299.
+    // 11299 -> 11301 at cogr/T4a (2026-11-14): +2 svg-class golden clone(s) (bupabi-53-xedu278, nexeno-07-pike819).
+    // Derivation: 11299 + 2 = 11301.
+    // 11301 -> 11302 at cogr/T4b (2026-11-14): +1 svg-class golden clone(s) (gimumo-81-fuce233).
+    // Derivation: 11301 + 1 = 11302.
+    // 11302 -> 11303 at cogr/T4c (2026-11-14): +1 svg-class golden clone(s) (gazizi-80-fula677).
+    // Derivation: 11302 + 1 = 11303.
+    // 11303 -> 11304 at cogr/T4d (2026-11-14): +1 svg-class golden clone(s) (gecaxa-13-jedi612).
+    // Derivation: 11303 + 1 = 11304.
+    // 11304 -> 11306 at cogr/T4e (2026-11-14): +2 svg-class golden clone(s) (juxugu-89-beki062, mocatu-19-jivi646).
+    // Derivation: 11304 + 2 = 11306.
+    // 11306 -> 11307 at cogr/T4f (2026-11-14): +1 svg-class golden clone(s) (moxeku-98-gufi234).
+    // Derivation: 11306 + 1 = 11307.
+    // 11307 -> 11310 at cogr/T4g (2026-11-14): +3 svg-class golden clone(s) (gelefo-99-vexu215, sokivo-58-tijo947, tezefu-05-xuvi984).
+    // Derivation: 11307 + 3 = 11310.
+    // 11310 -> 11311 at cogr/T4h2 (2026-11-14): +1 svg-class golden clone(s) (sivoso-11-xabi195).
+    // Derivation: 11310 + 1 = 11311.
+    // 11311 -> 11312 at cogr/T4f2 (2026-11-14): +1 svg-class golden clone(s) (dobefe-98-moji323).
+    // Derivation: 11311 + 1 = 11312.
+    // 11312 -> 11313 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
+    // Derivation: 11312 + 1 = 11313.
+    expect(pinnedRendering.length).toBe(11313);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

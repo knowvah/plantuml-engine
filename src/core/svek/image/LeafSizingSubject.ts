@@ -68,6 +68,8 @@ export interface EntitySizing {
   readonly titleAlignment?: HorizontalAlignment;
   readonly stereotypeAlignment?: HorizontalAlignment;
   readonly thickness?: number;
+  /** `styleTitle.value(PName.RoundCorner)` (`EntityImageDescription.java:171`); 0 selects `USymbolFile`'s polygon. */
+  readonly roundCorner?: number;
   /** `style.wrapWidth()`, `style.value(PName.MinimumWidth)` (`EntityImageDescription.java:185-191`). */
   readonly wrapWidth?: number;
   readonly minimumWidth?: number;

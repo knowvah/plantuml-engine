@@ -60,7 +60,7 @@ import type { NestedDiagramRenderer } from '../../core/EmbeddedDiagram.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
-import { registerNestedDiagramRenderer } from '../../core/nested-diagram-registry.js';
+import { getNestedDiagramRenderer, registerNestedDiagramRenderer } from '../../core/nested-diagram-registry.js';
 
 /**
  * Task item 3 (CDD T27): a block embedding itself, directly or via a cycle,
@@ -193,6 +193,12 @@ export function createNestedDiagramRenderer(
   function guardedRender(source: readonly string[]): RenderedEmbeddedImage {
     if (embedDepth >= maxDepth) throw new EmbeddedDiagramDepthError(maxDepth);
     embedDepth++;
+    // The nested render registers its OWN diagram's renderer (`src/index.ts#prepareBlock`), which would be what
+    // the NEXT embed of the enclosing diagram renders through, and inherit this embed's skinparams. Upstream's
+    // `EmbeddedDiagram` keeps the enclosing `skinParam` it was built from (`EmbeddedDiagram.java:88-90`), so the
+    // enclosing registration is put back once this embed has rendered.
+    const enclosingClass = registeredRenderer;
+    const enclosingChrome = getNestedDiagramRenderer();
     try {
       const svg = stripPlantumlProcessingInstructions(renderFn(source.join('\n')));
       // `EmbeddedDiagram#drawU` draws `new UImageSvg(imageSvg, 1)`
@@ -202,6 +208,8 @@ export function createNestedDiagramRenderer(
       const payload = toBase64(new TextEncoder().encode(svgImagePayload(image)));
       return { width: image.getWidth(), height: image.getHeight(), href: `data:image/svg+xml;base64,${payload}` };
     } finally {
+      registeredRenderer = enclosingClass;
+      if (enclosingChrome !== undefined) registerNestedDiagramRenderer(enclosingChrome);
       embedDepth--;
     }
   }

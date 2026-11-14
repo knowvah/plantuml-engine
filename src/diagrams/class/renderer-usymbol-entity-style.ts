@@ -10,7 +10,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageDescription.java
  */
 import type { ClassifierGeo } from './class-geo-types.js';
-import { resolveElementPaint, resolveElementLineThickness } from '../../core/theme.js';
+import { resolveElementPaint, resolveElementLineThickness, type Theme } from '../../core/theme.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
@@ -20,6 +20,8 @@ import { resolveBareOrBackColor } from '../../core/color-override.js';
 import { parseColor, isTransparentColor, type Paint } from '../../core/paint.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
+import { parseDeclarationColors } from './class-declaration-extractors.js';
+import { strokeForStyle } from '../../core/svek/svek-edge-stroke.js';
 import { byStereo, elementLineStyle, elementStereoFontColor, elementTitleFontColor } from './class-package-style.js';
 
 /** Jar default line thickness for an `EntityImageDescription`-family shape
@@ -98,11 +100,16 @@ const STEREOTYPE_STYLES: ReadonlySet<FontStyle> = new Set([FontStyle.ITALIC]);
  * NOT what the golden SVG shows. `usecase` keeps CENTER (unchanged from
  * before this task, and jar-verified correct by its own selector).
  */
-export function titleAlignmentFor(symbolKeyword: USymbol, theme: ScaledTheme): HorizontalAlignment {
+export function titleAlignmentFor(symbolKeyword: USymbol, theme: Pick<Theme, 'colors'>): HorizontalAlignment {
   // cdd5-T5c (gejuvu-17-vufu851): `USymbolUsecase#getSNames` is `{usecase,
   // business}` for the business variant (`USymbolUsecase.java:67-70`), so
   // its title signature contains `usecase` too and the same skin rule
   // centres it.
+  // cogr-T4a: `styleTitle.getHorizontalAlignment()` (`EntityImageDescription.java:175`) reads the title-scoped
+  // signature, so a `<style> component { HorizontalAlignment center }` (bucket `elements[symbol]`) wins over the
+  // skin default, the same `own ?? root ?? skin` cascade description's `leaf-sizing-entity.ts#titleAlignmentFor` has.
+  const own = theme.colors.elements?.[symbolKeyword]?.horizontalAlignment;
+  if (own !== undefined) return own;
   if (symbolKeyword === 'usecase' || symbolKeyword === 'usecase-business') return HorizontalAlignment.CENTER;
   // cdd7 T2b (xuloxo-85): `skinparam defaultTextAlignment X` is
   // `PName.HorizontalAlignment` on `SName.root` (`FromSkinparamToStyle.java
@@ -161,6 +168,10 @@ export function leafTags(classifier: ClassifierGeo): readonly string[] {
  *  the `<sname>BorderColor<<label>>` tier over the plain one (jar probe
  *  `rectangle<<person>> { BorderColor #073B6F }`; fepiko-26). */
 export function resolveForecolor(classifier: ClassifierGeo, theme: ScaledTheme, symbolKeyword: USymbol): Paint {
+  // cogr T2c: `styleTitle.eventuallyOverride(colors)` puts `ColorType.LINE` over every `LineColor` tier
+  // (`EntityImageDescription.java:151-153,162`, `Style.java:202-204`).
+  const inlineLine = parseDeclarationColors(classifier.color).line;
+  if (inlineLine !== undefined) return resolvedPaint(inlineLine);
   const own = theme.colors.elements?.[symbolKeyword];
   const byLabel = byStereo(own?.borderByStereo, leafTags(classifier));
   if (byLabel !== undefined) return byLabel;
@@ -180,6 +191,9 @@ export function resolveForecolor(classifier: ClassifierGeo, theme: ScaledTheme, 
  * scale with `theme.scaleK` (`SvgGraphics#format` scales the dasharray too).
  */
 export function resolveStroke(classifier: ClassifierGeo, theme: ScaledTheme, symbolKeyword: USymbol): UStroke {
+  // cogr T2c: `Style#getStroke(colors)` returns `colors.getSpecificLineStroke()` outright (`Style.java:322-328`).
+  const inlineStyle = parseDeclarationColors(classifier.color).lineStyle;
+  if (inlineStyle !== undefined) return scaledStroke(strokeForStyle(inlineStyle), theme.scaleK);
   const tags = leafTags(classifier);
   const byLabel = byStereo(theme.colors.elements?.[symbolKeyword]?.lineThicknessByStereo, tags);
   const thickness =
@@ -187,6 +201,12 @@ export function resolveStroke(classifier: ClassifierGeo, theme: ScaledTheme, sym
   const dash = elementLineStyle(theme, [symbolKeyword], tags);
   if (dash === undefined) return UStroke.withThickness(thickness);
   return new UStroke(dash.dashVisible * theme.scaleK, dash.dashSpace * theme.scaleK, thickness);
+}
+
+/** A `LinkStyle` stroke with its dash and thickness scaled (`SvgGraphics#format` scales both). */
+function scaledStroke(stroke: UStroke, k: number): UStroke {
+  const dash = stroke.getDasharraySvg();
+  return new UStroke((dash?.[0] ?? 0) * k, (dash?.[1] ?? 0) * k, stroke.getThickness() * k);
 }
 
 /** `font` with its colour replaced by `color` when an element tier set one;
@@ -209,12 +229,16 @@ function recolor(font: FontConfiguration, color: string | undefined): FontConfig
 export function resolveLeafFonts(classifier: ClassifierGeo, theme: ScaledTheme, symbolKeyword: USymbol) {
   const tags = leafTags(classifier);
   const byLabel = byStereo(theme.colors.elements?.[symbolKeyword]?.fontByStereo, tags);
+  // cogr T2c: `styleTitle`/`style` `.eventuallyOverride(colors)` put `ColorType.TEXT` over `FontColor`
+  // (`EntityImageDescription.java:149-153`, `Style.java:206-208`); `styleStereo` is not overridden (`:155-157`).
+  const inlineText = parseDeclarationColors(classifier.color).text;
+  const text = inlineText === undefined ? undefined : resolveColorToSvgHex(inlineText);
   return {
     fontTitle: recolor(
       textFont(theme, symbolKeyword, 0, entityTitleStyles(symbolKeyword)),
-      elementTitleFontColor(theme, symbolKeyword, tags),
+      text ?? elementTitleFontColor(theme, symbolKeyword, tags),
     ),
-    fontBody: recolor(textFont(theme, symbolKeyword), byLabel),
+    fontBody: recolor(textFont(theme, symbolKeyword), text ?? byLabel),
     // `plantuml.skin:79-82` `stereotype { FontStyle italic }` -- the same
     // STEREOTYPE_STYLES `description/renderer-entity.ts:82,214` passes.
     fontStereo: recolor(

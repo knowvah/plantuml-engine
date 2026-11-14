@@ -9,11 +9,12 @@ import type { ClassGeometry } from './layout.js';
 import { parseClass } from './parser.js';
 import { layoutClass, classPageAst, classPageCount } from './layout.js';
 import { renderClass, renderClassPage } from './renderer.js';
-import { annotateClassStyles } from './class-cluster-corner.js';
+import { annotateClassStyles, annotateLinkStyles } from './class-cluster-corner.js';
 import { annotateObjectStyles } from './class-object-style.js';
 import { annotateStateLeafStyles } from './class-state-leaf.js';
 import { layoutClassElk } from './class-elk-layout.js';
 import { ELK_RENDER_SYNC_UNSUPPORTED } from '../../core/elk/layout-services.js';
+import { withClassWarningBanner, withSkinParamWarnings } from './class-warnings.js';
 import { DiagramRefusal } from '../../core/error/error-diagrams.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
 
@@ -55,7 +56,9 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
   // `sprite $N jar:<path>` resolves at COMMAND-execution time
   // (`CommandSpriteFile.java:108-112`), i.e. during this call.
   parse(block, options) {
-    return parseClass(block, options);
+    const ast = parseClass(block, options);
+    // `CommandSkinParam.java:92-99` -> `ast.warnings`.
+    return 'refused' in ast ? ast : withSkinParamWarnings(ast, block);
   },
 
   // Command errors abort the diagram upstream (`CommandExecutionResult.error`
@@ -83,6 +86,7 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
     const builder = services?.styleBuilder?.();
     if (builder !== undefined) {
       annotateClassStyles(ast, builder);
+      if (services?.styleBuilderAt !== undefined) annotateLinkStyles(ast, services.styleBuilderAt);
       annotateObjectStyles(ast.classifiers, builder, theme);
       annotateStateLeafStyles(ast.classifiers, builder);
     }
@@ -93,7 +97,8 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
     const errors = ast.errors ?? [];
     const spritesField = ast.sprites !== undefined ? { sprites: ast.sprites } : {};
     const errorsField = errors.length > 0 ? { errors, errorLine: ast.errorLine } : {};
-    return { ...geo, measurer, ...spritesField, ...errorsField };
+    const warningsField = ast.warnings !== undefined ? { warnings: ast.warnings } : {};
+    return { ...geo, measurer, ...spritesField, ...errorsField, ...warningsField };
   },
 
   render(geo, theme) {
@@ -113,7 +118,8 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
     // difference invisible until `SvgGraphics.java:727-728`'s monospace NBSP
     // rule was ported and started rewriting its spaces.
     throwIfRefused(geo);
-    return renderClass(geo, theme);
+    // `DiagramChromeFactory.java:128`: the warning banner is the first chrome step.
+    return withClassWarningBanner(renderClass(geo, theme), geo.warnings, geo.measurer, theme);
   },
 
   // cdd-T34 (E14 `newpage`): the `PaginatedPlugin` trio (`core/dispatcher
@@ -132,7 +138,7 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
 
   renderPage(geo, theme, pageIndex): RenderFragment {
     throwIfRefused(geo);
-    return renderClassPage(geo, theme, pageIndex);
+    return withClassWarningBanner(renderClassPage(geo, theme, pageIndex), geo.warnings, geo.measurer, theme);
   },
 
   pageAst(ast, pageIndex) {
