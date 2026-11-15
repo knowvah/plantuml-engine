@@ -883,7 +883,9 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11284 + 1 = 11285.
     // 11285 -> 11286 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
     // Derivation: 11285 + 1 = 11286.
-    expect(pinnedAgree.length).toBe(11286);
+    // 11286 -> 11333 at dogr/T1 (2026-11-14): +47 svg-dot golden clone(s) (the 47 zero-diff #109 @startdot rows, #141).
+    // Derivation: 11286 + 47 = 11333.
+    expect(pinnedAgree.length).toBe(11333);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -921,7 +923,9 @@ describe('routing conformance — jar-error classification', () => {
     expect(pinnedMisroutes.length).toBe(17);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
-    expect(pinnedJarErrors.length).toBe(162);
+    // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
+    // Derivation: 162 + 8 = 170.
+    expect(pinnedJarErrors.length).toBe(170);
     // 7202 -> 7203 at gtc T1 (see the agree derivation above).
     // 7203 -> 7214 at gtc T2 (see the agree derivation above).
     // 7214 -> 7249 at gtc S (state lane close) (see the agree derivation above).
@@ -1086,7 +1090,11 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11463 + 1 = 11464.
     // 11464 -> 11465 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
     // Derivation: 11464 + 1 = 11465.
-    expect(manifest.fixtures.length).toBe(11465);
+    // 11465 -> 11512 at dogr/T1 (2026-11-14): +47 svg-dot golden clone(s) (the 47 zero-diff #109 @startdot rows, #141).
+    // Derivation: 11465 + 47 = 11512.
+    // 11512 -> 11520 at dogr/T1b (2026-11-14): +8 svg-dot golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
+    // Derivation: 11512 + 8 = 11520.
+    expect(manifest.fixtures.length).toBe(11520);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

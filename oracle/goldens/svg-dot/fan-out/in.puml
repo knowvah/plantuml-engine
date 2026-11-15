@@ -1,0 +1,8 @@
+@startdot
+digraph fanout {
+  root -> a
+  root -> b
+  root -> c
+  root -> d
+}
+@enddot

@@ -1,0 +1,11 @@
+@startdot
+digraph G {
+  subgraph { rank=source; s }
+  subgraph { rank=sink; t }
+  s -> a
+  s -> b
+  a -> t
+  b -> t
+  a -> b
+}
+@enddot

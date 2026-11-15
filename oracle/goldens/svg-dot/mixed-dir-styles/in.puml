@@ -1,0 +1,8 @@
+@startdot
+digraph G {
+  graph [rankdir=LR]
+  a -> b [dir=both, style=bold]
+  b -> c [dir=none, style=dashed]
+  c -> d [dir=back, style=dotted]
+}
+@enddot

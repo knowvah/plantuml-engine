@@ -1,0 +1,6 @@
+@startdot
+skinparam BackgroundColor #E8F4E8
+digraph G {
+  a -> b -> c
+}
+@enddot

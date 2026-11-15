@@ -1,0 +1,8 @@
+@startdot
+digraph G {
+  a [fillcolor="#FFCCCC", style=filled]
+  b [fillcolor="#CCFFCC", style=filled]
+  c [fillcolor="#CCCCFF", style=filled]
+  a -> b -> c
+}
+@enddot

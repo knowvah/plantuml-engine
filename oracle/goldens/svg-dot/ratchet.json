@@ -3,27 +3,350 @@
     {
       "slug": "bemepi-16-kuzo249",
       "addedAt": "2026-08-08",
-      "source": "D14 @startdot passthrough \u2014 zero-diff at seed"
+      "source": "D14 @startdot passthrough — zero-diff at seed"
     },
     {
       "slug": "chain-expansion",
       "addedAt": "2026-08-08",
-      "source": "D14 @startdot passthrough \u2014 zero-diff at seed"
+      "source": "D14 @startdot passthrough — zero-diff at seed"
     },
     {
       "slug": "ciditi-21-xacu710",
       "addedAt": "2026-08-08",
-      "source": "D14 @startdot passthrough \u2014 zero-diff at seed"
+      "source": "D14 @startdot passthrough — zero-diff at seed"
     },
     {
       "slug": "cluster-basic",
       "addedAt": "2026-08-08",
-      "source": "D14 @startdot passthrough \u2014 zero-diff at seed"
+      "source": "D14 @startdot passthrough — zero-diff at seed"
     },
     {
       "slug": "cluster-nested",
       "addedAt": "2026-08-08",
-      "source": "D14 @startdot passthrough \u2014 zero-diff at seed"
+      "source": "D14 @startdot passthrough — zero-diff at seed"
+    },
+    {
+      "slug": "constraint-false",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "deep-cycle",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "diamond-flow",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "dir-back",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "dir-both",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "dir-none",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "disconnected-components",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "edge-labels-workflow",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "edge-style-bold",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "edge-style-dashed",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "edge-style-dotted",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "edge-weight",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "fan-in",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "fan-out",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "lr-sm-labeled",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "lr-sm-nolabel",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "lr-sm-one-label",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "lr-with-edge-labels",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "mixed-dir-styles",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "mixed-shapes-all",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "multi-edge-labels",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "node-color",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "node-defaults-diamond",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "node-defaults-shape",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "node-fillcolor",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "numeric-node-ids",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "parallel-edges",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "plaintext-nodes-annotation",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "rank-source-sink",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "rankdir-bt",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "rankdir-rl",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "self-loop",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "shapes-box-ellipse-diamond",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "shapes-circle",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "single-node-shapes",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "skinparam-arrow-color",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "skinparam-background-color",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "skinparam-border-color",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "skinparam-node-background",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "strict-dedup",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "subgraph-same-rank",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "two-subgraphs-same-rank",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "undirected-chain-long",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "undirected-k4",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "undirected-star",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "undirected-triangle",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "wide-label-box",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1"
+    },
+    {
+      "slug": "comment-stripping",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "rankdir-lr-pipeline",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "style-combined-node-edge",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "style-diagram-background",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "style-edge-color",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "style-node-background",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "style-node-border",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 10,
+      "diffCount": 10
+    },
+    {
+      "slug": "title-only",
+      "addedAt": "2026-11-14",
+      "source": "dogr-T1b",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: dot)"
+      },
+      "weightedScore": 9,
+      "diffCount": 9
     }
   ]
 }

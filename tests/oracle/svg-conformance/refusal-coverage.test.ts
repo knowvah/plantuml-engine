@@ -724,11 +724,17 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11463 + 1 = 11464.
     // 11464 -> 11465 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
     // Derivation: 11464 + 1 = 11465.
-    expect(manifest.fixtures.length).toBe(11465);
+    // 11465 -> 11512 at dogr/T1 (2026-11-14): +47 svg-dot golden clone(s) (the 47 zero-diff #109 @startdot rows, #141).
+    // Derivation: 11465 + 47 = 11512.
+    // 11512 -> 11520 at dogr/T1b (2026-11-14): +8 svg-dot golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
+    // Derivation: 11512 + 8 = 11520.
+    expect(manifest.fixtures.length).toBe(11520);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
-    expect(pinnedJarErrors.length).toBe(162);
+    // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
+    // Derivation: 162 + 8 = 170.
+    expect(pinnedJarErrors.length).toBe(170);
     //
     // 242 -> 241 / 4242 -> 4243 at unknown-bucket-routing-repair/T11
     // (2026-09-20): `sequence/recani-60-licu962` renders now that the
@@ -799,7 +805,9 @@ describe('refusal coverage — baseline shape', () => {
     // 159 -> 153 at ftp/T3 (2026-11-12): the 2 Welcome and 4 ListFonts rows render now (PSystemWelcomeFactory
     // java:133, PSystemListFontsFactory java:148). Derivation: 159 - 6 = 153.
     // 153 -> 152 at sogr/T2a (2026-11-13): teoz-ng-001-11 stops erroring here (known-gap -> ok). Derivation: 153 - 1 = 152.
-    expect(pinnedErroring.length).toBe(152);
+    // 152 -> 160 at dogr/T1b (2026-11-14): +8 svg-dot weErrored golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
+    // Derivation: 152 + 8 = 160.
+    expect(pinnedErroring.length).toBe(160);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1100,7 +1108,9 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11311 + 1 = 11312.
     // 11312 -> 11313 at cogr/T4f3 (2026-11-14): +1 svg-class golden clone(s) (potatu-55-pave291).
     // Derivation: 11312 + 1 = 11313.
-    expect(pinnedRendering.length).toBe(11313);
+    // 11313 -> 11360 at dogr/T1 (2026-11-14): +47 svg-dot golden clone(s) (the 47 zero-diff #109 @startdot rows, #141).
+    // Derivation: 11313 + 47 = 11360.
+    expect(pinnedRendering.length).toBe(11360);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

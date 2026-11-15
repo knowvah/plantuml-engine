@@ -1,0 +1,10 @@
+@startdot
+digraph all_shapes {
+  a [shape=ellipse, label=ellipse]
+  b [shape=box, label=box]
+  c [shape=circle, label=circle]
+  d [shape=diamond, label=diamond]
+  e [shape=plaintext, label=plaintext]
+  a -> b -> c -> d -> e
+}
+@enddot

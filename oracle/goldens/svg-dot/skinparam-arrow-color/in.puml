@@ -1,0 +1,6 @@
+@startdot
+skinparam ArrowColor #0066CC
+digraph G {
+  source -> middle -> dest
+}
+@enddot

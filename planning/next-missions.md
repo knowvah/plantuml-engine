@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## dot-oracle-gap-rows (dogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #141; per-task history on the local tag `dot-oracle-gap-rows/pre-squash`)
+
+The 57 `@startdot` rows #109 captured were in no ratchet. 55 are now pinned in `oracle/goldens/svg-dot/ratchet.json`: 47 zero-diff rows at T1, and 8 jar error pages at T1b. The error pages are conformant under the 2026-10-10 rule, held by score, with error parity asserted. The ratchet holds 60 rows; the dot survey reads 60 / 2 / 0, unchanged. 0 conformant losses in any engine, and no `src/` change.
+
+**What remains (follow-ons, none blocks #141):**
+
+1. **#186 (`needs-ruling`)**: `quoted-labels` and `skinparam-font-color`. The oracle host's graphviz kerns `Node A` through pango (Times New Roman), and dot-engine's `LutTextMeasurer` has no kerning (dogr T2; `.agent-notes/dogr-T2.md`). The options are a host-font divergence, or a font-derived kern table in `@knowvah/dot-engine`. The same mechanism reaches any dot-engine-measured label with a kern pair (svek edge labels too), so a dot-engine kern table would need the every-engine survey.
+2. **Error-page pins in zero-diff ratchets**: other zero-diff ratchets can reuse T1b's shape for survey-conformant jar error pages: `jarError` + `weightedScore` + `diffCount` on the entry, AC1/passthrough filtered to non-error rows, and error parity via `setErrorPageObserver`. The pin tool has a `--jar-error` path (`plans/dot-oracle-gap-rows/tools/pin-goldens.mts`).
+3. **Pinning drifts the parity report**: any `ratchet.json` change needs `npm run parity:dashboard` in the same task. The D9 drift gate reads the pinned count and last-pin date (`scripts/parity-dashboard-goldens.ts:157`). Briefs should not defer the dashboard to survey batches.
+
+---
+
 ## class-oracle-gap-rows (cogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #140; per-task history on the local tag `class-oracle-gap-rows/pre-squash`)
 
 The 151 class rows #109 captured were in no ratchet. 148 are now conformant and pinned in `oracle/goldens/svg-class/ratchet.json`: 110 at T1, plus 38 driven to zero by porting the upstream mechanism each lacked (T1b, T2a-T2e, T3a-T3f, T4a-T4h, and the splits T4f2, T4f3, T4h2). The class survey reads 871 / 3 / 0 (was 834 / 19 / 21); 0 conformant losses in any engine.

@@ -1,0 +1,7 @@
+@startdot
+skinparam ClassBackgroundColor #FFE0B2
+digraph G {
+  start [shape=box, label=Start]
+  start -> process -> end
+}
+@enddot

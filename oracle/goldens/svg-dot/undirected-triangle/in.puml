@@ -1,0 +1,7 @@
+@startdot
+graph triangle {
+  a -- b
+  b -- c
+  c -- a
+}
+@enddot
