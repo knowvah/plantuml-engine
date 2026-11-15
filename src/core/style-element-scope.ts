@@ -26,7 +26,7 @@ import {
   isDark,
   styleNameOf,
 } from './document-back-color.js';
-import { parseConditionalColor } from './klimt/color/HColorSet.js';
+import { asColorToken, parseConditionalColor } from './klimt/color/HColorSet.js';
 import { noGradient, parseColor } from './paint.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { buildMindmapStyleBuilder } from './style/mindmap-style-builder.js';
@@ -416,9 +416,9 @@ function roleColor(
   return writtenColor(role, raw);
 }
 
-/** A bucket's colour: a gradient stays whole for its shape's driver, but text prints the first colour (see {@link roleColor}). */
+/** A bucket's colour as `Value#asColor` reads it (`ValueImpl.java:92-108`); see {@link roleColor} for gradients. */
 function writtenColor(role: keyof typeof ROLE_PNAMES, raw: string): ElementColors['background'] {
-  return role === 'font' ? noGradient(parseColor(raw)) : parseColor(raw);
+  return role === 'font' ? noGradient(parseColor(asColorToken(raw))) : parseColor(asColorToken(raw));
 }
 
 /** The value's string, unless it has none (`ValueNull`, a dark-only value) or is conditional (see {@link roleColor}). */

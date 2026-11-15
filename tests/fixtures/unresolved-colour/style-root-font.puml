@@ -1,0 +1,8 @@
+@startuml
+<style>
+root {
+  FontColor zzblue
+}
+</style>
+class A
+@enduml

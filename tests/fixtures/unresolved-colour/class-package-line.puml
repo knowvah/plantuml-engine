@@ -1,0 +1,5 @@
+@startuml
+package P #line:zzblue {
+class A
+}
+@enduml

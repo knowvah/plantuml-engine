@@ -16,6 +16,7 @@
 
 import type { RelationshipType } from './ast.js';
 import { parseArrowDecors, parseArrowDecorsRaw } from './class-arrow-decor-map.js';
+import { colorOrWhite } from '../../core/klimt/color/HColorSet.js';
 export { parseArrowDecors, parseArrowDecorsRaw };
 
 /**
@@ -446,10 +447,13 @@ export function parseArrowStyleOverrides(rawArrow: string): ArrowStyleOverrides 
         if (m !== null) {
           result.thickness = Number(m[1]);
         } else if (segIdx === 0) {
-          // Grammar-mandatory leading `#` -- strip it, matching this port's
-          // established inline-color-override convention
-          // (description's `renderer-entity.ts#parseColorOverride`).
-          result.color = token.startsWith('#') ? token.slice(1) : token;
+          // `HColorSet.instance().getColorOrWhite(s)` (`WithLinkType.java:161-163`):
+          // an unparseable token is WHITE (ucol T2a). Then the grammar-mandatory
+          // leading `#` is stripped, matching this port's established
+          // inline-color-override convention (description's
+          // `renderer-entity.ts#parseColorOverride`).
+          const color = colorOrWhite(token);
+          result.color = color.startsWith('#') ? color.slice(1) : color;
         }
       }
     }

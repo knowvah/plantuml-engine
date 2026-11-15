@@ -35,6 +35,19 @@ post-D7 measurements.
 
 ---
 
+## unresolved-colour (ucol) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #145; per-task history on the local tag `unresolved-colour/pre-squash`)
+
+A colour token the jar cannot parse still draws a valid colour wherever the jar draws, and each call site picks it from one `HColorSet` method (`HColorSet.java:58-76`). Class and description stored the raw token, which reached `fill`/`stroke`. Ported per site: an arrow-style token is `getColorOrWhite` (`WithLinkType.java:161-163`; class T2a, description T3a), a `name:value` part is `getColorOrNull` and its null clears the key (`Colors.java:111-113`; class T2b, description T3b), and a `<style>` value is `ValueImpl.asColor` → `getColorOrWhite` (`ValueImpl.java:92-108`; T2c, in the shared element-scope bucket writer and the class cascade). T2b also replaced the class link's trailing-colour grammar with upstream's `COLORS_REGEXP`: `A --> B #line:red` had drawn `:red` as a label. The refusal gate now asserts that every committed fixture draws only `#hex`/`none`/`black`/`white`/`url(#id)` (`tests/helpers/svg-colour-validity.ts`), and 28 probes hold the behaviour at zero in `tests/oracle/svg-conformance/unresolved-colour.authored.test.ts`. No conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #145):**
+
+1. **#189 (`queue:ready`)**: activity-3 `-[#zzblue]->`. The jar errors (`HtmlColorAndStyle.java:100` `getColor`); we draw the default. Mirror the error or sign the row (2026-10-10 rule); if we draw, it is #143's neutral, not the default.
+2. **#190 (`queue:ready`)**: `object X #line:<c>`. The jar errors for every `name:value` (`CommandCreateEntityObject.java:140-142` passes the whole capture to `getColor`); we draw.
+3. **#191 (`queue:ready`)**: `actor X #line:<c>` routes to sequence; the jar's sequence factory fails on the same `getColor` (`CommandParticipant.java:183-185`) and description draws.
+4. `class-arrow-multi` (`-[#zzblue;#red]->`), `seq-declared-arrow` and `seq-participant-line`: both sides error, conformant under the 2026-10-10 rule. No issue. The brief had `class-arrow-multi` as "we draw"; we error, and did at the base.
+
+---
+
 ## edge-label-embed (ele) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #144; per-task history on the local tag `edge-label-embed/pre-squash`)
 
 A `{{ … }}` in a svek link label is one `EmbeddedDiagram` stripe in the jar (`SvekEdge.java:299-300` → `CreoleParser.java:146-170`). State, description and legacy activity measured and drew it as text; class measured a lone `{{` as text. The walk, the atom and `SheetBlock1`'s stacking now live in `src/core/svek/edge-label-embed.ts`. `state/xetase-70-zaza808` is conformant and pinned (state 299/299), and 29 authored probes hold the behaviour in `tests/oracle/svg-conformance/edge-label-embed.authored.test.ts` (27 at zero, 2 open on #188). No conformant row was lost in any engine.

@@ -18,6 +18,7 @@ import {
   invertMiddleDecor,
 } from './class-arrow-grammar.js';
 import { parseUrlBracket } from './class-url.js';
+import { COLORS_REGEXP } from '../../core/klimt/color/ColorParser.js';
 import { parseRelColors } from './class-relationship-colors.js';
 import {
   resolveRelationshipEndpoints,
@@ -166,7 +167,10 @@ const REL_ARROW =
 // matched and discarded like ARROW_STYLE, so a line carrying it no longer
 // falls through REL_RE entirely (mission A2 iteration 12: `--> B #c;t:v :
 // label` was silently dropping the whole relationship, not just the color).
-const REL_COLOR = String.raw`#\w+(?:[-./|\\](?:\w+)?)?(?:;\w+(?:\.\w+)*(?::\w+(?:[-./|\\]\w+)?)?)*`;
+// ucol T2b: upstream's `COLORS_REGEXP` itself (`ColorParser.java:43-46`, via `simpleColor(ColorType.LINE)` at
+// `CommandLinkClass.java:160,173-175`). The former local grammar stopped at `#line`, so `#line:red` read `:red` as
+// the link label.
+const REL_COLOR = COLORS_REGEXP;
 // FIRST_ROLE/SECOND_ROLE: a `/roleName` (bare or quoted) right after each
 // quoted cardinality (CommandLinkClass.java:127,144). Plus the URL/stereotype
 // tokens after ENT2 (UrlBuilder.OPTIONAL, StereotypePattern.optional) — like

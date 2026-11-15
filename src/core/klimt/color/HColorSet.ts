@@ -376,6 +376,30 @@ export function colorOrNeutral(token: string): string {
   return HColorSet.instance().getColorOrNull(token) === undefined ? UNKNOWN_COLOR_NEUTRAL : token;
 }
 
+/** `HColors.WHITE` (`HColors.java:85`, `getColorOrWhite("#FFFFFF")`), as the stored colour token it resolves from. */
+export const WHITE_COLOR_TOKEN = '#FFFFFF';
+
+/**
+ * `HColorSet#getColorOrWhite` (`HColorSet.java:58-63`) for a site that stores the token and resolves it at emission:
+ * `token` itself when `parseColor` accepts it (so a resolvable token keeps its representation), else
+ * {@link WHITE_COLOR_TOKEN}.
+ */
+export function colorOrWhite(token: string): string {
+  return HColorSet.instance().getColorOrNull(token) === undefined ? WHITE_COLOR_TOKEN : token;
+}
+
+/** `ValueImpl.asColor`'s two keywords (`ValueImpl.java:94-98`), read before `getColorOrWhite`. */
+const STYLE_TRANSPARENT_VALUES: ReadonlySet<string> = new Set(['none', 'transparent']);
+
+/**
+ * `ValueImpl#asColor` (`ValueImpl.java:92-108`) for a site that stores a `<style>` value and resolves it at emission:
+ * `none` and `transparent` stay as written (both are `HColors.transparent()` there), anything else is
+ * {@link colorOrWhite}. A `value2` (dark) half never reaches a stored token: callers read `asString()`, `value1`.
+ */
+export function asColorToken(value1: string): string {
+  return STYLE_TRANSPARENT_VALUES.has(value1.toLowerCase()) ? value1 : colorOrWhite(value1);
+}
+
 export class HColorSet {
   /** @see HColorSet.java:45 */
   private static readonly singleton = new HColorSet();

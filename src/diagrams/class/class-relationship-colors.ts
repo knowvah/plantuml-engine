@@ -6,6 +6,8 @@
  * `class-relationship-parser.ts` (500-line hook cap).
  */
 
+import { HColorSet } from '../../core/klimt/color/HColorSet.js';
+
 /** The two `Colors` entries a class link reads back. */
 export interface RelColors {
   /** `getColor(ColorType.ARROW, ColorType.LINE)` (`SvekEdge.java:884-885`). */
@@ -24,12 +26,14 @@ export interface RelColors {
  * colour. Later tokens overwrite earlier ones (`map.put`). The
  * `line.dashed`/`.dotted`/`.bold` stroke half (`Colors.java:118-123`) is
  * not carried here. Colour names stay raw (with a leading `#`), resolved
- * at render time like `Relationship.colorOverride`.
+ * at render time like `Relationship.colorOverride`; a value `getColorOrNull`
+ * rejects is null, so it clears its key.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/Colors.java:95-124
  */
 export function parseRelColors(spec: string | undefined): RelColors {
   if (spec === undefined) return {};
-  const map = new Map<string, string>();
+  // A key mapped to `undefined` is upstream's `map.put(key, null)` (`Colors.java:111-113`).
+  const map = new Map<string, string | undefined>();
   for (const s of spec.replace(/#/g, '').split(';')) {
     if (s === '') continue;
     const x = s.indexOf(':');
@@ -39,7 +43,12 @@ export function parseRelColors(spec: string | undefined): RelColors {
     }
     const name = s.slice(0, x).toLowerCase();
     if (name === 'shadowing') continue;
-    map.set(name.split('.')[0] ?? name, `#${s.slice(x + 1)}`);
+    const value = s.slice(x + 1);
+    // `set.getColorOrNull(value)`: an unparseable value claims its key as null (ucol T2b).
+    map.set(
+      name.split('.')[0] ?? name,
+      HColorSet.instance().getColorOrNull(value) === undefined ? undefined : `#${value}`,
+    );
   }
   const line = map.get('arrow') ?? map.get('line');
   const text = map.get('text');

@@ -1,0 +1,4 @@
+@startuml
+class A
+note right of A #line:zzblue : n
+@enduml

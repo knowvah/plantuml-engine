@@ -18,7 +18,9 @@ import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-o
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { fullDescription } from '../../../src/core/version.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
+import { invalidColours } from '../../helpers/svg-colour-validity.js';
 import { corpusGatePartOf, isJarErrorPage } from './corpus-gate-part.js';
+import { checkNoInvalidColour, INVALID_COLOUR_ALLOWLIST } from './colour-validity-check.js';
 
 /** Which committed tree a fixture lives in. Decides the golden's filename and
  *  the root the `slug` is relative to — nothing else. */
@@ -179,6 +181,16 @@ export interface LiveRefusal {
   readonly jarRendered: boolean;
   readonly weErrored: boolean;
   readonly engine: string;
+  /** ucol D3: the colours in OUR render the jar never emits, minus any the golden itself carries (the jar's answer).
+   *  The golden is read whole only when ours has a candidate, so the 8 MB goldens stay unread on a clean row. */
+  readonly invalidColours: readonly string[];
+}
+
+function invalidAgainstGolden(ours: string, f: FixtureRef): string[] {
+  const candidates = invalidColours(ours);
+  if (candidates.length === 0) return candidates;
+  const jars = new Set(invalidColours(readFileSync(goldenPath(f), 'utf8')));
+  return candidates.filter((c) => !jars.has(c));
 }
 
 /** Renders ONE fixture the way production does. `DeterministicMeasurer` is
@@ -207,6 +219,7 @@ function measure(f: FixtureRef, store: ReturnType<typeof fixtureIncludeStore>): 
     jarRendered: !isJarErrorPage(readHead(goldenPath(f))),
     weErrored,
     engine: engineOf(ours, weErrored),
+    invalidColours: invalidAgainstGolden(ours, f),
   };
 }
 
@@ -456,6 +469,16 @@ export function defineRefusalGatePart(part: number): void {
       expect(defects.length).toBeLessThanOrEqual(
         fixtures.filter((f) => f.weErrored && f.jarRendered && f.status === 'ok').length,
       );
+    });
+  });
+
+  describe(`refusal coverage, part ${part} — colour validity`, () => {
+    it('every rendered fixture draws only colours the jar can emit (ucol D3)', () => {
+      const seen = live(part);
+      const wrong = fixtures
+        .map((f) => checkNoInvalidColour(keyOf(f), seen.get(keyOf(f)), INVALID_COLOUR_ALLOWLIST))
+        .filter((r) => !r.ok);
+      expect(wrong.map((r) => r.message)).toEqual([]);
     });
   });
 

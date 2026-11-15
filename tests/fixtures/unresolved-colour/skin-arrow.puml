@@ -1,0 +1,6 @@
+@startuml
+skinparam arrowColor zzblue
+class A
+class B
+A --> B
+@enduml

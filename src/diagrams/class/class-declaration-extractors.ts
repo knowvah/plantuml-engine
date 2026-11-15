@@ -7,6 +7,7 @@
 
 import { GENERIC_BODY_PATTERN, GENERIC_CLAUSE_RE, splitTopLevelCommas } from './class-namespace.js';
 import { parseUrlBracket, URL_BRACKET_RE, type UrlInfo } from './class-url.js';
+import { HColorSet } from '../../core/klimt/color/HColorSet.js';
 
 const TAG_TOKEN_RE = /(?<=^|\s)\$[^\s{}"'<>$]+(?=\s|$)/g;
 
@@ -102,7 +103,8 @@ function legacyLineStyleOf(data: string): NonNullable<DeclarationColors['lineSty
  * `ColorType.getType(name)` -- which itself truncates at the first `.`
  * (`ColorType.java:41-48`), so `line.dashed:blue` still lands under `LINE`.
  * A token with no `:` is the `mainType` (BACK) colour unless it contains a
- * `.`, and is not this function's concern.
+ * `.`, and is not this function's concern. A value `getColorOrNull` rejects
+ * leaves its key unset (`Colors.java:111-113`).
  */
 function parseColorsData(data: string): DeclarationColors {
   const normalized = data.toLowerCase().replaceAll('#', '');
@@ -115,8 +117,11 @@ function parseColorsData(data: string): DeclarationColors {
     // `ColorType.getType` truncates the name at its first `.` (java:42-45).
     const dot = name.indexOf('.');
     const key = dot === -1 ? name : name.slice(0, dot);
-    if (key === 'line') out.line = value;
-    else if (key === 'text') out.text = value;
+    if (key !== 'line' && key !== 'text') continue;
+    // `map.put(key, set.getColorOrNull(value))` (`Colors.java:111-113`): a null still claims the key, so an
+    // unparseable value clears an earlier one and the default draws (ucol T2b).
+    if (HColorSet.instance().getColorOrNull(value) === undefined) delete out[key];
+    else out[key] = value;
   }
   const lineStyle = legacyLineStyleOf(normalized);
   if (lineStyle !== undefined) out.lineStyle = lineStyle;

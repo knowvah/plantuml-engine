@@ -114,6 +114,7 @@ import {
   type LiveRefusal,
 } from './refusal-coverage-gate.js';
 import { fullDescription } from '../../../src/core/version.js';
+import { checkNoInvalidColour, INVALID_COLOUR_ALLOWLIST } from './colour-validity-check.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -1276,8 +1277,8 @@ const SAMPLE: BaselineFixture = {
   measuredAgainstCommit: '1aec6731',
 };
 
-const RENDERS: LiveRefusal = { jarRendered: true, weErrored: false, engine: 'sequence' };
-const REFUSES: LiveRefusal = { jarRendered: true, weErrored: true, engine: 'class' };
+const RENDERS: LiveRefusal = { jarRendered: true, weErrored: false, engine: 'sequence', invalidColours: [] };
+const REFUSES: LiveRefusal = { jarRendered: true, weErrored: true, engine: 'class', invalidColours: [] };
 
 describe('refusal coverage — branch discrimination', () => {
   it('a fixture that still renders passes', () => {
@@ -1334,11 +1335,7 @@ describe('refusal coverage — branch discrimination', () => {
   });
 
   it('the engine table counts each refusing engine, ordered by size', () => {
-    const table = engineTable([
-      { jarRendered: true, weErrored: true, engine: 'class' },
-      { jarRendered: true, weErrored: true, engine: 'class' },
-      { jarRendered: true, weErrored: true, engine: 'state' },
-    ]);
+    const table = engineTable([{ ...REFUSES }, { ...REFUSES }, { ...REFUSES, engine: 'state' }]);
     expect(table).toContain('class: 2');
     expect(table).toContain('state: 1');
     expect(table.indexOf('class:')).toBeLessThan(table.indexOf('state:'));
@@ -1386,5 +1383,54 @@ describe('refusal coverage — branch discrimination', () => {
     expect(engineOf('<text>Fatal crash</text>', true)).toBe('unknown');
     expect(engineOf('<svg data-diagram-type="CLASS" width="10">', false)).toBe('class');
     expect(engineOf('<svg width="10">', false)).toBe('none');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ucol T1a (2026-11-15, D3) -- every rendered row draws only colours the jar
+// can emit. The render-dependent half is in each part; these are its branches.
+// ---------------------------------------------------------------------------
+
+describe('refusal coverage — colour validity branches', () => {
+  const KEY = 'dot-cache:class/branch-probe';
+
+  it('a row drawing only valid colours passes', () => {
+    expect(checkNoInvalidColour(KEY, { invalidColours: [] }, {}).ok).toBe(true);
+  });
+
+  it('a row drawing an unresolved token fails, naming the row and the value', () => {
+    const { ok, message } = checkNoInvalidColour(KEY, { invalidColours: ['stroke=zzblue'] }, {});
+    expect(ok).toBe(false);
+    expect(message).toContain(KEY);
+    expect(message).toContain('stroke=zzblue');
+    expect(message).toContain('HColorSet.java:58-76');
+  });
+
+  it('an allowlist entry naming an issue excuses the row', () => {
+    const allow = { [KEY]: '#999: jar errors' };
+    const { ok, message } = checkNoInvalidColour(KEY, { invalidColours: ['fill=zzblue'] }, allow);
+    expect(ok).toBe(true);
+    expect(message).toContain('#999');
+  });
+
+  it('an allowlist entry that names no issue fails, even on a clean row', () => {
+    const allow = { [KEY]: 'later' };
+    expect(checkNoInvalidColour(KEY, { invalidColours: ['fill=zzblue'] }, allow).ok).toBe(false);
+    expect(checkNoInvalidColour(KEY, { invalidColours: [] }, allow).message).toContain('names no issue');
+  });
+
+  it('a stale allowlist entry fails once the row is clean', () => {
+    const { ok, message } = checkNoInvalidColour(KEY, { invalidColours: [] }, { [KEY]: '#999' });
+    expect(ok).toBe(false);
+    expect(message).toContain('stale');
+  });
+
+  it('an absent row is left to the completeness gate', () => {
+    expect(checkNoInvalidColour(KEY, undefined, {}).ok).toBe(true);
+  });
+
+  it('the allowlist starts empty and every entry names an issue', () => {
+    expect(Object.entries(INVALID_COLOUR_ALLOWLIST).filter(([, v]) => !/#\d+/.test(v))).toEqual([]);
+    expect(Object.keys(INVALID_COLOUR_ALLOWLIST)).toEqual([]);
   });
 });

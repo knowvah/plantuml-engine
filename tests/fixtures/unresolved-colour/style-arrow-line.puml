@@ -1,0 +1,10 @@
+@startuml
+<style>
+arrow {
+  LineColor zzblue
+}
+</style>
+class A
+class B
+A --> B
+@enduml

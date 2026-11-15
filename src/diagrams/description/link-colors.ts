@@ -10,6 +10,8 @@
  * `Colors.getLineStyle()`. Parsing follows `Colors(String, HColorSet, ColorType)` (`Colors.java:95-124`).
  */
 
+import { HColorSet } from '../../core/klimt/color/HColorSet.js';
+
 export interface LinkColors {
   /** `ColorType.LINE`: the bare token or `line:<c>`. */
   line?: string;
@@ -38,7 +40,10 @@ export function parseLinkColors(raw: string | undefined): LinkColors {
     const dot = token.indexOf('.');
     const key = token.slice(0, dot === -1 || dot > colon ? colon : dot);
     const value = token.slice(colon + 1);
-    if (key === 'line' || key === 'arrow' || key === 'text') result[key] = value;
+    if (key !== 'line' && key !== 'arrow' && key !== 'text') continue;
+    // `set.getColorOrNull(value)`, and a null still claims its key (`Colors.java:111-113`, ucol T3b).
+    if (HColorSet.instance().getColorOrNull(value) === undefined) delete result[key];
+    else result[key] = value;
   }
   const style = LINE_STYLE_RE.exec(data)?.[1];
   if (style === 'dashed' || style === 'dotted' || style === 'bold') result.lineStyle = style;
