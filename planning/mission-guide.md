@@ -271,6 +271,9 @@ klimt carriers included; its follow-ons are in `planning/next-missions.md`.
 diagram-style-scope (dss, 2026-11-03) read document and element colours through
 the ported `StyleBuilder`: 792 of 865 authored rows, 0 losses in 28 engines; open
 items are the dss follow-ons in `planning/next-missions.md`.
+hcl-yaml-oracle-gap-rows (hyogr, 2026-11-15) pinned 7 #109 hcl rows (svg-hcl 1 → 8,
+ratchet floors per type), named 3 hcl rows and 4 yaml twins under the Smetana ruling,
+and filed #187 for the two empty-container rows.
 
 ---
 

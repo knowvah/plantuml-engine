@@ -885,7 +885,9 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11285 + 1 = 11286.
     // 11286 -> 11333 at dogr/T1 (2026-11-14): +47 svg-dot golden clone(s) (the 47 zero-diff #109 @startdot rows, #141).
     // Derivation: 11286 + 47 = 11333.
-    expect(pinnedAgree.length).toBe(11333);
+    // 11333 -> 11340 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
+    // Derivation: 11333 + 7 = 11340.
+    expect(pinnedAgree.length).toBe(11340);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1094,7 +1096,9 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11465 + 47 = 11512.
     // 11512 -> 11520 at dogr/T1b (2026-11-14): +8 svg-dot golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
     // Derivation: 11512 + 8 = 11520.
-    expect(manifest.fixtures.length).toBe(11520);
+    // 11520 -> 11527 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
+    // Derivation: 11520 + 7 = 11527.
+    expect(manifest.fixtures.length).toBe(11527);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

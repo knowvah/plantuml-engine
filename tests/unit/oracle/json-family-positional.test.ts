@@ -224,9 +224,10 @@ describe('corpus rows (acceptance, needs test-results/dot-cache)', () => {
 
   // 92 -> 108 at ogc/T7 (2026-11-04): #109 captured 12 hcl and 4 yaml manifest rows that had no
   // oracle (json 50 + yaml 39 + 4 + hcl 3 + 12). Conformant stays 22: the ratchets gained no row (D7).
-  it('lists 108 cached rows, 22 of them conformant', () => {
+  // 22 -> 29 at hyogr/T1 (2026-11-15, #142): svg-hcl/ratchet.json pinned the 7 zero-diff #109 hcl rows.
+  it('lists 108 cached rows, 29 of them conformant', () => {
     expect(listCachedRows()).toHaveLength(108);
-    expect(conformantRows().size).toBe(22);
+    expect(conformantRows().size).toBe(29);
   });
 
   it('measures json/bavize-88-jumu158 aligned with the fixtures.md magnitudes', { timeout: TIMEOUT_MS }, () => {

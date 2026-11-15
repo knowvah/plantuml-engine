@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## hcl-yaml-oracle-gap-rows (hyogr) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #142; per-task history on the local tag `hcl-yaml-oracle-gap-rows/pre-squash`)
+
+#109 captured 12 `@starthcl` and 4 `@startyaml` rows that no gate held. 7 hcl rows are pinned zero-diff in `oracle/goldens/svg-hcl/ratchet.json` (1 → 8, with a per-type ratchet floor). 3 hcl rows pass the jfp D3 proof and are named in the DIVERGENCES Smetana row table (U-REC, U-ARROW, U-CLIP). The 4 yaml rows are byte-identical twins of named rows (source, oracle and render), and are named by paragraph. 2 hcl rows wait on #187. There is no `src/` change, and no conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #142):**
+
+1. **#187 (`needs-ruling`)**: `hcl/function-call` and `hcl/for-expression-empty-array`. (a) DIVERGENCES' empty-container label rationale ("`''` reproduces Smetana's no-text-extent outcome") is measured false: graphviz gives an empty record field a space glyph plus PAD (`shapes.c:3436-3438`), 19.75 in-rank against Smetana's 15, which is 2.375 px of node Δ. (b) The faithful `LimitFinder` ink for an empty block (`x+w−1`, `LimitFinder.java:184-188`) closes their dw and moves 10 rows toward the jar, but raises `authored:json/empty-nested` dw 0 → 1, a U-REC cancellation. The fix and its measurement are in the hyogr journal, T2a row.
+2. **DIVERGENCES.md is three files concatenated**: `82b9128ea` (2026-11-06) spliced older copies of the whole file in after line ~462 (`## General` at 15, 475 and 847). It needs a dedicated cleanup PR that diffs the tail copies for unique text first (`.agent-notes/hyogr-T2b.md`).
+3. **Edge `penwidth` is not forwarded** by `graph-layout-build-edges.ts`. Upstream never sets it, so nothing is wrong today, but an S1 counterfactual that only sets the attribute measures nothing (`.agent-notes/hyogr-T2a.md`).
+
+---
+
 ## dot-oracle-gap-rows (dogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #141; per-task history on the local tag `dot-oracle-gap-rows/pre-squash`)
 
 The 57 `@startdot` rows #109 captured were in no ratchet. 55 are now pinned in `oracle/goldens/svg-dot/ratchet.json`: 47 zero-diff rows at T1, and 8 jar error pages at T1b. The error pages are conformant under the 2026-10-10 rule, held by score, with error parity asserted. The ratchet holds 60 rows; the dot survey reads 60 / 2 / 0, unchanged. 0 conformant losses in any engine, and no `src/` change.

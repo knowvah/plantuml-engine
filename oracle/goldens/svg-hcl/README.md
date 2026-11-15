@@ -5,35 +5,32 @@ Mission **A5** (json family). Sibling of `svg-description`, `svg-class`,
 
 ## Current state
 
-**Still empty after A5 Batch 4 — 0 of 3 fixtures byte-conformant, and that is
-the accurate picture, not a stalled harness.** The ratchet suite skips
-gracefully; the graceful-skip branch is genuinely exercised here.
+**8 pinned (hyogr, 2026-11-15, #142).** `ratchet.json` holds `citoda-80-dimi195`
+(pinned 2026-08-09) and the 7 zero-diff `@starthcl` rows #109 captured
+(`source: hyogr-T1`), each copied byte-for-byte from
+`test-results/dot-cache/hcl/` by `plans/hcl-yaml-oracle-gap-rows/tools/pin-goldens.mts`.
+`json-family-ratchet.ts` holds a shrink-only floor of 8 (`RATCHET_FLOOR`).
 
-Two independent reasons, and only the second is a defect:
+The rest of the hcl corpus is not byte-conformant, and that is expected: upstream
+lays this family out with Smetana and this port uses dot-engine (CLAUDE.md "One
+layout engine", ruling 2026-08-09). For those rows the bar is the json-family
+structural pin (`oracle/goldens/json-family-structural.json`), the shrink-only
+positional ceiling (`oracle/goldens/json-family-positional.json`), and a named
+mechanism in DIVERGENCES.md's Smetana row-level table.
 
-1. **Byte-exact geometry is not the target for this family** (ADR-2b, and
-   CLAUDE.md "One layout engine"). Upstream lays these types out with Smetana;
-   this port uses one engine for everything, so document dimensions differ by
-   design. Priority here is readability first, SVG fidelity second.
-2. **The document structure does not match yet.** Every fixture carries a root
-   `childCount` diff — the jar emits `<defs/>` plus one content `<g>`, this
-   port emits node groups and per-node `<defs>` as top-level siblings. Because
-   `compare.ts` stops recursing on a structural mismatch, **no fixture's
-   interior has been compared**, so no fixture can honestly be pinned.
-
-See `plans/a5-json-family-conformance/ledger.md` — mechanism M2 is the gate.
-What IS measured and good: node sizing (mean |Δw| 3.08, |Δh| 0.96 against the
-jar) and per-node placement (mean |Δy| 6.65, 21 of 557 nodes exact), via
-`scripts/json-node-oracle.ts`.
-
-Corpus: **3 `@starthcl` fixtures**, captured from the pinned oracle jar into
-`test-results/dot-cache/hcl/`.
+The A5-era note that this directory was empty because of a root `childCount`
+mismatch is history: that structure was fixed, and the 8 pins above are
+zero-diff on the ratchet path.
 
 ## Where this type's layout lives
 
 **No layout of its own.** `src/diagrams/hcl/index.ts` parses with `parseHcl` and then imports `layoutJson`/`renderJson` directly. Every json layout change is transitively this type's.
 
-## Why there is no `parity-hcl.json`, and no AC3
+## Why there is no DOT-parity file, and no AC3
+
+(hyogr, 2026-11-15: the SVG survey does write `tests/oracle/svg-conformance/parity-hcl.json`
+now, via `npm run svg:survey -- hcl --out …`. That file is a per-row SVG verdict report.
+What this section explains is the absence of a DOT-equality gate.)
 
 The sibling suites gate ratchet eligibility on a fixture already being
 DOT-equal, so a residual SVG diff is attributable to SVG assembly rather than

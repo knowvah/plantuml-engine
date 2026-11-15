@@ -62,7 +62,11 @@ without ports, over 277 edges).
 json/yaml/hcl row (json 36, yaml 32, hcl 2) was diagnosed to its mechanism
 (`plans/json-family-parity/diagnosis/ledger.md`; D3 proof standard in that
 mission's `decisions.md`): our engine INPUT equals the jar's, and dot-engine
-equals real `dot -Tdot` 16.1.0 on that input. The upstream placement arithmetic
+equals real `dot -Tdot` 16.1.0 on that input. hcl-yaml-oracle-gap-rows (2026-11-15, #142)
+added three more hcl rows by the same proof (table rows `hcl/array-values`,
+`hcl/multiple-top-level-blocks`, `hcl/nested-object-value`); the two hcl rows
+with an empty container (`hcl/function-call`, `hcl/for-expression-empty-array`)
+await a ruling on #187. The upstream placement arithmetic
 (`SmetanaForJson#getPosition` + `Mirror`, `:97-102,158-215`) is now ported
 literally (`src/diagrams/json/json-node-position.ts`) — it changed no byte,
 because the root is alone in rank 0 so graphviz's bounding box already IS the
@@ -91,14 +95,17 @@ where the labelless call would import a node-name width Smetana never computes),
 `inches()` (`svek-dot-emit-clusters.ts:33` vs the jar's full-precision
 `"" + dim/72`, `SmetanaForJson.java:235-236`; json/kusule + 10 rows by ≤ 1 pt).
 Magnitudes (positional ceiling `oracle/goldens/json-family-positional.json`,
-max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligned rows; in-rank
+max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligned rows; in-rank
 (U-NS) up to 127 px (json/nofuvo-36-muxe040); the gate is shrink-only.
 
-<details><summary>Row-level table (70 rows)</summary>
+<details><summary>Row-level table (73 rows)</summary>
 
 | row | residue (node / path / dw / dh) | mechanisms | ledger |
 |---|---|---|---|
+| hcl/array-values | 0.150 / 1.555 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
 | hcl/jubete-32-sutu417 | 0.800 / 1.923 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| hcl/multiple-top-level-blocks | 0.619 / 1.068 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
+| hcl/nested-object-value | 0.425 / 1.834 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
 | hcl/vocago-35-xodu446 | 0.525 / 1.476 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | json/bavize-88-jumu158 | 0.225 / 1.938 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/bogiku-88-nano204 | 4.375 / 6.233 / 3 / 0 | M4, U-REC, U-NS | `json-large.md` |
@@ -175,6 +182,16 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 44 of 66 aligne
 `hcl/vocago-35-xodu446` above, filed a second time under `unknown`: byte-identical `in.puml` and `in.svg` (`cmp`,
 2026-11-06) and the same survey `maxDelta` (1.923, 1.476), so the same Smetana delta (U-REC, U-ARROW, U-CLIP)
 names them (#119).
+
+`yaml/YAML-list-key-value-pair-0`, `yaml/YAML-space-indent-0`, `yaml/YAML-attribute-hierarchy-0` and
+`yaml/YAML-attribute-hierarchy-1` are the rows `yaml/YAML-list-key-value-pair`, `yaml/YAML-space-indent`,
+`yaml/YAML-attribute-hierarchy` and `yaml/vaceci-80-lezo436` above, filed again by `classify-corpus.ts`'s per-block
+split (#109, #142). Their `in.svg` is byte-identical to the named row's (`cmp`, 2026-11-15), and so is their `in.puml`,
+except that `-attribute-hierarchy-0` holds only the first `@startyaml` block of `YAML-attribute-hierarchy`, which is
+the block that row's oracle draws. Our render of each pair is byte-identical too (`renderFixtureJson`, deterministic
+measurer), and so is the residue (0.451 / 1.011 / 1 / 0, 0.750 / 2.146 / 1 / 0, 0.654 / 1.742 / 1 / 0,
+1.100 / 2.583 / 1 / 0). The same Smetana delta (U-REC, U-ARROW, U-CLIP) therefore names them
+(`hcl-yaml-oracle-gap-rows/decision-journal.md` row 8).
 
 **`@startgit` (git-engine-port, 2026-11-11).** `src/diagrams/git/` ports `gitlog/` file for file and lays out
 through dot-engine with `SmetanaForGit`'s graph, attribute for attribute (`ranksep=0.35`; `shape=box`,
