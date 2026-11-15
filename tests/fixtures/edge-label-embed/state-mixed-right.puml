@@ -1,0 +1,5 @@
+@startuml
+skinparam stateMessageAlignment right
+[*] --> S1
+S1 --> S2 : a much longer line of text\n{{\nclass X\n}}\nmore
+@enduml

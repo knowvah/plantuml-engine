@@ -35,6 +35,18 @@ post-D7 measurements.
 
 ---
 
+## edge-label-embed (ele) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #144; per-task history on the local tag `edge-label-embed/pre-squash`)
+
+A `{{ … }}` in a svek link label is one `EmbeddedDiagram` stripe in the jar (`SvekEdge.java:299-300` → `CreoleParser.java:146-170`). State, description and legacy activity measured and drew it as text; class measured a lone `{{` as text. The walk, the atom and `SheetBlock1`'s stacking now live in `src/core/svek/edge-label-embed.ts`. `state/xetase-70-zaza808` is conformant and pinned (state 299/299), and 29 authored probes hold the behaviour in `tests/oracle/svg-conformance/edge-label-embed.authored.test.ts` (27 at zero, 2 open on #188). No conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #144):**
+
+1. **#188 (`queue:ready`)**: activity-3 arrow labels (`FtileFactoryDelegator.java:103-112`) draw the embed at the right size but in the wrong place (61x68 at y 83.444 vs 92; the open probe moves every node 31.5 lower). Probes `act3`, `act3-open` are open rows in the authored gate.
+2. **Description dzeta for embed-free labels** (`link-edge-attrs.ts#computeLinkDzeta`): the jar eats the margined creole block (`SvekEdge.java:1159-1203`), and ours eats one unmargined line. It only matters when `/10` beats the 35 nodesep floor (a horizontal label wider than ~330 px). No corpus row is known to hit it (`.agent-notes/ele-T2a.md`).
+3. **Harnesses that bypass `renderSync`** must register the nested renderer before layout, or a `{{` measures 42x42 (`.agent-notes/xetase-embedded-diagram-label.md`). The class and state harnesses now do this.
+
+---
+
 ## hcl-yaml-oracle-gap-rows (hyogr) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #142; per-task history on the local tag `hcl-yaml-oracle-gap-rows/pre-squash`)
 
 #109 captured 12 `@starthcl` and 4 `@startyaml` rows that no gate held. 7 hcl rows are pinned zero-diff in `oracle/goldens/svg-hcl/ratchet.json` (1 → 8, with a per-type ratchet floor). 3 hcl rows pass the jfp D3 proof and are named in the DIVERGENCES Smetana row table (U-REC, U-ARROW, U-CLIP). The 4 yaml rows are byte-identical twins of named rows (source, oracle and render), and are named by paragraph. 2 hcl rows wait on #187. There is no `src/` change, and no conformant row was lost in any engine.

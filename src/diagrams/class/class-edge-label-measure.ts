@@ -161,8 +161,10 @@ export function computeMeasuredLabelAttrs(
   opts: MeasuredLabelOptions = {},
 ): LabelAttrs {
   const { lines } = splitDisplayLines(label);
-  // `CreoleParser.java:150-170`: a `{{ }}` line makes the embedded diagram one image stripe of the label block.
-  const embeds = lines.length > 1 ? splitEmbedLabelLines(splitDisplayLines(applyGuillemet(label)).lines) : undefined;
+  // `CreoleParser.java:150-170`: a `{{ }}` line makes the embedded diagram one image stripe of the label block. The
+  // walk has no line-count condition (ele T3a): a lone unterminated `{{` is the Welcome page of an empty embed, as
+  // `class-edge-label-attach.ts#attachEmbedLabel` already draws it.
+  const embeds = splitEmbedLabelLines(splitDisplayLines(applyGuillemet(label)).lines);
   if (embeds !== undefined) {
     const { width, height } = layoutEmbedLabel(embeds, { font, measurer, maxWidth: opts.maxWidth });
     return { label, labelWidth: width, labelHeight: height };

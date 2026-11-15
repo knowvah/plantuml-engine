@@ -5,6 +5,7 @@
 
 import type { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import type { StateStyledTextLine } from './state-sizing-creole.js';
+import type { StateLabelStripes } from './state-label-style.js';
 import type { StateTextLine } from './state-geo-types.js';
 
 /**
@@ -111,6 +112,9 @@ export interface TransitionGeo {
      *  `create0(font, alignment, wrapWidth, SIMPLE_LINE)`, one `TextBlock` line each (runs carry tab
      *  stops and leading-space advances). Absent on a hand-built geometry: the renderer draws `text`. */
     lines?: readonly StateStyledTextLine[];
+    /** ele T1b: the stacked stripes of a label whose display holds a `{{ … }}` line (`CreoleParser.java:146-170`);
+     *  absent for every embed-free label. */
+    stripes?: StateLabelStripes;
     /** `getMessageTextAlignment` or the label's own `\l`/`\r` (`Display.java:648-649`). */
     align?: HorizontalAlignment;
     /** The text block's width, the lines' alignment reference. */

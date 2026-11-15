@@ -1,0 +1,4 @@
+@startuml
+[*] --> S1
+S1 --> S1 : {{\nclass X\n}}
+@enduml

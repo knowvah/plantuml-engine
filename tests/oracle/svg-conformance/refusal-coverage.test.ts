@@ -730,7 +730,9 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11512 + 8 = 11520.
     // 11520 -> 11527 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
     // Derivation: 11520 + 7 = 11527.
-    expect(manifest.fixtures.length).toBe(11527);
+    // 11527 -> 11528 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
+    // Derivation: 11527 + 1 = 11528.
+    expect(manifest.fixtures.length).toBe(11528);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1114,7 +1116,9 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11313 + 47 = 11360.
     // 11360 -> 11367 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
     // Derivation: 11360 + 7 = 11367.
-    expect(pinnedRendering.length).toBe(11367);
+    // 11367 -> 11368 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
+    // Derivation: 11367 + 1 = 11368.
+    expect(pinnedRendering.length).toBe(11368);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

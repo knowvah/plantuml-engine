@@ -1,0 +1,4 @@
+@startuml
+(*) --> "a"
+-->[{{\nclass X\n}}] "b"
+@enduml

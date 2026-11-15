@@ -887,7 +887,9 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11286 + 47 = 11333.
     // 11333 -> 11340 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
     // Derivation: 11333 + 7 = 11340.
-    expect(pinnedAgree.length).toBe(11340);
+    // 11340 -> 11341 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
+    // Derivation: 11340 + 1 = 11341.
+    expect(pinnedAgree.length).toBe(11341);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1098,7 +1100,9 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11512 + 8 = 11520.
     // 11520 -> 11527 at hyogr/T1 (2026-11-15): +7 svg-hcl golden clone(s) (the 7 zero-diff #109 @starthcl rows, #142).
     // Derivation: 11520 + 7 = 11527.
-    expect(manifest.fixtures.length).toBe(11527);
+    // 11527 -> 11528 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
+    // Derivation: 11527 + 1 = 11528.
+    expect(manifest.fixtures.length).toBe(11528);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

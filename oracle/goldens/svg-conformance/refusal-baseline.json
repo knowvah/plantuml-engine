@@ -116313,6 +116313,17 @@
     },
     {
       "tree": "goldens",
+      "type": "svg-state",
+      "slug": "xetase-70-zaza808",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "state",
+      "status": "ok",
+      "measuredAt": "2026-11-15",
+      "measuredAgainstCommit": "d0ea0fbd"
+    },
+    {
+      "tree": "goldens",
       "type": "svg-activity",
       "slug": "unknown/zovemu-18-keki646",
       "jarRendered": true,

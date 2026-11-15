@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2591 modules · 8479 exported names.
+2592 modules · 8491 exported names.
 
 ## `src/`
 
@@ -70,7 +70,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `edge-label-box-note-merge.ts` | `NoteOnLinkPosition`, `MergedLabelBoxInput`, `computeMergedLabelBox` | The `note on link` merge half of `edge-label-box.ts` — the note operand, the four `Position` merges and the shield. |
 | `edge-label-box.ts` | `stripCreoleMarkup`, `resolveLineFont`, `ReservedLabelBox`, `CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT`, `VisibilityIconAdjustment`, `applyVisibilityIcon`, `applyGuillemet`, `MagicArrowDirection`, `MagicArrowLabel`, `parseMagicArrowLabel`, `ReservedLabelBoxOptions`, `computeReservedLabelBox`, `QuantifierBox`, `stripLeadingEscapedChar`, `computeQuantifierBox`, `computeMergedLabelBox`, `MergedLabelBoxInput`, `NoteOnLinkPosition` | The reserved box an edge label occupies in the DOT handed to graphviz. |
 | `element-open-pattern.ts` | `ALL_KW_ALT`, `ELEMENT_DECORATION_RUN`, `ELEMENT_MULTILINE_OPEN_RE` | The `CommandCreateElementMultilines` opener patterns, shared by the description parser and by `preprocessor-collector.ts` (core), which must know where a `[ ... |
-| `EmbeddedDiagram.ts` | `Line`, `NestedDiagramRenderer`, `getEmbeddedType`, `EmbeddedDiagram` | EmbeddedDiagram — a creole `{{ ... |
+| `EmbeddedDiagram.ts` | `Line`, `NestedDiagramRenderer`, `getEmbeddedType`, `createAndSkipLines`, `EmbeddedDiagramDepthError`, `EmbeddedDiagram` | EmbeddedDiagram — a creole `{{ ... |
 | `graph-layout-build-borderpoint.ts` | `ClusterHandles`, `inheritedEeLabel`, `buildBorderPointClusterHandles`, `placeBorderPointMembers` | G7 T14b border-point (`<<entrypoint>>`/`<<exitpoint>>`-child, `portRanksLabelOnEe`) cluster nesting — split out of ./graph-layout-build.ts#addClusters (500-line file-cap compliance; pure extraction, no behavior change). |
 | `graph-layout-build-constraint.ts` | `withSameContainerConstraints` | The two graph-level paths to `constraint=false`. |
 | `graph-layout-build-edges.ts` | `CARDINALITY_FONT_SIZE`, `EdgeIndex`, `edgeKey`, `addEdges` | `addEdges` — split out of ./graph-layout-build.ts (500-line file-cap compliance, forced by G7 T14b's border-point wiring additions; pure move, no behavior change). |
@@ -1059,6 +1059,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `Control.ts` | `Control` |  |
 | `DecorateEntityImage.ts` | `UGraphicWithGroups`, `DecorateEntityImage`, `EntityDecorationInfo`, `decorateEntityDrawing` |  |
 | `diagram-type-style-name.ts` | `getStyleName` | `DiagramType#getStyleName`: the `SName` a diagram kind's style signatures carry (`activityDiagram` for every kind the table does not list, as upstream's trailing `return`). |
+| `edge-label-embed.ts` | `EdgeLabelSegment`, `splitEdgeLabelEmbeds`, `edgeLabelEmbedAtom`, `edgeLabelEmbedDimension`, `StackedEdgeLabel`, `stackEdgeLabelStripes`, `edgeLabelSheetBlock` | edge-label-embed.ts — a svek link label whose display holds a `{{ … }}` line (ele T1a, issue #144). |
 | `EntityDomain.ts` | `EntityDomain` |  |
 | `EntityImageDegenerated.ts` | `DEGENERATED_DELTA`, `EntityImageDegenerated` | `EntityImageDegenerated`: what `GraphvizImageBuilder#buildImage` returns for a diagram with exactly one leaf, no link and no group: the leaf's own image, translated by `delta` and padded by `delta` on every side, with no graphviz pass. |
 | `FrontierCalculator.ts` | `RectangleArea`, `Point`, `ENTITY_POSITION_RADIUS`, `FrontierRankdir`, `frontierCalculator`, `ensureMinWidth`, `ProjectionClusterSpec`, `entryExitPointRect`, `ClusterRectangles`, `projectionClusterOf` | FrontierCalculator — the post-layout box-correction jar applies to a cluster's own graphviz-assigned rectangle before drawing it, whenever the cluster carries `<<entrypoint>>`/`<<exitpoint>>` (port) members alongside or instead of normal-po |
@@ -3087,7 +3088,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `state-json-commands.ts` | `PendingJson`, `isJsonCloser`, `JSON_COMMANDS` | `json` declaration commands for the state diagram parser — thin adapter over the shared port in `core/command/CommandCreateJson.ts` (mission shared-seam-extraction T9; formerly a 74%-line-identical clone of `class/class-json-commands.ts`, D |
 | `state-json-layout.ts` | `JsonLeafText`, `JsonLeafRule`, `JsonLeafLayout`, `layoutJsonLeaf` | stdd T5a: a `json Name { ... |
 | `state-json-sizing.ts` | `Dim`, `JsonDimNode`, `measureJsonCell`, `scalarText`, `measureJsonNode`, `MeasuredJsonState`, `measureJsonState` | `json` state sizing — `kind:'json'` leaves in the state diagram layout engine (./state-sizing.ts). |
-| `state-label-style.ts` | `LabelStyle`, `labelStyleOf`, `labelDisplayBlock`, `measureStateLabelBox` | state-label-style.ts — what `SvekEdge#drawU` reads before it builds a state link's label block (stdd T2c): `getMessageTextAlignment` (`SvekEdge.java:376-381`), `skinParam.maxMessageSize()` (`:291-294`) and `classAttributeIconSize()` for `Li |
+| `state-label-style.ts` | `LabelStyle`, `labelStyleOf`, `StateLabelStripe`, `StateLabelStripes`, `labelOpensWithEmbed`, `labelDisplayBlock`, `measureStateLabelBox` | state-label-style.ts — what `SvekEdge#drawU` reads before it builds a state link's label block (stdd T2c): `getMessageTextAlignment` (`SvekEdge.java:376-381`), `skinParam.maxMessageSize()` (`:291-294`) and `classAttributeIconSize()` for `Li |
 | `state-leaf-node.ts` | `LeafNodeCtx`, `buildLeafNode` | Leaf-node DOT sizing/shape (mission A4/T4 + Phase L Gap 1) — originally a pure move out of state-composite-pass.ts to keep that file under the repo's 500-line cap (`buildLeafNode` grew past the cap once the Gap 1 border-point plaintext/rect |
 | `state-link-add.ts` | `emitTransition` | The state engine's link-add chokepoint (SI1/T11) — `emitTransition`, split out of `state-parse-state.ts` under the 500-line file cap. |
 | `state-link-note-merge.ts` | `Offset`, `noteDrawnFirst`, `mergedOperandOffsets`, `MergedBlock`, `MergedPlacement`, `placeMergedOperands`, `InkRect`, `unionInk` | Where the two operands of a state link's merged label block land (dss T3e). |

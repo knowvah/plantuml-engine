@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T03:12:02.050Z",
+  "generatedAt": "2026-11-15T06:10:31.389Z",
   "fixtures": [
     {
       "slug": "bajelo-54-dixe684",
@@ -1890,16 +1890,9 @@
     {
       "slug": "xetase-70-zaza808",
       "type": "state",
-      "dotEqual": false,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,645.7249919999999,320.00001599999996 vs ours 0,0,121.72499199999999,130.999984"
-      },
-      "verdict": "diverged",
-      "maxDelta": 523,
-      "firstDiff": "svg/g[1]/g[4]/text[1]",
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "xexika-61-fedu273",
