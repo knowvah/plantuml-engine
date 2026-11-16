@@ -246,8 +246,8 @@ export function degenerateSingleLeaf(
   const emojiArtwork = emojiArtworkResolverFor(ast.sprites?.emoji);
   // G1 I-hideshow: a single-root-leaf diagram can still carry `hide
   // stereotype`/`hide <<label>> stereotype` -- filter BEFORE sizing so a
-  // hidden guillemet block reserves no footprint (EntityImageUseCase.java
-  // :96-109/EntityImageDescription.java:190-201 both size from the
+  // hidden guillemet block reserves no footprint (EntityImageDescription.java
+  // :190-201, which draws a usecase too, sizes from the
   // ALREADY-filtered `portionShower.getVisibleStereotypeLabels` result,
   // not the raw stereotype list). No corpus fixture in this iteration's
   // 13-fixture reach exercises this path (all have links/containers) --

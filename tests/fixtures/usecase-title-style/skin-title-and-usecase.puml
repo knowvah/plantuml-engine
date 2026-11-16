@@ -1,0 +1,11 @@
+@startuml
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+skinparam usecaseBorderColor blue
+skinparam usecaseBackgroundColor #EEEEFF
+actor A
+usecase U
+(B)/
+A --> U
+A --> B
+@enduml

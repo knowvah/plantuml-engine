@@ -1,0 +1,9 @@
+@startuml
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+actor A
+usecase U #back:FFEEDD;line:blue
+usecase V #line.dashed:green
+A --> U
+A --> V
+@enduml

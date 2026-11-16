@@ -74,10 +74,6 @@ function stereotypeOf(node: DescriptiveNode): Stereotype | undefined {
   return labels === undefined || labels.length === 0 ? undefined : Stereotype.build(labels.join(''));
 }
 
-function isUsecase(symbol: USymbol): boolean {
-  return symbol === 'usecase' || symbol === 'usecase-business';
-}
-
 function symbolSNames(symbol: USymbol, theme: Theme): readonly SName[] | undefined {
   if (symbol === 'usecase-business') return ['usecase', 'business'];
   // `actor/` is `ACTOR_STICKMAN_BUSINESS` whatever the style (`USymbols.java`), whose name is `business` alone.
@@ -158,10 +154,10 @@ export function descriptionEntityStyle(
     signature.withTOBECHANGED(stereotype).getMergedStyle(builder);
   const titleSNames = node.symbol === 'actor-business' ? (['actor', 'business'] as const) : snames;
   const style = merged(StyleSignatureBasic.of('root', 'element', STYLE_NAME, ...snames));
-  // `EntityImageUseCase#getStyleSignature` (`EntityImageUseCase.java:202-209`) has no `title` part.
-  const title = isUsecase(node.symbol)
-    ? style
-    : merged(StyleSignatureBasic.of('root', 'element', STYLE_NAME, ...titleSNames, 'title'));
+  // A usecase too: `GeneralImageBuilder.java:169-175` builds `EntityImageDescription` for `USECASE` and
+  // `USECASE_BUSINESS` (the `EntityImageUseCase` constructions are commented out), whose `styleTitle` is
+  // `{root, element, getStyleName(), symbol.getSNames(), title}` (`EntityImageDescription.java:142-153`).
+  const title = merged(StyleSignatureBasic.of('root', 'element', STYLE_NAME, ...titleSNames, 'title'));
   const stereo = StyleSignatureBasic.of('root', 'element', STYLE_NAME, ...snames, 'stereotype')
     .forStereotypeItself(stereotype)
     .getMergedStyle(builder);
@@ -209,14 +205,12 @@ export function annotateEntityStyles(
 ): void {
   for (const node of nodes) {
     annotateEntityStyles(node.children, builderAt, theme);
-    // `EntityImageUseCase.java:198` reads `getSkinParam().getCurrentStyleBuilder()`, the diagram's last.
-    // `EntityImageJson.java:144-150` and `EntityImageMap.java:142-148` also read `getSkinParam().getCurrentStyleBuilder()`.
+    // `EntityImageDescription` (a usecase included) reads `getEntity().getCurrentStyleBuilder()`
+    // (`EntityImageDescription.java:152-160`): the entity's own, or the last when `isSkinParamUsed()`
+    // (`Entity.java:755-767`), which `builderAt(node.styleGeneration)` answers.
+    // `EntityImageJson.java:144-150` and `EntityImageMap.java:142-148` read `getSkinParam().getCurrentStyleBuilder()`.
     const lastBuilder =
-      isUsecase(node.symbol) ||
-      node.symbol === 'note' ||
-      node.leafType === 'json' ||
-      node.leafType === 'map' ||
-      node.leafType === 'requirement';
+      node.symbol === 'note' || node.leafType === 'json' || node.leafType === 'map' || node.leafType === 'requirement';
     const builder = builderAt(lastBuilder ? undefined : node.styleGeneration);
     if (builder === undefined) continue;
     const style = descriptionEntityStyle(builder, node, theme);

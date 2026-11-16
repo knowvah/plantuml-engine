@@ -187,7 +187,7 @@ export function buildDotNodes(
     if (!ctx.leafIdSet.has(id)) continue;
     // G1 I-hideshow: DOT node width/height must be sized from the FILTERED
     // (visible-only) stereotype labels, matching jar's own
-    // EntityImageDescription/EntityImageUseCase (both size from
+    // EntityImageDescription (sizes from
     // `portionShower.getVisibleStereotypeLabels`, never the raw list) --
     // otherwise a `hide stereotype` fixture reserves height/width for a
     // guillemet block the render pass then correctly omits, a real

@@ -1,0 +1,10 @@
+@startuml
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+skinparam titleBackgroundColor #FFEEEE
+actor A
+(U)
+(B)/
+A --> U
+A --> B
+@enduml

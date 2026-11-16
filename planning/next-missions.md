@@ -35,6 +35,13 @@ post-D7 measurements.
 
 ---
 
+## usecase-title-style (uts) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #148; per-task history on the local tag `usecase-title-style/pre-squash`)
+
+A usecase is drawn by `EntityImageDescription` in the jar (`GeneralImageBuilder.java:169-175`; `EntityImageUseCase` is never constructed), so its border reads `styleTitle`, `{root, element, componentDiagram, usecase[, business], title}`, on the entity's own builder (`EntityImageDescription.java:142-153`, `Entity.java:755-767`). Ours modelled the dead class: no `title` in the signature, and the diagram's last builder. `description-entity-style.ts` now takes the usecase down the shared path, so `skinparam titleBorderColor`/`titleBorderThickness`/`titleBackgroundColor` and `<style> title { }` reach it, and a `<style>` declared after it does not (no skinparam). 12 authored probes in `tests/oracle/svg-conformance/usecase-title-style.authored.test.ts`: 11 at zero, 1 open on #195. No verdict or diff count moved in any engine; d.ts byte-identical.
+
+Follow-on:
+- **#195 (`queue:ready`)**: with `allowmixing`, the class engine strokes a mixed-in usecase and actor from flat theme tiers (`renderer-usymbol-entity-style.ts#resolveForecolor`/`#resolveStroke`), never the merged `styleTitle`, so `title*` skinparams miss them (`skin-title-allowmixing`, 61 diffs).
+
 ## description-entity-images (dei) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #147; per-task history on the local tag `description-entity-images/pre-squash`)
 
 The description factory registers `CommandCreateMap`, `CommandCreateJson`, `CommandCreateJsonSingleLine` and `CommandCreateDomain` (`DescriptionDiagramFactory.java:129-137`) and draws each leaf with its own image (`GeneralImageBuilder.java:183-187,235-256`); this port had neither, so every such source was a Syntax Error page. Ported to core: `EntityImageJson` + `TextBlockCucaJSon`, `TextBlockMap` + `EntityImageMap` (over the existing `BodierMap`), and `BoxedCharacter`, `EntityImageDomain`, `EntityImageMachine`, `EntityImageDesignedDomain`, `EntityImageRequirement` (`src/core/descdiagram/`, letter outlines captured from the jar). `gacoxo-93-guti295`, `liripi-72-kefa167`, `rukitu-26-seme622` and ten authored `dei-*` fixtures are conformant, dotEqual and pinned. No conformant row lost in any engine; d.ts byte-identical.
