@@ -251,6 +251,7 @@ function namespaceGeoFromBox(
     ...(ns.stereotype !== undefined ? { stereotypeTags: splitStereotypeStyleTags(ns.stereotype) } : {}),
     ...(ns.usymbol !== undefined ? { usymbol: ns.usymbol } : {}),
     ...(ns.color !== undefined ? { color: ns.color } : {}),
+    ...(ns.colors !== undefined ? { colors: ns.colors } : {}),
     ...(ns.url !== undefined ? { url: ns.url } : {}),
     ...(ns.roundCorner !== undefined ? { roundCorner: ns.roundCorner } : {}),
   };

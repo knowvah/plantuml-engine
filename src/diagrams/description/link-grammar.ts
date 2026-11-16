@@ -20,6 +20,7 @@ import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js
 import type { DescriptiveLink, DescriptiveLinkStyle } from './ast.js';
 import { extractLinkStereotype } from './parse-helpers.js';
 import { parseLinkColors } from './link-colors.js';
+import { colorOrWhite } from '../../core/klimt/color/HColorSet.js';
 
 import { LINK_LINE_RE, TAIL_TO_HEAD_TOKEN, HEAD_TO_TAIL_TOKEN, type LinkGroups } from './link-grammar-regex.js';
 export { LINK_LINE_RE };
@@ -220,15 +221,16 @@ function parseArrowStyle(style1: string | undefined, style2: string | undefined)
         const m = THICKNESS_TOKEN_RE.exec(lower);
         if (m !== null) {
           result.thickness = Number(m[1]);
-        } else if (segIdx === 0) {
-          // Grammar-mandatory leading `#` (LINE_STYLE's `#\w+` alternative
-          // is the only way a non-keyword token reaches this branch) --
-          // strip it, matching `renderer-entity.ts#parseColorOverride`'s
-          // established convention.
-          result.color = token.startsWith('#') ? token.slice(1) : token;
         } else {
+          // `HColorSet.instance().getColorOrWhite(s)` (`WithLinkType.java:161-163`): an
+          // unparseable token is WHITE (ucol T3a). Then the grammar-mandatory leading `#`
+          // (LINE_STYLE's `#\w+` alternative is the only way a non-keyword token reaches
+          // this branch) is stripped, matching `renderer-entity.ts#parseColorOverride`.
+          const resolved = colorOrWhite(token);
+          const color = resolved.startsWith('#') ? resolved.slice(1) : resolved;
           // `setSpecificColor(color, i)`: a later segment is a supplementary path (`WithLinkType.java:68-74`).
-          (result.supplementary ??= []).push(token.startsWith('#') ? token.slice(1) : token);
+          if (segIdx === 0) result.color = color;
+          else (result.supplementary ??= []).push(color);
         }
       }
     }

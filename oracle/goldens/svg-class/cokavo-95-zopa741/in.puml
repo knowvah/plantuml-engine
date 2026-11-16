@@ -1,0 +1,9 @@
+@startuml
+queue "a" as a <<toto>> {
+      component "b" as b {
+     }
+}
+component "c" as c {
+}
+b->c: test
+@enduml

@@ -34,7 +34,7 @@ import { getSprite } from '../../core/sprite-registry.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import { parseMagicArrowLabel } from '../../core/edge-label-box.js';
 import { packageTitleFaces, packageTitleFontFamily, packageTitleFontSize } from './class-namespace-title-runs.js';
-import { packageTitleFontColor } from './class-package-style.js';
+import { DEFAULT_GROUP_FONT_COLOR, packageTitleFontColor } from './class-package-style.js';
 
 /** `final double marginLabel = 1;`: `CucaDiagramFileMakerElk.java:180`, `:191`. */
 const MARGIN_LABEL = 1;
@@ -114,8 +114,8 @@ function arrowFontConfiguration(theme: Theme): FontConfiguration {
  * out at `CucaDiagramFileMakerElk.java:205-207`, `:224-226`). `undefined` is
  * upstream's null label (a bare `<`/`>`).
  */
-function stringWithArrowLabel(completeLabel: string): string | undefined {
-  if (Display.hasSeveralGuideLines(completeLabel)) return completeLabel;
+function stringWithArrowLabel(completeLabel: string, verbatim: boolean): string | undefined {
+  if (verbatim || Display.hasSeveralGuideLines(completeLabel)) return completeLabel;
   const parsed = parseMagicArrowLabel(completeLabel);
   return parsed === undefined ? completeLabel : parsed.text;
 }
@@ -129,7 +129,7 @@ function stringWithArrowLabel(completeLabel: string): string | undefined {
  * (`:236-238`, no note).
  */
 export function classElkLinkLabel(rel: Relationship, theme: Theme): TextBlock {
-  const label = rel.label === undefined ? undefined : stringWithArrowLabel(rel.label);
+  const label = rel.label === undefined ? undefined : stringWithArrowLabel(rel.label, rel.labelVerbatim === true);
   if (label === undefined || label.length === 0) return TextBlockUtils.empty(0, 0);
   const display = Display.getWithNewlines(Pragma.createEmpty(), label);
   const block = createBlock(display, arrowFontConfiguration(theme), theme, CreoleMode.SIMPLE_LINE);
@@ -161,7 +161,12 @@ export function classElkEndLabel(
  * (`:153-157`) -- `plantuml.skin:94-98`'s bold, centred package title, with
  * the `package` font overrides `class-namespace-title-runs.ts` resolves.
  */
-export function classElkClusterTitle(ns: Namespace, theme: Theme, tags: readonly string[]): TextBlock {
+export function classElkClusterTitle(
+  ns: Namespace,
+  theme: Theme,
+  tags: readonly string[],
+  uSymbolTitle: boolean = false,
+): TextBlock {
   const faces = packageTitleFaces(theme);
   const styles = new Set<FontStyle>();
   if (faces.bold) styles.add(FontStyle.BOLD);
@@ -169,7 +174,9 @@ export function classElkClusterTitle(ns: Namespace, theme: Theme, tags: readonly
   const fc: FontConfiguration = {
     family: packageTitleFontFamily(theme),
     size: packageTitleFontSize(theme),
-    color: packageTitleFontColor(theme, tags),
+    // A USymbol group's title is `{..., <usymbol>, composite, title}` (`ClusterHeader.java:150-153`): no `package_`, so
+    // `packageFontColor` never reaches it (`renderer.ts#renderNamespace`).
+    color: uSymbolTitle ? DEFAULT_GROUP_FONT_COLOR : packageTitleFontColor(theme, tags),
     styles,
   };
   return createBlock(Display.getWithNewlines(Pragma.createEmpty(), ns.display), fc, theme, CreoleMode.FULL);

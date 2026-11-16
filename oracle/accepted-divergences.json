@@ -41,6 +41,15 @@
     },
     {
       "match": {
+        "id": "svg-class/vanadi-41-geru001"
+      },
+      "scope": "svg-conformance class ledger (nested {{yaml}} image size -- Smetana path, cdd7 D8 precedent; cogr D4)",
+      "acceptedAt": "2026-11-14",
+      "acceptedBy": "maintainer (standing ruling 2026-08-09, DIVERGENCES.md `Smetana-backed diagram types`; pre-ruled for this row class by plans/class-oracle-gap-rows/decisions.md#D4)",
+      "reason": "A `node n [ {{yaml ...}} ]` leaf embeds a `@startyaml` sub-diagram with a nested `color:` list. `@startyaml` is a JsonDiagram laid out by Smetana in the jar (`SmetanaForJson.java:137-143`) and by @knowvah/dot-engine here (CLAUDE.md, one layout engine, ruling 2026-08-09). cogr T4e made every text, rect and textLength inside the embed equal to the jar (inline creole in a yaml cell, `TextBlockJson.java:345-347`); what remains is the nested diagram's own size: the child `Red`/`Green` table sits at x 128.237 against the jar's 128 and its edge at M79.237 against M78.5 (the U-REC/U-CLIP sources of the DIVERGENCES.md entry), so the embedded `<image>` is 184 wide against 183. Every other diff follows from that 1 px: render-diff 2026-11-14 pass=false structural=0 numeric=11 (`svg/@width` 244/243, the node polygon and its three lines +1, `image/@width` 184/183). Same mechanism and magnitude as svg-unknown/gubeca-19-lemu434 and jixibu-01-xave465 (cdd7 D8). The embed has an edge, so planning's 'single node, no residue' expectation did not hold; D4 adds such a row to the existing Smetana entry rather than opening a new divergence. A yaml-engine fix that makes the row conformant retires this entry via the ledger gate."
+    },
+    {
+      "match": {
         "id": "svg-c4/gikaju-64-bari602"
       },
       "scope": "svg-conformance c4 ledger (jar errors, we draw -- ruling 2026-10-10)",

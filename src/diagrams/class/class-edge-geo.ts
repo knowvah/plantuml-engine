@@ -368,6 +368,7 @@ export function buildEdgeGeos(
       ...(rel.hidden === true ? { hidden: true as const } : {}),
       ...(rel.middleDecor !== undefined ? { middleDecor: rel.middleDecor } : {}),
       ...(rel.labelTextColor !== undefined ? { labelTextColor: rel.labelTextColor } : {}),
+      ...(rel.arrowStyle !== undefined ? { arrowStyle: rel.arrowStyle } : {}),
       ...resolved.strokeExtra,
       ...(grouped?.sametail !== undefined ? { sametail: grouped.sametail } : {}),
       // T3c (D8, `smetana-pragma-ignored`): carry-only copy of

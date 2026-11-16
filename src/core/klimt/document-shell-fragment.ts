@@ -178,6 +178,9 @@ export interface RenderDrawableToFragmentOptions {
   /** Per-drawable id-namespace seed -- see this interface's own doc
    *  comment above for the exact mechanism. */
   readonly uid: string;
+  /** `SvgOption#scale` (`SvgGraphics.java:466-472`): the factor `format` multiplies every emitted numeric by. The
+   *  `drawable` then draws in unscaled units. Absent = 1. */
+  readonly scale?: number;
 }
 
 /** {@link renderDrawableToFragment}'s return shape -- the exact contract
@@ -231,7 +234,10 @@ function driverBounderFor(measurer: StringMeasurer): DriverStringBounder {
  */
 export function renderDrawableToFragment(drawable: UDrawable, opts: RenderDrawableToFragmentOptions): DrawableFragment {
   const seed = seedOf(opts.uid);
-  const option = basicSvgOption({ minDim: { width: opts.width, height: opts.height } });
+  const option = basicSvgOption({
+    minDim: { width: opts.width, height: opts.height },
+    ...(opts.scale === undefined ? {} : { scale: opts.scale }),
+  });
   const stringBounder = driverBounderFor(opts.measurer);
   const ug = UGraphicSvg.build(seed, option, VERSION_PLACEHOLDER, stringBounder, opts.measurer);
 

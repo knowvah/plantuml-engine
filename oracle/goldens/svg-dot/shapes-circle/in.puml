@@ -1,0 +1,8 @@
+@startdot
+digraph circles {
+  a [shape=circle, label=A]
+  b [shape=circle, label=B]
+  c [shape=circle, label=C]
+  a -> b -> c -> a
+}
+@enddot

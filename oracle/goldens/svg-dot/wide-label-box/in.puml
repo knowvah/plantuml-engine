@@ -1,0 +1,7 @@
+@startdot
+digraph G {
+  start [shape=box, label="Starting Node"]
+  end [shape=box, label="Ending Node"]
+  start -> end [label="transition"]
+}
+@enddot

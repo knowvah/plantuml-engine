@@ -35,6 +35,71 @@ post-D7 measurements.
 
 ---
 
+## unresolved-colour (ucol) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #145; per-task history on the local tag `unresolved-colour/pre-squash`)
+
+A colour token the jar cannot parse still draws a valid colour wherever the jar draws, and each call site picks it from one `HColorSet` method (`HColorSet.java:58-76`). Class and description stored the raw token, which reached `fill`/`stroke`. Ported per site: an arrow-style token is `getColorOrWhite` (`WithLinkType.java:161-163`; class T2a, description T3a), a `name:value` part is `getColorOrNull` and its null clears the key (`Colors.java:111-113`; class T2b, description T3b), and a `<style>` value is `ValueImpl.asColor` → `getColorOrWhite` (`ValueImpl.java:92-108`; T2c, in the shared element-scope bucket writer and the class cascade). T2b also replaced the class link's trailing-colour grammar with upstream's `COLORS_REGEXP`: `A --> B #line:red` had drawn `:red` as a label. The refusal gate now asserts that every committed fixture draws only `#hex`/`none`/`black`/`white`/`url(#id)` (`tests/helpers/svg-colour-validity.ts`), and 28 probes hold the behaviour at zero in `tests/oracle/svg-conformance/unresolved-colour.authored.test.ts`. No conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #145):**
+
+1. **#189 (`queue:ready`)**: activity-3 `-[#zzblue]->`. The jar errors (`HtmlColorAndStyle.java:100` `getColor`); we draw the default. Mirror the error or sign the row (2026-10-10 rule); if we draw, it is #143's neutral, not the default.
+2. **#190 (`queue:ready`)**: `object X #line:<c>`. The jar errors for every `name:value` (`CommandCreateEntityObject.java:140-142` passes the whole capture to `getColor`); we draw.
+3. **#191 (`queue:ready`)**: `actor X #line:<c>` routes to sequence; the jar's sequence factory fails on the same `getColor` (`CommandParticipant.java:183-185`) and description draws.
+4. `class-arrow-multi` (`-[#zzblue;#red]->`), `seq-declared-arrow` and `seq-participant-line`: both sides error, conformant under the 2026-10-10 rule. No issue. The brief had `class-arrow-multi` as "we draw"; we error, and did at the base.
+
+---
+
+## edge-label-embed (ele) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #144; per-task history on the local tag `edge-label-embed/pre-squash`)
+
+A `{{ … }}` in a svek link label is one `EmbeddedDiagram` stripe in the jar (`SvekEdge.java:299-300` → `CreoleParser.java:146-170`). State, description and legacy activity measured and drew it as text; class measured a lone `{{` as text. The walk, the atom and `SheetBlock1`'s stacking now live in `src/core/svek/edge-label-embed.ts`. `state/xetase-70-zaza808` is conformant and pinned (state 299/299), and 29 authored probes hold the behaviour in `tests/oracle/svg-conformance/edge-label-embed.authored.test.ts` (27 at zero, 2 open on #188). No conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #144):**
+
+1. **#188 (`queue:ready`)**: activity-3 arrow labels (`FtileFactoryDelegator.java:103-112`) draw the embed at the right size but in the wrong place (61x68 at y 83.444 vs 92; the open probe moves every node 31.5 lower). Probes `act3`, `act3-open` are open rows in the authored gate.
+2. **Description dzeta for embed-free labels** (`link-edge-attrs.ts#computeLinkDzeta`): the jar eats the margined creole block (`SvekEdge.java:1159-1203`), and ours eats one unmargined line. It only matters when `/10` beats the 35 nodesep floor (a horizontal label wider than ~330 px). No corpus row is known to hit it (`.agent-notes/ele-T2a.md`).
+3. **Harnesses that bypass `renderSync`** must register the nested renderer before layout, or a `{{` measures 42x42 (`.agent-notes/xetase-embedded-diagram-label.md`). The class and state harnesses now do this.
+
+---
+
+## hcl-yaml-oracle-gap-rows (hyogr) — DONE 2026-11-15 (one commit on `feature/parity-queue`, #142; per-task history on the local tag `hcl-yaml-oracle-gap-rows/pre-squash`)
+
+#109 captured 12 `@starthcl` and 4 `@startyaml` rows that no gate held. 7 hcl rows are pinned zero-diff in `oracle/goldens/svg-hcl/ratchet.json` (1 → 8, with a per-type ratchet floor). 3 hcl rows pass the jfp D3 proof and are named in the DIVERGENCES Smetana row table (U-REC, U-ARROW, U-CLIP). The 4 yaml rows are byte-identical twins of named rows (source, oracle and render), and are named by paragraph. 2 hcl rows wait on #187. There is no `src/` change, and no conformant row was lost in any engine.
+
+**What remains (follow-ons, none blocks #142):**
+
+1. **#187 (`needs-ruling`)**: `hcl/function-call` and `hcl/for-expression-empty-array`. (a) DIVERGENCES' empty-container label rationale ("`''` reproduces Smetana's no-text-extent outcome") is measured false: graphviz gives an empty record field a space glyph plus PAD (`shapes.c:3436-3438`), 19.75 in-rank against Smetana's 15, which is 2.375 px of node Δ. (b) The faithful `LimitFinder` ink for an empty block (`x+w−1`, `LimitFinder.java:184-188`) closes their dw and moves 10 rows toward the jar, but raises `authored:json/empty-nested` dw 0 → 1, a U-REC cancellation. The fix and its measurement are in the hyogr journal, T2a row.
+2. **DIVERGENCES.md is three files concatenated**: `82b9128ea` (2026-11-06) spliced older copies of the whole file in after line ~462 (`## General` at 15, 475 and 847). It needs a dedicated cleanup PR that diffs the tail copies for unique text first (`.agent-notes/hyogr-T2b.md`).
+3. **Edge `penwidth` is not forwarded** by `graph-layout-build-edges.ts`. Upstream never sets it, so nothing is wrong today, but an S1 counterfactual that only sets the attribute measures nothing (`.agent-notes/hyogr-T2a.md`).
+
+---
+
+## dot-oracle-gap-rows (dogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #141; per-task history on the local tag `dot-oracle-gap-rows/pre-squash`)
+
+The 57 `@startdot` rows #109 captured were in no ratchet. 55 are now pinned in `oracle/goldens/svg-dot/ratchet.json`: 47 zero-diff rows at T1, and 8 jar error pages at T1b. The error pages are conformant under the 2026-10-10 rule, held by score, with error parity asserted. The ratchet holds 60 rows; the dot survey reads 60 / 2 / 0, unchanged. 0 conformant losses in any engine, and no `src/` change.
+
+**What remains (follow-ons, none blocks #141):**
+
+1. **#186 (`needs-ruling`)**: `quoted-labels` and `skinparam-font-color`. The oracle host's graphviz kerns `Node A` through pango (Times New Roman), and dot-engine's `LutTextMeasurer` has no kerning (dogr T2; `.agent-notes/dogr-T2.md`). The options are a host-font divergence, or a font-derived kern table in `@knowvah/dot-engine`. The same mechanism reaches any dot-engine-measured label with a kern pair (svek edge labels too), so a dot-engine kern table would need the every-engine survey.
+2. **Error-page pins in zero-diff ratchets**: other zero-diff ratchets can reuse T1b's shape for survey-conformant jar error pages: `jarError` + `weightedScore` + `diffCount` on the entry, AC1/passthrough filtered to non-error rows, and error parity via `setErrorPageObserver`. The pin tool has a `--jar-error` path (`plans/dot-oracle-gap-rows/tools/pin-goldens.mts`).
+3. **Pinning drifts the parity report**: any `ratchet.json` change needs `npm run parity:dashboard` in the same task. The D9 drift gate reads the pinned count and last-pin date (`scripts/parity-dashboard-goldens.ts:157`). Briefs should not defer the dashboard to survey batches.
+
+---
+
+## class-oracle-gap-rows (cogr) — DONE 2026-11-14 (one commit on `feature/parity-queue`, #140; per-task history on the local tag `class-oracle-gap-rows/pre-squash`)
+
+The 151 class rows #109 captured were in no ratchet. 148 are now conformant and pinned in `oracle/goldens/svg-class/ratchet.json`: 110 at T1, plus 38 driven to zero by porting the upstream mechanism each lacked (T1b, T2a-T2e, T3a-T3f, T4a-T4h, and the splits T4f2, T4f3, T4h2). The class survey reads 871 / 3 / 0 (was 834 / 19 / 21); 0 conformant losses in any engine.
+
+**What remains (follow-ons, none blocks #140):**
+
+1. **#185 (`needs-ruling`)**: `nacave-78-dijo807` and `subdiagram-theme-1` put `!theme` inside a `{{ }}` note embed. The jar never preprocesses an embed (`EmbeddedDiagram.java:87-90`, `BlockUml.java:146-148`), so it embeds its version-banner error page.
+2. **`vanadi-41-geru001`** is accepted under the Smetana ruling (nested yaml image 1 px, `oracle/accepted-divergences.json`, cogr D4). A yaml-engine fix that closes it retires the entry.
+3. **Three unpinned, non-#109 conformant class rows** (D1): `luzive-62-zote562`, `sadamo-18-siva346`, `zuduxu-90-kosi876`. Pin them with `plans/class-oracle-gap-rows/tools/pin-goldens.mts`.
+4. **No class `diff-baseline`** (D2): open class rows are not held shrink-only. The mission did not need one; the measurer was the record.
+5. **`compareSvg` never reads inside an embed's data URI**, so an embed row can hold wrong nested content at n=0 (T4f3 found the nested `<!--entity c1.comp12…-->` comment against the jar's `<!--entity comp1234-->`). `renderer-usymbol-entity.ts` names the entity comment by `classifier.id`; the jar uses the leaf name.
+6. **Description multiline openers drop their url** (`applyElementDecorations`), the twin of cogr T3d's class fix. No corpus row shows it.
+7. **Early links in description**: description's generation-count style thunk keeps every skinparam in every generation, so a description link made before a `skinparam` may be over-themed (cogr T4h2 ported positional builders for class only). No row shows it.
+8. **#149 (scale)**: cogr T4c fixed scaled USymbol *leaves*; the group-title path `class-namespace-usymbol-shape.ts#renderNamespaceUSymbol` has the same root (draws pre-scaled inputs at scale 1).
+9. **JSON/YAML cell creole**: size-tagged, linked, image, bullet and tab cells stay on the plain path (cogr T4e); no row uses them.
+
 ## sequence-oracle-gap-rows (sogr) — DONE 2026-11-13 (one commit on `feature/parity-queue`, #139; per-task history on the local tag `sequence-oracle-gap-rows/pre-squash`)
 
 The 94 sequence rows #109 captured had no `diff-baseline.json` row, so no gate held them. All 94 are now conformant and pinned (86 at T1, 8 by porting one upstream mechanism each), plus 11 authored rows (9 `sogr-partition-*`, 2 `sogr-anchor-*`). The sequence survey is 1248/1248 conformant; 0 conformant losses in any engine.

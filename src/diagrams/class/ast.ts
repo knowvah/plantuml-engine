@@ -11,11 +11,13 @@
 import type { Member, Visibility } from './class-member-ast.js';
 export type { Member, Visibility };
 import type { UrlInfo } from './class-url.js';
+import type { DeclarationColors } from './class-declaration-extractors.js';
 export type { UrlInfo };
 
 import type { DiagramAnnotations, DisplayPositioned } from '../../core/annotations/index.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
+import type { Warning } from '../../core/warning/Warning.js';
 
 // ---------------------------------------------------------------------------
 // Map row types
@@ -187,6 +189,22 @@ export interface Namespace {
    */
   color?: string;
   /**
+   * cogr T2a: the `line:`/`text:`/`line.<style>` halves of the same inline
+   * colour spec, the part {@link Namespace.color} drops. Cluster drawing reads
+   * `group.getColors().getColor(ColorType.LINE)` for the border and
+   * `getSpecificLineStroke()` for the stroke, and the title's
+   * `style.getFontConfiguration(set, g.getColors())` reads `ColorType.TEXT`.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:317-318,347
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/ClusterHeader.java:122-123
+   */
+  colors?: DeclarationColors;
+  /**
+   * cogr T2c: the RAW inline colour spec, kept so a group muted to a leaf can hand the whole `Colors` to the leaf
+   * (`Entity#muteToType` keeps the SAME entity and its `Colors`, `GraphvizImageBuilder.java:416-418`);
+   * {@link Classifier.color} stores the raw spec by the same convention.
+   */
+  colorSpec?: string;
+  /**
    * T11: the group's own USymbol keyword (same vocabulary
    * {@link Classifier.usymbol} uses --
    * `core/descriptive-keywords.ts#KEYWORD_TO_SYMBOL`'s key set), sourced
@@ -254,6 +272,8 @@ export interface ClassTogether {
 // ---------------------------------------------------------------------------
 
 export interface ClassDiagramAST {
+  /** `CommandSkinParam#executeArg`'s warnings for the line-form `skinparam` lines (`CommandSkinParam.java:92-99`). */
+  warnings?: readonly Warning[];
   classifiers: Classifier[];
   relationships: Relationship[];
   namespaces: Namespace[];

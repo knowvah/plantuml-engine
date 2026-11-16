@@ -20,6 +20,8 @@ import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { EDGE_LABEL_MARGIN, SELF_LOOP_EDGE_LABEL_MARGIN } from '../../core/svek/SvekEdge.js';
 import { buildTextBlock } from '../../core/svek/image/EntityImageDescriptionTextBlock.js';
+import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
+import { edgeLabelSheetBlock } from '../../core/svek/edge-label-embed.js';
 import { sizingAtomImageResolverFor } from '../../core/svek/image/leaf-sizing-entity.js';
 import { styleFont } from './description-entity-style.js';
 import { LABEL_SHIELD } from '../../core/svek/extremity/MiddleCircleDecor.js';
@@ -139,13 +141,39 @@ interface LinkDzeta {
  *  (stereotype included) and the tail/head qualifier labels
  *  (`link.firstLabel`/`secondLabel` -- always Quantifier1/Quantifier2 here,
  *  never Role1/Role2; see `applyQualifierLabels`'s doc comment). */
-function dzetaTexts(link: DescriptiveLink): string[] {
-  const texts: string[] = [];
+function dzetaTexts(link: DescriptiveLink): DzetaText[] {
+  const texts: DzetaText[] = [];
   const main = mainLabelText(link);
-  if (main !== undefined) texts.push(resolveInlineLinks(main));
-  if (link.firstLabel !== undefined) texts.push(resolveInlineLinks(link.firstLabel));
-  if (link.secondLabel !== undefined) texts.push(resolveInlineLinks(link.secondLabel));
+  if (main !== undefined) texts.push({ text: resolveInlineLinks(main), margined: true });
+  if (link.firstLabel !== undefined) texts.push({ text: resolveInlineLinks(link.firstLabel), margined: false });
+  if (link.secondLabel !== undefined) texts.push({ text: resolveInlineLinks(link.secondLabel), margined: false });
   return texts;
+}
+
+/** A text `getHorizontalDzeta`/`getVerticalDzeta` eats: the main `labelText` is margined
+ *  (`addVisibilityModifier`, `SvekEdge.java:372-373`), a quantifier block is not (`:330-340`). */
+interface DzetaText {
+  readonly text: string;
+  readonly margined: boolean;
+}
+
+/**
+ * One text's dimension in the dzeta (`SvekEdge.java:1169-1176`). ele T2a: a text with a `{{` line eats its stacked
+ * block (`CreoleParser.java:146-170`), the main label inside its `marginLabel` (a self-loop never gets here,
+ * `:1160-1161`); every other text keeps the single-line measure.
+ */
+function dzetaDim(t: DzetaText, ctx: MeasureCtx): { width: number; height: number } {
+  const font: FontConfiguration = { color: '#000000', styles: new Set(), ...ctx.fontSpec };
+  const lines = parseWithNewlines(Pragma.createEmpty(), t.text)!.lines;
+  const block = edgeLabelSheetBlock(
+    lines,
+    (ls) => buildTextBlock(ls.join('\n'), font, HorizontalAlignment.CENTER),
+    HorizontalAlignment.CENTER,
+  );
+  if (block === undefined) return measureLineWithAtoms(t.text, ctx.fontSpec, ctx.measurer, ctx.sprites);
+  const dim = block.calculateDimension(new MeasurerStringBounder(ctx.measurer));
+  const margin = t.margined ? 2 * EDGE_LABEL_MARGIN : 0;
+  return { width: dim.getWidth() + margin, height: dim.getHeight() + margin };
 }
 
 function computeLinkDzeta(link: DescriptiveLink, ctx: MeasureCtx): LinkDzeta {
@@ -157,17 +185,11 @@ function computeLinkDzeta(link: DescriptiveLink, ctx: MeasureCtx): LinkDzeta {
 
   const texts = dzetaTexts(link);
   if (link.length === 1) {
-    const widthSum = texts.reduce(
-      (s, t) => s + measureLineWithAtoms(t, ctx.fontSpec, ctx.measurer, ctx.sprites).width,
-      0,
-    );
+    const widthSum = texts.reduce((s, t) => s + dzetaDim(t, ctx).width, 0);
     return { horizontal: widthSum + decorDzeta, vertical: 0 };
   }
 
-  const heightSum = texts.reduce(
-    (s, t) => s + measureLineWithAtoms(t, ctx.fontSpec, ctx.measurer, ctx.sprites).height,
-    0,
-  );
+  const heightSum = texts.reduce((s, t) => s + dzetaDim(t, ctx).height, 0);
   return { horizontal: 0, vertical: heightSum + decorDzeta };
 }
 
@@ -254,13 +276,12 @@ function measureMainLabelBox(text: string, isSelfLoop: boolean, ctx: MeasureCtx)
   const marginLabel = isSelfLoop ? SELF_LOOP_EDGE_LABEL_MARGIN : EDGE_LABEL_MARGIN;
   const font: FontConfiguration = { color: '#000000', styles: new Set(), ...ctx.fontSpec };
   const parsed = parseWithNewlines(Pragma.createEmpty(), text)!;
-  const block = buildTextBlock(
-    parsed.lines.join('\n'),
-    font,
-    HorizontalAlignment.CENTER,
-    sizingAtomImageResolverFor(ctx.sprites)(font),
-    ctx.theme?.maxMessageSize ?? 0,
-  );
+  const resolver = sizingAtomImageResolverFor(ctx.sprites)(font);
+  const maxWidth = ctx.theme?.maxMessageSize ?? 0;
+  const textBlock = (lines: readonly string[]): TextBlock =>
+    buildTextBlock(lines.join('\n'), font, HorizontalAlignment.CENTER, resolver, maxWidth);
+  // ele T2a: a `{{` line reserves the stacked block `SvekEdge#drawLabelBlock` draws (`CreoleParser.java:146-170`).
+  const block = edgeLabelSheetBlock(parsed.lines, textBlock, HorizontalAlignment.CENTER) ?? textBlock(parsed.lines);
   const dim = block.calculateDimension(new MeasurerStringBounder(ctx.measurer));
   return { width: Math.floor(dim.getWidth() + 2 * marginLabel), height: Math.trunc(dim.getHeight() + 2 * marginLabel) };
 }

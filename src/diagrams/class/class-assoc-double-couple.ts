@@ -20,6 +20,7 @@ import {
   makeCoupleCircle,
 } from './class-assoc-couple.js';
 import { resolveArrow } from './class-arrow-grammar.js';
+import { placeInCurrentGroup } from './class-assoc-circle-group.js';
 
 /**
  * cdd-T3 (A1 SB3): one `insertPointBetween` call's shared-counter burns --
@@ -122,6 +123,7 @@ export function applyDoubleCouple(
   ensure: (id: string) => Classifier,
   line: string,
   counter?: AssocCoupleCounter,
+  activeNamespace: string | null = null,
 ): boolean {
   const m = ASSOC_DOUBLE_COUPLE_RE.exec(line);
   if (m === null) return false;
@@ -131,7 +133,14 @@ export function applyDoubleCouple(
   // results at once.
   const r1 = makeCoupleCircle(ast, ensure, m[1]!, m[2]!);
   const r2 = makeCoupleCircle(ast, ensure, m[3]!, m[4]!);
+  placeInCurrentGroup(ast, r1.circle, activeNamespace);
+  placeInCurrentGroup(ast, r2.circle, activeNamespace);
   const join: Relationship = { from: r1.circleId, to: r2.circleId, type: resolveJoinType(line), length: 1 };
+  // `executeArgSpecial3`: `LABEL_LINK` -> `LinkArg.build(label, 1)` on point1ToPoint2, no `LinkArrow`.
+  if (m[5] !== undefined) {
+    join.label = m[5];
+    join.labelVerbatim = true;
+  }
   ast.relationships.push(join);
   if (counter !== undefined) stampDoubleCouple(counter, r1, r2, join);
   return true;

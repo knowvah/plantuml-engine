@@ -9,12 +9,17 @@
  * builds from the declarations before it.
  */
 import type { PreprocessorResult } from './preprocessor.js';
+import type { MindmapStyleSource } from './style/mindmap-style-builder.js';
 import { currentStyleBuilderOf } from './document-back-color.js';
 import { StyleParsingException } from './style/parser/StyleParser.js';
 import type { StyleBuilder } from './style/StyleBuilder.js';
 
+/** What {@link declaredBefore} reads: the style sources and the document line of each declaration. */
+export type PositionedStyleSource = MindmapStyleSource &
+  Pick<PreprocessorResult, 'stylePositions' | 'skinparamAssignments'>;
+
 /** The greatest document line a located skinparam or `<style>` block sits at; `undefined` when none is located. */
-export function lastDeclarationPosition(pre: PreprocessorResult): number | undefined {
+export function lastDeclarationPosition(pre: PositionedStyleSource): number | undefined {
   const positions = [
     ...(pre.skinparamAssignments ?? []).map((assignment) => assignment.position),
     ...pre.stylePositions,
@@ -23,7 +28,7 @@ export function lastDeclarationPosition(pre: PreprocessorResult): number | undef
 }
 
 /** `pre` without the declarations located at or after `position` (an unlocated one counts as executed before). */
-export function declaredBefore(pre: PreprocessorResult, position: number): PreprocessorResult {
+export function declaredBefore<T extends PositionedStyleSource>(pre: T, position: number): T {
   const skinparam = new Map<string, string>();
   const skinparamOrder = new Map<string, number>();
   for (const assignment of pre.skinparamAssignments ?? []) {
@@ -44,7 +49,7 @@ export function declaredBefore(pre: PreprocessorResult, position: number): Prepr
 }
 
 /** The builder current at `position`, `null` for a `<style>` block the parser rejects. */
-export function builderAtPosition(pre: PreprocessorResult, position: number): StyleBuilder | null {
+export function builderAtPosition(pre: PositionedStyleSource, position: number): StyleBuilder | null {
   try {
     return currentStyleBuilderOf(declaredBefore(pre, position));
   } catch (e) {

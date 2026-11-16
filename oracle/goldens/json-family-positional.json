@@ -509,20 +509,6 @@
       "dw": 0,
       "dh": 0
     },
-    "hcl/comments-stripped": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/flat-key-value": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
     "hcl/for-expression-empty-array": {
       "aligned": true,
       "nodeMax": 1.5,
@@ -548,41 +534,6 @@
       "aligned": true,
       "nodeMax": 0.425,
       "pathMax": 1.834,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/nested-resource-block": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/style-element-header": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/style-node-background": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/variable-block": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
-      "dw": 0,
-      "dh": 0
-    },
-    "hcl/variable-reference-verbatim": {
-      "aligned": true,
-      "nodeMax": 0,
-      "pathMax": 0,
       "dw": 0,
       "dh": 0
     },

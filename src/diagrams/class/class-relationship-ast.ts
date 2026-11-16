@@ -7,12 +7,18 @@ import type { NotePosition } from './class-note-decl-ast.js';
 import type { MiddleDecor } from './class-arrow-middle-decor.js';
 import type { UrlInfo } from './class-url.js';
 import type { RelationshipType, LinkDecor } from './class-relationship-decor-ast.js';
+import type { Style } from '../../core/style/Style.js';
 import type { UStroke } from '../../core/klimt/UStroke.js';
 export type { MiddleDecor, RelationshipType, LinkDecor };
 
 export interface Relationship {
   /** `styleLine.getStroke()` (`MyElkEdge.java:170`) off the merged style (`class-cluster-corner.ts`); the ELK path's. */
   arrowStroke?: UStroke;
+  /**
+   * The `arrow` style merged over the builder current at this link's command (`Link.java:93,130`), set by
+   * `class-cluster-corner.ts#annotateLinkStyles` only for a link a later `skinparam`/`<style>` would otherwise reach.
+   */
+  arrowStyle?: Style;
   from: string;
   to: string;
   type: RelationshipType;
@@ -131,6 +137,15 @@ export interface Relationship {
    * (`objectdiagram/AbstractClassOrObjectDiagram.java:282-284`).
    */
   linkNoteNotPrinted?: boolean;
+  /**
+   * cogr T3a: the label is drawn verbatim -- a trailing ` >`/` <` is NOT a magic-arrow token. Upstream derives the
+   * link's `LinkArrow` only in `CommandLinkClass#executeArg` (`:367`, `link.setLinkArrow(labels.getLinkArrow())`
+   * through `Labels`/`StringWithArrow`, `descdiagram/command/Labels.java:64`); the association-class paths
+   * (`executeArgSpecial1/2/3`, `:414`, `:449`, `:487`) hand `LABEL_LINK` straight to `Display.getWithNewlines`
+   * and `LinkArg.build`, so the link keeps `LinkArrow.NONE_OR_SEVERAL` and `SvekEdge.java:290-299` measures and
+   * draws the text including the `>`. Set by class-assoc-couple.ts on the couple's own labelled edge.
+   */
+  labelVerbatim?: boolean;
   /**
    * cdd2-T19c: this note-on-link's own `#color` spec — the BACK (fill) and
    * LINE (outline stroke) slots `ComponentRoseNote`'s `symbolContext` reads

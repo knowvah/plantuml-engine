@@ -1,0 +1,4 @@
+@startuml
+participant A #line:zzblue
+A -> A : m
+@enduml

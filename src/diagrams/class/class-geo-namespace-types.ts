@@ -11,6 +11,7 @@
  * follow).
  */
 import type { UrlInfo } from './class-url.js';
+import type { DeclarationColors } from './class-declaration-extractors.js';
 import type { NamespaceVisibilityBlock } from './class-namespace-title-table.js';
 import type { ClusterHeaderStereo } from './class-cluster-header.js';
 import type { LeafSymbolInk } from '../../core/svek/image/leaf-sizing-entity.js';
@@ -88,6 +89,8 @@ export interface NamespaceGeo {
    *  mirroring `Cluster.java:360-362`'s `group.getColors()`-first back-color
    *  resolution. */
   color?: string;
+  /** cogr T2a: the header's `line:`/`text:`/`line.<style>` colours, copied from `Namespace.colors`. */
+  colors?: DeclarationColors;
   /** cdd-T12 (diagnosis A2b E4): the header's own `[[url]]`, copied from
    *  `Namespace.url`. Consumed by `renderer-group.ts#wrapCluster`, which
    *  opens the `<a>` INSIDE the `<g class="cluster">` and before the

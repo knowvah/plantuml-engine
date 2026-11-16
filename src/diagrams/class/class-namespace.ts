@@ -59,7 +59,9 @@ function copyMutedEntityFields(ns: Namespace, classifier: Classifier): void {
   // cdd3-T9 S-12: likewise the entity's own colours -- the mute keeps the
   // SAME entity, whose BACK colour `EntityImageEmptyPackage` reads first.
   // @see ~/git/plantuml/.../svek/image/EntityImageEmptyPackage.java:97,109-112
-  if (ns.color !== undefined) classifier.color = ns.color;
+  // cogr T2c: the WHOLE spec, so the leaf's `line:`/`text:`/`line.<style>` reach its draw (`Entity#muteToType`).
+  if (ns.colorSpec !== undefined) classifier.color = ns.colorSpec;
+  else if (ns.color !== undefined) classifier.color = ns.color;
   // cdd3-T10 (S-11): and its url (`Entity#addUrl`, `CommandPackageWithUSymbol
   // .java:212`) -- the SAME entity draws it after the mute.
   if (ns.url !== undefined) classifier.url = ns.url;

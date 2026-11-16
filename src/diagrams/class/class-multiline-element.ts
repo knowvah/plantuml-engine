@@ -37,6 +37,7 @@ import {
   extractNodeStereotype,
 } from '../description/parse-helpers.js';
 import { getEmbeddedType } from '../../core/EmbeddedDiagram.js';
+import { parseUrlBracket, URL_BRACKET_RE } from './class-url.js';
 import { scanEmbeddedElementBlock } from './class-embedded-block.js';
 import { ensureClassifier, type ParseState } from './parser.js';
 import type { PendingMultilineElement } from './class-parse-state.js';
@@ -68,6 +69,27 @@ import type { PendingMultilineElement } from './class-parse-state.js';
  */
 const NATIVE_DECL_KEYWORDS = new Set(['interface']);
 
+/**
+ * The leaf an opener creates: `usecase` is `LeafType.USECASE` and `usecase/`
+ * is `LeafType.USECASE_BUSINESS`; every other keyword is a
+ * `LeafType.DESCRIPTION` with that USymbol. Kinds follow the single-line
+ * declaration's own mapping (`class-declaration-parser.ts#resolveDeclKind`):
+ * a plain usecase carries no `usymbol`, a business one keeps its raw keyword.
+ * cogr T1b: both openers used to make every keyword `descriptive`, so a
+ * multiline usecase's svek node was `shape=rect` (fosufo-93-kozi113's oracle
+ * DOT is `shape=ellipse`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/descdiagram/command/CommandCreateElementMultilines.java:173-187
+ *   "if (symbol.equalsIgnoreCase("usecase")) { type = LeafType.USECASE; ...
+ *   } else if (symbol.equalsIgnoreCase("usecase/")) { type = LeafType.USECASE_BUSINESS;"
+ */
+function ensureMultilineLeaf(state: ParseState, code: string, usymbol: string): string {
+  if (usymbol === 'usecase') return ensureClassifier(state, code, 'usecase', code).id;
+  const kind = usymbol === 'usecase/' ? 'usecase' : 'descriptive';
+  const classifier = ensureClassifier(state, code, kind, code);
+  classifier.usymbol = usymbol;
+  return classifier.id;
+}
+
 /** Apply the opener's captured STEREO/COLOR run, mirroring the description
  *  engine's `applyElementDecorations`. BOTH types parse COLOR: TYPE0 before
  *  `as`, TYPE1 before `[` -- `ColorParser.exp1()` sits in both concats
@@ -86,6 +108,11 @@ function applyDecorations(state: ParseState, classifierId: string, run: string):
   if (sr?.sprite !== undefined) classifier.stereotypeSprite = sr.sprite;
   const cr = extractColor(sr === undefined ? run : sr.remainder);
   if (cr !== undefined) classifier.color = cr.color;
+  // `UrlBuilder.OPTIONAL` sits in both concats (`:100`, `:115`) and
+  // `executeNow` does `result.addUrl(urlBuilder.getUrl(urlString))` (`:216-220`).
+  const urlMatch = URL_BRACKET_RE.exec(run);
+  const url = urlMatch === null ? undefined : parseUrlBracket(urlMatch[0]);
+  if (url !== undefined) classifier.url = url;
 }
 
 /** A display row from the opener's own tail or the closer's pre-terminator
@@ -197,10 +224,9 @@ function tryType1(state: ParseState, line: string): boolean {
   const usymbol = open[1]!.toLowerCase();
   if (NATIVE_DECL_KEYWORDS.has(usymbol)) return false;
   const code = open[2]!;
-  const classifier = ensureClassifier(state, code, 'descriptive', code);
-  classifier.usymbol = usymbol;
-  applyDecorations(state, classifier.id, open[3]!);
-  const pending: PendingMultilineElement = { classifierId: classifier.id, terminator: 'bracket', lines: [] };
+  const classifierId = ensureMultilineLeaf(state, code, usymbol);
+  applyDecorations(state, classifierId, open[3]!);
+  const pending: PendingMultilineElement = { classifierId, terminator: 'bracket', lines: [] };
   state.pendingMultilineElement = pending;
   const desc = open[4]!;
   const closes = /\]\s*$/.test(desc);
@@ -227,10 +253,9 @@ function tryType0(state: ParseState, lines: readonly string[], i: number, line: 
   }
   if (!closerFound) return false;
   const code = open[2]!;
-  const classifier = ensureClassifier(state, code, 'descriptive', code);
-  classifier.usymbol = usymbol;
-  applyDecorations(state, classifier.id, open[3]!);
-  const pending: PendingMultilineElement = { classifierId: classifier.id, terminator: 'quote', lines: [] };
+  const classifierId = ensureMultilineLeaf(state, code, usymbol);
+  applyDecorations(state, classifierId, open[3]!);
+  const pending: PendingMultilineElement = { classifierId, terminator: 'quote', lines: [] };
   state.pendingMultilineElement = pending;
   pushEdgeText(pending, open[4]!);
   return true;

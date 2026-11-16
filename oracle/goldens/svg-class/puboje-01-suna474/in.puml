@@ -1,0 +1,11 @@
+@startuml
+title no style
+node node {
+}
+package package {
+}
+queue queue {
+}
+rectangle rectangle {
+}
+@enduml

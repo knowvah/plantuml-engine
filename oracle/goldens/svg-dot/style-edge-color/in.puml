@@ -1,0 +1,13 @@
+@startdot
+<style>
+edge {
+  LineColor: #009900
+}
+</style>
+digraph G {
+  start -> a
+  start -> b
+  a -> end
+  b -> end
+}
+@enddot

@@ -1,0 +1,10 @@
+@startuml
+robust "W" as W
+concise "U" as U
+@0
+W is Idle
+U is Idle
+@100
+W -> U : {{\nclass X\n}}
+W is Busy
+@enduml

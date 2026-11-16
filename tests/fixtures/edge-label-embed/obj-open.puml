@@ -1,0 +1,5 @@
+@startuml
+object A
+object B
+A --> B : {{
+@enduml

@@ -1,0 +1,14 @@
+@startdot
+<style>
+node {
+  BackgroundColor: #E8F5E9
+  BorderColor: #2E7D32
+}
+edge {
+  LineColor: #1565C0
+}
+</style>
+digraph pipeline {
+  compile -> test -> deploy
+}
+@enddot

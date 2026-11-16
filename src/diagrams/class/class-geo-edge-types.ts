@@ -4,6 +4,7 @@
  * cap -- a pure move (same precedent as `NamespaceGeo`/`ClassGeometry`/
  * `JsonBodyItem`), re-exported from there so no import path changed.
  */
+import type { Style } from '../../core/style/Style.js';
 import type { EdgeLabelRun } from './class-edge-label-sprite-runs.js';
 import type { LinkDecor, UrlInfo } from './ast.js';
 import type { MiddleDecor } from './class-arrow-middle-decor.js';
@@ -80,6 +81,9 @@ export interface EdgeGeo {
    *  triangle per line (`StringWithArrow#addSeveralMagicArrows`,
    *  `descdiagram/command/StringWithArrow.java:115-127`), 3 points in the
    *  same tip-then-two-back-corners order as {@link arrowGlyph}. */
+  /** The `{{ }}` blocks of a label (`class-edge-label-embed.ts`), each an `<image>` drawn after the `before`-th
+   *  {@link labelLines} entry. Absolute, like `labelLines`. */
+  labelEmbeds?: Array<{ x: number; y: number; width: number; height: number; href: string; before: number }>;
   labelLines?: Array<{
     text: string;
     x: number;
@@ -239,6 +243,8 @@ export interface EdgeGeo {
   /** cdd3-T10 (S-4t): copied unchanged from `Relationship.labelTextColor`
    *  -- the muted label font colour (`SvekEdge.java:260-262`). */
   labelTextColor?: string;
+  /** Copied unchanged from `Relationship.arrowStyle`: the arrow style of the builder current at the link's command. */
+  arrowStyle?: Style;
   /** B7/M8: copied unchanged from `Relationship.stereotypeTags` — the link's
    *  own `<<tag>>` style-class label(s). `renderer-edge.ts` looks each up in
    *  `theme.colors.graph.arrowTagCascade`. Absent for every link with no

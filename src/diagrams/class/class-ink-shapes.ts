@@ -8,6 +8,7 @@
  * owns the document-margin constants.
  */
 import type { ClassifierGeo } from './layout.js';
+import { JSON_CELL_MARGIN_X } from '../../core/svek/image/EntityImageJson.js';
 
 /** `LimitFinder#drawUPolygon`'s own `x`-only padding quirk
  *  (`HACK_X_FOR_POLYGON = 10` upstream, `LimitFinder.java:169`) --
@@ -348,6 +349,24 @@ export function addClassicRectInk(box: InkBox, x: number, y: number, w: number, 
 }
 
 /**
+ * cogr T3f (style-stereotype-on-arrow-6): the right edge of the widest json value cell. `getTextBlock` wraps every
+ * cell in `TextBlockUtils.withMargin(result, 5, 2)` (`TextBlockCucaJSon.java:181-190`) and `TextBlockMarged#drawU`
+ * first draws `UEmpty.create(dim)` of the WHOLE cell, margins included (`TextBlockMarged.java:77-80`), which
+ * `LimitFinder#drawEmpty` takes as a plain bbox with no inset. When the cell is as wide as the entity (`true` in a
+ * `json n1 true` whose name is narrower), that `UEmpty` ends at `x + w`, one past `drawRectangle`'s `x + w - 1`.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/TextBlockMarged.java:74-81
+ */
+function jsonCellInkRight(c: ClassifierGeo): number {
+  let right = Number.NEGATIVE_INFINITY;
+  for (const item of c.jsonBody ?? []) {
+    if (item.kind !== 'text') continue;
+    right = Math.max(right, c.x + item.row.indent + (item.row.width ?? 0) + JSON_CELL_MARGIN_X);
+  }
+  return right;
+}
+
+/**
  * T2b (json-canvas-width-1px, `unknown/bizasu-70-vaxa243`/`unknown/meramo-
  * 02-vasu175`/`unknown/momada-03-zeka599`): `kind: 'json'`'s own body-shape
  * dispatch, replacing the generic `addRectInk`'s `bodyInkWidth ?? c.width`
@@ -362,7 +381,8 @@ export function addClassicRectInk(box: InkBox, x: number, y: number, w: number, 
  * OBJECT bodies always draw a per-member `ULine.hline(jsonTotalWidth)`
  * (`cucadiagram/TextBlockCucaJSon.java:168,174`) and ARRAY bodies with >= 2
  * elements draw one BETWEEN elements (`:215-220`) -- both reaching `x+w`,
- * `LimitFinder#drawULine`'s own un-inset rule. `c.jsonBody` (`class-json-
+ * `LimitFinder#drawULine`'s own un-inset rule (cogr T3f: unless a value cell's own `UEmpty` reaches further,
+ * {@link jsonCellInkRight}). `c.jsonBody` (`class-json-
  * sizing.ts#buildJsonItems`) already carries this exact operation list --
  * `kind: 'hline'` items exist if and only if upstream would have drawn one
  * (`buildObjectItems` unconditionally, `buildArrayItems` only `if (i > 0)`)
@@ -376,7 +396,7 @@ export function addClassicRectInk(box: InkBox, x: number, y: number, w: number, 
 export function addJsonBodyInk(box: InkBox, c: ClassifierGeo): void {
   addPoint(box, c.x - 1, c.y - 1);
   const hasHline = (c.jsonBody ?? []).some((item) => item.kind === 'hline');
-  const maxX = hasHline ? c.x + c.width : c.x + c.width - 1;
+  const maxX = hasHline ? c.x + c.width : Math.max(c.x + c.width - 1, jsonCellInkRight(c));
   // An empty object draws one `ULine.vline(0)` at the title's foot (`TextBlockCucaJSon.java:167`) and an empty array
   // nothing, so only `drawRectangle`'s `y + h - 1` reaches the bottom: the title stops `marginEmptyFieldsOrMethod`
   // above it (`EntityImageJson.java:224-228`).

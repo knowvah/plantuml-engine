@@ -1,0 +1,7 @@
+@startuml
+start
+partition #CadetBlue;header:zzblue P {
+:a;
+}
+stop
+@enduml

@@ -13,6 +13,7 @@ import type { SName } from '../../core/style/SName.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { usymbolSNames } from '../../core/style-element-scope.js';
+import { linkStylesOf } from '../../core/style/style-reads.js';
 import type { ClassDiagramAST } from './ast.js';
 import { PACKAGE_SYMBOL } from './class-package-style.js';
 import { rawStereotypeLabels } from './class-stereotype.js';
@@ -49,6 +50,27 @@ function annotateArrowStrokes(ast: ClassDiagramAST, builder: StyleBuilder): void
     const stereotype = tags.length === 0 ? undefined : Stereotype.build(tags.map((tag) => `<<${tag}>>`).join(''));
     const stroke = signature.withTOBECHANGED(stereotype).getMergedStyle(builder)?.getStroke();
     if (stroke !== undefined) rel.arrowStroke = stroke;
+  }
+}
+
+/**
+ * `Link#getStyleBuilder` (`Link.java:93,130`): the builder current at the link's own command (`CommandLinkClass.java:355`
+ * hands `getCurrentStyleBuilder()` to `new Link(...)`), read by `SvekEdge.java:816-821,874-876` for the arrow's line
+ * colour, thickness and label font. Stored on a link only where a declaration lies AFTER it (`builderAt` answers
+ * `undefined` otherwise): every other link reads the diagram's last builder, which the flat theme tiers already hold.
+ */
+export function annotateLinkStyles(
+  ast: ClassDiagramAST,
+  builderAt: (position: number) => StyleBuilder | undefined,
+): void {
+  for (const rel of ast.relationships) {
+    if (rel.sourceLine === undefined) continue;
+    const builder = builderAt(rel.sourceLine);
+    if (builder === undefined) continue;
+    const tags = rel.stereotypeTags ?? [];
+    const stereotype = tags.length === 0 ? undefined : Stereotype.build(tags.map((tag) => `<<${tag}>>`).join(''));
+    const { arrowStyle } = linkStylesOf(builder, stereotype, STYLE_NAME);
+    if (arrowStyle !== undefined) rel.arrowStyle = arrowStyle;
   }
 }
 

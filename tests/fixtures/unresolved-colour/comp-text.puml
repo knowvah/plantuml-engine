@@ -1,0 +1,3 @@
+@startuml
+component C #text:zzblue
+@enduml

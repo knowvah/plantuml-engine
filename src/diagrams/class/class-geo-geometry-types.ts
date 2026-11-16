@@ -9,12 +9,15 @@
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
+import type { Warning } from '../../core/warning/Warning.js';
 import type { ClassElkGeometry, EdgeGeo } from './class-geo-types.js';
 import type { NamespaceGeo } from './class-geo-namespace-types.js';
 import type { ClassLeafGeo } from './class-leaf-geo.js';
 import type { JsonBodyItem } from './class-geo-json-types.js';
 
 export interface ClassGeometry {
+  /** The AST's skinparam warnings, drawn as a banner by the plugin (`class-warnings.ts`). */
+  warnings?: readonly Warning[];
   /** cdd-T3 (A1 SB5): `class-directives-removal.ts#computeRemovedRanks`'s output (see its doc comment). */
   removedRanks?: readonly number[];
   /** cdd3-T9 S-1: `creationIndex` of every packed group (`Namespace.packed`)

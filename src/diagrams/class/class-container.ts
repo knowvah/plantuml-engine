@@ -76,6 +76,16 @@ function muteClassifierToGroup(state: ParseState, effectiveId: string): number |
 }
 
 /**
+ * Which same-line `X {}` command opened a block, for the title it gives a dotted name. Unlike their opening-brace
+ * siblings (`display = quark.getName()`, `CommandPackage.java:160`, `CommandNamespace.java:117`), the empty forms
+ * name the leaf in full: `CommandPackageEmpty` passes the dotted name as typed (`idShort`, `:127-139`, so
+ * `package java.lang {}` shows `java.lang`) and `CommandNamespaceEmpty` the quark's qualified name (`:113`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandPackageEmpty.java:119-139
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandNamespaceEmpty.java:105-115
+ */
+export type EmptyBlockForm = 'package' | 'namespace';
+
+/**
  * Open a `package`/`namespace`/descriptive-container block: mark it the active
  * container, splitting a dotted name into a nested chain. All map to the same
  * GroupType.PACKAGE container upstream; the USymbol difference does not affect
@@ -87,7 +97,7 @@ function muteClassifierToGroup(state: ParseState, effectiveId: string): number |
  * under two different enclosing packages build two independent `ddf`
  * clusters instead of merging into one global `ddf` (tibatu-28-jiro743).
  */
-export function openNamespaceBlock(state: ParseState, id: string, display: string): string {
+export function openNamespaceBlock(state: ParseState, id: string, display: string, emptyForm?: EmptyBlockForm): string {
   // Restore point for the enclosing container on the matching `}`.
   const enclosing = state.activeNamespace;
   state.namespaceStack.push(enclosing);
@@ -121,9 +131,9 @@ export function openNamespaceBlock(state: ParseState, id: string, display: strin
     // @see ~/git/plantuml/src/main/java/net/atmp/CucaDiagram.java:349-355
     const existedBefore = ns.some((n) => n.id === effectiveId);
     state.activeNamespace = ensureNamespaceChain(ns, sep, segments, state.creationCounter, reuseCreationIndex);
-    if (!existedBefore && display !== id) {
+    if (!existedBefore && (display !== id || emptyForm !== undefined)) {
       const leaf = ns.find((n) => n.id === state.activeNamespace);
-      if (leaf !== undefined) leaf.display = display;
+      if (leaf !== undefined) leaf.display = emptyForm === 'namespace' ? effectiveId : display;
     }
     return state.activeNamespace;
   }
@@ -476,7 +486,7 @@ export const NAMESPACE_COMMANDS: readonly Command[] = [
     ),
     execute(state, match) {
       const nsId = stripQuotes(match[1]!);
-      const effectiveId = openNamespaceBlock(state, nsId, nsId);
+      const effectiveId = openNamespaceBlock(state, nsId, nsId, match[5] !== undefined ? 'namespace' : undefined);
       // A2s F-G mechanism A8: stereo capture (group 2) -- GATED, a
       // USymbol-naming stereotype selects the shape instead
       // (CommandNamespace.java:113-124).

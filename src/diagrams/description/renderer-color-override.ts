@@ -5,7 +5,7 @@
  * move: the code below is byte-identical to what lived in `renderer-entity.ts`.
  */
 import type { Paint } from '../../core/paint.js';
-import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
+import { colorOrNeutral, HColorSet } from '../../core/klimt/color/HColorSet.js';
 import { parseColor } from '../../core/paint.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
 
@@ -63,9 +63,12 @@ export function parseColorOverride(raw: string): ColorOverride {
     const value = token.slice(colonIdx + 1);
     const dotIdx = name.indexOf('.');
     const key = dotIdx === -1 ? name : name.slice(0, dotIdx);
-    if (key === 'line') result.line = value;
-    else if (key === 'text') result.text = value;
+    if (key !== 'line' && key !== 'text' && key !== 'back') continue;
+    // `map.put(key, set.getColorOrNull(value))` (`Colors.java:111-113`): a null still claims the key, so an
+    // unparseable value clears an earlier one and the default draws (ucol T3b).
+    if (HColorSet.instance().getColorOrNull(value) === undefined) delete result[key];
     else if (key === 'back') result.back = parseColor(value);
+    else result[key] = value;
   }
   if (data.includes('line.dashed')) result.lineStyle = 'dashed';
   else if (data.includes('line.dotted')) result.lineStyle = 'dotted';

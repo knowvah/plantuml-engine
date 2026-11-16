@@ -1,0 +1,6 @@
+@starthcl
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "my-app-bucket"
+  acl    = "private"
+}
+@endhcl

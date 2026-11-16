@@ -7,6 +7,7 @@ import type { ScaledTheme } from './class-scale-geo.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { renderEmptyPackageIcon } from './class-namespace-shape.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
+import { parseDeclarationColors } from './class-declaration-extractors.js';
 import { linkWrap } from '../../core/svg.js';
 
 /**
@@ -45,6 +46,9 @@ export function renderEmptyPackageLeaf(
   // cdd3-T9 S-12: the entity's own BACK colour (EntityImageEmptyPackage.java:97).
   const back = resolveBareOrBackColor(geo.color);
   if (back !== undefined) nsGeo.color = back;
+  // cogr T2c: `style.eventuallyOverride(colors)` (`EntityImageEmptyPackage.java:107`) -- the LINE/TEXT/stroke halves.
+  const colors = parseDeclarationColors(geo.color);
+  if (Object.keys(colors).length > 0) nsGeo.colors = colors;
   // cdd3-T21 (E3-6): the measured stereo block + packageStyle symbol, and
   // the entity's style tags (`EntityImageEmptyPackage#getStyle`'s
   // `withTOBECHANGED(stereotype)`, `EntityImageEmptyPackage.java:88-91`).

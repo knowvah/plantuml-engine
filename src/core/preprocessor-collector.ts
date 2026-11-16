@@ -9,6 +9,10 @@ import type { SkinDirective, SkinparamAssignment, SkinparamForm } from './prepro
 import { EmbeddedDiagram, getEmbeddedType } from './EmbeddedDiagram.js';
 import type { StringLocated } from './tim/StringLocated.js';
 import { getInputStreamForStyle } from './style/StyleLoader.js';
+import { ELEMENT_MULTILINE_OPEN_RE } from './element-open-pattern.js';
+
+/** `CommandCreateElementMultilines.END1` (java:83-84). */
+const RE_ELEMENT_BODY_END = /^([^[\]]*)\]$/;
 
 const RE_STYLE_OPEN = /^<style>$/i;
 /** `CommandStyleSingleLineCSS.getRegexConcat` (java:61-67), `%s` being
@@ -142,6 +146,31 @@ const RE_SKINPARAM_BLOCK_CLOSE = /^\s*\}\s*$/;
  * the ones that are not diagram content. No value needs substituting here any
  * more: `TContext#addPlain` already did (`TContext.java:455-466`).
  */
+/**
+ * The embedded type a line opens: a `{{` line itself, or a `[ ... ]` description opener whose own tail is one
+ * (`label a [{{`). `CommandCreateElementMultilines#executeNow` adds the opener's `DESC` (everything after the
+ * `[`) as the display's first line (`:200-202`), and `BodyEnhanced2` hands that line to
+ * `EmbeddedDiagram#createAndSkip` like any other.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/descdiagram/command/CommandCreateElementMultilines.java:200-202
+ */
+function embeddedOpenerOf(raw: string): string | null {
+  const direct = getEmbeddedType(raw);
+  if (direct !== null) return direct;
+  const open = ELEMENT_MULTILINE_OPEN_RE.exec(raw.trim());
+  return open === null ? null : getEmbeddedType(open[4]!);
+}
+
+/**
+ * True for a line that closes one `{{` level: `}}` itself, or `}}]` when the `]` ends the `[ ... ]` body
+ * (`END1`, `^([^\[\]]*)\]$`, whose group 1 `executeNow` appends as the last display line, `:204-205`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/descdiagram/command/CommandCreateElementMultilines.java:80-84
+ */
+function embeddedCloserOf(raw: string): boolean {
+  if (trim2(raw) === EmbeddedDiagram.EMBEDDED_END) return true;
+  const end = RE_ELEMENT_BODY_END.exec(raw.trim());
+  return end !== null && trim2(end[1]!) === EmbeddedDiagram.EMBEDDED_END;
+}
+
 export class StyleAndSkinparamCollector {
   readonly styles: string[] = [];
   /** G2 N39: parallel to {@link styles} -- see `PreprocessorResult
@@ -222,7 +251,7 @@ export class StyleAndSkinparamCollector {
 
     if (this.skinparamStack.length > 0) return this.collectSkinparamBlockEntry(trimmed);
 
-    if (this.embeddedNested > 0 || getEmbeddedType(raw) !== null) {
+    if (this.embeddedNested > 0 || embeddedOpenerOf(raw) !== null) {
       this.skipEmbedded(raw);
       return false;
     }
@@ -333,8 +362,8 @@ export class StyleAndSkinparamCollector {
    * closes one. The line itself stays diagram content.
    */
   private skipEmbedded(raw: string): void {
-    if (getEmbeddedType(raw) !== null) this.embeddedNested++;
-    else if (trim2(raw) === EmbeddedDiagram.EMBEDDED_END) this.embeddedNested--;
+    if (embeddedOpenerOf(raw) !== null) this.embeddedNested++;
+    else if (embeddedCloserOf(raw)) this.embeddedNested--;
   }
 
   /** Block-open forms are tested before the single-line form, which would

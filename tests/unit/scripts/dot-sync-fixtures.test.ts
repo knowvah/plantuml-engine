@@ -34,6 +34,15 @@ import { stripDiagramName, stripLayoutPragma } from '../../../scripts/dot-sync-d
  *  `exposant-02-usecase`: a dot-cache usecase row that is not in the visual
  *  manifest and gained an `svg-description/usecase/` golden when codd T11
  *  pinned it, so the enumerator now appends it like an authored golden. */
+/** The class ratchet rows class-oracle-gap-rows pinned (`source: "cogr-…"`). */
+const COGR_PINNED_CLASS_SLUGS = (
+  JSON.parse(readFileSync(join(CLASS_GOLDEN_DIR, 'ratchet.json'), 'utf-8')) as {
+    fixtures: { slug: string; source?: string }[];
+  }
+).fixtures
+  .filter((f) => f.source?.startsWith('cogr-') === true)
+  .map((f) => f.slug);
+
 const AUTHORED_USECASE_SLUGS = [
   'exposant-02-usecase',
   'sprite-svg-archimate-0',
@@ -332,19 +341,27 @@ describe('enumerateFixtures over the committed corpus', () => {
     const enumerated = enumerateFixtures('class');
     expect(enumerated).toBeDefined();
     expect(enumerated!.slice(0, 768)).toEqual(manifest);
-    expect(enumerated!.slice(768).map((f) => f.slug)).toEqual([
-      'class-actor-bare-no-allowmixing',
-      'class-allowmixing-usecase-mix',
-      'class-inheritance-interface-assoc',
-      'class-usecase-inline-img',
-      'class-usecase-inline-sprite',
-      // Since class-divergence-drive/close-b1 (2026-09-21): a cache fixture
-      // (`test-results/dot-cache/class/exposant-01-class`, creole-exposant-port)
-      // with no `tests/visual/data/class.json` row, pinned into the class
-      // ratchet once it measured conformant + zero-diff + dotEqual. The
-      // enumerator's rule (golden root minus manifest slugs) now lists it.
-      'exposant-01-class',
-    ]);
+    expect(enumerated!.slice(768).map((f) => f.slug)).toEqual(
+      [
+        'class-actor-bare-no-allowmixing',
+        'class-allowmixing-usecase-mix',
+        'class-inheritance-interface-assoc',
+        'class-usecase-inline-img',
+        'class-usecase-inline-sprite',
+        // Since class-divergence-drive/close-b1 (2026-09-21): a cache fixture
+        // (`test-results/dot-cache/class/exposant-01-class`, creole-exposant-port)
+        // with no `tests/visual/data/class.json` row, pinned into the class
+        // ratchet once it measured conformant + zero-diff + dotEqual. The
+        // enumerator's rule (golden root minus manifest slugs) now lists it.
+        'exposant-01-class',
+        // Since class-oracle-gap-rows T1/T1b (2026-11-14): the 111 #109 class
+        // rows (oracle-gap-capture), cache fixtures with no class.json row,
+        // pinned into the class ratchet the same way. Read from ratchet.json by
+        // their `cogr-` source tag rather than listed, and merged into the
+        // enumerator's own order (`authoredFixtures` sorts the golden root).
+        ...COGR_PINNED_CLASS_SLUGS,
+      ].sort(),
+    );
   });
 
   it("reads every one of the five authored class goldens' markup from their in.puml", () => {

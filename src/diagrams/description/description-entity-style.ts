@@ -14,23 +14,21 @@ import {
   upstreamKeyword,
 } from '../../core/decoration/symbol/usymbol-resolve.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
-import { HColorGradient } from '../../core/klimt/color/HColorGradient.js';
-import { HColorSet } from '../../core/klimt/color/HColorSet.js';
-import { HColorSimple } from '../../core/klimt/color/HColorSimple.js';
-import { bridgeFontConfiguration } from '../../core/klimt/font/FontConfigurationBridge.js';
-import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import type { Paint } from '../../core/paint.js';
 import { Stereotype } from '../../core/stereo/Stereotype.js';
-import type { PName } from '../../core/style/PName.js';
 import type { SName } from '../../core/style/SName.js';
 import type { Style } from '../../core/style/Style.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { ValueNull } from '../../core/style/ValueNull.js';
+import { linkStylesOf, styleFont, stylePaint } from '../../core/style/style-reads.js';
 import type { EntitySizing } from '../../core/svek/image/LeafSizingSubject.js';
 import type { Theme } from '../../core/theme.js';
 import type { DescriptiveLink, DescriptiveNode } from './ast.js';
 import { rawStereotypeLabels } from './parse-helpers.js';
+
+/** Re-exported for this engine's own importers; the bodies live in `core/style/style-reads.ts`. */
+export { linkStylesOf, styleFont, stylePaint };
 
 /** `DiagramType#getStyleName` for a description diagram. @see core/DiagramType.java:250-251 */
 const STYLE_NAME: SName = 'componentDiagram';
@@ -51,20 +49,6 @@ export interface DescriptionEntityStyle {
   readonly clusterTitle?: Style;
   /** `ClusterHeader.java:226-228`: the group's stereotype labels. */
   readonly clusterStereo?: Style;
-}
-
-/** `style.value(name).asColor(set)`, as this renderer's `Paint`; `undefined` where the style has no colour value. */
-export function stylePaint(style: Style | undefined, name: PName): Paint | undefined {
-  if (style === undefined) return undefined;
-  const value = style.value(name);
-  if (value.asString() === '') return undefined;
-  const color = value.asColor(HColorSet.instance());
-  return color instanceof HColorSimple || color instanceof HColorGradient ? color.asPaint() : undefined;
-}
-
-/** `Style#getFontConfiguration(set)` as the renderer's and the sizer's one `FontConfiguration`. */
-export function styleFont(style: Style | undefined): FontConfiguration | undefined {
-  return style === undefined ? undefined : bridgeFontConfiguration(style.getFontConfiguration(HColorSet.instance()));
 }
 
 /** `Rainbow.build`'s `HeadColor` (`Rainbow.java:85-90`): absent on a `ValueNull`, which keeps the line colour. */
@@ -188,12 +172,12 @@ export function annotateLinkStyles(
     const builder = builderAt(link.styleGeneration, true);
     if (builder === undefined) continue;
     const run = link.stereotypeRun ?? (link.stereotype === undefined ? undefined : `<<${link.stereotype}>>`);
-    const stereotype = run === undefined ? undefined : Stereotype.build(run);
-    const arrow = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'arrow');
-    const arrowStyle = arrow.withTOBECHANGED(stereotype).getMergedStyle(builder);
+    const { arrowStyle, cardinalityStyle } = linkStylesOf(
+      builder,
+      run === undefined ? undefined : Stereotype.build(run),
+      STYLE_NAME,
+    );
     if (arrowStyle !== undefined) link.arrowStyle = arrowStyle;
-    const cardinality = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'arrow', 'cardinality');
-    const cardinalityStyle = cardinality.withTOBECHANGED(stereotype).getMergedStyle(builder);
     if (cardinalityStyle !== undefined) link.cardinalityStyle = cardinalityStyle;
   }
 }

@@ -127,6 +127,8 @@ interface MeasureCtx {
   readonly mode: CreoleMode;
   /** stdd T3d -- see {@link CreoleHyperlinkStyle}. */
   readonly hyperlink: CreoleHyperlinkStyle | undefined;
+  /** The colour an untagged run carries, when the caller needs to tell it from a tagged one. */
+  readonly baseColor: string | undefined;
 }
 
 /**
@@ -142,7 +144,10 @@ export interface CreoleHyperlinkStyle {
 
 /** `FontConfiguration.create(font, color, hyperlinkColor, hyperlinkUnderlineStroke)` for one line. */
 function lineFontConfiguration(ctx: MeasureCtx): FontConfiguration {
-  const base = baseFontConfiguration(ctx.font);
+  const base =
+    ctx.baseColor === undefined
+      ? baseFontConfiguration(ctx.font)
+      : { ...baseFontConfiguration(ctx.font), color: ctx.baseColor };
   if (ctx.hyperlink === undefined) return base;
   return {
     ...base,
@@ -448,6 +453,9 @@ export function creoleTextLines(
     readonly mode?: CreoleMode;
     /** stdd T3d -- see {@link CreoleHyperlinkStyle}. */
     readonly hyperlink?: CreoleHyperlinkStyle;
+    /** The colour of a run no creole tag coloured (default: the jar's text colour). A caller whose cell style
+     *  supplies the colour passes a marker colour, so `CreoleTextRun.color` equal to it means "untagged". */
+    readonly baseColor?: string;
   },
 ): readonly CreoleTextLine[] {
   if (display === '') return [];
@@ -461,6 +469,7 @@ export function creoleTextLines(
     registry: opts?.spriteRegistry,
     mode: opts?.mode ?? CreoleMode.FULL,
     hyperlink: opts?.hyperlink,
+    baseColor: opts?.baseColor,
   };
   const wrapWidth = opts?.wrapWidth ?? 0;
 

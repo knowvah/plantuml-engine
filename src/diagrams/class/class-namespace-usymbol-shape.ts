@@ -32,6 +32,8 @@
  * `skinparam packageStyle rect` sibling are already ported there, and any
  * keyword that resolves to no `USymbol` at all.
  */
+import { strokeForStyle } from '../../core/svek/svek-edge-stroke.js';
+import { groupBorderColor, groupTitleColor, groupSpecificStroke } from './class-namespace-colors.js';
 import type { Paint } from '../../core/paint.js';
 import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { StringMeasurer } from '../../core/measurer.js';
@@ -80,7 +82,7 @@ const TITLE_STYLES: ReadonlySet<FontStyle> = new Set([FontStyle.BOLD]);
  *  (`theme.colors.border`) at thickness 1 -- jar-verified against
  *  `dativu-93-pona469`'s `<<Node>>` clusters (`stroke:#181818;
  *  stroke-width:1`). */
-const GROUP_STROKE_WIDTH = 1;
+export const GROUP_STROKE_WIDTH = 1;
 
 /** The stroke {@link namespaceUSymbolInk} walks with: paint and stroke do not
  *  reach `LimitFinder`, so the ink keeps the unstyled group default. */
@@ -235,6 +237,17 @@ function buildDecoration(
  * (`SvgGraphics#format` scales both, `svg-graphics-core.ts:380-384`).
  */
 function resolveClusterUSymbolStroke(theme: ScaledTheme, geo: NamespaceGeo, keyword: string): UStroke {
+  // cogr T2a: `Cluster#getStrokeInternal` -- `getSpecificLineStroke()` wins outright (`Cluster.java:437-442`).
+  const specific = groupSpecificStroke(geo, theme.scaleK);
+  if (specific !== undefined) {
+    const dash =
+      geo.colors?.lineStyle === undefined ? undefined : strokeForStyle(geo.colors.lineStyle).getDasharraySvg();
+    return new UStroke(
+      (dash?.[0] ?? 0) * theme.scaleK,
+      (dash?.[1] ?? 0) * theme.scaleK,
+      specific.thickness * theme.scaleK,
+    );
+  }
   const tags = geo.stereotypeTags ?? [];
   const own = theme.colors.elements?.[keyword];
   const thickness = byStereo(own?.lineThicknessByStereo, tags) ?? own?.lineThickness ?? GROUP_STROKE_WIDTH;
@@ -293,10 +306,14 @@ function resolveClusterUSymbolPaint(
   // `FromSkinparamToStyle.java:292-302,396-408`) over the plain one --
   // `Cluster.java:316-320` reads LineColor off the stereotype-signed style
   // (`:385-390`). Jar fepiko-26: `rectangle<<boundary>> BorderColor green`.
-  const borderColor = byStereo(specific?.borderByStereo, tags) ?? specific?.border ?? fallback.borderColor;
+  // cogr T2a: the group's own `line:` outranks every style tier (`Cluster.java:317-318`).
+  const borderColor = groupBorderColor(
+    geo,
+    byStereo(specific?.borderByStereo, tags) ?? specific?.border ?? fallback.borderColor,
+  );
   // cdd6 T2a: `elementTitleFontColor` adds the by-stereo / `title {}` tiers
   // (`ClusterHeader.java:120-122,146-147,158-160`) ahead of the plain font.
-  const fontColor = elementTitleFontColor(theme, keyword, tags) ?? fallback.fontColor;
+  const fontColor = groupTitleColor(geo, elementTitleFontColor(theme, keyword, tags) ?? fallback.fontColor);
   return { backColor, borderColor, roundCorner: fallback.roundCorner, fontColor };
 }
 
@@ -306,7 +323,11 @@ function resolveClusterUSymbolPaint(
  *  one gate {@link renderNamespaceUSymbol} and {@link namespaceUSymbolInk}
  *  share. */
 function resolveNamespaceUSymbol(geo: NamespaceGeo, theme: Theme): UpstreamUSymbol | undefined {
-  const keyword = geo.usymbol;
+  return resolveKeywordUSymbol(geo.usymbol, theme);
+}
+
+/** {@link resolveNamespaceUSymbol} over the keyword alone (the ELK adapter has no `NamespaceGeo`). */
+export function resolveKeywordUSymbol(keyword: string | undefined, theme: Theme): UpstreamUSymbol | undefined {
   if (keyword === undefined || isFolderFamily(keyword)) return undefined;
   const symbol = resolveDescriptionUSymbol(
     keyword,

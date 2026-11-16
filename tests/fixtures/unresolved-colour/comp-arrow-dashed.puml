@@ -1,0 +1,3 @@
+@startuml
+[A] -[#zzblue,dashed]-> [B]
+@enduml

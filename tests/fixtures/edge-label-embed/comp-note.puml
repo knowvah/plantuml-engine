@@ -1,0 +1,8 @@
+@startuml
+[A] --> [B]
+note on link
+{{
+class X
+}}
+end note
+@enduml

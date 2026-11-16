@@ -21,6 +21,7 @@ import { buildDotPathFromSplinePoints, edgeMidpoint } from './svek-edge-geometry
 import { placeHeadExtremity, placeTailExtremity } from './svek-edge-extremity.js';
 import type { PlacedExtremity } from './svek-edge-extremity.js';
 import { buildTextBlock } from './image/EntityImageDescriptionTextBlock.js';
+import { edgeLabelSheetBlock } from './edge-label-embed.js';
 import { parseWithNewlines } from '../klimt/creole/DisplayNewlines.js';
 import { Pragma } from '../skin/Pragma.js';
 import { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
@@ -431,7 +432,13 @@ export class SvekEdge implements UDrawable {
   /** `SvekEdge.java:956-980`: the text block at the placed table's corner. */
   private drawEndText(ug: UGraphic, end: SvekEdgeEndText | undefined): void {
     if (end === undefined) return;
-    const block = end.block ?? buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER);
+    const textBlock = (lines: readonly string[]): TextBlock =>
+      buildTextBlock(lines.join('\n'), end.font, HorizontalAlignment.CENTER);
+    // ele T2a: a `{{` line in a quantifier is an embed stripe, as `quantifier-block.ts` measures it.
+    const block =
+      end.block ??
+      edgeLabelSheetBlock(end.text.split('\n'), textBlock, HorizontalAlignment.CENTER) ??
+      buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER);
     block.drawU(ug.apply(new UTranslate(end.x, end.y)));
   }
 
@@ -490,13 +497,21 @@ export class SvekEdge implements UDrawable {
     const alignment = parsed.naturalHorizontalAlignment ?? this.input.labelAlignment ?? HorizontalAlignment.CENTER;
     const magic = parsed.lines.length === 1 ? parseMagicArrowLabel(parsed.lines[0]!) : undefined;
     const shownText = magic === undefined ? parsed.lines.join('\n') : (magic.text ?? '');
-    const block = buildTextBlock(
-      shownText,
-      font,
-      alignment,
-      this.input.resolveAtomImage?.(font),
-      this.input.labelMaxWidth ?? 0,
-    );
+    const resolver = this.input.resolveAtomImage?.(font);
+    const maxWidth = this.input.labelMaxWidth ?? 0;
+    // ele T2a: a line that opens a `{{` makes the label `CreoleParser#createSheetSlow`'s stack of stripes, the embed
+    // one `EmbeddedDiagram` atom (`CreoleParser.java:146-170`); an embed-free label keeps the one text block.
+    const embedded =
+      magic === undefined
+        ? edgeLabelSheetBlock(
+            // The lines `buildTextBlock` draws: an engine may join display lines with a real newline (legacy
+            // activity's `Display#asList`), which `parseWithNewlines` leaves inside one line.
+            parsed.lines.join('\n').split('\n'),
+            (lines) => buildTextBlock(lines.join('\n'), font, alignment, resolver, maxWidth),
+            alignment,
+          )
+        : undefined;
+    const block = embedded ?? buildTextBlock(shownText, font, alignment, resolver, maxWidth);
     if (magic !== undefined && label.note === undefined) {
       // `StringWithArrow.addMagicArrow` (`SvekEdge.java:281-285,304`): the glyph left of the margined block; a bare `<`
       // has no block and so no margin.

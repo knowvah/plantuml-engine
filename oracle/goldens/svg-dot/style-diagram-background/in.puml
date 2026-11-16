@@ -1,0 +1,10 @@
+@startdot
+<style>
+diagram {
+  BackgroundColor: #FFFDE7
+}
+</style>
+digraph G {
+  alpha -> beta -> gamma
+}
+@enddot

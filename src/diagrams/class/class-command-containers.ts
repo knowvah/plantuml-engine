@@ -174,7 +174,12 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
       }
       let effectiveId: string;
       if (name !== undefined) {
-        effectiveId = openNamespaceBlock(state, match[4] ?? name, name);
+        effectiveId = openNamespaceBlock(
+          state,
+          match[4] ?? name,
+          name,
+          match[10] !== undefined ? 'package' : undefined,
+        );
       } else {
         const id = '__pkg' + String(state.ast.namespaces.length);
         effectiveId = openNamespaceBlock(state, id, '');
@@ -224,7 +229,9 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
           USYMBOL_CONTAINER_HEAD +
           String.raw`((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(<<.+?>>))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(\[\[[^\]]*\]\]))?\s*` +
           NOTE_COLOR +
-          String.raw`\s*(?:[#<][^{]*)?\{\s*$`,
+          // `CommandPackageWithUSymbol.java:126-129`: nothing follows COLOR but `\s*\{` -- so a second `<<B>>`
+          // widens the lazy STEREOTYPE group (`StereotypePattern.optional`) instead of being swallowed here (cogr T3e).
+          String.raw`\s*\{\s*$`,
         'i',
       ),
     execute(state, match) {
@@ -316,6 +323,7 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
         (id) => ensureClassifier(state, id, undefined, undefined, true),
         match.input,
         state.creationCounter,
+        state.activeNamespace,
       );
     },
   },
@@ -329,6 +337,7 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
         (id) => ensureClassifier(state, id, undefined, undefined, true),
         match.input,
         state.creationCounter,
+        state.activeNamespace,
       );
     },
   },

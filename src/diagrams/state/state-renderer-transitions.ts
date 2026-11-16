@@ -188,7 +188,7 @@ function buildInlineLabelMarkup(label: InlineLabel, theme: Theme): string {
 
 type InlineLabel = Pick<
   NonNullable<TransitionGeo['label']>,
-  'text' | 'x' | 'y' | 'textLength' | 'lines' | 'align' | 'blockWidth' | 'ascent' | 'visibility'
+  'text' | 'x' | 'y' | 'textLength' | 'lines' | 'align' | 'blockWidth' | 'ascent' | 'visibility' | 'stripes'
 >;
 
 /**
@@ -210,12 +210,38 @@ function buildLabelBlockMarkup(label: InlineLabel, theme: Theme, fill: string): 
     ...(font.weight === 'bold' ? { fontWeight: '700' as const } : {}),
   };
   let out = label.visibility === undefined ? '' : buildLabelVisibilityIcon(label, theme, top);
+  if (label.stripes !== undefined) return out + buildLabelStripesMarkup(label.stripes, { x: textLeft, y: top }, style);
   let lineTop = top;
   for (const line of lines) {
     const height = line.height === 0 ? font.size : line.height;
     const x = textLeft + alignedLineOffset(label.align, blockWidth, line.width);
     out += renderStateRuns(line.runs, x, lineTop, height, style);
     lineTop += height;
+  }
+  return out;
+}
+
+/**
+ * ele T1c: a label whose display holds a `{{ … }}` line, one `SheetBlock1` stripe after another at its own offset
+ * (`SheetBlock1#drawU`, `SheetBlock1.java:224-232`). A text stripe draws its runs; an embed stripe draws its
+ * `EmbeddedDiagram` atom, a `UImageSvg` (`EmbeddedDiagram.java:169-174`), through a `UGraphicSvg`.
+ */
+function buildLabelStripesMarkup(
+  stripes: NonNullable<InlineLabel['stripes']>,
+  origin: { x: number; y: number },
+  style: Parameters<typeof renderStateRuns>[4],
+): string {
+  let out = '';
+  for (const item of stripes.items) {
+    const x = origin.x + item.dx;
+    const y = origin.y + item.dy;
+    if (item.kind === 'text') {
+      out += renderStateRuns(item.line.runs, x, y, item.line.height, style);
+      continue;
+    }
+    const ug = UGraphicSvg.build(0, basicSvgOption(), '$version$', NO_LABEL_TEXT_BOUNDER);
+    item.block.drawU(ug.apply(new UTranslate(x, y)));
+    out += extractFlatContent(ug.getSvgString()).body;
   }
   return out;
 }

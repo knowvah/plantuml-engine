@@ -35,6 +35,9 @@ import { isEmpty } from '../../../src/core/annotations/index.js';
 import { applyExportedChrome } from '../../../src/core/annotations/chrome-export.js';
 import { resolveAnnotationStyles } from '../../../src/core/annotations/style.js';
 import { assembleSvg, seedOfUmlSource } from '../../../src/core/assemble-svg.js';
+import { renderSync } from '../../../src/index.js';
+import { inheritingRenderFn } from '../../../src/core/nested-previous.js';
+import { registerNestedDiagramRenderers } from '../../../src/diagrams/class/class-nested-diagram-renderer.js';
 
 /** `renderFixtureState`'s own options bag: `PreprocessOptions` (forwarded to
  *  `buildBlockUmls`) UNION `ParseOptions` (`assetStore`, forwarded to
@@ -58,6 +61,11 @@ export function renderFixtureState(markup: string, measurer: StringMeasurer, opt
   if (!first.ok) throw first.failure.cause;
 
   const preprocessed = first.preprocessed;
+  // ele T1c: registered ahead of layout (which measures a `{{ }}` edge label), with the enclosing diagram's
+  // skinparams reaching each nested diagram, as `src/index.ts#prepareBlock` and `render-fixture-class.ts` do.
+  registerNestedDiagramRenderers(
+    inheritingRenderFn(preprocessed.skinparam, (source) => renderSync(source, { measurer })),
+  );
   // cdd4-T7b: the shipped `buildTheme`, not a copy of it -- a copy measured a
   // path no shipped code takes once theme styling moved into it.
   const { theme, styleMap } = buildTheme(preprocessed, undefined, 'state');

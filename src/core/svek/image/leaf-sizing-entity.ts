@@ -259,6 +259,7 @@ function sizedFromStyle(
     ...(sized.fontStereo === undefined ? {} : { fontStereo: sized.fontStereo }),
     ...(sized.titleAlignment === undefined ? {} : { titleAlignment: sized.titleAlignment }),
     ...(sized.stereotypeAlignment === undefined ? {} : { stereotypeAlignment: sized.stereotypeAlignment }),
+    ...(sized.roundCorner === undefined ? {} : { roundCorner: sized.roundCorner }),
     ...(sized.thickness === undefined ? {} : { stroke: UStroke.withThickness(sized.thickness) }),
     ...(sized.wrapWidth === undefined ? {} : { wrapWidth: sized.wrapWidth }),
     ...(sized.minimumWidth === undefined ? {} : { minimumWidth: sized.minimumWidth }),

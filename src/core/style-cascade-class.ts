@@ -13,7 +13,12 @@ import type { Theme } from './theme.js';
 import type { StyleMap } from './skinparam.js';
 import { parseStyleBlock } from './skinparam.js';
 import { resolveStyleCascade, collectStyleTagNames, cleanStereotypeToken } from './style-map-element.js';
-import { resolveColorToSvgHex, parseSimpleColor, resolveConditionalColor } from './klimt/color/HColorSet.js';
+import {
+  asColorToken,
+  resolveColorToSvgHex,
+  parseSimpleColor,
+  resolveConditionalColor,
+} from './klimt/color/HColorSet.js';
 import { noGradient, parseColor } from './paint.js';
 import { applyFontCascadeOverrides } from './style-cascade-class-font.js';
 import { applyVisibilityIconCascadeOverrides } from './style-cascade-visibility-icon.js';
@@ -71,12 +76,14 @@ export type GraphCascadeOverride = Pick<
 
 /**
  * Resolve one cascade lookup to an SVG-ready hex string, or `undefined`
- * when no matching declaration exists OR the matched value is not a
- * resolvable color token. `resolveColorToSvgHex` returns an UNRESOLVABLE
- * token UNCHANGED (its own doc comment); passing that through as an SVG
- * `fill` would be WORSE than leaving the field unset (every caller's own
- * `'#000000'` default matches jar's resolved value for every conditional-
- * color fixture sampled -- regression caught and fixed within N36). G2 N48:
+ * when no matching declaration exists OR the matched value is a colour the
+ * jar resolves that is not flat. A value `HColorSet#parseColor` rejects is
+ * WHITE, as `ValueImpl#asColor`'s `getColorOrWhite` makes it
+ * (`ValueImpl.java:92-108`; ucol T2c, measured 2026-11-15: 4 corpus rows
+ * reach it, `LightRed` and `$ORANGE`, in class fields their engines never
+ * draw). A conditional or other non-flat value stays unset: every caller's
+ * own `'#000000'` default matches the jar for every conditional-color
+ * fixture sampled (N36; 12 corpus rows on 2026-11-15, all `#?a:b[:c]`). G2 N48:
  * `#?light:dark[:transparent]` (`HColorScheme`, `xalaco-64-vuzu312`/
  * `dipune-93-sare489`) is a FontColor-only grammar upstream -- handled by
  * the sibling {@link cascadeFontColorHex}, NOT here.
@@ -96,7 +103,9 @@ export function cascadeHex(
 ): string | undefined {
   const declared = resolveStyleCascade(styleMap, snames, property, stereotypeTags);
   if (declared === undefined) return undefined;
-  const raw = property === FONT_COLOR_PROPERTY ? noGradient(parseColor(declared)) : declared;
+  // `Value#asColor` -> `getColorOrWhite` (`ValueImpl.java:92-108`): a value the jar cannot parse is WHITE (ucol T2c).
+  const token = asColorToken(declared);
+  const raw = property === FONT_COLOR_PROPERTY ? noGradient(parseColor(token)) : token;
   const lower = raw.toLowerCase();
   if (lower !== 'transparent' && lower !== 'background' && parseSimpleColor(raw) === undefined) {
     return undefined;

@@ -74,6 +74,14 @@ rect mechanisms closed the gap for these 29. Census:
 `dotEqual: true` per `parity-class.json` (regenerated 2026-07-16 against
 the current code, `conformant:23, structural-match:45, diverged:650`).
 
+**cogr (class-oracle-gap-rows, #140), 2026-11-14:** T1 pinned 110 of the
+111 #109 rows that were zero-diff on the ratchet path (`source: "cogr-T1"`),
+taking `ratchet.json` from 1005 to 1115 entries (830 `class`, 283
+`unknown`, 2 `c4`). The 111th, `fosufo-93-kozi113`, was zero-diff but not
+DOT-EQUAL (a multiline `usecase … as "…"` emitted `shape=rect`); cogr T1b
+ports that mechanism and pins it.
+T1b ported it and pinned the row (`source: "cogr-T1b"`, 1116 entries).
+
 ## Add rule
 
 A fixture may be added to `ratchet.json` only when **both** hold:

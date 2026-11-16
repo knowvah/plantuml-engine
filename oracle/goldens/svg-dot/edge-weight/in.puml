@@ -1,0 +1,8 @@
+@startdot
+digraph weighted {
+  a -> b [weight=5]
+  a -> c [weight=1]
+  b -> d
+  c -> d
+}
+@enddot

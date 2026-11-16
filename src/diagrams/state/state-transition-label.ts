@@ -21,7 +21,7 @@ import type { Transition } from './ast.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
 import type { LabelInkBox, StateTextLine, TransitionGeo } from './state-geo-types.js';
-import { labelDisplayBlock, measureStateLabelBox, type LabelStyle } from './state-label-style.js';
+import { labelDisplayBlock, labelOpensWithEmbed, measureStateLabelBox, type LabelStyle } from './state-label-style.js';
 import { transitionLabelText } from './state-dot-graph.js';
 import {
   CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT,
@@ -81,6 +81,8 @@ interface MeasuredLabel {
   readonly ascent: number;
   /** stdd T4b: the first line's measured text height (`LimitFinder#drawText`'s `dim.getHeight()`). */
   readonly firstLineHeight: number;
+  /** ele T1b: the first stripe is an embed, so no first-line `<text>` reaches above the marged box. */
+  readonly opensWithEmbed: boolean;
 }
 
 function measureLabel(text: string, ctx: LabelMeasureCtx, isSelfLoop: boolean): MeasuredLabel {
@@ -97,6 +99,7 @@ function measureLabel(text: string, ctx: LabelMeasureCtx, isSelfLoop: boolean): 
     box,
     ascent: font.size - measurer.getDescent(font, box.lines[0]!),
     firstLineHeight: measurer.measure(box.lines[0]!, font).height,
+    opensWithEmbed: labelOpensWithEmbed(text),
   };
 }
 
@@ -159,7 +162,7 @@ function svgPrecision(v: number): number {
  *  unfloored, box-anchored ink extent ({@link LabelInkBox}). */
 function labelBoxFields(
   anchor: { x: number; y: number },
-  { box, ascent, firstLineHeight }: MeasuredLabel,
+  { box, ascent, firstLineHeight, opensWithEmbed }: MeasuredLabel,
 ): { width: number; height: number; inkBox: LabelInkBox } {
   // `LimitFinder#drawEmpty` over `TextBlockMarged`'s own `UEmpty`: the
   // marged block's top-left corner, and its UNfloored dimension.
@@ -169,7 +172,8 @@ function labelBoxFields(
   // the marged box for a 13px label (11.5 over an ascent of 10.111 plus 1), lurage-50's 0.389.
   // The text term is plain double arithmetic on the quantized anchor (jar: 17.5 - 11.5 = 6, then 38.389
   // for the node), so only the box corner keeps `svgPrecision`.
-  const textTop = anchor.y - (firstLineHeight - 1.5);
+  // ele T1b: an embed first stripe draws a `UImageSvg`, which `LimitFinder` bounds by its own box, inside the marged one.
+  const textTop = opensWithEmbed ? Infinity : anchor.y - (firstLineHeight - 1.5);
   const top = Math.min(svgPrecision(boxTop), textTop);
   return {
     width: box.reservedWidth,

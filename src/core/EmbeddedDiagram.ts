@@ -301,6 +301,48 @@ const EMBEDDED_TYPE_KEYWORDS: ReadonlyMap<string, readonly string[]> = new Map([
   ['y', ['yaml']],
 ]);
 
+/**
+ * The line collection of `createAndSkip` (java:97-113), split out so a caller that needs the `@start…@end` source
+ * before it has a renderer (`svek/edge-label-embed.ts`, ele T1a) consumes the iterator through the SAME code:
+ * a line that opens a nested embed increments `nested`, a line that trims to `}}` decrements it, and only the `}}`
+ * that reaches 0 is swallowed. Unterminated input absorbs every remaining line.
+ */
+export function createAndSkipLines(type: string, it: Iterator<string>): string[] {
+  const result: string[] = [`@start${type}`];
+  let nested = 1;
+  let step = it.next();
+  while (step.done !== true) {
+    const s2 = step.value;
+    if (getEmbeddedType(s2) !== null) {
+      nested++;
+    } else if (trim2(s2) === EmbeddedDiagram.EMBEDDED_END) {
+      nested--;
+      if (nested === 0) break;
+    }
+    result.push(s2);
+    step = it.next();
+  }
+  result.push(`@end${type}`);
+  return result;
+}
+
+/**
+ * CDD T27: a block embedding itself, directly or via a cycle, throws this rather than recursing until the JS call
+ * stack overflows (`class-nested-diagram-renderer.ts#MAX_NESTED_DIAGRAM_DEPTH`). Moved here from that module (ele
+ * T1a) so this file's catch arms can let it through: the jar's runaway recursion is a `StackOverflowError`, an
+ * `Error` that `catch (Exception e)` (java:148, java:191) does not catch, so it never degrades to 42x42.
+ *
+ * // on-call: if a block embeds itself, renderSync throws
+ * EmbeddedDiagramDepthError rather than recursing; no runbook — fix the
+ * fixture.
+ */
+export class EmbeddedDiagramDepthError extends Error {
+  constructor(maxDepth: number) {
+    super(`EmbeddedDiagram: nested-diagram recursion exceeded ${maxDepth} levels — a block likely embeds itself`);
+    this.name = 'EmbeddedDiagramDepthError';
+  }
+}
+
 export class EmbeddedDiagram extends TextBlockMemoized implements Line, Atom {
   static readonly EMBEDDED_START = '{{';
   static readonly EMBEDDED_END = '}}';
@@ -349,22 +391,7 @@ export class EmbeddedDiagram extends TextBlockMemoized implements Line, Atom {
     skinParam: ISkinSimple | null,
     renderer: NestedDiagramRenderer,
   ): EmbeddedDiagram {
-    const result: string[] = [`@start${type}`];
-    let nested = 1;
-    let step = it.next();
-    while (step.done !== true) {
-      const s2 = step.value;
-      if (getEmbeddedType(s2) !== null) {
-        nested++;
-      } else if (trim2(s2) === EmbeddedDiagram.EMBEDDED_END) {
-        nested--;
-        if (nested === 0) break;
-      }
-      result.push(s2);
-      step = it.next();
-    }
-    result.push(`@end${type}`);
-    return EmbeddedDiagram.from(skinParam, result, renderer);
+    return EmbeddedDiagram.from(skinParam, createAndSkipLines(type, it), renderer);
   }
 
   /** java:121-123. */
@@ -435,6 +462,7 @@ export class EmbeddedDiagram extends TextBlockMemoized implements Line, Atom {
     try {
       return this.getInternalTextBlock().calculateDimension(stringBounder);
     } catch (err) {
+      if (err instanceof EmbeddedDiagramDepthError) throw err;
       // Upstream: `catch (Exception e) { Logme.error(e); }` (java:148-150) --
       // logged, not silently swallowed (this project's error-handling
       // convention, `svek/Cluster.ts#drawU`'s identical precedent), which
@@ -458,6 +486,7 @@ export class EmbeddedDiagram extends TextBlockMemoized implements Line, Atom {
       const target = ug.apply(new Back(NONE_PAINT));
       this.getInternalTextBlock().drawU(target);
     } catch (err) {
+      if (err instanceof EmbeddedDiagramDepthError) throw err;
       // Upstream: `catch (Exception e) { Logme.error(e); }` (java:191-193) --
       // logged, not silently swallowed (same convention/precedent as
       // `calculateDimensionSlow` above). Draws nothing on failure, matching

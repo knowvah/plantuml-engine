@@ -1,0 +1,6 @@
+@starthcl
+resource "aws_instance" "app" {
+  ami  = var.ami_id
+  type = var.instance_type
+}
+@endhcl

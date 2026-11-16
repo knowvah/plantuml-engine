@@ -1,0 +1,10 @@
+@startdot
+digraph multi {
+  graph [rankdir=LR]
+  A -> B [label="req 1"]
+  A -> C [label="req 2"]
+  B -> D [label="resp"]
+  C -> D [label="resp"]
+  D -> E [label="done"]
+}
+@enddot

@@ -36,6 +36,7 @@ import type { EdgeGeo } from './layout.js';
 import { labelOperandCenter } from './class-edge-note-box.js';
 import { dotEdgeRunsReversed } from './class-dot-edge-order.js';
 import { drawnEdgePoints } from './class-ink-dot-path.js';
+import { layoutEmbedLabel, placeEmbedLabel, splitEmbedLabelLines } from './class-edge-label-embed.js';
 
 /**
  * cdd3-T16: `SvekEdge#getArrowDirectionInRadianInternal` (`svek/SvekEdge.java
@@ -262,6 +263,7 @@ export function attachEdgeLabel(
   // comment) -- `dotPath` below is ONLY consumed by the magic-arrow angle
   // formula (single-line and multi-line arms alike), never for placement.
   const dotPath = dotPathOf(trimmedFromToPoints(edgeGeo, fromToPoints), rel);
+  if (attachEmbedLabel(edgeGeo, splitLines, align, ctx)) return;
   if (lines.length > 1) {
     // `NONE_OR_SEVERAL.reverse()` is itself (`LinkArrow.java:47-55`): the
     // per-line tokens are never flipped by an inverted link.
@@ -279,7 +281,7 @@ export function attachEdgeLabel(
   // single `<`/`>`, never the `<<`/`>>` pair `applyGuillemet` rewrites, nor
   // a `<U+XXXX>` escape -- no corpus fixture combines either with the other.
   const resolvedLabel = lines[0] ?? '';
-  const magic = parseMagicArrowLabel(resolvedLabel);
+  const magic = rel.labelVerbatim === true ? undefined : parseMagicArrowLabel(resolvedLabel);
   if (magic !== undefined) {
     attachMagicArrow(edgeGeo, magic, dotPath, ctx, rel);
     return;
@@ -339,6 +341,28 @@ function attachPlainLabel(
  *  formatting for this whole-line-wrapped case; a PARTIAL-run underline
  *  (only part of the line) has zero corpus reach and is not reproduced. */
 const UNDERLINE_TAG = /<\/?u(?:[:\s][^>]*)?>/i;
+
+/**
+ * A label holding a `{{ }}` block (`class-edge-label-embed.ts`): the embedded diagram is one image stripe stacked with
+ * the other lines, in the block `class-edge-label-measure.ts#computeMeasuredLabelAttrs` reserved. `splitLines` are the
+ * display lines before the visibility strip and escape decode (`CreoleParser.java:136-170` reads the raw display lines).
+ * `false` for a label with no embed, which keeps the paths below.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/legacy/CreoleParser.java:136-170
+ */
+function attachEmbedLabel(
+  edgeGeo: EdgeGeo,
+  splitLines: readonly string[],
+  align: 'center' | 'left' | 'right',
+  ctx: LabelAnchorContext,
+): boolean {
+  const segments = splitEmbedLabelLines(splitLines);
+  if (segments === undefined) return false;
+  const opts = { font: ctx.labelFont, measurer: ctx.measurer, maxWidth: ctx.maxWidth };
+  const placed = placeEmbedLabel(layoutEmbedLabel(segments, opts), align, ctx.center, opts);
+  edgeGeo.labelLines = placed.lines;
+  if (placed.embeds.length > 0) edgeGeo.labelEmbeds = placed.embeds;
+  return true;
+}
 
 /**
  * SI25 D3/D4: the multi-line branch. A label `hasSeveralGuideLines`

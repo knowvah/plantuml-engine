@@ -423,6 +423,11 @@ export function buildInkBox(
         addPoint(box, p.x + HACK_X_FOR_POLYGON, p.y);
       }
     }
+    // `LimitFinder#drawImageSvg` (`LimitFinder.java:201-204`): a label's `{{ }}` image, corner to corner.
+    for (const img of e.labelEmbeds ?? []) {
+      addPoint(box, img.x, img.y);
+      addPoint(box, img.x + img.width - 1, img.y + img.height - 1);
+    }
     for (const line of e.labelLines ?? []) {
       if (line.glyph !== undefined) {
         for (const p of line.glyph.points) {

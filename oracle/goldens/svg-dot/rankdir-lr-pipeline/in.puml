@@ -1,0 +1,7 @@
+@startdot
+title Build Pipeline
+digraph pipeline {
+  graph [rankdir=LR]
+  source -> compile -> test -> deploy
+}
+@enddot

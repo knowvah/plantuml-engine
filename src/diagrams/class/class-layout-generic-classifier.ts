@@ -23,6 +23,7 @@ import type { ClassifierGeo } from './layout.js';
 import type { MeasuredClassifier, MemberSuppression } from './class-layout-helpers.js';
 import { resolveVisibleStereotypeLabels } from './class-stereotype.js';
 import { measureLeafNode } from '../../core/svek/image/leaf-sizing.js';
+import { leafRoundCorner } from './class-leaf-round-corner.js';
 import { descriptionLeafSymbolInk } from './class-layout-description-leaf-ink.js';
 import type { LeafSizingSubject } from '../../core/svek/image/LeafSizingSubject.js';
 import { KEYWORD_TO_SYMBOL } from '../../core/descriptive-keywords.js';
@@ -86,7 +87,10 @@ export function tryMeasureDescriptionLeaf(
   const symbol = KEYWORD_TO_SYMBOL.get(classifier.usymbol);
   if (symbol === undefined || symbol === 'actor') return undefined;
   if (classifier.members.some((m) => m.hidden !== true)) return undefined;
-  const node = leafSizingSubjectOf(classifier, symbol);
+  const node = {
+    ...leafSizingSubjectOf(classifier, symbol),
+    entitySizing: { roundCorner: leafRoundCorner(classifier, theme, symbol) },
+  };
   const baseFont = { family: theme.fontFamily, size: theme.fontSize };
   const opts = buildDescriptionLeafOpts(theme, symbol);
   const spriteDims = sprites !== undefined ? spriteDimsLookupFor(sprites) : undefined;

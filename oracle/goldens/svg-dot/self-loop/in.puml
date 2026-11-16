@@ -1,0 +1,6 @@
+@startdot
+digraph selfloop {
+  a -> a
+  a -> b
+}
+@enddot

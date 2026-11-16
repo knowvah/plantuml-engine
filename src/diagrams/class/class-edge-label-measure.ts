@@ -20,6 +20,7 @@ import { resolveInlineAtom } from './class-member-atom-resolve.js';
 import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-commands.js';
 import type { FontStyle } from '../../core/klimt/shape/UText.js';
 import { resolveSpriteLabelRuns } from './class-edge-label-sprite-runs.js';
+import { layoutEmbedLabel, splitEmbedLabelLines } from './class-edge-label-embed.js';
 
 /**
  * `SvekEdge.java:298-299`'s `create0(..., CreoleMode.SIMPLE_LINE, ...)`
@@ -139,6 +140,8 @@ export interface MeasuredLabelOptions {
   /** cdd7 T2b: the label wrap width (`theme.maxMessageSize`, `SvekEdge.java
    *  :290-294`); absent/0 = no wrap. Multi-line labels only. */
   readonly maxWidth?: number | undefined;
+  /** cogr T3a: `Relationship.labelVerbatim` -- skip the magic-arrow token read. */
+  readonly labelVerbatim?: boolean | undefined;
 }
 
 /** The plain (non-note, non-constraint-spot) measured label -- multi-line,
@@ -158,8 +161,16 @@ export function computeMeasuredLabelAttrs(
   opts: MeasuredLabelOptions = {},
 ): LabelAttrs {
   const { lines } = splitDisplayLines(label);
+  // `CreoleParser.java:150-170`: a `{{ }}` line makes the embedded diagram one image stripe of the label block. The
+  // walk has no line-count condition (ele T3a): a lone unterminated `{{` is the Welcome page of an empty embed, as
+  // `class-edge-label-attach.ts#attachEmbedLabel` already draws it.
+  const embeds = splitEmbedLabelLines(splitDisplayLines(applyGuillemet(label)).lines);
+  if (embeds !== undefined) {
+    const { width, height } = layoutEmbedLabel(embeds, { font, measurer, maxWidth: opts.maxWidth });
+    return { label, labelWidth: width, labelHeight: height };
+  }
   if (lines.length > 1) return measureMultiLineLabel(label, lines, font, measurer, opts.maxWidth ?? 0);
-  const magic = parseMagicArrowLabel(label);
+  const magic = opts.labelVerbatim === true ? undefined : parseMagicArrowLabel(label);
   if (magic !== undefined) {
     // A leading `<size:N>` tag on the remaining text rewrites the TEXT's
     // own font ({@link resolveLineFont}) -- the arrow glyph below stays at

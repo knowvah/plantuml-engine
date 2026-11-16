@@ -20,7 +20,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/Colors.java:95-124
  */
 
-import { colorOrNeutral } from './klimt/color/HColorSet.js';
+import { colorOrNeutral, HColorSet } from './klimt/color/HColorSet.js';
 
 /** `ColorType.BACK`'s lowercase spelling in a `name:value` colour part
  *  (`ColorType.getType`, klimt/color/ColorType.java). */
@@ -87,7 +87,10 @@ export function resolveBareOrBackColor(color: string | undefined): string | unde
       // `ColorType.getType` truncates the name at its first `.`
       // (`ColorType.java:41-47`), so `back.anything:blue` is still BACK.
     } else if (colorTypeName(stripped.slice(0, x)) === BACK_COLOR_TYPE) {
-      back = stripped.slice(x + 1);
+      // `map.put(key, set.getColorOrNull(value))` (`Colors.java:111-113`): an unparseable value
+      // still claims BACK, so it clears an earlier one and the default draws (ucol T2b).
+      const value = stripped.slice(x + 1);
+      back = HColorSet.instance().getColorOrNull(value) === undefined ? undefined : value;
     }
   }
   return back;

@@ -40,6 +40,13 @@ export interface LayoutServices {
    * `positional` is `Link#getStyleBuilder` (`Link.java:130`), which has no `isSkinParamUsed` gate.
    */
   readonly styleBuilder?: ((generation?: number, positional?: boolean) => StyleBuilder | undefined) | undefined;
+  /**
+   * The builder current at a document line (`activity-box-builder-at.ts#builderAtPosition`): every `skinparam` and
+   * `<style>` block located before `position`, as the commands executed up to it. `Link.java:93,130` keeps the one a
+   * link was made with. `undefined` when the diagram has no declaration located after `position` (the last builder is
+   * then the right one: read `styleBuilder`) or the `<style>` does not parse.
+   */
+  readonly styleBuilderAt?: ((position: number) => StyleBuilder | undefined) | undefined;
 }
 
 /** A backend could not lay a graph out: a missing or changed elkjs, or a graph it did not build. */

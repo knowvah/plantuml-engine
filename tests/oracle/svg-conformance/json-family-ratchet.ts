@@ -38,6 +38,14 @@ interface RatchetManifest {
   fixtures: RatchetFixture[];
 }
 
+/**
+ * Shrink-only floor on each type's pinned golden count. Nothing else notices a
+ * pin being dropped from `ratchet.json`: AC1 iterates whatever the manifest
+ * holds. Raise a floor in the same commit that pins, never lower it.
+ * 2026-11-14 hyogr/T1 (#142): added at json 14, yaml 7, hcl 8 (hcl 1 -> 8).
+ */
+const RATCHET_FLOOR: Readonly<Record<'json' | 'yaml' | 'hcl', number>> = { json: 14, yaml: 7, hcl: 8 };
+
 function firstDiffPath(diffs: readonly { path: string }[]): string {
   return diffs.length > 0 ? diffs[0]!.path : '(none)';
 }
@@ -71,6 +79,10 @@ export function describeJsonFamilyRatchet(type: 'json' | 'yaml' | 'hcl'): void {
         expect(diffs).toEqual([]);
       });
     }
+  });
+
+  it(`pins at least ${RATCHET_FLOOR[type]} svg-${type} goldens (shrink-only)`, () => {
+    expect(manifest.fixtures.length).toBeGreaterThanOrEqual(RATCHET_FLOOR[type]);
   });
 
   if (manifest.fixtures.length === 0) {

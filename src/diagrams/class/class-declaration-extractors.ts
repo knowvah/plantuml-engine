@@ -7,6 +7,7 @@
 
 import { GENERIC_BODY_PATTERN, GENERIC_CLAUSE_RE, splitTopLevelCommas } from './class-namespace.js';
 import { parseUrlBracket, URL_BRACKET_RE, type UrlInfo } from './class-url.js';
+import { HColorSet } from '../../core/klimt/color/HColorSet.js';
 
 const TAG_TOKEN_RE = /(?<=^|\s)\$[^\s{}"'<>$]+(?=\s|$)/g;
 
@@ -102,7 +103,8 @@ function legacyLineStyleOf(data: string): NonNullable<DeclarationColors['lineSty
  * `ColorType.getType(name)` -- which itself truncates at the first `.`
  * (`ColorType.java:41-48`), so `line.dashed:blue` still lands under `LINE`.
  * A token with no `:` is the `mainType` (BACK) colour unless it contains a
- * `.`, and is not this function's concern.
+ * `.`, and is not this function's concern. A value `getColorOrNull` rejects
+ * leaves its key unset (`Colors.java:111-113`).
  */
 function parseColorsData(data: string): DeclarationColors {
   const normalized = data.toLowerCase().replaceAll('#', '');
@@ -115,8 +117,11 @@ function parseColorsData(data: string): DeclarationColors {
     // `ColorType.getType` truncates the name at its first `.` (java:42-45).
     const dot = name.indexOf('.');
     const key = dot === -1 ? name : name.slice(0, dot);
-    if (key === 'line') out.line = value;
-    else if (key === 'text') out.text = value;
+    if (key !== 'line' && key !== 'text') continue;
+    // `map.put(key, set.getColorOrNull(value))` (`Colors.java:111-113`): a null still claims the key, so an
+    // unparseable value clears an earlier one and the default draws (ucol T2b).
+    if (HColorSet.instance().getColorOrNull(value) === undefined) delete out[key];
+    else out[key] = value;
   }
   const lineStyle = legacyLineStyleOf(normalized);
   if (lineStyle !== undefined) out.lineStyle = lineStyle;
@@ -453,6 +458,21 @@ export function parseIdDisplay(rest: string): {
   // duplicated `Person` as a second, phantom classifier once `PersonRich
   // extends Person` referenced the correctly-spelled id.
   // @see ~/git/plantuml/.../classdiagram/command/CommandCreateClassMultilines.java:106-107 (RegexOptional(RegexConcat(spaceZeroOrMore(), GENERIC)))
+  // `CODE4` (`[%g]([^%g]+)[%g]`, `NameAndCodeParser.java:68`) is the QUOTED code, and the same optional GENERIC
+  // clause follows it (`CommandCreateClass.java:86-87`): `class "m3.Table1" <generic here>` names `m3.Table1`
+  // and carries the generic, quotes dropped like the bare quoted name below.
+  const quotedThenGeneric = /^"([^"]+)"\s*(<.*>)$/.exec(rest.trim());
+  if (quotedThenGeneric !== null) {
+    const genericMatch = GENERIC_CLAUSE_RE.exec(quotedThenGeneric[2]!);
+    if (genericMatch !== null) {
+      return {
+        display: quotedThenGeneric[1]!,
+        id: quotedThenGeneric[1]!,
+        typeParams: splitTopLevelCommas(genericMatch[1]!),
+        typeParamsRawText: genericMatch[1]!,
+      };
+    }
+  }
   const idThenGeneric = /^([^\s<>]+)\s*(<.*>)$/.exec(rest.trim());
   if (idThenGeneric !== null) {
     const genericMatch = GENERIC_CLAUSE_RE.exec(idThenGeneric[2]!);

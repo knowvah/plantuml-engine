@@ -1,9 +1,44 @@
 {
-    "fixtures": [
-        {
-            "slug": "citoda-80-dimi195",
-            "addedAt": "2026-08-09",
-            "source": "dot-cache"
-        }
-    ]
+  "fixtures": [
+    {
+      "slug": "citoda-80-dimi195",
+      "addedAt": "2026-08-09",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "comments-stripped",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "flat-key-value",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "nested-resource-block",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "style-element-header",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "style-node-background",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "variable-block",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    },
+    {
+      "slug": "variable-reference-verbatim",
+      "addedAt": "2026-11-14",
+      "source": "hyogr-T1"
+    }
+  ]
 }

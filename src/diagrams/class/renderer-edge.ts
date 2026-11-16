@@ -28,6 +28,8 @@ import {} from './renderer-classifier-box.js';
 import {} from './class-namespace-shape.js';
 import {} from './class-shadow.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
+import { stylePaint, styleFont } from '../../core/style/style-reads.js';
+import { FontStyle } from '../../core/klimt/shape/UText.js';
 import { arrowLabelTextAttrs, magicArrowPolygon, renderEdgeMainLabel } from './renderer-edge-label.js';
 import {
   renderEdgeVisibilityIcon,
@@ -207,7 +209,33 @@ function resolveEdgeStrokeWidth(
   tagStyle: { thickness?: number } | undefined,
   theme: ScaledTheme,
 ): number {
-  return geo.strokeWidth ?? (tagStyle?.thickness ?? 1) * theme.scaleK;
+  // `SvekEdge.java:874-876`: `styleLine.getStroke()` of the style merged over the link's own builder.
+  const styled = geo.arrowStyle?.getStroke().getThickness();
+  return geo.strokeWidth ?? (styled ?? tagStyle?.thickness ?? 1) * theme.scaleK;
+}
+
+/**
+ * `getDefaultStyleDefinitionArrow(stereotype).getMergedStyle(link.getStyleBuilder()).getFontConfiguration(...)`
+ * (`GraphvizImageBuilder.java:234-236`) for a link whose builder is not the diagram's last (`geo.arrowStyle`): the
+ * label's font attributes and colour, scaled as {@link arrowLabelTextAttrs}. `undefined` for every other link.
+ */
+function styledLabelFont(
+  geo: EdgeGeo,
+  theme: ScaledTheme,
+): { attrs: ReturnType<typeof arrowLabelTextAttrs>; color: string | null } | undefined {
+  const font = styleFont(geo.arrowStyle);
+  if (font === undefined) return undefined;
+  const bold = font.styles.has(FontStyle.BOLD);
+  const italic = font.styles.has(FontStyle.ITALIC);
+  return {
+    attrs: {
+      fontSize: font.size * theme.scaleK,
+      fontFamily: font.family,
+      ...(bold ? { fontWeight: '700' as const } : {}),
+      ...(italic ? { fontStyle: 'italic' as const } : {}),
+    },
+    color: font.color,
+  };
 }
 
 /**
@@ -247,7 +275,8 @@ function resolveStrokeAndArrowheads(
   const strokeColor =
     geo.colorOverride !== undefined
       ? resolveColorToSvgHex(geo.colorOverride)
-      : (tagStyle?.color ??
+      : (stylePaint(geo.arrowStyle, 'LineColor') ??
+        tagStyle?.color ??
         elementGradient(theme, 'arrow', 'border') ??
         theme.colors.graph.classCascadeArrowColor ??
         theme.colors.arrow);
@@ -414,8 +443,11 @@ export function renderEdge(
   // T3: `labelColor` feeds the whole-label glyph and {@link renderEdgeMainLabel}'s
   // fills (`arrow-label-font.ts` D2/D5; cardinality resolves its own, T11).
   // cdd3-T10 (S-4t): `font.mute(link.getColors())` (`SvekEdge.java:260-262`).
+  const styledFont = styledLabelFont(geo, theme);
   const labelColor =
-    geo.labelTextColor !== undefined ? resolveColorToSvgHex(geo.labelTextColor) : resolveArrowLabelFont(theme).color;
+    geo.labelTextColor !== undefined
+      ? resolveColorToSvgHex(geo.labelTextColor)
+      : (styledFont?.color ?? resolveArrowLabelFont(theme).color);
   // G2 item 44: the whole-label magic-arrow glyph -- see {@link
   // magicArrowPolygon}. Drawn before the label text (`mergeLR(arrow,
   // label)`, `SvekEdge.java:284,304`) -- part of the SAME `labelOnly`
@@ -426,7 +458,7 @@ export function renderEdge(
     const glyph = magicArrowPolygon(geo.arrowGlyph.points, labelColor);
     if (glyph !== undefined) labelParts.push(glyph);
   }
-  const labelFontAttrs = arrowLabelTextAttrs(theme);
+  const labelFontAttrs = styledFont?.attrs ?? arrowLabelTextAttrs(theme);
   labelParts.push(...renderEdgeMainLabel(geo, labelFontAttrs, labelColor, measurer));
   // cdd-T7/cdd2-T19c (A2a/M5): `note on link`'s body, ordered against the
   // label per `SvekEdge.java:318-325`'s `mergeLR`/`mergeTB` operand order:

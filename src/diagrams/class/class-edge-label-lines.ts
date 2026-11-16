@@ -145,7 +145,7 @@ export function stripLabelLines(lines: readonly string[]): {
 
 /** One physical row of a wrapped label: its atoms, their widths, and the
  *  logical line's bold/italic flags. */
-interface WrappedRow {
+export interface WrappedRow {
   readonly atoms: readonly string[];
   readonly widths: readonly number[];
   readonly width: number;
@@ -164,7 +164,9 @@ export function wrappedLabelRows(
 ): WrappedRow[] {
   const { stripped, bold, italic } = stripLabelLines(lines);
   return stripped.flatMap((text, i) =>
-    splitPlainTextAtoms(text, font, maxWidth, measurer).map((atoms) => {
+    splitPlainTextAtoms(text, font, maxWidth, measurer).map((split) => {
+      // `StripeSimple#getAtoms` (`StripeSimple.java:124-128`): a stripe with no atom (an empty line) gets one space.
+      const atoms = split.every((a) => a === '') ? [' '] : split;
       const widths = atoms.map((t) => measurer.measure(t, font).width);
       return { atoms, widths, width: widths.reduce((s, w) => s + w, 0), bold: bold[i]!, italic: italic[i]! };
     }),
@@ -208,10 +210,10 @@ export function multiLineLabelAnchorWrapped(
 
 /** `TextBlockVertical#drawU`'s per-block `dx` (`klimt/shape/TextBlockVertical
  *  .java:91-98`), as `multiLineLabelAnchor` applies it. */
-function rowOffset(align: 'center' | 'left' | 'right', total: number, own: number): number {
+export function rowOffset(align: 'center' | 'left' | 'right', total: number, own: number): number {
   return align === 'left' ? 0 : align === 'right' ? total - own : (total - own) / 2;
 }
 
-function rowFlags(row: WrappedRow): { bold?: true; italic?: true } {
+export function rowFlags(row: WrappedRow): { bold?: true; italic?: true } {
   return { ...(row.bold ? { bold: true as const } : {}), ...(row.italic ? { italic: true as const } : {}) };
 }

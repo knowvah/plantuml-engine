@@ -1,0 +1,9 @@
+@startdot
+digraph G {
+  a -> b
+  a -> c
+  b -> d
+  c -> d
+  subgraph { rank=same; b; c }
+}
+@enddot

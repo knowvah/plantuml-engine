@@ -1,0 +1,66 @@
+[
+  {
+    "type": "hcl",
+    "slug": "array-values"
+  },
+  {
+    "type": "hcl",
+    "slug": "comments-stripped"
+  },
+  {
+    "type": "hcl",
+    "slug": "flat-key-value"
+  },
+  {
+    "type": "hcl",
+    "slug": "for-expression-empty-array"
+  },
+  {
+    "type": "hcl",
+    "slug": "function-call"
+  },
+  {
+    "type": "hcl",
+    "slug": "multiple-top-level-blocks"
+  },
+  {
+    "type": "hcl",
+    "slug": "nested-object-value"
+  },
+  {
+    "type": "hcl",
+    "slug": "nested-resource-block"
+  },
+  {
+    "type": "hcl",
+    "slug": "style-element-header"
+  },
+  {
+    "type": "hcl",
+    "slug": "style-node-background"
+  },
+  {
+    "type": "hcl",
+    "slug": "variable-block"
+  },
+  {
+    "type": "hcl",
+    "slug": "variable-reference-verbatim"
+  },
+  {
+    "type": "yaml",
+    "slug": "YAML-attribute-hierarchy-0"
+  },
+  {
+    "type": "yaml",
+    "slug": "YAML-attribute-hierarchy-1"
+  },
+  {
+    "type": "yaml",
+    "slug": "YAML-list-key-value-pair-0"
+  },
+  {
+    "type": "yaml",
+    "slug": "YAML-space-indent-0"
+  }
+]

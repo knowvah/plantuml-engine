@@ -1,0 +1,6 @@
+@startuml
+Customer |o--o{ AccountParty
+"Customer::AccountReconciliation" <|.. Object
+
+hide empty members
+@enduml

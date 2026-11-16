@@ -52,6 +52,7 @@ import {
   packageTitleFontFamily,
   packageTitleFontSize,
 } from './class-namespace-title-runs.js';
+import { groupBorderColor, groupTitleColor, groupSpecificStroke } from './class-namespace-colors.js';
 import {
   MARGIN_TITLE_X1,
   MARGIN_TITLE_X2,
@@ -182,12 +183,16 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
   // tier first (`Cluster#getStyle`'s `withTOBECHANGED`, `Cluster.java:386-
   // 392`) -- giraca-14's `packageBorderThickness<<stereo>> 1.5`.
   const tags = geo.stereotypeTags ?? [];
-  const strokeWidth = packageBorderThickness(theme, tags, PACKAGE_STROKE_WIDTH) * theme.scaleK;
+  const specific = groupSpecificStroke(geo, theme.scaleK);
+  const strokeWidth =
+    specific !== undefined
+      ? specific.thickness * theme.scaleK
+      : packageBorderThickness(theme, tags, PACKAGE_STROKE_WIDTH) * theme.scaleK;
   // CDD T18b: `theme.colors.graph.packageBorder` is optional now -- this IS
   // a `...package_,group`-signature draw site, so it supplies the
   // cluster's own unstyled default explicitly (see that constant's doc
   // comment).
-  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol);
+  const border = groupBorderColor(geo, packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol));
   // G2 N18: `strictuml` -> sharp-corner `UPolygon` branch (roundCorner=0).
   // G2 N59: `packageFillValue` maps "no paint" to jar's literal `fill="none"`.
   const fill = namespaceFill(geo, theme);
@@ -198,6 +203,7 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
     fill,
     roundCorner: (geo.roundCorner ?? PACKAGE_ROUND_CORNER) * theme.scaleK,
     marginX3: MARGIN_TITLE_X3 * theme.scaleK,
+    ...(specific?.dasharray !== undefined ? { strokeDasharray: specific.dasharray } : {}),
   });
   // G2 N18: deterministic-text `textLength` from `wtitle` (= rawTextWidth +
   // X1 + X2 for a non-empty label, `getWTitle`); omitted for the empty-label
@@ -218,7 +224,7 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
       y: geo.y + geo.baselineOffset,
       fontFamily: packageTitleFontFamily(theme), // E3-5 packageFontName
       fontSize: packageTitleFontSize(theme),
-      fontColor: packageTitleFontColor(theme, tags),
+      fontColor: groupTitleColor(geo, packageTitleFontColor(theme, tags)),
       textLength: titleTextLength,
     },
     () => titleX,
@@ -256,11 +262,15 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
   // cdd-B8FU: both tiers scaled -- see renderNamespaceFolder's identical
   // citation.
   const tags = geo.stereotypeTags ?? [];
-  const strokeWidth = packageBorderThickness(theme, tags, PACKAGE_STROKE_WIDTH) * theme.scaleK;
+  const specific = groupSpecificStroke(geo, theme.scaleK);
+  const strokeWidth =
+    specific !== undefined
+      ? specific.thickness * theme.scaleK
+      : packageBorderThickness(theme, tags, PACKAGE_STROKE_WIDTH) * theme.scaleK;
   const fill = namespaceFill(geo, theme);
   // CDD T18b: `...package_,group`-signature site -- see
   // `PACKAGE_CLUSTER_BORDER_DEFAULT`'s doc comment.
-  const border = packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol);
+  const border = groupBorderColor(geo, packageBorderColor(theme, tags, PACKAGE_CLUSTER_BORDER_DEFAULT, geo.usymbol));
   const corner = (namespaceRoundCorner(geo, theme) * theme.scaleK) / 2;
   const outline = rect(geo.x, geo.y, geo.width, geo.height, {
     stroke: isTransparentColor(border) ? PAINT_NONE : border, // SvgGraphics.java:539-540 fixColor
@@ -268,6 +278,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
     fill,
     rx: corner,
     ry: corner,
+    ...(specific?.dasharray !== undefined ? { strokeDasharray: specific.dasharray } : {}),
   });
   // cdd2-T19b: `USymbolRectangle#asBig`: stereo at `((width - w) / 2, 2)`
   // BEFORE the title, title at `2 + dimStereo.getHeight()` (CENTER branch).
@@ -296,7 +307,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
       y: geo.y + stereo.height + geo.baselineOffset,
       fontFamily: packageTitleFontFamily(theme),
       fontSize: packageTitleFontSize(theme),
-      fontColor: packageTitleFontColor(theme, tags),
+      fontColor: groupTitleColor(geo, packageTitleFontColor(theme, tags)),
       textLength: textWidth,
     },
     (line) => geo.x + posTitle + vis.dx + (textWidth - line.width) / 2,

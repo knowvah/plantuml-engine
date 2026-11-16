@@ -1,0 +1,7 @@
+@startuml
+Node EventGenerator {
+	'component aaa
+}
+
+EventGenerator -> EventGenerator : Event
+@enduml

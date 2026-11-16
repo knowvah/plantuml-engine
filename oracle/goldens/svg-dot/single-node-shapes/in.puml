@@ -1,0 +1,5 @@
+@startdot
+digraph G {
+  only [shape=diamond, label=Only]
+}
+@enddot
