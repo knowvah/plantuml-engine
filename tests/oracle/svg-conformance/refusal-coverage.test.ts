@@ -733,7 +733,13 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11520 + 7 = 11527.
     // 11527 -> 11528 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
     // Derivation: 11527 + 1 = 11528.
-    expect(manifest.fixtures.length).toBe(11528);
+    // 11528 -> 11544 at dei/T1a (2026-11-16): +16 rows for the 8 authored dei-* fixtures (#147), each in both walks
+    // (dot-cache:component and goldens:svg-description/component). Derivation: 11528 + 16 = 11544.
+    // 11544 -> 11546 at dei/T4c (2026-11-16): +2 rows for dei-requirement-lone (both walks). Derivation: 11544 + 2 = 11546.
+    // 11546 -> 11548 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11546 + 2 = 11548.
+    // 11548 -> 11551 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
+    // by #147). Derivation: 11548 + 3 = 11551.
+    expect(manifest.fixtures.length).toBe(11551);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -812,7 +818,11 @@ describe('refusal coverage — baseline shape', () => {
     // 153 -> 152 at sogr/T2a (2026-11-13): teoz-ng-001-11 stops erroring here (known-gap -> ok). Derivation: 153 - 1 = 152.
     // 152 -> 160 at dogr/T1b (2026-11-14): +8 svg-dot weErrored golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
     // Derivation: 152 + 8 = 160.
-    expect(pinnedErroring.length).toBe(160);
+    // 160 -> 176 at dei/T1a (2026-11-16): +16 dei-* rows (8 authored fixtures x 2 walks, #147) error here today.
+    // Derivation: 160 + 16 = 176.
+    // 176 -> 157 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to ok (#147 ports
+    // json, map, domain and requirement into description): none errors here now. Derivation: 176 - 16 - 3 = 157.
+    expect(pinnedErroring.length).toBe(157);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1119,7 +1129,12 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11360 + 7 = 11367.
     // 11367 -> 11368 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
     // Derivation: 11367 + 1 = 11368.
-    expect(pinnedRendering.length).toBe(11368);
+    // 11368 -> 11389 at dei/T4c (2026-11-16): the 16 dei-* rows and the 3 #147 unknown rows render here now, plus the
+    // 2 dei-requirement-lone rows. Derivation: 11368 + 16 + 3 + 2 = 11389.
+    // 11389 -> 11391 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11389 + 2 = 11391.
+    // 11391 -> 11394 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
+    // by #147). Derivation: 11391 + 3 = 11394.
+    expect(pinnedRendering.length).toBe(11394);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1215,7 +1230,11 @@ describe('refusal coverage — baseline shape', () => {
     // 60 -> 58 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip known-gap -> ok.
     // 58 -> 52 at ftp/T3 (2026-11-12): the 2 Welcome and 4 ListFonts rows flip known-gap -> ok.
     // 52 -> 51 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-gap -> ok (`partition`, CommandGrouping.java:67).
-    expect(gaps.length).toBe(51);
+    // 51 -> 67 at dei/T1a (2026-11-16): +16 dei-* rows (8 fixtures x 2 walks) pinned known-gap, each citing the
+    // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 51 + 16 = 67.
+    // 67 -> 48 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to ok (#147 ports
+    // json, map, domain and requirement into description). Derivation: 67 - 16 - 3 = 48.
+    expect(gaps.length).toBe(48);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

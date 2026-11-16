@@ -51289,12 +51289,11 @@
       "type": "unknown",
       "slug": "gacoxo-93-guti295",
       "jarRendered": true,
-      "weErrored": true,
+      "weErrored": false,
       "engine": "description",
-      "status": "known-gap",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd",
-      "reason": "cloud \"Chat Service + DB\" as Char { [Service] database [PSQL] as DB { json JSON { \"fruit\":\"apple\", ... } } } embeds a JSON sub-diagram inside a descriptive container -- upstream's EmbeddedDiagram/nested-diagram mechanism. This port's own EntityImageDescriptionDelegates.ts:125 already documents the gap verbatim, citing upstream's EmbeddedDiagram.java:75 nested-renderer construct: 'embedded diagrams ({{ ... }}) inside a description label are not supported -- this port has no caller that constructs a nested-diagram renderer for description text'. Every candidate refuses on the nested json/color-array syntax (highest score: description, consumed=4), so the source errors here on a source the jar rendered as DESCRIPTION."
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
     },
     {
       "tree": "dot-cache",
@@ -53210,12 +53209,11 @@
       "type": "unknown",
       "slug": "liripi-72-kefa167",
       "jarRendered": true,
-      "weErrored": true,
+      "weErrored": false,
       "engine": "description",
-      "status": "known-gap",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd",
-      "reason": "Package \"Attribute Mapper\" ... { portin ... portout ... component \"Mapper engine\" ... { map \"Mappings\" as maps #acffa0 { Rule 1 => r'1 = 2 * r'2 ... } } } uses upstream's map/'=>' construct (objectdiagram/command/CommandCreateMap.java:76, whose own executeArg rejects a body lacking 'key => value' rows at CommandCreateMap.java:174), a distinct Command this port has no AST node, parser rule, or renderer for anywhere in src/diagrams/description or src/diagrams/class ('map' is absent from both KEYWORD_TO_SYMBOL and CommandCreateElementFull.ALL_TYPES -- descriptive-keywords.ts). A whole unported command, not a small grammar gap (D2 pin criterion). Every candidate refuses (highest score: description, consumed=5, failing on the 'Rule 3 => ...' row), so the source errors here on a source the jar rendered as DESCRIPTION."
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
     },
     {
       "tree": "dot-cache",
@@ -106450,12 +106448,11 @@
       "type": "unknown",
       "slug": "rukitu-26-seme622",
       "jarRendered": true,
-      "weErrored": true,
-      "engine": "class",
-      "status": "known-gap",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "6e11d963",
-      "reason": "deciding line 'domain \"Monitor\" as M <<Machine>> {'. The jar accepts it via CommandCreateDomain (registered DescriptionDiagramFactory.java:137): TYPE '(requirement|domain)', DISPLAY, 'as', CODE '[a-zA-Z0-9]+', STEREO, optional '\\{' (CommandCreateDomain.java:74-85); 'requirement \"Requirements\" as R {' takes the same command. We have no CommandCreateDomain port in src/diagrams/description, so the line falls to 'Syntax Error?' (src/diagrams/description/parser.ts:340). Open -> #113."
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
     },
     {
       "tree": "dot-cache",
@@ -126859,6 +126856,259 @@
       "status": "ok",
       "measuredAt": "2026-11-14",
       "measuredAgainstCommit": "5c7629aa"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-domain-each",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-domain-each",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-domain-group",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-domain-group",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-json-group",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-json-group",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-json-single",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-json-single",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-json-top",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-json-top",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-map-link",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-map-link",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-map-top",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-map-top",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-requirement",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-requirement",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-requirement-lone",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-requirement-lone",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b7f8437c9"
+    },
+    {
+      "tree": "dot-cache",
+      "type": "component",
+      "slug": "dei-domain-group-link",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b97a082a7"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "component/dei-domain-group-link",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b97a082a7"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "unknown/gacoxo-93-guti295",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b97a082a7"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "unknown/liripi-72-kefa167",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b97a082a7"
+    },
+    {
+      "tree": "goldens",
+      "type": "svg-description",
+      "slug": "unknown/rukitu-26-seme622",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "description",
+      "status": "ok",
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "b97a082a7"
     }
   ]
 }

@@ -19,6 +19,7 @@ import { ULine } from '../shape/ULine.js';
 import { UPath } from '../shape/UPath.js';
 import { UPolygon } from '../shape/UPolygon.js';
 import { URectangle } from '../shape/URectangle.js';
+import { UCenteredCharacter } from '../shape/UCenteredCharacter.js';
 import { UText } from '../shape/UText.js';
 import { UImage } from '../shape/UImage.js';
 import { UPixel } from '../shape/UPixel.js';
@@ -78,8 +79,7 @@ function isTextBlockShape(shape: UShape): shape is TextBlock {
  * `draw(shape)` dispatch — shape kinds with NO counterpart in this port
  * are simply absent from the `if`/`else if` chain (omitted, reported):
  * `UImage`/`UImageSvg`/`UImageTikz` (no `UImage*.ts` exists — image
- * embedding is not ported), `UCenteredCharacter` (not ported; upstream's own
- * branch is "// To be done" — empty), `CenteredText`/`SpecialText` (both
+ * embedding is not ported), `CenteredText`/`SpecialText` (both
  * belong to unported subsystems — activitydiagram3/ftile and net.atmp
  * respectively; upstream's branches are empty "// Ignored"). The
  * `CopyForegroundColorToBackgroundColor` branch IS kept for 1:1
@@ -145,6 +145,9 @@ export class LimitFinder extends UGraphicNo {
       this.drawEmpty(x, y, shape);
     } else if (isTextBlockShape(shape)) {
       shape.drawU(this);
+    } else if (shape instanceof UCenteredCharacter) {
+      // Ignored -- upstream's own `// To be done` branch (LimitFinder.java:138-139); reached by a domain's
+      // `BoxedCharacter` letter (dei T4c).
     } else if (shape instanceof CopyForegroundColorToBackgroundColor) {
       // Ignored — matches upstream's own dead branch (see class doc comment: this class
       // implements UChange, not UShape, in both codebases, so this never matches at runtime).

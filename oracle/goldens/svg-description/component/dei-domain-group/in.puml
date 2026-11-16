@@ -1,0 +1,7 @@
+@startuml
+domain "Ctrl" as M <<Machine>> {
+  domain "Motor" as D1 <<Causal>>
+}
+domain "Log" as D2 <<Lexical>>
+D1 -- D2 : data
+@enduml

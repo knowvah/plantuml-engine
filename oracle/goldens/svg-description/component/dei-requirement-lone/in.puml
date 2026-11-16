@@ -1,0 +1,3 @@
+@startuml
+requirement "Lone need" as R <<FR>>
+@enduml

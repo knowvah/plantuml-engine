@@ -12,6 +12,8 @@
  */
 
 import { rawStereotypeLabels } from './parse-helpers.js';
+import { copyLeafType, leafTypeDims } from './layout-leaf-type.js';
+import type { LeafImageEnv } from './description-entity-image.js';
 import type { DescriptionDiagramAST, DescriptiveNode } from './ast.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import { CONTAINER_SYMBOLS } from './parse-helpers.js';
@@ -226,7 +228,7 @@ export function degenerateSingleLeaf(
   containersCount: number,
   fontSpec: FontSpec,
   measurer: StringMeasurer,
-  boxOpts: (BoxSizingOpts & { topurl?: string }) | undefined,
+  boxOpts: (BoxSizingOpts & { topurl?: string; leafImageEnv?: LeafImageEnv }) | undefined,
 ): DescriptionGeometry | undefined {
   // #lizard forgives — pre-existing: CCN is a flat chain of early-return
   // guards (the upstream "does this qualify as a degenerate single leaf?"
@@ -261,7 +263,10 @@ export function degenerateSingleLeaf(
   const sizingOpts = emojiArtwork === undefined ? boxOpts : { ...(boxOpts ?? {}), emojiArtwork };
   const stereotypeRawLabels =
     visibleNode.stereotype === undefined ? undefined : rawStereotypeLabels(visibleNode.stereotype);
-  const dims = measureLeafNode({ ...visibleNode, stereotypeRawLabels }, fontSpec, measurer, sizingOpts, sprites);
+  const leafImageEnv = boxOpts?.leafImageEnv;
+  const dims =
+    (leafImageEnv === undefined ? undefined : leafTypeDims(node, leafImageEnv, measurer)) ??
+    measureLeafNode({ ...visibleNode, stereotypeRawLabels }, fontSpec, measurer, sizingOpts, sprites);
   const geo: DescriptionNodeGeo = {
     id: node.id,
     symbol: node.symbol,
@@ -289,6 +294,7 @@ export function degenerateSingleLeaf(
   if (url !== undefined) geo.url = url;
   if (node.color !== undefined) geo.color = node.color;
   if (node.creationIndex !== undefined) geo.creationIndex = node.creationIndex;
+  copyLeafType(node, geo);
   // Hoisted out of the `return` (was an inline `...(cond ? {…} : {})`
   // spread): identical spread semantics, but the inline ternary-object
   // literal there desyncs lizard's TS brace-tracking, which silently drops

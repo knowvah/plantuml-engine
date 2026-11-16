@@ -1,0 +1,12 @@
+@startuml
+domain "Other" as P0 <<Other>>
+domain "Mach" as P1 <<Machine>>
+domain "Des" as P2 <<Designed>>
+domain "Lex" as P3 <<Lexical>>
+domain "Cau" as P4 <<Causal>>
+domain "Bid" as P5 <<Biddable>>
+domain "Spec" as P6 <<Specification>>
+domain "Sol" as P7 <<Solved>>
+domain "Giv" as P8 <<Given>>
+domain "Unc" as P9 <<Uncertain>>
+@enduml

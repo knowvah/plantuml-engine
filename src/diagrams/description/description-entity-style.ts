@@ -23,6 +23,9 @@ import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { ValueNull } from '../../core/style/ValueNull.js';
 import { linkStylesOf, styleFont, stylePaint } from '../../core/style/style-reads.js';
 import type { EntitySizing } from '../../core/svek/image/LeafSizingSubject.js';
+import { JSON_HEADER_STYLE_SIGNATURE, JSON_STYLE_SIGNATURE } from '../../core/svek/image/EntityImageJson.js';
+import { MAP_HEADER_STYLE_SIGNATURE, MAP_STYLE_SIGNATURE } from '../../core/svek/image/EntityImageMap.js';
+import { REQUIREMENT_STYLE_SIGNATURE } from '../../core/descdiagram/EntityImageRequirement.js';
 import type { Theme } from '../../core/theme.js';
 import type { DescriptiveLink, DescriptiveNode } from './ast.js';
 import { rawStereotypeLabels } from './parse-helpers.js';
@@ -49,6 +52,15 @@ export interface DescriptionEntityStyle {
   readonly clusterTitle?: Style;
   /** `ClusterHeader.java:226-228`: the group's stereotype labels. */
   readonly clusterStereo?: Style;
+  /** `EntityImageJson#getStyle`, `root.element.objectDiagram.json` (`EntityImageJson.java:138-146`). */
+  readonly json?: Style;
+  /** `EntityImageJson#getStyleHeader` (`EntityImageJson.java:148-151`). */
+  readonly jsonHeader?: Style;
+  /** `EntityImageRequirement#getStyle` (`EntityImageRequirement.java:97-105`). */
+  readonly requirement?: Style;
+  /** `EntityImageMap#getStyle` / `#getStyleHeader` (`EntityImageMap.java:137-149`). */
+  readonly map?: Style;
+  readonly mapHeader?: Style;
 }
 
 /** `Rainbow.build`'s `HeadColor` (`Rainbow.java:85-90`): absent on a `ValueNull`, which keeps the line colour. */
@@ -79,12 +91,59 @@ function symbolSNames(symbol: USymbol, theme: Theme): readonly SName[] | undefin
   return usymbol?.getSNames() as readonly SName[] | undefined;
 }
 
+/**
+ * A `domain`/`requirement` group's styles: a null usymbol, so `Cluster#getStyle` reads `USymbols.PACKAGE`'s signature
+ * (`Cluster.java:386-390`), `ClusterHeader#getSignature` the plain `composite.title` (`ClusterHeader.java:152-165`), and
+ * the stereotype `Cluster.getDefaultStyleDefinition(..., null, groupType)`, plain `group` (`ClusterHeader.java:211-213`,
+ * `Cluster.java:286-296`).
+ */
+function problemFramesGroupStyle(builder: StyleBuilder, node: DescriptiveNode): DescriptionEntityStyle {
+  const stereotype = stereotypeOf(node);
+  const merged = (signature: StyleSignatureBasic): Style | undefined =>
+    signature.withTOBECHANGED(stereotype).getMergedStyle(builder);
+  const cluster = merged(StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'group', 'package_'));
+  const clusterTitle = merged(StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'composite', 'title'));
+  const clusterStereo = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'group')
+    .forStereotypeItself(stereotype)
+    .getMergedStyle(builder);
+  return {
+    ...(cluster === undefined ? {} : { cluster }),
+    ...(clusterTitle === undefined ? {} : { clusterTitle }),
+    ...(clusterStereo === undefined ? {} : { clusterStereo }),
+  };
+}
+
+/**
+ * The styles of a leaf `GeneralImageBuilder` dispatches on its `LeafType` (decisions D2). Each signature names
+ * `objectDiagram` whatever the diagram (`EntityImageJson.java:138-151`), merged with the entity's stereotype.
+ */
+function leafTypeStyle(builder: StyleBuilder, node: DescriptiveNode): DescriptionEntityStyle {
+  const stereotype = stereotypeOf(node);
+  const merged = (signature: StyleSignatureBasic): Style | undefined =>
+    signature.withTOBECHANGED(stereotype).getMergedStyle(builder);
+  if (node.leafType === 'requirement') {
+    const requirement = merged(REQUIREMENT_STYLE_SIGNATURE);
+    return requirement === undefined ? {} : { requirement };
+  }
+  if (node.leafType === 'map') {
+    const map = merged(MAP_STYLE_SIGNATURE);
+    const mapHeader = merged(MAP_HEADER_STYLE_SIGNATURE);
+    return { ...(map === undefined ? {} : { map }), ...(mapHeader === undefined ? {} : { mapHeader }) };
+  }
+  if (node.leafType !== 'json') return {};
+  const json = merged(JSON_STYLE_SIGNATURE);
+  const jsonHeader = merged(JSON_HEADER_STYLE_SIGNATURE);
+  return { ...(json === undefined ? {} : { json }), ...(jsonHeader === undefined ? {} : { jsonHeader }) };
+}
+
 /** `EntityImageDescription.java:142-160`, with `eventuallyOverride(colors)` left to the reader. */
 export function descriptionEntityStyle(
   builder: StyleBuilder,
   node: DescriptiveNode,
   theme: Theme,
 ): DescriptionEntityStyle {
+  if (node.leafType !== undefined) return leafTypeStyle(builder, node);
+  if (node.groupType !== undefined) return problemFramesGroupStyle(builder, node);
   if (node.symbol === 'note') {
     // `EntityImageNote.java:102,188-191`: the note signature with its stereotype, on the diagram's last builder.
     const note = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'note')
@@ -151,7 +210,14 @@ export function annotateEntityStyles(
   for (const node of nodes) {
     annotateEntityStyles(node.children, builderAt, theme);
     // `EntityImageUseCase.java:198` reads `getSkinParam().getCurrentStyleBuilder()`, the diagram's last.
-    const builder = builderAt(isUsecase(node.symbol) || node.symbol === 'note' ? undefined : node.styleGeneration);
+    // `EntityImageJson.java:144-150` and `EntityImageMap.java:142-148` also read `getSkinParam().getCurrentStyleBuilder()`.
+    const lastBuilder =
+      isUsecase(node.symbol) ||
+      node.symbol === 'note' ||
+      node.leafType === 'json' ||
+      node.leafType === 'map' ||
+      node.leafType === 'requirement';
+    const builder = builderAt(lastBuilder ? undefined : node.styleGeneration);
     if (builder === undefined) continue;
     const style = descriptionEntityStyle(builder, node, theme);
     node.entityStyle = style;

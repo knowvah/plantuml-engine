@@ -5,6 +5,7 @@
  * `ClassifyCtx`/`EdgeDotBuildResult`, so every existing import path is
  * unchanged; `layout-dot-tree.ts` is their principal consumer.
  */
+import type { LeafImageEnv } from './description-entity-image.js';
 import type { DescriptionEntityStyle } from './description-entity-style.js';
 import type { DescriptiveNode, StereotypeSpriteRef } from './ast.js';
 import type { DotInputEdge } from '../../core/graph-layout.js';
@@ -69,6 +70,8 @@ export interface ClassifyCtx {
   wrapWidth: number;
   /** `skinparam guillemet` pair for DISPLAY text (`manageGuillemet`), S1L-f. */
   guillemet: GuillemetPair;
+  /** The theme reads a `leafType` leaf's image takes (`description-entity-image.ts#leafImageEnv`). */
+  leafImageEnv: LeafImageEnv;
   /** Container-scoped identity (mission I1b) — bare ids that are TRUE
    *  cross-scope collisions across the WHOLE diagram
    *  (namespace-groups.ts#findCollidingIds), read by `dotKeyFor` to decide

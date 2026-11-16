@@ -351,7 +351,9 @@ export function buildCluster(node: DescriptionNodeGeo, theme: Theme, uid: string
     url: node.url ?? null,
   };
   const symbolInfo: ClusterSymbolInfo = {
-    symbol: resolveSymbol(node.symbol, theme),
+    // A `domain`/`requirement` group has no `USymbol` (`CommandCreateDomain`, `USymbols.java:122-181`): `Cluster` draws
+    // it through the package style and gives it no magnetic border (`Cluster.java:357-367,728-729`).
+    symbol: node.groupType === undefined ? resolveSymbol(node.symbol, theme) : null,
     packageStyle: null,
     // `skinParam.packageStyle()` (`Cluster.java:357-359`): a group with no symbol of its own (null `toUSymbol()`)
     // falls through `ClusterDecoration#guess` to it, and draws nothing when that is null as well.

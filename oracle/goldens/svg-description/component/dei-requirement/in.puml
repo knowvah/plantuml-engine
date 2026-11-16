@@ -1,0 +1,7 @@
+@startuml
+requirement "Top need" as R0
+requirement "Group" as RG {
+  requirement "Inner need" as R1
+}
+R0 --> R1 : refines
+@enduml

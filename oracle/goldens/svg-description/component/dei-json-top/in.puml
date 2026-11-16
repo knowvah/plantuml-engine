@@ -1,0 +1,9 @@
+@startuml
+component C
+json J {
+  "name": "x",
+  "list": [1, 2, 3],
+  "inner": { "a": true, "b": null }
+}
+C --> J
+@enduml

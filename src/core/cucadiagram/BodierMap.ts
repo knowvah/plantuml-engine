@@ -67,13 +67,19 @@ export class BodierMap extends BodierAbstract {
     return false;
   }
 
+  /** The table `getBody` would hand `TextBlockMap`, in insertion order. Not an upstream member: the description
+   *  engine draws a map through the core `EntityImageMap` with no `ISkinParam` to call `getBody` with (dei T3a,
+   *  decisions D1), so it reads the table here and builds `TextBlockMap` itself. */
+  getMap(): ReadonlyMap<string, string> {
+    return this.map;
+  }
+
   /** Deferred per SI1/ADR-2: upstream returns `new TextBlockMap(
    * fontConfiguration, skinParam, map, style.wrapWidth(),
    * style.getHorizontalAlignment())` — the map text-block renderer is
    * unported.
    * @see cucadiagram/BodierMap.java:102-108 */
   getBody(): TextBlock | null {
-    void this.map;
     throw new Error(
       'deferred per SI1/ADR-2: BodierMap.getBody needs TextBlockMap, not yet ported (cucadiagram/BodierMap.java:102-108)',
     );

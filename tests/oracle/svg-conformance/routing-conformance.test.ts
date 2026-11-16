@@ -889,7 +889,13 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11333 + 7 = 11340.
     // 11340 -> 11341 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
     // Derivation: 11340 + 1 = 11341.
-    expect(pinnedAgree.length).toBe(11341);
+    // 11341 -> 11362 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
+    // json, map, domain and requirement into description), plus the 2 dei-requirement-lone rows.
+    // Derivation: 11341 + 16 + 3 + 2 = 11362.
+    // 11362 -> 11364 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11362 + 2 = 11364.
+    // 11364 -> 11367 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
+    // by #147). Derivation: 11364 + 3 = 11367.
+    expect(pinnedAgree.length).toBe(11367);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -924,7 +930,11 @@ describe('routing conformance — jar-error classification', () => {
     // 20 -> 19 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips known-misroute -> agree. Derivation: 20 - 1 = 19.
     // 19 -> 17 at cogr/T3a (2026-11-14): kofogo-67-jiju461 and zemeco-27-kaje686 flip to agree (CommandLinkClass.java:116,
     // 165-170: the association-class couple with a `: label`). Derivation: 19 - 2 = 17.
-    expect(pinnedMisroutes.length).toBe(17);
+    // 17 -> 33 at dei/T1a (2026-11-16): +16 dei-* rows (8 fixtures x 2 walks) pinned known-misroute, each citing the
+    // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 17 + 16 = 33.
+    // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
+    // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
+    expect(pinnedMisroutes.length).toBe(14);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
@@ -1102,7 +1112,13 @@ describe('routing conformance — jar-error classification', () => {
     // Derivation: 11520 + 7 = 11527.
     // 11527 -> 11528 at ele/T1c (2026-11-15): +1 svg-state golden clone(s) (xetase-70-zaza808, #144).
     // Derivation: 11527 + 1 = 11528.
-    expect(manifest.fixtures.length).toBe(11528);
+    // 11528 -> 11544 at dei/T1a (2026-11-16): +16 rows for the 8 authored dei-* fixtures (#147), each in both walks
+    // (dot-cache:component and goldens:svg-description/component). Derivation: 11528 + 16 = 11544.
+    // 11544 -> 11546 at dei/T4c (2026-11-16): +2 rows for dei-requirement-lone (both walks). Derivation: 11544 + 2 = 11546.
+    // 11546 -> 11548 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11546 + 2 = 11548.
+    // 11548 -> 11551 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
+    // by #147). Derivation: 11548 + 3 = 11551.
+    expect(manifest.fixtures.length).toBe(11551);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {
@@ -1201,7 +1217,11 @@ describe('routing conformance — jar-error classification', () => {
     // 22 -> 20 at lsp/T3 (2026-11-12): folutu-01-xuzo995 and nujapi-78-mota753 flip to agree.
     // 20 -> 19 at sogr/T2a (2026-11-13): teoz-ng-001-11 flips to agree (`partition`, CommandGrouping.java:67).
     // 19 -> 17 at cogr/T3a (2026-11-14): the same 2 rows. Derivation: 19 - 2 = 17.
-    expect(censused.length).toBe(17);
+    // 17 -> 33 at dei/T1a (2026-11-16): +16 dei-* rows (8 fixtures x 2 walks) pinned known-misroute, each citing the
+    // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 17 + 16 = 33.
+    // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
+    // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
+    expect(censused.length).toBe(14);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

@@ -1,0 +1,7 @@
+@startuml
+component C
+map M {
+  first => one
+  second *-> C
+}
+@enduml

@@ -14,7 +14,9 @@ import type { EntitySizing } from '../../core/svek/image/LeafSizingSubject.js';
 import type { MiddleDecor } from '../../core/svek/extremity/MiddleCircleDecor.js';
 import type { Style } from '../../core/style/Style.js';
 import type { DescriptionEntityStyle } from './description-entity-style.js';
-import type { DescriptiveLinkStyle, StereotypeSpriteRef } from './ast.js';
+import type { DescriptionLeafType, DescriptiveLinkStyle, StereotypeSpriteRef } from './ast.js';
+import type { JsonNode } from '../../core/command/JsonNode.js';
+import type { BodierMap } from '../../core/cucadiagram/BodierMap.js';
 import type { NotePosition } from './note-grammar.js';
 import type { USymbol } from '../../core/descriptive-keywords.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
@@ -58,6 +60,14 @@ export interface DescriptionNodeGeo {
   portFinalBbox?: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
   /** `DescriptiveNode.entityStyle`, for the renderer. */
   entityStyle?: DescriptionEntityStyle;
+  /** `DescriptiveNode.leafType`: the renderer draws this leaf's own image (`description-entity-image.ts`). */
+  leafType?: DescriptionLeafType;
+  /** `DescriptiveNode.jsonValue`, for the json image. */
+  jsonValue?: JsonNode;
+  /** `DescriptiveNode.groupType`: the cluster has no `USymbol` (`renderer-cluster.ts#buildCluster`). */
+  groupType?: 'domain' | 'requirement';
+  /** `DescriptiveNode.mapBodier`, for the map image. */
+  mapBodier?: BodierMap;
   /** `DescriptiveNode.naturalAlignment`. */
   naturalAlignment?: 'left' | 'right';
   /** `DescriptiveNode.entitySizing`, so the renderer draws the wrap and floor the sizer measured. */

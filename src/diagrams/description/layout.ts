@@ -71,6 +71,7 @@ export type { DescriptionNodeGeo, DescriptionEdgeGeo, DescriptionGeometry } from
 // ── Internal types ── (moved to `layout-types.ts`, 500-line split;
 // re-exported below so every existing `from './layout.js'` import works)
 import type { ClassifyCtx, EdgeDotBuildResult } from './layout-types.js';
+import { leafImageEnv } from './description-entity-image.js';
 export type { ClassifyCtx, ContainerDesc, EdgeDotBuildResult } from './layout-types.js';
 
 /** D3/D4: the arrow-label font resolver -- `layoutDescription`'s
@@ -307,6 +308,7 @@ export function createClassifyCtx(ast: DescriptionDiagramAST, theme: Theme): Cla
       start: theme.colors.graph.guillemetStart ?? GUILLEMET_DEFAULT.start,
       end: theme.colors.graph.guillemetEnd ?? GUILLEMET_DEFAULT.end,
     },
+    leafImageEnv: leafImageEnv(theme),
     collidingIds,
     qualifiedPathToDotKey: new Map(),
     sprites: ast.sprites !== undefined ? spriteDimsLookupFor(ast.sprites) : undefined,
@@ -414,6 +416,7 @@ export function layoutDescription(
     // `EntityImageDescription`, so its box reads the same fonts, wrap width and guillemet (`EntityImageDescription.java:172-201`).
     wrapWidth: ctx.wrapWidth,
     guillemet: ctx.guillemet,
+    leafImageEnv: ctx.leafImageEnv,
     fontSize: ctx.fontSizeFor(ast.nodes[0]?.symbol ?? ''),
     stereotypeFontSize: ctx.stereotypeFontSizeFor(ast.nodes[0]?.symbol ?? '', ast.nodes[0]?.stereotype),
     lineThickness: ctx.lineThicknessFor(ast.nodes[0]?.symbol ?? ''),

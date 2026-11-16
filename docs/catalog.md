@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2592 modules · 8494 exported names.
+2609 modules · 8541 exported names.
 
 ## `src/`
 
@@ -388,6 +388,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `PortionShower.ts` | `PortionShower` |  |
 | `SquareLinker.ts` | `SquareLinker` | SquareLinker — the two link-emitting callbacks `SquareMaker` drives while chaining items into a square grid. |
 | `SquareMaker.ts` | `SquareMaker` |  |
+| `TextBlockMap.ts` | `TextBlockMap` | `TextBlockMap` — a `map` leaf's entries: one row per key, the key column aligned by the map style's `HorizontalAlignment`, the value column flush left, a full-width line above every row and a vertical line after the key column of every row |
 | `TextBlockTracer.ts` | `isMember`, `fullInnerPosition`, `TextBlockTracer` |  |
 
 ## `src/core/decimal/`
@@ -442,6 +443,18 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `USymbolStack.ts` | `USymbolStack` |  |
 | `USymbolStorage.ts` | `drawStorage`, `getMargin`, `USymbolStorage` |  |
 | `USymbolUsecase.ts` | `USymbolUsecase` |  |
+
+## `src/core/descdiagram/`
+
+| Module | Exports | Purpose |
+|---|---|---|
+| `boxed-glyph-data.ts` | `isBoxedCharacterFont`, `boxedGlyphPath` | Captured outlines of the `BoxedCharacter` letter a domain draws in its corner (decisions D4). |
+| `BoxedCharacter.ts` | `BoxedCharacter` | `BoxedCharacter` — a `2r x 2r` square with one letter centred in it: the corner tag of a Problem Frames domain. |
+| `descdiagram-common.ts` | `DescdiagramBoxParams`, `nameAndStereotypeDimension` | What the four Problem Frames images (`EntityImageDomain`, `EntityImageMachine`, `EntityImageDesignedDomain`, `EntityImageRequirement`) read off their `Entity` and `ISkinParam`, resolved by the caller: the description engine, which has no co |
+| `EntityImageDesignedDomain.ts` | `EntityImageDesignedDomain` | `EntityImageDesignedDomain` — a Problem Frames designed domain (`<<D>>`, `<<Designed>>`, `<<Nested>>`, `<<Solved>>`, `Stereotype.java:224-227`): the name in a box with a second, 4px-wide box along its left edge; the title is drawn 4px right |
+| `EntityImageDomain.ts` | `EntityImageDomainParams`, `EntityImageDomain` | `EntityImageDomain` — a Problem Frames domain: the name in a box, a `BoxedCharacter` letter in the bottom right corner below the title (`X` lexical or given, `C` causal, `B` biddable or uncertain, `P` otherwise, `GeneralImageBuilder.java:24 |
+| `EntityImageMachine.ts` | `EntityImageMachine` | `EntityImageMachine` — a Problem Frames machine (`<<Machine>>`, `<<M>>`, `<<S>>`, `<<Spec>>`, `<<Specification>>`, `Stereotype.java:229-233`): the name in a box with a second, 4px-wide box 4px in from its left edge; the title is drawn 5px r |
+| `EntityImageRequirement.ts` | `REQUIREMENT_STYLE_SIGNATURE`, `EntityImageRequirementParams`, `EntityImageRequirement` | `EntityImageRequirement` — a Problem Frames requirement: its text (under its stereotype, when it has one) in a dashed ellipse fitted by `TextBlockInEllipse`. |
 
 ## `src/core/elk/`
 
@@ -1149,7 +1162,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `EntityImageDescriptionTextBlock.ts` | `measureLine`, `drawWithAtomUrl`, `buildTextBlock` | EntityImageDescriptionTextBlock — the text-construction seam split out of `EntityImageDescriptionSupport.ts` (E2r/L1's own home for it) purely to stay under this project's 500-line complexity-hook ceiling once T9 (svg-sprite-nanoparser) wid |
 | `EntityImageDescriptionTextMeasure.ts` | `ResolvedAtomImageWithRaster`, `MIN_TEXT_RUN_HEIGHT`, `measureLine`, `LineMetrics`, `SEPARATOR_SIZE_HEIGHT`, `SEPARATOR_DRAW_ADVANCE`, `SEPARATOR_WIDTH_CONTRIBUTION`, `SEPARATOR_DEFAULT_THICKNESS`, `LineBuild`, `buildLine`, `measuringFont`, `measureAtomsWidthHeight`, `measureBuiltLine`, `measureSingleAtomWidth`, `buildWrappedLines` | EntityImageDescriptionTextMeasure -- the measuring half of `EntityImageDescriptionTextBlock.ts` (`measureLine`, the per-line atom build, `LineMetrics`, the wrap), split out by a pure move only to keep both files under this project's 500-lin |
 | `EntityImageEmptyPackage.ts` | `EmptyPackageSkinParam`, `EntityImageEmptyPackage` | `EntityImageEmptyPackage` — a package with no content, drawn as one node: `ClusterDecoration` over the title block (a partition that holds nothing is muted to `LeafType.EMPTY_PACKAGE`, `GraphvizImageBuilder.java:416-418`). |
-| `EntityImageJson.ts` | `JSON_NAME_MARGIN`, `JSON_CELL_MARGIN_X`, `JSON_CELL_MARGIN_Y`, `JSON_X_MARGIN_CIRCLE`, `JSON_EMPTY_HEIGHT_FALLBACK` | `EntityImageJson` / `TextBlockCucaJSon` — the margins a `json` leaf embedded in a cuca diagram insets its cells and title by. |
+| `EntityImageJson.ts` | `JSON_NAME_MARGIN`, `JSON_CELL_MARGIN_X`, `JSON_CELL_MARGIN_Y`, `JSON_X_MARGIN_CIRCLE`, `JSON_EMPTY_HEIGHT_FALLBACK`, `EntityImageJsonParams`, `JSON_STYLE_SIGNATURE`, `JSON_HEADER_STYLE_SIGNATURE`, `EntityImageJson` | `EntityImageJson` / `TextBlockCucaJSon` — the margins a `json` leaf embedded in a cuca diagram insets its cells and title by. |
+| `EntityImageMap.ts` | `MAP_STYLE_SIGNATURE`, `MAP_HEADER_STYLE_SIGNATURE`, `EntityImageMapParams`, `EntityImageMap` | `EntityImageMap` — a `map` leaf: the json image's header (name over an optional stereotype, margin 2,2) above a `TextBlockMap`, in a rounded box. |
 | `EntityImageNote.ts` | `OpaleLine`, `EntityImageNote` | `EntityImageNote` — a note leaf (`note right: text` of a legacy activity diagram): the sizing half (`GraphvizImageBuilder` writes the note's DOT node from it) and `drawU`: the plain folded box, or the Opale notched towards the one entity it |
 | `EntityImageNoteLink.ts` | `PureNoteTextDim`, `PureNoteTextMeasurer`, `measureLinkNoteDim`, `EntityImageNoteLink` | ONE port of `EntityImageNoteLink`'s dimension -- collapses the FOUR former copies (`class/class-note-link-box.ts:70`, `state/state-dot-graph.ts:172`, `state/state-composite-edge-label.ts:49` -- the last two byte-identical private duplicates |
 | `EntityImageState.ts` | `EntityImageState` | `EntityImageState` (with `EntityImageStateCommon`) — a state box: the entity's name over a separator line and its raw body as fields. |
@@ -1168,6 +1182,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `OpalePolygons.ts` | `OpaleBounds`, `OPALE_DELTA`, `getPolygonLeft`, `getPolygonRight`, `getPolygonUp`, `getPolygonDown`, `corner`, `polygonNormal`, `getPolygonLinked` |  |
 | `RotatedEllipse.ts` | `RotatedEllipse` |  |
 | `SmallestEnclosingCircle.ts` | `SmallestEnclosingCircle` |  |
+| `TextBlockCucaJSon.ts` | `TextBlockCucaJSon` | `TextBlockCucaJSon` — the entries area of a `json` leaf: a recursive table of key cells and value cells (`TextBlockJson` for an object, `TextBlockArray` for an array, a margin-5,2 creole cell for a scalar). |
 | `YTransformer.ts` | `YTransformer` |  |
 
 ## `src/core/syntax/`
@@ -2197,10 +2212,15 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `annotation-line-trim.ts` | `trimLineForAnnotationMatch` | `matchAnnotationCommand`'s single-line matchers (`matchTitle` et al., `core/annotations/commands.ts`'s `ORDERED_MATCHERS`) read `lines[i]` verbatim, no internal trim — they require an already-trimmed line, like `state/parser.ts:147-149`'s ` |
+| `ast-link.ts` | `DescriptiveLinkStyle`, `DescriptiveLink` | The `DescriptiveLink` half of `ast.ts`, split out (a pure move) to keep that file under the 500-line cap when dei T2b added `DescriptiveNode.leafType`; `ast.ts` re-exports both names, so every import path is unchanged. |
 | `ast-stereotype-sprite.ts` | `StereotypeSpriteRef` | `StereotypeSpriteRef` -- moved out of `./ast.ts` (cdd3-T18, pure move, to keep that file under the 500-line cap); re-exported from there. |
-| `ast.ts` | `StereotypeSpriteRef`, `DescriptiveNode`, `DescriptiveLinkStyle`, `DescriptiveLink`, `DescriptionDiagramAST` | AST type definitions for PlantUML descriptive diagrams (component / use-case / deployment). |
+| `ast.ts` | `StereotypeSpriteRef`, `DescriptionLeafType`, `DescriptiveNode`, `DescriptiveLink`, `DescriptiveLinkStyle`, `DescriptionDiagramAST` | AST type definitions for PlantUML descriptive diagrams (component / use-case / deployment). |
 | `command-archimate.ts` | `tryArchimate` | `CommandArchimate.java`'s single-line leaf form, moved out of `parser.ts` (file cap) by cdd8-T1c when it gained the `<<$archimate/icon>>` rewrite. |
 | `command-create-element-full.ts` | `keywordLineSymbol`, `tryColonDisplayForm`, `ELEMENT_FULL_COMMAND` | `CommandCreateElementFull` as one command: the Java's regex and `executeArg`, which the rules before this one approximate shape by shape. |
+| `command-domain.ts` | `tryDomainLine` | `CommandCreateDomain` (`DescriptionDiagramFactory.java:137`, registered last): `domain` and `requirement`, as a leaf (`LeafType.DOMAIN`/`REQUIREMENT`, drawn by the `descdiagram` images, `GeneralImageBuilder.java:235-255`) or, with a trailin |
+| `command-entity-image-block.ts` | `GatheredBlock`, `gatherMultilineBlock` | The line gathering `CommandMultilines2` does for the description factory's `map` and `json` blocks: from the header, every following line joins the block until one matches `END` (`^\s*\}\s*$`, trimmed both sides) and `finalVerification` ans |
+| `command-json.ts` | `tryJsonBlock`, `tryJsonSingleLine` | `CommandCreateJson` and `CommandCreateJsonSingleLine` in the description factory (`DescriptionDiagramFactory.java:130-131`): a `json` leaf (`LeafType.JSON`, usymbol `null`) whose body is `BodierJSon`'s value, drawn by `EntityImageJson` (`Ge |
+| `command-map.ts` | `MapLink`, `mapLinkOf`, `tryMapBlock` | `CommandCreateMap` in the description factory (`DescriptionDiagramFactory.java:129`, the first of the three leaf-type commands): a `map` leaf (`LeafType.MAP`, usymbol `null`) whose body is `BodierMap`'s table, drawn by `EntityImageMap` (`Ge |
 | `command-table-containers.ts` | `CONTAINER_COMMANDS` | Bracket/paren shorthand, container-block, and generic keyword-dispatch commands for the descriptive diagram dispatch table (rules 10-15 of the original command-table.ts COMMANDS array): `[Name]` bracket shorthand, `(Name)` use-case shorthan |
 | `command-table-directives.ts` | `DIRECTIVE_COMMANDS` | Directive-style commands for the descriptive diagram dispatch table (rules 1-4 of the original command-table.ts COMMANDS array): comment lines, `newpage`, direction directives, `skinparam linetype`, `set separator`, `!pragma kermor`, `scale |
 | `command-table-helpers.ts` | `SHORTHAND_TRAILER`, `BRACKET_TRAILER`, `shorthandNode`, `resolveEndpointNamespace` | Shared helpers for the descriptive diagram dispatch table (command-table.ts and its command-group modules). |
@@ -2211,6 +2231,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `description-cluster-header.ts` | `descriptionClusterTitleTable` | `ClusterHeader`'s DOT-side sizing for a description group: the `titleAndAttributeWidth/Height` the jar prints as the cluster's label `<TABLE>` (`ClusterDotString.java:122-125`). |
 | `description-elk-adapter.ts` | `ROOT_GROUP`, `DescriptionElkContext`, `DescriptionElkAdapter`, `layoutDescriptionElk`, `buildDescriptionElkContext` | `ElkDiagramAdapter` over the description engine (cdd8 T3b, D13). |
 | `description-elk-label.ts` | `nestedRenderer`, `labelSkinSimple`, `ElkDisplayStyle`, `elkDisplayBlock` | The creole `TextBlock` the ELK maker builds for a link's label, quantifier and role (`Display.getWithNewlines(...).create0(font, CENTER, skinParam, wrapWidth, CreoleMode.SIMPLE_LINE, null, null)`: `CucaDiagramFileMakerElk.java:213-215`, `:2 |
+| `description-entity-image.ts` | `LeafImageEnv`, `EntityImageSubject`, `LeafTypeImage`, `leafImageEnv`, `jsonImageFor`, `mapImageFor`, `leafTypeImageFor`, `ProblemFramesImage`, `problemFramesImageFor` | The leaf images description draws for a `leafType` (decisions D2): the one factory both the sizer (`layout-dot-tree.ts#buildDotNodes`) and the renderer (`renderer-entity.ts#drawEntity`) call, so they measure and draw the same object (`plann |
 | `description-entity-style.ts` | `linkStylesOf`, `styleFont`, `stylePaint`, `DescriptionEntityStyle`, `headPaint`, `descriptionEntityStyle`, `annotateEntityStyles`, `annotateLinkStyles` | The merged styles `EntityImageDescription` and `Cluster` read for one entity (D2 of description-divergence-drive): the values the flat `theme.colors.elements` tiers have no surface for, per stereotype and per symbol. |
 | `element-embedded-block.ts` | `EmbeddedElementBlock`, `scanEmbeddedElementBlock` | `PSystemCommandFactory#addOneSingleLineManageEmbedded2` (`:288-307`) for `CommandCreateElementMultilines`' TYPE1 element body (`parser.ts`'s `continueElementBlock`): while an open element block is accumulating body lines, a line that OPENS |
 | `element-grammar-nosymbol.ts` | `RE_BARE_AS_DECORATED`, `BareAsDecorated`, `parseBareAsDecorated`, `RE_BARE_QUOTED_DECL`, `RE_BARE_DECORATED_DECL`, `RE_CODE_AS_QUOTED_DISPLAY`, `CodeAsQuotedDisplay`, `parseCodeAsQuotedDisplay` | `CommandCreateElementFull`'s declaration alternatives with the leading SYMBOL keyword OMITTED (`getRegexConcat:84`, `(?:(ALL_TYPES\|\(\))[%s]+)?` — the group is optional). |
@@ -2225,6 +2246,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `layout-helpers-types.ts` | `DescriptionElkDrawing`, `EdgeEndText`, `DescriptionNodeGeo`, `KermorNoteGeo`, `KermorNotesGeo`, `Bbox`, `EdgeContainerEndpoints`, `ResolvedEndpoint`, `DescriptionEdgeGeo`, `DescriptionGeometry`, `EMPTY_CONTAINER_WIDTH`, `EMPTY_CONTAINER_HEIGHT`, `LAYOUT_MARGIN`, `LAYOUT_MARGIN_LEADING`, `GROUP_ANCHOR_SIZE` | Pure type/const declarations for the description diagram layout engine. |
 | `layout-helpers.ts` | `DescriptionNodeGeo`, `Bbox`, `EdgeContainerEndpoints`, `ResolvedEndpoint`, `DescriptionEdgeGeo`, `DescriptionGeometry`, `KermorNoteGeo`, `KermorNotesGeo`, `EMPTY_CONTAINER_WIDTH`, `EMPTY_CONTAINER_HEIGHT`, `LAYOUT_MARGIN`, `LAYOUT_MARGIN_LEADING`, `GROUP_ANCHOR_SIZE`, `groupAnchorNodeId`, `resolveEndpoint`, `containerEndpointsInfo`, `symbolBaseShape`, `isInterfaceShielded`, `shapeForNode`, `isPortLabelWide`, `portTablePad`, `applyShieldEdgePorts`, `measureLeafNode`, `measureLeafShield`, `ACTOR_WIDTH`, `ACTOR_HEIGHT`, `USECASE_HEIGHT`, `PORT_SIZE`, `measureTitleLabel`, `isContainer`, `isClusterNode`, `shiftGeo`, `insideBbox`, `buildNodeGeoIndex`, `resolveNodeUrl`, `degenerateSingleLeaf` | Pure, stateless helpers for the description diagram layout engine. |
 | `layout-ink-shift.ts` | `InkShift`, `BodyPlacement`, `BodyFraming`, `placeBody` | layout-ink-shift.ts — G1b/J1 (mechanism C): `SvekResult #calculateDimension`'s `moveDelta` shift (svek/SvekResult.java:125-136), replacing this port's former flat node-box document margin (`layout-geo-post.ts`'s pre-G1b `computeGlobalShift` |
+| `layout-leaf-type.ts` | `leafTypeDims`, `leafTypeDotNode`, `copyLeafType`, `copyGroupFields`, `withTailPort` | The layout side of a `leafType` leaf (decisions D2): its DOT node, sized by the image the renderer draws (`description-entity-image.ts`), and the fields the geo tree carries to the renderer. |
 | `layout-package-style.ts` | `applyPackageStyle` | `skinparam packagestyle` -> the `package` keyword's group symbol. |
 | `layout-types.ts` | `ContainerDesc`, `ClassifyCtx`, `EdgeDotBuildResult` | The layout engine's shared context/result TYPES, split out of `layout.ts` (this project's established "500-line splits" workaround — mechanical move only, no behavior and no upstream divergence). |
 | `layout.ts` | `isEffectiveCluster`, `DescriptionNodeGeo`, `DescriptionEdgeGeo`, `DescriptionGeometry`, `ClassifyCtx`, `ContainerDesc`, `EdgeDotBuildResult`, `createClassifyCtx`, `layoutDescription`, `USymbol` | Unified layout engine for PlantUML descriptive diagrams (component / use-case / deployment). |

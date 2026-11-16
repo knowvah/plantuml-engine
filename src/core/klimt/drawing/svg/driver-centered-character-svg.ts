@@ -18,7 +18,8 @@
  * Library-forced: upstream computes the outline from the system font
  * (`UnusedSpace.getUnusedSpace(font, c)`, `font.createTextLayout(c)
  * .getOutline(null).getPathIterator(null)`, java:73-81) — AWT, absent here.
- * The outline is read from `core/spot-glyph-data.ts#spotGlyphPath`, the
+ * The outline is read from `core/spot-glyph-data.ts#spotGlyphPath` (or, for `BoxedCharacter`'s font,
+ * `core/descdiagram/boxed-glyph-data.ts#boxedGlyphPath`), the
  * table of outlines scraped from jar renders and already translated to the
  * glyph's centre (`x - centerX - 0.5`, java:75-76, is what places it), then
  * replayed through the `SvgGraphics` path builder exactly as
@@ -36,6 +37,7 @@ import { noGradient } from '../../../paint.js';
 import { toSvgPaint, type ColorMapper } from '../../color/ColorMapper.js';
 import type { UCenteredCharacter } from '../../shape/UCenteredCharacter.js';
 import { spotGlyphPath } from '../../../spot-glyph-data.js';
+import { boxedGlyphPath, isBoxedCharacterFont } from '../../../descdiagram/boxed-glyph-data.js';
 import type { SvgGraphics } from './svg-graphics.js';
 
 /** `java.awt.geom.PathIterator.WIND_NON_ZERO`, the rule `TextLayout#getOutline` reports. */
@@ -74,7 +76,10 @@ export class DriverCenteredCharacterSvg implements UDriver<UCenteredCharacter> {
     const textColor = noGradient(toSvgPaint(param.getColor(), mapper));
     this.svg.setFillColor(textColor); // java:79
     const font = characterCircled.getFont();
-    const outline = spotGlyphPath(characterCircled.getChar(), font.getSize(), x, y);
+    // `BoxedCharacter`'s `UFontFactory.byDefault(8)` (sansSerif plain 12) has its own captures (decisions D4).
+    const outline = isBoxedCharacterFont(font)
+      ? boxedGlyphPath(characterCircled.getChar(), x, y)
+      : spotGlyphPath(characterCircled.getChar(), font.getSize(), x, y);
     if (outline !== undefined) replayOutline(this.svg, outline); // java:81
   }
 }

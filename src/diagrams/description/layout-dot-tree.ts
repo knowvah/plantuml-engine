@@ -52,6 +52,7 @@ import { dotKeyFor } from './namespace-groups.js';
 import type { ClassifyCtx, EdgeDotBuildResult } from './layout.js';
 import type { ContainerDesc } from './layout-types.js';
 import { isEffectiveCluster } from './layout.js';
+import { copyGroupFields, copyLeafType, leafTypeDotNode, withTailPort } from './layout-leaf-type.js';
 
 export interface PortClusterCtx {
   readonly infoByAstId: ReadonlyMap<string, PortClusterInfo>;
@@ -193,6 +194,11 @@ export function buildDotNodes(
     // geometry mismatch (favega-89-rado990, lufiba-62-dubi670). Cheap
     // shallow clone; returns the SAME node reference when nothing changes
     // (`visibleStereotypeLabels`'s own doc comment).
+    const leafType = node.leafType === undefined ? undefined : leafTypeDotNode(id, node, ctx.leafImageEnv, measurer);
+    if (leafType !== undefined) {
+      result.push(leafType);
+      continue;
+    }
     const sizedNode = nodeWithVisibleStereotype(node, stereotypeRules);
     const sizingOpts = {
       componentStyle: ctx.componentStyle,
@@ -442,7 +448,7 @@ export function buildDotEdges(
       to: toRes.dotNodeId,
       // Link#isInverted -> SvekEdge#isInverted (SvekEdge.java:1148-1150).
       ...(link.inverted === true ? { inverted: true as const } : {}),
-      attributes: buildLinkEdgeAttributes(link, fonts, measurer, linetype, ctx.sprites),
+      attributes: withTailPort(link, buildLinkEdgeAttributes(link, fonts, measurer, linetype, ctx.sprites)),
     });
     dotEdgeToLinkIdx.set(dotId, i);
 
@@ -553,14 +559,8 @@ function buildGeoNode(
     if (astNode.color !== undefined) geo.color = astNode.color;
     if (astNode.entityStyle !== undefined) geo.entityStyle = astNode.entityStyle;
     if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
-    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
     if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
-    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
-    if (astNode.entityStyle !== undefined) geo.entityStyle = astNode.entityStyle;
-    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
-    if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
-    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
-    if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
+    copyLeafType(astNode, geo);
     if (astNode.creationIndex !== undefined) geo.creationIndex = astNode.creationIndex;
     if (astNode.declaredAsGroup === true) geo.declaredAsGroup = true;
     // G1 I-hideshow: draw-time-only marker (see `DescriptionNodeGeo.hidden`'s
@@ -614,7 +614,7 @@ function buildGeoNode(
   if (astNode.naturalAlignment !== undefined) geo.naturalAlignment = astNode.naturalAlignment;
   if (astNode.entitySizing !== undefined) geo.entitySizing = astNode.entitySizing;
   if (astNode.creationIndex !== undefined) geo.creationIndex = astNode.creationIndex;
-  if (astNode.declaredAsGroup === true) geo.declaredAsGroup = true;
+  copyGroupFields(astNode, geo);
   // G1 I-hideshow: a hidden CONTAINER draws NOTHING at all (jar-verified,
   // Cluster.java:298-300's own early return -- not even its border/title,
   // component/mavuxi-16-jafi782's `a` cluster) -- its descendants are
