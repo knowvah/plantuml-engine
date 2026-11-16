@@ -35,6 +35,15 @@ post-D7 measurements.
 
 ---
 
+## usymbol-group-scale (ugs) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #149; per-task history on the local tag `usymbol-group-scale/pre-squash`)
+
+Under `scale`, `SvgGraphics#format` multiplies every emitted number by the document scale (`SvgGraphics.java:467-474`), so upstream's cluster, drawn in layout units through the scaled `UGraphic`, scales every literal inside `USymbol#asBig` as well. Ours drew the pre-scaled `NamespaceGeo` at scale 1, so every non-folder USymbol group left its literals unscaled (the node's 10 px corner, the rectangle's `2 + dimStereo` title offset, the database's 20 px cap). `renderNamespaceUSymbol` now unscales the geo and theme and draws with `SvgOption.scale`, as the #140 leaf does. The cluster header stereo (displayed stereotype and group legend) was a 3-dp string spliced unscaled on every draw path. It now keeps a deferred twin (`ClusterHeaderStereo.deferredBody`), which `placedClusterHeaderBody` formats once at the factor, on the USymbol and folder/rect paths. 37 authored probes in `tests/oracle/svg-conformance/usymbol-group-scale.authored.test.ts`: 34 at zero, 3 open on #196/#197. No verdict or diff count moved in any engine; d.ts byte-identical.
+
+Follow-ons:
+- **#196 (`queue:ready`)**: `package X <<Group>>`/`<<Partition>>` draws the folder tab, because `class-container.ts#USYMBOL_REGISTRY_TO_KEYWORD` maps neither name; upstream draws `USymbolFrame#asBig` (`CommandPackage.java:179-183`, `USymbols.java:81,87`). 84 diffs at every scale.
+- **#197 (`queue:ready`)**: `skinparam packageFontSize` sizes and draws a USymbol group's title. Upstream's title style is `{…, <usymbol>, composite, title}` with no `package_` (`ClusterHeader.java:152-160`). 101 diffs at every scale.
+- **#198 (`queue:ready`)**: the class ELK path ignores `scale` entirely; only svek resolves and applies the factor (`layout.ts:487-490`).
+
 ## usecase-title-style (uts) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #148; per-task history on the local tag `usecase-title-style/pre-squash`)
 
 A usecase is drawn by `EntityImageDescription` in the jar (`GeneralImageBuilder.java:169-175`; `EntityImageUseCase` is never constructed), so its border reads `styleTitle`, `{root, element, componentDiagram, usecase[, business], title}`, on the entity's own builder (`EntityImageDescription.java:142-153`, `Entity.java:755-767`). Ours modelled the dead class: no `title` in the signature, and the diagram's last builder. `description-entity-style.ts` now takes the usecase down the shared path, so `skinparam titleBorderColor`/`titleBorderThickness`/`titleBackgroundColor` and `<style> title { }` reach it, and a `<style>` declared after it does not (no skinparam). 12 authored probes in `tests/oracle/svg-conformance/usecase-title-style.authored.test.ts`: 11 at zero, 1 open on #195. No verdict or diff count moved in any engine; d.ts byte-identical.

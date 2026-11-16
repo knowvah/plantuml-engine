@@ -1,0 +1,6 @@
+@startuml
+scale 2
+package N <<Node>> {
+  object o1
+}
+@enduml

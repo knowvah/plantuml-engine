@@ -1,0 +1,6 @@
+@startuml
+scale 2
+package N <<Node>> #yellow/green {
+  class A
+}
+@enduml

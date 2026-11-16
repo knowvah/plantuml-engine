@@ -1,0 +1,9 @@
+@startuml
+scale 2
+rectangle R {
+  component C
+}
+node N {
+  component D
+}
+@enduml

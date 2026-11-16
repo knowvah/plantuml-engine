@@ -25,6 +25,9 @@
  * i.e. exactly ONE cluster child (`svek/Cluster.java:337-341,379-382`).
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { renderSync } from '../../../src/index.js';
 import { defaultTheme, deepMergeTheme } from '../../../src/core/theme.js';
@@ -42,6 +45,7 @@ import { namespaceTitleTableDims } from '../../../src/diagrams/class/class-names
 import { scaleClassTheme } from '../../../src/diagrams/class/class-scale-geo.js';
 
 const measurer = new DeterministicMeasurer();
+const UGS_FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/usymbol-group-scale');
 const scaledDefaultTheme = scaleClassTheme(defaultTheme, 1);
 
 const NODE_PAINT = {
@@ -297,5 +301,39 @@ describe('cluster border reaches the merged group style (cdd5-T5c)', () => {
     expect(svg).toMatch(
       /<path d="M8\.5,[^"]*" fill="none" stroke="#F00" stroke-width="1\.5"\/><line [^>]*stroke="#F00"/u,
     );
+  });
+});
+
+/**
+ * ugs T1b (#149): under `scale`, upstream draws the cluster in layout units through the scaled `UGraphic`, so every
+ * number `USymbol#asBig` emits -- its literals included -- is multiplied once at format time
+ * (`SvgGraphics.java:467-474`). Each source and expectation is a jar oracle under
+ * `tests/fixtures/usymbol-group-scale/`.
+ */
+describe('renderNamespaceUSymbol — a scaled group draws in layout units (ugs T1b, #149)', () => {
+  const clusterOf = (fixture: string, name: string): string => {
+    const svg = renderSync(readFileSync(join(UGS_FIXTURES, `${fixture}.puml`), 'utf8'), { measurer });
+    const start = svg.indexOf(`<!--cluster ${name}-->`);
+    return svg.slice(start, svg.indexOf('</g>', start));
+  };
+
+  it("scales USymbolRectangle#asBig's title offset `2 + dimStereo` (issue-149: y 39.778)", () => {
+    expect(clusterOf('issue-149', 'R')).toMatch(/<text [^>]*y="39\.778"[^>]*>R<\/text>/);
+  });
+
+  it("scales USymbolNode's 10 px corner (scale-node: points start 32,32,52,12)", () => {
+    expect(clusterOf('scale-node', 'G')).toContain('<polygon points="32,32,52,12,204,12,204,196,184,216,32,216,32,32"');
+  });
+
+  it('scales by a non-integer factor (scale-1p5-node: points start 24,24,39,9)', () => {
+    expect(clusterOf('scale-1p5-node', 'N')).toContain(
+      '<polygon points="24,24,39,9,153,9,153,147,138,162,24,162,24,24"',
+    );
+  });
+
+  it('scales the inline `#line.dashed:` stroke once (node-thick-dashed, Cluster.java:437-442)', () => {
+    const cluster = clusterOf('node-thick-dashed', 'N');
+    expect(cluster).toContain('<polygon points="32,52,52,32,204,32,204,216,184,236,32,236,32,52"');
+    expect(cluster).toContain('style="stroke:#00F;stroke-width:2;stroke-dasharray:14,14;');
   });
 });

@@ -19,7 +19,7 @@ import { shiftClassifierGeo } from './class-layout-shift.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { namespaceFolderTitle } from './class-namespace-title-table.js';
-import { buildClusterHeaderStereo } from './class-cluster-header.js';
+import { buildDrawnClusterHeaderStereo } from './class-cluster-header.js';
 import { stereotypeLabelFields, splitStereotypeStyleTags } from './class-stereotype.js';
 import { applyClassDocumentMargin, classDocumentMargin } from './layout-ink-extent.js';
 import { namespaceDrawnInk } from './class-namespace-title-ink.js';
@@ -300,7 +300,7 @@ export function buildNamespaceGeos(ast: ClassDiagramAST, inputs: NamespaceGeoInp
     const box = clusterFrontierBox(ns, graphvizBox, { ast, boxes, leaves, theme, measurer });
     boxes.set(ns.id, box);
     const geo = namespaceGeoFromBox(ns, box, theme, measurer, resolveNamespaceInkShape(theme, ns.usymbol));
-    const header = buildClusterHeaderStereo(ns, ast, theme, measurer); // cdd2-T19b: ClusterHeader#getStereo
+    const header = buildDrawnClusterHeaderStereo(ns, ast, theme, measurer); // cdd2-T19b: ClusterHeader#getStereo
     if (header !== undefined) geo.clusterHeaderStereo = header;
     Object.assign(geo, namespaceDrawnInk(geo, theme, measurer)); // cdd3-T31: E1-2/E2-8, E1-5
     namespaces.push(hiddenIds.has(ns.id) ? { ...geo, hidden: true } : geo);

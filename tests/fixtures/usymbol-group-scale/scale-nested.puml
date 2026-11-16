@@ -1,0 +1,9 @@
+@startuml
+scale 2
+package O <<Node>> {
+  package I <<Database>> {
+    class A
+  }
+  class B
+}
+@enduml

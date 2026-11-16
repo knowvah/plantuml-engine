@@ -1,0 +1,7 @@
+@startuml
+scale 2
+skinparam packageFontSize 20
+package N <<Node>> {
+  class A
+}
+@enduml

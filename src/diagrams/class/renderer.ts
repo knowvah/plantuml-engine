@@ -61,10 +61,11 @@ function renderNamespace(geo: NamespaceGeo, theme: ScaledTheme, measurer: String
       // The per-symbol tier (`elements[<usymbol>].border`) still outranks it
       // (`class-namespace-usymbol-shape.ts#resolveClusterUSymbolPaint`).
       borderColor: theme.colors.graph.packageBorder ?? theme.colors.border,
-      // cdd-B8FU: renderNamespaceUSymbol draws through renderDrawableToFragment
-      // at scale=1 (no SvgOption.scale threading, class-namespace-usymbol-
-      // shape.ts's own citation) -- this literal needs its own scaleK factor.
-      roundCorner: namespaceRoundCorner(geo, theme) * theme.scaleK,
+      // ugs T1b (#149): renderNamespaceUSymbol draws in layout units with
+      // `SvgOption.scale` (`SvgGraphics.java:467-474`, the leaf precedent
+      // `renderer-usymbol-entity.ts#renderClassUSymbolEntity`), so the corner
+      // goes in unscaled and is multiplied once on the way out.
+      roundCorner: namespaceRoundCorner(geo, theme),
       // cdd3-T21: a USymbol group's title style is `{..., <usymbol>,
       // composite, title}` (`ClusterHeader.java:150-153`) -- no `package_`,
       // so `packageFontColor` never reaches it (jar gigoru-88: `#000`).

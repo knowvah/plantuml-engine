@@ -1,0 +1,11 @@
+@startuml
+scale 2
+skinparam nodeBorderThickness 3
+skinparam roundCorner 10
+package N <<Node>> #line.dashed:blue {
+  class A
+}
+rectangle R <<Rectangle>> {
+  class B
+}
+@enduml
