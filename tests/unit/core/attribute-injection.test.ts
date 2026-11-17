@@ -477,11 +477,12 @@ describe('attribute injection probe matrix (audit-table.md, one probe per path)'
     expect(svg).toContain('<!--link A to x- -><script>evil()</script><!- - -->');
   });
 
-  it('object "x--><script>…<!--" (class renderer, wrapEntity) emits a defanged comment and liveMarkup is empty', () => {
+  it('object "x--><script>…<!--" (class renderer, wrapEntity) emits no comment and liveMarkup is empty', () => {
     const svg = expectSafe(`@startuml\nobject "${COMMENT_PAYLOAD}"\n@enduml`);
-    // `object` shares `class/renderer-group.ts#wrapEntity` with `class`, so
-    // it emits the same `<!--class …-->` tag (not `<!--object …-->`).
-    expect(svg).toContain('<!--class x- -><script>evil()</script><!- - -->');
+    // ccb T1b (2026-11-16): `object` shares `class/renderer-group.ts#wrapEntity` with `class`, but its upstream image,
+    // `EntityImageObject` (`GeneralImageBuilder.java:180-181`), writes no comment, so the payload reaches only the
+    // escaped group attributes.
+    expect(svg).not.toContain('<!--');
   });
 
   // `state/renderer-group.ts#wrapLink` also got `escapeComment` (D8), but

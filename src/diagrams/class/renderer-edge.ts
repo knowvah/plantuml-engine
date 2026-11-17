@@ -10,7 +10,7 @@ import {} from './renderer-note.js';
 import type {} from './note-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { ScaledTheme } from './class-scale-geo.js';
-import { fmt } from '../../core/svg-format.js';
+import { escapeComment, fmt } from '../../core/svg-format.js';
 import { scaleDashArrayString } from './class-scale-geo-row.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type {} from '../../core/dispatcher.js';
@@ -112,6 +112,22 @@ export function linkCommentOf(geo: EdgeGeo, syntheticNames: ReadonlyMap<string, 
   const { ent1, ent2, decorAtEnt1, decorAtEnt2 } = linkEnds(geo, syntheticNames);
   const word = looksLikeRevertedForSvg(decorAtEnt2, decorAtEnt1) ? 'reverse link' : 'link';
   return `${word} ${ent1} to ${ent2}`;
+}
+
+/**
+ * ccb D2: what a hidden link writes. `SvekResult#drawU` draws every edge, a hidden one through `UHidden`
+ * (`SvekResult.java:97-101`), and `SvekEdge#drawU` returns early only for `opale` and `link.isInvis()`
+ * (`SvekEdge.java:833-837`), so it writes `Link#commentForSvg` (`:844`; `AbstractUGraphic#draw` writes a `UComment`
+ * before its hidden check, `AbstractUGraphic.java:128-131`) and still takes its id from the shared set (`:944`,
+ * `uniq(ids, link.idCommentForSvg())`), so a later link between the same ends gets the `-1` suffix. Every shape is
+ * suppressed, and the empty group is dropped (`SvgGraphics.java:1190-1195`). A smetana edge returns before anything
+ * at `link.isHidden()` (`SmetanaEdge.java:108-109`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekEdge.java:830-944
+ */
+export function hiddenLinkMarkup(geo: EdgeGeo, ids: Set<string>, syntheticNames: ReadonlyMap<string, string>): string {
+  if (geo.smetana === true) return '';
+  linkIdForSvg(geo, ids, syntheticNames);
+  return '<!--' + escapeComment(linkCommentOf(geo, syntheticNames)) + '-->';
 }
 
 export function linkIdForSvg(geo: EdgeGeo, ids: Set<string>, syntheticNames: ReadonlyMap<string, string>): string {

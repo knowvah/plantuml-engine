@@ -1,0 +1,4 @@
+{
+  "_comment": "ccb (#151, D4): pins whose <!--...--> comment sequence still differs from the golden. Each count is commentMismatch (tests/oracle/svg-conformance/svg-comments.ts) and may never rise; an entry whose count reaches 0 must be removed. reason names the mechanism (decisions.md D1-D3) or a filed issue.",
+  "fixtures": []
+}

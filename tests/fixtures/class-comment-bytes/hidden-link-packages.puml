@@ -1,0 +1,9 @@
+@startuml
+package P {
+class A
+}
+package Q {
+class B
+}
+P -[hidden]- Q
+@enduml

@@ -21,7 +21,13 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import { renderUSymbolIcon } from '../../core/usymbol-shapes.js';
 import { renderEmptyPackageLeaf } from './renderer-empty-package-leaf.js';
-import { wrapEntity, leafPortion, renderGroupInheritanceNeighborhood } from './renderer-group.js';
+import {
+  entityImageCommentKind,
+  entityCommentName,
+  hiddenEntityMarkup,
+  wrapEntity,
+  renderGroupInheritanceNeighborhood,
+} from './renderer-group.js';
 import { renderAssocPoint, renderAssociationLeaf, renderLollipop } from './renderer-assoc-lollipop.js';
 import { renderClassifierBox } from './renderer-classifier-box.js';
 import { renderClassUSymbolEntity, usesClassUSymbolEntity } from './renderer-usymbol-entity.js';
@@ -75,7 +81,7 @@ export interface ClassLeafSink {
 function renderLollipopLeaf(classifier: ClassifierGeo, ctx: ClassLeafRenderContext, sink: ClassLeafSink): void {
   const lollipopUid = ctx.uidPlan.classifierUid.get(classifier.id) ?? '';
   const { circle, label } = renderLollipop(classifier, ctx.theme);
-  sink.children.push(wrapEntity(leafPortion(classifier.id), lollipopUid, classifier.id, false, circle));
+  sink.children.push(wrapEntity(entityCommentName(classifier, 'class'), lollipopUid, classifier.id, false, circle));
   if (label !== '') sink.children.push(label);
 }
 
@@ -105,7 +111,10 @@ function tryRenderEntityFragment(classifier: ClassifierGeo, ctx: ClassLeafRender
 /** One classifier leaf, `renderClass`'s classifier branch. */
 function renderClassifierLeaf(classifier: ClassifierGeo, ctx: ClassLeafRenderContext, sink: ClassLeafSink): void {
   const theme = ctx.theme;
-  if (classifier.hidden === true) return;
+  if (classifier.hidden === true) {
+    sink.children.push(hiddenEntityMarkup(classifier)); // ccb D2
+    return;
+  }
   if (classifier.stateLeaf !== undefined && stateLeafDrawsNoGroup(classifier.stateLeaf)) {
     sink.children.push(renderStateLeaf(classifier, classifier.stateLeaf, theme));
     return;
@@ -137,8 +146,17 @@ function renderClassifierLeaf(classifier: ClassifierGeo, ctx: ClassLeafRenderCon
   }
   if (tryRenderEntityFragment(classifier, ctx, sink)) return;
   const uid = ctx.uidPlan.classifierUid.get(classifier.id) ?? '';
+  // ccb D1: only an `EntityImageClass` leaf comments here (`GeneralImageBuilder.java:107-242`); an object, map, json or
+  // state leaf draws the same wrapped body with no comment.
+  const withComment = entityImageCommentKind(classifier) === 'class';
   sink.children.push(
-    wrapEntity(leafPortion(classifier.id), uid, classifier.id, true, renderClassifier(classifier, theme)),
+    wrapEntity(
+      entityCommentName(classifier, 'class'),
+      uid,
+      classifier.id,
+      withComment,
+      renderClassifier(classifier, theme),
+    ),
   );
   // cdd-T16 (M7/E11, flagged write-set extension, SvekResult.java:82-89):
   sink.children.push(...renderGroupInheritanceNeighborhood(classifier, ctx.edges, theme));

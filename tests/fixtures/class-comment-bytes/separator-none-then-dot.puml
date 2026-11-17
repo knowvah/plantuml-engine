@@ -1,0 +1,7 @@
+@startuml
+set namespaceSeparator none
+class p.Q
+set namespaceSeparator .
+class r.S
+Q --> S
+@enduml

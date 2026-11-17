@@ -40,6 +40,7 @@
 import { group, linkWrap } from '../../core/svg.js';
 import type { UrlInfo } from './class-url.js';
 import { escapeComment } from '../../core/svg-format.js';
+import { isClassEntityPort } from './renderer-entity-port.js';
 import { getLinkTypeName, looksLikeRevertedForSvg } from '../../core/svek/extremity/link-decor.js';
 import type { LinkDecorName } from '../../core/svek/extremity/link-decor.js';
 import type { Point2D } from '../../core/klimt/UTranslate.js';
@@ -61,17 +62,90 @@ import type { Theme } from '../../core/theme.js';
 import { noGradient } from '../../core/paint.js';
 
 /** Leaf (unqualified) portion of a dotted `Classifier.id`/`Relationship
- *  .from`/`.to` — the jar entity comment (`<!--class NAME-->`) and link
- *  comment (`<!--link X to Y-->`) both use the bare declared/alias name,
- *  never the namespace-qualified id (verified: `besepi-37-rori892`'s
- *  aliased, unnamespaced classifiers; `bajotu-30-soku184`'s namespaced
- *  `p1.cl1` comments as `<!--class cl1-->`). A fixed `.` split (not the
- *  diagram's real, possibly-customized `set separator`) — the comment
- *  text does not affect conformance (see module doc comment), so this is
- *  a documented best-effort approximation, not a precision requirement. */
+ *  .from`/`.to`: a fixed `.` split, not the diagram's real separator. ccb
+ *  D3: no entity comment reads it any more -- those print the quark name
+ *  stamped at creation (`Classifier.quarkName`, {@link entityCommentName}).
+ *  Still the fallback for a hand-built geo with no quark name, for a link
+ *  end with no `idEntity1`/`idEntity2` (`renderer-edge.ts#linkEnds`), a
+ *  port's name (`renderer-entity-port.ts`), a note connector's host
+ *  (`renderer-note-connector.ts`) and the association diamond's uncommented
+ *  wrap (`renderer-assoc-lollipop.ts`). */
 export function leafPortion(id: string): string {
   const idx = id.lastIndexOf('.');
   return idx === -1 ? id : id.slice(idx + 1);
+}
+
+/** Every `LeafType#isLikeClass` kind (`abel/LeafType.java:85-91`): `GeneralImageBuilder` draws it as `EntityImageClass`. */
+const LIKE_CLASS_KINDS: ReadonlySet<ClassifierGeo['kind']> = new Set<ClassifierGeo['kind']>([
+  'class',
+  'abstract',
+  'interface',
+  'enum',
+  'annotation',
+  'entity',
+  'protocol',
+  'struct',
+  'exception',
+  'metaclass',
+  'stereotype',
+  'dataclass',
+  'record',
+]);
+
+/** USymbol leaves `GeneralImageBuilder` draws as `EntityImageDescription` (`CIRCLE`, `DESCRIPTION`, `USECASE`). */
+const DESCRIPTION_KINDS: ReadonlySet<ClassifierGeo['kind']> = new Set<ClassifierGeo['kind']>([
+  'circle',
+  'descriptive',
+  'usecase',
+]);
+
+/**
+ * ccb D1: the comment the upstream entity image of a leaf writes. `GeneralImageBuilder#createEntityImageBlockInternal`
+ * picks the image per leaf type, and only two images write a `UComment`: `EntityImageClass#drawU` (`"class " +
+ * getName()`, `EntityImageClass.java:142`) for every `isLikeClass` leaf (`GeneralImageBuilder.java:110-116`), and
+ * `EntityImageDescription#drawU` (`"entity " + …`, `EntityImageDescription.java:295`) for `CIRCLE`, `DESCRIPTION` and
+ * `USECASE` (`:154-174`). A port is `EntityImagePort` (`:122-127`), checked before them. `OBJECT`, `MAP`, `JSON`
+ * (`:180-187`), `STATE` (`:131-145`), the lollipop (`:151-152`), the association point (`:195-196`), the association
+ * (`:205-206`) and a USymbol-less `EMPTY_PACKAGE` (`:201-204`) draw images that write none.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/GeneralImageBuilder.java:107-242
+ */
+export function entityImageCommentKind(
+  classifier: Pick<ClassifierGeo, 'kind' | 'usymbol' | 'folderTab'>,
+): 'class' | 'entity' | undefined {
+  if (classifier.folderTab !== undefined) return undefined;
+  if (LIKE_CLASS_KINDS.has(classifier.kind)) return 'class';
+  if (!DESCRIPTION_KINDS.has(classifier.kind) || isClassEntityPort(classifier)) return undefined;
+  return 'entity';
+}
+
+/**
+ * ccb D3: the name an entity comment prints, `Entity#getName()` (`EntityImageClass.java:142`,
+ * `EntityImageDescription.java:295`, `abel/Entity.java:686-688`): the quark name stamped at creation. A hand-built geo
+ * without one falls back to the id the visible draws read before ccb.
+ */
+export function entityCommentName(
+  classifier: Pick<ClassifierGeo, 'id' | 'quarkName'>,
+  kind: 'class' | 'entity',
+): string {
+  if (classifier.quarkName !== undefined) return classifier.quarkName;
+  return kind === 'class' ? leafPortion(classifier.id) : classifier.id;
+}
+
+/**
+ * ccb D2: what a hidden leaf writes. `SvekResult#drawU` draws every node, a hidden one through `UHidden`
+ * (`SvekResult.java:82-90`); `AbstractUGraphic#draw` writes a `UComment` before it checks the hidden flag
+ * (`AbstractUGraphic.java:128-131`, the check at `:141`), every shape is suppressed, and the empty group is dropped
+ * (`SvgGraphics.java:1190-1195`). So a hidden leaf leaves exactly the comment its image writes
+ * ({@link entityImageCommentKind}), or nothing.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekResult.java:82-90
+ */
+export function hiddenEntityMarkup(
+  classifier: Pick<ClassifierGeo, 'id' | 'kind' | 'usymbol' | 'folderTab' | 'quarkName'>,
+): string {
+  const kind = entityImageCommentKind(classifier);
+  if (kind === undefined) return '';
+  // `EntityImageClass.java:142` and `EntityImageDescription.java:295`; the names are the ones the visible draws write.
+  return '<!--' + kind + ' ' + escapeComment(entityCommentName(classifier, kind)) + '-->';
 }
 
 /** Wraps a classifier or note's rendered body in the jar's `<g

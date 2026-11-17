@@ -40,7 +40,9 @@ describe('addNote target qualification', () => {
   it('qualifies a bare target against the active namespace -- cejegu-93-kobo234', () => {
     const ast = makeAst({
       namespaces: [{ id: 'pragma', display: 'pragma', classifiers: ['pragma.PragmaStringMultiTest'] }],
-      classifiers: [makeClassifier('pragma.PragmaStringMultiTest', 'class', undefined, 'pragma')],
+      classifiers: [
+        makeClassifier('pragma.PragmaStringMultiTest', 'class', undefined, 'pragma', 'PragmaStringMultiTest'),
+      ],
     });
     addNote(ast, 'left', 'PragmaStringMultiTest', 'text', {
       namespace: 'pragma',
@@ -56,14 +58,17 @@ describe('addNote target qualification', () => {
         { id: 'p1', display: 'p1', classifiers: ['p1.A'] },
         { id: 'p2', display: 'p2', classifiers: ['p2.B'] },
       ],
-      classifiers: [makeClassifier('p1.A', 'class', undefined, 'p1'), makeClassifier('p2.B', 'class', undefined, 'p2')],
+      classifiers: [
+        makeClassifier('p1.A', 'class', undefined, 'p1', 'A'),
+        makeClassifier('p2.B', 'class', undefined, 'p2', 'B'),
+      ],
     });
     addNote(ast, 'left', 'A', 'note', { namespace: 'p1', implicitTarget: false, sep: '.' });
     expect(ast.notes[0]!.target).toBe('p1.A');
   });
 
   it('leaves a root-level target unqualified when there is no active namespace', () => {
-    const ast = makeAst({ classifiers: [makeClassifier('Foo', 'class', undefined, null)] });
+    const ast = makeAst({ classifiers: [makeClassifier('Foo', 'class', undefined, null, 'Foo')] });
     addNote(ast, 'left', 'Foo', 'text', { namespace: null, implicitTarget: false, sep: '.' });
     expect(ast.notes[0]!.target).toBe('Foo');
   });
@@ -71,7 +76,7 @@ describe('addNote target qualification', () => {
   it('preserves a `Class::member` tip target suffix while qualifying the host -- CommandFactoryTipOnEntity', () => {
     const ast = makeAst({
       namespaces: [{ id: 'p1', display: 'p1', classifiers: ['p1.A'] }],
-      classifiers: [makeClassifier('p1.A', 'class', undefined, 'p1')],
+      classifiers: [makeClassifier('p1.A', 'class', undefined, 'p1', 'A')],
     });
     addNote(ast, 'left', 'A::field', 'text', { namespace: 'p1', implicitTarget: false, sep: '.' });
     expect(ast.notes[0]!.target).toBe('p1.A');
@@ -89,7 +94,7 @@ describe('finalizePendingNote threads sep through to the attached branch', () =>
   it('qualifies an attached multi-line note target -- muvici-42-dumo371/tenule-05-fovi294 shape', () => {
     const ast = makeAst({
       namespaces: [{ id: 'ns', display: 'ns', classifiers: ['ns.X'] }],
-      classifiers: [makeClassifier('ns.X', 'class', undefined, 'ns')],
+      classifiers: [makeClassifier('ns.X', 'class', undefined, 'ns', 'X')],
     });
     const pending: PendingNote = {
       kind: 'attached',

@@ -37,6 +37,7 @@ import { compareSvg } from './compare.js';
 import { censusClassFixtureOptions } from '../../../scripts/svg-conformance-census.js';
 import { isElkRow } from './description-eligibility.js';
 import { prepareElkOnce, renderClassFixture } from './render-fixture-class.js';
+import { assertCommentBytes, readCommentOpen } from './comment-bytes-gate.js';
 
 interface RatchetFixture {
   slug: string;
@@ -61,6 +62,9 @@ interface ParityReport {
 const GOLDENS_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../oracle/goldens/svg-object');
 
 const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'utf8')) as RatchetManifest;
+
+// ccb (#151, D4): as `class.golden.ratchet.test.ts`, each pin also holds its comment bytes.
+const commentOpen = readCommentOpen(join(GOLDENS_ROOT, 'comment-open.json'), 'object');
 
 // Source of DOT-EQUAL truth for eligibility (AC3) — object-scoped, mirrors
 // class's own `parity-class.json` (see `render-fixture-class.ts`'s doc
@@ -117,6 +121,7 @@ describe.skipIf(manifest.fixtures.length === 0)('svg-object conformance ratchet 
           ` — ${JSON.stringify(diffs[0])}`,
       ).toBe(true);
       expect(diffs).toEqual([]);
+      assertCommentBytes(`object/${f.slug}`, ours, golden, commentOpen.get(`object/${f.slug}`));
     });
   }
 });
@@ -126,6 +131,13 @@ if (manifest.fixtures.length === 0) {
     expect(manifest.fixtures).toHaveLength(0);
   });
 }
+
+describe('svg-object conformance ratchet — comment open list (ccb D4)', () => {
+  it('every comment-open.json entry is a pinned fixture, listed once', () => {
+    const pinned = new Set(manifest.fixtures.map((f) => `object/${f.slug}`));
+    expect([...commentOpen.keys()].filter((k) => !pinned.has(k))).toEqual([]);
+  });
+});
 
 // ---------------------------------------------------------------------------
 // AC2 — tamper detection: an in-memory golden mutation must be caught, and

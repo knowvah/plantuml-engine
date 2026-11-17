@@ -82,7 +82,7 @@ function renderNamespace(geo: NamespaceGeo, theme: ScaledTheme, measurer: String
 // Edge
 // ---------------------------------------------------------------------------
 
-import { linkCommentOf, renderEdge } from './renderer-edge.js';
+import { hiddenLinkMarkup, linkCommentOf, renderEdge } from './renderer-edge.js';
 import { renderNoteConnectorLink } from './renderer-note-connector.js';
 import { interleaveNoteLinks, relIndexOfDotEdgeId } from './class-link-order.js';
 
@@ -182,7 +182,8 @@ export function renderClass(geo: ClassGeometry, rawTheme: Theme): RenderFragment
     // cdd-T12 (A2b E4): `ns.url` opens an `<a>` INSIDE the cluster group and
     // before the decoration (`svek/Cluster.java:337-341`, closed at
     // `:379-382`) -- see `renderer-group.ts#wrapCluster`.
-    children.push(wrapCluster(ns.label, uid, ns.id, renderNamespace(ns, theme, geo.measurer), ns.url));
+    // ccb D3: `Cluster#drawU` comments `group.getName()` (`svek/Cluster.java:309-311`), the quark name, not the label.
+    children.push(wrapCluster(ns.quarkName ?? ns.label, uid, ns.id, renderNamespace(ns, theme, geo.measurer), ns.url));
   }
 
   // G2 N7: a `hide <entity|$tag|...>` match (`layout.ts#buildClassifierGeos`'s
@@ -243,8 +244,13 @@ export function renderClass(geo: ClassGeometry, rawTheme: Theme): RenderFragment
     // comment for why this edge stays IN `geo.edges` (uid numbering) but
     // must never draw its own `<g class="link">`.
     if (edge.consumedByOpaleNote === true) return;
-    if (hiddenClassifierIds.has(edge.from) || hiddenClassifierIds.has(edge.to)) return;
-    if (edge.hidden === true) return; // cdd-T7 A2a/M12: `-[hidden]-` (SvekEdge.java:835-836)
+    // ccb D2: `Link#isHidden` is `hidden || cl1.isHidden() || cl2.isHidden()` (`abel/Link.java:458-459`); `-[hidden]-`
+    // sets `hidden` (`WithLinkType#goHidden`, `WithLinkType.java:149-150`). Such a link draws under `UHidden`
+    // (`SvekResult.java:97-101`): its comment and its id, nothing else -- see `hiddenLinkMarkup`.
+    if (edge.hidden === true || hiddenClassifierIds.has(edge.from) || hiddenClassifierIds.has(edge.to)) {
+      children.push(hiddenLinkMarkup(edge, linkIds, syntheticNames));
+      return;
+    }
     const rendered = renderEdge(edge, theme, { ids: linkIds, syntheticNames, measurer: geo.measurer, contactRects });
     extraDefs += rendered.extraDefs;
     children.push(

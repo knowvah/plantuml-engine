@@ -13,7 +13,7 @@
 
 import { countStyleBlocksBefore } from '../../core/style-generation.js';
 import type { Classifier, ClassifierKind } from './ast.js';
-import { makeClassifier, registerInNamespace, resolveReference } from './class-namespace.js';
+import { makeClassifier, quarkNameOf, registerInNamespace, resolveReference } from './class-namespace.js';
 import { eventuallyBuildPhantomGroups, isLikeClass } from './class-namespace-resolve.js';
 import { stripQuotes } from './class-relationship-parser.js';
 import type { ParseState } from './class-parse-state.js';
@@ -73,7 +73,13 @@ function isUnregisteredQuark(state: ParseState, ref: ClassifierRef): boolean {
 export function registerPendingLeaf(state: ParseState, ref: ClassifierRef): Classifier | undefined {
   if (!isUnregisteredQuark(state, ref)) return undefined;
   registerInNamespace(state.ast.namespaces, ref.nsId, ref.id);
-  return makeClassifier(ref.id, 'class', ref.display, ref.nsId);
+  return makeClassifier(
+    ref.id,
+    'class',
+    ref.display,
+    ref.nsId,
+    quarkNameOf(ref.id, ref.nsId, state.namespaceSeparator),
+  );
 }
 
 /**
@@ -94,7 +100,7 @@ export function materializeClassifier(
   }
   const groupAlias = existingGroupAlias(state, id, kind, disp, nsId);
   if (groupAlias !== undefined) return groupAlias;
-  const classifier = makeClassifier(id, kind, disp, nsId);
+  const classifier = makeClassifier(id, kind, disp, nsId, quarkNameOf(id, nsId, state.namespaceSeparator)); // ccb D3
   // G2 N2 (mechanism 3): this is the single classifier-creation chokepoint
   // (declarations AND relationship-endpoint auto-create both funnel
   // through here — see this function's own doc comment) — see
@@ -180,5 +186,5 @@ function existingGroupAlias(
 ): Classifier | undefined {
   const group = state.ast.namespaces.find((n) => n.id === id && n.creationIndex !== undefined);
   if (group === undefined) return undefined;
-  return makeClassifier(id, kind, display, nsId);
+  return makeClassifier(id, kind, display, nsId, quarkNameOf(id, nsId, state.namespaceSeparator));
 }

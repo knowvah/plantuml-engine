@@ -114,6 +114,12 @@ export type {
 export interface Namespace {
   id: string;
   display: string;
+  /**
+   * ccb D3: the group quark's own name (`Quark#getName`, `plasma/Quark.java:84-86`), stamped where the group is made
+   * (`class-namespace-resolve.ts#ensureNamespaceChain`, `class-container.ts#openNamespaceBlock`). `Cluster#drawU`'s
+   * comment prints it (`svek/Cluster.java:309-311`), and so does the leaf a collapsed group mutes to.
+   */
+  quarkName?: string;
   /** `Cluster.java:321` off the merged style (`class-cluster-corner.ts`); absent with no builder. */
   roundCorner?: number;
   /** `EntityImageEmptyPackage.java:104`, for a namespace that collapses to a leaf. */

@@ -154,7 +154,8 @@ export function openNamespaceBlock(state: ParseState, id: string, display: strin
     }
     // cdd5-T4e: nest under the current group when `sep === null` too (CucaDiagram.java:252-256).
     const parentId = enclosing !== null ? { parentId: enclosing } : {};
-    ns.push({ id: effectiveId, display, classifiers: [], creationIndex, ...parentId });
+    // ccb D3: the quark `quarkInContextSafe` makes for an unsplit name is `child(id)` of the current group.
+    ns.push({ id: effectiveId, display, quarkName: id, classifiers: [], creationIndex, ...parentId });
   }
   // #lizard forgives -- pre-existing 32 NLOC / 7 CCN (unchanged by A2s F-G;
   // the branch structure ports CucaDiagram#quarkInContextSafe + G2 N8's

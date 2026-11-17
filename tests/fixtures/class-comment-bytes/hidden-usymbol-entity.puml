@@ -1,0 +1,7 @@
+@startuml
+allow_mixing
+class A
+component C
+A --> C
+hide C
+@enduml

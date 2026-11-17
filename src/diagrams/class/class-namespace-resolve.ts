@@ -149,7 +149,7 @@ export function ensureNamespaceChain(
   for (const seg of segments) {
     acc = acc === '' ? seg : acc + sep + seg;
     if (namespaces.find((n) => n.id === acc) === undefined) {
-      const ns: Namespace = { id: acc, display: seg, classifiers: [] };
+      const ns: Namespace = { id: acc, display: seg, quarkName: seg, classifiers: [] }; // ccb D3: `Quark#child`'s segment
       if (parent !== undefined) ns.parentId = parent;
       namespaces.push(ns);
     }

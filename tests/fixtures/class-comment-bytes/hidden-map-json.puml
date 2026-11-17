@@ -1,0 +1,13 @@
+@startuml
+map M {
+  k => v
+}
+json J {
+  "a": 1
+}
+class C
+C --> M
+C --> J
+hide M
+hide J
+@enduml

@@ -133,6 +133,7 @@ export function buildClassifierGeos(
       ...(classifier.color !== undefined ? { color: classifier.color } : {}),
       ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
       ...(classifier.syntheticIdName !== undefined ? { syntheticIdName: classifier.syntheticIdName } : {}),
+      ...(classifier.quarkName !== undefined ? { quarkName: classifier.quarkName } : {}),
       ...(classifier.phantomSlot === true ? { phantomSlot: true as const } : {}),
       ...(classifier.noUidSlot === true ? { noUidSlot: true as const } : {}),
       ...assocCircleBookkeepingFields(classifier),
@@ -243,6 +244,7 @@ function namespaceGeoFromBox(
     width: box.width,
     height: box.height,
     label: ns.display,
+    ...(ns.quarkName !== undefined ? { quarkName: ns.quarkName } : {}),
     // cdd6-T3d: over `ClusterHeader#getTitle()` (icon + text, java:130-138).
     ...namespaceFolderTitle(ns, theme, measurer),
     ...(ns.creationIndex !== undefined ? { creationIndex: ns.creationIndex } : {}),

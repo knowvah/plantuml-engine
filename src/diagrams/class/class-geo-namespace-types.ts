@@ -25,6 +25,8 @@ export interface NamespaceGeo {
   width: number;
   height: number;
   label: string;
+  /** ccb D3: copied unchanged from `Namespace.quarkName` -- the name `Cluster#drawU`'s comment prints. */
+  quarkName?: string;
   /** G2 N17: the folder-tab's own title-tab width/height, pre-computed at
    *  layout time (`class-namespace-shape.ts#getWTitle`/`getHTitle`) -- the
    *  render phase stays a pure `geometry -> SVG string` function with no

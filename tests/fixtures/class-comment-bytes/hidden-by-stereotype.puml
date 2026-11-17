@@ -1,0 +1,6 @@
+@startuml
+class A <<s>>
+class B
+A --> B
+hide <<s>>
+@enduml

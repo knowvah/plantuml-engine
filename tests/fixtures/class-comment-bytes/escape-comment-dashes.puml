@@ -1,0 +1,5 @@
+@startuml
+class "a--b" as X
+class "c--d"
+X --> "c--d"
+@enduml
