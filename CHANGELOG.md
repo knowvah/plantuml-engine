@@ -344,3 +344,13 @@ already proven zero-diff and gates `npm test`.
   stronger (exact, gating) check for the description/component/usecase
   types it covers. Other diagram types' advisory raster coverage
   (`visual:classify`/`capture`/`build`/`upload`) is retained, unaffected.
+- `businessActorFill` and `businessUsecaseFill` from the public
+  `ThemeGraphColors` type (`Theme['colors']['graph']`) and from every
+  built-in theme, by maintainer ruling on #156 (option 1). Nothing read
+  them, and upstream has no such field: a business actor or use case fills
+  from its own style signature's `BackGroundColor`
+  (`EntityImageDescription.java:143-152,164-166`). A caller passing a full
+  `colors.graph` literal that names either field now gets an
+  excess-property error; drop the member. `<style> actor { business {
+  BackGroundColor … } }` and `usecase { business { … } }` still apply,
+  through the element style buckets.

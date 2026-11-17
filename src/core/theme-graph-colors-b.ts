@@ -383,12 +383,6 @@ export interface ThemeGraphColorsB {
   // BackgroundColor (#f1f1f1). Current renderer uses theme.colors.background
   // (#FFFFFF in default theme). Divergence preserved intentionally.
   usecaseFill: string;
-  // Same divergence note as actorFill; business variant of stickman actor
-  // (USymbolActorBusiness.java / ActorStickMan with isBusiness=true).
-  businessActorFill: string;
-  // Same divergence note as usecaseFill; business variant of usecase ellipse
-  // (USymbolUsecase.java with isBusiness=true).
-  businessUsecaseFill: string;
   activity?: {
     background?: Paint; // ActivityBackgroundColor — action box fill (add2 T3h: Paint, gradients)
     border?: string; // ActivityBorderColor — action box stroke

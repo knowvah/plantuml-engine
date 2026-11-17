@@ -198,9 +198,9 @@ export function buildEntityParams(
         stylePaint(entityStyle?.title, 'LineColor') ??
         resolveElementPaint(theme, node.symbol, 'border', styleLabels),
       // dss T3a: a business actor/use case reads its own signature's `BackGroundColor` like every other symbol
-      // (`EntityImageDescription.java:162-166`, `{..., actor, business, title}`); `style-element-scope.ts` writes it to
-      // the `actor-business`/`usecase-business` buckets. The `businessActorFill`/`businessUsecaseFill` defaults it
-      // replaces (`none`, `#FFFFFF`) are not the jar's: `actor/`, `usecase/` draw `#F1F1F1` (jar: `unknown/xisora-84-faca166`).
+      // (`EntityImageDescription.java:143-152,164-166`, `{..., actor, business, title}`); `style-element-scope.ts`
+      // writes it to the `actor-business`/`usecase-business` buckets. The jar has no separate business fill: `actor/`,
+      // `usecase/` draw `#F1F1F1` (jar: `unknown/xisora-84-faca166`).
       backcolor:
         override.back ??
         stylePaint(entityStyle?.title, 'BackGroundColor') ??

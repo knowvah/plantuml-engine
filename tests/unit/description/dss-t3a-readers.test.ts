@@ -72,7 +72,7 @@ describe('gradient FontColor (HColorGradient.java:103-105)', () => {
 });
 
 describe('business symbol fill (EntityImageDescription.java:162-166)', () => {
-  it('reads the business signature BackGroundColor, not the businessActorFill default', () => {
+  it('reads the business signature BackGroundColor', () => {
     // component__probe-business: jar ellipses #AAA, #AAA, #CCC, #CCC (`actor`/`usecase` backgrounds reach `business`).
     const fills = [...renderRow('component__probe-business').matchAll(/<ellipse [^>]*>/g)].map(
       ([tag]) => attrsOf(tag).fill,

@@ -35,6 +35,10 @@ post-D7 measurements.
 
 ---
 
+## unread-theme-fields (utf) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #156; per-task history on the local tag `unread-theme-fields/pre-squash`)
+
+`businessActorFill` and `businessUsecaseFill` are gone from `ThemeGraphColors`, from every built-in theme and from `SIMPLE_SELECTOR_MAPPINGS` (`actor.business`, `usecase.business`), by maintainer ruling on #156 (option 1). Nothing read them: a business actor or use case fills from its own signature's `BackGroundColor` (`EntityImageDescription.java:143-152,164-166`), read since dss T3a through the `actor-business`/`usecase-business` buckets. Absence pins cover the four built-in themes and `computeSimpleSelectorOverrides`. `dist/plantuml-engine.d.ts` lost exactly the two members; `CHANGELOG.md` names it under Removed. 0 verdict movers in every engine against `1689e015e`; every `parity-*.json` moved only `generatedAt`. No issue filed, no follow-on.
+
 ## version-builtin (vb) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #155; per-task history on the local tag `version-builtin/pre-squash`)
 
 `%version()` now returns this port's version (`versionString()`, `0.2.0`) by maintainer ruling on #155 (option c), where upstream returns `Version.versionString()` (`GetVersion.java:63-66` → `Version.java:47-49`) and the dev-build oracle prints `$version$`. The change is one line in `createDefaultTimEnvironment()` (`TimEnvironment.ts`); `GetVersion` keeps its environment seam (D1). No `0.0.999` fallback was added, because no reachable path yields an unknown version (D2). Two corpus rows moved, and both are signed in `oracle/accepted-divergences.json`: `svg-activity/rekefe-90-baju604` (diverged, the 5 legend-line attributes, maxDelta 2.65 → 16.95) and `svg-c4/kipive-74-lele070` (was conformant as a pair of error pages; the jar refuses `$version$` but accepts `0.2.0`, so now we draw where the dev-build oracle errors; accepted on #206, 2026-11-17). Its refusal and routing baselines were re-pinned. `DIVERGENCES.md` gained "`%version()` prints this port's version". d.ts byte-identical. Follow-on: **#205**, where `2.13.0` then `0.2.0` draws a class diagram and the jar falls through to description (pre-existing, found while measuring kipive-74).
@@ -299,7 +303,7 @@ dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagra
 
 ### Follow-ons (mechanism, owner)
 
-1. **Ruling #156** — drop the unread `businessActorFill`/`businessUsecaseFill` public `Theme` fields (a d.ts change), or keep them.
+1. ~~**Ruling #156** — drop the unread `businessActorFill`/`businessUsecaseFill` public `Theme` fields (a d.ts change), or keep them.~~ — **done by utf (2026-11-17, `unread-theme-fields/pre-squash`, #156)**
 2. **State arrow tag tier `HeadColor`** — `withStateArrowHead` reads the untagged merged arrow style; `arrow { .tag { HeadColor } }` (`withTOBECHANGED(stereotype)`, `SvekEdge.java:816-821`) is not read. No row.
 3. **Captured spot glyph 0.001 off** — the class `C` spot path differs from the jar at two coordinates and a trailing space, within `compareSvg` normalization (`.agent-notes/scr-T2a.md`). No row measures it.
 

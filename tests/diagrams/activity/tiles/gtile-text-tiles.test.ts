@@ -40,8 +40,6 @@ const stubTheme: Theme = {
       edgeLabel: '#000',
       actorFill: 'none',
       usecaseFill: '#fff',
-      businessActorFill: 'none',
-      businessUsecaseFill: '#fff',
     },
   },
   sequence: {
