@@ -429,16 +429,18 @@ export class SvekEdge implements UDrawable {
     placed.drawable.drawU(backed);
   }
 
-  /** `SvekEdge.java:956-980`: the text block at the placed table's corner. */
+  /** `SvekEdge.java:956-980`: the text block at the placed table's corner. Built with the label's `skinParam`
+   *  (`:328-340`), so it takes the label's atom resolver (eea D2). */
   private drawEndText(ug: UGraphic, end: SvekEdgeEndText | undefined): void {
     if (end === undefined) return;
+    const resolver = this.input.resolveAtomImage?.(end.font);
     const textBlock = (lines: readonly string[]): TextBlock =>
-      buildTextBlock(lines.join('\n'), end.font, HorizontalAlignment.CENTER);
+      buildTextBlock(lines.join('\n'), end.font, HorizontalAlignment.CENTER, resolver);
     // ele T2a: a `{{` line in a quantifier is an embed stripe, as `quantifier-block.ts` measures it.
     const block =
       end.block ??
       edgeLabelSheetBlock(end.text.split('\n'), textBlock, HorizontalAlignment.CENTER) ??
-      buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER);
+      buildTextBlock(end.text, end.font, HorizontalAlignment.CENTER, resolver);
     block.drawU(ug.apply(new UTranslate(end.x, end.y)));
   }
 

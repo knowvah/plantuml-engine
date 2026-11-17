@@ -31,6 +31,8 @@ import type { UTranslate } from '../../core/klimt/UTranslate.js';
 import { PositionableImpl } from '../../core/klimt/geom/PositionableImpl.js';
 import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
+import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
+import type { AtomImageResolver } from '../../core/creole-atoms.js';
 import { manageCollision } from '../../core/svek/quantifier-collision.js';
 import { styleFont } from './description-entity-style.js';
 import type { EdgeEndText } from './layout-helpers-types.js';
@@ -64,6 +66,8 @@ export interface EdgeMapping {
     readonly nodes: DotLayoutResult['nodes'];
     readonly measurer: StringMeasurer;
     readonly defaultFont: FontSpec;
+    /** eea D2: the label sizer's atom resolver, as `link-edge-attrs.ts#applyQualifierLabels` sizes the table. */
+    readonly atomImageResolverFor?: (font: FontConfiguration) => AtomImageResolver;
   };
 }
 
@@ -155,7 +159,7 @@ function quantifierAt(
 ): EdgeEndText {
   const q = m.quantifiers!;
   const font = styleFont(link.cardinalityStyle) ?? q.defaultFont;
-  const box = measureQuantifierBlock(text, font, q.measurer);
+  const box = measureQuantifierBlock(text, font, q.measurer, q.atomImageResolverFor);
   const placed = manageCollision(
     new PositionableImpl(
       center.x - box.reservedWidth / 2,

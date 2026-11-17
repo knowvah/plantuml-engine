@@ -36,7 +36,8 @@ import type { CreoleAtom, CreoleAtomUrl } from '../../klimt/creole/atom/Atom.js'
 import { urlCapable } from '../../annotations/blocks-creole-atoms.js';
 import { manageGuillemet, type GuillemetPair } from '../../text/Guillemet.js';
 import { renderLatexAsImage } from '../../latex.js';
-import { emojiBoxDim, emojiRenderRun } from '../../klimt/creole/atom/AtomEmoji.js';
+import { emojiBoxDim } from '../../klimt/creole/atom/AtomEmoji.js';
+import { drawEmojiAtom } from './EntityImageDescriptionEmoji.js';
 import { spriteHrefOver } from '../../klimt/sprite/sprite-tint.js';
 import {
   type LineMetrics,
@@ -172,13 +173,11 @@ function drawAtoms(
       x += resolved.width;
       continue;
     }
-    // A2s R2i: an emoji draws as its platform-glyph text run
-    // (`atom/AtomEmoji.ts#emojiRenderRun`); x-advance stays the DECLARED
-    // 36*factor box (ADR-2), never this glyph's own measure.
+    // `AtomEmoji#drawU` -> `Emoji#drawU` (`AtomEmoji.java:66-68`, `Emoji.java:175-182`): the artwork when the
+    // resolver carries the emoji store (eea D1), else A2s R2i's platform-glyph run. x-advance stays the DECLARED
+    // 36*factor box (`AtomEmoji.java:57-60`, ADR-2), never the glyph's own measure.
     if (atom.kind === 'emoji') {
-      const run = emojiRenderRun(atom);
-      const runM = measureLine(stringBounder, run.text, run.font);
-      ug.apply(new UTranslate(x, top + runM.height - runM.descent)).draw(UText.build(run.text, run.font));
+      drawEmojiAtom(ug.apply(new UTranslate(x, top)), atom, resolveAtomImage?.emojiArtwork);
       x += emojiBoxDim(atom.factor).width;
       continue;
     }

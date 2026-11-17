@@ -1,0 +1,7 @@
+@startuml
+package "<:rocket:> P" {
+  actor A
+}
+usecase U
+A --> U
+@enduml

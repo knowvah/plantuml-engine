@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T08:51:07.325Z",
+  "generatedAt": "2026-11-17T01:30:46.957Z",
   "fixtures": [
     {
       "slug": "babafi-51-dixi026",
@@ -300,6 +300,76 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-domain-each",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-domain-group",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-domain-group-link",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-json-group",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-json-single",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-json-top",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-map-link",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-map-top",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-requirement",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
+    },
+    {
+      "slug": "dei-requirement-lone",
+      "type": "component",
+      "dotEqual": true,
+      "layoutEqual": "n/a",
       "verdict": "conformant"
     },
     {

@@ -41,7 +41,7 @@ import { clusterBucketOf } from '../../core/style-element-scope.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import type { NamespaceGeo } from './layout.js';
 import { rect, PAINT_NONE } from '../../core/svg.js';
-import { shiftFragmentBody } from '../../core/annotations/coord-shift.js';
+import { placedClusterHeaderBody } from './class-cluster-header.js';
 import { isTransparentColor, parseColor, type Paint } from '../../core/paint.js';
 import { renderFolderTabShape } from './class-namespace-folder-outline.js';
 import { renderVisibilityIconAt } from './class-visibility-icon.js';
@@ -232,7 +232,12 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
   // cdd2-T19b: `stereotype.drawU(ug.apply(new UTranslate(4 + posStereo, 2 +
   // getHTitle(dimTitle))))`, `posStereo = (width - dimStereo.w) / 2`
   // (`USymbolFolder.java` `asBig`); `geo.htitle` IS `getHTitle`.
-  const stereo = placeHeaderStereo(geo, geo.x + TITLE_X_OFFSET * theme.scaleK, geo.y + TOP * theme.scaleK + geo.htitle);
+  const stereo = placeHeaderStereo(
+    geo,
+    geo.x + TITLE_X_OFFSET * theme.scaleK,
+    geo.y + TOP * theme.scaleK + geo.htitle,
+    theme.scaleK,
+  );
   return outline + hline + vis.icon + label + stereo.body;
   // #lizard forgives -- pre-existing (unchanged by A2s F-D): linear jar-verified draw sequence (G2 N17/N18); splitting would refactor faithfully-ported geometry mid-port.
 }
@@ -282,7 +287,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
   });
   // cdd2-T19b: `USymbolRectangle#asBig`: stereo at `((width - w) / 2, 2)`
   // BEFORE the title, title at `2 + dimStereo.getHeight()` (CENTER branch).
-  const stereo = placeHeaderStereo(geo, geo.x, geo.y + TOP * theme.scaleK);
+  const stereo = placeHeaderStereo(geo, geo.x, geo.y + TOP * theme.scaleK, theme.scaleK);
   if (geo.label.length === 0) return outline + stereo.body;
   const rawTextWidth = geo.wtitle - (MARGIN_TITLE_X1 + MARGIN_TITLE_X2) * theme.scaleK;
   const posTitle = (geo.width - rawTextWidth) / 2;
@@ -343,8 +348,11 @@ function renderTitleVisibility(
 /** cdd2-T19b: the pre-built `ClusterHeader` stereo block
  *  (`class-cluster-header.ts`) centred in the box from `x0`: `posStereo =
  *  (width - dimStereo.w) / 2` in both `asBig`s above. */
-function placeHeaderStereo(geo: NamespaceGeo, x0: number, y: number): { body: string; height: number } {
+function placeHeaderStereo(geo: NamespaceGeo, x0: number, y: number, k: number): { body: string; height: number } {
   const h = geo.clusterHeaderStereo;
   if (h === undefined) return { body: '', height: 0 };
-  return { body: shiftFragmentBody(h.body, x0 + (geo.width - h.width) / 2, y), height: h.height };
+  // ugs T1c (#149): `geo`, `x0` and `y` are pre-scaled, the header is in layout units; upstream places it in layout
+  // units and the scaled `UGraphic` multiplies (`ClusterHeader.java:173-220`, `SvgGraphics.java:467-474`).
+  const dx = x0 / k + (geo.width / k - h.width) / 2;
+  return { body: placedClusterHeaderBody(h, dx, y / k, k), height: h.height * k };
 }

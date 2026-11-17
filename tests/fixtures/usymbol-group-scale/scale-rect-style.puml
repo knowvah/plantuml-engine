@@ -1,0 +1,7 @@
+@startuml
+scale 2
+skinparam packageStyle rect
+package P <<boxed>> {
+  class A
+}
+@enduml

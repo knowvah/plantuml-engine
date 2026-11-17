@@ -46,6 +46,9 @@ import {
 } from './parse-state.js';
 import { tryNoteHandling } from './note-dispatch.js';
 import { COMMANDS } from './command-table.js';
+import { tryJsonBlock, tryJsonSingleLine } from './command-json.js';
+import { tryMapBlock } from './command-map.js';
+import { tryDomainLine } from './command-domain.js';
 import { tryArchimate } from './command-archimate.js';
 
 export { CONTAINER_SYMBOLS } from './parse-helpers.js';
@@ -342,7 +345,27 @@ function dispatchCommand(
       return 1;
     }
   }
+  const leafTypeResult = tryLeafTypeCommands(state, lines, i, line);
+  if (leafTypeResult !== null) {
+    if (state.executionError !== undefined) return refuse('execution', rawLine, i + 1, state.executionError);
+    return leafTypeResult;
+  }
   return refuse('syntax', rawLine, i + 1, 'Syntax Error?');
+}
+
+/**
+ * The commands registered after the multiline element and note commands (`DescriptionDiagramFactory.java:129-131`):
+ * `CommandCreateMap` and `CommandCreateJson` (blocks), then `CommandCreateJsonSingleLine`; `CommandCreateDomain` comes
+ * last, after the archimate commands (`:137`), which `processLine` tries before this table. No earlier command accepts their first line, so
+ * trying them once the table has failed keeps upstream's order. `null` when none matches.
+ */
+function tryLeafTypeCommands(state: ParseState, lines: readonly string[], i: number, line: string): number | null {
+  return (
+    tryMapBlock(state, lines, i) ??
+    tryJsonBlock(state, lines, i) ??
+    tryJsonSingleLine(state, line) ??
+    tryDomainLine(state, line)
+  );
 }
 
 /**

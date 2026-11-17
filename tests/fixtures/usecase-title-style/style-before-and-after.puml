@@ -1,0 +1,21 @@
+@startuml
+<style>
+usecase {
+  title {
+    LineColor green
+  }
+}
+</style>
+actor A
+usecase U
+<style>
+usecase {
+  title {
+    LineColor blue
+  }
+}
+</style>
+usecase V
+A --> U
+A --> V
+@enduml

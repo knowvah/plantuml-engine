@@ -1,0 +1,6 @@
+@startuml
+scale 2
+package P <<boxed>> {
+  class A
+}
+@enduml

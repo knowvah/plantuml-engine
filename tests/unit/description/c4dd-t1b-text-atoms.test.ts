@@ -9,20 +9,21 @@ import { HorizontalAlignment } from '../../../src/core/klimt/geom/HorizontalAlig
 import { MeasurerStringBounder } from '../../../src/core/measurer-bounder.js';
 import { measureAtomsWidthHeight } from '../../../src/core/svek/image/EntityImageDescriptionTextMeasure.js';
 import { buildTextBlock } from '../../../src/core/svek/image/EntityImageDescriptionSupport.js';
+import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
 import { jarFixtureDiffs, jarFixtureNames } from '../../helpers/jar-fixture-dir.js';
 
 const DIR = 'tests/fixtures/c4dd-T1b';
-/** #150: `buildTextBlock` has no emoji artwork seam. */
-const PENDING = new Set(['emoji-mixed-edge']);
-const names = jarFixtureNames(DIR).filter((name) => !PENDING.has(name));
+const names = jarFixtureNames(DIR);
+/** The survey renders with the emoji asset store (`scripts/svg-parity-survey.ts`); #150 draws its artwork on a label. */
+const assetStore = buildEmojiAssetsStore();
 
 describe('mixed-size lines against the jar', () => {
   it('collects every fixture with an oracle', () => {
-    expect(names.length).toBe(6);
+    expect(names.length).toBe(7);
   });
 
   it.each(names)('%s', (name) => {
-    expect(jarFixtureDiffs(DIR, name)).toEqual([]);
+    expect(jarFixtureDiffs(DIR, name, { assetStore })).toEqual([]);
   });
 });
 

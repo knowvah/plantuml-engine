@@ -1,0 +1,9 @@
+@startuml
+node N {
+  component C
+  json J <<data>> {
+    "k": "v",
+    "n": 2
+  }
+}
+@enduml

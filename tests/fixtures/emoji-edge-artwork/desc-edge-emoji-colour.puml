@@ -1,0 +1,5 @@
+@startuml
+component X
+component Y
+X --> Y : go <#red:rocket:>
+@enduml

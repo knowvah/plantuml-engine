@@ -1,0 +1,7 @@
+@startuml
+domain "Ctrl" as G <<Machine>> {
+  domain "Motor" as A <<Causal>>
+}
+domain "Log" as B <<Lexical>>
+B --> G
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+actor A
+usecase B
+A "<:rocket:> 1" --> "many <:star:>" B
+@enduml

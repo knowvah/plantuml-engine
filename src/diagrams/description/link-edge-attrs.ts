@@ -473,16 +473,18 @@ function applyQualifierLabels(
   // exactly as the class engine does (`class-layout-edge-labels.ts`).
   // `cardinalityFont` per link: `getStyleArrowCardinality(link.getStereotype())` (`GraphvizImageBuilder.java:237`).
   const font = styleFont(link.cardinalityStyle) ?? ctx.cardinalityFontSpec;
+  // eea D2: the quantifier is sized with the label's resolver (`SvekEdge.java:328-340`, one `skinParam`).
+  const resolverFor = sizingAtomImageResolverFor(ctx.sprites);
   if (link.firstLabel !== undefined) {
     const text = resolveInlineLinks(link.firstLabel);
-    const box = measureQuantifierBlock(text, font, ctx.measurer);
+    const box = measureQuantifierBlock(text, font, ctx.measurer, resolverFor);
     attrs.tailLabelWidth = box.reservedWidth;
     attrs.tailLabelHeight = box.reservedHeight;
     attrs.tailLabel = text;
   }
   if (link.secondLabel !== undefined) {
     const text = resolveInlineLinks(link.secondLabel);
-    const box = measureQuantifierBlock(text, font, ctx.measurer);
+    const box = measureQuantifierBlock(text, font, ctx.measurer, resolverFor);
     attrs.headLabelWidth = box.reservedWidth;
     attrs.headLabelHeight = box.reservedHeight;
     attrs.headLabel = text;

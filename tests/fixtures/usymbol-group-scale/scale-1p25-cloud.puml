@@ -1,0 +1,9 @@
+@startuml
+scale 1.25
+package C <<Cloud>> {
+  class A
+}
+package D <<Database>> {
+  class B
+}
+@enduml

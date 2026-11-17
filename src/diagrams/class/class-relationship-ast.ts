@@ -189,13 +189,15 @@ export interface Relationship {
    */
   dashedBody?: boolean;
   /**
-   * T5/M12: the `-[hidden]-` ARROW_STYLE keyword (`Link#isHidden()`,
-   * `abel/Link.java:458-459`) — upstream drops the WHOLE link group at draw
-   * time (`svek/SvekEdge.java:835-836`) rather than rendering an invisible
-   * one; this port previously discarded the keyword entirely
-   * (`guxode-39-dobi371`'s extra link group). DOT-graph emission is
+   * T5/M12: the `-[hidden]-` ARROW_STYLE keyword (`WithLinkType#goHidden`,
+   * `decoration/WithLinkType.java:149-150`, read by `Link#isHidden()`,
+   * `abel/Link.java:458-459`) — not `invis`. ccb D2: upstream draws the link
+   * through `UHidden` (`svek/SvekResult.java:97-101`), so it writes its
+   * `<!--link X to Y-->` comment and takes its id, and draws no group or
+   * shape (`renderer-edge.ts#hiddenLinkMarkup`); `SvekEdge.java:836-837` is
+   * the `isInvis` return, a different flag. DOT-graph emission is
    * UNCHANGED by this flag (the hidden link still participates in layout,
-   * confirmed against its own `svek-N.dot`) — only the SVG draw is skipped.
+   * confirmed against its own `svek-N.dot`).
    * @see ~/git/plantuml/.../decoration/WithLinkType.java:100-101,149-150
    */
   hidden?: boolean;

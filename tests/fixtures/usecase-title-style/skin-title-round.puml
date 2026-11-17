@@ -1,0 +1,9 @@
+@startuml
+skinparam titleBorderRoundCorner 15
+skinparam titleBorderColor red
+component C
+usecase U
+rectangle R
+C --> U
+U --> R
+@enduml

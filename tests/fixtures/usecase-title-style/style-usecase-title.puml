@@ -1,0 +1,15 @@
+@startuml
+<style>
+usecase {
+  title {
+    LineColor blue
+    LineThickness 3
+    BackGroundColor #EEFFEE
+  }
+}
+</style>
+actor A
+usecase U
+(B)/
+A --> U
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+scale 1.5
+package N <<Node>> {
+  class A
+}
+@enduml

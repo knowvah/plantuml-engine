@@ -43,6 +43,7 @@ import { ValueNull } from '../../core/style/ValueNull.js';
 import type { ActivityLegacyEdgeGeo, ActivityLegacyNodeGeo } from './layout.js';
 import type { ActivityLegacySkinParam } from './activity-legacy-skin-param.js';
 import { cardinalityFontOf, labelFontOf } from './activity-legacy-edge-text.js';
+import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
 
 /** The only style name of this engine. @see DiagramType.ACTIVITY.getStyleName() */
 const STYLE_NAME = 'activityDiagram';
@@ -203,6 +204,9 @@ function labelFields(edge: ActivityLegacyEdgeGeo, skinParam: ActivityLegacySkinP
     },
     labelFont: labelFontOf(edge.link, skinParam),
     labelAlignment: skinParam.getDefaultTextAlignment(HorizontalAlignment.CENTER),
+    // eea D2: the label's `create0` reads the diagram's `skinParam` (`SvekEdge.java:286-299`): its sprites, and the
+    // emoji table the registry carries (`Emoji.java:111-118`).
+    resolveAtomImage: makeAtomImageResolverFor(skinParam.getSprites()),
   };
 }
 

@@ -1,0 +1,9 @@
+@startuml
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+component C
+rectangle R
+actor A
+usecase U
+C --> R
+@enduml

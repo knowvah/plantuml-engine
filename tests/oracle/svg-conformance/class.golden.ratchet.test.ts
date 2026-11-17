@@ -54,6 +54,7 @@ import { prepareElkOnce, renderClassFixture } from './render-fixture-class.js';
 // between the ratchet, the census and the survey.
 import { censusClassFixtureOptions } from '../../../scripts/svg-conformance-census.js';
 import { CI_RENDER_BUDGET_MS } from '../../helpers/ci-test-budgets.js';
+import { assertCommentBytes, readCommentOpen } from './comment-bytes-gate.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // unknown/xuloxo-85-vibu502, 5,046ms (timed out));
@@ -93,6 +94,10 @@ interface ParityReport {
 const GOLDENS_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../oracle/goldens/svg-class');
 
 const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'utf8')) as RatchetManifest;
+
+// ccb (#151, D4): `compareSvg` drops comments, so each pin also holds its comment bytes. A pin listed here may not
+// raise its comment mismatch; every other pin's comments equal the golden's.
+const commentOpen = readCommentOpen(join(GOLDENS_ROOT, 'comment-open.json'), 'class');
 
 // Source of DOT-EQUAL truth for eligibility (AC3) — mirrors description's
 // own `parity.json`, but class-scoped (see `render-fixture-class.ts`'s doc
@@ -214,6 +219,7 @@ describe.skipIf(manifest.fixtures.length === 0)('svg-class conformance ratchet (
           ` — ${JSON.stringify(diffs[0])}`,
       ).toBe(true);
       expect(diffs).toEqual([]);
+      assertCommentBytes(`${tree}/${f.slug}`, ours, golden, commentOpen.get(`${tree}/${f.slug}`));
     });
   }
 });
@@ -223,6 +229,13 @@ if (manifest.fixtures.length === 0) {
     expect(manifest.fixtures).toHaveLength(0);
   });
 }
+
+describe('svg-class conformance ratchet — comment open list (ccb D4)', () => {
+  it('every comment-open.json entry is a pinned fixture, listed once', () => {
+    const pinned = new Set(manifest.fixtures.map((f) => `${f.tree ?? 'class'}/${f.slug}`));
+    expect([...commentOpen.keys()].filter((k) => !pinned.has(k))).toEqual([]);
+  });
+});
 
 // ---------------------------------------------------------------------------
 // AC2 — tamper detection: an in-memory golden mutation must be caught, and

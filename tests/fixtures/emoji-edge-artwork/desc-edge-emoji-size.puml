@@ -1,0 +1,5 @@
+@startuml
+component X
+component Y
+X --> Y : <size:30>big <:rocket:></size> small
+@enduml

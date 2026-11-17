@@ -126,11 +126,13 @@ function createLollipopLeaf(
   counter?: LollipopCounter,
 ): string {
   const id = `__lol${ast.classifiers.filter((c) => c.kind === 'lollipop').length}`;
-  const classifier = makeClassifier(id, 'lollipop', stripQuotes(name), activeNamespace);
+  // ccb D3: a lollipop's entity name is its synthetic one (`syntheticIdName`, below).
+  const classifier = makeClassifier(id, 'lollipop', stripQuotes(name), activeNamespace, id);
   classifier.lollipopKind = kind;
   if (counter !== undefined) {
     counter.value += 1;
     classifier.syntheticIdName = `${stripQuotes(existingRawName)}lol${counter.value}`;
+    classifier.quarkName = classifier.syntheticIdName;
     counter.value += 1;
     classifier.creationIndex = counter.value;
     classifier.phantomSlot = true;

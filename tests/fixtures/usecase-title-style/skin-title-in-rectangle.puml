@@ -1,0 +1,11 @@
+@startuml
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+actor A
+rectangle System {
+  usecase U
+  (B)/
+}
+A --> U
+A --> B
+@enduml

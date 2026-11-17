@@ -232,28 +232,24 @@ function buildDecoration(
  * LineThickness 1.0 }` (jar probe: `rectangleBorderThickness<<t>> 3` / `2`
  * draw 3 / 2); LineStyle from the `<usymbol>` tiers, then `<style> group {
  * LineStyle }` (jar probe: `group { LineStyle 3 }` dashes a rectangle
- * cluster 3,3). cdd-B8FU: `geo` is already scaled (`scaleNamespaceGeo`) and
- * this draw runs at scale 1, so thickness and dash take their own `scaleK`
- * (`SvgGraphics#format` scales both, `svg-graphics-core.ts:380-384`).
+ * cluster 3,3). ugs T1b (#149): in layout units -- {@link
+ * renderNamespaceUSymbol} draws with `SvgOption.scale`, which multiplies
+ * thickness and dash once on the way out (`SvgGraphics.java:467-474`), so
+ * the hand-applied `scaleK` (cdd-B8FU) is gone.
  */
-function resolveClusterUSymbolStroke(theme: ScaledTheme, geo: NamespaceGeo, keyword: string): UStroke {
+function resolveClusterUSymbolStroke(theme: Theme, geo: NamespaceGeo, keyword: string): UStroke {
   // cogr T2a: `Cluster#getStrokeInternal` -- `getSpecificLineStroke()` wins outright (`Cluster.java:437-442`).
-  const specific = groupSpecificStroke(geo, theme.scaleK);
+  const specific = groupSpecificStroke(geo, 1);
   if (specific !== undefined) {
     const dash =
       geo.colors?.lineStyle === undefined ? undefined : strokeForStyle(geo.colors.lineStyle).getDasharraySvg();
-    return new UStroke(
-      (dash?.[0] ?? 0) * theme.scaleK,
-      (dash?.[1] ?? 0) * theme.scaleK,
-      specific.thickness * theme.scaleK,
-    );
+    return new UStroke(dash?.[0] ?? 0, dash?.[1] ?? 0, specific.thickness);
   }
   const tags = geo.stereotypeTags ?? [];
   const own = theme.colors.elements?.[keyword];
   const thickness = byStereo(own?.lineThicknessByStereo, tags) ?? own?.lineThickness ?? GROUP_STROKE_WIDTH;
   const dash = elementLineStyle(theme, [keyword, 'group'], tags) ?? { dashVisible: 0, dashSpace: 0 };
-  const k = theme.scaleK;
-  return new UStroke(dash.dashVisible * k, dash.dashSpace * k, thickness * k);
+  return new UStroke(dash.dashVisible, dash.dashSpace, thickness);
 }
 
 /**
@@ -389,11 +385,18 @@ export function renderNamespaceUSymbol(
   const symbol = resolveNamespaceUSymbol(geo, theme);
   if (keyword === undefined || symbol === undefined) return undefined;
 
-  const resolvedPaint = resolveClusterUSymbolPaint(theme, geo, keyword, paint);
-  const header = clusterHeaderStereoTextBlock(geo.clusterHeaderStereo);
-  const titleFont = clusterTitleFont(theme, resolvedPaint.fontColor);
-  const stroke = resolveClusterUSymbolStroke(theme, geo, keyword);
-  const decoration = buildDecoration(geo, symbol, titleFont, stroke, header.block);
+  // ugs T1b (#149): `SvgGraphics#format` multiplies every emitted number by the document scale
+  // (`SvgGraphics.java:467-474`), and upstream draws the cluster in layout units through that scaled `UGraphic`, so
+  // every literal inside `USymbol#asBig` scales too (`USymbolRectangle.java:133`'s `2 + dimStereo`,
+  // `USymbolDatabase.java:157-161`'s `2 + 20`). The geo reaching here is pre-scaled (`class-scale-geo.ts`): undo it and
+  // let `scale: k` do the multiplying, as the leaf does (`renderer-usymbol-entity.ts#renderClassUSymbolEntity`).
+  const k = theme.scaleK;
+  const drawn = k === 1 ? { geo, theme } : unscaleNamespaceForDrawing(geo, theme, k);
+  const resolvedPaint = resolveClusterUSymbolPaint(drawn.theme, drawn.geo, keyword, paint);
+  const header = clusterHeaderStereoTextBlock(geo.clusterHeaderStereo, k);
+  const titleFont = clusterTitleFont(drawn.theme, resolvedPaint.fontColor);
+  const stroke = resolveClusterUSymbolStroke(drawn.theme, drawn.geo, keyword);
+  const decoration = buildDecoration(drawn.geo, symbol, titleFont, stroke, header.block);
   const fragment = renderDrawableToFragment(
     {
       drawU(ug) {
@@ -414,10 +417,31 @@ export function renderNamespaceUSymbol(
         );
       },
     },
-    { width: geo.x + geo.width, height: geo.y + geo.height, measurer, uid: geo.id },
+    {
+      width: drawn.geo.x + drawn.geo.width,
+      height: drawn.geo.y + drawn.geo.height,
+      measurer,
+      uid: geo.id,
+      ...(k === 1 ? {} : { scale: k }),
+    },
   );
   // `SvgGraphics.java:393` numbers per document, and this one draws a frame alone: the def takes its content id, so equal
   // gradients of two frames are one, and `collectDocumentDefs` lifts it (`SvgGraphics.java:367-371`, the map hit).
   const content = withContentGradientIds(fragment.extraDefs ?? '', header.splice(fragment.body));
   return content.defs + content.body;
+}
+
+/** The group and theme in layout units: `class-scale-geo.ts#scaleNamespaceGeo`/`#scaleClassTheme` undone, for a draw
+ *  that `SvgOption.scale` multiplies (`SvgGraphics.java:467-474`). The leaf twin is
+ *  `renderer-usymbol-entity.ts#unscaleForDrawing`. Only the fields {@link buildDecoration} and the paint/stroke
+ *  resolvers read are undone; `geo.roundCorner` is never scaled. */
+function unscaleNamespaceForDrawing(
+  geo: NamespaceGeo,
+  theme: ScaledTheme,
+  k: number,
+): { geo: NamespaceGeo; theme: ScaledTheme } {
+  return {
+    geo: { ...geo, x: geo.x / k, y: geo.y / k, width: geo.width / k, height: geo.height / k },
+    theme: { ...theme, fontSize: theme.fontSize / k, scaleK: 1 },
+  };
 }

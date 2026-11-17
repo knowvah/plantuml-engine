@@ -31,15 +31,30 @@ export function makeClassifier(
   kind: ClassifierKind,
   display: string | undefined,
   nsId: string | null,
+  quarkName: string,
 ): Classifier {
   return {
     id,
     display: display ?? id,
     kind,
+    quarkName,
     typeParams: [],
     members: [],
     ...(nsId !== null ? { namespace: nsId } : {}),
   };
+}
+
+/**
+ * ccb D3: the name `Quark#child` gives a leaf resolved to `id` under the namespace `nsId` (`plasma/Quark.java:84-121`).
+ * Our ids join a namespace and its child with the separator active at resolution, or `.` under `set separator none`
+ * (`class-namespace-resolve.ts#qualifiedId`, `ensureNamespaceChain`), so the quark's name is the id past that prefix:
+ * the last segment under a separator, and the reference as written under `none`, where `quarkInContextSafe` makes a
+ * direct child of the current group (`net/atmp/CucaDiagram.java:250-255`, `Quark#getDirectChild`). Read at creation,
+ * with the separator of that moment, as upstream fixes the quark's name when it is made.
+ */
+export function quarkNameOf(id: string, nsId: string | null, sep: string | null): string {
+  const prefix = nsId === null ? undefined : nsId + (sep ?? '.');
+  return prefix !== undefined && id.startsWith(prefix) ? id.slice(prefix.length) : id;
 }
 
 /**
@@ -112,7 +127,8 @@ export function collapseEmptyNamespace(
   if (ns === undefined || ns.classifiers.length > 0 || hasChildNamespace) return namespaces;
   const remaining = namespaces.filter((n) => n.id !== nsId);
   const parentId = ns.parentId ?? null;
-  const classifier = makeClassifier(nsId, 'descriptive', ns.display, parentId);
+  // ccb D3: `Entity#muteToType` keeps the group's own entity, so the leaf keeps the group quark's name.
+  const classifier = makeClassifier(nsId, 'descriptive', ns.display, parentId, ns.quarkName ?? nsId);
   // leaf-draw-order option (b): mark the mute so `class-leaf-order.ts` can
   // keep this leaf at its GROUP slot even when `closeContainer` later stamps
   // a `usymbol` on it (a `<<Database>>` package, daxeno-00-kasu166) -- see

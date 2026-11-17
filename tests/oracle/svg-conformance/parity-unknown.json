@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T08:59:40.831Z",
+  "generatedAt": "2026-11-17T01:40:49.207Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1717,12 +1717,9 @@
     {
       "slug": "gacoxo-93-guti295",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 92,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "galata-74-luka487",
@@ -3268,12 +3265,9 @@
     {
       "slug": "liripi-72-kefa167",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 119,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/@height"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "lirumo-81-jega996",
@@ -5169,12 +5163,9 @@
     {
       "slug": "rukitu-26-seme622",
       "type": "unknown",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 351.432,
-      "firstDiff": "svg/@background",
-      "maxDeltaPath": "svg/g[1]/text[3]/@x"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "rumepo-86-tima388",

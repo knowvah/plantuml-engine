@@ -1,0 +1,8 @@
+@startuml
+component C
+map M #lightblue {
+  key1 => value one
+  key2 => two
+}
+C --> M
+@enduml

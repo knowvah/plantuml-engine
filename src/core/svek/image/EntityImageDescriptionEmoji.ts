@@ -15,7 +15,7 @@ import { UText } from '../../klimt/shape/UText.js';
 import { SvgNanoParser } from '../../klimt/sprite/SvgNanoParser.js';
 import { parseColor } from '../../klimt/color/HColorSet.js';
 import { emojiRenderRun } from '../../klimt/creole/atom/AtomEmoji.js';
-import { measureLine } from './EntityImageDescriptionSupport.js';
+import { measureLine } from './EntityImageDescriptionTextMeasure.js';
 
 /** The emoji atom fields this draw path needs. */
 export interface EmojiAtomLike {

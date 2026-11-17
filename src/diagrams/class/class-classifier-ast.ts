@@ -22,6 +22,13 @@ export interface Classifier {
   id: string;
   display: string;
   kind: ClassifierKind;
+  /**
+   * ccb D3: `Entity#getName()` (`abel/Entity.java:686-688`), the quark's own name (`plasma/Quark.java:84-86`): the
+   * segment `Quark#child` made the quark with under the separator active at creation -- the last path segment, or the
+   * whole reference under `set separator none` -- and the code or alias, never the display. Stamped where the leaf is
+   * made (`class-namespace.ts#makeClassifier`); every `<!--class …-->`/`<!--entity …-->` comment prints it.
+   */
+  quarkName?: string;
   /** Generic type parameters, e.g. ['T', 'U']. */
   typeParams: string[];
   /**

@@ -63,6 +63,7 @@ import { type SpriteRegistry, spriteDimsLookupFor } from '../../core/sprite-comm
 import { resolveStereotypeSprite } from '../../core/svek/image/EntityImageDescriptionDelegates.js';
 import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
 import { drawNote } from './renderer-note.js';
+import { leafImageEnv, leafTypeImageFor } from './description-entity-image.js';
 import { lineStyleStroke, parseColorOverride, type ColorOverride } from './renderer-color-override.js';
 
 /** Jar-verified default entity corner radius / stroke width for the
@@ -347,6 +348,12 @@ export function drawEntity(
   }
   if (node.symbol === 'port') {
     drawPortFallback(translated, node, theme, uid);
+    return;
+  }
+  // `GeneralImageBuilder.java:183-187`: a map or json leaf draws its own image, never `EntityImageDescription`.
+  const leafImage = node.leafType === undefined ? undefined : leafTypeImageFor(node, leafImageEnv(theme), uid);
+  if (leafImage !== undefined) {
+    leafImage.drawU(translated);
     return;
   }
   const params = buildEntityParams(node, theme, sprites);

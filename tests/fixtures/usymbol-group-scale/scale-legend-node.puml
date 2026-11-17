@@ -1,0 +1,16 @@
+@startuml
+scale 2
+package N <<Node>> {
+legend
+group legend
+on two lines
+end legend
+  class A
+}
+rectangle R <<boxed>> {
+legend
+one line
+end legend
+  class B
+}
+@enduml

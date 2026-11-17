@@ -78,6 +78,8 @@ export interface ClassifierGeo {
    * (`ast.ts`'s doc comment) — feeds `renderer.ts`'s `<a>`-wrap emission.
    */
   url?: UrlInfo;
+  /** ccb D3: copied unchanged from `Classifier.quarkName` -- the name every entity comment prints. */
+  quarkName?: string;
   /** G2 N19: copied unchanged from `Classifier.syntheticIdName` (`ast.ts`'s
    *  doc comment) — feeds `renderer.ts#linkIdForSvg`'s couple/lollipop
    *  synthetic-name resolution. */

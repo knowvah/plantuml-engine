@@ -1,0 +1,9 @@
+@startuml
+set namespaceSeparator ::
+namespace N {
+  class A
+  class B
+}
+N::A --> N::B
+hide N::B
+@enduml

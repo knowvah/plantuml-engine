@@ -4301,6 +4301,84 @@
       "type": "unknown",
       "addedAt": "2026-11-05",
       "source": "dot-cache"
+    },
+    {
+      "slug": "gacoxo-93-guti295",
+      "type": "unknown",
+      "addedAt": "2026-11-16",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "liripi-72-kefa167",
+      "type": "unknown",
+      "addedAt": "2026-11-16",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "rukitu-26-seme622",
+      "type": "unknown",
+      "addedAt": "2026-11-16",
+      "source": "dot-cache"
+    },
+    {
+      "slug": "dei-domain-each",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-domain-group",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-json-group",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-json-single",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-json-top",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-map-link",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-map-top",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-requirement",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-requirement-lone",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
+    },
+    {
+      "slug": "dei-domain-group-link",
+      "type": "component",
+      "addedAt": "2026-11-16",
+      "source": "authored"
     }
   ]
 }

@@ -1,0 +1,5 @@
+@startuml
+usecase U1
+usecase U2
+U1 --> U2 : <:rocket:> go
+@enduml

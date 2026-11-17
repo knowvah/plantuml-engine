@@ -46,6 +46,7 @@ import {
 import { resolveStereotypeSprite } from '../../core/svek/image/EntityImageDescriptionDelegates.js';
 import { upstreamKeyword, mapComponentStyle, resolveActorStyle } from '../../core/decoration/symbol/usymbol-resolve.js';
 import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
+import { entityCommentName } from './renderer-group.js';
 import { KEYWORD_TO_SYMBOL, type USymbol } from '../../core/descriptive-keywords.js';
 // cdd7 T2b: the style-resolution helpers moved to a sibling (500-line cap).
 import {
@@ -143,7 +144,15 @@ export function buildUSymbolEntityParams(
   return {
     // cdd3-T10 (S-11): the entity's own url (`getUrl99()`), drawn by
     // `EntityImageDescription#drawU`'s `startUrl`/`closeUrl` pair.
-    entity: { name: classifier.id, uid: '', qualifiedName: classifier.id, location: null, url: classifier.url ?? null },
+    // ccb D3: `EntityImageDescription.java:295` comments `getName()`, the quark name (`renderer-group.ts
+    // #entityCommentName`); no other attribute this draw writes reads it.
+    entity: {
+      name: entityCommentName(classifier, 'entity'),
+      uid: '',
+      qualifiedName: classifier.id,
+      location: null,
+      url: classifier.url ?? null,
+    },
     symbol: {
       keyword: upstreamKeyword(symbolKeyword),
       actorStyle: resolveActorStyle(theme.actorStyle),

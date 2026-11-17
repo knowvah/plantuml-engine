@@ -1,0 +1,8 @@
+@startuml
+allow_mixing
+class A
+rectangle G <<Group>> {
+}
+A --> G
+hide G
+@enduml

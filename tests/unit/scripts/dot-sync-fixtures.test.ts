@@ -307,11 +307,26 @@ describe('enumerateFixtures over the committed corpus', () => {
     expect(enumerateFixtures('state')).toEqual(manifest);
   });
 
-  it('adds nothing for component, whose authored slugs are all already in the manifest', () => {
+  // dei/T1a (2026-11-16, #147): the `dei-*` fixtures (eight, then dei-requirement-lone at T4c) are the first component goldens with no manifest row,
+  // so they append after the manifest in slug order; every other authored component slug still collides.
+  it('appends only the dei-* fixtures for component; every other authored slug is already in the manifest', () => {
     const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     try {
       const manifest = JSON.parse(readFileSync(join(DATA_DIR, 'component.json'), 'utf-8')) as Fixture[];
-      expect(enumerateFixtures('component')).toEqual(manifest);
+      const merged = enumerateFixtures('component')!;
+      expect(merged.slice(0, manifest.length)).toEqual(manifest);
+      expect(merged.slice(manifest.length).map((f) => f.slug)).toEqual([
+        'dei-domain-each',
+        'dei-domain-group',
+        'dei-domain-group-link',
+        'dei-json-group',
+        'dei-json-single',
+        'dei-json-top',
+        'dei-map-link',
+        'dei-map-top',
+        'dei-requirement',
+        'dei-requirement-lone',
+      ]);
       expect(err).toHaveBeenCalledTimes(1);
       expect(err.mock.calls[0]![0] as string).toContain('manifest markup wins');
     } finally {

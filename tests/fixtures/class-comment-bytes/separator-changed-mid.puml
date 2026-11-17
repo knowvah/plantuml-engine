@@ -1,0 +1,7 @@
+@startuml
+class a.b.C
+set namespaceSeparator ::
+class x::y::D
+class e.f
+C --> D
+@enduml

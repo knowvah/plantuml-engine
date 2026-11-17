@@ -46,6 +46,7 @@ import {
 } from './layout-cluster-boxes.js';
 import { computeGraphSpacing, type EdgeFontSpecs } from './link-edge-attrs.js';
 import { spriteDimsLookupFor } from '../../core/sprite-commands.js';
+import { sizingAtomImageResolverFor } from '../../core/svek/image/leaf-sizing-entity.js';
 import { emojiArtworkResolverFor } from '../../core/internal-emoji-store.js';
 import { GUILLEMET_DEFAULT } from '../../core/text/Guillemet.js';
 import { buildMagmaEdges, magmaGroups } from './magma.js';
@@ -71,6 +72,7 @@ export type { DescriptionNodeGeo, DescriptionEdgeGeo, DescriptionGeometry } from
 // ── Internal types ── (moved to `layout-types.ts`, 500-line split;
 // re-exported below so every existing `from './layout.js'` import works)
 import type { ClassifyCtx, EdgeDotBuildResult } from './layout-types.js';
+import { leafImageEnv } from './description-entity-image.js';
 export type { ClassifyCtx, ContainerDesc, EdgeDotBuildResult } from './layout-types.js';
 
 /** D3/D4: the arrow-label font resolver -- `layoutDescription`'s
@@ -247,7 +249,15 @@ function buildGeoAndEdges(
     dy: 0,
     xlabelTableByDotId: xlabelTables(edgeDotBuild.dotEdges),
     namespaceSeparator: ast.namespaceSeparator,
-    quantifiers: { nodes: result.nodes, measurer, defaultFont: resolveCardinalityFont(theme) },
+    quantifiers: {
+      nodes: result.nodes,
+      measurer,
+      defaultFont: resolveCardinalityFont(theme),
+      // The lookup `ClassifyCtx.sprites` holds (`createClassifyCtx`), so the table and its placement measure alike.
+      atomImageResolverFor: sizingAtomImageResolverFor(
+        ast.sprites === undefined ? undefined : spriteDimsLookupFor(ast.sprites),
+      ),
+    },
     leafMagnet: (node, at) =>
       leafMagneticBorder(node, theme, ast.sprites)?.getForceAt(at, new MeasurerStringBounder(measurer)),
   };
@@ -307,6 +317,7 @@ export function createClassifyCtx(ast: DescriptionDiagramAST, theme: Theme): Cla
       start: theme.colors.graph.guillemetStart ?? GUILLEMET_DEFAULT.start,
       end: theme.colors.graph.guillemetEnd ?? GUILLEMET_DEFAULT.end,
     },
+    leafImageEnv: leafImageEnv(theme),
     collidingIds,
     qualifiedPathToDotKey: new Map(),
     sprites: ast.sprites !== undefined ? spriteDimsLookupFor(ast.sprites) : undefined,
@@ -414,6 +425,7 @@ export function layoutDescription(
     // `EntityImageDescription`, so its box reads the same fonts, wrap width and guillemet (`EntityImageDescription.java:172-201`).
     wrapWidth: ctx.wrapWidth,
     guillemet: ctx.guillemet,
+    leafImageEnv: ctx.leafImageEnv,
     fontSize: ctx.fontSizeFor(ast.nodes[0]?.symbol ?? ''),
     stereotypeFontSize: ctx.stereotypeFontSizeFor(ast.nodes[0]?.symbol ?? '', ast.nodes[0]?.stereotype),
     lineThickness: ctx.lineThicknessFor(ast.nodes[0]?.symbol ?? ''),

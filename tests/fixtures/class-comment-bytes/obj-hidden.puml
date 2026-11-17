@@ -1,0 +1,6 @@
+@startuml
+object o1
+object o2
+o1 --> o2
+hide o2
+@enduml

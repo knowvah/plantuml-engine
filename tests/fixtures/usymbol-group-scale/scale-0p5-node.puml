@@ -1,0 +1,9 @@
+@startuml
+scale 0.5
+package N <<Node>> {
+  class A
+}
+rectangle R <<boxed>> {
+  class B
+}
+@enduml

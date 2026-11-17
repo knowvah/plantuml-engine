@@ -25,7 +25,9 @@
  * `USymbolFolder#asBig` (`class-namespace-shape.ts`), `USymbolRectangle
  * #asBig` (`packageStyle rect`), and every other `USymbol#asBig` through
  * {@link clusterHeaderStereoTextBlock} (`undefined` -> `TextBlockUtils.empty(0,
- * 0)`, `ClusterHeader.java:189`).
+ * 0)`, `ClusterHeader.java:189`). Under `scale`, each draw site places the
+ * block in layout units and formats its deferred twin once at the factor
+ * ({@link placedClusterHeaderBody}, ugs T1c).
  *
  * A `<<$sprite>>` stereotype (`stereotype.getSprite(skinParam)`,
  * `ClusterHeader.java:199-201`) replaces the label block (cdd5-T5c,
@@ -51,6 +53,7 @@ import { buildAnnotationBlock, getTextX } from '../../core/annotations/index.js'
 import { isDisplayPositionedNull } from '../../core/annotations/model.js';
 import { resolveAnnotationStyles } from '../../core/annotations/style.js';
 import { shiftFragmentBody } from '../../core/annotations/coord-shift.js';
+import { scaleActivityBody } from '../../core/TextBlockExporter.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { VerticalAlignment } from '../../core/klimt/geom/VerticalAlignment.js';
 import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
@@ -70,7 +73,7 @@ import {
   spriteToPngDataUri,
   spriteColor4096ToPngDataUri,
 } from '../../core/klimt/sprite/sprite-raster.js';
-import { escapeComment } from '../../core/svg-format.js';
+import { escapeComment, withDeferredFormat } from '../../core/svg-format.js';
 import {
   isStereotypeLabelHidden,
   splitStereotypeStyleTags,
@@ -93,6 +96,10 @@ export interface ClusterHeaderStereo {
   readonly width: number;
   readonly height: number;
   readonly body: string;
+  /** ugs T1c (D2): {@link body} drawn with its numbers deferred (`svg-format.ts#withDeferredFormat`), for a draw at a
+   *  document scale other than 1: upstream formats the header once, after the multiply (`SvgGraphics.java:467-474`),
+   *  and rescaling the 3-dp {@link body} double-rounds. Set by {@link buildDrawnClusterHeaderStereo}. */
+  readonly deferredBody?: string;
 }
 
 /**
@@ -285,6 +292,35 @@ export function buildClusterHeaderStereo(
   return { width, height, body: top ? stereoBody + legendBody : legendBody + stereoBody };
 }
 
+/**
+ * {@link buildClusterHeaderStereo} for the header a cluster DRAWS: it also carries the body drawn deferred
+ * ({@link ClusterHeaderStereo.deferredBody}), since the class scale factor is resolved only after layout
+ * (`layout.ts#layoutClass`, `UgDiagram.java:138`). Built for every header, scaled or not: a page AST need not carry
+ * the `scale` directive, and the unscaled draw never reads it.
+ */
+export function buildDrawnClusterHeaderStereo(
+  ns: Namespace,
+  ast: ClassDiagramAST,
+  theme: Theme,
+  measurer: StringMeasurer,
+): ClusterHeaderStereo | undefined {
+  const header = buildClusterHeaderStereo(ns, ast, theme, measurer);
+  if (header === undefined) return undefined;
+  const deferred = withDeferredFormat(true, () => buildClusterHeaderStereo(ns, ast, theme, measurer));
+  return deferred === undefined ? header : { ...header, deferredBody: deferred.body };
+}
+
+/**
+ * The header body placed at `(dx, dy)` in layout units and drawn at document scale `k`: upstream draws the header
+ * `TextBlock` through the cluster's scaled `UGraphic` (`ClusterHeader.java:173-220`), so each number is
+ * `format((d + v) * k)` (`SvgGraphics.java:467-474`). The shift keeps full precision (`coord-shift.ts`) and
+ * `scaleActivityBody` is the single format step. At `k === 1` this is the plain shift of the formatted body.
+ */
+export function placedClusterHeaderBody(header: ClusterHeaderStereo, dx: number, dy: number, k: number): string {
+  if (k === 1 || header.deferredBody === undefined) return shiftFragmentBody(header.body, dx * k, dy * k);
+  return scaleActivityBody(shiftFragmentBody(header.deferredBody, dx, dy), k);
+}
+
 /** Comment token the klimt draw leaves where the header belongs. */
 const MARKER = 'cdd2 cluster header stereo';
 /** {@link MARKER} as the XML writer serializes a `UComment`. */
@@ -298,7 +334,10 @@ const MARKER_COMMENT = '<!--' + escapeComment(MARKER) + '-->';
  * marker in draw order; {@link spliceClusterHeaderStereo} then replaces the
  * marker with the pre-built string body at that translate.
  */
-export function clusterHeaderStereoTextBlock(header: ClusterHeaderStereo | undefined): {
+export function clusterHeaderStereoTextBlock(
+  header: ClusterHeaderStereo | undefined,
+  k = 1,
+): {
   block: TextBlock;
   splice(svg: string): string;
 } {
@@ -317,6 +356,7 @@ export function clusterHeaderStereoTextBlock(header: ClusterHeaderStereo | undef
   };
   return {
     block,
-    splice: (svg) => svg.replace(MARKER_COMMENT, shiftFragmentBody(header.body, dx, dy)),
+    // ugs T1b/T1c: a draw at `SvgOption.scale` k records its translate in layout units (`SvgGraphics.java:467-474`).
+    splice: (svg) => svg.replace(MARKER_COMMENT, placedClusterHeaderBody(header, dx, dy, k)),
   };
 }

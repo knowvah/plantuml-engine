@@ -1,0 +1,6 @@
+@startuml
+left to right direction
+component A
+component B
+A --> B : <:rocket:> go
+@enduml

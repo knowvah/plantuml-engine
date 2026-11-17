@@ -19,6 +19,10 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/objectdiagram/AbstractClassOrObjectDiagram.java:353-363
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { renderSync } from '../../../src/index.js';
 import { parseClass } from './parse-helper.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
@@ -282,5 +286,50 @@ describe('sprite stereotype on a cluster (ClusterHeader.java:199-201)', () => {
     const ast = parse(['package P <<$nope>> {', 'class Y', '}']);
     const header = buildClusterHeaderStereo(ns(ast, 'P'), ast, defaultTheme, measurer);
     expect(header?.body).toContain('«$nope»');
+  });
+});
+
+/**
+ * ugs T1c (#149): the header is a `TextBlock` drawn through the cluster's scaled `UGraphic`
+ * (`ClusterHeader.java:173-220`), so its numbers are multiplied and then formatted once (`SvgGraphics.java:467-474`).
+ * Each source and expectation is a jar oracle under `tests/fixtures/usymbol-group-scale/`.
+ */
+describe('cluster header stereo under scale (ugs T1c, #149)', () => {
+  const fixtures = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/usymbol-group-scale');
+  const stereoText = (fixture: string, label: string): string => {
+    const svg = renderSync(readFileSync(join(fixtures, `${fixture}.puml`), 'utf8'), {
+      measurer: new DeterministicMeasurer(),
+    });
+    return new RegExp(`<text [^>]*>«${label}»</text>`).exec(svg)?.[0] ?? '';
+  };
+
+  /** The text's attributes; emission order is not the jar's, and the comparer ignores order. */
+  const attrsOf = (tag: string): Record<string, string> =>
+    Object.fromEntries([...tag.matchAll(/ ([\w-]+)="([^"]*)"/g)].map((m): [string, string] => [m[1]!, m[2]!]));
+
+  it("scales the folder path's header (folder-stereo)", () => {
+    expect(attrsOf(stereoText('folder-stereo', 'boxed'))).toEqual({
+      x: '40.275',
+      y: '77.778',
+      fill: '#000',
+      'font-size': '28',
+      textLength: '107.45',
+      'font-style': 'italic',
+    });
+  });
+
+  it("scales the USymbol path's header (scale-rectangle-stereo)", () => {
+    expect(attrsOf(stereoText('scale-rectangle-stereo', 'boxed'))).toEqual({
+      x: '34.275',
+      y: '39.778',
+      fill: '#000',
+      'font-size': '28',
+      textLength: '107.45',
+      'font-style': 'italic',
+    });
+  });
+
+  it('formats the scaled header once: textLength 157.325, not the double-rounded 157.324 (node-thick-dashed)', () => {
+    expect(stereoText('node-thick-dashed', 'Rectangle')).toContain('textLength="157.325"');
   });
 });
