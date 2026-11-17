@@ -75,7 +75,8 @@
     "prepare": "husky",
     "prepublishOnly": "npm run build",
     "format": "prettier --write",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "codeql": "bash scripts/codeql-gate.sh"
   },
   "dependencies": {
     "@knowvah/dot-engine": "https://registry.npmjs.org/@knowvah/dot-engine/-/dot-engine-2.12.0.tgz",

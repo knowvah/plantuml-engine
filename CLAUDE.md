@@ -141,6 +141,11 @@ in-place mutation where it mutates, and document the contract.
 `npm test` (vitest + 90/90/90 coverage) · `npm run typecheck` (both tsconfigs)
 · `npm run lint` · `npm run build`
 
+Before opening a PR or pushing to one, also `npm run codeql` (user ruling
+2026-11-16): GitHub's code-scanning analysis run locally over the committed
+HEAD, failing on any result not already dismissed on GitHub. About 4 minutes;
+needs the `codeql` CLI and `gh`. Not per commit.
+
 Two narrowings of the local run only; CI always runs everything:
 
 - **Docs-only diff:** when it touches none of `src/`, `tests/`, `demo/`,
