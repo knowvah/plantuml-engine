@@ -35,6 +35,10 @@ post-D7 measurements.
 
 ---
 
+## legacy-partition-link (lpl) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #157; per-task history on the local tag `legacy-partition-link/pre-squash`)
+
+A legacy activity link to a partition draws as the jar draws it. The edge names the group's special point (`Cluster.getSpecialPointId`, now exported from `src/core/svek/Cluster.ts`); a linked cluster declares it inside the `a`/`p0`/`i`/`p1` wrappers, under swimlanes `a`/`i` only (`wrapperLevels` gained that branch, shared by builder, emitter and node order), and under kermor not at all (`DotInputNode.implicit`: graphviz's default node, `ClusterDotStringKermor.java:69-165`). The solve trims the spline to the partition box (`simulateCompound`), the draw pulls it to the package's magnetic border (`Cluster.ts` now keeps it for a symbol-less PACKAGE, opt-in) and shifts a group self-link the jar's way (`SvekEdge.java:863-869`). `partition-link` 21 → 0 plus 10 authored fixtures, all 0, DOT pinned EQUAL; `OPEN_ROWS` is the ELK/Smetana trio only. No issue filed. Follow-on (`.agent-notes/lpl-T2a.md`): description's cluster magnet does not set the PACKAGE flag; three engines each carry the group-autolink shift.
+
 ## unread-theme-fields (utf) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #156; per-task history on the local tag `unread-theme-fields/pre-squash`)
 
 `businessActorFill` and `businessUsecaseFill` are gone from `ThemeGraphColors`, from every built-in theme and from `SIMPLE_SELECTOR_MAPPINGS` (`actor.business`, `usecase.business`), by maintainer ruling on #156 (option 1). Nothing read them: a business actor or use case fills from its own signature's `BackGroundColor` (`EntityImageDescription.java:143-152,164-166`), read since dss T3a through the `actor-business`/`usecase-business` buckets. Absence pins cover the four built-in themes and `computeSimpleSelectorOverrides`. `dist/plantuml-engine.d.ts` lost exactly the two members; `CHANGELOG.md` names it under Removed. 0 verdict movers in every engine against `1689e015e`; every `parity-*.json` moved only `generatedAt`. No issue filed, no follow-on.
@@ -320,8 +324,9 @@ identical to the base.
 
 ### Follow-ons (mechanism, owner)
 
-1. **A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
-   `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.
+1. ~~**A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
+   `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.~~ —
+   **done by lpl (2026-11-17, `legacy-partition-link/pre-squash`, #157)**
 2. **`!pragma layout elk` on the legacy model** (`pragma-elk` 15, `pragma-elk-if` 33): `CucaDiagramFileMakerElk` over
    an adapter for the legacy diagram. Filed as #158.
 3. **State keeps its own start, end, choice and bar drawings** where `src/core/svek/image/` now has the shared

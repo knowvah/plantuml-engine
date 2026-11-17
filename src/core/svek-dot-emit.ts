@@ -221,7 +221,8 @@ function emitBody(input: DotInputGraph, seqs: SeqAssignment, tree: ClusterTree):
   // `manageMinMaxCluster`, before any node or edge (DotStringFactory.java:176); swimlane clusters only.
   body.push(...swimlaneRankLines(swimlaneClusters(input).map((c) => String(clusterColors.get(c.id)!.color))));
   const kermor = input.kermor === true;
-  const unclustered = input.nodes.filter((n) => !tree.clusteredIds.has(n.id));
+  // An implicit node has no statement: graphviz creates it at its first edge mention.
+  const unclustered = input.nodes.filter((n) => !tree.clusteredIds.has(n.id) && n.implicit !== true);
   // cdd3-T16: the root's `printCluster1` (`DotStringFactory.java:188`) —
   // inverted-edge tails, one line per link, BEFORE `lines0`; `printCluster2`
   // below then declares the rest (`./svek-dot-top.ts`).

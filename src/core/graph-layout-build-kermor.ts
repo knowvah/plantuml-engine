@@ -128,7 +128,8 @@ export function addNodesWithKermorRootEmpty(
     return;
   }
   const clustered = new Set((input.clusters ?? []).flatMap((c) => c.nodeIds));
-  let pending = input.nodes.every((n) => clustered.has(n.id));
+  // An implicit node is no normal node of the root (`Cluster.java:597`): it never cancels the placeholder.
+  let pending = input.nodes.every((n) => n.implicit === true || clustered.has(n.id));
   const endpoints = new Set(input.edges.flatMap((e) => [e.from, e.to]));
   for (const n of order) {
     if (pending && !endpoints.has(n.id)) {

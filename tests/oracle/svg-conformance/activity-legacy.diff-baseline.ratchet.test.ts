@@ -44,7 +44,7 @@ const CACHE_DIR = join(HERE, '../../../test-results/dot-cache');
 /** The legacy rows at laep's start (`measurements/planning-rows.json`): 118 activity, 4 unknown, 2 network. */
 const LEGACY_ROW_COUNT = 124;
 /** Authored rows the jar draws and we do not match, each ended by its `reason` (laep D8, journal 19-20). */
-const OPEN_ROWS = ['partition-link', 'pragma-elk', 'pragma-elk-if', 'pragma-smetana'];
+const OPEN_ROWS = ['pragma-elk', 'pragma-elk-if', 'pragma-smetana'];
 
 const authored = JSON.parse(readFileSync(join(GOLDENS_DIR, 'authored-baseline.json'), 'utf8')) as {
   readonly fixtures: readonly AuthoredFixture[];

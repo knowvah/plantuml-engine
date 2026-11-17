@@ -1,0 +1,8 @@
+@startuml
+!pragma kermor on
+partition P {
+(*) --> A
+}
+A --> P
+P --> (*)
+@enduml

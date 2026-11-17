@@ -42,7 +42,7 @@ import { buildClusterTree } from './svek-dot-sequence.js';
 import { rootTops, topsFirstClusters } from './svek-dot-top.js';
 import { togetherClusters } from './svek-dot-together.js';
 import { orderLines0Edges } from './svek-dot-lines0.js';
-import { borderPointAnchorDecl } from './svek-dot-wrappers.js';
+import { borderPointAnchorDecl, unwrappedNodeIdOf } from './svek-dot-wrappers.js';
 import { swimlaneEncounterHead } from './svek-dot-swimlane.js';
 
 /** Collector: appends an id the first time it is seen, ignoring ids that are
@@ -127,7 +127,7 @@ function pushCluster(c: DotInputCluster, ctx: WalkCtx): void {
     pushPortCluster(c, ctx);
     return;
   }
-  const unwrapped = c.innerMarginLevels === undefined ? undefined : c.unwrappedNodeId;
+  const unwrapped = unwrappedNodeIdOf(c);
   ctx.enc.push(unwrapped);
   for (const id of c.nodeIds) if (id !== unwrapped) ctx.enc.push(id);
   ctx.enc.push(c.portAnchorId);
@@ -167,14 +167,16 @@ export function firstEncounterOrder(input: DotInputGraph): DotInputNode[] {
   };
   // cdd3-T18: the together subgraphs nest members as the emitter prints them.
   const tree = buildClusterTree(topsFirstClusters({ ...input, clusters: togetherClusters(input) }));
-  const rootIds = input.nodes.filter((n) => !tree.clusteredIds.has(n.id)).map((n) => n.id);
+  // An implicit node is declared nowhere: its first edge mention creates it (or the fallback below).
+  const declared = (n: DotInputNode): boolean => !tree.clusteredIds.has(n.id) && n.implicit !== true;
+  const rootIds = input.nodes.filter(declared).map((n) => n.id);
   // `manageMinMaxCluster` precedes everything (DotStringFactory.java:176); swimlane clusters only.
   for (const id of swimlaneEncounterHead(input)) enc.push(id);
   for (const id of rootTops(input, rootIds)) enc.push(id);
   batch(true);
   if (kermor) batch(false);
   const ctx: WalkCtx = { enc, childrenOf: tree.childrenOf, kermor };
-  for (const n of input.nodes) if (!tree.clusteredIds.has(n.id)) enc.push(n.id);
+  for (const n of input.nodes) if (declared(n)) enc.push(n.id);
   for (const top of tree.childrenOf.get(undefined) ?? []) pushCluster(top, ctx);
   // Anything the walk could not reach (a cluster id that is not in the tree,
   // a node in no cluster's list) keeps its array position, at the end.

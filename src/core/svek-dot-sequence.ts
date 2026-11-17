@@ -164,6 +164,11 @@ interface SeqOut {
 function assignNodes(ids: readonly string[], out: SeqOut, seq: Seq): void {
   for (const id of ids) {
     if (!out.nodeById.has(id) || out.recs.has(id)) continue;
+    // An implicit node is no `SvekNode`: no colour value, and the text names it by its own id.
+    if (out.nodeById.get(id)!.implicit === true) {
+      out.recs.set(id, { sh: id, color: 0 });
+      continue;
+    }
     const ownerId = out.anchorOf.get(id);
     if (ownerId !== undefined) {
       out.zaCount += 1;

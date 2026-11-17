@@ -62,6 +62,12 @@ export interface WrapperLevels {
  * true for a title-table-eligible composite — see the field's own doc comment).
  */
 export function wrapperLevels(cluster: DotInputCluster): WrapperLevels {
+  // lpl T1b: a swimlane cluster has `protection0`/`protection1` off (`useSwimlanes`, `:299-315`); its
+  // `thereALinkFromOrToGroup1` is the special point the linked group declares (`unwrappedNodeId`, `:98,148-152`).
+  if (cluster.swimlane === true) {
+    const linked = cluster.unwrappedNodeId !== undefined;
+    return { a: linked, p0: false, i: linked, p1: false };
+  }
   // T4b: a hasPort cluster (genuine PORTIN/PORTOUT, `ClusterDotString.java:117-184`)
   // is also a border-point cluster -- protection forced off (`:109-112`), `a`/`i`
   // gated by `thereALinkFromOrToGroup1` -- but only once it opts in via
@@ -77,6 +83,15 @@ export function wrapperLevels(cluster: DotInputCluster): WrapperLevels {
     i: levels === 2,
     p1: levels !== undefined,
   };
+}
+
+/**
+ * The `nodeIds` member declared in the base cluster before the inner wrappers open (`ClusterDotString.java:148-152`):
+ * `unwrappedNodeId` when the cluster has inner wrappers, the plain family (`innerMarginLevels`) or a linked swimlane.
+ * The SINGLE answer the layout builder, the DOT emitter and the node order share.
+ */
+export function unwrappedNodeIdOf(cluster: DotInputCluster): string | undefined {
+  return cluster.innerMarginLevels !== undefined || cluster.swimlane === true ? cluster.unwrappedNodeId : undefined;
 }
 
 /** Where a border-point composite declares its special point. */

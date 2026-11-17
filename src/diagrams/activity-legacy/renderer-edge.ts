@@ -40,7 +40,10 @@ import type { Style } from '../../core/style/Style.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { ValueNull } from '../../core/style/ValueNull.js';
-import type { ActivityLegacyEdgeGeo, ActivityLegacyNodeGeo } from './layout.js';
+import type { ActivityLegacyClusterGeo, ActivityLegacyEdgeGeo, ActivityLegacyNodeGeo } from './layout.js';
+import type { ActivityLegacyDotCluster } from './activity-legacy-dot.js';
+import type { MagneticBorder } from '../../core/klimt/geom/MagneticBorder.js';
+import { buildCluster } from './renderer-cluster.js';
 import type { ActivityLegacySkinParam } from './activity-legacy-skin-param.js';
 import { cardinalityFontOf, labelFontOf } from './activity-legacy-edge-text.js';
 import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
@@ -142,6 +145,24 @@ export interface EdgeContext {
   readonly stringBounder: StringBounder;
   /** Every node, in `Bibliotekon#allNodes` order: `manageCollision` pushes the quantifiers clear of them. */
   readonly nodes: readonly ActivityLegacyNodeGeo[];
+  /** Every solved partition: a link to one is pulled to its magnetic border. */
+  readonly clusters: readonly ActivityLegacyClusterGeo[];
+}
+
+/**
+ * `getSvekCluster1/2().getMagneticBorder()` for an end with no `SvekNode` (a partition), in the layout frame both the
+ * edge points and the cluster box share. @see SvekEdge.java:921-942, 796-802
+ */
+function magnetFields(edge: ActivityLegacyEdgeGeo, ctx: EdgeContext): Partial<SvekEdgeInput> {
+  const magnetOf = (end: ActivityLegacyDotCluster): MagneticBorder =>
+    buildCluster(
+      ctx.clusters.find((c) => c.id === end.id)!,
+      ctx.skinParam,
+    ).getMagneticBorder();
+  return {
+    ...(edge.tailCluster === undefined ? {} : { magnet1: magnetOf(edge.tailCluster) }),
+    ...(edge.headCluster === undefined ? {} : { magnet2: magnetOf(edge.headCluster) }),
+  };
 }
 
 /**
@@ -272,6 +293,7 @@ export function edgeInputOf(edge: ActivityLegacyEdgeGeo, ctx: EdgeContext): Svek
     headColor,
     backgroundColor: lightPaintOf(skinParam.getBackgroundColor()),
     ...decorFields(link),
+    ...magnetFields(edge, ctx),
     ...quantifierFields(edge, ctx),
     ...labelFields(edge, skinParam),
   };

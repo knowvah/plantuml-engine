@@ -30,6 +30,7 @@ import { Rankdir } from '../../core/klimt/geom/Rankdir.js';
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import { PragmaKey } from '../../core/skin/PragmaKey.js';
+import { getSpecialPointId } from '../../core/svek/Cluster.js';
 import { createClusterHeader, type ClusterHeaderResult } from '../../core/svek/ClusterHeader.js';
 import { createEntityImageBlockInternal, type LegacyLeafImage } from '../../core/svek/GeneralImageBuilder.js';
 import type { NodePolygons, OctagonPolygon } from '../../core/svek/image/EntityImageActivity.js';
@@ -37,6 +38,12 @@ import { ShapeType } from '../../core/svek/ShapeType.js';
 import { getStyleName } from '../../core/svek/diagram-type-style-name.js';
 import type { ActivityDiagram } from './ActivityDiagram.js';
 import { buildEdgeTexts, type EdgeTexts } from './activity-legacy-edge-text.js';
+import {
+  edgeEndsOf,
+  implicitSpecialPoints,
+  isThereALinkFromOrToGroup,
+  specialPointNode,
+} from './activity-legacy-dot-ends.js';
 import { getOrderedLinks } from './activity-legacy-links.js';
 import { getSeparators } from './activity-legacy-spacing.js';
 import type { ActivityLegacySkinParam } from './activity-legacy-skin-param.js';
@@ -97,11 +104,19 @@ export interface ActivityLegacyDotNode {
   readonly height: number;
 }
 
-/** One `SvekEdge`: the link and its texts. */
+/** One `SvekEdge`: the link, its texts and its two DOT ends. */
 export interface ActivityLegacyDotEdge {
   readonly id: string;
   readonly link: Link;
   readonly texts: EdgeTexts;
+  /** `link.getEntityPort1(bibliotekon)`: a node id, or a group's special point. @see SvekEdge.java:249 */
+  readonly startUid: string;
+  /** `link.getEntityPort2(bibliotekon)`. @see SvekEdge.java:250 */
+  readonly endUid: string;
+  /** `ltail`: the cluster of a group start (`startUid` is a special point). @see SvekEdge.java:252-254 */
+  readonly tailCluster?: ActivityLegacyDotCluster;
+  /** `lhead`: the cluster of a group end. @see SvekEdge.java:256-258 */
+  readonly headCluster?: ActivityLegacyDotCluster;
 }
 
 /** One `Cluster`: the group and its header. */
@@ -264,21 +279,37 @@ class DotBuilder {
   get dotClusterList(): DotInputCluster[] {
     return this.dotClusters;
   }
+
+  /**
+   * `thereALinkFromOrToGroup2`, decided when the DOT is printed over every `SvekEdge` of the pass: a linked cluster
+   * declares its group's special point in the base cluster and (`thereALinkFromOrToGroup1`, true for every graphviz
+   * version, `GraphvizVersion#useProtectionWhenThereALinkFromOrToGroup`) opens the `a`/`i` wrappers around it.
+   * Returns the special points' `DotInputNode`s; they are not `SvekNode`s, so never enter {@link nodes}.
+   * @see ClusterDotString.java:91-99, 148-152, 317-323
+   */
+  finishClusters(edges: readonly ActivityLegacyDotEdge[]): DotInputNode[] {
+    const points: DotInputNode[] = [];
+    this.clusters.forEach((cl, index) => {
+      if (!isThereALinkFromOrToGroup(edges, cl.group)) return;
+
+      const cluster = this.dotClusters[index]!;
+      const point = getSpecialPointId(cl.group);
+      if (cluster.swimlane !== true) cluster.innerMarginLevels = 2;
+      cluster.unwrappedNodeId = point;
+      cluster.nodeIds.push(point);
+      points.push(specialPointNode(point));
+    });
+    return points;
+  }
 }
 
 function parentOf(parentClusterId: string | undefined): { parentId?: string } {
   return parentClusterId === undefined ? {} : { parentId: parentClusterId };
 }
 
-/** `link.getEntity1()`/`getEntity2()` must be leaves: a link to a partition is `Cluster.CENTER_ID`, not ported. */
-function requireLeaf(entity: Entity): Entity {
-  if (entity.isGroup()) throw new Error('unported: a link to a partition (Cluster.CENTER_ID)');
-  return entity;
-}
-
 /** The `DotInputEdge` of one `SvekEdge`. @see SvekEdge.java:294-327 (`appendLine`) */
 function dotEdgeOf(edge: ActivityLegacyDotEdge, ortho: boolean, stringBounder: StringBounder): DotInputEdge {
-  const { id, link, texts } = edge;
+  const { id, link, texts, startUid, endUid } = edge;
   const attributes: NonNullable<DotInputEdge['attributes']> = { minLen: link.getLength() - 1 };
   if (texts.labelDim !== undefined) {
     const width = Math.trunc(texts.labelDim.width / (texts.divideLabelWidthByTwo ? 2 : 1));
@@ -302,8 +333,8 @@ function dotEdgeOf(edge: ActivityLegacyDotEdge, ortho: boolean, stringBounder: S
 
   return {
     id,
-    from: nodeIdOf(requireLeaf(link.getEntity1())),
-    to: nodeIdOf(requireLeaf(link.getEntity2())),
+    from: startUid,
+    to: endUid,
     attributes,
     ...(link.isInverted() ? { inverted: true as const } : {}),
   };
@@ -351,6 +382,7 @@ function buildEdges(
   ctx: ActivityLegacyDotContext,
   scope: ActivityLegacyDotScope,
   nodes: readonly ActivityLegacyDotNode[],
+  clusters: readonly ActivityLegacyDotCluster[],
 ): ActivityLegacyDotEdge[] {
   const skinParam = ctx.diagram.getSkinParam();
   const edges: ActivityLegacyDotEdge[] = [];
@@ -364,7 +396,7 @@ function buildEdges(
     if (!hasNode(placed, link.getEntity1()) || !hasNode(placed, link.getEntity2())) continue;
 
     const texts = buildEdgeTexts(link, { skinParam, stringBounder: ctx.stringBounder, measurer: ctx.measurer });
-    edges.push({ id: `edge-${edges.length}`, link, texts });
+    edges.push({ id: `edge-${edges.length}`, link, texts, ...edgeEndsOf(link, placed, clusters) });
   }
   return edges;
 }
@@ -397,14 +429,21 @@ export function buildActivityLegacyDot(ctx: ActivityLegacyDotContext): ActivityL
   builder.printGroups(scope.topParent, undefined);
   builder.printEntities(getUnpackagedEntities(scope), undefined);
 
-  const edges = buildEdges(ctx, scope, builder.nodes);
+  const edges = buildEdges(ctx, scope, builder.nodes, builder.clusters);
   const kermor = diagram.getPragma().isTrue(PragmaKey.KERMOR);
-  const dotNodes: DotInputNode[] = builder.nodes.map((n) => ({
-    id: n.id,
-    width: n.width,
-    height: n.height,
-    shape: dotShapeOf(n.image.getShapeType()),
-  }));
+  // `ClusterDotStringKermor#printInternal` never computes `thereALinkFromOrToGroup` nor declares the special point
+  // (its `empty()` is called nowhere): the edges name `za<uid>` and graphviz creates a default node for it at the
+  // root. @see ClusterDotStringKermor.java:69-165, 190-196
+  const specialPoints = kermor ? implicitSpecialPoints(edges) : builder.finishClusters(edges);
+  const dotNodes: DotInputNode[] = [
+    ...builder.nodes.map((n) => ({
+      id: n.id,
+      width: n.width,
+      height: n.height,
+      shape: dotShapeOf(n.image.getShapeType()),
+    })),
+    ...specialPoints,
+  ];
   const dotEdges = edges.map((e) => dotEdgeOf(e, dotSplines === 'ortho', stringBounder));
 
   const graph: DotInputGraph = {

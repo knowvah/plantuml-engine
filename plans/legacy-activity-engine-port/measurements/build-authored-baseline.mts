@@ -18,8 +18,6 @@ const ELK_REASON =
   '#158: `!pragma layout elk` draws through CucaDiagramFileMakerElk over the legacy model, not ported yet';
 /** D8 ends of the authored rows the jar draws and we do not match (decision-journal rows 19, 20). */
 const OPEN_ROWS: Readonly<Record<string, string>> = {
-  'partition-link':
-    '#157: a link to a partition needs the zaent point and ltail/lhead (ClusterDotString.java:149, SvekEdge.java:252-258)',
   'pragma-elk': ELK_REASON,
   'pragma-elk-if': ELK_REASON,
   'pragma-smetana':

@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2609 modules · 8548 exported names.
+2610 modules · 8556 exported names.
 
 ## `src/`
 
@@ -190,7 +190,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `svek-dot-swimlane.ts` | `SwimlaneNames`, `swimlaneNames`, `swimlaneClusters`, `swimlaneRankLines`, `swimlaneClusterLines`, `swimlanePointIds`, `swimlaneEncounterHead`, `withSwimlanePoints`, `addSwimlaneRanks` | The swimlane DOT of a cluster, shared by the three consumers of one `DotInputGraph` (the text emitter, the node encounter order and the layout builder), opt-in per cluster: only an engine that sets `DotInputCluster.swimlane` gets any of it, |
 | `svek-dot-together.ts` | `ROOT_TOGETHER_PREFIX`, `togetherClusters` | `together { }` blocks as svek prints them: an unlabelled `subgraph <clusterId>t<k> { ... |
 | `svek-dot-top.ts` | `IsNormalPosition`, `nodesOrderedTop`, `nodesOrderedWithoutTop`, `normalPositionOf`, `topsFirstClusters`, `rootTops` | `Cluster#getNodesOrderedTop` / `getNodesOrderedWithoutTop` — the split `printCluster1` / `printCluster2` make of one cluster's own nodes. |
-| `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `BorderPointAnchorDecl`, `borderPointAnchorDecl`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
+| `svek-dot-wrappers.ts` | `WrapperLevels`, `wrapperLevels`, `unwrappedNodeIdOf`, `BorderPointAnchorDecl`, `borderPointAnchorDecl`, `subgraphNoLabel`, `outerWrapperLines`, `innerWrapperLines`, `closeCount` | ClusterDotString's protection-wrapper nesting, shared by the two consumers of one `DotInputGraph`: the LAYOUT builder (`graph-layout-build.ts` #addClusters, which already built this nesting) and the DOT-TEXT emitter (`svek-dot-emit.ts`, whi |
 | `svg-backcolor.ts` | `Backcolor`, `backcolorPaint` | The document background, decided once the way `SvgGraphics`' constructor decides it -- a pure port of its three-way split so every finalizer that has no verified copy of its own (json family, state, class, description) calls ONE implementat |
 | `svg-defs-scale.ts` | `scaleShadowFilterDefs` | svg-defs-scale.ts -- the document scale applied to the shadow `<filter>` def. |
 | `svg-defs-seeded.ts` | `getSeed`, `seededDefIdRenames`, `applySeededDefIds` | svg-defs-seeded.ts — the seeded def-id pass over an assembled document. |
@@ -1066,7 +1066,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `Boundary.ts` | `Boundary` |  |
 | `CircleInterface2.ts` | `CircleInterface2` |  |
-| `Cluster.ts` | `ClusterGeometry`, `ClusterUrl`, `ClusterGroupInfo`, `ClusterStyleDefaults`, `ClusterHeaderInfo`, `ClusterSymbolInfo`, `resolveBorderColor`, `resolveRoundCorner`, `getStrokeInternal`, `resolveBackColor`, `Cluster` | Cluster — the DRAWING half of a description/component/usecase-diagram container (a `package`, `frame`, `node`, or component/interface acting as a group): the `<!--cluster X-->` comment, the `<g class="cluster" data-qualified-name="..." id=" |
+| `Cluster.ts` | `ClusterGeometry`, `CENTER_ID`, `getSpecialPointId`, `ClusterUrl`, `ClusterGroupInfo`, `ClusterStyleDefaults`, `ClusterHeaderInfo`, `ClusterSymbolInfo`, `resolveBorderColor`, `resolveRoundCorner`, `getStrokeInternal`, `resolveBackColor`, `Cluster` | Cluster — the DRAWING half of a description/component/usecase-diagram container (a `package`, `frame`, `node`, or component/interface acting as a group): the `<!--cluster X-->` comment, the `<g class="cluster" data-qualified-name="..." id=" |
 | `ClusterDecoration.ts` | `ClusterGeometry`, `ClusterDecoration` | ClusterDecoration — resolves a Cluster's `USymbol` (an explicit one, or a `PackageStyle` fallback) and draws its `asBig` chrome (body outline + title + stereotype) at the cluster's own geometry. |
 | `ClusterHeader.ts` | `ClusterHeaderResult`, `createClusterHeader` | `ClusterHeader` — the title block of a group and the `(int)` size of the title table the DOT reserves for it (`ClusterDotString` writes `getTitleAndAttributeWidth()` by `getTitleAndAttributeHeight() - 5`). |
 | `Control.ts` | `Control` |  |
@@ -1566,6 +1566,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `activity-legacy-dot-ends.ts` | `edgeEndsOf`, `isThereALinkFromOrToGroup`, `specialPointNode`, `implicitSpecialPoints` | The two DOT ends of a legacy activity `SvekEdge` and the special point of a linked partition: `Bibliotekon #getNodeUid` names a leaf's node, else a group's `Cluster.getSpecialPointId`; an end that is a special point records the group's clus |
 | `activity-legacy-dot.ts` | `ActivityLegacyDotScope`, `rootScope`, `ActivityLegacyDotContext`, `ActivityLegacyDotNode`, `ActivityLegacyDotEdge`, `ActivityLegacyDotCluster`, `ActivityLegacyDot`, `NodePolygonStore`, `dotShapeOf`, `buildActivityLegacyDot` | The DOT input of a legacy activity diagram: `GraphvizImageBuilder#buildImage`'s `printGroups` / `printEntities` (one `SvekNode` per leaf, one `Cluster` per partition, created in that order) and the `SvekEdge` of each link of `getOrderedLink |
 | `activity-legacy-edge-text.ts` | `EdgeTexts`, `EdgeTextContext`, `labelFontOf`, `cardinalityFontOf`, `buildEdgeTexts`, `LABEL_SHIELD` | The texts a `SvekEdge` builds in its constructor and that the DOT reserves a box for: the label (with the `note on link` merged onto it), the quantifiers (the `if` condition is the second one) and the roles. |
 | `activity-legacy-links.ts` | `getOrderedLinks` | `CucaDiagramFileMakerSvek#getOrderedLinks`: the links svek lays out and draws, regrouped so that links with the same two entities (in either direction) sit next to each other, a new one after the last of its group. |
@@ -1581,7 +1582,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `layout-geometry.ts` | `ActivityLegacyNodeGeo`, `ActivityLegacyEdgeGeo`, `ActivityLegacyClusterGeo`, `ActivityLegacyGeometry`, `solveActivityLegacy` | The solved geometry of one `GraphvizImageBuilder#buildImage` pass: the DOT of a scope goes through the one dot-engine seam, and what comes back is mapped onto the leaves, links and partitions it was built from. |
 | `layout.ts` | `ActivityLegacyClusterGeo`, `ActivityLegacyEdgeGeo`, `ActivityLegacyGeometry`, `ActivityLegacyNodeGeo`, `layoutActivityLegacy` | Layout of a legacy activity diagram: `CucaDiagramFileMakerSvek#getTextBlock` up to `DotStringFactory#solve`. |
 | `legacy-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
-| `renderer-cluster.ts` | `drawCluster` | One legacy activity partition as `Cluster#drawU` draws it: the solved {@link ActivityLegacyClusterGeo} becomes the inputs of the shared drawing half (`core/svek/Cluster.ts`). |
+| `renderer-cluster.ts` | `buildCluster`, `drawCluster` | One legacy activity partition as `Cluster#drawU` draws it: the solved {@link ActivityLegacyClusterGeo} becomes the inputs of the shared drawing half (`core/svek/Cluster.ts`). |
 | `renderer-document.ts` | `calculateBackColor`, `muteColorMapper`, `calculateMargin` | The document-level reads of `TitledDiagram` for the legacy activity export: the back colour, the colour mapper and the exporter's margin. |
 | `renderer-edge.ts` | `EdgeContext`, `edgeInputOf`, `drawEdge` | One legacy activity link as `SvekEdge#drawU` draws it: the solved {@link ActivityLegacyEdgeGeo} becomes the `SvekEdgeInput` the shared klimt drawing half (`core/svek/SvekEdge.ts`) takes. |
 | `renderer-opale.ts` | `bindOpaleNotes` | The notes `GraphvizImageBuilder#buildImage` opalises: a `note` leaf with exactly one visible link, to a non-note, is drawn notched towards that entity and its link is not drawn (`SvekEdge#drawU` returns when `opale`). |
