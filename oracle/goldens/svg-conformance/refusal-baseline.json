@@ -39156,11 +39156,11 @@
       "type": "c4",
       "slug": "kipive-74-lele070",
       "jarRendered": false,
-      "weErrored": true,
-      "engine": "description",
+      "weErrored": false,
+      "engine": "class",
       "status": "jar-error",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "27ed6346"
+      "measuredAt": "2026-11-16",
+      "measuredAgainstCommit": "478e6228"
     },
     {
       "tree": "dot-cache",

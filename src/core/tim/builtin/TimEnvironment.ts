@@ -26,6 +26,7 @@
  * without any builtin changing.
  */
 
+import { versionString } from '../../version.js';
 import type { JsonValue } from '../expression/Token.js';
 
 /** Faithful analog of `System.currentTimeMillis()` -- injected, never read live. */
@@ -113,7 +114,12 @@ export interface TimEnvironment {
   /** Theme names for `%get_all_theme()`. */
   listThemeNames(): readonly string[];
 
-  /** `%version` -- this build's version string. Not sourced from `package.json` at runtime (browser-safe). */
+  /**
+   * `%version` -- the version string. Upstream answers `Version.versionString()`
+   * (`GetVersion.java:63-66` -> `Version.java:47-49`); the default here answers
+   * this port's `versionString()` by maintainer ruling #155 (2026-11-09). Not
+   * sourced from `package.json` at runtime (browser-safe).
+   */
   getVersionString(): string;
 }
 
@@ -123,7 +129,8 @@ export interface TimEnvironment {
  * well-typed, upstream-shaped value (an empty string, `false`, `[]`, `{}`,
  * or a stable `0`) rather than throwing -- matching upstream's own
  * graceful-degradation branches (e.g. `Dirpath`/`Filename` returning `""`
- * when `Defines#getEnvironmentValue` yields `null`).
+ * when `Defines#getEnvironmentValue` yields `null`). The version is the one
+ * non-empty answer: this port's compiled-in `versionString()` (ruling #155).
  */
 export function createDefaultTimEnvironment(): TimEnvironment {
   return {
@@ -137,6 +144,6 @@ export function createDefaultTimEnvironment(): TimEnvironment {
     getStdlibMetadata: () => undefined,
     getStdlibJsonResource: () => undefined,
     listThemeNames: () => [],
-    getVersionString: () => 'unknown',
+    getVersionString: () => versionString(),
   };
 }

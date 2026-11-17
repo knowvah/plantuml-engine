@@ -702,6 +702,42 @@ browser (no `fs`, no `process.env`) and render reproducibly (no `Date.now()`, no
 `Math.random()`). A host can supply a real implementation. **Category:**
 limitation.
 
+### `%version()` prints this port's version
+
+**Upstream:** `GetVersion#executeReturnFunction` returns
+`Version.versionString()` (`tim/builtin/GetVersion.java:63-66`), which is
+`CompilationInfo.VERSION` (`version/Version.java:47-49`). The oracle jar is an
+unfiltered development build, so it prints the placeholder `$version$`.
+
+**This port:** the default `TimEnvironment` answers `versionString()`
+(`src/core/version.ts`, `VERSION`, kept equal to `package.json#version` by
+`tests/unit/core/version.test.ts`), so `%version()` prints `0.2.0`. A host can
+still inject another answer through the seam.
+
+**Rows**, each ledgered in `oracle/accepted-divergences.json` under this ruling:
+
+- `svg-activity/rekefe-90-baju604`, whose legend reads `Rendered with Plantuml
+  Version %version()`, stays diverged on the 5 legend attributes (the text, its
+  `textLength` and `x`, and the legend box's `width` and `x`), with its
+  measured `maxΔ`.
+- `svg-c4/kipive-74-lele070` (`C4Version()` then `%version()`) left
+  conformant. Its lines preprocess to `2.13.0` and the version. The oracle's
+  `$version$` line is refused at line 5, as `unknown` was here, so both sides
+  drew error pages. `0.2.0` is a line the jar accepts too (verified with the
+  literal text through `scripts/oracle-render.sh`), so we now draw where the
+  dev-build oracle errors. What we draw for that text differs from what the jar
+  draws (a class diagram where the jar falls through to description): #205.
+
+`unknown/duluve-89-mati167` also calls `%version()` in its footer; it is
+already ledgered as jar-errors-we-draw (#143), and its verdict did not move.
+
+**Unchanged:** the `<?plantuml $version$?>` processing instruction
+(`src/core/klimt/document-shell.ts`, upstream `SvgGraphics.java:307`) and the
+error pages ("Error pages print this port's version") — the ruling covers the
+builtin only.
+
+**Category:** kept by user ruling (2026-11-09, #155).
+
 ### ~~`%newline()` / `%breakline()` emit a real newline~~ — RETIRED (unwind-U3, 2026-10-08)
 
 The flag is upstream's `true` (`JawsFlags.java:40`) and the sentinels decode as upstream (`Display.java:316-341`); unwind-U3 removed the port-only case-insensitive `%n()`/`%newline()` split in `flatten()` (TIM finds calls by an exact trie walk, `TrieImpl.java:91-111`). Open defects (not divergences): class member, description link label and state transition label skip `Display#getWithNewlines` (`it.fails` in `tests/unit/core/tim/unwind-u3-jar-fixtures.test.ts`).

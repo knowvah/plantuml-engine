@@ -94,8 +94,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'openDefect',
     detail:
       'Not a regression: the 5 rows short of conformant are named. Three are LaTeX under KaTeX and one is a QR ' +
-      'code under the MIT edition (DIVERGENCES.md); `rekefe-90` prints `%version()` and waits on #155. The ' +
-      'legacy `(*) -->` syntax is drawn by the legacy activity engine (#123), pinned in `svg-activity-legacy`.',
+      "code under the MIT edition (DIVERGENCES.md); `rekefe-90` prints this port's version from `%version()`, a " +
+      'signed divergence (#155, `oracle/accepted-divergences.json`). The legacy `(*) -->` syntax is drawn by the ' +
+      'legacy activity engine (#123), pinned in `svg-activity-legacy`.',
   },
   class: {
     noteClass: 'openDefect',
@@ -118,9 +119,10 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   c4: {
     noteClass: 'jarDeclines',
     detail:
-      'Drawn by the description engine, with two class rows and one ELK row: 10 of 11 conformant since ' +
-      'c4-divergence-drive (#114), 9 pinned. The last, `gikaju-64`, is a jar error page where we draw, a signed entry ' +
-      'in `oracle/accepted-divergences.json`.',
+      'Drawn by the description engine, with two class rows and one ELK row: 9 of 11 conformant, 9 pinned ' +
+      '(c4-divergence-drive, #114). The other two are jar error pages where we draw, each a signed entry in ' +
+      '`oracle/accepted-divergences.json`: `gikaju-64`, and `kipive-74`, whose `%version()` prints this ' +
+      "port's version (#155) where the dev-build jar prints `$version$` and errors.",
   },
   component: {
     noteClass: 'openDefect',

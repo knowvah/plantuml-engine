@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T01:28:39.304Z",
+  "generatedAt": "2026-11-17T02:46:45.674Z",
   "fixtures": [
     {
       "slug": "biluko-70-licu481",
@@ -40,10 +40,10 @@
     {
       "slug": "kipive-74-lele070",
       "type": "c4",
-      "dotEqual": true,
+      "dotEqual": false,
       "layoutEqual": "n/a",
-      "verdict": "conformant",
-      "errorPage": true
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "ropexu-72-jecu171",

@@ -1,9 +1,12 @@
 /**
- * `%version()` -- this build's version string. Sourced from the injected
- * {@link TimEnvironment} rather than `package.json` at runtime (browser-safe;
- * see `TimEnvironment.ts`'s file header) -- a deliberate divergence from
- * upstream's `net.sourceforge.plantuml.version.Version#versionString()`,
- * which reads a compiled-in constant.
+ * `%version()` -- the version string, read through the injected
+ * {@link TimEnvironment}. Upstream returns `Version.versionString()`
+ * (`GetVersion.java:63-66`), i.e. `CompilationInfo.VERSION`
+ * (`Version.java:47-49`), which the dev-build oracle jar prints as
+ * `$version$`. The default environment answers this port's own
+ * `versionString()` (`src/core/version.ts`) by maintainer ruling #155
+ * (2026-11-09) -- a signed divergence (DIVERGENCES.md, "`%version()` prints
+ * this port's version").
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/builtin/GetVersion.java
  */
 

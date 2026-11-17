@@ -1189,6 +1189,24 @@
       "retiredAt": "2026-11-10",
       "retiredBy": "regex-engine-port T3a (#126); maintainer confirmed 2026-11-11 (#167)",
       "retiredReason": "The regex engine (regex-engine-port T3a) now parses this source and refuses document line 1 (the jar's line 2) with the jar's own message, \"Error parsing: Bad quantifier {([^{}\": `readQuantifier` reads a `{` to the next `}` or the end of the line and rejects any braced text that is not `^\\\\{[0-9,]+\\\\}$` (RegexExpression.java:244-265), and `PSystemRegex#addBlocLines` turns the `RegexParsingException` into `Error parsing: ` + its message (PSystemRegex.java:172-174). So the jar errors and we error: conformant under the 2026-10-10 error-page rule (the survey prints it conformant). The divergence this entry accepted -- we drew where the jar errored -- is gone."
+    },
+    {
+      "match": {
+        "id": "svg-activity/rekefe-90-baju604"
+      },
+      "scope": "svg-conformance activity survey (%version() prints this port's version -- ruling #155)",
+      "acceptedAt": "2026-11-09",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-09 on #155, option (c): \"Version should return this port's version string. If 'Unknown', use something like `0.0.999`.\" Upstream's `%version()` returns `Version.versionString()` (GetVersion.java:63-66), i.e. `CompilationInfo.VERSION` (Version.java:47-49); the oracle jar is an unfiltered development build, so its legend line reads `Rendered with Plantuml Version $version$`. This port's default TimEnvironment answers `versionString()` (src/core/version.ts, pinned to package.json#version), so ours reads `Rendered with Plantuml Version 0.2.0` (DIVERGENCES.md, \"`%version()` prints this port's version\"). Measured 2026-11-16 (version-builtin T1a): diverged, maxDelta 16.95, 5 diffs (weightedScore 5), every one on the legend line and following from the text width: svg/g[1]/g[1]/text[1]/text()[1], text[1]/@textLength 134.25 vs 151.2, text[1]/@x, rect[1]/@width 148.65 vs 165.6 (the maxDelta path), rect[1]/@x. Everything else in the drawing compares conformant. The bound moves with the port's version string length; the attribute set does not."
+    },
+    {
+      "match": {
+        "id": "svg-c4/kipive-74-lele070"
+      },
+      "scope": "svg-conformance c4 survey (%version() prints this port's version -- ruling #155)",
+      "acceptedAt": "2026-11-17",
+      "acceptedBy": "maintainer",
+      "reason": "Maintainer ruling 2026-11-17 on #206 (option 1, accept as ledgered), under the ruling of 2026-11-09 on #155 (option c, see the svg-activity/rekefe-90-baju604 entry): `%version()` returns this port's version string. The source is `C4Version()` then `%version()`, which preprocess to `2.13.0` and the version. The oracle jar is an unfiltered development build, so its `%version()` is `$version$` (GetVersion.java:63-66, Version.java:47-49), a line it refuses (stock-error-pages.json: line 5, \"Syntax Error? (Assumed diagram type: class)\"); this port refused its old `unknown` the same way, so the row was conformant as a pair of error pages. Ours now reads `0.2.0`, and the jar accepts that text as well (verified 2026-11-16 through scripts/oracle-render.sh with the literal line: it draws), so we draw where the dev-build oracle errors. The release jar (plantuml-1.2026.8.jar, no -D flags) draws this row too, exit 0, because its `%version()` is its real version (checked 2026-11-16): only the dev build errors, so this is not the error-page acceptance of 2026-10-10, whose test is that the release jar also errors. Measured 2026-11-16 (version-builtin batch-1 close): diverged, firstDiff 'error-page'; refusal and routing baselines re-pinned (weErrored false, engine class). What we draw for that text is a class diagram where the jar falls through to description, a separate defect tracked as #205; fixing it would not make this row conformant. The survey still prints it diverged; this entry declares it, it does not special-case it."
     }
   ]
 }

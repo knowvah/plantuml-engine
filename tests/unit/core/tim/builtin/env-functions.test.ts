@@ -19,6 +19,7 @@ import {
   type TimEnvironment,
 } from '../../../../../src/core/tim/builtin/TimEnvironment.js';
 import { formatDate } from '../../../../../src/core/tim/builtin/date-format.js';
+import { versionString } from '../../../../../src/core/version.js';
 import { LOC, NO_MEMORY, NO_NAMED, fakeContext } from '../../../../helpers/tim-builtin.js';
 
 describe('createDefaultTimEnvironment', () => {
@@ -31,7 +32,8 @@ describe('createDefaultTimEnvironment', () => {
     expect(env.fileExists('/etc/passwd')).toBe(false);
     expect(env.listStdlibFolderNames()).toEqual([]);
     expect(env.listThemeNames()).toEqual([]);
-    expect(env.getVersionString()).toBe('unknown');
+    // Ruling #155 (2026-11-09): `%version()` answers this port's version.
+    expect(env.getVersionString()).toBe(versionString());
   });
 });
 
