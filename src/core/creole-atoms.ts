@@ -47,6 +47,7 @@ import type { Paint } from './paint.js';
 import type { SpriteTint } from './klimt/sprite/sprite-tint.js';
 import type { StringBounder } from './klimt/font/StringBounder.js';
 import type { SvgParserSelector } from './klimt/sprite/sax/svg-sprite-parser-factory.js';
+import type { EmojiArtworkResolver } from './internal-emoji-store.js';
 
 // ---------------------------------------------------------------------------
 // Token model
@@ -202,7 +203,15 @@ export interface DrawablePrimitive {
  */
 export type StringBounderSupplier = () => StringBounder;
 
-export type AtomImageResolver = (
+/**
+ * eea D1 (#150): a resolver also carries the emoji artwork table, the port's render-scoped `Emoji.retrieve`
+ * (`Emoji.java:111-118`: one global table, so every creole line draws an `AtomEmoji`'s artwork,
+ * `AtomEmoji.java:66-68`). `undefined` with no emoji store: the platform-glyph run (`DIVERGENCES.md`, "Emoji
+ * shorthand").
+ */
+export type AtomImageResolver = AtomImageResolverFn & { readonly emojiArtwork?: EmojiArtworkResolver | undefined };
+
+type AtomImageResolverFn = (
   atom: InlineAtomToken,
   stringBounder?: StringBounderSupplier,
 ) =>

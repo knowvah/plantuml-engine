@@ -64,6 +64,7 @@ import { measureInlineAtom, spriteAtomScale } from './creole-atoms-measure.js';
 import type { SpriteRegistry } from './sprite-commands.js';
 import { getSpriteMonochrome, getSpriteSvg, getSpriteColor4096, spriteDimsLookupFor } from './sprite-commands.js';
 import { getSpriteImage } from './sprite-registry.js';
+import { emojiArtworkResolverFor } from './internal-emoji-store.js';
 import type { SpriteImage } from './klimt/sprite/SpriteImage.js';
 import { HColorSimple } from './klimt/color/HColorSimple.js';
 import { spriteMonochromeAsLike, spriteColor4096ToPngDataUri } from './klimt/sprite/sprite-raster.js';
@@ -480,8 +481,10 @@ export function makeAtomImageResolverFor(
   backColor?: HColorOrPaint,
 ): (font: FontConfiguration) => AtomImageResolver {
   const spriteDims = registry !== undefined ? spriteDimsLookupFor(registry) : undefined;
+  // eea D1: the registry's emoji store rides on every resolver (`Emoji.retrieve`, `Emoji.java:111-118`).
+  const emojiArtwork = emojiArtworkResolverFor(registry?.emoji);
   return (font: FontConfiguration): AtomImageResolver => {
-    return (atom: InlineAtomToken, stringBounder?: StringBounderSupplier): ResolvedAtomImage => {
+    const resolve = (atom: InlineAtomToken, stringBounder?: StringBounderSupplier): ResolvedAtomImage => {
       if (atom.kind === 'img') return resolveImgAtom(atom);
       // G2 N41: OpenIconic glyphs have zero description/usecase corpus
       // reach (class-only per the G2 N40 survey) -- undefined here matches
@@ -491,5 +494,6 @@ export function makeAtomImageResolverFor(
       if (registry === undefined || spriteDims === undefined) return undefined;
       return overBack(resolveSpriteAtom(atom, registry, spriteDims, font, ambientStroke, stringBounder), backColor);
     };
+    return emojiArtwork === undefined ? resolve : Object.assign(resolve, { emojiArtwork });
   };
 }

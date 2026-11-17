@@ -1,0 +1,6 @@
+@startuml
+component X
+component Y
+X --> Y : go
+note on link: <:rocket:> noted
+@enduml

@@ -46,6 +46,7 @@ import {
 } from './layout-cluster-boxes.js';
 import { computeGraphSpacing, type EdgeFontSpecs } from './link-edge-attrs.js';
 import { spriteDimsLookupFor } from '../../core/sprite-commands.js';
+import { sizingAtomImageResolverFor } from '../../core/svek/image/leaf-sizing-entity.js';
 import { emojiArtworkResolverFor } from '../../core/internal-emoji-store.js';
 import { GUILLEMET_DEFAULT } from '../../core/text/Guillemet.js';
 import { buildMagmaEdges, magmaGroups } from './magma.js';
@@ -248,7 +249,15 @@ function buildGeoAndEdges(
     dy: 0,
     xlabelTableByDotId: xlabelTables(edgeDotBuild.dotEdges),
     namespaceSeparator: ast.namespaceSeparator,
-    quantifiers: { nodes: result.nodes, measurer, defaultFont: resolveCardinalityFont(theme) },
+    quantifiers: {
+      nodes: result.nodes,
+      measurer,
+      defaultFont: resolveCardinalityFont(theme),
+      // The lookup `ClassifyCtx.sprites` holds (`createClassifyCtx`), so the table and its placement measure alike.
+      atomImageResolverFor: sizingAtomImageResolverFor(
+        ast.sprites === undefined ? undefined : spriteDimsLookupFor(ast.sprites),
+      ),
+    },
     leafMagnet: (node, at) =>
       leafMagneticBorder(node, theme, ast.sprites)?.getForceAt(at, new MeasurerStringBounder(measurer)),
   };

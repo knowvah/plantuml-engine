@@ -1,0 +1,4 @@
+@startuml
+(*) --> [<:rocket:> go] "step"
+"step" --> (*)
+@enduml

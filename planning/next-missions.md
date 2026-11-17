@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## emoji-edge-artwork (eea) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #150; per-task history on the local tag `emoji-edge-artwork/pre-squash`)
+
+Upstream's `Emoji.retrieve` is one global table (`Emoji.java:111-118`), so every creole line draws an `AtomEmoji`'s artwork (`AtomEmoji.java:66-68`, `Emoji.java:175-182`); ours handed the emoji store only to the desc path (`descAtomOps`), so `buildTextBlock` drew the platform glyph on edge labels. The registry-backed `AtomImageResolver` now carries the store (`emojiArtwork`) and `drawAtoms` draws through `drawEmojiAtom`, with byte-identical output when no store is wired. `SvekEdge#drawEndText` and `measureQuantifierBlock` take the label's resolver (`SvekEdge.java:328-340`: one `skinParam`), so a quantifier draws its emoji and sizes its sprite, and legacy activity's edge input carries the registry resolver. `emoji-mixed-edge` left `PENDING`. 19 authored probes in `tests/oracle/svg-conformance/emoji-edge-artwork.authored.test.ts`: 13 at zero, 6 open on #199-#202. No verdict or diff count moved in any engine; d.ts byte-identical.
+
+Follow-ons:
+- **#199 (`queue:ready`)**: the class engine sizes and draws its edge label (`class-edge-label-measure.ts:225`) and quantifier (`edge-label-box.ts#computeQuantifierBox`) as raw text, so `<:name:>` is measured as glyphs (58 and 97 diffs).
+- **#200 (`queue:ready`)**: a description group title draws the glyph (`buildClusterTitle` passes `descAtomOps` no `emojiArtwork`) and its tab moves (7.167 vs 6), 39 diffs.
+- **#201 (`queue:ready`)**: the state transition label's own creole block (`state-label-style.ts#labelCreoleBlock`) gives the emoji no width and no artwork, 3 diffs.
+- **#202 (`queue:ready`)**: every description note, standalone or on a link, draws no artwork: `buildNoteBody` calls `buildDesc` with no `emojiArtwork` (`leaf-sizing.ts:247-277`), and the link note gets `undefined` sprites (`renderer-edge.ts:205`), 9 diffs each.
+
 ## usymbol-group-scale (ugs) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #149; per-task history on the local tag `usymbol-group-scale/pre-squash`)
 
 Under `scale`, `SvgGraphics#format` multiplies every emitted number by the document scale (`SvgGraphics.java:467-474`), so upstream's cluster, drawn in layout units through the scaled `UGraphic`, scales every literal inside `USymbol#asBig` as well. Ours drew the pre-scaled `NamespaceGeo` at scale 1, so every non-folder USymbol group left its literals unscaled (the node's 10 px corner, the rectangle's `2 + dimStereo` title offset, the database's 20 px cap). `renderNamespaceUSymbol` now unscales the geo and theme and draws with `SvgOption.scale`, as the #140 leaf does. The cluster header stereo (displayed stereotype and group legend) was a 3-dp string spliced unscaled on every draw path. It now keeps a deferred twin (`ClusterHeaderStereo.deferredBody`), which `placedClusterHeaderBody` formats once at the factor, on the USymbol and folder/rect paths. 37 authored probes in `tests/oracle/svg-conformance/usymbol-group-scale.authored.test.ts`: 34 at zero, 3 open on #196/#197. No verdict or diff count moved in any engine; d.ts byte-identical.

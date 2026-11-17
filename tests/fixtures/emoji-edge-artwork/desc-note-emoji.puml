@@ -1,0 +1,4 @@
+@startuml
+component X
+note right of X : <:rocket:> noted
+@enduml
