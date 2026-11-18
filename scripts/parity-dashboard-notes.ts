@@ -87,8 +87,7 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'openDefect',
     detail:
       'The wire engine (#128) draws all 18 conformant, byte-identical and pinned in `svg-wire`. 113 authored ' +
-      'fixtures in `tests/fixtures/wire` hold at 0 diffs or jar error pairs; `cov-embedded-state-note` waits on a ' +
-      'state-engine gap (#168).',
+      'fixtures in `tests/fixtures/wire` hold at 0 diffs or jar error pairs.',
   },
   activity: {
     noteClass: 'openDefect',

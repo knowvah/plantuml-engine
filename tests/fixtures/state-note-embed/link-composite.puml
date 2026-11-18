@@ -1,0 +1,12 @@
+@startuml
+state C {
+  state A
+  state B
+  A --> B
+  note on link
+  {{
+  class X
+  }}
+  end note
+}
+@enduml

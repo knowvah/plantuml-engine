@@ -35,6 +35,14 @@ post-D7 measurements.
 
 ---
 
+## state-note-embed (sne) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #168; per-task history on the local tag `state-note-embed/pre-squash`)
+
+A `{{ … }}` block in a state note now draws as the one `<image>` the jar's `EmbeddedDiagram` atom draws, at `(marginX1, marginY)` (`Opale.java:127`). `src/diagrams/state/state-note-stripes.ts` builds a note body's stripes the way `BodyEnhanced2#getArea` builds its blocks (separators decorated, an embed's lines kept whole), each block through the shared label stripe walk (`state-label-style.ts#segmentStripes`/`placeStripes`); the note's box stays on `buildNoteBody`. `src/diagrams/state/state-embed-draw.ts` draws an atom for labels and notes alike (D3) and a separator as the `UHorizontalLine` inside the note's `UGraphicStencil`. A `note on link` is sized and drawn the same way (`ComponentRoseNote` is `enhanced`: `BodyFactory.create3`), through one `measureStateLinkNoteDim` that all four callers share. The state note reader now takes an embedded block as one step (`state-note-multiline.ts`, calling `multiline-candidate.ts`'s port of `PSystemCommandFactory#addOneSingleLineManageEmbedded2`), so an `end note` inside `{{ }}` is body, and an unterminated `{{` or a note never closed is `Syntax Error?` at the note line, as in the jar. `timing/cov-embedded-state` and `wire/cov-embedded-state-note` are at 0 and leave both gates' `OPEN_ROWS`; 20 authored rows in `tests/fixtures/state-note-embed/` (16 at 0 with the jar's `<image>`s, 4 error pairs), held by `state-note-embed.authored.test.ts`. Nothing was lost in any engine, and no divergence was added.
+
+Follow-ons:
+
+1. **An embed-free state note with a `--`/`==`/`..`/`__` separator** draws the separator as text (#209): the stripe path's block walk already handles it, behind the embed guard D2 kept.
+
 ## legacy-partition-link (lpl) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #157; per-task history on the local tag `legacy-partition-link/pre-squash`)
 
 A legacy activity link to a partition draws as the jar draws it. The edge names the group's special point (`Cluster.getSpecialPointId`, now exported from `src/core/svek/Cluster.ts`); a linked cluster declares it inside the `a`/`p0`/`i`/`p1` wrappers, under swimlanes `a`/`i` only (`wrapperLevels` gained that branch, shared by builder, emitter and node order), and under kermor not at all (`DotInputNode.implicit`: graphviz's default node, `ClusterDotStringKermor.java:69-165`). The solve trims the spline to the partition box (`simulateCompound`), the draw pulls it to the package's magnetic border (`Cluster.ts` now keeps it for a symbol-less PACKAGE, opt-in) and shifts a group self-link the jar's way (`SvekEdge.java:863-869`). `partition-link` 21 → 0 plus 10 authored fixtures, all 0, DOT pinned EQUAL; `OPEN_ROWS` is the ELK/Smetana trio only. No issue filed. Follow-on (`.agent-notes/lpl-T2a.md`): description's cluster magnet does not set the PACKAGE flag; three engines each carry the group-autolink shift.
@@ -258,7 +266,7 @@ The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMat
 
 **What remains:**
 
-1. **A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.
+1. ~~**A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.~~ Done by #168 (sne, 2026-11-17).
 2. **Bold on the creole atom path never reaches `jarMeasurer`** (`.agent-notes/wrp-T3.md`): every production bold creole run measures plain, because `FontSpec.weight` is what `JarMeasurer` reads and the atom path passes `styles`. The deterministic survey cannot see it, and wire's `print` translates locally. A shared fix is unpinned work.
 3. **`SkinParam#sheet`'s parser cache** (`SkinParam.java:1291-1303`) is ported only in `wire-skin-param.ts`; other engines' skin params build a parser per call, which differs only where one bounder measures and another draws.
 
@@ -268,7 +276,7 @@ The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMat
 
 Follow-ons:
 
-1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port.
+1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port. Done by #168 (sne, 2026-11-17); `xetase-70-zaza808` had already closed through ele (#144).
 2. **A trailing space in other single-line commands**: the title commands are fixed at `src/core/annotations/commands.ts`; other engines' hand-rolled matchers should be checked against `SingleLineCommand2`'s `doTrim` if a corpus row shows a half-space offset.
 
 ## regex-engine-port (rep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #126; per-task history on the local tag `regex-engine-port/pre-squash`)

@@ -13,6 +13,7 @@ import type { StateColors } from './state-colors.js';
 import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { InkBox } from '../../core/annotations/body-ink.js';
+import type { StateNoteStripes } from './state-note-stripes.js';
 
 /** One measured text line (`state-sizing.ts#measureTextLines`/
  *  `measureBodyTextLines`) — `width` is the line's own measured advance
@@ -212,6 +213,12 @@ export interface StateNodeGeo {
    * A note has no `display`/`headerLines`/`bodyLines` shape of its own.
    */
   noteLines?: readonly StateTextLine[];
+  /**
+   * sne T1a (issue #168): present ONLY for a note whose display holds a `{{ … }}` line -- the body's stripes
+   * (`state-note-stripes.ts#noteStripesOf`), offsets from the body's top-left before `(marginX1, marginY)`
+   * (`Opale.java:127`). The note draws these instead of {@link noteLines}; absent for every embed-free note (D2).
+   */
+  noteStripes?: StateNoteStripes;
   /**
    * mission G4 S10: present ONLY for `kind: 'note'` WITH a resolved host
    * (`note <pos> of X` / implicit-position-attached -- `StateNote.target !==

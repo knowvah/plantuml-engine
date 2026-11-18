@@ -33,7 +33,7 @@ function nbMaxLinesOf(cmd: object): number | undefined {
  * its matching end (an unterminated block takes the rest of the source).
  * @see PSystemCommandFactory.java:288-307
  */
-function addOneSingleLineManageEmbedded2(
+export function addOneSingleLineManageEmbedded2(
   lineAt: (i: number) => StringLocated,
   count: number,
   index: number,

@@ -1,0 +1,8 @@
+@startuml
+state A
+state B
+A --> B
+note on link
+{{
+end note
+@enduml

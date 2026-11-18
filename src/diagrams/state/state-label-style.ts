@@ -27,6 +27,7 @@ import {
   edgeLabelEmbedDimension,
   splitEdgeLabelEmbeds,
   stackEdgeLabelStripes,
+  type EdgeLabelSegment,
 } from '../../core/svek/edge-label-embed.js';
 
 /**
@@ -83,22 +84,24 @@ export interface StateLabelStripes {
 }
 
 type CreoleOptions = Parameters<typeof stateCreoleBlock>[3];
-type UnplacedStripe =
+
+/** A stripe before `SheetBlock1#initMap` places it: its content and its own dimension. */
+export type UnplacedStripe =
   | { readonly kind: 'text'; readonly line: StateStyledTextLine; readonly width: number; readonly height: number }
   | { readonly kind: 'image'; readonly block: TextBlock; readonly width: number; readonly height: number };
 
-/** The label's stripes when a line opens an embed, else `undefined` (D2: the flat creole block stays). Text runs
- *  keep the state creole block; an embed stripe is the atom's own dimension. `maxMessageSize` cannot split an
- *  embed: `Fission#getSplitted` wraps only at a `ZWSP_SEPARATOR` neutron (`Fission.java:64-79`), and the
- *  atom is one neutron (`EmbeddedDiagram.java:252-255`). */
-function labelStripes(
-  displayLines: readonly string[],
-  ctx: { readonly font: FontSpec; readonly measurer: StringMeasurer; readonly creole: CreoleOptions },
-  align: HorizontalAlignment | undefined,
-): StateLabelStripes | undefined {
-  const segments = splitEdgeLabelEmbeds(displayLines);
-  if (segments === undefined) return undefined;
-  const unplaced: UnplacedStripe[] = segments.flatMap((segment): UnplacedStripe[] => {
+/** What a run of display lines needs to become stripes: the font, the measurer and the creole options. */
+export interface StripeCreoleCtx {
+  readonly font: FontSpec;
+  readonly measurer: StringMeasurer;
+  readonly creole: CreoleOptions;
+}
+
+/** `CreoleParser#createSheetSlow`'s stripes for `segments` (`CreoleParser.java:146-170`): each text line is one
+ *  stripe of the state creole block; an embed is one atom stripe at the atom's own dimension. Shared by labels and
+ *  notes (sne D2/D3). */
+export function segmentStripes(segments: readonly EdgeLabelSegment[], ctx: StripeCreoleCtx): UnplacedStripe[] {
+  return segments.flatMap((segment): UnplacedStripe[] => {
     if (segment.kind === 'text') {
       const lines = stateCreoleBlock(segment.lines, ctx.font, ctx.measurer, ctx.creole).lines;
       return lines.map((line) => ({ kind: 'text', line, width: line.width, height: line.height }));
@@ -108,6 +111,13 @@ function labelStripes(
     const block = edgeLabelEmbedAtom(segment.source, null);
     return [{ kind: 'image', block, ...edgeLabelEmbedDimension(block) }];
   });
+}
+
+/** `SheetBlock1#initMap`'s placement of `unplaced` (`SheetBlock1.java:115-171`) at `align`. */
+export function placeStripes(
+  unplaced: readonly UnplacedStripe[],
+  align: HorizontalAlignment | undefined,
+): StateLabelStripes {
   const stacked = stackEdgeLabelStripes(unplaced, align);
   const items = unplaced.map((stripe, i): StateLabelStripe => {
     const { dx, dy } = stacked.offsets[i]!;
@@ -116,6 +126,20 @@ function labelStripes(
       : { kind: 'image', block: stripe.block, width: stripe.width, height: stripe.height, dx, dy };
   });
   return { width: stacked.width, height: stacked.height, items };
+}
+
+/** The label's stripes when a line opens an embed, else `undefined` (D2: the flat creole block stays). Text runs
+ *  keep the state creole block; an embed stripe is the atom's own dimension. `maxMessageSize` cannot split an
+ *  embed: `Fission#getSplitted` wraps only at a `ZWSP_SEPARATOR` neutron (`Fission.java:64-79`), and the
+ *  atom is one neutron (`EmbeddedDiagram.java:252-255`). */
+function labelStripes(
+  displayLines: readonly string[],
+  ctx: StripeCreoleCtx,
+  align: HorizontalAlignment | undefined,
+): StateLabelStripes | undefined {
+  const segments = splitEdgeLabelEmbeds(displayLines);
+  if (segments === undefined) return undefined;
+  return placeStripes(segmentStripes(segments, ctx), align);
 }
 
 /** Whether the label's first stripe is an embed: no `<text>` then reaches above the marged box

@@ -52,6 +52,7 @@ import type { StateDiagramAST } from './ast.js';
 import { COMMANDS } from './state-commands.js';
 import { finalizePendingNote, isNoteCloser, type PendingNote } from './state-notes.js';
 import { isJsonCloser } from './state-json-commands.js';
+import { noteOpenerAfter, pendingNoteRefusal, stepNoteLine, type NoteOpener } from './state-note-multiline.js';
 import { finalizeJsonBody } from '../../core/command/CommandCreateJson.js';
 import { createAnnotations, matchAnnotationCommand, type DiagramAnnotations } from '../../core/annotations/index.js';
 import { createSpriteRegistry, matchSpriteCommand, type SpriteRegistry } from '../../core/sprite-commands.js';
@@ -107,14 +108,6 @@ function handlePendingNoteLine(ps: ParseState, line: string, raw: string, pass: 
     ps.pendingNote.textLines.push(raw);
   }
   return true;
-}
-
-/** dss T3f: a blank line inside a note body is a line of the note (`BlocLines`
- *  holds every line); `runPass` walks the non-blank ones, so the gap before
- *  `next` is added here. No-op outside a note. */
-function pushBlankNoteLines(ps: ParseState, block: UmlSource, previous: number, next: number): void {
-  if (ps.pendingNote === null) return;
-  for (let k = previous + 1; k < next; k++) ps.pendingNote.textLines.push(block.lines[k]!);
 }
 
 /**
@@ -270,6 +263,31 @@ function fallbackOrRefuse(
   return refuse('syntax', position, offending + 1, 'Syntax Error?');
 }
 
+/** `runPass`'s walk-position reset: `pendingNote`/`pendingJson` never leak from one pass's walk into the next's, and
+ *  `CucaDiagram#startingPass` (`CucaDiagram.java:160-166`) clears `lastEntity` and the scope cursor. */
+function resetWalk(ps: ParseState): void {
+  ps.pendingNote = null;
+  ps.pendingJson = null;
+  ps.lastEntity = null;
+  ps.scopeStack = [ps.scopeStack[0]];
+  ps.scopeStack[0].regionCursor = 0;
+}
+
+/** Pass ONE commits annotations and sprites onto `ps.ast`; a later pass matches the same lines into throwaway
+ *  targets (see the comment in {@link runPass}). */
+function passTargets(
+  ps: ParseState,
+  pass: Pass,
+): { annotationTarget: DiagramAnnotations; spriteTarget: SpriteRegistry } {
+  if (pass !== 'one') return { annotationTarget: createAnnotations(), spriteTarget: createSpriteRegistry() };
+  return { annotationTarget: ps.ast.annotations!, spriteTarget: ps.ast.sprites! };
+}
+
+/** Close any unclosed composite scopes (the best-effort recovery for a missing `}`/`end state`). */
+function closeScopes(ps: ParseState): void {
+  while (ps.scopeStack.length > 1) popScope(ps);
+}
+
 /**
  * Run one full top-to-bottom walk of `block` against the SHARED `ps` for
  * the given pass. `pendingNote` resets to `null` first — it is a
@@ -294,12 +312,7 @@ function fallbackOrRefuse(
  * @see ~/git/plantuml/.../command/PSystemCommandFactory.java:127-140
  */
 function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | null {
-  ps.pendingNote = null;
-  ps.pendingJson = null;
-  // `CucaDiagram#startingPass` (`CucaDiagram.java:160-166`).
-  ps.lastEntity = null;
-  ps.scopeStack = [ps.scopeStack[0]];
-  ps.scopeStack[0].regionCursor = 0;
+  resetWalk(ps);
 
   const { lines, origIndex } = nonBlankLines(block);
 
@@ -321,20 +334,26 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
   // pass, so this never conflicts with real state-building); pass TWO's
   // match target is a throwaway object -- pass ONE already committed the
   // real annotations onto `ps.ast`.
-  const annotationTarget = pass === 'one' ? ps.ast.annotations! : createAnnotations();
+  const { annotationTarget, spriteTarget } = passTargets(ps, pass);
   // Same pass-throwaway-target discipline as `annotationTarget` above:
   // pass ONE commits real sprites onto `ps.ast`, pass TWO's matches are
   // discarded (nothing else claims sprite lines on either pass, so this
   // never conflicts with real state-building).
-  const spriteTarget = pass === 'one' ? ps.ast.sprites! : createSpriteRegistry();
 
+  // sne T2b: the line whose command opened the note still being read (`state-note-multiline.ts`).
+  let opener: NoteOpener | undefined;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
-    pushBlankNoteLines(ps, block, origIndex[i - 1]!, origIndex[i]!);
+    const embedLast = stepNoteLine(ps, block, { lines, origIndex }, i);
+    if (embedLast !== undefined) {
+      i = embedLast;
+      continue;
+    }
     if (handlePendingNoteLine(ps, line, block.lines[origIndex[i]!]!, pass)) continue;
     if (handlePendingJsonLine(ps, line, pass)) continue;
     const position = block.linePositions?.[origIndex[i]!] ?? origIndex[i]!;
     const dispatched = dispatchCommand(ps, line, pass, origIndex[i]!, position);
+    opener = noteOpenerAfter(ps, opener, position, origIndex[i]!);
     if (dispatched === true) continue;
     if (dispatched !== false) return dispatched;
     const result = fallbackOrRefuse(annotationView(lines, origIndex, block.lines, i), origIndex, i, {
@@ -346,12 +365,8 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
     i += result;
   }
 
-  // Close any unclosed composite scopes (mirrors the pre-existing
-  // best-effort recovery for a missing `}`/`end state`).
-  while (ps.scopeStack.length > 1) {
-    popScope(ps);
-  }
-  return null;
+  closeScopes(ps);
+  return pendingNoteRefusal(ps, opener);
 }
 
 // ---------------------------------------------------------------------------

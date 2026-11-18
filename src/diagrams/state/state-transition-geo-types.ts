@@ -6,6 +6,7 @@
 import type { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import type { StateStyledTextLine } from './state-sizing-creole.js';
 import type { StateLabelStripes } from './state-label-style.js';
+import type { StateNoteStripes } from './state-note-stripes.js';
 import type { StateTextLine } from './state-geo-types.js';
 
 /**
@@ -101,6 +102,9 @@ export interface TransitionGeo {
     noteLines?: readonly StateTextLine[];
     /** stdd T5b -- `Transition.linkNoteColor`, the note's fill (fotigo-12). */
     noteColor?: string;
+    /** sne T2a (#168): the note body's stripes when a line opens an embed (`state-note-stripes.ts`); the renderer
+     *  draws these instead of `noteLines`. Absent for every embed-free note (D2). */
+    noteStripes?: StateNoteStripes;
     /** dss T3e: the inline label drawn beside the note, in the merged block (`SvekEdge.java:307-325`).
      *  Present only with `noteLines` and a non-empty label; then `x`/`y`/`width`/`height` are the NOTE
      *  operand's own box and `inkBox` the union of both operands. */

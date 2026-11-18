@@ -36,8 +36,9 @@ const GOLDENS_DIR = join(HERE, '../../../oracle/goldens/svg-wire');
 const CACHE_DIR = join(HERE, '../../../test-results/dot-cache');
 /** The `@startwire` rows at wrp's start (`measurements/planning-rows.json`), all in the `wire` bucket. */
 const WIRE_ROW_COUNT = 18;
-/** Authored rows the jar draws and we do not match, each with its D8 end in `reason`. */
-const OPEN_ROWS: readonly string[] = ['cov-embedded-state-note'];
+/** Authored rows the jar draws and we do not match, each with its D8 end in `reason`. 2026-11-17 sne T1b (#168):
+ *  `cov-embedded-state-note` draws its `<image>` and is at 0, so none is open. */
+const OPEN_ROWS: readonly string[] = [];
 
 const authored = JSON.parse(readFileSync(join(GOLDENS_DIR, 'authored-baseline.json'), 'utf8')) as {
   readonly fixtures: readonly AuthoredFixture[];

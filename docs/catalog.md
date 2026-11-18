@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2610 modules · 8556 exported names.
+2613 modules · 8584 exported names.
 
 ## `src/`
 
@@ -330,7 +330,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandMultilines2.ts` | `MultilineCommand`, `HasNbMaxLines`, `CommandMultilines2` | `CommandMultilines2`: a command spanning several lines: a start pattern on the first line (`RegexConcat`), an end pattern on the last (`Pattern2`), and the lines between kept verbatim. |
 | `CommandRankDir.ts` | `CommandRankDir` |  |
 | `JsonNode.ts` | `JsonNode` | Parsed value of a `json Name { ... |
-| `multiline-candidate.ts` | `MultilineStep`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
+| `multiline-candidate.ts` | `MultilineStep`, `addOneSingleLineManageEmbedded2`, `isMultilineCommandOk` | `PSystemCommandFactory#isMultilineCommandOk` and `addOneSingleLineManageEmbedded2`: how the dispatcher reads a multi-line command. |
 | `MultilinesStrategy.ts` | `MultilinesStrategy`, `cleanList` | `MultilinesStrategy`: what `BlocLines#cleanList` does to the lines of a multi-line command before it is matched or run. |
 | `ParserPass.ts` | `ParserPass` | ParserPass — which of the (up to) three parsing passes is running. |
 | `PSystemBasicFactory.ts` | `EMPTY_DESCRIPTION`, `SYNTAX_ERROR`, `BasicFactory`, `preprocessingArtifactOf`, `upstreamLinesOf`, `documentLineOf`, `createSystem` | `PSystemBasicFactory` as a plugin helper: the line-by-line base `PSystemCreoleFactory`, `PSystemDefinitionFactory`, `PSystemMathFactory` and `PSystemLatexFactory` extend (decisions.md D3). |
@@ -369,7 +369,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `BodierSimple.ts` | `BodierSimple` |  |
 | `BodyEnhanced1.ts` | `BodyEnhanced1` |  |
 | `BodyEnhanced1Config.ts` | `BodyEnhanced1Config`, `BodyEnhanced1StyleValues`, `BodyEnhanced1Style`, `requireBodyEnhanced1SkinParam`, `requireBodyEnhanced1Style` |  |
-| `BodyEnhanced2.ts` | `BodyEnhanced2Config`, `BodyEnhanced2StyleValues`, `BodyEnhanced2` |  |
+| `BodyEnhanced2.ts` | `BodyEnhanced2Config`, `BodyEnhanced2StyleValues`, `BodyEnhanced2`, `addOneSingleLineManageEmbedded2` |  |
 | `BodyEnhancedAbstract.ts` | `BodyEnhancedAbstract` |  |
 | `BodyFactory.ts` | `BodyFactory` |  |
 | `CucaDiagram.ts` | `DiagramType`, `Previous`, `UmlSource`, `InstallationRequirement`, `CucaDiagram` |  |
@@ -3074,7 +3074,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `renderer-frame-cluster.ts` | `renderFrameCluster` | `Cluster#drawU` for a group with a `USymbol` (`Cluster.java:353-374`): `drawUState` is skipped and `new ClusterDecoration(packageStyle, usymbol, title, stereo, rectangleArea, stroke).drawU(ug, backColor, borderColor, shadowing, rounded, tit |
 | `renderer-group.ts` | `wrapEntity`, `wrapCluster`, `wrapStartEntity`, `wrapEndEntity`, `WrapLinkInfo`, `wrapLink` | renderer-group.ts — mission G4 S1, mechanism 2: the per-element `<g class="entity"\|"start_entity"\|"end_entity"\|"link">` wrapper every jar state-diagram fixture stamps around each drawn state/pseudostate/ transition (verified against `jocela |
 | `renderer-json.ts` | `renderJsonLeaf` | stdd T5a: a `json Name { ... |
-| `renderer-note.ts` | `NoteEdgePosMap`, `FlatNoteGeoCtx`, `materializeNoteSpec`, `buildFlatNoteGeos`, `renderStateNoteFreestanding`, `renderStateNoteOpale`, `renderStateNote`, `renderNoteOnLink` | State-diagram note materialization + rendering (mission G4 S10 — "notes never render", the largest remaining zero-diff family named in S9's own queue). |
+| `renderer-note.ts` | `NoteEdgePosMap`, `FlatNoteGeoCtx`, `materializeNoteSpec`, `buildFlatNoteGeos`, `renderStateNoteFreestanding`, `renderStateNoteOpale`, `renderStateNote`, `renderNoteOnLink`, `LinkNoteBody` | State-diagram note materialization + rendering (mission G4 S10 — "notes never render", the largest remaining zero-diff family named in S9's own queue). |
 | `renderer-pseudostate.ts` | `renderInitial`, `renderFinal`, `renderForkJoin`, `renderChoiceJunction`, `renderHistory` | Pseudostate shape renderers (initial/final/fork/join/syncBar/choice/ history/deepHistory) — mission G4 S2, mechanism 5. |
 | `renderer-uid.ts` | `StateUidPlan`, `buildStateUidPlan` | renderer-uid.ts — mission G4 S1, mechanism 2: node/link uid assignment for the state renderer, mirroring `class/renderer-uid.ts#buildClassUidPlan` (G2 N2 precedent — same `ent%04d`/`lnk%d` shared-counter scheme). |
 | `renderer.ts` | `renderState` | State diagram SVG renderer. |
@@ -3105,20 +3105,23 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `state-creole-opts.ts` | `DEFAULT_TAB_SIZE`, `StateCreoleOpts`, `stateHyperlinkStyle`, `stateCreoleOpts` | stdd T3d: the creole options a state text block is measured and drawn with, split out of `state-sizing-creole.ts` (500-line cap). |
 | `state-directives.ts` | `computeRemovedIds`, `computeHiddenIds`, `filterRemovedEntities` | `remove`/`restore` directive evaluation for state diagrams — the port's equivalent of upstream's export-time `CucaDiagram#isRemoved()` skip. |
 | `state-dot-graph.ts` | `INITIAL_ID`, `FINAL_ID`, `endpointId`, `transitionLabelText`, `buildDotGraph` | Flat state-diagram DOT-graph construction. |
+| `state-embed-draw.ts` | `drawEmbedStripe`, `NoteRuleSpec`, `NoteRuleMarkup`, `drawNoteRule`, `noteRuleTitleOrigin` | state-embed-draw.ts — the core-drawn pieces of a state label's or note's stripes (sne D3, issue #168). |
 | `state-entity-position.ts` | `EntityPositionKind`, `positionFromStereotype`, `getEntityPosition`, `isBorderPoint`, `usesPortShape`, `PORT_LABEL_WIDE_THRESHOLD`, `PORT_TABLE_PAD_FLOOR`, `isInputPosition`, `isOutputPosition`, `BORDER_POINT_SIZE`, `EXPANSION_POINT_LONG`, `getBorderPointDimension` | EntityPosition classification (border-point leafs) — a property orthogonal to `StateKind`, faithfully mirroring upstream's TWO independent classification systems that both read the SAME `<<stereotype>>` text: - `Stereogroup#getLeafType` pic |
 | `state-geo-types.ts` | `StateUrl`, `StateTextLine`, `StateNodeGeo`, `StateRegionGeo`, `StateSeparatorGeo`, `LabelInkBox`, `LinkLabelGeo`, `TransitionGeo`, `StateGeometry` | Public geometry types for the state-diagram layout engine. |
 | `state-hidden.ts` | `markHidden` | stdd T5a: `hide X` / `hide <<x>>` on a laid-out geometry. |
 | `state-json-commands.ts` | `PendingJson`, `isJsonCloser`, `JSON_COMMANDS` | `json` declaration commands for the state diagram parser — thin adapter over the shared port in `core/command/CommandCreateJson.ts` (mission shared-seam-extraction T9; formerly a 74%-line-identical clone of `class/class-json-commands.ts`, D |
 | `state-json-layout.ts` | `JsonLeafText`, `JsonLeafRule`, `JsonLeafLayout`, `layoutJsonLeaf` | stdd T5a: a `json Name { ... |
 | `state-json-sizing.ts` | `Dim`, `JsonDimNode`, `measureJsonCell`, `scalarText`, `measureJsonNode`, `MeasuredJsonState`, `measureJsonState` | `json` state sizing — `kind:'json'` leaves in the state diagram layout engine (./state-sizing.ts). |
-| `state-label-style.ts` | `LabelStyle`, `labelStyleOf`, `StateLabelStripe`, `StateLabelStripes`, `labelOpensWithEmbed`, `labelDisplayBlock`, `measureStateLabelBox` | state-label-style.ts — what `SvekEdge#drawU` reads before it builds a state link's label block (stdd T2c): `getMessageTextAlignment` (`SvekEdge.java:376-381`), `skinParam.maxMessageSize()` (`:291-294`) and `classAttributeIconSize()` for `Li |
+| `state-label-style.ts` | `LabelStyle`, `labelStyleOf`, `StateLabelStripe`, `StateLabelStripes`, `UnplacedStripe`, `StripeCreoleCtx`, `segmentStripes`, `placeStripes`, `labelOpensWithEmbed`, `labelDisplayBlock`, `measureStateLabelBox` | state-label-style.ts — what `SvekEdge#drawU` reads before it builds a state link's label block (stdd T2c): `getMessageTextAlignment` (`SvekEdge.java:376-381`), `skinParam.maxMessageSize()` (`:291-294`) and `classAttributeIconSize()` for `Li |
 | `state-leaf-node.ts` | `LeafNodeCtx`, `buildLeafNode` | Leaf-node DOT sizing/shape (mission A4/T4 + Phase L Gap 1) — originally a pure move out of state-composite-pass.ts to keep that file under the repo's 500-line cap (`buildLeafNode` grew past the cap once the Gap 1 border-point plaintext/rect |
 | `state-link-add.ts` | `emitTransition` | The state engine's link-add chokepoint (SI1/T11) — `emitTransition`, split out of `state-parse-state.ts` under the 500-line file cap. |
 | `state-link-note-merge.ts` | `Offset`, `noteDrawnFirst`, `mergedOperandOffsets`, `MergedBlock`, `MergedPlacement`, `placeMergedOperands`, `InkRect`, `unionInk` | Where the two operands of a state link's merged label block land (dss T3e). |
 | `state-link-style.ts` | `TransitionLink`, `TransitionPaint`, `resolveTransitionPaint` | state-link-style.ts — what `SvekEdge#drawU` reads off a `Link` before it draws (stdd T2a). |
 | `state-note-attach.ts` | `attachLinkedNotes` | stdd T5b: `B --> N` where `N` is a `note as N`. |
-| `state-note-layout.ts` | `stateNoteFontSize`, `measureNote`, `measureNotePureText`, `buildRenderLines`, `NoteEdgeCandidate`, `NoteSpec`, `ScopeNoteParts`, `buildNoteGraphPartsByScope`, `NoteEdgeSweepTarget`, `sweepOrphanNoteEdges` | Note-on-entity DOT node + connector-edge construction for state diagrams (mission A4 Phase L iter 9) — shared by both the flat (state-dot-graph.ts) and composite (state-composite-pass.ts) DOT builders. |
+| `state-note-layout.ts` | `stateNoteFontSize`, `measureNote`, `measureNotePureText`, `measureStateLinkNoteDim`, `linkNoteStripes`, `buildRenderLines`, `NoteEdgeCandidate`, `NoteSpec`, `ScopeNoteParts`, `buildNoteGraphPartsByScope`, `NoteEdgeSweepTarget`, `sweepOrphanNoteEdges` | Note-on-entity DOT node + connector-edge construction for state diagrams (mission A4 Phase L iter 9) — shared by both the flat (state-dot-graph.ts) and composite (state-composite-pass.ts) DOT builders. |
 | `state-note-lines.ts` | `NoteSibling`, `moveNotesToCreationOrder`, `NoteLine`, `noteLineGeo`, `noteLinesOf` | A scope's notes among its siblings, and the note links no Opale notch replaces (dss T3f; split from ./state-note-layout.ts for the 500-line cap). |
+| `state-note-multiline.ts` | `embedBlockEnd`, `NoteOpener`, `unclosedNoteRefusal`, `NoteWalkLines`, `pushBlankNoteLines`, `stepNoteLine`, `noteOpenerAfter`, `pendingNoteRefusal` | state-note-multiline.ts — the multi-line note reader's embed step (sne T2b, issue #168). |
+| `state-note-stripes.ts` | `StateNoteRuleTitle`, `StateNoteRule`, `StateNoteStripe`, `StateNoteStripes`, `NoteStripeCtx`, `noteStripesOf` | state-note-stripes.ts — the stripes of a state note whose display holds a `{{ … }}` line (sne T1a, issue #168). |
 | `state-notes.ts` | `NOTE_STEREO`, `NOTE_COLOR`, `NOTE_URL`, `NOTE_COLOR_CAPTURE`, `NOTE_TARGET`, `PendingNote`, `isNoteCloser`, `stripQuotes`, `addNote`, `addFreestandingNote`, `finalizePendingNote`, `NOTE_ON_LINK_RE`, `NOTE_ON_LINK_MULTI_RE`, `applyNoteOnLink` | Note-block accumulation + note AST construction for the state parser. |
 | `state-parse-helpers.ts` | `extractDisplayAndId`, `assertConcurrentStateOk`, `assertDottedParentHasData`, `parseLabel` | Grammar-decoding helpers for the state parser's command bodies — split out of `state-parse-state.ts` (which owns the scope-stack/mutation machinery) purely to stay under the file-size cap; `extractDisplayAndId`/ `parseLabel` touch no `Parse |
 | `state-parse-phantom.ts` | `ensureParentState`, `buildPhantomGroups` | state-parse-phantom.ts — the two moments upstream gives a dotted id's data-less ancestor quark its entity (stdd T1d). |

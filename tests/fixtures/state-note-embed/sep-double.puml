@@ -1,0 +1,13 @@
+@startuml
+state S1
+note left of S1
+{{
+class X
+}}
+==
+after
+..
+__
+last
+end note
+@enduml

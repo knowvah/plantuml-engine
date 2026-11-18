@@ -1,0 +1,8 @@
+@startuml
+state S1
+note as N
+{{
+class X
+end note
+S1 --> N
+@enduml

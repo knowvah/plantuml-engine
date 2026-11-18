@@ -1,0 +1,11 @@
+@startuml
+left to right direction
+state S1
+state S2
+S1 --> S2
+note bottom of S2
+{{
+usecase U
+}}
+end note
+@enduml

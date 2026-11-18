@@ -35,13 +35,16 @@ import type { DotInputNode } from '../../core/graph-layout.js';
 import type { FontConfiguration, FontStyle } from '../../core/klimt/shape/UText.js';
 import { buildNoteBody } from '../../core/svek/image/leaf-sizing.js';
 import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
-import type { PureNoteTextDim } from '../../core/svek/image/EntityImageNoteLink.js';
+import { measureLinkNoteDim, type PureNoteTextDim } from '../../core/svek/image/EntityImageNoteLink.js';
+import type { RoseNoteDim } from '../../core/rose-note-dim.js';
+import { splitEdgeLabelEmbeds } from '../../core/svek/edge-label-embed.js';
 // SI30 T5: the SAME per-run size/dy/tab-stop conversion the header/body
 // path uses -- one core-vs-state-local seam, not a second one for notes
 // (`state-sizing-creole.ts#toStyledLine`'s own doc comment).
 import { stateCreoleBlock, type StateStyledTextLine } from './state-sizing-creole.js';
 import type { StateUrl } from './state-geo-types.js';
 import { stateUrlOf } from './state-sizing.js';
+import { noteStripesOf, type NoteStripeCtx, type StateNoteStripes } from './state-note-stripes.js';
 
 /**
  * mission G4 S10: `Opale.java`'s real `EntityImageNote`/`Opale` margin
@@ -80,6 +83,8 @@ interface NoteMeasurement {
   readonly height: number;
   /** stdd T3d -- see {@link NoteSpec.url}; built with the theme's `topurl` where the theme is at hand. */
   readonly url?: StateUrl;
+  /** sne T1a: the body's stripes when a line opens an embed ({@link noteStripesOf}); absent otherwise (D2). */
+  readonly stripes?: StateNoteStripes;
 }
 
 /** `note { FontSize 13 }`'s plain style set (`plantuml.skin` default,
@@ -119,18 +124,23 @@ export function stateNoteFontSize(theme: Partial<Pick<Theme, 'colors'>>): number
  */
 export function measureNote(text: string, theme: Theme, measurer: StringMeasurer): NoteMeasurement {
   const pure = measureNotePureText(text, theme.fontFamily, measurer, theme.sprites, stateNoteFontSize(theme));
+  // sne T1a: the box stays on `buildNoteBody`; the stripes only place what it holds (D2).
+  const stripes = noteStripesOf(text.split('\n'), noteCreoleCtx(theme, measurer));
   return {
     lines: buildRenderLines(text, theme, measurer),
     width: pure.width + NOTE_MARGIN_X1 + NOTE_MARGIN_X2,
     height: pure.height + NOTE_MARGIN_Y * 2,
+    ...(stripes !== undefined ? { stripes } : {}),
   };
 }
 
 /**
  * The note body's PURE (un-padded) content dimension — the shared half of
- * {@link measureNote} above. Exported (not yet consumed elsewhere) as the
+ * {@link measureNote} above. Exported as the
  * ready-made `pureText` strategy for `core/svek/image/EntityImageNoteLink.ts
- * #measureLinkNoteDim` (`shared-seam-extraction`/SI27's D1 extension point):
+ * #measureLinkNoteDim` (`shared-seam-extraction`/SI27's D1 extension point).
+ * sne T2a wires it, in all three callers at once, for a link note whose body
+ * opens an embed ({@link measureStateLinkNoteDim}); an embed-free one is still
  * NOT wired into `state-composite-edge-label.ts`'s own `measureLinkNoteDim`
  * call this task, because `state-dot-graph.ts` (the FLAT pipeline's
  * byte-identical call, `computeEdgeLabelBox`, out of this task's write-set)
@@ -157,6 +167,34 @@ export function measureNotePureText(
   const opts = sprites === undefined ? undefined : { atomImageResolverFor: makeAtomImageResolverFor(sprites) };
   const dim = buildNoteBody(text, font, opts).calculateDimension(new MeasurerStringBounder(measurer));
   return { width: dim.getWidth(), height: dim.getHeight() };
+}
+
+/**
+ * sne T2a (issue #168): a `note on link`'s box, `EntityImageNoteLink#calculateDimensionSlow`
+ * (`EntityImageNoteLink.java:69-73`). Its `ComponentRoseNote` builds the body as an entity note does,
+ * `BodyFactory.create3` (`AbstractTextualComponent.java:88-89`, `enhanced` is `true` at `ComponentRoseNote.java:68`),
+ * so a body that opens an embed is sized by {@link measureNotePureText}. An embed-free body keeps the core's naive
+ * default byte for byte (D2; the reason it was never wired is the doc comment above). One function for the flat, the
+ * composite and the render-time callers, which must agree (D1 lockstep).
+ */
+export function measureStateLinkNoteDim(text: string, fontFamily: string, measurer: StringMeasurer): RoseNoteDim {
+  const embeds = splitEdgeLabelEmbeds(text.split('\n')) !== undefined;
+  return measureLinkNoteDim(
+    text,
+    { family: fontFamily },
+    measurer,
+    embeds ? (body, m) => measureNotePureText(body, fontFamily, m) : undefined,
+  );
+}
+
+/** sne T2a: a `note on link` body's stripes, as {@link measureNote} builds an entity note's (`undefined` when no line
+ *  opens an embed). */
+export function linkNoteStripes(
+  text: string,
+  fontFamily: string,
+  measurer: StringMeasurer,
+): StateNoteStripes | undefined {
+  return noteStripesOf(text.split('\n'), noteCreoleCtx({ fontFamily }, measurer));
 }
 
 /** `SkinParam#getTabSize` default (`SkinParam.java:1073`) — notes have no
@@ -190,14 +228,24 @@ export function buildRenderLines(
   theme: Pick<Theme, 'fontFamily' | 'sprites'> & Partial<Pick<Theme, 'colors'>>,
   measurer: StringMeasurer,
 ): readonly StateStyledTextLine[] {
-  const font: FontSpec = { family: theme.fontFamily, size: stateNoteFontSize(theme) };
   // stdd T5a: the state creole block, whose `|= a | b |` rows are the real `StripeTable` grid
   // (`state-sizing-creole.ts#tableLine`, drawn by `renderer-box.ts#renderStateTable`), as a state body's
   // (fatupo-62); `EntityImageNote.java` builds the body through the same `Display#create` pipeline.
-  return stateCreoleBlock(text.split('\n'), font, measurer, {
-    tabSize: NOTE_TAB_SIZE_NB,
-    ...(theme.sprites !== undefined ? { spriteRegistry: theme.sprites } : {}),
-  }).lines;
+  const ctx = noteCreoleCtx(theme, measurer);
+  return stateCreoleBlock(text.split('\n'), ctx.font, measurer, ctx.creole).lines;
+}
+
+/** The note's font (`note { FontSize 13 }`) and creole options, shared by {@link buildRenderLines} and the stripes. */
+function noteCreoleCtx(
+  theme: Pick<Theme, 'fontFamily' | 'sprites'> & Partial<Pick<Theme, 'colors'>>,
+  measurer: StringMeasurer,
+): NoteStripeCtx {
+  const font: FontSpec = { family: theme.fontFamily, size: stateNoteFontSize(theme) };
+  return {
+    font,
+    measurer,
+    creole: { tabSize: NOTE_TAB_SIZE_NB, ...(theme.sprites !== undefined ? { spriteRegistry: theme.sprites } : {}) },
+  };
 }
 
 /** `Position.withRankdir` (utils/Position.java:49-66) — under `left to right
@@ -258,6 +306,8 @@ export interface NoteSpec {
   color?: string;
   /** stdd T3d: `EntityImageNote.java:194,204-205` `ug.startUrl(getEntity().getUrl99())`. */
   url?: StateUrl;
+  /** sne T1a: `StateNodeGeo.noteStripes`. */
+  noteStripes?: StateNoteStripes;
 }
 
 export interface ScopeNoteParts {
@@ -279,6 +329,7 @@ function noteSpecOf(note: StateNote, m: NoteMeasurement, opalisable: boolean): N
     ...(note.creationIndex !== undefined ? { creationIndex: note.creationIndex } : {}),
     ...(note.color !== undefined ? { color: note.color } : {}),
     ...(m.url !== undefined ? { url: m.url } : {}),
+    ...(m.stripes !== undefined ? { noteStripes: m.stripes } : {}),
   };
 }
 
