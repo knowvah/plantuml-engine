@@ -24,6 +24,7 @@ import { upstreamTypeOf } from './block-extractor.js';
 import type { ParseRefusal } from './parse-refusal.js';
 import { mergeRefusals, NULL_SYSTEM, parseRefusalOf } from './parse-refusal.js';
 import type { SkinCut } from './skin-command.js';
+import { DEFAULT_SECURITY_PROFILE, type SecurityProfile } from './security/SecurityProfile.js';
 import { rect, text } from './svg.js';
 import type { Theme } from './theme.js';
 import type { StringMeasurer } from './measurer.js';
@@ -124,6 +125,12 @@ export class DiagramRegistry {
    * command-factory candidate then answers `buildEmptyError` without parsing
    * (`PSystemCommandFactory.java:117-122`), never `isOk`, so it is skipped;
    * the other bases parse the empty source themselves.
+   *
+   * `registeredOnlyUnder` (ipe D1): a plugin gated on a profile other than
+   * `options.securityProfile` (absent = `DEFAULT_SECURITY_PROFILE`) is skipped
+   * before the candidate test, with no attempt and no refusal: it is absent
+   * from the merge, as a factory `PSystemBuilder` never added is
+   * (`PSystemBuilder.java:178-179`).
    */
   resolve(
     source: UmlSource,
@@ -133,7 +140,9 @@ export class DiagramRegistry {
   ): Resolution {
     const attempts: Attempt[] = [];
     const cuts: readonly SkinCut[] = cut === undefined ? [] : Array.isArray(cut) ? cut : [cut as SkinCut];
+    const profile = options?.securityProfile ?? DEFAULT_SECURITY_PROFILE;
     for (const plugin of this.plugins) {
+      if (!isRegisteredUnder(plugin, profile)) continue;
       if (!isCandidate(plugin, source) || (emptySource && testsEmpty(plugin))) continue;
       const own = cuts.find((c) => c.commandFactoryOnly !== true || testsEmpty(plugin));
       const parsed = own === undefined ? source : truncated(source, own.index);
@@ -168,6 +177,11 @@ export class DiagramRegistry {
       (plugin) => !isCandidate(plugin, source) || testsEmpty(plugin) || answersNull(plugin, source),
     );
   }
+}
+
+/** False for a plugin `PSystemBuilder` adds only under another profile (`PSystemBuilder.java:178-179`). */
+function isRegisteredUnder(plugin: DiagramPlugin, profile: SecurityProfile): boolean {
+  return plugin.registeredOnlyUnder === undefined || plugin.registeredOnlyUnder === profile;
 }
 
 /** `if (!diagramTypes.contains(f.getDiagramType())) continue;` (`PSystemBuilder.java:259-260`). */

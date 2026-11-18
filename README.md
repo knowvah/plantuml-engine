@@ -164,6 +164,9 @@ The gate covers url targets only; what a local target (`!include a.puml`)
 reads is decided by your `fetcher` (`makeNodeFsFetcher` confines reads to its
 base directory, symlinks included). `[[javascript:…]]` link targets are
 emitted as `href=""`, as the jar does, unless `allowJavascriptInLink: true`.
+As in the jar, `INSECURE` also registers the `path <motif>` easter egg
+(`PSystemBuilder.java:178-179`); it draws an SVG page where the jar writes a
+PNG (DIVERGENCES.md).
 
 ## Remote images
 

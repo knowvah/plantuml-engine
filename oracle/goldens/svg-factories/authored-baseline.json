@@ -1077,7 +1077,7 @@
     {
       "type": "factories",
       "slug": "cov-path-invalid",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path abc123`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `path abc123`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
@@ -1092,7 +1092,7 @@
     {
       "type": "factories",
       "slug": "cov-path-upper",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `PATH ABC`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `PATH ABC`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
@@ -1107,7 +1107,7 @@
     {
       "type": "factories",
       "slug": "cov-path-valid",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path ABCabc`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `path ABCabc`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,

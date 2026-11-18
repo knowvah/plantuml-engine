@@ -31,6 +31,7 @@ import { charliePlugin } from './diagrams/eggs/PSystemCharlieFactory.js';
 import { colorsPlugin } from './diagrams/eggs/PSystemColorsFactory.js';
 import { eggPlugin } from './diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
+import { pathPlugin } from './diagrams/eggs/PSystemPathFactory.js';
 import { welcomePlugin } from './diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
 import { listFontsPlugin } from './diagrams/font/PSystemListFontsFactory.js';
@@ -113,6 +114,7 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(eggPlugin); // java:175
   registry.register(appleTwoPlugin); // java:176
   registry.register(ripPlugin); // java:177
+  registry.register(pathPlugin); // java:178-179 (INSECURE only, registeredOnlyUnder)
   registry.register(charliePlugin); // java:181
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)

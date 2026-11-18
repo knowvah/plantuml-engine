@@ -151,7 +151,8 @@ interface MoveDelta {
  * directly), and `getMiddle()` (cdd-T7/A5-M4: needs one De Casteljau
  * subdivision per segment plus `BezierUtils#getStartingAngle`/
  * `getEndingAngle`, both ported as local helpers below — see
- * `getMiddle`'s own doc comment).
+ * `getMiddle`'s own doc comment), and `addAfter`, both overloads
+ * (ipe D4: `UMotif#addHorizontal`/`addVertical` build their path with it).
  *
  * Deferred (NOT read by `DriverDotPathSvg`, out of D3' scope,
  * reported — these belong to the svek layout/label-positioning
@@ -167,9 +168,9 @@ interface MoveDelta {
  *   renderer (superseded entirely by `toUPath()` + the SVG driver).
  * - `manageEnsureVisible(x, y, visible)` — needs the `EnsureVisible`
  *   interface.
- * - `addBefore`/`addAfter` (both the single-`Bezier` and `DotPath`
- *   overloads) — svek path-stitching utilities used when composing
- *   multi-segment connectors, not by the driver.
+ * - `addBefore` (private upstream, both the single-`Bezier` and
+ *   `DotPath` overloads) — a svek path-stitching utility used when
+ *   composing multi-segment connectors, not by the driver.
  * - The `Moveable` marker interface itself is not ported (matches this
  *   task's `Shadowable`/`UShapeSized` mechanical-adaptation pattern —
  *   `DotPath` exposes the same `moveStartPoint`/`moveEndPoint` methods
@@ -211,6 +212,18 @@ export class DotPath implements UShape {
       y2: pt4.y,
     };
     return DotPath.fromBeziers([...this.beziers, bezier]);
+  }
+
+  /**
+   * Both overloads: a copy of this path with `after` (one bezier, or every
+   * bezier of another path) appended. The receiver is unchanged.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/DotPath.java:328-338
+   */
+  addAfter(after: Bezier | DotPath): DotPath {
+    const copy = [...this.beziers];
+    if (after instanceof DotPath) copy.push(...after.beziers);
+    else copy.push(after);
+    return DotPath.fromBeziers(copy);
   }
 
   getStartPoint(): Point2D {

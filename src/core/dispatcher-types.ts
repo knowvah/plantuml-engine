@@ -18,6 +18,7 @@ import type { InkBox } from './annotations/body-ink.js';
 import type { ScaleSpec } from './scale-command.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import type { Clock } from './clock.js';
+import type { SecurityProfile } from './security/SecurityProfile.js';
 
 /**
  * The per-render inputs a plugin's `parse()` may need beyond the source
@@ -46,6 +47,11 @@ export interface ParseOptions {
   /** `RenderOptions.measurer`, forwarded verbatim: wire measures `print` while its commands execute, with
    *  `FileFormat.PNG`'s bounder, whose arm follows the render's measurer (`png-string-bounder.ts`, pbs D3, D4). */
   readonly measurer?: StringMeasurer | undefined;
+  /** `RenderOptions.securityProfile`, forwarded verbatim: the registry resolves a plugin declaring
+   *  {@link SyncPlugin.registeredOnlyUnder} only under that profile (absent = `DEFAULT_SECURITY_PROFILE`), as
+   *  upstream adds `PSystemPathFactory` only when `SecurityUtils.getSecurityProfile() == SecurityProfile.INSECURE`.
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/PSystemBuilder.java:178-179 */
+  readonly securityProfile?: SecurityProfile | undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -338,6 +344,12 @@ export interface SyncPlugin<AST = unknown, Geo = unknown> extends Partial<Pagina
   readonly type: DiagramType;
   /** The upstream factory base `parse` mirrors; absent = `PSystemCommandFactory`. See {@link PSystemFactoryBase}. */
   readonly factoryBase?: PSystemFactoryBase;
+  /**
+   * The plugin is registered only under this profile: the port's form of a conditional `factories.add`
+   * (`PSystemBuilder.java:178-179`). The registry skips it under any other {@link ParseOptions.securityProfile},
+   * with no attempt and no refusal. Absent = registered under every profile.
+   */
+  readonly registeredOnlyUnder?: SecurityProfile;
   parse(source: UmlSource, options?: ParseOptions): AST | ParseRefusal;
   /**
    * `services` (cdd8 D2b): what the render supplies beyond the AST — an
@@ -378,6 +390,8 @@ export interface AsyncPlugin<AST = unknown, Geo = unknown> extends Partial<Pagin
   readonly type: DiagramType;
   /** See {@link SyncPlugin.factoryBase}. */
   readonly factoryBase?: PSystemFactoryBase;
+  /** See {@link SyncPlugin.registeredOnlyUnder}. */
+  readonly registeredOnlyUnder?: SecurityProfile;
   parse(source: UmlSource, options?: ParseOptions): AST | ParseRefusal;
   layout(ast: AST, theme: Theme, measurer: StringMeasurer): Promise<Geo>;
   /**

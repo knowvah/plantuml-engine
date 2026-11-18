@@ -65,6 +65,14 @@ export interface SvgOption {
   readonly decimal: number;
   /** Upstream: `SvgOption.getLinkTarget()` (`net/atmp/SvgOption.java:223`); unset = `_top`. */
   readonly linkTarget?: string;
+  /**
+   * Port-only: a fixed root size, the SVG form of a fixed raster canvas. Upstream's `GraphicsPath` draws on
+   * `EmptyImageBuilder(null, 50, 50, ...)` (`eggs/GraphicsPath.java:74`), a PNG of exactly that size that clips
+   * any ink past it; the port writes that page as SVG (ipe D2, ruling #178). Set, the root takes exactly this
+   * size and `ensureVisible` no longer grows it. Unset = the root follows `ensureVisible`, as upstream's
+   * `SvgGraphics` does (`SvgGraphics.java:129-135`), which is every other caller.
+   */
+  readonly fixedDim?: Dimension2D;
 }
 
 /** Upstream: `SvgOption.basic()` — a `SvgOption` with upstream's

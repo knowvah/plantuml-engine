@@ -433,6 +433,11 @@ export class SvgGraphicsCore {
   }
 
   private finalizeRootAttributes(): void {
+    // Port-only `SvgOption.fixedDim` (ipe D2): a fixed canvas, as `EmptyImageBuilder` is (GraphicsPath.java:74).
+    if (this.option.fixedDim !== undefined) {
+      this.maxX = this.option.fixedDim.width;
+      this.maxY = this.option.fixedDim.height;
+    }
     const maxXscaled = Math.trunc(this.maxX * this.option.scale);
     const maxYscaled = Math.trunc(this.maxY * this.option.scale);
     let style = `width:${maxXscaled}px;height:${maxYscaled}px;`;

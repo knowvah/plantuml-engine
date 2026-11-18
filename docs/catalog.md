@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2614 modules · 8591 exported names.
+2618 modules · 8597 exported names.
 
 ## `src/`
 
@@ -124,7 +124,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `printed-diagram-type.ts` | `withPrintedDiagramType`, `printedDiagramTypeOf` | The `data-diagram-type` a fragment prints when it differs from its routing key (`RenderFragment.diagramType`). |
 | `remote-image-prefetch.ts` | `prefetchRemoteImages`, `withRemoteImages` | The async half of remote images: `render()` asks the host's {@link ImageProvider} for every `<img:http(s)://...>` url in a block and hands the successes to the synchronous pipeline as an {@link AssetStore} (key scheme and read side: `remote |
 | `remote-image-store.ts` | `REMOTE_IMAGE_ASSET_PREFIX`, `remoteImageKey`, `remoteImageStoreFrom`, `isRemoteImageSrc`, `scanRemoteImageSrcs`, `inlineRemoteImages`, `inlineRemoteImageLines` | The remote-image half of `<img:http(s)://...>`: the asset-store key scheme, the scan that finds the urls, and the rewrite that hands a served image to the existing `AtomImg.java:153-161` decode paths. |
-| `render-options.ts` | `RenderOptions`, `getDefaultMeasurer`, `resolveMeasurer` | `RenderOptions` and measurer resolution — extracted from `src/index.ts` (mission A5 / T4). |
+| `render-options.ts` | `RenderOptions`, `getDefaultMeasurer`, `resolveMeasurer`, `parseOptionsOf` | `RenderOptions` and measurer resolution — extracted from `src/index.ts` (mission A5 / T4). |
 | `rose-note-dim.ts` | `RoseNoteDim`, `roseNoteDim` | The note operand `computeMergedLabelBox` (`core/edge-label-box.ts`) merges into an edge label: `EntityImageNoteLink`'s own dimension. |
 | `scale-command.ts` | `ScaleSpec`, `matchScaleCommand`, `resolveScaleFactor`, `isExportScaled` | scale-command.ts — shared `scale ...` directive parsing + factor resolution (mission G1 I-scale). |
 | `skin-command.ts` | `skinCommandError`, `SkinCut`, `linesBefore`, `skinCutOf` | The `skin <name>` command's failure path — unwind2-S8. |
@@ -595,6 +595,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `UForeground.ts` | `UForeground` |  |
 | `UGraphic.ts` | `UGraphic` |  |
 | `UGraphicWithScale.ts` | `XAffineTransform`, `ColorResolver`, `UGraphicWithScale` |  |
+| `UMotif.ts` | `UMotif` |  |
 | `UParam.ts` | `UParam` |  |
 | `UShape.ts` | `UShape` | UShape — marker interface for every drawable primitive in the klimt rendering model (rectangles, lines, text, paths, ...). |
 | `UStroke.ts` | `UStroke` |  |
@@ -2357,6 +2358,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `charlie-image.ts` | `CharliePng`, `CHARLIE_PNG` | `CHARLIE_PNG` -- the image `charlie` draws (`PSystemCharlie.java`, `PSystemVersion.getCharlieImage`, java:104-106), as the pinned jar embeds it in SVG (D4). |
 | `EggUtils.ts` | `EggUtils` | `EggUtils` — hex, xor and the base-26 key the easter-egg sentences are encrypted with. |
 | `equals-ignore-case.ts` | `equalsIgnoreCase` | `java.lang.String#equalsIgnoreCase`, which every egg factory's literal test calls (`PSystemCharlieFactory.java:48`, `PSystemAppleTwoFactory.java:52-53`, `PSystemRIPFactory.java:52`): equal lengths, and per UTF-16 unit the units are equal, o |
+| `GraphicsPath.ts` | `GraphicsPath` | `GraphicsPath` — the `path` egg's drawing: a `UMotif` drawn once, in black, from (20, 20), on a fixed 50×50 white canvas. |
 | `PSystemAppleTwo.ts` | `PSystemAppleTwo` | `PSystemAppleTwo` — "Apple //e for ever !" over the Apple //e picture. |
 | `PSystemAppleTwoFactory.ts` | `PSystemAppleTwoFactory`, `appleTwoPlugin` | `PSystemAppleTwoFactory` — five literals, compared to the raw line with `equalsIgnoreCase`. |
 | `PSystemCharlie.ts` | `PSystemCharlie` | `PSystemCharlie` — the "Je suis Charlie" picture, alone on the page. |
@@ -2365,6 +2367,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `PSystemColorsFactory.ts` | `PSystemColorsFactory`, `colorsPlugin` | `PSystemColorsFactory` — `colors`, `color`, optionally followed by a colour name or hex value: the `@startuml` single-line factory for {@link PSystemColors}. |
 | `PSystemEgg.ts` | `PSystemEgg` | `PSystemEgg` — a decoded easter-egg sentence, one line per `\|`-separated token, drawn by `PlainStringsDiagram`. |
 | `PSystemEggFactory.ts` | `PSystemEggFactory`, `eggPlugin` | `PSystemEggFactory` — a line that decrypts one of two stored payloads to printable text is an easter egg (`SentenceDecoder`). |
+| `PSystemPath.ts` | `PSystemPath` | `PSystemPath` — the `path` egg: a `DirectOsDiagram` whose export is `GraphicsPath#writeImage` (an SVG page in the port, ipe D2). |
+| `PSystemPathFactory.ts` | `PSystemPathFactory`, `pathPlugin` | `PSystemPathFactory` — `path <motif>`, registered only under `SecurityProfile.INSECURE` (`PSystemBuilder.java:178-179`; ipe D1). |
 | `PSystemRIP.ts` | `PSystemRIP` | `PSystemRIP` — a dedication to the author's grandfather over his picture. |
 | `PSystemRIPFactory.ts` | `PSystemRIPFactory`, `ripPlugin` | `PSystemRIPFactory` — one literal, compared to the raw line with `equalsIgnoreCase`. |
 | `PSystemWelcomeFactory.ts` | `createSystem`, `welcomePlugin` | `PSystemWelcomeFactory` — the FIRST factory `PSystemBuilder` tries (`PSystemBuilder.java:133`). |

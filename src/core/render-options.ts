@@ -23,6 +23,8 @@ import type { AssetStore } from './asset-store.js';
 import type { SecurityProfile } from './security/SecurityProfile.js';
 import type { ElkBackend } from './elk/elk-backend.js';
 import type { ImageProvider } from './image-provider.js';
+import type { ParseOptions } from './dispatcher-types.js';
+import { renderClock } from './clock.js';
 
 export interface RenderOptions {
   theme?: 'default' | 'dark' | 'sketchy' | 'monochrome' | Partial<Theme>;
@@ -68,7 +70,9 @@ export interface RenderOptions {
    * 60 s, ALLOWLIST/INSECURE 5 min). Default `'LEGACY'`, upstream's default:
    * public hosts only, lexically checked. A server rendering untrusted source
    * should pass `'INTERNET'`, `'ALLOWLIST'` or `'SANDBOX'` (README, "Security").
-   * The jar reads this from `PLANTUML_SECURITY_PROFILE`.
+   * The jar reads this from `PLANTUML_SECURITY_PROFILE`. It also decides which
+   * profile-gated factories are registered: `path <motif>` only under
+   * `'INSECURE'` (`PSystemBuilder.java:178-179`, `ParseOptions.securityProfile`).
    */
   securityProfile?: SecurityProfile | undefined;
   /** Url prefixes allowed under every profile but SANDBOX, and the only ones
@@ -138,4 +142,19 @@ export function resolveMeasurer(pluginType: DiagramType, options?: RenderOptions
   if (options?.measurer !== undefined) return options.measurer;
   if (pluginType === 'description') return jarMeasurer;
   return getDefaultMeasurer();
+}
+
+/**
+ * The slice of `options` a plugin's `parse()` may read (`ParseOptions`): the
+ * asset store, the render's clock, the measurer and the security profile, each
+ * forwarded verbatim. The profile gates `registeredOnlyUnder` plugins in
+ * `DiagramRegistry#resolve` (ipe D1, `PSystemBuilder.java:178-179`).
+ */
+export function parseOptionsOf(options: RenderOptions | undefined): ParseOptions {
+  return {
+    assetStore: options?.assetStore,
+    clock: renderClock(options),
+    measurer: options?.measurer,
+    securityProfile: options?.securityProfile,
+  };
 }
