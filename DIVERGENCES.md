@@ -574,6 +574,41 @@ seam replaced was worse:** `include-resolver.ts` used to **silently drop**
 the line, rendering diagrams *quietly wrong*.
 **Category:** limitation only for store-less callers (deliberate packaging).
 
+### `!theme` on a theme moved to an opt-in package — licence-forced
+
+**Upstream:** all 44 themes ship inside the jar as `/themes/puml-theme-<name>.puml`
+resources. `!theme <name>` reads the bundled resource first, then a local file
+(`ThemeUtils.java:128-147`), and `help themes` lists every bundled resource
+(`ThemeUtils.java:204-217`).
+
+**This port (issue #180, maintainer ruling 2026-11-13):** the MIT `dist/` may
+carry only themes whose licence allows it, so core embeds 35: the 31 MIT ones,
+`_none_`, and the Apache-2.0 `mars`, `toy` and `vibrant` (licence text in
+`dist/licenses/`). The other nine ship in two opt-in packages:
+
+- `@knowvah/plantuml-themes-unlicensed` (`SEE LICENSE IN LICENSE`; no licence
+  stated by the authors): `amiga`, `blueprint`, `carbon-gray`, `crt-amber`,
+  `crt-green`, `mimeograph`, `mono`, `plain`;
+- `@knowvah/plantuml-themes-gpl` (`GPL-3.0-or-later`): `sunlust`. It is kept
+  out of `@knowvah/plantuml-all`.
+
+Without its package registered, `!theme amiga` gives the jar's own
+unknown-name error, `Cannot load theme amiga` (`EaterTheme.java:82-85`, after
+`ThemeUtils.java:128-147` returns `null`), and `help themes` lists 35 names
+instead of 44. **The fix:** register the packages with
+`withThemes(base, themeStore(unlicensedThemes, gplThemes))` on
+`options.includeStore`. A registered package is this port's form of a bundled
+resource (it resolves before a local file, with the bundled description
+`</themes/puml-theme-<name>.puml>`), so with both registered every render is
+the jar's, and `help themes` lists all 44.
+
+Pinned by `tests/unit/core/theme-packages-unregistered.test.ts` (both arms, all
+nine names), `tests/unit/core/tim/ThemeStore.test.ts` (lookup order and
+composition) and `tests/unit/factories/Help.test.ts` (35 without, 44 with).
+Precedent: the CC BY-ND `stdlib-aws` split (`!include <bundle/thing>` above).
+Design: `plans/themes-opt-in-packages/decisions.md` D1-D7.
+**Category:** licence-forced.
+
 ### Sprite and `img` rasters — CC BY-ND artwork passes through (licence-forced)
 
 **Mirrored (unwind-U4, 2026-10-08):** sprite rasters are resampled to the jar's `round(w*s)×round(h*s)` through a clean-room `AffineTransformOp` bilinear (`src/core/klimt/sprite/sprite-bilinear.ts`; 24/54248 channel values off by one on half-pixel downscale ties) and drawn at the raster's own size (`SvgGraphics.java:973-974`; `PortableImageAwt.java:113-127`); element geometry and note placement match the jar.

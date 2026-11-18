@@ -34,6 +34,7 @@ import {
   structuralFailures,
   type BacklogFile,
 } from './dot-parity-backlogs.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 const GOLDENS = join(dirname(fileURLToPath(import.meta.url)), '../../oracle/goldens/state');
 
@@ -83,6 +84,7 @@ describe.skipIf(ratchetFixtures.length === 0)('oracle DOT-parity ratchet — sta
       // captured-graph-count assertion is the structural check.
       renderSync(readFileSync(join(GOLDENS, name, 'input.puml'), 'utf8'), {
         measurer: new DeterministicMeasurer(),
+        includeStore: themedIncludeStore(),
       });
       expect(
         captured.length,

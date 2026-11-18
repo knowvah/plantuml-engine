@@ -24,6 +24,7 @@ import type { ParseRefusal } from '../../../src/core/parse-refusal.js';
 import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
 import { parseWbs } from '../../../src/diagrams/wbs/WBSDiagramFactory.js';
 import type { WBSDiagram } from '../../../src/diagrams/wbs/WBSDiagram.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const CORPUS = 'test-results/dot-cache/wbs';
 const OLD_ORDER_WARNING = 'Please define Direction/Shape before Color/Id.';
@@ -33,7 +34,7 @@ const ONE_ROOT = 'WBS diagram only accepts one root first declared.';
 
 /** The render pipeline's `UmlSource` for a `.puml` text (`index.ts#umlSourceOfBlock`). */
 function parse(text: string): WBSDiagram | ParseRefusal {
-  const block = buildBlockUmls(text)[0]!;
+  const block = buildBlockUmls(text, { includeStore: themedIncludeStore() })[0]!;
   if (!block.ok) throw new Error('preprocessor failure');
   const source = {
     ...block.source,

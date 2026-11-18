@@ -50,6 +50,7 @@ import {
 } from '../src/core/klimt/creole/legacy/StripeSimple.js';
 import type { FontConfiguration, FontStyle } from '../src/core/klimt/shape/UText.js';
 import type { CreoleAtom } from '../src/core/klimt/creole/atom/Atom.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDENS = join(REPO, 'oracle', 'goldens', 'description');
@@ -220,7 +221,7 @@ function hasNodesArray(ast: unknown): ast is { nodes: unknown[] } {
  *  (empty/failed preprocessor block, parse throw, or an AST with no
  *  `nodes` array). */
 function parseDisplays(puml: string): Array<{ id: string; display: string }> | undefined {
-  const includeStore = withStdlib(new MapIncludeStore(), buildStdlibAssetsStore());
+  const includeStore = themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()));
   const blocks = buildBlockUmls(puml, { includeStore });
   const first = blocks[0];
   if (first === undefined || !first.ok) return undefined;

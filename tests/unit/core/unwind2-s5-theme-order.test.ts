@@ -30,6 +30,7 @@ import { describe, expect, it } from 'vitest';
 import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from '../../oracle/svg-conformance/compare.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind2-S5');
 const COLOUR = /\/@(fill|stroke|font-family)$/u;
@@ -78,7 +79,7 @@ const CASES = readdirSync(DIR)
 function diffsOf(name: string): string[] {
   const source = readFileSync(join(DIR, `${name}.puml`), 'utf8');
   const jar = readFileSync(join(DIR, `${name}.svg`), 'utf8');
-  const ours = renderSync(source, { measurer: new DeterministicMeasurer() });
+  const ours = renderSync(source, { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() });
   return compareSvg(ours, jar, 'deterministic').diffs.map((d) => d.path);
 }
 

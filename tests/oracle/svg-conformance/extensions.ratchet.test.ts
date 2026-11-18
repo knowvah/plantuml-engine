@@ -21,6 +21,7 @@ import { describe, expect, it } from 'vitest';
 import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/extensions');
 const PLAIN_SUFFIX = '.plain.puml';
@@ -29,7 +30,7 @@ const ENGINES = ['json', 'yaml', 'hcl', 'files'] as const;
 /** Floor on pinned examples per engine -- the audit's `works` rows (extension-audit.md). */
 const MIN_EXAMPLES: Readonly<Record<(typeof ENGINES)[number], number>> = { json: 7, yaml: 7, hcl: 10, files: 9 };
 
-const OPTIONS = { measurer: new DeterministicMeasurer() };
+const OPTIONS = { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() };
 const JAR_OPTIONS = withJarCompatibleStyleInput(OPTIONS);
 
 const read = (name: string): string => readFileSync(join(DIR, name), 'utf8');

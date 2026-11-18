@@ -52,6 +52,10 @@ export interface ParseOptions {
    *  upstream adds `PSystemPathFactory` only when `SecurityUtils.getSecurityProfile() == SecurityProfile.INSECURE`.
    *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/PSystemBuilder.java:178-179 */
   readonly securityProfile?: SecurityProfile | undefined;
+  /** The theme names registered packages add to core's (`IncludeStore#packagedThemeNames`, #180 D3), for
+   *  `help themes`: upstream lists every bundled theme resource, and a registered package is this port's form
+   *  of one. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java:204-217 */
+  readonly packagedThemeNames?: readonly string[] | undefined;
 }
 
 // ---------------------------------------------------------------------------

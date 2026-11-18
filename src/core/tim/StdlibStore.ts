@@ -30,6 +30,7 @@
  */
 
 import type { IncludeStore } from './IncludeStore.js';
+import type { PackagedTheme } from './ThemeStore.js';
 import { splitStdlibPath } from './stdlib-path.js';
 
 /**
@@ -91,6 +92,10 @@ export function withStdlib(base: IncludeStore, stdlib: StdlibStore): IncludeStor
     get: (path: string): string | undefined => base.get(path),
     has: (path: string): boolean => base.has(path),
     getPumlResource: (fullname: string): string | undefined => stdlib.getPumlResource(fullname),
+    // #180 D1: forward the packaged-theme seam, so `withStdlib(withThemes(...))`
+    // keeps the registered themes (`ThemeStore.ts#withThemes`).
+    getPackagedTheme: (name: string): PackagedTheme | undefined => base.getPackagedTheme?.(name),
+    packagedThemeNames: (): readonly string[] => base.packagedThemeNames?.() ?? [],
   };
 }
 

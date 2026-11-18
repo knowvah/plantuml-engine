@@ -52,6 +52,7 @@ import {
 } from './dot-sync-fixtures.js';
 import { EXPECTED_TAG, dotParityRows, dotParityMarkdown, writeDotParityJson } from './dot-parity-rows.js';
 import { runProbeJsonDot } from './dot-sync-probe.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Lizard-safe (no regex literals): matches svek-<N>.dot dump files. */
@@ -162,7 +163,7 @@ function ourInputs(type: string, markup: string): DotInputGraph[] {
       measurer: new DeterministicMeasurer(),
       ...(STDLIB_WIRED_TYPES.has(type)
         ? {
-            includeStore: withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()),
+            includeStore: themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore())),
             assetStore: surveyAssetStoreFor(),
           }
         : {}),

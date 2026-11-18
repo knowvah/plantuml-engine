@@ -17,9 +17,18 @@ the individual packages you need and omit the non-MIT ones.
 | `@knowvah/plantuml-stdlib-tupadr3` | tupadr3 icon bundle | MIT | Preserve the notice |
 | `@knowvah/plantuml-sprites-archimate` | ArchiMate sprite artwork | MIT | Attribution + ArchiMate trademark notice |
 | `@knowvah/plantuml-emoji` | Twemoji artwork | **CC BY 4.0** | **Attribution required on redistribution** |
+| `@knowvah/plantuml-themes-unlicensed` | 8 PlantUML themes (amiga, blueprint, carbon-gray, crt-amber, crt-green, mimeograph, mono, plain) | **None stated** (`SEE LICENSE IN LICENSE`) | No licence is granted; redistributed as PlantUML does |
 
 `adaml` (GPL) is deliberately never included, here or in
-`@knowvah/plantuml-stdlib-all`.
+`@knowvah/plantuml-stdlib-all`. Nor is `@knowvah/plantuml-themes-gpl`, the
+GPL-3.0-or-later `sunlust` theme (#180).
+
+### Unlicensed themes — no licence stated
+
+`@knowvah/plantuml-themes-unlicensed` holds eight themes whose authors stated
+no licence. "Unlicensed" does not mean "The Unlicense": no licence is granted,
+and the files are redistributed unmodified, as PlantUML redistributes them.
+See that package's `LICENSE`.
 
 ## The two that need real care
 

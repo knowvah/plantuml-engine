@@ -8,6 +8,40 @@ grouped by mission/PR until a first tagged release exists.
 
 ## [Unreleased]
 
+### Changed — nine themes move to opt-in packages (BREAKING for `!theme` users)
+
+**What changed:** the MIT build now embeds only the themes MIT allows
+(issue #180, maintainer ruling 2026-11-13): the 31 MIT themes, `_none_`, and
+the Apache-2.0 `mars`, `toy` and `vibrant`, whose licence text ships in
+`dist/licenses/`. The other nine moved to two new packages:
+
+- `@knowvah/plantuml-themes-unlicensed`: `amiga`, `blueprint`, `carbon-gray`,
+  `crt-amber`, `crt-green`, `mimeograph`, `mono`, `plain`. Their authors
+  stated no licence. `@knowvah/plantuml-all` depends on it.
+- `@knowvah/plantuml-themes-gpl`: `sunlust` (GPL-3.0-or-later), kept out of
+  `@knowvah/plantuml-all`.
+
+**Why:** these files' own headers state no licence or GPL 3+, so they cannot
+ship inside an MIT `dist/`.
+
+**If you use one of the nine:** `!theme amiga` without its package renders
+PlantUML's `Cannot load theme amiga` error, and `help themes` lists 35 names.
+Register the packages:
+
+```js
+import { themeStore, withThemes } from '@knowvah/plantuml-engine';
+import { unlicensedThemes } from '@knowvah/plantuml-themes-unlicensed';
+
+const includeStore = withThemes(base, themeStore(unlicensedThemes));
+```
+
+**Added:** `themeStore`, `withThemes` and the types `ThemePackage`,
+`ThemeStore`, `PackagedTheme`, `ThemeOverride`; `IncludeStore` gains the
+optional `getPackagedTheme` and `packagedThemeNames`. With both packages
+registered every render is byte-identical to before.
+
+Refs: #180
+
 ### Changed — renamed to plantuml-engine (BREAKING for importers)
 
 **What changed:** the library is now `plantuml-engine` (issue #173):

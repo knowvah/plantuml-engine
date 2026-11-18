@@ -10,6 +10,9 @@
  * requirement that flows to you when you redistribute. Installing this
  * meta-package opts you into it. If you need an MIT-only dependency tree,
  * install the individual packages and omit `@knowvah/plantuml-emoji`.
+ * `@knowvah/plantuml-themes-unlicensed` ships eight PlantUML themes whose
+ * authors stated **no licence** at all (#180); omit it too for MIT-only.
+ * The GPL-3.0 theme package (`sunlust`) is never included.
  * See LICENSES.md.
  */
 export * from '@knowvah/plantuml-stdlib-all';
@@ -20,14 +23,16 @@ export {
   SPRITE_EXTENSIONS,
 } from '@knowvah/plantuml-sprites-archimate';
 export { emojiAssets, emojiAssetKey, emojiAssetPath, EMOJI_ASSET_PREFIX } from '@knowvah/plantuml-emoji';
+export { unlicensedThemes } from '@knowvah/plantuml-themes-unlicensed';
 
 /** Every asset package this meta-package pulls, with its licence — so a
  *  consumer can enumerate obligations programmatically instead of reading
- *  three READMEs. */
+ *  every README. */
 export const assetPackages = [
   { name: '@knowvah/plantuml-stdlib', license: 'MIT' },
   { name: '@knowvah/plantuml-stdlib-aws', license: 'CC-BY-ND-2.0' },
   { name: '@knowvah/plantuml-stdlib-tupadr3', license: 'MIT' },
   { name: '@knowvah/plantuml-sprites-archimate', license: 'MIT' },
   { name: '@knowvah/plantuml-emoji', license: 'CC-BY-4.0' },
+  { name: '@knowvah/plantuml-themes-unlicensed', license: 'SEE LICENSE IN LICENSE' },
 ];

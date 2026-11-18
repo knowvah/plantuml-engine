@@ -9,13 +9,13 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2618 modules · 8597 exported names.
+2621 modules · 8610 exported names.
 
 ## `src/`
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `index.ts` | `RenderOptions`, `ImageProvider`, `ImageFetchResult`, `assembleSvg`, `loadElk`, `ElkBackend`, `stdlibStore`, `withStdlib`, `BundleData`, `StdlibStore`, `stdlibRegistry`, `StdlibChunkLoadError`, `StdlibRegistry`, `prepareIncludeStore`, `CspIncludeError`, `CorsIncludeError`, `IncludeResolveError`, `CircularIncludeError`, `StdlibNotBundledError`, `IncludeWarmupOptions`, `SecurityProfile`, `remoteStdlib`, `StdlibResourceFetchError`, `StdlibRemoteManifest`, `RemoteBundle`, `spriteSplitStdlib`, `SpriteNotBundledError`, `SpriteSplitManifest`, `combineAssetStores`, `AssetPayload`, `AssetStore`, `renderPagesSync`, `renderSync`, `render`, `renderPages`, `renderAll` |  |
+| `index.ts` | `RenderOptions`, `ImageProvider`, `ImageFetchResult`, `assembleSvg`, `loadElk`, `ElkBackend`, `stdlibStore`, `withStdlib`, `BundleData`, `StdlibStore`, `themeStore`, `withThemes`, `PackagedTheme`, `ThemePackage`, `ThemeStore`, `ThemeOverride`, `stdlibRegistry`, `StdlibChunkLoadError`, `StdlibRegistry`, `prepareIncludeStore`, `CspIncludeError`, `CorsIncludeError`, `IncludeResolveError`, `CircularIncludeError`, `StdlibNotBundledError`, `IncludeWarmupOptions`, `SecurityProfile`, `remoteStdlib`, `StdlibResourceFetchError`, `StdlibRemoteManifest`, `RemoteBundle`, `spriteSplitStdlib`, `SpriteNotBundledError`, `SpriteSplitManifest`, `combineAssetStores`, `AssetPayload`, `AssetStore`, `renderPagesSync`, `renderSync`, `render`, `renderPages`, `renderAll` |  |
 | `registered-plugins.ts` | `PluginRegistrar`, `registerPlugins` | The composition root's registrations, in upstream's factory order: the `factories.add(...)` run of `PSystemBuilder`'s constructor. |
 
 ## `src/core/`
@@ -41,6 +41,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `asset-store.ts` | `AssetPayload`, `AssetStore`, `combineAssetStores` | ADR-2's asset store seam (`plans/s1l-tail-fix/decisions.md`) — the synchronous, pre-fillable channel for vendored binary/text asset payloads (the jar-internal `/sprites/**` bundle, F4-a; Twemoji artwork, F4-b). |
 | `assume-transparent.ts` | `RE_ASSUME_TRANSPARENT`, `isAssumeTransparent` | `CommandAssumeTransparent`: `!assume transparent dark\|light`, a historical directive every command factory registers through `CommonCommands#addCommonCommands2` (`command/CommonCommands.java:65`). |
 | `available-font-family-names.ts` | `availableFontFamilyNames` | `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`: the JVM host's font families. |
+| `backed-include-store.ts` | `BackedIncludeStore` | The store the async include prefetch fills and `render()` hands to the interpreter (`include-resolver.ts`, `startPrefetchWalk`). |
 | `block-extractor.ts` | `DiagramType`, `UmlSource`, `finalizeBlock`, `upstreamTypeOf`, `extractBlocks` | Block extractor: types a block's PREPROCESSED content, from the @start<type> keyword suffix or -- for plain @startuml -- by probing the first 20 non-empty content lines. |
 | `BlockUmlBuilder.ts` | `RawBlock`, `BlockUmlOk`, `BlockUmlErr`, `BlockUml`, `buildBlockUmls`, `rawBlocksOf`, `buildBlockUml`, `isBlockEmpty` | `BlockUmlBuilder` -- the document -> blocks stage, and the reason it runs BEFORE the preprocessor. |
 | `build-theme.ts` | `ResolvedThemeAndStyles`, `buildTheme` | Theme resolution -- extracted out of `src/index.ts` (this repo's `check-complexity.py` 500-line file cap; a MECHANICAL move, no behavior change). |
@@ -114,6 +115,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `object-skin-default.ts` | `OBJECT_SKIN_DEFAULT_BUCKET`, `objectSkinDefaults` | The skin default fill of an `object`/`map`/`json` box under `skinparam mode dark` (dss T3b, D8). |
 | `openiconic-glyphs-data.ts` | `RawGlyph`, `RAW_GLYPHS` | `RAW_GLYPHS` -- the OpenIconic glyph data table, split out of `openiconic-glyphs.ts` purely to keep that file under this project's 500-line cap (F1-c, S1L tail-fix G11; mirrors the existing `svg.ts`->`svg-markers.ts` / `style-map-theme.ts`- |
 | `openiconic-glyphs.ts` | `OPENICONIC_NATURAL_SIZE`, `isKnownOpenIconicGlyph`, `OpenIconicOp`, `parsedOpsFor`, `openIconicFactor`, `openIconicDims`, `openIconicStartingAltitude`, `openIconicOriginY`, `buildOpenIconicPathD` | OpenIconic `<&glyph>` inline icons (G2 N41, extended to the full upstream set F1-c). |
+| `packaged-theme-residue.ts` | `resolveBaseTheme` | Stage 1 of `buildTheme`: the named base theme, with the residual summary of a theme that ships in a registered package (#180). |
 | `paint.ts` | `Gradient`, `LinearGradientStopPaint`, `LinearGradientPaint`, `isLinearGradientPaint`, `Paint`, `parseColor`, `isTransparentColor`, `hashString`, `paintToSvg`, `noGradient` | Paint — the color/gradient value model for the rendering layer. |
 | `parse-refusal.ts` | `ParseRefusalKind`, `ParseRefusal`, `refuse`, `NULL_SYSTEM`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
 | `PlainStringsDiagram.ts` | `PlainStringsDiagram` | `PlainStringsDiagram` — a {@link UgDiagram} whose page is its `strings` drawn black on white, optionally with an `image` at `imagePosition` (`version`, the eggs). |
@@ -219,8 +221,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `theme-root-fields.ts` | `ThemeRootFields` |  |
 | `theme-sequence-fields.ts` | `ThemeSequenceFields` | `Theme.sequence` field shape — split out of theme.ts (cdd-T30) to keep that file under the project's 500-line file-size cap. |
 | `theme.ts` | `ElementColors`, `ThemeGraphColors`, `ThemeColorFields`, `ThemeSequenceFields`, `ThemeRootFields`, `PackageStyleSetting`, `Theme`, `defaultTheme`, `darkTheme`, `sketchyTheme`, `monochromeTheme`, `ThemeOverride`, `deepMergeTheme`, `mergeElementBuckets`, `resolveTheme`, `resolveElementPaint`, `resolveElementFontSize`, `resolveElementShadowing`, `resolveElementLineThickness`, `resolveElementMinimumWidth` | Theme system for plantuml-engine. |
-| `themes-builtin-a-m.ts` | `BUILTIN_THEMES_A_M` | Built-in PlantUML theme residue (amiga .. |
-| `themes-builtin-p-v.ts` | `BUILTIN_THEMES_P_V` | Built-in PlantUML theme residue (plain .. |
+| `themes-builtin-a-m.ts` | `BUILTIN_THEMES_A_M` | Built-in PlantUML theme residue (aws-orange .. |
+| `themes-builtin-p-v.ts` | `BUILTIN_THEMES_P_V` | Built-in PlantUML theme residue (reddress-darkorange .. |
 | `themes-builtin.ts` | `BUILTIN_THEMES` | Built-in PlantUML theme residue: only the fields an executed `!theme` does not yet reach -- see scripts/compile-themes.py. |
 | `themes-source.ts` | `THEME_SOURCES` | GENERATED by `scripts/build-theme-sources.ts` -- do not edit by hand. |
 | `TitledDiagram.ts` | `DiagramType`, `UmlSource`, `Previous`, `TitledDiagram` |  |
@@ -1260,6 +1262,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `TFunctionSignature.ts` | `TFunctionSignature` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TFunctionSignature.java |
 | `TFunctionType.ts` | `TFunctionType`, `isLegacyTFunctionType` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TFunctionType.java |
 | `ThemeExecutor.ts` | `ThemeMetadata`, `ThemeExecutor` | `TContext#executeTheme` and the state upstream's `TContext` keeps for it (`themeMetadata`), plus the name `preprocess()` surfaces as `PreprocessorResult.theme`. |
+| `ThemeStore.ts` | `PackagedTheme`, `ThemePackage`, `ThemeStore`, `themeStore`, `withThemes` | Theme packages: themes that core does not bundle, registered by the host. |
 | `TLineType.ts` | `getFromLineInternal`, `isQuote`, `isLatinDigit`, `isLetterOrEmojiOrUnderscoreOrDigit` | The `TLineType` CLASSIFIER -- the regex cascade that decides which TIM directive (if any) a raw source line is. |
 | `TMemory.ts` | `ExecutionContextIf`, `ExecutionContextWhile`, `ExecutionContextForeach`, `ExecutionContexts`, `TMemory` | The TIM variable-scoping contract (`TMemory`) plus the shared execution- context stack (`ExecutionContexts`) that both `TMemoryGlobal` and `TMemoryLocal` extend, plus the three `!if` / `!while` / `!foreach` execution-context value classes t |
 | `TMemoryGlobal.ts` | `TMemoryGlobal` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TMemoryGlobal.java |

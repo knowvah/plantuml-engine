@@ -21,6 +21,7 @@ import type { AssetStore } from '../../../src/core/asset-store.js';
 import type { IncludeStore } from '../../../src/core/tim/IncludeStore.js';
 import { renderSync } from '../../../src/index.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 /**
  * `renderFixtureChart`'s options bag -- the two `RenderOptions` fields
@@ -87,9 +88,11 @@ export function authoredChartIncludeStore(root: string = AUTHORED_CHART_ROOT): I
     const file = join(root, path);
     return existsSync(file) ? readFileSync(file, 'utf8') : undefined;
   };
-  return {
+  // #180: re-register the theme packages `shared` carries, which this
+  // hand-built store would otherwise drop.
+  return themedIncludeStore({
     get: (path: string): string | undefined => local(path) ?? shared.get(path),
     has: (path: string): boolean => local(path) !== undefined || shared.has(path),
     getPumlResource: (fullname: string): string | undefined => shared.getPumlResource?.(fullname),
-  };
+  });
 }

@@ -27,6 +27,7 @@ import { withJarCompatibleStyleInput } from '../src/core/internal-render-options
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
 import { compareSvg } from '../tests/oracle/svg-conformance/compare.js';
 import type { Diff } from '../tests/oracle/svg-conformance/compare.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CACHE_DIR = join(REPO, 'test-results', 'dot-cache');
@@ -250,7 +251,10 @@ function writeReport(outDir: string, slug: string, html: string): string {
 export function generateReport(cacheDir: string, outDir: string, ref: FixtureRef): string {
   const markup = readCachedMarkup(cacheDir, ref);
   const jarSvg = readCachedJarSvg(cacheDir, ref);
-  const oursSvg = renderSync(markup, withJarCompatibleStyleInput({ measurer: new DeterministicMeasurer() }));
+  const oursSvg = renderSync(
+    markup,
+    withJarCompatibleStyleInput({ measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() }),
+  );
   const result = compareSvg(oursSvg, jarSvg, TOLERANCE_CLASS);
   const html = buildOverlayHtml({ type: ref.type, slug: ref.slug, oursSvg, jarSvg, result });
   return writeReport(outDir, ref.slug, html);

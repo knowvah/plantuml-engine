@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { renderSync } from '../../../src/index.js';
 import { compareSvg } from '../../oracle/svg-conformance/compare.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const CORPUS = new URL('../../../test-results/dot-cache/unknown/', import.meta.url);
 
@@ -11,7 +12,7 @@ function corpus(slug: string, file: 'in.puml' | 'in.svg'): string {
 }
 
 function render(text: string): string {
-  return renderSync(text, { measurer: new DeterministicMeasurer() });
+  return renderSync(text, { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() });
 }
 
 /** The rows T3a makes conformant through `renderSync` (creole 7, def 2, help 4). */

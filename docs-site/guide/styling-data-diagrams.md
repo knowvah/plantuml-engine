@@ -105,6 +105,9 @@ Port output (jar-compatible mode draws the default style instead):
 ## Themes in HCL
 
 `!theme` applies its `<style>` blocks to HCL diagrams. The jar drops them.
+The `amiga` theme below ships in `@knowvah/plantuml-themes-unlicensed`, not in
+core: register it with `withThemes` (see the README's "Themes that need a
+package").
 
 ```plantuml
 @starthcl

@@ -16,6 +16,7 @@ import { withStdlib } from '../../../../src/core/tim/StdlibStore.js';
 import { StringLocated } from '../../../../src/core/tim/StringLocated.js';
 import { TContext } from '../../../../src/core/tim/TContext.js';
 import { TMemoryGlobal } from '../../../../src/core/tim/TMemoryGlobal.js';
+import { themedIncludeStore } from '../../../helpers/theme-packages-store.js';
 
 const AWS_PRIMARY = '#EC7211'; // puml-theme-aws-orange.puml:52
 const C4_THEME_KEY = 'C4/themes/puml-theme-C4_united.puml';
@@ -95,13 +96,21 @@ describe('!theme executes the bundled theme source', () => {
   });
 
   it("orders the theme's `<style>` before a later document skinparam", () => {
-    const r = preprocess('@startuml\n!theme plain\nskinparam backgroundColor red\n@enduml');
+    const r = preprocess('@startuml\n!theme plain\nskinparam backgroundColor red\n@enduml', undefined, {
+      includeStore: themedIncludeStore(),
+    });
     const order = r.declarationOrder!;
     expect(order.skinparam.get('backgroundcolor')).toBeGreaterThan(order.styles[0]!);
   });
 
   it('%get_current_theme() reads the executed theme metadata (GetCurrentTheme.java:65)', () => {
-    const { lines } = preprocess('@startuml\n!theme amiga\n!$m = %get_current_theme()\ntitle $m.name\n@enduml');
+    const { lines } = preprocess(
+      '@startuml\n!theme amiga\n!$m = %get_current_theme()\ntitle $m.name\n@enduml',
+      undefined,
+      {
+        includeStore: themedIncludeStore(),
+      },
+    );
     expect(lines).toContain('title amiga');
   });
 
@@ -204,7 +213,7 @@ describe('readThemeWithYamlHeader (ReadLineWithYamlHeader#readLine)', () => {
 
 describe('loadTheme descriptions (the error-diagram "[From ...]" text)', () => {
   it('describes a bundled theme by its jar resource path', () => {
-    const theme = loadTheme(EMPTY_INCLUDE_STORE, 'plain', undefined);
+    const theme = loadTheme(themedIncludeStore(), 'plain', undefined);
     expect(theme?.lines[0]?.getLocation()?.getDescription()).toBe('</themes/puml-theme-plain.puml>');
   });
 

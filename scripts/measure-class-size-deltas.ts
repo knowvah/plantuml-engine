@@ -41,19 +41,21 @@ import {
   type DeltaResult,
 } from './measure-description-size-deltas.js';
 import { svekFiles } from './lib/svek-files.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDENS = join(REPO, 'oracle', 'goldens', 'class');
 
 /** Renders one golden's `input.puml`, capturing every `layoutGraph()` input.
- *  No `includeStore` — matches `class-dot-parity.test.ts`'s RATCHET suite
+ *  No stdlib store, only the #180 theme packages (themes-only, so stdlib
+ *  resolution is unchanged) — matches `class-dot-parity.test.ts`'s RATCHET suite
  *  (a few stdlib-`!include` fixtures capture zero graphs, a legitimate
  *  zero-vs-zero EQUAL). */
 function captureGraphs(markup: string): DotInputGraph[] {
   const captured: DotInputGraph[] = [];
   setLayoutInputObserver(({ graph: g }) => captured.push(g));
   try {
-    renderSync(markup, { measurer: new DeterministicMeasurer() });
+    renderSync(markup, { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() });
   } finally {
     setLayoutInputObserver(undefined);
   }

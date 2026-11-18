@@ -29,6 +29,11 @@
  * A measurement seam duplicated across the surfaces that are meant to
  * cross-check each other defeats the cross-check. Hence one module.
  *
+ * #180: the store also registers both theme packages
+ * (`theme-packages-store.ts`), so a fixture using a theme that left core
+ * (`!theme amiga`, `!theme sunlust`, ...) renders exactly as before the move.
+ * Registration is a map lookup and costs no walk.
+ *
  * Node `fs` is reached here (through `buildStdlibAssetsStore`) and that is
  * fine: this is test infrastructure under `tests/`, never `src/`, which must
  * stay browser-safe (CLAUDE.md). The assets store deliberately covers EVERY
@@ -38,6 +43,7 @@
 import { buildStdlibAssetsStore } from './stdlib-assets-store.js';
 import { withStdlib, type StdlibStore } from '../../src/core/tim/StdlibStore.js';
 import type { IncludeStore } from '../../src/core/tim/IncludeStore.js';
+import { themedIncludeStore } from './theme-packages-store.js';
 
 /**
  * Builds an include store that resolves `<bundle/thing>` through `buildAssets`,
@@ -54,7 +60,7 @@ import type { IncludeStore } from '../../src/core/tim/IncludeStore.js';
  */
 export function createFixtureIncludeStore(buildAssets: () => StdlibStore): IncludeStore {
   let assets: StdlibStore | undefined;
-  return withStdlib(
+  const stdlib = withStdlib(
     { get: () => undefined, has: () => false },
     {
       getPumlResource: (fullname: string): string | undefined => {
@@ -63,6 +69,7 @@ export function createFixtureIncludeStore(buildAssets: () => StdlibStore): Inclu
       },
     },
   );
+  return themedIncludeStore(stdlib);
 }
 
 let cachedIncludeStore: IncludeStore | undefined;

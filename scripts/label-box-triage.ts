@@ -39,6 +39,7 @@ import { buildStdlibAssetsStore } from '../tests/helpers/stdlib-assets-store.js'
 import { buildSpriteAssetsStore } from '../tests/helpers/sprite-assets-store.js';
 import { buildEmojiAssetsStore } from '../tests/helpers/emoji-assets-store.js';
 import { svekFiles } from './lib/svek-files.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDEN_ROOT = join(REPO, 'oracle', 'goldens');
@@ -171,7 +172,7 @@ function captureGraphs(type: BacklogType, markup: string): DotInputGraph[] {
       measurer: new DeterministicMeasurer(),
       ...(type === 'description'
         ? {
-            includeStore: withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()),
+            includeStore: themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore())),
             assetStore: combineAssetStores(buildSpriteAssetsStore(), buildEmojiAssetsStore()),
           }
         : {}),

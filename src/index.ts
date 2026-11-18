@@ -48,6 +48,11 @@ export { loadElk, type ElkBackend } from './core/elk/load-elk.js';
 // here too, not just from their modules.
 export { stdlibStore, withStdlib } from './core/tim/StdlibStore.js';
 export type { BundleData, StdlibStore } from './core/tim/StdlibStore.js';
+// #180: themes core may not ship under MIT live in opt-in packages the host registers the same way
+// (plans/themes-opt-in-packages/decisions.md D1).
+export { themeStore, withThemes } from './core/tim/ThemeStore.js';
+export type { PackagedTheme, ThemePackage, ThemeStore } from './core/tim/ThemeStore.js';
+export type { ThemeOverride } from './core/theme.js';
 export { stdlibRegistry, StdlibChunkLoadError, type StdlibRegistry } from './core/tim/StdlibRegistry.js';
 export {
   prepareIncludeStore,

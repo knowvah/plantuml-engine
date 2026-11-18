@@ -147,7 +147,7 @@ export function resolveMeasurer(pluginType: DiagramType, options?: RenderOptions
 /**
  * The slice of `options` a plugin's `parse()` may read (`ParseOptions`): the
  * asset store, the render's clock, the measurer and the security profile, each
- * forwarded verbatim. The profile gates `registeredOnlyUnder` plugins in
+ * forwarded verbatim, and the registered packaged theme names (#180 D3). The profile gates `registeredOnlyUnder` plugins in
  * `DiagramRegistry#resolve` (ipe D1, `PSystemBuilder.java:178-179`).
  */
 export function parseOptionsOf(options: RenderOptions | undefined): ParseOptions {
@@ -156,5 +156,6 @@ export function parseOptionsOf(options: RenderOptions | undefined): ParseOptions
     clock: renderClock(options),
     measurer: options?.measurer,
     securityProfile: options?.securityProfile,
+    packagedThemeNames: options?.includeStore?.packagedThemeNames?.(),
   };
 }

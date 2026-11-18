@@ -40,6 +40,7 @@ import { buildSpriteAssetsStore } from '../helpers/sprite-assets-store.js';
 import { buildEmojiAssetsStore } from '../helpers/emoji-assets-store.js';
 import { combineAssetStores } from '../../src/core/asset-store.js';
 import { CI_RENDER_BUDGET_MS } from '../helpers/ci-test-budgets.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 // Renders past half of vitest's 5s default on the CI runner (worst observed:
 // bootstrap-0, 2,838ms);
@@ -98,7 +99,7 @@ describe.skipIf(fixtures.length === 0)('oracle DOT-parity ratchet — descriptio
         // wired for every ratchet fixture (cheap: memoized after first use,
         // see stdlib-assets-store.ts) rather than special-casing which ones
         // need it.
-        includeStore: withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()),
+        includeStore: themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore())),
         // F4-f piece 1: same render-input wiring as
         // `scripts/measure-description-size-deltas.ts` (ADR-2). The jar has
         // its `/sprites/**` classpath bundle unconditionally; without this

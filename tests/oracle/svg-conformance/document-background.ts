@@ -22,6 +22,7 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { renderSync } from '../../../src/index.js';
 import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
 import { compareSvg } from './compare.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -82,7 +83,11 @@ const ASSET_STORE = buildEmojiAssetsStore();
 export function renderDbgMarkup(markup: string): string {
   return renderSync(
     markup,
-    withJarCompatibleStyleInput({ measurer: new DeterministicMeasurer(), assetStore: ASSET_STORE }),
+    withJarCompatibleStyleInput({
+      measurer: new DeterministicMeasurer(),
+      assetStore: ASSET_STORE,
+      includeStore: themedIncludeStore(),
+    }),
   );
 }
 

@@ -73,6 +73,10 @@ assets/stdlib/
 # Generated per-bundle BundleData modules (scripts/build-stdlib-packages.ts)
 # — regenerable from assets/stdlib/ + assets/manifests/, never committed.
 packages/*/generated/
+# ...except the theme packages (#180): their generator reads ~/git/plantuml,
+# which CI does not have, so their output is committed and drift-gated
+# (`scripts/build-theme-sources.ts --check`, tests/unit/core/themes-source.test.ts).
+!packages/themes-*/generated/
 
 # Brand assets copied out of @knowvah/theme by `npm run docs:brand`. The
 # package is the source; see docs-site/copy-brand-assets.mjs.

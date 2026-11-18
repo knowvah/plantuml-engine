@@ -22,6 +22,8 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/preproc/PathSystem.java
  */
 
+import type { PackagedTheme } from './ThemeStore.js';
+
 /**
  * A pre-populated, synchronous path -> content map.
  *
@@ -48,6 +50,23 @@ export interface IncludeStore {
    * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/preproc/Stdlib.java#getPumlResource
    */
   getPumlResource?(fullname: string): string | undefined;
+  /**
+   * The registered theme-package seam (#180, `ThemeStore.ts`). Optional
+   * because only a store wrapped by `withThemes()` carries packages.
+   * `loadBundledOrLocalTheme` consults it after core's bundled themes and
+   * before the local `puml-theme-<name>.puml` key, so a registered theme
+   * resolves as one of upstream's jar resources does
+   * (`plans/themes-opt-in-packages/decisions.md` D2).
+   *
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java#loadBundledOrLocalTheme
+   */
+  getPackagedTheme?(name: string): PackagedTheme | undefined;
+  /**
+   * Every registered packaged theme name, for `help themes` (D3).
+   *
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java#getAllThemeNames
+   */
+  packagedThemeNames?(): readonly string[];
 }
 
 /** A `<bundle/path>` reference (PlantUML's bundled-stdlib form), or `undefined`. */

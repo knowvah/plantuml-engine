@@ -94,6 +94,37 @@ factory registration is commented out for MIT in `PSystemBuilder.java`), and
 the library it calls is LGPL-3.0, so a port of it could not ship in this MIT
 package.
 
+## Themes that need a package
+
+The MIT build ships only the themes MIT allows (issue #180, maintainer ruling
+of 2026-11-13). Core embeds 35 of upstream's 44 themes: the 31 whose headers
+say MIT, `_none_`, and `mars`, `toy` and `vibrant`, which say Apache License
+2.0 (the licence text ships in `dist/licenses/`). The other nine live in two
+opt-in packages:
+
+| Package | Themes | Licence |
+| --- | --- | --- |
+| `@knowvah/plantuml-themes-unlicensed` | `amiga`, `blueprint`, `carbon-gray`, `crt-amber`, `crt-green`, `mimeograph`, `mono`, `plain` | **None stated** by the authors (`SEE LICENSE IN LICENSE`). "Unlicensed" is not "The Unlicense". |
+| `@knowvah/plantuml-themes-gpl` | `sunlust` | **GPL-3.0-or-later** (header: `GPL 3+`). Not part of `@knowvah/plantuml-all`. |
+
+Without its package, `!theme amiga` renders PlantUML's own `Cannot load theme
+amiga` error. Register the packages on the include store:
+
+```js
+import { renderSync, themeStore, withThemes } from '@knowvah/plantuml-engine';
+import { unlicensedThemes } from '@knowvah/plantuml-themes-unlicensed';
+import { gplThemes } from '@knowvah/plantuml-themes-gpl';
+
+const base = { get: () => undefined, has: () => false }; // or your own include store
+const includeStore = withThemes(base, themeStore(unlicensedThemes, gplThemes));
+
+const svg = renderSync('@startuml\n!theme amiga\nAlice -> Bob : hi\n@enduml', { includeStore });
+```
+
+`withThemes` composes with `withStdlib` in either order, and `help themes`
+then lists all 44 names. See [DIVERGENCES.md](DIVERGENCES.md) and each
+package's `LICENSES.md`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Third-party components and their licenses are

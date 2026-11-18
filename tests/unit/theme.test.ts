@@ -11,6 +11,8 @@ import type { Theme, ThemeOverride } from '../../src/core/theme.js';
 import { buildTheme } from '../../src/core/build-theme.js';
 import { preprocess } from '../../src/core/preprocessor.js';
 import { REMOVED_BUSINESS_FILL_FIELDS } from '../helpers/removed-theme-fields.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
+import { resolveBaseTheme } from '../../src/core/packaged-theme-residue.js';
 
 // ---------------------------------------------------------------------------
 // defaultTheme
@@ -294,7 +296,8 @@ describe('resolveTheme', () => {
     // EXECUTED theme lines at the directive's position (`TContext.java:726-755`,
     // `build-theme.ts#rootCascadeSkinparams`), not from a summary below
     // every document line.
-    const result = resolveTheme('amiga');
+    // #180: amiga ships in @knowvah/plantuml-themes-unlicensed, its residue with it (D4).
+    const result = resolveBaseTheme('amiga', themedIncludeStore());
     expect(result.colors.text).toBe(defaultTheme.colors.text);
     expect(result.colors.border).toBe(defaultTheme.colors.border);
     expect(result.colors.arrow).toBe(defaultTheme.colors.arrow);
@@ -304,12 +307,22 @@ describe('resolveTheme', () => {
   });
 
   it('an executed !theme amiga reaches the root-cascade colours', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme amiga\n@enduml'), undefined, 'sequence');
+    const includeStore = themedIncludeStore();
+    const { theme } = buildTheme(
+      preprocess('@startuml\n!theme amiga\n@enduml', undefined, { includeStore }),
+      { includeStore },
+      'sequence',
+    );
     expect([theme.colors.text, theme.colors.border, theme.colors.arrow]).toEqual(['#FFFFFF', '#FFFFFF', '#FFFFFF']);
   });
 
   it('an executed !theme blueprint carries its dark blue background', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme blueprint\n@enduml'), undefined, 'sequence');
+    const includeStore = themedIncludeStore();
+    const { theme } = buildTheme(
+      preprocess('@startuml\n!theme blueprint\n@enduml', undefined, { includeStore }),
+      { includeStore },
+      'sequence',
+    );
     expect(theme.colors.background).toBe('#003153');
   });
 
@@ -319,7 +332,7 @@ describe('resolveTheme', () => {
   });
 
   it('retains defaultTheme graph fields when resolving a built-in theme', () => {
-    const result = resolveTheme('amiga');
+    const result = resolveBaseTheme('amiga', themedIncludeStore());
     expect(result.colors.graph.classBackground).toBe(defaultTheme.colors.graph.classBackground);
   });
 });

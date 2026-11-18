@@ -45,6 +45,7 @@ import {
   structuralFailures,
   type BacklogFile,
 } from './dot-parity-backlogs.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 const GOLDENS = join(dirname(fileURLToPath(import.meta.url)), '../../oracle/goldens/class');
 
@@ -104,6 +105,7 @@ describe('oracle DOT parity harness — class diagrams', () => {
       captured = [];
       const svg = renderSync(readFileSync(join(GOLDENS, name, 'input.puml'), 'utf8'), {
         measurer: new DeterministicMeasurer(),
+        includeStore: themedIncludeStore(),
       });
       expectNoErrorDiagram(svg);
       // A single-scope class diagram drives the layout seam exactly once.

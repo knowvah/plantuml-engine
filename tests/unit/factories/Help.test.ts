@@ -8,6 +8,11 @@ import { Help } from '../../../src/diagrams/help/Help.js';
 import { renderHelp } from '../../../src/diagrams/help/help-export.js';
 import { parseHelp } from '../../../src/diagrams/help/HelpFactory.js';
 import { sourceOf } from '../../helpers/utility-single-line.js';
+import { parseOptionsOf } from '../../../src/core/render-options.js';
+import { EMPTY_INCLUDE_STORE } from '../../../src/core/tim/IncludeStore.js';
+import { themeStore, withThemes } from '../../../src/core/tim/ThemeStore.js';
+import { themePackagesStore } from '../../helpers/theme-packages-store.js';
+import { renderSync } from '../../../src/index.js';
 
 const CORPUS = new URL('../../../test-results/dot-cache/unknown/', import.meta.url);
 
@@ -16,7 +21,8 @@ function corpus(slug: string, file: 'in.puml' | 'in.svg'): string {
 }
 
 function help(text: string): Help {
-  const parsed = parseHelp(sourceOf(text));
+  // #180: the registered theme packages' names, as `parseOptionsOf` passes them.
+  const parsed = parseHelp(sourceOf(text), { packagedThemeNames: themePackagesStore().themeNames() });
   if (!(parsed instanceof Help)) throw new Error(`refused: ${parseRefusalOf(parsed)?.message}`);
   return parsed;
 }
@@ -74,9 +80,34 @@ describe('Help', () => {
     ]);
   });
 
-  it('lists the bundled themes, _none_ first (kesexi-71-dubu320: 44 names)', () => {
+  it('lists the bundled themes, _none_ first: core 35, 44 with both packages (kesexi-71-dubu320, #180)', () => {
     expect(getAllThemeNames()[0]).toBe('_none_');
-    expect(getAllThemeNames()).toHaveLength(44);
+    expect(getAllThemeNames()).toHaveLength(35);
+    expect(getAllThemeNames(themePackagesStore().themeNames())).toHaveLength(44);
+  });
+
+  it('lists registered package themes once, in sorted position (#180 D3)', () => {
+    const names = getAllThemeNames(['zz', 'aws-orange', 'zz']);
+    expect(names).toHaveLength(getAllThemeNames().length + 1);
+    expect(names.filter((n) => n === 'aws-orange')).toHaveLength(1);
+    expect(names.at(-1)).toBe('zz');
+    expect(names).toEqual([...names].sort());
+  });
+
+  it('help themes reads the names from the parse options (#180 D3)', () => {
+    const parsed = parseHelp(sourceOf('@startuml\nhelp themes\n@enduml'), { packagedThemeNames: ['zz'] });
+    if (!(parsed instanceof Help)) throw new Error('refused');
+    expect(parsed.getLines().slice(3)).toEqual(getAllThemeNames(['zz']).map((n) => `* ${n}`));
+    expect(parsed.getLines().at(-1)).toBe('* zz');
+    expect(help('@startuml\nhelp themes\n@enduml').getLines()).toHaveLength(3 + 44);
+  });
+
+  it('parseOptionsOf fills the names from the include store (#180 D3)', () => {
+    const pkg = { name: 'p', license: 'MIT', themes: { zz: { source: '' } } };
+    const includeStore = withThemes(EMPTY_INCLUDE_STORE, themeStore(pkg));
+    expect(parseOptionsOf({ includeStore }).packagedThemeNames).toEqual(['zz']);
+    expect(parseOptionsOf(undefined).packagedThemeNames).toBeUndefined();
+    expect(renderSync('@startuml\nhelp themes\n@enduml', { includeStore })).toContain('>zz<');
   });
 
   it.each([

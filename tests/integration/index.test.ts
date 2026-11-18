@@ -21,6 +21,7 @@ import { defaultTheme } from '../../src/core/theme.js';
 import type { AsyncPlugin } from '../../src/core/dispatcher.js';
 import { refuse } from '../../src/core/parse-refusal.js';
 import { ERROR_BANNER, expectErrorDiagram, expectNoErrorDiagram } from '../helpers/error-diagram.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 // ---------------------------------------------------------------------------
 // Unique trigger strings — must not match sequence arrow patterns
@@ -320,7 +321,7 @@ describe('three-stage theme resolution', () => {
     const source = ['@startuml', '!theme amiga', 'skinparam backgroundColor #FFF', 'Alice -> Bob : hi', '@enduml'].join(
       '\n',
     );
-    const svg = await render(source);
+    const svg = await render(source, { includeStore: themedIncludeStore() });
     expectNoErrorDiagram(svg);
     expect(svg).toContain('background:#FFF');
     expect(svg).not.toContain('background:#0B58A8');

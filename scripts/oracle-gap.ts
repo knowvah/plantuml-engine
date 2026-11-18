@@ -28,6 +28,7 @@ import {
   type StructuralDiff,
 } from '../tests/oracle/svek-dot.js';
 import { svekFiles } from './lib/svek-files.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOTS = [join(REPO, 'oracle', 'goldens'), join(REPO, 'oracle', 'corpus-cache')];
@@ -50,7 +51,7 @@ function captureInputs(puml: string): DotInputGraph[] {
   const inputs: DotInputGraph[] = [];
   setLayoutInputObserver(({ graph: g }) => inputs.push(g));
   try {
-    renderSync(puml, { measurer: new DeterministicMeasurer() });
+    renderSync(puml, { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() });
   } catch {
     /* a fixture that fails to render produces no candidate */
   } finally {

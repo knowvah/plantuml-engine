@@ -1,8 +1,8 @@
 # @knowvah/plantuml-all
 
 One install for every [plantuml-engine](https://github.com/knowvah/plantuml-engine)
-asset package: the stdlib bundles, the ArchiMate sprites, and the Twemoji
-emoji artwork.
+asset package: the stdlib bundles, the ArchiMate sprites, the Twemoji emoji
+artwork, and the PlantUML themes core does not ship under MIT (GPL excepted).
 
 ```sh
 npm install @knowvah/plantuml-engine @knowvah/plantuml-all
@@ -16,9 +16,11 @@ This package's own code is MIT, but it pulls asset packages that are not:
 | --- | --- |
 | `@knowvah/plantuml-emoji` | **CC BY 4.0** — attribution required |
 | `@knowvah/plantuml-stdlib-aws` | **CC BY-ND 2.0** — attribution, no derivatives |
+| `@knowvah/plantuml-themes-unlicensed` | **No licence stated** by the theme authors |
 
-Installing this package opts you into both. If you need MIT-only, install the
-individual packages and omit those two. See [`LICENSES.md`](./LICENSES.md) for
+Installing this package opts you into all three. If you need MIT-only, install
+the individual packages and omit those three. The GPL theme package
+(`@knowvah/plantuml-themes-gpl`) is never included. See [`LICENSES.md`](./LICENSES.md) for
 the full table and the exact attribution text.
 
 ```js
@@ -38,6 +40,11 @@ assetPackages.filter((p) => p.license !== 'MIT');
   jar-internal icons behind `<<$archimate/...>>`.
 - **Twemoji artwork** via [`@knowvah/plantuml-emoji`](../emoji) — 1174 glyphs
   behind `<:name:>`.
+- **Unlicensed PlantUML themes** via
+  [`@knowvah/plantuml-themes-unlicensed`](../themes-unlicensed) — `amiga`,
+  `blueprint`, `carbon-gray`, `crt-amber`, `crt-green`, `mimeograph`, `mono`
+  and `plain`, re-exported as `unlicensedThemes`. Register them with
+  `withThemes(base, themeStore(unlicensedThemes))`.
 
 Note that `archimate` appears twice and means two different things: the
 stdlib bundle is `.puml` macros; the sprites package is the binary artwork.

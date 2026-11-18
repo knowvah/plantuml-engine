@@ -32,10 +32,28 @@ export class Help extends TitledDiagram {
   /** `TitledDiagram`'s `SkinParam.create(...)` (TitledDiagram.java:107): no command here can reach it. */
   private readonly skinParam: SkinParamFresh;
 
-  /** `classpath` is port-only (ADR-2). @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/Help.java:66-68 */
-  constructor(source: UmlSource, preprocessing: PreprocessingArtifact, classpath?: SkinParamClasspath) {
+  /** The registered theme packages' names (`ParseOptions.packagedThemeNames`, #180 D3), for `help themes`. */
+  private readonly packagedThemeNames: readonly string[];
+
+  /**
+   * `classpath` and `packagedThemeNames` are port-only (ADR-2; #180 D3: the
+   * jar's theme resources arrive here as registered packages).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/Help.java:66-68
+   */
+  constructor(
+    source: UmlSource,
+    preprocessing: PreprocessingArtifact,
+    classpath?: SkinParamClasspath,
+    packagedThemeNames: readonly string[] = [],
+  ) {
     super(source, 'HELP', undefined, preprocessing);
     this.skinParam = new SkinParamFresh(classpath);
+    this.packagedThemeNames = packagedThemeNames;
+  }
+
+  /** The theme names registered packages add to core's bundled ones (#180 D3). */
+  getPackagedThemeNames(): readonly string[] {
+    return this.packagedThemeNames;
   }
 
   /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/Help.java:62-64 */
