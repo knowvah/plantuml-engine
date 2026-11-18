@@ -33,6 +33,7 @@ import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { extractFlatContent } from '../../core/klimt/document-shell.js';
 import {} from './renderer-composite-box.js';
 import { renderNoteOnLink } from './renderer-note.js';
+import { drawEmbedStripe } from './state-embed-draw.js';
 import {} from './state-shadow.js';
 
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
@@ -224,7 +225,7 @@ function buildLabelBlockMarkup(label: InlineLabel, theme: Theme, fill: string): 
 /**
  * ele T1c: a label whose display holds a `{{ … }}` line, one `SheetBlock1` stripe after another at its own offset
  * (`SheetBlock1#drawU`, `SheetBlock1.java:224-232`). A text stripe draws its runs; an embed stripe draws its
- * `EmbeddedDiagram` atom, a `UImageSvg` (`EmbeddedDiagram.java:169-174`), through a `UGraphicSvg`.
+ * `EmbeddedDiagram` atom, a `UImageSvg` (`EmbeddedDiagram.java:169-174`), through `state-embed-draw.ts` (sne D3).
  */
 function buildLabelStripesMarkup(
   stripes: NonNullable<InlineLabel['stripes']>,
@@ -239,9 +240,7 @@ function buildLabelStripesMarkup(
       out += renderStateRuns(item.line.runs, x, y, item.line.height, style);
       continue;
     }
-    const ug = UGraphicSvg.build(0, basicSvgOption(), '$version$', NO_LABEL_TEXT_BOUNDER);
-    item.block.drawU(ug.apply(new UTranslate(x, y)));
-    out += extractFlatContent(ug.getSvgString()).body;
+    out += drawEmbedStripe(item.block, x, y);
   }
   return out;
 }
@@ -304,7 +303,8 @@ const ICON_SKINPARAM_COLOR: Record<string, (theme: Theme) => Paint | undefined> 
  *  for `Position.LEFT`/`TOP`, else the label first). */
 function buildLinkNoteMarkup(label: NonNullable<TransitionGeo['label']>, theme: Theme): string {
   const { x, y, width = 0, height = 0, noteLines = [], linkLabel } = label;
-  const note = renderNoteOnLink({ x, y, width, height }, noteLines, theme, label.noteColor);
+  const body = { lines: noteLines, stripes: label.noteStripes };
+  const note = renderNoteOnLink({ x, y, width, height }, body, theme, label.noteColor);
   if (linkLabel === undefined) return note;
   const inline = buildInlineLabelMarkup(
     {

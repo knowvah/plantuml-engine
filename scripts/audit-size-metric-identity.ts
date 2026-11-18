@@ -60,6 +60,7 @@ import { buildSpriteAssetsStore } from '../tests/helpers/sprite-assets-store.js'
 import { buildEmojiAssetsStore } from '../tests/helpers/emoji-assets-store.js';
 import { combineAssetStores } from '../src/core/asset-store.js';
 import { svekFiles } from './lib/svek-files.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDENS = join(REPO, 'oracle', 'goldens', 'description');
@@ -252,7 +253,7 @@ function captureGraphs(markup: string): DotInputGraph[] {
   try {
     renderSync(markup, {
       measurer: new DeterministicMeasurer(),
-      includeStore: withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()),
+      includeStore: themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore())),
       // Must match `measure-description-size-deltas.ts#captureGraphs` exactly.
       // Without this the audit renders internal sprites as their `«name»` text
       // fallback and reports a DIFFERENT diagram than the ratchet it is

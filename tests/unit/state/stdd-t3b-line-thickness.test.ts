@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 /**
  * stdd T3b: a state box's stroke is `EntityImageStateCommon.getStyleState(...).getStroke()`
@@ -19,7 +20,11 @@ const measurer = new DeterministicMeasurer();
 
 function render(slug: string): string {
   const puml = readFileSync(`${CACHE}/${slug}/in.puml`, 'utf8');
-  return renderSync(puml, { measurer, jarCompatibleStyleInput: true } as Parameters<typeof renderSync>[1]);
+  return renderSync(puml, {
+    measurer,
+    includeStore: themedIncludeStore(),
+    jarCompatibleStyleInput: true,
+  } as Parameters<typeof renderSync>[1]);
 }
 
 const widths = (svg: string): Record<string, number> => {

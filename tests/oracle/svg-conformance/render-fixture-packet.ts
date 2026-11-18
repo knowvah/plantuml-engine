@@ -24,6 +24,7 @@ import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
 import { buildSpriteAssetsStore } from '../../helpers/sprite-assets-store.js';
 import { buildUtilityAssetsStore } from '../../helpers/utility-assets-store.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 /**
  * The sprite, Twemoji and utility artwork the jar reads off its classpath, as
@@ -101,9 +102,11 @@ export function authoredPacketIncludeStore(root: string = AUTHORED_PACKET_ROOT):
     const file = join(root, path);
     return existsSync(file) ? readFileSync(file, 'utf8') : undefined;
   };
-  return {
+  // #180: re-register the theme packages `shared` carries, which this
+  // hand-built store would otherwise drop.
+  return themedIncludeStore({
     get: (path: string): string | undefined => local(path) ?? shared.get(path),
     has: (path: string): boolean => local(path) !== undefined || shared.has(path),
     getPumlResource: (fullname: string): string | undefined => shared.getPumlResource?.(fullname),
-  };
+  });
 }

@@ -109,6 +109,7 @@ import { UEmpty } from '../../shape/UEmpty.js';
 import { UPixel } from '../../shape/UPixel.js';
 import { UCenteredCharacter } from '../../shape/UCenteredCharacter.js';
 import type { UGroup } from '../../shape/UGroup.js';
+import { svgFileFormatOf } from '../../../measurer-deterministic.js';
 import { SvgGraphics } from './svg-graphics.js';
 import type { SvgOption } from './svg-graphics.js';
 import { DriverRectangleSvg } from './driver-rectangle-svg.js';
@@ -372,6 +373,8 @@ export class UGraphicSvg extends AbstractCommonUGraphic {
       getDescent(font, text) {
         return measurer !== undefined ? measurer.getDescent(font, text) : font.size / 4.5;
       },
+      // `FileFormat.java:185-193`: the deterministic render's SVG bounder answers SVG_DETERMINISTIC (pbs T2c).
+      getFileFormat: () => svgFileFormatOf(measurer),
     };
   }
 

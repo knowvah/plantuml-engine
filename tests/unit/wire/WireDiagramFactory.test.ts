@@ -8,12 +8,17 @@ import type { ParseRefusal } from '../../../src/core/parse-refusal.js';
 import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
 import { initCommandsList, parseWire } from '../../../src/diagrams/wire/WireDiagramFactory.js';
 import type { WireDiagram } from '../../../src/diagrams/wire/WireDiagram.js';
-import { svgOf } from './helpers.js';
+import { pngDefaultStringBounder } from '../../../src/core/png-string-bounder.js';
+import { measurer, svgOf } from './helpers.js';
 
 const PROTECTED = /^You should send a mail to plantuml@gmail\.com with this log \(V.*\) /;
 
 function parse(...lines: string[]): WireDiagram | ParseRefusal {
-  return parseWire({ lines, type: 'wire' } as unknown as UmlSource, new PreprocessingArtifact());
+  return parseWire(
+    { lines, type: 'wire' } as unknown as UmlSource,
+    new PreprocessingArtifact(),
+    pngDefaultStringBounder(measurer),
+  );
 }
 
 function refusalOf(...lines: string[]): ParseRefusal {

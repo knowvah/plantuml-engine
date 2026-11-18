@@ -11,6 +11,7 @@
 import type { DotInputGraph, DotLayoutResult } from '../../core/graph-layout.js';
 import { layoutGraph } from '../../core/graph-layout.js';
 import { UPolygon } from '../../core/klimt/shape/UPolygon.js';
+import { clipSplineEnd, clipSplineStart } from '../../core/spline-clip.js';
 import {
   buildActivityLegacyDot,
   type ActivityLegacyDot,
@@ -81,15 +82,39 @@ function nodesOf(dot: ActivityLegacyDot, result: DotLayoutResult): ActivityLegac
   });
 }
 
-function edgesOf(dot: ActivityLegacyDot, result: DotLayoutResult): ActivityLegacyEdgeGeo[] {
+function edgesOf(
+  dot: ActivityLegacyDot,
+  result: DotLayoutResult,
+  clusters: readonly ActivityLegacyClusterGeo[],
+): ActivityLegacyEdgeGeo[] {
   const byId = new Map(result.edges.map((e) => [e.id, e] as const));
+  const boxOf = (cluster: ActivityLegacyDotCluster): ActivityLegacyClusterGeo =>
+    clusters.find((c) => c.id === cluster.id)!;
   return dot.edges.map((edge) => {
     const solved = byId.get(edge.id);
     if (solved === undefined) throw new Error(`dot-engine: no spline for edge ${edge.id}`);
     // The optional fields are carried only when the engine reported them (`exactOptionalPropertyTypes`).
-    const { id: _id, ...rest } = solved;
-    return { ...edge, ...rest };
+    const { id: _id, points, ...rest } = solved;
+    return { ...edge, ...rest, points: simulateCompound(points, edge, boxOf) };
   });
+}
+
+/**
+ * `dotPath.simulateCompound(lhead.getRectangleArea(), ltail.getRectangleArea())`: the spline of an edge whose end is
+ * a partition's special point is trimmed to the partition's box, the tail first, before anything reads its ends. The
+ * node-distance reversal before it needs two `SvekNode`s (`:641-653`), so it never applies to a cluster end.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekEdge.java:641-672
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/DotPath.java:418-485
+ */
+function simulateCompound(
+  points: readonly { x: number; y: number }[],
+  edge: ActivityLegacyDotEdge,
+  boxOf: (cluster: ActivityLegacyDotCluster) => ActivityLegacyClusterGeo,
+): { x: number; y: number }[] {
+  let clipped = [...points];
+  if (edge.tailCluster !== undefined) clipped = clipSplineStart(clipped, boxOf(edge.tailCluster));
+  if (edge.headCluster !== undefined) clipped = clipSplineEnd(clipped, boxOf(edge.headCluster));
+  return clipped;
 }
 
 function clustersOf(dot: ActivityLegacyDot, result: DotLayoutResult): ActivityLegacyClusterGeo[] {
@@ -123,11 +148,12 @@ export function solveActivityLegacy(ctx: ActivityLegacyDotContext): ActivityLega
   const dot = buildActivityLegacyDot(ctx);
   const result = layoutGraph(dot.graph);
   storePolygons(dot, result);
+  const clusters = clustersOf(dot, result);
   return {
     dot: dot.graph,
     nodes: nodesOf(dot, result),
-    edges: edgesOf(dot, result),
-    clusters: clustersOf(dot, result),
+    edges: edgesOf(dot, result, clusters),
+    clusters,
     width: result.width,
     height: result.height,
     ...(result.originShift !== undefined ? { originShift: result.originShift } : {}),

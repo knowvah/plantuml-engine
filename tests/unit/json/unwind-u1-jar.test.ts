@@ -29,6 +29,7 @@ import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import type { InternalRenderOptions } from '../../../src/core/internal-render-options.js';
 import { compareSvg } from '../../oracle/svg-conformance/compare.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind-U1');
 
@@ -42,7 +43,12 @@ const OTHER_DIVERGENCE: Readonly<Record<string, readonly string[]>> = {
 };
 
 /** D9: the jar drops this styling input (`StyleExtractor.java:88-96`), so these are conformance renders. */
-const JAR_MODE: InternalRenderOptions = { measurer: new DeterministicMeasurer(), jarCompatibleStyleInput: true };
+const JAR_MODE: InternalRenderOptions = {
+  measurer: new DeterministicMeasurer(),
+  // #180: `json-theme-amiga` uses a theme that left core; register its package.
+  includeStore: themedIncludeStore(),
+  jarCompatibleStyleInput: true,
+};
 
 /**
  * The fixtures whose directive the library now honours (lad Amendment 1,

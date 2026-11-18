@@ -215,9 +215,8 @@ export class PSystemVersion extends PlainStringsDiagram {
     // compile time, and unstamped `Version.compileTime()` is now
     // (Version.java:79-82), so the age is 0 days < 140 (ReportLog.java:87-95).
     // java:181-189 omitted: `Loaded from <jar>` and the Word-mode lines print
-    // only under the INSECURE profile; the page cannot see
-    // `RenderOptions.securityProfile` (include prefetch only), the jar's
-    // default LEGACY prints neither, and the port has no jar path or Word mode.
+    // only under the INSECURE profile; the port has no jar path and no Word
+    // mode to report, and the jar's default LEGACY prints neither.
     strings.push(BLANK);
     addDotStatus(strings);
     strings.push(BLANK);

@@ -93,12 +93,15 @@ function swimlaneTitle(
   return { swimlaneTitleX: label.x - label.width / 2 };
 }
 
-/** Draws `cluster` (`Cluster#drawU`). The geometry is translated by the caller's `ug`. */
-export function drawCluster(ug: UGraphic, cluster: ActivityLegacyClusterGeo, skinParam: ActivityLegacySkinParam): void {
+/**
+ * The `Cluster` of a solved partition: what `drawU` draws and what `getMagneticBorder` answers for a link to it.
+ * Every legacy partition is a `PACKAGE` group with no `USymbol` (`printGroup` refuses any other type).
+ */
+export function buildCluster(cluster: ActivityLegacyClusterGeo, skinParam: ActivityLegacySkinParam): Cluster {
   // Port-only: `group.getColors().mute(skinParam)`'s muted builder is the diagram's; the group's own LINE and BACK
   // colours are applied by `Cluster#drawU` as overrides (`groupInfoOf`).
   const style = clusterStyleOf(cluster, skinParam.getCurrentStyleBuilder());
-  const drawn = new Cluster(
+  return new Cluster(
     groupInfoOf(cluster),
     {
       title: cluster.header.title,
@@ -114,11 +117,16 @@ export function drawCluster(ug: UGraphic, cluster: ActivityLegacyClusterGeo, ski
     styleDefaultsOf(style, skinParam),
     {
       symbol: null,
+      packageGroup: true,
       packageStyle: cluster.group.getPackageStyle() ?? null,
       defaultPackageStyle: packageStyleOf(skinParam),
       stereoAlignment:
         horizontalAlignmentFromString(skinParam.getValue('stereotypealignment')) ?? HorizontalAlignment.CENTER,
     },
   );
-  drawn.drawU(ug);
+}
+
+/** Draws `cluster` (`Cluster#drawU`). The geometry is translated by the caller's `ug`. */
+export function drawCluster(ug: UGraphic, cluster: ActivityLegacyClusterGeo, skinParam: ActivityLegacySkinParam): void {
+  buildCluster(cluster, skinParam).drawU(ug);
 }

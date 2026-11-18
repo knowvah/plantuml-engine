@@ -37,7 +37,8 @@
  *   - CORS: the remote server must send Access-Control-Allow-Origin; CSP changes won't help.
  */
 
-import { MapIncludeStore, StdlibNotBundledError, stdlibPathOf, type IncludeStore } from './tim/IncludeStore.js';
+import { StdlibNotBundledError, stdlibPathOf, type IncludeStore } from './tim/IncludeStore.js';
+import { BackedIncludeStore } from './backed-include-store.js';
 import { stdlibContentFor } from './stdlib-content.js';
 import { themeStoreKey } from './tim/EaterTheme.js';
 import type { StdlibRegistry } from './tim/StdlibRegistry.js';
@@ -203,10 +204,10 @@ const RE_COMPUTED = /[$%]/;
  * any include. A bundled theme names nothing to fetch; a computed name or
  * location is left to the caller's store, as `!include $path` is.
  */
-function themeTargetOf(line: string): string | undefined {
+function themeTargetOf(line: string, store: IncludeStore): string | undefined {
   const theme = THEME_RE.exec(line);
   if (theme === null || RE_COMPUTED.test(theme[1]!)) return undefined;
-  return themeStoreKey(theme[1]!);
+  return themeStoreKey(theme[1]!, store);
 }
 
 /** Strip the block selector: `!include foo.puml!SUB` fetches `foo.puml`. */
@@ -227,14 +228,14 @@ interface Target {
 }
 
 /** The include targets named on one line, if any. */
-function targetOf(rawLine: string): Target | undefined {
+function targetOf(rawLine: string, store: IncludeStore): Target | undefined {
   const line = rawLine.trimEnd();
   const include = INCLUDE_RE.exec(line);
   if (include !== null) return { url: fileOf(include[1]!), optional: false };
 
   const sub = INCLUDESUB_RE.exec(line);
   if (sub === null) {
-    const theme = themeTargetOf(line);
+    const theme = themeTargetOf(line, store);
     return theme === undefined ? undefined : { url: theme, optional: true };
   }
 
@@ -309,7 +310,7 @@ async function prefetchInner(
 ): Promise<void> {
   const targets = source
     .split('\n')
-    .map((line) => targetOf(line))
+    .map((line) => targetOf(line, walk.store))
     .filter((target): target is Target => target !== undefined);
 
   await Promise.all(
@@ -460,36 +461,4 @@ export async function prepareIncludeStore(source: string, options?: IncludeWarmu
     profile,
     allowlist: options?.urlAllowlist ?? [],
   });
-}
-
-/** A {@link MapIncludeStore} that falls back to a read-only base store on a miss. */
-class BackedIncludeStore extends MapIncludeStore {
-  private readonly base: IncludeStore | undefined;
-
-  constructor(base: IncludeStore | undefined) {
-    super();
-    this.base = base;
-  }
-
-  override get(path: string): string | undefined {
-    return super.get(path) ?? this.base?.get(path);
-  }
-
-  override has(path: string): boolean {
-    return this.get(path) !== undefined;
-  }
-
-  /**
-   * Forward the `<bundle/thing>` seam to the base store.
-   *
-   * This store is not just prefetch's scratch space — it is the value `render()`
-   * hands to the interpreter (`src/index.ts`, `prefetchIncludes` -> `buildBlockUmls`).
-   * Without this delegation, a `withStdlib` base resolves during prefetch and
-   * then `IncludeExecutor#load` throws `StdlibNotBundledError` anyway, because
-   * `this.store.getPumlResource?.(...)` finds no such method on the wrapper.
-   * Accepting in `prefetchInner` alone fixes nothing a caller can observe.
-   */
-  getPumlResource(fullname: string): string | undefined {
-    return this.base?.getPumlResource?.(fullname);
-  }
 }

@@ -35,6 +35,26 @@ post-D7 measurements.
 
 ---
 
+## state-note-embed (sne) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #168; per-task history on the local tag `state-note-embed/pre-squash`)
+
+A `{{ … }}` block in a state note now draws as the one `<image>` the jar's `EmbeddedDiagram` atom draws, at `(marginX1, marginY)` (`Opale.java:127`). `src/diagrams/state/state-note-stripes.ts` builds a note body's stripes the way `BodyEnhanced2#getArea` builds its blocks (separators decorated, an embed's lines kept whole), each block through the shared label stripe walk (`state-label-style.ts#segmentStripes`/`placeStripes`); the note's box stays on `buildNoteBody`. `src/diagrams/state/state-embed-draw.ts` draws an atom for labels and notes alike (D3) and a separator as the `UHorizontalLine` inside the note's `UGraphicStencil`. A `note on link` is sized and drawn the same way (`ComponentRoseNote` is `enhanced`: `BodyFactory.create3`), through one `measureStateLinkNoteDim` that all four callers share. The state note reader now takes an embedded block as one step (`state-note-multiline.ts`, calling `multiline-candidate.ts`'s port of `PSystemCommandFactory#addOneSingleLineManageEmbedded2`), so an `end note` inside `{{ }}` is body, and an unterminated `{{` or a note never closed is `Syntax Error?` at the note line, as in the jar. `timing/cov-embedded-state` and `wire/cov-embedded-state-note` are at 0 and leave both gates' `OPEN_ROWS`; 20 authored rows in `tests/fixtures/state-note-embed/` (16 at 0 with the jar's `<image>`s, 4 error pairs), held by `state-note-embed.authored.test.ts`. Nothing was lost in any engine, and no divergence was added.
+
+Follow-ons:
+
+1. **An embed-free state note with a `--`/`==`/`..`/`__` separator** draws the separator as text (#209): the stripe path's block walk already handles it, behind the embed guard D2 kept.
+
+## legacy-partition-link (lpl) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #157; per-task history on the local tag `legacy-partition-link/pre-squash`)
+
+A legacy activity link to a partition draws as the jar draws it. The edge names the group's special point (`Cluster.getSpecialPointId`, now exported from `src/core/svek/Cluster.ts`); a linked cluster declares it inside the `a`/`p0`/`i`/`p1` wrappers, under swimlanes `a`/`i` only (`wrapperLevels` gained that branch, shared by builder, emitter and node order), and under kermor not at all (`DotInputNode.implicit`: graphviz's default node, `ClusterDotStringKermor.java:69-165`). The solve trims the spline to the partition box (`simulateCompound`), the draw pulls it to the package's magnetic border (`Cluster.ts` now keeps it for a symbol-less PACKAGE, opt-in) and shifts a group self-link the jar's way (`SvekEdge.java:863-869`). `partition-link` 21 → 0 plus 10 authored fixtures, all 0, DOT pinned EQUAL; `OPEN_ROWS` is the ELK/Smetana trio only. No issue filed. Follow-on (`.agent-notes/lpl-T2a.md`): description's cluster magnet does not set the PACKAGE flag; three engines each carry the group-autolink shift.
+
+## unread-theme-fields (utf) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #156; per-task history on the local tag `unread-theme-fields/pre-squash`)
+
+`businessActorFill` and `businessUsecaseFill` are gone from `ThemeGraphColors`, from every built-in theme and from `SIMPLE_SELECTOR_MAPPINGS` (`actor.business`, `usecase.business`), by maintainer ruling on #156 (option 1). Nothing read them: a business actor or use case fills from its own signature's `BackGroundColor` (`EntityImageDescription.java:143-152,164-166`), read since dss T3a through the `actor-business`/`usecase-business` buckets. Absence pins cover the four built-in themes and `computeSimpleSelectorOverrides`. `dist/plantuml-engine.d.ts` lost exactly the two members; `CHANGELOG.md` names it under Removed. 0 verdict movers in every engine against `1689e015e`; every `parity-*.json` moved only `generatedAt`. No issue filed, no follow-on.
+
+## version-builtin (vb) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #155; per-task history on the local tag `version-builtin/pre-squash`)
+
+`%version()` now returns this port's version (`versionString()`, `0.2.0`) by maintainer ruling on #155 (option c), where upstream returns `Version.versionString()` (`GetVersion.java:63-66` → `Version.java:47-49`) and the dev-build oracle prints `$version$`. The change is one line in `createDefaultTimEnvironment()` (`TimEnvironment.ts`); `GetVersion` keeps its environment seam (D1). No `0.0.999` fallback was added, because no reachable path yields an unknown version (D2). Two corpus rows moved, and both are signed in `oracle/accepted-divergences.json`: `svg-activity/rekefe-90-baju604` (diverged, the 5 legend-line attributes, maxDelta 2.65 → 16.95) and `svg-c4/kipive-74-lele070` (was conformant as a pair of error pages; the jar refuses `$version$` but accepts `0.2.0`, so now we draw where the dev-build oracle errors; accepted on #206, 2026-11-17). Its refusal and routing baselines were re-pinned. `DIVERGENCES.md` gained "`%version()` prints this port's version". d.ts byte-identical. Follow-on: **#205**, where `2.13.0` then `0.2.0` draws a class diagram and the jar falls through to description (pre-existing, found while measuring kipive-74).
+
 ## class-comment-bytes (ccb) — DONE 2026-11-16 (one commit on `feature/parity-queue`, #151; per-task history on the local tag `class-comment-bytes/pre-squash`)
 
 `compareSvg` drops comments, so 154 of the 1234 class/object golden-ratchet pins were "conformant" with the wrong `<!--...-->` bytes. Three upstream mechanisms covered all of them. D1: only `EntityImageClass` and `EntityImageDescription` write an entity comment (`GeneralImageBuilder.java:107-242`), so objects, maps, json and states write none (`renderer-group.ts#entityImageCommentKind`). D2: a hidden node or edge draws through `UHidden` (`SvekResult.java:82-101`) after `AbstractUGraphic#draw` has written its comment (`:128-131`), so it leaves exactly its comment, and a hidden link still takes its id (`SvekEdge.java:944`, so its visible twin is `-1`). D3: every comment prints `Entity#getName()`, the quark name, fixed when the quark is made under the separator of that moment, now stamped as `Classifier.quarkName`/`Namespace.quarkName` at creation (`class-namespace.ts#quarkNameOf`). Both ratchets now assert comment bytes on the render they already make (`comment-bytes-gate.ts`; both `comment-open.json` lists are empty), and `tests/oracle/svg-conformance/class-comment-bytes.authored.test.ts` holds 19 rows (18 probes and the issue fixture): 17 at zero, 2 open on #203. All 955 cached class/object rows compare equal in comments. No verdict or diff count moved in any engine; d.ts byte-identical.
@@ -246,7 +266,7 @@ The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMat
 
 **What remains:**
 
-1. **A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.
+1. ~~**A `{{ }}` in a state note** (`cov-embedded-state-note`, and timing's `cov-embedded-state`): #168, a state-engine gap, not a wire defect.~~ Done by #168 (sne, 2026-11-17).
 2. **Bold on the creole atom path never reaches `jarMeasurer`** (`.agent-notes/wrp-T3.md`): every production bold creole run measures plain, because `FontSpec.weight` is what `JarMeasurer` reads and the atom path passes `styles`. The deterministic survey cannot see it, and wire's `print` translates locally. A shared fix is unpinned work.
 3. **`SkinParam#sheet`'s parser cache** (`SkinParam.java:1291-1303`) is ported only in `wire-skin-param.ts`; other engines' skin params build a parser per call, which differs only where one bounder measures and another draws.
 
@@ -256,7 +276,7 @@ The five factories no plugin registered (`PSystemDefinitionFactory`, `PSystemMat
 
 Follow-ons:
 
-1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port.
+1. **A `{{ }}` in a state note** (`cov-embedded-state`): the jar draws one `<image>`, the state engine draws the block as note text, for any embedded type (`renderer-note.ts`, `state-note-layout.ts#measureNote` have no nested renderer). `state/xetase-70-zaza808` (`{{` on a transition) probably shares it. Filed as #168 by wire-engine-port. Done by #168 (sne, 2026-11-17); `xetase-70-zaza808` had already closed through ele (#144).
 2. **A trailing space in other single-line commands**: the title commands are fixed at `src/core/annotations/commands.ts`; other engines' hand-rolled matchers should be checked against `SingleLineCommand2`'s `doTrim` if a corpus row shows a half-space offset.
 
 ## regex-engine-port (rep) — DONE 2026-11-10 (one commit on `feature/parity-queue`, #126; per-task history on the local tag `regex-engine-port/pre-squash`)
@@ -295,7 +315,7 @@ dss follow-ons 17-22, re-measured with 100 authored rows (`tests/fixtures/diagra
 
 ### Follow-ons (mechanism, owner)
 
-1. **Ruling #156** — drop the unread `businessActorFill`/`businessUsecaseFill` public `Theme` fields (a d.ts change), or keep them.
+1. ~~**Ruling #156** — drop the unread `businessActorFill`/`businessUsecaseFill` public `Theme` fields (a d.ts change), or keep them.~~ — **done by utf (2026-11-17, `unread-theme-fields/pre-squash`, #156)**
 2. **State arrow tag tier `HeadColor`** — `withStateArrowHead` reads the untagged merged arrow style; `arrow { .tag { HeadColor } }` (`withTOBECHANGED(stereotype)`, `SvekEdge.java:816-821`) is not read. No row.
 3. **Captured spot glyph 0.001 off** — the class `C` spot path differs from the jar at two coordinates and a trailing space, within `compareSvg` normalization (`.agent-notes/scr-T2a.md`). No row measures it.
 
@@ -312,8 +332,9 @@ identical to the base.
 
 ### Follow-ons (mechanism, owner)
 
-1. **A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
-   `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.
+1. ~~**A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
+   `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.~~ —
+   **done by lpl (2026-11-17, `legacy-partition-link/pre-squash`, #157)**
 2. **`!pragma layout elk` on the legacy model** (`pragma-elk` 15, `pragma-elk-if` 33): `CucaDiagramFileMakerElk` over
    an adapter for the legacy diagram. Filed as #158.
 3. **State keeps its own start, end, choice and bar drawings** where `src/core/svek/image/` now has the shared

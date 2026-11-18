@@ -9,6 +9,8 @@ import { UGraphicSvg } from '../../../src/core/klimt/drawing/svg/u-graphic-svg.j
 import type { UGraphic } from '../../../src/core/klimt/UGraphic.js';
 import { MeasurerStringBounder } from '../../../src/core/measurer-bounder.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
+import { pngDefaultStringBounder } from '../../../src/core/png-string-bounder.js';
+import type { StringBounder } from '../../../src/core/klimt/font/StringBounder.js';
 import { Pragma } from '../../../src/core/skin/Pragma.js';
 import { createSpriteRegistry } from '../../../src/core/sprite-registry.js';
 import { createMindmapSkinParam } from '../../../src/core/style/mindmap-style-builder.js';
@@ -38,11 +40,12 @@ export function svgOf(draw: (ug: UGraphic) => void, colorMapper: ColorMapper = C
   return ug.getSvgString();
 }
 
-/** A fresh `WireDiagram` over the default style. */
-export function wireDiagram(): WireDiagram {
+/** A fresh `WireDiagram` over the default style; `print` measures with PNG's bounder for the deterministic measurer. */
+export function wireDiagram(pngStringBounder: StringBounder = pngDefaultStringBounder(measurer)): WireDiagram {
   return new WireDiagram(
     { lines: [], type: 'wire' } as unknown as UmlSource,
     new PreprocessingArtifact(),
     wireSkinParam(),
+    pngStringBounder,
   );
 }

@@ -17,13 +17,16 @@ import type { Help } from './Help.js';
 /**
  * `ThemeUtils.getAllThemeNames()`: the bundled `puml-theme-<name>.puml`
  * resources' names (`_none_` included: it is a real resource), sorted with
- * `Collections.sort`, `String#compareTo` order. `THEME_SOURCES` holds the same
- * files, so its keys are that list; no `IOException` can arise from it, so
- * the command's error arm (java:79-84) is unreachable here.
+ * `Collections.sort`, `String#compareTo` order (the default JS sort agrees for
+ * these ASCII names). `THEME_SOURCES` holds core's files and `packaged` the
+ * names of registered theme packages, this port's form of the jar resources
+ * #180 moved out of core (decisions D3); their union, de-duplicated, is that
+ * list. No `IOException` can arise from either, so the command's error arm
+ * (java:79-84) is unreachable here.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java:204-217
  */
-export function getAllThemeNames(): readonly string[] {
-  return Object.keys(THEME_SOURCES).sort();
+export function getAllThemeNames(packaged: readonly string[] = []): readonly string[] {
+  return [...new Set([...Object.keys(THEME_SOURCES), ...packaged])].sort();
 }
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/help/CommandHelpTheme.java:59-64 */
@@ -59,7 +62,7 @@ export class CommandHelpTheme extends SingleLineCommand2<Help> {
     diagram.add('<b>Help on themes');
     diagram.add(' ');
     diagram.add(' The possible themes are :');
-    for (const type of getAllThemeNames()) diagram.add(`* ${type}`);
+    for (const type of getAllThemeNames(diagram.getPackagedThemeNames())) diagram.add(`* ${type}`);
     return CommandExecutionResult.ok();
   }
 }

@@ -6,6 +6,7 @@ export {
   SPRITE_EXTENSIONS,
 } from '@knowvah/plantuml-sprites-archimate';
 export { emojiAssets, emojiAssetKey, emojiAssetPath, EMOJI_ASSET_PREFIX } from '@knowvah/plantuml-emoji';
+export { unlicensedThemes } from '@knowvah/plantuml-themes-unlicensed';
 
 export interface AssetPackageLicence {
   readonly name: string;

@@ -76,6 +76,8 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotLayoutResult } from '../../core/graph-layout.types.js';
 import { path } from '../../core/svg.js';
 import { buildNoteGraphPartsByScope, stateNoteFontSize, type NoteSpec } from './state-note-layout.js';
+import type { StateNoteRule, StateNoteStripes } from './state-note-stripes.js';
+import { drawEmbedStripe, drawNoteRule, noteRuleTitleOrigin } from './state-embed-draw.js';
 import { inlineBack, resolveStateFill, textAscent } from './state-render-colors.js';
 import { resolveBareOrBackColor } from '../../core/color-override.js';
 import {
@@ -175,6 +177,7 @@ export function materializeNoteSpec(
     children: [],
     transitions: [],
     noteLines: spec.lines,
+    ...(spec.noteStripes !== undefined ? { noteStripes: spec.noteStripes } : {}),
     ...(opale !== undefined ? { noteOpale: opale } : {}),
     ...(spec.creationIndex !== undefined ? { creationIndex: spec.creationIndex } : {}),
     ...(spec.color !== undefined ? { color: spec.color } : {}),
@@ -209,24 +212,87 @@ export function buildFlatNoteGeos(ast: StateDiagramAST, ctx: FlatNoteGeoCtx): St
  *  (`state-note-layout.ts#buildRenderLines`, `state-sizing-creole.ts
  *  #toStyledLine`), so a `<sup>`/`<sub>`/`**bold**`/`<color:…>` run inside a
  *  note body now draws at its own size/baseline/decoration instead of one
- *  flat `<text>` of the markup-stripped-and-joined line (pre-T5 shape). */
-function renderNoteTextLines(node: StateNodeGeo, theme: Theme, back: Paint): string {
+ *  flat `<text>` of the markup-stripped-and-joined line (pre-T5 shape).
+ *  sne T1b: a note with {@link StateNodeGeo.noteStripes} draws those instead. */
+function renderNoteTextLines(node: StateNodeGeo, theme: Theme, ink: NoteInk): string {
+  const drawText: NoteTextDraw = (lines, x, top) => noteTextMarkup(lines, x, top, theme, ink.fill);
+  if (node.noteStripes !== undefined) {
+    return renderNoteStripes(node, node.noteStripes, { ink, drawText, ruleThickness: noteStrokeWidth(theme) });
+  }
+  return drawText(node.noteLines ?? [], node.x + NOTE_MARGIN_X1, node.y + NOTE_MARGIN_Y);
+}
+
+/** A note's fill and border. */
+interface NoteInk {
+  readonly fill: Paint;
+  readonly stroke: Paint;
+}
+
+/** Draws `lines` from `(x, top)` in a note's own text style. */
+type NoteTextDraw = (lines: readonly StateTextLine[], x: number, top: number) => string;
+
+/** `lines` from `(x, top)`, through the state text emitter. */
+function noteTextMarkup(lines: readonly StateTextLine[], x: number, top: number, theme: Theme, back: Paint): string {
   // stdd T5a: the shared state text emitter, table stripes included (`renderStateTable`); its
   // `startY` is the first baseline. unwind2-S11: `Opale#drawU` applies the note fill before the
   // text (`Opale.java:107`), a sprite's tint back.
-  return renderStateTextLines(
-    node.noteLines ?? [],
-    () => node.x + NOTE_MARGIN_X1,
-    node.y + NOTE_MARGIN_Y + textAscent(stateNoteFontSize(theme)),
-    theme,
-    {
-      fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
-      fontSize: stateNoteFontSize(theme),
-      back,
-      // `AtomTable#drawU` rules take the ambient stroke, the note's `style.getStroke()` (`EntityImageNote.java:292-297`).
-      tableRuleStroke: { strokeWidth: NOTE_STROKE_WIDTH },
-    },
-  );
+  return renderStateTextLines(lines, () => x, top + textAscent(stateNoteFontSize(theme)), theme, {
+    fill: stateBucketColor(theme, STATE_NOTE_BUCKET, 'font') ?? '#000000',
+    fontSize: stateNoteFontSize(theme),
+    back,
+    // `AtomTable#drawU` rules take the ambient stroke, the note's `style.getStroke()` (`EntityImageNote.java:292-297`).
+    tableRuleStroke: { strokeWidth: NOTE_STROKE_WIDTH },
+  });
+}
+
+/** How a note draws its stripes: its ink, its text style, and its `__` rule's thickness. */
+interface NoteStripeDraw {
+  readonly ink: NoteInk;
+  readonly drawText: NoteTextDraw;
+  readonly ruleThickness: number;
+}
+
+/**
+ * sne T1b: the body's stripes, each at `(box.x + marginX1 + dx, box.y + marginY + dy)` (`Opale.java:127`,
+ * `EntityImageNote.java:288`; a link note's `ComponentRoseNote.java:128-129` translates by the same
+ * `getOldPaddingX1`/`getOldPaddingY`): a text stripe in the note's text style, an embed through its atom's
+ * `UImageSvg` (`state-embed-draw.ts#drawEmbedStripe`, D3), a separator through its `UHorizontalLine`
+ * ({@link renderNoteRule}). `box` is the note's polygon, the stencil a separator spans.
+ */
+function renderNoteStripes(
+  box: { readonly x: number; readonly y: number; readonly width: number },
+  stripes: StateNoteStripes,
+  draw: NoteStripeDraw,
+): string {
+  const left = box.x + NOTE_MARGIN_X1;
+  const top = box.y + NOTE_MARGIN_Y;
+  return stripes.items
+    .map((item) => {
+      if (item.kind === 'image') return drawEmbedStripe(item.block, left + item.dx, top + item.dy);
+      if (item.kind === 'rule') return renderNoteRule(item, box, draw);
+      return draw.drawText([item.line], left + item.dx, top + item.dy);
+    })
+    .join('');
+}
+
+/** A separator's `TextBlockLineBefore` (`TextBlockLineBefore.java:81-95`): its line in the note's border colour (the
+ *  `ug` `Opale#drawU` hands the body, `Opale.java:107`), split around its title, which the note's text style draws at
+ *  `UHorizontalLine#drawTitleInternal`'s place. `__` takes the note style's thickness (`getDefaultThickness`). */
+function renderNoteRule(
+  rule: StateNoteRule,
+  box: { readonly x: number; readonly y: number; readonly width: number },
+  draw: NoteStripeDraw,
+): string {
+  const y = NOTE_MARGIN_Y + rule.dy;
+  const spec = {
+    separator: rule.separator,
+    defaultThickness: draw.ruleThickness,
+    ...(rule.title !== undefined ? { title: rule.title } : {}),
+  };
+  const { before, after } = drawNoteRule(spec, box, y, draw.ink.stroke);
+  if (rule.title === undefined) return before;
+  const origin = noteRuleTitleOrigin(rule.title, box, y);
+  return before + draw.drawText(rule.title.lines, origin.x, origin.y) + after;
 }
 
 /** dss T3c sites 10-11: `EntityImageNote.java:100-108` -- the inline `#color`
@@ -279,7 +345,7 @@ export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): s
         stroke,
         strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH,
       }) +
-      renderNoteTextLines(node, theme, fill)
+      renderNoteTextLines(node, theme, { fill, stroke })
     );
   }
   const outline = [
@@ -294,7 +360,7 @@ export function renderStateNoteFreestanding(node: StateNodeGeo, theme: Theme): s
   return (
     path(outline, { fill, stroke, strokeWidth: noteStrokeWidth(theme), ...noteOutlineShadow(theme) }) +
     path(corner, { fill, stroke, strokeWidth: NOTE_CORNER_DEFAULT_STROKE_WIDTH }) +
-    renderNoteTextLines(node, theme, fill)
+    renderNoteTextLines(node, theme, { fill, stroke })
   );
 }
 
@@ -326,7 +392,7 @@ export function renderStateNoteOpale(node: StateNodeGeo, theme: Theme): string {
   return (
     path(outline, { fill, stroke, strokeWidth: noteStrokeWidth(theme), ...noteOutlineShadow(theme) }) +
     path(corner, { fill, stroke, strokeWidth: noteStrokeWidth(theme) }) +
-    renderNoteTextLines(node, theme, fill)
+    renderNoteTextLines(node, theme, { fill, stroke })
   );
 }
 
@@ -387,7 +453,7 @@ function linkNoteInk(theme: Theme): { fill: Paint; stroke: Paint } {
  *  `state-notes.ts`'s own doc comment). */
 export function renderNoteOnLink(
   box: { x: number; y: number; width: number; height: number },
-  lines: readonly StateTextLine[],
+  body: LinkNoteBody,
   theme: Theme,
   noteColor?: string,
 ): string {
@@ -418,31 +484,50 @@ export function renderNoteOnLink(
     ...(override !== undefined ? { fill: inlineBack(override) } : {}),
     strokeWidth: NOTE_STROKE_WIDTH,
   };
-  return path(outline, paint) + path(corner, paint) + renderNoteOnLinkTextLines(px, py, lines, theme, paint.fill);
+  return path(outline, paint) + path(corner, paint) + linkNoteBody({ x: px, y: py, width: pw }, body, theme, paint);
+}
+
+/** A link note's lines and, when a line opens an embed, its stripes (sne T2a). */
+export interface LinkNoteBody {
+  readonly lines: readonly StateTextLine[];
+  readonly stripes?: StateNoteStripes | undefined;
+}
+
+/** A link note's body from its polygon's top-left: its lines at `(marginX1, marginY)`, or (sne T2a) the stripes of a
+ *  body that opens an embed, the polygon being the stencil (`ComponentRoseNote.java:140-146`, `0 .. getTextWidth`). */
+function linkNoteBody(
+  polygon: { readonly x: number; readonly y: number; readonly width: number },
+  body: LinkNoteBody,
+  theme: Theme,
+  ink: NoteInk,
+): string {
+  const drawText: NoteTextDraw = (ls, x, top) => linkNoteTextMarkup(ls, x, top, theme, ink.fill);
+  if (body.stripes === undefined) return drawText(body.lines, polygon.x + NOTE_MARGIN_X1, polygon.y + NOTE_MARGIN_Y);
+  return renderNoteStripes(polygon, body.stripes, { ink, drawText, ruleThickness: NOTE_STROKE_WIDTH });
 }
 
 /** Split out of {@link renderNoteOnLink} to stay under this project's
  *  per-function NLOC cap — the note body text, one `<text>` per RUN,
- *  LEFT-anchored (mirrors {@link renderNoteTextLines}'s own per-run loop,
- *  offset from the INSET polygon origin `(px, py)` rather than a
- *  `StateNodeGeo`'s own `x`/`y`). `lines` narrows through {@link styledLines}
+ *  LEFT-anchored (mirrors {@link renderNoteTextLines}'s own per-run loop),
+ *  from `(left, top)`: the INSET polygon origin plus `(marginX1, marginY)`
+ *  for the whole body, or a stripe's own place (sne T2a). `lines` narrows through {@link styledLines}
  *  the SAME way `renderNoteTextLines` does — this label's own producer
  *  (`state-composite-edge-label.ts#measureLinkNoteDim`'s
  *  `state-note-layout.ts#measureNote` reuse) already builds the styled shape. */
-function renderNoteOnLinkTextLines(
-  px: number,
-  py: number,
+function linkNoteTextMarkup(
   lines: readonly StateTextLine[],
+  left: number,
+  top: number,
   theme: Theme,
   back: Paint,
 ): string {
   const styled = styledLines(lines, NOTE_FONT_SIZE);
   const parts: string[] = [];
-  let lineTop = py + NOTE_MARGIN_Y;
+  let lineTop = top;
   for (const ln of styled) {
     const height = ln.height === 0 ? NOTE_FONT_SIZE : ln.height;
     parts.push(
-      renderStateRuns(ln.runs, px + NOTE_MARGIN_X1, lineTop, height, {
+      renderStateRuns(ln.runs, left, lineTop, height, {
         fontFamily: theme.fontFamily,
         fill: stateBucketColor(theme, STATE_LINK_NOTE_BUCKET, 'font') ?? '#000000',
         back,

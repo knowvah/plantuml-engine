@@ -10,12 +10,18 @@ import { buildTheme } from '../../../../src/core/build-theme.js';
 import { preprocess } from '../../../../src/core/preprocessor.js';
 import { styleSkinparamSegments } from '../../../../src/core/style-skinparam-segments.js';
 import { resolveAnnotationStyles } from '../../../../src/core/annotations/style.js';
+import { themedIncludeStore } from '../../../helpers/theme-packages-store.js';
 
 const AMIGA_BLUE = '#0B58A8'; // puml-theme-amiga.puml:16
 const RED = '#FF0000';
 
 function themeOf(body: string): ReturnType<typeof buildTheme> {
-  return buildTheme(preprocess(`@startuml\n${body}\n@enduml`), undefined, 'sequence');
+  const includeStore = themedIncludeStore();
+  return buildTheme(
+    preprocess(`@startuml\n${body}\n@enduml`, undefined, { includeStore }),
+    { includeStore },
+    'sequence',
+  );
 }
 
 describe('styleSkinparamSegments', () => {
@@ -90,7 +96,9 @@ describe('buildTheme: root / document <style> routed', () => {
 
 describe('resolveAnnotationStyles: declaration order', () => {
   it("a document skinparam after !theme beats the theme's document title style", () => {
-    const pre = preprocess('@startuml\n!theme amiga\nskinparam titleFontSize 14\n@enduml');
+    const pre = preprocess('@startuml\n!theme amiga\nskinparam titleFontSize 14\n@enduml', undefined, {
+      includeStore: themedIncludeStore(),
+    });
     const { theme, styleMap } = buildTheme(pre, undefined, 'sequence');
     expect(resolveAnnotationStyles(theme, pre, styleMap).title.fontSize).toBe(14);
     // A bare skinparam map keeps the two-stage order: the style wins.

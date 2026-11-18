@@ -27,6 +27,7 @@ import { BoolVal } from '../../../../../src/core/tim/builtin/BoolVal.js';
 import { GetVersion } from '../../../../../src/core/tim/builtin/GetVersion.js';
 import { Eval } from '../../../../../src/core/tim/builtin/Eval.js';
 import { createDefaultTimEnvironment } from '../../../../../src/core/tim/builtin/TimEnvironment.js';
+import { VERSION } from '../../../../../src/core/version.js';
 import { LOC, NO_MEMORY, NO_NAMED, fakeContext } from '../../../../helpers/tim-builtin.js';
 
 const strs = (...vs: string[]): TValue[] => vs.map((v) => TValue.fromString(v));
@@ -251,6 +252,16 @@ describe('GetVersion', () => {
     expect(new GetVersion(env).executeReturnFunction(fakeContext(), NO_MEMORY, LOC, [], NO_NAMED).toString()).toBe(
       '1.2.3',
     );
+  });
+  it("returns this port's version under the default environment (ruling #155)", () => {
+    const value = new GetVersion(createDefaultTimEnvironment()).executeReturnFunction(
+      fakeContext(),
+      NO_MEMORY,
+      LOC,
+      [],
+      NO_NAMED,
+    );
+    expect(value.toString()).toBe(VERSION);
   });
 });
 

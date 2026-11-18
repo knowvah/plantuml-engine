@@ -895,7 +895,9 @@ describe('routing conformance — jar-error classification', () => {
     // 11362 -> 11364 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11362 + 2 = 11364.
     // 11364 -> 11367 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
     // by #147). Derivation: 11364 + 3 = 11367.
-    expect(pinnedAgree.length).toBe(11367);
+    // 11367 -> 11372 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11367 + 5 = 11372.
+    expect(pinnedAgree.length).toBe(11372);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1118,7 +1120,9 @@ describe('routing conformance — jar-error classification', () => {
     // 11546 -> 11548 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11546 + 2 = 11548.
     // 11548 -> 11551 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
     // by #147). Derivation: 11548 + 3 = 11551.
-    expect(manifest.fixtures.length).toBe(11551);
+    // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
+    expect(manifest.fixtures.length).toBe(11556);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

@@ -1,0 +1,12 @@
+@startuml
+skinparam classBackgroundColor #FFAAAA
+state S1
+note right of S1
+{{
+class X
+}}
+{{
+class Y
+}}
+end note
+@enduml

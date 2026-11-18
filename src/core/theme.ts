@@ -303,8 +303,6 @@ export const defaultTheme: Theme = {
       edgeLabel: '#444444',
       actorFill: 'none',
       usecaseFill: '#FFFFFF',
-      businessActorFill: 'none',
-      businessUsecaseFill: '#FFFFFF',
       json: {
         // keyText is intentionally absent so the renderer's fallback chain
         // reaches nodeFontColor (from jsonDiagram.node.FontColor style blocks).
@@ -354,7 +352,6 @@ export const darkTheme: Theme = {
     graph: {
       ...defaultTheme.colors.graph,
       usecaseFill: '#1E1E1E',
-      businessUsecaseFill: '#1E1E1E',
       json: {
         keyText: '#CCCCCC',
         stringValue: '#6A9FBF',

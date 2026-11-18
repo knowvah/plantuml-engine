@@ -38,6 +38,7 @@ import { assembleSvg, seedOfUmlSource } from '../../../src/core/assemble-svg.js'
 import { renderSync } from '../../../src/index.js';
 import { inheritingRenderFn } from '../../../src/core/nested-previous.js';
 import { registerNestedDiagramRenderers } from '../../../src/diagrams/class/class-nested-diagram-renderer.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 /** `renderFixtureState`'s own options bag: `PreprocessOptions` (forwarded to
  *  `buildBlockUmls`) UNION `ParseOptions` (`assetStore`, forwarded to
@@ -55,7 +56,9 @@ type FixtureStateOptions = PreprocessOptions & ParseOptions;
  * `state/index.ts#statePlugin.parse`. Throws if the markup contains no
  * diagram block. */
 export function renderFixtureState(markup: string, measurer: StringMeasurer, options?: FixtureStateOptions): string {
-  const blocks = buildBlockUmls(markup, options);
+  // #180: no store given -> a themes-only store, so a fixture using a theme
+  // that left core still renders (stdlib resolution unchanged).
+  const blocks = buildBlockUmls(markup, { ...options, includeStore: options?.includeStore ?? themedIncludeStore() });
   const first = blocks[0];
   if (first === undefined) throw new Error('no diagram block found');
   if (!first.ok) throw first.failure.cause;

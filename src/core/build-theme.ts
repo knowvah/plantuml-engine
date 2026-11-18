@@ -10,6 +10,7 @@ import type { DiagramType } from './block-extractor.js';
 import { documentBackColor, documentStyleBuilder, type DocumentBackColor } from './document-back-color.js';
 import type { PreprocessorResult } from './preprocessor.js';
 import { resolveTheme, deepMergeTheme } from './theme.js';
+import { resolveBaseTheme } from './packaged-theme-residue.js';
 import type { Theme } from './theme.js';
 import { resolveSkinparam } from './skinparam.js';
 import type { StyleMap } from './skinparam.js';
@@ -96,8 +97,12 @@ export function buildTheme(
   diagramType: DiagramType,
 ): ResolvedThemeAndStyles {
   // Stage 1: named base theme
-  const themeName = typeof options?.theme === 'string' ? options.theme : (preprocessed.theme ?? 'default');
-  const base = resolveTheme(themeName);
+  // #180 D4: a string `options.theme` keeps the core-only path; a `!theme`
+  // name may read a registered package's residue (`packaged-theme-residue.ts`).
+  const base =
+    typeof options?.theme === 'string'
+      ? resolveTheme(options.theme)
+      : resolveBaseTheme(preprocessed.theme ?? 'default', options?.includeStore);
 
   // Stage 1.5: a `skin <name>` directive's sheet (D6, skin-file-loading
   // mission Batch 1) -- its runs come FIRST in the declaration order, so the

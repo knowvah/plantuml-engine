@@ -29,6 +29,7 @@ import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import type { InternalRenderOptions } from '../../../src/core/internal-render-options.js';
 import { compareSvg } from '../../oracle/svg-conformance/compare.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind2-S2');
 
@@ -43,7 +44,12 @@ const SMETANA_GEOMETRY: ReadonlySet<string> = new Set(['hcl-join-caption']);
 const SMETANA_POSITIONAL = /^svg\/@width$|\/@(x|cx|x1|x2|viewBox\[2\]|d\[\d+\])$/u;
 
 /** D9: the jar never applies hcl `<style>`/`skin`/`!theme` (`HclDiagramFactory.java:86-92`), so these are conformance renders. */
-const JAR_MODE: InternalRenderOptions = { measurer: new DeterministicMeasurer(), jarCompatibleStyleInput: true };
+const JAR_MODE: InternalRenderOptions = {
+  measurer: new DeterministicMeasurer(),
+  // #180: a theme that left core; register its package.
+  includeStore: themedIncludeStore(),
+  jarCompatibleStyleInput: true,
+};
 
 const CASES = readdirSync(DIR)
   .filter((f) => f.endsWith('.puml'))

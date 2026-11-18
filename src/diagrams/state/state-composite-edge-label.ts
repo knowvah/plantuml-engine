@@ -16,12 +16,12 @@ import type { DotInputEdge } from '../../core/graph-layout.js';
 import type { DiagramCtx } from './state-composite-pass.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
 import { measureStateLabelBox } from './state-transition-label.js';
+import { measureStateLinkNoteDim } from './state-note-layout.js';
 import { computeMergedLabelBox } from '../../core/edge-label-box.js';
 // `EntityImageNoteLink`'s real dimension — shared-seam-extraction T6, D1:
 // ONE port, `core/svek/image/EntityImageNoteLink.ts`, replacing this file's
 // former private copy (was duplicated from ./state-dot-graph.ts to avoid an
 // import cycle; the core module has no such cycle, both files import it).
-import { measureLinkNoteDim } from '../../core/svek/image/EntityImageNoteLink.js';
 
 /** Guard/action/plain label — same precedence as ./state-dot-graph.ts's
  *  `transitionLabelText` (duplicated to avoid an import cycle: layout.ts
@@ -60,7 +60,7 @@ function computeEdgeLabelBox(
   const { maxWidth } = wrap;
   return computeMergedLabelBox({
     label: text ?? '',
-    noteDim: measureLinkNoteDim(t.linkNote, { family: font.family }, measurer),
+    noteDim: measureStateLinkNoteDim(t.linkNote, font.family, measurer),
     position: t.linkNotePosition ?? 'bottom',
     halfWidth: false,
     hasMiddleDecor: false,

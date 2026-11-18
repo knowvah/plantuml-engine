@@ -159,15 +159,6 @@
     },
     {
       "type": "unknown",
-      "slug": "cunotu-47-bute165",
-      "status": "baseline",
-      "weightedScore": 16,
-      "diffCount": 16,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
-    },
-    {
-      "type": "unknown",
       "slug": "kebadi-11-fula439",
       "status": "baseline",
       "weightedScore": 52,
@@ -177,28 +168,10 @@
     },
     {
       "type": "unknown",
-      "slug": "marese-34-xaro137",
-      "status": "baseline",
-      "weightedScore": 14,
-      "diffCount": 14,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
-    },
-    {
-      "type": "unknown",
       "slug": "mimumu-93-fota059",
       "status": "baseline",
       "weightedScore": 2,
       "diffCount": 2,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
-    },
-    {
-      "type": "unknown",
-      "slug": "pecafo-64-rili177",
-      "status": "baseline",
-      "weightedScore": 23,
-      "diffCount": 23,
       "measuredAt": "2026-11-11",
       "measuredAgainstCommit": "9cf459148"
     },
@@ -215,37 +188,19 @@
       "type": "unknown",
       "slug": "roxita-24-tixu731",
       "status": "baseline",
-      "weightedScore": 7,
-      "diffCount": 7,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
+      "weightedScore": 1,
+      "diffCount": 1,
+      "measuredAt": "2026-11-18",
+      "measuredAgainstCommit": "2befcf793"
     },
     {
       "type": "unknown",
       "slug": "rozesu-56-suve592",
       "status": "baseline",
-      "weightedScore": 51,
-      "diffCount": 51,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
-    },
-    {
-      "type": "unknown",
-      "slug": "vocalo-20-dixu237",
-      "status": "baseline",
-      "weightedScore": 30,
-      "diffCount": 30,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
-    },
-    {
-      "type": "unknown",
-      "slug": "xanuke-94-tope429",
-      "status": "baseline",
-      "weightedScore": 9,
-      "diffCount": 9,
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "9cf459148"
+      "weightedScore": 10,
+      "diffCount": 10,
+      "measuredAt": "2026-11-18",
+      "measuredAgainstCommit": "2befcf793"
     },
     {
       "type": "unknown",

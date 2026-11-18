@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { JLM_NAMES } from '../../../src/core/latex-metrics/jlm-commands.js';
 import { jlmAccepts } from '../../../src/core/latex-metrics/jlm-accepts.js';
@@ -81,5 +81,32 @@ describe('the rollback document (D5)', () => {
 
   it('a creole <latex> atom rolls back too', () => {
     expect(imageSizes(render('@startcreole\n<latex>\\glb</latex>\n@endcreole'))).toEqual(['33x25']); // jar: 33x25
+  });
+});
+
+describe('a creole rollback is laid out by its PNG export (pbs D5, seam-5 oracles)', () => {
+  const FIXTURES = new URL('../../fixtures/factories/', import.meta.url);
+  const fixture = (slug: string): string => readFileSync(new URL(`${slug}.puml`, FIXTURES), 'utf8');
+  const imageYs = (svg: string): string[] => [...svg.matchAll(/<image [^>]*y="([\d.]+)"/g)].map((m) => m[1]!);
+
+  it('two rollback lines advance 24, the PNG height, while each draws its 25-high document (cov-rollback-two-lines)', () => {
+    const svg = render(fixture('cov-rollback-two-lines'));
+    expect(imageSizes(svg)).toEqual(['29x25', '29x25']);
+    expect(imageYs(svg)).toEqual(['14', '38']);
+    expect(svg).toMatch(/<text x="0" y="72\.889"[^>]*>after</);
+  });
+
+  it('the text after a rollback starts at its 48-wide PNG, not its 49-wide document (cov-rollback-latex)', () => {
+    const svg = render(fixture('cov-rollback-latex'));
+    expect(imageSizes(svg)).toEqual(['49x25']);
+    expect(svg).toMatch(/<text x="95\.337"[^>]*>after</);
+  });
+
+  it('cunotu-47-bute165: its one rollback no longer pushes the page 1 px taller', () => {
+    const corpus = new URL('../../../test-results/dot-cache/unknown/cunotu-47-bute165/', import.meta.url);
+    const svg = render(readFileSync(new URL('in.puml', corpus), 'utf8'));
+    const height = (s: string): string | undefined => /height="(\d+)px"/.exec(s)?.[1];
+    expect(height(svg)).toBe(height(readFileSync(new URL('in.svg', corpus), 'utf8')));
+    expect(height(svg)).toBe('1814');
   });
 });

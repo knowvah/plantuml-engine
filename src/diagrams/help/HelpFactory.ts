@@ -66,7 +66,7 @@ function classpathOf(options: ParseOptions | undefined): SkinParamClasspath | un
 export function parseHelp(source: UmlSource, options?: ParseOptions): Help | ParseRefusal {
   const all = upstreamLinesOf(source);
   if (!isStartDirective(all[0]!)) throw new Error('UnsupportedOperationException');
-  const diagram = new Help(source, preprocessingArtifactOf(source), classpathOf(options));
+  const diagram = new Help(source, preprocessingArtifactOf(source), classpathOf(options), options?.packagedThemeNames);
   const cmds = initCommandsList();
   for (let k = 1; k < all.length && !isEndDirective(all[k]!); k++) {
     const line = new StringLocated(all[k]!, undefined);

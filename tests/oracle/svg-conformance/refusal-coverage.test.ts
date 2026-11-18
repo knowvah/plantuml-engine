@@ -739,7 +739,9 @@ describe('refusal coverage — baseline shape', () => {
     // 11546 -> 11548 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11546 + 2 = 11548.
     // 11548 -> 11551 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
     // by #147). Derivation: 11548 + 3 = 11551.
-    expect(manifest.fixtures.length).toBe(11551);
+    // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
+    expect(manifest.fixtures.length).toBe(11556);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -822,7 +824,10 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 160 + 16 = 176.
     // 176 -> 157 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to ok (#147 ports
     // json, map, domain and requirement into description): none errors here now. Derivation: 176 - 16 - 3 = 157.
-    expect(pinnedErroring.length).toBe(157);
+    // 157 -> 156 at vb/close-b1 (2026-11-16): c4/kipive-74-lele070 renders here now -- `%version()` prints
+    // `0.2.0` (#155), a line the jar accepts too; its dev-build oracle (`$version$`) still errors (jar-error).
+    // Re-pinned `weErrored: false`, engine class, from a fresh measurement. Derivation: 157 - 1 = 156.
+    expect(pinnedErroring.length).toBe(156);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1134,7 +1139,11 @@ describe('refusal coverage — baseline shape', () => {
     // 11389 -> 11391 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11389 + 2 = 11391.
     // 11391 -> 11394 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
     // by #147). Derivation: 11391 + 3 = 11394.
-    expect(pinnedRendering.length).toBe(11394);
+    // 11394 -> 11395 at vb/close-b1 (2026-11-16): c4/kipive-74-lele070 renders (#155, see pinnedErroring).
+    // Derivation: 11394 + 1 = 11395.
+    // 11395 -> 11400 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11395 + 5 = 11400.
+    expect(pinnedRendering.length).toBe(11400);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

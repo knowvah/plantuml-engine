@@ -1,0 +1,10 @@
+@startuml
+state A
+state B
+A --> B : go
+note on link
+{{
+class X
+}}
+end note
+@enduml

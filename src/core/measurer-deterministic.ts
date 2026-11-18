@@ -61,8 +61,9 @@
  * — verified against the jar and fixed in `measurer.ts` as part of this
  * task (see that file's `WidthTableMeasurer.charWidth` doc comment).
  */
+import type { StringBounderFileFormat } from './klimt/font/StringBounder.js';
 import { WidthTableMeasurer } from './measurer.js';
-import type { FontSpec } from './measurer.js';
+import type { FontSpec, StringMeasurer } from './measurer.js';
 
 /** U+0020, measured as `SPACE_STAND_IN` (seam #4). */
 const SPACE = / /g;
@@ -95,4 +96,13 @@ export class DeterministicMeasurer extends WidthTableMeasurer {
     const dim = super.measure(text.replace(SPACE, SPACE_STAND_IN), font);
     return { width: Math.fround(dim.width), height: dim.height };
   }
+}
+
+/**
+ * The `FileFormat` an SVG bounder over `measurer` answers: the seam's `StringBounderFromWidthTable(SVG_DETERMINISTIC)`
+ * when the render is deterministic (this measurer is the port's `PLANTUML_DETERMINISTIC_TEXT`), else stock `SVG`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/FileFormat.java:185-193
+ */
+export function svgFileFormatOf(measurer: StringMeasurer | undefined): StringBounderFileFormat {
+  return measurer instanceof DeterministicMeasurer ? 'SVG_DETERMINISTIC' : 'SVG';
 }

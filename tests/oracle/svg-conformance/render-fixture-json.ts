@@ -44,6 +44,7 @@ import { applyExportedChrome } from '../../../src/core/annotations/chrome-export
 import { resolveAnnotationStyles } from '../../../src/core/annotations/style.js';
 import { assembleSvg } from '../../../src/index.js';
 import { seedOfUmlSource } from '../../../src/core/assemble-svg.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 /** The one per-type step. All three parsers share the signature
  *  `(UmlSource, ParseOptions?) => JsonDiagramAST`; everything after this is
@@ -87,7 +88,9 @@ type FixtureJsonOptions = PreprocessOptions & ParseOptions;
  * (D6, cdd6-T1c). Throws if the markup contains no diagram block.
  */
 export function renderFixtureJson(markup: string, measurer: StringMeasurer, options?: FixtureJsonOptions): string {
-  const blocks = buildBlockUmls(markup, options);
+  // #180: no store given -> a themes-only store, so a fixture using a theme
+  // that left core still renders (stdlib resolution unchanged).
+  const blocks = buildBlockUmls(markup, { ...options, includeStore: options?.includeStore ?? themedIncludeStore() });
   const first = blocks[0];
   if (first === undefined) throw new Error('no diagram block found');
   if (!first.ok) throw first.failure.cause;

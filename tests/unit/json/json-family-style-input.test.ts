@@ -10,6 +10,7 @@ import { jsonPlugin } from '../../../src/diagrams/json/index.js';
 import { yamlPlugin } from '../../../src/diagrams/yaml/index.js';
 import { hclPlugin } from '../../../src/diagrams/hcl/index.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 function inputOf(lines: readonly string[]) {
   const source = ['@startjson', ...lines, '@endjson'];
@@ -54,7 +55,7 @@ describe('jsonFamilyStyleInput', () => {
 describe('hclStyleInput', () => {
   function hclInputOf(lines: readonly string[]) {
     const source = ['@starthcl', ...lines, '@endhcl'];
-    const pre = preprocess(source.join('\n'));
+    const pre = preprocess(source.join('\n'), undefined, { includeStore: themedIncludeStore() });
     const block: UmlSource = { lines: [...pre.lines], type: 'hcl', seedSourceLines: source };
     return { pre, out: hclStyleInput(pre, block) };
   }

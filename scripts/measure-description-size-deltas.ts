@@ -63,6 +63,7 @@ import { buildSpriteAssetsStore } from '../tests/helpers/sprite-assets-store.js'
 import { buildEmojiAssetsStore } from '../tests/helpers/emoji-assets-store.js';
 import { combineAssetStores } from '../src/core/asset-store.js';
 import { svekFiles } from './lib/svek-files.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDENS = join(REPO, 'oracle', 'goldens', 'description');
@@ -182,7 +183,7 @@ function captureGraphs(markup: string): DotInputGraph[] {
   try {
     renderSync(markup, {
       measurer: new DeterministicMeasurer(),
-      includeStore: withStdlib(new MapIncludeStore(), buildStdlibAssetsStore()),
+      includeStore: themedIncludeStore(withStdlib(new MapIncludeStore(), buildStdlibAssetsStore())),
       // F4-f piece 1 (ADR-2: "the harness measures the same code path users
       // get"). The jar resolves `<<$archimate/x>>` and `sprite $N jar:…` off
       // its own classpath unconditionally; a browser-safe port needs the

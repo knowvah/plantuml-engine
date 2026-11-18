@@ -21,7 +21,7 @@ import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { DotInputGraph, DotInputNode, DotInputEdge } from '../../core/graph-layout.js';
 import { measureState, CIRCLE_START_SIZE, CIRCLE_END_SIZE, hidesEmptyDescription } from './state-sizing.js';
-import { buildNoteGraphPartsByScope } from './state-note-layout.js';
+import { buildNoteGraphPartsByScope, measureStateLinkNoteDim } from './state-note-layout.js';
 import { moveNotesToCreationOrder } from './state-note-lines.js';
 import type { ReservedLabelBox } from '../../core/edge-label-box.js';
 import { computeMergedLabelBox } from '../../core/edge-label-box.js';
@@ -30,7 +30,6 @@ import { measureStateLabelBox } from './state-transition-label.js';
 // ONE port, `core/svek/image/EntityImageNoteLink.ts`, replacing this file's
 // former private copy. See that module's doc comment for the full
 // `ComponentRoseNote`/Opale derivation.
-import { measureLinkNoteDim } from '../../core/svek/image/EntityImageNoteLink.js';
 
 // ---------------------------------------------------------------------------
 // [*] pseudostate anchors — one shared start/end node per (flat) diagram,
@@ -192,7 +191,7 @@ function computeEdgeLabelBox(
   const { maxWidth } = wrap;
   return computeMergedLabelBox({
     label: text ?? '',
-    noteDim: measureLinkNoteDim(t.linkNote, { family: font.family }, measurer),
+    noteDim: measureStateLinkNoteDim(t.linkNote, font.family, measurer),
     position: t.linkNotePosition ?? 'bottom',
     halfWidth: false,
     hasMiddleDecor: false,

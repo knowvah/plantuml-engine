@@ -31,24 +31,10 @@ const SIMPLE_SELECTOR_MAPPINGS: readonly SimpleSelectorMapping[] = [
     },
   },
   {
-    selector: 'actor.business',
-    apply: (props, override) => {
-      const bg = props.get('backgroundcolor');
-      if (bg !== undefined) override.businessActorFill = bg;
-    },
-  },
-  {
     selector: 'usecase',
     apply: (props, override) => {
       const bg = props.get('backgroundcolor');
       if (bg !== undefined) override.usecaseFill = bg;
-    },
-  },
-  {
-    selector: 'usecase.business',
-    apply: (props, override) => {
-      const bg = props.get('backgroundcolor');
-      if (bg !== undefined) override.businessUsecaseFill = bg;
     },
   },
   {

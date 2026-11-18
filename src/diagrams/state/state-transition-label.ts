@@ -32,8 +32,8 @@ import {
 // dimension `state-dot-graph.ts#computeEdgeLabelBox`/`state-composite-edge-
 // label.ts#computeEdgeLabelBox` already feed the DOT graph -- reused here so
 // the DRAWN box (this file) and the RESERVED box (DOT) never disagree.
-import { measureLinkNoteDim } from '../../core/svek/image/EntityImageNoteLink.js';
-import { buildRenderLines } from './state-note-layout.js';
+import { buildRenderLines, linkNoteStripes, measureStateLinkNoteDim } from './state-note-layout.js';
+import type { StateNoteStripes } from './state-note-stripes.js';
 import { noteDrawnFirst, placeMergedOperands, unionInk, type MergedPlacement } from './state-link-note-merge.js';
 
 /** Label offset perpendicular to the edge direction -- legacy fallback only
@@ -273,7 +273,7 @@ function measureNoteBox(
 ): ReservedLabelBox {
   return computeMergedLabelBox({
     label: labelText ?? '',
-    noteDim: measureLinkNoteDim(t.linkNote!, { family: font.family }, measurer),
+    noteDim: measureStateLinkNoteDim(t.linkNote!, font.family, measurer),
     position: t.linkNotePosition ?? 'bottom',
     halfWidth: false,
     hasMiddleDecor: false,
@@ -329,8 +329,18 @@ function noteBoxFields(
   noteText: string,
   ctx: LabelMeasureCtx,
   noteColor?: string,
-): { width: number; height: number; inkBox: LabelInkBox; noteLines: readonly StateTextLine[]; noteColor?: string } {
+): {
+  width: number;
+  height: number;
+  inkBox: LabelInkBox;
+  noteLines: readonly StateTextLine[];
+  noteColor?: string;
+  noteStripes?: StateNoteStripes;
+} {
+  // sne T2a: a body that opens an embed draws its stripes (`linkNoteStripes`), as an entity note's does.
+  const noteStripes = linkNoteStripes(noteText, ctx.font.family, ctx.measurer);
   return {
+    ...(noteStripes !== undefined ? { noteStripes } : {}),
     ...(noteColor !== undefined ? { noteColor } : {}),
     width: box.reservedWidth,
     height: box.reservedHeight,
@@ -373,7 +383,7 @@ function placeLinkOperands(
   return placeMergedOperands({
     position: t.linkNotePosition ?? 'bottom',
     anchor,
-    note: measureLinkNoteDim(t.linkNote!, { family: ctx.font.family }, ctx.measurer),
+    note: measureStateLinkNoteDim(t.linkNote!, ctx.font.family, ctx.measurer),
     label: { width: label.box.measuredWidth + 2 * label.box.marginLabel, height: label.box.reservedHeight },
     merged: { width: merged.measuredWidth, height: merged.measuredHeight },
     marginLabel: label.box.marginLabel,

@@ -10,6 +10,9 @@ import {
 import type { Theme, ThemeOverride } from '../../src/core/theme.js';
 import { buildTheme } from '../../src/core/build-theme.js';
 import { preprocess } from '../../src/core/preprocessor.js';
+import { REMOVED_BUSINESS_FILL_FIELDS } from '../helpers/removed-theme-fields.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
+import { resolveBaseTheme } from '../../src/core/packaged-theme-residue.js';
 
 // ---------------------------------------------------------------------------
 // defaultTheme
@@ -47,8 +50,6 @@ describe('defaultTheme', () => {
     expect(typeof g.edgeLabel).toBe('string');
     expect(typeof g.actorFill).toBe('string');
     expect(typeof g.usecaseFill).toBe('string');
-    expect(typeof g.businessActorFill).toBe('string');
-    expect(typeof g.businessUsecaseFill).toBe('string');
   });
 
   it('graph.classBackground is #F1F1F1 (D2 grey default)', () => {
@@ -92,16 +93,8 @@ describe('defaultTheme', () => {
     expect(defaultTheme.colors.graph.actorFill).toBe('none');
   });
 
-  it('graph.businessActorFill is none', () => {
-    expect(defaultTheme.colors.graph.businessActorFill).toBe('none');
-  });
-
   it('graph.usecaseFill equals colors.background', () => {
     expect(defaultTheme.colors.graph.usecaseFill).toBe(defaultTheme.colors.background);
-  });
-
-  it('graph.businessUsecaseFill equals colors.background', () => {
-    expect(defaultTheme.colors.graph.businessUsecaseFill).toBe(defaultTheme.colors.background);
   });
 
   it('has all required sequence fields', () => {
@@ -130,8 +123,6 @@ describe('darkTheme', () => {
     expect(typeof g.edgeLabel).toBe('string');
     expect(typeof g.actorFill).toBe('string');
     expect(typeof g.usecaseFill).toBe('string');
-    expect(typeof g.businessActorFill).toBe('string');
-    expect(typeof g.businessUsecaseFill).toBe('string');
   });
 
   it('graph fields are non-empty strings', () => {
@@ -147,16 +138,8 @@ describe('darkTheme', () => {
     expect(darkTheme.colors.graph.actorFill).toBe('none');
   });
 
-  it('graph.businessActorFill is none', () => {
-    expect(darkTheme.colors.graph.businessActorFill).toBe('none');
-  });
-
   it('graph.usecaseFill equals darkTheme colors.background', () => {
     expect(darkTheme.colors.graph.usecaseFill).toBe(darkTheme.colors.background);
-  });
-
-  it('graph.businessUsecaseFill equals darkTheme colors.background', () => {
-    expect(darkTheme.colors.graph.businessUsecaseFill).toBe(darkTheme.colors.background);
   });
 });
 
@@ -164,12 +147,10 @@ describe('darkTheme', () => {
 // sketchyTheme
 // ---------------------------------------------------------------------------
 describe('sketchyTheme', () => {
-  it('has all four new graph fill properties as non-undefined strings', () => {
+  it('has the actor and usecase graph fill properties as non-undefined strings', () => {
     const g = sketchyTheme.colors.graph;
     expect(typeof g.actorFill).toBe('string');
     expect(typeof g.usecaseFill).toBe('string');
-    expect(typeof g.businessActorFill).toBe('string');
-    expect(typeof g.businessUsecaseFill).toBe('string');
   });
 });
 
@@ -177,12 +158,10 @@ describe('sketchyTheme', () => {
 // monochromeTheme
 // ---------------------------------------------------------------------------
 describe('monochromeTheme', () => {
-  it('has all four new graph fill properties as non-undefined strings', () => {
+  it('has the actor and usecase graph fill properties as non-undefined strings', () => {
     const g = monochromeTheme.colors.graph;
     expect(typeof g.actorFill).toBe('string');
     expect(typeof g.usecaseFill).toBe('string');
-    expect(typeof g.businessActorFill).toBe('string');
-    expect(typeof g.businessUsecaseFill).toBe('string');
   });
 });
 
@@ -249,8 +228,6 @@ describe('resolveTheme', () => {
           edgeLabel: '#444444',
           actorFill: 'none',
           usecaseFill: '#FFFFFF',
-          businessActorFill: 'none',
-          businessUsecaseFill: '#FFFFFF',
         },
       },
     };
@@ -277,8 +254,6 @@ describe('resolveTheme', () => {
     expect(result.colors.graph.edgeLabel).toBe(defaultTheme.colors.graph.edgeLabel);
     expect(result.colors.graph.actorFill).toBe(defaultTheme.colors.graph.actorFill);
     expect(result.colors.graph.usecaseFill).toBe(defaultTheme.colors.graph.usecaseFill);
-    expect(result.colors.graph.businessActorFill).toBe(defaultTheme.colors.graph.businessActorFill);
-    expect(result.colors.graph.businessUsecaseFill).toBe(defaultTheme.colors.graph.businessUsecaseFill);
   });
 
   it('deep-merges partial graph actorFill override while retaining all other graph defaults', () => {
@@ -297,8 +272,6 @@ describe('resolveTheme', () => {
     expect(result.colors.graph.packageBorder).toBe(defaultTheme.colors.graph.packageBorder);
     expect(result.colors.graph.edgeLabel).toBe(defaultTheme.colors.graph.edgeLabel);
     expect(result.colors.graph.usecaseFill).toBe(defaultTheme.colors.graph.usecaseFill);
-    expect(result.colors.graph.businessActorFill).toBe(defaultTheme.colors.graph.businessActorFill);
-    expect(result.colors.graph.businessUsecaseFill).toBe(defaultTheme.colors.graph.businessUsecaseFill);
   });
 
   it('merges sequence partial fields', () => {
@@ -323,7 +296,8 @@ describe('resolveTheme', () => {
     // EXECUTED theme lines at the directive's position (`TContext.java:726-755`,
     // `build-theme.ts#rootCascadeSkinparams`), not from a summary below
     // every document line.
-    const result = resolveTheme('amiga');
+    // #180: amiga ships in @knowvah/plantuml-themes-unlicensed, its residue with it (D4).
+    const result = resolveBaseTheme('amiga', themedIncludeStore());
     expect(result.colors.text).toBe(defaultTheme.colors.text);
     expect(result.colors.border).toBe(defaultTheme.colors.border);
     expect(result.colors.arrow).toBe(defaultTheme.colors.arrow);
@@ -333,12 +307,22 @@ describe('resolveTheme', () => {
   });
 
   it('an executed !theme amiga reaches the root-cascade colours', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme amiga\n@enduml'), undefined, 'sequence');
+    const includeStore = themedIncludeStore();
+    const { theme } = buildTheme(
+      preprocess('@startuml\n!theme amiga\n@enduml', undefined, { includeStore }),
+      { includeStore },
+      'sequence',
+    );
     expect([theme.colors.text, theme.colors.border, theme.colors.arrow]).toEqual(['#FFFFFF', '#FFFFFF', '#FFFFFF']);
   });
 
   it('an executed !theme blueprint carries its dark blue background', () => {
-    const { theme } = buildTheme(preprocess('@startuml\n!theme blueprint\n@enduml'), undefined, 'sequence');
+    const includeStore = themedIncludeStore();
+    const { theme } = buildTheme(
+      preprocess('@startuml\n!theme blueprint\n@enduml', undefined, { includeStore }),
+      { includeStore },
+      'sequence',
+    );
     expect(theme.colors.background).toBe('#003153');
   });
 
@@ -348,7 +332,7 @@ describe('resolveTheme', () => {
   });
 
   it('retains defaultTheme graph fields when resolving a built-in theme', () => {
-    const result = resolveTheme('amiga');
+    const result = resolveBaseTheme('amiga', themedIncludeStore());
     expect(result.colors.graph.classBackground).toBe(defaultTheme.colors.graph.classBackground);
   });
 });
@@ -380,8 +364,6 @@ describe('deepMergeTheme', () => {
         edgeLabel: '#6A6A6A',
         actorFill: '#7A7A7A',
         usecaseFill: '#8A8A8A',
-        businessActorFill: '#9A9A9A',
-        businessUsecaseFill: '#AAAAAB',
       },
     },
     sequence: {
@@ -415,8 +397,6 @@ describe('deepMergeTheme', () => {
     expect(result.colors.graph.edgeLabel).toBe(customBase.colors.graph.edgeLabel);
     expect(result.colors.graph.actorFill).toBe(customBase.colors.graph.actorFill);
     expect(result.colors.graph.usecaseFill).toBe(customBase.colors.graph.usecaseFill);
-    expect(result.colors.graph.businessActorFill).toBe(customBase.colors.graph.businessActorFill);
-    expect(result.colors.graph.businessUsecaseFill).toBe(customBase.colors.graph.businessUsecaseFill);
     expect(result.sequence.activationWidth).toBe(customBase.sequence.activationWidth);
     expect(result.sequence.participantGap).toBe(customBase.sequence.participantGap);
   });
@@ -449,8 +429,6 @@ describe('deepMergeTheme', () => {
     expect(result.colors.graph.edgeLabel).toBe(customBase.colors.graph.edgeLabel);
     expect(result.colors.graph.actorFill).toBe(customBase.colors.graph.actorFill);
     expect(result.colors.graph.usecaseFill).toBe(customBase.colors.graph.usecaseFill);
-    expect(result.colors.graph.businessActorFill).toBe(customBase.colors.graph.businessActorFill);
-    expect(result.colors.graph.businessUsecaseFill).toBe(customBase.colors.graph.businessUsecaseFill);
   });
 
   it('merges sequence fields from partial over custom base', () => {
@@ -480,4 +458,18 @@ describe('deepMergeTheme', () => {
     expect(result.fontSize).toBe(20);
     expect(result.fontFamily).toBe(customBase.fontFamily);
   });
+});
+
+// ---------------------------------------------------------------------------
+// #156 option #1: the unread business fill fields are gone
+// ---------------------------------------------------------------------------
+describe('built-in themes carry no business fill fields (#156)', () => {
+  const themes = { defaultTheme, darkTheme, sketchyTheme, monochromeTheme };
+  for (const [name, theme] of Object.entries(themes)) {
+    for (const field of REMOVED_BUSINESS_FILL_FIELDS) {
+      it(`${name}.colors.graph has no own ${field}`, () => {
+        expect(Object.hasOwn(theme.colors.graph, field)).toBe(false);
+      });
+    }
+  }
 });

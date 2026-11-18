@@ -1,0 +1,10 @@
+@startuml
+state C {
+  state A
+  note left of A
+  {{
+  class X
+  }}
+  end note
+}
+@enduml

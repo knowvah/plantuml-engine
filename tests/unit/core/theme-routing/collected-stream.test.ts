@@ -5,6 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { preprocess } from '../../../../src/core/preprocessor.js';
+import { themedIncludeStore } from '../../../helpers/theme-packages-store.js';
 
 describe('the collector sees procedure output, substituted', () => {
   const PROC = '!procedure $scheme()\n  FontColor red\n  BorderColor blue\n!endprocedure';
@@ -27,7 +28,9 @@ describe('the collector sees procedure output, substituted', () => {
 
 describe('stylePositions: a <style> block sits where it executed in the document', () => {
   it("places a theme's block at the line before its !theme, not at its line in the theme file", () => {
-    const r = preprocess('@startuml\n!theme plain\n<style>\nroot { X 1 }\n</style>\n@enduml');
+    const r = preprocess('@startuml\n!theme plain\n<style>\nroot { X 1 }\n</style>\n@enduml', undefined, {
+      includeStore: themedIncludeStore(),
+    });
     // `@startuml` is line 0; the document's own block opens at line 2.
     expect(r.stylePositions).toEqual([0, 2]);
   });

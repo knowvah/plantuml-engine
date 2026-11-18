@@ -192,7 +192,7 @@ Finished in place by the orchestrating session after the user stopped the driver
   activity 755/4/119 -> 873/4/1, unknown 860/4/184 -> 864/4/180, network 1/0/2 -> 3/0/0 (conformant /
   structural-match / diverged). All buckets 5,231 -> 5,355 of 5,927 conformant. 0 lost in any engine.
 - **Authored:** 102 fixtures in `tests/fixtures/activity-legacy/`: 90 at zero, 8 jar error pages we also refuse, 4 open
-  rows with named ends (`partition-link` #157, `pragma-elk` and `pragma-elk-if` #158, `pragma-smetana` the
+  rows with named ends (~~`partition-link` #157~~ — **done by lpl (2026-11-17, `legacy-partition-link/pre-squash`, #157)**, `pragma-elk` and `pragma-elk-if` #158, `pragma-smetana` the
   library-forced Smetana delta).
 - **Pins:** `svg-activity-legacy` ratchet 124 rows + 102 authored; DOT-parity gate 214 fixtures (124 rows, 90 authored)
   structurally equal with exact node sizes, size backlog empty; routing/refusal +124 golden twins.

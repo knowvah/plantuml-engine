@@ -10,7 +10,9 @@
  * PLANTUML-TS DIVERGENCE (the include seam, `TContext.ts` DIVERGENCE 1):
  * where upstream opens a file, a URL or a jar resource, this reads
  *   - bundled themes from the generated `themes-source.ts` (upstream's
- *     `/themes/` jar resources, verbatim);
+ *     `/themes/` jar resources, verbatim), then from a theme package the host
+ *     registered with `withThemes` (#180: the themes core may not ship under
+ *     MIT; `ThemeStore.ts`);
  *   - everything else from the synchronous {@link IncludeStore} -- the same
  *     store `!include` reads, keyed the same way.
  *
@@ -96,15 +98,15 @@ function themeOf(content: string, description: string): Theme {
 /**
  * The store key `loadTheme` reads for `!theme <name>[ from <from>]`, for the
  * async prefetch (`include-resolver.ts`) to fill: `undefined` for a bundled
- * theme (nothing to fetch). A `<lib>` location yields the `<lib/file>` stdlib
- * key `loadStdlibTheme` tries first; the name/location split is
- * `EaterTheme#analyze`'s (`EaterTheme.java:62-70`), minus the substitution a
- * text scan cannot do.
+ * or registered-package theme (nothing to fetch, #180 D2). A `<lib>` location
+ * yields the `<lib/file>` stdlib key `loadStdlibTheme` tries first; the
+ * name/location split is `EaterTheme#analyze`'s (`EaterTheme.java:62-70`),
+ * minus the substitution a text scan cannot do.
  */
-export function themeStoreKey(args: string): string | undefined {
+export function themeStoreKey(args: string, store: IncludeStore): string | undefined {
   const x = args.toLowerCase().indexOf(FROM_MARKER);
   const name = (x === -1 ? args : args.slice(0, x)).trim();
-  if (x === -1) return bundledSource(name) === undefined ? getFilename(name) : undefined;
+  if (x === -1) return bundledOrPackagedSource(store, name) === undefined ? getFilename(name) : undefined;
 
   const from = args.slice(x + FROM_MARKER.length).trim();
   if (from.startsWith('<') && from.endsWith('>')) return `<${from.substring(1, from.length - 1)}/${getFilename(name)}>`;
@@ -131,9 +133,18 @@ export function loadTheme(store: IncludeStore, name: string, from: string | unde
   return themeOf(content, RE_HTTP.test(from) ? getFullPath(from, name) : `${name} from ${from}`);
 }
 
+/**
+ * Upstream's bundled jar resource (`ThemeUtils.java:130-131`): core's
+ * generated `THEME_SOURCES`, then a registered theme package -- this port's
+ * form of the resources #180 moved out of core (decisions D2).
+ */
+function bundledOrPackagedSource(store: IncludeStore, name: string): string | undefined {
+  return bundledSource(name) ?? store.getPackagedTheme?.(name)?.source;
+}
+
 /** `ThemeUtils.java:128-147`: the bundled resource first, then a local file. */
 function loadBundledOrLocalTheme(store: IncludeStore, name: string): Theme | undefined {
-  const bundled = bundledSource(name);
+  const bundled = bundledOrPackagedSource(store, name);
   if (bundled !== undefined) return themeOf(bundled, `</${THEME_PATH}/${getFilename(name)}>`);
 
   const local = store.get(getFilename(name));

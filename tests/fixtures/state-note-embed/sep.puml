@@ -1,0 +1,10 @@
+@startuml
+state S1
+note bottom of S1
+head
+--
+{{
+class X
+}}
+end note
+@enduml

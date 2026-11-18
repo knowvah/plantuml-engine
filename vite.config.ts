@@ -1,9 +1,26 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
+import { cpSync } from 'fs';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
+/**
+ * #180 D7: core ships the Apache-2.0 themes `mars`, `toy` and `vibrant`, so
+ * their licence text ships with them. Copies `src/core/licenses/*` to
+ * `dist/licenses/` once the bundle is written; `dist` is in `package.json`
+ * `files`. No dependency: `fs.cpSync` does it.
+ */
+function copyLicenses(): Plugin {
+  return {
+    name: 'plantuml-engine:copy-licenses',
+    apply: 'build',
+    closeBundle() {
+      cpSync(resolve(__dirname, 'src/core/licenses'), resolve(__dirname, 'dist/licenses'), { recursive: true });
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
@@ -16,6 +33,7 @@ export default defineConfig({
       // `./image-providers` subpath).
       bundleTypes: true,
     }),
+    copyLicenses(),
   ],
   build: {
     lib: {

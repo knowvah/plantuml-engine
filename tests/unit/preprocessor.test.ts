@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { preprocess } from '../../src/core/preprocessor.js';
 import { BLOCK_E1_NEWLINE } from '../../src/core/tim/builtin/jaws-constants.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 /**
  * Helper: build a source string from an array of lines, then run preprocess.
@@ -79,7 +80,9 @@ describe('preprocessor', () => {
   it('!theme directive is stripped: its styling lines are collected, blank lines kept', () => {
     // An upstream theme name: `dark` is not one, so the jar (and, since
     // cdd4-T7a, this port) stops at `Cannot load theme dark`.
-    const { lines, theme } = preprocess('!theme plain\nAlice -> Bob');
+    const { lines, theme } = preprocess('!theme plain\nAlice -> Bob', undefined, {
+      includeStore: themedIncludeStore(),
+    });
     expect(lines.filter((l) => l !== '')).toEqual(['Alice -> Bob']);
     expect(theme).toBe('plain');
   });

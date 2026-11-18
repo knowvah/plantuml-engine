@@ -37,7 +37,9 @@ import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import { TextBlockUtils } from '../../core/klimt/shape/TextBlockUtils.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
+import { jarMeasurer } from '../../core/measurer-jar.js';
 import type { StringMeasurer } from '../../core/measurer.js';
+import { pngDefaultStringBounder } from '../../core/png-string-bounder.js';
 import { isExportScaled, resolveScaleFactor } from '../../core/scale-command.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { BODY_ANCHOR } from '../../core/TextBlockExporter.js';
@@ -317,7 +319,9 @@ export const wirePlugin: SyncPlugin<WireDiagram, WireGeometry> = {
 
   parse(source, options) {
     const emoji = options?.assetStore === undefined ? undefined : internalEmojiStoreFrom(options.assetStore);
-    return parseWire(source, preprocessingArtifactOf(source), emoji);
+    // No measurer is the default one, never a `DeterministicMeasurer`, so PNG's bounder is AWT (pbs D3).
+    const pngStringBounder = pngDefaultStringBounder(options?.measurer ?? jarMeasurer);
+    return parseWire(source, preprocessingArtifactOf(source), pngStringBounder, emoji);
   },
 
   layoutSync(ast, _theme, measurer) {

@@ -10,12 +10,13 @@ import type { SyncPlugin } from '../../src/core/dispatcher.js';
 import { DeterministicMeasurer } from '../../src/core/measurer-deterministic.js';
 import { parseRefusalOf } from '../../src/core/parse-refusal.js';
 import { defaultTheme } from '../../src/core/theme.js';
+import { themedIncludeStore } from './theme-packages-store.js';
 
 const FIXTURES = new URL('../fixtures/utility/', import.meta.url);
 
 /** The pipeline's `UmlSource` for the first block of `text`. */
 export function sourceOf(text: string): UmlSource {
-  const block = buildBlockUmls(text)[0];
+  const block = buildBlockUmls(text, { includeStore: themedIncludeStore() })[0];
   if (block?.ok !== true) throw new Error(`no block in ${text}`);
   return { ...block.source, seedSourceLines: block.seedSource };
 }

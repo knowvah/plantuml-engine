@@ -1,0 +1,27 @@
+@knowvah/plantuml-themes-unlicensed — licence statement
+
+This package contains eight PlantUML theme files, copied verbatim from
+PlantUML's `src/main/resources/themes/` directory:
+
+  amiga, blueprint, crt-amber, crt-green, mimeograph, plain (Matthew Leather)
+  mono (Denis Bondarenko feat Matthew Leather)
+  carbon-gray (Bharat Rajagopalan)
+
+Their authors stated no licence. Each file's YAML header names its author and
+leaves the `license:` field empty or absent. No licence is granted here,
+because the authors granted none: this package is NOT MIT, and "unlicensed"
+does NOT mean "The Unlicense" or the public domain.
+
+The files are redistributed exactly as PlantUML itself redistributes them,
+inside its own distribution, unmodified, with each author's header kept
+verbatim. If you redistribute this package, you are responsible for deciding
+whether that is acceptable for your use.
+
+If an author grants the MIT licence for their theme, the theme moves back into
+the MIT core of @knowvah/plantuml-engine and leaves this package.
+
+The small JavaScript wrapper in `index.js` and `index.d.ts`, written for
+plantuml-engine, is MIT-licensed, as the rest of plantuml-engine is.
+
+See LICENSES.md for the per-theme table, and issue #180 of
+https://github.com/knowvah/plantuml-engine for the ruling behind this package.

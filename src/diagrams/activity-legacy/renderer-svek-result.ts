@@ -73,12 +73,36 @@ export class ActivityLegacySvekResult implements TextBlock {
     for (const edge of geometry.edges) {
       if (edge.link.isInvis() || this.opale.has(edge)) continue;
       drawEdge(
-        shifted,
+        shifted.apply(UTranslate.dx(this.autoLinkOfAGroupDx(edge, origin))),
         edge,
-        edgeInputOf(edge, { skinParam, stringBounder: this.input.stringBounder, nodes: geometry.nodes }),
+        edgeInputOf(edge, {
+          skinParam,
+          stringBounder: this.input.stringBounder,
+          nodes: geometry.nodes,
+          clusters: geometry.clusters,
+        }),
         ids,
       );
     }
+  }
+
+  /**
+   * `link.isAutoLinkOfAGroup()`: the link is drawn `cl.width - (dotPath.start.x - cl.minX)` further right. By the final
+   * draw `Cluster#moveDelta` has moved the box while the edge only accumulated `dx` (`SvekEdge.java:1241-1244`), so the
+   * jar's `dx` counts a second time; while `calculateDimension` measures, `dx` is 0 and the box unmoved. The jar's `dx`
+   * is this pass's translation less `originShift` (this frame plus `originShift` is the svek frame). The start is the
+   * clipped path's (`simulateCompound` ran in `solveLine`).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekEdge.java:863-871
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:127-137
+   */
+  private autoLinkOfAGroupDx(edge: ActivityLegacyEdgeGeo, origin: UTranslate): number {
+    const cluster = edge.tailCluster;
+    const start = edge.points[0];
+    if (!edge.link.isAutoLinkOfAGroup() || cluster === undefined || start === undefined) return 0;
+    const box = this.input.geometry.clusters.find((c) => c.id === cluster.id)!;
+    const measuring = this.ink === undefined;
+    const jarDx = measuring ? 0 : this.shift.getDx() + origin.getDx() - (this.input.geometry.originShift?.x ?? 0);
+    return box.width - (start.x - box.x) + jarDx;
   }
 
   private originShiftOf(): UTranslate {

@@ -65,6 +65,14 @@ export default tseslint.config([
     ...tseslint.configs.disableTypeChecked,
   },
   {
+    // `packages/*` declaration files (`index.d.ts`, `generated/*.d.ts`) belong
+    // to each workspace's own tsconfig, which `npm run typecheck --workspaces`
+    // checks; the root lint has no project for them. lint-staged names them on
+    // commit, so they get the same untyped treatment.
+    files: ['packages/**/*.ts'],
+    ...tseslint.configs.disableTypeChecked,
+  },
+  {
     // `scripts/` and the root `*.config.ts` files are NOT in the root tsconfig (which includes src/tests/demo
     // only), so `project: true` -- nearest-tsconfig resolution -- cannot see
     // it. Most script files happened to be reachable transitively as imports

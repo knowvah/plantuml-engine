@@ -16,6 +16,7 @@ import { CommandExecutionResult } from '../../core/command/CommandExecutionResul
 import { ParserPass } from '../../core/command/ParserPass.js';
 import type { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.js';
 import type { InternalEmojiStore } from '../../core/internal-emoji-store.js';
+import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { createSpriteRegistry } from '../../core/sprite-registry.js';
@@ -199,12 +200,15 @@ function executeCommands(
 /**
  * `createEmptyDiagram` with the skin param built here (as regex's), then `createSystem`'s per-line
  * dispatch and `finalizeDiagram`.
+ * @param pngStringBounder `FileFormat.PNG.getDefaultStringBounder()` for this render (`pngDefaultStringBounder` of
+ *   its measurer), which `print` measures with while the commands execute (WireDiagram.java:133, pbs D4).
  * @param emoji port-only Twemoji artwork store (ADR-2), carried in the sprite registry as regex carries it.
  * @see WireDiagramFactory.java:67-71, PSystemCommandFactory.java:107-153
  */
 export function parseWire(
   source: UmlSource,
   preprocessing: PreprocessingArtifact,
+  pngStringBounder: StringBounder,
   emoji?: InternalEmojiStore,
 ): WireDiagram | ParseRefusal {
   const dispatch = createStyleDispatch(source);
@@ -214,7 +218,7 @@ export function parseWire(
     sprites: createSpriteRegistry(undefined, emoji),
     pragma: Pragma.createEmpty(),
   });
-  const diagram = new WireDiagram(source, preprocessing, skinParam);
+  const diagram = new WireDiagram(source, preprocessing, skinParam, pngStringBounder);
   addSkinParamWarnings(diagram, dispatch.skinparam);
   const refusal = executeCommands(diagram, source, dispatch, initCommandsList());
   if (refusal !== null) return refusal;

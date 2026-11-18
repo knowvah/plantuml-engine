@@ -36,6 +36,7 @@ import { charliePlugin } from '../../src/diagrams/eggs/PSystemCharlieFactory.js'
 import { colorsPlugin } from '../../src/diagrams/eggs/PSystemColorsFactory.js';
 import { eggPlugin } from '../../src/diagrams/eggs/PSystemEggFactory.js';
 import { ripPlugin } from '../../src/diagrams/eggs/PSystemRIPFactory.js';
+import { pathPlugin } from '../../src/diagrams/eggs/PSystemPathFactory.js';
 import { welcomePlugin } from '../../src/diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactory.js';
 import { listFontsPlugin } from '../../src/diagrams/font/PSystemListFontsFactory.js';
@@ -118,6 +119,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [eggPlugin, 175],
   [appleTwoPlugin, 176],
   [ripPlugin, 177],
+  [pathPlugin, 179],
   [charliePlugin, 181],
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
@@ -203,6 +205,13 @@ describe('registration order (PSystemBuilder.java:133-200)', () => {
   it('orders every registered pair as the Java does', () => {
     const lines = REGISTERED_PLUGINS.map((p) => JAVA_LINE.get(p));
     expect(lines).toEqual([...lines].sort((a, b) => (a ?? 0) - (b ?? 0)));
+  });
+
+  it('puts path between RIP and Charlie, gated on INSECURE (java:177-181)', () => {
+    const at = REGISTERED_PLUGINS.indexOf(pathPlugin);
+    expect(REGISTERED_PLUGINS[at - 1]).toBe(ripPlugin);
+    expect(REGISTERED_PLUGINS[at + 1]).toBe(charliePlugin);
+    expect(pathPlugin.registeredOnlyUnder).toBe('INSECURE');
   });
 
   it('puts welcome first, then colors immediately before sequence (java:133-135)', () => {

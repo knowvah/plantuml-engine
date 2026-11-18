@@ -52,6 +52,13 @@ See `pin.json`. The oracle is upstream PlantUML at the pinned `upstreamSha`
 branch (`patches/0001-oracle-dot-dump.patch`). The seam is inert unless
 `PLANTUML_DUMP_DOT` is set, so the jar doubles as the stock SVG oracle.
 
+Seam #5 (`patches/0005-oracle-png-bounder.patch`, pbs, #170 option 3) makes
+`FileFormat.PNG`'s bounder deterministic under `PLANTUML_DETERMINISTIC_TEXT`, so a
+creole math rollback and wire `print` are measured from the width table. It was
+committed in a `/tmp` clone (`d878ea98104`); the user applies it to the fork's
+`dot-output`, and until then `build-oracle.sh` against `~/git/plantuml` fails its
+drift guard (`dot-output~5` is not the pinned tree).
+
 ## Rebuild
 
 ```sh

@@ -1,0 +1,356 @@
+[
+  {
+    "target": "test-results/dot-cache/unknown/bemixo-79-xulu250",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/cazace-10-nebi625",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/cunotu-47-bute165",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/kebadi-11-fula439",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/marese-34-xaro137",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/pecafo-64-rili177",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/rakidu-53-mopu785",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/roxita-24-tixu731",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/rozesu-56-suve592",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/rubebe-45-sura795",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/teoz-ng-001-10",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/vocalo-20-dixu237",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/unknown/xanuke-94-tope429",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "rollback"
+  },
+  {
+    "target": "test-results/dot-cache/class/zuduxu-90-kosi876",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/gantt/sakibi-88-zuci243",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/mindmap/susipa-95-tedu015",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/salt/lakari-33-mone874",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/sequence/xobebi-29-jilu859",
+    "kind": "dot-cache",
+    "status": "FAILED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/wbs/ledama-83-xoko366",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/wbs/link-URL-tooltip-0",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "test-results/dot-cache/wire/migaki-17-jori275",
+    "kind": "dot-cache",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "oracle/goldens/svg-flow/unknown/bemixo-79-xulu250",
+    "kind": "svg-golden",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "oracle/goldens/svg-gantt/sakibi-88-zuci243",
+    "kind": "svg-golden",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "oracle/goldens/svg-sequence/xobebi-29-jilu859",
+    "kind": "svg-golden",
+    "status": "FAILED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "oracle/goldens/svg-wire/migaki-17-jori275",
+    "kind": "svg-golden",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-leading-space.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-link-explicit-back.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-north-west.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-option-handwritten-link.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-shift-east.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-west-chain.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-west.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-wide-both.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/flow/cov-wide-south.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "unexpected"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-dark.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-dpi-200.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-handwritten.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-mode-dark.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-move-after-print.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-option-handwritten.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-after-component.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-creole.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-curly.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-empty-text.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-empty.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-multiline.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-nested.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-only.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-overflow-forced.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-quotes.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-size.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-sprite.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-tab-escape.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-print-table.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-scale-2.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-skinparam.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-style.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-theme-plain.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  },
+  {
+    "target": "tests/fixtures/wire/cov-theme.svg",
+    "kind": "fixture-svg",
+    "status": "CHANGED",
+    "cls": "wire-print"
+  }
+]

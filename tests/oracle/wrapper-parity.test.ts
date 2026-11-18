@@ -62,7 +62,8 @@ function loadCorpus(label: string): GoldenCorpus {
   return { label, dir, fixtures };
 }
 
-const CORPORA: GoldenCorpus[] = [loadCorpus('state'), loadCorpus('class')];
+/** lpl T1b: legacy activity joins for its swimlane branch (`partition-link-swimlane`: `a`/`i`, no `p0`/`p1`). */
+const CORPORA: GoldenCorpus[] = [loadCorpus('state'), loadCorpus('class'), loadCorpus('activity-legacy')];
 
 /** Every subgraph name reachable from `g`, in creation order. */
 function subgraphNames(g: Graph): string[] {
@@ -123,6 +124,8 @@ for (const { label, dir, fixtures } of CORPORA) {
           measurer: new DeterministicMeasurer(),
         });
         for (const [n, input] of captured.entries()) {
+          // Kermor writes `ClusterDotStringKermor`'s beta/gamma pair, never these wrappers (`:69-165`).
+          if (input.kermor === true) continue;
           const built = builderLevels(input);
           const emitted = emitterLevels(input);
           for (const c of input.clusters ?? []) {

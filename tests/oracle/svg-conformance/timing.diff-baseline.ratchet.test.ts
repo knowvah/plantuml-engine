@@ -47,8 +47,9 @@ const GOLDENS_DIR = join(HERE, '../../../oracle/goldens/svg-timing');
 const CACHE_DIR = join(HERE, '../../../test-results/dot-cache');
 /** The rows that reach the timing engine (`measurements/planning-rows.json`): 145 in `timing`, 13 drawn in `unknown`. */
 const TIMING_ROW_COUNT = 158;
-/** Authored rows the jar draws and we do not match: a timing `{{ }}` inside a state note (tep journal row 14). */
-const OPEN_ROWS: readonly string[] = ['cov-embedded-state'];
+/** Authored rows the jar draws and we do not match. 2026-11-17 sne T1b (#168): `cov-embedded-state` (a timing `{{ }}`
+ *  inside a state note, tep journal row 14) draws its `<image>` and is at 0, so none is open. */
+const OPEN_ROWS: readonly string[] = [];
 
 const authored = JSON.parse(readFileSync(join(GOLDENS_DIR, 'authored-baseline.json'), 'utf8')) as {
   readonly fixtures: readonly AuthoredFixture[];

@@ -91,27 +91,35 @@ PlantUML themes
     Source:   PlantUML's src/main/resources/themes/, embedded verbatim in
               src/core/themes-source.ts
 
-    All 44 themes are included. Each states its own author and license in
-    its header, which is kept. By that header:
+    35 of upstream's 44 themes are included: those whose licence the MIT
+    build may carry (issue #180, maintainer ruling 2026-11-13). Each states
+    its own author and license in its header, which is kept. By that header:
     - MIT: 31 themes, by Brett Schwarz (22), Drakemor (8) and KingPlus-lang
       (spacelab-white).
     - Apache License 2.0: mars, toy and vibrant, by future-architect
-      (https://github.com/future-architect/puml-themes).
-    - GPL 3+: sunlust, by Artem V. Ageev.
-    - No license stated: amiga, blueprint, crt-amber, crt-green, mimeograph
-      and plain (Matthew Leather), mono (Denis Bondarenko with Matthew
-      Leather), carbon-gray (Bharat Rajagopalan) and _none_ (The-Lum, an
-      intentionally empty theme).
+      (https://github.com/future-architect/puml-themes). The licence text
+      ships as dist/licenses/Apache-2.0-future-architect-puml-themes.txt
+      (src/core/licenses/); that repository has no NOTICE file.
+    - _none_ (The-Lum), an intentionally empty theme with no stated licence.
+
+    The other nine are not in this package; see "Optional packages" below.
 
 ================================================================================
 Optional packages
 ================================================================================
 
 The packages under packages/ (stdlib, stdlib-aws, stdlib-tupadr3, stdlib-all,
-sprites-archimate, emoji, all) are published separately, and each carries its
-own LICENSE and LICENSES.md. Among them: the AWS Architecture Icons are
-CC BY-ND 2.0, the ArchiMate sprites are MIT, and the Twemoji artwork is
-CC BY 4.0.
+sprites-archimate, emoji, themes-unlicensed, themes-gpl, all) are published
+separately, and each carries its own LICENSE and LICENSES.md. Among them: the
+AWS Architecture Icons are CC BY-ND 2.0, the ArchiMate sprites are MIT, and
+the Twemoji artwork is CC BY 4.0. The two theme packages hold the PlantUML
+themes core does not include (#180):
+- @knowvah/plantuml-themes-unlicensed (SEE LICENSE IN LICENSE): amiga,
+  blueprint, crt-amber, crt-green, mimeograph and plain (Matthew Leather),
+  mono (Denis Bondarenko with Matthew Leather) and carbon-gray (Bharat
+  Rajagopalan). Their authors stated no license; none is granted.
+- @knowvah/plantuml-themes-gpl (GPL-3.0-or-later): sunlust, by Artem V.
+  Ageev (header: GPL 3+). Not included in @knowvah/plantuml-all.
 
 ================================================================================
 Upstream works this project ports or derives from

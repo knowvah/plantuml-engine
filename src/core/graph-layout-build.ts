@@ -28,6 +28,7 @@ import { dotSplinesAttrs } from './dot-splines.js';
 import { portTable } from './svek-dot-emit-labels.js';
 import { addSpecialShapeNode, LAYOUT_LABEL_BGCOLOR } from './graph-layout-build-special-nodes.js';
 import { addSwimlaneRanks } from './svek-dot-swimlane.js';
+import { unwrappedNodeIdOf, wrapperLevels } from './svek-dot-wrappers.js';
 import { inches } from './svek-dot-emit.js';
 import { firstEncounterOrder } from './svek-dot-order.js';
 import { togetherClusters } from './svek-dot-together.js';
@@ -105,6 +106,11 @@ export { firstEncounterOrder };
  *  {@link addNodes} so each stays legible (and so the loop stays within the
  *  repo's complexity budget). */
 function addOneNode(b: GvGraphBuilder, n: DotInputNode): void {
+  // lpl T1c: no statement in the text, so graphviz's default node (ellipse, label `\N`).
+  if (n.implicit === true) {
+    b.addNode(n.id);
+    return;
+  }
   if (n.shape === 'point' && n.titleLabelWidth === undefined) {
     // emitter: `[shape=point,width=.01,label=""]` — width OVERRIDES the
     // caller's measured size, exactly as ClusterDotString emits anchors.
@@ -327,13 +333,15 @@ export function addClusters(b: GvGraphBuilder, input: DotInputGraph): ClusterInd
       handlesById.set(c.id, handles);
       return handles;
     }
-    const levels = c.innerMarginLevels;
     // G7 T7: jar's OUTER "a"/"p0" pair (`ClusterDotString.java:91-116`) wraps
     // `main` from outside, gated by the same `innerMarginLevels` as the inner
     // "i"/"p1" pair (307/307 cached DOTs pair p0 with p1, 93/93 a with i).
+    // lpl T1b: read through `wrapperLevels`, the emitter's own answer, so a
+    // linked swimlane gets its `a`/`i` pair with no `p0`/`p1`.
+    const w = wrapperLevels(c);
     let host = parentInnermost;
-    if (levels === 2) host = host.addSubgraph(`${outerName}a`, {});
-    if (levels !== undefined) host = host.addSubgraph(`${outerName}p0`, {});
+    if (w.a) host = host.addSubgraph(`${outerName}a`, {});
+    if (w.p0) host = host.addSubgraph(`${outerName}p0`, {});
     const hasTitleTable = c.titleTableWidth !== undefined && c.titleTableHeight !== undefined;
     const attrs = !hasTitleTable && c.label !== undefined ? { label: c.label } : {};
     const main = host.addSubgraph(outerName, attrs);
@@ -380,9 +388,10 @@ export function addClusters(b: GvGraphBuilder, input: DotInputGraph): ClusterInd
     // "p0" pair above) is structurally invisible to the DOT-parity gate,
     // same as jar's own protection wrappers.
     let innermost = main;
-    if (c.swimlane === true) addSwimlaneRanks(main, c.id);
-    if (levels === 2) innermost = innermost.addSubgraph(`${outerName}i`, {});
-    if (levels !== undefined) innermost = innermost.addSubgraph(`${outerName}p1`, {});
+    if (w.i) innermost = innermost.addSubgraph(`${outerName}i`, {});
+    if (w.p1) innermost = innermost.addSubgraph(`${outerName}p1`, {});
+    // ClusterDotString.java:151-170: the lane's rank groups open after `i`.
+    if (c.swimlane === true) addSwimlaneRanks(innermost, c.id);
     // T1b: rank groups for a port cluster WITHOUT an anchor -- since
     // cdd4-T6 only the kermor path (`buildDotClusters` leaves `portAnchorId`
     // unset there; `ClusterDotStringKermor.printRanks` has no chain). The
@@ -428,12 +437,11 @@ export function addClusters(b: GvGraphBuilder, input: DotInputGraph): ClusterInd
       placeBorderPointMembers(c, handles);
       continue;
     }
-    if (c.innerMarginLevels === undefined) {
-      for (const id of c.nodeIds) main.addNode(id);
-      continue;
-    }
+    // Without inner wrappers `innermost` is `main`; `unwrappedNodeIdOf` is the
+    // special point declared before they open (`ClusterDotString.java:148-152`).
+    const unwrapped = unwrappedNodeIdOf(c);
     for (const id of c.nodeIds) {
-      (id === c.unwrappedNodeId ? main : innermost).addNode(id);
+      (id === unwrapped ? main : innermost).addNode(id);
     }
   }
   return { idByName };

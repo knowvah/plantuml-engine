@@ -25,6 +25,7 @@ import { NULL_SYSTEM, refuse } from '../parse-refusal.js';
 import type { ParseRefusal } from '../parse-refusal.js';
 import { trin } from '../style/parser/StyleParser.js';
 import type { Theme } from '../theme.js';
+import type { SecurityProfile } from '../security/SecurityProfile.js';
 import { PreprocessingArtifact } from '../tim/PreprocessingArtifact.js';
 import { isEndDirective, isStartDirective } from '../tim/StartUtils.js';
 
@@ -76,6 +77,9 @@ export interface SingleLineSpec<D> {
   ): D | undefined;
   /** Typically `{ completeSvg: diagram.exportDiagram(0, ctx.measurer) }` (`UgDiagram`). */
   render(diagram: D, ctx: RenderContext): AssembledSvg;
+  /** Forwarded to {@link SyncPlugin.registeredOnlyUnder}: a factory `PSystemBuilder` adds under one profile
+   *  only (`PSystemPathFactory`, `PSystemBuilder.java:178-179`). Absent = every profile. */
+  readonly registeredOnlyUnder?: SecurityProfile;
 }
 
 /** What `layoutSync` hands `render`: the diagram and the layout measurer. */
@@ -175,6 +179,7 @@ function createSystem<D>(spec: SingleLineSpec<D>, source: UmlSource, options?: P
 export function singleLinePlugin<D>(spec: SingleLineSpec<D>): SyncPlugin<D, SingleLineGeometry<D>> {
   return {
     type: SEQUENCE_HACK,
+    ...(spec.registeredOnlyUnder === undefined ? {} : { registeredOnlyUnder: spec.registeredOnlyUnder }),
     parse: (source, options) => createSystem(spec, source, options),
     layoutSync: (diagram, _theme, measurer) => ({ diagram, measurer }),
     render: (geo, theme) => spec.render(geo.diagram, { theme, measurer: geo.measurer }),

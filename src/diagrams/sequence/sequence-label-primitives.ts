@@ -23,6 +23,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/AbstractTextualComponent.java:84-92
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/DriverTextSvg.java:93-180
  */
+import { svgFileFormatOf } from '../../core/measurer-deterministic.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import { FontStyle, getFont, UText } from '../../core/klimt/shape/UText.js';
@@ -109,6 +110,8 @@ export function sequenceStringBounder(measurer: StringMeasurer): StringBounder {
     getDescent(font, text) {
       return measurer.getDescent(specOf(font), text);
     },
+    // SVG_DETERMINISTIC under the deterministic measurer: a rollback atom reads PNG's bounder off it (pbs T2c).
+    getFileFormat: () => svgFileFormatOf(measurer),
   };
 }
 

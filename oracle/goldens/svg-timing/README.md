@@ -33,8 +33,8 @@ A row that reads the clock (`use date format`) renders with its recorded capture
 `tests/fixtures/timing/` is a flat tree of original fixtures, each with the jar's `.svg` beside it, rendered by
 `scripts/oracle-render.sh` (tep D6). `authored-baseline.json` tracks them (`timing.diff-baseline.ratchet.test.ts`):
 rows = the `.puml` files on disk, disjoint from the cached slugs; `weightedScore` never rises; a nonzero row is a jar
-error page where we also draw one, with its `jarError`, or a named open row: `cov-embedded-state`, a timing `{{ }}`
-inside a state note that the state engine draws as text (tep journal row 14). Re-measure:
+error page where we also draw one, with its `jarError`, or a named open row (none since 2026-11-17: sne #168 put
+`cov-embedded-state`, a timing `{{ }}` inside a state note, at 0). Re-measure:
 `npx jiti plans/timing-engine-port/measurements/build-authored-baseline.mts <commit> [--write]`.
 
 ## No DOT parity

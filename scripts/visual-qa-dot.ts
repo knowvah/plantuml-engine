@@ -28,6 +28,7 @@ import { setLayoutInputObserver } from '../src/core/graph-layout.js';
 import { FormulaMeasurer } from '../src/core/measurer.js';
 import type { DotInputGraph } from '../src/core/graph-layout.js';
 import { parseSvekDot, dotInputToStructural, compareStructural } from '../tests/oracle/svek-dot.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA_DIR = join(REPO, 'tests', 'visual', 'data');
@@ -71,7 +72,7 @@ function ourInputs(markup: string): DotInputGraph[] {
   const inputs: DotInputGraph[] = [];
   setLayoutInputObserver(({ graph: g }) => inputs.push(g));
   try {
-    renderSync(markup, { measurer: new FormulaMeasurer() });
+    renderSync(markup, { measurer: new FormulaMeasurer(), includeStore: themedIncludeStore() });
   } catch {
     /* no candidate */
   } finally {

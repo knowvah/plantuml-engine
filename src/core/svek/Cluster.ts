@@ -62,8 +62,9 @@
  *    `isInCluster`/`togetherCounter`/`addTogetherWithParents` — dot-text
  *    generation, entirely a layout/`ClusterDotString` concern (already
  *    ported separately in `layout.ts`'s own dot-building code).
- *  - `getClusterId`, `getSpecialPointId`, `getMinPoint`, `getMaxPoint` —
- *    dot node-id generation for the layout pass.
+ *  - `getClusterId`, `getMinPoint`, `getMaxPoint` — dot node-id generation
+ *    for the layout pass. (`CENTER_ID`/`getSpecialPointId` are ported as
+ *    module-level exports below, lpl D1.)
  *  - `getMagneticBorder` — feeds `SvekLine`/edge-routing "force"
  *    avoidance around a cluster's decorated shape (extremity/`SvekEdge`
  *    machinery, a parallel task's write-set this batch), not drawing.
@@ -147,6 +148,18 @@ function requireGroups(ug: UGraphic): UGraphicWithGroups {
 
 export type { ClusterGeometry } from './ClusterDecoration.js';
 
+/** The prefix of a group's special point id. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:104 */
+export const CENTER_ID = 'za';
+
+/**
+ * The DOT id of `group`'s special point, the node an edge names when its end is the group itself
+ * (`Bibliotekon#getNodeUid` for a group with no `SvekNode`, `Bibliotekon.java:126-137`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:653-655
+ */
+export function getSpecialPointId(group: { getUid(): string }): string {
+  return CENTER_ID + group.getUid();
+}
+
 /**
  * The subset of `Cluster.java`'s backing `Entity group` that the
  * DRAWING half reads. `hidden`/`name`/`uid`/`qualifiedName`/`location`
@@ -203,6 +216,9 @@ export interface ClusterHeaderInfo {
  * .packageStyle()`, and `skinParam.getStereotypeAlignment()`. */
 export interface ClusterSymbolInfo {
   readonly symbol: USymbol | null;
+  /** `group.getGroupType() == GroupType.PACKAGE`: a symbol-less PACKAGE still has the package style's magnetic border
+   *  (`Cluster.java:728-729`). Opt-in: a caller that does not set it keeps the symbol-only test. */
+  readonly packageGroup?: true;
   readonly packageStyle: PackageStyleName | null;
   readonly defaultPackageStyle: PackageStyleName;
   readonly stereoAlignment: HorizontalAlignment;
@@ -301,10 +317,11 @@ export class Cluster {
    * description/component/usecase diagrams). */
   /**
    * `Cluster#getMagneticBorder` (`Cluster.java:726-760`): the decoration's text block's, in the cluster's corner. The
-   * group has a `USymbol` here, so the `None` arm (`:728-729`) is the symbol-less one.
+   * `None` arm (`:728-729`) is a symbol-less group that is not a PACKAGE; a symbol-less PACKAGE takes its package
+   * style's symbol (`ClusterDecoration#guess`).
    */
   getMagneticBorder(): MagneticBorder {
-    if (this.symbolInfo.symbol === null) return new MagneticBorderNone();
+    if (this.symbolInfo.symbol === null && this.symbolInfo.packageGroup !== true) return new MagneticBorderNone();
     const packageStyle = this.symbolInfo.packageStyle ?? this.symbolInfo.defaultPackageStyle;
     const stroke = getStrokeInternal(this.group.specificLineStroke, this.style.strokeDefault);
     const decoration = new ClusterDecoration(

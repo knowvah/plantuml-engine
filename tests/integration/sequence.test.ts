@@ -6,6 +6,7 @@ import { defaultTheme } from '../../src/core/theme.js';
 import { testMeasurer, renderFixture, renderFile } from '../helpers/render.js';
 import '../helpers/svg-assertions.js';
 import { WELCOME_MARKER, expectNoErrorDiagram } from '../helpers/error-diagram.js';
+import { themedIncludeStore } from '../helpers/theme-packages-store.js';
 
 // ---------------------------------------------------------------------------
 // Fixture directory
@@ -305,7 +306,7 @@ describe('theme variants', () => {
 !theme amiga
 Alice -> Bob: hi
 @enduml`;
-    const svg = renderSync(source, { measurer: testMeasurer });
+    const svg = renderSync(source, { measurer: testMeasurer, includeStore: themedIncludeStore() });
     expect(svg).toContainText('#0B58A8');
   });
 

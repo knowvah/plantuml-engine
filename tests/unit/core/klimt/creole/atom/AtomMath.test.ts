@@ -18,6 +18,10 @@ import type { UShape } from '../../../../../../src/core/klimt/UShape.js';
 import type { UChange } from '../../../../../../src/core/klimt/UChange.js';
 import type { UGraphic } from '../../../../../../src/core/klimt/UGraphic.js';
 import type { StringBounder } from '../../../../../../src/core/klimt/font/StringBounder.js';
+import { MeasurerStringBounder } from '../../../../../../src/core/measurer-bounder.js';
+import { DeterministicMeasurer } from '../../../../../../src/core/measurer-deterministic.js';
+import { jarMeasurer } from '../../../../../../src/core/measurer-jar.js';
+import { GraphicStrings } from '../../../../../../src/core/klimt/shape/GraphicStrings.js';
 
 class FakeStringBounder implements StringBounder {
   calculateDimension(): XDimension2D {
@@ -137,5 +141,21 @@ describe('AtomMath.drawU (java:77-98) — bound to renderLatexAsImage', () => {
     withBg.drawU(ug1);
     withoutBg.drawU(ug2);
     expect((ug1.getDrawn()[0]!.shape as UImage).getHref()).toBe((ug2.getDrawn()[0]!.shape as UImage).getHref());
+  });
+});
+
+describe('AtomMath.calculateDimensionSlow on a rollback (java:63-70, pbs D5)', () => {
+  const rollback = (): AtomMath => new AtomMath(ScientificEquationSafe.fromLatex('\\glb{x}'), null, null);
+
+  it("is the PNG export's whole-pixel size under the deterministic measurer (cov-rollback-latex: 48 x 24)", () => {
+    const dim = rollback().calculateDimension(new MeasurerStringBounder(new DeterministicMeasurer()));
+    expect([dim.getWidth(), dim.getHeight()]).toEqual([48, 24]);
+  });
+
+  it('truncates the AWT measure of the monospaced block in production', () => {
+    const awt = new MeasurerStringBounder(jarMeasurer);
+    const block = GraphicStrings.createBlackOnWhiteMonospaced(['\\glb{x}']).calculateDimension(awt);
+    const dim = rollback().calculateDimension(awt);
+    expect([dim.getWidth(), dim.getHeight()]).toEqual([Math.trunc(block.getWidth()), Math.trunc(block.getHeight())]);
   });
 });

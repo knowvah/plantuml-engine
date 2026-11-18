@@ -60,6 +60,7 @@ import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
 import type { DotInputGraph } from '../src/core/graph-layout.js';
 import { parseSvekDot, dotInputToStructural } from '../tests/oracle/svek-dot.js';
 import type { StructuralGraph } from '../tests/oracle/svek-dot.js';
+import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CACHE = join(REPO, 'test-results', 'dot-cache', 'state');
@@ -93,7 +94,7 @@ function ourInputs(markup: string): DotInputGraph[] {
   const inputs: DotInputGraph[] = [];
   setLayoutInputObserver(({ graph: g }) => inputs.push(g));
   try {
-    renderSync(markup, { measurer: new DeterministicMeasurer() });
+    renderSync(markup, { measurer: new DeterministicMeasurer(), includeStore: themedIncludeStore() });
   } catch {
     /* fixture that does not render is reported as unmatched below */
   } finally {

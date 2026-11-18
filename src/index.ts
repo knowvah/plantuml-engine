@@ -25,8 +25,7 @@ import { surfaceParseWarnings } from './diagrams/json/ast.js';
 import type { PreprocessorResult } from './core/preprocessor.js';
 import { inheritingRenderFn, takePendingPrevious, withPrevious } from './core/nested-previous.js';
 import { DiagramRefusal, emptySvg, errorSvg, preprocessorErrorSvg, welcomeSvg } from './core/error/error-diagrams.js';
-import { resolveMeasurer, type RenderOptions } from './core/render-options.js';
-import { renderClock } from './core/clock.js';
+import { parseOptionsOf, resolveMeasurer, type RenderOptions } from './core/render-options.js';
 import { clockOfOptions, isJarCompatibleStyleInput } from './core/internal-render-options.js';
 import { layoutServices, layoutServicesSync } from './core/elk/layout-services.js';
 import { assembleSvg, seedOfUmlSource } from './core/assemble-svg.js';
@@ -49,6 +48,11 @@ export { loadElk, type ElkBackend } from './core/elk/load-elk.js';
 // here too, not just from their modules.
 export { stdlibStore, withStdlib } from './core/tim/StdlibStore.js';
 export type { BundleData, StdlibStore } from './core/tim/StdlibStore.js';
+// #180: themes core may not ship under MIT live in opt-in packages the host registers the same way
+// (plans/themes-opt-in-packages/decisions.md D1).
+export { themeStore, withThemes } from './core/tim/ThemeStore.js';
+export type { PackagedTheme, ThemePackage, ThemeStore } from './core/tim/ThemeStore.js';
+export type { ThemeOverride } from './core/theme.js';
 export { stdlibRegistry, StdlibChunkLoadError, type StdlibRegistry } from './core/tim/StdlibRegistry.js';
 export {
   prepareIncludeStore,
@@ -295,12 +299,7 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   // Served remote images (`options.assetStore`, `remote-image:<url>`) become the data URIs creole decodes; see `remote-image-store.ts`.
   const umlSource = { ...source, lines: inlineRemoteImageLines(source.lines, options?.assetStore) };
   const cuts = commandCutsOf(block.preprocessed, umlSource);
-  const resolution = registry.resolve(
-    umlSource,
-    { assetStore: options?.assetStore, clock: renderClock(options) },
-    cuts,
-    isBlockEmpty(block),
-  );
+  const resolution = registry.resolve(umlSource, parseOptionsOf(options), cuts, isBlockEmpty(block));
   const plugin = resolution.plugin;
   // sdd3-T8h: a nested `{{ }}` diagram starts from the enclosing diagram's skinparams (`nested-previous.ts`).
   // D9 (lad Amendment 1): `styleInput` is the jar-compatible normalisation, applied only when conformance asks for it.

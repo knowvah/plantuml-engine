@@ -142,9 +142,10 @@ in-place mutation where it mutates, and document the contract.
 · `npm run lint` · `npm run build`
 
 Before opening a PR or pushing to one, also `npm run codeql` (user ruling
-2026-11-16): GitHub's code-scanning analysis run locally over the committed
-HEAD, failing on any result not already dismissed on GitHub. About 4 minutes;
-needs the `codeql` CLI and `gh`. Not per commit.
+2026-11-16; Code Quality added 2026-11-18): GitHub's code scanning and Code
+Quality analyses run locally over the committed HEAD, failing on any result not
+already dismissed on GitHub. About 6 minutes; needs the `codeql` CLI and `gh`.
+Not per commit.
 
 Two narrowings of the local run only; CI always runs everything:
 

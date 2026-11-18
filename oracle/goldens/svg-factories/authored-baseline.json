@@ -1077,7 +1077,7 @@
     {
       "type": "factories",
       "slug": "cov-path-invalid",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path abc123`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `path abc123`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
@@ -1092,7 +1092,7 @@
     {
       "type": "factories",
       "slug": "cov-path-upper",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `PATH ABC`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `PATH ABC`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
@@ -1107,7 +1107,7 @@
     {
       "type": "factories",
       "slug": "cov-path-valid",
-      "topic": "PSystemPathFactory (PSystemBuilder.java:179, INSECURE only; unregistered under LEGACY, #178): `path ABCabc`",
+      "topic": "PSystemPathFactory (PSystemBuilder.java:179, registered under INSECURE only (#178); a syntax error under LEGACY): `path ABCabc`",
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
@@ -1118,6 +1118,57 @@
       },
       "measuredAt": "2026-11-12",
       "measuredAgainstCommit": "573bbe57e"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-class-note",
+      "topic": "note in a diagram: <math> rollback in a class note",
+      "status": "baseline",
+      "weightedScore": 27,
+      "diffCount": 27,
+      "reason": "class/description creole paths typeset a rollback with KaTeX instead of drawing it (#210)",
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-latex",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): <latex> rollback mid-line, laid out by its PNG export",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-sequence-note",
+      "topic": "note in a diagram: <math> rollback in a sequence note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-two-lines",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): two rollback lines advance by the PNG height",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-wide",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): a rollback wider than its block",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
     },
     {
       "type": "factories",

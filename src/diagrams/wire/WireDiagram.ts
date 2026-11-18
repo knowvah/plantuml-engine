@@ -2,7 +2,7 @@
  * `WireDiagram`: one `@startwire` block, a tree of `WBlock`s plus the spots and links drawn over it.
  *
  * Draw order is the Java's: the root tree, spots, horizontal links, vertical links (wrp D4). `print` measures with
- * AWT in every render (wrp D3): `FileFormat.PNG.getDefaultStringBounder()` is outside the oracle's deterministic seam.
+ * `FileFormat.PNG.getDefaultStringBounder()`, which the factory builds from the render's measurer (pbs D3, D4).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/wire/WireDiagram.java:57-178
  */
@@ -12,13 +12,9 @@ import { CommandExecutionResult } from '../../core/command/CommandExecutionResul
 import type { Display } from '../../core/klimt/creole/Display.js';
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import type { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
-import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
-import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
-import { jarMeasurer } from '../../core/measurer-jar.js';
-import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { HColor } from '../../core/style/Value.js';
@@ -33,12 +29,6 @@ import type { WLinkType } from './WLinkType.js';
 import { WLinkVertical } from './WLinkVertical.js';
 import type { SkinParam } from './wire-skin-param.js';
 
-/** `UFontFace#isBold`: CSS weight 700 and above. @see UFontFace.java:158-160 */
-const BOLD_CSS_WEIGHT = 700;
-
-/** What a bounder receives: a `FontSpec`, carrying a `FontConfiguration`'s members on the atom path. */
-type FontConfigurationLike = FontSpec & Partial<Pick<FontConfiguration, 'styles' | 'fontFace'>>;
-
 /** `vlink`/`hlink`'s eight Java arguments under their Java names (wrp D11). */
 export interface WireLinkArgs {
   readonly name1: string;
@@ -50,24 +40,6 @@ export interface WireLinkArgs {
   readonly color: HColor | undefined;
   readonly label: Display;
 }
-
-/**
- * Whether `font`, the `FontConfiguration` a creole atom hands the bounder, is bold. Java's `StringBounderAwt` measures
- * the font's real weight; `jarMeasurer` keys on `FontSpec.weight`, which the atom path leaves out (`cov-print-table`'s
- * bold header cells: `b` is 6.626 bold, 6.294 plain).
- */
-function isBoldFont(font: FontConfigurationLike): boolean {
-  return font.styles?.has(FontStyle.BOLD) === true || (font.fontFace?.cssWeight ?? 0) >= BOLD_CSS_WEIGHT;
-}
-
-/** The measure `jarMeasurer` gives a font whose weight it can read. */
-const awtMeasurer: StringMeasurer = {
-  measure: (text, font) => jarMeasurer.measure(text, isBoldFont(font) ? { ...font, weight: 'bold' } : font),
-  getDescent: (font, text) => jarMeasurer.getDescent(font, text),
-};
-
-/** `FileFormat.PNG.getDefaultStringBounder()`: `new StringBounderAwt()`, which `jarMeasurer` reproduces (wrp D3). */
-const AWT_BOUNDER: StringBounder = new MeasurerStringBounder(awtMeasurer);
 
 export class WireDiagram extends TitledDiagram {
   private readonly skinParam: SkinParam;
@@ -82,8 +54,18 @@ export class WireDiagram extends TitledDiagram {
   private readonly hlinks: WLinkHorizontal[] = [];
   private readonly vlinks: WLinkVertical[] = [];
 
-  /** The skin param is built by the factory, as regex's is. @see WireDiagram.java:68-70 */
-  constructor(source: UmlSource, preprocessing: PreprocessingArtifact, skinParam: SkinParam) {
+  /**
+   * The skin param is built by the factory, as regex's is. `pngStringBounder` is what
+   * `FileFormat.PNG.getDefaultStringBounder()` answers in this render (`png-string-bounder.ts`): the Java reads a JVM
+   * property, the port the render's measurer, which the factory sees (pbs D4).
+   * @see WireDiagram.java:68-70
+   */
+  constructor(
+    source: UmlSource,
+    preprocessing: PreprocessingArtifact,
+    skinParam: SkinParam,
+    private readonly pngStringBounder: StringBounder,
+  ) {
     super(source, 'WIRE', undefined, preprocessing);
     this.skinParam = skinParam;
   }
@@ -162,14 +144,15 @@ export class WireDiagram extends TitledDiagram {
   }
 
   /**
-   * The cursor advances by an AWT height whichever measurer the render carries:
-   * `final StringBounder stringBounder = FileFormat.PNG.getDefaultStringBounder();` (WireDiagram.java:133), and the
-   * deterministic seam covers only SVG (`this == SVG || this == SVG_DETERMINISTIC`, FileFormat.java:185-186, wrp D3).
+   * Measured while the commands execute, with PNG's bounder:
+   * `final StringBounder stringBounder = FileFormat.PNG.getDefaultStringBounder();` (WireDiagram.java:133). That is
+   * AWT in production and the width table under the deterministic flag since oracle seam #5 (pbs D1, D3; it was AWT in
+   * every render before, wrp D3).
    * @see WireDiagram.java:130-135
    */
   print(indent: string, text: string): CommandExecutionResult {
     const level = this.computeIndentationLevel(indent);
-    return this.root.print(AWT_BOUNDER, this.getSkinParam(), level, text);
+    return this.root.print(this.pngStringBounder, this.getSkinParam(), level, text);
   }
 
   /**

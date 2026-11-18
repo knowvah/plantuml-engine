@@ -23,6 +23,7 @@ import {
   closeCount,
   innerWrapperLines,
   outerWrapperLines,
+  unwrappedNodeIdOf,
   wrapperLevels,
 } from './svek-dot-wrappers.js';
 
@@ -403,8 +404,6 @@ export function clusterBlock(
   const out = [
     ...outerWrapperLines(cluster.id, w),
     `subgraph ${cluster.id} {style=solid;color="${hex(cc.color)}";${label}`,
-    // ClusterDotString.java:157-170: the lane's rank groups follow the title (swimlane clusters only).
-    ...(cluster.swimlane === true ? swimlaneClusterLines(String(cc.color)) : []),
   ];
   const emit = (id: string): void => {
     const node = nodeById.get(id);
@@ -417,9 +416,11 @@ export function clusterBlock(
   // carries exactly that node, and is (per its own doc comment) ignored when
   // no wrapper exists to be outside of — the same two-line split the layout
   // builder makes at `graph-layout-build.ts:489-495`.
-  const unwrapped = cluster.innerMarginLevels === undefined ? undefined : cluster.unwrappedNodeId;
+  const unwrapped = unwrappedNodeIdOf(cluster);
   if (unwrapped !== undefined) emit(unwrapped);
   out.push(...innerWrapperLines(cluster.id, w));
+  // ClusterDotString.java:157-170: the lane's rank groups follow the title and the `i` wrapper (swimlanes only).
+  if (cluster.swimlane === true) out.push(...swimlaneClusterLines(String(cc.color)));
   for (const id of cluster.nodeIds) if (id !== unwrapped) emit(id);
   out.push(...portChainLines(cluster, recs));
   for (const child of childrenOf.get(cluster.id) ?? []) {

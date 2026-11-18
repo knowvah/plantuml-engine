@@ -18,7 +18,8 @@
  * object through unmodified is safe.
  */
 import type { StringMeasurer } from './measurer.js';
-import type { StringBounder } from './klimt/font/StringBounder.js';
+import type { StringBounder, StringBounderFileFormat } from './klimt/font/StringBounder.js';
+import { svgFileFormatOf } from './measurer-deterministic.js';
 import { XDimension2D } from './klimt/geom/XDimension2D.js';
 
 export class MeasurerStringBounder implements StringBounder {
@@ -31,5 +32,10 @@ export class MeasurerStringBounder implements StringBounder {
 
   getDescent(font: { readonly family: string; readonly size: number }, text: string): number {
     return this.measurer.getDescent(font, text);
+  }
+
+  /** `SVG_DETERMINISTIC` over the deterministic measurer, else `SVG` (`StringBounder.ts`'s `getFileFormat`). */
+  getFileFormat(): StringBounderFileFormat {
+    return svgFileFormatOf(this.measurer);
   }
 }

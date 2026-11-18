@@ -18,8 +18,7 @@ const ERROR_REASON = 'jar error page and we error: conformant by the 2026-10-10 
 /** D8 ends of the authored rows the jar draws and we do not match: one entry per row, each naming its issue or forcing
  *  library. Empty at planning; T3c/T4 add a row only with its journal citation. */
 const OPEN_ROWS: Readonly<Record<string, string>> = {
-  'cov-embedded-state':
-    'state-engine gap: a {{ }} embedded diagram in a state note draws as text (renderer-note.ts, state-note-layout.ts#measureNote have no nested renderer); separable queue:ready issue, body in .agent-notes/tep-T4d.md (tep journal row 14)',
+  // 2026-11-17 sne T1b (#168): `cov-embedded-state` draws its embed as an `<image>` and is at 0; no open row.
 };
 
 const [commit, ...flags] = process.argv.slice(2);

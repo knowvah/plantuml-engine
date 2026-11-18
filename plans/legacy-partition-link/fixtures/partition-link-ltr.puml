@@ -1,0 +1,8 @@
+@startuml
+left to right direction
+partition P {
+(*) --> A
+}
+A --> P
+P --> (*)
+@enduml

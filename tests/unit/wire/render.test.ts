@@ -53,3 +53,16 @@ describe('renderSync on @startwire', () => {
     expect(upstreamTypeOf('wire')).toBe('WIRE');
   });
 });
+
+describe('renderSync on a wire print, by measurer (pbs D3, D4)', () => {
+  const source = readFileSync(new URL('cov-print-only.puml', FIXTURES), 'utf8');
+  const textYs = (svg: string): string[] => [...svg.matchAll(/<text x="20" y="([\d.]+)"/g)].map((m) => m[1]!);
+
+  it('advances by the table under the deterministic measurer (seam-5 oracle: 27.778, then 37.778)', () => {
+    expect(textYs(renderSync(source, options))).toEqual(['27.778', '37.778']);
+  });
+
+  it('advances by the AWT height with the default measurer (production, unchanged: 27.778, then 39.555)', () => {
+    expect(textYs(renderSync(source))).toEqual(['27.778', '39.555']);
+  });
+});

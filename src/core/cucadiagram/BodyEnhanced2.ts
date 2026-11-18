@@ -236,7 +236,7 @@ export class BodyEnhanced2 extends BodyEnhancedAbstract {
  * distinct algorithm from `EmbeddedDiagram.createAndSkip` (which swallows
  * the outer closer), not a reuse of it.
  */
-function addOneSingleLineManageEmbedded2(
+export function addOneSingleLineManageEmbedded2(
   elements: readonly DisplayElement[],
   startIndex: number,
   initialDisplay: Display,

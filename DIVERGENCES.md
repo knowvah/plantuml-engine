@@ -574,6 +574,41 @@ seam replaced was worse:** `include-resolver.ts` used to **silently drop**
 the line, rendering diagrams *quietly wrong*.
 **Category:** limitation only for store-less callers (deliberate packaging).
 
+### `!theme` on a theme moved to an opt-in package — licence-forced
+
+**Upstream:** all 44 themes ship inside the jar as `/themes/puml-theme-<name>.puml`
+resources. `!theme <name>` reads the bundled resource first, then a local file
+(`ThemeUtils.java:128-147`), and `help themes` lists every bundled resource
+(`ThemeUtils.java:204-217`).
+
+**This port (issue #180, maintainer ruling 2026-11-13):** the MIT `dist/` may
+carry only themes whose licence allows it, so core embeds 35: the 31 MIT ones,
+`_none_`, and the Apache-2.0 `mars`, `toy` and `vibrant` (licence text in
+`dist/licenses/`). The other nine ship in two opt-in packages:
+
+- `@knowvah/plantuml-themes-unlicensed` (`SEE LICENSE IN LICENSE`; no licence
+  stated by the authors): `amiga`, `blueprint`, `carbon-gray`, `crt-amber`,
+  `crt-green`, `mimeograph`, `mono`, `plain`;
+- `@knowvah/plantuml-themes-gpl` (`GPL-3.0-or-later`): `sunlust`. It is kept
+  out of `@knowvah/plantuml-all`.
+
+Without its package registered, `!theme amiga` gives the jar's own
+unknown-name error, `Cannot load theme amiga` (`EaterTheme.java:82-85`, after
+`ThemeUtils.java:128-147` returns `null`), and `help themes` lists 35 names
+instead of 44. **The fix:** register the packages with
+`withThemes(base, themeStore(unlicensedThemes, gplThemes))` on
+`options.includeStore`. A registered package is this port's form of a bundled
+resource (it resolves before a local file, with the bundled description
+`</themes/puml-theme-<name>.puml>`), so with both registered every render is
+the jar's, and `help themes` lists all 44.
+
+Pinned by `tests/unit/core/theme-packages-unregistered.test.ts` (both arms, all
+nine names), `tests/unit/core/tim/ThemeStore.test.ts` (lookup order and
+composition) and `tests/unit/factories/Help.test.ts` (35 without, 44 with).
+Precedent: the CC BY-ND `stdlib-aws` split (`!include <bundle/thing>` above).
+Design: `plans/themes-opt-in-packages/decisions.md` D1-D7.
+**Category:** licence-forced.
+
 ### Sprite and `img` rasters — CC BY-ND artwork passes through (licence-forced)
 
 **Mirrored (unwind-U4, 2026-10-08):** sprite rasters are resampled to the jar's `round(w*s)×round(h*s)` through a clean-room `AffineTransformOp` bilinear (`src/core/klimt/sprite/sprite-bilinear.ts`; 24/54248 channel values off by one on half-pixel downscale ties) and drawn at the raster's own size (`SvgGraphics.java:973-974`; `PortableImageAwt.java:113-127`); element geometry and note placement match the jar.
@@ -701,6 +736,42 @@ whose default implementation is inert and deterministic.
 browser (no `fs`, no `process.env`) and render reproducibly (no `Date.now()`, no
 `Math.random()`). A host can supply a real implementation. **Category:**
 limitation.
+
+### `%version()` prints this port's version
+
+**Upstream:** `GetVersion#executeReturnFunction` returns
+`Version.versionString()` (`tim/builtin/GetVersion.java:63-66`), which is
+`CompilationInfo.VERSION` (`version/Version.java:47-49`). The oracle jar is an
+unfiltered development build, so it prints the placeholder `$version$`.
+
+**This port:** the default `TimEnvironment` answers `versionString()`
+(`src/core/version.ts`, `VERSION`, kept equal to `package.json#version` by
+`tests/unit/core/version.test.ts`), so `%version()` prints `0.2.0`. A host can
+still inject another answer through the seam.
+
+**Rows**, each ledgered in `oracle/accepted-divergences.json` under this ruling:
+
+- `svg-activity/rekefe-90-baju604`, whose legend reads `Rendered with Plantuml
+  Version %version()`, stays diverged on the 5 legend attributes (the text, its
+  `textLength` and `x`, and the legend box's `width` and `x`), with its
+  measured `maxΔ`.
+- `svg-c4/kipive-74-lele070` (`C4Version()` then `%version()`) left
+  conformant. Its lines preprocess to `2.13.0` and the version. The oracle's
+  `$version$` line is refused at line 5, as `unknown` was here, so both sides
+  drew error pages. `0.2.0` is a line the jar accepts too (verified with the
+  literal text through `scripts/oracle-render.sh`), so we now draw where the
+  dev-build oracle errors. What we draw for that text differs from what the jar
+  draws (a class diagram where the jar falls through to description): #205.
+
+`unknown/duluve-89-mati167` also calls `%version()` in its footer; it is
+already ledgered as jar-errors-we-draw (#143), and its verdict did not move.
+
+**Unchanged:** the `<?plantuml $version$?>` processing instruction
+(`src/core/klimt/document-shell.ts`, upstream `SvgGraphics.java:307`) and the
+error pages ("Error pages print this port's version") — the ruling covers the
+builtin only.
+
+**Category:** kept by user ruling (2026-11-09, #155).
 
 ### ~~`%newline()` / `%breakline()` emit a real newline~~ — RETIRED (unwind-U3, 2026-10-08)
 
@@ -1320,7 +1391,7 @@ matches since T6f (`refusalLineOf`, `MindMapDiagramFactory.ts`).
 
 ### `version` page prints the port's own environment
 
-**Category:** platform-forced — a browser library has no Graphviz binary, JVM or environment to report (maintainer ruling D14, 2026-10-13, `plans/utility-factories-port/decisions.md`). `@startuml version @enduml` renders upstream's `PSystemVersion.createShowVersion` page (`PSystemVersion.java:172-202`) with this port's values, never the oracle host's: the first line names `plantuml-engine` and its version (journal row 24a); Git Commit, Build Time and License come from `src/core/version.ts` and `License`; the Graphviz block takes `GraphvizUtils.addDotStatus`'s JavaScript-library arm (`GraphvizUtils.java:93-108`) — `@knowvah/dot-engine library is used!`, then the same `digraph foo { test; }` file-generation test laid out by the port's engine (`GraphvizUtils.java:160-178`). The engine line carries no version: `@knowvah/dot-engine` exports none at runtime. Omitted, each with its Java line in `src/diagrams/version/PSystemVersion.ts`: the INSECURE-only `Loaded from` / Word-mode lines (java:181-189; the page cannot see `RenderOptions.securityProfile`, and the jar's LEGACY default prints neither), the JVM system properties (`OptionPrint.interestingProperties`, `OptionPrint.java:61-81`) and `PLANTUML_LIMIT_SIZE` (`OptionPrint.interestingValues`, :83-88) — upstream's own browser build (TeaVM) drops the same two blocks. Against the 1.2026.8beta1 probe the page is 8 lines where the jar's is 15; every kept line sits at the jar's x, y, font and spacing (`tests/unit/version/PSystemVersion.test.ts`).
+**Category:** platform-forced — a browser library has no Graphviz binary, JVM or environment to report (maintainer ruling D14, 2026-10-13, `plans/utility-factories-port/decisions.md`). `@startuml version @enduml` renders upstream's `PSystemVersion.createShowVersion` page (`PSystemVersion.java:172-202`) with this port's values, never the oracle host's: the first line names `plantuml-engine` and its version (journal row 24a); Git Commit, Build Time and License come from `src/core/version.ts` and `License`; the Graphviz block takes `GraphvizUtils.addDotStatus`'s JavaScript-library arm (`GraphvizUtils.java:93-108`) — `@knowvah/dot-engine library is used!`, then the same `digraph foo { test; }` file-generation test laid out by the port's engine (`GraphvizUtils.java:160-178`). The engine line carries no version: `@knowvah/dot-engine` exports none at runtime. Omitted, each with its Java line in `src/diagrams/version/PSystemVersion.ts`: the INSECURE-only `Loaded from` / Word-mode lines (java:181-189; the port has no jar path and no Word mode, and the jar's LEGACY default prints neither), the JVM system properties (`OptionPrint.interestingProperties`, `OptionPrint.java:61-81`) and `PLANTUML_LIMIT_SIZE` (`OptionPrint.interestingValues`, :83-88) — upstream's own browser build (TeaVM) drops the same two blocks. Against the 1.2026.8beta1 probe the page is 8 lines where the jar's is 15; every kept line sits at the jar's x, y, font and spacing (`tests/unit/version/PSystemVersion.test.ts`).
 
 ### `about`, `authors` and `version` credit the TypeScript port
 
@@ -1350,6 +1421,10 @@ An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar 
 ### Ditaa is not included
 
 **Category:** edition mirrored by user ruling (2026-11-04, #111), reversing the 2026-10-14 ruling to keep it. Upstream comments out `PSystemDitaaFactory` for MIT (`PSystemBuilder.java:165-167`), and the library it calls, `org.stathissideris.ascii2image`, is LGPL-3.0-or-later in 26 of its 28 files. Translating it into this MIT package would look like a derived work. No engine was ever ported. `@startditaa` draws the unknown-diagram sentinel, where upstream's MIT edition would return `PSystemUnsupported` (`PSystemBuilder.java:283`), the same sentinel gap every tag with no engine has (`src/core/dispatcher.ts`). The oracle is the GPL build, which writes a PNG even when asked for SVG, so both rows read `oracle-error` and are signed in the ledger.
+
+### `path` under INSECURE draws an SVG page, not the jar's PNG
+
+**Category:** library-forced — `renderSync` returns an SVG string (`src/index.ts`), by user ruling 2026-11-13 (#178, option 2). Upstream adds `PSystemPathFactory` only when the profile is INSECURE (`PSystemBuilder.java:178-179`); the port registers `pathPlugin` in the same slot with `registeredOnlyUnder: INSECURE`, so under every other profile the source is the same syntax-error page as before (the `cov-path-*` factories rows, weightedScore 5). Under INSECURE, `PSystemPath#exportDiagramNow` is `GraphicsPath#writeImage` (`PSystemPath.java:59-63`), which writes a PNG whatever the requested format: `GraphicsPath.java:66-88` draws `UMotif#drawHorizontal(ug.apply(BLACK), 20, 20, 1)` on a fixed 50×50 white `EmptyImageBuilder`, and the jar answers `-tsvg` for `path ABCabc` with a 285-byte PNG. We draw the same motif through `UGraphicSvg` as a 50×50 SVG page with one black path, fixed at that size whatever the motif's extent (`SvgOption.fixedDim`), with the PNG's points: `path ABCabc` runs `M20,20` through 17,17 · 15,14 · 14,11 · 16,11 · 19,11 · 16,12. A character outside `A-Z`/`a-w` throws `IllegalArgumentException` from `UMotif.convertFromChar` (`UMotif.java:94-102`) at export, as the jar's crash page does, and we render our error page (conformant by the 2026-10-10 rule). No corpus row reaches the factory: surveys render under LEGACY. Pinned by `tests/unit/eggs/PSystemPathFactory.test.ts`, `GraphicsPath.test.ts`, `PSystemPath.test.ts` and `tests/unit/core/dispatcher-security-gate.test.ts`.
 
 ### Sudoku is not included
 
@@ -1526,10 +1601,11 @@ are the same case.
 **A formula KaTeX cannot parse but JLaTeXMath typesets.** Each image is sized as the empty formula (8×8) because
 KaTeX throws; the jar typesets it:
 - `unknown/rozesu-56-suve592`: `^` alone, "KaTeX parse error: Expected group after '^' at position 1" (jar 9×22),
-  and `_` alone, "Expected group after '_' at position 1" (jar 8×25). The row's other diffs are its three
-  rollbacks (#170).
+  and `_` alone, "Expected group after '_' at position 1" (jar 8×25). These two images, and the rows below them
+  that they push down, are the row's only diffs.
 - `unknown/kebadi-11-fula439`: `\boxempty` (AsciiMath `square`), "Undefined control sequence: \boxempty", which
-  JLaTeXMath draws from `stmary10` code 63 (jar 24×22). The row's other diff is its one rollback (#170).
+  JLaTeXMath draws from `stmary10` code 63 (jar 24×22). This image, and the rows below it that it pushes down, are
+  the row's only diffs.
 - `tests/fixtures/factories/cov-latex-syntax`: `\frac{a`, "Unexpected end of input in a macro argument, expected '}'"
   (jar 24×45).
 
@@ -1547,11 +1623,13 @@ it, in which order (journal row 32, `plans/creole-math-factories-port/decision-j
 call from its inputs alone and keeps no state between formulas or renders, so the port types each formula as the jar
 does in a fresh JVM. Those two image sizes are this mechanism's only diffs.
 
-**Not a divergence: rollback atoms are sized by the PNG export (maintainer ruling 2026-11-11, #170, option 3).**
-`unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`, `unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237`,
-`unknown/xanuke-94-tope429` (and part of `kebadi`, `rozesu`, `roxita`): `AtomMath#calculateDimensionSlow` sizes a
-rollback with its PNG export (`AtomMath.java:63-70`), whose text the host's AWT fonts measure (`FileFormat.java:177-274`).
-The oracle's deterministic-text seam covers the SVG bounder only. The ruling extends the seam to the PNG bounder, so
-these rows are open work, not accepted deltas.
+**Not a divergence: rollback atoms are sized by the PNG export (maintainer ruling 2026-11-11, #170, option 3).
+Resolved 2026-11-17 (png-bounder-seam).** `AtomMath#calculateDimensionSlow` lays a rollback out by its PNG export
+(`AtomMath.java:63-70`, `ScientificEquationSafe.java:116-129`). Oracle seam #5 (`oracle/patches/0005-oracle-png-bounder.patch`)
+makes `FileFormat.PNG`'s bounder the width table under `PLANTUML_DETERMINISTIC_TEXT`, and the port follows
+(`src/core/png-string-bounder.ts`, `rollbackImageDimension`). `unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`,
+`unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237` and `unknown/xanuke-94-tope429` are conformant; `kebadi`,
+`rozesu` and `roxita` keep only the mechanisms named above. Class and description notes do not draw a rollback yet
+(#210), a separate gap.
 
 `unknown/cikoge-60-riti614` (`help font`) is named under "`help font` lists no fonts" (#169).

@@ -17,6 +17,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { renderSync } from '../../../src/index.js';
+import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const JAR_PARTICIPANT_FILL = '#E2E2F0';
 /** A head rectangle as the jar writes it: stroke in `style`
@@ -24,7 +25,7 @@ const JAR_PARTICIPANT_FILL = '#E2E2F0';
 const HEAD_RECT = /<rect [^>]*style="stroke:#[0-9A-Fa-f]+;[^>]*>/g;
 
 function headFills(source: string): string[] {
-  const svg = renderSync(source);
+  const svg = renderSync(source, { includeStore: themedIncludeStore() });
   return [...svg.matchAll(HEAD_RECT)].map((m) => /fill="([^"]*)"/.exec(m[0])?.[1] ?? '');
 }
 

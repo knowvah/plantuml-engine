@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T01:40:49.207Z",
+  "generatedAt": "2026-11-18T05:11:23.968Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -885,9 +885,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "curojo-96-rara225",
@@ -3529,9 +3527,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 7,
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "maxeme-36-rale224",
@@ -4437,9 +4433,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 3,
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "pedoze-30-xoxo765",
@@ -5076,8 +5070,8 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "structural-match",
-      "maxDelta": 97,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "maxDelta": 6,
+      "maxDeltaPath": "svg/g[1]/image[34]/@width"
     },
     {
       "slug": "rozesu-56-suve592",
@@ -5085,7 +5079,7 @@
       "dotEqual": true,
       "layoutEqual": "n/a",
       "verdict": "structural-match",
-      "maxDelta": 34,
+      "maxDelta": 31,
       "maxDeltaPath": "svg/@height"
     },
     {
@@ -6449,9 +6443,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "vofomo-62-gure525",
@@ -6647,9 +6639,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "xapeli-43-vuvu895",

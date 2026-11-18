@@ -91,6 +91,13 @@ export interface DotInputNode {
    *  in its owning cluster's rank-chain (`ClusterDotString.printRanks`).
    *  Emitter-only. */
   isPort?: true;
+  /** lpl T1c: a node graphviz creates from an edge's mention alone — the DOT
+   *  text has no statement for it, so it takes graphviz's defaults (an
+   *  ellipse labelled `\N`, its own name, measured by the engine). Upstream's
+   *  kermor printer names a group's special point in edges but never declares
+   *  it (`ClusterDotStringKermor.java:69-165`). Takes no colour value, keeps
+   *  its own id in the text, and `width`/`height` are ignored. */
+  implicit?: true;
   /** cdd3-T18: the `together { }` block the entity was created in
    *  (`CucaDiagram#reallyCreateLeaf` -> `setTogether(currentTogether())`,
    *  `atmp/CucaDiagram.java:232`). A `DotInputGraph.togethers` id. */
