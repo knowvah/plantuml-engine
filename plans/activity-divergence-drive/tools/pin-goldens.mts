@@ -52,7 +52,6 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fixtureIncludeStore } from '../../../tests/helpers/fixture-include-store.js';
 import { compareSvg } from '../../../tests/oracle/svg-conformance/compare.js';
 import { activityRatchetOptions, renderFixtureActivity } from '../../../tests/oracle/svg-conformance/render-fixture-activity.js';
 
