@@ -38,13 +38,14 @@ describe('lgm-T1d -- drawn border-point composite rectangle', () => {
     expect(linkEndsById(jar).size).toBeGreaterThan(0);
   });
 
-  it('pesita-10-dene726: AA is drawn at x=640.844 like the jar', () => {
+  it('pesita-10-dene726: AA is drawn at x=35 like the jar', () => {
     const dir = join(ROOT, 'test-results/dot-cache/state/pesita-10-dene726');
     const ours = render(readFileSync(join(dir, 'in.puml'), 'utf8'));
     const jar = readFileSync(join(dir, 'in.svg'), 'utf8');
-    // Re-captured oracle (seam #4 v2) test-results/dot-cache/state/pesita-10-dene726/in.svg:
-    // AA is now 134 wide (was 126) at x=640.844 (was 620.906).
-    expect(compositeOutlines(jar)).toContain('640.844,148,134,104.72');
-    expect(compositeOutlines(ours)).toContain('640.844,148,134,104.72');
+    // Re-captured oracle test-results/dot-cache/state/pesita-10-dene726/in.svg
+    // under graphviz 16.1.1 (#164): AA is 160 wide at x=35 (16.1.0: 134 wide at
+    // x=640.844; seam #4 v2 had widened it from 126).
+    expect(compositeOutlines(jar)).toContain('35,184,160,140.72');
+    expect(compositeOutlines(ours)).toContain('35,184,160,140.72');
   });
 });

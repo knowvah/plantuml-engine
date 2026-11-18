@@ -41,6 +41,17 @@ object ratchets and census re-run instantly against an updated `.tgz`).
      (`src/core/dot-engine-messages.ts`); `@startdot` prints them before the SVG,
      as the jar does. -->
 
+<!-- NOTE 2026-11-18 (#164): the oracle is now native graphviz 16.1.1
+     (20261108.1752), and plantuml-engine pins @knowvah/dot-engine 2.12.3, up
+     from 2.12.0, closing issue 43. Re-captured with
+     `scripts/recapture-oracles.ts`: 353 cache and golden targets and 31
+     authored fixture SVGs moved (layout, or the graphviz version string), all
+     byte-stable across two renders; the known jar noise rows stay as
+     committed. Surveyed one type at a time against main at b182e23c4: 5,948
+     rows, no verdict changed (conformant 5785, diverged 63, structural-match
+     97, oracle-error 3). One diverged row moved in maxDelta only
+     (unknown/revezi-19-kuki251). Dated 16.1.0 lines above stay as written. -->
+
 `[~]` marks an issue closed without an upstream fix to wait for —
 either diagnosed as correct-by-oracle, or reclassified as our work.
 
@@ -773,3 +784,5 @@ either diagnosed as correct-by-oracle, or reclassified as our work.
         TICKED 2026-11-06: fixed in 2.12.0. With the label as a fixed-size table (no font metrics), 2.12.0's `-Tdot` equals native 16.1.0 on all five edges; 2.10.3 still draws the second as the 4-point arc. The probe `ports-decors` is now an odd-T4a fixture at 0 diffs, 177 wide as the jar (184 on 2.10.3). -->
 - [x] 42-console-warn-with-no-sink.md  <!-- FILED 2026-11-05: 2.10.3 writes the graphviz table-size warning with console.warn on every titled cluster, and the public API has no way to redirect it. Faithful to native's stderr, but the jar never shows it, so plantuml-ts now writes to a consumer's console on valid diagrams. Output is unaffected.
         TICKED 2026-11-06: 2.12.0 exports `agseterrf` (lib/cgraph/agerror.c), which returns the previous sink. plantuml-ts drops engine messages around each engine call and restores the host's sink (`src/core/dot-engine-messages.ts`), as the jar's merged `dot` stream keeps them out of a rendered diagram (ProcessRunner.java:69, DotStringFactory.java:323-343). `tests/unit/core/dot-engine-messages.test.ts`: state/bemena-23 and an unknown @startdot shape render with no console call. -->
+- [x] 43-flat-reorder-bails-on-incoming-flat-edges.md  <!-- FILED 2026-11-09 (#164): native graphviz 16.1.1 (commit 9fb21f570, mincross.c flat_reorder) keeps the mincross order of a rank whose flat-edge head is reached outside postorder; dot-engine 2.12.0 still re-sorts it, as 16.1.0 did. 123 rows lost conformance when the oracle moved to 16.1.1, all with minlen=0 edges. Repro class/duruga-39-lani451 (3 nodes, 2 flat edges).
+        TICKED 2026-11-18: fixed in 2.12.3 (fbb98c92). On the repro, 2.12.3 places the three nodes at native 16.1.1's x (centres 20.68, 96.68, 173.68) on a 194.76 x 48 graph. With the oracle re-captured under 16.1.1, 122 of the 123 rows stay conformant; the 123rd (class/temise-16-neco018) was a port defect the 16.1.1 layout exposed, fixed in the same change. -->
