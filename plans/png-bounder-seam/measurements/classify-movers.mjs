@@ -32,7 +32,7 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const PUML_NAMES = ['in.puml', 'input.puml'];
 const IMAGE_HREF = /xlink:href="data:image\/svg\+xml;base64,([^"]+)"/g;
 const ROLLBACK_DOCUMENT =
-  /^<svg [^>]*>(<\?plantuml [^?]*\?>)?<defs\/><g [^>]*>(<text [^>]*font-family="monospace"[^>]*>[^<]*<\/text>)+<\/g><\/svg>\s*$/;
+  /^<svg [^>]*>(<\?plantuml [^?]*\?>)?<defs\/><g [^>]*>(<text (?=[^>]*font-family="monospace")[^>]*>[^<]*<\/text>)+<\/g><\/svg>\s*$/;
 const PRINT_LINE = /^\s*print\b/m;
 
 /** The source and committed svgs of one report row. */
