@@ -1,5 +1,8 @@
 import type { XDimension2D } from '../geom/XDimension2D.js';
 
+/** The `FileFormat` values a port bounder answers from `getFileFormat()`. @see StringBounder.java:57 */
+export type StringBounderFileFormat = 'SVG' | 'SVG_DETERMINISTIC' | 'PNG';
+
 /**
  * StringBounder — the text-measurement seam every `TextBlock#
  * calculateDimension` call receives, so a `TextBlock` can size its own
@@ -33,9 +36,17 @@ import type { XDimension2D } from '../geom/XDimension2D.js';
  * real one. Optional, not required: every pre-existing implementer of this
  * interface (test doubles, other callers) still satisfies it unchanged.
  *
+ * `getFileFormat` (png-bounder-seam, pbs T2c, journaled): re-added as OPTIONAL for the three formats the port's
+ * bounders stand for. Under `PLANTUML_DETERMINISTIC_TEXT` the jar's SVG bounder is
+ * `new StringBounderFromWidthTable(FileFormat.SVG_DETERMINISTIC)` (`FileFormat.java:185-193`), whose
+ * `getFileFormat()` answers `SVG_DETERMINISTIC`; stock `StringBounderSvg` answers `SVG`; PNG's bounder answers `PNG`
+ * (`StringBounderAwt.java:80-83`, seam #5). A creole atom that measures through `FileFormat.PNG`
+ * (`AtomMath.java:63-70`) reads the render's mode from it (`png-string-bounder.ts#pngStringBounderOf`).
+ *
  * This is a leaf module: it depends only on `XDimension2D` (this task).
  */
 export interface StringBounder {
   calculateDimension(font: { readonly family: string; readonly size: number }, text: string): XDimension2D;
   getDescent?(font: { readonly family: string; readonly size: number }, text: string): number;
+  getFileFormat?(): StringBounderFileFormat;
 }

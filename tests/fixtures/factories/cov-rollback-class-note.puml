@@ -1,0 +1,4 @@
+@startuml
+class A
+note right of A : <math>glb x</math>
+@enduml

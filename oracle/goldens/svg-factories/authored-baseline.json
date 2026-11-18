@@ -1121,6 +1121,57 @@
     },
     {
       "type": "factories",
+      "slug": "cov-rollback-class-note",
+      "topic": "note in a diagram: <math> rollback in a class note",
+      "status": "baseline",
+      "weightedScore": 27,
+      "diffCount": 27,
+      "reason": "class/description creole paths typeset a rollback with KaTeX instead of drawing it (#210)",
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-latex",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): <latex> rollback mid-line, laid out by its PNG export",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-sequence-note",
+      "topic": "note in a diagram: <math> rollback in a sequence note",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-two-lines",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): two rollback lines advance by the PNG height",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
+      "slug": "cov-rollback-wide",
+      "topic": "CreoleFactory (PSystemBuilder.java:174): a rollback wider than its block",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-17",
+      "measuredAgainstCommit": "27daf61ce"
+    },
+    {
+      "type": "factories",
       "slug": "cov-sprites-4z",
       "topic": "ListSpriteDiagramFactory (PSystemBuilder.java:170): `sprite $bug4 [15x15/4z] POz94W0X20Ep_F_FHf0fhK4Fq1A8020yeGVH_4f9begSHnM4FT8Ias6vR9swFzeeC1Ix1DDR2RmvbNE6P5CD6azPhSkgoTkrVt_eM000`",
       "status": "baseline",

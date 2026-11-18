@@ -1,0 +1,6 @@
+@startcreole
+before
+<math>glb</math>
+<math>lub</math>
+after
+@endcreole

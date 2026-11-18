@@ -739,7 +739,9 @@ describe('refusal coverage — baseline shape', () => {
     // 11546 -> 11548 at dei/T5 (2026-11-16): +2 rows for dei-domain-group-link (both walks). Derivation: 11546 + 2 = 11548.
     // 11548 -> 11551 at dei/T5 (2026-11-16): +3 svg-description golden clones (gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622, pinned
     // by #147). Derivation: 11548 + 3 = 11551.
-    expect(manifest.fixtures.length).toBe(11551);
+    // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
+    expect(manifest.fixtures.length).toBe(11556);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1139,7 +1141,9 @@ describe('refusal coverage — baseline shape', () => {
     // by #147). Derivation: 11391 + 3 = 11394.
     // 11394 -> 11395 at vb/close-b1 (2026-11-16): c4/kipive-74-lele070 renders (#155, see pinnedErroring).
     // Derivation: 11394 + 1 = 11395.
-    expect(pinnedRendering.length).toBe(11395);
+    // 11395 -> 11400 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
+    // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11395 + 5 = 11400.
+    expect(pinnedRendering.length).toBe(11400);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

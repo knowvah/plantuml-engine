@@ -183,8 +183,8 @@ registration at `PSystemBuilder.java:189`. 113 authored fixtures in `tests/fixtu
 pairs; `cov-embedded-state-note` waits on a state-engine gap (#168). No divergence added.
 
 **Reuse:** nothing from `golem/`. The klimt shapes, `Display`, `SingleLineCommand2` and the `regex` engine's plugin
-shape. `print` measures with `jarMeasurer` in every render, because `FileFormat.PNG` is outside the deterministic seam
-(wrp D3).
+shape. `print` measures with `FileFormat.PNG`'s bounder: AWT (`jarMeasurer`) in production, and the width table under the
+deterministic measurer since oracle seam #5 covers PNG (png-bounder-seam D3, D4; it was AWT in every render, wrp D3).
 
 ## Phase 4b — Timing Diagrams — DONE (timing-engine-port, #127)
 
@@ -598,7 +598,9 @@ SI-4 ports golem as a standalone module before this phase begins.
 `definition/`, `help/`, `syntax/LanguageDescriptor.java`, `command/PSystemBasicFactory.java`, `DirectOsDiagram.java`. Ported into
 `src/core/klimt/creole/legacy/`, `src/diagrams/{math,definition,help}/`, `src/core/syntax/`, `src/core/command/PSystemBasicFactory.ts`,
 `src/core/DirectOsDiagram.ts`, with JLaTeXMath's rollback (`src/core/latex-metrics/jlm-*.ts`) and sizing rules in `src/core/latex-metrics/`.
-Ratchet `svg-factories`. Remaining rows are on #169 and #170 or named in `DIVERGENCES.md`.
+Ratchet `svg-factories`. Remaining rows are on #169 or named in `DIVERGENCES.md`.
+png-bounder-seam (#170 option 3): oracle seam #5 makes the PNG bounder deterministic, a math rollback is laid out by its
+PNG export, and five creole rows joined the ratchet; class/description notes that never draw a rollback are #210.
 
 ## Phase 5r — BPM — DONE (bpm-engine-port, #130)
 

@@ -7,8 +7,8 @@
   "forkTreeIdenticalToUpstream": true,
   "plantumlVersion": "1.2026.8beta1",
   "seamBranch": "dot-output",
-  "seamCommit": "eb0f3cff7df7b48100bd2fc00b0a2e8812574199",
-  "seamCommitCount": 4,
+  "seamCommit": "d878ea981043f74aceabc9048c4f3e33a3a6a519",
+  "seamCommitCount": 5,
   "patch": "patches/0001-oracle-dot-dump.patch",
   "dumpProperty": "PLANTUML_DUMP_DOT",
   "note": "Re-baseline DOT/SVG goldens whenever upstreamSha changes (sync master, rebase dot-output, rebuild jar). seamCommitCount is the number of oracle-only commits stacked on the pristine base -- build-oracle.sh derives the base as dot-output~seamCommitCount, so ADD TO IT when adding a seam commit or the drift guard silently stops working.",
@@ -31,7 +31,8 @@
     "patches/0001-oracle-dot-dump.patch",
     "patches/0002-oracle-deterministic-text.patch",
     "patches/0003-oracle-svg-property.patch",
-    "patches/0004-oracle-space-width.patch"
+    "patches/0004-oracle-space-width.patch",
+    "patches/0005-oracle-png-bounder.patch"
   ],
   "seamHistory": [
     {
@@ -51,6 +52,12 @@
       "seamCommitCount": 4,
       "retiredOn": "2026-10-09",
       "why": "seam #4 v1 (spaces*4.4*size/16 added after the scaled sum) crashed the jar on activity cemagu-66/nerete-42/rosepa-78 (Direction.java:128 via Worm.mergeMe); amended in place to eb0f3cff7df (U+0020 measured as U+0021, width rounded to float like the stock bounder). Never re-captured into a merged oracle."
+    },
+    {
+      "seamCommit": "eb0f3cff7df7b48100bd2fc00b0a2e8812574199",
+      "seamCommitCount": 4,
+      "retiredOn": "2026-11-17",
+      "why": "seam #5 (pbs, #170 ruling 2026-11-11): FileFormat.PNG's bounder was StringBounderAwt even under PLANTUML_DETERMINISTIC_TEXT, so rollback atoms (AtomMath.java:63-70) and wire print (WireDiagram.java:133) were sized by host AWT fonts"
     }
   ]
 }

@@ -297,7 +297,7 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   const cuts = commandCutsOf(block.preprocessed, umlSource);
   const resolution = registry.resolve(
     umlSource,
-    { assetStore: options?.assetStore, clock: renderClock(options) },
+    { assetStore: options?.assetStore, clock: renderClock(options), measurer: options?.measurer },
     cuts,
     isBlockEmpty(block),
   );

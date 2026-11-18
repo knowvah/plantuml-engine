@@ -1,0 +1,2094 @@
+[
+ {
+  "target": "test-results/dot-cache/unknown/bemixo-79-xulu250",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/cazace-10-nebi625",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/unknown/cunotu-47-bute165",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/kebadi-11-fula439",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/marese-34-xaro137",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/pecafo-64-rili177",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/rakidu-53-mopu785",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg",
+   "svek-1.dot"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/unknown/roxita-24-tixu731",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/rozesu-56-suve592",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/rubebe-45-sura795",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg",
+   "svek-1.dot"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/unknown/teoz-ng-001-10",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/unknown/vocalo-20-dixu237",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/unknown/xanuke-94-tope429",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/class/zuduxu-90-kosi876",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg",
+   "svek-1.dot"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/gantt/sakibi-88-zuci243",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "test-results/dot-cache/mindmap/susipa-95-tedu015",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/salt/lakari-33-mone874",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/sequence/xobebi-29-jilu859",
+  "kind": "dot-cache",
+  "status": "FAILED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "ambiguous SVG output (file4.svg, file4_001.svg)"
+ },
+ {
+  "target": "test-results/dot-cache/wbs/ledama-83-xoko366",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/wbs/link-URL-tooltip-0",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": [],
+  "detail": "jar exit 200",
+  "jarExit": 200
+ },
+ {
+  "target": "test-results/dot-cache/wire/migaki-17-jori275",
+  "kind": "dot-cache",
+  "status": "CHANGED",
+  "outputs": [
+   "in.svg"
+  ],
+  "changedOutputs": [
+   "in.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "oracle/goldens/svg-flow/unknown/bemixo-79-xulu250",
+  "kind": "svg-golden",
+  "status": "CHANGED",
+  "outputs": [
+   "golden.svg"
+  ],
+  "changedOutputs": [
+   "golden.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "oracle/goldens/svg-gantt/sakibi-88-zuci243",
+  "kind": "svg-golden",
+  "status": "CHANGED",
+  "outputs": [
+   "golden.svg"
+  ],
+  "changedOutputs": [
+   "golden.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "oracle/goldens/svg-sequence/xobebi-29-jilu859",
+  "kind": "svg-golden",
+  "status": "FAILED",
+  "outputs": [
+   "golden.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "ambiguous SVG output (file4.svg, file4_001.svg)"
+ },
+ {
+  "target": "oracle/goldens/svg-wire/migaki-17-jori275",
+  "kind": "svg-golden",
+  "status": "CHANGED",
+  "outputs": [
+   "golden.svg"
+  ],
+  "changedOutputs": [
+   "golden.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/activity-legacy/inner-brace-nested.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "inner-brace-nested.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/board/cov-dark-media.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-dark-media.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-branch-no-else.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-branch-no-else.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-goto-back.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-goto-back.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-goto-resume-mixed.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-goto-resume-mixed.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-goto-self-merge.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-goto-self-merge.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-goto-unknown.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-goto-unknown.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/bpm/cov-resume-unknown.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-resume-unknown.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-inf-fixed.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-inf-fixed.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-nan-annotation-y.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-nan-annotation-y.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-nan-annotation.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-nan-annotation.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-nan-area.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-nan-area.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-nan-scatter.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-nan-scatter.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-span-annotation.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-span-annotation.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-span-line.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-span-line.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-span-spacing.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-span-spacing.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-span-ticks.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-span-ticks.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-value-nan.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-value-nan.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-zero-grouped.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-zero-grouped.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-zero-horizontal.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-zero-horizontal.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/chart/cov-zero-stacked.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-zero-stacked.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/cheneer/cov-multi-trailing-comma.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-multi-trailing-comma.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/activity__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "activity__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/class__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "class__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/component__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "component__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/object__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "object__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/sequence__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "sequence__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/sequence__scope-media-dark-only.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "sequence__scope-media-dark-only.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/state__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "state__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/diagram-style-scope/usecase__malformed-novalue.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "usecase__malformed-novalue.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/extensions/files-defaultfontcolor.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-defaultfontcolor.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-defaultfontname.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-defaultfontname.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-defaultfontsize.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-defaultfontsize.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-handwritten.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-handwritten.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-shadowing.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-shadowing.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-skinparam-background.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-skinparam-background.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-skinparam-lengthadjust-glyphs.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-skinparam-lengthadjust-glyphs.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-skinparam-lengthadjust-none.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-skinparam-lengthadjust-none.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/files-theme-aws-orange.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "files-theme-aws-orange.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-defaultfontcolor.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-defaultfontcolor.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skin-rose.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skin-rose.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-background.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-background.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-fontname.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-fontname.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-fontsize.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-fontsize.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-lengthadjust-glyphs.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-lengthadjust-glyphs.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-lengthadjust-none.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-lengthadjust-none.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-skinparam-roundcorner.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-skinparam-roundcorner.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-style-document.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-style-document.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-style-node.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-style-node.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-theme-amiga.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-theme-amiga.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/hcl-theme-aws-orange.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "hcl-theme-aws-orange.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-defaultfontcolor.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-defaultfontcolor.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-background.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-background.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-fontname.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-fontname.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-fontsize.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-fontsize.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-lengthadjust-glyphs.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-lengthadjust-glyphs.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-lengthadjust-none.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-lengthadjust-none.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-skinparam-roundcorner.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-skinparam-roundcorner.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/json-theme-aws-orange.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "json-theme-aws-orange.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-defaultfontcolor.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-defaultfontcolor.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-background.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-background.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-fontname.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-fontname.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-fontsize.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-fontsize.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-lengthadjust-glyphs.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-lengthadjust-glyphs.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-lengthadjust-none.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-lengthadjust-none.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-skinparam-roundcorner.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-skinparam-roundcorner.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/extensions/yaml-theme-aws-orange.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "yaml-theme-aws-orange.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/factories/cov-crash-blank-between.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-crash-blank-between.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/factories/cov-crash-drawing.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-crash-drawing.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/factories/cov-crash-finalizing-then-drawing.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-crash-finalizing-then-drawing.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/factories/cov-crash-spaces.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-crash-spaces.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/factories/cov-crash-upper.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-crash-upper.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/flow/cov-chain-east-nonroot.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-chain-east-nonroot.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-chain-north-nonroot.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-chain-north-nonroot.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-chain-south-nonroot.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-chain-south-nonroot.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-chain-west-nonroot.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-chain-west-nonroot.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-default-south.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-default-south.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-east.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-east.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-id-word.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-id-word.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-label-creole-two.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-label-creole-two.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-label-curly-mixed.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-label-curly-mixed.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-label-newline-neighbour.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-label-newline-neighbour.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-label-newline-three.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-label-newline-three.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-leading-space.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-leading-space.svg"
+  ],
+  "changedOutputs": [
+   "cov-leading-space.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-link-back.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-link-back.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-link-explicit-back.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-link-explicit-back.svg"
+  ],
+  "changedOutputs": [
+   "cov-link-explicit-back.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-link-four.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-link-four.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-link-twice.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-link-twice.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-loop.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-loop.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-many-shift.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-many-shift.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-north-chain.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-north-chain.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-north-west.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-north-west.svg"
+  ],
+  "changedOutputs": [
+   "cov-north-west.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-north.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-north.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-option-handwritten-link.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-option-handwritten-link.svg"
+  ],
+  "changedOutputs": [
+   "cov-option-handwritten-link.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-option-handwritten.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-option-handwritten.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-ring.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-ring.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-shift-east.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-shift-east.svg"
+  ],
+  "changedOutputs": [
+   "cov-shift-east.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-shift-one.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-shift-one.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-shift-three.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-shift-three.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-trailing-space.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-trailing-space.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-two-south.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-two-south.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/flow/cov-west-chain.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-west-chain.svg"
+  ],
+  "changedOutputs": [
+   "cov-west-chain.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-west.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-west.svg"
+  ],
+  "changedOutputs": [
+   "cov-west.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-wide-both.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-wide-both.svg"
+  ],
+  "changedOutputs": [
+   "cov-wide-both.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-wide-south.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-wide-south.svg"
+  ],
+  "changedOutputs": [
+   "cov-wide-south.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/flow/cov-wide-west.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-wide-west.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/gantt/quirk-stereotype-then-as.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "quirk-stereotype-then-as.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/gantt/quirk-stereotype-then-on.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "quirk-stereotype-then-on.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/gantt/today-implicit.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "today-implicit.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs"
+ },
+ {
+  "target": "tests/fixtures/git/cov-above-octopus.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-above-octopus.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/git/cov-octopus-3-modern.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-octopus-3-modern.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/git/cov-octopus-4-modern.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-octopus-4-modern.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/git/cov-octopus-5-modern.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-octopus-5-modern.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/packet/vega-R07.01-Range_Error1.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "vega-R07.01-Range_Error1.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/packet/vega-error-with-exception.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "vega-error-with-exception.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/regex/cov-group-not-empty.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-group-not-empty.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/regex/cov-title-only.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-title-only.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/regex/cov-two-lines-last-error.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-two-lines-last-error.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/salt/mode-line-is-data.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "mode-line-is-data.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/salt/no-factory-ready.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "no-factory-ready.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/timing/cov-analog-zero-range.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-analog-zero-range.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/timing/cov-date-julian.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-date-julian.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/timing/cov-negative-only-two.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-negative-only-two.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/timing/cov-negative-only.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-negative-only.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/unwind-U3/include-stdlib-unknown.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "include-stdlib-unknown.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/unwind-U3/undefine-alias-error.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "undefine-alias-error.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/wire/cov-colour-automatic.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-colour-automatic.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/wire/cov-dark.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-dark.svg"
+  ],
+  "changedOutputs": [
+   "cov-dark.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-dpi-200.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-dpi-200.svg"
+  ],
+  "changedOutputs": [
+   "cov-dpi-200.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-handwritten.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-handwritten.svg"
+  ],
+  "changedOutputs": [
+   "cov-handwritten.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-mode-dark.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-mode-dark.svg"
+  ],
+  "changedOutputs": [
+   "cov-mode-dark.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-move-after-print.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-move-after-print.svg"
+  ],
+  "changedOutputs": [
+   "cov-move-after-print.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-name-kelvin.svg",
+  "kind": "fixture-svg",
+  "status": "not-a-jar-render",
+  "outputs": [
+   "cov-name-kelvin.svg"
+  ],
+  "changedOutputs": [],
+  "removedOutputs": [],
+  "detail": "reference jar differs",
+  "jarExit": 200
+ },
+ {
+  "target": "tests/fixtures/wire/cov-option-handwritten.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-option-handwritten.svg"
+  ],
+  "changedOutputs": [
+   "cov-option-handwritten.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-after-component.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-after-component.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-after-component.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-creole.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-creole.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-creole.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-curly.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-curly.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-curly.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-empty-text.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-empty-text.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-empty-text.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-empty.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-empty.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-empty.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-multiline.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-multiline.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-multiline.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-nested.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-nested.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-nested.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-only.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-only.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-only.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-overflow-forced.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-overflow-forced.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-overflow-forced.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-quotes.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-quotes.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-quotes.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-size.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-size.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-size.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-sprite.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-sprite.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-sprite.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-tab-escape.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-tab-escape.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-tab-escape.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-print-table.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-print-table.svg"
+  ],
+  "changedOutputs": [
+   "cov-print-table.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-scale-2.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-scale-2.svg"
+  ],
+  "changedOutputs": [
+   "cov-scale-2.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-skinparam.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-skinparam.svg"
+  ],
+  "changedOutputs": [
+   "cov-skinparam.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-style.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-style.svg"
+  ],
+  "changedOutputs": [
+   "cov-style.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-theme-plain.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-theme-plain.svg"
+  ],
+  "changedOutputs": [
+   "cov-theme-plain.svg"
+  ],
+  "removedOutputs": []
+ },
+ {
+  "target": "tests/fixtures/wire/cov-theme.svg",
+  "kind": "fixture-svg",
+  "status": "CHANGED",
+  "outputs": [
+   "cov-theme.svg"
+  ],
+  "changedOutputs": [
+   "cov-theme.svg"
+  ],
+  "removedOutputs": []
+ }
+]

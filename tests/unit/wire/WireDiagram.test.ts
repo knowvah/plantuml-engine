@@ -4,6 +4,9 @@ import { Display } from '../../../src/core/klimt/creole/Display.js';
 import { WArrowDirection } from '../../../src/diagrams/wire/WArrowDirection.js';
 import { WLinkType } from '../../../src/diagrams/wire/WLinkType.js';
 import { record, type RecordedEvent } from '../../helpers/recording-ugraphic.js';
+import type { StringBounder } from '../../../src/core/klimt/font/StringBounder.js';
+import { jarMeasurer } from '../../../src/core/measurer-jar.js';
+import { pngDefaultStringBounder } from '../../../src/core/png-string-bounder.js';
 import { measurer, stringBounder, svgOf, wireDiagram } from './helpers.js';
 
 const STYLE = { type: WLinkType.NORMAL, direction: WArrowDirection.NORMAL, color: undefined, label: Display.NULL };
@@ -12,17 +15,25 @@ function drawn(events: readonly RecordedEvent[]): readonly string[] {
   return events.map((e) => ('draw' in e ? e.draw : ''));
 }
 
-describe('WireDiagram#print (WireDiagram.java:130-135, wrp D3)', () => {
-  it('advances the cursor by the AWT height at 10 pt, whatever the measurer (migaki-17-jori275)', () => {
-    const diagram = wireDiagram();
+describe('WireDiagram#print (WireDiagram.java:130-135, pbs D3)', () => {
+  function cursorSvg(pngStringBounder?: StringBounder): string {
+    const diagram = wireDiagram(pngStringBounder);
     diagram.addComponent('', 'a', 100, 100, undefined);
     diagram.print('', 'This is me10');
     diagram.print('', 'This is me20');
     diagram.addComponent('', 'b', 100, 100, undefined);
-    const svg = svgOf((ug) => diagram.getTextBlock().drawU(ug));
-    // 20 + 10 + 100 + 2 x 11.777344 (jarMeasurer's AWT height, not the table's 10) + 10.
+    return svgOf((ug) => diagram.getTextBlock().drawU(ug));
+  }
+
+  it("advances by the table's 10 at 10 pt under the deterministic measurer (seam-5 migaki-17-jori275)", () => {
+    // migaki: `This is me10` at y=147.778, `This is me20` at y=157.778. Here 20 + 10 + 100 + 2 x 10 + 10.
+    expect(cursorSvg()).toContain('y="160"');
+  });
+
+  it('advances by the AWT height under any other measurer (production, jarMeasurer 11.777344)', () => {
+    const svg = cursorSvg(pngDefaultStringBounder(jarMeasurer));
     expect(svg).toContain('y="163.555"');
-    expect(svg).not.toContain('y="150"');
+    expect(svg).not.toContain('y="160"');
   });
 
   it('the table measurer still sizes the drawn text', () => {

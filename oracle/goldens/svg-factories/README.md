@@ -31,10 +31,11 @@ capture clock where a row has one (`oracle/capture-clock.json`, e.g.
 
 ## Pins and the baseline
 
-`ratchet.json` pins the 21 rows that render zero-diff: both welcome rows, both
-definition rows, both listsprite rows, 11 creole rows and 4 help rows.
-`diff-baseline.json` carries the other 28 with their weighted score: 11 math and
-2 latex rows sit at their KaTeX glyph-group residual, 10 creole rows at small
+`ratchet.json` pins the 26 rows that render zero-diff: both welcome rows, both
+definition rows, both listsprite rows, 16 creole rows and 4 help rows (the five
+math-rollback rows joined with oracle seam #5, png-bounder-seam).
+`diff-baseline.json` carries the other 23 with their weighted score: 11 math and
+2 latex rows sit at their KaTeX glyph-group residual, 5 creole rows at small
 residuals, `cikoge-60-riti614` at its help-font residual and the 4 listfonts
 rows at theirs (the host font list, ruling #169; their `reason` says so). None is an error page, so no row is recorded `error`. The
 two manifests are disjoint and together cover the 49 slugs.

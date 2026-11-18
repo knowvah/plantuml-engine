@@ -69,10 +69,12 @@
 import { ColorMapper } from '../klimt/color/ColorMapper.js';
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import { ClockwiseTopRightBottomLeft } from '../klimt/geom/ClockwiseTopRightBottomLeft.js';
+import { XDimension2D } from '../klimt/geom/XDimension2D.js';
 import { GraphicStrings } from '../klimt/shape/GraphicStrings.js';
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
 import { jlmAccepts } from '../latex-metrics/jlm-accepts.js';
 import type { StringMeasurer } from '../measurer.js';
+import { pngStringBounderOf } from '../png-string-bounder.js';
 import { builderBackcolor, exportTo } from '../UgDiagram.js';
 import { AsciiMath } from './AsciiMath.js';
 import { mathDocument } from './math-document.js';
@@ -159,6 +161,11 @@ export class ScientificEquationSafe {
     return this.source !== null && jlmAccepts(this.source);
   }
 
+  /** `getImage`'s size when JLaTeXMath throws: the rollback's PNG export; see {@link rollbackImageDimension}. */
+  rollbackImageDimension(stringBounder: StringBounder): XDimension2D {
+    return rollbackImageDimension(this.formula, stringBounder);
+  }
+
   /** The rollback document for this formula; see {@link rollbackSvg}. */
   rollbackSvg(stringBounder: StringBounder): string {
     return rollbackSvg(this.formula, stringBounder);
@@ -175,6 +182,28 @@ export class ScientificEquationSafe {
     if (this.typesets()) return mathDocument(this.source!, foregroundColor, backgroundColor);
     return this.rollbackSvg(stringBounder);
   }
+}
+
+/** `EmptyImageBuilder`'s side cap: `GraphvizUtils.getenvImageLimit()` without `PLANTUML_LIMIT_SIZE` (the port reads no
+ *  environment). @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:63-73 */
+const IMAGE_LIMIT = 4096;
+
+/**
+ * The size of `getImage`'s rollback arm: `TextBlockExporter.builder(getRollback(), PNG, false).build().exportTo(baos)`
+ * read back as a `PixelImage` (`ScientificEquationSafe.java:116-129`). The exporter's bounder is
+ * `FileFormat.PNG.getDefaultStringBounder()` (`TextBlockExporter.java:148-149`, {@link pngStringBounderOf}); with the
+ * builder defaults (no skin param, margin `none()`, no scale) `calculateFinalDimension` is the block's own dimension
+ * and the scale factor 1 (`:196-209`). `createUGraphicPNG` makes the image `(int) (dim * scaleFactor)` per axis
+ * (`:343-344`), and `EmptyImageBuilder` caps each side at the image limit (`EmptyImageBuilder.java:68-77`).
+ * The SVG export (`rollbackSvg`) shares the block but measures with the host's SVG bounder; `AtomMath` lays out by
+ * this size and draws that document.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:335-346
+ */
+export function rollbackImageDimension(formula: string, stringBounder: StringBounder): XDimension2D {
+  const dim = getRollback(formula).calculateDimension(pngStringBounderOf(stringBounder));
+  const width = Math.min(Math.trunc(dim.getWidth()), IMAGE_LIMIT);
+  const height = Math.min(Math.trunc(dim.getHeight()), IMAGE_LIMIT);
+  return new XDimension2D(width, height);
 }
 
 /** `getRollback()`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:137-139 */

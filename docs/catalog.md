@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2613 modules · 8584 exported names.
+2614 modules · 8591 exported names.
 
 ## `src/`
 
@@ -103,7 +103,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `link-style-regex.ts` | `STYLE_KEY1`, `STYLE_KEY2`, `LINE_STYLE`, `LINE_STYLE_MULTIPLES`, `UBREX_KEY1`, `UBREX_KEY2`, `UBREX_LINE_STYLE` | The link line-style grammar shared by every engine whose arrows take a `[#red,dashed]` style/colour bracket. |
 | `magma.ts` | `computeBranch`, `MagmaGroupInput`, `buildMagmaEdges` | "Magma" standalone chaining — the shared cucadiagram/svek layout feature that arranges link-less ("standalone") leaves into a square grid of INVISIBLE edges so graphviz packs them compactly. |
 | `measurer-bounder.ts` | `MeasurerStringBounder` | measurer-bounder.ts — `StringMeasurer` -> `StringBounder` adapter (description-leaf-sizing-audit T6 / ADR-6). |
-| `measurer-deterministic.ts` | `DeterministicMeasurer` | Deterministic string measurer (dual-measurer conformance/ratchet seam). |
+| `measurer-deterministic.ts` | `DeterministicMeasurer`, `svgFileFormatOf` | Deterministic string measurer (dual-measurer conformance/ratchet seam). |
 | `measurer-jar.data.ts` | `JarFontMetrics`, `JAR_SANS_SERIF_METRICS`, `JAR_SANS_SERIF_BOLD_METRICS` | Per-point (font size == 1) jar-measured font metrics, keyed by codepoint. |
 | `measurer-jar.ts` | `JarMeasurer`, `jarMeasurer` | Jar-faithful string measurer (architecture decision D12). |
 | `measurer-width-table.data.ts` | `SANS_SERIF_BLOCKS` |  |
@@ -117,6 +117,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `paint.ts` | `Gradient`, `LinearGradientStopPaint`, `LinearGradientPaint`, `isLinearGradientPaint`, `Paint`, `parseColor`, `isTransparentColor`, `hashString`, `paintToSvg`, `noGradient` | Paint — the color/gradient value model for the rendering layer. |
 | `parse-refusal.ts` | `ParseRefusalKind`, `ParseRefusal`, `refuse`, `NULL_SYSTEM`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
 | `PlainStringsDiagram.ts` | `PlainStringsDiagram` | `PlainStringsDiagram` — a {@link UgDiagram} whose page is its `strings` drawn black on white, optionally with an `image` at `imagePosition` (`version`, the eggs). |
+| `png-string-bounder.ts` | `BOLD_START`, `BOLD_END`, `pngDefaultStringBounder`, `pngStringBounderOf` | `FileFormat.PNG.getDefaultStringBounder()`: the bounder an SVG render reaches when the Java measures through a PNG export or asks for PNG's bounder by name (wire `print`, `WireDiagram.java:133`; a creole math rollback, `AtomMath.java:63-70` |
 | `preprocessor-collector.ts` | `StyleAndSkinparamCollector` | preprocessor-collector.ts -- the `<style>` / `skinparam` / `skin` line collector `preprocessor.ts#resultOf` runs over the interpreter's finished result list. |
 | `preprocessor-first-page.ts` | `firstPageAssignments`, `firstPageOf` | `CommandNewpage` starts a brand-new diagram (`CommandNewpage.java:68-73`, `NewpagedDiagram.java:60-73`), so a `skinparam` or `<style>` after it belongs to a later page. |
 | `preprocessor.ts` | `SkinDirective`, `PreprocessorResult`, `SkinparamAssignment`, `SkinparamForm`, `DeclarationOrder`, `PreprocessOptions`, `preprocess`, `PreprocessorFailure`, `PreprocessOutcome`, `preprocessOrError`, `preprocessLinesOrError` | Preprocessor -- a thin wrapper over the TIM interpreter (`src/core/tim/`). |
@@ -768,7 +769,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `FontParam.ts` | `ARROW_LABEL_FONT_SIZE`, `NOTE_FONT_SIZE` | `FontParam` — the fixed per-element font sizes upstream declares as enum entries, each independent of the diagram's own default font size. |
 | `FontPosition.ts` | `FontPosition`, `fontPositionSpace`, `muteFontSize`, `fontPositionHtmlTag` | FontPosition — where a creole text run sits relative to the normal baseline: NORMAL, EXPOSANT (`<sup>`) or INDICE (`<sub>`). |
 | `FontStack.ts` | `FontStack` | FontStack — a comma-separated font-family definition (`FontName`), as the SVG and PDF back ends name it. |
-| `StringBounder.ts` | `StringBounder` |  |
+| `StringBounder.ts` | `StringBounderFileFormat`, `StringBounder` |  |
 | `UFont.ts` | `UFontFace`, `UFont` |  |
 | `UFontFactory.ts` | `UFontFactory` |  |
 
@@ -927,7 +928,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ASCIIMathTeXImg.ts` | `ASCIIMathTeXImg` | ASCIIMathTeXImg — a faithful transcription of upstream's `math/ASCIIMathTeXImg.java` (1032 lines): the ASCIIMath-notation to LaTeX converter reached from `AsciiMath`'s constructor, and through it from `ScientificEquationSafe.fromAsciiMath` |
 | `ASCIIMathTeXImgSymbols.ts` | `Ttype`, `Flag`, `Tuple`, `aAMsqrt`, `aAMroot`, `aAMfrac`, `aAMdiv`, `aAMover`, `aAMsub`, `aAMsup`, `aAMtext`, `aAMmbox`, `aAMquote`, `aAMsymbols` | ASCIIMathTeXImgSymbols — the data half of upstream's `math/ASCIIMathTeXImg.java`: the `Ttype` (java:96-99) and `Flag` (java:101-104) enums, the `Tuple` record (java:106-141), the ten named tuples (java:142-151) and the `aAMsymbols` table (j |
 | `math-document.ts` | `AwtColor`, `batikColorName`, `mathDocumentSize`, `mathDocument` | The document `@startmath` and `@startlatex` write: Batik's `SVGGraphics2D` stream of a JLaTeXMath `TeXIcon`, which `ScientificEquationSafe#export` copies straight to the output (`getSvg(1, fg, bg).getSvg(true)`, `ScientificEquationSafe.java |
-| `ScientificEquationSafe.ts` | `ScientificEquationSafe`, `rollbackSvg` | ScientificEquationSafe — upstream: math/ScientificEquationSafe.java (171 lines). |
+| `ScientificEquationSafe.ts` | `ScientificEquationSafe`, `rollbackImageDimension`, `rollbackSvg` | ScientificEquationSafe — upstream: math/ScientificEquationSafe.java (171 lines). |
 
 ## `src/core/plasma/`
 

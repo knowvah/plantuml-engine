@@ -58,6 +58,9 @@ measures with the render's measurer, as the Java does through `ug.getStringBound
 `cov-print-size` and `cov-print-creole` are the oracles for a block taller than one line.
 **Rejected:** the injected measurer (`migaki` drifts 1.777 px per print); a fitted 11.777 constant (`CLAUDE.md`: never fit
 a value; the seam already exists); a new divergence (no library forces one).
+**Superseded 2026-11-17 (png-bounder-seam, #170 option 3):** oracle seam #5 makes `FileFormat.PNG`'s bounder the width
+table under the deterministic flag, so `print` now measures with `pngDefaultStringBounder` of the render's measurer
+(`src/core/png-string-bounder.ts`; `plans/png-bounder-seam/decisions.md` D3, D4). Production stays AWT.
 
 ### D4 — Mirror upstream's quirks
 Port each as the jar does it, with a one-line comment quoting the Java:

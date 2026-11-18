@@ -43,6 +43,9 @@ export interface ParseOptions {
   readonly assetStore?: AssetStore | undefined;
   /** The render's clock (`renderClock(options)`), for the engines that read "today" (gantt, `GanttDiagram`). */
   readonly clock?: Clock | undefined;
+  /** `RenderOptions.measurer`, forwarded verbatim: wire measures `print` while its commands execute, with
+   *  `FileFormat.PNG`'s bounder, whose arm follows the render's measurer (`png-string-bounder.ts`, pbs D3, D4). */
+  readonly measurer?: StringMeasurer | undefined;
 }
 
 // ---------------------------------------------------------------------------

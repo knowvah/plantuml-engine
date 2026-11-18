@@ -1,0 +1,3 @@
+@startcreole
+before <latex>\glb{x}</latex> after
+@endcreole

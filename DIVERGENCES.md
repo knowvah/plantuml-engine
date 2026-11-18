@@ -1562,10 +1562,11 @@ are the same case.
 **A formula KaTeX cannot parse but JLaTeXMath typesets.** Each image is sized as the empty formula (8×8) because
 KaTeX throws; the jar typesets it:
 - `unknown/rozesu-56-suve592`: `^` alone, "KaTeX parse error: Expected group after '^' at position 1" (jar 9×22),
-  and `_` alone, "Expected group after '_' at position 1" (jar 8×25). The row's other diffs are its three
-  rollbacks (#170).
+  and `_` alone, "Expected group after '_' at position 1" (jar 8×25). These two images, and the rows below them
+  that they push down, are the row's only diffs.
 - `unknown/kebadi-11-fula439`: `\boxempty` (AsciiMath `square`), "Undefined control sequence: \boxempty", which
-  JLaTeXMath draws from `stmary10` code 63 (jar 24×22). The row's other diff is its one rollback (#170).
+  JLaTeXMath draws from `stmary10` code 63 (jar 24×22). This image, and the rows below it that it pushes down, are
+  the row's only diffs.
 - `tests/fixtures/factories/cov-latex-syntax`: `\frac{a`, "Unexpected end of input in a macro argument, expected '}'"
   (jar 24×45).
 
@@ -1583,11 +1584,13 @@ it, in which order (journal row 32, `plans/creole-math-factories-port/decision-j
 call from its inputs alone and keeps no state between formulas or renders, so the port types each formula as the jar
 does in a fresh JVM. Those two image sizes are this mechanism's only diffs.
 
-**Not a divergence: rollback atoms are sized by the PNG export (maintainer ruling 2026-11-11, #170, option 3).**
-`unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`, `unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237`,
-`unknown/xanuke-94-tope429` (and part of `kebadi`, `rozesu`, `roxita`): `AtomMath#calculateDimensionSlow` sizes a
-rollback with its PNG export (`AtomMath.java:63-70`), whose text the host's AWT fonts measure (`FileFormat.java:177-274`).
-The oracle's deterministic-text seam covers the SVG bounder only. The ruling extends the seam to the PNG bounder, so
-these rows are open work, not accepted deltas.
+**Not a divergence: rollback atoms are sized by the PNG export (maintainer ruling 2026-11-11, #170, option 3).
+Resolved 2026-11-17 (png-bounder-seam).** `AtomMath#calculateDimensionSlow` lays a rollback out by its PNG export
+(`AtomMath.java:63-70`, `ScientificEquationSafe.java:116-129`). Oracle seam #5 (`oracle/patches/0005-oracle-png-bounder.patch`)
+makes `FileFormat.PNG`'s bounder the width table under `PLANTUML_DETERMINISTIC_TEXT`, and the port follows
+(`src/core/png-string-bounder.ts`, `rollbackImageDimension`). `unknown/cunotu-47-bute165`, `unknown/marese-34-xaro137`,
+`unknown/pecafo-64-rili177`, `unknown/vocalo-20-dixu237` and `unknown/xanuke-94-tope429` are conformant; `kebadi`,
+`rozesu` and `roxita` keep only the mechanisms named above. Class and description notes do not draw a rollback yet
+(#210), a separate gap.
 
 `unknown/cikoge-60-riti614` (`help font`) is named under "`help font` lists no fonts" (#169).

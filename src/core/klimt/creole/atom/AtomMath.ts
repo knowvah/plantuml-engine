@@ -118,17 +118,14 @@ export class AtomMath extends AbstractAtom implements Atom {
   }
 
   /**
-   * `math.getImage(BLACK, WHITE)`'s size. When JLaTeXMath throws,
-   * `getImage` exports the rollback instead (`ScientificEquationSafe.java:116-129`);
-   * its PNG and SVG exports share `calculateFinalDimension`, so the rollback
-   * document's size is the image's (corpus: `glb` 29x25, `Lim` 33x25).
+   * `math.getImage(BLACK, WHITE).withScale(1).getImage()`'s size. When JLaTeXMath throws, `getImage` exports the
+   * rollback to PNG instead (`ScientificEquationSafe.java:116-129`): its size is the block measured with
+   * `FileFormat.PNG`'s bounder and truncated to whole pixels, while `drawU` draws the SVG export, measured with the
+   * host's bounder (pbs D5). The two differ: an atom is laid out by its PNG and drawn as its SVG.
    * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/atom/AtomMath.java:63-70
    */
   protected calculateDimensionSlow(stringBounder: StringBounder): XDimension2D {
-    if (!this.math.typesets()) {
-      const rollback = new UImageSvg(this.math.rollbackSvg(stringBounder), 1);
-      return new XDimension2D(rollback.getWidth(), rollback.getHeight());
-    }
+    if (!this.math.typesets()) return this.math.rollbackImageDimension(stringBounder);
     const { width, height } = measureLatex(this.math.getSource());
     return new XDimension2D(width, height);
   }
