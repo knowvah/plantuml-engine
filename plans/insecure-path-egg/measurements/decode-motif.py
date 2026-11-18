@@ -42,7 +42,8 @@ def unfilter(raw, width, height, bpp):
 
 
 def load(path):
-    data = open(path, 'rb').read()
+    with open(path, 'rb') as f:
+        data = f.read()
     # IHDR is the first chunk of every PNG (PNG spec 11.2.2): bytes 16..26.
     width, height, _depth, colour = struct.unpack('>IIBB', data[16:26])
     i, idat = 8, b''
