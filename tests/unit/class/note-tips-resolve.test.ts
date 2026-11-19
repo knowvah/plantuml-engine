@@ -124,11 +124,12 @@ describe('resolveTips -- EntityImageTips#drawU at draw time', () => {
 // aims at the wrapped block's centre (`svek/image/EntityImageTips.java:179`).
 // ---------------------------------------------------------------------------
 describe('cdd3-T32 — a member tip aims at a wrapped member`s whole block', () => {
-  it('zepeki-75-pifo352: the notch vertex lands at the jar`s y 124.21', () => {
+  it('zepeki-75-pifo352: the notch vertex lands at the jar`s y 75', () => {
     const markup = readFileSync('test-results/dot-cache/class/zepeki-75-pifo352/in.puml', 'utf8');
     const svg = renderFixtureClass(markup, new DeterministicMeasurer());
-    const notch = / L263\.65,([\d.]+) L/.exec(svg);
-    // D3 (graphviz's 2-dp `-Tsvg` read, unported) leaves 0.004 px here.
-    expect(Number(notch![1])).toBeCloseTo(124.21, 2);
+    // Jar oracle re-captured under graphviz 16.1.1 (#164): the note sits right
+    // of the class, notch vertex (184.775, 75); under 16.1.0 it was (263.65, 124.21).
+    const notch = / L184\.775,([\d.]+) L/.exec(svg);
+    expect(Number(notch![1])).toBeCloseTo(75, 2);
   });
 });

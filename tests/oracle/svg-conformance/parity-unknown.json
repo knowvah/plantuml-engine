@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:11:23.968Z",
+  "generatedAt": "2026-11-18T20:35:40.527Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -4887,9 +4887,9 @@
       "dotEqual": false,
       "layoutEqual": "n/a",
       "verdict": "diverged",
-      "maxDelta": 1624.508,
+      "maxDelta": 2286.7180000000003,
       "firstDiff": "svg/g[1]/g[102]/path[1]/@d",
-      "maxDeltaPath": "svg/g[1]/g[56]/rect[2]/@x",
+      "maxDeltaPath": "svg/g[1]/g[127]/path[1]/@d[6]",
       "oracleBlind": true
     },
     {

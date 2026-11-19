@@ -313,7 +313,14 @@ function resolveGroupGeos(group: NoteGroup, data: NoteDataset, ctx: NoteMapConte
   const points = groupConnectorPoints(group, noteEdge !== undefined, rawPoints, ctx);
   const tipMetrics = group.invis ? { baselineOffset: ctx.baselineOffset, rowHeight: ctx.rowHeight } : undefined;
   const strictUml = ctx.strictUml || group.opalisable === false;
-  return mapGroupNoteGeos(group, data, { pos, connectorPoints: points, tipMetrics, strictUml });
+  const geos = mapGroupNoteGeos(group, data, { pos, connectorPoints: points, tipMetrics, strictUml });
+  if (noteEdge !== undefined) return geos;
+  // A freestanding note's points are its relationship's own `SvekEdge`, which
+  // draws itself unless opale suppresses it (`SvekEdge.java:832-833`;
+  // `layout.ts` drops the edge only for an opalised note). The note has no
+  // link of its own, so a plain fallback box keeps no connector (#164,
+  // temise-16-neco018).
+  return geos.map((g) => (g.connector.length > 0 ? { ...g, connector: [] } : g));
 }
 
 /**

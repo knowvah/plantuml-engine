@@ -30,12 +30,12 @@ describe('stdd T4a: scale and dpi at export', () => {
     expect(rootSize('foluke-95-cezi696')).toBe('388px x 168px');
   });
   it('jibizo-72 / xijice-10: `scale W x H` fits the smaller ratio (`ScaleWidthAndHeight`)', () => {
-    expect(rootSize('jibizo-72-tori374')).toBe('73.103px x 100.345px');
-    expect(rootSize('xijice-10-leni272')).toBe('401.896px x 551.659px');
+    expect(rootSize('jibizo-72-tori374')).toBe('78.621px x 100.345px');
+    expect(rootSize('xijice-10-leni272')).toBe('400.421px x 511.064px');
   });
   it('domoru-86 / zoriza-41: `scale 1.3`, `scale 1.4`', () => {
     expect(rootSize('domoru-86-coki670')).toBe('374.4px x 1007.5px');
-    expect(rootSize('zoriza-41-rege543')).toBe('688.8px x 854px');
+    expect(rootSize('zoriza-41-rege543')).toBe('519.4px x 854px');
   });
   it('rovese-43 / jaxebo-54 / desebo-47: `scale N width` (dogeji-46 is left to its layout rows, T6c)', () => {
     expect(rootSize('rovese-43-tadu368')).toBe('1296px x 2420px');

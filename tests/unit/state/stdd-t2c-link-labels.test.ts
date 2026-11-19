@@ -63,8 +63,8 @@ describe('stdd T2c: link labels', () => {
   it('susena-02: `+OK` draws the PUBLIC_METHOD icon before `OK`', () => {
     const svg = render('susena-02-gusa448');
     expect(svg).toContain(
-      '<g data-visibility-modifier="PUBLIC_METHOD"><ellipse cx="245" cy="147" rx="3" ry="3" fill="none" style="stroke:#038048;stroke-width:1;"/></g>',
+      '<g data-visibility-modifier="PUBLIC_METHOD"><ellipse cx="80" cy="147" rx="3" ry="3" fill="none" style="stroke:#038048;stroke-width:1;"/></g>',
     );
-    expect(svg).toContain('<text x="252" y="150.111" font-size="13" fill="#000" textLength="18.769">OK</text>');
+    expect(svg).toContain('<text x="87" y="150.111" font-size="13" fill="#000" textLength="18.769">OK</text>');
   });
 });

@@ -5,6 +5,8 @@ import {
 } from '../../../src/diagrams/class/note-freestanding.js';
 import type { ClassNote, Namespace, Relationship } from '../../../src/diagrams/class/ast.js';
 import type { EdgeGeo } from '../../../src/diagrams/class/layout.js';
+import { renderSync } from '../../../src/index.js';
+import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -171,5 +173,53 @@ describe('findFreestandingNoteConnectors', () => {
     const edges = [makeEdgeGeo('edge-0', 'decoder_core', 'monolit')];
     const namespaces = [makeNamespace('decoder_core')];
     expect(findFreestandingNoteConnectors(notes, edges, namespaces).size).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Render: a freestanding note that does NOT opalise draws its relationship once
+// ---------------------------------------------------------------------------
+
+describe('freestanding note whose connector routes as several beziers', () => {
+  // temise-16-neco018 (#164): under graphviz 16.1.1 `N1 .. (Reporter, Queue)`
+  // routes as more than one bezier, so `SvekEdge.java:769-770` clears opale and
+  // the relationship draws as its own link (`<!--link N1 to apoint21-->`). The
+  // note is a plain box with no connector of its own; the jar draws nothing else.
+  const SOURCE = [
+    '@startuml',
+    'class Reporter',
+    'class Worker',
+    'class WorkerPool',
+    'class Queue',
+    'class QueueEntry',
+    'class Report',
+    'Reporter "1" -- "1" Queue',
+    'Reporter "1" -- "1" WorkerPool',
+    'Reporter "1" -- "*" Report',
+    'Queue "1" -- "*" QueueEntry',
+    'WorkerPool "1" -- "*" Worker',
+    'Worker "1" -- "0..1" QueueEntry',
+    'Report "1" -- "*" QueueEntry',
+    'note right of Worker',
+    '  * Initialisiert die pView',
+    '  * berwacht die Ausf?hrung',
+    'end note',
+    'note left of Queue',
+    '  * Enthlt erledigte Jobs',
+    '  * Enth?lt n?chste Jobs',
+    'end note',
+    'note as N1',
+    '  * Initialisiert freie Worker',
+    '  * Lscht veraltete Entries',
+    'end note',
+    'N1 .. (Reporter, Queue)',
+    '@enduml',
+  ].join('\n');
+
+  it('emits the N1 relationship once and no host-less note connector', () => {
+    const svg = renderSync(SOURCE, { measurer: new DeterministicMeasurer() });
+    const links = [...svg.matchAll(/<!--link ([^>]*?)-->/g)].map((m) => m[1] ?? '');
+    expect(links.filter((l) => l.startsWith('N1 ') || l.startsWith('GMN19'))).toEqual(['N1 to apoint21']);
+    expect(svg).not.toContain('id=""');
   });
 });
