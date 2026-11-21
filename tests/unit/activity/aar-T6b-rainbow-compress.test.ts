@@ -56,8 +56,9 @@ describe('diamond2 west/east/north blocks (tbout1/tbout2)', () => {
     const svg = render(
       '@startuml\nif (if?) then (yes)\n  :a a a a a;\n->this is t1;\nelse (no)\n  :b b b b b;\n->this is t2;\nendif\n@enduml',
     );
-    // bucoru-71 with `$t`: since 0537b558644 the jar runs `!t="..."` as Python, so the label is the literal
-    // `t`; the legacy `!$t = "..."` keeps the three-line label (jar via scripts/oracle-render.sh: 189x168).
+    // bucoru-71 with `$t`: the a720bdd jar runs `!t="..."` as Python, and the #3032 fix keeps it legacy but adds
+    // the missing-'$' warning banner, which moves the height; the legacy `!$t = "..."` keeps the three-line label
+    // with no banner (jar via scripts/oracle-render.sh: 189x168).
     const bucoru = render(
       '@startuml\n!$t = "this is t1\\nthis is t2\\nthis is t3\\n"\n\nif (if?) then (<color blue>yes)\n  :a a a a a;\n->$t;\n' +
         'else (<color blue>no)\n  :b b b b b;\n->$t;\nendif\n@enduml',

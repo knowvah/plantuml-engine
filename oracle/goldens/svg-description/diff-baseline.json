@@ -226,16 +226,6 @@
     },
     {
       "type": "component",
-      "slug": "pegali-65-rotu416",
-      "group": 4,
-      "status": "baseline",
-      "diffCount": 5,
-      "reason": "Python-preprocessor row: line 2 `!global = \"changed value\"` is a keyword line upstream (isKeywordLine: \"global\", PythonLine.java), so the a720bdd jar runs it as Python and draws an error page (\"Python syntax error: expected a name but found '=' (column 8)\", the stock-jar record in oracle/goldens/stock-error-pages.json agrees); this port has no Python preprocessor and draws the diagram. Every remaining diff is that error page against our diagram. Open -> #214",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f"
-    },
-    {
-      "type": "component",
       "slug": "kezodo-14-pume985",
       "group": 4,
       "status": "baseline",

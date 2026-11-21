@@ -5,7 +5,6 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/EaterAffectation.java
  */
 
-import { isLegacyAffectation } from '../text/PythonLine.js';
 import { Eater } from './Eater.js';
 import type { StringLocated } from './StringLocated.js';
 import type { TContext } from './TFunction.js';
@@ -16,7 +15,15 @@ import { lazzyParse } from './TVariableScope.js';
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/EaterAffectation.java
  */
 export class EaterAffectation extends Eater {
-  constructor(sl: StringLocated) {
+  /**
+   * @param ranAsPython PORT ONLY (#214): a `!name = value` line upstream runs
+   *   as Python reaches this eater only because this port has no Python
+   *   preprocessor (`CodeIteratorAffectation`); upstream never warns on it.
+   */
+  constructor(
+    sl: StringLocated,
+    private readonly ranAsPython = false,
+  ) {
     super(sl.getTrimmed());
   }
 
@@ -37,10 +44,7 @@ export class EaterAffectation extends Eater {
         varname = this.eatAndGetVarname();
       }
     }
-    // Upstream routes only `PythonLine.isLegacyAffectation` lines here (TLineType.java:179); the others
-    // (`!x = 1`) are Python statements and never warn. Until the Python preprocessor is ported they still
-    // run here, as before 0537b558644, so the warning keeps to the lines the jar warns on.
-    if (isLegacyAffectation(this.getStringLocated().getString())) this.checkVariableStartsWithDollar(context, varname);
+    if (!this.ranAsPython) this.checkVariableStartsWithDollar(context, varname);
     this.skipSpaces();
     let conditional = false;
     if (this.peekChar() === '?') {

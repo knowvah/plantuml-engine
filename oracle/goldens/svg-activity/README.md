@@ -224,20 +224,28 @@ README.md`'s identical rule; the same rationale applies verbatim.
 
 ### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
 
-Seventeen pins stopped being zero-diff when the oracle moved to a720bdd and
-left `ratchet.json`; each activity-tree row went back to `status:
-"baseline"` in `diff-baseline.json`, with a `reason` and a fresh
-`weightedScore`. Their `golden.svg` directories stay as the evidence.
+Ten pins stopped being zero-diff when the oracle moved to a720bdd and
+left `ratchet.json`; each went back to `status: "baseline"` in
+`diff-baseline.json`, with a `reason` and a fresh `weightedScore`. Their
+`golden.svg` directories stay as the evidence.
 
-- Python preprocessor (#214): `bineki-51`, `bucoru-71`, `lidumi-54`,
-  `liteta-29`, `nisigo-68`, `nupiko-03` and `unknown/nupiko-03`. Each has a
-  `!t="..."` line that upstream reads as a Python statement
-  (`PythonLine.isStatementLine`), so the jar no longer expands the label.
 - Formulas (DIVERGENCES.md, "LaTeX rendering engine — KaTeX, not
   JLaTeXMath"): `cepivu-60`, `fonusa-41`, `gakodi-47`, `pedulu-06`,
   `racose-40`, `ruveji-94`, `sipifu-25`, `tecimi-93`, `xataku-21` and
   `zatujo-89`. The jar now draws glyph `<path>`s where the port draws a
   KaTeX `<image>`.
+
+### Restored 2026-11-21 (the plantuml/plantuml#3032 fix)
+
+`bineki-51`, `bucoru-71`, `lidumi-54`, `liteta-29`, `nisigo-68`,
+`nupiko-03` and `unknown/nupiko-03` left this ratchet at the a720bdd re-pin
+because that jar runs a `!name = value` line of each as Python, and their
+`diff-baseline.json` rows are `pinned` again. Their oracles now come from the fix
+proposed in plantuml/plantuml#3032 (upstream 6524b446188), which runs the line
+as the legacy assignment again, with the missing-`$` warning banner; the port
+mirrors its routing (`src/core/tim/TContextPython.ts`). They are pinned again
+at their original ratchet positions. Re-pin when a release carries the fix
+(DIVERGENCES.md, "Rows pinned to unreleased upstream fixes").
 
 ## `activity-element-granularity` close-out — 2026-09-03
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T16:23:55.828Z",
+  "generatedAt": "2026-11-21T19:25:31.675Z",
   "fixtures": [
     {
       "slug": "activity-creole-table",
@@ -177,10 +177,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 31.631,
-      "firstDiff": "svg/g[1]/text[4]/@textLength",
-      "maxDeltaPath": "svg/g[1]/text[4]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "biredi-08-bama025",
@@ -362,10 +359,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 32.944,
-      "firstDiff": "svg/g[1]/text[6]/@textLength",
-      "maxDeltaPath": "svg/g[1]/polygon[2]/@points[1]"
+      "verdict": "conformant"
     },
     {
       "slug": "bufice-81-cemu957",
@@ -2793,10 +2787,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 203.55499999999995,
-      "firstDiff": "svg/g[1]/text[6]/@textLength",
-      "maxDeltaPath": "svg/g[1]/text[28]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "lifeve-53-zubi598",
@@ -2852,10 +2843,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 33,
-      "firstDiff": "svg/g[1]/text[5]/@textLength",
-      "maxDeltaPath": "svg/g[1]/text[5]/@y"
+      "verdict": "conformant"
     },
     {
       "slug": "liteza-62-nopo771",
@@ -3704,10 +3692,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 33,
-      "firstDiff": "svg/g[1]/text[3][childCount]",
-      "maxDeltaPath": "svg/@height"
+      "verdict": "conformant"
     },
     {
       "slug": "nivese-34-zavo418",
@@ -3849,10 +3834,7 @@
       "type": "activity",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 26.75,
-      "firstDiff": "svg/g[1]/text[3]/@textLength",
-      "maxDeltaPath": "svg/g[1]/text[3]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "nupose-71-vido428",

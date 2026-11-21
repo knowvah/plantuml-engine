@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2661 modules · 8810 exported names.
+2663 modules · 8824 exported names.
 
 ## `src/`
 
@@ -1208,7 +1208,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `BackSlash.ts` | `BackSlash` | BackSlash — line-separator/escape constants and the `\n` hide/reveal-via-private-use-block round trip `preproc/Define.java` uses to protect a literal `\n` inside a `!define` macro body from the preprocessor's own line splitting. |
 | `Guillemet.ts` | `GuillemetPair`, `GUILLEMET_DEFAULT`, `manageGuillemet` | `Guillemet` — the `<<x>>` -> `«x»` display-text substitution. |
-| `PythonLine.ts` | `isLegacyAffectation` | The part of upstream's `PythonLine` the legacy preprocessor's routing needs so far: which `!name = value` lines stay legacy affectations (`TLineType.java:179`). |
+| `PythonLine.ts` | `startsWithEscapedBang`, `startsWithInterpolation`, `isDecoratorLine`, `isKeywordLine`, `isLegacyAffectation`, `nameAssignedWithoutDollar`, `isStatementLine` | Tells a legacy preprocessor line from a Python line, by hand (no regex). |
 
 ## `src/core/tim/`
 
@@ -1250,6 +1250,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `LineLocation.ts` | `LineLocation` | Where a line of source came from: its 0-based position, the resource that produced it, and — for a line pulled in by `!include` — the location of the `!include` line that pulled it. |
 | `LineLocationImpl.ts` | `LineLocationImpl` | The only `LineLocation` implementation, exactly as upstream: an immutable `(description, parent, position)` triple whose `oneLineRead()` returns the NEXT position rather than mutating. |
 | `PreprocessingArtifact.ts` | `PreprocessingArtifact` | `PreprocessingArtifact` + `ConfigurationStore<OptionKey>` -- the two `net.sourceforge.plantuml.preproc` types `EaterOption` (`!option`) needs. |
+| `PythonChunks.ts` | `PythonSources`, `typeWithPython`, `collapse` | Groups the Python lines of a body into chunks, as upstream does before the legacy preprocessor looks at them. |
 | `ReadFilterMergeLines.ts` | `endsWithBackslash`, `mergeEndingBackslashLines` | Trailing-`\` line continuation: a source line ending in a bare `\` merges with the NEXT physical line, before `@start`/`@end` block splitting or command dispatch sees the document. |
 | `ReadLineReader.ts` | `SOURCE_STRING_DESCRIPTION`, `readLines` | Raw text -> the `StringLocated` list the interpreter executes. |
 | `StartUtils.ts` | `isStartDirective`, `isEndDirective`, `isPauseDirective`, `isUnpauseDirective`, `isExit`, `possibleAppend` | The two directive probes `DiagramExtractor` needs: is this line a `@start...` / `@end...` (or the backslash spelling, `\startuml`)? |
@@ -1263,6 +1264,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `StringLocated.ts` | `LineLocation`, `TLineType`, `StringLocated` | Minimal port of the surface this batch's write-set (`tim/` memory, function, and `Eater` primitives) actually calls on `net.sourceforge.plantuml.text.StringLocated` and `net.sourceforge.plantuml.utils.LineLocation`. |
 | `TContext.ts` | `TContextOptions`, `TContext` | The TIM interpreter: owns the function registry (`FunctionsSet`), builds the `CodeIterator` decorator chain, executes one line at a time, and performs inline `$variable` / `%function()` substitution. |
 | `TContextOptions.ts` | `TContextOptions` | Construction-time seams for {@link TContext}. |
+| `TContextPython.ts` | `TContextPython`, `containsWord` | The part of upstream's `TContext` that decides whether a Python chunk runs as Python or as before Python existed, with the fix proposed for plantuml/plantuml#3032 (upstream 6524b446188): a `!name = value` line, without '$', stays the legacy |
 | `TContextSubstitution.ts` | `TContextSubstitutionHost`, `applyFunctionsAndVariablesImpl`, `getFunctionNameAt` | The inline `%function(...)` / `$variable` substitution engine used by `TContext#applyFunctionsAndVariables`. |
 | `TFunction.ts` | `TWarning`, `TPreprocessingOptionStore`, `TPreprocessingArtifact`, `TContext`, `TFunction` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TFunction.java |
 | `TFunctionArgument.ts` | `TFunctionArgument` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TFunctionArgument.java |
@@ -1271,7 +1273,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `TFunctionType.ts` | `TFunctionType`, `isLegacyTFunctionType` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TFunctionType.java |
 | `ThemeExecutor.ts` | `ThemeMetadata`, `ThemeExecutor` | `TContext#executeTheme` and the state upstream's `TContext` keeps for it (`themeMetadata`), plus the name `preprocess()` surfaces as `PreprocessorResult.theme`. |
 | `ThemeStore.ts` | `PackagedTheme`, `ThemePackage`, `ThemeStore`, `themeStore`, `withThemes` | Theme packages: themes that core does not bundle, registered by the host. |
-| `TLineType.ts` | `getFromLineInternal`, `isQuote`, `isLatinDigit`, `isLetterOrEmojiOrUnderscoreOrDigit` | The `TLineType` CLASSIFIER -- the regex cascade that decides which TIM directive (if any) a raw source line is. |
+| `TLineType.ts` | `getFromLineInternal`, `TLineTypeWithPython`, `getFromLineWithPython`, `PYTHON_MARKER`, `isQuote`, `isLatinDigit`, `isLetterOrEmojiOrUnderscoreOrDigit` | The `TLineType` CLASSIFIER -- the regex cascade that decides which TIM directive (if any) a raw source line is. |
 | `TMemory.ts` | `ExecutionContextIf`, `ExecutionContextWhile`, `ExecutionContextForeach`, `ExecutionContexts`, `TMemory` | The TIM variable-scoping contract (`TMemory`) plus the shared execution- context stack (`ExecutionContexts`) that both `TMemoryGlobal` and `TMemoryLocal` extend, plus the three `!if` / `!while` / `!foreach` execution-context value classes t |
 | `TMemoryGlobal.ts` | `TMemoryGlobal` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TMemoryGlobal.java |
 | `TMemoryLocal.ts` | `TMemoryLocal` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TMemoryLocal.java |

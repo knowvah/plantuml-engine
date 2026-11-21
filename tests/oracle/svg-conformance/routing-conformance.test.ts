@@ -905,7 +905,11 @@ describe('routing conformance — jar-error classification', () => {
     // 11363 -> 11364 at the a720bdd port (2026-11-20): unknown/petiku-70-fogu777 (jar-error -> agree, CLASS),
     // a struct declared after first use renders since Entity.java:208-213 CLASS_LIKE_TYPES (592901f0c42).
     // Derivation: 11363 + 1 = 11364.
-    expect(pinnedAgree.length).toBe(11364);
+    // 11364 -> 11370 at the #3032 re-capture (2026-11-21): pegali-65, fidoba-93 and joleka-44 (both walks) flip
+    // known-misroute -> agree -- their oracles come from the fix proposed in plantuml/plantuml#3032 (6524b446188),
+    // which runs the `!name = value` line as the legacy assignment again (TContext.java:473-490), so the jar draws
+    // the diagram. Derivation: 11364 + 6 = 11370.
+    expect(pinnedAgree.length).toBe(11370);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -945,7 +949,9 @@ describe('routing conformance — jar-error classification', () => {
     // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
     // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
     // 14 -> 24 at the a720bdd re-pin (2026-11-20): the 10 #214 Python rows. Derivation: 14 + 10 = 24.
-    expect(pinnedMisroutes.length).toBe(24);
+    // 24 -> 18 at the #3032 re-capture (2026-11-21): pegali, fidoba, joleka (both walks) flip to agree (see
+    // pinnedAgree); zoriso and zarelu stay under #214. Derivation: 24 - 6 = 18.
+    expect(pinnedMisroutes.length).toBe(18);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
@@ -1240,7 +1246,8 @@ describe('routing conformance — jar-error classification', () => {
     // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
     // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
     // 14 -> 24 at the a720bdd re-pin (2026-11-20): the 10 #214 Python rows, each citing TLineType.java:266.
-    expect(censused.length).toBe(24);
+    // 24 -> 18 at the #3032 re-capture (2026-11-21): the 6 rows the fix restores. Derivation: 24 - 6 = 18.
+    expect(censused.length).toBe(18);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

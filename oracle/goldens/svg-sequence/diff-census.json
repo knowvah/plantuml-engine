@@ -1,12 +1,12 @@
 {
   "$comment": "Cause census for the committed SEQUENCE oracle corpus. Every count is produced MECHANICALLY by tests/oracle/svg-conformance/sequence-diff-census.ts from the path/actual/expected fields of the Diff records compare.ts emits -- never by reading an SVG (D5, plans/sequence-oracle-harness/decisions.md). The bucket set is closed at six; adding a seventh is stop 9. Fixtures come from diff-baseline.json: status \"baseline\" entries are censused, status \"error\" entries are carried in \"errors\" and contribute NOTHING to \"totals\" -- an unrenderable fixture has no bucket counts and must never read as zero diffs. Regenerate with: npx jiti tests/oracle/svg-conformance/sequence-diff-census.ts -- the output is a pure function of the committed corpus and carries no timestamp, so re-running is byte-identical.",
   "totals": {
-    "missing-element": 3,
-    "extra-element": 7,
-    "geometry": 131,
-    "text-metrics": 30,
+    "missing-element": 1,
+    "extra-element": 6,
+    "geometry": 72,
+    "text-metrics": 12,
     "format-units": 0,
-    "other": 50
+    "other": 36
   },
   "fixtures": [
     {
@@ -34,66 +34,6 @@
       }
     },
     {
-      "slug": "fidoba-93-nonu806",
-      "diffCount": 5,
-      "buckets": {
-        "missing-element": 1,
-        "extra-element": 0,
-        "geometry": 4,
-        "text-metrics": 0,
-        "format-units": 0,
-        "other": 0
-      }
-    },
-    {
-      "slug": "gugena-56-fazu871",
-      "diffCount": 21,
-      "buckets": {
-        "missing-element": 0,
-        "extra-element": 0,
-        "geometry": 19,
-        "text-metrics": 1,
-        "format-units": 0,
-        "other": 1
-      }
-    },
-    {
-      "slug": "gunabi-18-gumo131",
-      "diffCount": 28,
-      "buckets": {
-        "missing-element": 0,
-        "extra-element": 0,
-        "geometry": 24,
-        "text-metrics": 2,
-        "format-units": 0,
-        "other": 2
-      }
-    },
-    {
-      "slug": "joleka-44-cese913",
-      "diffCount": 34,
-      "buckets": {
-        "missing-element": 1,
-        "extra-element": 1,
-        "geometry": 12,
-        "text-metrics": 12,
-        "format-units": 0,
-        "other": 8
-      }
-    },
-    {
-      "slug": "jorari-47-buje011",
-      "diffCount": 2,
-      "buckets": {
-        "missing-element": 0,
-        "extra-element": 0,
-        "geometry": 0,
-        "text-metrics": 1,
-        "format-units": 0,
-        "other": 1
-      }
-    },
-    {
       "slug": "mefeke-43-xotu192",
       "diffCount": 1,
       "buckets": {
@@ -115,30 +55,6 @@
         "text-metrics": 6,
         "format-units": 0,
         "other": 17
-      }
-    },
-    {
-      "slug": "supezo-15-dasi526",
-      "diffCount": 2,
-      "buckets": {
-        "missing-element": 0,
-        "extra-element": 0,
-        "geometry": 0,
-        "text-metrics": 1,
-        "format-units": 0,
-        "other": 1
-      }
-    },
-    {
-      "slug": "vodiba-42-fegu984",
-      "diffCount": 2,
-      "buckets": {
-        "missing-element": 0,
-        "extra-element": 0,
-        "geometry": 0,
-        "text-metrics": 1,
-        "format-units": 0,
-        "other": 1
       }
     }
   ],

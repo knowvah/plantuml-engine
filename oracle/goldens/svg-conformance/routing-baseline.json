@@ -8838,12 +8838,11 @@
       "tree": "dot-cache",
       "type": "component",
       "slug": "pegali-65-rotu416",
-      "jarType": "NONE",
+      "jarType": "DESCRIPTION",
       "ourType": "DESCRIPTION",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!global = \"changed value\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: expected a name but found '=' (column 8)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "dot-cache",
@@ -13571,12 +13570,11 @@
       "tree": "dot-cache",
       "type": "sequence",
       "slug": "fidoba-93-nonu806",
-      "jarType": "NONE",
+      "jarType": "SEQUENCE",
       "ourType": "SEQUENCE",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!ijk<TAB>= \"foo\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: tabs are not allowed; indent with spaces (column 4)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "dot-cache",
@@ -69876,12 +69874,11 @@
       "tree": "goldens",
       "type": "svg-description",
       "slug": "component/pegali-65-rotu416",
-      "jarType": "NONE",
+      "jarType": "DESCRIPTION",
       "ourType": "DESCRIPTION",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!global = \"changed value\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: expected a name but found '=' (column 8)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "goldens",
@@ -73558,12 +73555,11 @@
       "tree": "goldens",
       "type": "svg-sequence",
       "slug": "fidoba-93-nonu806",
-      "jarType": "NONE",
+      "jarType": "SEQUENCE",
       "ourType": "SEQUENCE",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!ijk<TAB>= \"foo\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: tabs are not allowed; indent with spaces (column 4)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "goldens",
@@ -94274,12 +94270,11 @@
       "tree": "dot-cache",
       "type": "sequence",
       "slug": "joleka-44-cese913",
-      "jarType": "NONE",
+      "jarType": "SEQUENCE",
       "ourType": "SEQUENCE",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!TEST=something` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python error: NameError: name 'something' is not defined'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "dot-cache",
@@ -112299,12 +112294,11 @@
       "tree": "goldens",
       "type": "svg-sequence",
       "slug": "joleka-44-cese913",
-      "jarType": "NONE",
+      "jarType": "SEQUENCE",
       "ourType": "SEQUENCE",
-      "status": "known-misroute",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "77d1dae0c",
-      "reason": "the jar runs `!TEST=something` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python error: NameError: name 'something' is not defined'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
+      "status": "agree",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c9"
     },
     {
       "tree": "goldens",

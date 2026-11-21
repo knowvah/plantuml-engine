@@ -118,6 +118,16 @@ export interface TContext {
 
   /** @see ~/git/plantuml/.../tim/TContext.java#getPreprocessingArtifact */
   getPreprocessingArtifact(): TPreprocessingArtifact;
+
+  /**
+   * For a `!name = value` line: the line of upstream's Python chunk it comes
+   * from, when the plantuml/plantuml#3032 fix runs that chunk as legacy
+   * (`TContext.java:354`, `legacyLines` :473); undefined when it runs as
+   * Python. Optional so that the iterator and eater tests' stand-in contexts
+   * need not route: without it every such line takes the Python route.
+   * @see TContextPython.legacyLineOf
+   */
+  legacyLineOf?(line: StringLocated): StringLocated | undefined;
 }
 
 /**
