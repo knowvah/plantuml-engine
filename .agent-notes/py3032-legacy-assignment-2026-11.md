@@ -1,5 +1,5 @@
 ## Observation: the #3032 routing runs beside the body, not in place of it
-- **Context**: porting the plantuml/plantuml#3032 fix (6524b446188) without the Python interpreter (#214).
+- **Context**: porting the plantuml/plantuml#3032 fix (908fb9df265) without the Python interpreter (#214).
 - **Finding**: upstream replaces Python lines by chunks before the iterators run (`PythonChunks.collapse`); the port keeps executing the raw lines and builds the chunks only for the routing (`src/core/tim/PythonChunks.ts`, `TContextPython.ts`). A `!name = value` line reaches `CodeIteratorAffectation` on its own and finds its chunk by line LOCATION (the iterators may rebuild a line, never relocate it). `getFromLineWithPython` (TLineType.ts) is upstream's classifier; `getFromLineInternal` stays the pre-Python one that executes.
 - **Impact**: when #214 ports the interpreter, the chunks should replace the body (as upstream) and `chunkOfLine` goes away.
 - **Confidence**: High

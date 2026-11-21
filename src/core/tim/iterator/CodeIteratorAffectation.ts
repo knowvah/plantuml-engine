@@ -114,7 +114,7 @@ export class CodeIteratorAffectation extends AbstractCodeIterator {
 /**
  * A legacy assignment, as CodeIteratorAffectation runs it. A JSON value cannot
  * continue on the next lines here: they are not part of the chunk.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java:562-572 `executeLegacyAffectation` (6524b446188)
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java:562-572 `executeLegacyAffectation` (908fb9df265)
  */
 function executeLegacyAffectation(context: TContext, memory: TMemory, s: StringLocated): void {
   try {

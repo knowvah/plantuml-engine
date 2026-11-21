@@ -241,7 +241,7 @@ left `ratchet.json`; each went back to `status: "baseline"` in
 `nupiko-03` and `unknown/nupiko-03` left this ratchet at the a720bdd re-pin
 because that jar runs a `!name = value` line of each as Python, and their
 `diff-baseline.json` rows are `pinned` again. Their oracles now come from the fix
-proposed in plantuml/plantuml#3032 (upstream 6524b446188), which runs the line
+proposed in plantuml/plantuml#3032 (upstream 908fb9df265), which runs the line
 as the legacy assignment again, with the missing-`$` warning banner; the port
 mirrors its routing (`src/core/tim/TContextPython.ts`). They are pinned again
 at their original ratchet positions. Re-pin when a release carries the fix

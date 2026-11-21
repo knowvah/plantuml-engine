@@ -11,7 +11,7 @@
  * (`TContext.java:473`). `unescapeBang` belongs to the Python interpreter's
  * text lines and is not ported.
  *
- * Line numbers are upstream's at 6524b446188 (the #3032 fix).
+ * Line numbers are upstream's at 908fb9df265 (the #3032 fix).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/text/PythonLine.java
  */

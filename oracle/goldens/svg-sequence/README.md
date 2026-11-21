@@ -200,7 +200,7 @@ Their `golden.svg` directories stay as the evidence.
 and `vodiba-42` left the ratchet at the a720bdd re-pin with the two rows above
 and are pinned again at their original positions, their `diff-baseline.json`
 rows `pinned`. Their oracles now come from the fix proposed in
-plantuml/plantuml#3032 (upstream 6524b446188), which runs the `!name = value`
+plantuml/plantuml#3032 (upstream 908fb9df265), which runs the `!name = value`
 line as the legacy assignment again, with the missing-`$` warning banner; the
 port mirrors its routing (`src/core/tim/TContextPython.ts`). Re-pin when a
 release carries the fix (DIVERGENCES.md, "Rows pinned to unreleased upstream

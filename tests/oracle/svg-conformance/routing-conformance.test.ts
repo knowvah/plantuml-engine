@@ -906,7 +906,7 @@ describe('routing conformance — jar-error classification', () => {
     // a struct declared after first use renders since Entity.java:208-213 CLASS_LIKE_TYPES (592901f0c42).
     // Derivation: 11363 + 1 = 11364.
     // 11364 -> 11370 at the #3032 re-capture (2026-11-21): pegali-65, fidoba-93 and joleka-44 (both walks) flip
-    // known-misroute -> agree -- their oracles come from the fix proposed in plantuml/plantuml#3032 (6524b446188),
+    // known-misroute -> agree -- their oracles come from the fix proposed in plantuml/plantuml#3032 (908fb9df265),
     // which runs the `!name = value` line as the legacy assignment again (TContext.java:473-490), so the jar draws
     // the diagram. Derivation: 11364 + 6 = 11370.
     expect(pinnedAgree.length).toBe(11370);

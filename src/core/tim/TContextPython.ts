@@ -1,7 +1,7 @@
 /**
  * The part of upstream's `TContext` that decides whether a Python chunk runs
  * as Python or as before Python existed, with the fix proposed for
- * plantuml/plantuml#3032 (upstream 6524b446188): a `!name = value` line,
+ * plantuml/plantuml#3032 (upstream 908fb9df265): a `!name = value` line,
  * without '$', stays the legacy assignment it was when the diagram has no
  * other Python and uses the name in its text.
  *
@@ -17,7 +17,7 @@
  * A `!name(...)` legacy call already runs as a plain line here, which is
  * what upstream's routing gives it when legacy (`TContext.java:363-366`).
  *
- * Line numbers are upstream's `TContext.java` at 6524b446188.
+ * Line numbers are upstream's `TContext.java` at 908fb9df265.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java
  */

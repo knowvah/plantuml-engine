@@ -56,7 +56,7 @@ describe("a variable declared without '$' (Eater.java#checkVariableStartsWithDol
   });
 });
 
-/** Port of upstream `PythonLineTest.java` (plantuml/plantuml#3032 fix, 6524b446188). */
+/** Port of upstream `PythonLineTest.java` (plantuml/plantuml#3032 fix, 908fb9df265). */
 describe('PythonLine.nameAssignedWithoutDollar (PythonLine.java:147, #3032)', () => {
   it.each([
     ['!x = 1', 'x'],

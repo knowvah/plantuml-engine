@@ -191,7 +191,7 @@ export type TLineTypeWithPython = TLineType | 'PYTHON';
 
 /**
  * Upstream's classifier since the Python preprocessor (0537b558644), at
- * 6524b446188: `!x = 1`, `!def ...:`, `!f(1)` are `PYTHON`.
+ * 908fb9df265: `!x = 1`, `!def ...:`, `!f(1)` are `PYTHON`.
  *
  * {@link getFromLineInternal} stays the classifier that EXECUTES the line,
  * as before Python, because this port has no Python preprocessor (#214). This

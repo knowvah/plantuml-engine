@@ -23,7 +23,7 @@
  * diagram a Python diagram (`TContext.java:497-509`), so its text is never
  * read. The raw text stands in for it.
  *
- * Line numbers are upstream's at 6524b446188 (the #3032 fix).
+ * Line numbers are upstream's at 908fb9df265 (the #3032 fix).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/PythonChunks.java
  */

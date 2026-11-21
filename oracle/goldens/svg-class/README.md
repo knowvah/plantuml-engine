@@ -128,7 +128,7 @@ README.md`'s identical rule; the same rationale applies verbatim.
 `xonoru-58-noxe307` and `unknown/febuli-89-dusi249` left the ratchet at the
 a720bdd re-pin (its jar runs their `!name = value` lines as Python) and were
 restored on 2026-11-21 at their original positions: their oracles now come from
-the fix proposed in plantuml/plantuml#3032 (upstream 6524b446188), which runs
+the fix proposed in plantuml/plantuml#3032 (upstream 908fb9df265), which runs
 the lines as legacy assignments again, with the missing-`$` warning banner.
 Re-pin when a release carries the fix (DIVERGENCES.md, "Rows pinned to
 unreleased upstream fixes").

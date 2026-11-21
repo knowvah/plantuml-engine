@@ -1,6 +1,6 @@
 /**
  * `!name = value`, without '$' (plantuml/plantuml#3032, the fix proposed in
- * upstream 6524b446188): the legacy assignment it was before Python when the
+ * upstream 908fb9df265): the legacy assignment it was before Python when the
  * diagram has no other Python and uses the name in its text, a Python
  * assignment otherwise (`TContext.java:473` `legacyLines`, `:497`
  * `isPythonDiagram`, `:514` `isInText`).
@@ -173,7 +173,7 @@ describe('vega/python/legacy fixtures (#3032)', () => {
   });
 });
 
-describe('TContextPython (TContext.java:473-560 at 6524b446188)', () => {
+describe('TContextPython (TContext.java:473-560 at 908fb9df265)', () => {
   const routed = (...lines: string[]): (string | undefined)[] => {
     const body = readLines(block(...lines));
     const python = new TContextPython(new FunctionsSet());

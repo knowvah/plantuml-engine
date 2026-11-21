@@ -1,5 +1,5 @@
 /**
- * `PythonChunks.collapse` (PythonChunks.java:78-178 at 6524b446188): which
+ * `PythonChunks.collapse` (PythonChunks.java:78-178 at 908fb9df265): which
  * lines upstream groups into one Python chunk. Each case states the grouping
  * the Java loop gives, read off the method: upstream has no unit test of it,
  * and the jar shows a chunk only through the routing it feeds
