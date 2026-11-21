@@ -138,6 +138,7 @@ function computeParticipantWidths(sortedParticipants: Participant[], ctx: Partic
       font: paint.font,
       stereotypeBottom: p.stereotypeBottom,
       underlined: p.underlined,
+      stereotypeText: p.stereotypeText,
     });
     const textW = Math.max(...labelRows(rows, ctx).map((r) => r.width));
     // `TextBlockSprited#calculateDimension`: the badge widens the block by its
@@ -277,7 +278,7 @@ function positionParticipants(
     g.y = yOrigin + maxParticipantHeight - areaOf(g);
     // AFTER the bottom-align, never before: the runs carry an absolute
     // baseline, and `g.y` is what it is measured from.
-    g.labelRuns = buildLabelRuns(participantBoxOf(g), ctx, participantPaintsOf(sortedParticipants[i]!).stereoFont);
+    g.labelRuns = buildLabelRuns(participantBoxOf(g), ctx, participantPaintsOf(sortedParticipants[i]!));
   });
 
   return { participantGeos, participantMap, participantIndex, maxParticipantHeight };
@@ -324,6 +325,7 @@ function buildParticipantGeo(
     font: paint.font,
     stereotypeBottom: p.stereotypeBottom,
     underlined: p.underlined,
+    stereotypeText: p.stereotypeText,
   });
   const textHeight = labelRows(rows, ctx).reduce((h, r) => h + r.height, 0);
   // `getTextHeight = textBlock.height + padding.top + padding.bottom`
@@ -341,12 +343,15 @@ function buildParticipantGeo(
 
   return {
     id: p.id,
+    uid: p.uid,
+    ...(p.sourceLine !== undefined ? { sourceLine: p.sourceLine } : {}),
     display: p.display,
     paint,
     background: paint.fill,
     border: paint.stroke,
     ...(stereoLines.length > 0 ? { stereotypeLines: stereoLines } : {}),
     ...(p.stereotypeBottom === true ? { stereotypeBottom: true } : {}),
+    ...(p.stereotypeText !== undefined ? { stereotypeText: p.stereotypeText } : {}),
     ...(p.underlined === true ? { underlined: true } : {}),
     ...(p.url !== undefined ? { url: p.url } : {}),
     ...(badge !== undefined ? { badge } : {}),

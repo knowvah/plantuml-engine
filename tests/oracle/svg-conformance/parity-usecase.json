@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:12:25.275Z",
+  "generatedAt": "2026-11-21T16:52:11.064Z",
   "fixtures": [
     {
       "slug": "baxodi-80-doto381",
@@ -652,9 +652,10 @@
     {
       "slug": "zoriso-46-vata931",
       "type": "usecase",
-      "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "zotiru-33-legi180",

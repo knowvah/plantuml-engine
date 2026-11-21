@@ -26,13 +26,14 @@ import {
   applyHideUnlinked,
   emit,
   makeDefaultAST,
+  NOTE_END_RE,
   SequenceCommandRefusal,
   type ParseState,
 } from './sequence-parse-helpers.js';
 import { SEQUENCE_COMMANDS } from './sequence-command-registry.js';
 import { newLifeState } from './sequence-life-state.js';
 import { removeEmptyColumns } from './remove-empty-columns.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { applyNoteTextAlignment } from './sequence-note-text-alignment.js';
 import { applyResponseMessageBelowArrow } from './sequence-response-below.js';
@@ -106,7 +107,7 @@ function handlePendingNote(state: ParseState, lines: readonly string[], i: numbe
   // is the "end note" command — any other pattern match here is ignored and
   // the line still accumulates into the note text below.
   const endNoteCmd = SEQUENCE_COMMANDS.find((c) => c.pattern.test(line));
-  if (endNoteCmd !== undefined && /^end\s*(?:note|hnote|rnote)\s*$/i.test(line)) {
+  if (endNoteCmd !== undefined && NOTE_END_RE.test(line)) {
     const m = endNoteCmd.pattern.exec(line)!;
     endNoteCmd.execute(state, m);
     return 1;
@@ -287,7 +288,7 @@ function trimNonBlank(lines: readonly string[]): { text: string; origIndex: numb
  */
 function dispatchOrdinaryLine(state: ParseState, line: string, at: number): ParseRefusal | null {
   if (!dispatchCommand(state, line)) {
-    return refuse('syntax', at, at, 'Syntax Error?');
+    return refuse('syntax', at, at, syntaxErrorMessageOf(line));
   }
   if (state.executionError !== undefined) {
     return refuse('execution', at, at, state.executionError);
@@ -360,6 +361,11 @@ function runDispatchLoop(state: ParseState, source: UmlSource): ParseRefusal | n
   for (let i = 0; i < trimmedLines.length; i++) {
     const { origIndex } = trimmedEntries[i]!;
     if (state.pendingNote === null) lastRaw = origIndex;
+    // The `LineLocation` the command dispatched at this line receives.
+    state.currentLine = source.linePositions?.[origIndex];
+    const nextRaw = source.lines[origIndex + 1];
+    state.nextRawLine =
+      nextRaw === undefined ? undefined : { text: nextRaw, position: source.linePositions?.[origIndex + 1] };
     const styleRefusal = executeDeclarationsBefore(state.style, documentPositionOf(source, origIndex));
     if (styleRefusal !== null) return styleRefusal;
     const line = trimmedLines[i]!;

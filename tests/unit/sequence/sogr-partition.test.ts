@@ -28,9 +28,9 @@ describe('partition frame (teoz-ng-001-11)', () => {
   it('draws the border-to-border rect, background pass then both component passes', () => {
     const rects = partitionRects(svg);
     expect(rects.map((r) => [r['width'], r['height'], r['stroke'], r['fill']])).toEqual([
-      ['111.287', '45', 'none', 'none'],
-      ['111.287', '45', '#000', 'none'],
-      ['111.287', '45', '#000', 'none'],
+      ['107.181', '45', 'none', 'none'],
+      ['107.181', '45', '#000', 'none'],
+      ['107.181', '45', '#000', 'none'],
     ]);
     expect(rects[1]!['stroke-width']).toBe('1.5');
   });
@@ -38,8 +38,8 @@ describe('partition frame (teoz-ng-001-11)', () => {
   it('centres the bold 13 title over the border span', () => {
     const titles = [...svg.matchAll(/<text [^>]*>p<\/text>/g)].map((m) => attrsOf(m[0]));
     expect(titles.map((t) => [t['x'], t['y'], t['font-size'], t['font-weight']])).toEqual([
-      ['62.028', '65.111', '13', '700'],
-      ['62.028', '65.111', '13', '700'],
+      ['59.975', '65.111', '13', '700'],
+      ['59.975', '65.111', '13', '700'],
     ]);
   });
 

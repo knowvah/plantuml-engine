@@ -291,14 +291,14 @@ export function emptyPackageStereoFontColor(theme: Theme, tags: readonly string[
  * (`finono-05-cuvu171`: 20) and 40pt (`pixexi-81-sete111`: 46). Sums every
  * physical line's own height (cdd-T26, `daxeno-00-kasu166`).
  */
-export function getHTitle(measurer: StringMeasurer, theme: Theme, label: string): number {
+export function getHTitle(measurer: StringMeasurer, theme: Theme, label: string, wrapWidth = 0): number {
   // isw-T2-cls: the SAME title block `getWTitle` tests (`USymbolFolder.java:
   // 127-143` reads `dimTitle.getWidth()` in both). An empty label is one " "
   // atom (`StripeSimple.java:125-126`), 3.85 wide at 14pt, so it takes the
   // `height + marginTitleY1 + marginTitleY2` branch (jar probe `package "" as
   // p`: tab bottom at 26, not 16).
-  if (namespaceTitleWidth(measurer, theme, label) === 0) return 10;
-  return namespaceTitleHeight(measurer, theme, label) + MARGIN_TITLE_Y1 + MARGIN_TITLE_Y2;
+  if (namespaceTitleWidth(measurer, theme, label, wrapWidth) === 0) return 10;
+  return namespaceTitleHeight(measurer, theme, label, wrapWidth) + MARGIN_TITLE_Y1 + MARGIN_TITLE_Y2;
 }
 
 /**
@@ -306,8 +306,8 @@ export function getHTitle(measurer: StringMeasurer, theme: Theme, label: string)
  * `max(30, width/4)` for an empty label -- jar-verified `titleWidth+6`
  * (`finono-05-cuvu171`, `jinibe-02-tebi269`).
  */
-export function getWTitle(measurer: StringMeasurer, theme: Theme, label: string, width: number): number {
-  const titleWidth = namespaceTitleWidth(measurer, theme, label);
+export function getWTitle(measurer: StringMeasurer, theme: Theme, label: string, width: number, wrapWidth = 0): number {
+  const titleWidth = namespaceTitleWidth(measurer, theme, label, wrapWidth);
   if (titleWidth === 0) return Math.max(30, width / 4);
   return titleWidth + MARGIN_TITLE_X1 + MARGIN_TITLE_X2;
 }

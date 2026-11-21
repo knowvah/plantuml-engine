@@ -10,6 +10,7 @@ import { EmbeddedDiagram, getEmbeddedType } from './EmbeddedDiagram.js';
 import type { StringLocated } from './tim/StringLocated.js';
 import { getInputStreamForStyle } from './style/StyleLoader.js';
 import { ELEMENT_MULTILINE_OPEN_RE } from './element-open-pattern.js';
+import { trim2 } from './string-utils-trim.js';
 
 /** `CommandCreateElementMultilines.END1` (java:83-84). */
 const RE_ELEMENT_BODY_END = /^([^[\]]*)\]$/;
@@ -124,16 +125,6 @@ function cleanSkinKey(key: string): string {
   const stereos = [...lower.matchAll(/<<([^<>]*)>>/g)].map((m) => `<<${m[1]!}>>`);
   return lower.replace(/<<[^<>]*>>/g, '') + stereos.join('');
 }
-/** `StringUtils.trim2(CharSequence)` (`StringUtils.java:537-567`): trims
- *  characters `<= ' '` from both ends. Local copy, as in
- *  `EmbeddedDiagram.ts` / `BodyEnhanced2.ts` (each keeps its own). */
-function trim2(s: string): string {
-  let start = 0;
-  let end = s.length;
-  while (start < end && s.charCodeAt(start) <= 0x20) start++;
-  while (end > start && s.charCodeAt(end - 1) <= 0x20) end--;
-  return s.slice(start, end);
-}
 
 const RE_SKINPARAM_BLOCK_ENTRY = /^\s*(\w+(?:<<[^<>]+>>)?)\s+(.+)$/;
 const RE_SKINPARAM_BLOCK_CLOSE = /^\s*\}\s*$/;
@@ -208,6 +199,19 @@ export class StyleAndSkinparamCollector {
 
   private sequence = 0;
   private inStyleBlock = false;
+  /** The open block's opening line, while {@link inStyleBlock}. */
+  private styleOpening: StringLocated | undefined;
+
+  /**
+   * `notAnOpening`: a `<style>` line no `</style>` (nor second `<style>`)
+   * closes before the end of the block, found by a first pass
+   * ({@link unclosedStyleOpening}). Upstream's `CommandStyleMultilinesCSS`
+   * never accepts it -- the multi-line command looks for its `END` up to the
+   * end of the diagram (`CommandMultilines2`) -- so the line and every line
+   * after it stay in the body, where each engine's own commands meet them
+   * (`PSystemCommandFactory#getSyntaxErrorMessage`, upstream 96380842043).
+   */
+  constructor(private readonly notAnOpening?: StringLocated) {}
   private readonly styleBuffer: string[] = [];
   /**
    * Upstream's `SkinLoader#context` (`SkinLoader.java:56`): the stack of
@@ -261,8 +265,9 @@ export class StyleAndSkinparamCollector {
       this.pushStyle(singleLine[1]!, position);
       return true;
     }
-    if (RE_STYLE_OPEN.test(trimmed)) {
+    if (RE_STYLE_OPEN.test(trimmed) && line !== this.notAnOpening) {
       this.inStyleBlock = true;
+      this.styleOpening = line;
       this.stylePositions.push(position);
       this.styleOrder.push(this.sequence++);
       return true;
@@ -299,6 +304,11 @@ export class StyleAndSkinparamCollector {
     this.styles.push(sheet);
     this.stylePositions.push(position);
     this.styleOrder.push(this.sequence++);
+  }
+
+  /** Once every line was offered: the opening line of the block still open, if any. */
+  unclosedStyleOpening(): StringLocated | undefined {
+    return this.inStyleBlock ? this.styleOpening : undefined;
   }
 
   private collectStyleLine(raw: string, trimmed: string): boolean {
@@ -394,4 +404,21 @@ export class StyleAndSkinparamCollector {
     this.skinparamOrder.set(key, order);
     this.skinparamAssignments.push({ key, value, position, order, form });
   }
+}
+
+/**
+ * Offers every line to a collector; the lines it does not consume are the
+ * body. An unclosed `<style>` is no style command, so a second pass collects
+ * again with that opening left in the body (see the constructor).
+ */
+export function collectStylesAndSkinparams(
+  data: readonly StringLocated[],
+  positions: readonly (number | undefined)[],
+): { readonly collector: StyleAndSkinparamCollector; readonly kept: StringLocated[] } {
+  const first = new StyleAndSkinparamCollector();
+  const kept = data.filter((line, i) => !first.accept(line, positions[i]));
+  const unclosed = first.unclosedStyleOpening();
+  if (unclosed === undefined) return { collector: first, kept };
+  const second = new StyleAndSkinparamCollector(unclosed);
+  return { collector: second, kept: data.filter((line, i) => !second.accept(line, positions[i])) };
 }

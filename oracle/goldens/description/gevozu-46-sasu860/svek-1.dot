@@ -9,7 +9,7 @@ sh0007 [shape=rect,label="",width=0.888889,height=0.722222,color="#000007"];
 sh0008 [shape=rect,label="",width=0.902778,height=0.722222,color="#000008"];
 sh0009 [shape=rect,label="",width=0.805556,height=0.708333,color="#000009"];
 sh0010 [shape=rect,label="",width=1.277778,height=0.805556,color="#00000A"];
-sh0011 [shape=ellipse,label="",width=0.568066,height=0.471119,color="#00000B"];
+sh0011 [shape=ellipse,label="",width=0.426438,height=0.357817,color="#00000B"];
 sh0010->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#00000C"];
 sh0006->sh0007[arrowtail=none,arrowhead=none,minlen=1,color="#000010"];
 sh0007->sh0011[arrowtail=none,arrowhead=none,minlen=1,color="#000014"];

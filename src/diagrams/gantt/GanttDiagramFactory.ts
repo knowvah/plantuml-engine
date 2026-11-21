@@ -7,7 +7,7 @@ import type { InternalEmojiStore } from '../../core/internal-emoji-store.js';
 import { CommandControl } from '../../core/command/CommandControl.js';
 import type { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
 import { ParserPass } from '../../core/command/ParserPass.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand, type ScaleSpec } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
@@ -20,10 +20,10 @@ import {
   type PositionedDeclaration,
   type SkinParam as StyleSkinParam,
 } from '../../core/style/mindmap-style-builder.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import { StringLocated } from '../../core/tim/StringLocated.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
 import { CommandColorTask } from './command/CommandColorTask.js';
 import { CommandFootboxGantt } from './command/CommandFootboxGantt.js';
 import { CommandGanttArrow } from './command/CommandGanttArrow.js';
@@ -54,13 +54,10 @@ import { SubjectSeparator } from './lang/SubjectSeparator.js';
 import { SubjectTask } from './lang/SubjectTask.js';
 import { SubjectToday } from './lang/SubjectToday.js';
 import { SubjectWorkingHours } from './lang/SubjectWorkingHours.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startgantt`/`@endgantt` -- tolerated defensively in a hand-built source (the wbs factory's `START_END_RE`). */
 const START_END_RE = /^@(start|end)gantt\s*$/i;
-
-/** The standard error text of a line no command matches.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 
 /** `CommandNope`: `^[%s]*$` over the trimmed line (`%s` = `\s` + U+00A0, Pattern2.java:57, Java `\s` being ASCII).
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandNope.java:54-58 */
@@ -79,14 +76,6 @@ const PAGE = /^page[ \t\n\x0B\f\r\u00A0]+(\d+)[ \t\n\x0B\f\r\u00A0]*x[ \t\n\x0B\
  */
 const NAMESPACE_SEPARATOR =
   /^set[ \t\n\x0B\f\r\u00A0]+(?:separator|namespaceseparator)[ \t\n\x0B\f\r\u00A0]+((?:none|null)|[\\]{2}|::|[^\p{L}\p{N} \t\n\x0B\f\r\u00A0_$#\\{}<>"“”])$/iu;
-
-/** The `new Warning(...)` texts `CommandSkinParam#executeArg` adds, keyed by the lower-cased skin parameter name.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /**
  * What `parseGantt` hands the plugin: the diagram plus the two `TitledDiagram`/`UmlDiagram` members the common
@@ -299,12 +288,12 @@ function refusalLineOf(source: UmlSource, i: number): number {
 
 /**
  * `CommandSkinParam#executeArg`'s deprecation warnings, one per collected `skinparam`, in source order.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:94-107
  */
 function addSkinParamWarnings(diagram: GanttDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -328,7 +317,7 @@ function executeCommands(parsed: ParsedGantt, source: UmlSource, dispatch: Style
     }
 
     const outcome = dispatchGanttLine(parsed.diagram, lines, i);
-    if (outcome === undefined) return refuse('syntax', refusalLineOf(source, i), i, SYNTAX_ERROR);
+    if (outcome === undefined) return refuse('syntax', refusalLineOf(source, i), i, syntaxErrorMessageOf(lines[i]!));
     if (outcome.result.isOk() === false) {
       return refuse('execution', refusalLineOf(source, i), i, outcome.result.getError(), outcome.result.getScore());
     }

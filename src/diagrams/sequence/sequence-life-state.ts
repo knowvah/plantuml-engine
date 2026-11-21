@@ -1,7 +1,8 @@
 /**
  * The life-event bookkeeping `SequenceDiagram` keeps while it parses: the
  * pending `create`, the last delay, the event a bare life event binds to, and
- * the stack of activating messages `return` and a bare `deactivate` read.
+ * the stack of activating messages `return` and a bare `deactivate` read,
+ * and the two uid counters (participants, messages) the SVG groups read.
  *
  * Each function below is one method of `SequenceDiagram`, kept to what the
  * port's parser needs -- the drawing half (which bar opens where) stays in
@@ -30,12 +31,29 @@ export interface LifeState {
   lastEventWithDeactivate: LastEventWithDeactivate | null;
   /** `activationState` (`:352`). */
   readonly activationState: AbstractMessageEvent[];
+  /** `cpt` (`SequenceDiagram.java:105`): the next participant uid's number,
+   *  from 1 -- {@link createUid}. */
+  participantCounter: number;
+  /** `messageCount` (`:200`): messages added so far -- {@link addMessage}. */
+  messageCount: number;
 }
 
 export const AFTER_DELAY_ERROR = 'You cannot Activate/Deactivate just after a ...';
 
 export function newLifeState(): LifeState {
-  return { lastDelay: false, pendingCreate: null, lastEventWithDeactivate: null, activationState: [] };
+  return {
+    lastDelay: false,
+    pendingCreate: null,
+    lastEventWithDeactivate: null,
+    activationState: [],
+    participantCounter: 1,
+    messageCount: 0,
+  };
+}
+
+/** `SequenceDiagram#createUid` (`:178-180`): `"part" + cpt.getAndAdd(1)`. */
+export function createUid(life: LifeState): string {
+  return `part${life.participantCounter++}`;
 }
 
 /** `Message#dealWith` (`Message.java:73-75`) / `MessageExo#dealWith` (`:90-92`). */
@@ -56,6 +74,8 @@ function compatibleForCreate(m: AbstractMessageEvent, p: string): boolean {
  * makes it `isCreate()` (`AbstractMessage.java:169-171`).
  */
 export function addMessage(life: LifeState, m: AbstractMessageEvent): string | undefined {
+  // `m.setUid("msg" + (++messageCount))` (`:206`), ahead of the create check.
+  m.uid = `msg${++life.messageCount}`;
   life.lastEventWithDeactivate = m;
   life.lastDelay = false;
   if (life.pendingCreate === null) return undefined;

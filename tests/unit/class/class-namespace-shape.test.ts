@@ -39,8 +39,8 @@ describe('getWTitle', () => {
   });
 
   // isw-T2-cls: an empty label is a lone " " atom (3.85 @14pt), NOT a
-  // 0-wide title -- jar probe tests/fixtures/isw-T2-cls/empty-package-title.svg
-  // (`package "" as p`: tab path L13.35 = 6 + 9.85 - 2.5). The max(30, w/4)
+  // 0-wide title -- jar probe tests/fixtures/isw-T2-cls/empty-package-title-reachable.svg
+  // (`package "" as p {}`: tab path L13.35 = 6 + 9.85 - 2.5). The max(30, w/4)
   // arm (USymbolFolder.java:130) needs `dimTitle.getWidth() == 0`, i.e. a
   // null label, which no package declaration produces.
   it('is 3.85 + 6 for an empty label (a lone space atom), whatever the width', () => {

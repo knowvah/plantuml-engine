@@ -55,7 +55,7 @@ const LICENSE_LINES = [
   '| ',
   '+=======================================================================',
   ' ',
-  '(C) Copyright 2009-2024, Arnaud Roques',
+  '(C) Copyright 2009-2027, Arnaud Roques',
   ' ',
   'Project Info:  https://plantuml.com',
   ' ',

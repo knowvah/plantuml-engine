@@ -20,7 +20,7 @@ import type { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.j
 import type { ParseOptions } from '../../core/dispatcher.js';
 import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { getSyntaxErrorMessage, refuse } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import type { SkinParamClasspath } from '../../core/skin/SkinParamFresh.js';
 import { isEndDirective, isStartDirective } from '../../core/tim/StartUtils.js';
@@ -28,9 +28,6 @@ import { StringLocated } from '../../core/tim/StringLocated.js';
 import { CommandLineSimple } from './CommandLineSimple.js';
 import { CommandLink } from './CommandLink.js';
 import { FlowDiagram } from './FlowDiagram.js';
-
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:170 */
-const SYNTAX_ERROR = 'Syntax Error?';
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/flowdiagram/FlowDiagramFactory.java:60-64 */
 export function initCommandsList(): readonly SingleLineCommand2<FlowDiagram>[] {
@@ -59,7 +56,7 @@ export function parseFlow(source: UmlSource, options?: ParseOptions): FlowDiagra
   for (let k = 1; k < all.length && !isEndDirective(all[k]!); k++) {
     const line = new StringLocated(all[k]!, undefined);
     const cmd = cmds.find((c) => c.isValid(line) === CommandControl.OK);
-    if (cmd === undefined) return refuse('syntax', documentLineOf(source, all, k), k, SYNTAX_ERROR);
+    if (cmd === undefined) return refuse('syntax', documentLineOf(source, all, k), k, getSyntaxErrorMessage(line));
     const result = cmd.execute(diagram, line, ParserPass.ONE);
     if (!result.isOk())
       return refuse('execution', documentLineOf(source, all, k), k, result.getError(), result.getScore());

@@ -532,33 +532,45 @@ describe('MyElkEdge labels', () => {
   });
 });
 
-describe('getRoleLabelPosition (MyElkEdge.java:281-316)', () => {
+describe('getRoleLabelPosition (MyElkEdge.java:281-286, RoleLabels.getPosition)', () => {
   const Q = new XDimension2D(10, 13);
   const R = new XDimension2D(30, 13);
 
-  it('stacks the role under the quantifier when the ends coincide (:288-291)', () => {
+  it('stacks the role under the quantifier when the ends coincide (RoleLabels.java:101-103)', () => {
     const p = getRoleLabelPosition(Q, R, new XPoint2D(4, 5), new XPoint2D(1, 1), new XPoint2D(1.0004, 1.0005));
     expect([p.x, p.y]).toEqual([4, 18]);
   });
 
-  it('puts the role right of a vertical line when the quantifier is left of it (:301-302)', () => {
+  it('puts the role right of a vertical line when the quantifier is left of it (:129-136)', () => {
+    // The segment (0,0)-(3,50) is sampled every ~2 units (`sampleSegment`, 26 steps); the label spans
+    // y in [3, 20], where the line is furthest right at step 10: x = 3 * 10 / 26, so roleX = that + gap.
     const p = getRoleLabelPosition(Q, R, new XPoint2D(-20, 5), new XPoint2D(0, 0), new XPoint2D(3, 50));
-    expect([p.x, p.y]).toEqual([2, 5]);
+    expect(p.x).toBeCloseTo(2 + (3 * 10) / 26, 9);
+    expect(p.y).toBe(5);
   });
 
-  it('puts the role left of a vertical line otherwise (:303-305)', () => {
-    const p = getRoleLabelPosition(Q, R, new XPoint2D(-5, 5), new XPoint2D(0, 0), new XPoint2D(0, 50));
+  it('puts the role left of a vertical line otherwise (:137-143)', () => {
+    const p = getRoleLabelPosition(Q, R, new XPoint2D(20, 5), new XPoint2D(0, 0), new XPoint2D(0, 50));
     expect([p.x, p.y]).toEqual([-32, 5]);
   });
 
-  it('puts the role below a horizontal line when the quantifier is above it (:309-310)', () => {
+  it('puts the role below a horizontal line when the quantifier is above it (:149-155)', () => {
+    // Over x in [2, 36] the segment (0,0)-(50,3) is lowest at step 18: y = 3 * 18 / 26.
     const p = getRoleLabelPosition(Q, R, new XPoint2D(4, -20), new XPoint2D(0, 0), new XPoint2D(50, 3));
-    expect([p.x, p.y]).toEqual([4, 2]);
+    expect(p.x).toBe(4);
+    expect(p.y).toBeCloseTo(2 + (3 * 18) / 26, 9);
   });
 
-  it('puts the role above a horizontal line otherwise (:311-313)', () => {
-    const p = getRoleLabelPosition(Q, R, new XPoint2D(4, -6), new XPoint2D(0, 0), new XPoint2D(-50, 0));
+  it('puts the role above a horizontal line otherwise (:156-160)', () => {
+    const p = getRoleLabelPosition(Q, R, new XPoint2D(4, 5), new XPoint2D(0, 0), new XPoint2D(-50, 0));
     expect([p.x, p.y]).toEqual([4, -15]);
+  });
+
+  it('moves the role out of the quantifier it would land on (:109-119)', () => {
+    // The mirror image (-32, 5) of this quantifier across x = 0 overlaps it.
+    const p = getRoleLabelPosition(Q, R, new XPoint2D(-5, 5), new XPoint2D(0, 0), new XPoint2D(0, 50));
+    const overlapsQuantifier = p.x < 5 && p.x + 30 > -5 && p.y < 18 && p.y + 13 > 5;
+    expect(overlapsQuantifier).toBe(false);
   });
 });
 

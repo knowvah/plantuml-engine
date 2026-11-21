@@ -85,6 +85,7 @@ function copyMutedEntityFields(ns: Namespace, classifier: Classifier): void {
   // @see ~/git/plantuml/.../svek/image/EntityImageEmptyPackage.java:121-124
   if (ns.legend !== undefined) classifier.legend = ns.legend;
   if (ns.emptyLeafRoundCorner !== undefined) classifier.emptyLeafRoundCorner = ns.emptyLeafRoundCorner;
+  if (ns.emptyLeafTitleWrapWidth !== undefined) classifier.emptyLeafTitleWrapWidth = ns.emptyLeafTitleWrapWidth;
 }
 
 /**

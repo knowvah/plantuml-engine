@@ -5,7 +5,8 @@
  * `src/index.ts` is T2a's (`PSystemBuilder.java:144-152` position).
  *
  * Not accepted, so the line falls through to `null` ("Syntax Error?"):
- * `testdot` and the key tools (java:62-83), out by decisions.md D8.
+ * `testdot` and the key tools (java:62-87, the one-argument `keycheck` of
+ * upstream 3a4d1675141 among them), out by decisions.md D8.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersionFactory.java
  */

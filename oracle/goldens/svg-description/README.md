@@ -88,6 +88,22 @@ classified as conformant, or its golden SVG was captured from a bad jar
 build) and must be reviewed as such, not done inline while working on an
 unrelated change.
 
+### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
+
+Eight pins stopped being zero-diff when the oracle moved to a720bdd. They
+left `ratchet.json` and are now `diff-baseline.json` entries (group 4), each
+with a `reason` and a fresh `diffCount`. Their `golden.svg` directories stay
+as the evidence.
+
+- Python preprocessor (#214): `usecase/zoriso-46`, `unknown/zarelu-57` and
+  `component/pegali-65`. The jar runs a `!name = ...` line as Python and
+  draws a Python error page.
+- Formulas (DIVERGENCES.md, "LaTeX rendering engine — KaTeX, not
+  JLaTeXMath"): `component/gevozu-46`, `kezodo-14`, `sunuju-01`,
+  `vimulo-11` and `unknown/barufu-21`. The jar draws glyph `<path>`s, and
+  the usecase ellipses are fitted around those glyph points, so they come
+  out smaller.
+
 ## Known gap (T18 finding, still open after T19)
 
 The T18 seed set was 3 component + 1 usecase, all single-element/simple

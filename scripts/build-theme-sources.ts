@@ -34,8 +34,15 @@ import { fileURLToPath } from 'node:url';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Upstream's theme resource folder (`ThemeUtils.java` `THEME_PATH = "themes"`). */
-export const UPSTREAM_THEMES_DIR = join(homedir(), 'git', 'plantuml', 'src', 'main', 'resources', 'themes');
+/** Upstream's theme resource folder (`ThemeUtils.java` `THEME_PATH = "themes"`), in the checkout
+ *  `PLANTUML_FORK` names (as `rebaseline-svg-goldens.ts` reads it), else `~/git/plantuml`. */
+export const UPSTREAM_THEMES_DIR = join(
+  process.env.PLANTUML_FORK ?? join(homedir(), 'git', 'plantuml'),
+  'src',
+  'main',
+  'resources',
+  'themes',
+);
 
 export const THEME_SOURCES_PATH = join(REPO, 'src', 'core', 'themes-source.ts');
 

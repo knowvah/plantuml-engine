@@ -8,11 +8,13 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexLeaf.java
  */
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
-import { javaTrim, parseDouble } from '../../../core/java-number-format.js';
+import { javaTrim } from '../../../core/java-number-format.js';
 import { NoSuchColorException } from '../../../core/klimt/color/NoSuchColorException.js';
 import { Stereotype } from '../../../core/stereo/Stereotype.js';
 import type { ChartDiagram } from '../ChartDiagram.js';
-import type { ChartSeries } from '../ChartSeries.js';
+import { ChartSeries, type SeriesType } from '../ChartSeries.js';
+import type { ChartCartesianData } from './ChartCartesianData.js';
+import { BRACKETED } from './ChartDataItems.js';
 
 /** Java's `\s`. */
 const JAVA_S = String.raw`[ \t\n\x0B\f\r]`;
@@ -33,20 +35,52 @@ export const RANGE_PART = `(?:(?<RANGE_0>-?[0-9.]+)${JAVA_S}*-?->${JAVA_S}*(?<RA
 export function bracketGroup(name: string): string {
   return `\\[(?<${name}>${JAVA_DOT}*)\\]`;
 }
+/** `ChartDataItems.BRACKETED` without its capturing group, so the command names it `DATA`. */
+const BRACKETED_BODY = BRACKETED.slice(1, -1);
+
 /** The optional ` labels` keyword. */
 export const LABELS_PART = `(?:${SP1}(?<LABELS>labels))?`;
 /** The optional ` v2` or ` y2` keyword. */
 export const V2_PART = `(?:${SP1}(?<V2>[vy]2))?`;
 
 /**
- * What every series command opens with, in the `RegexConcat` order they all share.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartBar.java:62-73
+ * What every series command opens with, in the `RegexConcat` order they all
+ * share: the name is `ChartSeriesName`'s, and the data is optional, a series
+ * written without it taking the list items that follow (5ee1a051948). Compiled
+ * `iu`, for the name's `\p{L}`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartBar.java:66-79
  */
-export function seriesHead(keyword: string): string {
+export function seriesHead(keyword: string, nameRegex: string): string {
   return (
-    `^${SP0}${keyword}${SP0}(?:(?<STEREO><<${JAVA_DOT}+?>>))?${SP0}(?:"(?<NAME>[^"]+)")?${SP0}` +
-    `${bracketGroup('DATA')}${SP0}(?:#(?<COLOR>[0-9a-fA-F]{6}|[0-9a-fA-F]{3}|\\w+))?`
+    `^${SP0}${keyword}${SP0}(?:(?<STEREO><<${JAVA_DOT}+?>>))?${SP0}(?:${nameRegex})?${SP0}` +
+    `(?:(?<DATA>${BRACKETED_BODY}))?${SP0}(?:#(?<COLOR>[0-9a-fA-F]{6}|[0-9a-fA-F]{3}|\\w+))?`
   );
+}
+
+/**
+ * The series a parsed data gives: by coordinate pairs or by values, with the keys
+ * when every value has one.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartLine.java:111-120
+ */
+export function seriesOf(name: string, type: SeriesType, parsed: ChartCartesianData): ChartSeries {
+  const series = parsed.pairs
+    ? new ChartSeries(name, type, parsed.values, parsed.xValues)
+    : new ChartSeries(name, type, parsed.values);
+  if (parsed.keyed) series.setKeys(parsed.keys as readonly string[]);
+  return series;
+}
+
+/**
+ * Written without data, the series takes its values from the list items that
+ * follow it; with data, it is added.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartLine.java:153-155
+ */
+export function addOrOpen(
+  diagram: ChartDiagram,
+  series: ChartSeries,
+  data: string | undefined,
+): CommandExecutionResult {
+  return data === undefined ? diagram.openSeries(series) : diagram.addSeries(series);
 }
 
 /**
@@ -76,58 +110,6 @@ export function parseLabels(data: string | undefined): string[] {
 }
 
 /**
- * `parseValues`, the same in every series command: `undefined` for Java's `null`.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartBar.java:123-136
- */
-export function parseValues(data: string): number[] | undefined {
-  if (javaTrim(data) === '') return [];
-  const result: number[] = [];
-  for (const part of javaSplitComma(data)) {
-    const value = parseDouble(javaTrim(part));
-    if (value === undefined) return undefined;
-    result.push(value);
-  }
-  return result;
-}
-
-/** `String#split("\\),\\(")`, with `split`'s dropped trailing empties. */
-function splitPairs(cleaned: string): string[] {
-  const parts = cleaned.split('),(');
-  if (parts.length === 1) return parts;
-  while (parts.length > 0 && parts[parts.length - 1] === '') parts.pop();
-  return parts;
-}
-
-/** The coordinates a `line` or `scatter` carries in pair notation. */
-export interface CoordinatePairs {
-  readonly xValues: readonly number[];
-  readonly yValues: readonly number[];
-}
-
-/**
- * `parseCoordinatePairs`, the same in `line` and `scatter`: `undefined` for
- * Java's `false`. Its null-or-blank test is unreachable, since the caller saw a `(`.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartLine.java:162-191
- */
-export function parseCoordinatePairs(data: string): CoordinatePairs | undefined {
-  const xValues: number[] = [];
-  const yValues: number[] = [];
-  for (const pair of splitPairs(data.replace(/[ \t\n\x0B\f\r]+/g, ''))) {
-    const trimmedPair = javaTrim(pair)
-      .replace(/^[[(]+/, '')
-      .replace(/[\])]+$/, '');
-    const coords = javaSplitComma(trimmedPair);
-    if (coords.length !== 2) return undefined;
-    const x = parseDouble(javaTrim(coords[0]!));
-    const y = parseDouble(javaTrim(coords[1]!));
-    if (x === undefined || y === undefined) return undefined;
-    xValues.push(x);
-    yValues.push(y);
-  }
-  return { xValues, yValues };
-}
-
-/**
  * The tail every series command shares: the stereotype, then
  * `getColor("#" + colorStr)`, then `V2` and `LABELS` where the regex has them.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartLine.java:122-142
@@ -143,6 +125,8 @@ export function decorateSeries(
   if (color !== undefined) series.setColor(diagram.getSkinParam().getIHtmlColorSet().getColor(`#${color}`));
   if (groups['V2'] !== undefined) series.setUseSecondaryAxis(true);
   if (groups['LABELS'] !== undefined) series.setShowLabels(true);
+  if (groups['INTERPOLATE'] !== undefined) series.setInterpolate(true);
+  if (groups['CONNECT'] !== undefined) series.setConnect(true);
 }
 
 /** `SingleLineCommand2`'s `catch (NoSuchColorException e)`. @see command/SingleLineCommand2.java:174-178 */

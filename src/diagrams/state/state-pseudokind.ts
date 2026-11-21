@@ -31,15 +31,12 @@ const HISTORY_DEEP = '[H*]';
  * Upstream resolves a pseudostate's leaf type from the FIRST `<<label>>` in
  * a state's stereotype group (`Stereogroup#getLeafType`) — only these
  * labels are recognized; anything else keeps `LeafType.STATE` (our
- * `'normal'`). `<<junction>>` is deliberately ABSENT here (mission A4 Phase
- * L iter 15, livuni-63-fira764): `Stereogroup.java` has NO `junction` case
- * at all, so upstream treats it as a plain, unrecognized stereotype string
- * and keeps `LeafType.STATE` (kind:'normal', rect/rounded shape) — a prior
- * (invented) mapping to a `'junction'` StateKind rendered it as a diamond,
- * wrong shape and wrong size (24x24 vs the correct ~50x50 no-label rect).
- * `entrypoint`/`exitpoint` stay OUT of this table on purpose (see the
- * table's own comment) — a separate classification axis, not a StateKind.
- * @see ~/git/plantuml/.../stereo/Stereogroup.java#getLeafType
+ * `'normal'`). `<<junction>>` is `LeafType.JUNCTION` since upstream
+ * `a0a410773aa` (#2905, `Stereogroup.java:127-128`), a 12x12 circle
+ * (livuni-63-fira764). `entrypoint`/`exitpoint` stay OUT of this table on
+ * purpose (see the table's own comment) — a separate classification axis,
+ * not a StateKind.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/stereo/Stereogroup.java:114-138
  */
 const STEREOTYPE_KIND_MAP: Readonly<Record<string, StateKind>> = {
   choice: 'choice',
@@ -57,6 +54,8 @@ const STEREOTYPE_KIND_MAP: Readonly<Record<string, StateKind>> = {
   // were previously reserved-but-unused (only the anonymous `[*]` sentinel
   // used them, and `[*]` is never turned into a State node at all).
   start: 'initial',
+  // Stereogroup.java:127-128 (a0a410773aa, #2905).
+  junction: 'junction',
   end: 'final',
   // `<<entrypoint>>`/`<<exitpoint>>` are deliberately ABSENT here (mission
   // A4/T4 fact-4): Stereogroup.java has no such case, so upstream keeps

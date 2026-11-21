@@ -70,7 +70,7 @@ interface PackageLook {
   readonly desc: TextBlock;
 }
 
-/** `getStyle()` then `style.eventuallyOverride(colors)`, and the colours, stroke and title built from it. @see EntityImageEmptyPackage.java:98-132 */
+/** `getStyle()` then `style.eventuallyOverride(colors)`, and the colours, stroke and title built from it. @see EntityImageEmptyPackage.java:98-120 */
 function readLook(entity: Entity, skinParam: EmptyPackageSkinParam, signature: StyleSignature): PackageLook {
   const colors = entity.getColors();
   const set = skinParam.getIHtmlColorSet();
@@ -86,9 +86,15 @@ function readLook(entity: Entity, skinParam: EmptyPackageSkinParam, signature: S
     roundCorner: style.value('RoundCorner').asDouble(),
     diagonalCorner: style.value('DiagonalCorner').asDouble(),
     back: asPaintColor(colors.getColor(ColorType.BACK) ?? style.value('BackGroundColor').asColor(set)),
+    // f29aa9bd058: `create9(..., style.wrapWidth())`, the title wraps at the style's `MaximumWidth`
+    // (`EntityImageEmptyPackage.java:118-119`).
     desc: entity
       .getDisplay()
-      .create({ fontConfiguration, spriteContainer: skinParam, atomOps: skinParam.atomOps }, alignment),
+      .create9(
+        { fontConfiguration, spriteContainer: skinParam, atomOps: skinParam.atomOps },
+        alignment,
+        style.wrapWidth(),
+      ),
   };
 }
 

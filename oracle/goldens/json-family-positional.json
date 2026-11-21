@@ -270,7 +270,11 @@
       "dh": 0
     },
     "yaml/bafemu-96-luji978": {
-      "aligned": false
+      "aligned": true,
+      "nodeMax": 0,
+      "pathMax": 0,
+      "dw": 0,
+      "dh": 0
     },
     "yaml/gabalo-23-tefe408": {
       "aligned": true,
@@ -295,8 +299,8 @@
     },
     "yaml/jozapu-14-datu953": {
       "aligned": true,
-      "nodeMax": 5,
-      "pathMax": 6.35,
+      "nodeMax": 0,
+      "pathMax": 0,
       "dw": 0,
       "dh": 0
     },
@@ -310,7 +314,7 @@
     "yaml/ketunu-15-poli031": {
       "aligned": true,
       "nodeMax": 0.151,
-      "pathMax": 1.283,
+      "pathMax": 1.274,
       "dw": 0,
       "dh": 0
     },

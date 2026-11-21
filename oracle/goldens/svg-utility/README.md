@@ -49,6 +49,13 @@ Error-page oracles also depend on the capture minute (PSystemError.java:221-229,
 see `.agent-notes/cdd5-T0e-error-page-time-decoration.md`): check a re-capture
 for banner `<image>`s before trusting a score change.
 
+Re-pin to a720bdd (2026-11-20): upstream dadad87bba3 removed the egg, apple
+//e, rip and charlie factories, so the eight authored egg probes are now the
+jar's sequence Syntax Error? page (re-captured one file per JVM, twice, outside
+the decoration minutes) and score the error-page residual 5; the cached
+`kicizi-84-lexu138` (`charlie`) left `ratchet.json` for a `status: "error"`
+row in `diff-baseline.json`.
+
 Regenerate the manifest from a fresh measurement (topics and mechanisms are in
 the tool; it refuses a nonzero row without a reason):
 

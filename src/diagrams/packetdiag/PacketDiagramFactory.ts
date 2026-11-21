@@ -8,7 +8,7 @@ import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
@@ -21,9 +21,9 @@ import {
   type PositionedDeclaration,
   type SkinParam as StyleSkinParam,
 } from '../../core/style/mindmap-style-builder.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
 import { PacketDiagram } from './PacketDiagram.js';
 import { SkinParam } from './packet-skin-param.js';
 import { applyColWidth, COL_WIDTH_RE } from './command/CommandColWidth.js';
@@ -34,11 +34,10 @@ import { applyPacketDiagStart, PACKET_DIAG_START_RE } from './command/CommandPac
 import { applySameHeight, SAME_HEIGHT_RE } from './command/CommandSameHeight.js';
 import { applyScaleDirection, SCALE_DIRECTION_RE } from './command/CommandScaleDirection.js';
 import { applyScaleInterval, SCALE_INTERVAL_RE } from './command/CommandScaleInterval.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startpacketdiag`/`@endpacketdiag`, tolerated in a hand-built source (the wbs factory's `START_END_RE`). */
 const START_END_RE = /^@(start|end)packetdiag\s*$/i;
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** `Integer.MAX_VALUE`, past which `Integer.parseInt` throws. */
 const INT_MAX = 2147483647;
 /** `%s`. @see regex/Pattern2.java:57 */
@@ -80,14 +79,6 @@ const HIDE_BY_GENDER = new RegExp(
 );
 /** The fold of `s` under `iu` that Java's `CASE_INSENSITIVE` does not make. */
 const LONG_S = 'ſ';
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by the lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /** One registered packet command: matched on the trimmed line, as every one is `doTrim = true`. */
 interface PacketCommand {
@@ -246,9 +237,9 @@ function refusalLineOf(source: UmlSource, i: number): number {
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: PacketDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -271,7 +262,7 @@ function executeCommands(diagram: PacketDiagram, source: UmlSource, dispatch: St
     }
 
     const outcome = dispatchCommonCommand(diagram, lines, i) ?? dispatchPacketLine(diagram, lines[i]!, i);
-    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i + 1, SYNTAX_ERROR);
+    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i + 1, syntaxErrorMessageOf(lines[i]!));
     if (!outcome.result.isOk()) {
       const { result, nextIndex } = outcome;
       return refuse('execution', refusalLineOf(source, i), nextIndex, result.getError(), result.getScore());

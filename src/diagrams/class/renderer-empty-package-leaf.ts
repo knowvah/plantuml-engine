@@ -42,6 +42,7 @@ export function renderEmptyPackageLeaf(
     wtitle: folderTab.wtitle,
     htitle: folderTab.htitle,
     baselineOffset: folderTab.baselineOffset,
+    ...(folderTab.titleWrapWidth !== undefined ? { titleWrapWidth: folderTab.titleWrapWidth } : {}),
   };
   // cdd3-T9 S-12: the entity's own BACK colour (EntityImageEmptyPackage.java:97).
   const back = resolveBareOrBackColor(geo.color);

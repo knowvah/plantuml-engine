@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:08:31.628Z",
+  "generatedAt": "2026-11-21T16:48:00.660Z",
   "fixtures": [
     {
       "slug": "bacupi-77-fuke586",
@@ -573,7 +573,9 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[7]/image[1]"
     },
     {
       "slug": "carose-61-seko055",
@@ -1623,7 +1625,10 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 207.213,
+      "firstDiff": "svg/g[1]/g[1]/@id",
+      "maxDeltaPath": "svg/g[1]/g[3]/rect[1]/@x"
     },
     {
       "slug": "fenino-82-nusu462",
@@ -1700,7 +1705,8 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "fidobi-24-cugi165",
@@ -2372,7 +2378,10 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 9.113,
+      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength",
+      "maxDeltaPath": "svg/g[1]/g[4]/rect[1]/@x"
     },
     {
       "slug": "gujaje-38-zoce253",
@@ -2400,7 +2409,10 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 5.688000000000002,
+      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength",
+      "maxDeltaPath": "svg/g[1]/g[2]/g[1]/rect[1]/@x"
     },
     {
       "slug": "gunecu-53-jebu067",
@@ -2785,7 +2797,8 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "jomemi-46-zazi815",
@@ -2813,7 +2826,9 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[9]/text[1]/@textLength"
     },
     {
       "slug": "joroli-85-vace726",
@@ -4087,7 +4102,9 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[7]/image[1]"
     },
     {
       "slug": "mefone-86-soca963",
@@ -6033,7 +6050,10 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 207.213,
+      "firstDiff": "svg/g[1]/g[1]/@id",
+      "maxDeltaPath": "svg/g[1]/g[3]/rect[1]/@x"
     },
     {
       "slug": "sarobu-65-kise064",
@@ -6572,7 +6592,9 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[8]/text[1]/@textLength"
     },
     {
       "slug": "suredo-76-kaxo606",
@@ -7580,7 +7602,9 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength"
     },
     {
       "slug": "vofefi-14-rine141",

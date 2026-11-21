@@ -1,7 +1,7 @@
 import type { StringBounder } from '../../../core/klimt/font/StringBounder.js';
 import type { XDimension2D } from '../../../core/klimt/geom/XDimension2D.js';
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
-import type { Element } from './Element.js';
+import { type Element, mayDrawBeyondPreferredDimension } from './Element.js';
 
 /**
  * WrappedElement — what `SaltDictionary#get` hands out: the stored element,
@@ -26,5 +26,10 @@ export class WrappedElement implements Element {
   /** @see WrappedElement.java:54-56 */
   drawU(ug: UGraphic, zIndex: number, dimToUse: XDimension2D | null): void {
     this.wrapped.drawU(ug, zIndex, dimToUse);
+  }
+
+  /** @see WrappedElement.java:58-61 (upstream a720bdd) */
+  mayDrawBeyondPreferredDimension(): boolean {
+    return mayDrawBeyondPreferredDimension(this.wrapped);
   }
 }

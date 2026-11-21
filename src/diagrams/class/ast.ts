@@ -124,6 +124,10 @@ export interface Namespace {
   roundCorner?: number;
   /** `EntityImageEmptyPackage.java:104`, for a namespace that collapses to a leaf. */
   emptyLeafRoundCorner?: number;
+  /** `ClusterHeader.java:129`'s `style.wrapWidth()` (927f7531ddf) off the title style (`class-cluster-corner.ts`). */
+  titleWrapWidth?: number;
+  /** `EntityImageEmptyPackage.java:118-119`'s `style.wrapWidth()` (f29aa9bd058), for a namespace that collapses. */
+  emptyLeafTitleWrapWidth?: number;
   /** Classifier ids contained within this namespace. */
   classifiers: string[];
   /**

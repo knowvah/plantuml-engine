@@ -166,12 +166,13 @@ describe('note on link (SvekEdge.java:307-326,951-954)', () => {
 });
 
 describe('leading colour (CommandCreateElementFull.java:84-85, ColorParser.java:62)', () => {
-  // component__x-leading-colour (jar oracle): Both (leading #pink, trailing #green) = #008000, Lead = #FFC0CB,
-  // Trail = #008000, `hexagon #pink "Hex"` polygon = #FFC0CB.
-  it('fills with the leading colour, the trailing one winning when both are written', () => {
+  // component__x-leading-colour (jar oracle, a720bdd): Both (leading #pink, trailing #green) = #FFC0CB, Lead = #FFC0CB,
+  // Trail = #008000, `hexagon #pink "Hex"` polygon = #FFC0CB. getLazzy("COLOR") answers the first group in match
+  // order since e2659a157bf (RegexResult.java:128-149).
+  it('fills with the leading colour, which also wins when both are written', () => {
     const svg = renderRow('component__x-leading-colour');
     expect([...svg.matchAll(/<rect [^>]*>/g)].map(([tag]) => attrsOf(tag).fill)).toEqual([
-      '#008000',
+      '#FFC0CB',
       '#FFC0CB',
       '#008000',
     ]);

@@ -10,6 +10,7 @@
  * (`tests/architecture/svg-emission-seam.test.ts`).
  */
 import { ROOT_FONT_FAMILY } from './svg.js';
+import { javaTrim } from './java-number-format.js';
 
 /**
  * Normalize a raw skinparam font-family value for SVG attribute emission.
@@ -104,7 +105,7 @@ export function textFontFamily(family: string | undefined): string | undefined {
  * if (text.matches("^\\s*$"))
  *     text = text.replace(' ', (char) 160);
  * ```
- * @see .../klimt/drawing/svg/DriverTextSvg.java:115-116
+ * @see .../klimt/drawing/svg/DriverTextSvg.java:109-110
  *
  * The guard is what makes this narrow, and it is easy to get wrong in the
  * generous direction: ordinary labels keep their regular spaces (verified
@@ -126,44 +127,26 @@ function nbspIfBlank(content: string): string {
 }
 
 /**
- * `StringUtils.trin(String)` — trims only characters whose code point is
- * <= U+0020, from both ends. Deliberately NOT JS's `.trim()`, which also
- * strips U+00A0 per the ECMAScript WhiteSpace production: that would swallow
- * the very NBSPs {@link nbspIfBlank} just inserted (0xA0 > 0x20).
- *
- * `core/klimt/drawing/svg/driver-text-svg.ts#trin` is the same port for the
- * klimt-drawn engines; this is the copy for the shared shape emitters.
- * @see .../klimt/drawing/svg/DriverTextSvg.java:125
- */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
-
-/**
  * The exact string the jar puts inside a `<text>`, given the raw label.
  *
- * ORDER IS LOAD-BEARING and matches `DriverTextSvg#draw` (`:114-125`):
- * whitespace-only → NBSP FIRST, then `trin`. Reversed, a whitespace-only label
+ * ORDER IS LOAD-BEARING and matches `DriverTextSvg#draw` (`:108-122`):
+ * whitespace-only → NBSP FIRST, then `String#trim`. Reversed, a whitespace-only label
  * would be trimmed to nothing before it could become NBSP, and json's
  * three-space nested cell (`TextBlockJson.java:194`) would vanish instead of
  * rendering as `\xa0\xa0\xa0`.
  *
  * Exported because the value that reaches `textLength` must be measured from
  * THIS form, not the raw one — upstream measures after both steps
- * (`dim = calculateDimension(font, trimmed)`, `:126`). Any caller computing a
+ * (`dim = calculateDimension(font, trimmed)`, `:123`). Any caller computing a
  * width for a label it will emit through {@link text} has to agree with it.
  *
- * The leading-space conversion into an `x` advance (`:118-124`) needs the
+ * The leading-space conversion into an `x` advance (`:112-118`) needs the
  * run's space width, which these emitters do not have: a caller that can
  * measure uses {@link driverTextPlacement}, which returns both the emitted
  * form and the `x` shift.
  */
 export function emittedTextForm(content: string, fontFamily?: string): string {
-  return nbspIfMonospace(trin(nbspIfBlank(content)), fontFamily);
+  return nbspIfMonospace(javaTrim(nbspIfBlank(content)), fontFamily);
 }
 
 /** The emitted text of a run and how far its `x` moves, given the width of one
@@ -176,7 +159,7 @@ export interface DriverTextPlacement {
 }
 
 /**
- * `DriverTextSvg#draw`'s text preamble, whole (`:114-126`):
+ * `DriverTextSvg#draw`'s text preamble, whole (`:108-123`):
  *
  * ```java
  * String text = shape.getText();
@@ -189,7 +172,9 @@ export interface DriverTextPlacement {
  *         text = text.substring(1);
  *     }
  * }
- * text = StringUtils.trin(text);
+ * // Not StringUtils.trin(), which removes U+00A0 as well: a blank-only text has just been
+ * // turned into non-breaking spaces precisely so that it survives this trim.
+ * text = text.trim();
  * final XDimension2D dim = stringBounder.calculateDimension(font, text);
  * ```
  *
@@ -202,7 +187,7 @@ export interface DriverTextPlacement {
  * this is the shared form for every emitter outside klimt. `spaceWidth` is
  * `calculateDimension(font, " ").getWidth()` in the run's own font.
  *
- * @see .../klimt/drawing/svg/DriverTextSvg.java:114-126
+ * @see .../klimt/drawing/svg/DriverTextSvg.java:108-123
  */
 export function driverTextPlacement(rawText: string, spaceWidth: number): DriverTextPlacement {
   let text = nbspIfBlank(rawText);
@@ -211,7 +196,8 @@ export function driverTextPlacement(rawText: string, spaceWidth: number): Driver
     dx += spaceWidth;
     text = text.slice(1);
   }
-  return { text: trin(text), dx };
+  // `String#trim`, not `StringUtils.trin` (0c54c010cdf): the NBSPs `nbspIfBlank` inserted survive it.
+  return { text: javaTrim(text), dx };
 }
 
 /**

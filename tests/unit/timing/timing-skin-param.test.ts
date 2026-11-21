@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { HorizontalAlignment } from '../../../src/core/klimt/geom/HorizontalAlignment.js';
 import { CreoleMode } from '../../../src/core/klimt/creole/CreoleMode.js';
 import { CreoleParser } from '../../../src/core/klimt/creole/legacy/CreoleParser.js';
+import type { HColorSimple } from '../../../src/core/klimt/color/HColorSimple.js';
 import type { UFont } from '../../../src/core/klimt/font/UFont.js';
 import { Pragma } from '../../../src/core/skin/Pragma.js';
 import { createSpriteRegistry } from '../../../src/core/sprite-registry.js';
@@ -33,6 +34,14 @@ describe('SkinParam values (SkinParam.java:227-234, 326-340)', () => {
     expect(sp.getValue('defaultfontsize')).toBe('20');
     expect(sp.getValue('nothing')).toBeNull();
     expect(sp.values().get('defaultfontsize')).toBe('20');
+  });
+
+  it('getBackgroundColor: the skinparam (transparent/none are transparent), else the document style (SkinParam.java:334-341)', () => {
+    expect(paint(skinParam({ backgroundColor: '#EEEEEE' }).getBackgroundColor())).toBe('#EEEEEE');
+    expect(paint(skinParam({ backgroundColor: 'nosuchcolour' }).getBackgroundColor())).toBe('#FFFFFF');
+    for (const value of ['transparent', 'NONE'])
+      expect((skinParam({ backgroundColor: value }).getBackgroundColor() as HColorSimple).isTransparent()).toBe(true);
+    expect(paint(skinParam().getBackgroundColor())).toBe('#FFFFFF');
   });
 
   it('copyAllFrom overwrites by raw key', () => {

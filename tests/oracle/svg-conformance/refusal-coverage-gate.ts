@@ -19,7 +19,7 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { fullDescription } from '../../../src/core/version.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { invalidColours } from '../../helpers/svg-colour-validity.js';
-import { corpusGatePartOf, isJarErrorPage } from './corpus-gate-part.js';
+import { corpusGatePartOf, isJarErrorPage, securityProfileOf } from './corpus-gate-part.js';
 import { checkNoInvalidColour, INVALID_COLOUR_ALLOWLIST } from './colour-validity-check.js';
 
 /** Which committed tree a fixture lives in. Decides the golden's filename and
@@ -212,6 +212,7 @@ function measure(f: FixtureRef, store: ReturnType<typeof fixtureIncludeStore>): 
       includeStore: store,
       measurer: new DeterministicMeasurer(),
       elk,
+      securityProfile: securityProfileOf(f),
     }),
   );
   const weErrored = weErroredIn(ours);

@@ -4,7 +4,7 @@ import { XPoint2D } from '../../../core/klimt/geom/XPoint2D.js';
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
 import { UTranslate } from '../../../core/klimt/UTranslate.js';
 import { AbstractElement } from './AbstractElement.js';
-import type { Element } from './Element.js';
+import { type Element, mayDrawBeyondPreferredDimension } from './Element.js';
 import { ElementEmpty } from './ElementEmpty.js';
 
 /**
@@ -91,5 +91,16 @@ export class ElementBorder extends AbstractElement {
       Math.max(dimWest.getHeight(), dimCenter.getHeight(), dimEast.getHeight()) +
       dimSouth.getHeight();
     return new XDimension2D(width, height);
+  }
+
+  /** @see ElementBorder.java:106-111 (upstream a720bdd) */
+  mayDrawBeyondPreferredDimension(): boolean {
+    return (
+      mayDrawBeyondPreferredDimension(this.north) ||
+      mayDrawBeyondPreferredDimension(this.south) ||
+      mayDrawBeyondPreferredDimension(this.east) ||
+      mayDrawBeyondPreferredDimension(this.west) ||
+      mayDrawBeyondPreferredDimension(this.center)
+    );
   }
 }

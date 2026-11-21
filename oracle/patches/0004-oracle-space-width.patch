@@ -1,8 +1,8 @@
-From eb0f3cff7df7b48100bd2fc00b0a2e8812574199 Mon Sep 17 00:00:00 2001
+From 66cacd514a75f11642daf644f792a9a98f5a91b7 Mon Sep 17 00:00:00 2001
 From: Scott Seely <scott@seely.io>
 Date: Fri, 9 Oct 2026 07:19:51 -0500
-Subject: [PATCH] fix(oracle): width-table bounder measures U+0020 as 44, float
- widths
+Subject: [PATCH 4/5] fix(oracle): width-table bounder measures U+0020 as 44,
+ float widths
 
 UnicodeFontWidthSansSerif block 0 gives the space width 0, so a lone space
 is zero-wide and crashes SlotFinder (Slot.java:44-45) under
@@ -17,10 +17,10 @@ property-gated bounder changes.
  1 file changed, 26 insertions(+)
 
 diff --git a/src/main/java/net/sourceforge/plantuml/FileFormat.java b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-index dddf0d280d8..cece3102a31 100644
+index 4889c34facd..a3d6bc325d5 100644
 --- a/src/main/java/net/sourceforge/plantuml/FileFormat.java
 +++ b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-@@ -194,6 +194,32 @@ public enum FileFormat {
+@@ -203,6 +203,32 @@ public enum FileFormat {
  				public boolean matchesProperty(String propertyName) {
  					return "SVG".equalsIgnoreCase(propertyName);
  				}

@@ -179,3 +179,18 @@ To add a slug:
 
 Removal is **maintainer-only** — see `oracle/goldens/svg-description/
 README.md`'s identical rule; the same rationale applies verbatim.
+
+### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
+
+Eleven pins stopped being zero-diff when the oracle moved to a720bdd. They
+left `ratchet.json` and went back to `status: "baseline"` in
+`diff-baseline.json`, each with a `reason` and a fresh `weightedScore`.
+Their `golden.svg` directories stay as the evidence.
+
+- Python preprocessor (#214): `femixi-54`, `fidoba-93`, `gugena-56`,
+  `gunabi-18`, `joleka-44`, `jorari-47`, `sarico-38`, `supezo-15` and
+  `vodiba-42`. Each has a `!name = value` line that upstream reads as a
+  Python statement, not a legacy variable.
+- Formulas (DIVERGENCES.md, "LaTeX rendering engine — KaTeX, not
+  JLaTeXMath"): `camuxi-33` and `mefeke-43`. The jar now draws glyph
+  `<path>`s where the port draws a KaTeX `<image>`.

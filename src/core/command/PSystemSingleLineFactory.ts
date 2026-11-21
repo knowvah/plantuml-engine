@@ -23,7 +23,7 @@ import type { AssembledSvg, ParseOptions, SyncPlugin } from '../dispatcher.js';
 import type { StringMeasurer } from '../measurer.js';
 import { NULL_SYSTEM, refuse } from '../parse-refusal.js';
 import type { ParseRefusal } from '../parse-refusal.js';
-import { trin } from '../style/parser/StyleParser.js';
+import { trin } from '../string-utils-trim.js';
 import type { Theme } from '../theme.js';
 import type { SecurityProfile } from '../security/SecurityProfile.js';
 import { PreprocessingArtifact } from '../tim/PreprocessingArtifact.js';

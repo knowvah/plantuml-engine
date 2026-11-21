@@ -45,6 +45,7 @@ import { handleActivateEvent, handleDeactivateEvent } from './sequence-layout-li
 import { handleDividerEvent } from './sequence-layout-divider.js';
 import { handleDelayEvent, handleNewpageEvent, handleSpaceEvent } from './sequence-layout-simple-tiles.js';
 import { handleFrameEvent, type TileRecord } from './sequence-layout-frame.js';
+import { anchorsAfter, noteTileGauge, stacksInRun } from './sequence-note-stacking.js';
 import {
   createGauge,
   createParallel,
@@ -289,15 +290,22 @@ function metricsOf(run: TileRun, event: ContactEvent, ctx: EventProcessingContex
  */
 function parallelMembers(run: TileRun, k: number, ctx: EventProcessingContext): number[] {
   const members: number[] = [];
+  // A stacked `& note` passes the line on without pushing it (`sequence-note-stacking.ts`).
+  let anchors = anchorsAfter(run.tiles[k]!, run.groups, undefined);
   for (let j = k + 1; j < run.tiles.length; j++) {
     const next = run.tiles[j]!;
-    if (isPropagating(next)) continue;
+    if (isPropagating(next)) {
+      anchors = undefined;
+      continue;
+    }
     if (!isContactTile(next)) break;
     const metrics = metricsOf(run, next, ctx);
     // A tile this port skips (an unknown participant) is not in the chain.
     if (metrics === undefined) continue;
     if (!isParallel(run, next)) break;
+    if (next.kind === 'note' && !run.groups.has(next) && stacksInRun(next, anchors)) continue;
     members.push(metrics.contactRelative);
+    anchors = anchorsAfter(next, run.groups, anchors);
   }
   return members;
 }
@@ -372,9 +380,12 @@ function placeContactTile(run: TileRun, k: number, cursor: EventCursor, ctx: Eve
   const event = run.tiles[k] as ContactEvent;
   const metrics = metricsOf(run, event, ctx);
   if (metrics === undefined) return;
-  const gauge = isParallel(run, event)
-    ? createParallel(cursor.gauge, metrics)
-    : createWithContact(cursor.gauge, metrics, parallelMembers(run, k, ctx));
+  const gauge =
+    event.kind === 'note' && !run.groups.has(event)
+      ? noteTileGauge(cursor.gauge, event, metrics, isParallel(run, event) ? [] : parallelMembers(run, k, ctx))
+      : isParallel(run, event)
+        ? createParallel(cursor.gauge, metrics)
+        : createWithContact(cursor.gauge, metrics, parallelMembers(run, k, ctx));
   const tile = { gauge, metrics };
   const bound = boundLifeEvents(run.tiles, k);
   let outer = gauge;

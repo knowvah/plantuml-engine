@@ -18,7 +18,6 @@
 import { describe, expect, it } from 'vitest';
 import { Rankdir } from '../../../src/core/klimt/geom/Rankdir.js';
 import type { Idea } from '../../../src/diagrams/mindmap/Idea.js';
-import { STEP_BY_PARENT } from '../../../src/diagrams/mindmap/Idea.js';
 import type { MindMapDiagram } from '../../../src/diagrams/mindmap/MindMapDiagram.js';
 import { dumpStyle, ideaScenarioDump } from '../core/style/helpers/style-fixture.js';
 import { parseMindMap } from './helpers/mindmap-skin.js';
@@ -92,11 +91,11 @@ describe('Idea.getStyle equals the jar (DumpProbe ideas)', () => {
     expect(got).toEqual(expected);
   });
 
-  it('starts the walk at STEP_BY_PARENT * 1000 as a Java int: 1411065408 (Idea.java:97, WElement.java:110)', () => {
-    expect(STEP_BY_PARENT).toBe(10001000);
-    // a1 (level 2) reads `:depth(2) *` FontColor, stored at 326, lifted by the own-node delta.
+  it('starts the walk at ancestor rank 0 (Idea.java:92-93)', () => {
+    // a1 (level 2) reads `:depth(2) *` FontColor, stored at order 344 (probe/run.sh
+    // new, the re-pinned skin), in the cascade tier at its own rank.
     const a1 = ideasOf(parseMindMap(DEPTH, Rankdir.LEFT_TO_RIGHT))[2]!.idea;
-    expect(a1.getStyle().value('FontColor').getPriority()).toBe(326 + 1411065408);
+    expect(a1.getStyle().value('FontColor').getSpecificity().toString()).toBe('344,stereo=0,ancestor=0');
   });
 
   it('queries ancestors at the CHILD level (Idea.java:100): a level-1 rule on the parent does not reach a1', () => {
@@ -136,11 +135,11 @@ mindmapDiagram {
     });
     const boxless = ['boxless', 'element', 'mindmapDiagram', 'node', 'root'];
     expect(summary).toEqual([
-      ['regular', 'root', '30', ['darkgreen', null, 326], boxless],
+      ['regular', 'root', '30', ['darkgreen', null, 344], boxless],
       ['regular', 'a1', '14', ['black', 'white', 4], ['element', 'mindmapDiagram', 'node', 'root']],
-      ['regular', 'a2', '30', ['darkgreen', null, 326], boxless],
-      ['regular', 'b1', '30', ['darkgreen', null, 326], boxless],
-      ['reverse', 'root', '30', ['darkgreen', null, 326], boxless],
+      ['regular', 'a2', '30', ['darkgreen', null, 344], boxless],
+      ['regular', 'b1', '30', ['darkgreen', null, 344], boxless],
+      ['reverse', 'root', '30', ['darkgreen', null, 344], boxless],
     ]);
   });
 });

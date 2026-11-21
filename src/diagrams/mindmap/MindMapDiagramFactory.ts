@@ -3,7 +3,7 @@ import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
 import { Rankdir } from '../../core/klimt/geom/Rankdir.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
@@ -18,7 +18,6 @@ import {
 } from '../../core/style/mindmap-style-builder.js';
 import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
 import { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
 import { applyMindMapDirection, MINDMAP_DIRECTION_RE } from './CommandMindMapDirection.js';
 import {
   applyMindMapOrgmodeMultiline,
@@ -30,6 +29,7 @@ import { applyMindMapPlus, PLUS_RE } from './CommandMindMapPlus.js';
 import { applyMindMapRoot, ROOT_RE } from './CommandMindMapRoot.js';
 import { MindMapDiagram } from './MindMapDiagram.js';
 import { SkinParam } from './mindmap-skin-param.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startmindmap`/`@endmindmap` — `UmlSource.lines` is documented as
  *  already directive-stripped for a render-pipeline-built source, but a
@@ -48,15 +48,6 @@ const START_END_RE = /^@(start|end)mindmap\s*$/i;
  * (`((SkinParam) diagram.getSkinParam()).setRankdir(...)`).
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandRankDir.java:56-65
  */
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by
- *  the lower-cased skin parameter name.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:92-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
-
 const RANKDIR_RE = /^(left\s+to\s+right|top\s+to\s+bottom)\s+direction\s*$/i;
 
 interface DispatchOutcome {
@@ -276,12 +267,12 @@ export function createMindMapDiagram(source: UmlSource): MindMapDiagram | ParseR
  * whatever the value). The collector keeps no line form, so a top-level
  * `skinparam { … }` block entry warns too, where upstream's
  * `CommandSkinParamMultilines` does not.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:94-107
  */
 function addSkinParamWarnings(diagram: MindMapDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -306,7 +297,7 @@ function executeCommands(diagram: MindMapDiagram, source: UmlSource, dispatch: S
     }
 
     const outcome = dispatchMindMapLine(diagram, lines, i);
-    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, 'Syntax Error?');
+    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, syntaxErrorMessageOf(lines[i]!));
     if (outcome.result.isOk() === false) {
       return refuse('execution', refusalLineOf(source, i), i, outcome.result.getError(), outcome.result.getScore());
     }

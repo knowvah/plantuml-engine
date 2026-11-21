@@ -1,0 +1,26 @@
+@startuml
+manual time-axis
+analog "Vcc" between 0 and 5 as V
+digital "Bus" as D
+concise "C" as C
+
+@0 as :start
+V is 0
+D is 1
+C is Idle
+
+@40
+V is 5
+D is 3
+
+@1000 as :late
+V is 2
+D is 0
+C is Busy
+
+@1100
+C is Idle
+
+break 60 to 900
+C -> D@1000 : wake
+@enduml

@@ -374,10 +374,11 @@ function copyDeclDecorations(classifier: Classifier, decl: ClassifierDecl): void
   if (decl.url !== undefined) classifier.url = decl.url;
 }
 
-/** `Entity#muteToType`'s two whitelists (`abel/Entity.java:212-222`): the
- *  kinds an existing entity may mute FROM, and (plus OBJECT) TO. Port kinds:
- *  `abstract` is `LeafType.ABSTRACT_CLASS` (`LeafType.java:72-73`). */
-const MUTABLE_FROM: ReadonlySet<ClassifierKind> = new Set<ClassifierKind>([
+/** `Entity#muteToType`'s `CLASS_LIKE_TYPES` (`abel/Entity.java:208-213`, widened
+ *  by upstream `592901f0c42` #3006): the kinds an existing entity may mute
+ *  FROM, and (plus OBJECT, :226) TO. Port kinds: `abstract` is
+ *  `LeafType.ABSTRACT_CLASS` (`LeafType.java:72-73`). */
+const CLASS_LIKE_TYPES: ReadonlySet<ClassifierKind> = new Set<ClassifierKind>([
   'annotation',
   'abstract',
   'class',
@@ -385,8 +386,13 @@ const MUTABLE_FROM: ReadonlySet<ClassifierKind> = new Set<ClassifierKind>([
   'interface',
   'record',
   'dataclass',
+  'protocol',
+  'struct',
+  'exception',
+  'metaclass',
+  'stereotype',
+  'entity',
 ]);
-const MUTABLE_TO: ReadonlySet<ClassifierKind> = new Set<ClassifierKind>([...MUTABLE_FROM, 'object']);
 
 /** `CommandCreateClass.java:196` ("Bad name") and
  *  `CommandCreateClassMultilines.java:246`'s message. */
@@ -394,8 +400,9 @@ const BAD_NAME = 'Bad name';
 
 /**
  * cdd5-T4b: an existing entity re-declared with another TYPE must pass
- * `Entity#muteToType` (`abel/Entity.java:205-230`: "if (newType ==
- * this.leafType) return true;" then both whitelists, else "return false;").
+ * `Entity#muteToType` (`abel/Entity.java:215-236`: "if (newType ==
+ * this.leafType) return true;" then both `CLASS_LIKE_TYPES` tests, else
+ * "return false;").
  * On failure both class commands return an execution error before touching
  * the entity -- the single-line one "Bad name" (`CommandCreateClass.java:
  * 195-197`), the multi-line one "Cannot create " + idShort + " because it
@@ -413,7 +420,7 @@ const BAD_NAME = 'Bad name';
  */
 function refuseFailedMute(state: ParseState, decl: ClassifierDecl, oldKind: ClassifierKind): boolean {
   if (oldKind === decl.kind) return false;
-  if (MUTABLE_FROM.has(oldKind) && MUTABLE_TO.has(decl.kind)) return false;
+  if (CLASS_LIKE_TYPES.has(oldKind) && (CLASS_LIKE_TYPES.has(decl.kind) || decl.kind === 'object')) return false;
   const multiline = decl.opensBody || decl.inlineMembers.length > 0;
   const message = multiline ? `Cannot create ${decl.id} because it already exists` : BAD_NAME;
   if (decl.opensBody) {

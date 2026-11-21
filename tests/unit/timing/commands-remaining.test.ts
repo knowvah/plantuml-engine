@@ -6,7 +6,9 @@
 import { describe, expect, it } from 'vitest';
 import { CommandControl } from '../../../src/core/command/CommandControl.js';
 import { StringLocated } from '../../../src/core/tim/StringLocated.js';
+import { CommandBreak } from '../../../src/diagrams/timing/command/CommandBreak.js';
 import { CommandNoteLong } from '../../../src/diagrams/timing/command/CommandNoteLong.js';
+import { CommandTimeAxisUnit } from '../../../src/diagrams/timing/command/CommandTimeAxisUnit.js';
 import { PLAYER_CODE as PLAYER_CODE_SHARED } from '../../../src/diagrams/timing/command/player-code.js';
 import { PLAYER_CODE } from '../../../src/diagrams/timing/command/CommandTimeMessage.js';
 import { BlocLines } from '../../../src/core/utils/BlocLines.js';
@@ -52,6 +54,8 @@ describe('command order claims a line (TimingDiagramFactory.java:83-109)', () =>
     ['scale 50 as 100 pixels', 'CommandScalePixel'],
     ['hide time axis', 'CommandHideTimeAxis'],
     ['highlight 5 to 15', 'CommandHighlight'],
+    ['time-axis unit "ms"', 'CommandTimeAxisUnit'],
+    ['break :wait+100 to 4900', 'CommandBreak'],
     ['mode compact', 'CommandModeCompact'],
     ['A ticks every 2', 'CommandTicks'],
     ['A is 50 pixels height', 'CommandPixelHeight'],
@@ -67,6 +71,9 @@ describe('command order claims a line (TimingDiagramFactory.java:83-109)', () =>
     'A ticks sometimes 2',
     'stop at 10',
     'use date format ""',
+    'time axis unit ms',
+    'time--axis unit "ms"',
+    'break 10',
   ])('%s is no command', (line) => {
     expect(claimedBy(line)).toBeUndefined();
   });
@@ -300,6 +307,61 @@ describe('CommandHideTimeAxis', () => {
   it('`MANUAL` selects the manual strategy: `"MANUAL".equalsIgnoreCase(cmd)` (the grammar is case-insensitive)', () => {
     const upper = texts(runLines(...SETUP, '@10', 'A is z', 'MANUAL time axis').diagram);
     expect(upper).toEqual(texts(runLines(...SETUP, '@10', 'A is z', 'manual time axis').diagram));
+  });
+});
+
+describe('CommandTimeAxisUnit (CommandTimeAxisUnit.java:52-88)', () => {
+  const command = new CommandTimeAxisUnit();
+
+  it.each([
+    'time-axis unit "ms"',
+    'time axis unit "ms"',
+    'timeaxis unit "ms"',
+    'time_axis  unit  "s"',
+    'TIME-AXIS UNIT "s"',
+  ])('%s is accepted', (line) => {
+    expect(command.isValid(new StringLocated(line, undefined))).toBe(CommandControl.OK);
+  });
+
+  it('explains the line (CommandTimeAxisUnit.java:72-77) and draws the unit on the axis', () => {
+    expect(command.explain(new StringLocated('time-axis unit "ms"', undefined))).toBe(
+      'Setting the time axis unit to "ms"',
+    );
+    const { diagram, results } = runLines(...SETUP, '@100', 'A is z', 'time-axis unit "ms"');
+    expect(results.at(-1)!.isOk()).toBe(true);
+    expect(texts(diagram)).toContain('ms');
+  });
+});
+
+describe('CommandBreak (CommandBreak.java:53-98)', () => {
+  const command = new CommandBreak();
+  const explain = (line: string): string | undefined => command.explain(new StringLocated(line, undefined));
+
+  it('describes both times lexically (CommandBreak.java:75-83, TimeTickBuilder.java:115-140)', () => {
+    expect(explain('break :wait+100 to 4900')).toBe(
+      "Breaking the time axis from time 'wait' shifted by +100 to time 4900",
+    );
+    expect(explain('break :a to clk*3')).toBe("Breaking the time axis from time 'a' to tick 3 of clock 'clk'");
+    expect(explain('break 1:00:00 to 2020/07/04')).toBe('Breaking the time axis from hour 1:00:00 to date 2020/07/04');
+    expect(explain('break +5 to 10')).toBe('Breaking the time axis from a relative offset of 5 to time 10');
+  });
+
+  it('refuses an unknown time, an empty or reversed range, and an overlap (TimingDiagram.java:426-434)', () => {
+    const run = (...lines: string[]): string | undefined => {
+      const result = runLines(...SETUP, '@1000', 'A is z', ...lines).results.at(-1)!;
+      return result.isOk() ? undefined : result.getError();
+    };
+    expect(run('break :nowhere to 800')).toBe('Unknown time');
+    expect(run('break 500 to 500')).toBe('A break must end after it starts');
+    expect(run('break 100 to 500', 'break 400 to 800')).toBe('Breaks cannot overlap');
+    expect(run('break 100 to 500', 'break 500 to 800')).toBeUndefined();
+  });
+
+  it('masks each player and drops the labels inside the break', () => {
+    const plain = texts(runLines(...SETUP, '@500', 'A is z', '@1000', 'A is x').diagram);
+    const broken = texts(runLines(...SETUP, '@500', 'A is z', '@1000', 'A is x', 'break 100 to 900').diagram);
+    expect([plain.includes('500'), broken.includes('500')]).toEqual([true, false]);
+    expect([broken.includes('100'), broken.includes('900')]).toEqual([true, true]);
   });
 });
 

@@ -1,0 +1,25 @@
+@startuml
+<style>
+.foo {
+  .bar {
+    BackGroundColor green
+  }
+}
+.foo {
+  BackGroundColor red
+}
+.bar {
+  BackGroundColor blue
+}
+</style>
+skinparam rectangle<<baz&qux>> {
+  BackgroundColor yellow
+}
+skinparam rectangle<<qux>> {
+  BackgroundColor pink
+}
+rectangle A <<foo>><<bar>>
+rectangle B <<bar>><<foo>>
+rectangle C <<baz>><<qux>>
+rectangle D <<qux>>
+@enduml

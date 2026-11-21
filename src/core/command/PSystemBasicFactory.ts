@@ -21,7 +21,7 @@
 import type { UmlSource } from '../block-extractor.js';
 import { refuse } from '../parse-refusal.js';
 import type { ParseRefusal } from '../parse-refusal.js';
-import { trin } from '../style/parser/StyleParser.js';
+import { trin } from '../string-utils-trim.js';
 import { PreprocessingArtifact } from '../tim/PreprocessingArtifact.js';
 import { isEndDirective } from '../tim/StartUtils.js';
 

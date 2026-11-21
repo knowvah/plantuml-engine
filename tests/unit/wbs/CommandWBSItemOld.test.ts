@@ -18,7 +18,10 @@ import { WBS_ITEM_OLD_RE_0, WBS_ITEM_OLD_RE_1, applyWbsItemOld } from '../../../
 import { SkinParam } from '../../../src/diagrams/wbs/wbs-skin-param.js';
 import { WBSDiagram } from '../../../src/diagrams/wbs/WBSDiagram.js';
 
-const WARNING = 'Please define Direction/Shape before Color/Id.';
+/** `orderWarning`'s text for a rewritten prefix (CommandWBSItemOld.java:137-148). */
+const orderWarning = (prefix: string): string =>
+  `Shape (_) and direction (< >) must come before color and id: start the line with '${prefix}'`;
+const WARNING = orderWarning('++_[#red]');
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -187,7 +190,20 @@ describe('CommandWBSItemOld warning (java :66)', () => {
         .getPragma()
         .getWarnings()
         .map((w) => w.getMessage()),
-    ).toEqual([[WARNING]]);
+    ).toEqual([[orderWarning('+')], [WARNING]]); // `rooted()`'s `+ Root` went through Old too
+  });
+
+  it.each([
+    ['++[#red](c1)_< Label', 0, '++_<[#red](c1)'],
+    ['++(c1)[#red]> Label', 0, '++>[#red](c1)'],
+    ['++(c1) Label', 0, '++(c1)'],
+    ['  ++[#red]_ Label', 0, '++_[#red]'],
+    ['--[#red]_< "Q" as c3', 1, '--_<[#red]'],
+  ] as const)('rewrites %j in the expected order (mode %i): %j', (line, mode, prefix) => {
+    const { d } = rooted();
+    const add = vi.spyOn(d, 'addWarning');
+    run(d, line, mode);
+    expect(add.mock.calls[0]![0].getMessage()).toEqual([orderWarning(prefix)]);
   });
 
   it('adds none when the line is refused', () => {

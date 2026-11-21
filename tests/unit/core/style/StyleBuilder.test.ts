@@ -1,7 +1,7 @@
 /**
  * StyleBuilder — `style/StyleBuilder.java` (163 lines).
  *
- * Jar oracle (1.2026.8beta1):
+ * Jar oracle (1.2026.8beta1 engine, 1.2026.11beta1 skin):
  * - `fixtures/plantuml-skin-storage.json` — the jar's `StyleBuilder`
  *   storage after `plantuml.skin` alone (`@startmindmap / * r`), dumped
  *   with priorities.
@@ -10,17 +10,19 @@
  * - `StyleProbe` (T0c, `plans/mindmap-engine-port/tools/probe/`) PName
  *   lines, quoted inline where pinned.
  *
- * `Idea.getStyle()` (Idea.java:95-104) starts at `STEP_BY_PARENT * 1000`
- * in Java `int` arithmetic: `STEP_BY_PARENT` is `1000_1000`
- * (WElement.java:110), and 10001000 * 1000 overflows to 1411065408 — the
- * jar's own priorities confirm it (`:depth(2) *` FontColor stored at 326
- * reads back at 1411065734 = 326 + 1411065408).
+ * The dumps hold the old engine's int priorities: there `Idea.getStyle()`
+ * started at `STEP_BY_PARENT * 1000`, int-wrapped to 1411065408 (`:depth(2) *`
+ * FontColor stored at 344 read back at 1411065752). c9d62097ff5 replaced that
+ * lift by `Specificity`'s ancestor-cascade tier and rank (Idea.java:91-101);
+ * `helpers/style-fixture.ts` reads a resolved specificity back to the old int,
+ * which orders these scenarios identically.
  */
 import { describe, expect, it } from 'vitest';
 import { StyleBuilder } from '../../../../src/core/style/StyleBuilder.js';
 import { Style } from '../../../../src/core/style/Style.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import { MergeStrategy } from '../../../../src/core/style/MergeStrategy.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
 import type { PName } from '../../../../src/core/style/PName.js';
 import type { SName } from '../../../../src/core/style/SName.js';
@@ -33,16 +35,15 @@ import {
   type DumpedStyle,
 } from './helpers/style-fixture.js';
 
-/** WElement.java:110 — `1000_1000`. */
-const STEP_BY_PARENT = 10001000;
-/** Idea.java:97 `STEP_BY_PARENT * 1000`, as a Java `int` (wraps). */
-const IDEA_DELTA0 = Math.imul(STEP_BY_PARENT, 1000);
+/** Idea.java:92 `int ancestorRank = 0`: the own node's level. */
+const OWN_RANK = 0;
 
 const NODE: readonly SName[] = ['root', 'element', 'mindmapDiagram', 'node'];
 
 function style(sig: StyleSignatureBasic, values: Record<string, [string, number]>): Style {
   const map = new Map<PName, Value>();
-  for (const [k, [v, p]] of Object.entries(values)) map.set(k as PName, ValueImpl.regular(v, p));
+  for (const [k, [v, order]] of Object.entries(values))
+    map.set(k as PName, ValueImpl.regular(v, Specificity.atOrder(order)));
   return new Style(sig, map);
 }
 
@@ -65,7 +66,7 @@ const DEPTH_STYLES: readonly DumpedStyle[] = [
     level: 2,
     star: true,
     stereotypes: [],
-    values: { FontColor: ['red', null, 326], BackGroundColor: ['blue', null, 327] },
+    values: { FontColor: ['red', null, 344], BackGroundColor: ['blue', null, 345] },
   },
 ];
 
@@ -88,14 +89,14 @@ const STEREO_STYLES: readonly DumpedStyle[] = [
     level: -1,
     star: false,
     stereotypes: [],
-    values: { BackGroundColor: ['lightGreen', null, 326] },
+    values: { BackGroundColor: ['lightGreen', null, 344] },
   },
   {
     snames: ['mindmapDiagram'],
     level: 1,
     star: false,
     stereotypes: [],
-    values: { LineColor: ['green', null, 327], Padding: ['4 8', null, 328] },
+    values: { LineColor: ['green', null, 345], Padding: ['4 8', null, 346] },
   },
   {
     snames: ['mindmapDiagram'],
@@ -103,9 +104,9 @@ const STEREO_STYLES: readonly DumpedStyle[] = [
     star: false,
     stereotypes: ['foo'],
     values: {
-      BackGroundColor: ['red', null, 1329],
-      LineStyle: ['5-3', null, 1330],
-      MaximumWidth: ['60', null, 1331],
+      BackGroundColor: ['red', null, 1347],
+      LineStyle: ['5-3', null, 1348],
+      MaximumWidth: ['60', null, 1349],
     },
   },
   {
@@ -113,21 +114,21 @@ const STEREO_STYLES: readonly DumpedStyle[] = [
     level: -1,
     star: true,
     stereotypes: ['foo'],
-    values: { FontColor: ['#00ff00', null, 1332] },
+    values: { FontColor: ['#00ff00', null, 1350] },
   },
   {
     snames: ['mindmapDiagram', 'leafNode'],
     level: -1,
     star: false,
     stereotypes: [],
-    values: { RoundCorner: ['3', null, 333] },
+    values: { RoundCorner: ['3', null, 351] },
   },
   {
     snames: ['mindmapDiagram', 'rootNode'],
     level: -1,
     star: false,
     stereotypes: [],
-    values: { FontStyle: ['bold', null, 334], FontWeight: ['300', null, 335] },
+    values: { FontStyle: ['bold', null, 352], FontWeight: ['300', null, 353] },
   },
 ];
 
@@ -143,20 +144,17 @@ function nodeSignature(q: IdeaQuery, level: number): StyleSignatureBasic {
 }
 
 /**
- * `Idea.getStyle()` (Idea.java:95-104): own node special at DELTA0, then
- * each ancestor's definition AT THIS NODE'S LEVEL, starred, one step lower.
+ * `Idea.getStyle()` (Idea.java:91-101): own node special at ancestor rank 0, then
+ * each ancestor's definition AT THIS NODE'S LEVEL, starred, one rank lower.
  */
 function ideaGetStyle(builder: StyleBuilder, chain: readonly IdeaQuery[], level: number): Style | undefined {
   const [self, ...ancestors] = chain;
-  let deltaPriority = IDEA_DELTA0;
-  let result = builder.getMergedStyleSpecial(nodeSignature(self as IdeaQuery, level), deltaPriority);
+  let ancestorRank = OWN_RANK;
+  let result = builder.getMergedStyleSpecial(nodeSignature(self as IdeaQuery, level), ancestorRank);
   for (const up of ancestors) {
     const ss = nodeSignature(up, level).addStar();
-    deltaPriority -= STEP_BY_PARENT;
-    result = result?.mergeWith(
-      builder.getMergedStyleSpecial(ss, deltaPriority),
-      MergeStrategy.OVERWRITE_EXISTING_VALUE,
-    );
+    ancestorRank--;
+    result = result?.mergeWith(builder.getMergedStyleSpecial(ss, ancestorRank), MergeStrategy.OVERWRITE_EXISTING_VALUE);
   }
   return result;
 }
@@ -246,7 +244,7 @@ describe('StyleBuilder — getMergedStyle (StyleProbe merged)', () => {
     });
   });
 
-  it('stereotyped level-1 node: a starred `.foo *` rule matches the unstarred query, no delta', () => {
+  it('stereotyped level-1 node: a starred `.foo *` rule matches the unstarred query, no cascade tier', () => {
     const b = skinBuilder().muteStyle(STEREO_STYLES.map(styleFromDump));
     const sig = StyleSignatureBasic.of(...NODE)
       .addLevel(1)
@@ -261,7 +259,8 @@ describe('StyleBuilder — getMergedStyle (StyleProbe merged)', () => {
       MaximumWidth: '60',
       FontStyle: 'plain',
     });
-    expect(merged?.value('FontColor').getPriority()).toBe(1332);
+    // the jar's old int 1350 = order 350 + DELTA_PRIORITY_FOR_STEREOTYPE
+    expect(merged?.value('FontColor').getSpecificity().toString()).toBe('350,stereo=1');
   });
 
   it('caches per signature value: an equal signature returns the same Style instance', () => {
@@ -288,12 +287,12 @@ describe('StyleBuilder — getMergedStyle (StyleProbe merged)', () => {
 describe('StyleBuilder — getMergedStyleSpecial (StyleProbe special)', () => {
   it('returns undefined (Java null) when no stored style matches', () => {
     const sig = StyleSignatureBasic.of('leafNode').addLevel(0);
-    expect(skinBuilder().getMergedStyleSpecial(sig, IDEA_DELTA0)).toBeUndefined();
+    expect(skinBuilder().getMergedStyleSpecial(sig, OWN_RANK)).toBeUndefined();
   });
 
-  it(':depth(2) * matches a level-2 node and lifts only the starred declaration by the delta', () => {
+  it(':depth(2) * matches a level-2 node and puts only the starred declaration in the cascade tier', () => {
     const b = skinBuilder().muteStyle(DEPTH_STYLES.map(styleFromDump));
-    const merged = b.getMergedStyleSpecial(StyleSignatureBasic.of(...NODE).addLevel(2), IDEA_DELTA0);
+    const merged = b.getMergedStyleSpecial(StyleSignatureBasic.of(...NODE).addLevel(2), OWN_RANK);
     expect(probeLines(merged)).toEqual({
       Shadowing: '0.0',
       FontName: 'SansSerif',
@@ -311,8 +310,9 @@ describe('StyleBuilder — getMergedStyleSpecial (StyleProbe special)', () => {
       Margin: '10',
       HorizontalAlignment: 'left',
     });
-    expect(merged?.value('FontColor').getPriority()).toBe(1411065734);
-    expect(merged?.value('FontSize').getPriority()).toBe(5);
+    // the jar's old ints: 1411065752 = 344 + the int-wrapped STEP_BY_PARENT * 1000, and 5
+    expect(merged?.value('FontColor').getSpecificity().toString()).toBe('344,stereo=0,ancestor=0');
+    expect(merged?.value('FontSize').getSpecificity().toString()).toBe('5');
   });
 
   it('a starred level-3 query matches only starred declarations', () => {
@@ -320,9 +320,9 @@ describe('StyleBuilder — getMergedStyleSpecial (StyleProbe special)', () => {
     const sig = StyleSignatureBasic.of(...NODE)
       .addLevel(3)
       .addStar();
-    const merged = b.getMergedStyleSpecial(sig, IDEA_DELTA0 - STEP_BY_PARENT);
+    const merged = b.getMergedStyleSpecial(sig, OWN_RANK - 1);
     expect(probeLines(merged)).toEqual({ FontColor: 'red', BackGroundColor: 'blue' });
-    expect(merged?.value('BackGroundColor').getPriority()).toBe(327 + IDEA_DELTA0 - STEP_BY_PARENT);
+    expect(merged?.value('BackGroundColor').getSpecificity().toString()).toBe('345,stereo=0,ancestor=-1');
   });
 
   it('stereotyped root node', () => {
@@ -330,7 +330,7 @@ describe('StyleBuilder — getMergedStyleSpecial (StyleProbe special)', () => {
     const sig = StyleSignatureBasic.of('root', 'element', 'mindmapDiagram', 'node', 'rootNode')
       .addStereotype('foo')
       .addLevel(0);
-    expect(probeLines(b.getMergedStyleSpecial(sig, IDEA_DELTA0))).toEqual({
+    expect(probeLines(b.getMergedStyleSpecial(sig, OWN_RANK))).toEqual({
       Shadowing: '0.0',
       FontName: 'SansSerif',
       FontColor: '#00ff00',
@@ -353,7 +353,7 @@ describe('StyleBuilder — getMergedStyleSpecial (StyleProbe special)', () => {
   });
 });
 
-describe('StyleBuilder — Idea.getStyle() walk equals the jar (star + level + deltaPriority)', () => {
+describe('StyleBuilder — Idea.getStyle() walk equals the jar (star + level + ancestor rank)', () => {
   const ROOT: IdeaQuery = { snames: [...NODE, 'rootNode'] };
   const NODE_Q: IdeaQuery = { snames: NODE };
   const LEAF: IdeaQuery = { snames: [...NODE, 'leafNode'] };

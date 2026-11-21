@@ -25,7 +25,8 @@ describe('small fonts and stereotype ink against the jar', () => {
     expect(svg).toContain('y="13.667"');
   });
 
-  it('a stereotype pushes the first box to y 7.167', () => {
-    expect(renderJarFixture(DIR, 'object-8-stereo')).toContain('y="7.167"');
+  it('an 8 px stereotype (its own `stereotype` style since e7e3d8063b5) stays inside the box: the first box at y 7', () => {
+    // 1.2026.8 drew the label at FontParam.OBJECT_STEREOTYPE's 12 px, whose ink pushed the box to 7.167
+    expect(renderJarFixture(DIR, 'object-8-stereo')).toContain('<rect x="7" y="7"');
   });
 });

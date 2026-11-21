@@ -1,7 +1,7 @@
 import { PNAMES, type PName } from '../PName.js';
 import { retrieve } from '../SName.js';
 import { Style } from '../Style.js';
-import { addPriorityForStereotype } from '../StyleLoader.js';
+import { addStereotypeCount } from '../StyleLoader.js';
 import { StyleSignatureBasic } from '../StyleSignatureBasic.js';
 import type { Value } from '../Value.js';
 
@@ -133,14 +133,17 @@ export class Context {
 
   /**
    * One style per signature with at least one value; a stereotype
-   * signature's values are lifted by `DELTA_PRIORITY_FOR_STEREOTYPE`.
+   * signature's values carry its stereotype count -- c9d62097ff5's
+   * `LegacyStyleFlattener#toValueMap` (`Specificity.atOrder(priority)
+   * .withStereotypeCount(pathSoFar.getStereotypes().size())`,
+   * LegacyStyleFlattener.java:135-140) in place of the old +1000 lift.
    * @see Context.java:123-135
    */
   toStyles(): Style[] {
     const result: Style[] = [];
     for (const signature of this.toSignatures()) {
       let tmp: ReadonlyMap<PName, Value> = this.map;
-      if (signature.isWithDot()) tmp = addPriorityForStereotype(tmp);
+      if (signature.isWithDot()) tmp = addStereotypeCount(tmp, signature.getStereotypes().size);
       if (tmp.size > 0) result.push(new Style(signature, tmp));
     }
     return result;

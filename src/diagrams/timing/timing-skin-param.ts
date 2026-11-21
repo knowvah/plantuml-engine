@@ -27,6 +27,7 @@ import type { HColor } from '../../core/style/Value.js';
 import { chromeAtomOps } from '../../core/annotations/blocks-creole.js';
 import type { NestedDiagramRenderer } from '../../core/EmbeddedDiagram.js';
 import { HColorSet } from '../../core/klimt/color/HColorSet.js';
+import { HColors } from '../../core/klimt/color/HColors.js';
 import type { CreoleMode } from '../../core/klimt/creole/CreoleMode.js';
 import { CreoleParser } from '../../core/klimt/creole/legacy/CreoleParser.js';
 import { MONOSPACED } from '../../core/klimt/creole/Parser.js';
@@ -45,7 +46,7 @@ import { getNestedDiagramRenderer } from '../../core/nested-diagram-registry.js'
 import type { Pragma } from '../../core/skin/Pragma.js';
 import { getSprite, type SpriteRegistry } from '../../core/sprite-registry.js';
 import { cleanForKeySlow, type SkinParam as StyleSkinParam } from '../../core/style/mindmap-style-builder.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import type { Stereotype } from '../../core/stereo/Stereotype.js';
@@ -241,6 +242,23 @@ export class SkinParam implements ISkinParamWithSimple {
    */
   getFontHtmlColor(_stereotype: Stereotype | undefined, ..._param: FontParam[]): HColor {
     return timingFontHtmlColor(this, this.getIHtmlColorSet());
+  }
+
+  /**
+   * `getHtmlColor(ColorParam.background, null, false)` (`backgroundcolor`; `transparent`/`none` are
+   * `HColors.transparent()`, SkinParam.java:401-410), else the `{root, document}` style's `BackGroundColor`.
+   * @see SkinParam.java:334-341
+   */
+  getBackgroundColor(): HColor {
+    const value = this.getValue('backgroundcolor');
+    if (value !== null) {
+      const lower = value.toLowerCase();
+      if (lower === 'transparent' || lower === 'none') return HColors.transparent();
+      return this.getIHtmlColorSet().getColorOrWhite(value);
+    }
+    const style = StyleSignatureBasic.of('root', 'document').getMergedStyle(this.getCurrentStyleBuilder());
+    if (style === undefined) throw new Error('java.lang.NullPointerException: no document style');
+    return style.value('BackGroundColor').asColor(this.getIHtmlColorSet());
   }
 
   /** @see SkinParam.java:546-554 (`FontParam.TIMING`, no stereotype; see {@link getFontHtmlColor}) */

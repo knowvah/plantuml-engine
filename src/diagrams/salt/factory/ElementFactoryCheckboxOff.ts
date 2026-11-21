@@ -1,4 +1,4 @@
-import { trin } from '../../../core/style/parser/StyleParser.js';
+import { trin } from '../../../core/string-utils-trim.js';
 import { UFontFactory } from '../../../core/klimt/font/UFontFactory.js';
 import type { ISkinSimple } from '../../../core/style/ISkinSimple.js';
 import type { DataSource } from '../DataSource.js';

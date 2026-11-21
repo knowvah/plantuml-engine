@@ -18,6 +18,16 @@
  *    The text measurement that DOES matter happens inside the engine, pinned
  *    once by `src/core/dot-engine-measurer.ts`.
  *
+ * Security profile (a720bdd re-pin, upstream e3d33a8afe5): `PSystemDot#
+ * exportDiagramNow` writes graphviz's SVG only when `SecurityProfile#allowDotSvg`
+ * (`PSystemDot.java:77-84`, `SecurityProfile.java:195-202`: INSECURE or
+ * INTERNET_WITH_DOTSVG); under the default LEGACY profile every parsed
+ * `@startdot` is the same fixed "This feature has been suppressed" page. What
+ * this ratchet measures is graphviz parity, so the goldens are the jar's renders
+ * under `PLANTUML_SECURITY_PROFILE=INSECURE` and every render here passes
+ * `SecurityProfile.INSECURE`. One test pins the LEGACY page against the jar's
+ * own (`bemepi-16-kuzo249/legacy.svg`).
+ *
  * SEEDS FULL, unlike state's S0: all 5 cached fixtures were zero-diff the
  * moment the passthrough landed (baseline 0/5, at ≥6 diffs each).
  *
@@ -36,6 +46,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { renderSync } from '../../../src/index.js';
+import { SecurityProfile } from '../../../src/core/security/SecurityProfile.js';
 import { setErrorPageObserver } from '../../../src/core/error/error-renderer.js';
 import { compareSvg, weightedScore } from './compare.js';
 
@@ -62,6 +73,19 @@ function readGolden(f: RatchetFixture): string {
   return readFileSync(join(GOLDENS_ROOT, f.slug, 'golden.svg'), 'utf8');
 }
 
+/** The jar's default-profile (LEGACY) page for one row: `scripts/oracle-render.sh`
+ *  with no `PLANTUML_SECURITY_PROFILE`. */
+const LEGACY_SLUG = 'bemepi-16-kuzo249';
+
+function readLegacyGolden(): string {
+  return readFileSync(join(GOLDENS_ROOT, LEGACY_SLUG, 'legacy.svg'), 'utf8');
+}
+
+/** `renderSync` under INSECURE: the profile the goldens were captured with. */
+function render(markup: string): string {
+  return renderSync(markup, { securityProfile: SecurityProfile.INSECURE });
+}
+
 function readSource(f: RatchetFixture): string {
   return readFileSync(join(GOLDENS_ROOT, f.slug, 'in.puml'), 'utf8');
 }
@@ -84,7 +108,7 @@ function renderObserved(markup: string): { svg: string; errorPage: boolean } {
     errorPage = true;
   });
   try {
-    return { svg: renderSync(markup), errorPage };
+    return { svg: render(markup), errorPage };
   } finally {
     setErrorPageObserver(undefined);
   }
@@ -106,7 +130,7 @@ function errorParityBreak(golden: string, ours: { svg: string; errorPage: boolea
 describe('svg-dot conformance ratchet (AC1)', () => {
   for (const f of drawn) {
     it(`dot/${f.slug}: stays zero-diff against the pinned golden`, () => {
-      const { pass, diffs } = compareSvg(renderSync(readSource(f)), readGolden(f), 'deterministic');
+      const { pass, diffs } = compareSvg(render(readSource(f)), readGolden(f), 'deterministic');
       expect(
         pass,
         `dot/${f.slug}: conformance regression — first diff: ${firstDiffPath(diffs)}` +
@@ -115,6 +139,14 @@ describe('svg-dot conformance ratchet (AC1)', () => {
       expect(diffs).toEqual([]);
     });
   }
+
+  it(`dot/${LEGACY_SLUG}: the default LEGACY profile draws the jar's suppression page, byte for byte`, () => {
+    const legacy = readLegacyGolden();
+    expect(legacy).not.toContain(GRAPHVIZ_DOCUMENT_MARK);
+    expect(legacy).toContain('This feature has been suppressed');
+    const f = manifest.fixtures.find((x) => x.slug === LEGACY_SLUG)!;
+    expect(renderSync(readSource(f))).toBe(legacy);
+  });
 
   it('pins the whole known @startdot corpus', () => {
     // 5 -> 52 at dogr/T1 (2026-11-14): +47 #109 rows, zero-diff on this path (#141).
@@ -150,7 +182,7 @@ describe('svg-dot jar error-page rows', () => {
 
   for (const f of jarErrors) {
     it(`dot/${f.slug}: weighted score never rises above its pin (${String(f.weightedScore)})`, () => {
-      const { diffs } = compareSvg(renderSync(readSource(f)), readGolden(f), 'deterministic');
+      const { diffs } = compareSvg(render(readSource(f)), readGolden(f), 'deterministic');
       expect(
         weightedScore(diffs),
         `dot/${f.slug}: score rose. Re-pin only from a fresh measurement.`,
@@ -188,7 +220,7 @@ describe('svg-dot conformance ratchet — tamper detection (AC2)', () => {
   it('a mutated golden (in-memory only) produces a failure naming slug + diff path', () => {
     const target = manifest.fixtures[0]!;
     const golden = readGolden(target);
-    const ours = renderSync(readSource(target));
+    const ours = render(readSource(target));
 
     // Confirm the untampered pair really is zero-diff first, so the tampered
     // failure below is attributable to the mutation alone.
@@ -221,7 +253,7 @@ describe('svg-dot conformance ratchet — tamper detection (AC2)', () => {
 describe('svg-dot — passthrough is byte-exact', () => {
   for (const f of drawn) {
     it(`dot/${f.slug}: renderSync emits graphviz's document, not this port's markup`, () => {
-      const ours = renderSync(readSource(f));
+      const ours = render(readSource(f));
       expect(ours).toContain(GRAPHVIZ_DOCUMENT_MARK);
       // This port's shared shell auto-embeds arrowhead <marker> defs. Their
       // presence would mean the document went through `svgRoot` — the exact

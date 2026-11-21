@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:02:42.000Z",
+  "generatedAt": "2026-11-21T16:42:22.968Z",
   "fixtures": [
     {
       "slug": "bepinu-34-tiji715",
@@ -232,7 +232,9 @@
       "type": "mindmap",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/image[1]"
     },
     {
       "slug": "fupani-26-luco022",
@@ -309,7 +311,9 @@
       "type": "mindmap",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/image[1]"
     },
     {
       "slug": "gunuco-29-sizu788",

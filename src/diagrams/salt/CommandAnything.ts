@@ -1,5 +1,5 @@
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { javaTrim } from '../../core/java-number-format.js';
 
 /**
  * `RegexConcat(start, (.*), end)`: every line matches. `Pattern2` compiles
@@ -30,12 +30,12 @@ export interface CommandAnythingTarget {
  *
  * A first data line `salt` is an execution error: the `@startuml` + `salt`
  * wrapper predates `@startsalt`. `s.trim()` is Java's `String#trim` (every
- * char `<= ' '` stripped), which `StringUtils.trin` reproduces.
+ * char `<= ' '` stripped), `javaTrim`; not `StringUtils.trin`, which also strips U+00A0.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/salt/CommandAnything.java:48-76
  */
 export function executeArg(diagram: CommandAnythingTarget, s: string): CommandExecutionResult {
-  if (diagram.size() === 0 && trin(s) === SALT_KEYWORD) return CommandExecutionResult.error(NOT_NEEDED_ANYMORE);
+  if (diagram.size() === 0 && javaTrim(s) === SALT_KEYWORD) return CommandExecutionResult.error(NOT_NEEDED_ANYMORE);
   diagram.add(s);
   return CommandExecutionResult.ok();
 }

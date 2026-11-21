@@ -1,11 +1,13 @@
 import type { UmlSource as ExtractedSource } from '../../core/block-extractor.js';
-import { createAnnotations, matchAnnotationCommand } from '../../core/annotations/index.js';
+import { createAnnotations, setTitle, singleDisplayPositioned } from '../../core/annotations/index.js';
+import { getWithNewlines3 } from '../../core/klimt/creole/DisplayNewlines.js';
+import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
+import { VerticalAlignment } from '../../core/klimt/geom/VerticalAlignment.js';
 import type { DiagramAnnotations } from '../../core/annotations/index.js';
 import type { ParseOptions } from '../../core/dispatcher.js';
 import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
 import { Pragma } from '../../core/skin/Pragma.js';
-import { matchSpriteCommand } from '../../core/sprite-commands.js';
 import { createSpriteRegistry } from '../../core/sprite-registry.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import {
@@ -14,21 +16,14 @@ import {
   positionedDeclarationsOf,
 } from '../../core/style/mindmap-style-builder.js';
 import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
-import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
+import { extractStyle, upstreamSourceLines } from '../json/StyleExtractor.js';
 import { TitledDiagram } from '../../core/TitledDiagram.js';
 import { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import type { FontConfiguration } from '../../core/abel/FontConfiguration.js';
 import type { FilesDiagramAST } from './ast.js';
 import { SkinParam } from './files-skin-param.js';
 import { hasStyleDirective, isExtended, isHandwrittenRequested, styleDirectivesOf } from './files-extensions.js';
+import { FilesParser } from './files-parser.js';
 import { FilesListing } from './renderer.js';
-
-/** A line starting with this adds a path. @see FilesDiagram.java:84 */
-const PATH_PREFIX = '/';
-/** A line starting with this opens a note. @see FilesDiagram.java:86 */
-const NOTE_START = '<note>';
-/** A line starting with this closes a note. @see FilesDiagram.java:96 */
-const NOTE_END = '</note>';
 
 /** A hand-built source's style sources: no skin, no skinparam, no style. */
 const EMPTY_STYLE_SOURCE: NonNullable<ExtractedSource['styleSource']> = {
@@ -66,23 +61,6 @@ function spriteRegistryFor(options: ParseOptions | undefined): SpriteRegistry {
 }
 
 /**
- * The lines of a note below its `<note>` line, up to (not including) the
- * `</note>` line; a note never closed takes every remaining line. Answers the
- * lines and the index of the first line after the note.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/filesdiagram/FilesDiagram.java:92-101
- */
-function getNote(lines: readonly string[], from: number): { note: readonly string[]; next: number } {
-  const note: string[] = [];
-  let i = from;
-  while (i < lines.length) {
-    const line = lines[i++]!;
-    if (line.startsWith(NOTE_END)) return { note, next: i };
-    note.push(line);
-  }
-  return { note, next: i };
-}
-
-/**
  * `FilesDiagram` -- one `@startfiles` block: the style applied up front, the
  * `root.element.filesDiagram` font, and the listing the `/path` and `<note>`
  * lines fill. Every other line is ignored, as upstream does -- except the
@@ -104,8 +82,6 @@ export class FilesDiagram extends TitledDiagram {
   /** What {@link forMode} parses again. */
   private readonly extractedSource: ExtractedSource;
   private readonly parseOptions: ParseOptions | undefined;
-  /** The `root.element.filesDiagram` font every row is drawn in. @see FilesDiagram.java:71-76 */
-  readonly fontConfiguration: FontConfiguration;
 
   /**
    * `extended` keeps the style directives of `files-extensions.ts` among the skinparams (default: the jar's
@@ -128,39 +104,18 @@ export class FilesDiagram extends TitledDiagram {
     // `styleExtractor.applyStyles(skinParam)`: every `<style>` block before a single line is read (java:67).
     // Upstream parses them all in one go and mutes nothing when one fails; here an earlier one stays applied.
     this.styleError = applyDeclarations(style, source, styleSource);
-    // `getMergedStyle` answers undefined only for an undefined builder; a files diagram always has one.
-    const merged = StyleSignatureBasic.of('root', 'element', 'filesDiagram').getMergedStyle(
-      this.skinParam.getCurrentStyleBuilder(),
-    )!;
-    this.fontConfiguration = merged.getFontConfiguration(this.skinParam.getIHtmlColorSet());
-    this.list = new FilesListing(this.skinParam, this.fontConfiguration);
-    this.readLines(source.lines);
-  }
-
-  /** @see FilesDiagram.java:80-88 */
-  private readLines(lines: readonly string[]): void {
-    let i = 0;
-    while (i < lines.length) {
-      const line = lines[i]!;
-      i++;
-      if (line.startsWith(PATH_PREFIX)) {
-        this.list.addRawEntry(line.substring(PATH_PREFIX.length));
-      } else if (line.startsWith(NOTE_START)) {
-        const { note, next } = getNote(lines, i);
-        this.list.addNote(note);
-        i = next;
-      } else {
-        i += this.commonCommandLength(lines, i - 1) - 1;
-      }
+    const extractor = extractStyle(upstreamSourceLines(source, 'files'));
+    const parser = new FilesParser();
+    parser.parse(extractor.list);
+    // `FilesDiagramFactory#createSystem`: the title the extractor took, centred (java:62-66).
+    if (extractor.title !== undefined) {
+      const display = getWithNewlines3(extractor.title) ?? [];
+      setTitle(
+        this.annotations,
+        singleDisplayPositioned(display, HorizontalAlignment.CENTER, VerticalAlignment.CENTER),
+      );
     }
-  }
-
-  /** The lines the chrome or `sprite` command at `index` takes; 1 for a line neither claims (ignored). */
-  private commonCommandLength(lines: readonly string[], index: number): number {
-    const annotation = matchAnnotationCommand(lines, index, this.annotations);
-    if (annotation !== null) return annotation.consumed;
-    const sprite = matchSpriteCommand(lines, index, this.skinParam.getSprites());
-    return sprite === null ? 1 : sprite.consumed;
+    this.list = new FilesListing(this.skinParam, parser.getRoot(), parser.getIcons());
   }
 
   /**

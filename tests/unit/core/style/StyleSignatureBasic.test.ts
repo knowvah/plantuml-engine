@@ -32,7 +32,6 @@
  */
 import { describe, expect, it } from 'vitest';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
-import { StyleSignatures } from '../../../../src/core/style/StyleSignatures.js';
 import { STAR } from '../../../../src/core/style/StyleSignature.js';
 import { Stereotype } from '../../../../src/core/stereo/Stereotype.js';
 import { Stereostyles } from '../../../../src/core/abel/Stereostyles.js';
@@ -41,6 +40,7 @@ import type { SName } from '../../../../src/core/style/SName.js';
 import { Style } from '../../../../src/core/style/Style.js';
 import { StyleBuilder } from '../../../../src/core/style/StyleBuilder.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 
 const NODE: readonly SName[] = ['root', 'element', 'mindmapDiagram', 'node'];
 const query = (level: number): StyleSignatureBasic => StyleSignatureBasic.of(...NODE).addLevel(level);
@@ -232,23 +232,25 @@ describe('StyleSignatureBasic stereotype fan-out (java:92-148)', () => {
     expect(nodeDecl.withTOBECHANGED(Stereotype.build('<<<<<st>>>>>'))).toBe(nodeDecl);
   });
 
-  it('withTOBECHANGED fans out one signature per label', () => {
+  it('withTOBECHANGED folds every label into one signature (StyleQuery.java:93-105)', () => {
     const r = nodeDecl.withTOBECHANGED(Stereotype.build('<<A>><<B_b>>'));
-    expect(r).toBeInstanceOf(StyleSignatures);
-    expect(r.toString()).toBe('[[node]  [a], [node]  [bb]]');
+    expect(r).toBeInstanceOf(StyleSignatureBasic);
+    expect(r.toString()).toBe('[node]  [a, bb]');
   });
 
-  it('forStereotypeItself also adds SName.stereotype to each fan-out signature', () => {
+  it('forStereotypeItself also adds SName.stereotype to the one signature (StyleQuery.java:116-128)', () => {
     expect(nodeDecl.forStereotypeItself(undefined)).toBe(nodeDecl);
-    const r = nodeDecl.forStereotypeItself(Stereotype.build('<<A>>'));
-    expect(r.toString()).toBe('[[node, stereotype]  [a]]');
+    expect(nodeDecl.forStereotypeItself(Stereotype.build('<<A>>')).toString()).toBe('[node, stereotype]  [a]');
+    expect(nodeDecl.forStereotypeItself(Stereotype.build('<<A>><<B>>')).toString()).toBe('[node, stereotype]  [a, b]');
   });
 });
 
 describe('StyleSignatureBasic.getMergedStyle (StyleSignatureBasic.java:253-259)', () => {
   it("undefined builder -> undefined; else the builder's getMergedStyle(this)", () => {
     const sig = StyleSignatureBasic.of('root');
-    const builder = new StyleBuilder().muteStyle([new Style(sig, new Map([['FontSize', ValueImpl.regular('9', 1)]]))]);
+    const builder = new StyleBuilder().muteStyle([
+      new Style(sig, new Map([['FontSize', ValueImpl.regular('9', Specificity.atOrder(1))]])),
+    ]);
     expect(sig.getMergedStyle(undefined)).toBeUndefined();
     const query = StyleSignatureBasic.of('root', 'element').addLevel(0);
     expect(query.getMergedStyle(builder)).toBe(builder.getMergedStyle(query));

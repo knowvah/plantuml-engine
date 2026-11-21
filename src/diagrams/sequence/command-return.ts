@@ -10,7 +10,7 @@ import type { MessageEvent, MessageExoEvent, MessageExoType } from './ast.js';
 import type { ArrowConfiguration } from './sequence-arrowhead.js';
 import { HColorSet } from '../../core/klimt/color/HColorSet.js';
 import { activate, addMessage, getActivatingMessage } from './sequence-life-state.js';
-import { applyAutonumber, emit, type Command, type ParseState } from './sequence-parse-helpers.js';
+import { applyAutonumber, emit, sourceLineOf, type Command, type ParseState } from './sequence-parse-helpers.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { currentStyleBuilder } from './sequence-skin-param.js';
 
@@ -38,7 +38,9 @@ export const returnCommand: Command = {
       state.executionError = `No such color: ${match[2]!}`;
       return;
     }
-    const message2 = numbered(state, replyTo(message1, arrow, match[3] ?? '', match[1] !== undefined, styleBuilder));
+    // `new Message(..., location)` / `new MessageExo(..., location)` (`CommandReturn.java:134-138`).
+    const reply = replyTo(message1, arrow, match[3] ?? '', match[1] !== undefined, styleBuilder);
+    const message2 = numbered(state, { ...reply, ...sourceLineOf(state) });
     emit(state, message2);
     const error = addMessage(state.life, message2) ?? deactivateAfterReturn(state, message1, activating);
     if (error !== undefined) state.executionError = error;

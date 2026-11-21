@@ -43,28 +43,28 @@ describe('isGraphvizDotHeader — PSystemDotFactory.java:48-56', () => {
 describe('parseDot — the DOT body', () => {
   it('is the header and every later line, each with its newline, verbatim', () => {
     const ast = parseDot(src(['digraph G {', '  a [label="http://x"]; // c', '/* b */', '}']));
-    expect(ast).toEqual({ dotContent: 'digraph G {\n  a [label="http://x"]; // c\n/* b */\n}\n' });
+    expect(ast).toEqual({ dotContent: 'digraph G {\n  a [label="http://x"]; // c\n/* b */\n}\n', allowDotSvg: false });
   });
 
   it('keeps PlantUML directives after the header — graphviz reads them as DOT', () => {
     const ast = parseDot(src(['digraph G {', 'title Hello', 'skinparam X Y', '}']));
-    expect(ast).toEqual({ dotContent: 'digraph G {\ntitle Hello\nskinparam X Y\n}\n' });
+    expect(ast).toEqual({ dotContent: 'digraph G {\ntitle Hello\nskinparam X Y\n}\n', allowDotSvg: false });
   });
 
   it('stops at the first end directive (PSystemBasicFactory.java:54-58)', () => {
     const ast = parseDot(src([], { seedSourceLines: ['@startdot', 'digraph G {', '}', '@enddot', 'ignored'] }));
-    expect(ast).toEqual({ dotContent: 'digraph G {\n}\n' });
+    expect(ast).toEqual({ dotContent: 'digraph G {\n}\n', allowDotSvg: false });
   });
 });
 
 describe('parseDot — before the header', () => {
   it('drops skinparam/skinparamlocked/!pragma/blank lines directly after @startdot', () => {
     const lines = ['skinparam a b', '', 'skinparamlocked c d', '!pragma x', 'digraph G {', '}'];
-    expect(parseDot(src(lines))).toEqual({ dotContent: 'digraph G {\n}\n' });
+    expect(parseDot(src(lines))).toEqual({ dotContent: 'digraph G {\n}\n', allowDotSvg: false });
   });
 
   it('skips whitespace-only lines before the first content line', () => {
-    expect(parseDot(src(['   ', 'digraph G {', '}']))).toEqual({ dotContent: 'digraph G {\n}\n' });
+    expect(parseDot(src(['   ', 'digraph G {', '}']))).toEqual({ dotContent: 'digraph G {\n}\n', allowDotSvg: false });
   });
 
   it('refuses `title` with Syntax Error? on its line', () => {

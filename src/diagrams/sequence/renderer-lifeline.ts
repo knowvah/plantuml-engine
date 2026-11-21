@@ -20,6 +20,7 @@ import { lifelineTitle } from './sequence-layout-lifeline.js';
 import { closeGroup, startGroup } from './renderer-ug.js';
 import { drawEmptyGroup, lineColor, strokeOf, titledGroup } from './renderer-line-component.js';
 import { drawLiveboxes, type LiveboxItem } from './renderer-livebox.js';
+import { groupTypeLifeline } from './sequence-groups.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { UStroke } from '../../core/klimt/UStroke.js';
@@ -169,14 +170,21 @@ export function drawLifelineSegments(ug: UGraphic, p: ParticipantGeo, segments: 
 /**
  * The lifeline pass: `LivingSpaces#drawLifeLines`
  * (`teoz/LivingSpaces.java:157-168`), which loops the living spaces and calls
- * `LivingSpace#drawLineAndLiveboxes` (`teoz/LivingSpace.java:150-167`) on
+ * `LivingSpace#drawLineAndLiveboxes` (`teoz/LivingSpace.java:151-157`) on
  * each:
  *
  * ```java
- * if (alive)
- *     mutingLine.drawLine(ug, context, aliveSince, height);
+ * // Only the line is in the lifeline group, not the liveboxes
+ * ug.startGroup(p.groupTypeLifeline(skinParam.getPragma()));
+ * drawLine(ug, height, context);
+ * ug.closeGroup();
  * liveboxes.drawBoxes(ug, context, getFirstCreateY(), height);
  * ```
+ *
+ * `drawLine` (`:159-174`) draws every alive piece, delay pieces included
+ * (`MutingLine#drawLine`), so the whole piece list sits in the group. A
+ * participant whose pieces draw nothing leaves the group empty, and
+ * `SvgGraphics#closeTopPendingElement` drops it (`SvgGraphics.java:1197-1202`).
  *
  * So the interleave is PER PARTICIPANT -- each one's line, then that same
  * one's boxes -- not every line followed by every box. Confirmed against the
@@ -195,7 +203,9 @@ export function drawLifelinePass(
   segmentsOf: (p: ParticipantGeo) => readonly LifelineSegment[],
 ): void {
   for (const p of participants) {
+    startGroup(ug, groupTypeLifeline(p));
     drawLifelineSegments(ug, p, segmentsOf(p));
+    closeGroup(ug);
     drawLiveboxes(
       ug,
       liveboxes.filter((a) => a.participantId === p.id),

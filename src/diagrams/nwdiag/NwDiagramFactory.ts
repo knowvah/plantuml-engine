@@ -9,7 +9,7 @@ import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
@@ -22,10 +22,10 @@ import {
   type PositionedDeclaration,
   type SkinParam as StyleSkinParam,
 } from '../../core/style/mindmap-style-builder.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
 import { versionString } from '../../core/version.js';
-import { Warning } from '../../core/warning/Warning.js';
 import { applyComment, COMMENT_RE } from './CommandComment.js';
 import { applyElement, ELEMENT_RE } from './CommandElement.js';
 import { applyEndSomething, END_SOMETHING_RE } from './CommandEndSomething.js';
@@ -37,11 +37,10 @@ import { applyProperty, PROPERTY_RE } from './CommandProperty.js';
 import { concat, SP0 } from './nwdiag-command-text.js';
 import { NwDiagram } from './NwDiagram.js';
 import { SkinParam } from './nwdiag-skin-param.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startnwdiag`/`@endnwdiag`, tolerated in a hand-built source (the wbs factory's `START_END_RE`). */
 const START_END_RE = /^@(start|end)nwdiag\s*$/i;
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** `Integer.MAX_VALUE`, past which `Integer.parseInt` throws. */
 const INT_MAX = 2147483647;
 /** `%s`. @see regex/Pattern2.java:57 */
@@ -83,14 +82,6 @@ const HIDE_BY_GENDER = new RegExp(
 );
 /** The fold of `s` under `iu` that Java's `CASE_INSENSITIVE` does not make. */
 const LONG_S = 'ſ';
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by the lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /**
  * `CommandFootboxIgnored`: an optional `hide`/`show`, then `footbox`; `ok()`.
@@ -256,9 +247,9 @@ function refusalLineOf(source: UmlSource, i: number): number {
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: NwDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -302,7 +293,7 @@ function executeCommands(diagram: NwDiagram, source: UmlSource, dispatch: StyleD
     }
 
     const outcome = protectedDispatch(diagram, lines, i);
-    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i + 1, SYNTAX_ERROR);
+    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i + 1, syntaxErrorMessageOf(lines[i]!));
     if (!outcome.result.isOk()) {
       const { result, nextIndex } = outcome;
       return refuse('execution', refusalLineOf(source, i), nextIndex, result.getError(), result.getScore());

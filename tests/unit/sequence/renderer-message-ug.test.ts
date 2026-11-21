@@ -40,6 +40,7 @@ const SELF_STROKE = 'stroke(0,0,1)';
 
 const message = (spec: ArrowSpec, over: Partial<MessageGeo> = {}): MessageGeo => ({
   kind: 'message',
+  group: { uid: 'msg1', participant1: 'part1', participant2: 'part2' },
   fromX: 10,
   toX: 100,
   y: 50,
@@ -356,6 +357,7 @@ describe('drawMessage (CommunicationTile.java:324-371)', () => {
   const run: TextRun = { text: 'hello', x: 20, y: 44, textWidth: 30, textAscent: 11, textLineHeight: 16 };
   const participant: ParticipantGeo = {
     id: 'B',
+    uid: 'part1',
     display: 'B',
     type: 'participant',
     x: 90,

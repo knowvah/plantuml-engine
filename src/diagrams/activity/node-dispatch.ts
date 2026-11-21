@@ -13,10 +13,9 @@
  * small named functions sidesteps the tool bug instead of fighting it.
  */
 
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import type { ActivityAction, ActivityArrowLabel, ActivityNode, ActivityWhile } from './ast.js';
 import {
-  RE_ACTION,
   RE_ARROW_LABEL,
   RE_ENDWHILE,
   RE_SWIMLANE,
@@ -45,10 +44,10 @@ import {
   pushParsedNode,
 } from './list-backward-dispatch.js';
 import { singleLineArrowLabel, tryArrowLong } from './dispatch-arrow-long.js';
-import { displayWithNewlines } from './dispatch-newline-sentinels.js';
 import { readMultilineActionBody } from './dispatch-multiline-body.js';
 import { extractLeadingCaseNotes, tryOpenSwitch } from './switch-dispatch.js';
 import { tryOpenGroup } from './group-dispatch.js';
+import { tryAction, tryPrefixedAction } from './action-dispatch.js';
 import { enterSwimlane, isInstructionHandler, manageSwimlaneStrategy } from './swimlane-strategy.js';
 import { redirectNoteOntoGroup, redirectNoteOntoWhile, tryNoteMulti, tryNoteSingle } from './note-dispatch.js';
 import {
@@ -64,9 +63,9 @@ import {
   RE_TERMINAL,
   backColorSpread,
   deprecatedColorWarning,
-  stereogroupBackColor,
+  ignoredLeadingColorWarning,
+  splitExp4,
   stereogroupLineColor,
-  stereogroupStereotype,
   stereotypesSpread,
   innerColorsSpread,
 } from './dispatch-stereogroup.js';
@@ -146,25 +145,6 @@ function trySimpleKeyword(ctx: ParseContext, idx: number, line: string, lc: stri
 // ---------------------------------------------------------------------------
 // Action: :label; or :label; #color  or multiline :label\n...\n;
 // ---------------------------------------------------------------------------
-function tryAction(ctx: ParseContext, idx: number, line: string): DispatchResult | null {
-  const actionMatch = RE_ACTION.exec(line);
-  if (actionMatch === null) return null;
-  const label = displayWithNewlines(ctx.pragma, actionMatch[1]!);
-  const stereotype = stereogroupStereotype(actionMatch[2]);
-  const color = stereogroupBackColor(actionMatch[2]);
-  const node: ActivityAction = {
-    kind: 'action',
-    label,
-    ...(stereotype !== undefined ? { stereotype } : {}),
-    ...stereotypesSpread(actionMatch[2]),
-    ...innerColorsSpread(actionMatch[2]),
-    ...(color !== undefined ? { color } : {}),
-    ...swimlaneSpread(ctx),
-    ...positionSpread(ctx, idx),
-  };
-  return { idx: idx + 1, node };
-}
-
 export { readMultilineActionBody, type MultilineActionBody } from './dispatch-multiline-body.js';
 
 /** Multiline action: any `:` line {@link tryAction} did not take.
@@ -198,9 +178,6 @@ function tryMultilineAction(ctx: ParseContext, idx: number, line: string): Dispa
 
 /** `CommandActivityLong3`'s opener with its COLOR leaf present: `ColorParser.simpleColor(BACK)` then `:` then `DATA`.
  *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandActivityLong3.java:78-84 */
-/** `CommandExecutionResult`'s `Syntax Error?` (`PSystemCommandFactory#executeFewLines`). */
-const SYNTAX_ERROR = 'Syntax Error?';
-
 const RE_COLORED_MULTILINE_ACTION = new RegExp(`^(${COLORS_REGEXP}):(.*)$`);
 
 /** A multi-line action opened with a leading `#color:` (aar-T1b, `long3-colour`, `fuficu-36-caga441`): the colour is
@@ -213,7 +190,7 @@ function tryColoredMultilineAction(ctx: ParseContext, idx: number, line: string)
   const m = RE_COLORED_MULTILINE_ACTION.exec(line);
   if (m === null) return null;
   const body = readMultilineActionBody(ctx, idx + 1, [m[2]!]);
-  if (!body.closed) return refuse('syntax', idx, idx, SYNTAX_ERROR);
+  if (!body.closed) return refuse('syntax', idx, idx, syntaxErrorMessageOf(line));
   ctx.pragma.addWarning(deprecatedColorWarning(m[1]!));
   const node: ActivityAction = {
     kind: 'action',
@@ -238,8 +215,11 @@ function tryColoredMultilineAction(ctx: ParseContext, idx: number, line: string)
  *   when the `while` line itself is parsed, before the body.
  */
 function tryWhile(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
-  const whileMatch = RE_WHILE.exec(line);
+  // `ColorParser.exp4()` then `while` (`CommandWhile3.java:66-67`); the colour only warns (`:122-124`).
+  const { color: leadingColor, rest } = splitExp4(line);
+  const whileMatch = RE_WHILE.exec(rest);
   if (whileMatch === null) return null;
+  if (leadingColor !== undefined) ctx.pragma.addWarning(ignoredLeadingColorWarning(leadingColor));
   const { lines } = ctx;
   // `CommandWhile3.java:114-115`: `Display.getWithNewlines` over the test and the `is (...)` label.
   const condition = unescapeLabelNewlines(whileMatch[1]!);
@@ -340,6 +320,9 @@ const LINE_HANDLERS: readonly LineHandler[] = [
   tryOpenSwitch,
   tryWhile,
   tryRepeat,
+  // `CommandActivity3` with a leading `#color` or stereotype: right after `CommandRepeat3`
+  // (`ActivityDiagramFactory3.java:116-117`), see `action-dispatch.ts`.
+  tryPrefixedAction,
   tryFork,
   trySplit,
   tryNoteSingle,
@@ -380,6 +363,7 @@ const INSTRUCTION_HANDLERS: ReadonlySet<LineHandler> = new Set<LineHandler>([
   tryOpenSwitch,
   tryWhile,
   tryRepeat,
+  tryPrefixedAction,
   tryFork,
   tryColoredMultilineAction,
   tryActivityList,
@@ -413,7 +397,7 @@ function dispatchLine(ctx: ParseContext, idx: number, line: string, lc: string):
     if (result !== null) return result;
     ctx.swimlaneStrategy = before;
   }
-  return refuse('syntax', idx, idx, SYNTAX_ERROR);
+  return refuse('syntax', idx, idx, syntaxErrorMessageOf(line));
 }
 
 /** {@link pushParsedNode} plus the closed-group note redirect (add4-T2g,

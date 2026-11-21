@@ -48,7 +48,9 @@ import { UText, getFont } from '../../core/klimt/shape/UText.js';
 import type { DrawablePrimitive } from '../../core/creole-atoms.js';
 import type { Paint } from '../../core/paint.js';
 import { fmt } from '../../core/svg-format.js';
-import { path, ellipse, text as svgText } from '../../core/svg.js';
+import { path, ellipse, image, text as svgText } from '../../core/svg.js';
+import { rollbackSvgText } from '../../core/math/latex-atom.js';
+import type { MemberRenderAtom } from './class-member-render-atom.js';
 
 /** `driver-path-svg.ts#paintsEqual` -- a gradient `Paint` never takes the
  *  flat-fill fast path (matches upstream's own `HColor#equals` restriction
@@ -164,4 +166,16 @@ export function renderMemberRowDrawable(
     else if (shape instanceof UText) out += renderTextPrimitive(shape, primitive, originX, originY);
   }
   return out;
+}
+
+/** An `'image'` member/note atom at its box `top`: the raster at its `round`ed size, or a rolled-back formula's
+ *  monospace source in the same box (`AtomMath` -> `ScientificEquationSafe#drawU`, ScientificEquationSafe.java:124-128). */
+export function imageAtomMarkup(
+  atom: Extract<MemberRenderAtom, { kind: 'image' }>,
+  x: number,
+  top: number,
+  round: (v: number) => number,
+): string {
+  if (atom.rollback !== undefined) return rollbackSvgText(atom.rollback, x, top);
+  return image(x, top, round(atom.width), round(atom.height), atom.href);
 }

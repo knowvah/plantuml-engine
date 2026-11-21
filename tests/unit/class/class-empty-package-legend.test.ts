@@ -29,7 +29,7 @@ describe('empty-package leaf legend', () => {
     const ast = collapseEmptyNamespacesFinal(parseClass({ lines: SOURCE, type: 'class' }));
     const leaf = ast.classifiers.find((c) => c.id === 'P')!;
     const plain = measureEmptyPackageLeafDim(measurer, defaultTheme, 'P');
-    const dim = measureEmptyPackageLeafDim(measurer, defaultTheme, 'P', [], leaf.legend);
+    const dim = measureEmptyPackageLeafDim(measurer, defaultTheme, 'P', [], { legend: leaf.legend });
     expect(dim.stereo?.body).toContain('P legend');
     const sw = dim.stereo!.width;
     const sh = dim.stereo!.height;

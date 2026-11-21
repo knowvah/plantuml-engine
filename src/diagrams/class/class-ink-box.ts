@@ -295,6 +295,23 @@ function addEdgeTextInk(
 }
 
 /**
+ * a5731db447f: a role standing in for the quantifier (no `roleLines` on its
+ * end) is the label graphviz itself reserved, as ONE merged block whose
+ * left edge is the icon block's -- `getXY`'s table is what bounds the canvas
+ * on that side (`tailonly`: jar text at x=18, icon block at 6), where the
+ * drawn rect is `2` inside it. The block's left edge joins the ink at the
+ * text's own top, so only the x extent changes.
+ */
+function addStandInRoleIconInk(box: InkBox, e: EdgeGeo, cardinalityFontSize: number): void {
+  for (let i = 0; i < 2; i++) {
+    const icon = e.roleIcons?.[i];
+    const first = e.quantifierLines?.[i]?.[0];
+    if (icon === undefined || first === undefined || (e.roleLines?.[i] ?? []).length > 0) continue;
+    addPoint(box, icon.x, first.y - cardinalityFontSize + TEXT_INK_BASELINE_DROP);
+  }
+}
+
+/**
  * cdd2-T13 (Q-9): the ADDITIVE role label's own `UText` ink. Upstream draws
  * it through `SvekEdge#drawRoleLabel` (`svek/SvekEdge.java:1029-1063`,
  * `role.drawU(ug.apply(new UTranslate(x + roleX, y + roleY)))`), inside the
@@ -309,6 +326,7 @@ function addEdgeTextInk(
  * diagram's rightmost ink; without it our canvas was 2px narrow.
  */
 function addRoleLinesInk(box: InkBox, e: EdgeGeo, cardinalityFontSize: number): void {
+  addStandInRoleIconInk(box, e, cardinalityFontSize);
   for (const line of [...(e.roleLines?.[0] ?? []), ...(e.roleLines?.[1] ?? [])]) {
     addEdgeTextInk(box, line, cardinalityFontSize);
   }

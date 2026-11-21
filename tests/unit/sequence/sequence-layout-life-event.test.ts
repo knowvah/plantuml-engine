@@ -152,7 +152,14 @@ describe('where the cross goes (LifeEventTile.java:112-137, LiveBoxes.java:212-2
   it('lays out nothing for a destroy of a participant the layout does not know', () => {
     const ast: SequenceDiagramAST = {
       participants: [
-        { id: 'A', display: 'A', type: 'participant', order: 0, styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER },
+        {
+          id: 'A',
+          uid: 'part1',
+          display: 'A',
+          type: 'participant',
+          order: 0,
+          styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
+        },
       ],
       events: [
         { kind: 'deactivate', participantId: 'Ghost', destroy: true, styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER },

@@ -4,7 +4,6 @@
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/IRegex.java
  */
-import type { RegexPartialMatch } from './RegexPartialMatch.js';
 import type { RegexResult } from './RegexResult.js';
 
 export interface IRegex {
@@ -12,8 +11,12 @@ export interface IRegex {
   getPatternAsString(): string;
   /** The number of capture groups this node (and its children) contributes. */
   count(): number;
-  /** Consumes this node's groups from `it` and names them. */
-  createPartialMatch(it: Iterator<string | undefined>): Map<string, RegexPartialMatch>;
+  /**
+   * Consumes exactly {@link count} groups from `it` and adds the named ones to `result`, in order (upstream
+   * `e2659a157bf`: one `RegexResult` filled by every node, replacing the per-node maps).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/IRegex.java:48-59
+   */
+  fillPartialMatch(it: Iterator<string | undefined>, result: RegexResult): void;
   /** `UnsupportedOperationException` on a leaf, an optional and an `or`. */
   match(s: string): boolean;
   /** `UnsupportedOperationException` on a leaf, an optional and an `or`; `undefined` is Java `null`. */

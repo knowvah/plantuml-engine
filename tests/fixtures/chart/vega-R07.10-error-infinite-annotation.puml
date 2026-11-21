@@ -1,0 +1,9 @@
+---
+output: svg
+expected-status: 400
+---
+@startchart
+h-axis [A, B, C, D]
+bar [1, 2, 3, 4]
+annotation "Peak" at (B, Infinity)
+@endchart

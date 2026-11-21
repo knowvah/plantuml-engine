@@ -93,8 +93,10 @@ describe('chartPlugin', () => {
   });
 
   it('a deprecated skinparam adds its warning banner', () => {
-    expect(render('skinparam padding 2', ...BODY)).toMatch(
-      /font-family="monospace">Please\suse\sCSS\sstyle\sinstead\sof\sskinparam\spadding<\/text>/,
+    // jar: `@startchart` / `skinparam ParticipantPadding 10` / `bar [1]` (scripts/oracle-render.sh).
+    expect(render('skinparam ParticipantPadding 10', ...BODY)).toMatch(
+      /font-family="monospace">'skinparam\sParticipantPadding'\sis\signored:\suse\sa\sstyle\sinstead<\/text>/,
     );
+    expect(render('skinparam padding 2', ...BODY)).not.toContain('font-family="monospace"');
   });
 });

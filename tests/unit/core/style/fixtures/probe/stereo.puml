@@ -1,0 +1,33 @@
+@startmindmap
+<style>
+mindmapDiagram {
+  node {
+    BackGroundColor lightGreen
+  }
+  :depth(1) {
+    LineColor green
+    Padding 4 8
+  }
+  .foo {
+    BackGroundColor red
+    LineStyle 5-3
+    MaximumWidth 60
+  }
+  .foo * {
+    FontColor #00ff00
+  }
+  leafNode {
+    RoundCorner 3
+  }
+  rootNode {
+    FontStyle bold
+    FontWeight 300
+  }
+}
+</style>
+* r <<foo>>
+** a
+*** a1
+** b <<foo>>
+*** b1
+@endmindmap

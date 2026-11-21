@@ -17,6 +17,7 @@ import type { MemberRenderAtom } from './class-member-render-atom.js';
 import { resolveTextEscapes } from '../../core/text-escapes.js';
 import type { CreoleContext } from '../../core/klimt/creole/CreoleContext.js';
 import { type NoteRow, type NoteLineBuildContext, noteLineHeight } from './note-layout-measure-rows.js';
+import { trin } from '../../core/string-utils-trim.js';
 
 /**
  * Plain creole line -> one row normally, 2+ when `ctx.maxWidth` wraps it
@@ -38,15 +39,6 @@ export function buildPlainRows(rawLine: string, ctx: NoteLineBuildContext): Note
     atoms: build.atoms,
     height: noteLineHeight(build.atoms, fontSize),
   }));
-}
-
-/** `StringUtils.trin` (java:502-530) — strips chars `<= ' '` from both
- *  ends. Duplicated from `note-layout-measure.ts`'s own private copy
- *  (that file's own established "small private helper, no cross-module
- *  boundary for it" precedent — `note-layout-measure-rows.ts`'s module
- *  doc comment names the same convention). */
-function trin(s: string): string {
-  return s.replace(/^[\u0000- ]+/, '').replace(/[\u0000- ]+$/, '');
 }
 
 /** C-2: `CreoleStripeSimpleParser.java:72` — `HASH_HEADING_PATTERN`,

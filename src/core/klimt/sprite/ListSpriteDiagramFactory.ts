@@ -22,7 +22,7 @@ import type { SyncPlugin } from '../../dispatcher.js';
 import { internalEmojiStoreFrom, type InternalEmojiStore } from '../../internal-emoji-store.js';
 import { internalSpriteStoreFrom, type InternalSpriteStore } from '../../internal-sprite-store.js';
 import type { StringMeasurer } from '../../measurer.js';
-import { refuse, type ParseRefusal } from '../../parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../parse-refusal.js';
 import { Pragma } from '../../skin/Pragma.js';
 import { createSpriteRegistry } from '../../sprite-registry.js';
 import { isEndDirective, isStartDirective } from '../../tim/StartUtils.js';
@@ -32,7 +32,6 @@ import type { PreprocessingArtifact } from '../../tim/PreprocessingArtifact.js';
 import { StringLocated } from '../../tim/StringLocated.js';
 import type { TitledDiagram } from '../../TitledDiagram.js';
 import { versionString } from '../../version.js';
-import { Warning } from '../../warning/Warning.js';
 import { CommandListSprite } from './CommandListSprite.js';
 import { ListSpriteDiagram } from './ListSpriteDiagram.js';
 import { addCommonCommands1, type DispatchOutcome } from './listsprite-common-commands.js';
@@ -44,19 +43,10 @@ import {
   positionOf,
   type StyleDispatch,
 } from './listsprite-style-dispatch.js';
+import { skinParamWarning } from '../../skinparam-warnings.js';
 
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** The location description of a source string. @see LineLocation.getDescription */
 const LOCATION_DESCRIPTION = 'string';
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, by lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /** The asset stores `createEmptyDiagram`'s skin param reads (ADR-2), port-only. */
 export interface ListSpriteStores {
@@ -145,9 +135,9 @@ function locationOf(source: UmlSource, i: number): LineLocation {
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: ListSpriteDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -185,7 +175,8 @@ function executeCommands(
       continue;
     }
     const outcome = getCandidate(commands, { diagram, lines, index: i, location: locationOf(source, i) });
-    if (outcome === undefined) return refuse('syntax', refusalLineOf(source, i), i + 1, SYNTAX_ERROR);
+    if (outcome === undefined)
+      return refuse('syntax', refusalLineOf(source, i), i + 1, syntaxErrorMessageOf(lines[i]!));
     if (!outcome.result.isOk()) {
       const { result } = outcome;
       return refuse('execution', refusalLineOf(source, i), outcome.nextIndex, result.getError(), result.getScore());

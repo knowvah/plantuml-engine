@@ -13,7 +13,8 @@ import { UTranslate } from '../../core/klimt/UTranslate.js';
 import { URectangle } from '../../core/klimt/shape/URectangle.js';
 import { drawCreatedHead } from './renderer-participant-shapes.js';
 import type { MessageGeo } from './ast.js';
-import type { PageTheme } from './renderer-ug.js';
+import { closeGroup, startGroup, type PageTheme } from './renderer-ug.js';
+import { groupTypeMessage } from './sequence-groups.js';
 import { TRANSPARENT_SVG } from './text-block-geo.js';
 import type { ArrowConfiguration } from './sequence-arrowhead.js';
 import { drawFlatMessageArrow } from './renderer-arrowhead.js';
@@ -133,7 +134,14 @@ export function drawMessage(ug: UGraphic, msg: MessageGeo, theme: PageTheme): vo
   // (`CommunicationTile#drawU:351-371`) -- and draws it even when the arrow
   // is hidden, since only the arrow component checks `isHidden()`.
   if (msg.createdHead !== undefined) drawCreatedHead(ug, msg.createdHead, theme);
+  // `ug.startGroup(message.groupTypeMessage()); comp.drawU(...); ug.closeGroup()`
+  // (`CommunicationTile.java:369-371`, `CommunicationTileSelf.java:157-159`,
+  // `CommunicationExoTile.java:153-155`): around the arrow component only.
+  // A hidden arrow draws nothing in it, and the empty group is dropped
+  // (`SvgGraphics#closeTopPendingElement`, `SvgGraphics.java:1197-1202`).
+  startGroup(ug, groupTypeMessage(msg.group));
   drawMessageArrowAndLabel(ug, msg, theme);
+  closeGroup(ug);
 }
 
 /**

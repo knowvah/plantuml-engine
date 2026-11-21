@@ -7,7 +7,7 @@ import { RegexLeaf } from '../../../core/regex/RegexLeaf.js';
 import { RegexOr } from '../../../core/regex/RegexOr.js';
 import type { RegexResult } from '../../../core/regex/RegexResult.js';
 import type { LineLocation } from '../../../core/tim/LineLocation.js';
-import { PlayerAnalog } from '../PlayerAnalog.js';
+import { AbstractNumericPlayer } from '../AbstractNumericPlayer.js';
 import type { TimingDiagram } from '../TimingDiagram.js';
 import { parseInt32 } from './parse-int32.js';
 
@@ -37,7 +37,7 @@ function getRegexConcat(): IRegex {
 }
 
 /**
- * `A ticks every 5`, `A ticks num on multiple 5`: only an analog player takes it. `explainArg` (`@Explain`) is not
+ * `A ticks every 5`, `A ticks num on multiple 5`: only a numeric (`analog`, `digital`) player takes it. `explainArg` (`@Explain`) is not
  * ported.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/timingdiagram/command/CommandTicks.java:51-107
@@ -59,7 +59,7 @@ export class CommandTicks extends SingleLineCommand2<TimingDiagram> {
     const player = diagram.getPlayer(code);
     if (player === undefined) return CommandExecutionResult.error(`No such participant ${code}`);
 
-    if (player instanceof PlayerAnalog) player.setTicks(parseInt32(arg.get('NUM', 0)));
+    if (player instanceof AbstractNumericPlayer) player.setTicks(parseInt32(arg.get('NUM', 0)));
     return CommandExecutionResult.ok();
   }
 }

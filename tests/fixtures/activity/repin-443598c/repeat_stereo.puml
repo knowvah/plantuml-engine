@@ -1,0 +1,5 @@
+@startuml
+repeat :R; <<#palegreen>>
+  :A;
+repeat while (more?)
+@enduml

@@ -26,6 +26,13 @@ export interface DotDiagramAST {
    * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/directdot/PSystemDotFactory.java:71-81
    */
   dotContent: string;
+  /**
+   * The render's security profile allows graphviz's SVG
+   * (`SecurityProfile#allowDotSvg`); when false, `exportDiagramNow` writes the
+   * suppression page and never runs graphviz.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/directdot/PSystemDot.java:77-84
+   */
+  allowDotSvg: boolean;
 }
 
 /**

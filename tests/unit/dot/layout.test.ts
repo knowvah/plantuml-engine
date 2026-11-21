@@ -11,7 +11,7 @@ import { layoutDot } from '../../../src/diagrams/dot/layout.js';
 
 describe('layoutDot', () => {
   it("returns graphviz's own SVG document, not this port's markup", () => {
-    const geo = layoutDot({ dotContent: 'digraph G { a -> b; }\n' });
+    const geo = layoutDot({ dotContent: 'digraph G { a -> b; }\n', allowDotSvg: true });
     // graphviz's SVG writer signature: pt units on the root, a `graph0`
     // wrapper, and per-element <title> children.
     expect(geo.svg).toContain('id="graph0"');
@@ -20,13 +20,18 @@ describe('layoutDot', () => {
   });
 
   it('lays out clusters, edges and labels through the engine', () => {
-    const geo = layoutDot({ dotContent: 'digraph G { subgraph cluster_0 { label=Backend; db -> api } }\n' });
+    const geo = layoutDot({
+      dotContent: 'digraph G { subgraph cluster_0 { label=Backend; db -> api } }\n',
+      allowDotSvg: true,
+    });
     expect(geo.svg).toContain('class="cluster"');
     expect(geo.svg).toContain('Backend');
     expect(geo.svg).toContain('class="edge"');
   });
 
   it('surfaces a malformed-DOT failure instead of swallowing it', () => {
-    expect(() => layoutDot({ dotContent: 'digraph { a ->\n' })).toThrow(/@startdot: could not render DOT/);
+    expect(() => layoutDot({ dotContent: 'digraph { a ->\n', allowDotSvg: true })).toThrow(
+      /@startdot: could not render DOT/,
+    );
   });
 });

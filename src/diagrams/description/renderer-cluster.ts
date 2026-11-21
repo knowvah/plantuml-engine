@@ -22,7 +22,7 @@ import { UStroke } from '../../core/klimt/UStroke.js';
 import { HorizontalAlignment, horizontalAlignmentFromString } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { TextBlockUtils } from '../../core/klimt/shape/TextBlockUtils.js';
 import { GUILLEMET_DEFAULT } from '../../core/text/Guillemet.js';
-import { FontStyle } from '../../core/klimt/shape/UText.js';
+import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
 import { buildTextBlock } from '../../core/svek/image/EntityImageDescriptionSupport.js';
 import { buildClusterTitle } from '../../core/svek/image/EntityImageDescriptionClusterTitle.js';
 import {
@@ -153,6 +153,21 @@ function labelBlock(node: DescriptionNodeGeo, theme: Theme, styleLabels: readonl
   );
 }
 
+/** `ClusterHeader#getTitleBlock`'s `label.create9(fontConfiguration, alignment, g.getSkinParam(),
+ *  style.wrapWidth())` (`ClusterHeader.java:129`, upstream 927f7531ddf): the title wraps at the title style's
+ *  `MaximumWidth`. */
+function headerTitle(
+  node: DescriptionNodeGeo,
+  titleFont: FontConfiguration,
+  alignment: HorizontalAlignment,
+  options: HeaderOptions | undefined,
+): TextBlock {
+  return buildClusterTitle(node.display, titleFont, alignment, {
+    resolveAtomImage: options === undefined ? undefined : makeAtomImageResolverFor(options.sprites)(titleFont),
+    wrapWidth: node.entityStyle?.clusterTitle?.wrapWidth(),
+  });
+}
+
 export function buildHeader(node: DescriptionNodeGeo, theme: Theme, options?: HeaderOptions): ClusterHeaderInfo {
   // `ClusterHeader.java:111`: the title font is built with `g.getColors()`, so an inline `text:` colour wins.
   const text = node.color === undefined ? undefined : parseColorOverride(node.color).text;
@@ -178,9 +193,7 @@ export function buildHeader(node: DescriptionNodeGeo, theme: Theme, options?: He
         ? HorizontalAlignment.LEFT
         : HorizontalAlignment.RIGHT;
   const alignment = natural ?? options?.alignment ?? styleAlignment ?? resolveClusterTitleAlignment(theme, node.symbol);
-  const title = buildClusterTitle(node.display, titleFont, alignment, {
-    resolveAtomImage: options === undefined ? undefined : makeAtomImageResolverFor(options.sprites)(titleFont),
-  });
+  const title = headerTitle(node, titleFont, alignment, options);
   // G1 I5b: one guillemet line per stereotype tag, same convention as
   // `EntityImageDescriptionSupport.ts#buildStereo` -- ClusterHeader.java
   // :197-207 (`Display.create(visibleStereotypes)`) stacks ALL tags, not

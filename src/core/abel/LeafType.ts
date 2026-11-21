@@ -61,6 +61,8 @@ export const LeafType = {
   STATE_CHOICE: 'STATE_CHOICE',
   STATE_FORK_JOIN: 'STATE_FORK_JOIN',
   STATE_TRANSITION_LABEL: 'STATE_TRANSITION_LABEL',
+  /** The `<<junction>>` pseudostate (upstream `a0a410773aa`, #2905). @see abel/LeafType.java:60 */
+  JUNCTION: 'JUNCTION',
 
   BLOCK: 'BLOCK',
   ENTITY: 'ENTITY',

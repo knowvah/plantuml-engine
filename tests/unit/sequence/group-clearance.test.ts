@@ -46,15 +46,15 @@ function altPair(parallel: boolean): string[] {
   ];
 }
 
-describe('ensureFollowingParticipantClearsFrame (GroupingTile.java:411-440)', () => {
-  it("pushes the next participant past a self loop's drawn extent + 25 (probe q1: b at 106.894)", () => {
+describe('ensureFollowingParticipantClearsFrame (GroupingTile.java:411-456)', () => {
+  it("pushes the next participant's lifeline past a self loop's drawn extent + 25 (probe q1: b at 96)", () => {
     // stableMaxX: CommunicationTileSelf#getDrawnMaxX = posC2 + max(42, 7 + text)
     // (:303-307), plus MARGINX + EXTERNAL_MARGINX2.
-    expect(centreOf(['group g', 'a -> a : self', 'end', 'a -> b : hi'], 'b')).toBeCloseTo(106.894, 3);
+    expect(centreOf(['group g', 'a -> a : self', 'end', 'a -> b : hi'], 'b')).toBeCloseTo(96, 3);
   });
 
-  it('clears the frame of the group before it (caciga-47: C at 184.806)', () => {
-    expect(centreOf(altPair(false), 'C')).toBeCloseTo(184.806, 3);
+  it('clears the frame of the group before it (caciga-47: C at 172.731)', () => {
+    expect(centreOf(altPair(false), 'C')).toBeCloseTo(172.731, 3);
   });
 });
 
@@ -83,6 +83,10 @@ describe('addParallelSiblingDisjointConstraints (PlayingSpace.java:188-266)', ()
 });
 
 /** Jar probes (`scripts/oracle-render.sh`): every lifeline x, in order. */
+/** Four participants and an `opt`, closed and followed by a `& opt` on c/d. */
+const SIBLINGS_HEAD = ['participant a', 'participant b', 'participant c', 'participant d', 'opt'];
+const SIBLINGS_TAIL = ['end', '& opt', 'c -> d : y', 'end'];
+
 const PROBES: readonly { name: string; lines: readonly string[]; lifelines: readonly number[] }[] = [
   {
     // ensurePrecedingParticipantClearsFrame: posC(a) >= posC(x) + 25 (:483).
@@ -94,7 +98,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
     // stableMinX: a reverse loop's getDrawnMinX, posC - drawnWidth (:294-298).
     name: 'a reverse loop pushes its own participant clear of the previous one',
     lines: ['participant x', 'participant a', 'participant b', 'group g', 'a <- a : back', 'end', 'a -> b : z'],
-    lifelines: [20.5, 87.5, 159.625],
+    lifelines: [20.5, 87.5, 148.731],
   },
   {
     // stableMaxX: LifeEventTile#getMaxX, posC + level * 5 (LifeEventTile.java:151-158).
@@ -109,7 +113,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'end',
       'b -> c : q',
     ],
-    lifelines: [29, 72.462, 117.962],
+    lifelines: [29, 72.462, 107.462],
   },
   {
     // ensureClearsFrameOf recurses with the margin grown by 25 (:614).
@@ -125,13 +129,13 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'end',
       'a -> c : q',
     ],
-    lifelines: [48, 166.819, 198.212],
+    lifelines: [48, 155.925, 187.319],
   },
   {
     // The `**` CREATE LifeEventTile on the created lifeline (CommandArrow.java:397-398).
     name: 'a create inside a group',
     lines: ['participant a', 'participant b', 'participant c', 'group g', 'a -> b ** : make', 'end', 'b -> c : q'],
-    lifelines: [29, 95.662, 131.162],
+    lifelines: [29, 95.662, 127.056],
   },
   {
     // ensureDisjoint(a, b) of two `&` messages sharing no anchor (PlayingSpace.java:240-266).
@@ -159,7 +163,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'c ->] : y',
       'end',
     ],
-    lifelines: [27.713, 59.5, 142.038, 224.969],
+    lifelines: [27.713, 59.5, 131.538, 203.575],
   },
   {
     name: 'an activate inside a group, after the participant before it',
@@ -225,7 +229,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'c -> d : y',
       'end',
     ],
-    lifelines: [20.894, 87.894, 170.431, 201.825],
+    lifelines: [20.894, 87.894, 159.931, 191.325],
   },
   {
     // ElseTile#getMaxX, the group's getMinX + else width (ElseTile.java:153-161).
@@ -294,7 +298,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'c -> d : y',
       'end',
     ],
-    lifelines: [67.231, 99.019, 149.769, 181.163],
+    lifelines: [67.231, 99.019, 143.019, 174.412],
   },
   {
     name: 'a `&` message to the left of a self message',
@@ -326,7 +330,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'end',
       'a -> b : z',
     ],
-    lifelines: [20.5, 92.5, 164.625],
+    lifelines: [20.5, 92.5, 153.731],
   },
   {
     name: 'an exo message with a right note inside a `&` sibling group',
@@ -343,7 +347,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'c -> d : y',
       'end',
     ],
-    lifelines: [27.713, 59.5, 142.038, 173.431],
+    lifelines: [27.713, 59.5, 141.731, 173.125],
   },
   {
     // A ReferenceTile's first, posB, as a right sibling's min (ReferenceTile.java:163-171).
@@ -383,7 +387,7 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'c -> d : y',
       'end',
     ],
-    lifelines: [20.894, 92.894, 175.431, 206.825],
+    lifelines: [20.894, 92.894, 164.931, 196.325],
   },
   {
     // A reversed create's point2 is the head's posD (CommunicationTile.java:435-443).
@@ -416,7 +420,99 @@ const PROBES: readonly { name: string; lines: readonly string[]; lifelines: read
       'end',
       'b -> c : q',
     ],
-    lifelines: [42.894, 74.681, 136.969],
+    lifelines: [42.894, 74.681, 126.469],
+  },
+  // The note-on-message wrappers' footprints (`TileBuilder.java:86-133`), which
+  // `ensureDisjoint` compares (`PlayingSpace.java:240-276`). Jar probes,
+  // 1.2026.11beta1, 2026-11-19.
+  {
+    // CommunicationTileNoteRight#getMaxX: posC(ls) + level * 5 + width (:118-126,245-249).
+    name: 'a right note on a message inside a `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'a -> b : x', 'note right : a wider note here', ...SIBLINGS_TAIL],
+    lifelines: [29, 60.787, 236.131, 267.525],
+  },
+  {
+    // CommunicationTileSelfNoteRight#getMaxX: the loop's getMaxX + width (:111-113,160-164).
+    name: 'a self message with a right note inside a `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'b -> b : s', 'note right : a wider note here', ...SIBLINGS_TAIL],
+    lifelines: [20.894, 52.681, 270.025, 301.419],
+  },
+  {
+    // CommunicationTileSelfNoteLeft#getDrawnMinX: the loop's drawn min - width (:176-180).
+    name: 'a self message with a left note inside the right `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'a -> b : x', 'end', '& opt', 'c -> c : s', 'note left : a wider note here', 'end'],
+    lifelines: [29, 60.787, 251.381, 323.419],
+  },
+  {
+    // CommunicationTileNoteBottomTopAbstract#getMaxX: max(inner max, inner min + width) (:147-154).
+    name: 'a bottom note on a message inside a `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'a -> b : x', 'note bottom : a much wider bottom note here', ...SIBLINGS_TAIL],
+    lifelines: [29, 60.787, 282.913, 314.306],
+  },
+  {
+    // A right note on a create message hangs from posD (CommunicationTileNoteRight.java:121-123).
+    name: 'a create with a right note inside the right `&` sibling group',
+    lines: [
+      'participant a',
+      'participant b',
+      'participant d',
+      'opt',
+      'a -> b : x',
+      'end',
+      '& opt',
+      'create c',
+      'a -> c : make',
+      'note right : a wider note here',
+      'end',
+      'c -> d : y',
+    ],
+    lifelines: [29, 60.787, 101.038, 132.431],
+  },
+  {
+    // MessageExo#overrideNotePosition: a left-border arrow takes its notes on the RIGHT (MessageExo.java:62-69).
+    name: 'an exo message with a left note inside the right `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'a -> b : x', 'end', '& opt', '[-> c : e', 'note left : a wider note here', 'end'],
+    lifelines: [29, 60.787, 151.269, 307.613],
+  },
+  {
+    // One wrapper per note, each around the one before (TileBuilder.java:102-121).
+    name: 'two notes on a message inside a `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'a -> b : x', 'note left : l', 'note right : a wider note here', ...SIBLINGS_TAIL],
+    lifelines: [62.925, 94.712, 270.056, 301.45],
+  },
+  {
+    // ...and a right-border arrow its notes on the LEFT, for the group's clearance too.
+    name: 'an exo message to the right border with a right note inside a `&` sibling group',
+    lines: [...SIBLINGS_HEAD, 'b ->] : e', 'note right : a wider note here', ...SIBLINGS_TAIL],
+    lifelines: [20.894, 177.237, 252.469, 283.862],
+  },
+  {
+    name: 'an exo message from the left border with a left note clears the following participant',
+    lines: [
+      'participant a',
+      'participant b',
+      'participant c',
+      'group g',
+      '[-> b : e',
+      'note left : a wider note here',
+      'end',
+      'b -> c : z',
+    ],
+    lifelines: [28.444, 60.231, 216.575],
+  },
+  {
+    name: 'an exo message to the right border with a right note clears the preceding participant',
+    lines: [
+      'participant a',
+      'participant b',
+      'participant c',
+      'group g',
+      'b ->] : e',
+      'note right : a wider note here',
+      'end',
+      'a -> b : z',
+    ],
+    lifelines: [20.894, 177.237, 238.469],
   },
 ];
 
@@ -460,7 +556,6 @@ describe('footprints the participant row cannot reach (hand-back)', () => {
     ['a standalone note (its width)', ['a -> b : x', 'note over a : n']],
     ['a delay (its middle)', ['a -> b : x', '...']],
     ['a divider (the x origin)', ['a -> b : x', '== d ==']],
-    ['a right note on a message (its width)', ['a -> b : x', 'note right : n']],
     ['a `&` note tile (no anchor)', ['note over a : n']],
   ] as const) {
     it(`adds no disjointness for ${name}`, () => {

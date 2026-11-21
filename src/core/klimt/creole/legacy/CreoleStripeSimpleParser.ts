@@ -71,11 +71,9 @@
  * literally). Now reports `HEADING` with the `=` run's length-1 as `order`
  * and the remaining text (delimiter stripped) as content, matching upstream
  * exactly (`EQUALS_HEADING_PATTERN.matcher(line)`, `StringUtils.trin` applied
- * to the captured group — ported as a plain `.trim()`-equivalent below,
- * `trimHeadingContent`, since `StringUtils.trin` strips only `<= ' '`
- * characters, the same distinction `driver-text-svg.ts#trin` already
- * documents for an unrelated call site — NOT reused directly, that
- * function lives in a different layer and isn't exported).
+ * to the captured group — the shared `string-utils-trim.ts#trin`, which
+ * strips `<= ' '` and U+00A0 but not the rest of JS `.trim()`'s set;
+ * CreoleStripeSimpleParser.java:125, :135, :145, :154).
  *
  * ## T5a: `%newline()` (U+E100) split — {@link splitOnNewlineSentinel}
  *
@@ -101,6 +99,7 @@
 
 import { CreoleMode } from '../CreoleMode.js';
 import { BackSlash } from '../../../text/BackSlash.js';
+import { trin } from '../../../string-utils-trim.js';
 
 export type StripeClassification =
   | { readonly type: 'HORIZONTAL_LINE'; readonly style: '-' | '=' | '.' }
@@ -144,20 +143,6 @@ const ASTERISK_HEADER_LINE_PATTERN = /^(\*+)(\s.+)$/;
 /** java:72 — `^(#+)(.+)$`, matched against `CharHidder.hide(line)`. */
 const HASH_HEADING_PATTERN = /^(#+)(.+)$/;
 
-/** Upstream: `StringUtils.trin` — trims only characters whose code point is
- *  <= U+0020, from both ends (NOT JS's `.trim()`, which also strips U+00A0
- *  NBSP — same distinction `driver-text-svg.ts#trin` documents; duplicated
- *  here rather than imported since that function is a different layer's
- *  private helper, and this one-liner is cheaper than threading a new
- *  cross-module dependency for it). */
-function trimHeadingContent(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
-
 /** Upstream classifies EVERY match of these four patterns as
  *  `HORIZONTAL_LINE` (empty OR non-empty capture alike). This port keeps
  *  the non-empty case tagged `LITERAL` at runtime (see the module doc
@@ -185,7 +170,7 @@ function listClassification(line: string, mode: CreoleMode): StripeClassificatio
   // java:119-126.
   const bullet = ASTERISK_PREFIXED_LINE_PATTERN.exec(line);
   if (bullet !== null) {
-    return { type: 'LIST_WITHOUT_NUMBER', content: trimHeadingContent(bullet[2]!), order: bullet[1]!.length - 1 };
+    return { type: 'LIST_WITHOUT_NUMBER', content: trin(bullet[2]!), order: bullet[1]!.length - 1 };
   }
 
   // java:127-135 — the SECOND asterisk arm, a distinct pattern upstream
@@ -194,7 +179,7 @@ function listClassification(line: string, mode: CreoleMode): StripeClassificatio
   if (bulletHeader !== null) {
     return {
       type: 'LIST_WITHOUT_NUMBER',
-      content: trimHeadingContent(bulletHeader[2]!),
+      content: trin(bulletHeader[2]!),
       order: bulletHeader[1]!.length - 1,
     };
   }
@@ -202,7 +187,7 @@ function listClassification(line: string, mode: CreoleMode): StripeClassificatio
   // java:136-144.
   const numbered = HASH_HEADING_PATTERN.exec(line);
   if (numbered !== null) {
-    return { type: 'LIST_WITH_NUMBER', content: trimHeadingContent(numbered[2]!), order: numbered[1]!.length - 1 };
+    return { type: 'LIST_WITH_NUMBER', content: trin(numbered[2]!), order: numbered[1]!.length - 1 };
   }
   return null;
 }
@@ -227,7 +212,7 @@ export function classifyStripeLine(line: string, mode: CreoleMode = CreoleMode.F
 
   const heading = EQUALS_HEADING_PATTERN.exec(line);
   if (heading !== null) {
-    return { type: 'HEADING', content: trimHeadingContent(heading[2]!), order: heading[1]!.length - 1 };
+    return { type: 'HEADING', content: trin(heading[2]!), order: heading[1]!.length - 1 };
   }
 
   return { type: 'NORMAL', content: line };

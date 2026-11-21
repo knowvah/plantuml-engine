@@ -3,10 +3,12 @@
  * expands the compact `../fixtures/style-parser-storage.json` cases into
  * the full storage the jar dumped.
  *
- * Every case was dumped from the 1.2026.8beta1 oracle jar with the T2a
- * probe: `plans/mindmap-engine-port/tools/probe/run-probe.sh DumpProbe dump
- * <case>.puml` (the final `MindMapDiagram.getCurrentStyleBuilder()`'s
- * `StyleStorage.getStyles()`, in iteration order). `corpus-<slug>` cases are
+ * Every case is dumped by `../fixtures/probe/run.sh new <case>.puml`: the
+ * old-engine stock jar (97a5992, the `StyleStorage` engine the port
+ * mirrors) loading the 1.2026.11beta1 oracle jar's `plantuml.skin` (the
+ * final `MindMapDiagram.getCurrentStyleBuilder()`'s
+ * `StyleStorage.getStyles()`, in iteration order). `run.sh old` reproduces
+ * the earlier 1.2026.8beta1 dumps exactly. `corpus-<slug>` cases are
  * `test-results/dot-cache/mindmap/<slug>/in.puml` verbatim (every corpus
  * mindmap with a `<style>` block and no skinparam/`!theme`/`skin` line);
  * `authored-*` cases were written for parser branches the corpus lacks.

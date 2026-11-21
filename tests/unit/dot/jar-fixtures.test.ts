@@ -5,7 +5,10 @@
  *
  * Every `.svg` beside its `.puml` in `tests/fixtures/unwind-U2/` is the jar's
  * own render (`scripts/oracle-render.sh`, ONE fixture per jar run — see the
- * unwind-U2 agent note on the factory's shared `data` field).
+ * unwind-U2 agent note on the factory's shared `data` field). Under the
+ * default LEGACY profile a parsed `@startdot` is the jar's suppression page
+ * (`PSystemDot.java:77-84`); `insecure/<slug>.svg` is the same render with
+ * `PLANTUML_SECURITY_PROFILE=INSECURE`, where graphviz's SVG is written.
  *
  * The mechanism under test is `PSystemDotFactory#executeLine`
  * (`directdot/PSystemDotFactory.java:69-82`): nothing is accepted before the
@@ -22,15 +25,28 @@ import { fileURLToPath } from 'node:url';
 import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { compareSvg } from '../../oracle/svg-conformance/compare.js';
+import { SecurityProfile } from '../../../src/core/security/SecurityProfile.js';
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '../../fixtures/unwind-U2');
 
-function ours(slug: string): string {
-  return renderSync(readFileSync(join(FIXTURES, `${slug}.puml`), 'utf8'), { measurer: new DeterministicMeasurer() });
+function ours(slug: string, securityProfile?: SecurityProfile): string {
+  return renderSync(readFileSync(join(FIXTURES, `${slug}.puml`), 'utf8'), {
+    measurer: new DeterministicMeasurer(),
+    securityProfile,
+  });
 }
 
 function jar(slug: string): string {
   return readFileSync(join(FIXTURES, `${slug}.svg`), 'utf8');
+}
+
+/** The graphviz path: the jar under INSECURE, and ours under INSECURE. */
+function oursInsecure(slug: string): string {
+  return ours(slug, SecurityProfile.INSECURE);
+}
+
+function jarInsecure(slug: string): string {
+  return readFileSync(join(FIXTURES, 'insecure', `${slug}.svg`), 'utf8');
 }
 
 function texts(svg: string): string[] {
@@ -60,8 +76,11 @@ describe('@startdot — jar output is graphviz output (zero diffs)', () => {
     'comment-in-label',
   ];
   for (const slug of slugs) {
-    it(`${slug}: zero-diff against the jar`, () => {
-      expect(compareSvg(ours(slug), jar(slug), 'deterministic').diffs).toEqual([]);
+    it(`${slug}: zero-diff against the jar (INSECURE)`, () => {
+      expect(compareSvg(oursInsecure(slug), jarInsecure(slug), 'deterministic').diffs).toEqual([]);
+    });
+    it(`${slug}: the default profile matches the jar's suppression page byte for byte`, () => {
+      expect(ours(slug)).toBe(jar(slug));
     });
   }
 });
@@ -108,10 +127,10 @@ describe('@startdot — a directive after the header is DOT', () => {
   // match the jar; what remains is @knowvah/dot-engine's node-width arithmetic
   // (≤1pt), which is the layout library's, not this port's.
   for (const slug of ['title-after', 'caption-after', 'header-after', 'footer-after']) {
-    it(`${slug}: same elements and text as the jar, numeric deltas only`, () => {
-      const { diffs } = compareSvg(ours(slug), jar(slug), 'deterministic');
+    it(`${slug}: same elements and text as the jar (INSECURE), numeric deltas only`, () => {
+      const { diffs } = compareSvg(oursInsecure(slug), jarInsecure(slug), 'deterministic');
       expect(diffs.filter((d) => !('delta' in d))).toEqual([]);
-      expect(texts(ours(slug))).toEqual(texts(jar(slug)));
+      expect(texts(oursInsecure(slug))).toEqual(texts(jarInsecure(slug)));
     });
   }
 });

@@ -51,3 +51,11 @@ export function unescapeLabelNewlines(text: string): string {
   }
   return out;
 }
+
+/** {@link unescapeLabelNewlines} applied only when the captured group
+ *  matched. The capture is kept verbatim: upstream's `(.*?)` groups
+ *  (`CommandIf2.java`, `CommandElseIf2.java`, `CommandElse3.java`, ...)
+ *  reach `Display.getWithNewlines` untrimmed (isw-T2-act F2). */
+export function unescapeLabel(text: string | undefined): string | undefined {
+  return text === undefined ? text : unescapeLabelNewlines(text);
+}

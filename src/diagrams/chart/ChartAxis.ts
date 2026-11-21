@@ -3,6 +3,7 @@
  * spacing and label position.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartAxis.java
  */
+import { javaDoubleToString } from '../../core/java-number-format.js';
 
 /** @see ChartAxis.java:41-45 */
 export const LabelPosition = {
@@ -26,6 +27,15 @@ export interface ChartTick {
 const DEFAULT_MIN = 0;
 /** @see ChartAxis.java:58 */
 const DEFAULT_MAX = 100;
+/** Multipliers of a power of ten accepted as a tick step; 1.5 and 2.5 left out. @see ChartAxis.java:131 */
+const NICE_STEPS: readonly number[] = [1, 2, 3, 4, 5, 6, 8];
+/** The intervals the automatic value ticks draw. @see ChartAxis.java:134 */
+const TICK_INTERVALS = 5;
+
+/** A magnitude the nice-range loop can grow from. @see ChartAxis.java:167-169 (efe6d85e5f3) */
+function isUsableMagnitude(magnitude: number): boolean {
+  return magnitude > 0 && Number.isFinite(magnitude);
+}
 
 export class ChartAxis {
   private title: string;
@@ -90,12 +100,44 @@ export class ChartAxis {
     return pixelMin + ((value - this.min) / (this.max - this.min)) * (pixelMax - pixelMin);
   }
 
-  /** @see ChartAxis.java:121-128 */
-  includeValue(value: number): void {
-    if (this.autoScale) {
-      if (value < this.min) this.min = value;
-      if (value > this.max) this.max = value;
+  /** A copy of this axis (title, ticks, label position) with the given range. @see ChartAxis.java:121-127 */
+  withRange(newMin: number, newMax: number): ChartAxis {
+    const result = new ChartAxis(this.title, newMin, newMax);
+    result.customTicks = this.customTicks;
+    result.tickSpacing = this.tickSpacing;
+    result.labelPosition = this.labelPosition;
+    return result;
+  }
+
+  /**
+   * A copy whose range is the smallest round range holding `dataMin`, `dataMax`
+   * and 0: `start + 5 * step`, step being `NICE_STEPS` times a power of ten and
+   * start a multiple of step (2117ccb43cd, #2956).
+   *
+   * The loop needs finite numbers: NaN, Infinity, or a start that overflows near
+   * `-Double.MAX_VALUE` never pass the test, and a magnitude of 0 never grows, so
+   * it stops once the magnitude is no longer finite and positive, and throws
+   * (plantuml/plantuml#3030, efe6d85e5f3, mirrored ahead of a release).
+   * @see ChartAxis.java:145-169 (efe6d85e5f3)
+   */
+  withNiceRange(dataMin: number, dataMax: number): ChartAxis {
+    const lo = Math.min(0, dataMin);
+    const hi = Math.max(0, dataMax);
+    if (lo === hi) return this.withRange(this.min, this.max);
+
+    let magnitude = Math.pow(10, Math.floor(Math.log10((hi - lo) / TICK_INTERVALS)) - 1);
+    // Termination: once step >= hi - lo, any multiple start <= lo gives start + 5 * step > hi.
+    while (isUsableMagnitude(magnitude)) {
+      for (const nice of NICE_STEPS) {
+        const step = nice * magnitude;
+        const start = Math.floor(lo / step) * step;
+        if (start + TICK_INTERVALS * step >= hi) return this.withRange(start, start + TICK_INTERVALS * step);
+      }
+      magnitude *= 10;
     }
+    throw new Error(
+      `IllegalArgumentException: No axis range for values from ${javaDoubleToString(dataMin)} to ${javaDoubleToString(dataMax)}`,
+    );
   }
 
   getCustomTicks(): readonly ChartTick[] | undefined {

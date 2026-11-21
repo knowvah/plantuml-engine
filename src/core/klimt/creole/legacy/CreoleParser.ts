@@ -101,40 +101,12 @@ import { StripeLatex } from './StripeLatex.js';
 import type { StripeRaw } from './StripeRaw.js';
 import { CreoleHorizontalLine } from '../CreoleHorizontalLine.js';
 import { EmbeddedDiagram, getEmbeddedType, type NestedDiagramRenderer } from '../../../EmbeddedDiagram.js';
-
-/** `StringUtils.trim2(CharSequence)` (java: `StringUtils.java:534-565`) —
- *  trims characters `<= ' '` (0x20) from both ends. Duplicated here rather
- *  than imported from `EmbeddedDiagram.ts` (that file's own copy is
- *  module-private) — the SAME "small utility, cite it" precedent
- *  `EmbeddedDiagram.ts`'s own doc comment already applies to
- *  `getEmbeddedType`'s pre-T10g duplication. Used ONLY by the
- *  `StripeTree` CONTINUATION check below (java:88), which trims before
- *  testing `isTreeStart` — the "new StripeTree" branch further down does
- *  NOT trim, a deliberate upstream asymmetry preserved verbatim. */
-function trim2(s: string): string {
-  const len = s.length;
-  if (len === 0) return '';
-  let start = 0;
-  let end = len - 1;
-  while (start <= end) {
-    if (s.charCodeAt(start) <= 0x20) {
-      start++;
-      continue;
-    }
-    if (s.charCodeAt(end) <= 0x20) {
-      end--;
-      continue;
-    }
-    break;
-  }
-  if (start > end) return '';
-  return s.slice(start, end + 1);
-}
+import { trim2 } from '../../../string-utils-trim.js';
 
 /** Upstream: `AtomText`'s constructor `<U+XXXX>`/`&#NNN;` decode
  *  (`AtomText.java:79-81`, `manageSpecialChars`), applied per text atom.
  *  Duplicated from `StripeSimple.ts`'s private `decodeAtomEscapes` (the
- *  SAME "small utility, cite it" precedent as `trim2` above): T5a's
+ *  SAME "small utility, cite it" precedent): T5a's
  *  per-`%newline()`-piece atom building (below) cannot reuse
  *  `buildLineAtoms`'s own internal call to it, since that function only
  *  ever builds one (unsplit) piece's atoms.

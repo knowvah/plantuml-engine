@@ -47,7 +47,7 @@
 
 import { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import { VerticalAlignment } from '../klimt/geom/VerticalAlignment.js';
-import { trin } from '../style/parser/StyleParser.js';
+import { trin } from '../string-utils-trim.js';
 import {
   type DiagramAnnotations,
   horizontalAlignmentFromString,

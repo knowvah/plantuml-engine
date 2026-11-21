@@ -88,9 +88,17 @@ import {
 import { getSplitted } from '../../klimt/creole/Fission.js';
 import { JAR_DEFAULT_TEXT_COLOR } from '../../decoration/symbol/usymbol-resolve.js';
 import { renderLatexAsImage } from '../../latex.js';
+import { rollbackLayout } from '../../math/latex-atom.js';
+import { MeasurerStringBounder } from '../../measurer-bounder.js';
 import { baseFontConfiguration, CREOLE_HR_HEIGHT } from './leaf-sizing-text.js';
 import type { FontConfiguration } from '../../klimt/shape/UText.js';
-import type { CreoleRunImage, CreoleTextLine, CreoleTextRun, FontStyleFlags } from './creole-text-run-types.js';
+import type {
+  CreoleRunImage,
+  CreoleRunRollback,
+  CreoleTextLine,
+  CreoleTextRun,
+  FontStyleFlags,
+} from './creole-text-run-types.js';
 export type { CreoleRunImage, CreoleTextLine, CreoleTextRun, FontStyleFlags } from './creole-text-run-types.js';
 
 // ---------------------------------------------------------------------------
@@ -287,7 +295,16 @@ function textAtomMeasured(atom: Extract<CreoleAtom, { kind: 'text' }>, ctx: Meas
  * line; an atom cannot know its own top before its neighbours are laid out.
  */
 function latexAtomMeasured(atom: Extract<CreoleAtom, { kind: 'latex' }>, ctx: MeasureCtx): AtomMeasured {
-  void ctx;
+  if (atom.rollback !== undefined) {
+    // `AtomMath#calculateDimensionSlow` -> `ScientificEquationSafe#getDimension`: the rollback's own block.
+    const layout = rollbackLayout(atom.rollback, new MeasurerStringBounder(ctx.measurer));
+    const rollback: CreoleRunRollback = { ...layout, top: 0 };
+    return {
+      run: { text: '', style: NO_STYLE, size: ctx.font.size, rollback },
+      width: layout.width,
+      height: layout.height,
+    };
+  }
   const drawn = renderLatexAsImage(atom.expr, atom.color ?? JAR_DEFAULT_TEXT_COLOR);
   const image: CreoleRunImage = { href: drawn.href, width: drawn.width, height: drawn.height, top: 0 };
   return {
@@ -386,7 +403,9 @@ function atomsToLine(atoms: readonly CreoleAtom[], ctx: MeasureCtx): CreoleTextL
     // (`SheetBlock1.java:212-217`); only `Sea` knows it, and only now.
     const placed = m.run.image === undefined ? {} : { image: { ...m.run.image, top: layout.top[i] as number } };
     const bullet = m.run.bullet === undefined ? {} : { bullet: { ...m.run.bullet, top: layout.top[i] as number } };
-    runs.push({ ...m.run, ...placed, ...bullet, dy: layout.dy[i] as number });
+    const rollback =
+      m.run.rollback === undefined ? {} : { rollback: { ...m.run.rollback, top: layout.top[i] as number } };
+    runs.push({ ...m.run, ...placed, ...bullet, ...rollback, dy: layout.dy[i] as number });
   });
   return { runs, width: layout.width, height: layout.height, kind: 'text' };
 }

@@ -80,7 +80,12 @@ describe('EaterOption', () => {
       }),
     });
     new EaterOption(new StringLocated('!option notarealkey', LOC)).analyze(ctx, memory);
-    expect(addWarning).toHaveBeenCalledWith({ message: ['No such !option notarealkey'] });
+    expect(addWarning).toHaveBeenCalledWith({
+      message: [
+        "Unknown '!option notarealkey': this line is ignored",
+        'Known options are: language, use_descriptive_names, handwritten, debug, svg_desc, svg_title',
+      ],
+    });
   });
 
   it('warns when a known key with no default has no explicit value', () => {
@@ -95,6 +100,8 @@ describe('EaterOption', () => {
       }),
     });
     new EaterOption(new StringLocated('!option language', LOC)).analyze(ctx, memory);
-    expect(addWarning).toHaveBeenCalledWith({ message: ['No default value for language'] });
+    expect(addWarning).toHaveBeenCalledWith({
+      message: ["'!option language' needs a value: write '!option language <value>'"],
+    });
   });
 });

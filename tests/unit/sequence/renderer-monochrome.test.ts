@@ -55,7 +55,9 @@ describe('sequence renderer -- skinparam monochrome (sdd3-T1h)', () => {
 
   it('leaves the structure untouched: only paint values change', () => {
     const svg = render('skinparam monochrome true\n');
-    const strip = (s: string): string => s.replace(/#[0-9A-Fa-f]{3,8}/g, '#');
+    // Colours aside, only the groups' `data-source-line` moves: the skinparam
+    // line shifts every location down one (`UGroup(LineLocation)`).
+    const strip = (s: string): string => s.replace(/#[0-9A-Fa-f]{3,8}/g, '#').replace(/ data-source-line="\d+"/g, '');
     expect(strip(svg)).toBe(strip(plain));
   });
 

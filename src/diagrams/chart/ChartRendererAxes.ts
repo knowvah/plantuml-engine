@@ -5,7 +5,7 @@
  * Each Java method keeps its name.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartRenderer.java:241-773
  */
-import { javaFormatF } from '../../core/java-number-format.js';
+import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import { UFontFactory } from '../../core/klimt/font/UFontFactory.js';
 import { bridgeFontConfiguration } from '../../core/klimt/font/FontConfigurationBridge.js';
 import { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
@@ -16,14 +16,13 @@ import { UStroke } from '../../core/klimt/UStroke.js';
 import { UTranslate } from '../../core/klimt/UTranslate.js';
 import type { HColor } from '../../core/style/Value.js';
 import { LabelPosition, type ChartAxis } from './ChartAxis.js';
-import { GridMode } from './chart-modes.js';
+import { GridMode, Orientation } from './chart-modes.js';
+import { horizontalValueTicks, numericTicks, valueTicks } from './ChartTicks.js';
 import {
   asNullable,
   AXIS_LABEL_SPACE,
   displayBlock,
   fore,
-  formatAxisValue,
-  formatValue,
   getAxisStyleSignature,
   getGridStyleSignature,
   lineColorOf,
@@ -35,10 +34,6 @@ import {
   type StyleFontConfiguration,
 } from './ChartStyles.js';
 
-/** `drawYAxis`'s automatic ticks. @see ChartRenderer.java:362 */
-const NUM_TICKS = 5;
-/** `drawYAxisHorizontally`'s ticks. @see ChartRenderer.java:677 */
-const NUM_TICKS_HORIZONTAL = 5;
 /** Between a tick and its label. @see ChartRenderer.java:314 */
 const TICK_LABEL_GAP = 5;
 /** Moves a rotated title further from the axis. @see ChartRenderer.java:425 */
@@ -53,12 +48,11 @@ const AXIS_TITLE_TOP_GAP = 15;
 const X_TITLE_RIGHT_GAP = 10;
 /** `TICK_SIZE + 25`, an h-axis title below the labels. @see ChartRenderer.java:573 */
 const X_TITLE_BELOW = TICK_SIZE + 25;
-/** The automatic numeric tick count. @see ChartRenderer.java:587 */
-const AUTO_TICK_DIVISIONS = 10;
-/** `tickInterval * 0.01`, the numeric loops' tolerance. @see ChartRenderer.java:594 */
-const TICK_TOLERANCE = 0.01;
 /** Half a category: labels sit at category centres. @see ChartRenderer.java:545 */
 const CATEGORY_CENTER = 0.5;
+
+/** Between the widest tick label and the rotated title. @see ChartRenderer.java getYAxisSpace (f8e62ccdc42) */
+const AXIS_TITLE_CLEARANCE = 6;
 
 /** What `drawYAxis` passes its tick arms. */
 interface YAxisContext {
@@ -69,12 +63,12 @@ interface YAxisContext {
   readonly width: number;
   readonly leftSide: boolean;
   readonly fontConfig: StyleFontConfiguration;
-  readonly gridColor: HColor;
-  readonly gridStroke: UStroke;
 }
 
 /** What `drawYAxis` receives beyond the graphic. */
 export interface YAxisArgs {
+  /** The space between the axis and the edge of the plot area, from `getYAxisSpace`. */
+  readonly space: number;
   readonly height: number;
   readonly width: number;
   readonly axis: ChartAxis;
@@ -91,15 +85,11 @@ function gridStyleOf(state: ChartRendererState, lineColor: HColor): { color: HCo
 }
 
 /**
- * One tick of any of `drawYAxis`'s arms, which repeat this body. The grid arm is
- * dead: `xAxis` is never null (`ChartDiagram.java:74`). `drawGridLines` draws instead.
+ * One tick of any of `drawYAxis`'s arms, which repeat this body. Grid lines are drawn
+ * by `drawGridLines`, at the same ticks (781d73f9b1f, #2636).
  * @see ChartRenderer.java:294-317
  */
 function drawYTick(c: YAxisContext, y: number, label: string): void {
-  if (c.leftSide && c.state.yGridMode !== GridMode.OFF && c.state.xAxis === undefined) {
-    c.ug.apply(fore(c.gridColor)).apply(c.gridStroke).apply(UTranslate.dy(y)).draw(ULine.hline(c.width));
-  }
-
   c.ug.apply(UTranslate.dy(y)).draw(ULine.hline(c.leftSide ? -TICK_SIZE : TICK_SIZE));
 
   const textBlock = displayBlock(c.state.skinParam, label, c.fontConfig, HorizontalAlignment.RIGHT);
@@ -108,34 +98,28 @@ function drawYTick(c: YAxisContext, y: number, label: string): void {
   textBlock.drawU(c.ug.apply(UTranslate.dx(dx).compose(UTranslate.dy(y - dim.getHeight() / 2))));
 }
 
-/** The custom-ticks arm. Skips a tick outside the axis. @see ChartRenderer.java:281-318 */
-function drawCustomTicks(c: YAxisContext, axis: ChartAxis): void {
-  for (const { value, label } of axis.getCustomTicks()!) {
-    const y = c.height * (1.0 - (value - axis.getMin()) / (axis.getMax() - axis.getMin()));
-    if (y < 0 || y > c.height) continue;
-    drawYTick(c, y, label);
+/**
+ * The space between a vertical value axis and the edge of the plot area: the tick, a
+ * 5 px gap, the widest tick label and 6 px before the rotated title; never less than
+ * `AXIS_LABEL_SPACE` (#2618). A horizontal chart keeps the fixed space.
+ * @see ChartRenderer.java getYAxisSpace (f8e62ccdc42)
+ */
+export function getYAxisSpace(
+  state: ChartRendererState,
+  stringBounder: StringBounder,
+  axis: ChartAxis | undefined,
+): number {
+  if (axis === undefined || state.orientation === Orientation.HORIZONTAL) return AXIS_LABEL_SPACE;
+  const skinParam = state.skinParam;
+  const fontConfig = mergedStyle(getAxisStyleSignature(false), skinParam).getFontConfiguration(
+    skinParam.getIHtmlColorSet(),
+  );
+  let labelWidth = 0;
+  for (const { label } of valueTicks(axis)) {
+    const block = displayBlock(skinParam, label, fontConfig, HorizontalAlignment.RIGHT);
+    labelWidth = Math.max(labelWidth, block.calculateDimension(stringBounder).getWidth());
   }
-}
-
-/** The spacing arm. @see ChartRenderer.java:319-359 */
-function drawSpacedTicks(c: YAxisContext, axis: ChartAxis): void {
-  const spacing = axis.getTickSpacing()!;
-  const range = axis.getMax() - axis.getMin();
-  const startValue = Math.ceil(axis.getMin() / spacing) * spacing;
-  for (let value = startValue; value <= axis.getMax(); value += spacing) {
-    // Upstream's guard against floating point, unreachable under the loop's own test.
-    if (value > axis.getMax() + spacing * TICK_TOLERANCE) break;
-    drawYTick(c, c.height * (1.0 - (value - axis.getMin()) / range), formatValue(value));
-  }
-}
-
-/** The automatic arm. @see ChartRenderer.java:360-393 */
-function drawAutomaticTicks(c: YAxisContext, axis: ChartAxis): void {
-  for (let i = 0; i <= NUM_TICKS; i++) {
-    const y = c.height * (1.0 - i / NUM_TICKS);
-    const value = axis.getMin() + ((axis.getMax() - axis.getMin()) * i) / NUM_TICKS;
-    drawYTick(c, y, formatValue(value));
-  }
+  return Math.max(AXIS_LABEL_SPACE, TICK_SIZE + TICK_LABEL_GAP + labelWidth + AXIS_TITLE_CLEARANCE);
 }
 
 /** @see ChartRenderer.java:241-405 */
@@ -150,25 +134,14 @@ export function drawYAxis(state: ChartRendererState, ugIn: UGraphic, args: YAxis
   const ug = ugIn.apply(fore(actualLineColor)).apply(UStroke.withThickness(lineThickness));
   ug.draw(ULine.vline(height));
 
-  const grid = gridStyleOf(state, args.lineColor);
-  const context: YAxisContext = {
-    state,
-    ug,
-    height,
-    width: args.width,
-    leftSide,
-    fontConfig,
-    gridColor: grid.color,
-    gridStroke: grid.stroke,
-  };
-  if (axis.hasCustomTicks()) drawCustomTicks(context, axis);
-  else if (axis.hasTickSpacing()) drawSpacedTicks(context, axis);
-  else drawAutomaticTicks(context, axis);
+  const context: YAxisContext = { state, ug, height, width: args.width, leftSide, fontConfig };
+  for (const tick of valueTicks(axis)) drawYTick(context, height * (1.0 - tick.ratio), tick.label);
 
   const title = axis.getTitle();
   if (title === '') return;
-  if (axis.getLabelPosition() === LabelPosition.TOP) drawHorizontalAxisTitle(state, ug, title, leftSide, fontConfig);
-  else drawVerticalText(ug, title, { height, leftSide, axisFontConfig: fontConfig });
+  if (axis.getLabelPosition() === LabelPosition.TOP)
+    drawHorizontalAxisTitle(state, ug, title, { leftSide, space: args.space, axisFontConfig: fontConfig });
+  else drawVerticalText(ug, title, { height, leftSide, space: args.space, axisFontConfig: fontConfig });
 }
 
 /**
@@ -178,9 +151,9 @@ export function drawYAxis(state: ChartRendererState, ugIn: UGraphic, args: YAxis
 function drawVerticalText(
   ug: UGraphic,
   text: string,
-  args: { height: number; leftSide: boolean; axisFontConfig: StyleFontConfiguration },
+  args: { height: number; leftSide: boolean; space: number; axisFontConfig: StyleFontConfiguration },
 ): void {
-  const { height, leftSide } = args;
+  const { height, leftSide, space } = args;
   const font = bridgeFontConfiguration(args.axisFontConfig);
   const utext = UText.build(text, font).withOrientation(leftSide ? ORIENTATION_LEFT : ORIENTATION_RIGHT);
 
@@ -188,8 +161,8 @@ function drawVerticalText(
   const textWidth = dim.getWidth();
   const textHeight = dim.getHeight();
   const xPos = leftSide
-    ? -AXIS_LABEL_SPACE + textHeight / 2 - VERTICAL_TEXT_EXTRA_SPACING
-    : AXIS_LABEL_SPACE - textHeight / 2 + VERTICAL_TEXT_EXTRA_SPACING;
+    ? -space + textHeight / 2 - VERTICAL_TEXT_EXTRA_SPACING
+    : space - textHeight / 2 + VERTICAL_TEXT_EXTRA_SPACING;
   const yPos = leftSide ? height / 2 + textWidth / 2 : height / 2 - textWidth / 2;
 
   ug.apply(UTranslate.dx(xPos).compose(UTranslate.dy(yPos))).draw(utext);
@@ -203,37 +176,15 @@ function drawHorizontalAxisTitle(
   state: ChartRendererState,
   ug: UGraphic,
   text: string,
-  leftSide: boolean,
-  axisFontConfig: StyleFontConfiguration,
+  args: { leftSide: boolean; space: number; axisFontConfig: StyleFontConfiguration },
 ): void {
+  const { leftSide, axisFontConfig } = args;
   const textBlock = displayBlock(state.skinParam, text, axisFontConfig, HorizontalAlignment.CENTER);
   const dim = textBlock.calculateDimension(ug.getStringBounder());
-  const half = AXIS_LABEL_SPACE / 2;
+  const half = args.space / 2;
   const xPos = leftSide ? -half - dim.getWidth() / 2 : half - dim.getWidth() / 2;
   const yPos = -dim.getHeight() - AXIS_TITLE_TOP_GAP;
   textBlock.drawU(ug.apply(UTranslate.dx(xPos).compose(UTranslate.dy(yPos))));
-}
-
-/** The categorical arm's vertical grid lines, up and down from the zero line. @see ChartRenderer.java:509-541 */
-function drawCategoryGrid(
-  state: ChartRendererState,
-  ug: UGraphic,
-  args: { categoryWidth: number; height: number; color: HColor; stroke: UStroke },
-): void {
-  const { yAxis, xAxisLabels } = state;
-  let distanceToTop = args.height;
-  let distanceToBottom = 0;
-  if (yAxis.getMin() <= 0 && yAxis.getMax() >= 0) {
-    const zeroRatio = (0 - yAxis.getMin()) / (yAxis.getMax() - yAxis.getMin());
-    distanceToTop = args.height * (1.0 - zeroRatio);
-    distanceToBottom = args.height * zeroRatio;
-  }
-  const line = ug.apply(fore(args.color)).apply(args.stroke);
-  for (let i = 0; i < xAxisLabels.length; i++) {
-    const gridX = (i + CATEGORY_CENTER) * args.categoryWidth;
-    if (distanceToTop > 0) line.apply(UTranslate.dx(gridX)).draw(ULine.vline(-distanceToTop));
-    if (distanceToBottom > 0) line.apply(UTranslate.dx(gridX)).draw(ULine.vline(distanceToBottom));
-  }
 }
 
 /** An h-axis label centred below its tick. @see ChartRenderer.java:553-556, 606-609 */
@@ -277,11 +228,7 @@ function drawCategoryXAxis(
 ): void {
   const { xAxisLabels, xAxisTickSpacing } = state;
   const categoryWidth = args.width / xAxisLabels.length;
-  const grid = gridStyleOf(state, args.lineColor);
   const spacing = xAxisTickSpacing !== undefined && xAxisTickSpacing > 0 ? xAxisTickSpacing : 1;
-
-  if (state.xGridMode !== GridMode.OFF)
-    drawCategoryGrid(state, ug, { categoryWidth, height: args.height, color: grid.color, stroke: grid.stroke });
 
   for (let i = 0; i < xAxisLabels.length; i++) {
     if (i % spacing !== 0) continue;
@@ -292,32 +239,16 @@ function drawCategoryXAxis(
   drawXAxisTitle(state, ug, args.width, args.fontConfig);
 }
 
-/** The range and start both numeric h-axis loops walk. @see ChartRenderer.java:579-598, 730-745 */
-function numericXTicks(state: ChartRendererState, xAxis: ChartAxis): number[] {
-  const { xAxisTickSpacing } = state;
-  const range = xAxis.getMax() - xAxis.getMin();
-  const tickInterval =
-    xAxisTickSpacing !== undefined && xAxisTickSpacing > 0 ? xAxisTickSpacing : range / AUTO_TICK_DIVISIONS;
-  const startValue = Math.floor(xAxis.getMin() / tickInterval) * tickInterval;
-  const tolerance = tickInterval * TICK_TOLERANCE;
-  const values: number[] = [];
-  for (let value = startValue; value <= xAxis.getMax() + tolerance; value += tickInterval) {
-    if (value < xAxis.getMin() - tolerance || value > xAxis.getMax() + tolerance) continue;
-    values.push(value);
-  }
-  return values;
-}
-
 /** The numeric arm, for coordinate pairs. @see ChartRenderer.java:577-628 */
 function drawNumericXAxis(
   state: ChartRendererState,
   ug: UGraphic,
   args: { xAxis: ChartAxis; width: number; fontConfig: StyleFontConfiguration },
 ): void {
-  for (const value of numericXTicks(state, args.xAxis)) {
-    const x = args.xAxis.valueToPixel(value, 0, args.width);
+  for (const tick of numericTicks(args.xAxis, state.xAxisTickSpacing)) {
+    const x = args.xAxis.valueToPixel(tick.value, 0, args.width);
     ug.apply(UTranslate.dx(x)).draw(ULine.vline(TICK_SIZE));
-    drawXLabel(state, ug, x, formatAxisValue(value), args.fontConfig);
+    drawXLabel(state, ug, x, tick.label, args.fontConfig);
   }
   drawXAxisTitle(state, ug, args.width, args.fontConfig);
 }
@@ -384,13 +315,11 @@ export function drawYAxisHorizontally(
   ug.draw(ULine.hline(width));
 
   const fontConfig = plainFontConfiguration(UFontFactory.sansSerif(SMALL_FONT_SIZE), args.fontColor);
-  const range = axis.getMax() - axis.getMin();
 
-  for (let i = 0; i <= NUM_TICKS_HORIZONTAL; i++) {
-    const value = axis.getMin() + (i * range) / NUM_TICKS_HORIZONTAL;
-    const x = (width * i) / NUM_TICKS_HORIZONTAL;
+  for (const tick of horizontalValueTicks(axis)) {
+    const x = width * tick.ratio;
     ug.apply(UTranslate.dx(x)).draw(ULine.vline(TICK_SIZE));
-    drawXLabel(state, ug, x, javaFormatF(value, 0), fontConfig);
+    drawXLabel(state, ug, x, tick.label, fontConfig);
   }
 
   const title = axis.getTitle();
@@ -401,44 +330,56 @@ export function drawYAxisHorizontally(
 }
 
 /**
- * `xAxis` is never null, so this always runs, and `drawYAxis`'s grid arm never does.
- * @see ChartRenderer.java:704-773
+ * Every grid line falls on a tick of its own axis (#2636): `x` is the category (or
+ * numeric h-) axis and `y` the value axis whatever the orientation, because
+ * `ChartDiagram` swaps the grid modes for a horizontal chart.
+ * @see ChartRenderer.java:509-571 (781d73f9b1f)
  */
 export function drawGridLines(
   state: ChartRendererState,
   ugIn: UGraphic,
   args: { plotWidth: number; plotHeight: number; lineColor: HColor },
 ): void {
-  const { xAxis, yAxis, xGridMode, yGridMode } = state;
-  if (xAxis === undefined) return;
-
+  const { yAxis, xGridMode, yGridMode } = state;
+  const { plotWidth, plotHeight } = args;
   const { color, stroke } = gridStyleOf(state, args.lineColor);
   const ug = ugIn.apply(fore(color)).apply(stroke);
+  const horizontal = state.orientation === Orientation.HORIZONTAL;
 
-  if (xGridMode !== GridMode.OFF) {
-    for (const value of numericXTicks(state, xAxis)) {
-      const x = xAxis.valueToPixel(value, 0, args.plotWidth);
-      ug.apply(UTranslate.dx(x)).draw(ULine.vline(args.plotHeight));
-    }
-  }
+  if (xGridMode !== GridMode.OFF) drawCategoryGrid(state, ug, args);
 
-  if (yGridMode !== GridMode.OFF) drawHorizontalGridLines(ug, yAxis, args);
+  if (yGridMode === GridMode.OFF) return;
+  if (horizontal)
+    for (const { ratio } of horizontalValueTicks(yAxis))
+      ug.apply(UTranslate.dx(plotWidth * ratio)).draw(ULine.vline(plotHeight));
+  else
+    for (const { ratio } of valueTicks(yAxis))
+      ug.apply(UTranslate.dy(plotHeight * (1.0 - ratio))).draw(ULine.hline(plotWidth));
 }
 
-/** @see ChartRenderer.java:752-771 */
-function drawHorizontalGridLines(
+/**
+ * The x grid: one line per labelled category (every spacing), or per tick of a
+ * numeric h-axis. `ug` already carries the grid colour and stroke.
+ * @see ChartRenderer.java:544-561
+ */
+function drawCategoryGrid(
+  state: ChartRendererState,
   ug: UGraphic,
-  yAxis: ChartAxis,
   args: { plotWidth: number; plotHeight: number },
 ): void {
-  const range = yAxis.getMax() - yAxis.getMin();
-  const tickInterval = yAxis.hasTickSpacing() ? yAxis.getTickSpacing()! : range / AUTO_TICK_DIVISIONS;
-  const startValue = Math.ceil(yAxis.getMin() / tickInterval) * tickInterval;
-  const tolerance = tickInterval * TICK_TOLERANCE;
-
-  for (let value = startValue; value <= yAxis.getMax() + tolerance; value += tickInterval) {
-    if (value < yAxis.getMin() - tolerance || value > yAxis.getMax() + tolerance) continue;
-    const y = args.plotHeight * (1.0 - (value - yAxis.getMin()) / (yAxis.getMax() - yAxis.getMin()));
-    ug.apply(UTranslate.dy(y)).draw(ULine.hline(args.plotWidth));
+  const { xAxis, xAxisLabels, xAxisTickSpacing } = state;
+  const { plotWidth, plotHeight } = args;
+  const horizontal = state.orientation === Orientation.HORIZONTAL;
+  if (xAxisLabels.length > 0) {
+    const spacing = horizontal || xAxisTickSpacing === undefined || xAxisTickSpacing <= 0 ? 1 : xAxisTickSpacing;
+    const count = xAxisLabels.length;
+    for (let i = 0; i < count; i += spacing)
+      if (horizontal)
+        ug.apply(UTranslate.dy(((i + CATEGORY_CENTER) * plotHeight) / count)).draw(ULine.hline(plotWidth));
+      else ug.apply(UTranslate.dx(((i + CATEGORY_CENTER) * plotWidth) / count)).draw(ULine.vline(plotHeight));
+  } else if (xAxis !== undefined && !horizontal) {
+    // Same ticks as drawXAxis.
+    for (const tick of numericTicks(xAxis, xAxisTickSpacing))
+      ug.apply(UTranslate.dx(xAxis.valueToPixel(tick.value, 0, plotWidth))).draw(ULine.vline(plotHeight));
   }
 }

@@ -151,6 +151,7 @@ function astOf(events: SequenceEvent[]): SequenceDiagramAST {
   return {
     participants: ['A', 'B'].map((id, i) => ({
       id,
+      uid: `part${i + 1}`,
       display: id,
       type: 'participant' as const,
       order: i,
@@ -177,6 +178,7 @@ function addedBy(events: SequenceEvent[]): number {
 
 const MSG: SequenceEvent = {
   kind: 'message',
+  uid: 'msg1',
   styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
   from: 'A',
   to: 'B',

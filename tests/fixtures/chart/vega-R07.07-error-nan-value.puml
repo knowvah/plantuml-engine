@@ -1,0 +1,8 @@
+---
+output: svg
+expected-status: 400
+---
+@startchart
+h-axis [A, B, C, D]
+line [1, NaN, 3]
+@endchart

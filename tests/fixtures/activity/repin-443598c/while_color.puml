@@ -1,0 +1,5 @@
+@startuml
+#red:while (more?)
+  :A;
+endwhile
+@enduml

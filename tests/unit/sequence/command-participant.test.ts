@@ -217,6 +217,7 @@ describe('matchParticipantMultilineCommand', () => {
     // Pre-register Bob the way an earlier `participant Bob` line would.
     state.ast.participants.push({
       id: 'Bob',
+      uid: 'part1',
       display: 'Bob',
       type: 'participant',
       order: 0,

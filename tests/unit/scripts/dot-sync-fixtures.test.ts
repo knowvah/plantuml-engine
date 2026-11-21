@@ -375,6 +375,12 @@ describe('enumerateFixtures over the committed corpus', () => {
         // their `cogr-` source tag rather than listed, and merged into the
         // enumerator's own order (`authoredFixtures` sorts the golden root).
         ...COGR_PINNED_CLASS_SLUGS,
+        // The a720bdd re-pin (2026-11-20) unpinned three cogr rows but kept
+        // their golden dirs as evidence (svg-class/README.md "Removed
+        // fixtures"), so the enumerator still lists them.
+        'buveco-86-tibo673',
+        'delaja-41-liju424',
+        'xonoru-58-noxe307',
       ].sort(),
     );
   });

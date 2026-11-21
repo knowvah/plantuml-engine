@@ -17,7 +17,6 @@ import {
   archimateSpriteNames,
   decodeDonors,
   dedicationInputLine,
-  emitCharlieModule,
   emitDedicationModule,
   emitModules,
   javaTreeSetOrder,
@@ -31,7 +30,6 @@ import {
 } from '../../../scripts/generate-utility-data.js';
 import { AsciiEncoder } from '../../../src/core/klimt/sprite/AsciiEncoder.js';
 import { ARCHIMATE_SPRITE_NAMES } from '../../../src/core/klimt/sprite/archimate-sprite-names.js';
-import { CHARLIE_PNG } from '../../../src/diagrams/eggs/charlie-image.js';
 import { DEDICATION_IMAGES } from '../../../src/diagrams/dedication/dedication-images.js';
 import { DONORS } from '../../../src/diagrams/donors/donors-list.js';
 import { SKINPARAMETER_NAMES } from '../../../src/diagrams/donors/skinparameter-names.js';
@@ -170,11 +168,6 @@ describe('emitted modules are fixed points of the emitter (byte-stable on rerun)
     expect(second).toEqual(first);
     expect(first.size).toBe(5);
     for (const [path, text] of first) expect(text, path).toBe(readFileSync(join(REPO, path), 'utf8'));
-  });
-
-  it('re-emits the charlie module byte-identical to the checked-in file', async () => {
-    const [path, text] = await emitCharlieModule(CHARLIE_PNG);
-    expect(text).toBe(readFileSync(join(REPO, path), 'utf8'));
   });
 
   it('re-emits the dedication module byte-identical to the checked-in file', async () => {

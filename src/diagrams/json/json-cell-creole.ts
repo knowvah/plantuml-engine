@@ -75,6 +75,7 @@ function isPlainRun(run: CreoleTextRun, font: CellFont): boolean {
 function isDrawableRun(run: CreoleTextRun, font: CellFont): boolean {
   return (
     run.image === undefined &&
+    run.rollback === undefined &&
     run.bullet === undefined &&
     run.url === undefined &&
     run.dy === 0 &&

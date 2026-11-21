@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:16:39.782Z",
+  "generatedAt": "2026-11-21T16:57:08.912Z",
   "fixtures": [
     {
       "slug": "babafi-51-dixi026",
@@ -615,8 +615,15 @@
       "slug": "gevozu-46-sasu860",
       "type": "component",
       "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "layoutEqual": false,
+      "layoutFirstDiff": {
+        "component": "bb",
+        "detail": "page 1: jar 0,0,641.703616,221.00000800000004 vs ours 0,0,651.900832,221.00000800000004"
+      },
+      "verdict": "diverged",
+      "maxDelta": 196,
+      "firstDiff": "svg/g[1]/g[1]/rect[1]/@rx",
+      "maxDeltaPath": "svg/g[1]/g[1]/rect[1]/@width"
     },
     {
       "slug": "gezemu-34-kamu453",
@@ -819,7 +826,10 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 392,
+      "firstDiff": "svg/g[1]/g[1]/rect[1]/@rx",
+      "maxDeltaPath": "svg/g[1]/g[1]/rect[1]/@width"
     },
     {
       "slug": "kizobu-64-rozo458",
@@ -1195,9 +1205,10 @@
     {
       "slug": "pegali-65-rotu416",
       "type": "component",
-      "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "pemifo-35-kute324",
@@ -1476,8 +1487,15 @@
       "slug": "sunuju-01-pote718",
       "type": "component",
       "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "layoutEqual": false,
+      "layoutFirstDiff": {
+        "component": "bb",
+        "detail": "page 1: jar 0,0,641.703616,221.00000800000004 vs ours 0,0,651.900832,221.00000800000004"
+      },
+      "verdict": "diverged",
+      "maxDelta": 392,
+      "firstDiff": "svg/g[1]/g[1]/rect[1]/@rx",
+      "maxDeltaPath": "svg/g[1]/g[1]/rect[1]/@width"
     },
     {
       "slug": "suzemi-86-kuma659",
@@ -1652,7 +1670,10 @@
       "type": "component",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 784,
+      "firstDiff": "svg/g[1]/g[1]/rect[1]/@rx",
+      "maxDeltaPath": "svg/g[1]/g[1]/rect[1]/@width"
     },
     {
       "slug": "vixeni-34-nici683",
@@ -2585,9 +2606,10 @@
     {
       "slug": "zoriso-46-vata931",
       "type": "usecase",
-      "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "dotEqual": false,
+      "layoutEqual": "n/a",
+      "verdict": "diverged",
+      "firstDiff": "error-page"
     },
     {
       "slug": "zotiru-33-legi180",

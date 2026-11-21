@@ -19,10 +19,10 @@ import type { SpriteDimsLookup, DrawablePrimitive } from '../../core/creole-atom
 import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-commands.js';
 import { atomFontSpec } from './class-member-creole-sea.js';
 import { placeDriverRun } from './class-driver-text-placement.js';
-import { resolveInlineAtom } from './class-member-atom-resolve.js';
 import { text, linkWrap } from '../../core/svg.js';
 import { manageGuillemet } from '../../core/text/Guillemet.js';
 import type { CreoleAtomUrl } from '../../core/klimt/creole/atom/Atom.js';
+import { atomRuns, wrappedTitleRuns, type NamespaceTitleLineOptions } from './class-namespace-title-wrap.js';
 import { renderMemberRowDrawable } from './class-member-sprite-render.js';
 import { isTransparentColor, type Paint } from '../../core/paint.js';
 import type { SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
@@ -185,23 +185,7 @@ export function namespaceTitleRuns(
   spriteDims?: SpriteDimsLookup,
 ): readonly NamespaceTitleRun[] {
   const font = titleFontConfiguration(theme);
-  const runs: NamespaceTitleRun[] = [];
-  for (const atom of buildLineAtoms(manageGuillemet(label), font).atoms) {
-    if (atom.kind === 'text') {
-      runs.push({
-        kind: 'text',
-        text: atom.text,
-        font: atom.font,
-        ...(atom.url !== undefined ? { url: atom.url } : {}),
-      });
-      continue;
-    }
-    if (atom.kind === 'inline') {
-      const resolved = resolveInlineAtom(atom.atom, font, sprites, spriteDims);
-      if (resolved !== undefined) runs.push(resolved);
-    }
-  }
-  return runs.length > 0 ? runs : [{ kind: 'text', text: label, font }];
+  return atomRuns(buildLineAtoms(manageGuillemet(label), font).atoms, font, label, { sprites, spriteDims });
 }
 
 /** One split PHYSICAL line of a title (`daxeno-00-kasu166`'s
@@ -251,16 +235,23 @@ export function namespaceTitleLines(
   measurer: StringMeasurer,
   theme: Theme,
   label: string,
-  sprites?: SpriteRegistry,
-  spriteDims?: SpriteDimsLookup,
+  options: NamespaceTitleLineOptions = {},
 ): readonly NamespaceTitleLine[] {
-  // unwind2-S11: `ClusterHeader#getTitleBlock`'s `label.create(fc, align,
-  // skinParam)` (`ClusterHeader.java:128`) resolves `<$sprite>` through
+  // unwind2-S11: `ClusterHeader#getTitleBlock`'s `label.create9(fc, align,
+  // skinParam, style.wrapWidth())` (`ClusterHeader.java:129`) resolves `<$sprite>` through
   // `skinParam.getSprite` (`StripeSimple.java:229`) -- `Theme#sprites`.
-  const registry = sprites ?? theme.sprites;
-  const dims = spriteDims ?? (registry !== undefined ? spriteDimsLookupFor(registry) : undefined);
-  return splitDisplayLines(label).lines.map((line) => {
-    const runs = namespaceTitleRuns(line, theme, registry, dims);
+  const registry = options.sprites ?? theme.sprites;
+  const dims = options.spriteDims ?? (registry !== undefined ? spriteDimsLookupFor(registry) : undefined);
+  // 927f7531ddf / f29aa9bd058: wrapped at the style's `MaximumWidth` (`class-namespace-title-wrap.ts`).
+  const wrapWidth = options.wrapWidth ?? 0;
+  const font = titleFontConfiguration(theme);
+  const assets = { sprites: registry, spriteDims: dims };
+  const wrapped = splitDisplayLines(label).lines.flatMap((line) =>
+    wrapWidth === 0
+      ? [namespaceTitleRuns(line, theme, registry, dims)]
+      : wrappedTitleRuns(line, font, measurer, wrapWidth, assets),
+  );
+  return wrapped.map((runs) => {
     let width = 0;
     let fontSize = 0;
     let nominalFontSize = 0;
@@ -292,8 +283,8 @@ export function namespaceTitleLines(
  *  styled"@14px = 93.45 -> block width 93.45 (DOT `WIDTH="93"`,
  *  `Math.floor(93.45)`). Reduces to {@link namespaceTitleRuns}'s own single-
  *  line sum for an escape-free label (one line). */
-export function namespaceTitleWidth(measurer: StringMeasurer, theme: Theme, label: string): number {
-  return Math.max(0, ...namespaceTitleLines(measurer, theme, label).map((l) => l.width));
+export function namespaceTitleWidth(measurer: StringMeasurer, theme: Theme, label: string, wrapWidth = 0): number {
+  return Math.max(0, ...namespaceTitleLines(measurer, theme, label, { wrapWidth }).map((l) => l.width));
 }
 
 /** The title BLOCK's own height — SUM of each physical line's own height
@@ -306,8 +297,8 @@ export function namespaceTitleWidth(measurer: StringMeasurer, theme: Theme, labe
  *  oracle `svek-1.dot`'s `HEIGHT="42"` exactly. Reduces to the pre-existing
  *  single-line `dim.height` (one line, `fontSize` unchanged) for an
  *  escape-free label. */
-export function namespaceTitleHeight(measurer: StringMeasurer, theme: Theme, label: string): number {
-  return namespaceTitleLines(measurer, theme, label).reduce((sum, l) => sum + l.fontSize, 0);
+export function namespaceTitleHeight(measurer: StringMeasurer, theme: Theme, label: string, wrapWidth = 0): number {
+  return namespaceTitleLines(measurer, theme, label, { wrapWidth }).reduce((sum, l) => sum + l.fontSize, 0);
 }
 
 /** Each physical line's own baseline Y, LOCAL to the title BLOCK's top (the
@@ -440,6 +431,8 @@ export interface NamespaceTitleRenderInput {
   readonly blockTopY: number;
   /** unwind2-S11: the cluster's back ({@link TitleRunsDraw}). */
   readonly back?: Paint | undefined;
+  /** The title style's `MaximumWidth` ({@link NamespaceTitleLineOptions#wrapWidth}). */
+  readonly wrapWidth?: number | undefined;
 }
 
 /** {@link renderNamespaceTitleAuto}'s single-line/single-run FALLBACK draw
@@ -474,7 +467,8 @@ export function renderNamespaceTitleAuto(
   xForLine: (line: NamespaceTitleLine) => number,
 ): string {
   const { label, theme, measurer, blockTopY, back } = input;
-  const lines = measurer === undefined ? [] : namespaceTitleLines(measurer, theme, label);
+  const lines =
+    measurer === undefined ? [] : namespaceTitleLines(measurer, theme, label, { wrapWidth: input.wrapWidth });
   const soleRun = lines.length <= 1 ? lines[0]?.runs[0] : undefined;
   // cdd5-T5c: a url run carries its own colour/underline/link, so it takes
   // the run path; a plain run draws its guillemet-managed text.

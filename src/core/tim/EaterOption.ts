@@ -87,10 +87,18 @@ export class EaterOption extends Eater {
     this.skipSpaces();
     const optionKey = lazyFrom(key);
     const artifact = context.getPreprocessingArtifact();
+    // EaterOption.java:66-73 (443598c29ce): the known keys are `OptionKey.values()`, lower-cased, in declaration order.
     if (optionKey === undefined) {
-      artifact.addWarning({ message: [`No such !option ${key}`] });
+      artifact.addWarning({
+        message: [
+          `Unknown '!option ${key}': this line is ignored`,
+          `Known options are: ${Object.values(OptionKey)
+            .map((k) => k.toLowerCase())
+            .join(', ')}`,
+        ],
+      });
     } else if (value === undefined && optionKeyDefaultValue(optionKey) === undefined) {
-      artifact.addWarning({ message: [`No default value for ${key}`] });
+      artifact.addWarning({ message: [`'!option ${key}' needs a value: write '!option ${key} <value>'`] });
     } else if (value === undefined) {
       artifact.getOption().define(optionKey, optionKeyDefaultValue(optionKey) as string);
     } else {

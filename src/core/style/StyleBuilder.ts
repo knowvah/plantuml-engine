@@ -104,16 +104,18 @@ export class StyleBuilder implements AutomaticCounter {
 
   /**
    * As `getMergedStyle`, uncached, with every STARRED matching declaration
-   * lifted by `deltaPriority` first; `undefined` when nothing matches.
-   * @see StyleBuilder.java:139-160
+   * applied through the ancestor cascade at `ancestorRank` first (0 = the
+   * element's own level, more negative = farther up); `undefined` when
+   * nothing matches.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleBuilder.java:139-158
    */
-  getMergedStyleSpecial(signature: StyleSignatureBasic, deltaPriority: number): Style | undefined {
+  getMergedStyleSpecial(signature: StyleSignatureBasic, ancestorRank: number): Style | undefined {
     let mergedStyle: Style | undefined;
     for (const style of this.storage.getStyles()) {
       const key = style.getSignature();
       if (!key.matchAll(signature)) continue;
 
-      const tmp = key.isStarred() ? style.deltaPriority(deltaPriority) : style;
+      const tmp = key.isStarred() ? style.withAncestorRank(ancestorRank) : style;
       mergedStyle =
         mergedStyle === undefined ? tmp : mergedStyle.mergeWith(tmp, MergeStrategy.OVERWRITE_EXISTING_VALUE);
     }

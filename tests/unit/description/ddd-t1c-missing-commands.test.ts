@@ -36,12 +36,18 @@ describe('CommandArchimateMultilines', () => {
     expect(svg).toContain('>on several lines</text>');
   });
 
-  it('drops the leading colour, as the jar does', () => {
-    expect(svg).toContain('fill="#F1F1F1"');
-    expect(svg).not.toContain('#C9FFC9');
+  // e2659a157bf: getLazzy("COLOR") answers the first COLOR group in match order (RegexResult.java:128-149),
+  // the leading one; the HashMap before kept the trailing, empty, leaf (jar a720bdd: ceboti-36 fills #C9FFC9).
+  it('paints the leading colour, as the jar does', () => {
+    expect(svg).toContain('fill="#C9FFC9"');
+    expect(svg).not.toContain('#F1F1F1');
   });
 
-  it('honours the colour after the url slot', () => {
-    expect(render('archimate #Technology VPN #pink [', 'x', ']')).toContain('fill="#FFC0CB"');
+  it('the leading colour also beats the one after the url slot (jar a720bdd: #C9FFC9)', () => {
+    expect(render('archimate #Technology VPN #pink [', 'x', ']')).toContain('fill="#C9FFC9"');
+  });
+
+  it('honours the colour after the url slot when there is no leading one', () => {
+    expect(render('archimate  VPN #pink [', 'x', ']')).toContain('fill="#FFC0CB"');
   });
 });

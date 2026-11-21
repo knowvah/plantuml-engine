@@ -83,8 +83,6 @@ export const LEGEND_ITEM_SPACING = 15;
 
 /** `String.format("%.2f", ...)`'s decimals in `formatValue`. @see ChartRenderer.java:938 */
 const VALUE_DECIMALS = 2;
-/** `String.format("%.1f", ...)`'s decimals in `formatAxisValue`. @see ChartRenderer.java:1034 */
-const AXIS_VALUE_DECIMALS = 1;
 /** `%.2e`. @see ChartRenderer.java:935 */
 const EXPONENT_DECIMALS = 2;
 /** Below this magnitude a non-zero value prints with an exponent. @see ChartRenderer.java:934 */
@@ -131,6 +129,11 @@ export function lineColorOf(style: Style, skinParam: SkinParam): HColor {
   return style.value('LineColor').asColor(skinParam.getIHtmlColorSet());
 }
 
+/** A style's line thickness: what a line series draws with (a0b2949242b). @see ChartRenderer.java:719 */
+export function lineThicknessOf(style: Style): number {
+  return style.value('LineThickness').asDouble();
+}
+
 /** @see ChartRenderer.java:951-953 */
 export function getStyleSignature(): StyleSignatureBasic {
   return StyleSignatureBasic.of('root', 'element', 'chartDiagram');
@@ -154,6 +157,21 @@ export function getAreaStyleSignature(): StyleSignatureBasic {
 /** @see ChartRenderer.java:1037-1039 */
 export function getScatterStyleSignature(): StyleSignatureBasic {
   return StyleSignatureBasic.of('root', 'element', 'chartDiagram', 'scatter');
+}
+
+/** @see StyleQueries.java:108 (CHARTDIAG_PIE) */
+export function getPieStyleSignature(): StyleSignatureBasic {
+  return StyleSignatureBasic.of('root', 'element', 'chartDiagram', 'pie');
+}
+
+/** @see StyleQueries.java:110 (CHARTDIAG_RADAR) */
+export function getRadarStyleSignature(): StyleSignatureBasic {
+  return StyleSignatureBasic.of('root', 'element', 'chartDiagram', 'radar');
+}
+
+/** `CHARTDIAG_AXIS`, without `hAxis` or `vAxis`: the radar's spokes and names. @see StyleQueries.java:98 */
+export function getPolarAxisStyleSignature(): StyleSignatureBasic {
+  return StyleSignatureBasic.of('root', 'element', 'chartDiagram', 'axis');
 }
 
 /** @see ChartRenderer.java:1061-1064 */
@@ -180,10 +198,12 @@ export function getAnnotationStyleSignature(): StyleSignatureBasic {
  * The body of `ChartRenderer#getBarStyle`, `getLineStyle`, `getAreaStyle` and
  * `getScatterStyle`: `withTOBECHANGED` merged with `forStereotypeItself`.
  * `BarRenderer` and `ScatterRenderer` have their own that do not merge the
- * second, so stereotype selectors reach colour and border differently.
+ * second, so stereotype selectors reach colour and border differently. Upstream
+ * names the shared body `getSeriesStyle` since e8ef39dd55c, for the pie and radar.
  * @see ChartRenderer.java:959-978
+ * @see ChartRenderer.java:768-777 (a720bdd getSeriesStyle)
  */
-function stereotypedStyle(signature: StyleSignatureBasic, series: ChartSeries, skinParam: SkinParam): Style {
+export function stereotypedStyle(signature: StyleSignatureBasic, series: ChartSeries, skinParam: SkinParam): Style {
   const stereotype = series.getStereotype();
   if (stereotype === undefined) return mergedStyle(signature, skinParam);
   const style = mergedStyle(signature.withTOBECHANGED(stereotype), skinParam);
@@ -220,13 +240,6 @@ export function formatValue(value: number): string {
   if (Math.abs(value) < EXPONENT_BELOW && value !== 0) return javaFormatE(value, EXPONENT_DECIMALS);
   if (isLongValued(value)) return javaFormatLong(value);
   return javaFormatF(value, VALUE_DECIMALS);
-}
-
-/** @see ChartRenderer.java:1028-1035 */
-export function formatAxisValue(value: number): string {
-  if (Math.abs(value) < EXPONENT_BELOW && value !== 0) return javaFormatE(value, EXPONENT_DECIMALS);
-  if (isLongValued(value)) return javaFormatLong(value);
-  return javaFormatF(value, AXIS_VALUE_DECIMALS);
 }
 
 /** @see ChartRenderer.java:941-949 */
@@ -279,9 +292,9 @@ export function plainFontConfiguration(font: UFont, color: HColor): StyleFontCon
  * `UFontFactory.sansSerif(10).withFontFace(UFontFace.bold())` in black, the value
  * labels' font. @see BarRenderer.java:384-386
  */
-export function valueLabelFontConfiguration(skinParam: SkinParam): StyleFontConfiguration {
+export function valueLabelFontConfiguration(skinParam: SkinParam, color?: HColor): StyleFontConfiguration {
   const font = UFontFactory.sansSerif(SMALL_FONT_SIZE).withFontFace(UFontFace.bold());
-  return plainFontConfiguration(font, skinParam.getIHtmlColorSet().getColor(LABEL_COLOR));
+  return plainFontConfiguration(font, color ?? skinParam.getIHtmlColorSet().getColor(LABEL_COLOR));
 }
 
 /**
@@ -290,11 +303,18 @@ export function valueLabelFontConfiguration(skinParam: SkinParam): StyleFontConf
  * the port can raise, so no `catch` is ported.
  * @see BarRenderer.java:381-396
  */
-export function drawLabel(ug: UGraphic, skinParam: SkinParam, value: number, x: number, y: number): void {
+export function drawLabel(
+  ug: UGraphic,
+  skinParam: SkinParam,
+  value: number,
+  x: number,
+  y: number,
+  color?: HColor,
+): void {
   const textBlock = displayBlock(
     skinParam,
     formatValue(value),
-    valueLabelFontConfiguration(skinParam),
+    valueLabelFontConfiguration(skinParam, color),
     Alignment.CENTER,
   );
   const textDim = textBlock.calculateDimension(ug.getStringBounder());

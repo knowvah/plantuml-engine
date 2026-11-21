@@ -269,16 +269,14 @@ describe('preprocessor', () => {
     expect(() => run(['Alice -> Bob', '!endif'])).toThrow('No if related to this endif');
   });
 
-  // NOT the same case: the jar TOLERATES an !ifdef left unclosed at EOF and
-  // renders the document (forum.plantuml.net/6808; pdiff buveco-86-tibo673).
-  it('an !ifdef left unclosed at EOF is tolerated, and its body still renders', () => {
-    const result = run(['!define FOO', '!ifdef FOO', 'Alice -> Bob']);
-    expect(result).toEqual(['Alice -> Bob']);
+  // An !ifdef left unclosed at EOF is an error too since upstream 0537b558644
+  // (CodeIteratorIf.java:75-80); the old jar tolerated it (pdiff buveco-86-tibo673).
+  it('an !ifdef left unclosed at EOF is an error', () => {
+    expect(() => run(['!define FOO', '!ifdef FOO', 'Alice -> Bob'])).toThrow('!ifdef without !endif');
   });
 
-  it('an unclosed FALSE !ifdef suppresses the rest of the document, without erroring', () => {
-    const result = run(['!ifdef NEVER', 'Alice -> Bob']);
-    expect(result).toEqual([]);
+  it('an unclosed FALSE !ifdef is an error as well', () => {
+    expect(() => run(['!ifdef NEVER', 'Alice -> Bob'])).toThrow('!ifdef without !endif');
   });
 
   // ── parametric macros ────────────────────────────────────────────────────

@@ -19,7 +19,7 @@ import type { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.j
 import type { ParseOptions } from '../../core/dispatcher.js';
 import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { getSyntaxErrorMessage, refuse } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import type { SkinParamClasspath } from '../../core/skin/SkinParamFresh.js';
 import { isEndDirective, isStartDirective } from '../../core/tim/StartUtils.js';
@@ -32,9 +32,6 @@ import { CommandGoto } from './CommandGoto.js';
 import { CommandMerge } from './CommandMerge.js';
 import { CommandNewBranch } from './CommandNewBranch.js';
 import { CommandResume } from './CommandResume.js';
-
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:170 */
-const SYNTAX_ERROR = 'Syntax Error?';
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/bpm/BpmDiagramFactory.java:54-63 */
 export function initCommandsList(): readonly SingleLineCommand2<BpmDiagram>[] {
@@ -73,7 +70,7 @@ export function parseBpm(source: UmlSource, options?: ParseOptions): BpmDiagram 
   for (let k = 1; k < all.length && !isEndDirective(all[k]!); k++) {
     const line = new StringLocated(all[k]!, undefined);
     const cmd = cmds.find((c) => c.isValid(line) === CommandControl.OK);
-    if (cmd === undefined) return refuse('syntax', documentLineOf(source, all, k), k, SYNTAX_ERROR);
+    if (cmd === undefined) return refuse('syntax', documentLineOf(source, all, k), k, getSyntaxErrorMessage(line));
     const result = cmd.execute(diagram, line, ParserPass.ONE);
     if (!result.isOk())
       return refuse('execution', documentLineOf(source, all, k), k, result.getError(), result.getScore());

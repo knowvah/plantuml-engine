@@ -1,0 +1,15 @@
+@startuml
+digital D between 0 and 2 <<s>>
+robust "Robust" as R
+
+@0
+D is 2
+R is Idle
+
+@100
+D is 0
+R is Busy
+
+@200
+D is 1
+@enduml

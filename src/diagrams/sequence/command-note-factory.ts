@@ -14,7 +14,15 @@
  */
 
 import type { NoteEvent, NoteShape } from './ast.js';
-import { emit, ensureParticipant, urlOf, type Command, type ParseState } from './sequence-parse-helpers.js';
+import {
+  blockBodyLocation,
+  emit,
+  ensureParticipant,
+  NOTE_END_RE,
+  urlOf,
+  type Command,
+  type ParseState,
+} from './sequence-parse-helpers.js';
 import { emitOnArrowNote, manageVariable } from './sequence-note-placement.js';
 import { removeEmptyColumns } from './remove-empty-columns.js';
 import { SEQUENCE_COLOR } from './sequence-color-grammar.js';
@@ -135,13 +143,16 @@ function unquote(token: string): string {
  * narrows what THIS fix registers without touching the unrelated,
  * pre-existing URL-parsing gap itself.
  */
-function registerNoteParticipants(state: ParseState, raw: string): string[] {
+function registerNoteParticipants(state: ParseState, raw: string, multiline: boolean): string[] {
   const participants = raw
     .split(',')
     .map((s) => unquote(s.trim()))
     .filter((s) => s.length > 0);
+  // The single-line form passes its own line (`executeArg`, `:180-183`); the
+  // multi-line form its first body line (`executeNow`, `:154-160`).
+  const sourceLine = multiline ? blockBodyLocation(state, (t) => NOTE_END_RE.test(t)) : undefined;
   for (const p of participants) {
-    if (!p.includes('[')) ensureParticipant(state, p);
+    if (!p.includes('[')) ensureParticipant(state, p, 'participant', sourceLine === undefined ? {} : { sourceLine });
   }
   return participants;
 }
@@ -192,7 +203,7 @@ export const noteCommand: Command = {
     // rather than a second, quote-literal participant. T11 (ubrr): also
     // registers each one -- see {@link registerNoteParticipants}'s doc
     // comment.
-    const participants = registerNoteParticipants(state, rawParticipants);
+    const participants = registerNoteParticipants(state, rawParticipants, inlineText === undefined);
     if (refusedNoteColor(state, color, false)) return;
 
     if (inlineText !== undefined) {
@@ -405,7 +416,7 @@ export const styledNoteCommand: Command = {
     const position: NoteEvent['position'] = rawPos === 'left' ? 'left' : rawPos === 'right' ? 'right' : 'over';
     // T11 (ubrr): also registers each participant -- see
     // {@link registerNoteParticipants}'s doc comment.
-    const participants = registerNoteParticipants(state, match[6]!);
+    const participants = registerNoteParticipants(state, match[6]!, inlineText === undefined);
     const stereotype = match[4] ?? match[7]; // `getLazzy("STEREO", 0)`: STEREO1, else STEREO2
     if (refusedNoteColor(state, color, false)) return;
     const shape = noteShapeOf(style);

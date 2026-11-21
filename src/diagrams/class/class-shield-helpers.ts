@@ -139,6 +139,8 @@ export interface MagneticClusterBox {
   readonly width: number;
   readonly height: number;
   readonly label: string;
+  /** The title style's `MaximumWidth` (`ClusterHeader.java:129`); absent = no wrap. */
+  readonly titleWrapWidth?: number;
 }
 
 /**
@@ -167,8 +169,8 @@ export function clusterMagneticBorder(
   // `PackageStyle.toUSymbol`: FOLDER -> USymbols.PACKAGE, RECTANGLE -> USymbolRectangle.
   if (usymbol === undefined && theme.packageStyle === 'rect') return undefined;
   const title = TextBlockUtils.empty(
-    namespaceTitleWidth(measurer, theme, box.label),
-    namespaceTitleHeight(measurer, theme, box.label),
+    namespaceTitleWidth(measurer, theme, box.label, box.titleWrapWidth),
+    namespaceTitleHeight(measurer, theme, box.label, box.titleWrapWidth),
   );
   const asBig = (folder ?? PACKAGE).asBig(
     title,
@@ -298,6 +300,11 @@ export function shieldedClassifierIds(ast: ClassDiagramAST): Map<string, { isPor
     if (rel.toPort !== undefined) mark(rel.to, memberPortIsP(byId.get(rel.to)), false);
     if (rel.fromQualifier !== undefined) mark(rel.from, false, true);
     if (rel.toQualifier !== undefined) mark(rel.to, false, true);
+    // a5731db447f: `SvekEdge#reserveRoomForRoles` gives the entity non-zero
+    // `Margins`, so `SvekNode#isShielded`'s final `shield().isZero() == false`
+    // holds (svek/SvekNode.java:383-396) -- same effect as a `Kal` here.
+    if (rel.fromRole !== undefined) mark(rel.from, false, true);
+    if (rel.toRole !== undefined) mark(rel.to, false, true);
   }
   return shielded;
 }

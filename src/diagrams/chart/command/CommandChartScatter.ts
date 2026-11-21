@@ -5,23 +5,26 @@
  */
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
 import type { ChartDiagram } from '../ChartDiagram.js';
-import { ChartSeries, MarkerShape, SeriesType } from '../ChartSeries.js';
+import { MarkerShape, SeriesType } from '../ChartSeries.js';
+import { parseCartesianData } from './ChartCartesianData.js';
+import { seriesNameOf, seriesNameRegex } from './ChartSeriesName.js';
 import {
+  addOrOpen,
   decorateSeries,
   LABELS_PART,
-  parseCoordinatePairs,
-  parseValues,
   seriesHead,
+  seriesOf,
   SP0,
   SP1,
   V2_PART,
   withBadColor,
 } from './chart-command-text.js';
 
-/** @see CommandChartScatter.java:62-87 */
+/** @see CommandChartScatter.java:64-89 */
 export const CHART_SCATTER_RE = new RegExp(
-  `${seriesHead('scatter')}${V2_PART}${LABELS_PART}(?:${SP1}<<(?<MARKER>circle|square|triangle)>>)?${SP0}$`,
-  'i',
+  `${seriesHead('scatter', seriesNameRegex('v2', 'y2', 'labels'))}${V2_PART}${LABELS_PART}` +
+    `(?:${SP1}<<(?<MARKER>circle|square|triangle)>>)?${SP0}$`,
+  'iu',
 );
 
 /** The `switch (markerStr.toLowerCase())`, whose `default` joins `circle`. @see CommandChartScatter.java:138-149 */
@@ -36,26 +39,16 @@ function markerShapeOf(markerStr: string): MarkerShape {
   }
 }
 
-/** @see CommandChartScatter.java:98-165 */
+/** @see CommandChartScatter.java:98-167 */
 export function applyChartScatter(diagram: ChartDiagram, match: RegExpExecArray): CommandExecutionResult {
   const g = match.groups!;
-  const data = g['DATA']!;
-  const seriesName = g['NAME'] ?? `scatter${diagram.getSeries().length}`;
+  const parsed = parseCartesianData(g['DATA'], true);
+  if (parsed.error !== undefined) return CommandExecutionResult.error(parsed.error);
 
-  let series: ChartSeries;
-  if (data.includes('(')) {
-    const pairs = parseCoordinatePairs(data);
-    if (pairs === undefined) return CommandExecutionResult.error('Invalid coordinate pair format in scatter data');
-    series = new ChartSeries(seriesName, SeriesType.SCATTER, pairs.yValues, pairs.xValues);
-  } else {
-    const values = parseValues(data);
-    if (values === undefined) return CommandExecutionResult.error('Invalid number format in scatter data');
-    series = new ChartSeries(seriesName, SeriesType.SCATTER, values);
-  }
-
+  const series = seriesOf(seriesNameOf(g) ?? `scatter${diagram.getSeries().length}`, SeriesType.SCATTER, parsed);
   return withBadColor(() => {
     decorateSeries(diagram, series, g);
     if (g['MARKER'] !== undefined) series.setMarkerShape(markerShapeOf(g['MARKER']));
-    return diagram.addSeries(series);
+    return addOrOpen(diagram, series, g['DATA']);
   });
 }

@@ -60,6 +60,31 @@ export class TimeTickBuilder {
     if (arg.get(`${name}DATE`, 0) !== undefined) return dateTick(name, arg, clock);
     return digitTick(name, arg, clock);
   }
+
+  /**
+   * The time expression matched by `expressionAtWithoutArobase(name)`, described in `parseTimeTick`'s branch order
+   * without resolving it against the diagram.
+   * @see TimeTickBuilder.java:115-140 (upstream a720bdd)
+   */
+  public static describeTime(name: string, arg: RegexResult): string {
+    const code = arg.get(`${name}CODE`, 0);
+    if (code !== undefined) {
+      const delta = arg.get(`${name}CODE`, 1);
+      return delta !== undefined ? `time '${code}' shifted by ${delta}` : `time '${code}'`;
+    }
+    const clock = arg.get(`${name}CLOCK`, 0);
+    if (clock !== undefined) return `tick ${String(arg.get(`${name}CLOCK`, 1))} of clock '${clock}'`;
+    const g = (key: string, i: number): string => String(arg.get(`${name}${key}`, i) ?? null);
+    if (arg.get(`${name}HOUR`, 0) !== undefined) return `hour ${g('HOUR', 0)}:${g('HOUR', 1)}:${g('HOUR', 2)}`;
+    if (arg.get(`${name}DATE`, 0) !== undefined) return `date ${g('DATE', 0)}/${g('DATE', 1)}/${g('DATE', 2)}`;
+    const number = arg.get(`${name}DIGIT`, 1);
+    if (number !== undefined) {
+      const isRelative = arg.get(`${name}DIGIT`, 0) === '+';
+      return isRelative ? `a relative offset of ${number}` : `time ${number}`;
+    }
+    // No numeric value: parseTimeTick falls back to the current time
+    return 'the current time';
+  }
 }
 
 /** The `CODE` branch (java:66-75): the code's tick, shifted by an optional `[-+][.\d]+`. */

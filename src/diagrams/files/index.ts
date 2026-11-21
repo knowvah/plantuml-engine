@@ -23,6 +23,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/filesdiagram/FilesDiagramFactory.java
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:153-209
  */
+import { isEmpty } from '../../core/annotations/index.js';
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import type { RenderFragment, SyncPlugin } from '../../core/dispatcher.js';
 import type { Gradient } from '../../core/paint.js';
@@ -49,6 +50,7 @@ import type { FilesDiagramAST } from './ast.js';
 import { filesStyleInput } from './files-style-input.js';
 import type { FilesDiagram } from './parser.js';
 import { parseFiles } from './parser.js';
+import { splitLeadingBackgroundRect } from '../../core/assemble-svg-backcolor.js';
 
 /** `DiagramType.FILES.name()`, the root `data-diagram-type` value.
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:292-294 */
@@ -215,29 +217,44 @@ function exportTextBlock(geo: FilesGeometry, textBlock: TextBlock, dim: XDimensi
     geo.diagram.getSkinParam().getDpi(),
   );
   const translate = new UTranslate(margin.getLeft(), margin.getTop());
-  return drawFragment(geo, { textBlock, minDim, scale, translate });
+  const fragment = drawFragment(geo, { textBlock, minDim, scale, translate });
+  // With a title, chrome is composed around the margin-less block and the margin applied after it
+  // (`TextBlockExporter#exportTo`, `DiagramChromeFactory`): declare the block and the margin for `applyExportedChrome`.
+  if (isEmpty(geo.diagram.annotations)) return fragment;
+  return forChrome(fragment, dim, margin);
 }
 
 /**
- * The diagram as the fragment `src/index.ts` assembles. No chrome: `FilesDiagram` reads only the lines starting
- * `/` and `<note>` (FilesDiagram.java:80-88) and `FilesDiagramFactory` runs no command
- * (FilesDiagramFactory.java:46-52), so `TitledDiagram`'s title, caption, legend, header, footer and mainframe
- * stay unset and the jar draws none of them. `diagram.annotations` is parsed (mission G0b) but never drawn.
+ * The fragment {@link exportTextBlock} hands to `applyExportedChrome`: its margin-less block, its margin, and its
+ * back-colour rect lifted out. `UgDiagram#getExporter` adds the back colour after the chrome
+ * (UgDiagram.java:174-178), so `SvgGraphics` paints it over the whole exported canvas, ahead of the title.
+ */
+function forChrome(fragment: RenderFragment, dim: XDimension2D, margin: ClockwiseTopRightBottomLeft): RenderFragment {
+  const { body, documentBackgroundRect } = splitLeadingBackgroundRect(fragment.body);
+  return {
+    ...fragment,
+    body,
+    ...(documentBackgroundRect === undefined ? {} : { documentBackgroundRect }),
+    preChromeWidth: dim.getWidth(),
+    preChromeHeight: dim.getHeight(),
+    documentMargin: {
+      top: margin.getTop(),
+      right: margin.getRight(),
+      bottom: margin.getBottom(),
+      left: margin.getLeft(),
+    },
+  };
+}
+
+/**
+ * The diagram as the fragment `src/index.ts` assembles. `StyleExtractor` reads only the title (StyleExtractor.java:92-93)
+ * (FilesDiagram.java:61-70), which `src/index.ts` composes around the block (`applyExportedChrome`).
  */
 export function renderFiles(geo: FilesGeometry): RenderFragment {
   const { diagram, measurer } = geo;
   // `DiagramChromeFactory.create`'s first step, `addWarnings` (DiagramChromeFactory.java:128).
   const textBlock = addWarnings(diagram.getTextBlock(), diagram.getWarnings(), ColorMapper.IDENTITY);
   return exportTextBlock(geo, textBlock, textBlock.calculateDimension(stringBounderFor(measurer)));
-}
-
-/**
- * The AST without its `annotations`: `src/index.ts#annotationsOf` chromes any AST that carries them, and the jar
- * draws no chrome for files -- `FilesDiagram` consumes only the lines starting `/` and `<note>`
- * (FilesDiagram.java:80-88), so a `title`/`legend`/... line is skipped like any other.
- */
-function withoutChrome(ast: FilesDiagramAST): FilesDiagramAST {
-  return { root: ast.root, diagram: ast.diagram, ...(ast.sprites === undefined ? {} : { sprites: ast.sprites }) };
 }
 
 export const filesPlugin: SyncPlugin<FilesDiagramAST, FilesGeometry> = {
@@ -250,7 +267,7 @@ export const filesPlugin: SyncPlugin<FilesDiagramAST, FilesGeometry> = {
   /** `FilesDiagramFactory#createSystem`; `options.assetStore` carries the Twemoji artwork of the folder/file
    *  emoticons (ADR-2). */
   parse(source, options) {
-    return withoutChrome(parseFiles(source, options));
+    return parseFiles(source, options);
   },
 
   /** The jar-compatible style input of `@startfiles` (lad D9): `files-style-input.ts`. */

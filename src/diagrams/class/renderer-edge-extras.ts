@@ -5,6 +5,7 @@
  * `batch-2/T7-edge-rendering.md`'s own quality bar).
  */
 import type { EdgeGeo } from './layout.js';
+import type { VisibilityIconGeo } from './class-edge-visibility.js';
 import type { NoteGeo } from './note-layout.js';
 import type { ScaledTheme } from './class-scale-geo.js';
 import { scaleDashArrayString } from './class-scale-geo-row.js';
@@ -39,6 +40,10 @@ import { KAL_STROKE_THICKNESS } from './class-kal.js';
  * the matching `core/skin/VisibilityModifier.ts` static instance.
  */
 const METHOD_MODIFIER_TO_ICON: Record<string, Visibility> = {
+  PRIVATE_FIELD: '-',
+  PROTECTED_FIELD: '#',
+  PACKAGE_PRIVATE_FIELD: '~',
+  PUBLIC_FIELD: '+',
   PRIVATE_METHOD: '-',
   PROTECTED_METHOD: '#',
   PACKAGE_PRIVATE_METHOD: '~',
@@ -46,6 +51,10 @@ const METHOD_MODIFIER_TO_ICON: Record<string, Visibility> = {
   IE_MANDATORY: '*',
 };
 const MODIFIER_INSTANCE_BY_NAME: Record<string, VisibilityModifier> = {
+  PRIVATE_FIELD: VisibilityModifier.PRIVATE_FIELD,
+  PROTECTED_FIELD: VisibilityModifier.PROTECTED_FIELD,
+  PACKAGE_PRIVATE_FIELD: VisibilityModifier.PACKAGE_PRIVATE_FIELD,
+  PUBLIC_FIELD: VisibilityModifier.PUBLIC_FIELD,
   PRIVATE_METHOD: VisibilityModifier.PRIVATE_METHOD,
   PROTECTED_METHOD: VisibilityModifier.PROTECTED_METHOD,
   PACKAGE_PRIVATE_METHOD: VisibilityModifier.PACKAGE_PRIVATE_METHOD,
@@ -74,8 +83,16 @@ const NO_TEXT_BOUNDER = { calculateDimension: (): { width: number } => ({ width:
  * `fill="none"` regardless of method visibility.
  */
 export function renderEdgeVisibilityIcon(geo: EdgeGeo, theme: ScaledTheme): string {
-  const icon = geo.visibilityIcon;
-  if (icon === undefined) return '';
+  return geo.visibilityIcon === undefined ? '' : renderVisibilityIconGeo(geo.visibilityIcon, theme);
+}
+
+/**
+ * {@link renderEdgeVisibilityIcon} for any {@link VisibilityIconGeo}: since
+ * a5731db447f an association role's icon (`RoleLabels#create`, FIELD
+ * modifiers, `getVisibilityModifier(role, true)`) goes through the same
+ * hollow `getUBlock(size, fore, null, false)` draw.
+ */
+function renderVisibilityIconGeo(icon: VisibilityIconGeo, theme: ScaledTheme): string {
   const char = METHOD_MODIFIER_TO_ICON[icon.modifier];
   const modifier = MODIFIER_INSTANCE_BY_NAME[icon.modifier];
   if (char === undefined || modifier === undefined) return '';
@@ -274,7 +291,14 @@ export function renderEdgeCardinalityLabels(geo: EdgeGeo, theme: ScaledTheme, me
     // `geo.roleLines` uses the SAME `[tail, head]` shape as `quantifierLines`
     // itself, so indexing both arrays by the same `i` keeps the two paired.
     for (let i = 0; i < geo.quantifierLines.length; i++) {
+      // a5731db447f: the role's icon is merged LEFT of its text, so it draws
+      // first -- before the role lines, or, when the role stands in for the
+      // quantifier, before the end's only lines.
+      const roleIcon = geo.roleIcons?.[i];
+      const additive = (geo.roleLines?.[i] ?? []).length > 0;
+      if (roleIcon !== undefined && !additive) parts.push(renderVisibilityIconGeo(roleIcon, theme));
       for (const l of geo.quantifierLines[i]!) parts.push(drawRun(l));
+      if (roleIcon !== undefined && additive) parts.push(renderVisibilityIconGeo(roleIcon, theme));
       for (const l of geo.roleLines?.[i] ?? []) parts.push(drawRun(l));
     }
     return parts;

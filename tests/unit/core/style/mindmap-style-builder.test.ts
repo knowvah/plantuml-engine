@@ -30,7 +30,7 @@ import type { StyleBuilder } from '../../../../src/core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import type { Value } from '../../../../src/core/style/Value.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
-import { skinStorageDump } from './helpers/style-fixture.js';
+import { type DumpedStyle, skinStorageDump } from './helpers/style-fixture.js';
 import { dumpStorage, jarStorageCases } from './helpers/storage-dump.js';
 
 /** The `hyperlinkColor` row of FromSkinparamToStyle (java:135, 355-356). */
@@ -39,6 +39,12 @@ const hyperlinkColorOnly: ConvertSkinparam = (key: string, value: string, builde
   const map = new Map<PName, Value>([['HyperLinkColor', ValueImpl.regular(value, builder)]]);
   return [new Style(StyleSignatureBasic.of('root'), map)];
 };
+
+/** The plain `root` style: storage lists stereotyped (legacy) styles first
+ *  (StyleStorage.java:88-100), and `plantuml.skin` has some since 1.2026.11. */
+function rootStyle(builder: StyleBuilder): DumpedStyle | undefined {
+  return dumpStorage(builder).find((s) => s.stereotypes.length === 0 && s.snames.join() === 'root');
+}
 
 function recordingConverter(calls: string[]): ConvertSkinparam {
   return (key, value) => {
@@ -91,21 +97,21 @@ describe('buildMindmapStyleBuilder: sources and order (SkinParam.java:155-265)',
     const builder = buildMindmapStyleBuilder(pre, recordingConverter(calls));
     expect(calls).toEqual(['a=1', 'b=2']);
     // the style block took the first user priority: nothing was converted before it
-    expect(dumpStorage(builder)[0]?.values.FontSize).toEqual(['9', null, 326]);
+    expect(rootStyle(builder)?.values.FontSize).toEqual(['9', null, 344]);
   });
 
   it('a hand-built result with no order: every skinparam, then every block', () => {
     const pre = handBuilt({ skinparam: new Map([['hyperlinkcolor', 'red']]), styles: ['root {\n  FontSize 9\n}'] });
-    const root = dumpStorage(buildMindmapStyleBuilder(pre, hyperlinkColorOnly))[0];
+    const root = rootStyle(buildMindmapStyleBuilder(pre, hyperlinkColorOnly));
     expect([root?.values.HyperLinkColor, root?.values.FontSize]).toEqual([
-      ['red', null, 326],
-      ['9', null, 327],
+      ['red', null, 344],
+      ['9', null, 345],
     ]);
   });
 
   it("a `'` line of a `<style>` block is dropped (MultilinesStrategy.java:52-63)", () => {
     const pre = handBuilt({ styles: ["root {\n  ' FontSize 3\n  FontSize 9\n}"] });
-    expect(dumpStorage(buildMindmapStyleBuilder(pre))[0]?.values.FontSize).toEqual(['9', null, 326]);
+    expect(rootStyle(buildMindmapStyleBuilder(pre))?.values.FontSize).toEqual(['9', null, 344]);
   });
 
   it('every cleaned key of a stereotyped skinparam is converted (SkinParam.java:227-234)', () => {
@@ -115,8 +121,8 @@ describe('buildMindmapStyleBuilder: sources and order (SkinParam.java:155-265)',
   });
 
   it('`style strictuml` matches ignoring case; any other `style` value mutes nothing (SkinParam.java:235)', () => {
-    const upper = dumpStorage(buildMindmapStyleBuilder(handBuilt({ skinparam: new Map([['style', 'StrictUML']]) })));
-    expect(upper[0]?.values.Shadowing).toEqual(['0.0', null, 326]);
+    const upper = rootStyle(buildMindmapStyleBuilder(handBuilt({ skinparam: new Map([['style', 'StrictUML']]) })));
+    expect(upper?.values.Shadowing).toEqual(['0.0', null, 344]);
     const other = dumpStorage(buildMindmapStyleBuilder(handBuilt({ skinparam: new Map([['style', 'other']]) })));
     expect(other).toEqual(skinStorageDump());
   });

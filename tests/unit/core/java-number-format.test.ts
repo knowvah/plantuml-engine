@@ -119,6 +119,19 @@ describe('javaDoubleToString', () => {
     [9999999, '9999999.0'],
     [Number.NaN, 'NaN'],
     [Number.POSITIVE_INFINITY, 'Infinity'],
+    // A one-digit shortest gives way to the closest two digits (JDK 21 output).
+    [Number.MIN_VALUE, '4.9E-324'],
+    [1.0e-323, '9.9E-324'],
+    [1.5e-323, '1.5E-323'],
+    [2.0e-323, '2.0E-323'],
+    [-1.0e-322, '-9.9E-323'],
+    [1.0e-320, '1.0E-320'],
+    [2.2250738585072014e-308, '2.2250738585072014E-308'],
+    [1e20, '1.0E20'],
+    [1e-5, '1.0E-5'],
+    [3e-10, '3.0E-10'],
+    [1.7e308, '1.7E308'],
+    [123456789, '1.23456789E8'],
   ])('(%s) prints %s', (value, expected) => {
     expect(javaDoubleToString(value)).toBe(expected);
   });

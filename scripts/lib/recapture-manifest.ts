@@ -11,6 +11,8 @@
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { posix } from 'node:path';
+import type { SecurityProfile } from '../../src/core/security/SecurityProfile.js';
+import { securityProfileOf } from './golden-security-profile.js';
 
 /** What a target's committed bytes are. */
 export const TARGET_KIND = {
@@ -68,6 +70,19 @@ function under(dir: string, root: string): boolean {
 
 function topSegment(dir: string, root: string): string {
   return dir.slice(root.length + 1).split('/')[0] ?? '';
+}
+
+/**
+ * The profile the jar must capture a target under: the gates' own
+ * `securityProfileOf`, keyed the way they key a fixture (`goldens/svg-dot`,
+ * `dot-cache/<engine>`). Dot goldens and authored fixtures are LEGACY.
+ */
+export function securityProfileOfTarget(t: Target): SecurityProfile | undefined {
+  if (t.kind === TARGET_KIND.svgGolden)
+    return securityProfileOf({ tree: 'goldens', type: topSegment(t.dir, GOLDENS_ROOT) });
+  if (t.kind === TARGET_KIND.dotCache)
+    return securityProfileOf({ tree: 'dot-cache', type: topSegment(t.dir, DOT_CACHE_ROOT) });
+  return undefined;
 }
 
 function dotCacheTarget(dir: string, names: readonly string[]): Target | undefined {

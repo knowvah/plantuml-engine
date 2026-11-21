@@ -190,7 +190,8 @@
     "yaml/YAML-attribute-hierarchy-0",
     "yaml/YAML-attribute-hierarchy-1",
     "yaml/YAML-list-key-value-pair-0",
-    "yaml/YAML-space-indent-0"
+    "yaml/YAML-space-indent-0",
+    "yaml/yaml_with_braces"
   ],
   "divergent": {
     "json/timafu-94-bixe774": {

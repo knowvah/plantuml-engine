@@ -8838,11 +8838,12 @@
       "tree": "dot-cache",
       "type": "component",
       "slug": "pegali-65-rotu416",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-08-23",
-      "measuredAgainstCommit": "0315454c"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!global = \"changed value\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: expected a name but found '=' (column 8)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "dot-cache",
@@ -13570,11 +13571,12 @@
       "tree": "dot-cache",
       "type": "sequence",
       "slug": "fidoba-93-nonu806",
-      "jarType": "SEQUENCE",
+      "jarType": "NONE",
       "ourType": "SEQUENCE",
-      "status": "agree",
-      "measuredAt": "2026-08-23",
-      "measuredAgainstCommit": "0315454c"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!ijk<TAB>= \"foo\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: tabs are not allowed; indent with spaces (column 4)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
     },
     {
       "tree": "dot-cache",
@@ -26358,11 +26360,12 @@
       "tree": "dot-cache",
       "type": "usecase",
       "slug": "zoriso-46-vata931",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-08-23",
-      "measuredAgainstCommit": "0315454c"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!foo = $myjson.root` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: invalid character '$' (column 7)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "dot-cache",
@@ -30429,11 +30432,12 @@
       "tree": "goldens",
       "type": "svg-description",
       "slug": "usecase/zoriso-46-vata931",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-08-23",
-      "measuredAgainstCommit": "0315454c"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!foo = $myjson.root` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: invalid character '$' (column 7)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "goldens",
@@ -49687,12 +49691,11 @@
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "petiku-70-fogu777",
-      "jarType": "NONE",
-      "jarErrored": true,
+      "jarType": "CLASS",
       "ourType": "CLASS",
-      "status": "jar-error",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "status": "agree",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "44df5e6e6"
     },
     {
       "tree": "dot-cache",
@@ -51122,34 +51125,31 @@
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-7",
-      "jarType": "NONE",
-      "jarErrored": true,
-      "ourType": "NONE",
-      "status": "jar-error",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "jarType": "TIMING",
+      "ourType": "TIMING",
+      "status": "agree",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-8",
-      "jarType": "NONE",
-      "jarErrored": true,
-      "ourType": "NONE",
-      "status": "jar-error",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "jarType": "TIMING",
+      "ourType": "TIMING",
+      "status": "agree",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-9",
-      "jarType": "NONE",
-      "jarErrored": true,
-      "ourType": "NONE",
-      "status": "jar-error",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "jarType": "TIMING",
+      "ourType": "TIMING",
+      "status": "agree",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
@@ -52458,11 +52458,12 @@
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "zarelu-57-xika172",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!foo = $myjson.root` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: invalid character '$' (column 7)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "dot-cache",
@@ -69875,11 +69876,12 @@
       "tree": "goldens",
       "type": "svg-description",
       "slug": "component/pegali-65-rotu416",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-10-15",
-      "measuredAgainstCommit": "5b4b5c731"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!global = \"changed value\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: expected a name but found '=' (column 8)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "goldens",
@@ -71735,11 +71737,12 @@
       "tree": "goldens",
       "type": "svg-description",
       "slug": "unknown/zarelu-57-xika172",
-      "jarType": "DESCRIPTION",
+      "jarType": "NONE",
       "ourType": "DESCRIPTION",
-      "status": "agree",
-      "measuredAt": "2026-10-15",
-      "measuredAgainstCommit": "5b4b5c731"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!foo = $myjson.root` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: invalid character '$' (column 7)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the DESCRIPTION diagram. Open -> #214"
     },
     {
       "tree": "goldens",
@@ -73555,11 +73558,12 @@
       "tree": "goldens",
       "type": "svg-sequence",
       "slug": "fidoba-93-nonu806",
-      "jarType": "SEQUENCE",
+      "jarType": "NONE",
       "ourType": "SEQUENCE",
-      "status": "agree",
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c47"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!ijk<TAB>= \"foo\"` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python syntax error: tabs are not allowed; indent with spaces (column 4)'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
     },
     {
       "tree": "goldens",
@@ -91871,11 +91875,12 @@
       "tree": "dot-cache",
       "type": "class",
       "slug": "buveco-86-tibo673",
-      "jarType": "CLASS",
-      "ourType": "CLASS",
-      "status": "agree",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "6e11d963"
+      "jarType": "NONE",
+      "jarErrored": true,
+      "ourType": "NONE",
+      "status": "jar-error",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c"
     },
     {
       "tree": "dot-cache",
@@ -94269,11 +94274,12 @@
       "tree": "dot-cache",
       "type": "sequence",
       "slug": "joleka-44-cese913",
-      "jarType": "SEQUENCE",
+      "jarType": "NONE",
       "ourType": "SEQUENCE",
-      "status": "agree",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "6e11d963"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!TEST=something` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python error: NameError: name 'something' is not defined'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
     },
     {
       "tree": "dot-cache",
@@ -112293,11 +112299,12 @@
       "tree": "goldens",
       "type": "svg-sequence",
       "slug": "joleka-44-cese913",
-      "jarType": "SEQUENCE",
+      "jarType": "NONE",
       "ourType": "SEQUENCE",
-      "status": "agree",
-      "measuredAt": "2026-11-13",
-      "measuredAgainstCommit": "a2487fb3a"
+      "status": "known-misroute",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "the jar runs `!TEST=something` as a Python statement (TLineType.java:266, PythonLine.isStatementLine; 0537b558644) and draws its error page, 'Python error: NameError: name 'something' is not defined'. That page's 'PlantUML version ...' signature (PSystemError.java:157-160) sits at byte 5353 behind the Welcome preamble (PSystemError.java:261-262), past the gate's 4096-byte head window, so it reads as jarType NONE here. The port has no Python preprocessor and still runs the line through the legacy one, then draws the SEQUENCE diagram. Open -> #214"
     },
     {
       "tree": "goldens",
@@ -113233,11 +113240,12 @@
       "tree": "goldens",
       "type": "svg-class",
       "slug": "buveco-86-tibo673",
-      "jarType": "CLASS",
-      "ourType": "CLASS",
-      "status": "agree",
-      "measuredAt": "2026-11-14",
-      "measuredAgainstCommit": "53393e4d"
+      "jarType": "NONE",
+      "jarErrored": true,
+      "ourType": "NONE",
+      "status": "jar-error",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c"
     },
     {
       "tree": "goldens",

@@ -1,0 +1,13 @@
+@startuml
+<style>
+.foo {
+  BackGroundColor red
+}
+.bar {
+  BackGroundColor blue
+}
+</style>
+rectangle A <<foo>><<bar>>
+rectangle B <<bar>><<foo>>
+rectangle C <<foo>>
+@enduml

@@ -13,7 +13,7 @@
 import type { NoteGeo } from './note-layout.js';
 import type { TipShape } from './note-tips-resolve.js';
 import type { ScaledTheme } from './class-scale-geo.js';
-import { text, path, image, linkWrap, decorationLines } from '../../core/svg.js';
+import { text, path, linkWrap, decorationLines } from '../../core/svg.js';
 import { textRenderDecorations } from '../../core/klimt/drawing/svg/driver-text-svg-decorations.js';
 import { renderBulletAtom } from './renderer-bullet-atom.js';
 export { renderBulletAtom };
@@ -34,7 +34,7 @@ import { getFont } from '../../core/klimt/shape/UText.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import { noteImageAtomTop, noteLineAtomDy } from './class-member-creole-sea.js';
 import { renderOpenIconicAtom } from './renderer-openiconic.js';
-import { renderMemberRowDrawable } from './class-member-sprite-render.js';
+import { imageAtomMarkup, renderMemberRowDrawable } from './class-member-sprite-render.js';
 // cdd-T10 wiring fix: a row's own creole `----` divider / table draws AT
 // THIS ROW'S OWN POSITION inside `renderNoteText`'s loop below -- see that
 // function's own doc comment. `renderer-note-lines.ts` owns the pure
@@ -229,8 +229,7 @@ function renderNoteLineAtoms(
     // 'image': `Sea` bottom-aligns the atom on the line's shared span
     // (`noteImageAtomTop`); the drawn box is the raster's own rounded size
     // (`SvgGraphics.java:973-974`), x-advance keeps the declared width.
-    const top = lineTop + noteImageAtomTop(atoms, atom.height);
-    out += image(x, top, Math.round(atom.width), Math.round(atom.height), atom.href);
+    out += imageAtomMarkup(atom, x, lineTop + noteImageAtomTop(atoms, atom.height), Math.round);
     x += atom.width;
   }
   // #lizard forgives -- pre-existing per-atom-kind switch, unrelated to

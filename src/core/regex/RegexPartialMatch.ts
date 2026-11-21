@@ -1,42 +1,41 @@
 /**
- * `RegexPartialMatch` -- the ordered captured strings of one named regex
- * leaf. Java `null` entries (a group that did not participate) are
- * `undefined`. `get` out of range throws `RangeError` (Java
- * `IndexOutOfBoundsException`).
+ * `RegexPartialMatch` -- the captured strings of one named regex node. Java
+ * `null` entries (a group that did not participate) are `undefined`. `get`
+ * out of range throws `RangeError` (Java `IndexOutOfBoundsException`).
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java
+ * Upstream `e2659a157bf` made it a fixed-capacity array: the number of groups
+ * is known before the first is added (one for `RegexOr`, `count()` for a
+ * `RegexLeaf`), and it is no longer `Iterable`.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java:40-70
  */
-export class RegexPartialMatch implements Iterable<string | undefined> {
-  private readonly data: (string | undefined)[] = [];
+export class RegexPartialMatch {
+  private readonly data: (string | undefined)[];
+  private count = 0;
 
-  /** The Java constructor takes a `name` it never reads. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
-  public constructor(_name: string) {
-    // intentionally empty: upstream ignores `name`
+  /** @see RegexPartialMatch.java:47-49 */
+  public constructor(capacity: number) {
+    this.data = new Array<string | undefined>(capacity).fill(undefined);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
+  /** @see RegexPartialMatch.java:51-53 */
   public add(group: string | undefined): void {
-    this.data.push(group);
+    this.data[this.count++] = group;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
+  /** @see RegexPartialMatch.java:55-57 */
   public size(): number {
-    return this.data.length;
+    return this.count;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
+  /** @see RegexPartialMatch.java:59-64 */
   public get(i: number): string | undefined {
-    if (!Number.isInteger(i) || i < 0 || i >= this.data.length)
-      throw new RangeError('Index ' + String(i) + ' out of bounds for length ' + String(this.data.length));
+    if (!Number.isInteger(i) || i < 0 || i >= this.count)
+      throw new RangeError('Index: ' + String(i) + ', Size: ' + String(this.count));
     return this.data[i];
   }
 
-  /** `Collections.unmodifiableCollection(data).iterator()`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
-  public [Symbol.iterator](): Iterator<string | undefined> {
-    return this.data.values();
-  }
-
-  /** `"{" + data + "}"` with `List#toString` (`null` for absent entries). @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexPartialMatch.java */
+  /** `"{" + Arrays.asList(data) + "}"`: every slot of the capacity, `null` for an absent one. @see RegexPartialMatch.java:66-69 */
   public toString(): string {
     return '{[' + this.data.map((s) => (s === undefined ? 'null' : s)).join(', ') + ']}';
   }

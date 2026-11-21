@@ -32,7 +32,9 @@ describe('top/bottom note after ref', () => {
   // Oracle probe (scripts/oracle-render.sh, 2026-10-21): `A -> B : hi`,
   // `ref over A, B : r`, `note bottom : n`, `A -> B : after` draws NO note
   // (no FEFFDD fill) and the later message sits right under the ref (jar
-  // y=148.111 = ours 128.111 + the 20px banner); the jar adds the banner "This position is ignored: BOTTOM" (built by T7e).
+  // y=148.111 = ours 128.111 + the 20px banner); the jar adds a banner, reworded upstream in
+  // 443598c29ce to "'note bottom' is not supported on a 'ref': …" (built by T7e). Its width sets the
+  // canvas: jar 416 (bottom) and 399 (top), re-probed against a720bdd.
   // `Reference#addNote` returns that Warning instead of storing the note
   // (`Reference.java:166-168`).
   const probe = (position: string): string =>
@@ -41,10 +43,14 @@ describe('top/bottom note after ref', () => {
       new DeterministicMeasurer(),
     );
 
-  it.each(['bottom', 'top'])('draws no %s note: canvas is the jar 211 (191 body + the 20px banner)', (position) => {
+  it.each([
+    ['bottom', 416],
+    ['top', 399],
+  ])('draws no %s note: canvas is the jar %ix211 (191 body + the 20px banner)', (position, width) => {
     const svg = probe(position);
     expect(svg).not.toContain('#FEFFDD');
-    expect(svg).toContain('height="211px"');
-    expect(svg).toContain(`This\u00a0position\u00a0is\u00a0ignored:\u00a0${position.toUpperCase()}`);
+    expect(svg).toContain(`width="${width}px" height="211px"`);
+    const warning = `'note ${position}' is not supported on a 'ref': this note is ignored.`;
+    expect(svg).toContain(warning.replaceAll(' ', '\u00a0'));
   });
 });

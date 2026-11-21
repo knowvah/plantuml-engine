@@ -14,7 +14,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderSync, renderAll } from '../../src/index.js';
 import { DeterministicMeasurer } from '../../src/core/measurer-deterministic.js';
-import { ERROR_BANNER, WELCOME_MARKER, expectErrorDiagram } from '../helpers/error-diagram.js';
+import { WELCOME_MARKER, expectErrorDiagram } from '../helpers/error-diagram.js';
 
 const measurer = new DeterministicMeasurer();
 const opts = { measurer };
@@ -103,21 +103,40 @@ describe('error diagram — a known function called with an uncoverable arity', 
   });
 });
 
-describe('error diagram — an unclosed !ifdef is NOT an error', () => {
-  it('renders the diagram when the unclosed !ifdef is TRUE', () => {
+describe('error diagram — an unclosed !ifdef IS an error (a720bdd)', () => {
+  // `CodeIteratorIf#peek` (CodeIteratorIf.java:73-80): at the end of the body a
+  // still-open `!if`/`!ifdef` throws `<keyword> without !endif`, reported on the
+  // line left open. Jar (a720bdd, `scripts/oracle-render.sh`) draws exactly
+  // that for both sources below, whatever the condition evaluated to.
+  it('reports the unclosed !ifdef when it is TRUE', () => {
     const source = '@startuml\n!define FOO\n!ifdef FOO\nAlice -> Bob\n@enduml\n';
     const svg = renderSync(source, opts);
-    expect(svg).not.toContain(ERROR_BANNER);
-    expect(svg).toContain('Alice');
+    expectErrorDiagram(svg, '!ifdef without !endif');
+    expect(textOf(svg)).toContain('[From string (line 3) ]');
   });
 
-  it('a FALSE unclosed !ifdef swallows the document — the jar reports it EMPTY, not an if error', () => {
+  // `PSystemErrorPreprocessor` counts `BlockUml#data` -- the interpreter's
+  // result list plus the error line `TimLoader#load` appends
+  // (BlockUml.java:156-161,195-196, TimLoader.java:79-80), not the raw block
+  // (PSystemError.java:261-262). Jar (a720bdd): the 5-line TRUE source keeps
+  // @startuml, Alice -> Bob, @enduml + the error line = 4, so it shows Welcome.
+  it('shows the Welcome block by the preprocessed line count (4 < 5)', () => {
+    const source = '@startuml\n!define FOO\n!ifdef FOO\nAlice -> Bob\n@enduml\n';
+    expect(renderSync(source, opts)).toContain(WELCOME_MARKER);
+  });
+
+  // Jar (a720bdd): 7 raw lines, 4 preprocessed + the error line = 5 -> no Welcome.
+  it('omits the Welcome block when the preprocessed lines plus the error reach 5', () => {
+    const source = '@startuml\n!define FOO\n!define BAR\n!ifdef FOO\nAlice -> Bob\nBob -> Alice\n@enduml\n';
+    const svg = renderSync(source, opts);
+    expectErrorDiagram(svg, '!ifdef without !endif');
+    expect(svg).not.toContain(WELCOME_MARKER);
+  });
+
+  it('reports the unclosed !ifdef when it is FALSE', () => {
     const svg = renderSync('@startuml\n!ifdef NEVER\nAlice -> Bob\n@enduml\n', opts);
-    // Everything after the false !ifdef is suppressed, `@enduml` included, so no
-    // block survives -- the jar renders the Welcome screen for that, and says
-    // nothing about `!if`.
-    expect(svg).toContain(WELCOME_MARKER);
-    expect(svg).not.toContain('No if related');
+    expectErrorDiagram(svg, '!ifdef without !endif');
+    expect(textOf(svg)).toContain('[From string (line 2) ]');
   });
 });
 

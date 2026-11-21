@@ -11,12 +11,12 @@ import { renderDot } from '../../../src/diagrams/dot/renderer.js';
 
 describe('renderDot', () => {
   it("passes graphviz's bytes through verbatim as a CompleteSvg", () => {
-    const geo = layoutDot({ dotContent: 'digraph G { a -> b; }\n' });
+    const geo = layoutDot({ dotContent: 'digraph G { a -> b; }\n', allowDotSvg: true });
     expect(renderDot(geo)).toEqual({ completeSvg: geo.svg });
   });
 
   it("keeps the XML prolog and adds no <defs> of this port's own", () => {
-    const { svg } = layoutDot({ dotContent: 'digraph G { a -> b; }\n' });
+    const { svg } = layoutDot({ dotContent: 'digraph G { a -> b; }\n', allowDotSvg: true });
     expect(svg.startsWith('<?xml')).toBe(true);
     expect(svg).toContain('<!DOCTYPE svg');
     expect(svg).not.toContain('<marker');

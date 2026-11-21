@@ -46,15 +46,19 @@ describe('CommandUrl (CommandUrl.java:60-70,88-100)', () => {
   });
 });
 
-describe('CommandHideShowByGender, sequence arm (:163-166)', () => {
-  it('`hide << new >> stereotype` hides stereotypes, ignoring the gender', () => {
+describe('CommandHideShowByGender, sequence arm (:168-179, upstream 0801eabbca2)', () => {
+  it('`hide << new >> stereotype` records the gender, which matches no `<<new>>` label (tegasu-93)', () => {
     const ast = parse(['hide << new >> stereotype', 'participant A <<new>>']);
-    expect(ast.options.hideStereotype).toBe(true);
+    expect(ast.options.stereotypeRules).toEqual([{ gender: '<< new >>', show: false }]);
+    expect(ast.participants[0]!.stereotypeHidden).toBeUndefined();
   });
 
-  it('`show stereotype` clears it; non-stereotype portions are inert', () => {
-    expect(parse(['participant A', 'hide stereotype', 'show stereotype']).options.hideStereotype).toBe(false);
-    expect(parse(['participant A', 'hide class members']).options.hideStereotype).toBeUndefined();
+  it("keeps the rules in order, drops a name's quotes; non-stereotype portions are inert", () => {
+    expect(parse(['participant A', 'hide stereotype', 'show "A" stereotype']).options.stereotypeRules).toEqual([
+      { gender: undefined, show: false },
+      { gender: 'A', show: true },
+    ]);
+    expect(parse(['participant A', 'hide class members']).options.stereotypeRules).toBeUndefined();
     expect(hideStereotypeCommand.pattern.test('hide members')).toBe(true);
   });
 });

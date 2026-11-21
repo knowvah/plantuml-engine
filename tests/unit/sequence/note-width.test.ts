@@ -109,7 +109,7 @@ describe('note grouping', () => {
 });
 
 describe('GroupingTile note reaches (GroupingTile.java:538-590)', () => {
-  it('pushes D past a right note on a message inside the group (putici-74: D at 487.269)', () => {
+  it('pushes D past a right note on a message inside the group (putici-74: D at 464.694)', () => {
     const got = centres([
       'opt',
       'opt',
@@ -128,7 +128,7 @@ describe('GroupingTile note reaches (GroupingTile.java:538-590)', () => {
       'end',
     ]);
     expect(got[2]).toBeCloseTo(319.806, 3);
-    expect(got[3]).toBeCloseTo(487.269, 3);
+    expect(got[3]).toBeCloseTo(464.694, 3);
   });
 
   it("adds a nested group's `end` note width to the margin (GroupingTile.java:613,1015-1021)", () => {
@@ -148,7 +148,7 @@ describe('GroupingTile note reaches (GroupingTile.java:538-590)', () => {
     const noted = constraints(body(['note right: Some explication']));
     const width = noteComponentWidth(notesOf(['participant A', 'note over A: Some explication'])[0]!, env);
     const widest = (all: readonly SpanConstraint[]): number =>
-      Math.max(...all.filter((c) => c.from === 0 && c.to === 2 && c.createdIndex === 2).map((c) => c.span));
+      Math.max(...all.filter((c) => c.from === 0 && c.to === 2 && c.createdIndex === undefined).map((c) => c.span));
     // The title reach of the outer group (A to C) grows by the nested group's
     // `end` note on its right.
     expect(widest(noted) - widest(plain)).toBeCloseTo(width, 6);
@@ -163,9 +163,12 @@ describe('GroupingTile note reaches, per tile class (stableMaxX/stableMinX :538-
   const width = (kind = 'note over A'): number =>
     noteComponentWidth(notesOf(['participant A', `${kind}: ${TEXT}`])[0]!, env);
   const inGroup = (...body: string[]): string[] => [...PARTICIPANTS, 'group g', ...body, 'end'];
+  /** The following participant's demands: since upstream `be731fa99fc`
+   *  (issue #2788) `next.getPosC()` is pushed (`GroupingTile.java:440`), so a
+   *  right edge is a plain centre span too. */
   const spanOf = (lines: readonly string[], from: number, to: number): number[] =>
     constraints(lines)
-      .filter((c) => c.from === from && c.to === to && c.createdIndex === to)
+      .filter((c) => c.from === from && c.to === to && c.createdIndex === undefined)
       .map((c) => c.span);
 
   /** The preceding participant's demands: a left edge is a plain centre span. */
@@ -221,8 +224,12 @@ describe('GroupingTile note reaches, per tile class (stableMaxX/stableMinX :538-
     expect(Math.max(...noted) - Math.max(...plain)).toBeCloseTo(width(), 6);
   });
 
-  it('an exo message takes note 0 position for every note (TileBuilder.java:128-136)', () => {
-    expect(leftSpans(inGroup('[-> B : e', `note left : ${TEXT}`), 0, 1)).toContain(width() + CLEARANCE);
+  it('an exo message takes its notes away from the border (MessageExo.java:62-69, TileBuilder.java:128-136)', () => {
+    // `AbstractMessage#addNote` overrides every note on a left-border arrow to
+    // RIGHT (`:228`), so `note left` builds a CommunicationTileNoteRight.
+    const lines = inGroup('[-> B : e', `note left : ${TEXT}`);
+    expect(spanOf(lines, 1, 2)).toContain(width() + CLEARANCE);
+    expect(leftSpans(lines, 0, 1)).not.toContain(width() + CLEARANCE);
   });
 });
 
@@ -239,7 +246,7 @@ describe('noteLiveEntries', () => {
       'end',
     ];
     const noted = constraints(lines)
-      .filter((c) => c.from === 1 && c.to === 2 && c.createdIndex === 2)
+      .filter((c) => c.from === 1 && c.to === 2 && c.createdIndex === undefined)
       .map((c) => c.span);
     const w = noteComponentWidth(notesOf(['participant A', 'note over A: lvl'])[0]!, env);
     // level 1 at the note: posC + 5 + width, plus the frame clearance.
@@ -253,7 +260,7 @@ describe('title overhang (GroupingTile.java:654-661, NoteTile.java:243-251)', ()
   const titleReach = (lines: readonly string[]): number =>
     Math.max(
       ...constraints(lines)
-        .filter((c) => c.from === 0 && c.to === 2 && c.createdIndex === 2)
+        .filter((c) => c.from === 0 && c.to === 2 && c.createdIndex === undefined)
         .map((c) => c.span),
     );
   const noteWidth = noteComponentWidth(notesOf(['participant A', 'note over A: text'])[0]!, env);

@@ -21,7 +21,7 @@ import { parseNodes } from './node-dispatch.js';
 import {
   RE_REPEAT_STEREOGROUP,
   backColorSpread,
-  deprecatedColorWarning,
+  deprecatedRepeatColorWarning,
   stereogroupBackColor,
   stereogroupLabels,
   stereogroupStereotype,
@@ -159,12 +159,18 @@ function repeatColors(
  *   -- `setTest` stores `swimlaneOut`, taken when `repeat while` is parsed
  *   (`ActivityDiagram3.java:367`).
  */
+/** `CommandRepeat3`'s raw `LABEL`: the lazy `(.*?)` between `:` and `;` (`CommandRepeat3.java:75-77`). */
+const RE_REPEAT_RAW_LABEL = /^:(.*?);/;
+
 export function tryRepeat(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const repeatHeadMatch = RE_REPEAT_HEAD.exec(line);
   if (repeatHeadMatch === null) return null;
-  // `CommandRepeat3.java:121-123`: the leading `#color:` is warned about and dropped.
+  // `CommandRepeat3.java:126-131`: the leading `#color:` is warned about and dropped.
   const deprecatedColor = repeatHeadMatch[1];
-  if (deprecatedColor !== undefined) ctx.pragma.addWarning(deprecatedColorWarning(deprecatedColor));
+  if (deprecatedColor !== undefined) {
+    const rawLabel = RE_REPEAT_RAW_LABEL.exec(repeatHeadMatch[2] ?? '')?.[1];
+    ctx.pragma.addWarning(deprecatedRepeatColorWarning(deprecatedColor, rawLabel));
+  }
   // Mission `activity-lane-capture` D1/T5: read BEFORE the body parses, so
   // a lane switch inside the body never leaks into this node's own
   // `swimlane`.

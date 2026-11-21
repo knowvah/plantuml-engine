@@ -154,3 +154,16 @@ To add a slug:
 
 Removal is **maintainer-only** — see `oracle/goldens/svg-description/
 README.md`'s identical rule; the same rationale applies verbatim.
+
+### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
+
+| slug | why |
+|---|---|
+| `gupeto-19-mesa256` | Formula, DIVERGENCES.md "LaTeX rendering engine — KaTeX, not JLaTeXMath": `<math>S<=1/(F+(1-F)/N)</math>` is now drawn by the jar as JLaTeXMath glyph `<path>`s, by us as a KaTeX `<image>`. That substitution (the state group has 4 children here, 8 in the jar) is the only diff. |
+| `corumi-91-mizo869` | Same formula and same single diff as `gupeto-19-mesa256`. |
+
+`livuni-63-fira764` stays pinned and fails. Upstream now maps `<<junction>>`
+to `LeafType.JUNCTION` (`Stereogroup.java:127-128`) and draws it as a small
+start circle (`GeneralImageBuilder.java:145`, `EntityImageCircleStart.java:67`,
+class `start_entity`). The port still draws an ordinary state. This is new
+upstream behaviour and no issue tracks it yet.

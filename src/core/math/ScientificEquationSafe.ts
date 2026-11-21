@@ -1,114 +1,97 @@
 /**
- * ScientificEquationSafe — upstream: math/ScientificEquationSafe.java (171
- * lines). T10e (batch 3a) — the third file `StripeLatex#getAtom` needs
- * (java:91, `ScientificEquationSafe.fromLatex(formula.toString())`), behind
- * `AtomMath.ts`.
+ * ScientificEquationSafe — upstream: math/ScientificEquationSafe.java. Since
+ * upstream `aa79d2d80ee` a formula is drawn straight on the UGraphic: its
+ * dimension is the JLaTeXMath `TeXIcon`'s (`TeXIconBuilder.java:53-80`, the
+ * `MathDrawing`), a background colour paints a rectangle of that size behind
+ * it, and a formula that cannot be made is drawn as its source in monospace
+ * text (`getRollback()`). `@startmath`/`@startlatex` export that block through
+ * `TextBlockExporter` with the formula's scale.
  *
- * ## Ported: the value-object surface reachable without rasterization
+ * The formula's glyphs are the one permanent divergence (DIVERGENCES.md,
+ * "LaTeX rendering engine — KaTeX, not JLaTeXMath"): the jar paints
+ * JLaTeXMath's glyph outlines as `<path>`s (`UGraphicTeXGraphics`), the port
+ * draws KaTeX's MathML as one `<image>` of the same size, placed where the
+ * jar places the formula. Everything around the glyphs -- the size, the
+ * background rectangle, the rollback text, the export -- is the jar's.
  *
- *  - `fromLatex(String)` (java:81-89, `LatexBuilder(tex)` construction) —
- *    `LatexBuilder`'s constructor (`math/LatexBuilder.java:56-58`) is a bare
- *    field assignment that cannot throw, so upstream's surrounding
- *    try/catch (which exists only to guard `new LatexBuilder(formula)`
- *    against a checked/runtime exception neither this port's TS
- *    constructor call nor `LatexBuilder`'s own body can raise) has no
- *    reachable catch branch to preserve — ported as a direct construction.
- *  - `getFormula()` (java:163-165) — returns the raw constructor argument.
- *  - `getSource()` (java:167-169, `equation.getSource()`) — for the
- *    `fromLatex` path this is `LatexBuilder#getSource()`
- *    (`math/LatexBuilder.java:146-148`), a pure `return tex;` pass-through
- *    of the SAME string `fromLatex` received, so that path stores one
- *    constructor argument instead of threading a second, always-equal value
- *    through a fake "equation" layer. The `fromAsciiMath` path stores
- *    `AsciiMath#getSource()` (`math/AsciiMath.java:75-77`), which is the
- *    CONVERTED LaTeX and therefore differs from `getFormula()`.
- *  - `fromAsciiMath(String)` (java:71-79) — see its own section below.
+ * `equation` is modelled as the nullable LaTeX `source` (`getSource()` is the
+ * only member read through it); "the drawing can be made" is {@link typesets}:
+ * an equation whose LaTeX JLaTeXMath parses (`latex-metrics/jlm-accepts.ts`),
+ * where upstream's `getDrawing` catches the exception (java:97-108).
  *
- * ## NOT PORTED — `getSvg`/`getImage`/`export`/`printTrace`/`getRollback`
- * (java:91-161) — an architectural boundary, not a gap
- *
- * Every one of these methods routes through upstream's raster/vector image
- * pipeline: `PortableImage`, `MutableImage`, `UImageSvg`, `EpsGraphics`,
- * `SImageIO`, `GraphicStrings`, `TextBlockExporter` — none of which exist
- * in this port, and none of which COULD exist without contradicting
- * `CLAUDE.md`'s architecture notes ("Pure SVG renderer — no DOM, no async,
- * no canvas... never use Node built-ins"). This port renders `<latex>`
- * math as inline KaTeX MathML (`core/latex.ts`) instead of rasterizing
- * JLaTeXMath output to a PNG/EPS/embedded-SVG image — a deliberate,
- * pre-existing architectural substitution (`CommandCreoleLatex.ts`'s own
- * doc comment; `EntityImageDescriptionSupport.ts`'s established `'latex'`
- * `CreoleAtom` render path), not a filesystem/Node seam the way
- * `SignatureUtils.ts`'s "BLOCKED ON THE FILE SEAM" methods are. `AtomMath.ts`
- * (this task) binds directly to `core/latex.ts#measureLatex`/
- * `renderLatexAsImage` using `getSource()`'s formula string instead of
- * calling any of these methods — see that file's own doc comment.
- *
- * ## Ported: `fromAsciiMath` (java:71-79)
- *
- * `fromAsciiMath` runs `new AsciiMath(formula)` (`math/AsciiMath.java`), whose
- * constructor is `new ASCIIMathTeXImg().getTeX(form)` — the ASCIIMath-notation
- * to LaTeX converter, now transcribed at `core/math/ASCIIMathTeXImg.ts` and
- * wrapped by `core/math/AsciiMath.ts`. Upstream's `try`/`catch (Exception e)`
- * IS reachable here and is preserved: `getTeX` walks the formula with Java
- * string-bounds semantics, so a malformed formula raises rather than emitting
- * wrong LaTeX (see `ASCIIMathTeXImg.ts`'s module doc comment), and this method
- * answers that the way upstream does — with an equation-less
- * `ScientificEquationSafe(formula, null)`, not a throw. Upstream's two
- * logging calls in that catch (`Logme.error(e)`, `Log.info(...)`) have no
- * counterpart in this port, which has no logging seam; the same omission
- * `EmbeddedDiagram.ts` already documents for its own `Logme.error` catches.
- *
- * The `equation` field is modelled as the nullable `source` string rather than
- * a `ScientificEquation` object, because `getSource()` (java:167-169) is the
- * only member this port reads it through — see `getSource`'s own comment for
- * what happens on the null branch.
- *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:58-183
  */
 
-import { ColorMapper } from '../klimt/color/ColorMapper.js';
+import { Back } from '../klimt/Back.js';
+import { ColorMapper, toSvgPaint, type HColorOrPaint } from '../klimt/color/ColorMapper.js';
+import { HColors } from '../klimt/color/HColors.js';
+import { HColorSimple } from '../klimt/color/HColorSimple.js';
+import { Fore } from '../klimt/Fore.js';
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import { ClockwiseTopRightBottomLeft } from '../klimt/geom/ClockwiseTopRightBottomLeft.js';
 import { XDimension2D } from '../klimt/geom/XDimension2D.js';
 import { GraphicStrings } from '../klimt/shape/GraphicStrings.js';
 import type { TextBlock } from '../klimt/shape/TextBlock.js';
+import { UImage } from '../klimt/shape/UImage.js';
+import { URectangle } from '../klimt/shape/URectangle.js';
+import type { UGraphic } from '../klimt/UGraphic.js';
+import { measureLatex, renderLatexAsImage, stripMathModeDollars } from '../latex.js';
 import { jlmAccepts } from '../latex-metrics/jlm-accepts.js';
 import type { StringMeasurer } from '../measurer.js';
-import { pngStringBounderOf } from '../png-string-bounder.js';
-import { builderBackcolor, exportTo } from '../UgDiagram.js';
+import { exportTo } from '../UgDiagram.js';
 import { AsciiMath } from './AsciiMath.js';
-import { mathDocument } from './math-document.js';
-import type { AwtColor } from './math-document.js';
 
-/** The `StringMeasurer` `UGraphicSvg` draws text with, read off the host's `StringBounder`, so the rollback
- *  document measures its text as the diagram embedding it does. */
-function measurerOf(stringBounder: StringBounder): StringMeasurer {
-  return {
-    measure: (text, font) => {
-      const dim = stringBounder.calculateDimension(font, text);
-      return { width: dim.getWidth(), height: dim.getHeight() };
-    },
-    getDescent: (font, text) => stringBounder.getDescent?.(font, text) ?? 0,
-  };
+/** `HColors.BLACK.withDark(HColors.WHITE)`. @see ScientificEquationSafe.java:60 */
+export const DEFAULT_FOREGROUND: HColorOrPaint = HColors.BLACK.withDark(HColors.WHITE) as HColorSimple;
+
+/** `HColors.transparent()`. @see ScientificEquationSafe.java:61 */
+export const DEFAULT_BACKGROUND: HColorOrPaint = HColors.transparent();
+
+/** `MathDrawing#draw`'s "null for black" (`MathDrawing.java:51-55`). */
+const NULL_FOREGROUND = '#000000';
+
+/** `HColor#isTransparent`: only a simple colour can be. */
+function isTransparent(color: HColorOrPaint): boolean {
+  return color instanceof HColorSimple && color.isTransparent();
+}
+
+/** The CSS colour KaTeX's MathML is written in: the colour `UGraphicTeXGraphics` would paint the glyphs with, a
+ *  gradient's first stop. */
+function cssColorOf(foreground: HColorOrPaint | null): string {
+  if (foreground === null) return NULL_FOREGROUND;
+  const paint = toSvgPaint(foreground, ColorMapper.IDENTITY);
+  return typeof paint === 'string' ? paint : paint.color1;
+}
+
+/** `getRollback()`. @see ScientificEquationSafe.java:158-160 */
+function getRollback(formula: string): TextBlock {
+  return GraphicStrings.createBlackOnWhiteMonospaced([formula]);
+}
+
+/** The rollback's size, for the data-oriented creole atom (`blocks-creole-atoms.ts`). @see ScientificEquationSafe.java:110-115 */
+export function rollbackDimension(formula: string, stringBounder: StringBounder): XDimension2D {
+  return getRollback(formula).calculateDimension(stringBounder);
+}
+
+/** The rollback drawn as text, for the data-oriented creole atom. @see ScientificEquationSafe.java:124-128 */
+export function drawRollback(formula: string, ug: UGraphic): void {
+  getRollback(formula).drawU(ug);
 }
 
 export class ScientificEquationSafe {
-  /** java:66-69. `source === null` models upstream's `equation == null`,
-   *  the state `fromAsciiMath`/`fromLatex` fall back to on a parse failure. */
+  /** java:69-72. `source === null` models upstream's `equation == null`, the state `fromAsciiMath`/`fromLatex` fall
+   *  back to on a parse failure. */
   private constructor(
     private readonly formula: string,
     private readonly source: string | null,
   ) {}
 
-  /** java:81-89. See this file's own module doc comment for why upstream's
-   *  try/catch has no reachable catch branch here. */
+  /** java:84-92. `LatexBuilder`'s constructor stores its argument and cannot throw. */
   static fromLatex(formula: string): ScientificEquationSafe {
     return new ScientificEquationSafe(formula, formula);
   }
 
-  /** java:71-79. On any exception out of the converter, upstream logs and
-   *  returns an equation-less instance rather than propagating — see this
-   *  file's own module doc comment. */
+  /** java:74-82: a converter exception gives an equation-less instance. */
   static fromAsciiMath(formula: string): ScientificEquationSafe {
     try {
       return new ScientificEquationSafe(formula, new AsciiMath(formula).getSource());
@@ -118,120 +101,91 @@ export class ScientificEquationSafe {
     }
   }
 
-  /** java:163-165. */
+  /** java:174-176. */
   getFormula(): string {
     return this.formula;
   }
 
-  /** Upstream's own `equation != null` guard, which every DRAWING path
-   *  tests before touching the equation — `getSvg` (java:118) and `getImage`
-   *  (java:137) both fall back to
-   *  `GraphicStrings.createBlackOnWhiteMonospaced(formula)` when it fails,
-   *  i.e. they draw the RAW formula rather than propagating the failure.
-   *  Exposed as a predicate so a caller can take that same fallback without
-   *  provoking {@link getSource}'s NullPointerException, which upstream only
-   *  ever reaches from `printTrace` (java:132, itself behind this guard). */
+  /** `equation != null`. */
   hasEquation(): boolean {
     return this.source !== null;
   }
 
-  /** java:167-169. Upstream is a bare `equation.getSource()`, so a
-   *  fallback instance (`equation == null`, java:77) throws a
-   *  NullPointerException here; this raises the same way rather than
-   *  inventing an empty-string result upstream never produces. For a
-   *  `fromLatex` instance the value is the constructor argument unchanged
-   *  (`LatexBuilder#getSource`, `math/LatexBuilder.java:146-148`). */
+  /** java:178-180: a bare `equation.getSource()`, so an equation-less instance throws. */
   getSource(): string {
-    if (this.source === null) {
+    if (this.source === null)
       throw new Error(
-        'NullPointerException: ScientificEquationSafe#getSource on an ' + 'instance whose formula failed to parse',
+        'NullPointerException: ScientificEquationSafe#getSource on an instance whose formula failed to parse',
       );
-    }
     return this.source;
   }
 
-  /**
-   * `getSvg`'s typesetting succeeds: there is an equation, and JLaTeXMath parses
-   * its LaTeX (`latex-metrics/jlm-accepts.ts`). Otherwise `getSvg` and
-   * `getImage` catch the exception and draw {@link getRollback} (java:91-115,
-   * :116-129).
-   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:91-104
-   */
+  /** `getDrawing(stringBounder) != null`: there is an equation and JLaTeXMath parses it. @see ScientificEquationSafe.java:97-108 */
   typesets(): boolean {
     return this.source !== null && jlmAccepts(this.source);
   }
 
-  /** `getImage`'s size when JLaTeXMath throws: the rollback's PNG export; see {@link rollbackImageDimension}. */
-  rollbackImageDimension(stringBounder: StringBounder): XDimension2D {
-    return rollbackImageDimension(this.formula, stringBounder);
-  }
-
-  /** The rollback document for this formula; see {@link rollbackSvg}. */
-  rollbackSvg(stringBounder: StringBounder): string {
-    return rollbackSvg(this.formula, stringBounder);
+  /** The `TeXIcon`'s size (`MathDrawing#getDimension`), else the rollback's. @see ScientificEquationSafe.java:110-115 */
+  getDimension(stringBounder: StringBounder): XDimension2D {
+    if (!this.typesets()) return rollbackDimension(this.formula, stringBounder);
+    const { width, height } = measureLatex(this.source!);
+    return new XDimension2D(width, height);
   }
 
   /**
-   * `export`'s SVG branch: `getSvg(1, fg, bg).getSvg(true)`, written straight
-   * to the stream -- the typeset Batik document (`math-document.ts`), else the
-   * rollback's klimt document (`cov-math-unknown`, 40x25).
-   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:145-151
-   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:91-115
+   * The formula, or its source as text if it cannot be made. A background that is not transparent paints the
+   * formula's box first (`ug.apply(HColors.transparent()).apply(background.bg())`). The glyphs are KaTeX's image (see
+   * the module comment); a formula with nothing to typeset has no glyph, so nothing is drawn for it.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:117-135
    */
-  exportSvg(foregroundColor: AwtColor, backgroundColor: AwtColor | null, stringBounder: StringBounder): string {
-    if (this.typesets()) return mathDocument(this.source!, foregroundColor, backgroundColor);
-    return this.rollbackSvg(stringBounder);
+  drawU(ug: UGraphic, foreground: HColorOrPaint | null, background: HColorOrPaint | null): void {
+    if (!this.typesets()) {
+      drawRollback(this.formula, ug);
+      return;
+    }
+    const source = this.source!;
+    if (background !== null && !isTransparent(background)) {
+      const dim = this.getDimension(ug.getStringBounder());
+      ug.apply(new Fore(HColors.transparent()))
+        .apply(new Back(background))
+        .draw(URectangle.build(dim.getWidth(), dim.getHeight()));
+    }
+    if (stripMathModeDollars(source).trim() === '') return;
+    const image = renderLatexAsImage(source, cssColorOf(foreground));
+    ug.draw(UImage.build(image.width, image.height, image.href));
   }
-}
 
-/** `EmptyImageBuilder`'s side cap: `GraphvizUtils.getenvImageLimit()` without `PLANTUML_LIMIT_SIZE` (the port reads no
- *  environment). @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:63-73 */
-const IMAGE_LIMIT = 4096;
+  /** @see ScientificEquationSafe.java:137-148 */
+  getTextBlock(foreground: HColorOrPaint | null, background: HColorOrPaint | null): TextBlock {
+    return {
+      calculateDimension: (stringBounder) => this.getDimension(stringBounder),
+      drawU: (ug) => this.drawU(ug, foreground, background),
+    };
+  }
 
-/**
- * The size of `getImage`'s rollback arm: `TextBlockExporter.builder(getRollback(), PNG, false).build().exportTo(baos)`
- * read back as a `PixelImage` (`ScientificEquationSafe.java:116-129`). The exporter's bounder is
- * `FileFormat.PNG.getDefaultStringBounder()` (`TextBlockExporter.java:148-149`, {@link pngStringBounderOf}); with the
- * builder defaults (no skin param, margin `none()`, no scale) `calculateFinalDimension` is the block's own dimension
- * and the scale factor 1 (`:196-209`). `createUGraphicPNG` makes the image `(int) (dim * scaleFactor)` per axis
- * (`:343-344`), and `EmptyImageBuilder` caps each side at the image limit (`EmptyImageBuilder.java:68-77`).
- * The SVG export (`rollbackSvg`) shares the block but measures with the host's SVG bounder; `AtomMath` lays out by
- * this size and draws that document.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:335-346
- */
-export function rollbackImageDimension(formula: string, stringBounder: StringBounder): XDimension2D {
-  const dim = getRollback(formula).calculateDimension(pngStringBounderOf(stringBounder));
-  const width = Math.min(Math.trunc(dim.getWidth()), IMAGE_LIMIT);
-  const height = Math.min(Math.trunc(dim.getHeight()), IMAGE_LIMIT);
-  return new XDimension2D(width, height);
-}
-
-/** `getRollback()`. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:137-139 */
-function getRollback(formula: string): TextBlock {
-  return GraphicStrings.createBlackOnWhiteMonospaced([formula]);
-}
-
-/**
- * The rollback exported as `getSvg` does it: `TextBlockExporter.builder(getRollback(),
- * SVG, false).build().exportTo(baos)` -- the builder's defaults (no skin
- * param, margin `none()`, the block's own white back colour, no scale).
- * Its size is the `<image>` an atom draws (`cov-math-unknown` 40x25; corpus
- * `glb` 29x25).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:103-110
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/TextBlockExporter.java:405-430
- */
-export function rollbackSvg(formula: string, stringBounder: StringBounder): string {
-  const textBlock = getRollback(formula);
-  return exportTo(
-    {
-      textBlock,
-      backcolor: builderBackcolor(textBlock),
-      margin: ClockwiseTopRightBottomLeft.none(),
-      scale: undefined,
-      colorMapper: ColorMapper.IDENTITY,
-      isHandwritten: false,
-    },
-    stringBounder,
-    measurerOf(stringBounder),
-  );
+  /**
+   * `export`'s SVG branch: `TextBlockExporter.builder(block, fileFormat, false).backcolor(DEFAULT_BACKGROUND)
+   * .scale(new ScaleSimple(scale)).build().exportTo(os)` -- margin `none()`, no skin param.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/math/ScientificEquationSafe.java:162-172
+   */
+  exportSvg(
+    scale: number,
+    foreground: HColorOrPaint,
+    background: HColorOrPaint,
+    stringBounder: StringBounder,
+    measurer: StringMeasurer,
+  ): string {
+    return exportTo(
+      {
+        textBlock: this.getTextBlock(foreground, background),
+        backcolor: DEFAULT_BACKGROUND,
+        margin: ClockwiseTopRightBottomLeft.none(),
+        scale: { kind: 'simple', factor: scale },
+        colorMapper: ColorMapper.IDENTITY,
+        isHandwritten: false,
+      },
+      stringBounder,
+      measurer,
+    );
+  }
 }

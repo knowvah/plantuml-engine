@@ -1,15 +1,12 @@
 {
-  "generatedAt": "2026-11-18T05:15:06.934Z",
+  "generatedAt": "2026-11-21T16:55:25.138Z",
   "fixtures": [
     {
       "slug": "bafemu-96-luji978",
       "type": "yaml",
-      "dotEqual": false,
+      "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 89.62800000000004,
-      "firstDiff": "svg/g[1]/path[57]/@d",
-      "maxDeltaPath": "svg/g[1]/path[59]/@d[4]"
+      "verdict": "conformant"
     },
     {
       "slug": "bedega-54-romu926",
@@ -69,11 +66,9 @@
     {
       "slug": "jozapu-14-datu953",
       "type": "yaml",
-      "dotEqual": false,
+      "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 6.349999999999909,
-      "maxDeltaPath": "svg/g[1]/path[138]/@d[4]"
+      "verdict": "conformant"
     },
     {
       "slug": "jukejo-54-pope427",
@@ -90,7 +85,7 @@
       "dotEqual": false,
       "layoutEqual": "n/a",
       "verdict": "structural-match",
-      "maxDelta": 1.282999999999987,
+      "maxDelta": 1.274000000000001,
       "maxDeltaPath": "svg/g[1]/path[1]/@d[8]"
     },
     {

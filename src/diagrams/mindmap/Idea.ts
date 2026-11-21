@@ -7,21 +7,6 @@ import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { IdeaShape } from './IdeaShape.js';
 
-/**
- * `WElement.STEP_BY_PARENT` (`1000_1000`), which `Idea` aliases.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/wbs/WElement.java:110
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/mindmap/Idea.java:94
- */
-export const STEP_BY_PARENT = 10001000;
-
-/**
- * `int deltaPriority = STEP_BY_PARENT * 1000` in Java `int` arithmetic:
- * 10001000 * 1000 overflows to 1411065408 (the jar's own priorities read
- * back at 1411065408 + stored). `Math.imul` is the 32-bit multiply.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/mindmap/Idea.java:97
- */
-const FIRST_DELTA_PRIORITY = Math.imul(STEP_BY_PARENT, 1000);
-
 /** Java dereferences a `null` merged style (an NPE); the port throws at the same point. */
 function requireStyle(style: Style | undefined, what: string): Style {
   if (style === undefined) throw new Error(`NullPointerException: no ${what} style in the StyleBuilder`);
@@ -128,19 +113,19 @@ export class Idea {
   }
 
   /**
-   * The own node's special merge at `STEP_BY_PARENT * 1000`, then every
-   * ancestor's definition AT THIS NODE'S LEVEL, starred, one
-   * `STEP_BY_PARENT` lower each, merged over it (`OVERWRITE_EXISTING_VALUE`).
-   * `| 0` keeps the subtraction in Java `int` arithmetic.
-   * @see Idea.java:96-106
+   * The own node's special merge at ancestor rank 0, then every ancestor's
+   * definition AT THIS NODE'S LEVEL, starred, one rank lower each
+   * (`Specificity#withAncestorRank`: a nearer ancestor wins), merged over it
+   * (`OVERWRITE_EXISTING_VALUE`).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/mindmap/Idea.java:91-101
    */
   getStyle(): Style {
-    let deltaPriority = FIRST_DELTA_PRIORITY;
-    let result = this.styleBuilder.getMergedStyleSpecial(this.getDefaultStyleDefinitionNode(this.level), deltaPriority);
+    let ancestorRank = 0;
+    let result = this.styleBuilder.getMergedStyleSpecial(this.getDefaultStyleDefinitionNode(this.level), ancestorRank);
     for (let up = this.parent; up !== undefined; up = up.parent) {
       const ss = up.getDefaultStyleDefinitionNode(this.level).addStar();
-      deltaPriority = (deltaPriority - STEP_BY_PARENT) | 0;
-      const styleParent = this.styleBuilder.getMergedStyleSpecial(ss, deltaPriority);
+      ancestorRank--;
+      const styleParent = this.styleBuilder.getMergedStyleSpecial(ss, ancestorRank);
       result = requireStyle(result, 'node').mergeWith(styleParent, MergeStrategy.OVERWRITE_EXISTING_VALUE);
     }
     return requireStyle(result, 'node');

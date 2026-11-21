@@ -14,9 +14,10 @@
  * The four refusal points, each read directly off `PSystemCommandFactory
  * #executeFewLines` / `#finalizeDiagram`:
  *
- * 1. No `Command` matched the line — `SYNTAX_ERROR "Syntax Error?"`, score
+ * 1. No `Command` matched the line — `SYNTAX_ERROR "Syntax Error?"` (or the
+ *    unclosed-`<style>` message, {@link getSyntaxErrorMessage}), score
  *    contribution 0 (the literal third arg to `new ErrorUml(...)`).
- *    @see PSystemCommandFactory.java:169-175
+ *    @see PSystemCommandFactory.java:205-211
  * 2. A `Command` matched but execution failed — `EXECUTION_ERROR`, score
  *    contribution `result.getScore()`.
  *    @see PSystemCommandFactory.java:180-186
@@ -35,6 +36,35 @@
  * The `ErrorUml` score itself is exactly the constructor's third argument —
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/ErrorUml.java:52-53.
  */
+
+import { StringLocated } from './tim/StringLocated.js';
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:258 */
+export const SYNTAX_ERROR_MESSAGE = 'Syntax Error?';
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:256 */
+export const UNCLOSED_STYLE_MESSAGE = "Unclosed <style> block: '</style>' is missing";
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:255 */
+const STYLE_OPENING = '<style>';
+
+/**
+ * Refusal point 1's message (upstream 96380842043): a line that no command
+ * accepts is a "Syntax Error?", except an opening `<style>` on its own line:
+ * the only way for it to be refused is that nothing closes the block, the
+ * lines that follow having been looked at up to the end of the diagram.
+ * `equalsIgnoreCase` against an ASCII literal is a lower-case compare.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:249-259
+ */
+export function getSyntaxErrorMessage(line: StringLocated): string {
+  if (line.getTrimmed().getString().toLowerCase() === STYLE_OPENING) return UNCLOSED_STYLE_MESSAGE;
+  return SYNTAX_ERROR_MESSAGE;
+}
+
+/** {@link getSyntaxErrorMessage} of a body line held as a plain string (port-only adapter). */
+export function syntaxErrorMessageOf(text: string): string {
+  return getSyntaxErrorMessage(new StringLocated(text, undefined));
+}
 
 /** The four refusal points ported off `PSystemCommandFactory`; see file header. */
 export type ParseRefusalKind = 'syntax' | 'execution' | 'incomplete' | 'final';

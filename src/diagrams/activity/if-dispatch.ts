@@ -12,9 +12,6 @@ import {
   RE_ELSE_LEGACY,
   RE_ELSEIF,
   RE_ENDIF,
-  RE_IF,
-  RE_IF4,
-  RE_IF_LEGACY,
   isRefusal,
   swimlaneSpread,
   type DispatchResult,
@@ -23,9 +20,15 @@ import {
   positionSpread,
 } from './dispatch-support.js';
 import { parseNodes } from './node-dispatch.js';
-import { getRegexp, transform } from '../../core/url/UrlBuilder.js';
+import { matchIfHeader } from './if-header.js';
 import { parenArrowStyle, parenArrowText } from './dispatch-paren-arrow.js';
-import { backColorSpread, stereogroupBackColor, stereogroupLabels } from './dispatch-stereogroup.js';
+import {
+  backColorSpread,
+  ignoredLeadingColorWarning,
+  splitExp4,
+  stereogroupBackColor,
+  stereogroupLabels,
+} from './dispatch-stereogroup.js';
 
 // ---------------------------------------------------------------------------
 // if / elseif / else / endif
@@ -37,7 +40,7 @@ import { backColorSpread, stereogroupBackColor, stereogroupLabels } from './disp
  *  shape). Mirrors `RE_ELSEIF`'s own leading `(incoming)` group (see its
  *  doc, `dispatch-support.ts`) so a decorated `elseif` stops a body scan
  *  the same as a bare one. */
-const RE_ELSEIF_STOP = /^(?:\([^)]*\)\s*)?else\s*if\b/i;
+const RE_ELSEIF_STOP = /^(?:#\w+[-\\|/]?\w+:)?\s*(?:\([^)]*\)\s*)?else\s*if\b/i;
 
 /**
  * `endif` with no `else`: `InstructionIf#endif` makes the empty `else` branch and gives it the pending arrow as its
@@ -104,13 +107,9 @@ export function stripTrailingSemi(raw: string): string {
  * `renderIfLabel` -- a separate mechanism from "multiline branch label",
  * left for a fixture that actually needs it.
  */
-export { unescapeLabelNewlines } from './label-newlines.js';
-import { unescapeLabelNewlines } from './label-newlines.js';
+export { unescapeLabel, unescapeLabelNewlines } from './label-newlines.js';
+import { unescapeLabel, unescapeLabelNewlines } from './label-newlines.js';
 
-/** {@link unescapeLabelNewlines} applied only when the captured group
- *  matched. The capture is kept verbatim: upstream's `(.*?)` groups
- *  (`CommandIf2.java`, `CommandElseIf2.java`, `CommandElse3.java`, ...)
- *  reach `Display.getWithNewlines` untrimmed (isw-T2-act F2). */
 /** `{ [key]: style }` for a paren arrow leaf's style (`INCOMING_COLOR`/`WHEN_COLOR`), else `{}`. */
 function colorField<K extends string>(key: K, raw: string | undefined): { [P in K]?: string } {
   const style = raw === undefined ? undefined : parenArrowStyle(raw);
@@ -128,21 +127,18 @@ function parenText(raw: string | undefined): string | undefined {
   return raw === undefined ? raw : parenArrowText(raw);
 }
 
-export function unescapeLabel(text: string | undefined): string | undefined {
-  return text === undefined ? text : unescapeLabelNewlines(text);
-}
-
 /** `CommandElseIf3#getRegexConcat` (`CommandElseIf3.java:64-104`): exp4, `(INCOMING)`, `else if (TEST) is|equals
  *  (WHEN)`, optional `then` with a colour-only `( )`. Groups as {@link RE_ELSEIF}'s: 1 INCOMING, 2 TEST, 3 the label
- *  (WHEN, its colour leaf appended so {@link colorField} reads WHEN_COLOR), 4 no stereogroup. */
+ *  (WHEN, its colour leaf appended so {@link colorField} reads WHEN_COLOR), 4 the stereogroup (`:103-104`, whose inner
+ *  BACK colours the diamond, `:159-161`). Matched after {@link splitExp4} took the exp4 colour. */
 const RE_ELSEIF3 =
-  /^(?:#\w+[-\\|/]?\w+:)?\s*(?:\((.*?)\))?\s*else\s*if\s*\((.*?)\)\s*(?:is|equals?)\s*\((.+?)\)\s*(?:then\s*(?:\((->|-\[[^\]]*\]->)?\))?)?\s*;?$/i;
+  /^\s*(?:\((.*?)\))?\s*else\s*if\s*\((.*?)\)\s*(?:is|equals?)\s*\((.+?)\)\s*(?:then\s*(?:\((->|-\[[^\]]*\]->)?\))?)?\s*;?\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 function elseIf3Match(line: string): RegExpExecArray | null {
   const m = RE_ELSEIF3.exec(line);
   if (m === null) return null;
   // Re-shape to RE_ELSEIF's groups: the WHEN label, prefixed by the then-parens' arrow leaf (its colour), if any.
-  const shaped = [m[0], m[1], m[2], `${m[4] ?? ''}${m[3]!}`, undefined] as unknown as RegExpExecArray;
+  const shaped = [m[0], m[1], m[2], `${m[4] ?? ''}${m[3]!}`, m[5]] as unknown as RegExpExecArray;
   return shaped;
 }
 
@@ -158,9 +154,14 @@ function consumeElseifClause(
   clauseLine: string,
   ifInnerStops: StopKeywords,
 ): ElseifStep | ParseRefusal {
+  // Both commands open with `ColorParser.exp4()` then `spaceZeroOrMore` (`CommandElseIf2.java:68-69`,
+  // `CommandElseIf3.java:66-67`); the colour only warns (`CommandElseIf2.java:146-148`, `CommandElseIf3.java:156-158`).
+  const { color: leadingColor, rest } = splitExp4(clauseLine);
+  const clause = rest.trimStart();
+  if (leadingColor !== undefined) ctx.pragma.addWarning(ignoredLeadingColorWarning(leadingColor));
   // `CommandElseIf3` (`TEST (is|equals) (WHEN)`) is registered BEFORE `CommandElseIf2` (`ActivityDiagramFactory3.java
   // :122-123`): its WHEN is the branch label, and its `then (...)` parens carry an arrow colour only (aar-T6a, `cidibe-55`).
-  const elseifMatch = elseIf3Match(clauseLine) ?? RE_ELSEIF.exec(clauseLine)!;
+  const elseifMatch = elseIf3Match(clause) ?? RE_ELSEIF.exec(clause)!;
   // ELSEIFIN: group 1 is the leading `(incoming)` decoration -- shifts
   // condition/then-label to groups 2/3 (dispatch-support.ts's own doc).
   // `INCOMING`/`WHEN` after the optional arrow leaf (`CommandElseIf2.java:70-97`, aar-T3a `takupu-75`).
@@ -240,7 +241,7 @@ function classifyClauseLine(ctx: ParseContext, cursor: number, ifInnerStops: Sto
   const endifMatch = RE_ENDIF.exec(clauseLine);
   if (endifMatch !== null) return { kind: 'endif', cursor: cursor + 1, endGroup: endifMatch[1] };
 
-  if (RE_ELSEIF.test(clauseLine)) {
+  if (RE_ELSEIF.test(splitExp4(clauseLine).rest.trimStart())) {
     const step = consumeElseifClause(ctx, cursor, clauseLine, ifInnerStops);
     if (isRefusal(step)) return step;
     return { kind: 'elseif', cursor: step.cursor, branch: step.branch };
@@ -333,50 +334,6 @@ function consumeIfClauses(ctx: ParseContext, startIdx: number, ifInnerStops: Sto
   return { cursor, elseIfBranches, elseBranch, elseLabel, elseLabelColor, hadElse, endGroup };
 }
 
-interface IfHeader {
-  condition: string;
-  thenLabel: string | undefined;
-  /** `CommandIf2`'s stereogroup; `CommandIf4` reads none (`:101-104`, "currently ignored"). */
-  group?: string | undefined;
-  /** `CommandIf2`'s `URL` group, raw (`[[...]]`), resolved against `topurl` at render (`CommandIf2.java:139-145`). */
-  url?: string;
-}
-
-/** `CommandIf2.java:70-72`: `UrlBuilder.OPTIONAL`, `spaceZeroOrMore`, `ColorParser.exp4()` -- always matches. */
-const RE_IF2_PREFIX = new RegExp(`^(?<url>${transform(getRegexp())})?\\s*(?:#\\w+[-\\\\|/]?\\w+:)?`, 'iu');
-
-/**
- * Tries the three `if`-opener spellings in upstream's registration order
- * (`ActivityDiagramFactory3.java:118-121`): `CommandIf4`'s `is`/`equals`
- * form, `CommandIf2`'s `then (label)?` form (now with an optional trailing
- * stereogroup, mission ubrr-T10 M4a), then `CommandIfLegacy1`'s `then when
- * LABEL` form (M4c). All three hand their label to the SAME
- * `diagram.startIf(test, when, ...)` call upstream-side, so they collapse
- * onto the one `thenLabel` field here.
- */
-function matchIfHeader(line: string): IfHeader | null {
-  const if4 = RE_IF4.exec(line);
-  if (if4 !== null) return { condition: unescapeLabelNewlines(if4[1]!), thenLabel: unescapeLabel(if4[2]) };
-  // `CommandIf2`'s leading `UrlBuilder.OPTIONAL`, `spaceZeroOrMore` and `ColorParser.exp4()` (`:70-72`): the URL
-  // rides on the diamond (`:139-145`), the colour is "currently ignored" (`:129-130`, `:120-121`).
-  const prefix = RE_IF2_PREFIX.exec(line)!;
-  const if2 = RE_IF.exec(line.slice(prefix[0].length));
-  if (if2 !== null) {
-    const url = prefix.groups?.url;
-    return {
-      condition: unescapeLabelNewlines(if2[1]!),
-      thenLabel: unescapeLabel(if2[2]),
-      group: if2[3],
-      ...(url !== undefined ? { url } : {}),
-    };
-  }
-  const legacy = RE_IF_LEGACY.exec(line);
-  if (legacy !== null) {
-    return { condition: unescapeLabelNewlines(legacy[1]!), thenLabel: unescapeLabel(legacy[2]!.trim()) };
-  }
-  return null;
-}
-
 interface LeadingNoteSplit {
   readonly body: ActivityNode[];
   readonly note?: ActivityNote;
@@ -437,7 +394,8 @@ function extractIfOwnNotes(
 export function tryIf(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const header = matchIfHeader(line);
   if (header === null) return null;
-  const { condition, thenLabel, group, url } = header;
+  const { condition, thenLabel, group, url, leadingColor } = header;
+  if (leadingColor !== undefined) ctx.pragma.addWarning(ignoredLeadingColorWarning(leadingColor));
 
   // Mission `activity-lane-capture` D1/T3: read BEFORE the then-branch
   // parses, so a lane switch inside the body never leaks into this node's

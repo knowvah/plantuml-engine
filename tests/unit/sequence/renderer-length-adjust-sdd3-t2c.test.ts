@@ -21,7 +21,10 @@ describe('sequence skinparam lengthAdjust', () => {
   });
 
   it('explicit spacing is byte-identical to unset', () => {
-    expect(sequence('spacing')).toBe(sequence());
+    // The skinparam line moves every group's `data-source-line` down one
+    // (`UGroup(LineLocation)`); nothing else may differ.
+    const unlocated = (s: string): string => s.replace(/ data-source-line="\d+"/g, '');
+    expect(unlocated(sequence('spacing'))).toBe(unlocated(sequence()));
   });
 
   it('spacingAndGlyphs: named on the root, textLength kept', () => {

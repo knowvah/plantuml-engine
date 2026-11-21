@@ -50,6 +50,7 @@
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { CreoleRunBullet } from '../../core/svek/image/creole-text-run-types.js';
 import type { CreoleRunImage, CreoleTextLine, CreoleTextRun } from '../../core/svek/image/creole-text-lines.js';
+import type { CreoleRunRollback } from '../../core/svek/image/creole-text-run-types.js';
 import { creoleTextLines } from '../../core/svek/image/creole-text-lines.js';
 import {
   hasTabulation,
@@ -120,6 +121,9 @@ export interface StateTextRun {
    *  which for this port equals the DRAWN width, since `renderLatexAsImage`
    *  measures what it draws. */
   readonly image?: CreoleRunImage;
+  /** The seam's own `CreoleTextRun.rollback`: a formula JLaTeXMath rejects, drawn by `renderer-box-runs.ts` as its
+   *  monospace source (ScientificEquationSafe.java:124-128). */
+  readonly rollback?: CreoleRunRollback;
 }
 
 /** One laid-out creole table cell: its styled runs plus the cell's own
@@ -192,6 +196,7 @@ function toRun(run: CreoleTextRun, text: string, width: number, dx: number, plac
     dy: run.dy,
     ...(run.image !== undefined ? { image: run.image } : {}),
     ...(run.bullet !== undefined ? { bullet: run.bullet } : {}),
+    ...(run.rollback !== undefined ? { rollback: run.rollback } : {}),
   };
 }
 
@@ -217,6 +222,8 @@ function expandRun(run: CreoleTextRun, font: FontSpec, measurer: StringMeasurer,
   // (empty) text — `AtomMath#calculateDimensionSlow` is the image's own box
   // (`AtomMath.java:64-71`). It carries no text, so it can carry no tab.
   if (run.image !== undefined) return [toRun(run, '', run.image.width, 0)];
+  // A rolled-back formula advances by its own block (ScientificEquationSafe.java:110-115).
+  if (run.rollback !== undefined) return [toRun(run, '', run.rollback.width, 0)];
   // stdd T6d: a list stripe's `Bullet` header -- no text, the atom's own advance (`Bullet.java:57-62`).
   if (run.bullet !== undefined) return [toRun(run, '', run.bullet.width, 0)];
   const whole = measure(run.text);

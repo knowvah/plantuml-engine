@@ -9,11 +9,15 @@ import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } fr
 
 import { withEngineMessagesCollected, withEngineMessagesDropped } from '../../../src/core/dot-engine-messages.js';
 import { renderSync } from '../../../src/index.js';
+import { SecurityProfile } from '../../../src/core/security/SecurityProfile.js';
 
 const FIXTURE = 'test-results/dot-cache/state/bemena-23-zebu249';
 const TITLED_CLUSTER_WARNING = 'Warning: table size too small for content\nin label of graph cluster6\n';
-/** Authored `@startdot` with an unknown shape, and the jar's output for it (`scripts/oracle-render.sh`). */
+/** Authored `@startdot` with an unknown shape, and the jar's output for it (`scripts/oracle-render.sh`).
+ *  graphviz runs only under a profile that allows it (`PSystemDot.java:77-84`): the jar's render under
+ *  `PLANTUML_SECURITY_PROFILE=INSECURE` is `insecure/unknown-shape.svg`. */
 const UNKNOWN_SHAPE = 'tests/fixtures/dot-engine-messages/unknown-shape';
+const UNKNOWN_SHAPE_INSECURE = 'tests/fixtures/dot-engine-messages/insecure/unknown-shape';
 
 /** Every message the engine sends to `sink` while `call` runs. */
 function messagesOf(call: () => unknown): string {
@@ -56,8 +60,10 @@ describe('engine messages', () => {
   });
 
   it("@startdot puts the warning before the SVG, as the jar's merged dot stream does", () => {
-    const jar = readFileSync(`${UNKNOWN_SHAPE}.svg`, 'utf8');
-    const ours = renderSync(readFileSync(`${UNKNOWN_SHAPE}.puml`, 'utf8'));
+    const jar = readFileSync(`${UNKNOWN_SHAPE_INSECURE}.svg`, 'utf8');
+    const ours = renderSync(readFileSync(`${UNKNOWN_SHAPE}.puml`, 'utf8'), {
+      securityProfile: SecurityProfile.INSECURE,
+    });
     const before = (svg: string): string => svg.slice(0, svg.indexOf('<'));
     expect(before(jar)).toBe('Warning: using box for unknown shape nosuchshape\n');
     expect(before(ours)).toBe(before(jar));

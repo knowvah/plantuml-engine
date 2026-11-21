@@ -1,0 +1,7 @@
+@startuml
+ participant Alice 
+ Alice -> Bob : hello 
+ note over Alice : n 
+ == Section ==
+ Bob --> Alice 
+@enduml

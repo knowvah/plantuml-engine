@@ -77,7 +77,7 @@ describe('licensePlugin', () => {
     const svg = renderOf('@startuml\nlicense\n@enduml');
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('width="581px" height="881px"');
-    expect(svg).toContain('>(C) Copyright 2009-2024, Arnaud Roques</text>');
+    expect(svg).toContain('>(C) Copyright 2009-2027, Arnaud Roques</text>');
   });
 
   it('renders the same document three times', () => {

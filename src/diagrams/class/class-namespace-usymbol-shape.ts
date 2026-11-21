@@ -204,7 +204,15 @@ function buildDecoration(
   // title, where LEFT and CENTER produce byte-identical output (the one line
   // spans the block's own full measured width), so this was invisible until
   // a multi-line title existed to distinguish the two.
-  const title = buildTextBlock(splitDisplayLines(geo.label).lines.join('\n'), titleFont, HorizontalAlignment.CENTER);
+  // 927f7531ddf: `label.create9(..., style.wrapWidth())` (`ClusterHeader.java:129`) -- the title wraps at the title
+  // style's `MaximumWidth`.
+  const title = buildTextBlock(
+    splitDisplayLines(geo.label).lines.join('\n'),
+    titleFont,
+    HorizontalAlignment.CENTER,
+    undefined,
+    geo.titleWrapWidth ?? 0,
+  );
   // cdd2-T19b: `clusterHeader.getStereo()` (`Cluster.java:367-368`) -- the
   // displayed stereotype + the group's own legend (`class-cluster-header
   // .ts`). A stereotype that NAMES a USymbol is consumed as the shape and

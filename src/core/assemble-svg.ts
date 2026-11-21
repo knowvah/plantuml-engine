@@ -293,10 +293,21 @@ function finalizeDescriptionFragment(fragment: RenderFragment): RenderFragment {
  * lad-T1a: board/files/packet. Their jar oracles open the content with the shared root `<g>`
  * (`TextBlockExporter.java:292-294`, `SvgGraphics.java:155-158`) and draw no extra chrome here, so an
  * unwrapped body gets a bare `<g>` for the document shell to decorate (`withRootGroupAttributes`);
- * a `bodyWrapped` body already carries it and passes through.
+ * a `bodyWrapped` body already carries it and passes through. A titled files diagram lifted its klimt
+ * background rect (`documentBackgroundRect`): `SvgGraphics`' constructor paints it at the exported canvas,
+ * the content's first child (`SvgGraphics.java:176-192`, `UgDiagram.java:174-178`).
  */
 function finalizeGenericRootFragment(fragment: RenderFragment): RenderFragment {
-  return fragment.bodyWrapped === true ? fragment : { ...fragment, body: group(fragment.body) };
+  const body = fragment.bodyWrapped === true ? fragment.body : group(fragment.body);
+  if (fragment.documentBackgroundRect === undefined)
+    return fragment.bodyWrapped === true ? fragment : { ...fragment, body };
+  const background = backcolorMarkup(
+    fragment.documentBackgroundRect,
+    undefined,
+    Math.trunc(fragment.width),
+    Math.trunc(fragment.height),
+  );
+  return { ...fragment, body: spliceAsFirstChild(body, background) };
 }
 
 /**

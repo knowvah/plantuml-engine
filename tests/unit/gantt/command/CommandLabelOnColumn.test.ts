@@ -39,12 +39,20 @@ describe('CommandLabelOnColumn', () => {
     expect(COMMAND_LABEL_ON_COLUMN_RE.exec('Labels on last column')?.groups?.['ALIGNED']).toBeUndefined();
   });
 
-  it('apply only warns "This command is deprecated" and answers ok (CommandLabelOnColumn.java:86-87)', () => {
-    const d = newGantt();
-    const m = COMMAND_LABEL_ON_COLUMN_RE.exec('Labels on last column')!;
-    expect(applyCommandLabelOnColumn(d, m).isOk()).toBe(true);
-    expect(d.getWarnings().map((w) => w.getMessage())).toEqual([['This command is deprecated']]);
-  });
+  it.each([
+    ['Labels on last column', 'last'],
+    ['labels on First column and right aligned', 'First'],
+  ])(
+    'apply only warns that %j is ignored, naming POSITION as written (CommandLabelOnColumn.java:91-93)',
+    (line, pos) => {
+      const d = newGantt();
+      const m = COMMAND_LABEL_ON_COLUMN_RE.exec(line)!;
+      expect(applyCommandLabelOnColumn(d, m).isOk()).toBe(true);
+      expect(d.getWarnings().map((w) => w.getMessage())).toEqual([
+        [`'labels on ${pos} column' is no longer supported: this line is ignored`],
+      ]);
+    },
+  );
 
   it('exports { regex, apply } under the Java class name', () => {
     expect(CommandLabelOnColumn.regex).toBe(COMMAND_LABEL_ON_COLUMN_RE);

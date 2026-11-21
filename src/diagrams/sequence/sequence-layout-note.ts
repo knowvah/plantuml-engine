@@ -13,6 +13,7 @@ import { activationLevel } from './sequence-layout-events.js';
 import type { EventProcessingContext } from './sequence-layout-events.js';
 import { wrapGauge, type TileMetrics, type YGauge } from './sequence-y-gauge.js';
 import { messageExtent, noteAnchor } from './sequence-note-anchor.js';
+import { exoNoteSide } from './sequence-note-folding.js';
 import { selfDrawnSpan } from './sequence-layout-frame-extent.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import { legacyOverTile, noteTile, notePadding, NOTE_COMPONENT_PADDING_Y } from './sequence-note-tile.js';
@@ -396,14 +397,6 @@ function wrapSide(
   const height = Math.max(chain.height, notePreferredHeight(resolved));
   const extent = position === 'left' ? { minX: resolved.tile.minX } : { maxX: resolved.tile.maxX };
   return { ...chain, ...extent, height, gauge: wrapGauge(chain.gauge, height) };
-}
-
-/** `MessageExo#overrideNotePosition`, applied by `AbstractMessage#addNote` to
- *  every note on the arrow (`MessageExo.java:62-69`, `AbstractMessage.java:224`):
- *  a left border arrow takes its notes on the RIGHT, a right border one on
- *  the LEFT. */
-function exoNoteSide(type: MessageExoEvent['exoType']): 'left' | 'right' {
-  return type === 'FROM_LEFT' || type === 'TO_LEFT' ? 'right' : 'left';
 }
 
 /**

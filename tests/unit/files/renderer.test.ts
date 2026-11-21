@@ -40,20 +40,26 @@ describe('rows (FEntry.java:131-138)', () => {
   it('a folder row draws the 1f4c2 artwork (#269 body, #55ACEE flap) then its name', () => {
     expect(svg.indexOf('fill="#269"')).toBeGreaterThan(-1);
     expect(svg.indexOf('fill="#55ACEE"')).toBeGreaterThan(svg.indexOf('fill="#269"'));
-    expect(rowsOf(svg)[0]).toEqual({ x: 31, y: 29.639, textLength: 42, text: '.github' });
+    expect(rowsOf(svg)[0]).toEqual({ x: 37, y: 24.389, textLength: 42, text: '.github' });
   });
 
-  it('a file row draws the 1f4c4 artwork (#E1E8ED, #CCD6DD, #99AAB5)', () => {
-    for (const fill of ['#E1E8ED', '#CCD6DD', '#99AAB5']) expect(svg).toContain(`fill="${fill}"`);
+  it('a file of an unknown extension draws the 1f4c4 artwork (#E1E8ED, #CCD6DD, #99AAB5)', () => {
+    const unknown = render('/a.zzz');
+    for (const fill of ['#E1E8ED', '#CCD6DD', '#99AAB5']) expect(unknown).toContain(`fill="${fill}"`);
   });
 
-  it('each row is height + 2 = 24.75 below the previous', () => {
-    expect(rowsOf(svg).map((r) => r.y)).toEqual([29.639, 54.389, 79.139, 103.889]);
+  it('a .py file draws the snake (#77B255) and a folder the connector line (oracle dobido-76-nugu008)', () => {
+    expect(svg).toContain('fill="#77B255"');
+    expect(svg).toContain('<line x1="20.5" y1="66.5" x2="29" y2="66.5" style="stroke:#A0A0A0;stroke-width:1;"/>');
+  });
+
+  it('each row is height 21 + 2 = 23 below the previous', () => {
+    expect(rowsOf(svg).map((r) => r.y)).toEqual([24.389, 47.389, 70.389, 93.389]);
   });
 
   it('a child row is 21 further right than its folder', () => {
     const [github, src, example, readme] = rowsOf(svg);
-    expect([github!.x, src!.x, example!.x, readme!.x]).toEqual([31, 31, 52, 31]);
+    expect([github!.x, src!.x, example!.x, readme!.x]).toEqual([37, 37, 58, 37]);
     expect(example!.text).toBe('example.py');
   });
 
@@ -69,7 +75,7 @@ describe('document shell', () => {
   it('is a FILES document drawn by klimt: no dominant-baseline, text at the emoticon width', () => {
     expect(rootOf(svg)).toContain('data-diagram-type="FILES"');
     expect(svg).not.toContain('dominant-baseline');
-    expect(rowsOf(svg)[0]!.x).toBe(31);
+    expect(rowsOf(svg)[0]!.x).toBe(37);
   });
 
   it('has no minimum width: the canvas is the listing plus the margins', () => {
@@ -77,16 +83,16 @@ describe('document shell', () => {
     expect(width).toBeLessThan(100);
   });
 
-  it('a diagram with no entry is the empty 21x21 canvas (oracle empty-diagram: dim 0 + margins 20, +1)', () => {
-    expect(rootOf(renderSync('@startfiles\nfoo\n@endfiles', OPTIONS))).toContain('width="21px" height="21px"');
+  it('a diagram with no entry is the empty 23x21 canvas (oracle empty-diagram: box margin 2 + margins 20, +1)', () => {
+    expect(rootOf(renderSync('@startfiles\n@endfiles', OPTIONS))).toContain('width="23px" height="21px"');
   });
 });
 
 describe('notes (FEntry.java:165-183)', () => {
   const svg = render('/doc/dummy.doc\n<note>\nthis is a note\non two lines\n</note>\n/LICENSE');
 
-  it('is an Opale outline: folded-corner path in the note colours, stroke 0.5', () => {
-    expect(svg).toMatch(/<path d="M[\d.]+,[\d.]+ L[^"]*" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"\/>/);
+  it('is an Opale outline: folded-corner path in the note colours, the filesDiagram line (#A0A0A0, 1; oracle xeseve-00-tipa730)', () => {
+    expect(svg).toMatch(/<path d="M[\d.]+,[\d.]+ L[^"]*" style="stroke:#A0A0A0;stroke-width:1;" fill="#FEFFDD"\/>/);
   });
 
   it('draws the note lines as 13 px creole text, one per line', () => {
@@ -99,10 +105,11 @@ describe('notes (FEntry.java:165-183)', () => {
 });
 
 describe('chrome and styling', () => {
-  it('draws no title/header (FilesDiagram.java:80-88 reads only `/` and `<note>`)', () => {
+  it('draws the title (FilesDiagramFactory.java:62-66) but not a header, which is an entry', () => {
     const svg = render('title My Title\nheader My Header\n/a.txt');
-    expect(svg).not.toContain('My Title');
-    expect(svg).not.toContain('My Header');
+    expect(svg).toContain('<g class="title">');
+    expect(svg).toContain('>My Title<');
+    expect(svg).toContain('>header My Header<');
   });
 
   it('a <style> root background paints the document (oracle nixaro-94-pefo622)', () => {
@@ -125,7 +132,7 @@ describe('chrome and styling', () => {
 describe('document style', () => {
   it('a <style> document Margin replaces the default margin of 10 (TextBlockExporter.java:510-516)', () => {
     const svg = render('<style>\ndocument {\n Margin 3\n}\n</style>\n/a.txt');
-    expect(rowsOf(svg)[0]).toMatchObject({ x: 24, y: 22.639 });
+    expect(rowsOf(svg)[0]).toMatchObject({ x: 30, y: 17.389 });
   });
 
   it('a gradient document background leaves the root without a `background:` and defines the gradient', () => {

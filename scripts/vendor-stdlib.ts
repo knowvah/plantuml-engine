@@ -17,6 +17,10 @@
  * Usage:
  *   jiti scripts/vendor-stdlib.ts            capture (idempotent)
  *   jiti scripts/vendor-stdlib.ts --verify   re-hash assets vs manifest
+ *
+ * PLANTUML_STDLIB=<checkout> reads another clone instead of
+ * ~/git/plantuml-stdlib: vendor the commit whose output/*.sha1 match the
+ * oracle jar's src/main/resources/stdlib, which can trail the stdlib's HEAD.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -32,7 +36,7 @@ import { verifyBundle } from './vendor-stdlib/verify.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
-const SOURCE_REPO_DIR = join(homedir(), 'git', 'plantuml-stdlib');
+const SOURCE_REPO_DIR = process.env.PLANTUML_STDLIB ?? join(homedir(), 'git', 'plantuml-stdlib');
 const STDLIB_SOURCE_DIR = join(SOURCE_REPO_DIR, 'stdlib');
 const ASSETS_STDLIB_DIR = join(REPO_ROOT, 'assets', 'stdlib');
 const MANIFESTS_DIR = join(REPO_ROOT, 'assets', 'manifests');

@@ -16,7 +16,8 @@ import { buildClassMagmaEdges } from './class-magma.js';
 import { buildClassUidPlan, classUidPlanInputFromAst } from './renderer-uid.js';
 import { LIKE_CLASS_KINDS, type MeasuredClassifier, type NoteBoxContext } from './class-layout-helpers.js';
 import { packageEndpointAnchors, shieldedClassifierIds } from './class-shield-helpers.js';
-import { computeKals, kalMarginsByEntity, type Kal } from './class-kal.js';
+import { computeKals, type Kal } from './class-kal.js';
+import { entityMarginsByEntity } from './class-role-margins.js';
 // cdd-T15: the two pre-DOT width floors live in a sibling module (500-line
 // cap); re-exported here so every existing import path keeps working.
 import { applyKalWidthFloor, applySameClassWidthFloor } from './class-dot-width-floors.js';
@@ -278,7 +279,7 @@ function buildDotNodes(
   // list already sits at the project's cap. `resolveNodeShape` has already
   // made every qualified end `plaintext` off the same `shieldedClassifierIds`
   // scan, so this only fills in the shield's real sizes.
-  const margins = kalMarginsByEntity(kals);
+  const margins = entityMarginsByEntity(ast.relationships, kals, theme, measurer);
   // cdd-T22b: `SvekNode.java:220-267`'s SECOND shield source -- a
   // `hideText` (`circle`) leaf's own icon-cell margins, keyed the same
   // way and applied through the SAME `node.shieldMargins` field (and

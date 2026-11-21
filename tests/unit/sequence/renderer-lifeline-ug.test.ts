@@ -90,7 +90,9 @@ class RecordingUGraphic implements UGraphic {
   }
 
   startGroup(group: UGroup): void {
-    this.log.push({ start: group.asMap().get(UGroupType.TITLE) ?? '' });
+    // An untitled group logs its `id` (`DATA_UID`), so the lifeline group reads as `part-A-lifeline`.
+    const map = group.asMap();
+    this.log.push({ start: map.get(UGroupType.TITLE) ?? map.get(UGroupType.DATA_UID) ?? '' });
   }
 
   closeGroup(): void {
@@ -122,6 +124,7 @@ function record(draw: (ug: UGraphic) => void): Event[] {
 
 const participant = (id = 'A', centerX = 22): ParticipantGeo => ({
   id,
+  uid: `part-${id}`,
   display: id,
   type: 'participant',
   x: centerX - 12,
@@ -346,10 +349,12 @@ describe('drawLifelinePass (LivingSpaces.java:157-168, LiveBoxes.java:374-420)',
       .map((e) => 'chain' in e && e.chain[1]);
     // A: hover, line, bar level 1 (dx 0), bar level 2 (dx 5), the two cross strokes; then B.
     expect(titles(events)).toEqual([
+      '<part-A-lifeline>',
       '<A>',
       'URectangle(8,139)',
       'ULine(0,139)',
       '</>',
+      '</>',
       '<>',
       'URectangle(10,34)',
       '</>',
@@ -358,9 +363,11 @@ describe('drawLifelinePass (LivingSpaces.java:157-168, LiveBoxes.java:374-420)',
       '</>',
       'cross-stroke',
       'cross-stroke',
+      '<part-B-lifeline>',
       '<B>',
       'URectangle(8,139)',
       'ULine(0,139)',
+      '</>',
       '</>',
       '<>',
       'URectangle(10,34)',
@@ -377,10 +384,13 @@ describe('drawLifelinePass (LivingSpaces.java:157-168, LiveBoxes.java:374-420)',
         lifelineSegments: { A: [piece()] },
       }),
     );
+    // The lifeline group holds the line only (`LivingSpace.java:151-157`).
     expect(titles(events)).toEqual([
+      '<part-A-lifeline>',
       '<A>',
       'URectangle(8,139)',
       'ULine(0,139)',
+      '</>',
       '</>',
       '<>',
       'URectangle(10,34)',

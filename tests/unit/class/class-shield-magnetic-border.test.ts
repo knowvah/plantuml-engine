@@ -64,7 +64,7 @@ describe('clusterMagneticBorder — Cluster.java:726-757 + USymbolFolder.java:24
   });
 
   // isw-T2-cls: an empty title is a lone " " atom, not a 0-wide block (jar
-  // probe tests/fixtures/isw-T2-cls/empty-package-title.svg): wtitle = 3.85 +
+  // probe tests/fixtures/isw-T2-cls/empty-package-title-reachable.svg): wtitle = 3.85 +
   // 6 = 9.85 and htitle = 14 + 6 = 20 (USymbolFolder.java:127-143), so the
   // `max(30, width/4)` arm is not taken even in a 400-wide cluster.
   it('uses the " " atom title for an empty label (wtitle 9.85, htitle 20)', () => {

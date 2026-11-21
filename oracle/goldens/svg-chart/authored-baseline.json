@@ -275,15 +275,15 @@
       "slug": "cov-creole-hz-url",
       "topic": "T4d text and style: creole-hz-url",
       "status": "baseline",
-      "weightedScore": 7,
-      "diffCount": 7,
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 3,
-        "message": "Syntax Error? (Assumed diagram type: chart)"
+        "message": "Invalid number \"//a.b lnk]], B]\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -410,10 +410,10 @@
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 2,
-        "message": "Invalid number format in bar data (Assumed diagram type: chart)"
+        "message": "Coordinate pairs are not allowed here: \"(1,2)\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -440,10 +440,10 @@
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 2,
-        "message": "Invalid number format in bar data (Assumed diagram type: chart)"
+        "message": "Invalid number \"x\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -485,10 +485,10 @@
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 3,
-        "message": "Invalid coordinate pair format in line data (Assumed diagram type: chart)"
+        "message": "Invalid coordinate pair \"(1,2,3)\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -555,15 +555,10 @@
       "slug": "cov-err-pairs-no-range",
       "topic": "T4e/T4c error or crash: err-pairs-no-range",
       "status": "baseline",
-      "weightedScore": 5,
-      "diffCount": 5,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
-      "jarError": {
-        "line": 2,
-        "message": "Coordinate pair notation requires explicit h-axis range (e.g., h-axis \"x\" -5 --> 5) (Assumed diagram type: chart)"
-      },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -600,15 +595,15 @@
       "slug": "cov-err-style",
       "topic": "T4e/T4c error or crash: err-style",
       "status": "baseline",
-      "weightedScore": 39,
-      "diffCount": 18,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 32,
+      "diffCount": 25,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target. At the a720bdd pin the jar reports the style error from RawStyleParser.java:148 at the faulty line (upstream 96380842043 and c9d62097ff5, unported: ours keeps the old message).",
       "jarError": {
-        "line": 4,
-        "message": "Error in style definition: Invalid open bracket (Assumed diagram type: chart)"
+        "line": 3,
+        "message": "Error in style definition: Unexpected character '{' (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "chart",
@@ -835,25 +830,30 @@
       "slug": "cov-inf-bar",
       "topic": "T4e/T4c error or crash: inf-bar",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 3,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
     },
     {
       "type": "chart",
       "slug": "cov-inf-fixed",
       "topic": "T4e/T4c error or crash: inf-fixed",
       "status": "baseline",
-      "weightedScore": 353,
-      "diffCount": 69,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 4,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
@@ -970,70 +970,71 @@
       "slug": "cov-nan-annotation",
       "topic": "T4e/T4c error or crash: nan-annotation",
       "status": "baseline",
-      "weightedScore": 367,
-      "diffCount": 69,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
-      "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
-      },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
       "slug": "cov-nan-annotation-y",
       "topic": "T4e/T4c error or crash: nan-annotation-y",
       "status": "baseline",
-      "weightedScore": 386,
-      "diffCount": 68,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 4,
+        "message": "Y position must be a numeric value: NaN (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
       "slug": "cov-nan-area",
       "topic": "T4e/T4c error or crash: nan-area",
       "status": "baseline",
-      "weightedScore": 339,
-      "diffCount": 69,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 4,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
       "slug": "cov-nan-bar",
       "topic": "T4e/T4c error or crash: nan-bar",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 4,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
       "slug": "cov-nan-scatter",
       "topic": "T4e/T4c error or crash: nan-scatter",
       "status": "baseline",
-      "weightedScore": 360,
-      "diffCount": 69,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 4,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
@@ -1340,15 +1341,15 @@
       "slug": "cov-span-annotation",
       "topic": "T4e/T4c error or crash: span-annotation",
       "status": "baseline",
-      "weightedScore": 386,
+      "weightedScore": 393,
       "diffCount": 68,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": null,
         "message": "java.lang.IllegalArgumentException"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "chart",
@@ -1395,45 +1396,40 @@
       "slug": "cov-span-line",
       "topic": "T4e/T4c error or crash: span-line",
       "status": "baseline",
-      "weightedScore": 346,
-      "diffCount": 69,
+      "weightedScore": 386,
+      "diffCount": 68,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": null,
         "message": "java.lang.IllegalArgumentException"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "chart",
       "slug": "cov-span-spacing",
       "topic": "T4e/T4c error or crash: span-spacing",
       "status": "baseline",
-      "weightedScore": 314,
-      "diffCount": 132,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
-      "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
-      },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
-    },
-    {
-      "type": "chart",
-      "slug": "cov-span-ticks",
-      "topic": "T4e/T4c error or crash: span-ticks",
-      "status": "baseline",
-      "weightedScore": 333,
+      "weightedScore": 340,
       "diffCount": 133,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": null,
         "message": "java.lang.IllegalArgumentException"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-span-ticks",
+      "topic": "T4e/T4c error or crash: span-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -1740,15 +1736,15 @@
       "slug": "cov-value-nan",
       "topic": "T4e/T4c error or crash: value-nan",
       "status": "baseline",
-      "weightedScore": 346,
-      "diffCount": 69,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 4,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "d8e3d3e71"
     },
     {
       "type": "chart",
@@ -1765,30 +1761,20 @@
       "slug": "cov-zero-grouped",
       "topic": "T4e/T4c error or crash: zero-grouped",
       "status": "baseline",
-      "weightedScore": 344,
-      "diffCount": 68,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
-      "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException: height=0.0"
-      },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
       "slug": "cov-zero-horizontal",
       "topic": "T4e/T4c error or crash: zero-horizontal",
       "status": "baseline",
-      "weightedScore": 332,
-      "diffCount": 76,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
-      "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException: width=0.0"
-      },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
     },
     {
       "type": "chart",
@@ -1805,15 +1791,2640 @@
       "slug": "cov-zero-stacked",
       "topic": "T4e/T4c error or crash: zero-stacked",
       "status": "baseline",
-      "weightedScore": 325,
-      "diffCount": 76,
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c4b0b86e0"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.01-series-bar-basic",
+      "topic": "upstream src/test/resources/vega/chart: R01.01-series-bar-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.02-series-bar-grouped",
+      "topic": "upstream src/test/resources/vega/chart: R01.02-series-bar-grouped",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.03-series-bar-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R01.03-series-bar-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.04-series-bar-horizontal",
+      "topic": "upstream src/test/resources/vega/chart: R01.04-series-bar-horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.05-series-line-basic",
+      "topic": "upstream src/test/resources/vega/chart: R01.05-series-line-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.06-series-line-coordinate-pair",
+      "topic": "upstream src/test/resources/vega/chart: R01.06-series-line-coordinate-pair",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.07-series-area-basic",
+      "topic": "upstream src/test/resources/vega/chart: R01.07-series-area-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.08-series-scatter-style-with-stereotypes",
+      "topic": "upstream src/test/resources/vega/chart: R01.08-series-scatter-style-with-stereotypes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.09-series-mixed-types",
+      "topic": "upstream src/test/resources/vega/chart: R01.09-series-mixed-types",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R01.10-series-data-labels",
+      "topic": "upstream src/test/resources/vega/chart: R01.10-series-data-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.01-axes-h-axis-spacing",
+      "topic": "upstream src/test/resources/vega/chart: R02.01-axes-h-axis-spacing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.02-axes-v-axis-ticks",
+      "topic": "upstream src/test/resources/vega/chart: R02.02-axes-v-axis-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.03-axes-v-axis-negative",
+      "topic": "upstream src/test/resources/vega/chart: R02.03-axes-v-axis-negative",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.04-axes-v2-axis",
+      "topic": "upstream src/test/resources/vega/chart: R02.04-axes-v2-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.05-axes-label-position",
+      "topic": "upstream src/test/resources/vega/chart: R02.05-axes-label-position",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.06-axes-v-axis-title-wide-labels",
+      "topic": "upstream src/test/resources/vega/chart: R02.06-axes-v-axis-title-wide-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.07-axes-v2-axis-title-wide-labels",
+      "topic": "upstream src/test/resources/vega/chart: R02.07-axes-v2-axis-title-wide-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R02.08-axes-v-axis-title-custom-ticks",
+      "topic": "upstream src/test/resources/vega/chart: R02.08-axes-v-axis-title-custom-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.01-layout-legend-bottom",
+      "topic": "upstream src/test/resources/vega/chart: R03.01-layout-legend-bottom",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.02-layout-grid-both",
+      "topic": "upstream src/test/resources/vega/chart: R03.02-layout-grid-both",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.03-layout-grid-v-scatter",
+      "topic": "upstream src/test/resources/vega/chart: R03.03-layout-grid-v-scatter",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.04-layout-grid-h-categories",
+      "topic": "upstream src/test/resources/vega/chart: R03.04-layout-grid-h-categories",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.05-layout-grid-v-ticks",
+      "topic": "upstream src/test/resources/vega/chart: R03.05-layout-grid-v-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.06-layout-grid-spacing-custom-ticks",
+      "topic": "upstream src/test/resources/vega/chart: R03.06-layout-grid-spacing-custom-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.07-layout-grid-horizontal-categories",
+      "topic": "upstream src/test/resources/vega/chart: R03.07-layout-grid-horizontal-categories",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R03.08-layout-grid-horizontal-values",
+      "topic": "upstream src/test/resources/vega/chart: R03.08-layout-grid-horizontal-values",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R04.01-style-block",
+      "topic": "upstream src/test/resources/vega/chart: R04.01-style-block",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R04.02-style-stereotypes",
+      "topic": "upstream src/test/resources/vega/chart: R04.02-style-stereotypes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R05.01-annotation-arrow",
+      "topic": "upstream src/test/resources/vega/chart: R05.01-annotation-arrow",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R06.01-preproc-procedure",
+      "topic": "upstream src/test/resources/vega/chart: R06.01-preproc-procedure",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R06.02-preproc-function",
+      "topic": "upstream src/test/resources/vega/chart: R06.02-preproc-function",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.01-error-coordinate-pair-with-categorical-axis",
+      "topic": "upstream src/test/resources/vega/chart: R07.01-error-coordinate-pair-with-categorical-axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException: height=0.0"
+        "line": 7,
+        "message": "Coordinate pair notation requires numeric h-axis (e.g., h-axis \"x\" -5 --> 5), not categorical labels (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.02-error-coordinate-out-of-range",
+      "topic": "upstream src/test/resources/vega/chart: R07.02-error-coordinate-out-of-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "X-coordinate 50.0 is outside h-axis range [0.0, 10.0] (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.03-error-mixed-formats",
+      "topic": "upstream src/test/resources/vega/chart: R07.03-error-mixed-formats",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Either every item is a coordinate pair (x, y), or none is (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.04-error-unknown-keyword",
+      "topic": "upstream src/test/resources/vega/chart: R07.04-error-unknown-keyword",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.06-error-infinite-value",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.06-error-infinite-value",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.07-error-nan-value",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.07-error-nan-value",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.08-error-overflowing-value",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.08-error-overflowing-value",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid number \"1e999\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.09-error-infinite-coordinate-pair",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.09-error-infinite-coordinate-pair",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid coordinate pair \"(3, -Infinity)\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.10-error-infinite-annotation",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.10-error-infinite-annotation",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 8,
+        "message": "Y position must be a numeric value: Infinity (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R07.11-error-overflowing-axis-range",
+      "topic": "upstream fix/chart-non-finite-values vega/chart: R07.11-error-overflowing-axis-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid number format in axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "531a94fff"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.01-missing-minimal-line-interpolate",
+      "topic": "upstream src/test/resources/vega/chart: R08.01-missing-minimal-line-interpolate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.02-missing-value-interpolate",
+      "topic": "upstream src/test/resources/vega/chart: R08.02-missing-value-interpolate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.03-missing-value-interpolate-labels",
+      "topic": "upstream src/test/resources/vega/chart: R08.03-missing-value-interpolate-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.04-missing-values-interpolate-connect",
+      "topic": "upstream src/test/resources/vega/chart: R08.04-missing-values-interpolate-connect",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.05-missing-value-scatter",
+      "topic": "upstream src/test/resources/vega/chart: R08.05-missing-value-scatter",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R08.06-missing-value-scatter-h-axis-range",
+      "topic": "upstream src/test/resources/vega/chart: R08.06-missing-value-scatter-h-axis-range",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.01-range-line-default",
+      "topic": "upstream src/test/resources/vega/chart: R09.01-range-line-default",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.02-range-line-explicit",
+      "topic": "upstream src/test/resources/vega/chart: R09.02-range-line-explicit",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.03-range-line-above-100",
+      "topic": "upstream src/test/resources/vega/chart: R09.03-range-line-above-100",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.04-range-bar-default",
+      "topic": "upstream src/test/resources/vega/chart: R09.04-range-bar-default",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.05-range-bar-above-100",
+      "topic": "upstream src/test/resources/vega/chart: R09.05-range-bar-above-100",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.06-range-line-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R09.06-range-line-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.07-range-bar-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R09.07-range-bar-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.08-range-horizontal-above-100",
+      "topic": "upstream src/test/resources/vega/chart: R09.08-range-horizontal-above-100",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.09-range-bar-negative",
+      "topic": "upstream src/test/resources/vega/chart: R09.09-range-bar-negative",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.10-range-v2-axis-after-series",
+      "topic": "upstream src/test/resources/vega/chart: R09.10-range-v2-axis-after-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R09.11-range-bar-decimal",
+      "topic": "upstream src/test/resources/vega/chart: R09.11-range-bar-decimal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.01-order-bar-then-area",
+      "topic": "upstream src/test/resources/vega/chart: R10.01-order-bar-then-area",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.02-order-area-then-bar",
+      "topic": "upstream src/test/resources/vega/chart: R10.02-order-area-then-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.03-order-area-then-line",
+      "topic": "upstream src/test/resources/vega/chart: R10.03-order-area-then-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.04-order-mixed-groups",
+      "topic": "upstream src/test/resources/vega/chart: R10.04-order-mixed-groups",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.05-order-bar-area-bar",
+      "topic": "upstream src/test/resources/vega/chart: R10.05-order-bar-area-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.06-order-bar-area-bar-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R10.06-order-bar-area-bar-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R10.07-order-area-line-area",
+      "topic": "upstream src/test/resources/vega/chart: R10.07-order-area-line-area",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.01-horizontal-grouped",
+      "topic": "upstream src/test/resources/vega/chart: R11.01-horizontal-grouped",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.02-horizontal-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R11.02-horizontal-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.03-horizontal-negative-value",
+      "topic": "upstream src/test/resources/vega/chart: R11.03-horizontal-negative-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.04-horizontal-area-legend-right",
+      "topic": "upstream src/test/resources/vega/chart: R11.04-horizontal-area-legend-right",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.05-horizontal-grouped-negative-labels",
+      "topic": "upstream src/test/resources/vega/chart: R11.05-horizontal-grouped-negative-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R11.06-horizontal-stacked-negative-labels",
+      "topic": "upstream src/test/resources/vega/chart: R11.06-horizontal-stacked-negative-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R12.01-short-title-without-quote",
+      "topic": "upstream src/test/resources/vega/chart: R12.01-short-title-without-quote",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R12.02-short-title-all-series",
+      "topic": "upstream src/test/resources/vega/chart: R12.02-short-title-all-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R12.03-short-title-needs-blank",
+      "topic": "upstream src/test/resources/vega/chart: R12.03-short-title-needs-blank",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Syntax Error? (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R13.01-zero-value-vertical",
+      "topic": "upstream src/test/resources/vega/chart: R13.01-zero-value-vertical",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R13.02-zero-value-horizontal",
+      "topic": "upstream src/test/resources/vega/chart: R13.02-zero-value-horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R13.03-zero-value-vertical-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R13.03-zero-value-vertical-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R13.04-zero-value-horizontal-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R13.04-zero-value-horizontal-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R14.01-line-labels",
+      "topic": "upstream src/test/resources/vega/chart: R14.01-line-labels",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R14.02-line-labels-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R14.02-line-labels-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R14.03-line-labels-coordinate-pairs",
+      "topic": "upstream src/test/resources/vega/chart: R14.03-line-labels-coordinate-pairs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.01-pie-keyed",
+      "topic": "upstream src/test/resources/vega/chart: R15.01-pie-keyed",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.02-pie-a-axis-percent-legend",
+      "topic": "upstream src/test/resources/vega/chart: R15.02-pie-a-axis-percent-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.03-pie-donut-labels-colors",
+      "topic": "upstream src/test/resources/vega/chart: R15.03-pie-donut-labels-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.04-pie-single-value-donut",
+      "topic": "upstream src/test/resources/vega/chart: R15.04-pie-single-value-donut",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.05-pie-quoted-keys-missing-zero",
+      "topic": "upstream src/test/resources/vega/chart: R15.05-pie-quoted-keys-missing-zero",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R15.06-pie-style-stereotype",
+      "topic": "upstream src/test/resources/vega/chart: R15.06-pie-style-stereotype",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R16.01-radar-basic",
+      "topic": "upstream src/test/resources/vega/chart: R16.01-radar-basic",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R16.02-radar-keys-auto-scale-circle",
+      "topic": "upstream src/test/resources/vega/chart: R16.02-radar-keys-auto-scale-circle",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R16.03-radar-missing-value-custom-ticks",
+      "topic": "upstream src/test/resources/vega/chart: R16.03-radar-missing-value-custom-ticks",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R16.04-radar-style",
+      "topic": "upstream src/test/resources/vega/chart: R16.04-radar-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.01-polar-error-pie-with-h-axis",
+      "topic": "upstream src/test/resources/vega/chart: R17.01-polar-error-pie-with-h-axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"pie\" cannot be used with \"h-axis\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.02-polar-error-two-pies",
+      "topic": "upstream src/test/resources/vega/chart: R17.02-polar-error-two-pies",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Only one pie is allowed in a chart (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.03-polar-error-pie-negative",
+      "topic": "upstream src/test/resources/vega/chart: R17.03-polar-error-pie-negative",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A pie cannot have a negative value: -2.0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.04-polar-error-radar-with-bar",
+      "topic": "upstream src/test/resources/vega/chart: R17.04-polar-error-radar-with-bar",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"bar\" cannot be used with \"radar\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.05-polar-error-unknown-key",
+      "topic": "upstream src/test/resources/vega/chart: R17.05-polar-error-unknown-key",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"Test\" is not in a-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.06-polar-error-mixed-keys",
+      "topic": "upstream src/test/resources/vega/chart: R17.06-polar-error-mixed-keys",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Either every value has a key (key: value), or none has (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R17.07-polar-error-r-axis-with-pie",
+      "topic": "upstream src/test/resources/vega/chart: R17.07-polar-error-r-axis-with-pie",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"pie\" cannot be used with \"r-axis\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.01-txt-bar-vertical",
+      "topic": "upstream src/test/resources/vega/chart: R18.01-txt-bar-vertical",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.02-txt-bar-horizontal",
+      "topic": "upstream src/test/resources/vega/chart: R18.02-txt-bar-horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.03-txt-line",
+      "topic": "upstream src/test/resources/vega/chart: R18.03-txt-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.04-txt-bar-line-axis-title",
+      "topic": "upstream src/test/resources/vega/chart: R18.04-txt-bar-line-axis-title",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.05-txt-bar-grouped-line-legend",
+      "topic": "upstream src/test/resources/vega/chart: R18.05-txt-bar-grouped-line-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.06-txt-bar-stacked-negative",
+      "topic": "upstream src/test/resources/vega/chart: R18.06-txt-bar-stacked-negative",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.07-txt-horizontal-grouped-titles",
+      "topic": "upstream src/test/resources/vega/chart: R18.07-txt-horizontal-grouped-titles",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.08-txt-pie-table",
+      "topic": "upstream src/test/resources/vega/chart: R18.08-txt-pie-table",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.09-txt-table-area-line",
+      "topic": "upstream src/test/resources/vega/chart: R18.09-txt-table-area-line",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.10-txt-table-radar",
+      "topic": "upstream src/test/resources/vega/chart: R18.10-txt-table-radar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.11-txt-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R18.11-txt-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.12-txt-no-series",
+      "topic": "upstream src/test/resources/vega/chart: R18.12-txt-no-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R18.13-txt-table-coordinate-pairs",
+      "topic": "upstream src/test/resources/vega/chart: R18.13-txt-table-coordinate-pairs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.01-lenient-pie-json-braces",
+      "topic": "upstream src/test/resources/vega/chart: R19.01-lenient-pie-json-braces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.02-lenient-pie-parentheses",
+      "topic": "upstream src/test/resources/vega/chart: R19.02-lenient-pie-parentheses",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.03-lenient-pie-single-quotes",
+      "topic": "upstream src/test/resources/vega/chart: R19.03-lenient-pie-single-quotes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.04-lenient-pie-quoted-values-spaces",
+      "topic": "upstream src/test/resources/vega/chart: R19.04-lenient-pie-quoted-values-spaces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.05-lenient-pie-json-colors-donut",
+      "topic": "upstream src/test/resources/vega/chart: R19.05-lenient-pie-json-colors-donut",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.06-lenient-pie-apostrophe-and-quoted-comma",
+      "topic": "upstream src/test/resources/vega/chart: R19.06-lenient-pie-apostrophe-and-quoted-comma",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.07-lenient-pie-preprocessor-json",
+      "topic": "upstream src/test/resources/vega/chart: R19.07-lenient-pie-preprocessor-json",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.08-lenient-pie-json-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R19.08-lenient-pie-json-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.09-lenient-pie-name-stereotype-braces",
+      "topic": "upstream src/test/resources/vega/chart: R19.09-lenient-pie-name-stereotype-braces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.10-lenient-pie-json-decimals",
+      "topic": "upstream src/test/resources/vega/chart: R19.10-lenient-pie-json-decimals",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.11-lenient-pie-json-a-axis-order",
+      "topic": "upstream src/test/resources/vega/chart: R19.11-lenient-pie-json-a-axis-order",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.12-lenient-pie-quoted-hash-and-colon",
+      "topic": "upstream src/test/resources/vega/chart: R19.12-lenient-pie-quoted-hash-and-colon",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.13-lenient-pie-positional-braces",
+      "topic": "upstream src/test/resources/vega/chart: R19.13-lenient-pie-positional-braces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.14-lenient-radar-braces-two-series",
+      "topic": "upstream src/test/resources/vega/chart: R19.14-lenient-radar-braces-two-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.15-lenient-radar-parentheses-single-quotes",
+      "topic": "upstream src/test/resources/vega/chart: R19.15-lenient-radar-parentheses-single-quotes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.16-lenient-radar-preprocessor-json",
+      "topic": "upstream src/test/resources/vega/chart: R19.16-lenient-radar-preprocessor-json",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.17-lenient-radar-positional-braces-color",
+      "topic": "upstream src/test/resources/vega/chart: R19.17-lenient-radar-positional-braces-color",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.18-lenient-radar-json-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R19.18-lenient-radar-json-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.19-lenient-radar-mixed-brackets-series",
+      "topic": "upstream src/test/resources/vega/chart: R19.19-lenient-radar-mixed-brackets-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.20-lenient-error-mismatched-brackets",
+      "topic": "upstream src/test/resources/vega/chart: R19.20-lenient-error-mismatched-brackets",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Mismatched '{' and ']' around data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.21-lenient-error-unclosed-single-quote",
+      "topic": "upstream src/test/resources/vega/chart: R19.21-lenient-error-unclosed-single-quote",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Unbalanced quotes in data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.22-lenient-error-quoted-non-number",
+      "topic": "upstream src/test/resources/vega/chart: R19.22-lenient-error-quoted-non-number",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Invalid number \"many\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.23-lenient-error-braces-mixed-keys",
+      "topic": "upstream src/test/resources/vega/chart: R19.23-lenient-error-braces-mixed-keys",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Either every value has a key (key: value), or none has (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R19.24-lenient-error-radar-mismatched-parentheses",
+      "topic": "upstream src/test/resources/vega/chart: R19.24-lenient-error-radar-mismatched-parentheses",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Mismatched '(' and '}' around data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.01-lenient-xy-line-braces-quoted",
+      "topic": "upstream src/test/resources/vega/chart: R20.01-lenient-xy-line-braces-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.02-lenient-xy-line-parentheses",
+      "topic": "upstream src/test/resources/vega/chart: R20.02-lenient-xy-line-parentheses",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.03-lenient-xy-line-json-pairs-brackets",
+      "topic": "upstream src/test/resources/vega/chart: R20.03-lenient-xy-line-json-pairs-brackets",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.04-lenient-xy-line-pairs-braces-quoted",
+      "topic": "upstream src/test/resources/vega/chart: R20.04-lenient-xy-line-pairs-braces-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.05-lenient-xy-line-pairs-mixed-delimiters",
+      "topic": "upstream src/test/resources/vega/chart: R20.05-lenient-xy-line-pairs-mixed-delimiters",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.06-lenient-xy-line-missing-values-quoted",
+      "topic": "upstream src/test/resources/vega/chart: R20.06-lenient-xy-line-missing-values-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.07-lenient-xy-line-preprocessor-json",
+      "topic": "upstream src/test/resources/vega/chart: R20.07-lenient-xy-line-preprocessor-json",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.08-lenient-xy-line-preprocessor-json-pairs",
+      "topic": "upstream src/test/resources/vega/chart: R20.08-lenient-xy-line-preprocessor-json-pairs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.09-lenient-xy-line-v2-interpolate-braces",
+      "topic": "upstream src/test/resources/vega/chart: R20.09-lenient-xy-line-v2-interpolate-braces",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.10-lenient-xy-line-decimals-negative",
+      "topic": "upstream src/test/resources/vega/chart: R20.10-lenient-xy-line-decimals-negative",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.11-lenient-xy-bar-braces-quoted",
+      "topic": "upstream src/test/resources/vega/chart: R20.11-lenient-xy-bar-braces-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.12-lenient-xy-bar-parentheses-stacked",
+      "topic": "upstream src/test/resources/vega/chart: R20.12-lenient-xy-bar-parentheses-stacked",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.13-lenient-xy-bar-horizontal-single-quotes",
+      "topic": "upstream src/test/resources/vega/chart: R20.13-lenient-xy-bar-horizontal-single-quotes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.14-lenient-xy-area-braces-quoted",
+      "topic": "upstream src/test/resources/vega/chart: R20.14-lenient-xy-area-braces-quoted",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.15-lenient-xy-area-parentheses-v2",
+      "topic": "upstream src/test/resources/vega/chart: R20.15-lenient-xy-area-parentheses-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.16-lenient-xy-scatter-json-pairs",
+      "topic": "upstream src/test/resources/vega/chart: R20.16-lenient-xy-scatter-json-pairs",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.17-lenient-xy-scatter-parentheses-values",
+      "topic": "upstream src/test/resources/vega/chart: R20.17-lenient-xy-scatter-parentheses-values",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.18-lenient-xy-mixed-series-all-delimiters",
+      "topic": "upstream src/test/resources/vega/chart: R20.18-lenient-xy-mixed-series-all-delimiters",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.19-lenient-xy-error-mismatched-brackets",
+      "topic": "upstream src/test/resources/vega/chart: R20.19-lenient-xy-error-mismatched-brackets",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Mismatched '{' and ']' around data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.20-lenient-xy-error-pairs-in-bar",
+      "topic": "upstream src/test/resources/vega/chart: R20.20-lenient-xy-error-pairs-in-bar",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Coordinate pairs are not allowed here: \"(1, 2)\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.21-lenient-xy-error-pair-three-coordinates",
+      "topic": "upstream src/test/resources/vega/chart: R20.21-lenient-xy-error-pair-three-coordinates",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid coordinate pair \"[1, 2, 3]\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.22-lenient-xy-error-mismatched-pair",
+      "topic": "upstream src/test/resources/vega/chart: R20.22-lenient-xy-error-mismatched-pair",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Mismatched '(' and ']' around a coordinate pair (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.23-lenient-xy-error-unclosed-quote",
+      "topic": "upstream src/test/resources/vega/chart: R20.23-lenient-xy-error-unclosed-quote",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Unbalanced quotes or brackets in data (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R20.24-lenient-xy-error-quoted-non-number",
+      "topic": "upstream src/test/resources/vega/chart: R20.24-lenient-xy-error-quoted-non-number",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Invalid number \"ten\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.01-keyed-xy-bar-h-axis-order-missing",
+      "topic": "upstream src/test/resources/vega/chart: R21.01-keyed-xy-bar-h-axis-order-missing",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.02-keyed-xy-line-categories-from-keys",
+      "topic": "upstream src/test/resources/vega/chart: R21.02-keyed-xy-line-categories-from-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.03-keyed-xy-line-union-of-keys",
+      "topic": "upstream src/test/resources/vega/chart: R21.03-keyed-xy-line-union-of-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.04-keyed-xy-line-preprocessor-json-object",
+      "topic": "upstream src/test/resources/vega/chart: R21.04-keyed-xy-line-preprocessor-json-object",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.05-keyed-xy-bar-stacked-different-orders",
+      "topic": "upstream src/test/resources/vega/chart: R21.05-keyed-xy-bar-stacked-different-orders",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.06-keyed-xy-area-missing-category",
+      "topic": "upstream src/test/resources/vega/chart: R21.06-keyed-xy-area-missing-category",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.07-keyed-xy-scatter-keys",
+      "topic": "upstream src/test/resources/vega/chart: R21.07-keyed-xy-scatter-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.08-keyed-xy-bar-horizontal-v-axis",
+      "topic": "upstream src/test/resources/vega/chart: R21.08-keyed-xy-bar-horizontal-v-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.09-keyed-xy-mixed-keyed-and-positional",
+      "topic": "upstream src/test/resources/vega/chart: R21.09-keyed-xy-mixed-keyed-and-positional",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.10-keyed-xy-quoted-special-keys",
+      "topic": "upstream src/test/resources/vega/chart: R21.10-keyed-xy-quoted-special-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.11-keyed-xy-line-connect-interpolate",
+      "topic": "upstream src/test/resources/vega/chart: R21.11-keyed-xy-line-connect-interpolate",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.12-keyed-xy-line-v2",
+      "topic": "upstream src/test/resources/vega/chart: R21.12-keyed-xy-line-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.13-keyed-xy-brackets-and-parentheses",
+      "topic": "upstream src/test/resources/vega/chart: R21.13-keyed-xy-brackets-and-parentheses",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.14-keyed-xy-h-axis-after-series",
+      "topic": "upstream src/test/resources/vega/chart: R21.14-keyed-xy-h-axis-after-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.15-keyed-xy-preprocessor-json-series",
+      "topic": "upstream src/test/resources/vega/chart: R21.15-keyed-xy-preprocessor-json-series",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.16-keyed-xy-error-key-not-in-h-axis",
+      "topic": "upstream src/test/resources/vega/chart: R21.16-keyed-xy-error-key-not-in-h-axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"Mar\" is not in h-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.17-keyed-xy-error-key-not-in-h-axis-after",
+      "topic": "upstream src/test/resources/vega/chart: R21.17-keyed-xy-error-key-not-in-h-axis-after",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "\"Mar\" is not in h-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.18-keyed-xy-error-keys-with-h-axis-range",
+      "topic": "upstream src/test/resources/vega/chart: R21.18-keyed-xy-error-keys-with-h-axis-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Keyed values (key: value) need h-axis categories, not an h-axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.19-keyed-xy-error-h-axis-range-after-keys",
+      "topic": "upstream src/test/resources/vega/chart: R21.19-keyed-xy-error-h-axis-range-after-keys",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Keyed values (key: value) need h-axis categories, not an h-axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.20-keyed-xy-error-mixed-keyed-values",
+      "topic": "upstream src/test/resources/vega/chart: R21.20-keyed-xy-error-mixed-keyed-values",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Either every value has a key (key: value), or none has (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.21-keyed-xy-error-keyed-pair",
+      "topic": "upstream src/test/resources/vega/chart: R21.21-keyed-xy-error-keyed-pair",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A coordinate pair cannot have a key: \"Jan: (1, 2)\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.22-keyed-xy-error-key-not-in-v-axis",
+      "topic": "upstream src/test/resources/vega/chart: R21.22-keyed-xy-error-key-not-in-v-axis",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "\"C\" is not in v-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.23-keyed-xy-error-empty-key",
+      "topic": "upstream src/test/resources/vega/chart: R21.23-keyed-xy-error-empty-key",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "Empty key before the value 1 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R21.24-keyed-xy-area-positional-missing-value",
+      "topic": "upstream src/test/resources/vega/chart: R21.24-keyed-xy-area-positional-missing-value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.01-list-pie-star-items",
+      "topic": "upstream src/test/resources/vega/chart: R22.01-list-pie-star-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.02-list-pie-dash-items",
+      "topic": "upstream src/test/resources/vega/chart: R22.02-list-pie-dash-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.03-list-pie-mermaid-quoted-keys",
+      "topic": "upstream src/test/resources/vega/chart: R22.03-list-pie-mermaid-quoted-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.04-list-pie-name-options",
+      "topic": "upstream src/test/resources/vega/chart: R22.04-list-pie-name-options",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.05-list-pie-item-colors",
+      "topic": "upstream src/test/resources/vega/chart: R22.05-list-pie-item-colors",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.06-list-pie-special-keys",
+      "topic": "upstream src/test/resources/vega/chart: R22.06-list-pie-special-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.07-list-pie-values-only",
+      "topic": "upstream src/test/resources/vega/chart: R22.07-list-pie-values-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.08-list-pie-missing-and-zero",
+      "topic": "upstream src/test/resources/vega/chart: R22.08-list-pie-missing-and-zero",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.09-list-pie-title-colon-legend",
+      "topic": "upstream src/test/resources/vega/chart: R22.09-list-pie-title-colon-legend",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.10-list-pie-stereotype-style",
+      "topic": "upstream src/test/resources/vega/chart: R22.10-list-pie-stereotype-style",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.11-list-pie-mixed-bullets",
+      "topic": "upstream src/test/resources/vega/chart: R22.11-list-pie-mixed-bullets",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.12-list-pie-preprocessor-foreach-keys",
+      "topic": "upstream src/test/resources/vega/chart: R22.12-list-pie-preprocessor-foreach-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.13-list-pie-preprocessor-foreach-array",
+      "topic": "upstream src/test/resources/vega/chart: R22.13-list-pie-preprocessor-foreach-array",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.14-list-radar-a-axis",
+      "topic": "upstream src/test/resources/vega/chart: R22.14-list-radar-a-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.15-list-radar-categories-from-keys",
+      "topic": "upstream src/test/resources/vega/chart: R22.15-list-radar-categories-from-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.16-list-radar-values-only",
+      "topic": "upstream src/test/resources/vega/chart: R22.16-list-radar-values-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.17-list-radar-inline-then-items",
+      "topic": "upstream src/test/resources/vega/chart: R22.17-list-radar-inline-then-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.18-list-radar-a-axis-after-items",
+      "topic": "upstream src/test/resources/vega/chart: R22.18-list-radar-a-axis-after-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.19-list-error-item-without-series",
+      "topic": "upstream src/test/resources/vega/chart: R22.19-list-error-item-without-series",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A list item must follow a series written without data, as in: pie \"Air\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.20-list-error-bare-key-without-series",
+      "topic": "upstream src/test/resources/vega/chart: R22.20-list-error-bare-key-without-series",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A list item must follow a series written without data, as in: pie \"Air\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.21-list-error-mixed-keyed-items",
+      "topic": "upstream src/test/resources/vega/chart: R22.21-list-error-mixed-keyed-items",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "Either every value has a key (key: value), or none has (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.22-list-error-pie-negative-item",
+      "topic": "upstream src/test/resources/vega/chart: R22.22-list-error-pie-negative-item",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "A pie cannot have a negative value: -5.0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.23-list-error-pie-all-zero",
+      "topic": "upstream src/test/resources/vega/chart: R22.23-list-error-pie-all-zero",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A pie needs at least one value greater than 0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.24-list-error-empty-pie",
+      "topic": "upstream src/test/resources/vega/chart: R22.24-list-error-empty-pie",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 6,
+        "message": "A pie needs at least one value greater than 0 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.25-list-error-radar-key-not-in-a-axis",
+      "topic": "upstream src/test/resources/vega/chart: R22.25-list-error-radar-key-not-in-a-axis",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "\"QA\" is not in a-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.26-list-error-a-axis-after-unknown-key",
+      "topic": "upstream src/test/resources/vega/chart: R22.26-list-error-a-axis-after-unknown-key",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "\"QA\" is not in a-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.27-list-error-item-after-inline-pie",
+      "topic": "upstream src/test/resources/vega/chart: R22.27-list-error-item-after-inline-pie",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "A list item must follow a series written without data, as in: pie \"Air\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.28-list-error-item-after-inline-bar",
+      "topic": "upstream src/test/resources/vega/chart: R22.28-list-error-item-after-inline-bar",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "A list item must follow a series written without data, as in: pie \"Air\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R22.29-list-error-unclosed-quote-item",
+      "topic": "upstream src/test/resources/vega/chart: R22.29-list-error-unclosed-quote-item",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "Unbalanced quotes in: \"Nitrogen : 78 (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "008b9361f"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.01-xy-list-bar-keys-h-axis",
+      "topic": "upstream src/test/resources/vega/chart: R23.01-xy-list-bar-keys-h-axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.02-xy-list-bar-categories-from-keys",
+      "topic": "upstream src/test/resources/vega/chart: R23.02-xy-list-bar-categories-from-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.03-xy-list-line-mermaid-keys",
+      "topic": "upstream src/test/resources/vega/chart: R23.03-xy-list-line-mermaid-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.04-xy-list-line-values-only",
+      "topic": "upstream src/test/resources/vega/chart: R23.04-xy-list-line-values-only",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.05-xy-list-line-missing-connect",
+      "topic": "upstream src/test/resources/vega/chart: R23.05-xy-list-line-missing-connect",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.06-xy-list-area-stacked-lists",
+      "topic": "upstream src/test/resources/vega/chart: R23.06-xy-list-area-stacked-lists",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.07-xy-list-bar-stacked-lists",
+      "topic": "upstream src/test/resources/vega/chart: R23.07-xy-list-bar-stacked-lists",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.08-xy-list-bar-horizontal",
+      "topic": "upstream src/test/resources/vega/chart: R23.08-xy-list-bar-horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.09-xy-list-scatter-keys",
+      "topic": "upstream src/test/resources/vega/chart: R23.09-xy-list-scatter-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.10-xy-list-line-v2-with-inline-bar",
+      "topic": "upstream src/test/resources/vega/chart: R23.10-xy-list-line-v2-with-inline-bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.11-xy-list-mixed-series-lists",
+      "topic": "upstream src/test/resources/vega/chart: R23.11-xy-list-mixed-series-lists",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.12-xy-list-special-keys",
+      "topic": "upstream src/test/resources/vega/chart: R23.12-xy-list-special-keys",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.13-xy-list-h-axis-after-items",
+      "topic": "upstream src/test/resources/vega/chart: R23.13-xy-list-h-axis-after-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.14-xy-list-preprocessor-foreach",
+      "topic": "upstream src/test/resources/vega/chart: R23.14-xy-list-preprocessor-foreach",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.15-xy-list-title-legend-around-items",
+      "topic": "upstream src/test/resources/vega/chart: R23.15-xy-list-title-legend-around-items",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.16-xy-list-error-item-color",
+      "topic": "upstream src/test/resources/vega/chart: R23.16-xy-list-error-item-color",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 7,
+        "message": "A value of a bar cannot have a color of its own (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.17-xy-list-error-key-not-in-h-axis",
+      "topic": "upstream src/test/resources/vega/chart: R23.17-xy-list-error-key-not-in-h-axis",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "\"Mar\" is not in h-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.18-xy-list-error-key-not-in-h-axis-after",
+      "topic": "upstream src/test/resources/vega/chart: R23.18-xy-list-error-key-not-in-h-axis-after",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "\"Jan\" is not in h-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.19-xy-list-error-keys-with-h-axis-range",
+      "topic": "upstream src/test/resources/vega/chart: R23.19-xy-list-error-keys-with-h-axis-range",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "Keyed values (key: value) need h-axis categories, not an h-axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.20-xy-list-error-coordinate-pair-item",
+      "topic": "upstream src/test/resources/vega/chart: R23.20-xy-list-error-coordinate-pair-item",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "A coordinate pair cannot be written as a list item: write [(x, y), ...] (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.21-xy-list-error-list-after-pairs",
+      "topic": "upstream src/test/resources/vega/chart: R23.21-xy-list-error-list-after-pairs",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "All series must use the same data format (either all coordinate pairs or all index-based) (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.22-xy-list-error-mixed-keyed-items",
+      "topic": "upstream src/test/resources/vega/chart: R23.22-xy-list-error-mixed-keyed-items",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 8,
+        "message": "Either every value has a key (key: value), or none has (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-R23.23-xy-list-error-key-not-in-v-axis",
+      "topic": "upstream src/test/resources/vega/chart: R23.23-xy-list-error-key-not-in-v-axis",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "\"C\" is not in v-axis (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "98696e766"
     }
   ]
 }

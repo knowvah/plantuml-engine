@@ -20,7 +20,7 @@ import { matchSpriteCommand } from '../../core/sprite-commands.js';
 import type { InternalSpriteStore } from '../../core/internal-sprite-store.js';
 import type { InternalEmojiStore } from '../../core/internal-emoji-store.js';
 import { KEYWORD_TO_SYMBOL } from '../../core/descriptive-keywords.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { getEmbeddedType } from '../../core/EmbeddedDiagram.js';
 import type { DescriptionDiagramAST, DescriptiveNode } from './ast.js';
 import { scanEmbeddedElementBlock } from './element-embedded-block.js';
@@ -350,7 +350,7 @@ function dispatchCommand(
     if (state.executionError !== undefined) return refuse('execution', rawLine, i + 1, state.executionError);
     return leafTypeResult;
   }
-  return refuse('syntax', rawLine, i + 1, 'Syntax Error?');
+  return refuse('syntax', rawLine, i + 1, syntaxErrorMessageOf(line));
 }
 
 /**

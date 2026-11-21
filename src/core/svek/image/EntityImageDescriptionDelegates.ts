@@ -33,7 +33,6 @@ import {
   tabStopWidth,
   tokenizeOnTabs,
 } from '../../klimt/creole/legacy/AtomText.js';
-import { UImage } from '../../klimt/shape/UImage.js';
 import type { TextBlock } from '../../klimt/shape/TextBlock.js';
 import { TextBlockUtils } from '../../klimt/shape/TextBlockUtils.js';
 import type { AtomImageResolver, SpriteDimsLookup } from '../../creole-atoms.js';
@@ -66,7 +65,7 @@ import { ClockwiseTopRightBottomLeft } from '../../klimt/geom/ClockwiseTopRightB
 import { CreoleParser } from '../../klimt/creole/legacy/CreoleParser.js';
 import { MONOSPACED } from '../../klimt/creole/Parser.js';
 import { GUILLEMET_DEFAULT, type GuillemetPair } from '../../text/Guillemet.js';
-import { renderLatexAsImage } from '../../latex.js';
+import { drawLatexAtom, latexAtomDimension } from '../../math/latex-atom.js';
 import type { ISkinSimple } from '../../style/ISkinSimple.js';
 import type { AtomOps } from '../../klimt/creole/Sea.js';
 import type { CreoleAtom } from '../../klimt/creole/atom/Atom.js';
@@ -203,7 +202,7 @@ export function descAtomOps(
 ): AtomOps {
   function dimensionOf(atom: CreoleAtom, stringBounder: StringBounder): { width: number; height: number } {
     if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font));
-    if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000');
+    if (atom.kind === 'latex') return latexAtomDimension(atom, stringBounder);
     // A2s R2i: a `<:name:>` emoji sizes as `AtomEmoji`'s exact contract
     // (`klimt/creole/atom/AtomEmoji.ts`); description previously measured
     // the raw markup as literal text (murava-69-tago286's backlog pin).
@@ -276,12 +275,8 @@ export function descAtomOps(
         drawWithAtomUrl(ug, atom.url, () => drawTextAtom(ug, atom));
         return;
       }
-      if (atom.kind === 'latex') {
-        const r = renderLatexAsImage(atom.expr, atom.color ?? '#000000');
-        // `Footprint` sees `AtomMath`'s raster `UImage` (`AtomMath.java:90-95`, `UImage.java:87-92`), one less each way.
-        ug.draw(UImage.build(r.width, r.height, r.href, { rasterWidth: r.width, rasterHeight: r.height }));
-        return;
-      }
+      // `Footprint` sees `AtomMath`'s raster `UImage` (`AtomMath.java:90-95`, `UImage.java:87-92`), one less each way.
+      if (atom.kind === 'latex') return drawLatexAtom(atom, ug, true);
       // Artwork when the asset channel supplies it, platform-glyph text run
       // otherwise — `EntityImageDescriptionEmoji.ts#drawEmojiAtom`. Which one
       // runs changes LAYOUT, not just looks: `Footprint` collects the points

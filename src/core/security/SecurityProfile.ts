@@ -8,8 +8,8 @@
  * behavior reads the variable itself and passes it through.
  *
  * Not ported, because they govern nothing this port does: the local-file
- * rules (`SFile`), `canWeReadThisEnvironmentVariable` (`%getenv` is inert
- * here -- DIVERGENCES.md) and `allowDotSvg`.
+ * rules (`SFile`) and `canWeReadThisEnvironmentVariable` (`%getenv` is inert
+ * here -- DIVERGENCES.md). `allowDotSvg` gates `@startdot` ({@link allowDotSvg}).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/security/SecurityProfile.java
  */
@@ -39,6 +39,15 @@ export type SecurityProfile = (typeof SecurityProfile)[keyof typeof SecurityProf
  * @see ~/git/plantuml/.../security/SecurityProfile.java:118-137
  */
 export const DEFAULT_SECURITY_PROFILE: SecurityProfile = SecurityProfile.LEGACY;
+
+/**
+ * Whether `@startdot` may write graphviz's SVG: only INSECURE and
+ * INTERNET_WITH_DOTSVG allow it, so the default LEGACY profile does not.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/security/SecurityProfile.java:195-202
+ */
+export function allowDotSvg(profile: SecurityProfile): boolean {
+  return profile === SecurityProfile.INSECURE || profile === SecurityProfile.INTERNET_WITH_DOTSVG;
+}
 
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;

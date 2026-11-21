@@ -489,13 +489,25 @@ describe('M6 — CommandPartition3 (tuvigo-52-redo102 shape)', () => {
     expect(node.stereotype).toBeUndefined();
   });
 
-  // add4-T2b: CommandPartition3.java:154-157, CommandCloseGroupLegacy3.java:75.
+  // add4-T2b: CommandPartition3.java:161-162, CommandCloseGroupLegacy3.java:81.
   it('bracket-less opener and legacy closer each add their warning, in order', () => {
     const ast = parse(['Group "My G"', ':A;', 'end group']);
     const messages = ast.pragma!.getWarnings().map((w) => w.getMessage().join('\n'));
     expect(messages).toEqual([
-      "You should use a bracket ({) when defining your container 'Group' My G",
-      "You should use a bracket (}) instead of 'end group'",
+      "Missing '{': write 'Group \"My G\" {' and close it with '}'",
+      "'end group' is deprecated: close the group with '}' instead",
+    ]);
+  });
+
+  // CommandPartition3#rebuildWithBracket (java:171-181): TYPE, BACK1, NAME as written, BACK2, STEREO, then ' {'.
+  it.each([
+    ['partition #red "N" <<S>>', 'partition #red "N" <<S>> {'],
+    ['group G #blue', 'group G #blue {'],
+    ['rectangle <$react{scale=1}>', 'rectangle <$react{scale=1}> {'],
+  ])('rebuilds %j with its bracket in the warning', (line, rebuilt) => {
+    const ast = parse([line, ':A;', '}']);
+    expect(ast.pragma!.getWarnings().map((w) => w.asSingleLine())).toEqual([
+      `Missing '{': write '${rebuilt}' and close it with '}'`,
     ]);
   });
 

@@ -2,10 +2,11 @@
  * `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartVAxis.java
  */
+import { parseFiniteDouble } from './ChartDataItems.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
-import { javaTrim, parseDouble } from '../../../core/java-number-format.js';
+import { javaTrim } from '../../../core/java-number-format.js';
 import { LabelPosition, type ChartAxis, type ChartTick } from '../ChartAxis.js';
-import { GridMode, type ChartDiagram } from '../ChartDiagram.js';
+import { GridMode, Kind, type ChartDiagram } from '../ChartDiagram.js';
 import { bracketGroup, javaSplitComma, parseLabels, RANGE_PART, SP0, SP1, TITLE_PART } from './chart-command-text.js';
 
 /** @see CommandChartVAxis.java:61-86 */
@@ -43,7 +44,7 @@ export function parseCustomTicks(ticksStr: string): ChartTick[] | undefined {
     if (colonIndex < 0) return undefined;
     const label = javaTrim(pair.slice(colonIndex + 1));
     if (!label.startsWith('"') || !label.endsWith('"') || label.length <= 1) return undefined;
-    const value = parseDouble(javaTrim(pair.slice(0, colonIndex)));
+    const value = parseFiniteDouble(javaTrim(pair.slice(0, colonIndex)));
     if (value === undefined) return undefined;
     putTick(ticks, { value, label: label.slice(1, -1) });
   }
@@ -63,8 +64,8 @@ function parseVAxisFields(g: Readonly<Record<string, string | undefined>>): Pars
   let min: number | undefined = undefined;
   let max: number | undefined = undefined;
   if (g['RANGE_0'] !== undefined && g['RANGE_1'] !== undefined) {
-    min = parseDouble(g['RANGE_0']);
-    max = parseDouble(g['RANGE_1']);
+    min = parseFiniteDouble(g['RANGE_0']);
+    max = parseFiniteDouble(g['RANGE_1']);
     if (min === undefined || max === undefined) return 'Invalid number format in axis range';
   }
 
@@ -76,7 +77,7 @@ function parseVAxisFields(g: Readonly<Record<string, string | undefined>>): Pars
 
   let tickSpacing: number | undefined = undefined;
   if (g['SPACING'] !== undefined) {
-    tickSpacing = parseDouble(g['SPACING']);
+    tickSpacing = parseFiniteDouble(g['SPACING']);
     if (tickSpacing === undefined) return 'Invalid number format in spacing value';
     if (tickSpacing <= 0) return 'Tick spacing must be greater than 0';
   }
@@ -90,6 +91,11 @@ function parseVAxisFields(g: Readonly<Record<string, string | undefined>>): Pars
  */
 export function applyChartVAxis(diagram: ChartDiagram, match: RegExpExecArray): CommandExecutionResult {
   const g = match.groups!;
+  // The keyword as written names the refusal. @see CommandChartVAxis.java:103-105 (e8ef39dd55c)
+  const kindError = diagram.checkKind(g['AXIS']!, Kind.CARTESIAN);
+  if (kindError !== undefined) return kindError;
+  // `grid` is read before the labels return (781d73f9b1f): 'v-axis [A, B] grid' of a horizontal chart.
+  if (g['GRID'] !== undefined) diagram.setYGridMode(GridMode.MAJOR);
   if (g['LABELS'] !== undefined) return diagram.setYAxisLabels(parseLabels(g['LABELS']));
 
   const fields = parseVAxisFields(g);
@@ -105,7 +111,6 @@ export function applyChartVAxis(diagram: ChartDiagram, match: RegExpExecArray): 
   if (fields.customTicks !== undefined) axis.setCustomTicks(fields.customTicks);
   if (fields.tickSpacing !== undefined) axis.setTickSpacing(fields.tickSpacing);
   if (g['LABELTOP'] !== undefined) axis.setLabelPosition(LabelPosition.TOP);
-  if (g['GRID'] !== undefined) diagram.setYGridMode(GridMode.MAJOR);
 
   return result;
 }

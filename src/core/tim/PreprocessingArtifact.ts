@@ -14,8 +14,12 @@ export class PreprocessingArtifact implements TPreprocessingArtifact {
   private readonly warnings: TWarning[] = [];
   private readonly options = new Map<string, string>();
 
+  /** A `LinkedHashSet<Warning>` upstream (`PreprocessingArtifact.java:53-59`): an equal warning
+   *  (`Warning#equals`, same lines) is kept once, at its first position. */
   addWarning(warning: TWarning): void {
-    this.warnings.push(warning);
+    const same = (w: TWarning): boolean =>
+      w.message.length === warning.message.length && w.message.every((line, i) => line === warning.message[i]);
+    if (!this.warnings.some(same)) this.warnings.push(warning);
   }
 
   getOption(): TPreprocessingOptionStore {

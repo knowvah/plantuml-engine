@@ -109,17 +109,21 @@ describe('PSystemEbnfFactory common commands', () => {
   });
 
   it('adds the skinparam deprecation warnings and reads handwritten from skinparam or !option', () => {
+    // CommandSkinParam.java:98-107: padding no longer warns; handwritten warns with its value.
     const d = parseEbnf(
       sourceOf(['a = "b";'], { styleSource: { skinparam: new Map([['Padding', '2']]), styles: [] } }),
       new PreprocessingArtifact(),
     ) as PSystemEbnf;
-    expect(d.getWarnings()).toHaveLength(1);
+    expect(d.getWarnings()).toEqual([]);
     expect(d.isHandwritten()).toBe(false);
     const hand = parseEbnf(
       sourceOf(['a = "b";'], { styleSource: { skinparam: new Map([['handwritten', 'true']]), styles: [] } }),
       new PreprocessingArtifact(),
     ) as PSystemEbnf;
     expect(hand.isHandwritten()).toBe(true);
+    expect(hand.getWarnings().map((w) => w.asSingleLine())).toEqual([
+      "'skinparam handwritten' is deprecated: write '!option handwritten true' instead",
+    ]);
     const artifact = new PreprocessingArtifact();
     artifact.getOption().define(OptionKey.HANDWRITTEN, 'true');
     expect((parseEbnf(sourceOf(['a = "b";']), artifact) as PSystemEbnf).isHandwritten()).toBe(true);

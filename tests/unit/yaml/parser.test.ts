@@ -150,25 +150,28 @@ describe('parseYaml', () => {
   });
 
   // -------------------------------------------------------------------------
-  // code-review item 5 — KEY_AND_FOLDED_STYLE degradation is reported, not
-  // silently dropped or console.warn'd (RenderOptions.onWarning).
+  // 0537b558644: KEY_AND_FOLDED_STYLE (>) is folded (`YamlParser.java:270-298`),
+  // and every YamlSyntaxException is the "not YAML data" page.
   // -------------------------------------------------------------------------
 
-  it('has no parseWarnings for a document with no folded-style values', () => {
-    const ast = parseYaml(makeSource(['fruit: Apple']));
-    expect(ast.parseWarnings).toBeUndefined();
+  it('folds a folded-style (>) value', () => {
+    const ast = parseYaml(makeSource(['key: >', '  a', '  b']));
+    expect(plainOf(ast.root)).toEqual({ key: 'a b\n' });
   });
 
-  it('collects a parseWarnings entry for a folded-style (>) value', () => {
-    const ast = parseYaml(makeSource(['key: >']));
-    expect(ast.parseWarnings).toEqual([
-      'YAML key "key": folded-style (>) block value is not supported and was dropped',
-    ]);
+  it.each([
+    ['a flow mapping', ['m: {a: 1}']],
+    ['a duplicate key', ['a: 1', 'a: 2']],
+    ['a list in a list', ['l:', '  - - a']],
+  ])('%s is a parse error', (_name, lines) => {
+    const ast = parseYaml(makeSource(lines));
+    expect(ast.root).toBeNull();
+    expect(ast.parseError).toBe(true);
   });
 
-  it('renderSync surfaces the warning through options.onWarning', () => {
+  it('renderSync reports no warning for a folded-style (>) value', () => {
     const messages: string[] = [];
     renderSync('@startyaml\nkey: >\n@endyaml', { onWarning: (m) => messages.push(m) });
-    expect(messages).toEqual(['YAML key "key": folded-style (>) block value is not supported and was dropped']);
+    expect(messages).toEqual([]);
   });
 });

@@ -27,6 +27,7 @@ function named(now: number, overrides: Partial<LicenseInfoFields> = {}): License
     owner: 'ACME',
     context: 'ctx',
     sha: undefined,
+    key: 'abcdef0123456789',
     currentTimeMillis: () => now,
     ...overrides,
   });
@@ -43,10 +44,28 @@ describe('LicenseInfo.NONE (java:74)', () => {
     expect(none.getContext()).toBeUndefined();
     expect(none.getGenerationDate()).toBe(0);
     expect(none.getExpirationDate()).toBe(0);
+    expect(none.getKeyStart()).toBeUndefined();
+    expect(none.getShaStart()).toBeUndefined();
   });
 });
 
-describe('LicenseInfo#isValid / #hasExpired (java:67-69, :260-262)', () => {
+describe('LicenseInfo#getKeyStart / #getShaStart (java:94, :285-295)', () => {
+  it('keeps the first KEY_START_LENGTH = 8 characters of the key', () => {
+    expect(named(0).getKeyStart()).toBe('abcdef01');
+  });
+
+  it('keeps a key shorter than 8 characters whole', () => {
+    expect(named(0, { key: 'abc' }).getKeyStart()).toBe('abc');
+  });
+
+  it('reads the first 8 hexadecimal digits of the stored SHA', () => {
+    const sha = new Uint8Array([0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]);
+    expect(named(0, { sha }).getShaStart()).toBe('01234567');
+    expect(named(0).getShaStart()).toBeUndefined();
+  });
+});
+
+describe('LicenseInfo#isValid / #hasExpired (java:67-69, :301-303)', () => {
   it('is valid up to and including the expiration instant', () => {
     expect(named(EXPIRY).isValid()).toBe(true);
     expect(named(EXPIRY).hasExpired()).toBe(false);
@@ -68,7 +87,7 @@ describe('LicenseInfo#isValid / #hasExpired (java:67-69, :260-262)', () => {
   });
 });
 
-describe('the retrievals (java:58-65, :102-132, :147-193)', () => {
+describe('the retrievals (java:58-65, :106-136, :168-217)', () => {
   it('finds no distributor resource', () => {
     expect(retrieveDistributor()).toBeUndefined();
   });

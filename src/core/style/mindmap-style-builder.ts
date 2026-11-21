@@ -23,7 +23,8 @@
  * `params`, the flat skinparam map the style engine never reads.
  */
 import type { PreprocessorResult } from '../preprocessor.js';
-import { readLines, StyleParser, StyleParsingException, trin } from './parser/StyleParser.js';
+import { readLines, StyleParser, StyleParsingException } from './parser/StyleParser.js';
+import { trin } from '../string-utils-trim.js';
 import { STRICTUML_SKIN } from './skins/plantuml-skin.js';
 import type { Style } from './Style.js';
 import { setDarkScheme, type StyleBuilder } from './StyleBuilder.js';

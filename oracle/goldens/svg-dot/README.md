@@ -5,6 +5,18 @@ Mission **D14** (dot passthrough). Sibling of `svg-description`, `svg-class`,
 
 ## Current state
 
+**a720bdd re-pin (2026-11-20): goldens are INSECURE renders.** Upstream
+e3d33a8afe5 gates `@startdot` SVG on `SecurityProfile#allowDotSvg`
+(`PSystemDot.java:77-84`, `SecurityProfile.java:195-202`): under the default
+LEGACY profile the jar writes a fixed "This feature has been suppressed" page
+for every parsed `@startdot`. The ratchet measures graphviz parity, so each
+drawn row's `golden.svg` is captured with `PLANTUML_SECURITY_PROFILE=INSECURE
+scripts/oracle-render.sh …` (one fixture per jar run) and the test renders with
+`SecurityProfile.INSECURE`. The 52 INSECURE captures are byte-identical to the
+d94d25ace goldens; the 8 jar error rows are the same page under either
+profile. `bemepi-16-kuzo249/legacy.svg` is the jar's LEGACY page, pinned
+byte-for-byte by one test.
+
 **dogr (2026-11-14, #141): 60 pinned: 52 zero-diff, 8 jar error pages.** The
 #109 oracle-gap capture added 57 `@startdot` rows to the cache. dogr/T1 pinned
 the 47 that are zero-diff on this path (`source: dogr-T1`), and dogr/T1b the 8
@@ -77,11 +89,11 @@ golden, and asserts error parity: the golden has no graphviz `id="graph0"`, and
 and passthrough blocks skip these rows. `plans/dot-oracle-gap-rows/tools/
 pin-goldens.mts --jar-error` writes such a row.
 
-Re-capture with the pinned oracle jar, through the script (it sets
+Re-capture with the pinned oracle jar under INSECURE, through the script (it sets
 `-DPLANTUML_DETERMINISTIC_TEXT=true`):
 
 ```sh
-scripts/oracle-render.sh <absolute-out-dir> <fixture>.puml
+PLANTUML_SECURITY_PROFILE=INSECURE scripts/oracle-render.sh <absolute-out-dir> <fixture>.puml
 ```
 
 `-DPLANTUML_DUMP_DOT` is pointless here — see `docs/svg-conformance.md`; the

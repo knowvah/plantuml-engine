@@ -26,10 +26,11 @@ describe('parseChart', () => {
     expect(d.getSeries()[0]!.getValues()).toEqual([45, 62]);
   });
 
-  it('coordinate pairs need an explicit h-axis range', () => {
-    expect(errorOf('line [(1,2)]')).toBe(
+  it('coordinate pairs need a range that is not empty, and x inside it', () => {
+    expect(errorOf('h-axis 1 --> 1', 'line [(1,2)]')).toBe(
       'Coordinate pair notation requires explicit h-axis range (e.g., h-axis "x" -5 --> 5)',
     );
+    expect(errorOf('h-axis 0 --> 1', 'line [(2,2)]')).toBe('X-coordinate 2.0 is outside h-axis range [0.0, 1.0]');
   });
 
   it('coordinate pairs need a numeric h-axis', () => {
@@ -75,9 +76,9 @@ describe('parseChart', () => {
     expect([d.getYAxis().isAutoScale(), d.getY2Axis(), d.getSeries()]).toEqual([true, undefined, []]);
   });
 
-  it('autoscales only without an explicit range', () => {
-    expect(parsed('bar [150]').getYAxis().getMax()).toBe(150);
-    expect(parsed('v-axis 0 --> 100', 'bar [150]').getYAxis().getMax()).toBe(100);
+  it('fits the value axis only without an explicit range', () => {
+    expect(parsed('bar [138]').resolveCartesian().getValueAxis().getMax()).toBe(150);
+    expect(parsed('v-axis 0 --> 100', 'bar [150]').resolveCartesian().getValueAxis().getMax()).toBe(100);
   });
 
   it('accepts the x and y aliases', () => {

@@ -8,12 +8,8 @@ import { HColorSet } from '../../../../src/core/klimt/color/HColorSet.js';
 import { GridMode, type ChartDiagram } from '../../../../src/diagrams/chart/ChartDiagram.js';
 import { MarkerShape, SeriesType } from '../../../../src/diagrams/chart/ChartSeries.js';
 import { LabelPosition } from '../../../../src/diagrams/chart/ChartAxis.js';
-import {
-  javaSplitComma,
-  parseCoordinatePairs,
-  parseLabels,
-  parseValues,
-} from '../../../../src/diagrams/chart/command/chart-command-text.js';
+import { javaSplitComma, parseLabels } from '../../../../src/diagrams/chart/command/chart-command-text.js';
+import { parseCartesianData } from '../../../../src/diagrams/chart/command/ChartCartesianData.js';
 import {
   applyChartAnnotation,
   CHART_ANNOTATION_RE,
@@ -73,22 +69,42 @@ describe('chart-command-text', () => {
     expect(() => parseLabels('",x')).toThrow(/StringIndexOutOfBoundsException/);
   });
 
-  it('parseValues is empty for blanks, undefined for a bad number', () => {
-    expect(parseValues('  ')).toEqual([]);
-    expect(parseValues('1, 2.5,')).toEqual([1, 2.5]);
-    expect(parseValues('1,,2')).toBeUndefined();
-    expect(parseValues('x')).toBeUndefined();
-    expect(parseValues('0x1p3, 1d')).toEqual([8, 1]);
+  it('parseCartesianData reads values, missing values, keys and JSON-like data (22ed6b6b822)', () => {
+    const values = (data: string | undefined) => parseCartesianData(data, true).values;
+    expect(values(undefined)).toEqual([]);
+    expect(values('[  ]')).toEqual([]);
+    expect(values('[1, , 2.5,]')).toEqual([1, undefined, 2.5, undefined]);
+    expect(values('{"10", \'20\', 0x1p3}')).toEqual([10, 20, 8]);
+    const keyed = parseCartesianData('[Jan: 10, "Feb, x": 20, Driver\'s: 5]', false);
+    expect([keyed.keyed, keyed.keys, keyed.values, keyed.error]).toEqual([
+      true,
+      ['Jan', 'Feb, x', "Driver's"],
+      [10, 20, 5],
+      undefined,
+    ]);
   });
 
-  it('parseCoordinatePairs strips brackets and whitespace', () => {
-    expect(parseCoordinatePairs('(1, 2), (3,4)')).toEqual({ xValues: [1, 3], yValues: [2, 4] });
-    expect(parseCoordinatePairs('((1,2)')).toEqual({ xValues: [1], yValues: [2] });
-    // `split` drops the trailing empty after the last `),(`.
-    expect(parseCoordinatePairs('(1,2),(')).toEqual({ xValues: [1], yValues: [2] });
-    expect(parseCoordinatePairs('(1,2,3)')).toBeUndefined();
-    expect(parseCoordinatePairs('(a,2)')).toBeUndefined();
-    expect(parseCoordinatePairs('(1,b)')).toBeUndefined();
+  it('parseCartesianData reads coordinate pairs between brackets, braces or parentheses', () => {
+    const pairs = parseCartesianData('[(1, 2), [3, "4"], {5,6}]', true);
+    expect([pairs.pairs, pairs.xValues, pairs.values]).toEqual([true, [1, 3, 5], [2, 4, 6]]);
+  });
+
+  it.each([
+    ['[1, 2)', true, "Mismatched '[' and ')' around data"],
+    ['["1, 2]', true, 'Unbalanced quotes or brackets in data'],
+    ['[1, 2)]', true, 'Unbalanced quotes or brackets in data'],
+    ['[a: b: 1]', true, `Too many ':' in "a: b: 1": quote the key`],
+    ['[: 1]', true, 'Empty key before the value 1'],
+    ['[A: 1, 2]', true, 'Either every value has a key (key: value), or none has'],
+    ['[A: (1, 2)]', true, 'A coordinate pair cannot have a key: "A: (1, 2)"'],
+    ['[(1, 2)]', false, 'Coordinate pairs are not allowed here: "(1, 2)"'],
+    ['[(1, 2), 3]', true, 'Either every item is a coordinate pair (x, y), or none is'],
+    ['[(1, 2]]', true, "Mismatched '(' and ']' around a coordinate pair"],
+    ['[(1, 2, 3)]', true, 'Invalid coordinate pair "(1, 2, 3)"'],
+    ['[(a, 2)]', true, 'Invalid coordinate pair "(a, 2)"'],
+    ['[x]', true, 'Invalid number "x"'],
+  ])('parseCartesianData refuses %j', (data, pairsAllowed, message) => {
+    expect(parseCartesianData(data, pairsAllowed).error).toBe(message);
   });
 });
 
@@ -146,14 +162,14 @@ describe('CommandChartHAxis', () => {
 });
 
 describe('CommandChartVAxis', () => {
-  it('LABELS returns before the title, range, ticks, spacing and grid', () => {
+  it('LABELS returns before the title, range, ticks and spacing, but reads grid first (781d73f9b1f)', () => {
     const d = emptyChartDiagram();
     vAxis(d, 'v-axis "T" 0 --> 5 [A, B] ticks [1:"x"] spacing 2 label-top grid');
     expect(d.getYAxisLabels()).toEqual(['A', 'B']);
     expect(d.getYAxis().getTitle()).toBe('');
     expect(d.getYAxis().isAutoScale()).toBe(true);
     expect(d.getYAxis().hasCustomTicks()).toBe(false);
-    expect(d.getYGridMode()).toBe(GridMode.OFF);
+    expect(d.getYGridMode()).toBe(GridMode.MAJOR);
   });
 
   it('LABELS applies to yAxisLabels even for v2-axis, creating nothing', () => {
@@ -254,11 +270,26 @@ describe('CommandChartBar', () => {
     expect(d.getSeries().map((s) => s.getName())).toEqual(['bar0', 'bar1']);
   });
 
-  it('reaches parseValues with pairs, and accepts blanks', () => {
+  it('refuses pairs, accepts blanks, and keys its values', () => {
     const d = emptyChartDiagram();
-    expect(run(d, CHART_BAR_RE, applyChartBar, 'bar [(1,2)]').getError()).toBe('Invalid number format in bar data');
+    expect(run(d, CHART_BAR_RE, applyChartBar, 'bar [(1,2)]').getError()).toBe(
+      'Coordinate pairs are not allowed here: "(1,2)"',
+    );
     expect(run(d, CHART_BAR_RE, applyChartBar, 'bar [ ]').isOk()).toBe(true);
     expect(d.getSeries()[0]!.getValues()).toEqual([]);
+    expect(run(d, CHART_BAR_RE, applyChartBar, 'bar [A: 1]').isOk()).toBe(true);
+    expect(d.getSeries()[1]!.getKeys()).toEqual(['A']);
+  });
+
+  it('reads an unquoted name, but not a keyword (31d6742f27f)', () => {
+    const d = emptyChartDiagram();
+    run(d, CHART_BAR_RE, applyChartBar, 'bar Revenue_2024 [1]');
+    run(d, CHART_BAR_RE, applyChartBar, 'bar labels');
+    expect(d.getSeries().map((s) => [s.getName(), s.isShowLabels()])).toEqual([
+      ['Revenue_2024', false],
+      ['bar1', true],
+    ]);
+    expect(CHART_BAR_RE.test('barfoo [1]')).toBe(false);
   });
 
   it('an unknown colour is a bad-colour result', () => {
@@ -284,17 +315,24 @@ describe('CommandChartLine', () => {
 
   it('refuses a bad pair and a bad value', () => {
     expect(run(emptyChartDiagram(), CHART_LINE_RE, applyChartLine, 'line [(1,2,3)]').getError()).toBe(
-      'Invalid coordinate pair format in line data',
+      'Invalid coordinate pair "(1,2,3)"',
     );
-    expect(run(emptyChartDiagram(), CHART_LINE_RE, applyChartLine, 'line [x]').getError()).toBe(
-      'Invalid number format in line data',
-    );
+    expect(run(emptyChartDiagram(), CHART_LINE_RE, applyChartLine, 'line [x]').getError()).toBe('Invalid number "x"');
+  });
+
+  it('reads interpolate and connect, and opens a series written without data', () => {
+    const d = emptyChartDiagram();
+    run(d, CHART_LINE_RE, applyChartLine, 'line "L" interpolate connect');
+    const s = d.getSeries()[0]!;
+    expect([s.getName(), s.isInterpolate(), s.isConnect(), s.getValues()]).toEqual(['L', true, true, []]);
+    run(d, CHART_LINE_RE, applyChartLine, 'line [1, 2] interpolate connect');
+    expect([d.getSeries()[1]!.isInterpolate(), d.getSeries()[1]!.isConnect()]).toEqual([true, true]);
   });
 
   it('reads values, an index-based series, and a bad colour', () => {
     const d = emptyChartDiagram();
     run(d, CHART_LINE_RE, applyChartLine, 'line "L" [1,2,]');
-    expect(d.getSeries()[0]!.getValues()).toEqual([1, 2]);
+    expect(d.getSeries()[0]!.getValues()).toEqual([1, 2, undefined]);
     expect(run(d, CHART_LINE_RE, applyChartLine, 'line [1] #nosuch').getError()).toBe('No such color');
   });
 
@@ -314,7 +352,9 @@ describe('CommandChartArea', () => {
       true,
       true,
     ]);
-    expect(run(d, CHART_AREA_RE, applyChartArea, 'area [(1,2)]').getError()).toBe('Invalid number format in area data');
+    expect(run(d, CHART_AREA_RE, applyChartArea, 'area [(1,2)]').getError()).toBe(
+      'Coordinate pairs are not allowed here: "(1,2)"',
+    );
     expect(run(emptyChartDiagram(), CHART_AREA_RE, applyChartArea, 'area [1]').isOk()).toBe(true);
   });
 });
@@ -347,11 +387,9 @@ describe('CommandChartScatter', () => {
     expect(d.getSeries()[0]!.getName()).toBe('scatter0');
     expect(d.getSeries()[0]!.getXValues()).toEqual([1]);
     expect(run(d, CHART_SCATTER_RE, applyChartScatter, 'scatter [(1)]').getError()).toBe(
-      'Invalid coordinate pair format in scatter data',
+      'Invalid coordinate pair "(1)"',
     );
-    expect(run(d, CHART_SCATTER_RE, applyChartScatter, 'scatter [x]').getError()).toBe(
-      'Invalid number format in scatter data',
-    );
+    expect(run(d, CHART_SCATTER_RE, applyChartScatter, 'scatter [x]').getError()).toBe('Invalid number "x"');
     expect(run(emptyChartDiagram(), CHART_SCATTER_RE, applyChartScatter, 'scatter [1] #nosuch').getError()).toBe(
       'No such color',
     );

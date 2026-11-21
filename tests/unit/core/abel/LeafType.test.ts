@@ -1,13 +1,13 @@
 /**
- * LeafType.test.ts — SI1/T2: the 51-value `LeafType` enum
- * (abel/LeafType.java:44-69), `getLeafType` (:71-83), `isLikeClass`
+ * LeafType.test.ts — SI1/T2: the 52-value `LeafType` enum (JUNCTION since a0a410773aa)
+ * (abel/LeafType.java:44-70), `getLeafType` (:71-83), `isLikeClass`
  * (:85-96), `toHtml` (:99-102).
  */
 import { describe, expect, it } from 'vitest';
 import { LeafType, getLeafType, isLikeClass, toHtml } from '../../../../src/core/abel/LeafType.js';
 
-/** Every value of abel/LeafType.java:44-69, in declaration order. */
-const ALL_51 = [
+/** Every value of abel/LeafType.java:44-70, in declaration order. */
+const ALL_52 = [
   'EMPTY_PACKAGE',
   'ABSTRACT_CLASS',
   'CLASS',
@@ -48,6 +48,7 @@ const ALL_51 = [
   'STATE_CHOICE',
   'STATE_FORK_JOIN',
   'STATE_TRANSITION_LABEL',
+  'JUNCTION',
   'BLOCK',
   'ENTITY',
   'DOMAIN',
@@ -62,12 +63,12 @@ const ALL_51 = [
 ] as const;
 
 describe('LeafType values (java:44-69)', () => {
-  it('has exactly the 51 upstream values, in declaration order', () => {
-    expect(Object.keys(LeafType)).toEqual([...ALL_51]);
+  it('has exactly the 52 upstream values, in declaration order', () => {
+    expect(Object.keys(LeafType)).toEqual([...ALL_52]);
   });
 
   it('each value maps to its own name (as-const string union)', () => {
-    for (const v of ALL_51) expect(LeafType[v]).toBe(v);
+    for (const v of ALL_52) expect(LeafType[v]).toBe(v);
   });
 });
 
@@ -118,7 +119,7 @@ describe('isLikeClass (java:85-96)', () => {
   it('is true for exactly the 13 LIKE_CLASS members', () => {
     for (const v of LIKE_CLASS) expect(isLikeClass(v), v).toBe(true);
     const not = Object.values(LeafType).filter((v) => !LIKE_CLASS.includes(v));
-    expect(not).toHaveLength(51 - 13);
+    expect(not).toHaveLength(52 - 13);
     for (const v of not) expect(isLikeClass(v), v).toBe(false);
   });
 });

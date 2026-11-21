@@ -38,6 +38,7 @@ import {
   buildManifest,
   filterTargets,
   listRepoFiles,
+  securityProfileOfTarget,
   targetId,
   type Target,
 } from './lib/recapture-manifest.js';
@@ -85,7 +86,13 @@ function applyWrite(repo: string, t: Target, ev: Evaluation): void {
 async function evaluateTarget(t: Target, ctx: Context): Promise<Evaluation> {
   const existing = readExisting(ctx.repo, t);
   const abs = join(ctx.repo, t.puml);
-  const opts = (jar: string): RenderOptions => ({ jar, repo: ctx.repo, scratchRoot: ctx.scratchRoot });
+  const securityProfile = securityProfileOfTarget(t);
+  const opts = (jar: string): RenderOptions => ({
+    jar,
+    repo: ctx.repo,
+    scratchRoot: ctx.scratchRoot,
+    ...(securityProfile === undefined ? {} : { securityProfile }),
+  });
   if (t.kind !== TARGET_KIND.fixtureSvg) return evaluate(t, existing, await ctx.render(abs, opts(ctx.jar)));
   const reference = await ctx.render(abs, opts(ctx.referenceJar));
   const candidate = ctx.jar === ctx.referenceJar ? undefined : await ctx.render(abs, opts(ctx.jar));

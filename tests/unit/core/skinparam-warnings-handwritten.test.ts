@@ -15,7 +15,7 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { withWarningBanner } from '../../../src/core/skinparam-warnings.js';
 import { Warning } from '../../../src/core/warning/Warning.js';
 
-const HANDWRITTEN_WARNING = "Please use '!option handwritten true' to enable handwritten ";
+const HANDWRITTEN_WARNING = "'skinparam handwritten' is deprecated: write '!option handwritten true' instead";
 const MARGIN = { top: 5, right: 5, bottom: 5, left: 5 };
 const UID = 'handwritten-banner-test';
 const measurer = new DeterministicMeasurer();

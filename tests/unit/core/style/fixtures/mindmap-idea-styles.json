@@ -2,6 +2,16 @@
   "depth": {
     "storage": [
       {
+        "snames": ["filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": ["highlight"],
+        "values": {
+          "BackGroundColor": ["#FFF3CD", "#4D3D00", 1272],
+          "LineColor": ["#FFC107", "#FFC107", 1273]
+        }
+      },
+      {
         "snames": ["root"],
         "level": -1,
         "star": false,
@@ -96,84 +106,118 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 45], "LineColor": ["black", "white", 44] }
+        "values": {
+          "LineThickness": ["1.5", null, 45],
+          "LineColor": ["black", "white", 44]
+        }
       },
       {
         "snames": ["document"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", "#1B1B1B", 14] }
+        "values": {
+          "BackGroundColor": ["white", "#1B1B1B", 14]
+        }
       },
       {
         "snames": ["map"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "HorizontalAlignment": ["center", null, 46] }
+        "values": {
+          "HorizontalAlignment": ["center", null, 46]
+        }
       },
       {
         "snames": ["package_", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 47] }
+        "values": {
+          "FontStyle": ["bold", null, 47]
+        }
       },
       {
         "snames": ["stereotype"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["italic", null, 48], "HorizontalAlignment": ["center", null, 49] }
+        "values": {
+          "FontStyle": ["italic", null, 48],
+          "HorizontalAlignment": ["center", null, 49]
+        }
       },
       {
         "snames": ["mainframe"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 51], "Padding": ["1 5", null, 50], "Margin": ["10 5", null, 52] }
+        "values": {
+          "LineThickness": ["1.5", null, 51],
+          "Padding": ["1 5", null, 50],
+          "Margin": ["10 5", null, 52]
+        }
       },
       {
         "snames": ["composite", "element", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 55], "HorizontalAlignment": ["center", null, 56] }
+        "values": {
+          "FontStyle": ["bold", null, 55],
+          "HorizontalAlignment": ["center", null, 56]
+        }
       },
       {
         "snames": ["element", "package_", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 55], "HorizontalAlignment": ["center", null, 56] }
+        "values": {
+          "FontStyle": ["bold", null, 55],
+          "HorizontalAlignment": ["center", null, 56]
+        }
       },
       {
         "snames": ["element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Shadowing": ["0.0", null, 53], "LineThickness": ["0.5", null, 54] }
+        "values": {
+          "Shadowing": ["0.0", null, 53],
+          "LineThickness": ["0.5", null, 54]
+        }
       },
       {
         "snames": ["group", "package_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 59], "LineColor": ["black", "white", 60] }
+        "values": {
+          "LineThickness": ["1.5", null, 59],
+          "LineColor": ["black", "white", 60]
+        }
       },
       {
         "snames": ["folder", "group"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 61], "LineColor": ["black", "white", 62] }
+        "values": {
+          "LineThickness": ["1.5", null, 61],
+          "LineColor": ["black", "white", 62]
+        }
       },
       {
         "snames": ["group"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["transparent", null, 57], "LineThickness": ["1.0", null, 58] }
+        "values": {
+          "BackGroundColor": ["transparent", null, 57],
+          "LineThickness": ["1.0", null, 58]
+        }
       },
       {
         "snames": ["group", "sequenceDiagram"],
@@ -205,7 +249,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["13", null, 75], "FontStyle": ["bold", null, 76] }
+        "values": {
+          "FontSize": ["13", null, 75],
+          "FontStyle": ["bold", null, 76]
+        }
       },
       {
         "snames": ["partition", "sequenceDiagram"],
@@ -223,21 +270,30 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": [null, "black", 274], "LineStyle": ["5", null, 77] }
+        "values": {
+          "BackGroundColor": [null, "black", 289],
+          "LineStyle": ["5", null, 77]
+        }
       },
       {
         "snames": ["activationBox", "sequenceDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 78] }
+        "values": {
+          "BackGroundColor": ["white", null, 78]
+        }
       },
       {
         "snames": ["destroy", "sequenceDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["2", null, 81], "LineColor": ["#A80036", null, 79], "LineStyle": ["0", null, 80] }
+        "values": {
+          "LineThickness": ["2", null, 81],
+          "LineColor": ["#A80036", null, 79],
+          "LineStyle": ["0", null, 80]
+        }
       },
       {
         "snames": ["reference", "sequenceDiagram"],
@@ -271,7 +327,11 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["13", null, 94], "FontStyle": ["bold", null, 95], "BackGroundColor": ["#d", "#2", 93] }
+        "values": {
+          "FontSize": ["13", null, 94],
+          "FontStyle": ["bold", null, 95],
+          "BackGroundColor": ["#d", "#2", 93]
+        }
       },
       {
         "snames": ["separator", "sequenceDiagram"],
@@ -292,7 +352,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineStyle": ["2", null, 102] }
+        "values": {
+          "LineStyle": ["2", null, 102]
+        }
       },
       {
         "snames": ["participant", "sequenceDiagram"],
@@ -388,203 +450,303 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["componentDiagram", "object"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["objectDiagram", "object"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["classDiagram", "element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["componentDiagram", "element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["element", "objectDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["classDiagram", "generic"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
       },
       {
         "snames": ["componentDiagram", "generic"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
       },
       {
         "snames": ["generic", "objectDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
+      },
+      {
+        "snames": ["classDiagram", "class_", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 110]
+        }
+      },
+      {
+        "snames": ["objectDiagram", "object", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 111]
+        }
+      },
+      {
+        "snames": ["map", "objectDiagram", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 112]
+        }
+      },
+      {
+        "snames": ["json", "objectDiagram", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 113]
+        }
       },
       {
         "snames": ["visibilityIcon", "public_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#84BE84", null, 111], "LineColor": ["#038048", null, 110] }
+        "values": {
+          "BackGroundColor": ["#84BE84", null, 115],
+          "LineColor": ["#038048", null, 114]
+        }
       },
       {
         "snames": ["visibilityIcon", "private_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#F24D5C", null, 113], "LineColor": ["#C82930", null, 112] }
+        "values": {
+          "BackGroundColor": ["#F24D5C", null, 117],
+          "LineColor": ["#C82930", null, 116]
+        }
       },
       {
         "snames": ["visibilityIcon", "protected_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FFFF44", null, 115], "LineColor": ["#B38D22", null, 114] }
+        "values": {
+          "BackGroundColor": ["#FFFF44", null, 119],
+          "LineColor": ["#B38D22", null, 118]
+        }
       },
       {
         "snames": ["package_", "visibilityIcon"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#4177AF", null, 117], "LineColor": ["#1963A0", null, 116] }
+        "values": {
+          "BackGroundColor": ["#4177AF", null, 121],
+          "LineColor": ["#1963A0", null, 120]
+        }
       },
       {
         "snames": ["visibilityIcon", "IEMandatory"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["black", null, 119], "LineColor": ["black", null, 118] }
+        "values": {
+          "BackGroundColor": ["black", null, 123],
+          "LineColor": ["black", null, 122]
+        }
       },
       {
         "snames": ["spot", "spotAnnotation"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#E3664A", "#4A0000", 120] }
+        "values": {
+          "BackGroundColor": ["#E3664A", "#4A0000", 124]
+        }
       },
       {
         "snames": ["spot", "spotAbstractClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#A9DCDF", "#2A5D60", 121] }
+        "values": {
+          "BackGroundColor": ["#A9DCDF", "#2A5D60", 125]
+        }
       },
       {
         "snames": ["spot", "spotClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ADD1B2", "#2E5233", 122] }
+        "values": {
+          "BackGroundColor": ["#ADD1B2", "#2E5233", 126]
+        }
       },
       {
         "snames": ["spot", "spotInterface"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#B4A7E5", "#352866", 123] }
+        "values": {
+          "BackGroundColor": ["#B4A7E5", "#352866", 127]
+        }
       },
       {
         "snames": ["spot", "spotEnum"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#EB937F", "#852D19", 124] }
+        "values": {
+          "BackGroundColor": ["#EB937F", "#852D19", 128]
+        }
       },
       {
         "snames": ["spot", "spotEntity"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ADD1B2", "#2E5233", 125] }
+        "values": {
+          "BackGroundColor": ["#ADD1B2", "#2E5233", 129]
+        }
       },
       {
         "snames": ["spot", "spotException"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#D94321", "#7D0000", 126] }
+        "values": {
+          "BackGroundColor": ["#D94321", "#7D0000", 130]
+        }
       },
       {
         "snames": ["spot", "spotMetaClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#CCCCCC", "#7C7C7C", 127] }
+        "values": {
+          "BackGroundColor": ["#CCCCCC", "#7C7C7C", 131]
+        }
       },
       {
         "snames": ["spot", "spotStereotype"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FF77FF", "#890089", 128] }
+        "values": {
+          "BackGroundColor": ["#FF77FF", "#890089", 132]
+        }
       },
       {
         "snames": ["spot", "spotDataClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#7E57C2", "#B39DDB", 129] }
+        "values": {
+          "BackGroundColor": ["#7E57C2", "#B39DDB", 133]
+        }
       },
       {
         "snames": ["spot", "spotRecord"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FF8F00", "#FFB74D", 130] }
+        "values": {
+          "BackGroundColor": ["#FF8F00", "#FFB74D", 134]
+        }
       },
       {
         "snames": ["body", "stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["transparent", null, 132] }
+        "values": {
+          "BackGroundColor": ["transparent", null, 136]
+        }
       },
       {
         "snames": ["name", "stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["plain", null, 133], "HorizontalAlignment": ["center", null, 134] }
+        "values": {
+          "FontStyle": ["plain", null, 137],
+          "HorizontalAlignment": ["center", null, 138]
+        }
       },
       {
         "snames": ["stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["25", null, 131] }
+        "values": {
+          "RoundCorner": ["25", null, 135]
+        }
       },
       {
         "snames": ["group", "stateDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["0.5", null, 135] }
+        "values": {
+          "LineThickness": ["0.5", null, 139]
+        }
       },
       {
         "snames": ["circle", "start", "stateDiagram"],
@@ -592,9 +754,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -603,9 +765,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -614,9 +776,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -625,10 +787,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 139],
-          "FontStyle": ["plain", null, 140],
-          "LineStyle": ["1-4", null, 142],
-          "HorizontalAlignment": ["center", null, 141]
+          "FontSize": ["11", null, 143],
+          "FontStyle": ["plain", null, 144],
+          "LineStyle": ["1-4", null, 146],
+          "HorizontalAlignment": ["center", null, 145]
         }
       },
       {
@@ -637,10 +799,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["18", null, 146],
-          "BackGroundColor": ["transparent", null, 143],
-          "LineThickness": ["1.5", null, 145],
-          "LineColor": ["black", "white", 144]
+          "FontSize": ["18", null, 150],
+          "BackGroundColor": ["transparent", null, 147],
+          "LineThickness": ["1.5", null, 149],
+          "LineColor": ["black", "white", 148]
         }
       },
       {
@@ -649,9 +811,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["13", null, 147],
-          "BackGroundColor": ["black", null, 149],
-          "LineThickness": ["1.0", null, 148]
+          "FontSize": ["13", null, 151],
+          "BackGroundColor": ["black", null, 153],
+          "LineThickness": ["1.0", null, 152]
         }
       },
       {
@@ -660,9 +822,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["13", null, 150],
-          "BackGroundColor": ["#FEFFDD", "#714137", 151],
-          "LineThickness": ["0.5", null, 152]
+          "FontSize": ["13", null, 154],
+          "BackGroundColor": ["#FEFFDD", "#714137", 155],
+          "LineThickness": ["0.5", null, 156]
         }
       },
       {
@@ -671,10 +833,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "RoundCorner": ["25", null, 155],
-          "LineThickness": ["1.5", null, 156],
-          "Padding": ["10", null, 153],
-          "Margin": ["10", null, 154]
+          "RoundCorner": ["25", null, 159],
+          "LineThickness": ["1.5", null, 160],
+          "Padding": ["10", null, 157],
+          "Margin": ["10", null, 158]
         }
       },
       {
@@ -682,7 +844,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.0", null, 157] }
+        "values": {
+          "LineThickness": ["1.0", null, 161]
+        }
       },
       {
         "snames": ["wbsDiagram"],
@@ -690,11 +854,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 162],
-          "RoundCorner": ["0", null, 160],
-          "LineThickness": ["1.5", null, 161],
-          "Padding": ["10", null, 158],
-          "Margin": ["15", null, 159]
+          "FontSize": ["12", null, 166],
+          "RoundCorner": ["0", null, 164],
+          "LineThickness": ["1.5", null, 165],
+          "Padding": ["10", null, 162],
+          "Margin": ["15", null, 163]
         }
       },
       {
@@ -702,7 +866,11 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 164], "RoundCorner": ["25", null, 165], "Padding": ["10", null, 163] }
+        "values": {
+          "FontSize": ["12", null, 168],
+          "RoundCorner": ["25", null, 169],
+          "Padding": ["10", null, 167]
+        }
       },
       {
         "snames": ["activityDiagram", "composite"],
@@ -710,9 +878,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["transparent", null, 167],
-          "LineThickness": ["1.5", null, 168],
-          "LineColor": ["black", null, 166]
+          "BackGroundColor": ["transparent", null, 171],
+          "LineThickness": ["1.5", null, 172],
+          "LineColor": ["black", null, 170]
         }
       },
       {
@@ -720,14 +888,19 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 169] }
+        "values": {
+          "FontSize": ["11", null, 173]
+        }
       },
       {
         "snames": ["activityDiagram", "arrow"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 170], "LineThickness": ["1", null, 171] }
+        "values": {
+          "FontSize": ["11", null, 174],
+          "LineThickness": ["1", null, 175]
+        }
       },
       {
         "snames": ["activityDiagram", "circle", "start"],
@@ -735,9 +908,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1", null, 172],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1", null, 176],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -746,9 +919,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1", null, 172],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1", null, 176],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -757,9 +930,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1.5", null, 175],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1.5", null, 179],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -767,14 +940,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#5", "#a", 176] }
+        "values": {
+          "BackGroundColor": ["#5", "#a", 180]
+        }
       },
       {
         "snames": ["task"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 177] }
+        "values": {
+          "FontSize": ["11", null, 181]
+        }
       },
       {
         "snames": ["milestone"],
@@ -782,9 +959,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 178],
-          "BackGroundColor": ["black", "white", 179],
-          "LineColor": ["black", "white", 180]
+          "FontSize": ["11", null, 182],
+          "BackGroundColor": ["black", "white", 183],
+          "LineColor": ["black", "white", 184]
         }
       },
       {
@@ -792,14 +969,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 181] }
+        "values": {
+          "LineThickness": ["1.5", null, 185]
+        }
       },
       {
         "snames": ["ganttDiagram", "note"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["9", null, 182] }
+        "values": {
+          "FontSize": ["9", null, 186]
+        }
       },
       {
         "snames": ["ganttDiagram", "separator"],
@@ -807,11 +988,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 183],
-          "FontStyle": ["plain", null, 184],
-          "BackGroundColor": ["transparent", null, 185],
-          "Padding": ["5", null, 187],
-          "Margin": ["5", null, 186]
+          "FontSize": ["11", null, 187],
+          "FontStyle": ["plain", null, 188],
+          "BackGroundColor": ["transparent", null, 189],
+          "Padding": ["5", null, 191],
+          "Margin": ["5", null, 190]
         }
       },
       {
@@ -820,9 +1001,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "LineThickness": ["2", null, 188],
-          "LineColor": ["black", null, 190],
-          "LineStyle": ["2-2", null, 189]
+          "LineThickness": ["2", null, 192],
+          "LineColor": ["black", null, 194],
+          "LineStyle": ["2-2", null, 193]
         }
       },
       {
@@ -830,14 +1011,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 194] }
+        "values": {
+          "FontSize": ["12", null, 198]
+        }
       },
       {
         "snames": ["ganttDiagram", "timeline", "year"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["14", null, 195] }
+        "values": {
+          "FontSize": ["14", null, 199]
+        }
       },
       {
         "snames": ["ganttDiagram", "timeline"],
@@ -845,9 +1030,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["10", null, 193],
-          "BackGroundColor": ["transparent", null, 191],
-          "LineColor": ["#C0C0C0", "#3f3f3f", 192]
+          "FontSize": ["10", null, 197],
+          "BackGroundColor": ["transparent", null, 195],
+          "LineColor": ["#C0C0C0", "#3f3f3f", 196]
         }
       },
       {
@@ -855,7 +1040,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["#989898", "#676767", 197], "BackGroundColor": ["#F1E5E5", "#1f1f1f", 196] }
+        "values": {
+          "FontColor": ["#989898", "#676767", 201],
+          "BackGroundColor": ["#F1E5E5", "#1f1f1f", 200]
+        }
       },
       {
         "snames": ["ganttDiagram", "task"],
@@ -863,10 +1051,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#e2e2f0", "#555", 198],
-          "RoundCorner": ["0", null, 199],
-          "Padding": ["0", null, 201],
-          "Margin": ["2 2 2 2", null, 200]
+          "BackGroundColor": ["#e2e2f0", "#555", 202],
+          "RoundCorner": ["0", null, 203],
+          "Padding": ["0", null, 205],
+          "Margin": ["2 2 2 2", null, 204]
         }
       },
       {
@@ -874,105 +1062,142 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", "black", 202] }
+        "values": {
+          "BackGroundColor": ["white", "black", 206]
+        }
       },
       {
         "snames": ["ganttDiagram", "milestone"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["3", null, 204], "Margin": ["2", null, 203] }
+        "values": {
+          "Padding": ["3", null, 208],
+          "Margin": ["2", null, 207]
+        }
       },
       {
         "snames": ["usecase"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "HorizontalAlignment": ["center", null, 205] }
+        "values": {
+          "HorizontalAlignment": ["center", null, 209]
+        }
       },
       {
         "snames": ["arrow", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 208], "LineStyle": ["3-3", null, 209] }
+        "values": {
+          "LineThickness": ["1", null, 212],
+          "LineStyle": ["3-3", null, 213]
+        }
       },
       {
         "snames": ["arrow", "jsonDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 208], "LineStyle": ["3-3", null, 209] }
+        "values": {
+          "LineThickness": ["1", null, 212],
+          "LineStyle": ["3-3", null, 213]
+        }
       },
       {
         "snames": ["node", "separator", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 212] }
+        "values": {
+          "LineThickness": ["1", null, 216]
+        }
       },
       {
         "snames": ["jsonDiagram", "node", "separator"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 212] }
+        "values": {
+          "LineThickness": ["1", null, 216]
+        }
       },
       {
         "snames": ["header", "node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 213] }
+        "values": {
+          "FontStyle": ["bold", null, 217]
+        }
       },
       {
         "snames": ["header", "jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 213] }
+        "values": {
+          "FontStyle": ["bold", null, 217]
+        }
       },
       {
         "snames": ["highlight", "node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ccff02", "#ccff02", 214] }
+        "values": {
+          "BackGroundColor": ["#ccff02", "#ccff02", 218]
+        }
       },
       {
         "snames": ["highlight", "jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ccff02", "#ccff02", 214] }
+        "values": {
+          "BackGroundColor": ["#ccff02", "#ccff02", 218]
+        }
       },
       {
         "snames": ["node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["10", null, 211], "LineThickness": ["1.5", null, 210] }
+        "values": {
+          "RoundCorner": ["10", null, 215],
+          "LineThickness": ["1.5", null, 214]
+        }
       },
       {
         "snames": ["jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["10", null, 211], "LineThickness": ["1.5", null, 210] }
+        "values": {
+          "RoundCorner": ["10", null, 215],
+          "LineThickness": ["1.5", null, 214]
+        }
       },
       {
         "snames": ["yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["black", "white", 206], "LineColor": ["black", "white", 207] }
+        "values": {
+          "FontColor": ["black", "white", 210],
+          "LineColor": ["black", "white", 211]
+        }
       },
       {
         "snames": ["jsonDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["black", "white", 206], "LineColor": ["black", "white", 207] }
+        "values": {
+          "FontColor": ["black", "white", 210],
+          "LineColor": ["black", "white", 211]
+        }
       },
       {
         "snames": ["timeline", "timingDiagram"],
@@ -980,9 +1205,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 220],
-          "FontStyle": ["plain", null, 219],
-          "LineThickness": ["2", null, 221]
+          "FontSize": ["11", null, 224],
+          "FontStyle": ["plain", null, 223],
+          "LineThickness": ["2", null, 225]
         }
       },
       {
@@ -990,7 +1215,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["0.5", null, 222] }
+        "values": {
+          "LineThickness": ["0.5", null, 226]
+        }
       },
       {
         "snames": ["arrow", "timingDiagram"],
@@ -998,12 +1225,12 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontName": ["Serif", null, 223],
-          "FontColor": ["darkblue", null, 226],
-          "FontSize": ["14", null, 224],
-          "FontStyle": ["plain", null, 225],
-          "LineThickness": ["1.5", null, 228],
-          "LineColor": ["darkblue", "lightblue", 227]
+          "FontName": ["Serif", null, 227],
+          "FontColor": ["darkblue", null, 230],
+          "FontSize": ["14", null, 228],
+          "FontStyle": ["plain", null, 229],
+          "LineThickness": ["1.5", null, 232],
+          "LineColor": ["darkblue", "lightblue", 231]
         }
       },
       {
@@ -1012,11 +1239,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontColor": ["darkred", "tomato", 231],
-          "FontSize": ["12", null, 229],
-          "FontStyle": ["plain", null, 230],
-          "LineThickness": ["1.5", null, 233],
-          "LineColor": ["darkred", "tomato", 232]
+          "FontColor": ["darkred", "tomato", 235],
+          "FontSize": ["12", null, 233],
+          "FontStyle": ["plain", null, 234],
+          "LineThickness": ["1.5", null, 237],
+          "LineColor": ["darkred", "tomato", 236]
         }
       },
       {
@@ -1024,7 +1251,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 235], "LineColor": ["darkgreen", "lightgreen", 234] }
+        "values": {
+          "LineThickness": ["1.5", null, 239],
+          "LineColor": ["darkgreen", "lightgreen", 238]
+        }
       },
       {
         "snames": ["concise", "timingDiagram"],
@@ -1032,10 +1262,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 236],
-          "BackGroundColor": ["#e2e2f0", "#6", 238],
-          "LineThickness": ["1.5", null, 239],
-          "LineColor": ["darkgreen", "lightgreen", 237]
+          "FontSize": ["12", null, 240],
+          "BackGroundColor": ["#e2e2f0", "#6", 242],
+          "LineThickness": ["1.5", null, 243],
+          "LineColor": ["darkgreen", "lightgreen", 241]
         }
       },
       {
@@ -1044,11 +1274,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 241],
-          "FontStyle": ["plain", null, 240],
-          "BackGroundColor": ["#e2e2f0", "#3", 244],
-          "LineThickness": ["2", null, 243],
-          "LineColor": ["darkgreen", "lightgreen", 242]
+          "FontSize": ["12", null, 245],
+          "FontStyle": ["plain", null, 244],
+          "BackGroundColor": ["#e2e2f0", "#3", 248],
+          "LineThickness": ["2", null, 247],
+          "LineColor": ["darkgreen", "lightgreen", 246]
         }
       },
       {
@@ -1057,10 +1287,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 246],
-          "FontStyle": ["plain", null, 245],
-          "LineThickness": ["2", null, 248],
-          "LineColor": ["darkgreen", null, 247]
+          "FontSize": ["12", null, 250],
+          "FontStyle": ["plain", null, 249],
+          "LineThickness": ["2", null, 252],
+          "LineColor": ["darkgreen", null, 251]
         }
       },
       {
@@ -1069,9 +1299,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#e", "#1", 249],
-          "LineThickness": ["2", null, 250],
-          "LineStyle": ["4-4", null, 251]
+          "BackGroundColor": ["#e", "#1", 253],
+          "LineThickness": ["2", null, 254],
+          "LineStyle": ["4-4", null, 255]
         }
       },
       {
@@ -1080,10 +1310,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontColor": ["#3", "#d", 216],
-          "FontStyle": ["bold", null, 217],
-          "LineThickness": ["0.5", null, 218],
-          "LineColor": ["#3", "#d", 215]
+          "FontColor": ["#3", "#d", 220],
+          "FontStyle": ["bold", null, 221],
+          "LineThickness": ["0.5", null, 222],
+          "LineColor": ["#3", "#d", 219]
         }
       },
       {
@@ -1091,14 +1321,19 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 253], "BackGroundColor": ["#e2e2f0", "#555", 252] }
+        "values": {
+          "FontSize": ["12", null, 257],
+          "BackGroundColor": ["#e2e2f0", "#555", 256]
+        }
       },
       {
         "snames": ["nwdiagDiagram", "server"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 254] }
+        "values": {
+          "FontSize": ["12", null, 258]
+        }
       },
       {
         "snames": ["group", "nwdiagDiagram"],
@@ -1106,9 +1341,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 255],
-          "BackGroundColor": ["#e7e7e7", "#2", 256],
-          "LineColor": ["#e7e7e7", null, 257]
+          "FontSize": ["12", null, 259],
+          "BackGroundColor": ["#e7e7e7", "#2", 260],
+          "LineColor": ["#e7e7e7", null, 261]
         }
       },
       {
@@ -1116,21 +1351,94 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 258] }
+        "values": {
+          "FontSize": ["11", null, 262]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "line"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["2", null, 263]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "pie"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["1.5", null, 265],
+          "LineColor": ["#FFFFFF", null, 264]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "radar"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["2", null, 266]
+        }
+      },
+      {
+        "snames": ["filesDiagram", "folder"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "BackGroundColor": ["transparent", null, 269]
+        }
+      },
+      {
+        "snames": ["file", "filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "BackGroundColor": ["transparent", null, 269]
+        }
+      },
+      {
+        "snames": ["description", "filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontColor": ["#6A9955", null, 270],
+          "FontStyle": ["italic", null, 271]
+        }
+      },
+      {
+        "snames": ["filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["1", null, 268],
+          "LineColor": ["#A0A0A0", "#707070", 267]
+        }
       },
       {
         "snames": ["activityDiagram", "partition"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineColor": [null, "white", 297] }
+        "values": {
+          "LineColor": [null, "white", 312]
+        }
       },
       {
         "snames": [],
         "level": 2,
         "star": true,
         "stereotypes": [],
-        "values": { "FontColor": ["red", null, 326], "BackGroundColor": ["blue", null, 327] }
+        "values": {
+          "FontColor": ["red", null, 344],
+          "BackGroundColor": ["blue", null, 345]
+        }
       }
     ],
     "ideas": [
@@ -1150,14 +1458,14 @@
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
             "BackGroundColor": ["#f1f1f1", "#313139", 12],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -1178,14 +1486,14 @@
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
             "BackGroundColor": ["#f1f1f1", "#313139", 12],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -1202,18 +1510,18 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["red", null, 1411065734],
+            "FontColor": ["red", null, 1411065752],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["blue", null, 1411065735],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["blue", null, 1411065753],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -1230,18 +1538,18 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["red", null, 1411065734],
+            "FontColor": ["red", null, 1411065752],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["blue", null, 1411065735],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["blue", null, 1411065753],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -1262,14 +1570,14 @@
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
             "BackGroundColor": ["#f1f1f1", "#313139", 12],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -1279,14 +1587,24 @@
   "stereo": {
     "storage": [
       {
+        "snames": ["filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": ["highlight"],
+        "values": {
+          "BackGroundColor": ["#FFF3CD", "#4D3D00", 1272],
+          "LineColor": ["#FFC107", "#FFC107", 1273]
+        }
+      },
+      {
         "snames": ["mindmapDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": ["foo"],
         "values": {
-          "BackGroundColor": ["red", null, 1329],
-          "LineStyle": ["5-3", null, 1330],
-          "MaximumWidth": ["60", null, 1331]
+          "BackGroundColor": ["red", null, 1347],
+          "LineStyle": ["5-3", null, 1348],
+          "MaximumWidth": ["60", null, 1349]
         }
       },
       {
@@ -1294,7 +1612,9 @@
         "level": -1,
         "star": true,
         "stereotypes": ["foo"],
-        "values": { "FontColor": ["#00ff00", null, 1332] }
+        "values": {
+          "FontColor": ["#00ff00", null, 1350]
+        }
       },
       {
         "snames": ["root"],
@@ -1391,84 +1711,118 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 45], "LineColor": ["black", "white", 44] }
+        "values": {
+          "LineThickness": ["1.5", null, 45],
+          "LineColor": ["black", "white", 44]
+        }
       },
       {
         "snames": ["document"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", "#1B1B1B", 14] }
+        "values": {
+          "BackGroundColor": ["white", "#1B1B1B", 14]
+        }
       },
       {
         "snames": ["map"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "HorizontalAlignment": ["center", null, 46] }
+        "values": {
+          "HorizontalAlignment": ["center", null, 46]
+        }
       },
       {
         "snames": ["package_", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 47] }
+        "values": {
+          "FontStyle": ["bold", null, 47]
+        }
       },
       {
         "snames": ["stereotype"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["italic", null, 48], "HorizontalAlignment": ["center", null, 49] }
+        "values": {
+          "FontStyle": ["italic", null, 48],
+          "HorizontalAlignment": ["center", null, 49]
+        }
       },
       {
         "snames": ["mainframe"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 51], "Padding": ["1 5", null, 50], "Margin": ["10 5", null, 52] }
+        "values": {
+          "LineThickness": ["1.5", null, 51],
+          "Padding": ["1 5", null, 50],
+          "Margin": ["10 5", null, 52]
+        }
       },
       {
         "snames": ["composite", "element", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 55], "HorizontalAlignment": ["center", null, 56] }
+        "values": {
+          "FontStyle": ["bold", null, 55],
+          "HorizontalAlignment": ["center", null, 56]
+        }
       },
       {
         "snames": ["element", "package_", "title"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 55], "HorizontalAlignment": ["center", null, 56] }
+        "values": {
+          "FontStyle": ["bold", null, 55],
+          "HorizontalAlignment": ["center", null, 56]
+        }
       },
       {
         "snames": ["element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Shadowing": ["0.0", null, 53], "LineThickness": ["0.5", null, 54] }
+        "values": {
+          "Shadowing": ["0.0", null, 53],
+          "LineThickness": ["0.5", null, 54]
+        }
       },
       {
         "snames": ["group", "package_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 59], "LineColor": ["black", "white", 60] }
+        "values": {
+          "LineThickness": ["1.5", null, 59],
+          "LineColor": ["black", "white", 60]
+        }
       },
       {
         "snames": ["folder", "group"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 61], "LineColor": ["black", "white", 62] }
+        "values": {
+          "LineThickness": ["1.5", null, 61],
+          "LineColor": ["black", "white", 62]
+        }
       },
       {
         "snames": ["group"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["transparent", null, 57], "LineThickness": ["1.0", null, 58] }
+        "values": {
+          "BackGroundColor": ["transparent", null, 57],
+          "LineThickness": ["1.0", null, 58]
+        }
       },
       {
         "snames": ["group", "sequenceDiagram"],
@@ -1500,7 +1854,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["13", null, 75], "FontStyle": ["bold", null, 76] }
+        "values": {
+          "FontSize": ["13", null, 75],
+          "FontStyle": ["bold", null, 76]
+        }
       },
       {
         "snames": ["partition", "sequenceDiagram"],
@@ -1518,21 +1875,30 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": [null, "black", 274], "LineStyle": ["5", null, 77] }
+        "values": {
+          "BackGroundColor": [null, "black", 289],
+          "LineStyle": ["5", null, 77]
+        }
       },
       {
         "snames": ["activationBox", "sequenceDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 78] }
+        "values": {
+          "BackGroundColor": ["white", null, 78]
+        }
       },
       {
         "snames": ["destroy", "sequenceDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["2", null, 81], "LineColor": ["#A80036", null, 79], "LineStyle": ["0", null, 80] }
+        "values": {
+          "LineThickness": ["2", null, 81],
+          "LineColor": ["#A80036", null, 79],
+          "LineStyle": ["0", null, 80]
+        }
       },
       {
         "snames": ["reference", "sequenceDiagram"],
@@ -1566,7 +1932,11 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["13", null, 94], "FontStyle": ["bold", null, 95], "BackGroundColor": ["#d", "#2", 93] }
+        "values": {
+          "FontSize": ["13", null, 94],
+          "FontStyle": ["bold", null, 95],
+          "BackGroundColor": ["#d", "#2", 93]
+        }
       },
       {
         "snames": ["separator", "sequenceDiagram"],
@@ -1587,7 +1957,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineStyle": ["2", null, 102] }
+        "values": {
+          "LineStyle": ["2", null, 102]
+        }
       },
       {
         "snames": ["participant", "sequenceDiagram"],
@@ -1683,203 +2055,303 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["componentDiagram", "object"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["objectDiagram", "object"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["2 2", null, 107] }
+        "values": {
+          "Padding": ["2 2", null, 107]
+        }
       },
       {
         "snames": ["classDiagram", "element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["componentDiagram", "element"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["element", "objectDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["5", null, 108] }
+        "values": {
+          "RoundCorner": ["5", null, 108]
+        }
       },
       {
         "snames": ["classDiagram", "generic"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
       },
       {
         "snames": ["componentDiagram", "generic"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
       },
       {
         "snames": ["generic", "objectDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", null, 109] }
+        "values": {
+          "BackGroundColor": ["white", null, 109]
+        }
+      },
+      {
+        "snames": ["classDiagram", "class_", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 110]
+        }
+      },
+      {
+        "snames": ["objectDiagram", "object", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 111]
+        }
+      },
+      {
+        "snames": ["map", "objectDiagram", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 112]
+        }
+      },
+      {
+        "snames": ["json", "objectDiagram", "stereotype"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontSize": ["12", null, 113]
+        }
       },
       {
         "snames": ["visibilityIcon", "public_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#84BE84", null, 111], "LineColor": ["#038048", null, 110] }
+        "values": {
+          "BackGroundColor": ["#84BE84", null, 115],
+          "LineColor": ["#038048", null, 114]
+        }
       },
       {
         "snames": ["visibilityIcon", "private_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#F24D5C", null, 113], "LineColor": ["#C82930", null, 112] }
+        "values": {
+          "BackGroundColor": ["#F24D5C", null, 117],
+          "LineColor": ["#C82930", null, 116]
+        }
       },
       {
         "snames": ["visibilityIcon", "protected_"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FFFF44", null, 115], "LineColor": ["#B38D22", null, 114] }
+        "values": {
+          "BackGroundColor": ["#FFFF44", null, 119],
+          "LineColor": ["#B38D22", null, 118]
+        }
       },
       {
         "snames": ["package_", "visibilityIcon"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#4177AF", null, 117], "LineColor": ["#1963A0", null, 116] }
+        "values": {
+          "BackGroundColor": ["#4177AF", null, 121],
+          "LineColor": ["#1963A0", null, 120]
+        }
       },
       {
         "snames": ["visibilityIcon", "IEMandatory"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["black", null, 119], "LineColor": ["black", null, 118] }
+        "values": {
+          "BackGroundColor": ["black", null, 123],
+          "LineColor": ["black", null, 122]
+        }
       },
       {
         "snames": ["spot", "spotAnnotation"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#E3664A", "#4A0000", 120] }
+        "values": {
+          "BackGroundColor": ["#E3664A", "#4A0000", 124]
+        }
       },
       {
         "snames": ["spot", "spotAbstractClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#A9DCDF", "#2A5D60", 121] }
+        "values": {
+          "BackGroundColor": ["#A9DCDF", "#2A5D60", 125]
+        }
       },
       {
         "snames": ["spot", "spotClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ADD1B2", "#2E5233", 122] }
+        "values": {
+          "BackGroundColor": ["#ADD1B2", "#2E5233", 126]
+        }
       },
       {
         "snames": ["spot", "spotInterface"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#B4A7E5", "#352866", 123] }
+        "values": {
+          "BackGroundColor": ["#B4A7E5", "#352866", 127]
+        }
       },
       {
         "snames": ["spot", "spotEnum"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#EB937F", "#852D19", 124] }
+        "values": {
+          "BackGroundColor": ["#EB937F", "#852D19", 128]
+        }
       },
       {
         "snames": ["spot", "spotEntity"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ADD1B2", "#2E5233", 125] }
+        "values": {
+          "BackGroundColor": ["#ADD1B2", "#2E5233", 129]
+        }
       },
       {
         "snames": ["spot", "spotException"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#D94321", "#7D0000", 126] }
+        "values": {
+          "BackGroundColor": ["#D94321", "#7D0000", 130]
+        }
       },
       {
         "snames": ["spot", "spotMetaClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#CCCCCC", "#7C7C7C", 127] }
+        "values": {
+          "BackGroundColor": ["#CCCCCC", "#7C7C7C", 131]
+        }
       },
       {
         "snames": ["spot", "spotStereotype"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FF77FF", "#890089", 128] }
+        "values": {
+          "BackGroundColor": ["#FF77FF", "#890089", 132]
+        }
       },
       {
         "snames": ["spot", "spotDataClass"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#7E57C2", "#B39DDB", 129] }
+        "values": {
+          "BackGroundColor": ["#7E57C2", "#B39DDB", 133]
+        }
       },
       {
         "snames": ["spot", "spotRecord"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#FF8F00", "#FFB74D", 130] }
+        "values": {
+          "BackGroundColor": ["#FF8F00", "#FFB74D", 134]
+        }
       },
       {
         "snames": ["body", "stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["transparent", null, 132] }
+        "values": {
+          "BackGroundColor": ["transparent", null, 136]
+        }
       },
       {
         "snames": ["name", "stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["plain", null, 133], "HorizontalAlignment": ["center", null, 134] }
+        "values": {
+          "FontStyle": ["plain", null, 137],
+          "HorizontalAlignment": ["center", null, 138]
+        }
       },
       {
         "snames": ["stateDiagram", "state"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["25", null, 131] }
+        "values": {
+          "RoundCorner": ["25", null, 135]
+        }
       },
       {
         "snames": ["group", "stateDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["0.5", null, 135] }
+        "values": {
+          "LineThickness": ["0.5", null, 139]
+        }
       },
       {
         "snames": ["circle", "start", "stateDiagram"],
@@ -1887,9 +2359,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -1898,9 +2370,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -1909,9 +2381,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 138],
-          "LineThickness": ["1", null, 136],
-          "LineColor": ["#2", "#d", 137]
+          "BackGroundColor": ["#2", "#d", 142],
+          "LineThickness": ["1", null, 140],
+          "LineColor": ["#2", "#d", 141]
         }
       },
       {
@@ -1920,10 +2392,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 139],
-          "FontStyle": ["plain", null, 140],
-          "LineStyle": ["1-4", null, 142],
-          "HorizontalAlignment": ["center", null, 141]
+          "FontSize": ["11", null, 143],
+          "FontStyle": ["plain", null, 144],
+          "LineStyle": ["1-4", null, 146],
+          "HorizontalAlignment": ["center", null, 145]
         }
       },
       {
@@ -1932,10 +2404,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["18", null, 146],
-          "BackGroundColor": ["transparent", null, 143],
-          "LineThickness": ["1.5", null, 145],
-          "LineColor": ["black", "white", 144]
+          "FontSize": ["18", null, 150],
+          "BackGroundColor": ["transparent", null, 147],
+          "LineThickness": ["1.5", null, 149],
+          "LineColor": ["black", "white", 148]
         }
       },
       {
@@ -1944,9 +2416,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["13", null, 147],
-          "BackGroundColor": ["black", null, 149],
-          "LineThickness": ["1.0", null, 148]
+          "FontSize": ["13", null, 151],
+          "BackGroundColor": ["black", null, 153],
+          "LineThickness": ["1.0", null, 152]
         }
       },
       {
@@ -1955,9 +2427,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["13", null, 150],
-          "BackGroundColor": ["#FEFFDD", "#714137", 151],
-          "LineThickness": ["0.5", null, 152]
+          "FontSize": ["13", null, 154],
+          "BackGroundColor": ["#FEFFDD", "#714137", 155],
+          "LineThickness": ["0.5", null, 156]
         }
       },
       {
@@ -1966,11 +2438,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["lightGreen", null, 326],
-          "RoundCorner": ["25", null, 155],
-          "LineThickness": ["1.5", null, 156],
-          "Padding": ["10", null, 153],
-          "Margin": ["10", null, 154]
+          "BackGroundColor": ["lightGreen", null, 344],
+          "RoundCorner": ["25", null, 159],
+          "LineThickness": ["1.5", null, 160],
+          "Padding": ["10", null, 157],
+          "Margin": ["10", null, 158]
         }
       },
       {
@@ -1978,7 +2450,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.0", null, 157] }
+        "values": {
+          "LineThickness": ["1.0", null, 161]
+        }
       },
       {
         "snames": ["wbsDiagram"],
@@ -1986,11 +2460,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 162],
-          "RoundCorner": ["0", null, 160],
-          "LineThickness": ["1.5", null, 161],
-          "Padding": ["10", null, 158],
-          "Margin": ["15", null, 159]
+          "FontSize": ["12", null, 166],
+          "RoundCorner": ["0", null, 164],
+          "LineThickness": ["1.5", null, 165],
+          "Padding": ["10", null, 162],
+          "Margin": ["15", null, 163]
         }
       },
       {
@@ -1998,7 +2472,11 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 164], "RoundCorner": ["25", null, 165], "Padding": ["10", null, 163] }
+        "values": {
+          "FontSize": ["12", null, 168],
+          "RoundCorner": ["25", null, 169],
+          "Padding": ["10", null, 167]
+        }
       },
       {
         "snames": ["activityDiagram", "composite"],
@@ -2006,9 +2484,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["transparent", null, 167],
-          "LineThickness": ["1.5", null, 168],
-          "LineColor": ["black", null, 166]
+          "BackGroundColor": ["transparent", null, 171],
+          "LineThickness": ["1.5", null, 172],
+          "LineColor": ["black", null, 170]
         }
       },
       {
@@ -2016,14 +2494,19 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 169] }
+        "values": {
+          "FontSize": ["11", null, 173]
+        }
       },
       {
         "snames": ["activityDiagram", "arrow"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 170], "LineThickness": ["1", null, 171] }
+        "values": {
+          "FontSize": ["11", null, 174],
+          "LineThickness": ["1", null, 175]
+        }
       },
       {
         "snames": ["activityDiagram", "circle", "start"],
@@ -2031,9 +2514,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1", null, 172],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1", null, 176],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -2042,9 +2525,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1", null, 172],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1", null, 176],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -2053,9 +2536,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#2", "#d", 174],
-          "LineThickness": ["1.5", null, 175],
-          "LineColor": ["#2", "#d", 173]
+          "BackGroundColor": ["#2", "#d", 178],
+          "LineThickness": ["1.5", null, 179],
+          "LineColor": ["#2", "#d", 177]
         }
       },
       {
@@ -2063,14 +2546,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#5", "#a", 176] }
+        "values": {
+          "BackGroundColor": ["#5", "#a", 180]
+        }
       },
       {
         "snames": ["task"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 177] }
+        "values": {
+          "FontSize": ["11", null, 181]
+        }
       },
       {
         "snames": ["milestone"],
@@ -2078,9 +2565,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 178],
-          "BackGroundColor": ["black", "white", 179],
-          "LineColor": ["black", "white", 180]
+          "FontSize": ["11", null, 182],
+          "BackGroundColor": ["black", "white", 183],
+          "LineColor": ["black", "white", 184]
         }
       },
       {
@@ -2088,14 +2575,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 181] }
+        "values": {
+          "LineThickness": ["1.5", null, 185]
+        }
       },
       {
         "snames": ["ganttDiagram", "note"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["9", null, 182] }
+        "values": {
+          "FontSize": ["9", null, 186]
+        }
       },
       {
         "snames": ["ganttDiagram", "separator"],
@@ -2103,11 +2594,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 183],
-          "FontStyle": ["plain", null, 184],
-          "BackGroundColor": ["transparent", null, 185],
-          "Padding": ["5", null, 187],
-          "Margin": ["5", null, 186]
+          "FontSize": ["11", null, 187],
+          "FontStyle": ["plain", null, 188],
+          "BackGroundColor": ["transparent", null, 189],
+          "Padding": ["5", null, 191],
+          "Margin": ["5", null, 190]
         }
       },
       {
@@ -2116,9 +2607,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "LineThickness": ["2", null, 188],
-          "LineColor": ["black", null, 190],
-          "LineStyle": ["2-2", null, 189]
+          "LineThickness": ["2", null, 192],
+          "LineColor": ["black", null, 194],
+          "LineStyle": ["2-2", null, 193]
         }
       },
       {
@@ -2126,14 +2617,18 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 194] }
+        "values": {
+          "FontSize": ["12", null, 198]
+        }
       },
       {
         "snames": ["ganttDiagram", "timeline", "year"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["14", null, 195] }
+        "values": {
+          "FontSize": ["14", null, 199]
+        }
       },
       {
         "snames": ["ganttDiagram", "timeline"],
@@ -2141,9 +2636,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["10", null, 193],
-          "BackGroundColor": ["transparent", null, 191],
-          "LineColor": ["#C0C0C0", "#3f3f3f", 192]
+          "FontSize": ["10", null, 197],
+          "BackGroundColor": ["transparent", null, 195],
+          "LineColor": ["#C0C0C0", "#3f3f3f", 196]
         }
       },
       {
@@ -2151,7 +2646,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["#989898", "#676767", 197], "BackGroundColor": ["#F1E5E5", "#1f1f1f", 196] }
+        "values": {
+          "FontColor": ["#989898", "#676767", 201],
+          "BackGroundColor": ["#F1E5E5", "#1f1f1f", 200]
+        }
       },
       {
         "snames": ["ganttDiagram", "task"],
@@ -2159,10 +2657,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#e2e2f0", "#555", 198],
-          "RoundCorner": ["0", null, 199],
-          "Padding": ["0", null, 201],
-          "Margin": ["2 2 2 2", null, 200]
+          "BackGroundColor": ["#e2e2f0", "#555", 202],
+          "RoundCorner": ["0", null, 203],
+          "Padding": ["0", null, 205],
+          "Margin": ["2 2 2 2", null, 204]
         }
       },
       {
@@ -2170,105 +2668,142 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["white", "black", 202] }
+        "values": {
+          "BackGroundColor": ["white", "black", 206]
+        }
       },
       {
         "snames": ["ganttDiagram", "milestone"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "Padding": ["3", null, 204], "Margin": ["2", null, 203] }
+        "values": {
+          "Padding": ["3", null, 208],
+          "Margin": ["2", null, 207]
+        }
       },
       {
         "snames": ["usecase"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "HorizontalAlignment": ["center", null, 205] }
+        "values": {
+          "HorizontalAlignment": ["center", null, 209]
+        }
       },
       {
         "snames": ["arrow", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 208], "LineStyle": ["3-3", null, 209] }
+        "values": {
+          "LineThickness": ["1", null, 212],
+          "LineStyle": ["3-3", null, 213]
+        }
       },
       {
         "snames": ["arrow", "jsonDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 208], "LineStyle": ["3-3", null, 209] }
+        "values": {
+          "LineThickness": ["1", null, 212],
+          "LineStyle": ["3-3", null, 213]
+        }
       },
       {
         "snames": ["node", "separator", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 212] }
+        "values": {
+          "LineThickness": ["1", null, 216]
+        }
       },
       {
         "snames": ["jsonDiagram", "node", "separator"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1", null, 212] }
+        "values": {
+          "LineThickness": ["1", null, 216]
+        }
       },
       {
         "snames": ["header", "node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 213] }
+        "values": {
+          "FontStyle": ["bold", null, 217]
+        }
       },
       {
         "snames": ["header", "jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 213] }
+        "values": {
+          "FontStyle": ["bold", null, 217]
+        }
       },
       {
         "snames": ["highlight", "node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ccff02", "#ccff02", 214] }
+        "values": {
+          "BackGroundColor": ["#ccff02", "#ccff02", 218]
+        }
       },
       {
         "snames": ["highlight", "jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "BackGroundColor": ["#ccff02", "#ccff02", 214] }
+        "values": {
+          "BackGroundColor": ["#ccff02", "#ccff02", 218]
+        }
       },
       {
         "snames": ["node", "yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["10", null, 211], "LineThickness": ["1.5", null, 210] }
+        "values": {
+          "RoundCorner": ["10", null, 215],
+          "LineThickness": ["1.5", null, 214]
+        }
       },
       {
         "snames": ["jsonDiagram", "node"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["10", null, 211], "LineThickness": ["1.5", null, 210] }
+        "values": {
+          "RoundCorner": ["10", null, 215],
+          "LineThickness": ["1.5", null, 214]
+        }
       },
       {
         "snames": ["yamlDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["black", "white", 206], "LineColor": ["black", "white", 207] }
+        "values": {
+          "FontColor": ["black", "white", 210],
+          "LineColor": ["black", "white", 211]
+        }
       },
       {
         "snames": ["jsonDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontColor": ["black", "white", 206], "LineColor": ["black", "white", 207] }
+        "values": {
+          "FontColor": ["black", "white", 210],
+          "LineColor": ["black", "white", 211]
+        }
       },
       {
         "snames": ["timeline", "timingDiagram"],
@@ -2276,9 +2811,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["11", null, 220],
-          "FontStyle": ["plain", null, 219],
-          "LineThickness": ["2", null, 221]
+          "FontSize": ["11", null, 224],
+          "FontStyle": ["plain", null, 223],
+          "LineThickness": ["2", null, 225]
         }
       },
       {
@@ -2286,7 +2821,9 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["0.5", null, 222] }
+        "values": {
+          "LineThickness": ["0.5", null, 226]
+        }
       },
       {
         "snames": ["arrow", "timingDiagram"],
@@ -2294,12 +2831,12 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontName": ["Serif", null, 223],
-          "FontColor": ["darkblue", null, 226],
-          "FontSize": ["14", null, 224],
-          "FontStyle": ["plain", null, 225],
-          "LineThickness": ["1.5", null, 228],
-          "LineColor": ["darkblue", "lightblue", 227]
+          "FontName": ["Serif", null, 227],
+          "FontColor": ["darkblue", null, 230],
+          "FontSize": ["14", null, 228],
+          "FontStyle": ["plain", null, 229],
+          "LineThickness": ["1.5", null, 232],
+          "LineColor": ["darkblue", "lightblue", 231]
         }
       },
       {
@@ -2308,11 +2845,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontColor": ["darkred", "tomato", 231],
-          "FontSize": ["12", null, 229],
-          "FontStyle": ["plain", null, 230],
-          "LineThickness": ["1.5", null, 233],
-          "LineColor": ["darkred", "tomato", 232]
+          "FontColor": ["darkred", "tomato", 235],
+          "FontSize": ["12", null, 233],
+          "FontStyle": ["plain", null, 234],
+          "LineThickness": ["1.5", null, 237],
+          "LineColor": ["darkred", "tomato", 236]
         }
       },
       {
@@ -2320,7 +2857,10 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineThickness": ["1.5", null, 235], "LineColor": ["darkgreen", "lightgreen", 234] }
+        "values": {
+          "LineThickness": ["1.5", null, 239],
+          "LineColor": ["darkgreen", "lightgreen", 238]
+        }
       },
       {
         "snames": ["concise", "timingDiagram"],
@@ -2328,10 +2868,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 236],
-          "BackGroundColor": ["#e2e2f0", "#6", 238],
-          "LineThickness": ["1.5", null, 239],
-          "LineColor": ["darkgreen", "lightgreen", 237]
+          "FontSize": ["12", null, 240],
+          "BackGroundColor": ["#e2e2f0", "#6", 242],
+          "LineThickness": ["1.5", null, 243],
+          "LineColor": ["darkgreen", "lightgreen", 241]
         }
       },
       {
@@ -2340,11 +2880,11 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 241],
-          "FontStyle": ["plain", null, 240],
-          "BackGroundColor": ["#e2e2f0", "#3", 244],
-          "LineThickness": ["2", null, 243],
-          "LineColor": ["darkgreen", "lightgreen", 242]
+          "FontSize": ["12", null, 245],
+          "FontStyle": ["plain", null, 244],
+          "BackGroundColor": ["#e2e2f0", "#3", 248],
+          "LineThickness": ["2", null, 247],
+          "LineColor": ["darkgreen", "lightgreen", 246]
         }
       },
       {
@@ -2353,10 +2893,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 246],
-          "FontStyle": ["plain", null, 245],
-          "LineThickness": ["2", null, 248],
-          "LineColor": ["darkgreen", null, 247]
+          "FontSize": ["12", null, 250],
+          "FontStyle": ["plain", null, 249],
+          "LineThickness": ["2", null, 252],
+          "LineColor": ["darkgreen", null, 251]
         }
       },
       {
@@ -2365,9 +2905,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "BackGroundColor": ["#e", "#1", 249],
-          "LineThickness": ["2", null, 250],
-          "LineStyle": ["4-4", null, 251]
+          "BackGroundColor": ["#e", "#1", 253],
+          "LineThickness": ["2", null, 254],
+          "LineStyle": ["4-4", null, 255]
         }
       },
       {
@@ -2376,10 +2916,10 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontColor": ["#3", "#d", 216],
-          "FontStyle": ["bold", null, 217],
-          "LineThickness": ["0.5", null, 218],
-          "LineColor": ["#3", "#d", 215]
+          "FontColor": ["#3", "#d", 220],
+          "FontStyle": ["bold", null, 221],
+          "LineThickness": ["0.5", null, 222],
+          "LineColor": ["#3", "#d", 219]
         }
       },
       {
@@ -2387,14 +2927,19 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 253], "BackGroundColor": ["#e2e2f0", "#555", 252] }
+        "values": {
+          "FontSize": ["12", null, 257],
+          "BackGroundColor": ["#e2e2f0", "#555", 256]
+        }
       },
       {
         "snames": ["nwdiagDiagram", "server"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["12", null, 254] }
+        "values": {
+          "FontSize": ["12", null, 258]
+        }
       },
       {
         "snames": ["group", "nwdiagDiagram"],
@@ -2402,9 +2947,9 @@
         "star": false,
         "stereotypes": [],
         "values": {
-          "FontSize": ["12", null, 255],
-          "BackGroundColor": ["#e7e7e7", "#2", 256],
-          "LineColor": ["#e7e7e7", null, 257]
+          "FontSize": ["12", null, 259],
+          "BackGroundColor": ["#e7e7e7", "#2", 260],
+          "LineColor": ["#e7e7e7", null, 261]
         }
       },
       {
@@ -2412,35 +2957,113 @@
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontSize": ["11", null, 258] }
+        "values": {
+          "FontSize": ["11", null, 262]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "line"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["2", null, 263]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "pie"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["1.5", null, 265],
+          "LineColor": ["#FFFFFF", null, 264]
+        }
+      },
+      {
+        "snames": ["chartDiagram", "radar"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["2", null, 266]
+        }
+      },
+      {
+        "snames": ["filesDiagram", "folder"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "BackGroundColor": ["transparent", null, 269]
+        }
+      },
+      {
+        "snames": ["file", "filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "BackGroundColor": ["transparent", null, 269]
+        }
+      },
+      {
+        "snames": ["description", "filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "FontColor": ["#6A9955", null, 270],
+          "FontStyle": ["italic", null, 271]
+        }
+      },
+      {
+        "snames": ["filesDiagram"],
+        "level": -1,
+        "star": false,
+        "stereotypes": [],
+        "values": {
+          "LineThickness": ["1", null, 268],
+          "LineColor": ["#A0A0A0", "#707070", 267]
+        }
       },
       {
         "snames": ["activityDiagram", "partition"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineColor": [null, "white", 297] }
+        "values": {
+          "LineColor": [null, "white", 312]
+        }
       },
       {
         "snames": ["mindmapDiagram"],
         "level": 1,
         "star": false,
         "stereotypes": [],
-        "values": { "LineColor": ["green", null, 327], "Padding": ["4 8", null, 328] }
+        "values": {
+          "LineColor": ["green", null, 345],
+          "Padding": ["4 8", null, 346]
+        }
       },
       {
         "snames": ["leafNode", "mindmapDiagram"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "RoundCorner": ["3", null, 333] }
+        "values": {
+          "RoundCorner": ["3", null, 351]
+        }
       },
       {
         "snames": ["mindmapDiagram", "rootNode"],
         "level": -1,
         "star": false,
         "stereotypes": [],
-        "values": { "FontStyle": ["bold", null, 334], "FontWeight": ["300", null, 335] }
+        "values": {
+          "FontStyle": ["bold", null, 352],
+          "FontWeight": ["300", null, 353]
+        }
       }
     ],
     "ideas": [
@@ -2456,21 +3079,21 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1411066740],
+            "FontColor": ["#00ff00", null, 1411066758],
             "FontSize": ["14", null, 5],
-            "FontStyle": ["bold", null, 334],
-            "FontWeight": ["300", null, 335],
-            "BackGroundColor": ["red", null, 1329],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "FontStyle": ["bold", null, 352],
+            "FontWeight": ["300", null, 353],
+            "BackGroundColor": ["red", null, 1347],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "LineStyle": ["5-3", null, 1330],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
-            "MaximumWidth": ["60", null, 1331],
+            "LineStyle": ["5-3", null, 1348],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
+            "MaximumWidth": ["60", null, 1349],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -2487,18 +3110,18 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1401065740],
+            "FontColor": ["#00ff00", null, 1401065758],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["lightGreen", null, 326],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["lightGreen", null, 344],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
-            "LineColor": ["green", null, 327],
-            "Padding": ["4 8", null, 328],
-            "Margin": ["10", null, 154],
+            "LineColor": ["green", null, 345],
+            "Padding": ["4 8", null, 346],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -2515,18 +3138,18 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1391064740],
+            "FontColor": ["#00ff00", null, 1391064758],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["lightGreen", null, 326],
-            "RoundCorner": ["3", null, 333],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["lightGreen", null, 344],
+            "RoundCorner": ["3", null, 351],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -2543,20 +3166,20 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1411066740],
+            "FontColor": ["#00ff00", null, 1411066758],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["red", null, 1329],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["red", null, 1347],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
-            "LineColor": ["green", null, 327],
-            "LineStyle": ["5-3", null, 1330],
-            "Padding": ["4 8", null, 328],
-            "Margin": ["10", null, 154],
-            "MaximumWidth": ["60", null, 1331],
+            "LineColor": ["green", null, 345],
+            "LineStyle": ["5-3", null, 1348],
+            "Padding": ["4 8", null, 346],
+            "Margin": ["10", null, 158],
+            "MaximumWidth": ["60", null, 1349],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -2573,18 +3196,18 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1401065740],
+            "FontColor": ["#00ff00", null, 1401065758],
             "FontSize": ["14", null, 5],
             "FontStyle": ["plain", null, 6],
-            "BackGroundColor": ["lightGreen", null, 326],
-            "RoundCorner": ["3", null, 333],
-            "LineThickness": ["1.5", null, 156],
+            "BackGroundColor": ["lightGreen", null, 344],
+            "RoundCorner": ["3", null, 351],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
             "HorizontalAlignment": ["left", null, 7]
           }
         }
@@ -2601,21 +3224,21 @@
           "values": {
             "Shadowing": ["0.0", null, 53],
             "FontName": ["SansSerif", null, 1],
-            "FontColor": ["#00ff00", null, 1411066740],
+            "FontColor": ["#00ff00", null, 1411066758],
             "FontSize": ["14", null, 5],
-            "FontStyle": ["bold", null, 334],
-            "FontWeight": ["300", null, 335],
-            "BackGroundColor": ["red", null, 1329],
-            "RoundCorner": ["25", null, 155],
-            "LineThickness": ["1.5", null, 156],
+            "FontStyle": ["bold", null, 352],
+            "FontWeight": ["300", null, 353],
+            "BackGroundColor": ["red", null, 1347],
+            "RoundCorner": ["25", null, 159],
+            "LineThickness": ["1.5", null, 160],
             "DiagonalCorner": ["0", null, 9],
             "HyperLinkColor": ["blue", "blue", 2],
             "HyperlinkUnderlineThickness": ["1", null, 3],
             "LineColor": ["#181818", "#e7e7e7", 11],
-            "LineStyle": ["5-3", null, 1330],
-            "Padding": ["10", null, 153],
-            "Margin": ["10", null, 154],
-            "MaximumWidth": ["60", null, 1331],
+            "LineStyle": ["5-3", null, 1348],
+            "Padding": ["10", null, 157],
+            "Margin": ["10", null, 158],
+            "MaximumWidth": ["60", null, 1349],
             "HorizontalAlignment": ["left", null, 7]
           }
         }

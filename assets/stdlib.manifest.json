@@ -1,11 +1,11 @@
 {
   "sourceRepo": "https://github.com/plantuml/plantuml-stdlib",
-  "sourceSha": "bdbb819f76c75e7a23af582b2a63ea7dc43eed7c",
+  "sourceSha": "5535b9a3102848446180756e5a5763cb98fe6b83",
   "generatedBy": "scripts/vendor-stdlib.ts",
   "bundles": {
     "C4": {
       "license": "MIT",
-      "version": "2.13.0",
+      "version": "2.14.0",
       "source": "https://github.com/plantuml-stdlib/C4-PlantUML",
       "fileCount": 38,
       "manifestPath": "assets/manifests/C4.json"

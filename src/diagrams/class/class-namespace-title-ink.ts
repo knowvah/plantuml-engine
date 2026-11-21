@@ -117,9 +117,10 @@ export function namespaceTitleInk(
   theme: Theme,
   label: string,
   place: TitleInkPlacement,
+  wrapWidth = 0,
 ): LeafSymbolInk | undefined {
   if (label.length === 0) return undefined;
-  const lines = namespaceTitleLines(measurer, theme, label);
+  const lines = namespaceTitleLines(measurer, theme, label, { wrapWidth });
   const ink: MutableInk = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   const sole = lines.length === 1 && lines[0]!.runs.length === 1 && lines[0]!.runs[0]!.kind === 'text';
   if (sole) {
@@ -135,14 +136,16 @@ export function namespaceTitleInk(
   return ink;
 }
 
-/** `USymbolFolder#asBig` (`USymbolFolder.java:228`): every line at the
- *  fixed local `(4, 2)` -- `renderNamespaceFolder`/`renderFolderLeaf`. */
-export function folderTitlePlacement(baselineOffset: number): TitleInkPlacement {
+/** `USymbolFolder#asBig` (`USymbolFolder.java:228`): the title block at the
+ *  fixed local `(4, 2)` -- `renderNamespaceFolder`/`renderFolderLeaf` --, each
+ *  line centred on the block's `blockWidth` (`SheetBlock1`, the title style's
+ *  CENTER); absent = every line at the block's left. */
+export function folderTitlePlacement(baselineOffset: number, blockWidth?: number): TitleInkPlacement {
   return {
     singleX: TITLE_LOCAL_LEFT_OFFSET,
     singleBaseline: baselineOffset,
     blockTop: TITLE_LOCAL_TOP_OFFSET,
-    xForLine: () => TITLE_LOCAL_LEFT_OFFSET,
+    xForLine: (w) => TITLE_LOCAL_LEFT_OFFSET + ((blockWidth ?? w) - w) / 2,
   };
 }
 
@@ -183,7 +186,7 @@ export function namespaceDrawnInk(
   const place =
     theme.packageStyle === 'rect'
       ? rectTitlePlacement(geo, geo.clusterHeaderStereo?.height ?? 0, geo.baselineOffset)
-      : folderTitlePlacement(geo.baselineOffset);
-  const titleInk = namespaceTitleInk(measurer, theme, geo.label, place);
+      : folderTitlePlacement(geo.baselineOffset, geo.wtitle - (MARGIN_TITLE_X1 + MARGIN_TITLE_X2));
+  const titleInk = namespaceTitleInk(measurer, theme, geo.label, place, geo.titleWrapWidth);
   return titleInk !== undefined ? { titleInk } : {};
 }

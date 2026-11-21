@@ -32,7 +32,7 @@ describe('ValueNull.NULL', () => {
     expect(set.requested).toEqual(['#000000']);
   });
 
-  it('getPriority is inherited from ValueAbstract and throws (ValueAbstract.java:82-84)', () => {
-    expect(() => v.getPriority()).toThrow('UnsupportedOperationException');
+  it('getSpecificity is inherited from ValueAbstract and throws (ValueAbstract.java:82-84)', () => {
+    expect(() => v.getSpecificity()).toThrow('UnsupportedOperationException');
   });
 });

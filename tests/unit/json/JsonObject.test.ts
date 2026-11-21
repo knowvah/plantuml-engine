@@ -30,12 +30,18 @@ describe('each parser builds its object as upstream does', () => {
     expect(membersOf((nested.values[0] as unknown[])[1])).toEqual([['2', null]]);
   });
 
-  it('yaml collapses a repeated key: last value, first position (Monomorph.java:103-111)', () => {
-    const ast = parseYaml(src('yaml', ['a: 1', '10: 2', 'a: 3']));
+  it('yaml keeps document order, integer-like keys included (Monomorph.java:103-112)', () => {
+    const ast = parseYaml(src('yaml', ['a: 1', '10: 2']));
     expect(membersOf(ast.root)).toEqual([
-      ['a', '3'],
+      ['a', '1'],
       ['10', '2'],
     ]);
+  });
+
+  it('yaml refuses a repeated key (Monomorph.java:110-111, 0537b558644)', () => {
+    const ast = parseYaml(src('yaml', ['a: 1', '10: 2', 'a: 3']));
+    expect(ast.root).toBeNull();
+    expect(ast.parseError).toBe(true);
   });
 
   it('hcl keeps a repeated field, collapses a repeated module (HclParser.java:61-75, :123-148)', () => {

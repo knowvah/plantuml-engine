@@ -16,6 +16,7 @@ import { ExtremityFactoryCircleConnect } from './ExtremityCircleConnect.js';
 import { ExtremityFactoryPlus } from './ExtremityPlus.js';
 import { ExtremityFactoryExtendsLike } from './ExtremityExtendsLike.js';
 import { ExtremityFactoryHalfArrow } from './ExtremityHalfArrow.js';
+import { trin } from '../../string-utils-trim.js';
 
 /**
  * link-decor.ts — the reachable subset of `LinkDecor`
@@ -151,18 +152,18 @@ const DECORS2: Record<string, LinkDecorName> = {
   '//': 'HALF_ARROW_DOWN',
 };
 
-/** `LinkDecor.lookupDecors1(s)` — `StringUtils.trin(s)` (trim) then
+/** `LinkDecor.lookupDecors1(s)` — `StringUtils.trin(s)` then
  *  table lookup, `NONE` (`undefined` here) on no match or an
  *  empty/absent token. */
 export function lookupDecors1(token: string | undefined): LinkDecorName | undefined {
   if (token === undefined) return undefined;
-  return DECORS1[token.trim()];
+  return DECORS1[trin(token)];
 }
 
 /** `LinkDecor.lookupDecors2(s)` — see {@link lookupDecors1}. */
 export function lookupDecors2(token: string | undefined): LinkDecorName | undefined {
   if (token === undefined) return undefined;
-  return DECORS2[token.trim()];
+  return DECORS2[trin(token)];
 }
 
 export function isFillDecor(name: LinkDecorName): boolean {

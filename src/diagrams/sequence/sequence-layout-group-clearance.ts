@@ -15,7 +15,7 @@ import type { Scan, SpanConstraint } from './sequence-layout-participant-constra
 import { FRAME_EXTERNAL_MARGIN_X2, FRAME_MARGIN_X } from './sequence-frame-metrics.js';
 import { groupHeaderWidth } from './sequence-frame-component.js';
 import { selfDrawnWidth } from './sequence-layout-frame-extent.js';
-import { notesOnMessages, type NoteOwner } from './sequence-note-folding.js';
+import { exoNoteSide, notesOnMessages, type NoteOwner } from './sequence-note-folding.js';
 import { noteComponentWidth, noteLevel, noteTiles } from './sequence-note-width.js';
 import { LIVE_DELTA_SIZE } from './sequence-layout-shared.js';
 
@@ -249,9 +249,12 @@ function noteTileReach(note: NoteEvent, side: Side, sorted: readonly Participant
 }
 
 /** The side a wrapper's note is drawn on: after an exo arrow every note takes
- *  note 0's (`TileBuilder.java:128-136`). */
-function wrapperSide(ev: MessageEvent | MessageExoEvent, notes: readonly NoteEvent[], note: NoteEvent): string {
-  return ev.kind === 'messageExo' ? notes[0]!.position : note.position;
+ *  note 0's (`TileBuilder.java:128-136`), which `AbstractMessage#addNote` has
+ *  already overridden to the side away from the border
+ *  (`MessageExo#overrideNotePosition`, `MessageExo.java:62-69`,
+ *  `AbstractMessage.java:228`). */
+export function wrapperSide(ev: MessageEvent | MessageExoEvent, note: NoteEvent): string {
+  return ev.kind === 'messageExo' ? exoNoteSide(ev.exoType) : note.position;
 }
 
 /**
@@ -276,9 +279,9 @@ function wrapperReach(
   const outer = notes?.at(-1);
   if (notes === undefined || outer === undefined) return [];
   const wanted = side === 'max' ? 'right' : 'left';
-  if (wrapperSide(ev, notes, outer) !== wanted) return [];
+  if (wrapperSide(ev, outer) !== wanted) return [];
   if (ev.kind === 'message' && ev.from === ev.to) {
-    const onSide = notes.filter((n) => wrapperSide(ev, notes, n) === wanted);
+    const onSide = notes.filter((n) => wrapperSide(ev, n) === wanted);
     const total = onSide.reduce((sum, n) => sum + noteComponentWidth(n, scan, 'note'), 0);
     return selfWrapperReach(ev, side, total, sorted, scan);
   }
@@ -304,7 +307,7 @@ function plainWrapperReach(
  *  ls2`, `left` `reverse ? ls2 : ls1` (`TileBuilder.java:108-115`); an exo
  *  message has the one (`:128-136`). `reverse` is `posC(ls1) > posC(ls2)` at
  *  build time, i.e. by the participants' initial order (`:97`). */
-function wrapperAnchor(ev: MessageEvent | MessageExoEvent, side: Side, sorted: readonly Participant[]): string {
+export function wrapperAnchor(ev: MessageEvent | MessageExoEvent, side: Side, sorted: readonly Participant[]): string {
   if (ev.kind === 'messageExo') return ev.participant;
   const reverse = indexOf(sorted, ev.from) > indexOf(sorted, ev.to);
   return (side === 'max') === reverse ? ev.from : ev.to;
@@ -312,7 +315,7 @@ function wrapperAnchor(ev: MessageEvent | MessageExoEvent, side: Side, sorted: r
 
 /** `livingSpace.getLevelAt(wrapper, IGNORE_FUTURE_DEACTIVATE)`
  *  (`CommunicationTileNoteRight.java:125`): the message's own level. */
-function wrapperLevel(ev: MessageEvent | MessageExoEvent, id: string, scan: Scan): number {
+export function wrapperLevel(ev: MessageEvent | MessageExoEvent, id: string, scan: Scan): number {
   const live = scan.live.ofSource.get(ev);
   return live === undefined ? 0 : (scan.boxes.get(id)?.getLevelAt(live, 'IGNORE_FUTURE_DEACTIVATE') ?? 0);
 }
@@ -374,13 +377,13 @@ export function groupClearance(group: FrameEvent, sorted: Participant[], scan: S
 }
 
 /**
- * `ensureFollowingParticipantClearsFrame` (`GroupingTile.java:411-440`): the
- * participant after the rightmost one touched has its `posA` pushed
- * `MARGINX + EXTERNAL_MARGINX2` past that one's `posC`, and past every right
- * edge the frame is built on (`ensureClearsFrameOf`, `:602-620`). Each push is
- * a left-edge demand: `posB[next] >= reach + margin`, which the solver reads
- * as a centre demand plus `next`'s half width ({@link SpanConstraint.createdIndex}
- * is exactly "the `to` end is its `posB`").
+ * `ensureFollowingParticipantClearsFrame` (`GroupingTile.java:411-456`): the
+ * participant after the rightmost one touched has its LIFELINE (`posC`)
+ * pushed `MARGINX + EXTERNAL_MARGINX2` past that one's `posC`, and past every
+ * right edge the frame is built on (`ensureClearsFrameOf`, `:618-636`) -- the
+ * same landmark the left side pushes (issue #2788, upstream `be731fa99fc`,
+ * which replaced `next.getPosA()` with `next.getPosC()`, `:440`). Each push is
+ * therefore a plain centre demand, `posC[next] >= reach + margin`.
  */
 function followingClearance(group: FrameEvent, rightmost: number, sorted: Participant[], scan: Scan): SpanConstraint[] {
   const next = rightmost + 1;
@@ -393,7 +396,6 @@ function followingClearance(group: FrameEvent, rightmost: number, sorted: Partic
     from: reach.index,
     to: next,
     span: reach.offset + margin,
-    createdIndex: next,
   }));
 }
 
@@ -403,8 +405,8 @@ interface ReachSink {
   readonly reaches: { reach: Reach; margin: number }[];
 }
 
-/** `ensureClearsFrameOf` (`:602-620`): the title, each tile's right edges,
- *  and each nested group with the margin grown by its own frame (`:614`). */
+/** `ensureClearsFrameOf` (`:618-636`): the title, each tile's right edges,
+ *  and each nested group with the margin grown by its own frame (`:630`). */
 function clearsFrameOf(group: FrameEvent, margin: number, sink: ReachSink): void {
   clearsTitleOf(group, margin, sink);
   const tiles = tilesOf(group);
@@ -416,7 +418,7 @@ function clearsFrameOf(group: FrameEvent, margin: number, sink: ReachSink): void
 }
 
 /**
- * `ensureClearsTitleOf` (`:637-666`): `posC` of the group's leftmost touched
+ * `ensureClearsTitleOf` (`:653-682`): `posC` of the group's leftmost touched
  * participant plus `width + 16 - MARGINX - MARGINX - overhang + margin`, the
  * header component's width. `overhang` is a left/over note's on that lifeline
  * (`:658-661`).

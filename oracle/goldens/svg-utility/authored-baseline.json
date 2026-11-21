@@ -5,20 +5,30 @@
       "slug": "apple",
       "topic": "T1h probe: `apple //e` (PSystemAppleTwoFactory.java)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
       "slug": "apple-steve-wozniak",
       "topic": "T1h probe: `STEVE wozniak` (equalsIgnoreCase arm)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -36,10 +46,15 @@
       "slug": "cov-apple-kelvin-sign",
       "topic": "T1h probe: `Steve Wozniak` with U+212A KELVIN SIGN (equalsIgnoreCase)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -72,10 +87,15 @@
       "slug": "cov-charlie-dotless-i",
       "topic": "T1h probe: `charlıe` (dotless i; Java char-wise equalsIgnoreCase)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -162,10 +182,15 @@
       "slug": "cov-egg-synthetic",
       "topic": "T1h probe: PSystemEggFactory positive path via a synthetic non-secret line",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -192,10 +217,15 @@
       "slug": "cov-jesuischarlie",
       "topic": "`jesuischarlie` (PSystemCharlieFactory second arm)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -551,10 +581,15 @@
       "slug": "cov-steve-jobs",
       "topic": "`Steve Jobs` (PSystemAppleTwoFactory arm)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",
@@ -597,10 +632,15 @@
       "slug": "rip",
       "topic": "T1h probe: `jean canouet` (PSystemRIPFactory)",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "650f08bcc"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse). Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page (oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7fb"
     },
     {
       "type": "utility",

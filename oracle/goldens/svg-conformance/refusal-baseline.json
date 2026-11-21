@@ -52666,11 +52666,12 @@
       "type": "unknown",
       "slug": "kicizi-84-lexu138",
       "jarRendered": true,
-      "weErrored": false,
-      "engine": "none",
-      "status": "ok",
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "e908d335"
+      "weErrored": true,
+      "engine": "sequence",
+      "status": "known-gap",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "PSystemError#getTextBlock prepends the Welcome tutorial whenever source.getTotalLineCountLessThan5() (PSystemError.java:261-262; this source is 3 lines), pushing the jar's 'PlantUML version ...' signature (PSystemError.java:157-160) to byte 5363, past the 4096-byte HEAD_BYTES head-read window (refusal-coverage-gate.ts), so isJarErrorPage misreads a genuine jar error page as jarRendered. At a720bdd the jar errors here: the `charlie` easter egg is gone (dadad87bba3), so the line reaches the sequence factory and the page reads 'Syntax Error? (Assumed diagram type: sequence)' on line 2 (PSystemCommandFactory.java:250-258); this port refuses with the same string on the same line -- conformant under the 2026-10-10 error-page rule. Measurement-tool limitation, not an unported feature."
     },
     {
       "tree": "dot-cache",
@@ -54573,12 +54574,12 @@
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "petiku-70-fogu777",
-      "jarRendered": false,
+      "jarRendered": true,
       "weErrored": false,
       "engine": "class",
       "status": "ok",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "44df5e6e6"
     },
     {
       "tree": "dot-cache",
@@ -56146,34 +56147,34 @@
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-7",
-      "jarRendered": false,
-      "weErrored": true,
-      "engine": "class",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "timing",
       "status": "ok",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-8",
-      "jarRendered": false,
-      "weErrored": true,
-      "engine": "class",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "timing",
       "status": "ok",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
       "type": "unknown",
       "slug": "Timing-short-alias-9",
-      "jarRendered": false,
-      "weErrored": true,
-      "engine": "class",
+      "jarRendered": true,
+      "weErrored": false,
+      "engine": "timing",
       "status": "ok",
-      "measuredAt": "2026-09-20",
-      "measuredAgainstCommit": "31f579dd"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "f67ab8c05"
     },
     {
       "tree": "dot-cache",
@@ -75548,11 +75549,12 @@
       "type": "svg-utility",
       "slug": "kicizi-84-lexu138",
       "jarRendered": true,
-      "weErrored": false,
-      "engine": "none",
-      "status": "ok",
-      "measuredAt": "2026-10-14",
-      "measuredAgainstCommit": "e908d335"
+      "weErrored": true,
+      "engine": "sequence",
+      "status": "known-gap",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c",
+      "reason": "PSystemError#getTextBlock prepends the Welcome tutorial whenever source.getTotalLineCountLessThan5() (PSystemError.java:261-262; this source is 3 lines), pushing the jar's 'PlantUML version ...' signature (PSystemError.java:157-160) to byte 5363, past the 4096-byte HEAD_BYTES head-read window (refusal-coverage-gate.ts), so isJarErrorPage misreads a genuine jar error page as jarRendered. At a720bdd the jar errors here: the `charlie` easter egg is gone (dadad87bba3), so the line reaches the sequence factory and the page reads 'Syntax Error? (Assumed diagram type: sequence)' on line 2 (PSystemCommandFactory.java:250-258); this port refuses with the same string on the same line -- conformant under the 2026-10-10 error-page rule. Measurement-tool limitation, not an unported feature."
     },
     {
       "tree": "goldens",
@@ -100947,12 +100949,12 @@
       "tree": "dot-cache",
       "type": "class",
       "slug": "buveco-86-tibo673",
-      "jarRendered": true,
-      "weErrored": false,
-      "engine": "class",
+      "jarRendered": false,
+      "weErrored": true,
+      "engine": "unknown",
       "status": "ok",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "6e11d963"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c"
     },
     {
       "tree": "dot-cache",
@@ -124375,12 +124377,12 @@
       "tree": "goldens",
       "type": "svg-class",
       "slug": "buveco-86-tibo673",
-      "jarRendered": true,
-      "weErrored": false,
-      "engine": "class",
+      "jarRendered": false,
+      "weErrored": true,
+      "engine": "unknown",
       "status": "ok",
-      "measuredAt": "2026-11-14",
-      "measuredAgainstCommit": "53393e4d"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "77d1dae0c"
     },
     {
       "tree": "goldens",

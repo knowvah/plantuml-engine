@@ -16,10 +16,20 @@ import { LicenseType } from '../../../src/diagrams/version/LicenseType.js';
 /** 2026-10-13T00:00:00Z. */
 const EXPIRY = Date.UTC(2026, 9, 13);
 
+/** A licence key; `getKeyStart` keeps its first 8 characters (LicenseInfo.java:76, :94). */
+const KEY = 'abcdef0123456789';
+
+/** License.java:392, `getKeyStart() + "..."`. */
+const KEY_LINE = '|      LICENSE KEY : abcdef01...';
+
+/** License.java:393. */
+const EXPIRATION_LINE = '|      EXPIRATION DATE : Oct 13, 2026';
+
 function info(
   type: LicenseType,
   now: number,
   owner: { readonly name: string | undefined } = { name: 'ACME' },
+  licenceKey: { readonly key: string | undefined } = { key: KEY },
 ): LicenseInfo {
   const fields: LicenseInfoFields = {
     type,
@@ -28,6 +38,7 @@ function info(
     owner: owner.name,
     context: undefined,
     sha: undefined,
+    key: licenceKey.key,
     currentTimeMillis: () => now,
   };
   return new LicenseInfo(fields);
@@ -38,8 +49,8 @@ const RULE = '+=================================================================
 /** java:115-119. */
 const TEXT1_FREE = [RULE, '| ', '|      PlantUML : a free UML diagram generator', '| ', RULE];
 
-/** java:132-136. */
-const HEADER2 = [' ', '(C) Copyright 2009-2024, Arnaud Roques', ' ', 'Project Info:  https://plantuml.com', ' '];
+/** java:132-136 (2009-2027 since upstream 3a4d1675141). */
+const HEADER2 = [' ', '(C) Copyright 2009-2027, Arnaud Roques', ' ', 'Project Info:  https://plantuml.com', ' '];
 
 /** java:139-143. */
 const SUPPORT_US = [
@@ -203,10 +214,10 @@ describe('License — the switches end3 reads (java:211-223)', () => {
   });
 });
 
-describe('License — a licensed build (java:120-128, :373-389)', () => {
+describe('License — a licensed build (java:120-128, :374-395)', () => {
   const license = License.getCurrent();
 
-  it('NAMED: professional header, owner and expiration date', () => {
+  it('NAMED: professional header, owner, key start and expiration date', () => {
     expect(license.getText1(info(LicenseType.NAMED, EXPIRY))).toEqual([
       RULE,
       '| ',
@@ -215,16 +226,19 @@ describe('License — a licensed build (java:120-128, :373-389)', () => {
       RULE,
       '| ',
       '|      LICENSED TO : ACME',
-      '|      EXPIRATION DATE : Oct 13, 2026',
+      KEY_LINE,
+      EXPIRATION_LINE,
       '|  ',
       RULE,
     ]);
   });
 
-  it('DISTRIBUTOR: distributor line, then the expiry warning once expired', () => {
+  it('DISTRIBUTOR: distributor, key start and expiration lines, then the expiry warning once expired', () => {
     expect(license.getText1(info(LicenseType.DISTRIBUTOR, EXPIRY + 1)).slice(5)).toEqual([
       '|  ',
       '|      DISTRIBUTED BY : ACME',
+      KEY_LINE,
+      EXPIRATION_LINE,
       '|  ',
       '|      <i>Warning: Your license has expired.',
       '|  ',
@@ -232,13 +246,30 @@ describe('License — a licensed build (java:120-128, :373-389)', () => {
     ]);
   });
 
-  it('prints a missing owner as Java string concatenation does: null (java:376, :382)', () => {
+  it('prints a missing owner and key as Java string concatenation does: null (java:377, :381, :392)', () => {
     const named: string[] = [];
-    License.addLicenseInfo(named, info(LicenseType.NAMED, EXPIRY + 1, { name: undefined }));
-    expect(named).toEqual(['| ', '|      LICENSED TO : null', '|      EXPIRATION DATE : Oct 13, 2026', '|  ']);
+    License.addLicenseInfo(named, info(LicenseType.NAMED, EXPIRY, { name: undefined }, { key: undefined }));
+    expect(named).toEqual(['| ', '|      LICENSED TO : null', '|      LICENSE KEY : null...', EXPIRATION_LINE, '|  ']);
     const distributor: string[] = [];
-    License.addLicenseInfo(distributor, info(LicenseType.DISTRIBUTOR, EXPIRY + 1, { name: undefined }));
-    expect(distributor).toEqual(['|  ', '|      DISTRIBUTED BY : null', '|  ']);
+    License.addLicenseInfo(distributor, info(LicenseType.DISTRIBUTOR, EXPIRY, { name: undefined }, { key: undefined }));
+    expect(distributor).toEqual([
+      '|  ',
+      '|      DISTRIBUTED BY : null',
+      '|      LICENSE KEY : null...',
+      EXPIRATION_LINE,
+      '|  ',
+    ]);
+  });
+
+  it('an expired licence drops the support and qrcode lines but keeps the sponsor lines (java:139, :191)', () => {
+    expect(license.getText2(info(LicenseType.NAMED, EXPIRY + 1))).toEqual([
+      ...HEADER2,
+      ...MIT,
+      ...SPONSORED,
+      ...IMAGES,
+      ...ARCHIVE,
+      ...CREDITS,
+    ]);
   });
 
   it('UNKNOWN: no type line and no expiry warning', () => {

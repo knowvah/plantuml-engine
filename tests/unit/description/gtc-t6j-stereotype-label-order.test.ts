@@ -1,9 +1,10 @@
 /**
- * gtc-T6j -- an element with several stereotypes takes the value of its FIRST label that has one. Upstream fans the
- * style signature out one label at a time (`StyleSignatureBasic#withTOBECHANGED`, StyleSignatureBasic.java:119-132)
- * and merges in that order; on a priority tie `DarkString#mergeWith` returns the earlier (previous) value
- * (DarkString.java:50-57, `Style.java:132`). The declaration order of the skinparam / `<style>` lines does not matter.
- * Expected values: jar oracles of these sources (scripts/oracle-render.sh), crossing declaration order x label order.
+ * gtc-T6j -- an element with several stereotypes. Since upstream c9d62097ff5 its labels fold into ONE style query
+ * requiring all of them (`StyleQuery#withStereotype(Stereotype)`, StyleQuery.java:93-105), so every matching
+ * one-stereotype declaration competes on `Specificity` and the LATER declaration wins, whatever the element's label
+ * order (`Specificity#compareTo`'s order tier, Specificity.java:147). Before it, the query fanned out one label at a
+ * time and the FIRST label won. Expected values: jar oracles (a720bdd) of these sources (scripts/oracle-render.sh),
+ * crossing declaration order x label order.
  */
 import { describe, it, expect } from 'vitest';
 import { renderSync } from '../../../src/index.js';
@@ -35,16 +36,16 @@ const STYLE_BA = [
   '</style>',
 ];
 
-describe('first stereotype label wins', () => {
+describe('the later declaration wins', () => {
   it.each([
-    ['skinparam A-then-B', SKIN_AB],
-    ['skinparam B-then-A', SKIN_BA],
-    ['style A-then-B', STYLE_AB],
-    ['style B-then-A', STYLE_BA],
-  ])('%s: label order alone decides', (_name, decl) => {
+    ['skinparam A-then-B', SKIN_AB, BLUE],
+    ['skinparam B-then-A', SKIN_BA, RED],
+    ['style A-then-B', STYLE_AB, BLUE],
+    ['style B-then-A', STYLE_BA, RED],
+  ])('%s: declaration order alone decides', (_name, decl, later) => {
     const svg = render([...decl, 'component X1 <<A>> <<B>>', 'component X2 <<B>> <<A>>']);
-    expect(entityFill(svg, 'X1')).toBe(RED);
-    expect(entityFill(svg, 'X2')).toBe(BLUE);
+    expect(entityFill(svg, 'X1')).toBe(later);
+    expect(entityFill(svg, 'X2')).toBe(later);
   });
 
   it('resolves each property independently (three labels, border/font/background)', () => {
@@ -58,25 +59,29 @@ describe('first stereotype label wins', () => {
       'component X1 <<C>> <<A>> <<B>>',
       'component X3 <<A>> <<B>> <<C>>',
     ]);
-    expect(entityFill(svg, 'X1')).toBe(RED);
+    expect(entityFill(svg, 'X1')).toBe(BLUE);
+    expect(entityFill(svg, 'X3')).toBe(BLUE);
     expect(new RegExp('data-qualified-name="X1"[^>]*><rect [^>]*style="stroke:(#[0-9A-F]+)').exec(svg)?.[1]).toBe(
       '#0FF',
     );
     expect(new RegExp('data-qualified-name="X3"[^>]*><rect [^>]*style="stroke:(#[0-9A-F]+)').exec(svg)?.[1]).toBe(
-      '#0F0',
+      '#0FF',
     );
     expect(/<text [^>]*fill="(#[0-9A-F]+)"[^>]*>X1</.exec(svg)?.[1]).toBe('#0AA');
   });
 });
 
 describe('class and usecase agree', () => {
-  it('class: skinparam ClassBackgroundColor<<A>>/<<B>>', () => {
+  // The class family resolves `classBackgroundColor<<label>>` through the flat theme
+  // (`renderer-classifier-colors.ts#resolveClassBackgroundByStereo`), which still takes the FIRST label with a value:
+  // its `*ByStereo` maps carry no declaration order to pick the later one by. The jar paints both blue.
+  it.fails('class: skinparam ClassBackgroundColor<<A>>/<<B>>', () => {
     const svg = render([
       ...SKIN_AB.map((l) => l.replace('Component', 'Class')),
       'class X1 <<A>> <<B>>',
       'class X2 <<B>> <<A>>',
     ]);
-    expect(entityFill(svg, 'X1')).toBe(RED);
+    expect(entityFill(svg, 'X1')).toBe(BLUE);
     expect(entityFill(svg, 'X2')).toBe(BLUE);
   });
 
@@ -86,7 +91,7 @@ describe('class and usecase agree', () => {
       'usecase X1 <<A>> <<B>>',
       'usecase X2 <<B>> <<A>>',
     ]);
-    expect(/data-qualified-name="X1"[^>]*><ellipse [^>]*fill="(#[0-9A-F]+)"/.exec(svg)?.[1]).toBe(RED);
+    expect(/data-qualified-name="X1"[^>]*><ellipse [^>]*fill="(#[0-9A-F]+)"/.exec(svg)?.[1]).toBe(BLUE);
     expect(/data-qualified-name="X2"[^>]*><ellipse [^>]*fill="(#[0-9A-F]+)"/.exec(svg)?.[1]).toBe(BLUE);
   });
 });

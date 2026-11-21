@@ -1,20 +1,43 @@
 import { describe, it, expect } from 'vitest';
-import { skinParamWarnings, uniqueWarnings } from '../../../src/core/skinparam-warnings.js';
+import { skinParamWarning, skinParamWarnings, uniqueWarnings } from '../../../src/core/skinparam-warnings.js';
 import { preprocess } from '../../../src/core/preprocessor.js';
 import { Warning } from '../../../src/core/warning/Warning.js';
 
-const PARTICIPANT_PADDING = 'Please use CSS style instead of skinparam ParticipantPadding';
-const HANDWRITTEN = "Please use '!option handwritten true' to enable handwritten ";
-const PADDING = 'Please use CSS style instead of skinparam padding';
+/** CommandSkinParam.java:102-104: the style block that replaces the parameter. */
+const participantPadding = (value: string): string =>
+  [
+    "'skinparam ParticipantPadding' is ignored: use a style instead",
+    '<style>',
+    'participant {',
+    `  Padding ${value}`,
+    '}',
+    '</style>',
+  ].join('\n');
+const handwritten = (value: string): string =>
+  `'skinparam handwritten' is deprecated: write '!option handwritten ${value}' instead`;
+const HANDWRITTEN = handwritten('true');
 
-describe('skinParamWarnings (CommandSkinParam.java:92-99)', () => {
-  it('warns for the three deprecated names, case-insensitively, in map order', () => {
+describe('skinParamWarning (CommandSkinParam.java:98-107)', () => {
+  it('names the value written, for handwritten and ParticipantPadding, case-insensitively', () => {
+    expect(skinParamWarning('HandWritten', 'False')?.getMessage()).toEqual([handwritten('False')]);
+    expect(skinParamWarning('participantpadding', '7')?.getMessage()).toEqual(participantPadding('7').split('\n'));
+  });
+
+  it('no longer warns for padding (commented out at :106-107)', () => {
+    expect(skinParamWarning('padding', '3')).toBeUndefined();
+    expect(skinParamWarning('ArrowColor', 'red')).toBeUndefined();
+  });
+});
+
+describe('skinParamWarnings (CommandSkinParam.java:98-107)', () => {
+  it('warns for the deprecated names, case-insensitively, in map order', () => {
     const map = new Map([
       ['ParticipantPadding', '10'],
       ['ArrowColor', 'red'],
       ['PADDING', '3'],
+      ['handwritten', 'true'],
     ]);
-    expect(skinParamWarnings(map).map((w) => w.asSingleLine())).toEqual([PARTICIPANT_PADDING, PADDING]);
+    expect(skinParamWarnings(map).map((w) => w.asSingleLine())).toEqual([participantPadding('10'), HANDWRITTEN]);
   });
 
   it('is empty without a map or a deprecated name', () => {
@@ -28,7 +51,13 @@ const warnTexts = (puml: string): string[] => skinParamWarnings(preprocess(puml)
 describe('skinParamWarnings form (CommandSkinParam.java:92-99 vs CommandSkinParamMultilines.java:90-102)', () => {
   it('warns for each deprecated name in line form', () => {
     const puml = '@startuml\nskinparam handwritten true\nskinparam ParticipantPadding 5\nskinparam padding 2\n@enduml';
-    expect(warnTexts(puml)).toEqual([HANDWRITTEN, PARTICIPANT_PADDING, PADDING]);
+    expect(warnTexts(puml)).toEqual([HANDWRITTEN, participantPadding('5')]);
+  });
+
+  it('warns once per distinct value, in assignment order (a LinkedHashSet of value-bearing texts)', () => {
+    const puml =
+      '@startuml\nskinparam handwritten true\nskinparam handwritten false\nskinparam handwritten true\n@enduml';
+    expect(warnTexts(puml)).toEqual([HANDWRITTEN, handwritten('false')]);
   });
 
   it('does not warn for entries of skinparam { and skinparam sequence {, yet keeps the parameter', () => {

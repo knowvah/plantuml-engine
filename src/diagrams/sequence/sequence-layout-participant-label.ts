@@ -132,11 +132,20 @@ export function headRowsOf(
     readonly stereoFont: FontConfiguration;
     readonly stereotypeBottom?: boolean | undefined;
     readonly underlined?: boolean | undefined;
+    /** {@link Participant.stereotypeText}: the kept labels as a plain line. */
+    readonly stereotypeText?: string | undefined;
   },
 ): HeadDisplay {
   // `Display#underlined` prefixes every (already split) line (`Display.java:462-469`).
-  const lines = displayLines(display);
-  return { stereotypeLines, lines: fonts.underlined === true ? lines.map(underlineLine) : lines, ...fonts };
+  const own = displayLines(display);
+  const underlined = fonts.underlined === true ? own.map(underlineLine) : own;
+  // `result.addFirst(visibleStereotype)` / `result.add(...)` AFTER the
+  // underline (`Participant.java:129-137`): a plain line, never underlined.
+  const text = fonts.stereotypeText;
+  const lines =
+    text === undefined ? underlined : fonts.stereotypeBottom === true ? [...underlined, text] : [text, ...underlined];
+  const { stereotypeText: _plain, ...rest } = fonts;
+  return { stereotypeLines, lines, ...rest };
 }
 
 /** How a head's block is drawn: its `Back` (the sprite tint start), its ink
@@ -293,18 +302,34 @@ function isStickKind(type: ParticipantGeo['type']): boolean {
  * `blockWidth` is the whole text block's, badge included (`TextBlockSprited
  * .java:62`), `badgeWidth` the part of it left of the rows.
  */
-function nameCenterX(p: ParticipantGeo, paint: SequencePaint, blockWidth: number, badgeWidth: number): number {
+function nameCenterX(
+  p: ParticipantGeo,
+  paint: SequencePaint,
+  block: { readonly width: number; readonly badgeWidth: number; readonly minimumWidth: number },
+): number {
+  const { width: blockWidth, badgeWidth } = block;
   if (p.type === 'queue') return p.x + queueMargin().getX1() + badgeWidth + (blockWidth - badgeWidth) / 2;
   if (isStickKind(p.type)) {
     const left = (p.width - (blockWidth + DB_TEXT_PADDING_X * 2)) / 2;
     return p.x + left + badgeWidth + (blockWidth - badgeWidth) / 2;
   }
   if (p.type !== 'participant' && p.type !== 'collections') return p.centerX;
-  // The block is drawn at `padding.getTranslate()` (`ComponentRoseParticipant
-  // .java:121`) at its OWN width, never the box's: a `MinimumWidth` box is
-  // wider than it (`:139-142`), and the text stays at the left padding.
+  // The block is drawn at `padding.getTranslate()` at its OWN width, then
+  // shifted by `HorizontalAlignment#getPosition` inside the room a wider
+  // `MinimumWidth` leaves (`ComponentRoseParticipant.java:114-121`, upstream
+  // `54cbdd6e59e`): `extra = getPureTextWidth - textWidth`, `getPureTextWidth`
+  // being `max(text, minWidth)` (`:143-145`).
   // The badge, when any, takes the block's left `badgeWidth` (`TextBlockSprited.java:70-77`).
-  return p.x + paint.padding.getLeft() + badgeWidth + (blockWidth - badgeWidth) / 2;
+  const extra = block.minimumWidth - blockWidth;
+  const dx = extra > 0 ? alignedOffset(paint.align ?? HorizontalAlignment.CENTER, blockWidth, blockWidth + extra) : 0;
+  return p.x + paint.padding.getLeft() + dx + badgeWidth + (blockWidth - badgeWidth) / 2;
+}
+
+/** `HorizontalAlignment#getPosition(width, fullWidth)` (`HorizontalAlignment.java:92-98`). */
+function alignedOffset(align: HorizontalAlignment, width: number, fullWidth: number): number {
+  if (align === HorizontalAlignment.RIGHT) return fullWidth - width;
+  if (align === HorizontalAlignment.CENTER) return (fullWidth - width) / 2;
+  return 0;
 }
 
 /**
@@ -330,14 +355,16 @@ function nameCenterX(p: ParticipantGeo, paint: SequencePaint, blockWidth: number
 export function buildLabelRuns(
   p: ParticipantGeo,
   ctx: ParticipantLayoutCtx,
-  stereoFont: FontConfiguration,
+  paints: { readonly stereoFont: FontConfiguration; readonly minimumWidth: number },
 ): readonly TextRun[] {
+  const { stereoFont } = paints;
   const paint = paintOfGeo(p);
   const head = headRowsOf(p.stereotypeLines ?? [], p.display, {
     font: paint.font,
     stereoFont,
     stereotypeBottom: p.stereotypeBottom,
     underlined: p.underlined,
+    stereotypeText: p.stereotypeText,
   });
   const block = headBlock(head, ctx, {
     align: paint.align ?? HorizontalAlignment.CENTER,
@@ -349,7 +376,7 @@ export function buildLabelRuns(
   // `TextBlockSprited#calculateDimension`: width = rows + sprite + 6, height =
   // max(sprite, rows) (`TextBlockSprited.java:55-62`).
   const blockHeight = Math.max(p.badge?.height ?? 0, block.height);
-  const cx = nameCenterX(p, paint, block.width + badgeWidth, badgeWidth);
+  const cx = nameCenterX(p, paint, { width: block.width + badgeWidth, badgeWidth, minimumWidth: paints.minimumWidth });
   // The block's TOP is `cy - blockHeight / 2`: the sprite draws at the block
   // origin and the parent text block at the same y (`TextBlockSprited.java:
   // 70-77`), so the rows start at the block top, not centred on it. The sheet

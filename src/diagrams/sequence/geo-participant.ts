@@ -47,6 +47,11 @@ export interface ParticipantGeo {
    */
   readonly paint?: SequencePaint;
   id: string;
+  /** `Participant.uid`: the head/tail/lifeline groups' `data-entity-uid`
+   *  and `id` stem (`Participant.java:233-262`). */
+  uid: string;
+  /** `Participant.sourceLine`: those groups' `data-source-line`. */
+  sourceLine?: number;
   display: string;
   type: ParticipantType;
   x: number;
@@ -79,6 +84,8 @@ export interface ParticipantGeo {
   stereotypeLines?: readonly string[];
   /** {@link Participant.stereotypeBottom}: the rows follow the name lines. */
   stereotypeBottom?: boolean;
+  /** `Participant.stereotypeText`: the kept labels, a plain head line. */
+  stereotypeText?: string;
   /** {@link Participant.underlined}: every display line carries `<u>`. */
   underlined?: boolean;
   /**

@@ -11,7 +11,6 @@ import type { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { javaDoubleToString } from '../../core/java-number-format.js';
 import type { ScaleSpec } from '../../core/scale-command.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import { TitledDiagram } from '../../core/TitledDiagram.js';
@@ -20,24 +19,48 @@ import type { UmlSource } from '../../core/TitledDiagram.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
 import type { ChartAnnotation } from './ChartAnnotation.js';
 import { ChartAxis, LabelPosition } from './ChartAxis.js';
-import type { ChartSeries } from './ChartSeries.js';
-import { SeriesType } from './ChartSeries.js';
+import {
+  checkCartesianKey,
+  checkCartesianKeys,
+  checkCoordinatePairs,
+  checkSameFormat,
+  ERROR_KEYS_NEED_CATEGORIES,
+  ERROR_PAIRS_NEED_NUMERIC,
+  ERROR_SAME_FORMAT,
+  type CartesianCheckState,
+} from './chart-checks.js';
+import {
+  ChartKind,
+  checkFinalPie,
+  ERROR_ONE_PIE,
+  isPolar,
+  Kind,
+  keywordOf,
+  kindOf,
+  PolarAxes,
+  type RadialAxisSettings,
+} from './chart-polar.js';
+import type { PieChart } from './PieChart.js';
+import { PieRenderer } from './PieRenderer.js';
+import type { RadarChart } from './RadarChart.js';
+import { RadarRenderer } from './RadarRenderer.js';
+import { SeriesType, type ChartSeries, type ChartValue } from './ChartSeries.js';
+import type { HColor } from '../../core/style/Value.js';
+import type { CartesianChart } from './CartesianChart.js';
+import { hasCoordinatePairs, resolveCartesian } from './chart-resolve.js';
 import { GridMode, LegendPosition, Orientation, StackMode } from './chart-modes.js';
 import { ChartRenderer } from './ChartRenderer.js';
 import type { SkinParam } from './chart-skin-param.js';
 
 export { GridMode, LegendPosition, Orientation, StackMode } from './chart-modes.js';
+export { Kind, type RadialAxisSettings } from './chart-polar.js';
 
-/** @see ChartDiagram.java:198-199 */
-const ERROR_PAIRS_LINE_SCATTER_ONLY = 'Coordinate pair notation (x:y) is only supported for line and scatter charts';
-/** @see ChartDiagram.java:204-205 */
-const ERROR_PAIRS_NEED_NUMERIC =
-  'Coordinate pair notation requires numeric h-axis (e.g., h-axis "x" -5 --> 5), not categorical labels';
-/** @see ChartDiagram.java:210-211 */
-const ERROR_PAIRS_NEED_RANGE = 'Coordinate pair notation requires explicit h-axis range (e.g., h-axis "x" -5 --> 5)';
-/** @see ChartDiagram.java:218-219, 240-241 */
-const ERROR_SAME_FORMAT = 'All series must use the same data format (either all coordinate pairs or all index-based)';
-
+/** @see ChartDiagram.java:686-687 */
+const ERROR_RANGE_AFTER_PAIRS = 'h-axis range must be given before coordinate pair data';
+/** @see ChartDiagram.java:610-611 */
+const ERROR_ITEM_WITHOUT_SERIES = 'A list item must follow a series written without data, as in: pie "Air"';
+/** @see ChartDiagram.java:613 */
+const ERROR_MIXED_KEYS = 'Either every value has a key (key: value), or none has';
 /** The skin param is built by the factory and passed in, as `WBSDiagram`'s is. */
 export class ChartDiagram extends TitledDiagram implements TextBlock {
   private readonly xAxisLabels: string[] = [];
@@ -58,6 +81,12 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
   /** Upstream's `annotations` (D3). @see ChartDiagram.java:84 */
   private readonly chartAnnotations: ChartAnnotation[] = [];
   private readonly skinParam: SkinParam;
+  /** The series written without data, which takes the list items after it. @see ChartDiagram.java:113 */
+  private openedSeries: ChartSeries | undefined = undefined;
+  /** `angularLabels`, `radialAxis`, `radarCircleGrid`. @see ChartDiagram.java:105-108 */
+  private readonly polar = new PolarAxes();
+  /** `kind` and `kindKeyword`. @see ChartDiagram.java:110-111 */
+  private readonly kind = new ChartKind();
   /** `TitledDiagram`'s title/caption/legend/header/footer/mainframe, read by the chrome step. */
   readonly annotations: DiagramAnnotations = createAnnotations();
   /** `CommandScale*`'s target (`UmlDiagram#setScale`), as `WBSDiagram.ts` has it. */
@@ -98,65 +127,162 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this;
   }
 
-  /** @see ChartDiagram.java:94-97 */
+  /** @see ChartDiagram.java:123-130 */
   drawU(ug: UGraphic): void {
-    this.getRenderer().drawU(ug);
+    this.getKindRenderer().drawU(ug);
   }
 
-  /** @see ChartDiagram.java:341-343 */
+  /** @see ChartDiagram.java:132-138 */
   calculateDimension(stringBounder: StringBounder): XDimension2D {
-    return this.getRenderer().calculateDimension(stringBounder);
+    return this.getKindRenderer().calculateDimension(stringBounder);
   }
 
-  /**
-   * Horizontal passes the v-axis labels as categories and the h-axis as both
-   * axes, with the grid modes swapped. `xAxis != null` always holds, and its
-   * title is never null.
-   * @see ChartDiagram.java:99-121
-   */
+  /** `drawMe`'s and `calculateDimension`'s dispatch on the kind. @see ChartDiagram.java:123-146 */
+  private getKindRenderer(): ChartRenderer | PieRenderer | RadarRenderer {
+    const kind = this.kind.getKind();
+    if (kind === Kind.PIE) return new PieRenderer(this.skinParam, this.resolvePie());
+    if (kind === Kind.RADAR) return new RadarRenderer(this.skinParam, this.resolveRadar());
+    return this.getRenderer();
+  }
+
+  /** The pie, its slices resolved. @see ChartDiagram.java:151-153 */
+  resolvePie(): PieChart {
+    return this.polar.resolvePie(this.series, this.legendPosition);
+  }
+
+  /** The radar, its categories, values and scale resolved. @see ChartDiagram.java:158-161 */
+  resolveRadar(): RadarChart {
+    return this.polar.resolveRadar(this.series, this.legendPosition);
+  }
+
+  getKind(): Kind | undefined {
+    return this.kind.getKind();
+  }
+
+  /** @see ChartDiagram.java:490-504 */
+  checkKind(keyword: string, wanted: Kind): CommandExecutionResult | undefined {
+    return errorOf(this.kind.checkKind(keyword, wanted));
+  }
+
+  /** @see ChartDiagram.java:506-519 */
+  setAngularLabels(labels: readonly string[]): CommandExecutionResult {
+    return this.checkKind('a-axis', Kind.POLAR) ?? okOr(this.polar.setAngularLabels(this.series, labels));
+  }
+
+  /** @see ChartDiagram.java:530-548 */
+  setRadialAxis(r: RadialAxisSettings): CommandExecutionResult {
+    return this.checkKind('r-axis', Kind.RADAR) ?? okOr(this.polar.setRadialAxis(r));
+  }
+
+  /** @see ChartDiagram.java:550-565 */
+  private addPolarSeries(s: ChartSeries): CommandExecutionResult {
+    const refused = this.polar.checkPolarSeries(this.series, s);
+    if (refused !== undefined) return CommandExecutionResult.error(refused);
+    this.series.push(s);
+    return CommandExecutionResult.ok();
+  }
+
+  /** A pie written as a list is checked once all its items are read. @see ChartDiagram.java:636-645 */
+  checkFinalError(): string | undefined {
+    return checkFinalPie(this.series);
+  }
+
+  /** What the cartesian checks read. */
+  private checkState(): CartesianCheckState {
+    return { orientation: this.orientation, xAxis: this.xAxis, xAxisLabels: this.xAxisLabels, series: this.series };
+  }
+
+  /** @see ChartDiagram.java:222-224 */
   private getRenderer(): ChartRenderer {
-    const common = this.commonRendererState();
-    if (this.orientation === Orientation.HORIZONTAL) {
-      return new ChartRenderer({
-        ...common,
-        xAxisLabels: this.yAxisLabels,
-        xAxisTitle: this.yAxis.getTitle(),
-        xAxisTickSpacing: undefined,
-        yAxis: this.xAxis,
-        y2Axis: undefined,
-        xGridMode: this.yGridMode,
-        yGridMode: this.xGridMode,
-      });
-    }
-    const title = this.xAxis.getTitle();
-    return new ChartRenderer({
-      ...common,
+    return new ChartRenderer(this.skinParam, this.resolveCartesian());
+  }
+
+  /** The chart as drawn on cartesian axes, every implicit value resolved. @see ChartDiagram.java:230-255 */
+  resolveCartesian(): CartesianChart {
+    return resolveCartesian({
+      orientation: this.orientation,
       xAxisLabels: this.xAxisLabels,
-      xAxisTitle: title !== '' ? title : this.xAxisTitle,
+      xAxisTitle: this.xAxisTitle,
       xAxisTickSpacing: this.xAxisTickSpacing,
+      xAxisLabelPosition: this.xAxisLabelPosition,
+      xAxis: this.xAxis,
+      yAxisLabels: this.yAxisLabels,
       yAxis: this.yAxis,
       y2Axis: this.y2Axis,
+      series: this.series,
+      legendPosition: this.legendPosition,
       xGridMode: this.xGridMode,
       yGridMode: this.yGridMode,
+      stackMode: this.stackMode,
+      annotations: this.chartAnnotations,
     });
   }
 
-  /** The arguments both `getRenderer` arms pass unchanged. @see ChartDiagram.java:109-120 */
-  private commonRendererState() {
-    return {
-      skinParam: this.skinParam,
-      xAxisLabelPosition: this.xAxisLabelPosition,
-      series: this.series,
-      legendPosition: this.legendPosition,
-      stackMode: this.stackMode,
-      orientation: this.orientation,
-      annotations: this.chartAnnotations,
-      xAxis: this.xAxis,
-    };
+  /** The labels of the category axis. @see ChartDiagram.java:412-414 */
+  private getCategoryLabels(): readonly string[] {
+    return this.orientation === Orientation.HORIZONTAL ? this.yAxisLabels : this.xAxisLabels;
   }
 
-  /** @see ChartDiagram.java:125-129 */
+  /** The first refusal of `checkCartesianKeys` over every series. @see ChartDiagram.java:652-657, 719-724 */
+  private checkAllKeys(labels: readonly string[]): CommandExecutionResult {
+    for (const s of this.series) {
+      const unknown = checkCartesianKeys(this.checkState(), s, labels);
+      if (unknown !== undefined) return CommandExecutionResult.error(unknown);
+    }
+    return CommandExecutionResult.ok();
+  }
+
+  /**
+   * A series written without data: the list items that follow give its values.
+   * A pie is checked once every line is read (`checkFinalError`).
+   * @see ChartDiagram.java:587-603
+   */
+  openSeries(s: ChartSeries): CommandExecutionResult {
+    const kind = kindOf(s);
+    const error = this.checkKind(keywordOf(s), kind);
+    if (error !== undefined) return error;
+    if (s.getType() === SeriesType.PIE && this.series.length > 0) return CommandExecutionResult.error(ERROR_ONE_PIE);
+    if (kind === Kind.CARTESIAN && hasCoordinatePairs(this.series))
+      return CommandExecutionResult.error(ERROR_SAME_FORMAT);
+    this.series.push(s);
+    this.openedSeries = s;
+    return CommandExecutionResult.ok();
+  }
+
+  /**
+   * A value written on a line of a list, such as `* Nitrogen : 78`, added to the
+   * series written without data before it.
+   * @see ChartDiagram.java:608-632
+   */
+  addItem(key: string | undefined, value: ChartValue, color: HColor | undefined): CommandExecutionResult {
+    const open = this.openedSeries;
+    if (open === undefined) return CommandExecutionResult.error(ERROR_ITEM_WITHOUT_SERIES);
+    const mixed = open.getValues().length > 0 && open.hasKeys() !== (key !== undefined) ? ERROR_MIXED_KEYS : undefined;
+    const refused = mixed ?? this.polar.checkPolarItem(open, key, value) ?? this.checkCartesianItem(open, key, color);
+    if (refused !== undefined) return CommandExecutionResult.error(refused);
+    open.addItem(key, value, color);
+    return CommandExecutionResult.ok();
+  }
+
+  /** A bar, line, area or scatter item takes no colour, and a key among the categories. @see ChartDiagram.java:620-630 */
+  private checkCartesianItem(
+    open: ChartSeries,
+    key: string | undefined,
+    color: HColor | undefined,
+  ): string | undefined {
+    if (isPolar(open)) return undefined;
+    if (color !== undefined) return `A value of a ${keywordOf(open)} cannot have a color of its own`;
+    return key === undefined ? undefined : checkCartesianKey(this.checkState(), key, this.getCategoryLabels());
+  }
+
+  /** @see ChartDiagram.java:647-662 */
   setXAxisLabels(labels: readonly string[]): CommandExecutionResult {
+    if (labels.length > 0 && this.xAxis.isAutoScale() && hasCoordinatePairs(this.series))
+      return CommandExecutionResult.error(ERROR_PAIRS_NEED_NUMERIC);
+    if (this.orientation === Orientation.VERTICAL) {
+      const refused = this.checkAllKeys(labels);
+      if (!refused.isOk()) return refused;
+    }
     this.xAxisLabels.length = 0;
     this.xAxisLabels.push(...labels);
     return CommandExecutionResult.ok();
@@ -186,8 +312,17 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this.xAxisTickSpacing;
   }
 
-  /** @see ChartDiagram.java:151-159 */
+  /**
+   * Coordinate pairs given without a range were never checked against one; keyed
+   * values need categories, not a range.
+   * @see ChartDiagram.java:684-702
+   */
   setXAxis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
+    const ranged = min !== undefined || max !== undefined;
+    if (ranged && this.xAxis.isAutoScale() && hasCoordinatePairs(this.series))
+      return CommandExecutionResult.error(ERROR_RANGE_AFTER_PAIRS);
+    if (ranged && this.orientation === Orientation.VERTICAL && this.series.some((s) => s.hasKeys() && !isPolar(s)))
+      return CommandExecutionResult.error(ERROR_KEYS_NEED_CATEGORIES);
     applyToAxis(this.xAxis, title, min, max);
     return CommandExecutionResult.ok();
   }
@@ -196,14 +331,18 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this.xAxis;
   }
 
-  /** @see ChartDiagram.java:165-173 */
+  /** @see ChartDiagram.java:708-716 */
   setYAxis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
     applyToAxis(this.yAxis, title, min, max);
     return CommandExecutionResult.ok();
   }
 
-  /** @see ChartDiagram.java:175-179 */
+  /** @see ChartDiagram.java:718-728 */
   setYAxisLabels(labels: readonly string[]): CommandExecutionResult {
+    if (this.orientation === Orientation.HORIZONTAL) {
+      const refused = this.checkAllKeys(labels);
+      if (!refused.isOk()) return refused;
+    }
     this.yAxisLabels.length = 0;
     this.yAxisLabels.push(...labels);
     return CommandExecutionResult.ok();
@@ -213,7 +352,7 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this.yAxisLabels;
   }
 
-  /** Creates the axis even with all three absent. @see ChartDiagram.java:181-191 */
+  /** Creates the axis even with all three absent. @see ChartDiagram.java:730-740 */
   setY2Axis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
     this.y2Axis ??= new ChartAxis();
     applyToAxis(this.y2Axis, title, min, max);
@@ -221,47 +360,22 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
   }
 
   /**
-   * The checks run in Java's order. `isAutoScale` having passed, `includeValue`
-   * on the x axis is a no-op: kept, as upstream has it. The `SeriesType` test is
-   * unreachable from a registered command (`bar` and `area` never build pairs).
-   * @see ChartDiagram.java:193-255
+   * The checks run in Java's order. The axes are no longer widened here: they are
+   * fitted when the chart is resolved (2117ccb43cd).
+   * @see ChartDiagram.java:742-807
    */
   addSeries(series: ChartSeries): CommandExecutionResult {
-    const refused = series.hasExplicitXValues() ? this.checkCoordinatePairs(series) : this.checkSameFormat(series);
+    this.openedSeries = undefined;
+    const kindError = this.checkKind(keywordOf(series), kindOf(series));
+    if (kindError !== undefined) return kindError;
+    if (isPolar(series)) return this.addPolarSeries(series);
+    const state = this.checkState();
+    const refused = series.hasExplicitXValues()
+      ? checkCoordinatePairs(state, series)
+      : (checkCartesianKeys(state, series, this.getCategoryLabels()) ?? checkSameFormat(state, series));
     if (refused !== undefined) return CommandExecutionResult.error(refused);
-
-    if (series.hasExplicitXValues()) for (const x of series.getXValues()!) this.xAxis.includeValue(x);
-
     this.series.push(series);
-
-    const axis = series.isUseSecondaryAxis() && this.y2Axis !== undefined ? this.y2Axis : this.yAxis;
-    for (const value of series.getValues()) axis.includeValue(value);
-
     return CommandExecutionResult.ok();
-  }
-
-  /** @see ChartDiagram.java:195-231 */
-  private checkCoordinatePairs(series: ChartSeries): string | undefined {
-    if (series.getType() !== SeriesType.LINE && series.getType() !== SeriesType.SCATTER)
-      return ERROR_PAIRS_LINE_SCATTER_ONLY;
-    if (this.xAxisLabels.length > 0) return ERROR_PAIRS_NEED_NUMERIC;
-    if (this.xAxis.isAutoScale() || this.xAxis.getMax() === this.xAxis.getMin()) return ERROR_PAIRS_NEED_RANGE;
-    const sameFormat = this.checkSameFormat(series);
-    if (sameFormat !== undefined) return sameFormat;
-    for (const x of series.getXValues()!) {
-      if (x < this.xAxis.getMin() || x > this.xAxis.getMax()) {
-        const range = `[${javaDoubleToString(this.xAxis.getMin())}, ${javaDoubleToString(this.xAxis.getMax())}]`;
-        return `X-coordinate ${javaDoubleToString(x)} is outside h-axis range ${range}`;
-      }
-    }
-    return undefined;
-  }
-
-  /** @see ChartDiagram.java:215-222, 237-243 */
-  private checkSameFormat(series: ChartSeries): string | undefined {
-    const first = this.series[0];
-    if (first !== undefined && first.hasExplicitXValues() !== series.hasExplicitXValues()) return ERROR_SAME_FORMAT;
-    return undefined;
   }
 
   getXAxisLabels(): readonly string[] {
@@ -353,4 +467,14 @@ function applyToAxis(
   if (title !== undefined) axis.setTitle(title);
   if (min !== undefined) axis.setMin(min);
   if (max !== undefined) axis.setMax(max);
+}
+
+/** An error result for a message, `undefined` for none. */
+function errorOf(message: string | undefined): CommandExecutionResult | undefined {
+  return message === undefined ? undefined : CommandExecutionResult.error(message);
+}
+
+/** `ok()`, or the error for a message. */
+function okOr(message: string | undefined): CommandExecutionResult {
+  return errorOf(message) ?? CommandExecutionResult.ok();
 }

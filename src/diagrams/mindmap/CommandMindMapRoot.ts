@@ -1,6 +1,6 @@
 import type { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
 import { Display } from '../../core/klimt/creole/Display.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import { IdeaShape } from './IdeaShape.js';
 import type { MindMapDiagram } from './MindMapDiagram.js';
 

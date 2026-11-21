@@ -2,7 +2,7 @@ import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import type { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
@@ -17,7 +17,6 @@ import {
 } from '../../core/style/mindmap-style-builder.js';
 import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
 import {
   applyWbsItemMultilineNew,
   collectWbsMultilineBlock,
@@ -29,22 +28,11 @@ import { applyWbsItemOld, WBS_ITEM_OLD_RE_0, WBS_ITEM_OLD_RE_1 } from './Command
 import { applyWbsLink, WBS_LINK_RE } from './CommandWBSLink.js';
 import { WBSDiagram } from './WBSDiagram.js';
 import { SkinParam } from './wbs-skin-param.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startwbs`/`@endwbs` — tolerated defensively in a hand-built source
  *  (the mindmap factory's `START_END_RE` precedent). */
 const START_END_RE = /^@(start|end)wbs\s*$/i;
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by
- *  the lower-cased skin parameter name.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:92-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
-
-/** The standard error text of a line no command matches. */
-const SYNTAX_ERROR = 'Syntax Error?';
 
 interface DispatchOutcome {
   readonly result: CommandExecutionResult;
@@ -217,12 +205,12 @@ function refusalLineOf(source: UmlSource, i: number): number {
 /**
  * `CommandSkinParam#executeArg`'s deprecation warnings, one per collected
  * `skinparam`, in source order.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:94-107
  */
 function addSkinParamWarnings(diagram: WBSDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -247,7 +235,7 @@ function executeCommands(diagram: WBSDiagram, source: UmlSource, dispatch: Style
     }
 
     const outcome = dispatchWbsLine(diagram, lines, i);
-    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, SYNTAX_ERROR);
+    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, syntaxErrorMessageOf(lines[i]!));
     if (outcome.result.isOk() === false) {
       return refuse('execution', refusalLineOf(source, i), i, outcome.result.getError(), outcome.result.getScore());
     }

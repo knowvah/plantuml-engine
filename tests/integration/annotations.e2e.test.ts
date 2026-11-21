@@ -168,7 +168,12 @@ describe('T7 pipeline integration — annotation chrome end to end', () => {
   });
 
   it("buveco-86-tibo673: TIM cascade collapsing to a bare 'title Test SVG' line renders a CLASS-typed diagram containing the title", () => {
-    const source = readFileSync(join(REPO_ROOT, 'tests/fixtures/corpus/sequence/buveco-86-tibo673.puml'), 'utf-8');
+    // The fixture leaves its inner `!ifdef` open, an error page since upstream 0537b558644
+    // (CodeIteratorIf.java:75-80); closing it keeps the cascade this test is about.
+    const source = readFileSync(
+      join(REPO_ROOT, 'tests/fixtures/corpus/sequence/buveco-86-tibo673.puml'),
+      'utf-8',
+    ).replace('@enduml', '!endif\n@enduml');
 
     // Mission's own routing assertion (SI7 default: an @startuml block with
     // no diagram-specific content falls back to the CLASS plugin, not

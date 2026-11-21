@@ -1,0 +1,4 @@
+@startuml
+rectangle "<math>glb x</math>" as r
+note right of r : <math>glb x</math>
+@enduml

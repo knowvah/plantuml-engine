@@ -21,7 +21,7 @@ import { ParserPass } from '../../core/command/ParserPass.js';
 import type { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.js';
 import { DEFAULT_CLOCK } from '../../core/clock.js';
 import type { InternalEmojiStore } from '../../core/internal-emoji-store.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { createSpriteRegistry } from '../../core/sprite-registry.js';
 import { LineLocationImpl } from '../../core/tim/LineLocationImpl.js';
@@ -30,26 +30,31 @@ import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact
 import { StringLocated } from '../../core/tim/StringLocated.js';
 import { BlocLines } from '../../core/utils/BlocLines.js';
 import { versionString } from '../../core/version.js';
-import { Warning } from '../../core/warning/Warning.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 import { CommandAnalog } from './command/CommandAnalog.js';
 import { CommandAtPlayer } from './command/CommandAtPlayer.js';
 import { CommandAtTime } from './command/CommandAtTime.js';
 import { CommandBinary } from './command/CommandBinary.js';
+import { CommandBreak } from './command/CommandBreak.js';
 import { CommandChangeStateByPlayerCode } from './command/CommandChangeStateByPlayerCode.js';
 import { CommandChangeStateByTime } from './command/CommandChangeStateByTime.js';
 import { CommandClock } from './command/CommandClock.js';
+import { CommandConcise } from './command/CommandConcise.js';
 import { CommandConstraint } from './command/CommandConstraint.js';
 import { CommandDefineStateLong } from './command/CommandDefineStateLong.js';
 import { CommandDefineStateShort } from './command/CommandDefineStateShort.js';
+import { CommandDigital } from './command/CommandDigital.js';
 import { CommandHideTimeAxis } from './command/CommandHideTimeAxis.js';
 import { CommandHighlight } from './command/CommandHighlight.js';
 import { CommandModeCompact } from './command/CommandModeCompact.js';
 import { CommandNote } from './command/CommandNote.js';
 import { CommandNoteLong } from './command/CommandNoteLong.js';
 import { CommandPixelHeight } from './command/CommandPixelHeight.js';
-import { CommandRobustConcise } from './command/CommandRobustConcise.js';
+import { CommandRectangle } from './command/CommandRectangle.js';
+import { CommandRobust } from './command/CommandRobust.js';
 import { CommandScalePixel } from './command/CommandScalePixel.js';
 import { CommandTicks } from './command/CommandTicks.js';
+import { CommandTimeAxisUnit } from './command/CommandTimeAxisUnit.js';
 import { CommandTimeMessage } from './command/CommandTimeMessage.js';
 import { CommandUseDateFormat } from './command/CommandUseDateFormat.js';
 import { TimingDiagram } from './TimingDiagram.js';
@@ -64,18 +69,8 @@ import {
 
 /** `@startuml`/`@enduml`, tolerated in a hand-built source. */
 const START_END_RE = /^@(start|end)uml\s*$/i;
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** The location description of a source string. @see LineLocation.getDescription */
 const LOCATION_DESCRIPTION = 'string';
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, by lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /** Where the command at line `index` stands. */
 interface CommandInput {
@@ -186,9 +181,12 @@ export function initCommandsList(): readonly TimingCommand[] {
   return [
     COMMON_COMMANDS_1,
     singleLine('CommandFootboxIgnored', new CommandFootboxIgnored<TimingDiagram>()),
-    singleLine('CommandRobustConcise', new CommandRobustConcise()),
+    singleLine('CommandRobust', new CommandRobust()),
+    singleLine('CommandConcise', new CommandConcise()),
+    singleLine('CommandRectangle', new CommandRectangle()),
     singleLine('CommandClock', new CommandClock()),
     singleLine('CommandAnalog', new CommandAnalog()),
+    singleLine('CommandDigital', new CommandDigital()),
     singleLine('CommandBinary', new CommandBinary()),
     singleLine('CommandDefineStateShort', new CommandDefineStateShort()),
     singleLine('CommandDefineStateLong', new CommandDefineStateLong()),
@@ -202,20 +200,21 @@ export function initCommandsList(): readonly TimingCommand[] {
     singleLine('CommandConstraint', new CommandConstraint()),
     singleLine('CommandScalePixel', new CommandScalePixel()),
     singleLine('CommandHideTimeAxis', new CommandHideTimeAxis()),
+    singleLine('CommandTimeAxisUnit', new CommandTimeAxisUnit()),
     singleLine('CommandHighlight', new CommandHighlight()),
+    singleLine('CommandBreak', new CommandBreak()),
     singleLine('CommandModeCompact', new CommandModeCompact()),
     singleLine('CommandTicks', new CommandTicks()),
     singleLine('CommandPixelHeight', new CommandPixelHeight()),
     singleLine('CommandUseDateFormat', new CommandUseDateFormat()),
-    // cmds.add(new CommandStopAt());
   ];
 }
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: TimingDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -248,7 +247,10 @@ function executeCommands(
       continue;
     }
     const outcome = getCandidate(commands, { diagram, source, lines, index: i, location: locationOf(source, i) });
-    if (outcome === undefined) return refuse('syntax', refusalLineOf(source, i), i + 1, SYNTAX_ERROR);
+    // `getSyntaxErrorMessage`: "Syntax Error?", or the unclosed-`<style>` wording (PSystemCommandFactory.java:206).
+    if (outcome === undefined) {
+      return refuse('syntax', refusalLineOf(source, i), i + 1, syntaxErrorMessageOf(lines[i]!));
+    }
     const { result, nextIndex } = outcome;
     if (!result.isOk()) {
       return refuse('execution', refusalLineOf(source, i), nextIndex, result.getError(), result.getScore());

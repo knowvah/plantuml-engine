@@ -7,7 +7,6 @@ import { describe, it, expect } from 'vitest';
 import { parseFiles } from '../../../src/diagrams/files/parser.js';
 import { FEntry, FilesType } from '../../../src/diagrams/files/ast.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
-import { bridgeFontConfiguration } from '../../../src/core/klimt/font/FontConfigurationBridge.js';
 import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
 
 function makeSource(lines: string[], styleSource?: UmlSource['styleSource']): UmlSource {
@@ -51,18 +50,24 @@ describe('parseFiles -- paths (FEntry.java:82-94)', () => {
     expect(treeOf(['/src/'])).toEqual([leaf('src:FOLDER')]);
   });
 
-  it('a DATA entry of the same name does not satisfy a later folder (:103 matches FOLDER only)', () => {
-    expect(treeOf(['/a', '/a/b'])).toEqual([leaf('a:DATA'), { entry: 'a:FOLDER', children: [leaf('b:DATA')] }]);
+  it('a DATA entry of the same name becomes the folder of a later path (FEntry.java:127-130)', () => {
+    expect(treeOf(['/a', '/a/b'])).toEqual([{ entry: 'a:FOLDER', children: [leaf('b:DATA')] }]);
   });
 
-  it('keeps insertion order and does not trim the path (FilesDiagram.java:84-85)', () => {
-    expect(treeOf(['/b ', '/a'])).toEqual([leaf('b :DATA'), leaf('a:DATA')]);
+  it('keeps insertion order and trims the label (FilesParser.java:97-99)', () => {
+    expect(treeOf(['/b ', '/a'])).toEqual([leaf('b:DATA'), leaf('a:DATA')]);
   });
 
-  it('addRawEntry answers the DATA entry created, null for a trailing slash (:82-94)', () => {
+  it('addRawEntry answers the entry of the last element: the DATA file, or the folder for a trailing slash (:74-100)', () => {
     const root = FEntry.createRoot();
-    expect(root.addRawEntry('x/y')?.name).toBe('y');
-    expect(root.addRawEntry('x/')).toBeNull();
+    expect(root.addRawEntry('x/y').name).toBe('y');
+    expect(root.addRawEntry('x/').name).toBe('x');
+  });
+
+  it('addRawEntry drops leading ./ and / and answers itself for nothing left (:76-80)', () => {
+    const root = FEntry.createRoot();
+    expect(root.addRawEntry('./a.txt').name).toBe('a.txt');
+    expect(root.addRawEntry('/')).toBe(root);
   });
 
   it('getParent answers the containing entry; the root has none (:116-118)', () => {
@@ -73,10 +78,11 @@ describe('parseFiles -- paths (FEntry.java:82-94)', () => {
     expect(root.getParent()).toBeNull();
   });
 
-  it('getEmoticon is the open folder for a FOLDER, the page for everything else (:124-129)', () => {
+  it('getLastEntryChild skips the trailing notes (:158-163)', () => {
     const root = FEntry.createRoot();
-    expect(root.getEmoticon()).toBe('<:1f4c2:>');
-    expect(root.addRawEntry('f.txt')?.getEmoticon()).toBe('<:1f4c4:>');
+    root.addRawEntry('a.txt');
+    root.addNote(['n']);
+    expect(root.getLastEntryChild()?.name).toBe('a.txt');
   });
 });
 
@@ -86,13 +92,13 @@ describe('parseFiles -- notes (FilesDiagram.java:86-99, FilesListing.java:81-86)
     expect(a!.children.map((c) => c.entry)).toEqual(['b.txt:DATA', 'NONE:NOTE']);
   });
 
-  it('a note after a trailing-slash folder goes to the root (lastCreated is null)', () => {
-    expect(treeOf(['/a/', '<note>', 'hi', '</note>']).map((c) => c.entry)).toEqual(['a:FOLDER', 'NONE:NOTE']);
+  it('a note after a folder line goes under that folder (FilesParser.java:124-132, upstream 69a34da7add)', () => {
+    expect(treeOf(['/a/', '<note>', 'hi', '</note>'])).toEqual([{ entry: 'a:FOLDER', children: [leaf('NONE:NOTE')] }]);
   });
 
-  it('a note after a file and then a trailing-slash folder goes to the root', () => {
+  it('a note after a file and then a folder line goes under the last folder', () => {
     const tree = treeOf(['/a/b.txt', '/c/', '<note>', 'hi', '</note>']);
-    expect(tree.map((c) => c.entry)).toEqual(['a:FOLDER', 'c:FOLDER', 'NONE:NOTE']);
+    expect(tree[1]).toEqual({ entry: 'c:FOLDER', children: [leaf('NONE:NOTE')] });
   });
 
   it('a note before any entry goes to the root', () => {
@@ -109,10 +115,10 @@ describe('parseFiles -- notes (FilesDiagram.java:86-99, FilesListing.java:81-86)
     expect(note).toEqual(['  indented ', 'second']);
   });
 
-  it('a note never closed takes every remaining line (getNote, :92-101)', () => {
+  it('a note never closed takes every remaining line, the closing @endfiles too (readNote, :134-143)', () => {
     const root = parseFiles(makeSource(['<note>', 'a', '/b.txt'])).root;
     expect(root.children.map((c) => c.type)).toEqual([FilesType.NOTE]);
-    expect(root.children[0]!.note).toEqual(['a', '/b.txt']);
+    expect(root.children[0]!.note).toEqual(['a', '/b.txt', '@endfiles']);
   });
 
   it('`</note>` closes by prefix, and a `/` line inside a note is note text (:96)', () => {
@@ -122,24 +128,44 @@ describe('parseFiles -- notes (FilesDiagram.java:86-99, FilesListing.java:81-86)
   });
 });
 
-describe('parseFiles -- lines the jar skips (FilesDiagram.java:80-88)', () => {
-  it('ignores unknown, blank, indented and directive lines', () => {
-    expect(treeOf(['', 'foo', '  /indented.txt', '!theme x', "' comment", '/a.txt'])).toEqual([leaf('a.txt:DATA')]);
+describe('parseFiles -- lines (FilesParser.java:70-88)', () => {
+  it('skips blank and comment lines; every other line is an entry', () => {
+    expect(treeOf(['', 'foo', "' comment", '/a.txt'])).toEqual([leaf('foo:DATA'), leaf('a.txt:DATA')]);
   });
 
-  it('matches `<note>` case-sensitively', () => {
-    expect(treeOf(['<NOTE>', 'x', '</NOTE>'])).toEqual([]);
+  it('indentation nests an entry under the less indented one before it', () => {
+    expect(treeOf(['src', '  a.ts', '  lib', '    b.ts', 'README'])).toEqual([
+      { entry: 'src:FOLDER', children: [leaf('a.ts:DATA'), { entry: 'lib:FOLDER', children: [leaf('b.ts:DATA')] }] },
+      leaf('README:DATA'),
+    ]);
   });
 
-  it('an annotation block is consumed whole, so its inner lines are not paths', () => {
-    const ast = parseFiles(makeSource(['legend', '/inside', 'end legend', '/a.txt']));
-    expect(ast.root.children.map((c) => c.name)).toEqual(['a.txt']);
-    expect(ast.annotations?.legend.display).toEqual(['/inside']);
+  it('matches `<note>` case-sensitively: <NOTE> is an entry', () => {
+    expect(treeOf(['<NOTE>']).map((c) => c.entry)).toEqual(['<NOTE>:DATA']);
   });
 
-  it('a `sprite` definition is consumed by the sprite matcher, not read as a path', () => {
-    const ast = parseFiles(makeSource(['sprite $s [2x2/1] {', '00', '00', '}', '/a.txt']));
-    expect(ast.root.children.map((c) => c.name)).toEqual(['a.txt']);
+  it('ignores the noise tree prints (".", "C:.", "3 directories, 4 files")', () => {
+    expect(treeOf(['.', 'C:.', '3 directories, 4 files', '/a.txt'])).toEqual([leaf('a.txt:DATA')]);
+  });
+
+  it('reads GNU tree output, nesting by the branch column', () => {
+    expect(treeOf(['├── src', '│   └── a.ts', '└── README'])).toEqual([
+      { entry: 'src:FOLDER', children: [leaf('a.ts:DATA')] },
+      leaf('README:DATA'),
+    ]);
+  });
+
+  it('reads Windows tree: a branch glued to the name is a folder (TreePrefix.java:79)', () => {
+    expect(treeOf(['+---bin', '|       a.exe', '\\---lib'])).toEqual([
+      { entry: 'bin:FOLDER', children: [leaf('a.exe:DATA')] },
+      leaf('lib:FOLDER'),
+    ]);
+  });
+
+  it('a title the style extractor takes reaches the annotations, not the tree (StyleExtractor.java:73-76)', () => {
+    const ast = parseFiles(makeSource(['@startfiles', 'title My Files', '/src/foo.ts', '@endfiles']));
+    expect(ast.annotations?.title.display).toEqual(['My Files']);
+    expect(ast.root.children.map((c) => c.name)).toEqual(['src']);
   });
 });
 
@@ -150,11 +176,10 @@ describe('parseFiles -- style and sprites', () => {
     expect(diagram.getSkinParam().getValue('shadowing')).toBeNull();
   });
 
-  it('applies a <style> block before the font is read (FilesDiagram.java:67-76)', () => {
+  it('applies a <style> block (FilesDiagram.java:66-70)', () => {
     const styleSource = { skinparam: new Map<string, string>(), styles: ['root {\n FontColor red\n}'] };
     const diagram = parseFiles(makeSource(['/a'], styleSource)).diagram;
     expect(diagram.styleError).toBeUndefined();
-    expect(bridgeFontConfiguration(diagram.fontConfiguration).color).toBe('#FF0000');
   });
 
   it('keeps a style error and carries on without the style (e.printStackTrace, FilesDiagram.java:68-70)', () => {

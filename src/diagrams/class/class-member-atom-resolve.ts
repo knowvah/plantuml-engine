@@ -34,6 +34,8 @@ import { spriteMonochromeAsLike, spriteColor4096ToPngDataUri } from '../../core/
 import { spriteTintHref, type SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
 import { resolveSvgSpriteAtom } from '../../core/creole-atoms-image-resolver.js';
 import { renderLatexAsImage } from '../../core/latex.js';
+import { rollbackLayout } from '../../core/math/latex-atom.js';
+import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import { JAR_DEFAULT_TEXT_COLOR } from '../../core/decoration/symbol/usymbol-resolve.js';
 
 /** One resolved atom + the width/line-height it contributes to its row —
@@ -276,7 +278,20 @@ export function resolveOpenIconicAtom(
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/creole/atom/AtomMath.java:64-106
  */
-export function resolveLatexAtom(atom: Extract<CreoleAtom, { kind: 'latex' }>): ResolvedMemberAtom {
+export function resolveLatexAtom(
+  atom: Extract<CreoleAtom, { kind: 'latex' }>,
+  stringBounder: StringBounder,
+): ResolvedMemberAtom {
+  // `AtomMath` -> `ScientificEquationSafe#getDimension`/`drawU`: a rejected formula is its monospace source's block
+  // (ScientificEquationSafe.java:110-128, aa79d2d80ee).
+  if (atom.rollback !== undefined) {
+    const layout = rollbackLayout(atom.rollback, stringBounder);
+    return {
+      atom: { kind: 'image', href: '', width: layout.width, height: layout.height, rollback: layout },
+      width: layout.width,
+      lineHeight: layout.height,
+    };
+  }
   const drawn = renderLatexAsImage(atom.expr, atom.color ?? JAR_DEFAULT_TEXT_COLOR);
   return {
     atom: { kind: 'image', href: drawn.href, width: drawn.width, height: drawn.height },

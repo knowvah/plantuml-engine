@@ -5,7 +5,7 @@ import type { Element } from '../element/Element.js';
 import { ElementText } from '../element/ElementText.js';
 import { Terminated } from '../Terminated.js';
 import type { ElementFactory } from './ElementFactory.js';
-import { trin } from '../../../core/style/parser/StyleParser.js';
+import { trin } from '../../../core/string-utils-trim.js';
 /**
  * ElementFactoryText — any token not opening/closing a block to an `ElementText`.
  *

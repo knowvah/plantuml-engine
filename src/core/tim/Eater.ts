@@ -204,6 +204,21 @@ export abstract class Eater {
     return varname;
   }
 
+  /**
+   * A variable declared without its leading '$' still works but is deprecated: the diagram gets a warning,
+   * wherever the line comes from (the diagram, an include, the standard library or a theme).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/Eater.java#checkVariableStartsWithDollar (upstream 8ae9ef41383)
+   */
+  protected checkVariableStartsWithDollar(context: TContext, varname: string): void {
+    if (varname.startsWith('$')) return;
+    context.getPreprocessingArtifact().addWarning({
+      message: [
+        `This diagram is using the variable '${varname}' declared without '$', which is deprecated and will be removed in the future.`,
+        `You should use '$${varname}' instead in your diagram.`,
+      ],
+    });
+  }
+
   /** @throws EaterException (thrown, not returned) if not positioned at a valid function-name start. */
   protected eatAndGetFunctionName(): string {
     let varname = this.eatOneChar();

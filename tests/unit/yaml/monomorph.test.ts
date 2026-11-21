@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { Monomorph, monomorphToJson as monomorphToJsonObject } from '../../../src/diagrams/yaml/monomorph.js';
+import {
+  Monomorph,
+  monomorphToJson as monomorphToJsonObject,
+  monomorphToPlain,
+} from '../../../src/diagrams/yaml/monomorph.js';
+import { YamlSyntaxException } from '../../../src/diagrams/yaml/yaml-syntax-exception.js';
 import { plainOf } from '../../helpers/json-object.js';
 import type { Monomorph as MonomorphT } from '../../../src/diagrams/yaml/monomorph.js';
 
@@ -205,5 +210,46 @@ describe('monomorphToJson', () => {
     m.putInMap('k', new Monomorph());
 
     expect(() => monomorphToJson(m)).toThrow();
+  });
+});
+
+describe('Monomorph.putInMap — duplicate key (Monomorph.java:110-111)', () => {
+  it('refuses a key already in the map, keeping the first value', () => {
+    const m = new Monomorph();
+    m.putInMap('a', Monomorph.scalar('1'));
+    expect(() => m.putInMap('a', Monomorph.scalar('2'))).toThrow(new YamlSyntaxException("duplicate key 'a'"));
+    expect(m.getMapValue('a').getValue()).toBe('1');
+    expect(m.size()).toBe(1);
+  });
+});
+
+describe('monomorphToPlain (MonomorphToPlain.java:49-66)', () => {
+  it('converts a scalar to its string, whatever it looks like', () => {
+    expect(monomorphToPlain(Monomorph.scalar('3.5'))).toBe('3.5');
+  });
+
+  it('converts a list to an array, and nested lists and maps recursively', () => {
+    const inner = new Monomorph();
+    inner.putInMap('k', Monomorph.scalar('v'));
+    const list = new Monomorph();
+    list.addInList(Monomorph.scalar('true'));
+    list.addInList(Monomorph.list(['x']));
+    list.addInList(inner);
+    expect(monomorphToPlain(list)).toEqual(['true', ['x'], new Map([['k', 'v']])]);
+  });
+
+  it('converts a map to a Map in document order, integer-like keys included', () => {
+    const m = new Monomorph();
+    m.putInMap('b', Monomorph.scalar('1'));
+    m.putInMap('10', Monomorph.scalar('2'));
+    const plain = monomorphToPlain(m) as Map<string, unknown>;
+    expect([...plain.entries()]).toEqual([
+      ['b', '1'],
+      ['10', '2'],
+    ]);
+  });
+
+  it('converts an UNDETERMINATE node (an empty document) to an empty map', () => {
+    expect(monomorphToPlain(new Monomorph())).toEqual(new Map());
   });
 });

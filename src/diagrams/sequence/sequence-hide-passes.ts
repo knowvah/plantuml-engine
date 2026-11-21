@@ -3,7 +3,10 @@
  * `sequence-parse-helpers.ts` (which re-exports them) to keep that file under
  * the 500-line cap (sdd1 T1b). Bodies unchanged.
  */
-import type { Participant, ParticipantBadge, SequenceDiagramAST, SequenceEvent } from './ast.js';
+import type { Participant, ParticipantBadge, SequenceDiagramAST, SequenceEvent, StereotypeRule } from './ast.js';
+import { Stereotype } from '../../core/stereo/Stereotype.js';
+import { GUILLEMET_DOUBLE_COMPARATOR } from '../../core/stereo/StereotypeDecoration.js';
+import { displayLines } from './display-lines.js';
 import type { Paint } from '../../core/paint.js';
 import { anyBadgeFor, visibleStereotypeLines, type ParticipantLayoutCtx } from './sequence-layout-participant-label.js';
 
@@ -39,17 +42,66 @@ function collectLinkedIds(event: SequenceEvent, linked: Set<string>): void {
   }
 }
 
-/** `hide stereotype` (`options.hideStereotype`): hide every participant's
- *  DISPLAYED stereotype. Upstream each `Participant` holds the diagram's
- *  `hiddenPortions` and `getDisplay` skips the stereotype when it contains
- *  `STEREOTYPE` (`Participant.java:125-135`), while `getUsedStyles` still
- *  merges it (`:82-91`) -- so the stereotype is kept and only flagged.
- *  Applied post-parse for the same reason `applyHideUnlinked` is: the set is
- *  read at draw time, so the directive reaches declarations above it. See
- *  `hideStereotypeCommand` (`command-common.ts`) for the registration. */
+/**
+ * `hide|show [GENDER] stereotype` (`options.stereotypeRules`): what each
+ * participant's DISPLAYED stereotype keeps, `Participant#visibleStereotypeText`
+ * (`Participant.java:142-166`, upstream `0801eabbca2`). Every participant
+ * holds the diagram's one `StereotypeVisibility`, read at draw time, so the
+ * rules reach declarations above them; applied post-parse for the same reason
+ * `applyHideUnlinked` is. `getUsedStyles` still merges the whole stereotype
+ * (`:82-91`), so it is kept and only flagged:
+ * - every label shown: the `Stereotype` itself, unchanged;
+ * - none: hidden ({@link Participant.stereotypeHidden});
+ * - some: the kept labels, space-joined, as plain text
+ *   ({@link Participant.stereotypeText}).
+ */
 export function applyHideStereotype(ast: SequenceDiagramAST): void {
-  if (ast.options.hideStereotype !== true) return;
-  for (const p of ast.participants) if (p.stereotype !== undefined) p.stereotypeHidden = true;
+  const rules = ast.options.stereotypeRules ?? [];
+  if (rules.length === 0) return;
+  for (const p of ast.participants) {
+    if (p.stereotype === undefined) continue;
+    const visible = visibleStereotypeText(p, rules);
+    if (visible === SHOWN) continue;
+    p.stereotypeHidden = true;
+    if (visible !== undefined) p.stereotypeText = visible;
+  }
+}
+
+/** The `Stereotype` itself stays: every label is shown. */
+const SHOWN = Symbol('shown');
+
+/** `Participant#visibleStereotypeText` (`Participant.java:142-166`): labels
+ *  are `Stereotype#getLabels(Guillemet.DOUBLE_COMPARATOR)`; a stereotype with
+ *  none (a bare spot) is judged on its `toString()`. */
+function visibleStereotypeText(p: Participant, rules: readonly StereotypeRule[]): string | typeof SHOWN | undefined {
+  const stereotype = Stereotype.build(p.stereotype!, false);
+  const name = displayLines(p.display)[0];
+  const labels = stereotype.getLabels(GUILLEMET_DOUBLE_COMPARATOR);
+  if (labels.length === 0) return isLabelShown(rules, stereotype.toString(), p.id, name) ? SHOWN : undefined;
+  const kept = labels.filter((label) => isLabelShown(rules, label, p.id, name));
+  if (kept.length === labels.length) return SHOWN;
+  return kept.length === 0 ? undefined : kept.join(' ');
+}
+
+/** `StereotypeVisibility#isLabelShown` (`StereotypeVisibility.java:69-75`):
+ *  the last rule that applies wins; none, shown. A rule with no gender
+ *  applies to every label, a `<<name>>` one to that label on every
+ *  participant, any other to the participant named by code or display name
+ *  (`applies`, `:77-84`). */
+function isLabelShown(
+  rules: readonly StereotypeRule[],
+  label: string,
+  code: string,
+  name: string | undefined,
+): boolean {
+  let shown = true;
+  for (const rule of rules) {
+    const applies =
+      rule.gender === undefined ||
+      (rule.gender.startsWith('<<') ? rule.gender === label : rule.gender === code || rule.gender === name);
+    if (applies) shown = rule.show;
+  }
+  return shown;
 }
 
 /** The stereotype rows a head draws: none once `hide stereotype` has dropped

@@ -61,6 +61,8 @@ import { isBorderPoint } from './state-entity-position.js';
 // text is now a `stateCreoleBlock` call -- see that module's doc comment.
 import type { StateCreoleOpts, StateStyledTextLine } from './state-sizing-creole.js';
 import { stateCreoleBlock, stateCreoleOpts } from './state-sizing-creole.js';
+// CircleStart.java:57 (`JUNCTION_SIZE`), the `<<junction>>` circle (a0a410773aa, #2905).
+import { JUNCTION_SIZE } from '../../core/svek/image/CircleStart.js';
 
 // ---------------------------------------------------------------------------
 // Creole line splitting
@@ -108,6 +110,7 @@ interface Dim {
  *  form (not a switch) keeps this file's per-function CCN under the cap. */
 const FIXED_PSEUDOSTATE_DIM: Partial<Record<StateKind, Dim>> = {
   initial: { width: CIRCLE_START_SIZE, height: CIRCLE_START_SIZE },
+  junction: { width: JUNCTION_SIZE, height: JUNCTION_SIZE },
   final: { width: CIRCLE_END_SIZE, height: CIRCLE_END_SIZE },
   history: { width: HISTORY_SIZE, height: HISTORY_SIZE },
   deepHistory: { width: HISTORY_SIZE, height: HISTORY_SIZE },
@@ -118,6 +121,8 @@ const FIXED_PSEUDOSTATE_DIM: Partial<Record<StateKind, Dim>> = {
  *  shape doesn't depend on rankdir, only their dimensions do). */
 const FIXED_PSEUDOSTATE_SHAPE: Partial<Record<StateKind, DotInputNodeShape>> = {
   initial: 'circle',
+  // EntityImageCircleStart#getShapeType (EntityImageCircleStart.java:88-90).
+  junction: 'circle',
   final: 'circle',
   history: 'circle',
   deepHistory: 'circle',

@@ -2,6 +2,7 @@ import { horizontalAlignmentFromString, type HorizontalAlignment } from '../klim
 import { NORMAL_FONT_FACE, type FontFace } from '../klimt/shape/UText.js';
 import type { AutomaticCounter } from './AutomaticCounter.js';
 import { DarkString } from './DarkString.js';
+import { Specificity } from './Specificity.js';
 import type { HColor, HColorSet, Value } from './Value.js';
 import { ValueColor } from './ValueColor.js';
 
@@ -67,7 +68,7 @@ function extractDigits(s: string | null): string {
 
 /**
  * ValueImpl — a parsed style value: a {@link DarkString} (regular and/or
- * dark string + priority) read through the typed accessors. Accessor
+ * dark string + specificity) read through the typed accessors. Accessor
  * caches mirror upstream's sentinel-initialized fields.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/ValueImpl.java:46-209
@@ -80,35 +81,46 @@ export class ValueImpl implements Value {
   /** @see ValueImpl.java:75-77 */
   private constructor(private readonly value: DarkString) {}
 
-  /** A `@media dark` value: `value2`, priority from the counter. @see ValueImpl.java:50-52 */
+  /** A `@media dark` value: `value2`, at the counter's next order. @see value/ValueImpl.java:51-53 */
   static dark(value: string, counter: AutomaticCounter): ValueImpl {
-    return new ValueImpl(new DarkString(null, value, counter.getNextInt()));
+    return new ValueImpl(new DarkString(null, value, Specificity.atOrder(counter.getNextInt())));
   }
 
-  /** A regular value: `value1`, priority from the counter or given. @see ValueImpl.java:54-60 */
-  static regular(value: string, counterOrPriority: AutomaticCounter | number): ValueImpl {
-    const priority = typeof counterOrPriority === 'number' ? counterOrPriority : counterOrPriority.getNextInt();
-    return new ValueImpl(new DarkString(value, null, priority));
+  /**
+   * A regular value: `value1`, at the counter's next order or at the given
+   * specificity. @see value/ValueImpl.java:55-61
+   */
+  static regular(value: string, counterOrSpecificity: AutomaticCounter | Specificity): ValueImpl {
+    const specificity =
+      counterOrSpecificity instanceof Specificity
+        ? counterOrSpecificity
+        : Specificity.atOrder(counterOrSpecificity.getNextInt());
+    return new ValueImpl(new DarkString(value, null, specificity));
   }
 
   /**
    * Another `ValueImpl`: merged via {@link DarkString#mergeWith}. A
-   * `ValueColor`: the strictly higher priority wins, else this. Anything
-   * else throws. @see ValueImpl.java:62-73
+   * `ValueColor`: the strictly bigger specificity wins, else this. Anything
+   * else throws. @see value/ValueImpl.java:76-87
    */
   mergeWith(other: Value | undefined): Value {
     if (other === undefined) return this;
     if (other instanceof ValueImpl) return new ValueImpl(this.value.mergeWith(other.value));
     if (other instanceof ValueColor) {
-      if (other.getPriority() > this.getPriority()) return other;
+      if (other.getSpecificity().isBiggerThan(this.getSpecificity())) return other;
       return this;
     }
     throw new Error('UnsupportedOperationException');
   }
 
-  /** @see ValueImpl.java:79-81 */
-  addPriority(delta: number): Value {
-    return new ValueImpl(this.value.addPriority(delta));
+  /** @see value/ValueImpl.java:93-95 */
+  withAncestorRank(rank: number): Value {
+    return new ValueImpl(this.value.withAncestorRank(rank));
+  }
+
+  /** @see value/ValueImpl.java:97-99 */
+  withStereotypeCount(count: number): Value {
+    return new ValueImpl(this.value.withStereotypeCount(count));
   }
 
   /** @see ValueImpl.java:83-86 */
@@ -125,7 +137,7 @@ export class ValueImpl implements Value {
   darkScheme(): ValueImpl {
     const dark = this.value.getValue2();
     if (dark === null || this.value.getValue1() === null) return this;
-    return new ValueImpl(new DarkString(dark, null, this.value.getPriority()));
+    return new ValueImpl(new DarkString(dark, null, this.value.getSpecificity()));
   }
 
   /** `value1`; `null` for a dark-only value. @see ValueImpl.java:88-90 */
@@ -218,8 +230,8 @@ export class ValueImpl implements Value {
     return horizontalAlignmentFromString(this.asString());
   }
 
-  /** @see ValueImpl.java:206-208 */
-  getPriority(): number {
-    return this.value.getPriority();
+  /** @see value/ValueImpl.java:229-231 */
+  getSpecificity(): Specificity {
+    return this.value.getSpecificity();
   }
 }

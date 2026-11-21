@@ -331,6 +331,7 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean): void {
   }
   switch (node.kind) {
     case 'initial':
+    case 'junction':
     case 'final':
     case 'history':
     case 'deepHistory': {

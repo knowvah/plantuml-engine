@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { rawBlocksOf } from '../../../src/core/BlockUmlBuilder.js';
+import { getYamlHeader, rawBlocksOf } from '../../../src/core/BlockUmlBuilder.js';
+import { StringLocated } from '../../../src/core/tim/StringLocated.js';
 
 const linesOf = (src: string): string[] => rawBlocksOf(src)[0]!.lines.map((l) => l.getString());
 
@@ -41,5 +42,24 @@ describe('BlockUmlBuilder -- YAML header removal', () => {
       '---',
       '@enduml',
     ]);
+  });
+});
+
+describe('getYamlHeader (ReadLineWithYamlHeader.java:98-107, 0537b558644)', () => {
+  const header = (...lines: string[]): string[] =>
+    getYamlHeader(lines.map((s) => new StringLocated(s, undefined))).map((l) => l.getString());
+
+  it('returns the lines between the two separators, both excluded', () => {
+    expect(header('@startuml', '---', 'a: 1', 'b: 2', '---', 'A -> B', '---')).toEqual(['a: 1', 'b: 2']);
+  });
+
+  it('returns an empty header for an empty --- --- pair', () => {
+    expect(header('@startuml', '---', '---', 'A -> B')).toEqual([]);
+  });
+
+  it('returns no header when it is never closed, or not on the second line', () => {
+    expect(header('@startuml', '---', 'a: 1')).toEqual([]);
+    expect(header('@startuml', 'A -> B', '---', 'a: 1', '---')).toEqual([]);
+    expect(header('@startuml')).toEqual([]);
   });
 });

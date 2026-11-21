@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T05:09:25.789Z",
+  "generatedAt": "2026-11-21T16:48:56.920Z",
   "fixtures": [
     {
       "slug": "bajelo-54-dixe684",
@@ -140,7 +140,9 @@
       "type": "state",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[1][childCount]"
     },
     {
       "slug": "coteta-47-mare883",
@@ -568,7 +570,9 @@
       "type": "state",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "conformant"
+      "verdict": "diverged",
+      "maxDelta": 0,
+      "firstDiff": "svg/g[1]/g[1][childCount]"
     },
     {
       "slug": "jafazu-60-leca675",

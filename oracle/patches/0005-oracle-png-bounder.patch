@@ -1,10 +1,9 @@
-From d878ea981043f74aceabc9048c4f3e33a3a6a519 Mon Sep 17 00:00:00 2001
+From 8fec366a90716faa4a77698c28b7e6b805492469 Mon Sep 17 00:00:00 2001
 From: Scott Seely <scott@seely.io>
 Date: Tue, 17 Nov 2026 18:50:24 -0600
-Subject: [PATCH] fix(oracle): deterministic PNG bounder under
+Subject: [PATCH 5/5] fix(oracle): deterministic PNG bounder under
  PLANTUML_DETERMINISTIC_TEXT
 
-#170, maintainer ruling 2026-11-11 (option 3): FileFormat.PNG's bounder
 was StringBounderAwt even under the property, and two SVG renders reach
 it: a creole <math>/<latex> rollback is laid out by its PNG export
 (AtomMath.java:63-70, ScientificEquationSafe.java:116-129) and wire print
@@ -17,19 +16,19 @@ Only the property-gated bounder changes; stock is untouched.
  1 file changed, 42 insertions(+)
 
 diff --git a/src/main/java/net/sourceforge/plantuml/FileFormat.java b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-index cece3102a31..b594437efd7 100644
+index a3d6bc325d5..5152accac86 100644
 --- a/src/main/java/net/sourceforge/plantuml/FileFormat.java
 +++ b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-@@ -64,6 +64,8 @@ import net.sourceforge.plantuml.security.SFile;
+@@ -65,6 +65,8 @@ import net.sourceforge.plantuml.security.SFile;
  import net.sourceforge.plantuml.skin.Pragma;
- import net.sourceforge.plantuml.teavm.StringBounderTeaVM;
  import net.sourceforge.plantuml.teavm.TeaVM;
+ import net.sourceforge.plantuml.teavm.js.StringBounderTeaVM;
 +import net.sourceforge.plantuml.text.RichText;
 +import net.sourceforge.plantuml.text.StyledString;
  import net.sourceforge.plantuml.text.SvgCharSizeHack;
  import net.sourceforge.plantuml.tikz.LatexEngine;
  import net.sourceforge.plantuml.tikz.StringBounderTikz;
-@@ -222,6 +224,46 @@ public enum FileFormat {
+@@ -231,6 +233,46 @@ public enum FileFormat {
  				}
  			};
  

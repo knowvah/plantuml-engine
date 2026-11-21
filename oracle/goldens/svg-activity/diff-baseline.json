@@ -203,10 +203,11 @@
       "type": "activity",
       "slug": "bigobe-53-denu394",
       "status": "baseline",
-      "diffCount": 16,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 16
+      "diffCount": 15,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 29,
+      "reason": "Re-pinned 2026-11-20 against the a720bdd oracle: the rise is the jar's three glyph <path>s replace the one <image> it drew before (child count 6 vs 8, weight 15) instead of the old image width/height diffs; the geometry residual (our image 170x51 vs the jar's 153x47 box for {\\small \\mathsf{...}}) is unchanged from the pre-re-pin baseline 16 (measured against the d94d25ace oracle at d94d25ace). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -220,11 +221,12 @@
     {
       "type": "activity",
       "slug": "bineki-51-zedo397",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "4346d637",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 34,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 75,
+      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -454,11 +456,12 @@
     {
       "type": "activity",
       "slug": "bucoru-71-gapi371",
-      "status": "pinned",
-      "diffCount": 22,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 73
+      "status": "baseline",
+      "diffCount": 28,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 67,
+      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -697,11 +700,12 @@
     {
       "type": "activity",
       "slug": "cepivu-60-lobe416",
-      "status": "pinned",
-      "diffCount": 64,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 64
+      "status": "baseline",
+      "diffCount": 1,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 30,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -1840,11 +1844,12 @@
     {
       "type": "activity",
       "slug": "fonusa-41-deze863",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 18,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -2065,11 +2070,12 @@
     {
       "type": "activity",
       "slug": "gakodi-47-gobi866",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 18,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -3559,11 +3565,12 @@
     {
       "type": "activity",
       "slug": "lidumi-54-moza355",
-      "status": "pinned",
-      "diffCount": 271,
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "b478793e",
-      "weightedScore": 322
+      "status": "baseline",
+      "diffCount": 534,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 783,
+      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -3631,11 +3638,12 @@
     {
       "type": "activity",
       "slug": "liteta-29-zufa478",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "4346d637",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 21,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 41,
+      "reason": "Python-preprocessor row: line 3 `!t1=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -4720,11 +4728,12 @@
     {
       "type": "activity",
       "slug": "nisigo-68-ledo444",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "2cbb901d",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 69,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 89,
+      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -4900,11 +4909,12 @@
     {
       "type": "activity",
       "slug": "nupiko-03-cezu269",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-09-02",
-      "measuredAgainstCommit": "31d8168e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 32,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 51,
+      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
     },
     {
       "type": "activity",
@@ -5062,11 +5072,12 @@
     {
       "type": "activity",
       "slug": "pedulu-06-xomo122",
-      "status": "pinned",
-      "diffCount": 28,
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "b478793e",
-      "weightedScore": 28
+      "status": "baseline",
+      "diffCount": 84,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 108,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee), this port a KaTeX <image>. Besides that substitution, the jar now takes extents from the glyph ink: the canvas min-x is the \"false\" label's ink at x=15.0 (LimitFinder.java:118-119 walks UPath points) where the image box began 4.66 px further left, so every x shifts 4.66; the 2 px longer arrow under the \"true\" label is formula-only (no plain-text while row moved) and not isolated further. Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -5512,11 +5523,12 @@
     {
       "type": "activity",
       "slug": "racose-40-caze160",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 18,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -5612,10 +5624,11 @@
       "type": "activity",
       "slug": "rekefe-90-baju604",
       "status": "baseline",
-      "diffCount": 5,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 5
+      "diffCount": 7,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 23,
+      "reason": "Re-pinned 2026-11-20 against the a720bdd oracle: the rise is two <image>-vs-<path> substitutions (9 each); the legend's %version() text (5) is unchanged from the pre-re-pin baseline 5. Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -5890,11 +5903,12 @@
     {
       "type": "activity",
       "slug": "ruveji-94-ziju101",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 18,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -6097,11 +6111,12 @@
     {
       "type": "activity",
       "slug": "sipifu-25-doru842",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 1,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 48,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -6376,11 +6391,12 @@
     {
       "type": "activity",
       "slug": "tecimi-93-vuku872",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 3,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 27,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -7150,11 +7166,12 @@
     {
       "type": "activity",
       "slug": "xataku-21-xoda345",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 18,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -7223,10 +7240,11 @@
       "type": "activity",
       "slug": "xexuxu-81-kuni702",
       "status": "baseline",
-      "diffCount": 16,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 16
+      "diffCount": 15,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 29,
+      "reason": "Re-pinned 2026-11-20 against the a720bdd oracle: the rise is the jar's three glyph <path>s replace the one <image> it drew before (child count 6 vs 8, weight 15) instead of the old image width/height diffs; the geometry residual (our image scaled by dpi 300 box for {\\small \\mathsf{...}}) is unchanged from the pre-re-pin baseline 16 (measured against the d94d25ace oracle at d94d25ace). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -7457,10 +7475,11 @@
       "type": "activity",
       "slug": "xuzovi-55-doze473",
       "status": "baseline",
-      "diffCount": 16,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 16
+      "diffCount": 15,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 29,
+      "reason": "Re-pinned 2026-11-20 against the a720bdd oracle: the rise is the jar's three glyph <path>s replace the one <image> it drew before (child count 6 vs 8, weight 15) instead of the old image width/height diffs; the geometry residual (our image scaled by scale 4 box for {\\small \\mathsf{...}}) is unchanged from the pre-re-pin baseline 16 (measured against the d94d25ace oracle at d94d25ace). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",
@@ -7546,11 +7565,12 @@
     {
       "type": "activity",
       "slug": "zatujo-89-vuzo318",
-      "status": "pinned",
-      "diffCount": 0,
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
-      "weightedScore": 0
+      "status": "baseline",
+      "diffCount": 1,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "weightedScore": 9,
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <latex>/<math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "activity",

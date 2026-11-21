@@ -32,7 +32,10 @@ import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-comm
 import type { SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
 import type { CreoleAtomUrl } from '../../core/klimt/creole/atom/Atom.js';
 import { FontStyle } from '../../core/klimt/shape/UText.js';
-import { resolveInlineAtom } from './class-member-atom-resolve.js';
+import { resolveInlineAtom, resolveLatexAtom } from './class-member-atom-resolve.js';
+import type { MemberRenderAtom } from './class-member-render-atom.js';
+import type { RollbackLayout } from '../../core/math/latex-atom.js';
+import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
 
 /** One run of a mixed label, in draw order. `dy` (images only) is the
  *  image top relative to the label baseline. */
@@ -52,6 +55,11 @@ export type EdgeLabelRun =
       readonly height: number;
       readonly dy: number;
       readonly tint?: SpriteTint;
+      /** A `<math>`/`<latex>` formula JLaTeXMath rejects, drawn as its monospace source in this box
+       *  (ScientificEquationSafe.java:110-128); `href` is empty. */
+      readonly rollback?: RollbackLayout;
+      /** A `<math>`/`<latex>` atom (`AtomMath`, altitude 0): it alone makes a label mixed. */
+      readonly formula?: true;
     };
 
 /** The resolved runs plus the line box `Sea` gives them. */
@@ -122,6 +130,10 @@ export function resolveSpriteLabelRuns(
       });
       continue;
     }
+    if (atom.kind === 'latex') {
+      runs.push(formulaRun(resolveLatexAtom(atom, new MeasurerStringBounder(measurer)).atom));
+      continue;
+    }
     if (atom.kind !== 'inline' || sprites === undefined || dims === undefined) return undefined;
     const img = resolveInlineAtom(atom.atom, base, sprites, dims);
     if (img === undefined || img.kind !== 'image') return undefined;
@@ -129,8 +141,16 @@ export function resolveSpriteLabelRuns(
   }
   const hasLink = runs.some((r) => r.kind === 'text' && r.link !== undefined);
   const hasSpriteBesideText = runs.some((r) => r.kind === 'text') && runs.some((r) => r.kind === 'image');
-  if (!hasLink && !hasSpriteBesideText) return undefined;
+  const hasFormula = runs.some((r) => r.kind === 'image' && r.formula === true);
+  if (!hasLink && !hasSpriteBesideText && !hasFormula) return undefined;
   return placeRuns(runs, textHeight, measurer.getDescent(font, text));
+}
+
+/** A `<math>`/`<latex>` atom's run: `AtomMath`'s box (`resolveLatexAtom`), KaTeX's image or the rollback's text. */
+function formulaRun(atom: MemberRenderAtom): EdgeLabelRun {
+  if (atom.kind !== 'image') throw new Error('IllegalStateException: a formula resolves to an image atom');
+  const rollback = atom.rollback === undefined ? {} : { rollback: atom.rollback };
+  return { kind: 'image', href: atom.href, width: atom.width, height: atom.height, dy: 0, formula: true, ...rollback };
 }
 
 function tintOf(img: { readonly tint?: SpriteTint }): { tint?: SpriteTint } {

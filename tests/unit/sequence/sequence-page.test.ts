@@ -48,6 +48,7 @@ function geo(events: EventGeo[], overrides?: Partial<SequenceGeometry>): Sequenc
     participants: [
       {
         id: 'A',
+        uid: 'part1',
         display: 'A',
         type: 'participant',
         x: 10,
@@ -80,6 +81,7 @@ function newpage(y: number): NewpageGeo {
 function message(y: number, labelY?: number): MessageGeo {
   return {
     kind: 'message',
+    group: { uid: 'msg1', participant1: 'part1', participant2: 'part2' },
     fromX: 40,
     toX: 200,
     y,

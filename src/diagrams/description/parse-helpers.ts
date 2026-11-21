@@ -315,9 +315,10 @@ export function parseNameSection(rest: string): NameSection {
     remainder = cr.remainder.trim();
   }
 
-  // `COLOR2` (leading) and `COLOR` (trailing) both feed `ColorParser#getColor`'s `getLazzy("COLOR", 0)`; with both
-  // present the jar paints the trailing one (oracle: `rectangle #pink "Both" as b #green` fills `#008000`).
-  color ??= lead.color;
+  // `COLOR2` (leading) and `COLOR` (trailing) both feed `ColorParser#getColor`'s `getLazzy("COLOR", 0)`, which since
+  // e2659a157bf answers the first group in match order (RegexResult.java:128-149): with both present the jar paints
+  // the leading one (oracle: `rectangle #pink "Both" as b #green` fills `#FFC0CB`).
+  color = lead.color ?? color;
 
   // Re-attach the quoted display the extractors were kept away from. The
   // separator space must survive: `stripTrailingUrl` deliberately preserves

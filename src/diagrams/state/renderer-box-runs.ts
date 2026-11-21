@@ -5,6 +5,7 @@
  */
 import { line, text, linkWrap, image, ellipse, rect } from '../../core/svg.js';
 import type { CreoleRunBullet } from '../../core/svek/image/creole-text-run-types.js';
+import { rollbackSvgText } from '../../core/math/latex-atom.js';
 import type { StateTableGeo, StateTextRun } from './state-sizing-creole.js';
 import type { CreoleRunImage } from '../../core/svek/image/creole-text-lines.js';
 import { creoleRunImageHref } from '../../core/svek/image/creole-run-sprite.js';
@@ -123,6 +124,12 @@ export function renderStateRuns(
     if (run.image !== undefined) {
       out += runImage(run.image, x, lineTop, style);
       x += run.image.width;
+      continue;
+    }
+    if (run.rollback !== undefined) {
+      // A rolled-back formula at its own top (`SheetBlock1.java:212-217`).
+      out += rollbackSvgText(run.rollback, x, lineTop + run.rollback.top);
+      x += run.rollback.width;
       continue;
     }
     if (run.bullet !== undefined) {

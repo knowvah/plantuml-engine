@@ -28,6 +28,12 @@ export class CodeIteratorIf extends AbstractCodeIterator {
   private readonly context: TContext;
   private readonly memory: TMemory;
   private readonly logs: StringLocated[];
+  /**
+   * The `!if`, `!ifdef` and `!ifndef` lines opened in the body this iterator reads and not closed yet. The
+   * stack of the memory is not enough: it is shared with the files that include this one.
+   * @see CodeIteratorIf.java:58-63 (upstream 0537b558644)
+   */
+  private readonly opened: StringLocated[] = [];
 
   constructor(source: CodeIterator, context: TContext, memory: TMemory, logs: StringLocated[]) {
     super(source);
@@ -40,7 +46,15 @@ export class CodeIteratorIf extends AbstractCodeIterator {
   peek(): StringLocated | null {
     while (true) {
       const result = this.source.peek();
-      if (result === null) return null;
+      if (result === null) {
+        const open = this.opened.at(-1);
+        if (open !== undefined) {
+          // the error is reported on the last line of the debug list: the line left open (java:75-80)
+          this.logs.push(open);
+          throw new EaterException(`${keyword(open)} without !endif`, open);
+        }
+        return null;
+      }
 
       const type = result.getType();
 
@@ -62,6 +76,9 @@ export class CodeIteratorIf extends AbstractCodeIterator {
   }
 
   private processConditionalDirective(line: StringLocated, type: TLineType): void {
+    // java:109-112
+    if (type === 'IF' || type === 'IFDEF' || type === 'IFNDEF') this.opened.push(line);
+    else if (type === 'ENDIF' && this.opened.length > 0) this.opened.pop();
     switch (type) {
       case 'IF':
         this.executeIf(line);
@@ -171,4 +188,12 @@ export class CodeIteratorIf extends AbstractCodeIterator {
 
     return poll;
   }
+}
+
+/** `!if`, `!ifdef` or `!ifndef`, as the line writes it. @see CodeIteratorIf.java#keyword */
+function keyword(line: StringLocated): string {
+  const s = line.getTrimmed().getString();
+  if (s.startsWith('!ifndef')) return '!ifndef';
+  if (s.startsWith('!ifdef')) return '!ifdef';
+  return '!if';
 }

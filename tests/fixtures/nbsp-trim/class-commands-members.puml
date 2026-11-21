@@ -1,0 +1,10 @@
+@startuml
+ class Foo {
+  + bar : int 
+  -- section --
+  baz() 
+ }
+ Foo --> Bar : uses 
+ note right of Bar : a note 
+ hide empty members 
+@enduml

@@ -13,7 +13,7 @@
  * then wraps the decorated whole.
  *
  * `CommandSkinParam#executeArg`'s deprecation warnings (CommandSkinParam
- * .java:92-99) are rebuilt from the collected skinparam map
+ * .java:94-107) are rebuilt from the collected skinparam map
  * ({@link skinParamWarnings}) because the preprocessor hoists `skinparam`
  * lines out of the block before the parser sees it (line form only); they come ahead of the
  * command warnings (upstream's order is source order, so a `skinparam`
@@ -40,50 +40,73 @@ import { Warning } from './warning/Warning.js';
  *  (`SvgGraphics.java:129-135`). */
 const SVG_CANVAS_CEIL = 1;
 
-/** The `new Warning(...)` texts `CommandSkinParam#executeArg` adds, keyed by
- *  the lower-cased skin parameter name (`equalsIgnoreCase`).
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:92-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
+/**
+ * The warning `CommandSkinParam#executeArg` adds for one `skinparam <name>
+ * <value>` line, or `undefined` (names compared `equalsIgnoreCase`). The texts
+ * name the value as written (`VALUE`, `([^{}]*)` on the trimmed line). The
+ * `padding` warning is commented out upstream (java:106-107): it warns no more.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:94-107
+ */
+export function skinParamWarning(name: string, value: string): Warning | undefined {
+  const lower = name.toLowerCase();
+  if (lower === 'handwritten')
+    return new Warning(`'skinparam handwritten' is deprecated: write '!option handwritten ${value}' instead`);
+  if (lower === 'participantpadding')
+    return new Warning(
+      "'skinparam ParticipantPadding' is ignored: use a style instead",
+      '<style>',
+      'participant {',
+      `  Padding ${value}`,
+      '}',
+      '</style>',
+    );
+  return undefined;
+}
 
 /** `LinkedHashSet<Warning>#add`: append unless an equal warning is present. */
 export function addUniqueWarning(into: Warning[], warning: Warning): void {
   if (!into.some((w) => w.equals(warning))) into.push(warning);
 }
 
-/** What {@link skinParamWarnings} reads: the collected map and, when the
- *  collector located each form, its assignments. */
-export type SkinparamWarningSource = Pick<PreprocessorResult, 'skinparam' | 'skinparamAssignments'>;
+/** What {@link skinParamWarnings} reads: the collected map, its assignments
+ *  when the collector located each form, and the preprocessor's own warnings. */
+export type SkinparamWarningSource = Pick<PreprocessorResult, 'skinparam' | 'skinparamAssignments'> &
+  Partial<Pick<PreprocessorResult, 'warnings'>>;
 
-/** The skin parameter names whose LINE-form assignment upstream warns on, in
- *  first-assignment order. A hand-built source without `skinparamAssignments`
- *  (or a bare map) has no recorded form: every map key counts, as before. */
-function lineFormNames(source: SkinparamWarningSource | ReadonlyMap<string, string> | undefined): Iterable<string> {
+/** The `[name, value]` LINE-form assignments upstream warns on, in
+ *  assignment order. A hand-built source without `skinparamAssignments`
+ *  (or a bare map) has no recorded form: every map entry counts, as before. */
+function lineFormEntries(
+  source: SkinparamWarningSource | ReadonlyMap<string, string> | undefined,
+): Iterable<readonly [string, string]> {
   if (source === undefined) return [];
-  if (source instanceof Map) return source.keys();
+  if (source instanceof Map) return source.entries();
   const { skinparam, skinparamAssignments } = source as SkinparamWarningSource;
-  if (skinparamAssignments === undefined) return skinparam?.keys() ?? [];
-  return skinparamAssignments.filter((a) => a.form !== 'block').map((a) => a.key);
+  if (skinparamAssignments === undefined) return skinparam?.entries() ?? [];
+  return skinparamAssignments.filter((a) => a.form !== 'block').map((a) => [a.key, a.value] as const);
 }
 
 /**
  * `CommandSkinParam#executeArg`'s warnings, for the LINE-form assignments
- * only (`skinparam handwritten true`), first-assignment order, de-duplicated.
+ * only (`skinparam handwritten true`), assignment order, de-duplicated by
+ * value (`LinkedHashSet`): the texts carry the value, so two values warn twice.
  * An entry of `skinparam [name] {` is `CommandSkinParamMultilines`, which
  * delegates to `SkinLoader` and never warns
  * (CommandSkinParamMultilines.java:90-102); the parameter still applies, via
  * the merged map.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:94-107
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParamMultilines.java:90-102
  */
 export function skinParamWarnings(source: SkinparamWarningSource | ReadonlyMap<string, string> | undefined): Warning[] {
   const warnings: Warning[] = [];
-  for (const name of lineFormNames(source)) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) addUniqueWarning(warnings, new Warning(message));
+  // `TitledDiagram#getWarnings` joins the preprocessing artifact's warnings (`!option`, a variable declared
+  // without '$') ahead of the pragma's, where the commands add theirs (TitledDiagram.java:326-334).
+  if (source !== undefined && !(source instanceof Map))
+    for (const w of (source as SkinparamWarningSource).warnings ?? [])
+      addUniqueWarning(warnings, new Warning(...w.message));
+  for (const [name, value] of lineFormEntries(source)) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) addUniqueWarning(warnings, warning);
   }
   return warnings;
 }

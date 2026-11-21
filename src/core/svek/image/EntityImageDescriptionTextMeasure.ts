@@ -14,7 +14,7 @@ import { verticalAtomBox, bulletDimension, layoutLineThroughSea } from './creole
 import { buildLineAtoms, type LineBuildAtoms } from '../../klimt/creole/legacy/StripeSimple.js';
 import { getSplitted } from '../../klimt/creole/Fission.js';
 import { atomTextWidth } from '../../klimt/creole/legacy/AtomText.js';
-import { renderLatexAsImage } from '../../latex.js';
+import { latexAtomDimension } from '../../math/latex-atom.js';
 import { EMOJI_BOX_FACTOR, emojiBoxDim } from '../../klimt/creole/atom/AtomEmoji.js';
 
 /**
@@ -148,7 +148,7 @@ function atomDimension(
   resolveAtomImage: AtomImageResolver | undefined,
 ): { readonly width: number; readonly height: number } {
   if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font));
-  if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000');
+  if (atom.kind === 'latex') return latexAtomDimension(atom, stringBounder);
   // `AtomEmoji#calculateDimensionSlow`: the 36*factor square; its -3*factor altitude reaches the line through `Sea`.
   if (atom.kind === 'emoji') return { width: EMOJI_BOX_FACTOR * atom.factor, height: EMOJI_BOX_FACTOR * atom.factor };
   // `AtomSpace#calculateDimensionSlow`: (width, 1).
@@ -208,7 +208,7 @@ export function measureSingleAtomWidth(
   resolveAtomImage: AtomImageResolver | undefined,
 ): number {
   if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font)).width;
-  if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000').width;
+  if (atom.kind === 'latex') return latexAtomDimension(atom, stringBounder).width;
   // A2s R2i: emoji x-advance is the 36*factor box (see measureAtomsWidthHeight).
   if (atom.kind === 'emoji') return emojiBoxDim(atom.factor).width;
   if (atom.kind === 'space') return atom.width;

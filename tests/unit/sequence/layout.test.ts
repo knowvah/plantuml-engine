@@ -31,6 +31,7 @@ function makeAst(participants: string[], events: SequenceEvent[]): SequenceDiagr
   return {
     participants: participants.map((id, i) => ({
       id,
+      uid: `part${i + 1}`,
       display: id,
       type: 'participant' as const,
       order: i,
@@ -51,6 +52,7 @@ const SYNC_ARROW = arrowConfigurationOf({});
 function msg(from: string, to: string, label = 'hello', extras: Partial<MessageEvent> = {}): SequenceEvent {
   return {
     kind: 'message',
+    uid: 'msg1',
     styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
     from,
     to,
@@ -1004,6 +1006,7 @@ describe('layoutSequence — sequence numbers', () => {
       [
         {
           kind: 'message',
+          uid: 'msg1',
           styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
           from: 'Alice',
           to: 'Bob',
@@ -1058,11 +1061,19 @@ describe('layoutSequence — message from unknown participant', () => {
     // Build an AST with a message referencing a participant not declared
     const ast: SequenceDiagramAST = {
       participants: [
-        { id: 'Alice', display: 'Alice', type: 'participant', order: 0, styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER },
+        {
+          id: 'Alice',
+          uid: 'part1',
+          display: 'Alice',
+          type: 'participant',
+          order: 0,
+          styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
+        },
       ],
       events: [
         {
           kind: 'message',
+          uid: 'msg1',
           styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
           from: 'Alice',
           to: 'Ghost',
@@ -1102,6 +1113,7 @@ describe('layoutSequence — auto-deactivate without prior activation record', (
 function exo(participant: string, label = 'in'): MessageExoEvent {
   return {
     kind: 'messageExo',
+    uid: 'msg1',
     styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
     participant,
     exoType: 'FROM_LEFT',
@@ -1155,6 +1167,7 @@ describe('layoutSequence — database participant sizing', () => {
     const ast = makeAst(['DB', 'Other'], [msg('DB', 'Other')]);
     ast.participants[0] = {
       id: 'DB',
+      uid: 'part1',
       display,
       type: 'database',
       order: 0,
@@ -1211,7 +1224,14 @@ describe('layoutSequence — the five glyph participant kinds', () => {
 
   function kindGeo(kind: Kind, display: string) {
     const ast = makeAst(['P', 'Other'], [msg('P', 'Other')]);
-    ast.participants[0] = { id: 'P', display, type: kind, order: 0, styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER };
+    ast.participants[0] = {
+      id: 'P',
+      uid: 'part1',
+      display,
+      type: kind,
+      order: 0,
+      styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
+    };
     return layoutSequence(ast, defaultTheme, measurer).participants.find((p) => p.id === 'P')!;
   }
 
@@ -1269,7 +1289,14 @@ describe('layoutSequence — the five glyph participant kinds', () => {
 describe('layoutSequence — actor participant sizing', () => {
   function actorGeo(display: string, actorStyle?: 'AWESOME' | 'HOLLOW') {
     const ast = makeAst(['A', 'Other'], [msg('A', 'Other')]);
-    ast.participants[0] = { id: 'A', display, type: 'actor', order: 0, styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER };
+    ast.participants[0] = {
+      id: 'A',
+      uid: 'part1',
+      display,
+      type: 'actor',
+      order: 0,
+      styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
+    };
     const theme = actorStyle === undefined ? defaultTheme : { ...defaultTheme, actorStyle };
     return layoutSequence(ast, theme, measurer).participants.find((p) => p.id === 'A')!;
   }

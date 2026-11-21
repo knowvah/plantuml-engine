@@ -4,9 +4,9 @@
  * are equal, or their upper cases are, or the lower cases of their upper
  * cases are (`String#regionMatches(true, ...)`).
  *
- * A copy of `diagrams/eggs/equals-ignore-case.ts`: layering rule 2
- * (`tests/architecture/layering.test.ts`) forbids importing across diagram
- * packages; a shared core home is a follow-on.
+ * Lives here since the eggs copy went with its factories (upstream
+ * dadad87bba3); layering rule 2 (`tests/architecture/layering.test.ts`)
+ * forbids importing across diagram packages.
  *
  * `Character.toUpperCase(char)` / `toLowerCase(char)` are the one-unit
  * (simple) case maps; JS's are the full maps. A full upper case longer than

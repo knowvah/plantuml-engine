@@ -42,6 +42,44 @@ function clusterSignature(usymbol: string | undefined): StyleSignatureBasic {
 /** `EntityImageEmptyPackage.java:88`. */
 const EMPTY_PACKAGE_SIGNATURE = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'package_', 'title');
 
+/**
+ * `ClusterHeader#getSignature` (`ClusterHeader.java:151-163`) for a class group: `COMPOSITE_TITLE.add(sname)
+ * .addSNames(uSymbol.getSNames())` with a USymbol, else `PACKAGE_TITLE.add(sname)` (every class group is a
+ * `GroupType.PACKAGE`).
+ */
+function titleSignature(usymbol: string | undefined): StyleSignatureBasic {
+  if (usymbol === undefined) return EMPTY_PACKAGE_SIGNATURE;
+  return StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'composite', 'title', ...usymbolSNames(usymbol));
+}
+
+/** `style.wrapWidth()`'s width (`Style.java:330-333`), `undefined` when none is set or no style merges. */
+function wrapWidth(
+  builder: StyleBuilder,
+  signature: StyleSignatureBasic,
+  stereotype: string | undefined,
+): number | undefined {
+  const width = signature.withTOBECHANGED(stereotypeOf(stereotype)).getMergedStyle(builder)?.wrapWidth().getMaxWidth();
+  return width === 0 ? undefined : width;
+}
+
+/**
+ * The title wrap widths of 927f7531ddf (`ClusterHeader.java:129`, a cluster title) and f29aa9bd058
+ * (`EntityImageEmptyPackage.java:118-119`, the leaf an empty group mutes to): both `create9(..., style.wrapWidth())`.
+ */
+function annotateTitleWrapWidths(ast: ClassDiagramAST, builder: StyleBuilder): void {
+  for (const ns of ast.namespaces) {
+    const title = wrapWidth(builder, titleSignature(ns.usymbol), ns.stereotype);
+    if (title !== undefined) ns.titleWrapWidth = title;
+    const leaf = wrapWidth(builder, EMPTY_PACKAGE_SIGNATURE, ns.stereotype);
+    if (leaf !== undefined) ns.emptyLeafTitleWrapWidth = leaf;
+  }
+  for (const classifier of ast.classifiers) {
+    if (classifier.collapsedGroup !== true) continue;
+    const leaf = wrapWidth(builder, EMPTY_PACKAGE_SIGNATURE, classifier.stereotype);
+    if (leaf !== undefined) classifier.emptyLeafTitleWrapWidth = leaf;
+  }
+}
+
 /** `MyElkEdge#getStyle` (`MyElkEdge.java:140-145`), with the link's own stereotype. */
 function annotateArrowStrokes(ast: ClassDiagramAST, builder: StyleBuilder): void {
   const signature = StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'arrow');
@@ -74,9 +112,10 @@ export function annotateLinkStyles(
   }
 }
 
-/** Stores each group's corners on the AST; a group that collapses later copies its leaf's (`copyMutedEntityFields`). */
+/** Stores each group's corners and title wrap widths on the AST; a group that collapses later copies its leaf's (`copyMutedEntityFields`). */
 export function annotateClassStyles(ast: ClassDiagramAST, builder: StyleBuilder): void {
   annotateArrowStrokes(ast, builder);
+  annotateTitleWrapWidths(ast, builder);
   for (const ns of ast.namespaces) {
     const cluster = corner(builder, clusterSignature(ns.usymbol), ns.stereotype);
     if (cluster !== undefined) ns.roundCorner = cluster;

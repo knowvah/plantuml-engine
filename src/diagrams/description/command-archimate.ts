@@ -62,7 +62,7 @@ function archimateStereotype(labels: readonly string[] | undefined): ReturnType<
  * and closing lines is dropped (`lines.subExtract(1, 1)`, `:157`), and `END` is any line ending `]` (`:71-72`).
  */
 const ARCHIMATE_MULTILINE_RE = compileUpstream(
-  String.raw`^archimate[%s]+(?:${COLORS_REGEXP})?[%s]+(?<CODE>[%pLN_.]+)[%s]*(?<STEREOTYPE><<[-\w]+?>>)?[%s]*` +
+  String.raw`^archimate[%s]+(?<COLOR1>${COLORS_REGEXP})?[%s]+(?<CODE>[%pLN_.]+)[%s]*(?<STEREOTYPE><<[-\w]+?>>)?[%s]*` +
     String.raw`(?:${getRegexp()})?[%s]*(?<COLOR2>${COLOR_REGEXP})?[%s]*\[.*$`,
 );
 
@@ -72,9 +72,12 @@ function tryArchimateMultilines(state: ParseState, line: string): boolean {
   const code = g['CODE']!;
   const icon =
     g['STEREOTYPE'] === undefined ? undefined : extractNodeStereotype(`<<$archimate/${g['STEREOTYPE'].slice(2, -2)}>>`);
-  // Both colour leaves are named COLOR (`:80,85`), and the later entry of `RegexComposed#createPartialMatch`'s map wins
-  // (`RegexComposed.java:109`), so the leading `#Technology` is parsed and dropped (jar: ceboti-36 fills `#F1F1F1`).
-  const node = makeNode(code, code, 'rectangle', icon?.stereotypes, g['COLOR2'], undefined, icon?.sprite);
+  // Both colour leaves are named COLOR (`CommandArchimateMultilines.java:83,89`; JS needs COLOR1/COLOR2), read by
+  // `ColorParser#getColor`'s `getLazzy("COLOR", 0)` (`ColorParser.java:62`). Since e2659a157bf that is the FIRST
+  // group, in match order, with a value (`RegexResult.java:128-149`), so the leading `#Technology` wins (jar:
+  // ceboti-36 fills `#C9FFC9`); the HashMap before kept the trailing, empty, leaf.
+  const color = g['COLOR1'] ?? g['COLOR2'];
+  const node = makeNode(code, code, 'rectangle', icon?.stereotypes, color, undefined, icon?.sprite);
   emitNode(state, node);
   state.pendingElement = { terminator: 'archimate', node, lines: [], baseIndent: undefined };
   return true;
