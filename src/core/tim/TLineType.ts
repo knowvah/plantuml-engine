@@ -26,6 +26,13 @@
  */
 
 import type { TLineType } from './StringLocated.js';
+import {
+  isDecoratorLine,
+  isKeywordLine,
+  isLegacyAffectation,
+  isStatementLine,
+  startsWithInterpolation,
+} from '../text/PythonLine.js';
 
 /** `Pattern2`'s `%s` macro: normal or non-breaking space.
  * @see ~/git/plantuml/.../regex/Pattern2.java */
@@ -178,6 +185,56 @@ export function getFromLineInternal(s: string): TLineType {
 
   return 'PLAIN';
 }
+
+/** {@link TLineType} plus upstream's `PYTHON`, which this port's execution never sees (#214). */
+export type TLineTypeWithPython = TLineType | 'PYTHON';
+
+/**
+ * Upstream's classifier since the Python preprocessor (0537b558644), at
+ * 908fb9df265: `!x = 1`, `!def ...:`, `!f(1)` are `PYTHON`.
+ *
+ * {@link getFromLineInternal} stays the classifier that EXECUTES the line,
+ * as before Python, because this port has no Python preprocessor (#214). This
+ * one only tells which lines upstream groups into Python chunks, for the
+ * routing of `!name = value` (`PythonChunks.ts`, `TContextPython.ts`). The
+ * two agree on every line upstream does not call `PYTHON`, except the
+ * `!name = value` lines the pre-Python `PATTERN_AFFECTATION` still matches.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/text/TLineType.java:149-269
+ */
+export function getFromLineWithPython(s: string): TLineTypeWithPython {
+  if (PATTERN_COMMENT_SIMPLE1.test(s) || PATTERN_COMMENT_SIMPLE2.test(s)) return 'COMMENT_SIMPLE';
+  if (PATTERN_COMMENT_LONG_START.test(s) && !s.includes("'/")) return 'COMMENT_LONG_START';
+  if (!s.includes('!')) return 'PLAIN';
+  if (s.startsWith(PYTHON_MARKER)) return 'PYTHON';
+  if (startsWithInterpolation(s)) return 'PLAIN';
+  return exclamationWithPython(s);
+}
+
+/** The `!` half of {@link getFromLineWithPython}, from `PATTERN_LEGACY_DEFINE` on (TLineType.java:170-269). */
+function exclamationWithPython(s: string): TLineTypeWithPython {
+  const define = cascadeMatch(s, 0, AFFECTATION_INDEX);
+  if (define !== undefined) return define;
+  if (isLegacyAffectation(s)) return 'AFFECTATION';
+  if (isKeywordLine(s) || isDecoratorLine(s)) return 'PYTHON';
+  const directive = cascadeMatch(s, AFFECTATION_INDEX + 1, EXCLAMATION_CASCADE.length);
+  if (directive !== undefined) return directive;
+  return isStatementLine(s) ? 'PYTHON' : 'PLAIN';
+}
+
+/** The first of `EXCLAMATION_CASCADE[from, to)` that matches. */
+function cascadeMatch(s: string, from: number, to: number): TLineType | undefined {
+  for (let i = from; i < to; i++) if (EXCLAMATION_CASCADE[i]![0].test(s)) return EXCLAMATION_CASCADE[i]![1];
+  return undefined;
+}
+
+/** Marker put at the start of a collapsed Python chunk.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/text/TLineType.java:71 */
+export const PYTHON_MARKER = '!python\n';
+
+/** Where upstream's `PythonLine.isLegacyAffectation` replaced the pre-Python `PATTERN_AFFECTATION`
+ * (TLineType.java:179-183). */
+const AFFECTATION_INDEX = EXCLAMATION_CASCADE.findIndex(([, type]) => type === 'AFFECTATION');
 
 /** @see ~/git/plantuml/.../text/TLineType.java#isQuote */
 export function isQuote(ch: string): boolean {

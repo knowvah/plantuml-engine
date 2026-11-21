@@ -1,7 +1,7 @@
 {
   "$comment": "Text census (fill, anchor, inset) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): insets move where a label's box shifted with the compressed geometry; no fill/anchor change is expected.",
-  "measuredAt": "2026-11-20",
-  "measuredAgainstCommit": "525b1d7f",
+  "measuredAt": "2026-11-21",
+  "measuredAgainstCommit": "ae8ba15c",
   "fixtures": [
     {
       "type": "activity",
@@ -728,31 +728,33 @@
       "type": "activity",
       "slug": "bineki-51-zedo397",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 12
+          "#000": 16
         },
         "anchor": {
-          "(absent)": 12
+          "(absent)": 16
         },
         "inset": {
+          "7": 1,
           "10": 3
         },
-        "textCount": 12
+        "textCount": 16
       },
       "jar": {
         "fill": {
-          "#000": 6
+          "#000": 16
         },
         "anchor": {
-          "(absent)": 6
+          "(absent)": 16
         },
         "inset": {
+          "7": 1,
           "10": 3
         },
-        "textCount": 6
+        "textCount": 16
       }
     },
     {
@@ -1488,33 +1490,35 @@
       "type": "activity",
       "slug": "bucoru-71-gapi371",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 11,
+          "#000": 13,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 13
+          "(absent)": 15
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 13
+        "textCount": 15
       },
       "jar": {
         "fill": {
-          "#000": 5,
+          "#000": 13,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 15
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 7
+        "textCount": 15
       }
     },
     {
@@ -10975,33 +10979,35 @@
       "type": "activity",
       "slug": "lidumi-54-moza355",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 62,
+          "#000": 64,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 64
+          "(absent)": 66
         },
         "inset": {
+          "7": 1,
           "10": 11
         },
-        "textCount": 64
+        "textCount": 66
       },
       "jar": {
         "fill": {
-          "#000": 26,
+          "#000": 64,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 28
+          "(absent)": 66
         },
         "inset": {
+          "7": 1,
           "10": 11
         },
-        "textCount": 28
+        "textCount": 66
       }
     },
     {
@@ -11225,31 +11231,33 @@
       "type": "activity",
       "slug": "liteta-29-zufa478",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 8
+          "#000": 10
         },
         "anchor": {
-          "(absent)": 8
+          "(absent)": 10
         },
         "inset": {
+          "7": 1,
           "10": 3
         },
-        "textCount": 8
+        "textCount": 10
       },
       "jar": {
         "fill": {
-          "#000": 5
+          "#000": 10
         },
         "anchor": {
-          "(absent)": 5
+          "(absent)": 10
         },
         "inset": {
+          "7": 1,
           "10": 3
         },
-        "textCount": 5
+        "textCount": 10
       }
     },
     {
@@ -14383,31 +14391,33 @@
       "type": "activity",
       "slug": "nisigo-68-ledo444",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 6
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 6
+          "(absent)": 8
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 6
+        "textCount": 8
       },
       "jar": {
         "fill": {
-          "#000": 3
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 3
+          "(absent)": 8
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 3
+        "textCount": 8
       }
     },
     {
@@ -14991,31 +15001,33 @@
       "type": "activity",
       "slug": "nupiko-03-cezu269",
       "status": "baseline",
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
       "ours": {
         "fill": {
-          "#000": 7
+          "#000": 9
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 9
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 7
+        "textCount": 9
       },
       "jar": {
         "fill": {
-          "#000": 4
+          "#000": 9
         },
         "anchor": {
-          "(absent)": 4
+          "(absent)": 9
         },
         "inset": {
+          "7": 1,
           "10": 2
         },
-        "textCount": 4
+        "textCount": 9
       }
     },
     {

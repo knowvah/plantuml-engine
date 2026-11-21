@@ -221,12 +221,12 @@
     {
       "type": "activity",
       "slug": "bineki-51-zedo397",
-      "status": "baseline",
-      "diffCount": 34,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 75,
-      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",
@@ -456,12 +456,12 @@
     {
       "type": "activity",
       "slug": "bucoru-71-gapi371",
-      "status": "baseline",
-      "diffCount": 28,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 67,
-      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",
@@ -3565,12 +3565,12 @@
     {
       "type": "activity",
       "slug": "lidumi-54-moza355",
-      "status": "baseline",
-      "diffCount": 534,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 783,
-      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",
@@ -3638,12 +3638,12 @@
     {
       "type": "activity",
       "slug": "liteta-29-zufa478",
-      "status": "baseline",
-      "diffCount": 21,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 41,
-      "reason": "Python-preprocessor row: line 3 `!t1=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 3 `!t1=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",
@@ -4728,12 +4728,12 @@
     {
       "type": "activity",
       "slug": "nisigo-68-ledo444",
-      "status": "baseline",
-      "diffCount": 69,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 89,
-      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",
@@ -4909,12 +4909,12 @@
     {
       "type": "activity",
       "slug": "nupiko-03-cezu269",
-      "status": "baseline",
-      "diffCount": 32,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "525b1d7f",
-      "weightedScore": 51,
-      "reason": "Python-preprocessor row: line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not bind it as a legacy variable and the label keeps the unexpanded text; this port has no Python preprocessor and still expands it into three lines. Every remaining diff is that label (its text lines and the geometry they move). Open -> #214"
+      "status": "pinned",
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "ae8ba15c",
+      "weightedScore": 0,
+      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!t=\"this is t1\\nthis is t2\\nthis is t3\\n\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
     },
     {
       "type": "activity",

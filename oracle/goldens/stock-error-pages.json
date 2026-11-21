@@ -87,10 +87,6 @@
       "message": "",
       "provenance": "oracle-widths"
     },
-    "component/pegali-65-rotu416": {
-      "line": 2,
-      "message": "Python syntax error: expected a name but found '=' (column 8)"
-    },
     "dot/comment-stripping": {
       "line": 2,
       "message": "Syntax Error? (Assumed diagram type: dot)"
@@ -194,14 +190,6 @@
     "salt/lakari-33-mone874": {
       "line": null,
       "message": ""
-    },
-    "sequence/fidoba-93-nonu806": {
-      "line": 3,
-      "message": "Python syntax error: tabs are not allowed; indent with spaces (column 4)"
-    },
-    "sequence/joleka-44-cese913": {
-      "line": 2,
-      "message": "Python error: NameError: name 'something' is not defined"
     },
     "state/cagego-53-vemo516": {
       "line": 8,

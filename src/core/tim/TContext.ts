@@ -54,6 +54,7 @@ import { PreprocessingArtifact } from './PreprocessingArtifact.js';
 import { StringLocated, type LineLocation, type TLineType } from './StringLocated.js';
 import { ThemeExecutor, type ThemeMetadata } from './ThemeExecutor.js';
 import type { TContext as TContextInterface, TFunction, TPreprocessingArtifact } from './TFunction.js';
+import { TContextPython } from './TContextPython.js';
 import { applyFunctionsAndVariablesImpl } from './TContextSubstitution.js';
 import type { TFunctionSignature } from './TFunctionSignature.js';
 import { TFunctionType } from './TFunctionType.js';
@@ -83,6 +84,9 @@ export class TContext implements TContextInterface {
   readonly functionsSet = new FunctionsSet();
 
   private readonly subs = new Map<string, Sub>();
+
+  /** Upstream's `bodies`, `pythonSources` and `legacyLines` (plantuml/plantuml#3032 fix), see the class. */
+  private readonly python = new TContextPython(this.functionsSet);
   private readonly preprocessingArtifact = new PreprocessingArtifact();
 
   /** Upstream's `PathSystem` + `filesUsedCurrent` + `DefinitionsContainer`, behind the sync seam. */
@@ -138,6 +142,8 @@ export class TContext implements TContextInterface {
     ftype: TFunctionType | undefined,
     modeSpecial: boolean,
   ): TValue | undefined {
+    // upstream: `buildCodeIterator(memory, body, ftype)` -> `collapsePython(body, ftype)` (TContext.java:224-226)
+    this.python.collapsePython(body, ftype);
     // @see `iterator/buildCodeIterator.ts` -- the chain, and why its order matters.
     const it: CodeIterator = buildCodeIterator(body, {
       context: this,
@@ -155,6 +161,11 @@ export class TContext implements TContextInterface {
       it.next();
     }
     return undefined;
+  }
+
+  /** @see TContextPython.legacyLineOf */
+  legacyLineOf(line: StringLocated): StringLocated | undefined {
+    return this.python.legacyLineOf(line);
   }
 
   /** @see ~/git/plantuml/.../tim/TContext.java#executeOneLineSafe */

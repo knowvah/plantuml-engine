@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T16:48:00.660Z",
+  "generatedAt": "2026-11-21T19:33:15.960Z",
   "fixtures": [
     {
       "slug": "bacupi-77-fuke586",
@@ -1705,8 +1705,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "firstDiff": "error-page"
+      "verdict": "conformant"
     },
     {
       "slug": "fidobi-24-cugi165",
@@ -2378,10 +2377,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 9.113,
-      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength",
-      "maxDeltaPath": "svg/g[1]/g[4]/rect[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "gujaje-38-zoce253",
@@ -2409,10 +2405,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 5.688000000000002,
-      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength",
-      "maxDeltaPath": "svg/g[1]/g[2]/g[1]/rect[1]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "gunecu-53-jebu067",
@@ -2797,8 +2790,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "firstDiff": "error-page"
+      "verdict": "conformant"
     },
     {
       "slug": "jomemi-46-zazi815",
@@ -2826,9 +2818,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[9]/text[1]/@textLength"
+      "verdict": "conformant"
     },
     {
       "slug": "joroli-85-vace726",
@@ -6592,9 +6582,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[8]/text[1]/@textLength"
+      "verdict": "conformant"
     },
     {
       "slug": "suredo-76-kaxo606",
@@ -7602,9 +7590,7 @@
       "type": "sequence",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[7]/text[1]/@textLength"
+      "verdict": "conformant"
     },
     {
       "slug": "vofefi-14-rine141",

@@ -14,7 +14,8 @@
  * 2026-11-04 numbers after #109's capture:
  * `plans/oracle-gap-capture/measurements/note-audit.md`. The re-pin to a720bdd
  * (2026-11-21) re-wrote the rows its survey moved; each loss is a Python row
- * (#214) or a formula row (DIVERGENCES.md), checked against that survey.
+ * (#214) or a formula row (DIVERGENCES.md), checked against that survey. The
+ * #3032 re-capture (2026-11-21) took the Python rows that fix restores back out.
  */
 
 type NoteClass = 'smetana' | 'notBuilt' | 'openDefect' | 'mixed' | 'jarDeclines';
@@ -94,9 +95,10 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   activity: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: the 21 rows short of conformant are named. The a720bdd re-pin (2026-11-20) moved 16: six ' +
-      'carry a `!t="…"` line the jar now runs as Python (#214) (bineki, bucoru, lidumi, liteta, nisigo, nupiko) and ten a formula ' +
+      'Not a regression: the 15 rows short of conformant are named. The a720bdd re-pin (2026-11-20) moved ten: a formula ' +
       'the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine) (cepivu, fonusa, gakodi, pedulu, racose, ruveji, sipifu, tecimi, xataku, zatujo). ' +
+      'Its six `!t="…"` rows (bineki, bucoru, lidumi, liteta, nisigo, nupiko) conform against the plantuml/plantuml#3032 fix ' +
+      '(DIVERGENCES.md, rows pinned to unreleased upstream fixes). ' +
       'Before it: three LaTeX rows under KaTeX (bigobe, xexuxu, xuzovi), one QR code under the MIT edition ' +
       "(nomave), and `rekefe-90`, which prints this port's version from `%version()`, a signed divergence (#155, " +
       '`oracle/accepted-divergences.json`). The legacy `(*) -->` syntax is drawn by the legacy activity engine ' +
@@ -105,9 +107,10 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   class: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: 3 rows short of conformant. `delaja-41` and `xonoru-58` carry lines the jar now runs as Python (#214) ' +
-      '(the a720bdd re-pin, 2026-11-20); `vanadi` is a structural match #109 captured on 2026-11-04, not yet ' +
-      'diagnosed.',
+      'Not a regression: 2 rows short of conformant. In `delaja-41` the jar now drops the leading `!` of each `!!` ' +
+      'sprite row (PythonLine.unescapeBang, #214) (the a720bdd re-pin, 2026-11-20); `vanadi` is a structural match #109 captured on 2026-11-04, ' +
+      'not yet diagnosed. `xonoru-58` conforms against the plantuml/plantuml#3032 fix (DIVERGENCES.md, rows pinned to ' +
+      'unreleased upstream fixes).',
   },
   dot: {
     noteClass: 'openDefect',
@@ -116,9 +119,11 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   sequence: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: the 11 rows short of conformant all moved at the a720bdd re-pin (2026-11-20). Nine carry ' +
-      'a `!name = …` line the jar now runs as Python (#214) (femixi, fidoba, gugena, gunabi, joleka, jorari, sarico, supezo, ' +
-      'vodiba) and two a formula the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine) (camuxi, mefeke).',
+      'Not a regression: the 4 rows short of conformant all moved at the a720bdd re-pin (2026-11-20). Two carry ' +
+      'a `!name = …` line the jar now runs as Python (#214) (femixi, sarico) and two a formula the jar now draws as ' +
+      'JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine) (camuxi, mefeke). Seven ' +
+      'more `!name = …` rows (fidoba, gugena, gunabi, joleka, jorari, supezo, vodiba) conform against the ' +
+      'plantuml/plantuml#3032 fix (DIVERGENCES.md, rows pinned to unreleased upstream fixes).',
   },
   c4: {
     noteClass: 'jarDeclines',
@@ -132,8 +137,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'openDefect',
     detail:
       'description-divergence-drive (#113, 2026-11-04) took all 51 open rows to conformant. The a720bdd re-pin ' +
-      '(2026-11-20) moved five: `pegali-65` carries a line the jar now runs as Python (#214), and gevozu, kezodo, sunuju and ' +
-      'vimulo draw a formula the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine), which also changes the shape fitted around it.',
+      '(2026-11-20) moved four: gevozu, kezodo, sunuju and vimulo draw a formula the jar now draws as JLaTeXMath glyph ' +
+      'paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine), which also changes the shape fitted around ' +
+      'it. `pegali-65` conforms against the plantuml/plantuml#3032 fix (DIVERGENCES.md, rows pinned to unreleased upstream fixes).',
   },
   object: {
     noteClass: 'openDefect',
@@ -153,7 +159,8 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     detail:
       'description-divergence-drive (#113, 2026-11-04) took 23 of the 24 open rows to conformant. `fepuvo-06` cannot ' +
       "be compared because the jar's comment is not well-formed; with comments stripped it has zero diffs. " +
-      '`zoriso-46` carries a line the jar now runs as Python (#214) (the a720bdd re-pin, 2026-11-20).',
+      '`zoriso-46` carries a line the jar now runs as Python (#214) (the a720bdd re-pin, 2026-11-20); the ' +
+      'plantuml/plantuml#3032 fix leaves it Python, since its name is in no text line.',
   },
   mindmap: {
     noteClass: 'openDefect',

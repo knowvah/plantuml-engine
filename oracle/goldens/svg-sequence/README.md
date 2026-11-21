@@ -182,15 +182,26 @@ README.md`'s identical rule; the same rationale applies verbatim.
 
 ### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
 
-Eleven pins stopped being zero-diff when the oracle moved to a720bdd. They
+Four pins stopped being zero-diff when the oracle moved to a720bdd. They
 left `ratchet.json` and went back to `status: "baseline"` in
 `diff-baseline.json`, each with a `reason` and a fresh `weightedScore`.
 Their `golden.svg` directories stay as the evidence.
 
-- Python preprocessor (#214): `femixi-54`, `fidoba-93`, `gugena-56`,
-  `gunabi-18`, `joleka-44`, `jorari-47`, `sarico-38`, `supezo-15` and
-  `vodiba-42`. Each has a `!name = value` line that upstream reads as a
-  Python statement, not a legacy variable.
+- Python preprocessor (#214): `femixi-54` and `sarico-38`. Each has a
+  `!name = value` line that upstream reads as a Python statement, not a
+  legacy variable.
 - Formulas (DIVERGENCES.md, "LaTeX rendering engine — KaTeX, not
   JLaTeXMath"): `camuxi-33` and `mefeke-43`. The jar now draws glyph
   `<path>`s where the port draws a KaTeX `<image>`.
+
+### Restored 2026-11-21 (the plantuml/plantuml#3032 fix)
+
+`fidoba-93`, `gugena-56`, `gunabi-18`, `joleka-44`, `jorari-47`, `supezo-15`
+and `vodiba-42` left the ratchet at the a720bdd re-pin with the two rows above
+and are pinned again at their original positions, their `diff-baseline.json`
+rows `pinned`. Their oracles now come from the fix proposed in
+plantuml/plantuml#3032 (upstream 908fb9df265), which runs the `!name = value`
+line as the legacy assignment again, with the missing-`$` warning banner; the
+port mirrors its routing (`src/core/tim/TContextPython.ts`). Re-pin when a
+release carries the fix (DIVERGENCES.md, "Rows pinned to unreleased upstream
+fixes").

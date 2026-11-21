@@ -25,6 +25,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/iterator/CodeIteratorAffectation.java
  */
 
+import { isLegacyAffectation, nameAssignedWithoutDollar } from '../../text/PythonLine.js';
 import type { StringLocated } from '../StringLocated.js';
 import { EaterAffectation } from '../EaterAffectation.js';
 import { EaterException } from '../EaterException.js';
@@ -66,12 +67,36 @@ export class CodeIteratorAffectation extends AbstractCodeIterator {
     }
   }
 
-  /** @throws EaterException (thrown, not returned) on malformed JSON, or a malformed directive. */
+  /**
+   * Upstream reaches this iterator with the legacy affectations only
+   * (`PythonLine.isLegacyAffectation`, TLineType.java:179). This port's
+   * pre-Python classifier also sends it `!x = 1` and `!x == 1`, which upstream
+   * calls PYTHON (TLineType.java:266) and routes in `executeOneLineNotSafe`
+   * (TContext.java:353-367).
+   * @throws EaterException (thrown, not returned) on malformed JSON, or a malformed directive.
+   */
   private doAffectation(resultIn: StringLocated): void {
+    if (isLegacyAffectation(resultIn.getString())) {
+      this.doLegacyAffectation(resultIn, false);
+      return;
+    }
+    const legacy =
+      nameAssignedWithoutDollar(resultIn.getString()) === undefined ? undefined : this.context.legacyLineOf?.(resultIn);
+    if (legacy !== undefined) {
+      executeLegacyAffectation(this.context, this.memory, legacy);
+      return;
+    }
+    // `executePython` (TContext.java:355). #214: no Python preprocessor yet, so the line runs as before
+    // Python, through the legacy preprocessor, without the warning the jar never gives it.
+    this.doLegacyAffectation(resultIn, true);
+  }
+
+  /** @throws EaterException (thrown, not returned) on malformed JSON, or a malformed directive. */
+  private doLegacyAffectation(resultIn: StringLocated, ranAsPython: boolean): void {
     let result = resultIn;
     for (let i = 0; i < MAX_JSON_CONTINUATION_ATTEMPTS; i++) {
       try {
-        this.executeAffectation(this.context, this.memory, result);
+        new EaterAffectation(result, ranAsPython).analyze(this.context, this.memory);
         return;
       } catch (e) {
         if (!(e instanceof SyntaxError)) throw e;
@@ -84,8 +109,19 @@ export class CodeIteratorAffectation extends AbstractCodeIterator {
       }
     }
   }
+}
 
-  private executeAffectation(context: TContext, memory: TMemory, s: StringLocated): void {
+/**
+ * A legacy assignment, as CodeIteratorAffectation runs it. A JSON value cannot
+ * continue on the next lines here: they are not part of the chunk.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java:562-572 `executeLegacyAffectation` (908fb9df265)
+ */
+function executeLegacyAffectation(context: TContext, memory: TMemory, s: StringLocated): void {
+  try {
     new EaterAffectation(s).analyze(context, memory);
+  } catch (e) {
+    // upstream catches the JSON `ParseException`; this port's JSON reader throws `SyntaxError`
+    if (e instanceof SyntaxError) throw new EaterException('Error in JSON format', s);
+    throw e;
   }
 }

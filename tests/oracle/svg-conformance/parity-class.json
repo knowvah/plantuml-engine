@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T16:28:20.361Z",
+  "generatedAt": "2026-11-21T19:26:38.762Z",
   "fixtures": [
     {
       "slug": "bajotu-30-soku184",
@@ -5707,16 +5707,9 @@
     {
       "slug": "xonoru-58-noxe307",
       "type": "class",
-      "dotEqual": false,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,480.968748,171.00004800000002 vs ours 0,0,90.57499200000001,162.99998399999998"
-      },
-      "verdict": "diverged",
-      "maxDelta": 397.25,
-      "firstDiff": "svg/g[1]/g[1]/@id",
-      "maxDeltaPath": "svg/g[1]/g[1]/text[1]/@x"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "xopuku-46-nefa571",

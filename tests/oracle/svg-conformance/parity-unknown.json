@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T16:51:14.049Z",
+  "generatedAt": "2026-11-21T19:31:57.802Z",
   "fixtures": [
     {
       "slug": "activity-legacy1-example-0",
@@ -1395,9 +1395,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": true,
-      "verdict": "diverged",
-      "maxDelta": 0,
-      "firstDiff": "svg/g[1]/g[1]/text[2]/@fill"
+      "verdict": "conformant"
     },
     {
       "slug": "fecure-20-muca822",
@@ -4258,10 +4256,7 @@
       "type": "unknown",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "maxDelta": 26.75,
-      "firstDiff": "svg/g[1]/text[3]/@textLength",
-      "maxDeltaPath": "svg/g[1]/text[3]/@x"
+      "verdict": "conformant"
     },
     {
       "slug": "nurile-03-kumi912",

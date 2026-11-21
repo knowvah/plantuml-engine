@@ -90,19 +90,26 @@ unrelated change.
 
 ### Removed 2026-11-20 (oracle re-pin to upstream a720bdd)
 
-Eight pins stopped being zero-diff when the oracle moved to a720bdd. They
+Seven pins stopped being zero-diff when the oracle moved to a720bdd. They
 left `ratchet.json` and are now `diff-baseline.json` entries (group 4), each
 with a `reason` and a fresh `diffCount`. Their `golden.svg` directories stay
 as the evidence.
 
-- Python preprocessor (#214): `usecase/zoriso-46`, `unknown/zarelu-57` and
-  `component/pegali-65`. The jar runs a `!name = ...` line as Python and
-  draws a Python error page.
+- Python preprocessor (#214): `usecase/zoriso-46` and `unknown/zarelu-57`.
+  The jar runs a `!name = ...` line as Python and draws a Python error
+  page.
 - Formulas (DIVERGENCES.md, "LaTeX rendering engine — KaTeX, not
   JLaTeXMath"): `component/gevozu-46`, `kezodo-14`, `sunuju-01`,
   `vimulo-11` and `unknown/barufu-21`. The jar draws glyph `<path>`s, and
   the usecase ellipses are fitted around those glyph points, so they come
   out smaller.
+
+`component/pegali-65` left with them and was restored on 2026-11-21 at its
+original position: its oracle (and `svek-1.dot`) now comes from the fix
+proposed in plantuml/plantuml#3032 (upstream 908fb9df265), which runs
+`!global = "changed value"` as the legacy assignment again, with the
+missing-`$` warning banner. Re-pin when a release carries the fix
+(DIVERGENCES.md, "Rows pinned to unreleased upstream fixes").
 
 ## Known gap (T18 finding, still open after T19)
 

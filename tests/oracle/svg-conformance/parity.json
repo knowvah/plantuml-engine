@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T16:57:08.912Z",
+  "generatedAt": "2026-11-21T19:35:36.138Z",
   "fixtures": [
     {
       "slug": "babafi-51-dixi026",
@@ -1205,10 +1205,9 @@
     {
       "slug": "pegali-65-rotu416",
       "type": "component",
-      "dotEqual": false,
-      "layoutEqual": "n/a",
-      "verdict": "diverged",
-      "firstDiff": "error-page"
+      "dotEqual": true,
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "pemifo-35-kute324",
