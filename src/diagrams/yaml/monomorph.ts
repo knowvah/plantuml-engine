@@ -5,9 +5,11 @@
  *   net.sourceforge.plantuml.yaml.parser.Monomorph
  *   net.sourceforge.plantuml.yaml.parser.MonomorphType
  *   net.sourceforge.plantuml.yaml.parser.MonomorphToJson
+ *   net.sourceforge.plantuml.yaml.parser.MonomorphToPlain
  */
 
 import { JsonObject } from '../json/JsonObject.js';
+import { YamlSyntaxException } from './yaml-syntax-exception.js';
 
 // ---------------------------------------------------------------------------
 // MonomorphType
@@ -62,6 +64,8 @@ export class Monomorph {
     } else if (this._type !== 'MAP') {
       throw new Error(`Cannot putInMap on a Monomorph of type ${this._type}`);
     }
+    // Monomorph.java:110-111 (0537b558644): a repeated key is an error, no longer a silent overwrite.
+    if (this._map!.has(key)) throw new YamlSyntaxException(`duplicate key '${key}'`);
     this._map!.set(key, val);
   }
 
@@ -197,4 +201,35 @@ function convertToObject(input: Monomorph): JsonObject {
     }
   }
   return obj;
+}
+
+// ---------------------------------------------------------------------------
+// monomorphToPlain
+// ---------------------------------------------------------------------------
+
+/** What {@link monomorphToPlain} returns: strings, arrays and insertion-ordered maps. */
+export type PlainValue = string | PlainValue[] | Map<string, PlainValue>;
+
+/**
+ * Converts a Monomorph tree to plain values: a map becomes a `Map` (the
+ * `LinkedHashMap`: keys in document order, integer-like ones included), a list
+ * an array and a scalar a string. Every scalar stays a string, whatever it
+ * looks like ("3.5", "true"). An UNDETERMINATE node (an empty document) is an
+ * empty map.
+ *
+ * Upstream's one caller is `TContext#parseYamlHeader` (the Python
+ * preprocessor's view of the YAML header, TContext.java:430), which this port
+ * does not have (issue #214).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/yaml/parser/MonomorphToPlain.java:49-66
+ */
+export function monomorphToPlain(input: Monomorph): PlainValue {
+  if (input.type === 'SCALAR') return input.getValue();
+  if (input.type === 'LIST') {
+    const result: PlainValue[] = [];
+    for (let i = 0; i < input.size(); i++) result.push(monomorphToPlain(input.getElementAt(i)));
+    return result;
+  }
+  const result = new Map<string, PlainValue>();
+  if (input.type === 'MAP') for (const key of input.keys()) result.set(key, monomorphToPlain(input.getMapValue(key)));
+  return result;
 }

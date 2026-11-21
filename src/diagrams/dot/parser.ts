@@ -3,6 +3,7 @@ import { refuse } from '../../core/parse-refusal.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import { isEndDirective } from '../../core/tim/StartUtils.js';
 import type { DotDiagramAST } from './ast.js';
+import { allowDotSvg, DEFAULT_SECURITY_PROFILE, type SecurityProfile } from '../../core/security/SecurityProfile.js';
 
 // ---------------------------------------------------------------------------
 // `@startdot` parsing is upstream's `PSystemDotFactory` and nothing more: find
@@ -107,7 +108,10 @@ function documentLineOf(source: UmlSource, all: readonly string[], k: number): n
  * two directive lines remain (java:54-56).
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemBasicFactory.java:41-68
  */
-export function parseDot(source: UmlSource): DotDiagramAST | ParseRefusal {
+export function parseDot(
+  source: UmlSource,
+  securityProfile: SecurityProfile = DEFAULT_SECURITY_PROFILE,
+): DotDiagramAST | ParseRefusal {
   const all = upstreamLinesOf(source);
   const lines = removeInitialNoise(all);
   let data: string | undefined;
@@ -121,6 +125,6 @@ export function parseDot(source: UmlSource): DotDiagramAST | ParseRefusal {
     }
     data = `${data ?? ''}${text}\n`;
   }
-  if (data !== undefined) return { dotContent: data };
+  if (data !== undefined) return { dotContent: data, allowDotSvg: allowDotSvg(securityProfile) };
   return refuse('syntax', documentLineOf(source, all, all.length - 1), lines.length, 'Empty description');
 }

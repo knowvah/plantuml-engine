@@ -38,6 +38,7 @@ import { ExtremityFactoryParenthesis } from '../svek/extremity/ExtremityParenthe
 import { ExtremityFactoryPlus } from '../svek/extremity/ExtremityPlus.js';
 import { ExtremityFactorySquare } from '../svek/extremity/ExtremitySquare.js';
 import { ExtremityFactoryTriangle } from '../svek/extremity/ExtremityTriangle.js';
+import { trin } from '../string-utils-trim.js';
 
 export const LinkDecor = {
   NONE: 'NONE',
@@ -144,14 +145,14 @@ export function isExtendsLike(decor: LinkDecor): boolean {
 }
 
 /**
- * `LinkDecor.lookupDecors1(String)` — `StringUtils.trin` (trim) then
+ * `LinkDecor.lookupDecors1(String)` — `StringUtils.trin` then
  * `DECORS1.getOrDefault(s, NONE)`; null-safe.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/decoration/LinkDecor.java:226-230
  */
 export function lookupDecors1(s: string | null): LinkDecor {
   if (s === null) return LinkDecor.NONE;
-  return DECORS1.get(s.trim()) ?? LinkDecor.NONE;
+  return DECORS1.get(trin(s)) ?? LinkDecor.NONE;
 }
 
 /**
@@ -161,7 +162,7 @@ export function lookupDecors1(s: string | null): LinkDecor {
  */
 export function lookupDecors2(s: string | null): LinkDecor {
   if (s === null) return LinkDecor.NONE;
-  return DECORS2.get(s.trim()) ?? LinkDecor.NONE;
+  return DECORS2.get(trin(s)) ?? LinkDecor.NONE;
 }
 
 /** `Pattern.quote` equivalent — escape every regex metacharacter so the

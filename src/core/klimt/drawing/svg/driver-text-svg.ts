@@ -3,7 +3,7 @@
  *
  * Upstream: klimt/drawing/svg/DriverTextSvg.java (~185 ln). Ported: the
  * leading-space-to-x-offset shift, whitespace-only → NBSP substitution,
- * final `StringUtils.trin` trim, the BOLD/ITALIC → `font-weight`/
+ * final `String#trim` trim, the BOLD/ITALIC → `font-weight`/
  * `font-style` mapping, the UNDERLINE/STRIKE/WAVE → `text-decoration`
  * accumulation, and the `<text>` emission call itself.
  *
@@ -60,6 +60,7 @@ import { UStroke } from '../../UStroke.js';
 import { extraLineStrokeWidth, textRenderDecorations, type ExtraLine } from './driver-text-svg-decorations.js';
 import type { UText, FontConfiguration } from '../../shape/UText.js';
 import type { SvgGraphics } from './svg-graphics.js';
+import { javaTrim } from '../../../java-number-format.js';
 
 /** See the module doc comment above for why this is a local, injected
  * seam rather than a real font-metrics implementation. Upstream:
@@ -101,21 +102,6 @@ function adjustColorForBackground(color: string, param: UParam): string {
 
 // Upstream: `text.replace(' ', (char) 160)` — regular space -> NBSP.
 const NBSP = '\u00A0';
-
-// Upstream: `StringUtils.trin(String)` — trims only characters whose code
-// point is <= U+0020 (space), from both ends. Deliberately NOT JS's
-// `.trim()`: JS's `.trim()` also strips U+00A0 (NBSP) per the ECMAScript
-// WhiteSpace production, but upstream's `<= ' '` check does NOT (0xA0 >
-// 0x20) — using `.trim()` here would silently swallow the very NBSP
-// glyphs the whitespace-only substitution above just inserted. Ported
-// faithfully rather than approximated, per this task's own finding.
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
 
 /**
  * `fontConfiguration.containsStyle(FontStyle.UNDERLINE) &&
@@ -163,7 +149,9 @@ export class DriverTextSvg implements UDriver<UText> {
 
     const y = param.getTranslate().getDy();
     const { text, x } = this.leadingSpaceAdjust(shape.getText(), param.getTranslate().getDx(), font);
-    const trimmed = trin(text); // Upstream: StringUtils.trin(text).
+    // Upstream: `text.trim()`, deliberately not `StringUtils.trin`, which strips U+00A0 too: the
+    // NBSPs a blank-only text was just turned into must survive (DriverTextSvg.java:120-122).
+    const trimmed = javaTrim(text);
     // SI30: every read of the drawing font goes through `getFont`
     // (upstream: `fontConfiguration.getFont()`, FontConfiguration.java:98-104
     // — DriverTextSvg.java:96 binds ONE `font` local from it and uses that

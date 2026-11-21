@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T04:56:34.507Z",
+  "generatedAt": "2026-11-21T16:30:30.244Z",
   "fixtures": [
     {
       "slug": "bemepi-16-kuzo249",
@@ -245,9 +245,7 @@
       "type": "dot",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 1,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "verdict": "conformant"
     },
     {
       "slug": "rank-source-sink",
@@ -332,9 +330,7 @@
       "type": "dot",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "structural-match",
-      "maxDelta": 1.0200000000000102,
-      "maxDeltaPath": "svg/g[1]/polygon[1]/@points[4]"
+      "verdict": "conformant"
     },
     {
       "slug": "skinparam-node-background",

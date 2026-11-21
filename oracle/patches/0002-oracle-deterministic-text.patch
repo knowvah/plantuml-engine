@@ -1,7 +1,7 @@
-From b1688670551676a78be998774b44be321954e626 Mon Sep 17 00:00:00 2001
+From bcf73a07f618c2920d70ec5c20d27cb0a1644e9e Mon Sep 17 00:00:00 2001
 From: Scott Seely <scott@scottseely.com>
 Date: Sun, 5 Jul 2026 19:34:32 -0500
-Subject: [PATCH] feat(oracle): force width-table bounder under
+Subject: [PATCH 2/5] feat(oracle): force width-table bounder under
  PLANTUML_DETERMINISTIC_TEXT
 
 Companion to the DOT-dump seam: when -DPLANTUML_DETERMINISTIC_TEXT is
@@ -14,17 +14,17 @@ them. See plantuml-ts planning/adr/ADR-001-text-measurement.md.
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ---
- src/main/java/net/sourceforge/plantuml/FileFormat.java | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../java/net/sourceforge/plantuml/FileFormat.java     | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/src/main/java/net/sourceforge/plantuml/FileFormat.java b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-index 877fa5b4cd0..c476ccc425b 100644
+index 44624e3de72..f95e842d220 100644
 --- a/src/main/java/net/sourceforge/plantuml/FileFormat.java
 +++ b/src/main/java/net/sourceforge/plantuml/FileFormat.java
-@@ -170,6 +170,16 @@ public enum FileFormat {
- 	}
+@@ -185,6 +185,17 @@ public enum FileFormat {
  
- 	public StringBounder getDefaultStringBounder(TikzFontDistortion tikzFontDistortion, SvgCharSizeHack charSizeHack) {
+ 	public StringBounder getDefaultStringBounder(TikzFontDistortion tikzFontDistortion, SvgCharSizeHack charSizeHack,
+ 			Pragma pragma) {
 +		// [plantuml-ts oracle seam] dev-only: when -DPLANTUML_DETERMINISTIC_TEXT is
 +		// set, force PlantUML's deterministic width-table bounder for SVG renders so
 +		// the dumped DOT node sizes match plantuml-ts's WidthTableMeasurer (same
@@ -35,9 +35,10 @@ index 877fa5b4cd0..c476ccc425b 100644
 +				&& (this == SVG || this == SVG_DETERMINISTIC))
 +			return new StringBounderFromWidthTable(FileFormat.SVG_DETERMINISTIC);
 +
++
  		// ::comment when JAVA8
  		if (TeaVM.isTeaVM()) {
  			if (this == SVG_DETERMINISTIC)
 -- 
-2.50.1 (Apple Git-155)
+2.54.0 (Apple Git-157)
 

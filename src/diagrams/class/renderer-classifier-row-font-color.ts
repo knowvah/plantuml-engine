@@ -9,6 +9,7 @@ import type { ClassifierGeo } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import { CLASS_STEREOTYPE_BUCKET, OBJECT_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
 import { isObjectKind } from './object-kind-style.js';
+import { STEREOTYPE_FONT_DEFAULTS } from './class-stereotype-style.js';
 import { resolveClassTagCascadeEntry } from '../../core/style-cascade-class.js';
 import {
   resolveElementFont,
@@ -52,12 +53,14 @@ export function isStereotypeLabelRow(row: { readonly stereotypeLabel?: true }, f
 }
 
 /**
- * dss T3b: a stereotype LABEL row is drawn with `FontConfiguration.create(skinParam, FontParam.CLASS_STEREOTYPE |
- * OBJECT_STEREOTYPE, stereotype)` (`EntityImageClassHeader.java:131`, `EntityImageObject.java:105-106`), the legacy
- * skinparam chain with no style behind it, so no `<style>` cascade tints it (jar: `class__kinds-font-*`, label
- * `#000`). `legacy-stereotype-font.ts` resolves that chain into the two buckets; absent, the `FontParam` default.
+ * A stereotype LABEL row is drawn in its `stereotype` style's colour (`class-stereotype-style.ts`; upstream
+ * 53fba993513, e7e3d8063b5), the skin's black when nothing restyles it. Without a style builder (a render with no
+ * services) the geo has no `stereotypeFont`, and the pre-1.2026.11 legacy chain answers: `legacy-stereotype-font.ts`'s
+ * two buckets, absent, the `FontParam` default.
+ * @see EntityImageClassHeader.java:83-87,133-136, EntityImageObject.java:103-107,122-126 (upstream a720bdd)
  */
-function stereotypeLabelFontColor(geo: ClassifierGeo, theme: Theme): string {
+export function stereotypeLabelFontColor(geo: ClassifierGeo, theme: Theme): string {
+  if (geo.stereotypeFont !== undefined) return geo.stereotypeFont.font ?? STEREOTYPE_FONT_DEFAULTS.color;
   const bucket = isObjectKind(geo.kind) ? OBJECT_STEREOTYPE_BUCKET : CLASS_STEREOTYPE_BUCKET;
   const font = theme.colors.elements?.[bucket]?.font;
   return typeof font === 'string' ? font : DEFAULT_STEREOTYPE_FONT_COLOR;

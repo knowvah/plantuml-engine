@@ -35,7 +35,7 @@ import type { AtomImageResolver } from '../../creole-atoms.js';
 import type { CreoleAtom, CreoleAtomUrl } from '../../klimt/creole/atom/Atom.js';
 import { urlCapable } from '../../annotations/blocks-creole-atoms.js';
 import { manageGuillemet, type GuillemetPair } from '../../text/Guillemet.js';
-import { renderLatexAsImage } from '../../latex.js';
+import { drawLatexAtom, latexAtomDimension } from '../../math/latex-atom.js';
 import { emojiBoxDim } from '../../klimt/creole/atom/AtomEmoji.js';
 import { drawEmojiAtom } from './EntityImageDescriptionEmoji.js';
 import { spriteHrefOver } from '../../klimt/sprite/sprite-tint.js';
@@ -168,9 +168,9 @@ function drawAtoms(
       continue;
     }
     if (atom.kind === 'latex') {
-      const resolved = renderLatexAsImage(atom.expr, atom.color ?? '#000000');
-      ug.apply(new UTranslate(x, top)).draw(UImage.build(resolved.width, resolved.height, resolved.href));
-      x += resolved.width;
+      // `AtomMath#drawU`: KaTeX's image, or a rejected formula's monospace source (ScientificEquationSafe.java:124-128).
+      drawLatexAtom(atom, ug.apply(new UTranslate(x, top)));
+      x += latexAtomDimension(atom, stringBounder).width;
       continue;
     }
     // `AtomEmoji#drawU` -> `Emoji#drawU` (`AtomEmoji.java:66-68`, `Emoji.java:175-182`): the artwork when the

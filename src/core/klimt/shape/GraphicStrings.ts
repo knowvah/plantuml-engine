@@ -46,20 +46,21 @@ import { UStroke } from '../UStroke.js';
 import { UTranslate } from '../UTranslate.js';
 import type { TextBlock } from './TextBlock.js';
 import { TextBlockMemoized } from './TextBlockMemoized.js';
+import { TextBlockRaw } from './TextBlockRaw.js';
 import { FontStyle } from './UText.js';
 import type { FontConfiguration } from './UText.js';
 import { UImage } from './UImage.js';
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:63 */
-const MARGIN = 5;
+export const MARGIN = 5;
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:75 */
 const IMAGE_PADDING = 30;
 
 /** `UFontFactory.sansSerif(12)` / `sansSerif(14)` / `monospace(14)`.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:118-128 */
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:123-133 */
 const SIZE_12 = 12;
-const SIZE_14 = 14;
+export const SIZE_14 = 14;
 
 /** `HColors` constants this port's `HColors` does not carry, resolved as
  *  upstream resolves them: `set.getColorOrWhite(...)`.
@@ -109,17 +110,17 @@ function bold(font: GraphicFont): GraphicFont {
   return { ...font, creole: { ...font.creole, styles: new Set([...font.creole.styles, FontStyle.BOLD]) } };
 }
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:118-120 */
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:123-125 */
 function sansSerif12(color: HColorSimple): GraphicFont {
   return fontOf(UFontFactory.sansSerif(SIZE_12), color);
 }
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:122-124 */
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:127-129 */
 function sansSerif14(color: HColorSimple): GraphicFont {
   return fontOf(UFontFactory.sansSerif(SIZE_14), color);
 }
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:126-128 */
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:131-133 */
 function monospaced14(color: HColorSimple): GraphicFont {
   return fontOf(UFontFactory.monospace(SIZE_14), color);
 }
@@ -164,7 +165,7 @@ interface GraphicMode {
 /** Every factory but `createForError` and `createGreenOnBlackMonospaced`. */
 const FULL: GraphicMode = { mode: CreoleMode.FULL, isCrash: false };
 
-/** `createBlackOnWhite(strings, image, position)`'s mode (java:113-116). */
+/** `createBlackOnWhite(strings, image, position)`'s mode (java:118-121). */
 const FULL_BUT_UNDERSCORE: GraphicMode = { mode: CreoleMode.FULL_BUT_UNDERSCORE, isCrash: false };
 
 /** `new UImage(new PixelImage(image, TYPE_BILINEAR))`: the raster at its pixel size. */
@@ -192,7 +193,7 @@ export class GraphicStrings extends TextBlockMemoized {
 
   /**
    * `createBlackOnWhite(strings)` (java:105-107, `CreoleMode.FULL`), or the
-   * `(strings, image, position)` overload (java:113-116,
+   * `(strings, image, position)` overload (java:118-121,
    * `FULL_BUT_UNDERSCORE`). The overloads differ by arity, as upstream's do:
    * passing `image`/`position` — even `undefined`, Java's `null` — selects the
    * second. An image without a position is neither drawn nor sized
@@ -220,14 +221,19 @@ export class GraphicStrings extends TextBlockMemoized {
     return new GraphicStrings(strings, sansSerif12(textColor()), HColors.WHITE, undefined, mode);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:109-111 */
+  /** The text as it is, no creole: the source of a formula that cannot be drawn, where a backslash is not an
+   *  escape (`CreoleMode.NO_CREOLE` since aa79d2d80ee).
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:113-116 */
   static createBlackOnWhiteMonospaced(strings: readonly string[]): TextBlock {
-    return new GraphicStrings(strings, monospaced14(textColor()), HColors.WHITE, undefined, FULL);
+    return new GraphicStrings(strings, monospaced14(textColor()), HColors.WHITE, undefined, {
+      mode: CreoleMode.NO_CREOLE,
+      isCrash: false,
+    });
   }
 
   /** `mode`/`isCrash` travel as one {@link GraphicMode} (the complexity
    *  hook's 5-parameter cap); every upstream value is kept.
-   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:132-142 */
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:139-149 */
   private constructor(
     private readonly strings: readonly string[],
     private readonly fontConfiguration: GraphicFont,
@@ -238,11 +244,11 @@ export class GraphicStrings extends TextBlockMemoized {
     super();
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:144-151 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:151-158 */
   private getTextBlock(): TextBlock {
     const display = Display.create([...this.strings]);
     if (this.graphicMode.mode === CreoleMode.NO_CREOLE)
-      throw new Error('GraphicStrings: TextBlockRaw (CreoleMode.NO_CREOLE) is not ported');
+      return new TextBlockRaw(this.strings, this.fontConfiguration.creole);
     const fontConfiguration = this.fontConfiguration.creole;
     const classpath = this.graphicMode.classpath;
     const spriteContainer = new SpriteContainerEmpty(classpath?.sprites, classpath?.emoji);
@@ -250,62 +256,59 @@ export class GraphicStrings extends TextBlockMemoized {
     return display.create7(ctx, HorizontalAlignment.LEFT, this.graphicMode.mode);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:153-172 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:160-175 */
   drawU(ug: UGraphic): void {
     const inner = ug.apply(new UTranslate(MARGIN, MARGIN));
     const size = this.calculateDimension(inner.getStringBounder()).delta(-2 * MARGIN);
     this.getTextBlock().drawU(inner.apply(new Fore(this.fontConfiguration.color)));
     if (this.placed === undefined) return;
     const { image, position } = this.placed;
-    if (position === GraphicPosition.BOTTOM)
-      inner
-        .apply(new UTranslate((size.getWidth() - image.width) / 2, size.getHeight() - image.height))
-        .draw(uimage(image));
-    else if (position === GraphicPosition.BACKGROUND_CORNER_BOTTOM_RIGHT)
+    if (position === GraphicPosition.BACKGROUND_CORNER_BOTTOM_RIGHT)
       inner.apply(new UTranslate(size.getWidth() - image.width, size.getHeight() - image.height)).draw(uimage(image));
     else inner.apply(new UTranslate(size.getWidth() - image.width - 1, 1)).draw(uimage(image));
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:174-177 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:177-179 */
   protected calculateDimensionSlow(stringBounder: StringBounder): XDimension2D {
     return this.calculateDimensionInternal22(stringBounder).delta(2 * MARGIN);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:179-191 */
+  /** The corner arm is tall enough for both the text and the image (443598c29ce, java:184-189).
+   *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:181-193 */
   private calculateDimensionInternal22(stringBounder: StringBounder): XDimension2D {
     const dim = this.getTextBlock().calculateDimension(stringBounder);
     if (this.placed === undefined) return dim;
-    const { image, position } = this.placed;
-    if (position === GraphicPosition.BOTTOM) return new XDimension2D(dim.getWidth(), dim.getHeight() + image.height);
-    return new XDimension2D(dim.getWidth() + IMAGE_PADDING + image.width, dim.getHeight());
+    // Both remaining positions are corners since dadad87bba3 dropped BOTTOM (java:183-189).
+    const { image } = this.placed;
+    return new XDimension2D(dim.getWidth() + IMAGE_PADDING + image.width, Math.max(dim.getHeight(), image.height));
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:193-195 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:195-197 */
   getShapeType(): ShapeType {
     return ShapeType.RECTANGLE;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:197-199 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:199-201 */
   getBackcolor(): HColorSimple {
     return this.background;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:201-203 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:203-205 */
   getShield(_stringBounder: StringBounder): Margins {
     return Margins.NONE;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:205-207 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:207-209 */
   isHidden(): boolean {
     return false;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:209-211 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:211-214 */
   getOverscanX(_stringBounder: StringBounder): number {
     return 0;
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:213-216 */
+  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/shape/GraphicStrings.java:216-218 */
   isCrash(): boolean {
     return this.graphicMode.isCrash;
   }

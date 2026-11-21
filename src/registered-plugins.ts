@@ -26,11 +26,7 @@ import { descriptionPlugin } from './diagrams/description/index.js';
 import { dotPlugin } from './diagrams/dot/index.js';
 import { donorsPlugin } from './diagrams/donors/PSystemDonorsFactory.js';
 import { skinparameterListPlugin } from './diagrams/donors/PSystemSkinparameterListFactory.js';
-import { appleTwoPlugin } from './diagrams/eggs/PSystemAppleTwoFactory.js';
-import { charliePlugin } from './diagrams/eggs/PSystemCharlieFactory.js';
 import { colorsPlugin } from './diagrams/eggs/PSystemColorsFactory.js';
-import { eggPlugin } from './diagrams/eggs/PSystemEggFactory.js';
-import { ripPlugin } from './diagrams/eggs/PSystemRIPFactory.js';
 import { pathPlugin } from './diagrams/eggs/PSystemPathFactory.js';
 import { welcomePlugin } from './diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from './diagrams/emoji/PSystemListEmojiFactory.js';
@@ -111,11 +107,8 @@ function registerFromSalt(registry: PluginRegistrar): void {
   registry.register(mathPlugin); // java:172
   registry.register(latexPlugin); // java:173
   registry.register(creolePlugin); // java:174
-  registry.register(eggPlugin); // java:175
-  registry.register(appleTwoPlugin); // java:176
-  registry.register(ripPlugin); // java:177
+  // The egg, apple //e, RIP and charlie factories went in upstream dadad87bba3 (PSystemBuilder.java).
   registry.register(pathPlugin); // java:178-179 (INSECURE only, registeredOnlyUnder)
-  registry.register(charliePlugin); // java:181
   registry.register(ganttPlugin); // java:183
   registry.register(chronologyPlugin); // java:184 (commented out upstream)
   registry.register(flowPlugin); // java:185

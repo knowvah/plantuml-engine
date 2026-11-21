@@ -19,6 +19,9 @@ import type { LeafSymbolInk } from '../../core/svek/image/leaf-sizing-entity.js'
 export interface NamespaceGeo {
   /** `Cluster.java:321`, unscaled; absent means the skin's {@link PACKAGE_ROUND_CORNER} (`namespaceRoundCorner`). */
   roundCorner?: number;
+  /** The title style's `MaximumWidth` (`ClusterHeader.java:129`, 927f7531ddf; `EntityImageEmptyPackage.java:118-119`
+   *  for an empty leaf), copied from `Namespace.titleWrapWidth`; absent = no wrap. */
+  titleWrapWidth?: number;
   id: string;
   x: number;
   y: number;

@@ -79,14 +79,18 @@ export class RegexLeaf implements IRegex {
     return this.groupCount;
   }
 
-  /** @see RegexLeaf.java:117-126 */
-  createPartialMatch(it: Iterator<string | undefined>): Map<string, RegexPartialMatch> {
-    const m = new RegexPartialMatch(this.name ?? '');
+  /** An unnamed leaf still consumes its groups. @see RegexLeaf.java:117-132 */
+  fillPartialMatch(it: Iterator<string | undefined>, result: RegexResult): void {
+    if (this.name === undefined) {
+      for (let i = this.count(); i > 0; i--) it.next();
+
+      return;
+    }
+
+    const m = new RegexPartialMatch(this.count());
     for (let i = 0; i < this.count(); i++) m.add(it.next().value as string | undefined);
 
-    if (this.name === undefined) return new Map();
-
-    return new Map([[this.name, m]]);
+    result.add(this.name, m);
   }
 
   /** @see RegexLeaf.java:128-130 */

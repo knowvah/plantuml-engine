@@ -17,7 +17,7 @@ import { loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
 import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
-import { corpusGatePartOf, isJarErrorPage } from './corpus-gate-part.js';
+import { corpusGatePartOf, isJarErrorPage, securityProfileOf } from './corpus-gate-part.js';
 
 /** Which committed tree a fixture lives in. Decides the golden's filename and
  *  the root the `slug` is relative to — nothing else. */
@@ -189,6 +189,7 @@ function measure(f: FixtureRef, store: ReturnType<typeof fixtureIncludeStore>): 
       includeStore: store,
       measurer: new DeterministicMeasurer(),
       elk,
+      securityProfile: securityProfileOf(f),
     }),
   ).slice(0, HEAD_BYTES);
   const golden = readHead(goldenPath(f));

@@ -38,6 +38,14 @@ export class YamlBuilder {
     }
   }
 
+  /**
+   * The indentation of the innermost open level, or -1 before the first line.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/yaml/parser/YamlBuilder.java:100-103
+   */
+  currentIndent(): number {
+    return this._indents.length === 0 ? -1 : this._indents[this._indents.length - 1]!;
+  }
+
   getResult(): Monomorph {
     return this._nodes[0]!;
   }

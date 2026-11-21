@@ -35,6 +35,13 @@ export type MessageExoType = 'FROM_LEFT' | 'TO_LEFT' | 'FROM_RIGHT' | 'TO_RIGHT'
  * @see sequencediagram/AbstractMessage.java:81-121
  */
 export interface AbstractMessageEvent {
+  /** `AbstractMessage#getUid` (`AbstractMessage.java:307-309`): `"msg" +
+   *  (++messageCount)`, set by `SequenceDiagram#addMessage` (`:200,206`) --
+   *  `sequence-life-state.ts#addMessage`. Absent until then. */
+  uid?: string;
+  /** The command's `LineLocation#getPosition` (`AbstractMessage.java:63,98`).
+   *  Absent on a hand-built source with no line positions. */
+  sourceLine?: number;
   label: string;
   /** The whole arrow, as `CommandArrow.executeArg` builds it: a pair of
    *  `ArrowDressing`s plus a per-side `ArrowDecoration`, a dashed body and an

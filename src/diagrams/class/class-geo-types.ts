@@ -8,6 +8,7 @@ import type { LeafSizingStereotypeSprite } from '../../core/svek/image/LeafSizin
 import type { ClassifierKind, UrlInfo } from './ast.js';
 import type { GenericTagGeo } from './class-stereotype.js';
 import type { ObjectStyleScope } from './class-object-style.js';
+import type { StereotypeFontValues } from './class-stereotype-style.js';
 import type { StateGeoTextFields } from '../state/state-sizing.js';
 import type { EmptyPackageLeafDim } from './class-namespace-shape.js';
 import type { EnhancedBodyGeo } from './class-body-enhanced-layout.js';
@@ -171,6 +172,8 @@ export interface ClassifierGeo {
   headerPathInk?: true;
   /** odd T2a: copied from `Classifier.objectStyle`; the renderer's first tier. */
   objectStyle?: ObjectStyleScope;
+  /** Copied from `Classifier.stereotypeFont`: the stereotype label's `stereotype` style. */
+  stereotypeFont?: StereotypeFontValues;
   /** G2 N37: EVERY stereotype label (2-or-3-bracket, `class-stereotype.ts
    *  #resolveStyleStereotypeTags`) this classifier carries -- feeds
    *  `renderer-classifier-box.ts`'s `.tagname` `<style>` cascade lookup

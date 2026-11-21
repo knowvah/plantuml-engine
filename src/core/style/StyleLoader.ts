@@ -2,13 +2,10 @@ import { BUILTIN_SKINS } from '../skins-builtin.js';
 import { parseStyles, StyleParsingException } from './parser/StyleParser.js';
 import { PNAMES, type PName } from './PName.js';
 import { PLANTUML_SKIN, STRICTUML_SKIN } from './skins/plantuml-skin.js';
-import { DELTA_PRIORITY_FOR_STEREOTYPE } from './Style.js';
 import { StyleBuilder } from './StyleBuilder.js';
 import { StyleSignatureBasic } from './StyleSignatureBasic.js';
 import type { Value } from './Value.js';
 import { ValueImpl } from './ValueImpl.js';
-
-export { DELTA_PRIORITY_FOR_STEREOTYPE };
 
 /**
  * `NoStyleAvailableException` — no `.skin` text for the requested name.
@@ -113,17 +110,18 @@ export function getMissingRootProperties(styleBuilder: StyleBuilder | undefined)
 }
 
 /**
- * Every value lifted by `DELTA_PRIORITY_FOR_STEREOTYPE`, into a new map in
- * PName order (an `EnumMap`).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java:180-186
+ * Every value's specificity set to require `count` stereotypes, into a new
+ * map in PName order (an `EnumMap`) -- upstream c9d62097ff5's replacement for
+ * the flat `DELTA_PRIORITY_FOR_STEREOTYPE` (+1000) lift.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java:211-217
  */
-export function addPriorityForStereotype(tmp: ReadonlyMap<PName, Value>): Map<PName, Value> {
+export function addStereotypeCount(tmp: ReadonlyMap<PName, Value>, count: number): Map<PName, Value> {
   const result = new Map<PName, Value>();
   for (const key of PNAMES) {
     const value = tmp.get(key);
     if (value === undefined) continue;
     if (!(value instanceof ValueImpl)) throw new Error(`ClassCastException: ${key} is not a ValueImpl`);
-    result.set(key, value.addPriority(DELTA_PRIORITY_FOR_STEREOTYPE));
+    result.set(key, value.withStereotypeCount(count));
   }
   return result;
 }

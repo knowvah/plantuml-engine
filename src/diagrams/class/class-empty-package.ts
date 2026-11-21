@@ -118,6 +118,17 @@ export interface EmptyPackageLeafDim {
    *  `USymbolRectangle#asBig` (a `URectangle`, `LimitFinder`'s inset rect
    *  ink rule) instead of the folder `UPath`. */
   rect?: true;
+  /** f29aa9bd058: `desc = entity.getDisplay().create9(..., style.wrapWidth())`
+   *  (`EntityImageEmptyPackage.java:118-119`); absent = no wrap. */
+  titleWrapWidth?: number;
+}
+
+/** {@link measureEmptyPackageLeafDim}'s leaf inputs beyond the label and stereotype. */
+export interface EmptyPackageLeafInputs {
+  /** cdd6-T3d (bijufi): the group legend is the stereo block (java:121-124). */
+  readonly legend?: DisplayPositioned | undefined;
+  /** The leaf style's `MaximumWidth` ({@link EmptyPackageLeafDim#titleWrapWidth}). */
+  readonly wrapWidth?: number | undefined;
 }
 
 function stereoFont(theme: Theme): FontSpec {
@@ -189,6 +200,26 @@ function leafStereoBlock(
   return legend !== undefined ? buildLegendStereo(legend, theme, measurer) : buildStereo(measurer, theme, labels);
 }
 
+/** The leaf title's `UText` ink at its folder/rect title placement (`class-namespace-title-ink.ts`). */
+function leafTitleInk(
+  measurer: StringMeasurer,
+  theme: Theme,
+  label: string,
+  box: {
+    readonly width: number;
+    readonly wtitle: number;
+    readonly stereoHeight: number;
+    readonly baselineOffset: number;
+    readonly wrapWidth: number | undefined;
+  },
+): LeafSymbolInk | undefined {
+  const place =
+    theme.packageStyle === 'rect'
+      ? rectTitlePlacement(box, box.stereoHeight, box.baselineOffset)
+      : folderTitlePlacement(box.baselineOffset, box.wtitle - (MARGIN_TITLE_X1 + MARGIN_TITLE_X2));
+  return namespaceTitleInk(measurer, theme, label, place, box.wrapWidth);
+}
+
 /**
  * `EntityImageEmptyPackage#calculateDimensionSlow` (G2 N33; A2s F-D A8):
  * `mergeTB(desc, stereoBlock, LEFT).atLeast(0, 2*dimDesc.height)
@@ -201,35 +232,33 @@ export function measureEmptyPackageLeafDim(
   theme: Theme,
   label: string,
   stereotypeLabels: readonly string[] = [],
-  legend?: DisplayPositioned,
+  leaf: EmptyPackageLeafInputs = {},
 ): EmptyPackageLeafDim {
-  // unwind2-S11: `desc = entity.getDisplay().create(titleFontConfiguration,
-  // ...)` (`EntityImageEmptyPackage.java` constructor) is a creole block --
+  // unwind2-S11: `desc = entity.getDisplay().create9(titleFontConfiguration,
+  // ..., style.wrapWidth())` (`EntityImageEmptyPackage.java:118-119`) is a creole block --
   // a `<$sprite>` is its own atom, not literal glyphs -- so it is the title
   // block's width/height, not one raw-string measure.
+  const { wrapWidth } = leaf;
   const dim = {
-    width: namespaceTitleWidth(measurer, theme, label),
-    height: namespaceTitleHeight(measurer, theme, label),
+    width: namespaceTitleWidth(measurer, theme, label, wrapWidth),
+    height: namespaceTitleHeight(measurer, theme, label, wrapWidth),
   };
-  const stereo = leafStereoBlock(measurer, theme, stereotypeLabels, legend);
+  const stereo = leafStereoBlock(measurer, theme, stereotypeLabels, leaf.legend);
   const sh = stereo?.height ?? 0;
   const width = Math.max(dim.width, stereo?.width ?? 0) + EMPTY_PACKAGE_MARGIN * 2;
-  const wtitle = getWTitle(measurer, theme, label, 0);
+  const wtitle = getWTitle(measurer, theme, label, 0, wrapWidth);
   const baselineOffset = getTitleBaselineOffset(measurer, theme, label);
-  const place =
-    theme.packageStyle === 'rect'
-      ? rectTitlePlacement({ width, wtitle }, sh, baselineOffset)
-      : folderTitlePlacement(baselineOffset);
-  const titleInk = namespaceTitleInk(measurer, theme, label, place);
+  const titleInk = leafTitleInk(measurer, theme, label, { width, wtitle, stereoHeight: sh, baselineOffset, wrapWidth });
   return {
     width,
     height: Math.max(dim.height + sh, dim.height * 2) + EMPTY_PACKAGE_MARGIN * 2,
     wtitle,
-    htitle: getHTitle(measurer, theme, label),
+    htitle: getHTitle(measurer, theme, label, wrapWidth),
     baselineOffset,
     ...(stereo !== undefined ? { stereo } : {}),
     ...(titleInk !== undefined ? { titleInk } : {}),
     ...(theme.packageStyle === 'rect' ? { rect: true as const } : {}),
+    ...(wrapWidth !== undefined ? { titleWrapWidth: wrapWidth } : {}),
   };
 }
 
@@ -345,6 +374,7 @@ function drawTitle(
       measurer,
       blockTopY: at.blockTopY,
       back: emptyPackagePaint(theme, draw.tags, draw.geo).fill,
+      wrapWidth: geo.titleWrapWidth,
     },
     {
       x: at.x,
@@ -385,11 +415,13 @@ function renderFolderLeaf(
   });
   const titleX = geo.x + TITLE_X_OFFSET * theme.scaleK;
   const top = TITLE_LOCAL_TOP_OFFSET * theme.scaleK;
+  const rawTextWidth = geo.wtitle - (MARGIN_TITLE_X1 + MARGIN_TITLE_X2) * theme.scaleK;
   const title = drawTitle(draw, theme, measurer, {
     x: titleX,
     blockTopY: geo.y + top,
     baselineY: geo.y + geo.baselineOffset,
-    xForLine: () => titleX,
+    // `USymbolFolder.java:228` places the block at `(4, 2)`; `SheetBlock1` centres each stripe in it.
+    xForLine: (w) => titleX + (rawTextWidth - w) / 2,
   });
   const sw = draw.tab.stereo?.width ?? 0;
   const stereo = drawStereo(draw, theme, titleX + (geo.width - sw) / 2, geo.y + top + geo.htitle);

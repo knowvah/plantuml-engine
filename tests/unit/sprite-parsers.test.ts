@@ -131,11 +131,11 @@ describe('sprite registry population per engine', () => {
     expect(ast.events.map((e) => e.name)).toEqual(['Launch']);
   });
 
-  it('files: parseFiles populates ast.sprites, not a path entry', () => {
+  it('files: no command table (FilesParser.java:70-88), so a sprite definition is entry text, not a sprite', () => {
     const source: UmlSource = { lines: L(`/root/\n${SPRITE_BLOCK}\n/root/file.txt`), type: 'files' };
     const ast = parseFiles(source);
-    expectIcon(ast.sprites);
-    expect(ast.root.children.map((c) => c.name)).toEqual(['root']);
+    expect(getSprite(ast.sprites as Parameters<typeof getSprite>[0], 'Icon')).toBeUndefined();
+    expect(ast.root.children.map((c) => c.name)).not.toEqual(['root']);
   });
 
   it('packetdiag: parsePacket populates the skin param sprites, not a field line', () => {

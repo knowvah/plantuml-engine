@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { StyleStorage } from '../../../../src/core/style/StyleStorage.js';
 import { Style } from '../../../../src/core/style/Style.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
 import type { PName } from '../../../../src/core/style/PName.js';
 import type { Value } from '../../../../src/core/style/Value.js';
@@ -15,7 +16,8 @@ import { dumpStyle, ideaScenarioDump, skinStorageDump, styleFromDump } from './h
 
 function style(sig: StyleSignatureBasic, values: Record<string, [string, number]>): Style {
   const map = new Map<PName, Value>();
-  for (const [k, [v, p]] of Object.entries(values)) map.set(k as PName, ValueImpl.regular(v, p));
+  for (const [k, [v, order]] of Object.entries(values))
+    map.set(k as PName, ValueImpl.regular(v, Specificity.atOrder(order)));
   return new Style(sig, map);
 }
 

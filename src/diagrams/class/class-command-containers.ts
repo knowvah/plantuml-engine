@@ -34,6 +34,7 @@ import {
 } from './class-notes.js';
 import { applyUrlStatement, URL_STATEMENT_RE } from './class-url-command.js';
 import { ensureClassifier } from './parser.js';
+import { COMMAND_PACKAGE_RE, commandPackageArgs } from './class-command-package.js';
 import { parseTagTokens } from './class-declaration-parser.js';
 
 /**
@@ -77,8 +78,8 @@ const USYMBOL_CONTAINER_HEAD =
  * reads (`CommandPackageWithUSymbol.java:178-205`): `display` falls back to
  * the code when no DISPLAY alternative matched (`ident.getName()`, java:186).
  * `stereotype` is the in-head STEREOTYPEn; the caller falls back to the
- * trailing STEREOTYPE group. When both are present `getLazzy` walks a
- * HashMap (`RegexComposed.java:84`), so that order is unspecified upstream.
+ * trailing STEREOTYPE group. When both are present `getLazzy` answers the
+ * first in match order, the in-head one (`RegexResult.java:128-149`, e2659a157bf).
  */
 function usymbolContainerHead(match: RegExpExecArray): { code: string; display: string; stereotype?: string } {
   const first = (groups: readonly number[]): string | undefined =>
@@ -119,67 +120,59 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
   //       under the line cap; order preserved (2 tried first).
   ...NAMESPACE_COMMANDS,
 
-  // 5b. Package block. Upstream routes package through the same PACKAGE group
-  //     as namespace, so it clusters alike. Trailing `(\s*\})?` (group 9)
-  //     captures same-line 'X {}' (CommandPackageEmpty) for immediate collapse.
-  //     `$tag` tokens after the name (CommandPackage's Stereotag.pattern()
-  //     TAGS1/TAGS2 slots — `package p1 $txn {`, one run each side of the
-  //     stereotype, mirroring CommandPackage.java:87,89) are now CAPTURING
-  //     (groups 4/6, cdd-T31 round 2, E5 defect b -- were non-capturing and
-  //     discarded) and read onto the Namespace via `setNamespaceTags` (its
-  //     own doc comment cites `CommandPackage.java:198` + `Entity
-  //     #addStereotag`). A2s F-G mechanism A8: the `<<stereotype>>` (group
-  //     5, between the TAGS runs like upstream's STEREOTYPE slot) is stored
-  //     on the Namespace via `setNamespaceStereotype` (gated: a
-  //     USymbol-naming stereotype selects the shape instead,
-  //     CommandPackage.java:178-191).
-  // T3 (unknown-bucket-routing-repair): optional leading VISIBILITY char
-  // (`CommandPackage.java:74`, the SAME `VisibilityModifier
-  // .regexForVisibilityCharacter()` prefix `class-declaration-parser.ts`'s
-  // `DECL_KIND_RE` carries). cdd6-T3d: now CAPTURED (group 1) and stored
-  // (`CommandPackage.java:189-192`) -- `ClusterHeader.java:130-138` draws it
-  // left of the title, so every later group index below is +1 from the
-  // numbers the older notes in this comment give.
-  // T11 (E4/M3): the `[[url]]` group (7) is CAPTURING and NOTE_COLOR (8,
-  // the SAME bare/`back:` grammar `class-notes.ts` note commands already
-  // reuse) is inserted ahead of the old trailing catch-all -- both read
-  // onto the Namespace via setNamespaceUrl/setNamespaceColor below; the
-  // same-line-close brace group is 9. cdd5-T4b: the trailing
-  // `(?:[#<][^{]*)?` catch-all is gone -- upstream has nothing after COLOR
-  // but `\s*\{` (`CommandPackage.java:92-96`), so a second `<<B>>` must
-  // widen the lazy STEREOTYPE group (`StereotypePattern.java:66-67`,
-  // "(\\<\\<.+?\\>\\>)") to `<<A>><<B>>`; the catch-all swallowed it
-  // instead (`mupavi-50-fijo192`).
+  // 5b. Package block (CommandPackage, ClassDiagramFactory.java:127). Upstream
+  //     routes package through the same PACKAGE group as namespace, so it
+  //     clusters alike. The regex and its CODE/DISPLAY reads are
+  //     `class-command-package.ts` (#2846's two-branch RegexOr); the tail
+  //     groups are the ones this rule always carried: `$tag` runs TAGS1/TAGS2
+  //     around the STEREOTYPE slot (`CommandPackage.java:129-131`, read by
+  //     `setNamespaceTags`), the `<<stereotype>>` (gated: a USymbol-naming
+  //     stereotype selects the shape instead, java:207-226), the `[[url]]`
+  //     and the BACK colour (java:230-238), and the leading VISIBILITY char
+  //     (java:93, stored by `setNamespaceVisibility`, java:218-223;
+  //     `ClusterHeader.java:130-138` draws it left of the title). A second
+  //     `<<B>>` widens the lazy STEREOTYPE group (`StereotypePattern.java:
+  //     66-67`) because nothing follows COLOR but `\s*\{` (`mupavi-50-fijo192`).
   {
-    pattern: new RegExp(
-      String.raw`^(?:([-#+~])\s*)?package\b\s*(?:"([^"]*)"|([^\s#<{]+))?(?:\s+as\s+([^\s{]+))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(<<.+?>>))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(\[\[[^\]]*\]\]))?\s*` +
-        NOTE_COLOR +
-        // T11: a `\s*` gap here is load-bearing -- without it, a trailing
-        // space before `{` (e.g. `#DDD {`) makes the whole match fail at
-        // NOTE_COLOR's end position, and the engine backtracks NOTE_COLOR
-        // to zero-width so the catch-all below (whose `[^{]*` tolerates
-        // the space) silently swallows the colour text instead, leaving
-        // the capture group undefined (caught by this task's own tests).
-        String.raw`\s*\{(\s*\})?\s*$`,
-      'i',
-    ),
+    pattern: COMMAND_PACKAGE_RE,
     execute(state, match) {
-      const name = match[2] ?? match[3];
-      // `CommandPackage.java:154-158`: an empty NAME with no `as` is an execution error, so the next
-      // factory runs (`PSystemBuilder.java:136-140`, D10). `package {}` is `CommandPackageEmpty`'s.
-      if ((name === undefined || name === '') && match[4] === undefined && match[10] === undefined) {
+      const { idRaw, display } = commandPackageArgs(match);
+      // `CommandPackage.java:201-202`: an empty CODE is an execution error, so the next
+      // factory runs (`PSystemBuilder.java:136-140`, D10).
+      if (idRaw.length === 0) {
         const at = state.currentLine ?? 0;
         state.executionRefusal = refuse('execution', at, at, 'Error in name', 0);
         return;
       }
+      // `displayResolved = display == null ? quark.getName() : display` (java:205): passing the id
+      // as display keeps `openNamespaceBlock`'s segment (quark-name) title.
+      const effectiveId = openNamespaceBlock(state, idRaw, display ?? idRaw);
+      setNamespaceStereotype(state, effectiveId, match[7], true);
+      setNamespaceTags(state, effectiveId, `${match[6] ?? ''} ${match[8] ?? ''}`);
+      setNamespaceUrl(state, effectiveId, match[9]);
+      setNamespaceColor(state, effectiveId, match[10]);
+      setNamespaceVisibility(state, effectiveId, match[1]);
+    },
+  },
+
+  // 5b-empty. Same-line `X {}` (CommandPackageEmpty, ClassDiagramFactory.java:129),
+  //     tried after CommandPackage like upstream; collapsed immediately. This is
+  //     the pre-#2846 package grammar restricted to the `{}` close (#2846 left
+  //     CommandPackageEmpty untouched, so `package "" as p {}` still lands here).
+  {
+    pattern: new RegExp(
+      String.raw`^(?:([-#+~])\s*)?package\b\s*(?:"([^"]*)"|([^\s#<{]+))?(?:\s+as\s+([^\s{]+))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(<<.+?>>))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(\[\[[^\]]*\]\]))?\s*` +
+        NOTE_COLOR +
+        // T11: a `\s*` gap here is load-bearing -- without it a trailing space
+        // before `{` (`#DDD {`) fails the match at NOTE_COLOR's end position.
+        String.raw`\s*\{\s*\}\s*$`,
+      'i',
+    ),
+    execute(state, match) {
+      const name = match[2] ?? match[3];
       let effectiveId: string;
       if (name !== undefined) {
-        effectiveId = openNamespaceBlock(
-          state,
-          match[4] ?? name,
-          name,
-          match[10] !== undefined ? 'package' : undefined,
-        );
+        effectiveId = openNamespaceBlock(state, match[4] ?? name, name, 'package');
       } else {
         const id = '__pkg' + String(state.ast.namespaces.length);
         effectiveId = openNamespaceBlock(state, id, '');
@@ -188,17 +181,14 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
       setNamespaceTags(state, effectiveId, `${match[5] ?? ''} ${match[7] ?? ''}`);
       setNamespaceUrl(state, effectiveId, match[8]);
       setNamespaceColor(state, effectiveId, match[9]);
-      // cdd6-T3d: `p.setVisibilityModifier(...)` (CommandPackage.java:189-192).
       setNamespaceVisibility(state, effectiveId, match[1]);
-      if (match[10] !== undefined) {
-        state.ast.namespaces = collapseEmptyNamespace(
-          state.ast.namespaces,
-          state.classifierIndex,
-          state.ast.classifiers,
-          effectiveId,
-        );
-        state.activeNamespace = state.namespaceStack.pop() ?? null;
-      }
+      state.ast.namespaces = collapseEmptyNamespace(
+        state.ast.namespaces,
+        state.classifierIndex,
+        state.ast.classifiers,
+        effectiveId,
+      );
+      state.activeNamespace = state.namespaceStack.pop() ?? null;
     },
   },
 
@@ -224,8 +214,14 @@ export const CONTAINER_COMMANDS: readonly Command[] = [
       // `isContainerOpener` exemption instead of opening a real container --
       // the nested body's own lines were then never re-dispatched through
       // the per-line/allowmixing gate at all.
+      // #2846: `package` added -- the SYMBOL alternation's first keyword
+      // (`CommandPackageWithUSymbol.java:86-87`). It was unreachable while
+      // CommandPackage's NAME took any `[^#%s{}]*`; its CODE_BAREWORD
+      // (`[%pLN_.$]*`, `CommandPackage.java:87`) now leaves `package foo-bar {`
+      // to this command, which displays the stereotype ungated and stamps the
+      // `package` keyword's USymbol (`:194-206`).
       new RegExp(
-        String.raw`^(rectangle|node|component|folder|frame|cloud|database|storage|artifact|file|card|queue|stack|hexagon|agent|action|process)\s+` +
+        String.raw`^(package|rectangle|node|component|folder|frame|cloud|database|storage|artifact|file|card|queue|stack|hexagon|agent|action|process)\s+` +
           USYMBOL_CONTAINER_HEAD +
           String.raw`((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(<<.+?>>))?((?:\s+\$[^\s{}"'<>$]+)*)(?:\s*(\[\[[^\]]*\]\]))?\s*` +
           NOTE_COLOR +

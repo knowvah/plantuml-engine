@@ -32,9 +32,8 @@ function tokenize(text: string): string[] {
 /**
  * ElementDroplist — `^head^entry^…^`: a `#EEE` box holding the head, a
  * divider `box` px from the right with a filled arrow, and — when there are
- * entries — the open list below it. The open list draws at every z-index
- * (java:110-116 is outside the `zIndex == 0` guard), so `PSystemSalt` draws
- * it twice.
+ * entries — the open list below it, drawn once on the z-index 1 pass
+ * (java:132; before upstream f63ffe0701a, #2882, it drew on both passes).
  *
  * `HColors.changeBack(ug)` (HColors.java:148-154) is
  * `new Back(ug.getParam().getColor())`, the port's idiom for it
@@ -74,7 +73,16 @@ export class ElementDroplist extends AbstractElementText implements Element {
     return text.substring(0, idx);
   }
 
-  /** @see ElementDroplist.java:86-89 */
+  /** @see ElementDroplist.java:86-89 (upstream a720bdd) */
+  mayDrawBeyondPreferredDimension(): boolean {
+    return this.openDrop !== undefined;
+  }
+
+  /**
+   * The closed head only, never the open list, which floats over the rows
+   * after it; `PSystemSalt#getTextBlock` sizes the image from the drawn
+   * extent instead. @see ElementDroplist.java:91-104 (upstream a720bdd)
+   */
   getPreferredDimension(stringBounder: StringBounder, x: number, _y: number): XDimension2D {
     const dim = this.getTextDimensionAt(stringBounder, x + 2);
     return dim.delta(4 + this.box, 4);
@@ -89,7 +97,8 @@ export class ElementDroplist extends AbstractElementText implements Element {
       this.drawClosed(ug, dim);
     }
 
-    if (this.openDrop !== undefined) {
+    // Once, on the top (z 1) pass only. @see ElementDroplist.java:125-132 (upstream a720bdd)
+    if (this.openDrop !== undefined && zIndex === 1) {
       const dimOpen = this.openDrop.calculateDimension(ug.getStringBounder()).atLeast(dim.getWidth() - 1, 0);
       ug = ug.apply(UTranslate.dy(dim.getHeight() - 1));
       ug.apply(new Back(this.getColorEE())).draw(URectangle.build(dimOpen.getWidth() - 1, dimOpen.getHeight() - 1));

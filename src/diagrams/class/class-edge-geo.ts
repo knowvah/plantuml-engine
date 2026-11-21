@@ -396,6 +396,7 @@ export function buildEdgeGeos(
       fontFamily: text.fontFamily,
       nodes: result.nodes,
       cardinalityFont: text.cardinalityFont,
+      classAttributeIconSize: text.classAttributeIconSize,
     });
     edges.push(edgeGeo);
   }

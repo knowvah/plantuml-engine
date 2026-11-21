@@ -15,9 +15,10 @@
 import type { PreprocessorFailure } from '../preprocessor.js';
 import type { BlockUmlOk } from '../BlockUmlBuilder.js';
 import { upstreamTypeOf, type DiagramType } from '../block-extractor.js';
-import { humanReadableName } from '../diagram-type-set.js';
+import { DiagramType as UpstreamDiagramType, findStartTypes, humanReadableName } from '../diagram-type-set.js';
 import type { StringMeasurer } from '../measurer.js';
-import type { StringLocated } from '../tim/StringLocated.js';
+import { StringLocated } from '../tim/StringLocated.js';
+import { loadInternal } from '../uml-source-lines.js';
 import { readLines } from '../tim/ReadLineReader.js';
 import { getDefaultMeasurer } from '../render-options.js';
 import type { RenderOptions } from '../render-options.js';
@@ -39,11 +40,34 @@ function errorMeasurer(options?: RenderOptions): StringMeasurer {
  * unresolvable include. The trace is the lines the interpreter really executed
  * — through includes, loops and macro bodies — with the message already marked
  * on its last line.
- * @see ~/git/plantuml/.../BlockUml.java#getDiagram
+ *
+ * The `UmlSource` is `BlockUml#data` (the interpreter's OUTPUT plus the error
+ * line), not the raw block: `new PSystemErrorPreprocessor(data, …)`
+ * (BlockUml.java:195-196) wraps it as `UmlSource.create(input, <starts a
+ * sequence diagram>)` (PSystemErrorPreprocessor.java:48-51), and the Welcome
+ * block counts those lines (PSystemError.java:261-262).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/BlockUml.java:195-196
  */
 export function preprocessorErrorSvg(failure: PreprocessorFailure, options?: RenderOptions): string {
-  const system = new PSystemErrorPreprocessor(umlSourceOf(failure.input), failure.trace);
+  const system = new PSystemErrorPreprocessor(preprocessorUmlSource(failure.data), failure.trace);
   return renderPSystemError(system, errorMeasurer(options));
+}
+
+/**
+ * `UmlSource.create(input, checkEndingBackslash)` over `BlockUml#data`, the
+ * flag being whether the first line starts a sequence diagram
+ * (PSystemErrorPreprocessor.java:50-51). Only the lines' text is read
+ * (`getTotalLineCount`, `containsIgnoreCase`), so the joined lines carry no
+ * location.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/core/UmlSource.java:120-156
+ */
+function preprocessorUmlSource(data: readonly StringLocated[]): readonly StringLocated[] {
+  const first = data[0]?.getString();
+  const checkEndingBackslash = first !== undefined && findStartTypes(first).has(UpstreamDiagramType.SEQUENCE);
+  return loadInternal(
+    data.map((s) => s.getString()),
+    checkEndingBackslash,
+  ).map((s) => new StringLocated(s, undefined));
 }
 
 /**

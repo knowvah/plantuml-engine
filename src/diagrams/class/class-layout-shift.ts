@@ -112,6 +112,18 @@ function shiftEdgeExtras(edge: EdgeGeo, dx: number, dy: number): Partial<EdgeGeo
           ] as const,
         }
       : {}),
+    ...(edge.roleIcons !== undefined
+      ? {
+          roleIcons: [
+            edge.roleIcons[0] === undefined
+              ? undefined
+              : { ...edge.roleIcons[0], x: edge.roleIcons[0].x + dx, y: edge.roleIcons[0].y + dy },
+            edge.roleIcons[1] === undefined
+              ? undefined
+              : { ...edge.roleIcons[1], x: edge.roleIcons[1].x + dx, y: edge.roleIcons[1].y + dy },
+          ] as const,
+        }
+      : {}),
     ...(nb !== undefined
       ? {
           noteBox: {

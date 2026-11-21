@@ -41,6 +41,7 @@ export class EaterForeach extends Eater {
     this.checkAndEatChar('!foreach');
     this.skipSpaces();
     this.varname = this.eatAndGetVarname();
+    this.checkVariableStartsWithDollar(context, this.varname);
     this.skipSpaces();
     this.checkAndEatChar('in');
     this.skipSpaces();

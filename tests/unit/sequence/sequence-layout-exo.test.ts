@@ -49,6 +49,7 @@ function makeAst(participants: string[], events: SequenceEvent[]): SequenceDiagr
   return {
     participants: participants.map((id, i) => ({
       id,
+      uid: `part${i + 1}`,
       display: id,
       type: 'participant' as const,
       order: i,
@@ -65,6 +66,7 @@ function makeAst(participants: string[], events: SequenceEvent[]): SequenceDiagr
 function exo(exoType: MessageExoType, overrides: Partial<MessageExoEvent> = {}): MessageExoEvent {
   return {
     kind: 'messageExo',
+    uid: 'msg1',
     styleBuilder: DEFAULT_SEQUENCE_STYLE_BUILDER,
     participant: 'Bob',
     exoType,

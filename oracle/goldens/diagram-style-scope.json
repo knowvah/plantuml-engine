@@ -710,8 +710,7 @@
     },
     "activity__long3-oneline-colour": {
       "conformant": true,
-      "diffCount": 0,
-      "stockError": true
+      "diffCount": 0
     },
     "activity__loops-bg-diag": {
       "conformant": true,

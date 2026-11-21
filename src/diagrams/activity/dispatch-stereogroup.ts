@@ -9,14 +9,41 @@
  * field, so it carries that label when there is one, else the first label
  * (the pre-existing single-stereotype behaviour), lowercased.
  */
+import { COLOR_REGEXP } from '../../core/klimt/color/ColorParser.js';
 import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import { boxStyleName } from './tiles/gtile-action.js';
 import { Warning } from '../../core/warning/Warning.js';
 
-/** The deprecation warning a leading `#color` earns (the colour itself is ignored):
- *  `CommandRepeat3.java:121-123`, `CommandActivityLong3.java:125-127`, word for word. */
+/** The deprecation warning a multi-line activity's leading `#color` earns (the colour itself is ignored),
+ *  word for word. @see net/sourceforge/plantuml/activitydiagram3/command/CommandActivityLong3.java:130-132 */
 export function deprecatedColorWarning(color: string): Warning {
   return new Warning(`This syntax is deprecated, you must add <<${color}>> at the end of the line, after the ';'`);
+}
+
+/** `CommandRepeat3`'s warning for its leading `#color:`, naming the head as it should be written (`repeat` or
+ *  `repeat :LABEL;`, the raw label). @see net/sourceforge/plantuml/activitydiagram3/command/CommandRepeat3.java:126-131 */
+export function deprecatedRepeatColorWarning(color: string, rawLabel: string | undefined): Warning {
+  const repeat = rawLabel === undefined ? 'repeat' : `repeat :${rawLabel};`;
+  return new Warning(
+    `This syntax is deprecated and the color is ignored: write '${repeat} <<${color}>>' instead of '${color}:${repeat}'`,
+  );
+}
+
+/** `ColorParser.exp4()`: `(?:(COLOR_REGEXP):)?` at the start of the line. @see ColorParser.java:101-103 */
+const RE_EXP4 = new RegExp(`^(?:(${COLOR_REGEXP}):)?`);
+
+/** A line split at its `ColorParser.exp4()` prefix: the `COLOR` group (absent when there is none) and the rest. */
+export function splitExp4(line: string): { readonly color: string | undefined; readonly rest: string } {
+  const m = RE_EXP4.exec(line)!;
+  return { color: m[1], rest: line.slice(m[0].length) };
+}
+
+/** The warning `CommandIf2`/`CommandIf4`/`CommandElseIf2`/`CommandElseIf3`/`CommandSwitch`/`CommandWhile3` add for
+ *  the exp4 colour they parse and no longer apply.
+ *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf2.java:136-138
+ *  @see net/sourceforge/plantuml/activitydiagram3/command/CommandSwitch.java:112-114 */
+export function ignoredLeadingColorWarning(color: string): Warning {
+  return new Warning(`This syntax is deprecated, you must add <<${color}>> at the end of the line`);
 }
 
 /** `Stereogroup.java:70`'s `pattern`. */

@@ -1,4 +1,4 @@
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { DataSource } from './DataSource.js';
 import { Terminated } from './Terminated.js';
 import { Terminator } from './Terminator.js';

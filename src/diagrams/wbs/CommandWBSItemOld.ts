@@ -10,7 +10,7 @@ import type { WBSDiagram } from './WBSDiagram.js';
 /**
  * `CommandWBSItemOld` — the single-line WBS item whose colour/code pair comes
  * BEFORE the shape/direction markers (`**[#red](c1)_< Label`); every match
- * adds the "Please define Direction/Shape before Color/Id." warning. Two
+ * adds {@link orderWarning}, the prefix rewritten in the expected order. Two
  * modes, registered as `Old(1)`, `Old(0)` (WBSDiagramFactory.java:8-12).
  * See {@link ./CommandWBSItemNew.ts} for the group-naming and expansion
  * conventions (identical here).
@@ -68,7 +68,7 @@ function getLazzy(groups: Readonly<Record<string, string | undefined>>, key: str
  * label/shape checks pass (Old.java:66), so a refused line adds none.
  * @see CommandWBSItemOld.java:51-68
  */
-export function applyWbsItemOld(diagram: WBSDiagram, match: RegExpExecArray, _mode: 0 | 1): CommandExecutionResult {
+export function applyWbsItemOld(diagram: WBSDiagram, match: RegExpExecArray, mode: 0 | 1): CommandExecutionResult {
   const groups = match.groups ?? {};
   const type = groups['TYPE']!;
   const label = groups['LABEL'];
@@ -88,6 +88,47 @@ export function applyWbsItemOld(diagram: WBSDiagram, match: RegExpExecArray, _mo
   if (label === undefined && shape === IdeaShape.NONE) shape = IdeaShape.PSEUDO;
   else if (label === undefined) return CommandExecutionResult.error('Missing label for WBS node.');
 
-  diagram.addWarning(new Warning('Please define Direction/Shape before Color/Id.'));
+  // `orderWarning(arg, mode == 0)`: mode 1's CODE (`"x" as c`) is not shown. @see CommandWBSItemOld.java:136
+  const prefix = {
+    type,
+    shape: getLazzy(groups, 'SHAPE'),
+    direction: getLazzy(groups, 'DIR'),
+    backColor: stringColor,
+    code,
+  };
+  diagram.addWarning(orderWarning(prefix, mode === 0));
   return diagram.addIdea(code, diagram.getSmartLevel(type), { backColor, label: label ?? '', shape }, dir);
+}
+
+/** The markers of a legacy-order WBS line, as `orderWarning` reads them
+ *  (`arg.get(WBS_TYPE)` and the `getLazzy` prefixes SHAPE, DIRECTION,
+ *  BACKCOLOR, CODE). @see CommandWBSItemOld.java:145-151 */
+export interface WbsOrderPrefix {
+  readonly type: string;
+  readonly shape: string | undefined;
+  readonly direction: string | undefined;
+  readonly backColor: string | undefined;
+  readonly code: string | undefined;
+}
+
+/** `appendIfPresent`: `before + value + after` when `value` is non-empty. @see CommandWBSItemOld.java:157-160 */
+function appendIfPresent(before: string, value: string | undefined, after: string): string {
+  return value !== undefined && value.length > 0 ? `${before}${value}${after}` : '';
+}
+
+/**
+ * `orderWarning` — the warning for the legacy order where the colour and/or id
+ * come before the shape/direction markers, showing the prefix rewritten in the
+ * expected order (`**_>[#red](id)` for `**[#red](id)_>`). Shared with
+ * `CommandWBSItemMultilineOld` (java:124), which passes `withCode = true`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/wbs/CommandWBSItemOld.java:139-155
+ */
+export function orderWarning(prefix: WbsOrderPrefix, withCode: boolean): Warning {
+  const sb =
+    prefix.type.trim() +
+    appendIfPresent('', prefix.shape, '') +
+    appendIfPresent('', prefix.direction, '') +
+    appendIfPresent('[', prefix.backColor, ']') +
+    (withCode ? appendIfPresent('(', prefix.code, ')') : '');
+  return new Warning(`Shape (_) and direction (< >) must come before color and id: start the line with '${sb}'`);
 }

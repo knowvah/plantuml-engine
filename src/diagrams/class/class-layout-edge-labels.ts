@@ -15,7 +15,8 @@ import type { DotInputEdge } from '../../core/graph-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
 import { CARDINALITY_FONT_SIZE } from '../../core/graph-layout.js';
-import { computeQuantifierBox, computeMergedLabelBox } from '../../core/edge-label-box.js';
+import { computeMergedLabelBox } from '../../core/edge-label-box.js';
+import { reservedLabelBox } from './class-role-label-box.js';
 import { isBareMagicArrowLabel } from './class-magic-arrow.js';
 // cdd-T17: the multi-line/magic-arrow/plain-string measured-label arm moved
 // to `class-edge-label-measure.ts` (500-line hook cap) -- a pure move, see
@@ -388,6 +389,7 @@ function computeMultiplicityAttrs(
   rel: Relationship,
   cardinalityFont: { family: string; size: number },
   measurer: StringMeasurer,
+  classAttributeIconSize: number | undefined,
 ): MultiplicityAttrs {
   const attrs: MultiplicityAttrs = {};
   // T17/M8: `SvekEdge.java:447-466`'s `if (startTailText != null) ... else
@@ -401,7 +403,10 @@ function computeMultiplicityAttrs(
   // `class-edge-label-anchor.ts#roleLabelAnchors`).
   const tailText = rel.fromMultiplicity ?? rel.fromRole;
   if (tailText !== undefined) {
-    const box = computeQuantifierBox(tailText, cardinalityFont, measurer);
+    const box = reservedLabelBox(tailText, rel.fromMultiplicity === undefined, cardinalityFont, {
+      measurer,
+      classAttributeIconSize,
+    });
     attrs.tailLabelWidth = box.reservedWidth;
     attrs.tailLabelHeight = box.reservedHeight;
     // G2/N25: the actual text, fed into the real @knowvah/dot-engine layout call so
@@ -411,7 +416,10 @@ function computeMultiplicityAttrs(
   }
   const headText = rel.toMultiplicity ?? rel.toRole;
   if (headText !== undefined) {
-    const box = computeQuantifierBox(headText, cardinalityFont, measurer);
+    const box = reservedLabelBox(headText, rel.toMultiplicity === undefined, cardinalityFont, {
+      measurer,
+      classAttributeIconSize,
+    });
     attrs.headLabelWidth = box.reservedWidth;
     attrs.headLabelHeight = box.reservedHeight;
     attrs.headLabel = headText;
@@ -448,7 +456,7 @@ export function edgeLabelAttrs(
       rel,
       noteCtx,
     ),
-    ...computeMultiplicityAttrs(rel, cardinalityFont, tabStopMeasurer(measurer)),
+    ...computeMultiplicityAttrs(rel, cardinalityFont, tabStopMeasurer(measurer), noteCtx?.theme.classAttributeIconSize),
   });
 }
 

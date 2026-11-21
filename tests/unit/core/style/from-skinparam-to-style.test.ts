@@ -116,8 +116,9 @@ function collectCorpusAndThemeSkinparams(): ReadonlyMap<string, string> {
 }
 
 /**
- * The exact 20-key gap list (see the module's own doc comment, and this
- * file's header): re-verifies the retry note's unconfirmed count of 21.
+ * The exact 18-key gap list (see the module's own doc comment, and this
+ * file's header). 20 at 1.2026.8; `classStereotypeFontColor` and `objectStereotypeFontColor`
+ * convert since 1.2026.11 (upstream 53fba993513, e7e3d8063b5).
  */
 const KNOWN_GAP_KEYS = new Set([
   'dpi',
@@ -125,8 +126,6 @@ const KNOWN_GAP_KEYS = new Set([
   'handwritten',
   'boxpadding',
   'usebetastyle',
-  'classstereotypefontcolor',
-  'objectstereotypefontcolor',
   'participantparticipantborderthickness',
   'sequencearrowthickness',
   'sequencebackgroundcolor',
@@ -143,7 +142,7 @@ const KNOWN_GAP_KEYS = new Set([
 ]);
 
 describe('convertSkinparam — full corpus+theme completeness (regression guard)', () => {
-  it('produces at least one Style for every key NOT in KNOWN_GAP_KEYS, and exactly the 20 known gaps', () => {
+  it('produces at least one Style for every key NOT in KNOWN_GAP_KEYS, and exactly the 18 known gaps', () => {
     const allKeys = collectCorpusAndThemeSkinparams();
     const measuredGaps: string[] = [];
     for (const [key, value] of allKeys) {

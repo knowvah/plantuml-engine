@@ -51,7 +51,7 @@ import {
   classElkGroupUSymbol,
   classElkUSymbolClusterStyle,
 } from './class-elk-usymbol-cluster.js';
-import { classElkClusterTitle, classElkEndLabel, classElkLinkLabel } from './class-elk-text.js';
+import { classElkClusterTitle, classElkEndLabel, classElkLinkLabel, classElkRoleLabel } from './class-elk-text.js';
 
 /** `CucaDiagram#getRootGroup()`'s id: no namespace id is empty. */
 export const CLASS_ELK_ROOT_GROUP = '';
@@ -334,7 +334,7 @@ function linkMembers(index: ClassElkIndex, ends: ReturnType<typeof linkEndMember
     getQuantifier: (id: string, n: 1 | 2, sb: StringBounder) =>
       classElkEndLabel((n === 1 ? ends.getQuantifier1(id) : ends.getQuantifier2(id)) ?? undefined, theme, sb),
     getRoleLabel: (id: string, n: 1 | 2, sb: StringBounder) =>
-      classElkEndLabel((n === 1 ? ends.getRole1(id) : ends.getRole2(id)) ?? undefined, theme, sb),
+      classElkRoleLabel((n === 1 ? ends.getRole1(id) : ends.getRole2(id)) ?? undefined, theme, sb),
     isInvis: (id: string) => link(id).invis === true,
     // `Link#isHidden` (`abel/Link.java:459`): its own flag, or either end's.
     isHidden: (id: string) => link(id).hidden === true || hidden(link(id).from) || hidden(link(id).to),

@@ -22,7 +22,7 @@ import type {
 import type { ArrowConfiguration, ArrowHeadKind } from './sequence-arrowhead.js';
 import type { Command as CoreCommand } from '../../core/command/Command.js';
 import type { ParticipantUrl } from './sequence-participant-declaration.js';
-import type { LifeState } from './sequence-life-state.js';
+import { createUid, type LifeState } from './sequence-life-state.js';
 import { createAnnotations } from '../../core/annotations/index.js';
 import { createSpriteRegistry } from '../../core/sprite-commands.js';
 import type { InternalSpriteStore } from '../../core/internal-sprite-store.js';
@@ -72,6 +72,22 @@ export interface ParseState {
   executionError: string | undefined;
   /** `SequenceDiagram`'s life-event bookkeeping -- `sequence-life-state.ts`. */
   life: LifeState;
+  /**
+   * The `LineLocation#getPosition` of the command being dispatched
+   * (`SingleLineCommand2.java:177`'s `first.getLocation()`, a block's
+   * `BlocLines#getLocation` = its first line, `BlocLines.java:406-410`): the
+   * line `parser.ts#runDispatchLoop` sets before each dispatch, from
+   * `UmlSource.linePositions`. Stamped onto a new participant and a message
+   * as `sourceLine`. Absent on a hand-built source.
+   */
+  currentLine?: number | undefined;
+  /**
+   * The raw source line after the one being dispatched, blank or not, with
+   * its `LineLocation` position: line 1 of a multi-line block, which upstream
+   * collects whole (`PSystemCommandFactory#isMultilineCommandOk`,
+   * `:391-409`). {@link blockBodyLocation} reads it. Absent at the last line.
+   */
+  nextRawLine?: { readonly text: string; readonly position: number | undefined } | undefined;
   /** The diagram's style `SkinParam`, replayed per command (sdd1 D2/D3):
    *  every node reads `currentStyleBuilder(style)` where its Java
    *  constructor reads `getSkinParam().getCurrentStyleBuilder()`. */
@@ -158,11 +174,17 @@ export function ensureParticipant(
     stereotype?: string | undefined;
     url?: ParticipantUrl | undefined;
     order?: number | undefined;
+    /** The creating command's location when it is not the dispatched line
+     *  ({@link blockBodyLocation}); `null` = none (`UGroup(null)`). */
+    sourceLine?: number | null;
   },
 ): void {
   if (state.participantIndex.has(id)) return;
   const p: Participant = {
     id,
+    // `new Participant(location, ..., createUid())` (`SequenceDiagram.java:129-130,171-172`).
+    uid: createUid(state.life),
+    ...(decl?.sourceLine === undefined ? sourceLineOf(state) : locationField(decl.sourceLine)),
     display: decl?.display ?? id,
     type,
     order: state.ast.participants.length,
@@ -475,3 +497,34 @@ export function activationFlags(
  * changes.
  */
 export { applyHideStereotype, applyHideUnlinked, linkedParticipantIds } from './sequence-hide-passes.js';
+
+/** A `sourceLine` field, or none for an absent location. */
+function locationField(line: number | null | undefined): { sourceLine?: number } {
+  return line === null || line === undefined ? {} : { sourceLine: line };
+}
+
+/** The dispatched command's `LineLocation`, as a message's `sourceLine`
+ *  (`AbstractMessage.java:98`); empty when the source carries no positions. */
+export function sourceLineOf(state: ParseState): { sourceLine?: number } {
+  return locationField(state.currentLine);
+}
+
+/**
+ * `lines = lines.subExtract(1, 1); ... lines.getLocation()`: the location a
+ * multi-line note (`FactorySequenceNoteCommand.java:156-160`,
+ * `FactorySequenceNoteOverSeveralCommand.java:235-238`) or participant block
+ * (`CommandParticipantMultilines.java:147-156`) creates its participant at --
+ * the block's first BODY line, blank or not, read once the opening line is
+ * dropped. An empty body leaves no lines, so `getLocation()` is `null`
+ * (`BlocLines.java:406-410`): the participant has no location. `closes` tells
+ * the block's closing line (trimmed) from a body line.
+ */
+export function blockBodyLocation(state: ParseState, closes: (trimmed: string) => boolean): number | null {
+  const next = state.nextRawLine;
+  if (next === undefined || closes(next.text.trim())) return null;
+  return next.position ?? null;
+}
+
+/** The closing line of a multi-line sequence note (`end note`, `endnote`,
+ *  `end hnote`, `end rnote`). */
+export const NOTE_END_RE = /^end\s*(?:note|hnote|rnote)\s*$/i;

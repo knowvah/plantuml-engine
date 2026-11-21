@@ -6,7 +6,7 @@
  *
  * Observable discriminators (not mocks): `CommandWBSItemOld` (and only it,
  * `CommandWBSItemMultilineOld` for blocks) adds the warning
- * "Please define Direction/Shape before Color/Id." (CommandWBSItemOld.java:66);
+ * the order warning (CommandWBSItemOld.java:131,137-148);
  * the `"x" as c` form registers code `c`, which a later link resolves.
  *
  * Corpus outcomes: the 26 stock-error rows of `plans/wbs-engine-port/
@@ -27,7 +27,8 @@ import type { WBSDiagram } from '../../../src/diagrams/wbs/WBSDiagram.js';
 import { themedIncludeStore } from '../../helpers/theme-packages-store.js';
 
 const CORPUS = 'test-results/dot-cache/wbs';
-const OLD_ORDER_WARNING = 'Please define Direction/Shape before Color/Id.';
+const OLD_ORDER_WARNING =
+  "Shape (_) and direction (< >) must come before color and id: start the line with '**_[#red]'";
 const SYNTAX = 'Syntax Error?';
 const BAD_TREE = 'Bad tree structure';
 const ONE_ROOT = 'WBS diagram only accepts one root first declared.';
@@ -132,9 +133,10 @@ describe('WBSDiagramFactory refusals', () => {
 });
 
 describe('WBSDiagramFactory style and skinparam handling', () => {
-  it('adds the skinparam deprecation warning for padding', () => {
-    expect(warnings(parsed('skinparam padding 3\n* root'))).toEqual([
-      'Please use CSS style instead of skinparam padding',
+  // CommandSkinParam.java:98-107: padding no longer warns; handwritten names its value.
+  it('adds the skinparam deprecation warning for handwritten, none for padding', () => {
+    expect(warnings(parsed('skinparam padding 3\nskinparam handwritten false\n* root'))).toEqual([
+      "'skinparam handwritten' is deprecated: write '!option handwritten false' instead",
     ]);
   });
 

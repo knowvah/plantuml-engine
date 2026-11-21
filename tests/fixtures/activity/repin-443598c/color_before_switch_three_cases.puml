@@ -1,0 +1,13 @@
+@startuml
+start
+#E2EFDA:Init;
+switch (mode?)
+case ( a )
+  :A;
+case ( b )
+  :B;
+case ( c )
+  :C;
+endswitch
+stop
+@enduml

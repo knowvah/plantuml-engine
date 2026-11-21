@@ -1,16 +1,17 @@
 /**
  * `salt/element/Grid.java` — the pyramid table lines per `TableStrategy`,
- * in the jar's draw order, which is `HashSet<Segment>` iteration order
- * (Grid.java:57-58, 87-99). Expected events are read off jar oracles
- * (1.2026.8beta1):
+ * in the jar's draw order, which is `LinkedHashSet<Segment>` iteration
+ * order: insertion order, de-duplicated on `hashCode` + `equals`
+ * (Grid.java:57-58, 87-99; upstream `1ec797b9732` replaced the `HashSet`).
+ * Expected events are read off jar oracles (1.2026.11beta1):
  *
  * - `test-results/dot-cache/salt/cifali-45-fexa238` (= `fixtures/
  *   pyramid-strategies.jar.svg`): four 2 x 2 tables `{+`, `{#`, `{!`, `{-`,
  *   each at (6, top), column starts 0 / 17.375 / 28.075, row pitch 14.
  * - `suvage-74-tera749` (= `fixtures/pyramid-outside-7x4.jar.svg`, `{+`)
  *   and `fixtures/pyramid-all-7x4.jar.svg` (`{#`, oracle-render.sh probe):
- *   7 rows x 4 columns at (5, 5) — 14 / 22 / 32 / 35 segments, which grow
- *   the `HashMap` table past 16 and 32 bins, so the order pins the resize.
+ *   7 rows x 4 columns at (5, 5) — 14 / 22 / 32 / 35 segments, past the
+ *   16 and 32 where the old `HashSet` order depended on its table resizes.
  */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
@@ -61,54 +62,54 @@ function jarLines(name: string): DrawEvent[] {
 }
 
 describe('Grid.drawU — cifali-45-fexa238 2 x 2 tables', () => {
-  it('{+ (DRAW_OUTSIDE) draws the outline only, in HashSet order', () => {
+  it('{+ (DRAW_OUTSIDE) draws the outline only, in insertion order', () => {
     expect(drawn(ROWS_2, COLS_2, TableStrategy.DRAW_OUTSIDE, CELLS_2(), 6, 52)).toEqual([
       line(6, 52, 23.375, 52),
-      line(23.375, 52, 34.075, 52),
       line(6, 80, 23.375, 80),
+      line(23.375, 52, 34.075, 52),
       line(23.375, 80, 34.075, 80),
       line(6, 52, 6, 66),
-      line(34.075, 66, 34.075, 80),
       line(34.075, 52, 34.075, 66),
       line(6, 66, 6, 80),
+      line(34.075, 66, 34.075, 80),
     ]);
   });
 
   it('{# (DRAW_ALL) draws every cell edge once, de-duplicated on hashCode + equals', () => {
     expect(drawn(ROWS_2, COLS_2, TableStrategy.DRAW_ALL, CELLS_2(), 6, 98)).toEqual([
       line(6, 98, 23.375, 98),
-      line(23.375, 112, 34.075, 112),
-      line(23.375, 98, 34.075, 98),
       line(6, 126, 23.375, 126),
+      line(23.375, 98, 34.075, 98),
       line(23.375, 126, 34.075, 126),
       line(6, 112, 23.375, 112),
+      line(23.375, 112, 34.075, 112),
       line(6, 98, 6, 112),
-      line(23.375, 112, 23.375, 126),
-      line(34.075, 112, 34.075, 126),
-      line(23.375, 98, 23.375, 112),
       line(34.075, 98, 34.075, 112),
       line(6, 112, 6, 126),
+      line(34.075, 112, 34.075, 126),
+      line(23.375, 98, 23.375, 112),
+      line(23.375, 112, 23.375, 126),
     ]);
   });
 
   it('{! (DRAW_VERTICAL) draws every column edge and no row edge', () => {
     expect(drawn(ROWS_2, COLS_2, TableStrategy.DRAW_VERTICAL, CELLS_2(), 6, 144)).toEqual([
       line(6, 144, 6, 158),
-      line(23.375, 158, 23.375, 172),
       line(23.375, 144, 23.375, 158),
-      line(34.075, 158, 34.075, 172),
       line(34.075, 144, 34.075, 158),
       line(6, 158, 6, 172),
+      line(23.375, 158, 23.375, 172),
+      line(34.075, 158, 34.075, 172),
     ]);
   });
 
   it('{- (DRAW_HORIZONTAL) draws every row edge and no column edge', () => {
     expect(drawn(ROWS_2, COLS_2, TableStrategy.DRAW_HORIZONTAL, CELLS_2(), 6, 190)).toEqual([
       line(6, 190, 23.375, 190),
-      line(23.375, 204, 34.075, 204),
-      line(23.375, 190, 34.075, 190),
-      line(6, 218, 23.375, 218),
       line(6, 204, 23.375, 204),
+      line(23.375, 190, 34.075, 190),
+      line(23.375, 204, 34.075, 204),
+      line(6, 218, 23.375, 218),
       line(23.375, 218, 34.075, 218),
     ]);
   });
@@ -124,14 +125,14 @@ describe('Grid.drawU — cifali-45-fexa238 2 x 2 tables', () => {
   });
 });
 
-describe('Grid.drawU — 7 x 4 tables (HashMap resize order)', () => {
-  it('{+ (suvage-74-tera749): 14 verticals resize the table to 32 bins', () => {
+describe('Grid.drawU — 7 x 4 tables (insertion order past 16 and 32 segments)', () => {
+  it('{+ (suvage-74-tera749): the outline, horizontals then verticals', () => {
     expect(drawn(ROWS_7, COLS_4, TableStrategy.DRAW_OUTSIDE, cells7x4(), 5, 5)).toEqual(
       jarLines('pyramid-outside-7x4'),
     );
   });
 
-  it('{# (pyramid-all-7x4 probe): 32 horizontals and 35 verticals resize it to 64 bins', () => {
+  it('{# (pyramid-all-7x4 probe): 32 horizontals and 35 verticals, each once', () => {
     const events = drawn(ROWS_7, COLS_4, TableStrategy.DRAW_ALL, cells7x4(), 5, 5);
     expect(events).toHaveLength(67);
     expect(events).toEqual(jarLines('pyramid-all-7x4'));
@@ -161,8 +162,8 @@ describe('Grid.drawU — title (Grid.java:101-107)', () => {
     expect(ug.events.slice(-1)).toEqual([rect(11, 5, 72.6, 12)]);
     expect(ug.events.slice(0, 4)).toEqual([
       line(5, 11, 64, 11),
-      line(64, 11, 144, 11),
       line(5, 72, 64, 72),
+      line(64, 11, 144, 11),
       line(64, 72, 144, 72),
     ]);
     expect(title.drawnAt).toEqual([{ x: 11, y: 5 }]);

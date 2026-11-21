@@ -141,6 +141,7 @@ function box(id: string, label: string, parentId?: string): BoxGroup {
 function participant(id: string, order: number, boxId?: string): Participant {
   return {
     id,
+    uid: 'part1',
     display: id,
     type: 'participant',
     order,

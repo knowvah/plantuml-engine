@@ -58,6 +58,19 @@ describe('PSystemSalt#getTextBlock — createElement(manageSprite())', () => {
     expect(Math.trunc(h + 10 + 1)).toBe(25);
   });
 
+  it('grows to the drawn extent of an open droplist (withActualExtent, java:127, 165-174, #2882)', () => {
+    // fixtures widget-droplist-open / -two (1.2026.11beta1): canvases 115x37 and 83x49.
+    const [w, h] = dimensionOf(salt(['{', '^Smart Mode^m2^', '}']));
+    expect([Math.trunc(w + 10 + 1), Math.trunc(h + 10 + 1)]).toEqual([115, 37]);
+    const [w2, h2] = dimensionOf(salt(['{', '^Select^one item^two^', '}']));
+    expect([Math.trunc(w2 + 10 + 1), Math.trunc(h2 + 10 + 1)]).toEqual([83, 49]);
+  });
+
+  it('keeps the preferred dimension when nothing may overflow (closed droplist: widget-droplist, 173x29)', () => {
+    const [w, h] = dimensionOf(salt(['{', '^This is a droplist^', '}']));
+    expect([Math.trunc(w + 10 + 1), Math.trunc(h + 10 + 1)]).toEqual([173, 29]);
+  });
+
   it('drops `hide stereotype` and `skinparam …` lines (PSystemSalt.java:149-152)', () => {
     expect(dimensionOf(salt(['hide stereotype', 'skinparam foo bar', '{', 'A | B', '}']))).toEqual(
       dimensionOf(salt(['{', 'A | B', '}'])),

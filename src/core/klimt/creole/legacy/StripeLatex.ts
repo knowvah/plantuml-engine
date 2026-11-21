@@ -124,7 +124,8 @@ export class StripeLatex implements StripeRaw {
   private getAtom(): Atom {
     if (this.atom === undefined) {
       const math = ScientificEquationSafe.fromLatex(this.formula);
-      this.atom = new AtomMath(math, this.fontConfiguration.color, null);
+      // `fontConfiguration.getExtendedColor()` is the background (StripeLatex.java:90).
+      this.atom = new AtomMath(math, this.fontConfiguration.color, this.fontConfiguration.extendedColor ?? null);
     }
     return this.atom;
   }

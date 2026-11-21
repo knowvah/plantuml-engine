@@ -400,8 +400,9 @@ Not a divergence: the pinned jar draws `#F1F1F1`/`#181818` elements and a `#FEFF
 ### LaTeX rendering engine — KaTeX, not JLaTeXMath (permanent)
 
 **Upstream:** a `<latex>expr</latex>` creole tag is rendered by JLaTeXMath
-(a Java library) and embedded in the SVG as a raster image of that
-library's output.
+(a Java library). Up to the 2026-11 re-pin the jar embedded that library's
+output as an image; since a720bdd it draws the glyphs as paths (update
+below).
 
 **This port:** the same tag renders through KaTeX (`src/core/latex.ts`,
 `renderLatexAsImage` — mission E2r L2). The element structure (an image
@@ -428,8 +429,26 @@ none.** The library-forced candidates (KaTeX has no text kern pairs and
 collapses text-mode spaces, e.g. `\text{mod}` −1 px) occur in no fixture that
 renders today.
 
+**Update, 2026-11-20 (oracle re-pin to a720bdd) — the jar draws formulas as
+glyph outlines.** Upstream `aa79d2d80ee` vendored JLaTeXMath 1.0.7 and draws
+every formula (`@startmath`, `@startlatex`, `<math>`, `<latex>`) straight on
+the UGraphic: each TeX glyph is a `<path>` whose outline comes from
+`glyphs.bin`, the TeX fonts' outlines, and the Batik `<image>` is gone. This
+port keeps the KaTeX `<image>` described above, so a formula-bearing row now
+differs in element structure as well as bytes (about 29 corpus rows, among
+them `component/gevozu-46`, `sunuju-01`, `vimulo-11`, `state/corumi-91`,
+`gupeto-19`, `sequence/mefeke-43`, `mindmap/fovule`, `gukofo` and the activity
+`<latex>` rows named below). Two libraries force it: KaTeX lays out with font
+glyphs and has no glyph-outline output, and the outlines are JLaTeXMath's,
+GPL v2 or later. Upstream's MIT edition does not carry JLaTeXMath at all: its
+license-variant build drops `org/scilab/` from every variant but GPL
+(`license-variants/build-logic/src/main/kotlin/plantuml.license-variant.gradle.kts:81-85`).
+The sizing rule above (TeXIcon over a JLaTeXMath box) still governs where the
+formula sits. Accepted by the maintainer on 2026-11-20 ("I accept the
+divergence for the Latex stuff").
+
 **Category:** permanent, maintainer-approved (2026-07-15: "100% right on
-the latex decision").
+the latex decision"; 2026-11-20 for the glyph-outline drawing).
 
 **Rationale:** JLaTeXMath is a Java library with no JS port; KaTeX is the
 ecosystem-standard equivalent and keeps the library browser-pure (no JVM,
@@ -1442,6 +1461,14 @@ is geometric — the image size and the title and box sizes and x/y it shifts �
 ### `help font` lists no fonts
 
 **Category:** library-forced, by maintainer ruling (2026-11-11, #169): a browser-safe library has no API that enumerates the host's installed fonts. `CommandHelpFont#executeArg` (`help/CommandHelpFont.java:71-81`) writes `<b>Help on font`, a blank line and ` The possible font on your system are :`, then one `* <name>` line for each entry of `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`, the JVM host's font families. The port ports the command whole (`src/diagrams/help/CommandHelpFont.ts`). Its `availableFontFamilyNames()` seam returns no names, so the page is the three header lines only, 49 px tall, where the oracle host's jar lists 196 families on a 276×3137 page. Copying the oracle machine's list was rejected: it would pass the comparison by copying the test's own data, and would print a stranger's fonts. Rows: `unknown/cikoge-60-riti614` (`help font`) and `tests/fixtures/factories/cov-help-fonts.puml` (`help fonts`). `listfonts` (`PSystemListFontsFactory`, #135) reads the same list, and this ruling covers it. Since factories-tail-port (#135) it is ported (`src/diagrams/font/PSystemListFonts.ts`), and both callers read the one seam, `src/core/available-font-family-names.ts` (`PSystemListFonts.java:52`, `CommandHelpFont.java:73`). Its page is the header `   <b><size:16>Fonts available:` and a blank line, 39 px tall, where the oracle host's jar draws one line per family, each sample in its own font, on a 248×2355 page. More rows: `unknown/jivufi-79-simi298`, `unknown/jodesa-24-lovo810`, `unknown/kubuju-35-neji041`, `unknown/vofomo-62-gure525` (`oracle/goldens/svg-factories/diff-baseline.json`), and `tests/fixtures/factories/cov-listfont-bare`, `cov-listfont-text`, `cov-listfont-creole`, `cov-listfonts-bare`, `cov-listfonts-text`, `cov-listfonts-upper` (`authored-baseline.json`).
+
+### Chart rows pinned to the plantuml/plantuml#3030 fix, not the pinned jar
+
+**Category:** temporary, by user ruling (2026-11-21). At the pin (a720bdd) a non-finite chart number makes the jar hang or crash. `Double.parseDouble` accepts `NaN`, `Infinity` and overflowing literals such as `1e999`. With such a value, `ChartAxis.withNiceRange` (`ChartAxis.java:145-162`) gets an infinite step and a NaN start and never leaves its `while (true)`. The user filed upstream issue plantuml/plantuml#3030 and asked for the fix (`ChartDataItems.parseFiniteDouble` at every chart parse site, and a bounded `withNiceRange`). The port mirrors that fix now (`src/diagrams/chart/command/ChartDataItems.ts`, `ChartAxis.ts`).
+
+The rows whose output the fix changes take their oracle from the pinned fork build with the fix applied, not from the a720bdd jar. Each row's `reason` names #3030. The rows are authored, in `oracle/goldens/svg-chart/authored-baseline.json`: `cov-inf-bar` (the a720bdd jar never returns), `cov-inf-fixed`, `cov-nan-area`, `cov-nan-scatter`, `cov-value-nan`, `cov-nan-annotation-y`, `cov-nan-bar`, `cov-nan-annotation`, and upstream's new fixtures `vega-R07.06` to `vega-R07.11`.
+
+**Retire when** a release jar carries the fix: re-pin these rows from that jar and remove this entry. The zero-width axis crash, plantuml/plantuml#3031 (`v-axis 5 --> 5`), is not mirrored: its `cov-span-*` rows stay pinned to the a720bdd output.
 
 ### Chronology draws, though the jar has no such diagram
 

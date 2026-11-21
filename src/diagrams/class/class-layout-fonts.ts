@@ -15,6 +15,7 @@
 import type { Theme } from '../../core/theme.js';
 import type { resolveClassTagCascadeEntry } from '../../core/style-cascade-class.js';
 import { CLASS_STEREOTYPE_FONT_SIZE, type GuillemetPair } from './class-stereotype.js';
+import { styledStereoFace, type StereotypeFontValues } from './class-stereotype-style.js';
 
 type TagCascadeEntry = ReturnType<typeof resolveClassTagCascadeEntry>;
 
@@ -233,7 +234,15 @@ function resolveStereoFontSize(theme: Theme): number {
  * comment), unlike every OTHER class font param. Size tier:
  * {@link resolveStereoFontSize} (A2s R2j).
  */
-export function resolveStereoFont(theme: Theme, headerFont: ReturnType<typeof resolveHeaderFont>) {
+export function resolveStereoFont(
+  theme: Theme,
+  headerFont: ReturnType<typeof resolveHeaderFont>,
+  styled?: StereotypeFontValues,
+) {
+  // upstream 53fba993513: the `stereotype` style (`class-stereotype-style.ts`); `skinparam classStereotypeFont*`
+  // reaches it through FromSkinparamToStyle, `defaultFontSize` and the header family no longer do.
+  // @see EntityImageClassHeader.java:83-87 (upstream a720bdd)
+  if (styled !== undefined) return styledStereoFace(theme.fontFamily, styled);
   return {
     family: theme.colors.graph.classStereotypeFontFamily ?? headerFont.family,
     size: resolveStereoFontSize(theme),

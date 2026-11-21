@@ -23,6 +23,7 @@
  */
 
 import { getFromLineInternal } from './TLineType.js';
+import { trin } from '../string-utils-trim.js';
 
 /**
  * Batch SI6: the opaque `unknown` stand-in this file carried through SI5a is
@@ -178,31 +179,17 @@ export class StringLocated {
    * scope note (see class header) but a required, faithful widening rather
    * than an invented feature. Preserves the trimmed classification (this
    * port has no lazy re-classifier to invalidate, unlike upstream).
-   * Upstream's `StringUtils#trin` trims characters `<= ' '` (0x20) from
-   * both ends -- a direct char-code trim is the faithful port (not
-   * `.trim()`, which trims a broader Unicode whitespace set that would
-   * diverge on non-ASCII control chars).
-   * @see ~/git/plantuml/.../text/StringLocated.java#getTrimmed
-   * @see ~/git/plantuml/.../StringUtils.java#trin
+   * Upstream trims with `StringUtils#trin`, which since 0c54c010cdf strips
+   * U+00A0 as well as every char `<= ' '` (the shared
+   * `string-utils-trim.ts`, not JS `.trim()`'s wider Unicode set).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/text/StringLocated.java:189-205
    */
   getTrimmed(): StringLocated {
     if (this.s.length === 0) return this;
 
-    let start = 0;
-    let end = this.s.length - 1;
-    while (start <= end) {
-      if (this.s.charCodeAt(start) <= 0x20) {
-        start++;
-        continue;
-      }
-      if (this.s.charCodeAt(end) <= 0x20) {
-        end--;
-        continue;
-      }
-      break;
-    }
-    if (start === 0 && end === this.s.length - 1) return this;
-    const tmp = start > end ? '' : this.s.slice(start, end + 1);
+    const tmp = trin(this.s);
+    // tmp == s when no trim is needed (java:196).
+    if (tmp === this.s) return this;
     return new StringLocated(tmp, this.location, this.type);
   }
 

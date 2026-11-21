@@ -30,6 +30,28 @@ import type { Entity } from './Entity.js';
  * same local-slice convention as `skin/VisibilityModifier.ts`'s
  * `StringUtils` object; move when the full `StringUtils` port lands.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/StringUtils.java:444-446 */
+/**
+ * Class diagram types that an entity can switch between, for instance when
+ * "A <|-- B" creates A as a class and a later "metaclass A" declares its real
+ * type (upstream `592901f0c42`, #3006).
+ * @see abel/Entity.java:208-213
+ */
+const CLASS_LIKE_TYPES: ReadonlySet<LeafType> = new Set<LeafType>([
+  LeafType.ANNOTATION,
+  LeafType.ABSTRACT_CLASS,
+  LeafType.CLASS,
+  LeafType.ENUM,
+  LeafType.INTERFACE,
+  LeafType.RECORD,
+  LeafType.DATACLASS,
+  LeafType.PROTOCOL,
+  LeafType.STRUCT,
+  LeafType.EXCEPTION,
+  LeafType.METACLASS,
+  LeafType.STEREOTYPE,
+  LeafType.ENTITY,
+]);
+
 const StringUtils = {
   getUid(uid1: string, uid2: number): string {
     return uid1 + String(uid2).padStart(4, '0');
@@ -156,17 +178,14 @@ export abstract class EntityBase {
     return this.leafType;
   }
 
-  /** Both upstream `muteToType` overloads: the 1-arg mutator (:194-199,
-   * `void`) and the 2-arg guarded variant (:206-232, `boolean`),
-   * dispatched on argument count.
-   * @see abel/Entity.java:194-199 and :206-232 */
+  /** Both upstream `muteToType` overloads: the 1-arg mutator (:196-201,
+   * `void`) and the 2-arg guarded variant (:215-236, `boolean`),
+   * dispatched on argument count. `EnumSet#contains(null)` is false, hence
+   * the `undefined` (group) test.
+   * @see abel/Entity.java:196-201 and :215-236 */
   muteToType(newType: LeafType): void;
   muteToType(newType: LeafType, newSymbol: USymbol | undefined): boolean;
   muteToType(newType: LeafType, ...rest: readonly [] | readonly [USymbol | undefined]): boolean | undefined {
-    // #lizard forgives(cyclomatic_complexity, nloc, length, token_count) --
-    // CCN 23/37 NLOC are upstream's own guard matrix (Entity.java:206-232:
-    // the two seven/eight-way LeafType membership tests), ported
-    // branch-for-branch; do-not-refactor-while-porting.
     if (rest.length === 0) {
       if (this.leafType === LeafType.CLASS && newType === LeafType.OBJECT) this.bodier.muteClassToObject();
       this.groupType = undefined;
@@ -178,29 +197,10 @@ export abstract class EntityBase {
     if (this.leafType !== LeafType.STILL_UNKNOWN) {
       if (newType === this.leafType) return true;
 
-      if (
-        this.leafType !== LeafType.ANNOTATION &&
-        this.leafType !== LeafType.ABSTRACT_CLASS &&
-        this.leafType !== LeafType.CLASS &&
-        this.leafType !== LeafType.ENUM &&
-        this.leafType !== LeafType.INTERFACE &&
-        this.leafType !== LeafType.RECORD &&
-        this.leafType !== LeafType.DATACLASS
-      )
-        return false;
+      if (this.leafType === undefined || !CLASS_LIKE_TYPES.has(this.leafType)) return false;
       // throw new IllegalArgumentException("type=" + leafType);
 
-      if (
-        newType !== LeafType.ANNOTATION &&
-        newType !== LeafType.ABSTRACT_CLASS &&
-        newType !== LeafType.CLASS &&
-        newType !== LeafType.ENUM &&
-        newType !== LeafType.INTERFACE &&
-        newType !== LeafType.RECORD &&
-        newType !== LeafType.DATACLASS &&
-        newType !== LeafType.OBJECT
-      )
-        return false;
+      if (!CLASS_LIKE_TYPES.has(newType) && newType !== LeafType.OBJECT) return false;
       // throw new IllegalArgumentException("newtype=" + newType);
     }
     if (this.leafType === LeafType.CLASS && newType === LeafType.OBJECT) this.bodier.muteClassToObject();
@@ -210,7 +210,7 @@ export abstract class EntityBase {
     return true;
   }
 
-  /** @see abel/Entity.java:201-204 */
+  /** @see abel/Entity.java:203-206 */
   muteToGroupType(newType: GroupType): void {
     this.groupType = newType;
     this.leafType = undefined;

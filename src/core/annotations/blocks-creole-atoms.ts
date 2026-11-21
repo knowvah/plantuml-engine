@@ -26,8 +26,7 @@ import type { Atom } from '../klimt/creole/SheetBlock1.js';
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import type { UGraphic } from '../klimt/UGraphic.js';
 import { spriteHrefOver } from '../klimt/sprite/sprite-tint.js';
-import { UImageSvg } from '../klimt/shape/UImageSvg.js';
-import { rollbackImageDimension, rollbackSvg } from '../math/ScientificEquationSafe.js';
+import { drawRollback, rollbackDimension } from '../math/ScientificEquationSafe.js';
 
 /** `'kind' in x` duck-typing of the plain-data `CreoleAtom` union vs a
  *  composite OOP `Atom` (`AtomTable`/`AtomTree`/`AtomMath`/…) —
@@ -109,8 +108,9 @@ export function atomDim(
   if (atom.kind === 'text') return textDim(atom, stringBounder);
   if (atom.kind === 'space') return new XDimension2D(atom.width, SPACE_ATOM_HEIGHT);
   if (atom.kind === 'latex') {
-    // `AtomMath#calculateDimensionSlow`: the rollback is laid out by its PNG export, drawn as its SVG (pbs D5).
-    if (atom.rollback !== undefined) return rollbackImageDimension(atom.rollback, stringBounder);
+    // `AtomMath#calculateDimensionSlow` -> `ScientificEquationSafe#getDimension`: the rollback text's own size
+    // (ScientificEquationSafe.java:110-115, aa79d2d80ee).
+    if (atom.rollback !== undefined) return rollbackDimension(atom.rollback, stringBounder);
     const r = renderLatexAsImage(atom.expr, atom.color ?? LATEX_DEFAULT_COLOR);
     return new XDimension2D(r.width, r.height);
   }
@@ -198,9 +198,10 @@ export function drawAtom(atom: CreoleAtom, ug: UGraphic, resolveAtomImage: AtomI
     return;
   }
   if (atom.kind === 'latex') {
-    // `AtomMath#drawU`'s `ug.draw(math.getSvg(1, fore, back))`: the rollback is a `UImageSvg` (cmf D5).
+    // `AtomMath#drawU` -> `ScientificEquationSafe#drawU`: the rollback is drawn as monospace text
+    // (ScientificEquationSafe.java:124-128, aa79d2d80ee).
     if (atom.rollback !== undefined) {
-      ug.draw(new UImageSvg(rollbackSvg(atom.rollback, ug.getStringBounder()), 1));
+      drawRollback(atom.rollback, ug);
       return;
     }
     const r = renderLatexAsImage(atom.expr, atom.color ?? LATEX_DEFAULT_COLOR);

@@ -83,6 +83,8 @@ export interface LegendFrame {
   readonly topMargin: number;
   readonly plotWidth: number;
   readonly plotHeight: number;
+  /** `getYAxisSpace` of the v2-axis, 0 without one. @see ChartRenderer.java:1111 (f8e62ccdc42) */
+  readonly y2Space: number;
 }
 
 /** The first item's position, or `undefined` for `default: return`, unreachable past the `NONE` test. @see ChartRenderer.java:1130-1151 */
@@ -92,8 +94,7 @@ function legendOrigin(state: ChartRendererState, frame: LegendFrame): { x: numbe
     case LegendPosition.LEFT:
       return { x: MARGIN, y: topMargin };
     case LegendPosition.RIGHT: {
-      const y2Space = state.y2Axis !== undefined ? AXIS_LABEL_SPACE : 0;
-      return { x: leftMargin + plotWidth + y2Space + LEGEND_MARGIN, y: topMargin };
+      return { x: leftMargin + plotWidth + frame.y2Space + LEGEND_MARGIN, y: topMargin };
     }
     case LegendPosition.TOP:
       return { x: leftMargin, y: MARGIN };
@@ -125,9 +126,12 @@ function drawScatterSymbol(
 ): void {
   const skinParam = state.skinParam;
   const scatterStyle = getScatterStyle(s, skinParam);
-  const styleMarkerColor = asNullable(scatterStyle.value('MarkerColor').asColor(skinParam.getIHtmlColorSet()));
-  // The `LineColor` arm needs a null `MarkerColor`, which `ValueNull` never answers.
-  const markerColor = styleMarkerColor ?? at.color;
+  // Inline > MarkerColor > LineColor. @see ChartRenderer.java:1024-1028 (c7e65a2d642)
+  const colorName = scatterStyle.hasValue('MarkerColor') ? 'MarkerColor' : 'LineColor';
+  const markerColor =
+    s.getColor() === undefined
+      ? (asNullable(scatterStyle.value(colorName).asColor(skinParam.getIHtmlColorSet())) ?? at.color)
+      : at.color;
   drawMarker(ug, {
     color: markerColor,
     x: at.x + LEGEND_SYMBOL_SIZE / 2,

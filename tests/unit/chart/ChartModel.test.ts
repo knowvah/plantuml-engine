@@ -14,15 +14,49 @@ describe('ChartAxis', () => {
     expect(axis.getLabelPosition()).toBe(LabelPosition.DEFAULT);
   });
 
-  it('grows under autoScale and stops once a bound is set', () => {
+  it('withNiceRange fits 0 and the data to start + 5 * step (2117ccb43cd)', () => {
     const axis = new ChartAxis();
-    axis.includeValue(150);
-    axis.includeValue(-5);
-    expect([axis.getMin(), axis.getMax()]).toEqual([-5, 150]);
-    axis.setMax(100);
-    expect(axis.isAutoScale()).toBe(false);
-    axis.includeValue(150);
-    expect(axis.getMax()).toBe(100);
+    const range = (lo: number, hi: number): number[] => {
+      const fitted = axis.withNiceRange(lo, hi);
+      return [fitted.getMin(), fitted.getMax()];
+    };
+    expect(range(0, 38)).toEqual([0, 40]);
+    expect(range(0, 138)).toEqual([0, 150]);
+    expect(range(-20, 70)).toEqual([-20, 80]);
+    expect(range(0, 0.7)).toEqual([0, 1]);
+    expect(range(5, 5)).toEqual([0, 5]);
+    expect(range(0, 12)).toEqual([0, 15]);
+    expect(range(0, 0)).toEqual([0, 100]);
+    expect(axis.withNiceRange(0, 38).isAutoScale()).toBe(false);
+  });
+
+  it('withNiceRange stops on an unusable magnitude and throws (plantuml/plantuml#3030, efe6d85e5f3)', () => {
+    const messageOf = (lo: number, hi: number): string => {
+      try {
+        new ChartAxis().withNiceRange(lo, hi);
+        return 'no throw';
+      } catch (e) {
+        return (e as Error).message;
+      }
+    };
+    const prefix = 'IllegalArgumentException: No axis range for values from';
+    expect(messageOf(0, Number.POSITIVE_INFINITY)).toBe(`${prefix} 0.0 to Infinity`);
+    expect(messageOf(Number.NaN, 1)).toBe(`${prefix} NaN to 1.0`);
+    expect(messageOf(-1.7e308, 1)).toBe(`${prefix} -1.7E308 to 1.0`);
+    expect(messageOf(-1.7e308, 1.7e308)).toBe(`${prefix} -1.7E308 to 1.7E308`);
+    expect(messageOf(4.9e-324, 4.9e-324)).toBe(`${prefix} 4.9E-324 to 4.9E-324`);
+    const max = new ChartAxis().withNiceRange(0, Number.MAX_VALUE);
+    expect(max.getMax()).toBeGreaterThanOrEqual(Number.MAX_VALUE);
+  });
+
+  it('withRange keeps the title, ticks, spacing and label position', () => {
+    const axis = new ChartAxis('T', 0, 1);
+    axis.setCustomTicks([{ value: 0.5, label: 'half' }]);
+    axis.setTickSpacing(0.25);
+    axis.setLabelPosition(LabelPosition.TOP);
+    const copy = axis.withRange(2, 3);
+    expect([copy.getTitle(), copy.getMin(), copy.getMax(), copy.getTickSpacing()]).toEqual(['T', 2, 3, 0.25]);
+    expect([copy.getCustomTicks(), copy.getLabelPosition()]).toEqual([[{ value: 0.5, label: 'half' }], 'TOP']);
   });
 
   it('setMin also clears autoScale', () => {

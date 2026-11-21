@@ -1,0 +1,27 @@
+@startuml
+scale 100 as 60 pixels
+time axis unit "seconds"
+skinparam backgroundColor transparent
+robust "R" as R
+concise "Pink" as P #pink
+
+@0
+R is A
+P is X
+
+@200
+R is B
+
+@2000
+R is A
+P is Y
+
+@2600
+P is Z
+
+@4000
+R is B
+
+break 300 to 1800
+break 2700 to 3800
+@enduml

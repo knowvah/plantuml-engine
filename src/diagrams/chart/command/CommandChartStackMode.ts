@@ -3,7 +3,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartStackMode.java
  */
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
-import { StackMode, type ChartDiagram } from '../ChartDiagram.js';
+import { Kind, StackMode, type ChartDiagram } from '../ChartDiagram.js';
 import { SP0, SP1 } from './chart-command-text.js';
 
 /** @see CommandChartStackMode.java:54-61 */
@@ -11,6 +11,9 @@ export const CHART_STACK_MODE_RE = new RegExp(`^${SP0}stackMode${SP1}(?<MODE>gro
 
 /** @see CommandChartStackMode.java:72-89 */
 export function applyChartStackMode(diagram: ChartDiagram, match: RegExpExecArray): CommandExecutionResult {
+  // @see CommandChartStackMode.java:79-81 (e8ef39dd55c)
+  const kindError = diagram.checkKind('stackMode', Kind.CARTESIAN);
+  if (kindError !== undefined) return kindError;
   const mode = match.groups!['MODE']!;
   switch (mode.toLowerCase()) {
     case 'grouped':

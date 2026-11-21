@@ -2,10 +2,11 @@
  * `CommandChartAnnotation`: `annotation "text" at (x, y) [<<arrow>>]`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartAnnotation.java
  */
+import { parseFiniteDouble } from './ChartDataItems.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
-import { javaTrim, parseDouble } from '../../../core/java-number-format.js';
+import { javaTrim } from '../../../core/java-number-format.js';
 import { ChartAnnotation } from '../ChartAnnotation.js';
-import type { ChartDiagram } from '../ChartDiagram.js';
+import { Kind, type ChartDiagram } from '../ChartDiagram.js';
 import { SP0, SP1 } from './chart-command-text.js';
 
 /** @see CommandChartAnnotation.java:61-82 */
@@ -17,14 +18,17 @@ export const CHART_ANNOTATION_RE = new RegExp(
 
 /** @see CommandChartAnnotation.java:93-121 */
 export function applyChartAnnotation(diagram: ChartDiagram, match: RegExpExecArray): CommandExecutionResult {
+  // @see CommandChartAnnotation.java:100-102 (e8ef39dd55c)
+  const kindError = diagram.checkKind('annotation', Kind.CARTESIAN);
+  if (kindError !== undefined) return kindError;
   const g = match.groups!;
   const xPosStr = javaTrim(g['XPOS']!);
   const yPosStr = javaTrim(g['YPOS']!);
 
-  const yPosition = parseDouble(yPosStr);
+  const yPosition = parseFiniteDouble(yPosStr);
   if (yPosition === undefined) return CommandExecutionResult.error(`Y position must be a numeric value: ${yPosStr}`);
 
   // Not a number: a categorical label.
-  const xPosition = parseDouble(xPosStr) ?? xPosStr;
+  const xPosition = parseFiniteDouble(xPosStr) ?? xPosStr;
   return diagram.addAnnotation(new ChartAnnotation(g['TEXT']!, xPosition, yPosition, g['ARROW'] !== undefined));
 }

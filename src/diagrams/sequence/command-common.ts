@@ -16,6 +16,7 @@
  */
 
 import { PragmaKey, pragmaKeyLazyFrom } from '../../core/skin/PragmaKey.js';
+import { eventuallyRemoveStartingAndEndingDoubleQuote } from '../../core/url/Url.js';
 import type { Command } from './sequence-parse-helpers.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { RE_ASSUME_TRANSPARENT } from '../../core/assume-transparent.js';
@@ -80,16 +81,18 @@ export const rotateCommand: Command = {
 
 /** `GENDER` -- `CommandHideShowByGender.java:75-77`, `%pLN_.` widened to its
  *  `\p{L}\p{N}_.` JS spelling. */
-const GENDER = String.raw`(?:(?:class|object|interface|enum|annotation|dataclass|record|abstract|[\p{L}\p{N}_.]+|"[^"]+"|<<.*>>)\s+)*?`;
+const GENDER = String.raw`(?:(?<GENDER>class|object|interface|enum|annotation|dataclass|record|abstract|[\p{L}\p{N}_.]+|"[^"]+"|<<.*>>)\s+)*?`;
 
 /** `hide|show [GENDER] stereotype(s)` — reached in sequence diagrams through
  *  `SequenceDiagramFactory:100` -> `CommonCommands#addCommonCommands1` ->
  *  `addCommonHides` (`CommonCommands.java:103-106`) ->
  *  `CommandHideShowByGender`. The regex's GENDER run
- *  (`CommandHideShowByGender.java:75-77`) is a lazy repeat of a type keyword,
- *  a name, a quoted name or `<<...>>`; the sequence arm IGNORES it and only
- *  applies the PORTION (`executeSequenceDiagram` `:163-166`: `diagram
- *  .hideOrShow(portion.asSet(), show)`). Sequence-scoped: the class engine
+ *  (`CommandHideShowByGender.java:78-79`) is a lazy repeat of a type keyword,
+ *  a name, a quoted name or `<<...>>`; its group holds the LAST repetition,
+ *  as a repeated Java group does. For the stereotype portion the sequence arm
+ *  adds `(GENDER, show)` to the diagram's ordered `StereotypeVisibility`
+ *  (`executeSequenceDiagram`, `:168-179`, upstream `0801eabbca2`); every
+ *  other portion is `hideOrShow(portion.asSet(), show)`. Sequence-scoped: the class engine
  *  carries its own `hide`/`show` directive (`class-command-directives.ts`);
  *  this module is imported by no other engine's dispatch.
  *
@@ -99,14 +102,25 @@ const GENDER = String.raw`(?:(?:class|object|interface|enum|annotation|dataclass
  *  both ways (`secida-27-jaco323` hides, `birocu-87-xubi808` shows). */
 export const hideStereotypeCommand: Command = {
   pattern: new RegExp(
-    String.raw`^(hide|show)\s+${GENDER}(?:empty\s+)?(members?|attributes?|fields?|methods?|circles?|circled?|(stereotypes?))$`,
+    String.raw`^(?<COMMAND>hide|show)\s+${GENDER}(?:empty\s+)?(?:members?|attributes?|fields?|methods?|circles?|circled?|(?<STEREOTYPE>stereotypes?))$`,
     'iu',
   ),
   execute(state, match) {
-    if (match[3] === undefined) return;
-    state.ast.options.hideStereotype = match[1]!.toLowerCase() === 'hide';
+    const groups = match.groups ?? {};
+    if (groups['STEREOTYPE'] === undefined) return;
+    const rules = (state.ast.options.stereotypeRules ??= []);
+    rules.push({ gender: stereotypeRuleGender(groups['GENDER']), show: groups['COMMAND']!.toLowerCase() === 'show' });
   },
 };
+
+/** `StereotypeVisibility#add` (`StereotypeVisibility.java:63-67`): a gender
+ *  that is not `<<...>>` drops one surrounding pair
+ *  (`StringUtils#eventuallyRemoveStartingAndEndingDoubleQuote(s)`, format
+ *  `"([:`, `StringUtils.java:87-92`). */
+function stereotypeRuleGender(gender: string | undefined): string | undefined {
+  if (gender === undefined || gender.startsWith('<<')) return gender;
+  return eventuallyRemoveStartingAndEndingDoubleQuote(gender, '"([:') ?? undefined;
+}
 
 /** `hide unlinked` / `show unlinked` / `hide @unlinked` — `CommandHideUnlinked`.
  *  Stored as an option; applied post-parse by `applyHideUnlinked`

@@ -22,6 +22,13 @@ export type StateKind =
   | 'normal'
   | 'initial'
   | 'final'
+  /**
+   * `state X <<junction>>` (upstream `LeafType.JUNCTION`, `a0a410773aa` #2905): drawn by
+   * `EntityImageCircleStart` like `<<start>>`, but at `CircleStart.JUNCTION_SIZE` (12, not 20).
+   * Its own kind, not `'initial'`, because upstream keeps it its own LeafType.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageCircleStart.java:61-69
+   */
+  | 'junction'
   | 'history'
   | 'deepHistory'
   | 'fork'

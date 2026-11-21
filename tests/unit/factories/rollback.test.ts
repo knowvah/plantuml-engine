@@ -59,7 +59,7 @@ describe('jlmAccepts mirrors TeXParser throws', () => {
   });
 });
 
-describe('the rollback document (D5)', () => {
+describe('the rollback (aa79d2d80ee)', () => {
   it.each([
     ['@startmath\nglb x\n@endmath', 'width:40px;height:25px', />glb\u00A0x<\/text>/], // the space is drawn as U+00A0, as the jar's // cov-math-unknown
     ['@startlatex\n\\notacommand{x}\n@endlatex', 'width:119px;height:25px', />\\notacommand\{x\}<\/text>/], // cov-latex-unknown
@@ -71,35 +71,44 @@ describe('the rollback document (D5)', () => {
     expect(svg).not.toContain('Batik');
   });
 
-  it('a creole <math> atom draws the rollback image at the corpus sizes', () => {
+  /** Every monospace `<text>`'s `x,y` and content (the space is drawn as U+00A0). */
+  const monoRuns = (svg: string): string[] =>
+    [...svg.matchAll(/<text x="([\d.]+)" y="([\d.]+)"[^>]*font-family="monospace">([^<]*)<\/text>/g)].map(
+      (m) => `${m[1]},${m[2]} ${m[3]}`,
+    );
+
+  // Since aa79d2d80ee the rollback is drawn as monospace text on the UGraphic (ScientificEquationSafe.java:124-128),
+  // 5 px in from its box (GraphicStrings.java:160-175) on a TextBlockRaw baseline (TileText/SingleLine), and the box
+  // is its own size (:110-115). Jar values: scripts/oracle-render.sh, a720bdd.
+  it('a creole <math> atom draws its source as text, laid out by its own size', () => {
     const svg = render(
       '@startcreole\n<math>glb</math> <math>Lim</math> <math>:}</math> <math>>->></math> <math>cancel(x)</math>\n@endcreole',
     );
-    // cunotu-47 / rozesu-56 / marese-34 corpus images: glb 29x25, Lim 33x25, :} 19x25, >->> 40x25, cancel(x) 67x25.
-    expect(imageSizes(svg)).toEqual(['29x25', '33x25', '19x25', '40x25', '67x25']);
+    expect(imageSizes(svg)).toEqual([]);
+    expect(monoRuns(svg)).toEqual(['5,19 glb', '37.575,19 Lim', '74,19 :}', '96.338,19 >->>', '139.5,19 cancel(x)']);
   });
 
-  it('a creole <latex> atom rolls back too', () => {
-    expect(imageSizes(render('@startcreole\n<latex>\\glb</latex>\n@endcreole'))).toEqual(['33x25']); // jar: 33x25
+  it('a creole <latex> atom rolls back too, its backslash kept (NO_CREOLE)', () => {
+    expect(monoRuns(render('@startcreole\n<latex>\\glb</latex>\n@endcreole'))).toEqual(['5,19 \\glb']);
   });
 });
 
-describe('a creole rollback is laid out by its PNG export (pbs D5, seam-5 oracles)', () => {
+describe('a creole rollback is laid out by its own size (aa79d2d80ee)', () => {
   const FIXTURES = new URL('../../fixtures/factories/', import.meta.url);
   const fixture = (slug: string): string => readFileSync(new URL(`${slug}.puml`, FIXTURES), 'utf8');
-  const imageYs = (svg: string): string[] => [...svg.matchAll(/<image [^>]*y="([\d.]+)"/g)].map((m) => m[1]!);
+  const monoYs = (svg: string): string[] =>
+    [...svg.matchAll(/<text [^>]*y="([\d.]+)"[^>]*font-family="monospace"/g)].map((m) => m[1]!);
 
-  it('two rollback lines advance 24, the PNG height, while each draws its 25-high document (cov-rollback-two-lines)', () => {
+  it('two rollback lines advance 24, the block height (cov-rollback-two-lines)', () => {
     const svg = render(fixture('cov-rollback-two-lines'));
-    expect(imageSizes(svg)).toEqual(['29x25', '29x25']);
-    expect(imageYs(svg)).toEqual(['14', '38']);
+    expect(monoYs(svg)).toEqual(['33', '57']);
     expect(svg).toMatch(/<text x="0" y="72\.889"[^>]*>after</);
   });
 
-  it('the text after a rollback starts at its 48-wide PNG, not its 49-wide document (cov-rollback-latex)', () => {
+  it('the text after a rollback starts past its box (cov-rollback-latex)', () => {
     const svg = render(fixture('cov-rollback-latex'));
-    expect(imageSizes(svg)).toEqual(['49x25']);
-    expect(svg).toMatch(/<text x="95\.337"[^>]*>after</);
+    expect(svg).toMatch(/<text x="48\.487" y="19"[^>]*font-family="monospace">/);
+    expect(svg).toMatch(/<text x="96\.187"[^>]*>after</);
   });
 
   it('cunotu-47-bute165: its one rollback no longer pushes the page 1 px taller', () => {

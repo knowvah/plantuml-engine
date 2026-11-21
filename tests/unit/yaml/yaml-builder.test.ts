@@ -8,6 +8,19 @@ import type { Monomorph as MonomorphT } from '../../../src/diagrams/yaml/monomor
 const monomorphToJson = (m: MonomorphT): unknown => plainOf(monomorphToJsonObject(m));
 
 describe('YamlBuilder', () => {
+  // YamlBuilder.java:100-103 (0537b558644)
+  it('currentIndent is -1 before the first line, then the innermost open level', () => {
+    const b = new YamlBuilder();
+    expect(b.currentIndent()).toBe(-1);
+    b.adjustIndentation(0);
+    expect(b.currentIndent()).toBe(0);
+    b.onOnlyKey('k');
+    b.adjustIndentation(4);
+    expect(b.currentIndent()).toBe(4);
+    b.adjustIndentation(0);
+    expect(b.currentIndent()).toBe(0);
+  });
+
   // 1. Simple key-value
   it('onKeyAndValue produces a single-key map', () => {
     const b = new YamlBuilder();

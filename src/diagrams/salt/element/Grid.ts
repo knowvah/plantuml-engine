@@ -19,76 +19,36 @@ import type { Cell } from '../Cell.js';
 import { Segment } from './Segment.js';
 import { TableStrategy } from './TableStrategy.js';
 
-/** `HashMap.DEFAULT_INITIAL_CAPACITY` (`new HashSet<>()` → `new HashMap<>()`,
- *  HashSet.java:106-108). @see java.base/java/util/HashMap.java:238 (JDK 21) */
-const DEFAULT_INITIAL_CAPACITY = 16;
-/** @see java.base/java/util/HashMap.java:250 (JDK 21) */
-const DEFAULT_LOAD_FACTOR = 0.75;
-/** @see java.base/java/util/HashMap.java:260 (JDK 21) */
-const TREEIFY_THRESHOLD = 8;
-/** @see java.base/java/util/HashMap.java:275 (JDK 21) */
-const MIN_TREEIFY_CAPACITY = 64;
-
-/** `HashMap.hash(key)`: the key's `hashCode()` (a Java `int`) xor its high
- *  half. @see java.base/java/util/HashMap.java:336-339 (JDK 21) */
-function spread(hashCode: number): number {
-  const h = hashCode | 0;
-  return h ^ (h >>> 16);
-}
-
 /**
- * `java.util.HashSet<Segment>` — what `Grid.java:57-58` collects into, and
- * whose ITERATION ORDER is the jar's line draw order (`cifali-45-fexa238`'s
- * `{+` verticals draw (0,0), (1,2), (0,2), (1,0)). A TS `Set` keys on
- * identity and iterates in insertion order, so neither its de-duplication
- * nor its order is the jar's; this is the `HashMap` bin table instead:
- * `add` is `putVal` (bin `(n - 1) & hash`, appended at the bin's tail unless
- * an equal key is already in it, `++size > threshold` doubles the table),
- * `resize` is the order-preserving lo/hi split, iteration walks bins in
- * index order. `treeifyBin`'s small-table branch (resize instead) is
- * ported; a tree bin (9+ segments in one bin of a 64+ table) keeps list
- * order here — upstream reorders it (`TreeNode#moveRootToFront`). Not
- * ported: residual, reported with sep-T2c.
+ * `java.util.LinkedHashSet<Segment>` — what `Grid.java:57-58` collects into
+ * since upstream `1ec797b9732` (before it, a `HashSet` whose bin order was
+ * the draw order). Iteration is insertion order; `add` keeps the first of
+ * two segments equal on `hashCode()` + `equals()` and leaves its position
+ * alone, as `HashMap#putVal` does for an existing key (`LinkedHashMap`
+ * links a node only when it is created). A TS `Set` keys on identity, so
+ * the de-duplication is done here on the segment's `hashCode()`.
  *
- * @see java.base/java/util/HashMap.java:631-676 (putVal), 683-751 (resize), 761-764 (treeifyBin) (JDK 21)
+ * @see net/sourceforge/plantuml/salt/element/Grid.java:57-58 (upstream a720bdd)
+ * @see java.base/java/util/LinkedHashSet.java (JDK 21)
  */
-class HashSet implements Iterable<Segment> {
-  /** `HashMap.table`, `null` until the first `put`. */
-  private table: Segment[][] | undefined;
-  private size = 0;
-  private threshold = 0;
+class LinkedHashSet implements Iterable<Segment> {
+  /** Insertion-ordered entries, bucketed by `hashCode()` for the equality probe. */
+  private readonly ordered: Segment[] = [];
+  private readonly byHash = new Map<number, Segment[]>();
 
-  /** @see java.base/java/util/HashSet.java:228-230, HashMap.java:631-676 (JDK 21) */
+  /** @see java.base/java/util/HashSet.java:228-230 (JDK 21) */
   add(e: Segment): boolean {
-    const hash = spread(e.hashCode());
-    const tab = this.table ?? this.resize();
-    const bin = (tab[(tab.length - 1) & hash] ??= []);
-    for (const k of bin) {
-      if (spread(k.hashCode()) === hash && e.equals(k)) return false;
-    }
-    bin.push(e);
-    // `binCount >= TREEIFY_THRESHOLD - 1` with binCount + 2 nodes now in the bin.
-    if (bin.length > TREEIFY_THRESHOLD && tab.length < MIN_TREEIFY_CAPACITY) this.resize();
-    if (++this.size > this.threshold) this.resize();
+    const hash = e.hashCode();
+    const bucket = this.byHash.get(hash);
+    if (bucket?.some((k) => e.equals(k))) return false;
+    if (bucket === undefined) this.byHash.set(hash, [e]);
+    else bucket.push(e);
+    this.ordered.push(e);
     return true;
   }
 
-  /** @see java.base/java/util/HashMap.java:683-751 (JDK 21) */
-  private resize(): Segment[][] {
-    const oldTab = this.table;
-    const newCap = oldTab === undefined ? DEFAULT_INITIAL_CAPACITY : oldTab.length * 2;
-    this.threshold = oldTab === undefined ? DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY : this.threshold * 2;
-    const newTab: Segment[][] = [];
-    newTab.length = newCap;
-    for (const bin of oldTab ?? []) {
-      for (const e of bin ?? []) (newTab[spread(e.hashCode()) & (newCap - 1)] ??= []).push(e);
-    }
-    this.table = newTab;
-    return newTab;
-  }
-
-  *[Symbol.iterator](): Iterator<Segment> {
-    for (const bin of this.table ?? []) yield* bin ?? [];
+  [Symbol.iterator](): Iterator<Segment> {
+    return this.ordered[Symbol.iterator]();
   }
 }
 
@@ -110,9 +70,9 @@ export class Grid {
   private readonly title: TextBlock;
 
   /** @see Grid.java:57 */
-  private readonly horizontals = new HashSet();
+  private readonly horizontals = new LinkedHashSet();
   /** @see Grid.java:58 */
-  private readonly verticals = new HashSet();
+  private readonly verticals = new LinkedHashSet();
 
   /** @see Grid.java:60-69 */
   constructor(rowsStart: readonly number[], colsStart: readonly number[], strategy: TableStrategy, title: TextBlock) {

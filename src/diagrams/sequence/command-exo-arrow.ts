@@ -65,6 +65,7 @@ import {
   emit,
   ensureParticipant,
   setLastEventWithNoteSpan,
+  sourceLineOf,
   type ArrowSpec,
   type Command,
   type ParseState,
@@ -385,6 +386,7 @@ function messageExoOf(state: ParseState, g: Groups, type: MessageExoType, partic
     label: g['LABEL'] ?? '',
     arrow,
     styleBuilder: currentStyleBuilder(state.style), // `CommandExoArrowAny.java:136`
+    ...sourceLineOf(state), // `new MessageExo(..., location)`, `:136-137`
     ...getNextMessageNumber(state, participant, arrow),
     ...exoOptionalFields(g),
   };

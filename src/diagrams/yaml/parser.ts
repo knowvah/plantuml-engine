@@ -5,7 +5,7 @@ import type { ParseOptions } from '../../core/dispatcher.js';
 // for why this is imported rather than re-inlined (json/yaml/hcl already
 // share `layoutJson`/`renderJson`, `yaml/index.ts`; this is the same trio).
 import { jsonSpriteRegistryFor } from '../json/parser.js';
-import { parseYamlLines } from './yaml-parser.js';
+import { YamlParser } from './yaml-parser.js';
 import { monomorphToJson } from './monomorph.js';
 import { extractStyle, payloadOf, upstreamSourceLines } from '../json/StyleExtractor.js';
 import { headerOf } from '../json/json-diagram-factory.js';
@@ -53,13 +53,16 @@ function parseYamlHighlightLine(line: string): HighlightDirective {
  * monomorph that is no scalar/list/map (`MonomorphToJson.java:44-52`, an
  * empty payload): `JsonDiagram#drawU` draws both as the "does not sound like
  * YAML data" page (`JsonDiagram.java:116-122`). A bare scalar document is
- * one -- `YamlParser.java:53-54` throws on `NO_KEY_ONLY_TEXT` -- so unlike
+ * one -- `YamlParser.java:98-99` throws on `NO_KEY_ONLY_TEXT` -- so unlike
  * json a yaml diagram never reaches the scalar-root wrap
- * (jar: `tests/fixtures/unwind-U1/yaml-root-*`).
+ * (jar: `tests/fixtures/unwind-U1/yaml-root-*`). So is every other
+ * `YamlSyntaxException` of the subset: a flow mapping, a duplicate key, a list
+ * in a list (0537b558644). Upstream only logs the message
+ * (`Logme.error`); this port has no log channel there and drops it.
  */
-function parseYamlBody(list: string[], parseWarnings: string[]): { root: unknown; parseError: boolean } {
+function parseYamlBody(list: string[]): { root: unknown; parseError: boolean } {
   try {
-    const root = monomorphToJson(parseYamlLines(list, parseWarnings));
+    const root = monomorphToJson(new YamlParser().parse(list));
     return { root, parseError: root === null };
   } catch {
     return { root: null, parseError: true };
@@ -81,15 +84,13 @@ export function parseYaml(source: UmlSource, options?: ParseOptions): JsonDiagra
     if (line.startsWith(HIGHLIGHT_PREFIX)) highlights.push(parseYamlHighlightLine(line));
     else list.push(line);
   }
-  const parseWarnings: string[] = [];
   return {
-    ...parseYamlBody(list, parseWarnings),
+    ...parseYamlBody(list),
     diagramLabel: 'YAML' as const,
     highlights,
     ...headerOf(extractor, true),
     // D6 (cdd6-T1c): mirrors `class/parser.ts:326-327`.
     sprites: jsonSpriteRegistryFor(options),
     skinParam: createJsonSkinParam(source, 'yaml'),
-    ...(parseWarnings.length === 0 ? {} : { parseWarnings }),
   };
 }

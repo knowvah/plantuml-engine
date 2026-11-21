@@ -292,6 +292,25 @@ describe('TimingRuler manual axis', () => {
     ]);
   });
 
+  it('draws the rule, then every tick, then every label (TimingRuler.java:317-349, mekivo-95-xafe506)', () => {
+    const ug = new RecordingUGraphic(oracleMeasurer());
+    ruler(tick('0'), tick('100'), tick('300')).drawTimeAxis(ug, TimeAxisStategy.MANUAL, new Map());
+    const kinds = ug.log
+      .filter((e): e is { draw: string; chain: readonly string[] } => 'draw' in e)
+      .map((e) => (e.draw === 'ULine(0,5)' ? 'tick' : e.draw.startsWith('ULine(') ? 'rule' : 'label'));
+    expect(kinds).toEqual(['rule', 'tick', 'tick', 'tick', 'label', 'label', 'label']);
+  });
+
+  it('draws the automatic ticks and rule before every label (TimingRuler.java:351-370)', () => {
+    const ug = new RecordingUGraphic(oracleMeasurer());
+    ruler(tick('0'), tick('100'), tick('300')).drawTimeAxis(ug, TimeAxisStategy.AUTOMATIC, new Map());
+    const kinds = ug.log
+      .filter((e): e is { draw: string; chain: readonly string[] } => 'draw' in e)
+      .map((e) => (e.draw === 'ULine(0,5)' ? 'tick' : e.draw.startsWith('ULine(') ? 'rule' : 'label'));
+    // 0..300 at the HCF unit 100: five ticks; labels at the three tick times
+    expect(kinds).toEqual(['tick', 'tick', 'tick', 'tick', 'tick', 'rule', 'label', 'label', 'label']);
+  });
+
   it('prefers a code name when the code holds that very tick (identity, not value)', () => {
     const start = tick('0');
     const same = tick('100');

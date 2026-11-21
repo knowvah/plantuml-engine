@@ -26,6 +26,7 @@ import { Pragma } from '../../core/skin/Pragma.js';
 import { splitEdgeLabelEmbeds } from '../../core/svek/edge-label-embed.js';
 import { stateCreoleBlock, type StateStyledTextLine } from './state-sizing-creole.js';
 import { placeStripes, segmentStripes, type StateLabelStripe, type StripeCreoleCtx } from './state-label-style.js';
+import { trin } from '../../core/string-utils-trim.js';
 
 /** A separator's title (`BodyEnhancedAbstract#getTitle`), as the state creole block draws it. */
 export interface StateNoteRuleTitle {
@@ -76,15 +77,6 @@ interface NoteBlock {
 function separatorTitle(s: string): string | undefined {
   if (s.length <= 4) return undefined;
   return trin(s.slice(2, s.length - 2));
-}
-
-/** `StringUtils.trin` (`StringUtils.java:502-520`): trims characters at or below U+0020 from both ends. */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
 }
 
 /** `BodyEnhanced2#getArea`'s loop (`BodyEnhanced2.java:84-109`), on the note's display lines. */

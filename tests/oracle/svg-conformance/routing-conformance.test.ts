@@ -897,7 +897,15 @@ describe('routing conformance — jar-error classification', () => {
     // by #147). Derivation: 11364 + 3 = 11367.
     // 11367 -> 11372 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11367 + 5 = 11372.
-    expect(pinnedAgree.length).toBe(11372);
+    // 11372 -> 11360 at the a720bdd re-pin (2026-11-20): buveco-86-tibo673 (both walks) becomes jar-error, and
+    // the 10 #214 Python rows (zoriso, zarelu, pegali, joleka, fidoba, both walks) become known-misroute.
+    // Derivation: 11372 - 2 - 10 = 11360.
+    // 11360 -> 11363 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 flip jar-error -> agree --
+    // the jar draws TIMING at a720bdd (`analog CODE`, `analog "N" as C between a and b`, 3cdc46b2092) and so do we after its port (CommandNumericPlayer.java:83-158). Derivation: 11360 + 3 = 11363.
+    // 11363 -> 11364 at the a720bdd port (2026-11-20): unknown/petiku-70-fogu777 (jar-error -> agree, CLASS),
+    // a struct declared after first use renders since Entity.java:208-213 CLASS_LIKE_TYPES (592901f0c42).
+    // Derivation: 11363 + 1 = 11364.
+    expect(pinnedAgree.length).toBe(11364);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -936,12 +944,18 @@ describe('routing conformance — jar-error classification', () => {
     // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 17 + 16 = 33.
     // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
     // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
-    expect(pinnedMisroutes.length).toBe(14);
+    // 14 -> 24 at the a720bdd re-pin (2026-11-20): the 10 #214 Python rows. Derivation: 14 + 10 = 24.
+    expect(pinnedMisroutes.length).toBe(24);
     // 86 -> 162 at ogc/T5: +76 jar error pages whose signature sits in the head window
     // (dot 8, unknown 68). Derivation: 86 + 76 = 162.
     // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
     // Derivation: 162 + 8 = 170.
-    expect(pinnedJarErrors.length).toBe(170);
+    // 170 -> 172 at the a720bdd re-pin (2026-11-20): buveco-86-tibo673 in both walks (unclosed `!ifdef`,
+    // CodeIteratorIf.java:73-80). Derivation: 170 + 2 = 172.
+    // 172 -> 169 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 (see pinnedAgree). Derivation: 172 - 3 = 169.
+    // 169 -> 168 at the a720bdd port (2026-11-20): unknown/petiku-70-fogu777 flips to agree (see above).
+    // Derivation: 169 - 1 = 168.
+    expect(pinnedJarErrors.length).toBe(168);
     // 7202 -> 7203 at gtc T1 (see the agree derivation above).
     // 7203 -> 7214 at gtc T2 (see the agree derivation above).
     // 7214 -> 7249 at gtc S (state lane close) (see the agree derivation above).
@@ -1225,7 +1239,8 @@ describe('routing conformance — jar-error classification', () => {
     // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 17 + 16 = 33.
     // 33 -> 14 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to agree (#147 ports
     // json, map, domain and requirement into description). Derivation: 33 - 16 - 3 = 14.
-    expect(censused.length).toBe(14);
+    // 14 -> 24 at the a720bdd re-pin (2026-11-20): the 10 #214 Python rows, each citing TLineType.java:266.
+    expect(censused.length).toBe(24);
     expect(censused.length).toBe(pinnedMisroutes.length);
     for (const m of censused) {
       expect(m.reason ?? '', `${keyOf(m)} must cite its upstream origin`).toMatch(/\w+\.java:\d+/);

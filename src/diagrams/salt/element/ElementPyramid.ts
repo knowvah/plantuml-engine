@@ -13,7 +13,7 @@ import type { Cell } from '../Cell.js';
 import type { Positionner2 } from '../Positionner2.js';
 import { atomOpsFor } from '../SaltDictionary.js';
 import { AbstractElement } from './AbstractElement.js';
-import type { Element } from './Element.js';
+import { type Element, mayDrawBeyondPreferredDimension } from './Element.js';
 import { Grid } from './Grid.js';
 import { LeftFirst } from './LeftFirst.js';
 import type { TableStrategy } from './TableStrategy.js';
@@ -112,6 +112,12 @@ export class ElementPyramid extends AbstractElement {
       at(colsStart, colsStart.length - 1),
       at(rowsStart, rowsStart.length - 1) + this.title.calculateDimension(stringBounder).getHeight(),
     );
+  }
+
+  /** Upstream's loop over `positions1.keySet()`, returning on the first
+   *  `true`. @see ElementPyramid.java:176-183 (upstream a720bdd) */
+  mayDrawBeyondPreferredDimension(): boolean {
+    return [...this.positions1.keys()].some((elt) => mayDrawBeyondPreferredDimension(elt));
   }
 
   /** `ug.apply(getBlack())` sets the foreground (`Fore`). @see ElementPyramid.java:101-121 */

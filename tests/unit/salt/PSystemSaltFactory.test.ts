@@ -83,6 +83,10 @@ describe('CommandAnything — a first line `salt` (CommandAnything.java:70)', ()
     expect(parseRefusalOf(createSaltDiagram(source(['  salt\t', '{', '}'])))).toBeDefined();
   });
 
+  it('is String#trim, not StringUtils.trin: "\u00A0salt" is data (CommandAnything.java:78)', () => {
+    expect(parseRefusalOf(createSaltDiagram(source(['\u00A0salt', '{', '}'])))).toBeUndefined();
+  });
+
   it('is data once anything else was added', () => {
     expect(parse(['{', 'salt', '}']).size()).toBe(3);
   });
@@ -92,11 +96,11 @@ describe('CommandAnything — a first line `salt` (CommandAnything.java:70)', ()
   });
 });
 
-describe('CommandSkinParam warnings (CommandSkinParam.java:92-99)', () => {
-  it('skinparam handwritten warns "Please use \'!option handwritten true\' …"', () => {
+describe('CommandSkinParam warnings (CommandSkinParam.java:97-99)', () => {
+  it("skinparam handwritten warns that it is deprecated and names '!option handwritten true'", () => {
     const d = parse(['{', 'A', '}'], new Map([['handwritten', 'true']]));
     expect(d.getWarnings().map((w) => w.asSingleLine())).toEqual([
-      "Please use '!option handwritten true' to enable handwritten ",
+      "'skinparam handwritten' is deprecated: write '!option handwritten true' instead",
     ]);
   });
 });

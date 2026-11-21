@@ -1,5 +1,6 @@
 import type { Colors } from '../../core/abel/Colors.js';
 import type { BigDecimal } from '../../core/decimal/BigDecimal.js';
+import type { Stereotype } from '../../core/stereo/Stereotype.js';
 import type { ArrowConfiguration } from '../sequence/sequence-arrowhead.js';
 import type { Panels } from './graphic/Panels.js';
 import { PanelsClock } from './graphic/PanelsClock.js';
@@ -14,6 +15,17 @@ export interface PlayerClockArgs extends Omit<PlayerBaseArgs, 'generalBackground
   readonly period: BigDecimal;
   readonly pulse: BigDecimal;
   readonly offset: BigDecimal;
+}
+
+/** `createPlayerClock`'s arguments (D16: more than five parameters). @see TimingDiagram.java:330-331 */
+export interface CreatePlayerClockArgs {
+  readonly code: string;
+  readonly full: string;
+  readonly period: BigDecimal;
+  readonly pulse: BigDecimal;
+  readonly offset: BigDecimal;
+  readonly compact: boolean;
+  readonly stereotype: Stereotype | undefined;
 }
 
 /** The suggested height of a clock player (PlayerClock.java:55). */

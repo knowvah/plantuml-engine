@@ -16,6 +16,7 @@
 import { activate } from './sequence-life-state.js';
 import type { ParticipantType } from './ast.js';
 import {
+  blockBodyLocation,
   ensureParticipant,
   putParticipantInLast,
   parseParticipantDeclaration,
@@ -194,7 +195,12 @@ export function matchParticipantMultilineCommand(
   // one silently url-less -- and no cached oracle would have said so, since
   // `boparo-11-pema294` uses the single-line form.
   if (state.participantIndex.has(id)) putParticipantInLast(state, id);
-  else ensureParticipant(state, id, 'participant', { display, color, stereotype, url, order });
+  else {
+    // `createNewParticipant(lines.getLocation(), ...)` after `subExtract(1, 1)`
+    // (`CommandParticipantMultilines.java:147-156`): the first body line.
+    const sourceLine = blockBodyLocation(state, (t) => PARTICIPANT_MULTILINE_CLOSE_RE.test(t));
+    ensureParticipant(state, id, 'participant', { display, color, stereotype, url, order, sourceLine });
+  }
 
   return closeIndex - i + 1;
 }

@@ -17,11 +17,11 @@
  *
  * Not ported:
  * - `createTestDot`, `createKeyDistributor` and the private image constructor
- *   (java:83-89, :256-279): `testdot` and the key tools are out (decisions.md D8).
- * - The other image getters (`getTime01`, `getTime15`, `getCharlieImage`,
- *   `getPlantumlSmallIcon(2)`, `getArecibo`, `getDotc`, `getDotd`,
- *   `getApple2Image`, java:96-169): resources of other pages, owned where they
- *   are drawn (`eggs/charlie-image.ts`, `core/error/`).
+ *   (java:83-89, :234-258): `testdot` and the key tools are out (decisions.md D8).
+ * - The other image getters (`getTime01`, `getTime15`,
+ *   `getPlantumlSmallIcon(2)`, `getArecibo`, `getDotc`, `getDotd`): resources
+ *   of other pages, owned where they are drawn (`core/error/`). `getCharlieImage`
+ *   and `getApple2Image` went with the eggs upstream (dadad87bba3).
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java
  */

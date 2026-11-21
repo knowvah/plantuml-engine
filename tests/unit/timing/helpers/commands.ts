@@ -10,11 +10,13 @@ import { CommandAnalog } from '../../../../src/diagrams/timing/command/CommandAn
 import { CommandAtPlayer } from '../../../../src/diagrams/timing/command/CommandAtPlayer.js';
 import { CommandAtTime } from '../../../../src/diagrams/timing/command/CommandAtTime.js';
 import { CommandBinary } from '../../../../src/diagrams/timing/command/CommandBinary.js';
+import { CommandBreak } from '../../../../src/diagrams/timing/command/CommandBreak.js';
 import { CommandChangeStateByPlayerCode } from '../../../../src/diagrams/timing/command/CommandChangeStateByPlayerCode.js';
 import { CommandChangeStateByTime } from '../../../../src/diagrams/timing/command/CommandChangeStateByTime.js';
 import { CommandClock } from '../../../../src/diagrams/timing/command/CommandClock.js';
 import { CommandDefineStateLong } from '../../../../src/diagrams/timing/command/CommandDefineStateLong.js';
 import { CommandDefineStateShort } from '../../../../src/diagrams/timing/command/CommandDefineStateShort.js';
+import { CommandDigital } from '../../../../src/diagrams/timing/command/CommandDigital.js';
 import { CommandConstraint } from '../../../../src/diagrams/timing/command/CommandConstraint.js';
 import { CommandHideTimeAxis } from '../../../../src/diagrams/timing/command/CommandHideTimeAxis.js';
 import { CommandHighlight } from '../../../../src/diagrams/timing/command/CommandHighlight.js';
@@ -23,9 +25,12 @@ import { CommandNote } from '../../../../src/diagrams/timing/command/CommandNote
 import { CommandPixelHeight } from '../../../../src/diagrams/timing/command/CommandPixelHeight.js';
 import { CommandScalePixel } from '../../../../src/diagrams/timing/command/CommandScalePixel.js';
 import { CommandTicks } from '../../../../src/diagrams/timing/command/CommandTicks.js';
+import { CommandTimeAxisUnit } from '../../../../src/diagrams/timing/command/CommandTimeAxisUnit.js';
 import { CommandTimeMessage } from '../../../../src/diagrams/timing/command/CommandTimeMessage.js';
 import { CommandUseDateFormat } from '../../../../src/diagrams/timing/command/CommandUseDateFormat.js';
-import { CommandRobustConcise } from '../../../../src/diagrams/timing/command/CommandRobustConcise.js';
+import { CommandConcise } from '../../../../src/diagrams/timing/command/CommandConcise.js';
+import { CommandRectangle } from '../../../../src/diagrams/timing/command/CommandRectangle.js';
+import { CommandRobust } from '../../../../src/diagrams/timing/command/CommandRobust.js';
 import { TimingDiagram } from '../../../../src/diagrams/timing/TimingDiagram.js';
 import type { SkinParam } from '../../../../src/diagrams/timing/timing-skin-param.js';
 import { stringBounder, svgGraphic } from '../../mindmap/helpers/mindmap-skin.js';
@@ -34,9 +39,12 @@ import { svgElements, timingSkinParam } from './timing.js';
 /** `TimingDiagramFactory#initCommandsList` order (java:83-109), every single-line command (`CommandNoteLong` is multi-line). */
 export function singleLineCommands(): SingleLineCommand2<TimingDiagram>[] {
   return [
-    new CommandRobustConcise(),
+    new CommandRobust(),
+    new CommandConcise(),
+    new CommandRectangle(),
     new CommandClock(),
     new CommandAnalog(),
+    new CommandDigital(),
     new CommandBinary(),
     new CommandDefineStateShort(),
     new CommandDefineStateLong(),
@@ -49,7 +57,9 @@ export function singleLineCommands(): SingleLineCommand2<TimingDiagram>[] {
     new CommandConstraint(),
     new CommandScalePixel(),
     new CommandHideTimeAxis(),
+    new CommandTimeAxisUnit(),
     new CommandHighlight(),
+    new CommandBreak(),
     new CommandModeCompact(),
     new CommandTicks(),
     new CommandPixelHeight(),

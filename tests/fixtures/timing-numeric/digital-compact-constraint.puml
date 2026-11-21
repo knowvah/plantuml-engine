@@ -1,0 +1,19 @@
+@startuml
+compact digital "Digital" <<sig>> from 0 to 4 as D
+analog "Analog" as A from -1 to 1
+D ticks num on multiple 2
+
+@0
+D is 1
+A is -1
+
+@50
+D is 4
+A is 1
+
+@120
+D is 0
+A is 0
+
+D@0 <-> @50 : rise
+@enduml

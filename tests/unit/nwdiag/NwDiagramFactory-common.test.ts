@@ -76,12 +76,19 @@ describe('NwDiagramFactory common commands', () => {
     expect('refused' in r && r.message.startsWith('Error in style definition: ')).toBe(true);
   });
 
+  // CommandSkinParam.java:98-107: handwritten warns with its value; padding no longer warns.
   it('adds the skinparam deprecation warnings', () => {
+    const skinparam = new Map([
+      ['Padding', '2'],
+      ['handwritten', 'false'],
+    ]);
     const d = parseNwdiag(
-      sourceOf(['a'], { styleSource: { skinparam: new Map([['Padding', '2']]), styles: [] } }),
+      sourceOf(['a'], { styleSource: { skinparam, styles: [] } }),
       new PreprocessingArtifact(),
     ) as NwDiagram;
-    expect(d.getWarnings()).toHaveLength(1);
+    expect(d.getWarnings().map((w) => w.asSingleLine())).toEqual([
+      "'skinparam handwritten' is deprecated: write '!option handwritten false' instead",
+    ]);
     expect(d.getSkinParam().getValue('padding')).toBe('2');
     expect(d.isHandwritten()).toBe(false);
   });

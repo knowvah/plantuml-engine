@@ -1,0 +1,12 @@
+@startuml
+concise "C" as C
+
+@0
+C is A
+
+@1000
+C is B
+
+break 100 to 500
+break 400 to 800
+@enduml

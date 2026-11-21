@@ -105,6 +105,7 @@ function renderShape(node: StateNodeGeo, theme: Theme, measurer?: StringMeasurer
 
   switch (node.kind) {
     case 'initial':
+    case 'junction':
       return renderInitial(node, theme);
     case 'final':
       return renderFinal(node, theme);
@@ -167,6 +168,7 @@ function wrapClassFor(node: StateNodeGeo): 'entity' | 'start_entity' | 'end_enti
   if (node.kind === 'normal' && node.stereotype?.toLowerCase() === 'sdlreceive') return undefined;
   switch (node.kind) {
     case 'initial':
+    case 'junction':
       return 'start_entity';
     case 'final':
       return 'end_entity';

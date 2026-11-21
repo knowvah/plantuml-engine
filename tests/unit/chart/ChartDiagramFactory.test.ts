@@ -4,6 +4,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartDiagramFactory.java
  */
 import { describe, expect, it } from 'vitest';
+import { syntaxErrorMessageOf } from '../../../src/core/parse-refusal.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import { isDisplayPositionedNull, isEmpty } from '../../../src/core/annotations/index.js';
 import type { ParseRefusal } from '../../../src/core/parse-refusal.js';
@@ -30,6 +31,9 @@ function refusal(...lines: string[]): ParseRefusal {
   return result;
 }
 
+/** Digits only, as the range and spacing regexes allow, too large for a double: Infinity. */
+const HUGE = `1${'0'.repeat(400)}`;
+
 describe('parseChart', () => {
   it('grid v-axis is a syntax refusal at that line, as the planning probe', () => {
     const r = refusal('h-axis [A]', 'grid v-axis');
@@ -42,7 +46,7 @@ describe('parseChart', () => {
 
   it('an execution error carries the message', () => {
     const r = refusal('bar [x]');
-    expect([r.kind, r.message]).toEqual(['execution', 'Invalid number format in bar data']);
+    expect([r.kind, r.message]).toEqual(['execution', 'Invalid number "x"']);
   });
 
   it('accepts rotate, page and scale, and sets scale', () => {
@@ -96,12 +100,69 @@ describe('parseChart', () => {
     expect(d.getSeries()).toHaveLength(1);
   });
 
-  it.each(['hide ſtereotypes', 'ſet separator ::', 'hide everything else', 'nonsense'])(
-    'refuses %j where Java does',
-    (line) => {
-      expect(refusal(line).kind).toBe('syntax');
-    },
-  );
+  it.each(['hide ſtereotypes', 'hide everything else', 'nonsense'])('refuses %j where Java does', (line) => {
+    expect(refusal(line).kind).toBe('syntax');
+  });
+
+  it('reads "ſet separator ::" as a list item, as CommandChartItem does after the common commands', () => {
+    const r = refusal('ſet separator ::');
+    expect([r.kind, r.message]).toEqual(['execution', `Too many ':' in "ſet separator ::": quote the key`]);
+  });
+
+  it.each([
+    [['bar [Infinity]'], 'Invalid number "Infinity"'],
+    [['bar [1e999]'], 'Invalid number "1e999"'],
+    [['line [NaN]'], 'Invalid number "NaN"'],
+    [['line [(3, -Infinity)]'], 'Invalid coordinate pair "(3, -Infinity)"'],
+    [['bar', '* Infinity'], 'Invalid number "Infinity"'],
+    [['pie [Infinity]'], 'Invalid number "Infinity"'],
+    [[`pie [1] donut ${HUGE}%`], `Invalid donut size ${HUGE}%`],
+    [['h-axis [A]', 'annotation "a" at (A, Infinity)'], 'Y position must be a numeric value: Infinity'],
+    [[`v-axis 0 --> ${HUGE}`], 'Invalid number format in axis range'],
+    [[`h-axis 0 --> ${HUGE}`], 'Invalid number format in axis range'],
+    [[`v-axis spacing ${HUGE}`], 'Invalid number format in spacing value'],
+    [['v-axis ticks [1e999:"x"]'], 'Invalid tick format. Expected: [value:"label", ...]'],
+    [['radar [1]', `r-axis 0 --> ${HUGE}`], 'Invalid number format in axis range'],
+    [['radar [1]', `r-axis spacing ${HUGE}`], 'Invalid number format in spacing value'],
+  ])('refuses the non-finite number in %j (efe6d85e5f3)', (lines, message) => {
+    expect(refusal(...lines).message).toBe(message);
+  });
+
+  it('reads a non-finite annotation x as a category, as parseFiniteDouble refuses it', () => {
+    expect(diagram('h-axis [A]', 'annotation "a" at (Infinity, 1)').getAnnotations()[0]!.getXPosition()).toBe(
+      'Infinity',
+    );
+  });
+
+  it('words an unclosed <style> as PSystemCommandFactory does', () => {
+    expect(refusal('<style>', 'bar [1]').message).toBe(syntaxErrorMessageOf('<style>'));
+    expect(refusal('<style>').message).not.toBe('Syntax Error?');
+  });
+
+  it('reads list items after a series written without data (5ee1a051948)', () => {
+    const d = diagram('h-axis [Jan, Feb, Mar]', 'bar "Sales"', '* Feb : 20', '- Jan: 10', '"Mar": ');
+    const [series] = d.resolveCartesian().getSeries();
+    expect([series!.getName(), series!.getValues()]).toEqual(['Sales', [10, 20, undefined]]);
+  });
+
+  it.each([
+    [['* 1'], 'A list item must follow a series written without data, as in: pie "Air"'],
+    [['line', '* 1', '* A: 2'], 'Either every value has a key (key: value), or none has'],
+    [['line', '* 1 #red'], 'A value of a line cannot have a color of its own'],
+    [['h-axis [A]', 'line', '* B: 1'], '"B" is not in h-axis'],
+    [['h-axis 0 --> 1', 'line', '* B: 1'], 'Keyed values (key: value) need h-axis categories, not an h-axis range'],
+    [['line', '* (1, 2)'], 'A coordinate pair cannot be written as a list item: write [(x, y), ...]'],
+    [['line', '* "a'], 'Unbalanced quotes in: "a'],
+    [['line', '* : 1'], 'Empty key in ": 1"'],
+    [['line', '* x'], 'Invalid number "x"'],
+    [['line', '* 1 #nosuchcolour'], 'Unknown color #nosuchcolour'],
+    [
+      ['line [(1, 2)]', 'bar'],
+      'All series must use the same data format (either all coordinate pairs or all index-based)',
+    ],
+  ])('refuses the list items %j', (lines, message) => {
+    expect(refusal(...lines).message).toBe(message);
+  });
 
   it('tolerates start and end lines in a hand-built source', () => {
     expect(diagram('@startchart', 'bar [1]', '@endchart').getSeries()).toHaveLength(1);
@@ -126,12 +187,18 @@ describe('parseChart', () => {
     expect('refused' in r && r.message.startsWith('Error in style definition: ')).toBe(true);
   });
 
-  it('adds the skinparam deprecation warnings', () => {
+  it('adds the skinparam deprecation warnings; padding warns no more (CommandSkinParam.java:94-107)', () => {
+    const skinparam = new Map([
+      ['Padding', '2'],
+      ['ParticipantPadding', '4'],
+    ]);
     const r = parseChart(
-      sourceOf(['bar [1]'], { styleSource: { skinparam: new Map([['Padding', '2']]), styles: [] } }),
+      sourceOf(['bar [1]'], { styleSource: { skinparam, styles: [] } }),
       new PreprocessingArtifact(),
     );
     if ('refused' in r) throw new Error('refused');
-    expect(r.getWarnings()).toHaveLength(1);
+    expect(r.getWarnings().map((w) => w.getMessage()[0])).toEqual([
+      "'skinparam ParticipantPadding' is ignored: use a style instead",
+    ]);
   });
 });

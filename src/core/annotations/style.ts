@@ -271,7 +271,7 @@ export function getStyleName(diagramType: string): SName {
  * declarations `BASE_DEFAULTS` (plantuml.skin `root {}` + `document { legend
  * {} }`) does not transcribe. Each skin value carries its own declaration
  * counter (`ValueImpl.regular(value, counter)`, StyleParser.java:137), so a
- * different priority is a different declaration. For plantuml.skin these are
+ * different specificity is a different declaration. For plantuml.skin these are
  * wbsDiagram's five (plantuml.skin:350-356), timingDiagram's four
  * (plantuml.skin:479-483) and yamlDiagram/jsonDiagram's two (plantuml.skin:
  * 457-459). Module-level cache: pure in its key (the embedded skin text is a
@@ -289,7 +289,8 @@ function skinLegendDeclarations(styleName: SName): ReadonlyMap<string, string> {
   for (const name of PNAMES) {
     if (scoped === undefined || !scoped.hasValue(name)) continue;
     const value = scoped.value(name);
-    if (base?.hasValue(name) === true && base.value(name).getPriority() === value.getPriority()) continue;
+    if (base?.hasValue(name) === true && base.value(name).getSpecificity().compareTo(value.getSpecificity()) === 0)
+      continue;
     const text = value.asString();
     if (text !== null) declarations.set(name.toLowerCase(), text);
   }

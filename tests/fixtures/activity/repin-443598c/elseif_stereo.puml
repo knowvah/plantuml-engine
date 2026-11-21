@@ -1,0 +1,9 @@
+@startuml
+if (c?) then (yes)
+  :A;
+elseif (d?) then (yes) <<#palegreen>>
+  :B;
+else (no)
+  :C;
+endif
+@enduml

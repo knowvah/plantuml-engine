@@ -33,12 +33,19 @@ describe('CommandRepeat3: `repeat` then spaceZeroOrMore', () => {
     expect(ast.nodes[1]).toMatchObject({ kind: 'repeat', entry: { kind: 'action', label: 'B' } });
   });
 
-  it('ColorParser.exp4: `#red:repeat` parses and warns, the colour ignored', () => {
+  it('ColorParser.exp4: `#red:repeat` parses and warns, the colour ignored (CommandRepeat3.java:126-131)', () => {
     const ast = parsed(['#red:repeat', ':x;', 'repeat while (C)']);
     expect(ast.nodes[0]).toMatchObject({ kind: 'repeat' });
     expect(ast.nodes[0]).not.toHaveProperty('color');
     expect(activityWarnings(ast).map((w) => w.asSingleLine())).toEqual([
-      "This syntax is deprecated, you must add <<#red>> at the end of the line, after the ';'",
+      "This syntax is deprecated and the color is ignored: write 'repeat <<#red>>' instead of '#red:repeat'",
+    ]);
+  });
+
+  it('names the raw `:LABEL;` in the rewritten head (CommandRepeat3.java:127-128)', () => {
+    const ast = parsed(['#red:repeat :R a;', ':x;', 'repeat while (C)']);
+    expect(activityWarnings(ast).map((w) => w.asSingleLine())).toEqual([
+      "This syntax is deprecated and the color is ignored: write 'repeat :R a; <<#red>>' instead of '#red:repeat :R a;'",
     ]);
   });
 });
@@ -65,19 +72,26 @@ describe('CommandActivityLong3: the leading COLOR of a multi-line activity', () 
     ]);
   });
 
-  it('fuficu-36: `#green:Activity 1;` opens a block the NEXT `;` line closes', () => {
+  // 443598c29ce gave CommandActivity3 a leading COLOR (`CommandActivity3.java:68`), registered before
+  // CommandActivityLong3 (`ActivityDiagramFactory3.java:117,159`): a one-line `#c:label;` is now a single action.
+  it('fuficu-36: `#green:Activity 1;` is one single-line action, colour ignored with its warning', () => {
     const ast = parsed(['#green:Activity 1;', ':Activity 2; <<redactivity>>', 'stop']);
-    expect(ast.nodes[0]).toMatchObject({
-      kind: 'action',
-      label: 'Activity 1;\n:Activity 2',
-      stereotype: 'redactivity',
-    });
-    expect(ast.nodes[1]).toMatchObject({ kind: 'stop' });
+    expect(ast.nodes[0]).toMatchObject({ kind: 'action', label: 'Activity 1' });
+    expect(ast.nodes[0]).not.toHaveProperty('color');
+    expect(ast.nodes[1]).toMatchObject({ kind: 'action', label: 'Activity 2', stereotype: 'redactivity' });
+    expect(ast.nodes[2]).toMatchObject({ kind: 'stop' });
+    expect(activityWarnings(ast).map((w) => w.asSingleLine())).toEqual([
+      "This syntax is deprecated and the color is ignored: write ':Activity 1; <<#green>>' instead of '#green:Activity 1;'",
+    ]);
   });
 
-  it('`#red:a;` alone is still refused (the first line is never tested against END)', () => {
-    const r = parseActivity({ lines: ['start', '#red:a;', 'stop'], type: 'activity' });
-    expect('refused' in r).toBe(true);
+  it('a stereotype before the `:` is ignored with its warning, ahead of the colour one (CommandActivity3.java:136-144)', () => {
+    const ast = parsed(['#red <<foo>> :a; <<save>>']);
+    expect(ast.nodes[0]).toMatchObject({ kind: 'action', label: 'a', stereotype: 'save' });
+    expect(activityWarnings(ast).map((w) => w.asSingleLine())).toEqual([
+      "The stereotype <<foo>> before the ':' is ignored: write ':a; <<foo>>' instead",
+      "This syntax is deprecated and the color is ignored: write ':a; <<#red>>' instead of '#red:a;'",
+    ]);
   });
 });
 

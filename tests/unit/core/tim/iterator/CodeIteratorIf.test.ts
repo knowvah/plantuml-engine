@@ -25,25 +25,40 @@ describe('CodeIteratorIf orphan directives (SI6: an error, as upstream has it)',
   });
 });
 
-describe('CodeIteratorIf — an UNCLOSED !ifdef is NOT an orphan directive', () => {
-  // The two cases must not be conflated. An orphan `!endif` errors; an `!ifdef`
-  // left unclosed at EOF is TOLERATED by the jar and renders normally (verified
-  // against the oracle, and on pdiff fixture buveco-86-tibo673 -- itself a
-  // PlantUML bug report, forum.plantuml.net/6808). Nothing in
-  // `getRequiredIfContext` can fire for it: the unclosed context stays ON the
-  // if-stack, so no directive ever finds the stack empty.
-  it('a TRUE unclosed !ifdef executes its body and does not throw', () => {
+describe('CodeIteratorIf — an !if left open at the end of the body (CodeIteratorIf.java:75-80)', () => {
+  // Since upstream 0537b558644 the iterator keeps its own stack of the !if/!ifdef/!ifndef lines it opened
+  // and throws at the end of the body for the last one still open; the old jar tolerated it. The jar's
+  // render of pdiff buveco-86-tibo673 (forum.plantuml.net/6808) is now the `!ifdef without !endif` page.
+  it('a TRUE unclosed !ifdef throws !ifdef without !endif on that line', () => {
+    const open = line('!ifdef FOO', 'IFDEF');
+    expect(() => runBody([line('!define FOO', 'AFFECTATION_DEFINE'), open, line('!$x = 1', 'AFFECTATION')])).toThrow(
+      '!ifdef without !endif',
+    );
+  });
+
+  it('a FALSE unclosed !ifndef throws too, naming its keyword', () => {
+    expect(() => runBody([line('!ifndef NEVER', 'IFNDEF'), line('!$x = 1', 'AFFECTATION')])).toThrow(
+      '!ifndef without !endif',
+    );
+  });
+
+  it('reports the innermost line left open; a closed nested !if does not count', () => {
+    const body = [
+      line('!if 1', 'IF'),
+      line('!ifdef A', 'IFDEF'),
+      line('!endif', 'ENDIF'),
+      line('!$x = 1', 'AFFECTATION'),
+    ];
+    expect(() => runBody(body)).toThrow('!if without !endif');
+  });
+
+  it('a balanced body does not throw', () => {
     const { memory } = runBody([
-      line('!define FOO', 'AFFECTATION_DEFINE'),
-      line('!ifdef FOO', 'IFDEF'),
+      line('!ifdef NEVER', 'IFDEF'),
+      line('!endif', 'ENDIF'),
       line('!$x = 1', 'AFFECTATION'),
     ]);
     expect(memory.getVariable('$x')?.toString()).toBe('1');
-  });
-
-  it('a FALSE unclosed !ifdef suppresses the rest of the document and does not throw', () => {
-    const { memory } = runBody([line('!ifdef NEVER', 'IFDEF'), line('!$x = 1', 'AFFECTATION')]);
-    expect(memory.getVariable('$x')).toBeUndefined();
   });
 });
 

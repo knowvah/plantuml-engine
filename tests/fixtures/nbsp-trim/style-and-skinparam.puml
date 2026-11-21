@@ -1,0 +1,12 @@
+@startuml
+<style>
+ classDiagram {
+  class {
+   BackgroundColor pink 
+  }
+ }
+</style>
+ skinparam classBorderColor blue 
+ title A title 
+class A
+@enduml

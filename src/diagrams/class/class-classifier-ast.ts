@@ -9,6 +9,7 @@ import type { JsonNode } from '../../core/command/JsonNode.js';
 import type { UrlInfo } from './class-url.js';
 import type { MapRow } from './ast.js';
 import type { ObjectStyleScope } from './class-object-style.js';
+import type { StereotypeFontValues } from './class-stereotype-style.js';
 import type { DisplayPositioned } from '../../core/annotations/index.js';
 import type { LeafSizingStereotypeSprite } from '../../core/svek/image/LeafSizingSubject.js';
 
@@ -51,6 +52,8 @@ export interface Classifier {
   stereotype?: string;
   /** A collapsed group's corner, `EntityImageEmptyPackage.java:104` off the merged style (`class-cluster-corner.ts`). */
   emptyLeafRoundCorner?: number;
+  /** A collapsed group's title wrap width, `EntityImageEmptyPackage.java:118-119` (`class-cluster-corner.ts`). */
+  emptyLeafTitleWrapWidth?: number;
   /**
    * G2 N24: the classifier's stereotype, split into individual labels and
    * filtered through `hide|show [<<pattern>>] stereotype(s)` directives
@@ -209,6 +212,8 @@ export interface Classifier {
   stateShadowing?: number;
   /** odd T2a: what an `object`/`map`/`json` image asks its merged styles (`class-object-style.ts`). */
   objectStyle?: ObjectStyleScope;
+  /** The `<<stereotype>>` label's `stereotype` style (`class-stereotype-style.ts`, upstream 53fba993513/e7e3d8063b5). */
+  stereotypeFont?: StereotypeFontValues;
   /** cdd-T3 (A1 SB3): standalone rank of the DOUBLE-couple `apoint` NAME tick, which upstream burns two ranks
    *  BEFORE the point entity (`objectdiagram/AbstractClassOrObjectDiagram.java:120-129`) -- so {@link phantomSlot}'s
    *  "rank at `creationIndex - 1`" encoding cannot express it. Single couples (`:226-231`) keep `phantomSlot`. */

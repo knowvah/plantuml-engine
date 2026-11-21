@@ -19,6 +19,7 @@ import { FormulaMeasurer } from '../../../src/core/measurer.js';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
 import { assembleSvg, renderSync } from '../../../src/index.js';
 import { parseAst } from '../../helpers/parse-ast.js';
+import { SecurityProfile } from '../../../src/core/security/SecurityProfile.js';
 
 const measurer = new FormulaMeasurer();
 const theme = defaultTheme;
@@ -27,8 +28,12 @@ function makeSource(lines: string[]): UmlSource {
   return { type: 'dot', lines };
 }
 
+/** INSECURE: the default LEGACY profile suppresses graphviz's SVG
+ *  (`PSystemDot.java:77-84`, `tests/unit/dot/suppression.test.ts`). */
+const INSECURE = { securityProfile: SecurityProfile.INSECURE };
+
 function renderFull(source: UmlSource): string {
-  const ast = parseAst(dotPlugin, source);
+  const ast = parseAst(dotPlugin, source, INSECURE);
   const geo = dotPlugin.layoutSync(ast, theme, measurer);
   return assembleSvg(dotPlugin.render(geo, theme));
 }
@@ -72,7 +77,8 @@ describe('dotPlugin — output shape', () => {
   });
 
   it("emits graphviz's document verbatim through the real entry point when there is no chrome", () => {
-    const svg = renderSync(DOC.join('\n'));
+    const svg = renderSync(DOC.join('\n'), INSECURE);
+    expect(svg).toContain('id="graph0"');
     expect(svg.startsWith('<?xml')).toBe(true);
     expect(svg).not.toContain('<marker');
   });

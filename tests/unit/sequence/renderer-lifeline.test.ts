@@ -75,6 +75,7 @@ const WHOLE_LIFELINE: LifelineSegment = { y1: HEAD_HEIGHT, y2: 178, delay: false
 function participant(over: Partial<ParticipantGeo> = {}): ParticipantGeo {
   const base: ParticipantGeo = {
     id: 'A',
+    uid: 'part1',
     display: 'A',
     type: 'participant',
     x: 10,

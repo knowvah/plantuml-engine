@@ -8,8 +8,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
-  addPriorityForStereotype,
-  DELTA_PRIORITY_FOR_STEREOTYPE,
+  addStereotypeCount,
   getInputStreamForStyle,
   getMissingRootProperties,
   loadSkin,
@@ -19,6 +18,7 @@ import { BUILTIN_SKINS } from '../../../../src/core/skins-builtin.js';
 import { PLANTUML_SKIN, STRICTUML_SKIN } from '../../../../src/core/style/skins/plantuml-skin.js';
 import { Style } from '../../../../src/core/style/Style.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import type { PName } from '../../../../src/core/style/PName.js';
 import type { Value } from '../../../../src/core/style/Value.js';
@@ -33,15 +33,15 @@ function jarStorage(name: string): unknown {
 }
 
 describe('StyleLoader.loadSkin', () => {
-  it('plantuml.skin: the jar storage, in order, with every priority (126 styles)', () => {
+  it('plantuml.skin: the jar storage, in order, with every priority (138 styles)', () => {
     const storage = dumpStorage(loadSkin('plantuml.skin'));
-    expect(storage).toHaveLength(126);
+    expect(storage).toHaveLength(138);
     expect(storage).toEqual(skinStorageDump());
   });
 
-  it('plantuml.skin leaves the counter where the jar does: the first user value is 326', () => {
-    // corpus cejije-94-xibi793: `:depth(2) * { FontColor red ... }` stores FontColor at 326
-    expect(loadSkin('plantuml.skin').getNextInt()).toBe(326);
+  it('plantuml.skin leaves the counter where the jar does: the first user value is 344', () => {
+    // corpus cejije-94-xibi793: `:depth(2) * { FontColor red ... }` stores FontColor at 344
+    expect(loadSkin('plantuml.skin').getNextInt()).toBe(344);
   });
 
   it('debug.skin: the jar storage of `skin debug`', () => {
@@ -53,10 +53,13 @@ describe('StyleLoader.loadSkin', () => {
     first.getNextInt();
     first.loadInternal(
       StyleSignatureBasic.of('root'),
-      new Style(StyleSignatureBasic.of('root'), new Map<PName, Value>([['FontColor', ValueImpl.regular('red', 999)]])),
+      new Style(
+        StyleSignatureBasic.of('root'),
+        new Map<PName, Value>([['FontColor', ValueImpl.regular('red', Specificity.atOrder(999))]]),
+      ),
     );
     const second = loadSkin('plantuml.skin');
-    expect(second.getNextInt()).toBe(326);
+    expect(second.getNextInt()).toBe(344);
     expect(dumpStorage(second)).toEqual(skinStorageDump());
   });
 
@@ -105,18 +108,17 @@ describe('StyleLoader.getMissingRootProperties', () => {
   });
 });
 
-describe('StyleLoader.addPriorityForStereotype', () => {
-  it('lifts every value by DELTA_PRIORITY_FOR_STEREOTYPE = 1000 (StyleLoader.java:178-185)', () => {
-    expect(DELTA_PRIORITY_FOR_STEREOTYPE).toBe(1000);
+describe('StyleLoader.addStereotypeCount', () => {
+  it('sets every value to require `count` stereotypes, the order kept (StyleLoader.java:211-217)', () => {
     const map = new Map<PName, Value>([
-      ['FontColor', ValueImpl.regular('red', 7)],
-      ['LineColor', ValueImpl.regular('blue', 9)],
+      ['FontColor', ValueImpl.regular('red', Specificity.atOrder(7))],
+      ['LineColor', ValueImpl.regular('blue', Specificity.atOrder(9))],
     ]);
-    const lifted = addPriorityForStereotype(map);
-    expect([...lifted.entries()].map(([k, v]) => [k, v.getPriority()])).toEqual([
-      ['FontColor', 1007],
-      ['LineColor', 1009],
+    const lifted = addStereotypeCount(map, 2);
+    expect([...lifted.entries()].map(([k, v]) => [k, v.getSpecificity().toString()])).toEqual([
+      ['FontColor', '7,stereo=2'],
+      ['LineColor', '9,stereo=2'],
     ]);
-    expect(map.get('FontColor')?.getPriority()).toBe(7);
+    expect(map.get('FontColor')?.getSpecificity().toString()).toBe('7');
   });
 });

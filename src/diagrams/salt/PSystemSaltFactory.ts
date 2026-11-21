@@ -5,10 +5,11 @@ import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
 import { buildMindmapStyleBuilder } from '../../core/style/mindmap-style-builder.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 import { COMMAND_ANYTHING_PATTERN, executeArg } from './CommandAnything.js';
 import { PSystemSalt } from './PSystemSalt.js';
 
@@ -30,15 +31,6 @@ const PAGE = /^page[ \t\n\x0B\f\r ]+(\d+)[ \t\n\x0B\f\r ]*x[ \t\n\x0B\f\r ]*(
  */
 const NAMESPACE_SEPARATOR =
   /^set[ \t\n\x0B\f\r ]+(?:separator|namespaceseparator)[ \t\n\x0B\f\r ]+((?:none|null)|[\\]{2}|::|[^\p{L}\p{N} \t\n\x0B\f\r _$#\\{}<>"“”])$/iu;
-
-/** `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by the
- *  lower-cased skin parameter name.
- *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /** A hand-built source's style sources: no skin, no skinparam, no style. */
 const EMPTY_STYLE_SOURCE: NonNullable<UmlSource['styleSource']> = { skinparam: new Map(), styles: [] };
@@ -110,9 +102,9 @@ function executeCommands(diagram: PSystemSalt, source: UmlSource): ParseRefusal 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, one per collected
  *  skinparam, in source order (`MindMapDiagramFactory.ts#addSkinParamWarnings`). */
 function addSkinParamWarnings(diagram: PSystemSalt, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 

@@ -44,7 +44,7 @@ import { getNestedDiagramRenderer } from '../../core/nested-diagram-registry.js'
 import type { Pragma } from '../../core/skin/Pragma.js';
 import { getSprite, type SpriteRegistry } from '../../core/sprite-registry.js';
 import { cleanForKeySlow, type SkinParam as StyleSkinParam } from '../../core/style/mindmap-style-builder.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import type { Stereotype } from '../../core/stereo/Stereotype.js';

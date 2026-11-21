@@ -11,10 +11,11 @@
  *    `AtomText#getWidth`'s tab-stop walk (`*-tab-key`).
  *  - minimal-json `JsonObject#add` appends, never dedups
  *    (`JsonObject.java:337-348`), in source order: json (`Json.java:377-378`)
- *    and hcl fields (`HclParser.java:123-148`) keep duplicates; yaml's
- *    `LinkedHashMap` (`Monomorph.java:103-111`) and hcl's top-level module
- *    map (`HclParser.java:61-75`) collapse them, last value at first position
- *    (`*-dup-*`, `*-int-keys`).
+ *    and hcl fields (`HclParser.java:123-148`) keep duplicates; hcl's
+ *    top-level module map (`HclParser.java:61-75`) collapses them, last value
+ *    at first position (`*-dup-*`, `*-int-keys`). yaml refuses a repeated key
+ *    (`Monomorph.java:110-111`, 0537b558644): `yaml-dup-key` is the "does not
+ *    sound like YAML data" page.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';

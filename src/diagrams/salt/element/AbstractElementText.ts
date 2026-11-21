@@ -8,7 +8,7 @@ import type { TextBlock } from '../../../core/klimt/shape/TextBlock.js';
 import type { FontConfiguration } from '../../../core/klimt/shape/UText.js';
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
 import { UTranslate } from '../../../core/klimt/UTranslate.js';
-import { trin } from '../../../core/style/parser/StyleParser.js';
+import { trin } from '../../../core/string-utils-trim.js';
 import type { ISkinSimple } from '../../../core/style/ISkinSimple.js';
 import { atomOpsFor } from '../SaltDictionary.js';
 import { AbstractElement } from './AbstractElement.js';

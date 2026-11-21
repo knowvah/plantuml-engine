@@ -9,10 +9,12 @@
  * `--families` tally or `DIVERGENCES.md` on 2026-11-03
  * (`plans/parity-dashboard-repair/measurements/note-audit.md`); a row's
  * sentence says what was measured, and "not yet diagnosed" where nothing more
- * is known. A row that reaches conformant has no entry (gantt, mindmap,
+ * is known. A row that reaches conformant has no entry (gantt,
  * ...): an entry for it would be dead. Rows re-audited against the
  * 2026-11-04 numbers after #109's capture:
- * `plans/oracle-gap-capture/measurements/note-audit.md`.
+ * `plans/oracle-gap-capture/measurements/note-audit.md`. The re-pin to a720bdd
+ * (2026-11-21) re-wrote the rows its survey moved; each loss is a Python row
+ * (#214) or a formula row (DIVERGENCES.md), checked against that survey.
  */
 
 type NoteClass = 'smetana' | 'notBuilt' | 'openDefect' | 'mixed' | 'jarDeclines';
@@ -92,17 +94,20 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   activity: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: the 5 rows short of conformant are named. Three are LaTeX under KaTeX and one is a QR ' +
-      "code under the MIT edition (DIVERGENCES.md); `rekefe-90` prints this port's version from `%version()`, a " +
-      'signed divergence (#155, `oracle/accepted-divergences.json`). The legacy `(*) -->` syntax is drawn by the ' +
-      'legacy activity engine (#123), pinned in `svg-activity-legacy`.',
+      'Not a regression: the 21 rows short of conformant are named. The a720bdd re-pin (2026-11-20) moved 16: six ' +
+      'carry a `!t="…"` line the jar now runs as Python (#214) (bineki, bucoru, lidumi, liteta, nisigo, nupiko) and ten a formula ' +
+      'the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine) (cepivu, fonusa, gakodi, pedulu, racose, ruveji, sipifu, tecimi, xataku, zatujo). ' +
+      'Before it: three LaTeX rows under KaTeX (bigobe, xexuxu, xuzovi), one QR code under the MIT edition ' +
+      "(nomave), and `rekefe-90`, which prints this port's version from `%version()`, a signed divergence (#155, " +
+      '`oracle/accepted-divergences.json`). The legacy `(*) -->` syntax is drawn by the legacy activity engine ' +
+      '(#123), pinned in `svg-activity-legacy`.',
   },
   class: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: all 43 rows short of conformant are fixtures #109 captured on 2026-11-04. The layout ' +
-      'matches on most of them (layoutEqual 641 of 664); the first differences are element ids, strokes, font ' +
-      'sizes and fills, not yet diagnosed row by row.',
+      'Not a regression: 3 rows short of conformant. `delaja-41` and `xonoru-58` carry lines the jar now runs as Python (#214) ' +
+      '(the a720bdd re-pin, 2026-11-20); `vanadi` is a structural match #109 captured on 2026-11-04, not yet ' +
+      'diagnosed.',
   },
   dot: {
     noteClass: 'openDefect',
@@ -111,9 +116,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   sequence: {
     noteClass: 'openDefect',
     detail:
-      'Not a regression: all 9 rows short of conformant are fixtures #109 captured on 2026-11-04. One draws our ' +
-      'error page where PlantUML draws a diagram (`partition` as a grouping keyword, which we do not parse); the ' +
-      'rest differ in a title child count, a dash pattern and path data.',
+      'Not a regression: the 11 rows short of conformant all moved at the a720bdd re-pin (2026-11-20). Nine carry ' +
+      'a `!name = …` line the jar now runs as Python (#214) (femixi, fidoba, gugena, gunabi, joleka, jorari, sarico, supezo, ' +
+      'vodiba) and two a formula the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine) (camuxi, mefeke).',
   },
   c4: {
     noteClass: 'jarDeclines',
@@ -126,8 +131,9 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
   component: {
     noteClass: 'openDefect',
     detail:
-      'description-divergence-drive (#113, 2026-11-04) took all 51 open rows to conformant, the LaTeX fixtures ' +
-      'included: only the image bytes differ, and the comparer exempts them.',
+      'description-divergence-drive (#113, 2026-11-04) took all 51 open rows to conformant. The a720bdd re-pin ' +
+      '(2026-11-20) moved five: `pegali-65` carries a line the jar now runs as Python (#214), and gevozu, kezodo, sunuju and ' +
+      'vimulo draw a formula the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine), which also changes the shape fitted around it.',
   },
   object: {
     noteClass: 'openDefect',
@@ -139,14 +145,21 @@ const ROW_NOTES: Readonly<Record<string, RowNote>> = {
     noteClass: 'openDefect',
     detail:
       'state-divergence-drive (#112, 2026-11-04) took the 174 open rows to 2, and the border-point anchor fix ' +
-      '(graphviz issue 39, reclassified as ours) closed `viroxo-69-fito663`: 298 of 299 conformant. ' +
-      '`xetase-70-zaza808` is a `{{ }}` edge label the flat creole seam cannot embed (#144, chained on #136).',
+      '(graphviz issue 39, reclassified as ours) closed `viroxo-69-fito663`; `xetase-70-zaza808` conforms since. The a720bdd re-pin ' +
+      '(2026-11-20) moved two: corumi and gupeto draw a formula the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine).',
   },
   usecase: {
     noteClass: 'openDefect',
     detail:
       'description-divergence-drive (#113, 2026-11-04) took 23 of the 24 open rows to conformant. `fepuvo-06` cannot ' +
-      "be compared because the jar's comment is not well-formed; with comments stripped it has zero diffs.",
+      "be compared because the jar's comment is not well-formed; with comments stripped it has zero diffs. " +
+      '`zoriso-46` carries a line the jar now runs as Python (#214) (the a720bdd re-pin, 2026-11-20).',
+  },
+  mindmap: {
+    noteClass: 'openDefect',
+    detail:
+      'The 2 rows short of conformant moved at the a720bdd re-pin (2026-11-20): fovule and gukofo draw a formula ' +
+      'the jar now draws as JLaTeXMath glyph paths and we as a KaTeX image (DIVERGENCES.md, LaTeX rendering engine).',
   },
   // The `unknown` sentence is generated from the survey (`unknownDetail`, D4
   // of plans/parity-dashboard-repair) and passed to `notesSection`.

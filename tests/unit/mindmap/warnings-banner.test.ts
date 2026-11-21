@@ -67,17 +67,21 @@ function rootSize(svg: string): string {
 describe('CommandSkinParam warnings (CommandSkinParam.java:92-99)', () => {
   const body = '* root\n** first\n@endmindmap\n';
 
-  it('skinparam handwritten adds the deprecation warning, whatever its value', () => {
-    const expected = ["Please use '!option handwritten true' to enable handwritten "];
-    expect(warningLines(`@startmindmap\nskinparam handwritten true\n${body}`)).toEqual(expected);
-    expect(warningLines(`@startmindmap\nskinparam HANDWRITTEN false\n${body}`)).toEqual(expected);
+  it('skinparam handwritten adds the deprecation warning, naming its value', () => {
+    const text = (v: string) => `'skinparam handwritten' is deprecated: write '!option handwritten ${v}' instead`;
+    expect(warningLines(`@startmindmap\nskinparam handwritten true\n${body}`)).toEqual([text('true')]);
+    expect(warningLines(`@startmindmap\nskinparam HANDWRITTEN false\n${body}`)).toEqual([text('false')]);
   });
 
-  it('skinparam ParticipantPadding and padding add their CSS warnings, in source order', () => {
+  it('skinparam ParticipantPadding adds its style block; padding no longer warns (CommandSkinParam.java:102-107)', () => {
     const source = `@startmindmap\nskinparam padding 3\nskinparam ParticipantPadding 4\n${body}`;
     expect(warningLines(source)).toEqual([
-      'Please use CSS style instead of skinparam padding',
-      'Please use CSS style instead of skinparam ParticipantPadding',
+      "'skinparam ParticipantPadding' is ignored: use a style instead",
+      '<style>',
+      'participant {',
+      '  Padding 4',
+      '}',
+      '</style>',
     ]);
   });
 
@@ -90,9 +94,9 @@ describe('handwritten export with the warnings banner (zature-18-vidu755)', () =
   const { markup, golden } = fixture('zature-18-vidu755');
   const ours = renderSync(markup, { measurer });
 
-  it('grows the canvas by the banner (+90 x +20 at dpi 96)', () => {
+  it('grows the canvas by the banner (+168 x +20 at dpi 96)', () => {
     expect(rootSize(ours)).toBe(rootSize(golden));
-    expect(rootSize(ours)).toBe('302px | 149px | 0 0 302 149'); // zature-18-vidu755 in.svg (re-captured, seam #4 v2)
+    expect(rootSize(ours)).toBe('380px | 149px | 0 0 380 149'); // zature-18-vidu755 in.svg (1.2026.11beta1 text)
   });
 
   it('draws the banner and every node/link as the golden hand shapes', () => {
@@ -103,7 +107,7 @@ describe('handwritten export with the warnings banner (zature-18-vidu755)', () =
   it('draws the banner line in monospace 10 at (20, 22)', () => {
     expect(textTags(ours)).toEqual(textTags(golden));
     expect(textTags(ours)[0]).toBe(
-      '<text x="20" y="22" fill="#000" font-size="10" textLength="258.813" font-family="monospace">',
+      '<text x="20" y="22" fill="#000" font-size="10" textLength="339.813" font-family="monospace">',
     );
   });
 });

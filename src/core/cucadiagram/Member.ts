@@ -3,6 +3,8 @@ import { manageGuillemet } from '../text/Guillemet.js';
 import type { Url } from '../url/Url.js';
 import { UrlBuilder, getRegexp, transform } from '../url/UrlBuilder.js';
 import { UrlMode } from '../url/UrlMode.js';
+import { trin } from '../string-utils-trim.js';
+import { javaTrim } from '../java-number-format.js';
 
 /**
  * Member — one field or method line of a class/object body: the raw line
@@ -37,18 +39,6 @@ import { UrlMode } from '../url/UrlMode.js';
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/cucadiagram/Member.java
  */
-
-/** `StringUtils.trin` (StringUtils.java:502-520) — trims only chars whose
- *  code unit is <= U+0020, both ends. Duplicated locally per established
- *  precedent (`BodyEnhanced2.ts`'s own copy and its stated rationale: no
- *  shared `StringUtils.ts` owner exists in this port). */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
 
 /** `StringUtils.goLowerCase` — `toLowerCase(Locale.ENGLISH)`.
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/StringUtils.java (goLowerCase) */
@@ -133,7 +123,9 @@ export class Member {
       this.staticModifier = lower.includes('{static}') || lower.includes('{classifier}');
       this.abstractModifier = lower.includes('{abstract}');
 
-      let displayClean = tmpDisplay.replace(REMOVE_STATIC_CLASSIFIER_ABSTRACT_PATTERN, '').trim();
+      // `String#trim` (Member.java:127-128), not JS `trim` nor `StringUtils.trin`: a leading U+00A0 stays,
+      // so it hides the visibility character.
+      let displayClean = javaTrim(tmpDisplay.replace(REMOVE_STATIC_CLASSIFIER_ABSTRACT_PATTERN, ''));
 
       if (displayClean.length === 0) displayClean = ' ';
 

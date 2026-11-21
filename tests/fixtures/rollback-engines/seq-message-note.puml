@@ -1,0 +1,7 @@
+@startuml
+Alice -> Bob : <math>glb x</math>
+note over Alice : <math>glb x</math>
+note right of Bob
+before <latex>\glb{x}</latex>
+end note
+@enduml

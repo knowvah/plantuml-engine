@@ -116,7 +116,7 @@ interface Dim {
  *  Oscillator 1.583333x1.083333in == golden exact).
  * @see ~/git/plantuml/.../klimt/creole/legacy/AtomText.java:179-181
  */
-function stereoLineHeight(fontSize: number): number {
+export function stereoLineHeight(fontSize: number): number {
   return Math.max(fontSize, 10);
 }
 

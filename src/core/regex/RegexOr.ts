@@ -2,11 +2,12 @@
  * `RegexOr` -- the alternation of its children, one capture group when it is named (`arg.get(name, 0)` is then the
  * whole alternative, or `undefined` when the `or` did not take part).
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexOr.java:43-97
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexOr.java:42-91
  */
 import type { IRegex } from './IRegex.js';
 import { RegexComposed } from './RegexComposed.js';
 import { RegexPartialMatch } from './RegexPartialMatch.js';
+import type { RegexResult } from './RegexResult.js';
 
 export class RegexOr extends RegexComposed {
   private readonly name: string | undefined;
@@ -37,20 +38,19 @@ export class RegexOr extends RegexComposed {
     return 1;
   }
 
-  /** The named group comes first, then the children's. @see RegexOr.java:77-88 */
-  override createPartialMatch(it: Iterator<string | undefined>): Map<string, RegexPartialMatch> {
+  /** This node's own group comes before its children's, and its own entry is added after theirs. @see RegexOr.java:74-85 */
+  override fillPartialMatch(it: Iterator<string | undefined>, result: RegexResult): void {
     // Java's `name == null ? null : it.next()`: an unnamed `or` is `(?:` and owns no group.
     const fullGroup = this.name === undefined ? undefined : (it.next().value as string | undefined);
-    const result = super.createPartialMatch(it);
+    super.fillPartialMatch(it, result);
     if (this.name !== undefined) {
-      const m = new RegexPartialMatch(this.name);
+      const m = new RegexPartialMatch(1);
       m.add(fullGroup);
-      result.set(this.name, m);
+      result.add(this.name, m);
     }
-    return result;
   }
 
-  /** @see RegexOr.java:90-92 */
+  /** @see RegexOr.java:87-89 */
   override match(_s: string): boolean {
     throw new Error('UnsupportedOperationException');
   }

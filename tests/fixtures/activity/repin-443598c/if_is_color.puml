@@ -1,0 +1,7 @@
+@startuml
+#red:if (c?) is (v) then
+  :A;
+else (no)
+  :B;
+endif
+@enduml

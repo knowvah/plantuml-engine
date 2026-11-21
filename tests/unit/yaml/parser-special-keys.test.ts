@@ -53,7 +53,7 @@ describe('YAML parser — special keys', () => {
   });
 
   it('does not throw on unusual input — returns null root for NO_KEY_ONLY_TEXT at root', () => {
-    // parseYaml catches YamlSyntaxError internally; root becomes null
+    // parseYaml catches YamlSyntaxException internally; root becomes null
     expect(parse(['just plain text without colon'])).toBeNull();
   });
 });

@@ -79,7 +79,7 @@ describe('ChartRenderer frame (T3a)', () => {
       'bar [30]',
     );
     expect(svg).toContain('textLength="29.575">Poor</text>');
-    expect(svg).toContain('<text x="3.125" y="63.889" fill="#000" font-size="14" textLength="56.875">Excellent</text>');
+    expect(svg).toContain('<text x="36" y="63.889" fill="#000" font-size="14" textLength="56.875">Excellent</text>');
     expect(svg).not.toContain('Skipped');
   });
 
@@ -113,18 +113,19 @@ describe('ChartRenderer frame (T3a)', () => {
     expect(svg).toContain('x="70" y="80" width="300" height="60"');
   });
 
-  it('a v-axis grid steps range / 10, whatever drawYAxis ticks at', () => {
+  it('a v-axis grid draws on the five ticks only (781d73f9b1f)', () => {
     const svg = draw('h-axis [Q1]', 'v-axis 0 --> 100 grid');
-    expect(svg).toContain(line(70, 330, 470, 330));
+    expect(svg).not.toContain(line(70, 330, 470, 330));
+    expect(svg).toContain(line(70, 300, 470, 300));
     expect(svg).toContain(line(70, 60, 470, 60));
   });
 
-  it('an h-axis grid draws at category centres and on the numeric walk', () => {
+  it('an h-axis grid draws once at each category centre (781d73f9b1f)', () => {
     const svg = draw('h-axis [A, B] grid', 'v-axis -10 --> 10');
-    expect(svg).toContain(line(170, 210, 170, 60));
-    expect(svg).toContain(line(170, 210, 170, 360));
-    expect(svg).toContain(line(70, 60, 70, 360));
-    expect(svg).toContain(line(110, 60, 110, 360));
+    expect(svg).toContain(line(170, 60, 170, 360));
+    expect(svg).toContain(line(370, 60, 370, 360));
+    expect(svg).not.toContain(line(170, 210, 170, 60));
+    expect(svg).not.toContain(line(110, 60, 110, 360));
   });
 
   it('numeric h-axis labels use %.1f, an exponent when small', () => {
@@ -169,10 +170,12 @@ describe('series (T3b)', () => {
     );
   });
 
-  it('a scatter loses its explicit colour, as fosoma-37, and bars draw first', () => {
+  it('a scatter takes its explicit colour (c7e65a2d642), and bars draw first', () => {
     const svg = draw(...FOSOMA);
-    expect(svg).toContain('<ellipse cx="120" cy="216" rx="4" ry="4" fill="#000" style="stroke:#000;stroke-width:1;"/>');
-    expect(svg).toContain('<ellipse cx="486" cy="124" rx="4.2" ry="4.2" fill="#000"');
+    expect(svg).toContain(
+      '<ellipse cx="120" cy="216" rx="4" ry="4" fill="#9B59B6" style="stroke:#9B59B6;stroke-width:1;"/>',
+    );
+    expect(svg).toContain('<ellipse cx="486" cy="124" rx="4.2" ry="4.2" fill="#9B59B6"');
     expect(svg.indexOf('<rect')).toBeLessThan(svg.indexOf('stroke:#E74C3C;stroke-width:2'));
     expect(svg.indexOf('stroke:#E74C3C;stroke-width:2')).toBeLessThan(svg.indexOf('<ellipse'));
   });
@@ -207,11 +210,53 @@ describe('series (T3b)', () => {
     expect(svg).toContain(line(70, 210, 470, 210));
   });
 
-  it('a zero bar is skipped when single; grouped and horizontal reach URectangle.java:140-144 and throw', () => {
+  it('a zero bar is skipped, single, grouped, stacked or horizontal (5808a1c3f9a, 2117ccb43cd)', () => {
     expect(draw('h-axis [A]', 'bar [0]')).not.toContain('<rect');
-    expect(() => draw('h-axis [A]', 'bar [0]', 'bar [0]')).toThrow('height=0');
-    expect(() => draw('h-axis [A]', 'bar [0]', 'bar [0]', 'stackMode stacked')).toThrow('height=0');
-    expect(() => draw('orientation horizontal', 'v-axis [A]', 'h-axis 0 --> 10', 'bar [0]')).toThrow('width=0');
+    expect(draw('h-axis [A]', 'bar [0]', 'bar [0]')).not.toContain('<rect');
+    expect(draw('h-axis [A]', 'bar [0]', 'bar [0]', 'stackMode stacked')).not.toContain('<rect');
+    expect(draw('orientation horizontal', 'v-axis [A]', 'h-axis 0 --> 10', 'bar [0]')).not.toContain('<rect');
+    expect(draw('orientation horizontal', 'v-axis [A]', 'bar [0]', 'bar [0]')).not.toContain('<rect');
+    expect(draw('orientation horizontal', 'v-axis [A]', 'bar [0]', 'bar [0]', 'stackMode stacked')).not.toContain(
+      '<rect',
+    );
+  });
+
+  it('horizontal bars go from 0 to their value, grouped or stacked (6ef6ba87046)', () => {
+    const negative = draw('orientation horizontal', 'v-axis [A]', 'bar [-12, 0] #ff0000', 'bar [8] #00ff00');
+    expect(negative).toContain('fill="#F00"');
+    expect(negative).toContain('fill="#0F0"');
+    const stacked = draw(
+      'orientation horizontal',
+      'v-axis [A]',
+      'bar [5] labels',
+      'bar [-3] labels',
+      'stackMode stacked',
+    );
+    expect(stacked).toContain('>5</text>');
+    expect(stacked).toContain('>-3</text>');
+    expect(draw('orientation horizontal', 'v-axis [A]', 'bar [5] labels', 'bar [3]')).toContain('>5</text>');
+  });
+
+  it('series are drawn in source order, each run of bars at its place (8962a60262c, e12b4ccaa3c)', () => {
+    const svg = draw(
+      'h-axis [A, B]',
+      'line [1, 2] #ff0000',
+      'bar [1, 2] #00ff00',
+      'area [1, 1] #0000ff',
+      'bar [2, 1] #ffff00',
+    );
+    const order = ['#F00', '#0F0', '#00F', '#FF0'].map((c) => svg.indexOf(c));
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+  });
+
+  it('missing values leave gaps; connect joins them; interpolate draws a spline', () => {
+    expect(draw('h-axis [A, B, C]', 'bar [1, , 3]').match(/<rect/g)).toHaveLength(2);
+    expect(draw('h-axis [A, B, C]', 'line [1, , 3]')).not.toContain('stroke-width:2');
+    expect(draw('h-axis [A, B, C]', 'line [1, , 3] connect').match(/stroke-width:2/g)).toHaveLength(1);
+    expect(draw('h-axis [A, B, C]', 'line [1, 3, 2] interpolate')).toContain('<path');
+    expect(draw('h-axis [A, B, C]', 'line [1, , 3] labels').match(/<text[^>]*font-weight="700"/g)).toHaveLength(2);
+    expect(draw('h-axis [A, B, C]', 'area [1, , 3, 4]').match(/<polygon/g)).toHaveLength(2);
+    expect(draw('h-axis [A, B, C]', 'scatter [1, , 3]').match(/<ellipse/g)).toHaveLength(2);
   });
 
   it('value labels are bold size 10, with %.2f and an exponent', () => {
@@ -231,7 +276,8 @@ describe('series (T3b)', () => {
   });
 
   it('with no categories and no pairs nothing draws, and series past the categories stop', () => {
-    expect(draw('bar [1]')).not.toContain('<rect');
+    expect(draw('bar [1]')).toContain('<rect');
+    expect(draw('h-axis 0 --> 10', 'bar [1]')).not.toContain('<rect');
     expect(draw('h-axis [A]', 'line [1, 2, 3]')).not.toContain('stroke-width:2');
     expect(draw('h-axis [A]', 'scatter [1, 2, 3]').match(/<ellipse/g)).toHaveLength(1);
     expect(draw('h-axis [A]', 'bar [1, 2, 3]').match(/<rect/g)).toHaveLength(1);
@@ -243,14 +289,14 @@ describe('series (T3b)', () => {
   });
 
   it('scatters by coordinate pairs, with labels, and the marker shapes', () => {
-    const svg = draw('h-axis 0 --> 10', 'scatter [(5, 50)] labels');
+    const svg = draw('h-axis 0 --> 10', 'v-axis 0 --> 100', 'scatter [(5, 50)] labels');
     expect(svg).toContain('<ellipse cx="270" cy="210"');
     expect(svg).toContain('>50</text>');
-    expect(draw('h-axis [A]', 'scatter [50] <<square>>')).toContain(
-      '<rect x="266" y="206" width="8" height="8" fill="#000"',
+    expect(draw('h-axis [A]', 'v-axis 0 --> 100', 'scatter [50] <<square>>')).toContain(
+      '<rect x="266" y="206" width="8" height="8" fill="#181818"',
     );
-    expect(draw('h-axis [A]', 'scatter [50] <<triangle>>')).toContain(
-      '<polygon points="270,206,266,214,274,214" fill="#000"',
+    expect(draw('h-axis [A]', 'v-axis 0 --> 100', 'scatter [50] <<triangle>>')).toContain(
+      '<polygon points="270,206,266,214,274,214" fill="#181818"',
     );
     expect(draw('h-axis [A]', 'scatter [50] labels')).toContain('>50</text>');
   });
@@ -258,11 +304,13 @@ describe('series (T3b)', () => {
   it('style sets the marker, and an unknown shape is ignored', () => {
     const svg = drawStyled('chartDiagram {\nscatter {\nMarkerColor #ff0000\nMarkerSize 10\nMarkerShape square\n}\n}', [
       'h-axis [A]',
+      'v-axis 0 --> 100',
       'scatter [50]',
     ]);
     expect(svg).toContain('<rect x="265" y="205" width="10" height="10" fill="#F00"');
     const unknown = drawStyled('chartDiagram {\nscatter {\nMarkerShape hexagon\nMarkerSize abc\n}\n}', [
       'h-axis [A]',
+      'v-axis 0 --> 100',
       'scatter [50]',
     ]);
     expect(unknown).toContain('<ellipse cx="270" cy="210" rx="4" ry="4"');
@@ -290,7 +338,7 @@ describe('series (T3b)', () => {
     expect(svg).toContain('stroke:#0F0;stroke-width:1');
     expect(svg.indexOf('#F00')).toBeLessThan(svg.indexOf('#0F0'));
     expect(svg).toContain('>20</text>');
-    expect(draw('area [1]')).not.toContain('<polygon');
+    expect(draw('h-axis 0 --> 1', 'area [1]')).not.toContain('<polygon');
   });
 
   it('an area with a third series grows the cumulative', () => {

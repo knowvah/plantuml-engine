@@ -45,7 +45,7 @@ import type { AutomaticCounter } from './AutomaticCounter.js';
 import type { PName } from './PName.js';
 import type { SName } from './SName.js';
 import { Style } from './Style.js';
-import { addPriorityForStereotype } from './StyleLoader.js';
+import { addStereotypeCount } from './StyleLoader.js';
 import { StyleSignatureBasic } from './StyleSignatureBasic.js';
 import type { StyleBuilder } from './StyleBuilder.js';
 import type { Value } from './Value.js';
@@ -204,7 +204,7 @@ function buildRootTitleLegend(): void {
   addConvert('BackgroundColor', 'BackGroundColor', 'document');
 }
 
-/** Class, object, state. @see FromSkinparamToStyle.java:182-208 */
+/** Class, object, state. @see FromSkinparamToStyle.java:182-213 (upstream a720bdd) */
 function buildClassObjectState(): void {
   addConvert('classBackgroundColor', 'BackGroundColor', 'element', 'class_');
   addConvert('classBorderColor', 'LineColor', 'element', 'class_');
@@ -212,16 +212,30 @@ function buildClassObjectState(): void {
   addConvert('classFontStyle', 'FontStyle', 'element', 'class_', 'header');
   addConvert('classFontColor', 'FontColor', 'element', 'class_', 'header');
   addConvert('classFontName', 'FontName', 'element', 'class_', 'header');
+  // upstream 53fba993513: the class stereotype label reads the `stereotype` style now
+  addConvert('classStereotypeFontSize', 'FontSize', 'element', 'class_', 'stereotype');
+  addConvert('classStereotypeFontStyle', 'FontStyle', 'element', 'class_', 'stereotype');
+  addConvert('classStereotypeFontColor', 'FontColor', 'element', 'class_', 'stereotype');
+  addConvert('classStereotypeFontName', 'FontName', 'element', 'class_', 'stereotype');
   addConvert('classAttributeFontSize', 'FontSize', 'element', 'class_');
   addConvert('classAttributeFontStyle', 'FontStyle', 'element', 'class_');
   addConvert('classAttributeFontColor', 'FontColor', 'element', 'class_');
   addConvert('classAttributeFontName', 'FontName', 'element', 'class_');
   addConvert('classBorderThickness', 'LineThickness', 'element', 'class_');
   addConvert('classHeaderBackgroundColor', 'BackGroundColor', 'element', 'class_', 'header');
+  buildObjectState();
+}
+
+/** The object and state half of {@link buildClassObjectState}, in table order. @see FromSkinparamToStyle.java:203-217 (upstream a720bdd) */
+function buildObjectState(): void {
   addConvert('objectBackgroundColor', 'BackGroundColor', 'object');
   addConvert('objectBorderColor', 'LineColor', 'object');
   addConFont('object', 'object');
   addConFont('objectAttribute', 'object');
+  // e7e3d8063b5 (#3013): FontParam.OBJECT_STEREOTYPE was used for objects, maps and JSON alike
+  addConFont('objectStereotype', 'object', 'stereotype');
+  addConFont('objectStereotype', 'map', 'stereotype');
+  addConFont('objectStereotype', 'json', 'stereotype');
   addConvert('objectBorderThickness', 'LineThickness', 'object');
   addConvert('stateBackgroundColor', 'BackGroundColor', 'state');
   addConvert('stateBorderColor', 'LineColor', 'state');
@@ -329,7 +343,18 @@ function javaTokenize(s: string, delimiters: string): string[] {
   return tokens;
 }
 
-/** @see FromSkinparamToStyle.java:396-408 */
+/**
+ * `String#split("\\&").length`: Java drops trailing empty strings, and an
+ * input with no delimiter is one element even when empty.
+ */
+function javaSplitLength(s: string, delimiter: string): number {
+  const parts = s.split(delimiter);
+  if (parts.length === 1) return 1;
+  while (parts.length > 0 && parts[parts.length - 1] === '') parts.pop();
+  return parts.length;
+}
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/FromSkinparamToStyle.java:406-420 */
 function addStyle(
   styles: Style[],
   stereo: string | null,
@@ -340,7 +365,7 @@ function addStyle(
   let map: ReadonlyMap<PName, Value> = new Map([[propertyName, value]]);
   let sig = StyleSignatureBasic.of(...styleNames);
   if (stereo !== null) {
-    map = addPriorityForStereotype(map);
+    map = addStereotypeCount(map, javaSplitLength(stereo, '&'));
     for (const s of javaTokenize(stereo, '&')) sig = sig.addStereotype(s);
   }
   styles.push(new Style(sig, map));

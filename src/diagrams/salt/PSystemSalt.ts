@@ -11,6 +11,7 @@ import { ClockwiseTopRightBottomLeft } from '../../core/klimt/geom/ClockwiseTopR
 import type { HorizontalAlignment } from '../../core/klimt/geom/HorizontalAlignment.js';
 import { XDimension2D } from '../../core/klimt/geom/XDimension2D.js';
 import type { TextBlock } from '../../core/klimt/shape/TextBlock.js';
+import { TextBlockUtils } from '../../core/klimt/shape/TextBlockUtils.js';
 import type { Sprite } from '../../core/klimt/sprite/Sprite.js';
 import type { UGraphic } from '../../core/klimt/UGraphic.js';
 import type { UStroke } from '../../core/klimt/UStroke.js';
@@ -22,14 +23,15 @@ import { matchSpriteCommand } from '../../core/sprite-commands.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { Stereotype } from '../../core/stereo/Stereotype.js';
 import { cleanForKeySlow } from '../../core/style/mindmap-style-builder.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
+import { javaTrim } from '../../core/java-number-format.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../core/style/StyleSignatureBasic.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
 import { TitledDiagram, type UmlSource } from '../../core/TitledDiagram.js';
 import { DataSourceImpl } from './DataSourceImpl.js';
 import type { DataSource } from './DataSource.js';
-import type { Element } from './element/Element.js';
+import { type Element, mayDrawBeyondPreferredDimension } from './element/Element.js';
 import type { AbstractElementFactoryComplex } from './factory/AbstractElementFactoryComplex.js';
 import { ElementFactoryBorder } from './factory/ElementFactoryBorder.js';
 import { ElementFactoryButton } from './factory/ElementFactoryButton.js';
@@ -91,7 +93,7 @@ function expandsNewline(s: string): string[] {
 const JAVA_DOUBLE = /^[+-]?(?:NaN|Infinity|(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?[fFdD]?)$/;
 
 function parseDouble(text: string): number {
-  const s = trin(text);
+  const s = javaTrim(text); // `FloatingDecimal` trims with `String#trim`: U+00A0 stays.
   if (!JAVA_DOUBLE.test(s)) throw new Error(`NumberFormatException: For input string: "${text}"`);
   return Number.parseFloat(s.replace(/[fFdD]$/, ''));
 }
@@ -230,10 +232,18 @@ export class PSystemSalt extends TitledDiagram {
     return this.data.length;
   }
 
-  /** @see PSystemSalt.java:111-132 */
+  /**
+   * The dry run that grows the size to the drawn extent runs only when an
+   * element may draw past its preferred dimension (an open droplist), so
+   * every other diagram keeps its preferred size.
+   * @see PSystemSalt.java:114-145 (upstream a720bdd; f63ffe0701a, #2882)
+   */
   getTextBlock(stringBounder: StringBounder): TextBlock {
     const salt = this.createElement(this.manageSprite());
-    const size = salt.getPreferredDimension(stringBounder, 0, 0);
+    const preferred = salt.getPreferredDimension(stringBounder, 0, 0);
+    const size = mayDrawBeyondPreferredDimension(salt)
+      ? PSystemSalt.withActualExtent(salt, preferred, stringBounder)
+      : preferred;
     return {
       drawU(ug: UGraphic): void {
         ug = ug.apply(new Fore(HColors.BLACK));
@@ -246,7 +256,26 @@ export class PSystemSalt extends TitledDiagram {
     };
   }
 
-  /** @see PSystemSalt.java:134-136 */
+  /**
+   * Both z-index passes drawn into a `LimitFinder` (`initToZero`), and the
+   * preferred dimension grown to its max corner.
+   * @see PSystemSalt.java:147-174 (upstream a720bdd)
+   */
+  private static withActualExtent(salt: Element, preferred: XDimension2D, stringBounder: StringBounder): XDimension2D {
+    const minmax = TextBlockUtils.getMinMax(
+      {
+        drawU(ug: UGraphic): void {
+          salt.drawU(ug, 0, preferred);
+          salt.drawU(ug, 1, preferred);
+        },
+      },
+      stringBounder,
+      true,
+    );
+    return preferred.atLeast(minmax.getMaxX(), minmax.getMaxY());
+  }
+
+  /** @see PSystemSalt.java:176-178 (upstream a720bdd) */
   getDescription(): string {
     return '(Salt)';
   }

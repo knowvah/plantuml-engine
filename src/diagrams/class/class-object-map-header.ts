@@ -43,9 +43,10 @@ import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer, FontSpec } from '../../core/measurer.js';
 import type { ClassifierGeo } from './layout.js';
 import { OBJECT_STEREOTYPE_BUCKET } from '../../core/legacy-stereotype-font.js';
+import { styledStereoFace, type StereotypeFontValues } from './class-stereotype-style.js';
 import { measureNameBlock } from './class-object-name-block.js';
 import { headerLineTops, headerLineY } from './class-header-line-stacking.js';
-import { resolveVisibleStereotypeLabels } from './class-stereotype.js';
+import { resolveVisibleStereotypeLabels, stereoLineHeight } from './class-stereotype.js';
 import { objectDisplayText } from './class-object-display.js';
 import { plainRowRender } from './class-driver-text-placement.js';
 import { headerFontSpec, type HeaderFontOverride } from './object-kind-style.js';
@@ -122,7 +123,13 @@ const STEREO_FONT_SIZE = 12;
 const LIMIT_FINDER_TEXT_DESCENT = 1.5;
 
 /** `FontParam.OBJECT_STEREOTYPE` (`FontParam.java:58`) through its skinparam chain (`legacy-stereotype-font.ts`). */
-function stereoFace(theme: Theme): { family: string; size: number; bold: boolean; italic: boolean } {
+function stereoFace(
+  theme: Theme,
+  styled: StereotypeFontValues | undefined,
+): { family: string; size: number; bold: boolean; italic: boolean } {
+  // e7e3d8063b5 (#3013): the label reads the `stereotype` style of the object/map/json query
+  // (EntityImageObject.java:122-126, upstream a720bdd); the legacy chain only without a style builder.
+  if (styled !== undefined) return styledStereoFace(theme.fontFamily, styled);
   const bucket = theme.colors.elements?.[OBJECT_STEREOTYPE_BUCKET];
   return {
     family: bucket?.fontFamily ?? theme.fontFamily,
@@ -196,9 +203,9 @@ export function measureStereo(classifier: Classifier, theme: Theme, measurer: St
   if (classifier.stereotype === undefined || classifier.hideStereotype === true) return { width: 0, height: 0 };
   const labels = resolveVisibleStereotypeLabels(classifier);
   if (labels.length === 0) return { width: 0, height: 0 };
-  const face = stereoFace(theme);
+  const face = stereoFace(theme, classifier.stereotypeFont);
   const widths = stereoLabelWidths(labels, face, measurer);
-  return { width: Math.max(...widths), height: labels.length * face.size };
+  return { width: Math.max(...widths), height: labels.length * stereoLineHeight(face.size) };
 }
 
 /**
@@ -210,7 +217,7 @@ function stereoTextInkTop(classifier: Classifier, theme: Theme, measurer: String
   if (classifier.stereotype === undefined || classifier.hideStereotype === true) return undefined;
   const [label] = resolveVisibleStereotypeLabels(classifier);
   if (label === undefined) return undefined;
-  const face = stereoFace(theme);
+  const face = stereoFace(theme, classifier.stereotypeFont);
   const spec = { family: face.family, size: face.size };
   const baseline = face.size - measurer.getDescent(spec, '');
   return baseline - measurer.measure(wrapGuillemet(label), spec).height + LIMIT_FINDER_TEXT_DESCENT;
@@ -326,7 +333,7 @@ function buildStereoHeaderRows(
   measurer: StringMeasurer,
   boxWidth: number,
 ): StereoHeaderRowsResult {
-  const face = stereoFace(theme);
+  const face = stereoFace(theme, classifier.stereotypeFont);
   const stereoFontSpec = { family: face.family, size: face.size };
   const stereoLabels =
     classifier.stereotype === undefined || classifier.hideStereotype === true
@@ -338,7 +345,7 @@ function buildStereoHeaderRows(
     const width = stereoWidths[i]!;
     return {
       text: wrapGuillemet(label),
-      y: i * face.size + stereoBaselineOffset,
+      y: i * stereoLineHeight(face.size) + stereoBaselineOffset,
       indent: (boxWidth - width) / 2,
       ...(face.italic ? { italic: true } : {}),
       ...(face.bold ? { bold: true } : {}),
@@ -348,7 +355,7 @@ function buildStereoHeaderRows(
       fontSize: face.size,
     };
   });
-  return { rows, stereoHeight: stereoLabels.length * face.size };
+  return { rows, stereoHeight: stereoLabels.length * stereoLineHeight(face.size) };
 }
 
 /**

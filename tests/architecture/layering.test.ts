@@ -224,6 +224,15 @@ export const ALLOWLIST: readonly AllowlistEntry[] = [
       '(mission regex-engine-port D3).',
   },
   {
+    from: 'src/diagrams/files/',
+    to: 'src/diagrams/json/',
+    why:
+      'upstream FilesDiagramFactory.java:38,59 and FilesDiagram.java:43 import ' +
+      'net.sourceforge.plantuml.jsondiagram.StyleExtractor, whose iterator FilesParser reads ' +
+      '(FilesDiagram.java:73) and whose title the factory sets (FilesDiagramFactory.java:62-66) -- ' +
+      'kept at its upstream home.',
+  },
+  {
     from: 'src/diagrams/wbs/',
     to: 'src/diagrams/activity/ftile/',
     why:

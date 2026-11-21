@@ -116,8 +116,9 @@ describe('M8 participant MinimumWidth', () => {
   it('rupasa: minClassWidth 400 makes heads 414 = 400 + 7 + 7 (ComponentRoseParticipant.java:139-142)', () => {
     const svg = oursFor('rupasa-72-neco694');
     expect(rects(svg).filter((r) => r[2] === 414).length).toBeGreaterThanOrEqual(2);
-    // The text stays at the left padding, box x 434 + 7 = 441 (drawInternalU:121).
-    expect(svg).toContain('x="441"');
+    // The text is centred in the room the minimum width leaves (upstream
+    // `54cbdd6e59e`, `drawInternalU:114-121`): 434 + 7 + (400 - 24.938) / 2.
+    expect(svg).toContain('x="628.531"');
   });
 
   it('rujapu: minClassWidth 150 makes the head 164 wide', () => {

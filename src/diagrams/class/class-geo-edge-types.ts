@@ -133,6 +133,11 @@ export interface EdgeGeo {
    *  role-as-fallback case (no quantifier) reuses {@link quantifierLines}
    *  instead (`class-layout-edge-labels.ts#computeMultiplicityAttrs`). */
   roleLines?: RoleLinesGeo;
+  /** a5731db447f: the visibility icon of each end's role (`[tail, head]`),
+   *  `RoleLabels#create`'s icon merged LEFT of the role text. Drawn before
+   *  that end's role lines -- or, for a role standing in for an absent
+   *  quantifier, before that end's {@link quantifierLines}. */
+  roleIcons?: readonly [VisibilityIconGeo | undefined, VisibilityIconGeo | undefined];
   /** cdd-T6 (A2a/M2): the link label's visibility-modifier icon block —
    *  see {@link VisibilityIconGeo} and `class-edge-visibility.ts`. Present
    *  only when the label's first line began with a visibility character

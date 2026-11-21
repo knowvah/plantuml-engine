@@ -164,6 +164,12 @@ describe('acceptance 1: stdlib-tupadr3 ships no eager module', () => {
 // stayed put (plans/rename-plantuml-engine/decision-journal.md).
 // See `tests/unit/stdlib-dts-import-specifier.test.ts` for why the specifier
 // was wrong and why no gate caught it.
+//
+// RE-PINNED for the oracle re-pin to upstream a720bdd (2026-11-20): the
+// stdlib is vendored at plantuml-stdlib 5535b9a3, the commit whose
+// output/*.sha1 match all 99 of the jar's bundled ones. Its C4 is 2.14.0 and
+// its archimate takes the leading-'$' rule, so archimate.js and c4.js carry
+// the new sources; every `.d.ts` and the other `.js` digests stayed put.
 // ---------------------------------------------------------------------------
 
 interface PinnedFile {
@@ -173,11 +179,11 @@ interface PinnedFile {
 
 const STDLIB_PINNED_DIGESTS: readonly PinnedFile[] = [
   { fileName: 'archimate.d.ts', sha256: '017374e9e1c83036b1b8e0b93aa90b5d33ae02596fc512723b5153338bf46052' },
-  { fileName: 'archimate.js', sha256: '2b7cc62394934490272f23307517ed21b05c4534f92758369bf2d7ec0e08878f' },
+  { fileName: 'archimate.js', sha256: 'c48f3ba9733881e70078614a108dd66e37a52a5c5b6439c632457a3a50cd294d' },
   { fileName: 'bootstrap.d.ts', sha256: '6f6d5e3bcbb2be5694635771957466b63179b00ddbaea5475a5b20b82b0609ea' },
   { fileName: 'bootstrap.js', sha256: '29fefcebde1e4896d5687c8ad1fc57213e9d2690213048d899846d0de392ea5f' },
   { fileName: 'c4.d.ts', sha256: '62f0377675512dc1c551ee131a7fbccbb6f1755466b4a05f767e4e6e5fd4bfd8' },
-  { fileName: 'c4.js', sha256: 'f7929a5a2efdfd453e7889677ffc89f3fd050a4915139f2149838c8fd65cb0c7' },
+  { fileName: 'c4.js', sha256: 'a40233c2b8c412e4333b80883280d9499f6253e0634b737a5252c1c9037b95d8' },
   { fileName: 'cloudinsight.d.ts', sha256: 'f233da1446164a1fcad41e6a6d871d8b85c86284bf5e2459fae420abd2331bd8' },
   { fileName: 'cloudinsight.js', sha256: '26edf20eef9bc3b79bd8affdc1d2f16f2ffa3ee14c7837c50ee2ba223fbe1c5b' },
   { fileName: 'cloudogu.d.ts', sha256: '1854d89413259217b6703765ced310f525cc930007863770128fa94951e48c64' },

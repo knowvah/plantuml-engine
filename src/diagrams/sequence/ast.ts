@@ -33,8 +33,23 @@ export type { FrameEvent } from './ast-frame.js';
 export type ParticipantType =
   'participant' | 'actor' | 'boundary' | 'control' | 'entity' | 'database' | 'collections' | 'queue';
 
+/** One `StereotypeVisibility` rule (`StereotypeVisibility.java:51-61`):
+ *  `gender` is the command's GENDER -- `<<name>>`, or a participant code or
+ *  display name with its quotes dropped -- or absent for every stereotype. */
+export interface StereotypeRule {
+  readonly gender: string | undefined;
+  readonly show: boolean;
+}
+
 export interface Participant {
   id: string;
+  /** `Participant#getUid` (`Participant.java:264-266`): `"part" + cpt.getAndAdd(1)`,
+   *  `cpt` starting at 1, minted once at creation (`SequenceDiagram.java:105,179`). */
+  uid: string;
+  /** The creating command's `LineLocation#getPosition` (`Participant#getLocation`,
+   *  `:229-231`): the first mention, implicit or declared. Absent on a
+   *  hand-built source with no line positions. */
+  sourceLine?: number;
   display: string;
   type: ParticipantType;
   color?: string;
@@ -67,6 +82,13 @@ export interface Participant {
    *  drops the stereotype from `getDisplay` only (`Participant.java:125-135`);
    *  `getUsedStyles` still merges it (`:82-91`). */
   stereotypeHidden?: boolean;
+  /** When a `hide <<x>> stereotype` rule drops some of the stereotype's labels
+   *  but not all, `Participant#getDisplay` adds the KEPT labels as plain text
+   *  instead of the `Stereotype` (`Participant.java:131-166`): a display line
+   *  in the name font, first or last as {@link stereotypeBottom} says, not
+   *  underlined (it is added after `Display#underlined`). Set together with
+   *  {@link stereotypeHidden}. */
+  stereotypeText?: string;
   /**
    * The participant's own `[[url{tooltip}]]`, resolved (B3).
    *
@@ -282,13 +304,14 @@ export interface SequenceDiagramAST {
      *  during the parse walk, not post-parse, because the suppression is
      *  positional. */
     ignoreNewpage?: boolean;
-    /** `hide stereotype` -- registered for sequence diagrams too, via
-     *  `SequenceDiagramFactory:100` -> `CommonCommands#addCommonCommands1`
-     *  -> `addCommonHides` (`CommonCommands.java:103-106`) ->
-     *  `CommandHideShowByGender` (`:195`). Suppresses the participant
-     *  stereotype run; the jar's goldens confirm it both ways
-     *  (secida-27-jaco323 hides, birocu-87-xubi808 shows `«APIGateway»`). */
-    hideStereotype?: boolean;
+    /** `hide|show [GENDER] stereotype` rules, in source order -- registered
+     *  for sequence diagrams via `SequenceDiagramFactory:100` ->
+     *  `CommonCommands#addCommonCommands1` -> `addCommonHides`
+     *  (`CommonCommands.java:103-106`) -> `CommandHideShowByGender`, whose
+     *  sequence arm adds each to the diagram's `StereotypeVisibility`
+     *  (`CommandHideShowByGender.java:170-178`, upstream `0801eabbca2`).
+     *  Applied post-parse (`sequence-hide-passes.ts`). */
+    stereotypeRules?: StereotypeRule[];
   };
   /** `scale ...` (`command/CommandScale*.java`, 6 forms via
    *  `CommonCommands#addCommonScaleCommands`) — resolved to a factor and

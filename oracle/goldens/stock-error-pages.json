@@ -1,6 +1,6 @@
 {
-  "upstreamSha": "97a5992201a7b1bc5d4063a81da609fe7387fede",
-  "plantumlVersion": "1.2026.8beta1",
+  "upstreamSha": "a720bdd164ac137c0c3d0ad4463d34997c74478c",
+  "plantumlVersion": "1.2026.11beta1",
   "errors": {
     "activity/gabeme-89-tiko230": {
       "line": 15,
@@ -70,6 +70,10 @@
       "line": null,
       "message": ""
     },
+    "class/buveco-86-tibo673": {
+      "line": 5,
+      "message": "!ifdef without !endif"
+    },
     "class/luzive-62-zote562": {
       "line": 10,
       "message": "Already existing : StationCrossing (Assumed diagram type: class)"
@@ -82,6 +86,10 @@
       "line": null,
       "message": "",
       "provenance": "oracle-widths"
+    },
+    "component/pegali-65-rotu416": {
+      "line": 2,
+      "message": "Python syntax error: expected a name but found '=' (column 8)"
     },
     "dot/comment-stripping": {
       "line": 2,
@@ -187,6 +195,14 @@
       "line": null,
       "message": ""
     },
+    "sequence/fidoba-93-nonu806": {
+      "line": 3,
+      "message": "Python syntax error: tabs are not allowed; indent with spaces (column 4)"
+    },
+    "sequence/joleka-44-cese913": {
+      "line": 2,
+      "message": "Python error: NameError: name 'something' is not defined"
+    },
     "state/cagego-53-vemo516": {
       "line": 8,
       "message": "The state c cannot be used here. (Assumed diagram type: state)"
@@ -226,18 +242,6 @@
     "timing/vufija-57-xoda292": {
       "line": 11,
       "message": "What time? (Assumed diagram type: timing)"
-    },
-    "unknown/Timing-short-alias-7": {
-      "line": 2,
-      "message": "Syntax Error? (Assumed diagram type: sequence)"
-    },
-    "unknown/Timing-short-alias-8": {
-      "line": 2,
-      "message": "Syntax Error? (Assumed diagram type: sequence)"
-    },
-    "unknown/Timing-short-alias-9": {
-      "line": 2,
-      "message": "Syntax Error? (Assumed diagram type: sequence)"
     },
     "unknown/besixo-40-rige905": {
       "line": 10,
@@ -362,6 +366,10 @@
     "unknown/kesogi-76-keco873": {
       "line": 8,
       "message": "This looks like a DOT diagram. Please use @startdot instead of @startuml. (Assumed diagram type: sequence)"
+    },
+    "unknown/kicizi-84-lexu138": {
+      "line": 2,
+      "message": "Syntax Error? (Assumed diagram type: sequence)"
     },
     "unknown/kijaro-77-vomi552": {
       "line": null,
@@ -526,10 +534,6 @@
     "unknown/pedoze-30-xoxo765": {
       "line": 3,
       "message": "Bad hierarchy for class javax.sound.sampled.AudioFormat.Encoding (Assumed diagram type: class)"
-    },
-    "unknown/petiku-70-fogu777": {
-      "line": 9,
-      "message": "Cannot create bar because it already exists (Assumed diagram type: class)"
     },
     "unknown/pevoma-08-vido726": {
       "line": 1,
@@ -716,6 +720,10 @@
       "line": 13,
       "message": "You should send a mail to plantuml@gmail.com with this log (V$version$) java.lang.IllegalStateException (Assumed diagram type: class)"
     },
+    "unknown/zarelu-57-xika172": {
+      "line": 37,
+      "message": "Python syntax error: invalid character '$' (column 7)"
+    },
     "unknown/zeceme-22-rade890": {
       "line": 6,
       "message": "Cannot nest group (Assumed diagram type: nwdiag)"
@@ -747,6 +755,10 @@
     "unknown/zugazo-84-raju675": {
       "line": null,
       "message": ""
+    },
+    "usecase/zoriso-46-vata931": {
+      "line": 6,
+      "message": "Python syntax error: invalid character '$' (column 7)"
     },
     "wbs/WBS-monoline-def-0-11": {
       "line": 6,

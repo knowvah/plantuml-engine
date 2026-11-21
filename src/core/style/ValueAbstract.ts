@@ -1,5 +1,6 @@
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { FontFace } from '../klimt/shape/UText.js';
+import type { Specificity } from './Specificity.js';
 import type { HColor, HColorSet, Value } from './Value.js';
 
 /**
@@ -59,8 +60,8 @@ export abstract class ValueAbstract implements Value {
     throw this.unsupported();
   }
 
-  /** @see ValueAbstract.java:82-84 */
-  getPriority(): number {
+  /** @see value/ValueAbstract.java:82-84 */
+  getSpecificity(): Specificity {
     throw this.unsupported();
   }
 }

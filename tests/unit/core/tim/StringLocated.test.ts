@@ -60,6 +60,11 @@ describe('StringLocated#getTrimmed (batch 2b addition)', () => {
     const sl = new StringLocated('   ', undefined);
     expect(sl.getTrimmed().getString()).toBe('');
   });
+
+  it('strips U+00A0 too, StringUtils.trin since 0c54c010cdf (StringLocated.java:194)', () => {
+    expect(new StringLocated('\u00A0class A\u00A0 ', undefined).getTrimmed().getString()).toBe('class A');
+    expect(new StringLocated('\u2003x', undefined).getTrimmed().getString()).toBe('\u2003x');
+  });
 });
 
 describe('StringLocated#append (batch 2b addition)', () => {

@@ -1,0 +1,4 @@
+@startuml
+object bar
+class bar
+@enduml

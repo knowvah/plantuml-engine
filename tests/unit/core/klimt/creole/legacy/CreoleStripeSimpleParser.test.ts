@@ -81,8 +81,10 @@ describe('classifyStripeLine — HEADING (I4c mechanism 2/5)', () => {
     expect(classifyStripeLine('====Deeper')).toEqual({ type: 'HEADING', content: 'Deeper', order: 3 });
   });
 
-  test('trims only <= U+0020 whitespace off the captured content, not NBSP', () => {
-    expect(classifyStripeLine('==  P2 ')).toEqual({ type: 'HEADING', content: ' P2', order: 1 });
+  test('trims U+00A0 off the captured content too (StringUtils.trin since 0c54c010cdf)', () => {
+    // CreoleStripeSimpleParser.java:154 `StringUtils.trin(m3.group(2))`; StringUtils.java:654-656.
+    expect(classifyStripeLine('== \u00A0P2 ')).toEqual({ type: 'HEADING', content: 'P2', order: 1 });
+    expect(classifyStripeLine('==P2\u2003')).toEqual({ type: 'HEADING', content: 'P2\u2003', order: 1 });
   });
 
   test('"==P3 with a long name" (I4c mechanism 5 fixture text) classifies as HEADING order 1', () => {

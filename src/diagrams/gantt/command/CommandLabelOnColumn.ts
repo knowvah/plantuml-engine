@@ -36,11 +36,13 @@ export const COMMAND_LABEL_ON_COLUMN_RE: RegExp = new RegExp(
 );
 
 /**
- * The commented-out body (`:79-85`) is dead upstream: the command only warns.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/gantt/command/CommandLabelOnColumn.java:76-88
+ * The commented-out body (`:84-90`) is dead upstream: the command only warns,
+ * naming `POSITION` as written.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/gantt/command/CommandLabelOnColumn.java:81-94
  */
-export function applyCommandLabelOnColumn(diagram: GanttDiagram, _match: RegExpExecArray): CommandExecutionResult {
-  diagram.addWarning(new Warning('This command is deprecated'));
+export function applyCommandLabelOnColumn(diagram: GanttDiagram, match: RegExpExecArray): CommandExecutionResult {
+  const position = match.groups?.['POSITION'] ?? '';
+  diagram.addWarning(new Warning(`'labels on ${position} column' is no longer supported: this line is ignored`));
   return CommandExecutionResult.ok();
 }
 

@@ -158,6 +158,7 @@ import type { ISkinSimple } from './style/ISkinSimple.js';
 import type { Paint } from './paint.js';
 import { enterNestedDiagramLayout, exitNestedDiagramLayout } from './graph-layout.js';
 import { withDeferredFormat } from './svg-format.js';
+import { trim2 } from './string-utils-trim.js';
 
 /** `klimt/shape/Line.java` (5 lines), ported inline — see the module doc
  *  comment's "`Line`" section for why this is not a separate file. */
@@ -204,34 +205,6 @@ export interface NestedDiagramRenderer {
  *  is the seam's equivalent everywhere upstream carries `HColor`, and the
  *  literal SVG `'none'` paint is the faithful transparent-fill value. */
 const NONE_PAINT: Paint = 'none';
-
-/** `StringUtils.trim2(CharSequence)` (java: `StringUtils.java:534-565`) —
- *  trims characters `<= ' '` (0x20) from both ends; NOT the same predicate
- *  as `CreoleParser.ts`'s own `isJavaWhitespace` (`Character.isWhitespace`),
- *  a genuinely different upstream method, so reusing that one would not be
- *  faithful even if it were exported. */
-function trim2(s: string): string {
-  const len = s.length;
-  if (len === 0) return '';
-
-  let start = 0;
-  let end = len - 1;
-
-  while (start <= end) {
-    if (s.charCodeAt(start) <= 0x20) {
-      start++;
-      continue;
-    }
-    if (s.charCodeAt(end) <= 0x20) {
-      end--;
-      continue;
-    }
-    break;
-  }
-
-  if (start > end) return '';
-  return s.slice(start, end + 1);
-}
 
 /**
  * `EmbeddedDiagram#getEmbeddedType(CharSequence)` (java:257-366). Pure

@@ -1,0 +1,7 @@
+@startuml
+usecase "before <math>glb x</math> after" as u
+component c [
+line
+<latex>\glb{x}</latex>
+]
+@enduml

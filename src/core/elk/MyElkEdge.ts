@@ -42,6 +42,7 @@ import type { UStroke } from '../klimt/UStroke.js';
 import { UTranslate, type Point2D } from '../klimt/UTranslate.js';
 import type { Paint } from '../paint.js';
 import { ExtremityFactoryExtends } from '../svek/extremity/ExtremityFactoryExtends.js';
+import { getPosition } from '../svek/RoleLabels.js';
 import type { SName } from '../style/SName.js';
 // "Nasty trick: we store the type of label (center/head/tail) in the text"
 // (`MyElkEdge.java:248-258`); the maker writes them (`CucaDiagramFileMakerElk.java:424`, `:437`, `:451`).
@@ -49,11 +50,6 @@ import { CENTER_LABEL_TEXT, HEAD_LABEL_TEXT, TAIL_LABEL_TEXT } from './CucaDiagr
 import type { ElkArrowStyle, ElkDiagramAdapter } from './ElkDiagramAdapter.js';
 import type { ElkEdge } from './proxy/graph/ElkEdge.js';
 import type { ElkEdgeSection } from './proxy/graph/ElkEdgeSection.js';
-
-/** `final double gap = 2;`: `MyElkEdge.java:294`. */
-const ROLE_GAP = 2;
-/** `Math.abs(dirX) + Math.abs(dirY) < 0.001`: `MyElkEdge.java:288`. */
-const DEGENERATE_DIRECTION = 0.001;
 
 /**
  * The `IEntityImage` member `MyElkEdge` reads off `nodeImages`
@@ -126,22 +122,22 @@ export function getRoleLabelPosition(
   thisEndpoint: XPoint2D,
   otherEndpoint: XPoint2D,
 ): XPoint2D {
-  const dirX = otherEndpoint.getX() - thisEndpoint.getX();
-  const dirY = otherEndpoint.getY() - thisEndpoint.getY();
-
-  if (Math.abs(dirX) + Math.abs(dirY) < DEGENERATE_DIRECTION)
-    return new XPoint2D(quantifierPos.getX(), quantifierPos.getY() + qDim.getHeight());
-
-  if (Math.abs(dirY) >= Math.abs(dirX)) {
-    const qCenterX = quantifierPos.getX() + qDim.getWidth() / 2;
-    const lineX = thisEndpoint.getX();
-    const roleX = qCenterX < lineX ? lineX + ROLE_GAP : lineX - rDim.getWidth() - ROLE_GAP;
-    return new XPoint2D(roleX, quantifierPos.getY());
-  }
-  const qCenterY = quantifierPos.getY() + qDim.getHeight() / 2;
-  const lineY = thisEndpoint.getY();
-  const roleY = qCenterY < lineY ? lineY + ROLE_GAP : lineY - rDim.getHeight() - ROLE_GAP;
-  return new XPoint2D(quantifierPos.getX(), roleY);
+  // `RoleLabels.getPosition(qDim, rDim, quantifierPos, thisEndpoint, otherEndpoint, null,
+  // Collections.<RectangleArea>emptyList())` (`MyElkEdge.java:282-285`, upstream a5731db447f):
+  // no path samples (the straight segment is used) and no obstacles.
+  const pos = getPosition(
+    {
+      qDim: { width: qDim.getWidth(), height: qDim.getHeight() },
+      rDim: { width: rDim.getWidth(), height: rDim.getHeight() },
+      quantifierPos: { x: quantifierPos.getX(), y: quantifierPos.getY() },
+    },
+    {
+      thisEndpoint: { x: thisEndpoint.getX(), y: thisEndpoint.getY() },
+      otherEndpoint: { x: otherEndpoint.getX(), y: otherEndpoint.getY() },
+    },
+    [],
+  );
+  return new XPoint2D(pos.x, pos.y);
 }
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/elk/MyElkEdge.java:96-354 */

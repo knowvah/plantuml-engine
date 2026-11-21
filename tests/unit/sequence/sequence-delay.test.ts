@@ -63,6 +63,7 @@ function painted(pieces: readonly LinePiece[]): LifelineSegment[] {
 
 const PARTICIPANT: ParticipantGeo = {
   id: 'A',
+  uid: 'part1',
   display: 'A',
   type: 'participant',
   x: 10,

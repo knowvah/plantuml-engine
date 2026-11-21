@@ -1,6 +1,6 @@
 /**
- * `ElementDroplist` (ElementDroplist.java:56-118) against the 1.2026.8beta1
- * jar. `ElementFactoryDroplist` strips the outer `^`s
+ * `ElementDroplist` (ElementDroplist.java:56-133 at upstream a720bdd)
+ * against the 1.2026.11beta1 jar. `ElementFactoryDroplist` strips the outer `^`s
  * (ElementFactoryDroplist.java:57), so `^A^b^` reaches the constructor as
  * `A^b`:
  *
@@ -8,8 +8,8 @@
  *   144 reserved, + 4 + 12 = 160 by 12 + 4 = 16 (java:86-89).
  * - `fixtures/widget-droplist-open.puml` — `Smart Mode^m2`: the head is
  *   `Smart Mode` (java:78-84), the open list `m2` (java:63-75), drawn below
- *   the box at z-index 0 AND again at z-index 1 (java:110-116 is outside
- *   the `zIndex == 0` guard) — the jar SVG carries it twice.
+ *   the box once, on the z-index 1 pass (java:132, `openDrop != null &&
+ *   zIndex == 1` since upstream f63ffe0701a, #2882).
  * - `fixtures/widget-droplist-open-two.puml` — `Select^one item^two`: a
  *   two-line open list, wider than nothing (`atLeast`, java:111).
  */
@@ -46,11 +46,11 @@ describe('ElementDroplist#drawU (java:91-117)', () => {
     expect(drawAt(droplist('This is a droplist'), 1)).toEqual([]);
   });
 
-  it('draws the box and the open list at z-index 0, then the open list again at z-index 1 (widget-droplist-open)', () => {
+  it('draws the box at z-index 0 and the open list once, at z-index 1 (widget-droplist-open, #2882)', () => {
     const jar = jarElements('widget-droplist-open');
-    expect(jar).toHaveLength(8);
+    expect(jar).toHaveLength(6);
     expect([...drawAt(droplist('Smart Mode^m2'), 0), ...drawAt(droplist('Smart Mode^m2'), 1)]).toEqual(jar);
-    expect(drawAt(droplist('Smart Mode^m2'), 1)).toEqual(jar.slice(6));
+    expect(drawAt(droplist('Smart Mode^m2'), 1)).toEqual(jar.slice(4));
   });
 
   it('stacks a two-entry open list (widget-droplist-open-two)', () => {

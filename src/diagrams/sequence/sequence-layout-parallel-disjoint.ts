@@ -13,7 +13,8 @@
  * `RealMax`'s first-read cache (`real/RealMax.java:89-94`). Split out of `sequence-layout-group-clearance.ts`
  * (500-line cap); every import is a leaf, as there.
  */
-import type { FrameEvent, MessageEvent, MessageExoEvent, Participant, SequenceEvent } from './ast.js';
+import type { FrameEvent, MessageEvent, MessageExoEvent, NoteEvent, Participant, SequenceEvent } from './ast.js';
+import { noteComponentWidth, noteTileFootprint, noteTiles } from './sequence-note-width.js';
 import type { Anchor, DisjointConstraint, Scan } from './sequence-layout-participant-constraints.js';
 import {
   elseComponentWidth,
@@ -34,7 +35,9 @@ import {
   lifeReach,
   messageLifeReaches,
   tilesOf,
-  wrapperOf,
+  wrapperAnchor,
+  wrapperLevel,
+  wrapperSide,
   type GroupTiles,
   type Reach,
 } from './sequence-layout-group-clearance.js';
@@ -105,23 +108,113 @@ function selfFootprint(ev: MessageEvent, index: number, scan: Scan, drawn: boole
   return { mins: [{ index, offset: -width - adjust, at: 'C' }], maxs: [{ index, offset: posC2, at: 'C' }] };
 }
 
+/** A tile's `getMinX`/`getMaxX` and its `getDrawnMinX`/`getDrawnMaxX`
+ *  (`Tile.java:85-91`), which differ only for a self loop and its two
+ *  note-wrapping siblings. */
+interface TileExtent {
+  readonly layout: Footprint;
+  readonly drawn: Footprint;
+}
+
+/** Both extents of a plain wrapper: `getDrawnMinX`/`getDrawnMaxX` default to
+ *  its own `getMinX`/`getMaxX` (`Tile.java:85-91`). */
+function plainExtent(layout: Footprint): TileExtent {
+  return { layout, drawn: layout };
+}
+
 /**
- * A message's outermost tile (`TileBuilder.java:86-122`): the wrapper of its
- * last folded note keeps the inner tile's min (`NoteRight`, `NoteTop`/
- * `Bottom`) or max (`NoteLeft`) and reaches a note's width on the other side,
- * which the participant row cannot measure.
+ * `CommunicationTileNoteLeft`/`NoteRight` (`TileBuilder.java:106-115`, an exo
+ * message's at `:126-133`): the left wrapper's min is `posC(ls) - width`
+ * (`CommunicationTileNoteLeft.java:111-115,218-224`), the right wrapper's max
+ * `posC(ls) + level * 5 + width`, or `posD(ls) + width` on a create message
+ * (`CommunicationTileNoteRight.java:118-126,241-249`); the other side is the
+ * inner tile's.
  */
-function wrappedFootprint(inner: Footprint, wrapper: ReturnType<typeof wrapperOf>): Footprint {
-  if (wrapper === undefined) return inner;
-  return wrapper === 'left' ? { mins: undefined, maxs: inner.maxs } : { mins: inner.mins, maxs: undefined };
+function plainSideWrap(
+  ev: MessageEvent | MessageExoEvent,
+  inner: Footprint,
+  side: 'left' | 'right',
+  w: number,
+  sorted: readonly Participant[],
+  scan: Scan,
+): TileExtent {
+  const id = wrapperAnchor(ev, side === 'left' ? 'min' : 'max', sorted);
+  const index = indexOf(sorted, id);
+  if (side === 'left') return plainExtent({ mins: [{ index, offset: -w, at: 'C' }], maxs: inner.maxs });
+  const create = ev.kind === 'message' && ev.create === true;
+  const max: Anchor = create
+    ? { index, offset: w, at: 'D' }
+    : { index, offset: wrapperLevel(ev, id, scan) * LIVE_DELTA_SIZE + w, at: 'C' };
+  return plainExtent({ mins: inner.mins, maxs: [max] });
+}
+
+/** `CommunicationTileSelfNoteLeft`/`SelfNoteRight` (`TileBuilder.java:104-112`):
+ *  the inner extent widened by the note on its side, drawn and layout alike
+ *  (`CommunicationTileSelfNoteLeft.java:111-116,163-185`,
+ *  `CommunicationTileSelfNoteRight.java:111-113,156-180`). */
+function selfSideWrap(inner: TileExtent, side: 'left' | 'right', w: number): TileExtent {
+  const widen = (f: Footprint): Footprint =>
+    side === 'left' ? { mins: shift(f.mins, -w), maxs: f.maxs } : { mins: f.mins, maxs: shift(f.maxs, w) };
+  return { layout: widen(inner.layout), drawn: widen(inner.drawn) };
+}
+
+/** `CommunicationTileNoteTop`/`NoteBottom` (`CommunicationTileNoteBottomTopAbstract
+ *  .java:143-154`): the inner min, and `max(inner max, inner min + width)`. */
+function topBottomWrap(inner: Footprint, w: number): TileExtent {
+  if (inner.mins === undefined || inner.maxs === undefined || inner.mins.length === 0)
+    return plainExtent({ mins: inner.mins, maxs: undefined });
+  const least = leastOf(inner.mins);
+  return plainExtent({ mins: inner.mins, maxs: [...inner.maxs, { ...least, offset: least.offset + w }] });
+}
+
+/** One note's wrapper around `inner` (`TileBuilder.java:102-133`): an exo
+ *  message takes note 0's side for every note and builds no top/bottom one. */
+function wrapOnce(
+  ev: MessageEvent | MessageExoEvent,
+  inner: TileExtent,
+  note: NoteEvent,
+  side: string,
+  sorted: readonly Participant[],
+  scan: Scan,
+): TileExtent {
+  const self = ev.kind === 'message' && ev.from === ev.to;
+  if (side === 'left' || side === 'right') {
+    // The self wrappers force `ComponentType.NOTE` (`CommunicationTileSelfNoteRight.java:105`).
+    if (self) return selfSideWrap(inner, side, noteComponentWidth(note, scan, 'note'));
+    return plainSideWrap(ev, inner.layout, side, noteComponentWidth(note, scan), sorted, scan);
+  }
+  if (ev.kind === 'messageExo') return inner;
+  return topBottomWrap(inner.layout, noteComponentWidth(note, scan, 'note'));
+}
+
+/** A message's outermost tile (`TileBuilder.java:86-133`): one wrapper per
+ *  folded note, in order, each around the tile before it. */
+function wrappedExtent(
+  ev: MessageEvent | MessageExoEvent,
+  inner: TileExtent,
+  tiles: GroupTiles,
+  sorted: readonly Participant[],
+  scan: Scan,
+): TileExtent {
+  const notes = tiles.folded.get(ev) ?? [];
+  let extent = inner;
+  for (const note of notes) {
+    const side = wrapperSide(ev, note);
+    extent = wrapOnce(ev, extent, note, side, sorted, scan);
+  }
+  return extent;
 }
 
 function messageTile(ev: MessageEvent, tiles: GroupTiles, sorted: readonly Participant[], scan: Scan, drawn: boolean) {
   const from = indexOf(sorted, ev.from);
   const to = indexOf(sorted, ev.to);
   if (from < 0 || to < 0) return undefined;
-  const inner = from === to ? selfFootprint(ev, from, scan, drawn) : messageFootprint(ev, from, to, scan);
-  return wrappedFootprint(inner, wrapperOf(ev, tiles));
+  const inner: TileExtent =
+    from === to
+      ? { layout: selfFootprint(ev, from, scan, false), drawn: selfFootprint(ev, from, scan, true) }
+      : plainExtent(messageFootprint(ev, from, to, scan));
+  const extent = wrappedExtent(ev, inner, tiles, sorted, scan);
+  return drawn ? extent.drawn : extent.layout;
 }
 
 /** `CommunicationExoTile#getMinX`/`#getMaxX` (`:206-240`). */
@@ -133,7 +226,7 @@ function exoTile(ev: MessageExoEvent, tiles: GroupTiles, sorted: readonly Partic
   const inner: Footprint = right
     ? { mins: [{ index, offset: 0, at: 'C' }], maxs: [{ index, offset: width, at: 'C' }] }
     : { mins: [{ index, offset: -width, at: 'C' }], maxs: [{ index, offset: 0, at: 'C' }] };
-  return wrappedFootprint(inner, wrapperOf(ev, tiles));
+  return wrappedExtent(ev, plainExtent(inner), tiles, sorted, scan).layout;
 }
 
 /** `ReferenceTile#getMinX`/`#getMaxX` (`:163-180`): `first`, the leftmost
@@ -246,21 +339,30 @@ function groupTile(group: FrameEvent, sorted: readonly Participant[], scan: Scan
 
 /** A top-level tile's `getMinX`/`getMaxX` (not drawn): the footprint
  *  `ensureDisjoint` compares (`PlayingSpace.java:240-243`). */
-function tileFootprint(ev: SequenceEvent, tiles: GroupTiles, sorted: readonly Participant[], scan: Scan): Footprint {
+function tileFootprint(ev: SequenceEvent, ctx: DisjointContext): Footprint {
+  const { tiles, sorted, scan } = ctx;
   if (ev.kind === 'message') return messageTile(ev, tiles, sorted, scan, false) ?? UNREACHABLE;
   if (ev.kind === 'messageExo') return exoTile(ev, tiles, sorted, scan) ?? UNREACHABLE;
   if (ev.kind === 'frame' && ev.frameType !== 'ref') return groupTile(ev, sorted, scan);
+  if (isStandaloneNote(ev)) return noteTileFootprint(ctx.notes.get(ev) ?? [ev], sorted, scan) ?? UNREACHABLE;
   return UNREACHABLE;
 }
 
+/** A `NoteTile`/`NotesTile` of its own, not a note on a message. */
+function isStandaloneNote(ev: SequenceEvent): ev is NoteEvent {
+  return ev.kind === 'note' && ev.onMessage !== true;
+}
+
 /**
- * `findAnchorLivingSpace` (`PlayingSpace.java:281-298`): a message's
- * participant1, an exo message's participant, a group's first child that has
- * one; anything else has none.
+ * `findAnchorLivingSpace` (`PlayingSpace.java:384-409`): a message's
+ * participant1, an exo message's participant, a note's participant -- a
+ * `Notes` group's first note's (`:392-399`, upstream `2c679666164`) -- a
+ * group's first child that has one; anything else has none.
  */
 function anchorIndexOf(ev: SequenceEvent, sorted: readonly Participant[]): number | undefined {
   if (ev.kind === 'message') return indexOrUndefined(sorted, ev.from);
   if (ev.kind === 'messageExo') return indexOrUndefined(sorted, ev.participant);
+  if (isStandaloneNote(ev)) return indexOrUndefined(sorted, ev.participants[0] ?? '');
   if (ev.kind !== 'frame' || ev.frameType === 'ref') return undefined;
   for (const child of ev.branches.flat()) {
     const found = anchorIndexOf(child, sorted);
@@ -276,8 +378,8 @@ function indexOrUndefined(sorted: readonly Participant[], id: string): number | 
 
 /** `GroupingTile.isParallel` (`:1150-1152`), `tile.getEvent().isParallel()`:
  *  a `Notes` merge never is (`NotesTile.java:84-91`). */
-function isParallel(ev: SequenceEvent): boolean {
-  if (ev.kind === 'note') return ev.parallel === true && ev.vmerge !== true;
+function isParallel(ev: SequenceEvent, ctx: DisjointContext): boolean {
+  if (ev.kind === 'note') return ev.parallel === true && ev.vmerge !== true && !ctx.notes.has(ev);
   if (ev.kind === 'frame') return ev.frameType !== 'ref' && ev.parallel === true;
   return (ev.kind === 'message' || ev.kind === 'messageExo') && ev.parallel === true;
 }
@@ -294,8 +396,9 @@ function disjoint(a: SequenceEvent, b: SequenceEvent, ctx: DisjointContext): Dis
   const pair = leftThenRight(a, b, ctx.sorted);
   if (pair === undefined) return [];
   const [left, right] = pair;
-  const lows = tileFootprint(right, ctx.tiles, ctx.sorted, ctx.scan).mins ?? [];
-  const highs = tileFootprint(left, ctx.tiles, ctx.sorted, ctx.scan).maxs ?? [];
+  if (cannotPushApart(left, right, ctx)) return [];
+  const lows = tileFootprint(right, ctx).mins ?? [];
+  const highs = tileFootprint(left, ctx).maxs ?? [];
   if (lows.length === 0 || highs.length === 0) return [];
   return [{ disjoint: true, lows, highs, ...(left.kind === 'frame' ? { highsOwner: left } : {}) }];
 }
@@ -317,6 +420,47 @@ interface DisjointContext {
   readonly tiles: GroupTiles;
   readonly sorted: readonly Participant[];
   readonly scan: Scan;
+  /** A `/` group's head note and its members, one `NotesTile` (`noteTiles`). */
+  readonly notes: ReadonlyMap<NoteEvent, readonly NoteEvent[]>;
+}
+
+/**
+ * `cannotPushApart` (`PlayingSpace.java:291-306`): when the left tile is a
+ * lone note on one participant and the right one starts at that participant
+ * or left of it, pushing the right tile moves the note too, and the jar skips
+ * the pair rather than loop. Positions compare by declaration order, as
+ * `posB.getCurrentValue()` does before the solve.
+ */
+function cannotPushApart(left: SequenceEvent, right: SequenceEvent, ctx: DisjointContext): boolean {
+  if (!isStandaloneNote(left) || ctx.notes.has(left)) return false;
+  if (left.position === 'over' && left.participants.length > 1) return false;
+  const noteIndex = indexOrUndefined(ctx.sorted, left.participants[0] ?? '');
+  const rightStart = leftmostIndex(right, ctx);
+  return noteIndex !== undefined && rightStart !== undefined && rightStart <= noteIndex;
+}
+
+/**
+ * `leftmostPosB` (`PlayingSpace.java:312-337`): the leftmost participant
+ * pushing this tile moves -- a group's children, a message's two ends, a
+ * note's one or two, a `Notes` group's members not `OVER_SEVERAL`.
+ */
+function leftmostIndex(ev: SequenceEvent, ctx: DisjointContext): number | undefined {
+  const least = (ids: readonly string[]): number | undefined => {
+    const found = ids.map((id) => indexOf(ctx.sorted, id)).filter((i) => i >= 0);
+    return found.length === 0 ? undefined : Math.min(...found);
+  };
+  if (ev.kind === 'frame' && ev.frameType !== 'ref') {
+    const all = ev.branches.flat().map((child) => leftmostIndex(child, ctx));
+    const defined = all.filter((i): i is number => i !== undefined);
+    return defined.length === 0 ? undefined : Math.min(...defined);
+  }
+  if (ev.kind === 'message') return least([ev.from, ev.to]);
+  if (!isStandaloneNote(ev)) return undefined;
+  const group = ctx.notes.get(ev);
+  if (group === undefined) return least(ev.participants.slice(0, 2));
+  return least(
+    group.filter((n) => !(n.position === 'over' && n.participants.length > 1)).map((n) => n.participants[0]!),
+  );
 }
 
 /**
@@ -330,13 +474,18 @@ export function parallelDisjoint(
   sorted: readonly Participant[],
   scan: Scan,
 ): DisjointConstraint[] {
-  const ctx: DisjointContext = { tiles: tilesOf({ branches: [[...events]] }), sorted, scan };
+  const groups = noteTiles(events).filter((t) => t.length > 1);
+  const notes = new Map(groups.map((t) => [t[0]!, t] as const));
+  const members = new Set(groups.flatMap((t) => t.slice(1)));
+  const ctx: DisjointContext = { tiles: tilesOf({ branches: [[...events]] }), sorted, scan, notes };
   const out: DisjointConstraint[] = [];
   let cluster: SequenceEvent[] = [];
   for (const ev of events) {
-    if (ev.kind === 'note' && ev.onMessage === true) continue;
-    if (isParallel(ev)) for (const other of cluster) out.push(...disjoint(other, ev, ctx));
-    cluster = closesRun(ev, scan) ? [] : isParallel(ev) ? [...cluster, ev] : [ev];
+    // A note on a message is its message's wrapper, and a merged `/` note is
+    // its group's `NotesTile`: neither is a tile of its own.
+    if ((ev.kind === 'note' && ev.onMessage === true) || members.has(ev as NoteEvent)) continue;
+    if (isParallel(ev, ctx)) for (const other of cluster) out.push(...disjoint(other, ev, ctx));
+    cluster = closesRun(ev, scan) ? [] : isParallel(ev, ctx) ? [...cluster, ev] : [ev];
   }
   return out;
 }

@@ -19,6 +19,7 @@ import type { Style } from '../../../../src/core/style/Style.js';
 import { StyleBuilder } from '../../../../src/core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { dumpStyle } from './helpers/style-fixture.js';
 import { dumpStorage, jarStorageCases } from './helpers/storage-dump.js';
 
@@ -55,10 +56,10 @@ describe('StyleParser over the default skin: the jar storage', () => {
       level: 1,
       star: false,
       stereotypes: [],
-      values: { FontColor: ['red', null, 328], LineColor: ['#123456', null, 329] },
+      values: { FontColor: ['red', null, 346], LineColor: ['#123456', null, 347] },
     });
     // var(--accent) resolved (CssVariables.java:58-69), `--accent` itself consumed no priority
-    expect(styles[1]?.values).toEqual({ BackGroundColor: ['#ABCDEF', null, 327] });
+    expect(styles[1]?.values).toEqual({ BackGroundColor: ['#ABCDEF', null, 345] });
   });
 });
 
@@ -177,16 +178,16 @@ describe('Context', () => {
 
   it('putInContext on a present key replaces it in place (Context.java:119-121)', () => {
     const ctx = Context.empty().push('node');
-    ctx.putInContext('FontColor', ValueImpl.regular('red', 1));
-    ctx.putInContext('FontColor', ValueImpl.regular('blue', 2));
-    expect([...ctx.getInternalMap().values()].map((v) => v.getPriority())).toEqual([2]);
+    ctx.putInContext('FontColor', ValueImpl.regular('red', Specificity.atOrder(1)));
+    ctx.putInContext('FontColor', ValueImpl.regular('blue', Specificity.atOrder(2)));
+    expect([...ctx.getInternalMap().values()].map((v) => v.getSpecificity().toString())).toEqual(['2']);
   });
 
   it('toStyles skips an empty map; values stay in PName order (Context.java:121-133)', () => {
     const ctx = Context.empty().push('node');
     expect(ctx.toStyles()).toEqual([]);
-    ctx.putInContext('LineColor', ValueImpl.regular('blue', 2));
-    ctx.putInContext('FontColor', ValueImpl.regular('red', 1));
+    ctx.putInContext('LineColor', ValueImpl.regular('blue', Specificity.atOrder(2)));
+    ctx.putInContext('FontColor', ValueImpl.regular('red', Specificity.atOrder(1)));
     expect([...ctx.getInternalMap().keys()]).toEqual(['FontColor', 'LineColor']);
     expect(ctx.toString()).toBe(`[${StyleSignatureBasic.of('node').toString()}]`);
   });

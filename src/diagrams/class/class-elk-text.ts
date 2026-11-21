@@ -32,6 +32,11 @@ import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
 import { getSprite } from '../../core/sprite-registry.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
+import { createRoleBlock } from '../../core/svek/RoleLabels.js';
+import { VisibilityModifier } from '../../core/skin/VisibilityModifier.js';
+import { VerticalAlignment } from '../../core/klimt/geom/VerticalAlignment.js';
+import { CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT } from '../../core/edge-label-box.js';
+import { colorsFor } from './class-visibility-icon.js';
 import { parseMagicArrowLabel } from '../../core/edge-label-box.js';
 import { packageTitleFaces, packageTitleFontFamily, packageTitleFontSize } from './class-namespace-title-runs.js';
 import { DEFAULT_GROUP_FONT_COLOR, packageTitleFontColor } from './class-package-style.js';
@@ -150,6 +155,35 @@ export function classElkEndLabel(
   if (text === undefined) return null;
   const display = Display.getWithNewlines(Pragma.createEmpty(), text);
   const label = createBlock(display, arrowFontConfiguration(theme), theme, CreoleMode.FULL);
+  if (TextBlockUtils.isEmpty(label, stringBounder)) return null;
+  return label;
+}
+
+/**
+ * The maker's `getRoleLabel` (`CucaDiagramFileMakerElk.java:269-278`, upstream
+ * a5731db447f): `RoleLabels.create(role, pragma, labelFont, skinParam)` -- the
+ * text with a leading visibility character turned into the attribute-style
+ * (FIELD, hollow) icon merged LEFT of it, `TextBlockUtils.withMargin(icon, 0,
+ * 1, 2, 0)` -- null for a null role or an empty block.
+ *
+ * @see svek/RoleLabels.java#create (`:72-96`)
+ */
+export function classElkRoleLabel(
+  role: string | undefined,
+  theme: Theme,
+  stringBounder: StringBounder,
+): TextBlock | null {
+  if (role === undefined) return null;
+  const size = theme.classAttributeIconSize ?? CLASS_ATTRIBUTE_ICON_SIZE_DEFAULT;
+  const roleBlock = createRoleBlock(role, size);
+  const display = Display.getWithNewlines(Pragma.createEmpty(), roleBlock.text);
+  let label = createBlock(display, arrowFontConfiguration(theme), theme, CreoleMode.FULL);
+  const modifier = roleBlock.icon === undefined ? null : VisibilityModifier.getVisibilityModifier(role, true);
+  if (modifier !== null) {
+    const fore = colorsFor(role.charAt(0) as Parameters<typeof colorsFor>[0], theme).line;
+    const icon = TextBlockUtils.withMargin(modifier.getUBlock(size, fore, null, false), 0, 1, 2, 0);
+    label = TextBlockUtils.mergeLR(icon, label, VerticalAlignment.CENTER);
+  }
   if (TextBlockUtils.isEmpty(label, stringBounder)) return null;
   return label;
 }

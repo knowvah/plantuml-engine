@@ -23,7 +23,7 @@ import {
 import { parseNodes } from './node-dispatch.js';
 import { stripTrailingSemi, unescapeLabelNewlines } from './if-dispatch.js';
 import { tryNoteMulti, tryNoteSingle } from './note-dispatch.js';
-import { stereogroupBackColor } from './dispatch-stereogroup.js';
+import { ignoredLeadingColorWarning, splitExp4, stereogroupBackColor } from './dispatch-stereogroup.js';
 
 /** `case`/`endswitch` are both simple word-prefix stops -- the same
  *  mechanism `if`'s `['elseif', 'else', 'endif']` already relies on
@@ -141,8 +141,11 @@ function consumeSwitchCases(
  * `activity-lane-capture` D1).
  */
 export function tryOpenSwitch(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
-  const m = RE_SWITCH.exec(line);
+  // `ColorParser.exp4()` then `switch` (`CommandSwitch.java:62-63`); the colour only warns (`:112-114`).
+  const { color: leadingColor, rest } = splitExp4(line);
+  const m = RE_SWITCH.exec(rest);
   if (m === null) return null;
+  if (leadingColor !== undefined) ctx.pragma.addWarning(ignoredLeadingColorWarning(leadingColor));
   const condition = m[1]!;
   const openerSwimlane = swimlaneSpread(ctx);
 

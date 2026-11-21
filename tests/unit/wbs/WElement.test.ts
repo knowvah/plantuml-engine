@@ -26,12 +26,9 @@ import { StyleBuilder } from '../../../src/core/style/StyleBuilder.js';
 import type { StyleSignatureBasic } from '../../../src/core/style/StyleSignatureBasic.js';
 import { IdeaShape } from '../../../src/diagrams/mindmap/IdeaShape.js';
 import type { WElementDecoration } from '../../../src/diagrams/wbs/WElement.js';
-import { STEP_BY_PARENT, WElement } from '../../../src/diagrams/wbs/WElement.js';
+import { WElement } from '../../../src/diagrams/wbs/WElement.js';
 
 const RED = HColorSet.instance().getColor('#FF0000');
-
-/** `int deltaPriority = STEP_BY_PARENT * 1000` overflows a Java int: 10001000000 - 2 * 2^32 (WElement.java:113). */
-const FIRST_DELTA = 1411065408;
 
 const NODE = ['root', 'element', 'wbsDiagram', 'node'] as const;
 
@@ -40,25 +37,27 @@ interface SpecialCall {
   readonly level: number;
   readonly starred: boolean;
   readonly stereotypes: readonly string[];
-  readonly priority: number;
+  readonly ancestorRank: number;
   readonly returned: Style;
 }
 
 /** A real builder whose `getMergedStyleSpecial` records each call and answers a fresh empty style on the signature. */
 function spyBuilder(calls: SpecialCall[]): StyleBuilder {
   const builder = new StyleBuilder();
-  vi.spyOn(builder, 'getMergedStyleSpecial').mockImplementation((signature: StyleSignatureBasic, priority: number) => {
-    const returned = new Style(signature, new Map());
-    calls.push({
-      names: signature.names,
-      level: signature.getKey().level,
-      starred: signature.isStarred(),
-      stereotypes: [...signature.getStereotypes()],
-      priority,
-      returned,
-    });
-    return returned;
-  });
+  vi.spyOn(builder, 'getMergedStyleSpecial').mockImplementation(
+    (signature: StyleSignatureBasic, ancestorRank: number) => {
+      const returned = new Style(signature, new Map());
+      calls.push({
+        names: signature.names,
+        level: signature.getKey().level,
+        starred: signature.isStarred(),
+        stereotypes: [...signature.getStereotypes()],
+        ancestorRank,
+        returned,
+      });
+      return returned;
+    },
+  );
   return builder;
 }
 
@@ -208,12 +207,8 @@ describe('WElement.getDefaultStyleDefinitionNode — the six signatures (WElemen
   });
 });
 
-describe('WElement.getStyle — the STEP_BY_PARENT merge (WElement.java:110-122)', () => {
-  it('STEP_BY_PARENT is 1000_1000 (WElement.java:110)', () => {
-    expect(STEP_BY_PARENT).toBe(10001000);
-  });
-
-  it('a 3-deep chain: self at STEP_BY_PARENT*1000, then each ancestor starred, STEP_BY_PARENT lower', () => {
+describe('WElement.getStyle — the ancestor-rank merge (WElement.java:109-119)', () => {
+  it('a 3-deep chain: self at rank 0, then each ancestor starred, one rank lower', () => {
     const calls: SpecialCall[] = [];
     const builder = spyBuilder(calls);
     const root = rootOf(IdeaShape.BOX, builder, Stereotype.build('<<top>>'));
@@ -223,10 +218,10 @@ describe('WElement.getStyle — the STEP_BY_PARENT merge (WElement.java:110-122)
     calls.length = 0;
     b.getStyle();
     expect(calls.map(({ returned: _, ...call }) => call)).toEqual([
-      { names: [...NODE, 'leafNode'], level: 2, starred: false, stereotypes: [], priority: FIRST_DELTA },
-      { names: [...NODE, 'boxless'], level: 2, starred: true, stereotypes: [], priority: FIRST_DELTA - STEP_BY_PARENT },
+      { names: [...NODE, 'leafNode'], level: 2, starred: false, stereotypes: [], ancestorRank: 0 },
+      { names: [...NODE, 'boxless'], level: 2, starred: true, stereotypes: [], ancestorRank: -1 },
       // The root is asked at b's level 2, not its own 0 (java:116): the non-root, non-leaf signature.
-      { names: [...NODE], level: 2, starred: true, stereotypes: ['top'], priority: FIRST_DELTA - 2 * STEP_BY_PARENT },
+      { names: [...NODE], level: 2, starred: true, stereotypes: ['top'], ancestorRank: -2 },
     ]);
     expect(merges.mock.calls).toEqual([
       [calls[1]!.returned, MergeStrategy.OVERWRITE_EXISTING_VALUE],

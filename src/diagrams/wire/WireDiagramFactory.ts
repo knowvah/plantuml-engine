@@ -17,7 +17,7 @@ import { ParserPass } from '../../core/command/ParserPass.js';
 import type { SingleLineCommand2 } from '../../core/command/SingleLineCommand2.js';
 import type { InternalEmojiStore } from '../../core/internal-emoji-store.js';
 import type { StringBounder } from '../../core/klimt/font/StringBounder.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { createSpriteRegistry } from '../../core/sprite-registry.js';
 import { LineLocationImpl } from '../../core/tim/LineLocationImpl.js';
@@ -25,7 +25,6 @@ import type { LineLocation } from '../../core/tim/LineLocation.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
 import { StringLocated } from '../../core/tim/StringLocated.js';
 import { versionString } from '../../core/version.js';
-import { Warning } from '../../core/warning/Warning.js';
 import { CommandComponent } from './CommandComponent.js';
 import { CommandGoto } from './CommandGoto.js';
 import { CommandMove } from './CommandMove.js';
@@ -42,21 +41,12 @@ import {
   positionOf,
   type StyleDispatch,
 } from './wire-style-dispatch.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 
 /** `@startwire`/`@endwire`, tolerated in a hand-built source. */
 const START_END_RE = /^@(start|end)wire\s*$/i;
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** The location description of a source string. @see LineLocation.getDescription */
 const LOCATION_DESCRIPTION = 'string';
-
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, by lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
 
 /** Where the command at line `index` stands. */
 interface CommandInput {
@@ -145,9 +135,9 @@ function refusalLineOf(source: UmlSource, i: number): number {
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: WireDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -190,7 +180,8 @@ function executeCommands(
       continue;
     }
     const outcome = getCandidate(commands, { diagram, source, lines, index: i, location: locationOf(source, i) });
-    if (outcome === undefined) return refuse('syntax', refusalLineOf(source, i), i + 1, SYNTAX_ERROR);
+    if (outcome === undefined)
+      return refuse('syntax', refusalLineOf(source, i), i + 1, syntaxErrorMessageOf(lines[i]!));
     if (!outcome.result.isOk()) return executionRefusal(source, i, outcome.nextIndex, outcome.result);
     i = outcome.nextIndex;
   }

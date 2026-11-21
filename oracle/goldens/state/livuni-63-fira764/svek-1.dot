@@ -8,7 +8,7 @@ sh0007 [shape=rect,style=rounded,label="",width=1.054340,height=0.694444,color="
 sh0008 [shape=rect,style=rounded,label="",width=1.610938,height=0.694444,color="#000008"];
 sh0009 [shape=rect,style=rounded,label="",width=1.054340,height=0.694444,color="#000009"];
 sh0010 [shape=rect,style=rounded,label="",width=1.610938,height=0.694444,color="#00000A"];
-sh0011 [shape=rect,style=rounded,label="",width=0.694444,height=0.694444,color="#00000B"];
+sh0011 [shape=circle,label="",width=0.166667,height=0.166667,color="#00000B"];
 sh0012 [shape=diamond,label="",width=0.333333,height=0.333333,color="#00000C"];
 sh0013 [shape=rect,style=rounded,label="",width=0.694444,height=0.694444,color="#00000D"];
 sh0014 [shape=rect,style=rounded,label="",width=0.710417,height=0.694444,color="#00000E"];

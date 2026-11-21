@@ -40,6 +40,31 @@ residuals, `cikoge-60-riti614` at its help-font residual and the 4 listfonts
 rows at theirs (the host font list, ruling #169; their `reason` says so). None is an error page, so no row is recorded `error`. The
 two manifests are disjoint and together cover the 49 slugs.
 
+Re-pin to a720bdd (2026-11-20): upstream aa79d2d80ee draws every formula as
+JLaTeXMath glyph `<path>`s (DIVERGENCES.md "LaTeX rendering engine", 2026-11-20
+update). Four creole math pins (`jugepi-77`, `kurugo-90`, `nurile-03`,
+`ziboza-73`) left `ratchet.json` for `diff-baseline.json` rows at their
+formula residual, and the other creole formula-only rows re-measured with that
+reason. Not re-pinned, because what differs is not KaTeX-forced: rows where the
+jar now draws a formula's rollback as monospace text
+(`ScientificEquationSafe.java:122-127`, `:158-160`) while the port still draws
+the old rollback image, and every `@startmath`/`@startlatex` row, whose
+document the jar now exports through `TextBlockExporter` with the formula scale
+applied (`ScientificEquationSafe.java:164-173`) while the port still writes
+Batik's envelope and ignores `scale` in SVG.
+
+Port of aa79d2d80ee's export (2026-11-20): the port now draws the rollback as
+the jar's monospace text (`TextBlockRaw`) and exports `@startmath`/`@startlatex`
+through `TextBlockExporter` with the scale, the background box and the rollback,
+so those rows were re-measured to their glyph residual with the same reason
+(the 13 `@startmath`/`@startlatex` cache rows, `kebadi-11`, `roxita-24`,
+`rozesu-56` and the authored `cov-math-*`/`cov-latex-*` rows), and the five
+rollback pins (`cunotu-47`, `marese-34`, `pecafo-64`, `vocalo-20`, `xanuke-94`)
+left `ratchet.json` for `diff-baseline.json` rows. `ratchet.json` now pins 17
+rows, `diff-baseline.json` carries 32. `cov-rollback-class-note` is zero-diff
+since the class, description and state creole paths draw the rollback too
+(2026-11-21).
+
 ## Authored root
 
 `tests/fixtures/factories/` is a flat tree of ORIGINAL fixtures (`<slug>.puml` +

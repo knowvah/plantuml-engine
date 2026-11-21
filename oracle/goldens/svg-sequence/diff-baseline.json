@@ -877,11 +877,12 @@
     {
       "type": "sequence",
       "slug": "camuxi-33-nopo108",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 59,
-      "measuredAt": "2026-10-21",
-      "measuredAgainstCommit": "fae94fe7"
+      "status": "baseline",
+      "weightedScore": 30,
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "sequence",
@@ -2227,11 +2228,12 @@
     {
       "type": "sequence",
       "slug": "femixi-54-maja138",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 139,
+      "diffCount": 62,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk = 'foo'` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the later `!if`/`!elseif` on it takes neither branch, so the jar draws two messages where this port draws three; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -2326,11 +2328,12 @@
     {
       "type": "sequence",
       "slug": "fidoba-93-nonu806",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 379,
+      "diffCount": 5,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk<TAB>= \"foo\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the jar draws its empty-diagram Welcome page where this port draws the diagram; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -3190,11 +3193,12 @@
     {
       "type": "sequence",
       "slug": "gugena-56-fazu871",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 21,
+      "diffCount": 21,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk = \"foo\" + \"bar\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the message text keeps the bare name where this port substitutes the value; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -3226,11 +3230,12 @@
     {
       "type": "sequence",
       "slug": "gunabi-18-gumo131",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 28,
+      "diffCount": 28,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk = \"foo\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the message text keeps the bare name where this port substitutes the value; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -3721,11 +3726,12 @@
     {
       "type": "sequence",
       "slug": "joleka-44-cese913",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-13",
-      "measuredAgainstCommit": "a2487fb3"
+      "status": "baseline",
+      "weightedScore": 390,
+      "diffCount": 34,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 2 `!TEST=something` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the jar draws its empty-diagram Welcome page where this port draws the diagram; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -3757,11 +3763,12 @@
     {
       "type": "sequence",
       "slug": "jorari-47-buje011",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 2,
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 5 `!ij = \"foo5\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the message text keeps the bare name where this port substitutes the value; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -5395,11 +5402,12 @@
     {
       "type": "sequence",
       "slug": "mefeke-43-xotu192",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-10-23",
-      "measuredAgainstCommit": "ce6d9558"
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 1,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Formula row: since the a720bdd re-pin the jar draws each <math> formula as JLaTeXMath glyph <path>s (upstream aa79d2d80ee, ScientificEquationSafe.java:123-134 -> TeXIconBuilder.java:69-71), this port a KaTeX <image>; every remaining diff is that image-for-paths substitution (the element and the parent child count). Accepted divergence: DIVERGENCES.md, \"LaTeX rendering engine — KaTeX, not JLaTeXMath\" (2026-11-20 update)."
     },
     {
       "type": "sequence",
@@ -7897,11 +7905,12 @@
     {
       "type": "sequence",
       "slug": "sarico-38-foxo520",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 139,
+      "diffCount": 62,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk = 'foo'` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the later `!if`/`!elseif` on it takes neither branch, so the jar draws two messages where this port draws three; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -8509,11 +8518,12 @@
     {
       "type": "sequence",
       "slug": "supezo-15-dasi526",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 2,
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 2 `!Response = \"FOO\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the message text keeps the bare name where this port substitutes the value; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",
@@ -9742,11 +9752,12 @@
     {
       "type": "sequence",
       "slug": "vodiba-42-fegu984",
-      "status": "pinned",
-      "weightedScore": 0,
-      "diffCount": 14,
-      "measuredAt": "2026-10-20",
-      "measuredAgainstCommit": "ed7355c4"
+      "status": "baseline",
+      "weightedScore": 2,
+      "diffCount": 2,
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
+      "reason": "Python-preprocessor row: line 3 `!ijk = \"foo\"` is a Python statement upstream (PythonLine.isStatementLine, PythonLine.java; not isLegacyAffectation: no \"$\", no scope, no \"?=\"), so the a720bdd jar does not define it as a legacy variable and the message text keeps the bare name where this port substitutes the value; this port has no Python preprocessor and still defines it. Every remaining diff follows from that. Open -> #214"
     },
     {
       "type": "sequence",

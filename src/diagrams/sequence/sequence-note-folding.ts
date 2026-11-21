@@ -78,37 +78,80 @@ export function elseLeafNotes(branch: readonly SequenceEvent[]): NoteEvent[] {
 
 /**
  * The warnings `Reference#addNote` returns for the notes it drops: a `ref`
- * takes LEFT and RIGHT only, any other position yields `new Warning("This
- * position is ignored: " + note.getPosition())` (`Reference.java:166-171`),
+ * takes LEFT and RIGHT only, any other position yields a Warning naming the
+ * position in lower case (`Reference.java:166-171`, reworded upstream in 443598c29ce),
  * which `FactorySequenceNoteOnArrowCommand.java:236-237` hands to
  * `diagram.addWarning`. A group's `end` leaf warns the same way for `top`/`bottom`
  * (`GroupingLeaf.java:122-128`). Source order, nested frames included; the
  * `NotePosition` enum prints upper-case. A message's own `top`/`bottom` note
  * is accepted (`AbstractMessage.java:219-227`), so only `ref` owners warn.
+ *
+ * In the same source-order walk, a standalone note written with the leading
+ * `/` warns that the merge syntax is deprecated ({@link VMERGE_DEPRECATED}).
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/sequencediagram/Reference.java:166-171
  */
 export function ignoredNoteWarnings(events: readonly SequenceEvent[]): Warning[] {
   const warnings: Warning[] = [];
   let owner: NoteOwner | undefined;
   for (const event of events) {
+    if (event.kind === 'note' && warnsVmerge(event)) warnings.push(new Warning(VMERGE_DEPRECATED));
     if (event.kind === 'frame') event.branches.forEach((b, i) => warnings.push(...branchWarnings(b, i)));
     if (event.kind === 'message' || event.kind === 'messageExo') owner = event;
     else if (isRef(event)) owner = event;
     else if (event.kind === 'frame') owner = event;
     else if (owner?.kind === 'frame' && foldsInto(owner, event) && event.side !== undefined)
-      warnings.push(new Warning(`This position is ignored: ${event.side.toUpperCase()}`));
+      warnings.push(new Warning(isRef(owner) ? refNoteIgnored(event.side) : leafNoteIgnored(event.side)));
   }
   return warnings;
+}
+
+/**
+ * `FactorySequenceNoteCommand#executeInternal` (`:279-283`, upstream
+ * `2c679666164`): a note it adds with the leading `/` (`tryMerge`) warns,
+ * pointing authors at `&`.
+ */
+const VMERGE_DEPRECATED =
+  "The leading '/' note-merge syntax is deprecated; use '&' to place notes on the same row instead.";
+
+/**
+ * Whether `FactorySequenceNoteCommand` added this note with `tryMerge`: a
+ * standalone note on ONE participant (the command's single `PARTICIPANT`
+ * group; `note over A, B` is `FactorySequenceNoteOverSeveralCommand`, which
+ * does not warn) written with `/`. The warning sits inside `display.size() > 0`
+ * (`:246`).
+ */
+function warnsVmerge(note: NoteEvent): boolean {
+  return note.vmerge === true && note.onMessage !== true && note.participants.length === 1;
 }
 
 /** A branch's warnings; an `else` branch's leaf notes warn like an `end`'s
  *  (`GroupingLeaf.java:122-128`), `top`/`bottom` only. */
 function branchWarnings(branch: readonly SequenceEvent[], index: number): Warning[] {
   const leaf = index === 0 ? [] : elseLeafNotes(branch).flatMap((n) => (n.side === undefined ? [] : [n.side]));
-  const own = leaf.map((side) => new Warning(`This position is ignored: ${side.toUpperCase()}`));
+  const own = leaf.map((side) => new Warning(leafNoteIgnored(side)));
   return [...own, ...ignoredNoteWarnings(branch)];
+}
+
+/** `Reference#addNote`'s warning for a dropped note; the position prints lower-case.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/sequencediagram/Reference.java:167-171 */
+function refNoteIgnored(side: string): string {
+  return `'note ${side}' is not supported on a 'ref': this note is ignored. Use 'note left' or 'note right'`;
+}
+
+/** `GroupingLeaf#addNote`'s warning for a note after `end` (or `else`) that is not LEFT/RIGHT.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/sequencediagram/GroupingLeaf.java:123-129 */
+function leafNoteIgnored(side: string): string {
+  return `'note ${side}' is not supported after 'end': use 'note left' or 'note right'`;
 }
 
 function isRef(event: SequenceEvent): event is RefOwner {
   return event.kind === 'frame' && event.frameType === 'ref';
+}
+
+/** `MessageExo#overrideNotePosition`, applied by `AbstractMessage#addNote` to
+ *  every note on the arrow (`MessageExo.java:62-69`, `AbstractMessage.java:224`):
+ *  a left border arrow takes its notes on the RIGHT, a right border one on
+ *  the LEFT. */
+export function exoNoteSide(type: MessageExoEvent['exoType']): 'left' | 'right' {
+  return type === 'FROM_LEFT' || type === 'TO_LEFT' ? 'right' : 'left';
 }

@@ -94,11 +94,11 @@ describe('parseGantt: accepted sources', () => {
     expect('refused' in result ? result.message : 'ok').toBe('ok');
   });
 
-  it('adds the CommandSkinParam deprecation warning (CommandSkinParam.java:88-99)', () => {
-    const result = parsed('skinparam padding 2\n[A] lasts 5 days');
-    expect(result.diagram.getWarnings().map((w) => w.asSingleLine())).toContain(
-      'Please use CSS style instead of skinparam padding',
-    );
+  it('adds the CommandSkinParam deprecation warning, naming the value (CommandSkinParam.java:98-100)', () => {
+    const result = parsed('skinparam handwritten false\nskinparam padding 2\n[A] lasts 5 days');
+    expect(result.diagram.getWarnings().map((w) => w.asSingleLine())).toEqual([
+      "'skinparam handwritten' is deprecated: write '!option handwritten false' instead",
+    ]);
   });
 });
 

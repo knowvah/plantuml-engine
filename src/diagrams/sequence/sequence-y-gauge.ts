@@ -31,6 +31,20 @@ export interface YGauge {
   /** The parallel group's chaining origin (`:47-51`), the max of the gauge
    *  before the group head; `undefined` with {@link contact}. */
   readonly origin: number | undefined;
+  /**
+   * The note footprints -- (participant, position) keys -- already claimed by
+   * a `& note` in the current contact-line run (`YGauge.java:54-65`,
+   * `noteAnchorsInRun`, upstream `2c679666164`). Only a `NoteTile` sets it
+   * ({@link withNoteAnchorsInRun}); every factory below builds a gauge
+   * without it, as upstream's constructors do, so any other tile ends the run.
+   */
+  readonly noteAnchorsInRun?: ReadonlySet<string>;
+}
+
+/** `YGauge#withNoteAnchorsInRun`: the same gauge, only the note bookkeeping
+ *  changes (`NoteTile`'s constructor is the only caller). */
+export function withNoteAnchorsInRun(gauge: YGauge, anchors: ReadonlySet<string>): YGauge {
+  return { ...gauge, noteAnchorsInRun: anchors };
 }
 
 /** What a tile hands its gauge factory: `getContactPointRelative()` and

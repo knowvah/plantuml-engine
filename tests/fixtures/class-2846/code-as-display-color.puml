@@ -1,0 +1,6 @@
+@startuml
+package uid as "Hello" #pink {
+ class A
+}
+uid --> A
+@enduml

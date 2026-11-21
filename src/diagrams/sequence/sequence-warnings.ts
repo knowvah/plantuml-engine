@@ -1,14 +1,15 @@
 /**
  * The sequence diagram's warning channel and banner (sdd2-T7e).
  *
- * Two producers reach the banner `DiagramChromeFactory#addWarnings` draws
+ * The producers that reach the banner `DiagramChromeFactory#addWarnings` draws
  * above the diagram (`DiagramChromeFactory.java:124-135,176-200`):
  * - `CommandSkinParam#executeArg`'s deprecation warnings (`CommandSkinParam
  *   .java:92-99`), rebuilt from the collected skinparam map into
  *   `ast.warnings` (`core/skinparam-warnings.ts`);
- * - `Reference#addNote`'s `This position is ignored: <POSITION>`
- *   (`Reference.java:166-171`), derived from the events
- *   ({@link ignoredNoteWarnings}).
+ * - `Reference#addNote`'s and `GroupingLeaf#addNote`'s dropped-note warnings
+ *   (`Reference.java:166-171`) and `FactorySequenceNoteCommand`'s `/`
+ *   deprecation (`FactorySequenceNoteCommand.java:279-283`), derived from the
+ *   events in source order ({@link ignoredNoteWarnings}).
  *
  * The banner goes on the margin-baked fragment the renderer returns, before
  * chrome: the same composition the activity engine uses, with sequence's own

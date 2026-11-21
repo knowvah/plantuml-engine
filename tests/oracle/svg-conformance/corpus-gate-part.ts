@@ -9,6 +9,10 @@
 import { createHash } from 'node:crypto';
 import { readdirSync } from 'node:fs';
 
+// The capture profile lives with the recapture tool, which must capture
+// exactly what these gates render with.
+export { securityProfileOf } from '../../../scripts/lib/golden-security-profile.js';
+
 /** On PR #153's numbers the whole-corpus refusal test took 424 s, so four parts
  *  should take about 106 s each. */
 export const CORPUS_GATE_PARTS = 4;

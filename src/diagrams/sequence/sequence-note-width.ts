@@ -21,6 +21,7 @@ import { UStroke } from '../../core/klimt/UStroke.js';
 import { Stereotype } from '../../core/stereo/Stereotype.js';
 import type { LiveEvent, LiveEvents } from './sequence-live-events.js';
 import type {
+  Anchor,
   NotePoint,
   NotePointConstraint,
   Scan,
@@ -242,6 +243,30 @@ function placeMembers(members: readonly NoteEvent[], sorted: readonly Participan
     placed.push({ note, index, ...(index2 !== undefined ? { index2 } : {}), offset, width });
   });
   return placed;
+}
+
+/**
+ * A standalone note tile's `getMinX`/`getMaxX`: a lone note's `NoteTile`
+ * (`getX` and `getX + getUsedWidth`, `NoteTile.java:191-206,315-332`) or a
+ * `/` group's `NotesTile`, the least `getX` and greatest `getX2` of its
+ * members (`NotesTile.java:228-246`). For one member both read the same
+ * place. An `OVER_SEVERAL` member sits on the MIDDLE of two centres (and its
+ * `getUsedWidth` reads the row before it is solved, `NoteTile.java:176-189`),
+ * which no {@link Anchor} spells: `undefined`, as for a member on an unknown
+ * participant.
+ */
+export function noteTileFootprint(
+  members: readonly NoteEvent[],
+  sorted: readonly Participant[],
+  scan: Scan,
+): { mins: Anchor[]; maxs: Anchor[] } | undefined {
+  if (members.some(isSeveral)) return undefined;
+  const placed = placeMembers(members, sorted, scan);
+  if (placed.length !== members.length) return undefined;
+  return {
+    mins: placed.map((p) => ({ index: p.index, offset: p.offset, at: 'C' as const })),
+    maxs: placed.map((p) => ({ index: p.index, offset: p.offset + p.width, at: 'C' as const })),
+  };
 }
 
 /** `getX` (`extra` 0) or `getX2` (`extra` the width, `:228-230`) of a member. */

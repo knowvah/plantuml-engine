@@ -11,6 +11,7 @@ import { BodyEnhancedAbstract } from './BodyEnhancedAbstract.js';
 import { EmbeddedDiagram, getEmbeddedType } from '../EmbeddedDiagram.js';
 import type { AtomOps } from '../klimt/creole/Sea.js';
 import type { CreoleRenderContext } from '../klimt/creole/DisplayCreole.js';
+import { trim2, trin } from '../string-utils-trim.js';
 
 /**
  * BodyEnhanced2 — the `BodyEnhancedAbstract` concrete used for description-
@@ -257,30 +258,4 @@ export function addOneSingleLineManageEmbedded2(
     }
   }
   return { display, index: i };
-}
-
-/** `StringUtils.trin(String)` (`StringUtils.java:502-520`) -- trims only
- *  characters whose code point is <= U+0020, from both ends. Duplicated
- *  locally rather than imported: this exact one-liner is already
- *  independently duplicated in `driver-text-svg.ts`/`link-decor.ts`
- *  (established precedent -- no shared `StringUtils.ts` owner exists in
- *  this port). */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
-
-/** `StringUtils.trim2(CharSequence)` (`StringUtils.java:534-552`) -- same
- *  trim predicate as {@link trin} over a different upstream signature.
- *  Duplicated locally matching `EmbeddedDiagram.ts`/`CreoleParser.ts`'s own
- *  established precedent for this exact utility (no shared owner). */
-function trim2(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
 }

@@ -1,0 +1,11 @@
+@startuml
+concise "C" as C
+
+@0
+C is A
+
+@100
+C is B
+
+break 80 to 20
+@enduml

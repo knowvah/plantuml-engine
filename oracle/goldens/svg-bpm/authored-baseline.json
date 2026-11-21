@@ -88,8 +88,8 @@
         "line": null,
         "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
@@ -297,8 +297,8 @@
         "line": null,
         "message": "java.lang.ClassCastException: class net.sourceforge.plantuml.bpm.BpmElement cannot be cast to class net.sourceforge.plantuml.bpm.ConnectorPuzzleEmpty (net.sourceforge.plantuml.bpm.BpmElement and net.sourceforge.plantuml.bpm.ConnectorPuzzleEmpty are in unnamed module of loader 'app')"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
@@ -338,36 +338,36 @@
         "line": null,
         "message": "java.lang.IllegalStateException"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
       "slug": "cov-goto-self-merge",
       "status": "baseline",
-      "weightedScore": 297,
-      "diffCount": 69,
+      "weightedScore": 316,
+      "diffCount": 68,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": null,
         "message": "java.lang.IllegalStateException"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
       "slug": "cov-goto-unknown",
       "status": "baseline",
-      "weightedScore": 260,
-      "diffCount": 129,
+      "weightedScore": 280,
+      "diffCount": 128,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": null,
         "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
@@ -651,8 +651,8 @@
         "line": null,
         "message": "java.lang.NullPointerException: Cannot invoke \"net.sourceforge.plantuml.bpm.Coord.getLine()\" because \"coord\" is null"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "db4c389f2"
     },
     {
       "type": "bpm",
@@ -732,15 +732,15 @@
       "type": "bpm",
       "slug": "cov-style",
       "status": "baseline",
-      "weightedScore": 7,
-      "diffCount": 7,
-      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target. The message is PSystemCommandFactory#getSyntaxErrorMessage's unclosed-<style> wording (upstream 96380842043, ported): bpm has no style command, so even a closed block's opening line is refused.",
       "jarError": {
         "line": 2,
-        "message": "Syntax Error? (Assumed diagram type: bpm)"
+        "message": "Unclosed <style> block: '</style>' is missing (Assumed diagram type: bpm)"
       },
-      "measuredAt": "2026-11-11",
-      "measuredAgainstCommit": "e88ea8424"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "3be6ffbc0"
     },
     {
       "type": "bpm",

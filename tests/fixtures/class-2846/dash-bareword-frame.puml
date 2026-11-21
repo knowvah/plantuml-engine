@@ -1,0 +1,5 @@
+@startuml
+package foo-bar <<Frame>> {
+ class A
+}
+@enduml

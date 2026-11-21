@@ -17,7 +17,6 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java
  */
 
-import { EaterException } from './tim/EaterException.js';
 import type { IncludeStore } from './tim/IncludeStore.js';
 import type { TWarning } from './tim/TFunction.js';
 import { readLines } from './tim/ReadLineReader.js';
@@ -31,9 +30,8 @@ import type { TimEnvironment } from './tim/builtin/TimEnvironment.js';
 import { TMemoryGlobal } from './tim/TMemoryGlobal.js';
 import { TValue } from './tim/expression/TValue.js';
 import { TVariableScope } from './tim/TVariableScope.js';
-import { StyleAndSkinparamCollector } from './preprocessor-collector.js';
-import { BLOCK_E1_BREAKLINE } from './tim/builtin/jaws-constants.js';
-import { mutateExpandsBreakline } from './uml-source-lines.js';
+import { collectStylesAndSkinparams } from './preprocessor-collector.js';
+import { failureDataOf, markLastLine, messageOf, mutateExpands1 } from './preprocessor-failure.js';
 
 /** One `skin <name>` line: its argument and document position. */
 export interface SkinDirective {
@@ -144,8 +142,8 @@ export interface PreprocessorResult {
   readonly options?: ReadonlyMap<string, string>;
   /**
    * The warnings the run added to the same `PreprocessingArtifact`
-   * (`EaterOption.java:64-67`: `No such !option <key>`, `No default value for
-   * <key>`), in order. Upstream's `TitledDiagram#getWarnings` joins them with
+   * (`EaterOption.java:66-73`: `Unknown '!option <key>': this line is
+   * ignored`, `'!option <key>' needs a value: ...`), in order. Upstream's `TitledDiagram#getWarnings` joins them with
    * the pragma's (`AbstractDiagram.java:259-261`), so a diagram that rebuilds
    * its artifact from {@link options} adds these too. Absent on a hand-built
    * result.
@@ -278,6 +276,15 @@ export interface PreprocessorFailure {
    * is exactly where `PSystemErrorPreprocessor` reads it back from.
    */
   readonly trace: readonly StringLocated[];
+  /**
+   * Upstream's `BlockUml#data` on failure: the interpreter's result list with
+   * the error line `TimLoader#load` appends to it, through
+   * `Jaws.mutateExpands1` -- what `PSystemErrorPreprocessor` wraps as its
+   * `UmlSource` and counts for the Welcome block.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TimLoader.java:79-80
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/BlockUml.java:156-161,195-196
+   */
+  readonly data: readonly StringLocated[];
   /** The original thrown error, so `preprocess()` can rethrow it unchanged. */
   readonly cause: unknown;
 }
@@ -379,10 +386,8 @@ export function preprocessLinesOrError(
   try {
     context.executeLines(memory, input, undefined, false);
   } catch (e) {
-    return {
-      ok: false,
-      failure: { input, trace: markLastLine(context.getDebug(), messageOf(e)), cause: e },
-    };
+    const trace = markLastLine(context.getDebug(), messageOf(e));
+    return { ok: false, failure: { input, trace, data: failureDataOf(context, e, trace), cause: e } };
   }
 
   return { ok: true, result: resultOf(context) };
@@ -401,10 +406,9 @@ export function preprocessLinesOrError(
  * mid-line call's `pendingAdd` prefix (`:645`) leaked into the diagram body.
  */
 function resultOf(context: TContext): PreprocessorResult {
-  const collector = new StyleAndSkinparamCollector();
   const data = mutateExpands1(context.getResultList());
   const positions = documentPositions(data);
-  const kept = data.filter((line, i) => !collector.accept(line, positions[i]));
+  const { collector, kept } = collectStylesAndSkinparams(data, positions);
   const flattened = flatten(kept);
   return {
     lines: flattened.lines,
@@ -421,30 +425,6 @@ function resultOf(context: TContext): PreprocessorResult {
     options: new Map(context.getPreprocessingArtifact().getOptions()),
     warnings: [...context.getPreprocessingArtifact().getWarnings()],
   };
-}
-
-/**
- * `BlockUml`'s constructor runs `Jaws.mutateExpands1(tmp)` on the TIM result
- * list (`BlockUml.java:153`) before any command sees it: every
- * `BLOCK_E1_BREAKLINE` (`%breakline()`, C4's `$bl()`) outside a `{{...}}`
- * embed splits the line, each piece keeping the line's location and
- * preprocessor error (`jaws/Jaws.java:65-120`). Collecting before this split
- * read C4's `$defineSkinparams` output -- several `skinparam X { }` blocks on
- * one line -- as ONE single-line skinparam whose value was the whole blob
- * (cdd6 verify.md, "C4 `>>` head + `$bl()` split"). The per-line split is
- * {@link mutateExpandsBreakline}'s; this re-wraps its pieces as located lines.
- * `mergeTripleMarkBlocks` is not run: `JawsFlags.PARSE_NEW_MULTILINE_TRIPLE_MARKS`
- * is `false` (`JawsFlags.java:41`).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/jaws/Jaws.java:59-63
- */
-function mutateExpands1(lines: readonly StringLocated[]): StringLocated[] {
-  return lines.flatMap((sl) => {
-    const s = sl.getString();
-    if (!s.includes(BLOCK_E1_BREAKLINE)) return [sl];
-    return mutateExpandsBreakline([s]).map(
-      (piece) => new StringLocated(piece, sl.getLocation(), undefined, sl.getPreprocessorError()),
-    );
-  });
 }
 
 /** The root of a line's location chain: an included line's `!include` line. */
@@ -471,24 +451,4 @@ function documentPositions(lines: readonly StringLocated[]): (number | undefined
     if (root !== undefined && root.getDescription() === document) last = root.getPosition();
     return last;
   });
-}
-
-/** @see ~/git/plantuml/.../tim/TimLoader.java#changeLastLine */
-function markLastLine(debug: readonly StringLocated[], message: string): readonly StringLocated[] {
-  const num = debug.length - 1;
-  if (num < 0) return debug;
-
-  const result = [...debug];
-  result[num] = debug[num]!.withErrorPreprocessor(message);
-  return result;
-}
-
-/**
- * An `EaterException`'s message is the error text upstream prints verbatim. Any
- * other throw has no upstream counterpart here, so it is reported as it reads.
- */
-function messageOf(e: unknown): string {
-  if (e instanceof EaterException) return e.getMessage();
-
-  return e instanceof Error ? e.message : String(e);
 }

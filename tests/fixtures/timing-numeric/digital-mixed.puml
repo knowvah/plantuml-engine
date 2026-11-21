@@ -1,0 +1,21 @@
+@startuml
+concise "Concise" as C
+digital "Bus" as B
+binary "Bin" as N
+rectangle "Rect" as T
+
+@0
+C is A
+B is 0
+N is high
+T is X
+
+@40
+B is 5
+C is {-}
+
+@80
+B is 2
+N is low
+T is Y
+@enduml

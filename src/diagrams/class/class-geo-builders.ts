@@ -21,6 +21,7 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import { namespaceFolderTitle } from './class-namespace-title-table.js';
 import { buildDrawnClusterHeaderStereo } from './class-cluster-header.js';
 import { stereotypeLabelFields, splitStereotypeStyleTags } from './class-stereotype.js';
+import { mergedStyleFields } from './class-stereotype-style.js';
 import { applyClassDocumentMargin, classDocumentMargin } from './layout-ink-extent.js';
 import { namespaceDrawnInk } from './class-namespace-title-ink.js';
 import { degenerateNoteGeo, DEGENERATE_NEAR_MARGIN } from './class-geo-builders-degenerate-note.js';
@@ -131,7 +132,7 @@ export function buildClassifierGeos(
       ...(classifier.creationIndex !== undefined ? { creationIndex: classifier.creationIndex } : {}),
       ...(classifier.url !== undefined ? { url: classifier.url } : {}),
       ...(classifier.color !== undefined ? { color: classifier.color } : {}),
-      ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
+      ...mergedStyleFields(classifier),
       ...(classifier.syntheticIdName !== undefined ? { syntheticIdName: classifier.syntheticIdName } : {}),
       ...(classifier.quarkName !== undefined ? { quarkName: classifier.quarkName } : {}),
       ...(classifier.phantomSlot === true ? { phantomSlot: true as const } : {}),
@@ -256,6 +257,7 @@ function namespaceGeoFromBox(
     ...(ns.colors !== undefined ? { colors: ns.colors } : {}),
     ...(ns.url !== undefined ? { url: ns.url } : {}),
     ...(ns.roundCorner !== undefined ? { roundCorner: ns.roundCorner } : {}),
+    ...(ns.titleWrapWidth !== undefined ? { titleWrapWidth: ns.titleWrapWidth } : {}),
   };
 }
 
@@ -365,7 +367,7 @@ function buildDegenerateClassifierLeaf(
     ...(classifier.usymbol !== undefined ? { usymbol: classifier.usymbol } : {}),
     ...(classifier.url !== undefined ? { url: classifier.url } : {}),
     ...(classifier.color !== undefined ? { color: classifier.color } : {}),
-    ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
+    ...mergedStyleFields(classifier),
     ...stereotypeLabelFields(classifier),
     ...(classifier.styleGeneration !== undefined ? { styleGeneration: classifier.styleGeneration } : {}),
     // `EntityImageClass.java:197,210`: the lone class casts its merged style's shadow like any other.

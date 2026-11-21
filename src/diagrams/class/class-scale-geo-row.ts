@@ -36,6 +36,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/SvgGraphics.java:466-472,557,695
  * @see src/diagrams/sequence/scale-geo.ts
  */
+import type { RollbackLayout } from '../../core/math/latex-atom.js';
 import type { ClassifierGeo } from './class-geo-types.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
@@ -147,7 +148,12 @@ export function scaleAtom(atom: MemberRenderAtom, k: number): MemberRenderAtom {
         ...(atom.dy !== undefined ? { dy: atom.dy * k } : {}),
       };
     case 'image':
-      return { ...atom, width: atom.width * k, height: atom.height * k };
+      return {
+        ...atom,
+        width: atom.width * k,
+        height: atom.height * k,
+        ...(atom.rollback !== undefined ? { rollback: scaleRollback(atom.rollback, k) } : {}),
+      };
     case 'bullet':
       return { ...atom, width: atom.width * k };
     case 'vector':
@@ -157,6 +163,19 @@ export function scaleAtom(atom: MemberRenderAtom, k: number): MemberRenderAtom {
     case 'drawable':
       return scaleDrawableAtom(atom, k);
   }
+}
+
+/** A rolled-back formula's block and text, every length scaled. */
+function scaleRollback(layout: RollbackLayout, k: number): RollbackLayout {
+  return {
+    ...layout,
+    width: layout.width * k,
+    height: layout.height * k,
+    textWidth: layout.textWidth * k,
+    dx: layout.dx * k,
+    baseline: layout.baseline * k,
+    fontSize: layout.fontSize * k,
+  };
 }
 
 /** One classifier row, scaled -- see this module's header for why

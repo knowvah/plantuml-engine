@@ -9,7 +9,7 @@ import { matchAnnotationCommand } from '../../core/annotations/index.js';
 import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { Pragma } from '../../core/skin/Pragma.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
@@ -21,15 +21,21 @@ import {
   type PositionedDeclaration,
   type SkinParam as StyleSkinParam,
 } from '../../core/style/mindmap-style-builder.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { Warning } from '../../core/warning/Warning.js';
+import { skinParamWarning } from '../../core/skinparam-warnings.js';
 import { ChartDiagram } from './ChartDiagram.js';
 import { SkinParam } from './chart-skin-param.js';
 import { applyChartAnnotation, CHART_ANNOTATION_RE } from './command/CommandChartAnnotation.js';
+import { applyChartAAxis, CHART_A_AXIS_RE } from './command/CommandChartAAxis.js';
 import { applyChartArea, CHART_AREA_RE } from './command/CommandChartArea.js';
+import { applyChartPie, CHART_PIE_RE } from './command/CommandChartPie.js';
+import { applyChartRadar, CHART_RADAR_RE } from './command/CommandChartRadar.js';
+import { applyChartRAxis, CHART_R_AXIS_RE } from './command/CommandChartRAxis.js';
 import { applyChartBar, CHART_BAR_RE } from './command/CommandChartBar.js';
 import { applyChartHAxis, CHART_H_AXIS_RE } from './command/CommandChartHAxis.js';
+import { applyChartItem, CHART_ITEM_RE } from './command/CommandChartItem.js';
 import { applyChartLegend, CHART_LEGEND_RE } from './command/CommandChartLegend.js';
 import { applyChartLine, CHART_LINE_RE } from './command/CommandChartLine.js';
 import { applyChartOrientation, CHART_ORIENTATION_RE } from './command/CommandChartOrientation.js';
@@ -39,8 +45,6 @@ import { applyChartVAxis, CHART_V_AXIS_RE } from './command/CommandChartVAxis.js
 
 /** `@startchart`/`@endchart`, tolerated in a hand-built source (the wbs factory's `START_END_RE`). */
 const START_END_RE = /^@(start|end)chart\s*$/i;
-/** The standard error text of a line no command matches. @see command/PSystemCommandFactory.java:169-175 */
-const SYNTAX_ERROR = 'Syntax Error?';
 /** `Integer.MAX_VALUE`, past which `Integer.parseInt` throws. */
 const INT_MAX = 2147483647;
 /** `%s`. @see regex/Pattern2.java:57 */
@@ -83,21 +87,13 @@ const HIDE_BY_GENDER = new RegExp(
 /** The fold of `s` under `iu` that Java's `CASE_INSENSITIVE` does not make. */
 const LONG_S = 'ſ';
 
-/** The `new Warning(…)` texts `CommandSkinParam#executeArg` adds, keyed by the lower-cased skin parameter name.
- *  @see command/CommandSkinParam.java:88-99 */
-const SKINPARAM_WARNINGS: ReadonlyMap<string, string> = new Map([
-  ['handwritten', "Please use '!option handwritten true' to enable handwritten "],
-  ['participantpadding', 'Please use CSS style instead of skinparam ParticipantPadding'],
-  ['padding', 'Please use CSS style instead of skinparam padding'],
-]);
-
 /** One registered chart command: raw line, since every one passes `doTrim = false`. */
 interface ChartCommand {
   readonly re: RegExp;
   readonly apply: (diagram: ChartDiagram, match: RegExpExecArray) => CommandExecutionResult;
 }
 
-/** @see ChartDiagramFactory.java:67-76 (registration order) */
+/** @see ChartDiagramFactory.java:67-80 (registration order) */
 const CHART_COMMANDS: readonly ChartCommand[] = [
   { re: CHART_H_AXIS_RE, apply: applyChartHAxis },
   { re: CHART_V_AXIS_RE, apply: applyChartVAxis },
@@ -105,6 +101,10 @@ const CHART_COMMANDS: readonly ChartCommand[] = [
   { re: CHART_LINE_RE, apply: applyChartLine },
   { re: CHART_AREA_RE, apply: applyChartArea },
   { re: CHART_SCATTER_RE, apply: applyChartScatter },
+  { re: CHART_PIE_RE, apply: applyChartPie },
+  { re: CHART_RADAR_RE, apply: applyChartRadar },
+  { re: CHART_A_AXIS_RE, apply: applyChartAAxis },
+  { re: CHART_R_AXIS_RE, apply: applyChartRAxis },
   { re: CHART_LEGEND_RE, apply: applyChartLegend },
   { re: CHART_STACK_MODE_RE, apply: applyChartStackMode },
   { re: CHART_ORIENTATION_RE, apply: applyChartOrientation },
@@ -122,6 +122,26 @@ function dispatchChartLine(diagram: ChartDiagram, raw: string, i: number): Dispa
     if (match !== null) return { result: command.apply(diagram, match), nextIndex: i + 1 };
   }
   return null;
+}
+
+/**
+ * `CommandChartItem`, so loose that it comes after every other command, the common
+ * ones included (5ee1a051948).
+ * @see ChartDiagramFactory.java:83-84
+ */
+function dispatchItem(diagram: ChartDiagram, raw: string, i: number): DispatchOutcome | null {
+  const match = CHART_ITEM_RE.exec(raw);
+  return match === null ? null : { result: applyChartItem(diagram, match), nextIndex: i + 1 };
+}
+
+/**
+ * `finalizeDiagram`'s `checkFinalError` (a pie written as a list, e8ef39dd55c),
+ * an execution error at the first body line, as the jar reports it (R22.23).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:187-191
+ */
+function finalRefusal(diagram: ChartDiagram, source: UmlSource): ParseRefusal | null {
+  const message = diagram.checkFinalError();
+  return message === undefined ? null : refuse('final', refusalLineOf(source, 0), 0, message);
 }
 
 /** `Integer.parseInt` on `\d+`: past `int`, Java's uncaught `NumberFormatException`, a crash. */
@@ -249,9 +269,9 @@ function refusalLineOf(source: UmlSource, i: number): number {
 
 /** `CommandSkinParam#executeArg`'s deprecation warnings, in source order. */
 function addSkinParamWarnings(diagram: ChartDiagram, skinparam: ReadonlyMap<string, string>): void {
-  for (const name of skinparam.keys()) {
-    const message = SKINPARAM_WARNINGS.get(name.toLowerCase());
-    if (message !== undefined) diagram.addWarning(new Warning(message));
+  for (const [name, value] of skinparam) {
+    const warning = skinParamWarning(name, value);
+    if (warning !== undefined) diagram.addWarning(warning);
   }
 }
 
@@ -268,8 +288,11 @@ function executeCommands(diagram: ChartDiagram, source: UmlSource, dispatch: Sty
       continue;
     }
 
-    const outcome = dispatchChartLine(diagram, lines[i]!, i) ?? dispatchCommonCommand(diagram, lines, i);
-    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, SYNTAX_ERROR);
+    const outcome =
+      dispatchChartLine(diagram, lines[i]!, i) ??
+      dispatchCommonCommand(diagram, lines, i) ??
+      dispatchItem(diagram, lines[i]!, i);
+    if (outcome === null) return refuse('syntax', refusalLineOf(source, i), i, syntaxErrorMessageOf(lines[i]!));
     if (!outcome.result.isOk())
       return refuse('execution', refusalLineOf(source, i), i, outcome.result.getError(), outcome.result.getScore());
     i = outcome.nextIndex;
@@ -295,5 +318,5 @@ export function parseChart(source: UmlSource, preprocessing: PreprocessingArtifa
   const refusal = executeCommands(diagram, source, dispatch);
   if (refusal !== null) return refusal;
   // Declarations after the last command still mute the builder the render reads.
-  return executeDeclarationsBefore(dispatch, Number.POSITIVE_INFINITY) ?? diagram;
+  return executeDeclarationsBefore(dispatch, Number.POSITIVE_INFINITY) ?? finalRefusal(diagram, source) ?? diagram;
 }

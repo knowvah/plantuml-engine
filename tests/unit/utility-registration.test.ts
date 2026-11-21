@@ -31,11 +31,7 @@ import { dotPlugin } from '../../src/diagrams/dot/index.js';
 import { nwdiagPlugin } from '../../src/diagrams/nwdiag/index.js';
 import { donorsPlugin } from '../../src/diagrams/donors/PSystemDonorsFactory.js';
 import { skinparameterListPlugin } from '../../src/diagrams/donors/PSystemSkinparameterListFactory.js';
-import { appleTwoPlugin } from '../../src/diagrams/eggs/PSystemAppleTwoFactory.js';
-import { charliePlugin } from '../../src/diagrams/eggs/PSystemCharlieFactory.js';
 import { colorsPlugin } from '../../src/diagrams/eggs/PSystemColorsFactory.js';
-import { eggPlugin } from '../../src/diagrams/eggs/PSystemEggFactory.js';
-import { ripPlugin } from '../../src/diagrams/eggs/PSystemRIPFactory.js';
 import { pathPlugin } from '../../src/diagrams/eggs/PSystemPathFactory.js';
 import { welcomePlugin } from '../../src/diagrams/eggs/PSystemWelcomeFactory.js';
 import { listEmojiPlugin } from '../../src/diagrams/emoji/PSystemListEmojiFactory.js';
@@ -116,11 +112,7 @@ const JAVA_LINE: ReadonlyMap<DiagramPlugin, number> = new Map<DiagramPlugin, num
   [mathPlugin, 172],
   [latexPlugin, 173],
   [creolePlugin, 174],
-  [eggPlugin, 175],
-  [appleTwoPlugin, 176],
-  [ripPlugin, 177],
   [pathPlugin, 179],
-  [charliePlugin, 181],
   [ganttPlugin, 183],
   [chronologyPlugin, 184],
   [flowPlugin, 185],
@@ -159,9 +151,23 @@ const ROWS: readonly (readonly [slug: string, plugin: DiagramPlugin])[] = [
   ['xozane-18-becu956', listEmojiPlugin],
   ['xucoma-93-jeko861', listArchimateSpritesPlugin],
   ['govuca-53-mili511', versionPlugin],
-  ['kicizi-84-lexu138', charliePlugin],
   ['kavama-92-noro949', dedicationPlugin],
 ];
+
+/** `charlie` lost its factory upstream (dadad87bba3): the line is now sequence's syntax error. */
+describe('kicizi-84-lexu138 (charlie, removed upstream in dadad87bba3)', () => {
+  it('renders the jar syntax-error page', () => {
+    const text = corpusSource('kicizi-84-lexu138');
+    expect(resolved(text).plugin).not.toBe(undefined);
+    const { svg, errorPage } = render(text);
+    expect(errorPage).toBe(true);
+    const golden = readFileSync(new URL('kicizi-84-lexu138/in.svg', CORPUS), 'utf8');
+    // Jar error page + ours = conformant (docs/svg-conformance.md); only the version banner differs.
+    const verdict = '>Syntax Error? (Assumed diagram type: sequence)<';
+    expect(golden).toContain(verdict);
+    expect(svg).toContain(verdict);
+  });
+});
 
 /** D13: sudoku is dropped (MIT edition); these rows stay error pages. */
 const SUDOKU_ROWS: readonly string[] = ['lazama-75-loli189', 'gazale-13-tadu312'];
@@ -207,10 +213,10 @@ describe('registration order (PSystemBuilder.java:133-200)', () => {
     expect(lines).toEqual([...lines].sort((a, b) => (a ?? 0) - (b ?? 0)));
   });
 
-  it('puts path between RIP and Charlie, gated on INSECURE (java:177-181)', () => {
+  it('puts path between creole and gantt, gated on INSECURE (the eggs around it went in dadad87bba3)', () => {
     const at = REGISTERED_PLUGINS.indexOf(pathPlugin);
-    expect(REGISTERED_PLUGINS[at - 1]).toBe(ripPlugin);
-    expect(REGISTERED_PLUGINS[at + 1]).toBe(charliePlugin);
+    expect(REGISTERED_PLUGINS[at - 1]).toBe(creolePlugin);
+    expect(REGISTERED_PLUGINS[at + 1]).toBe(ganttPlugin);
     expect(pathPlugin.registeredOnlyUnder).toBe('INSECURE');
   });
 

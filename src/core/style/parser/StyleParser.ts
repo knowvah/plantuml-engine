@@ -7,6 +7,8 @@ import { ValueImpl } from '../ValueImpl.js';
 import { Context } from './Context.js';
 import { CssVariables } from './CssVariables.js';
 import { StyleScheme } from './StyleScheme.js';
+import { javaTrim } from '../../java-number-format.js';
+import { trin } from '../../string-utils-trim.js';
 
 /**
  * `StyleParsingException` — a style text the parser rejects.
@@ -50,15 +52,6 @@ class StyleToken {
 /** `CharInspector`'s end sentinel: `'\0'`. @see CharInspectorImpl.java:54-56 */
 const NUL = '\0';
 
-/** `StringUtils.trin`: strip every char `<= ' '` from both ends. @see StringUtils.java:505-533 */
-export function trin(arg: string): string {
-  let start = 0;
-  let end = arg.length - 1;
-  while (start <= end && arg.charCodeAt(start) <= 32) start++;
-  while (end >= start && arg.charCodeAt(end) <= 32) end--;
-  return arg.substring(start, end + 1);
-}
-
 /**
  * `CharInspectorImpl` over `BlocLines`: each line trimmed (`getTrimmed`),
  * `'\n'` appended when `insertNewlines`; empty lines are skipped on `jump`.
@@ -84,6 +77,7 @@ class CharInspectorImpl {
 
   /** @see CharInspectorImpl.java:60-64 */
   private getCurrentLine(): string {
+    // `getTrimmed()` is `StringUtils.trin`. @see CharInspectorImpl.java:62-63
     const trimmed = trin(this.data[this.line]!);
     return this.insertNewlines ? `${trimmed}\n` : trimmed;
   }
@@ -397,7 +391,8 @@ export class StyleParser {
       ins.jump();
       result += ch;
     }
-    if (result.charAt(0) === '.') return trin(result);
+    // `String#trim`, not `StringUtils.trin`: U+00A0 stays. @see StyleParser.java:357-358 (c9d62097ff5^)
+    if (result.charAt(0) === '.') return javaTrim(result);
     return result;
   }
 }

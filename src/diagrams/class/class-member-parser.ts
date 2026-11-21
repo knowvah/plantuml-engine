@@ -8,6 +8,8 @@
 import type { Member, Visibility } from './ast.js';
 import { parseUrlBracket, type UrlInfo } from './class-url.js';
 import { VisibilityModifier } from '../../core/skin/VisibilityModifier.js';
+import { javaTrim } from '../../core/java-number-format.js';
+import { trin } from '../../core/string-utils-trim.js';
 
 // ---------------------------------------------------------------------------
 // Member parsing helpers
@@ -141,7 +143,7 @@ function stripModifiers(rawLine: string): { line: string; isStatic: boolean; isA
   const lower = rawLine.toLowerCase();
   const isStatic = lower.includes('{static}') || lower.includes('{classifier}');
   const isAbstract = lower.includes('{abstract}');
-  const line = rawLine.replace(REMOVE_STATIC_CLASSIFIER_ABSTRACT_PATTERN, '').trim();
+  const line = javaTrim(rawLine.replace(REMOVE_STATIC_CLASSIFIER_ABSTRACT_PATTERN, ''));
   return { line, isStatic, isAbstract };
 }
 
@@ -175,7 +177,8 @@ function stripVisibility(line: string): { line: string; visibility: Visibility; 
   // (`Member.java:133`, `VisibilityModifier.java:211-214`), so `+x` is the text "+x" with no icon (jar:
   // `class__kinds-none`'s `+x` field, the baseline its `text[3]` diffs came from).
   if (VisibilityModifier.isVisibilityCharacter(line)) {
-    return { line: line.slice(1).trimStart(), visibility: line.charAt(0) as Visibility, visibilityExplicit: true };
+    // `StringUtils.trin(...substring(1))` (Member.java:135).
+    return { line: trin(line.slice(1)), visibility: line.charAt(0) as Visibility, visibilityExplicit: true };
   }
   return { line, visibility: '+', visibilityExplicit: false };
 }
@@ -302,7 +305,8 @@ function rawDisplayFallback(line: string, base: MemberBase): Omit<Member, 'visib
  * Returns a Member or null if the string cannot be parsed as a member.
  */
 export function parseMemberLine(rawLine: string): Member | null {
-  const trimmed = rawLine.trim();
+  // `String#trim` (Member.java:127-128): a U+00A0 indent stays and hides the visibility character.
+  const trimmed = javaTrim(rawLine);
   if (trimmed === '') return null;
 
   // A2s F-B B1 -- upstream's exact processing order: {method}/{field} tag

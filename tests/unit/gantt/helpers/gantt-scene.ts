@@ -11,6 +11,7 @@ import { Style } from '../../../../src/core/style/Style.js';
 import type { StyleBuilder } from '../../../../src/core/style/StyleBuilder.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import type { PName } from '../../../../src/core/style/PName.js';
 import type { Value } from '../../../../src/core/style/Value.js';
 import { LocalDate } from '../../../../src/core/time/LocalDate.js';
@@ -35,7 +36,7 @@ export const sb = new MeasurerStringBounder(measurer);
 
 /** `timeline { BackgroundColor <colour> }` with a priority no skin value can beat (Style#mergeWith: higher wins). */
 export function withTimelineBackground(colour: string): StyleBuilder {
-  const map = new Map<PName, Value>([['BackGroundColor', ValueImpl.regular(colour, 2147483647)]]);
+  const map = new Map<PName, Value>([['BackGroundColor', ValueImpl.regular(colour, Specificity.atOrder(2147483647))]]);
   const timeline = new Style(StyleSignatureBasic.of('root', 'element', 'ganttDiagram', 'timeline'), map);
   return skinStyleBuilder.muteStyle([timeline]);
 }

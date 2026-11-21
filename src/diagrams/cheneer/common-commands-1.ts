@@ -11,7 +11,7 @@ import { isAssumeTransparent } from '../../core/assume-transparent.js';
 import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
 import { matchScaleCommand } from '../../core/scale-command.js';
 import { matchSpriteCommand } from '../../core/sprite-commands.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { ChenEerDiagram } from './ChenEerDiagram.js';
 
 /** What a command that claimed line `i` leaves: its result and the index of the next line. */

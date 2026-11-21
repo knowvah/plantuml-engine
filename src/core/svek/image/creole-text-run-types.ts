@@ -9,6 +9,7 @@
  * the `'vertical'` arm.
  */
 import type { SpriteTint } from '../../klimt/sprite/sprite-tint.js';
+import type { RollbackLayout } from '../../math/latex-atom.js';
 
 /** Bold/italic/underline/strike — the four style flags a `CreoleTextRun`
  *  reports for the RENDERER to draw with (`FontConfiguration.styles` also
@@ -101,6 +102,15 @@ export interface CreoleTextRun {
    *  at all (`AtomMath#drawU` draws one `UImage`/`UImageSvg` and nothing
    *  else, `AtomMath.java:78-97`). Absent on every text run. */
   readonly image?: CreoleRunImage;
+  /** Set ONLY on a `'latex'` atom's run whose formula JLaTeXMath rejects: `AtomMath#drawU` then draws the source as
+   *  monospace text (ScientificEquationSafe.java:124-128, aa79d2d80ee). `top` is placed as an image's. */
+  readonly rollback?: CreoleRunRollback;
+}
+
+/** A rolled-back formula's box and where its text goes in it (`math/latex-atom.ts#rollbackLayout`), plus its top
+ *  within the line (as {@link CreoleRunImage.top}). */
+export interface CreoleRunRollback extends RollbackLayout {
+  readonly top: number;
 }
 
 /** A `'bullet'` atom's run (`Bullet.java`): its box TOP within the line (as {@link CreoleRunImage.top}) and

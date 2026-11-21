@@ -110,16 +110,19 @@ describe('Help', () => {
     expect(renderSync('@startuml\nhelp themes\n@enduml', { includeStore })).toContain('>zz<');
   });
 
+  const SYNTAX = 'Syntax Error?';
+  const UNCLOSED_STYLE = "Unclosed <style> block: '</style>' is missing";
   it.each([
-    ['@startuml\ntitle foo\nhelp type\n@enduml', 1], // cov-help-title
-    ['@startuml\nscale 2\nhelp type\n@enduml', 1], // cov-help-scale
-    ['@startuml\nskinparam backgroundColor yellow\nhelp type\n@enduml', 1], // cov-help-skinparam
-    ['@startuml\n<style>\nroot { BackGroundColor red }\n</style>\nhelp type\n@enduml', 1], // cov-help-style
-    ['@startuml\nhelp foo\n@enduml', 1], // cov-help-bad
-    ['@startuml\nhelp\n@enduml', 1], // cov-help-bare
-    ['@startuml\nhelp type\n\nhelp theme\n@enduml', 2], // a blank line is not a command
-  ])('refuses %j at upstream line %i: no CommonCommands', (text, k) => {
-    expect(parseHelp(sourceOf(text))).toMatchObject({ refused: true, message: 'Syntax Error?', consumed: k });
+    ['@startuml\ntitle foo\nhelp type\n@enduml', 1, SYNTAX], // cov-help-title
+    ['@startuml\nscale 2\nhelp type\n@enduml', 1, SYNTAX], // cov-help-scale
+    ['@startuml\nskinparam backgroundColor yellow\nhelp type\n@enduml', 1, SYNTAX], // cov-help-skinparam
+    // a lone `<style>` no command takes words its refusal (PSystemCommandFactory.java:254-255)
+    ['@startuml\n<style>\nroot { BackGroundColor red }\n</style>\nhelp type\n@enduml', 1, UNCLOSED_STYLE], // cov-help-style
+    ['@startuml\nhelp foo\n@enduml', 1, SYNTAX], // cov-help-bad
+    ['@startuml\nhelp\n@enduml', 1, SYNTAX], // cov-help-bare
+    ['@startuml\nhelp type\n\nhelp theme\n@enduml', 2, SYNTAX], // a blank line is not a command
+  ])('refuses %j at upstream line %i: no CommonCommands', (text, k, message) => {
+    expect(parseHelp(sourceOf(text))).toMatchObject({ refused: true, message, consumed: k });
   });
 
   it('describes itself as (Help) with margin 0', () => {

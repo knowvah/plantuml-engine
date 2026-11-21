@@ -1,5 +1,10 @@
 // Port of net.sourceforge.plantuml.yaml.parser.YamlLine and YamlLineType
 
+import { YamlSyntaxException } from './yaml-syntax-exception.js';
+
+/** `YamlLine.java:74,95`: the subset refuses `{...}`, as a value or a whole line. */
+const FLOW_MAPPING_NOT_SUPPORTED = 'flow mappings {...} are not supported';
+
 export enum YamlLineType {
   EMPTY_LINE = 'EMPTY_LINE',
   NO_KEY_ONLY_TEXT = 'NO_KEY_ONLY_TEXT',
@@ -50,14 +55,16 @@ function removeYamlComment(s: string): string {
   return s;
 }
 
-// Find the first ':' outside quoted strings.
-// Port of YamlLine.findColonSeparator().
+// Find the first ':' outside quoted strings; inside a double-quoted one a
+// backslash skips the next character.
+// Port of YamlLine.findColonSeparator() (`YamlLine.java:104-121`).
 function findColonSeparator(line: string): number {
   let inQuote = '\0';
   for (let i = 0; i < line.length; i++) {
     const c = line.charAt(i);
     if (inQuote !== '\0') {
-      if (c === inQuote) inQuote = '\0';
+      if (c === '\\' && inQuote === '"') i++;
+      else if (c === inQuote) inQuote = '\0';
     } else if (c === '"' || c === "'") {
       inQuote = c;
     } else if (c === ':') {
@@ -67,16 +74,41 @@ function findColonSeparator(line: string): number {
   return -1;
 }
 
-// Strip surrounding matching quotes from a string.
-// Port of YamlLine.unquote().
+/**
+ * Removes the quotes of a quoted scalar. In a single-quoted scalar, '' is a
+ * quote; in a double-quoted one, a backslash escapes (\" \\ \n \t \/).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/yaml/parser/YamlLine.java:195-211
+ */
 function unquote(str: string): string {
   if (str.length < 2) return str;
   const first = str.charAt(0);
   const last = str.charAt(str.length - 1);
-  if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
-    return str.substring(1, str.length - 1);
-  }
+  if (first === "'" && last === "'") return str.substring(1, str.length - 1).replaceAll("''", "'");
+  if (first === '"' && last === '"') return unescapeDoubleQuoted(str.substring(1, str.length - 1));
   return str;
+}
+
+/** A double-quoted scalar's escape, given the character after its backslash (`YamlLine.java:224-231`). */
+function unescaped(next: string): string {
+  if (next === 'n') return '\n';
+  if (next === 't') return '\t';
+  if (next === '"' || next === '\\' || next === '/') return next;
+  return `\\${next}`;
+}
+
+/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/yaml/parser/YamlLine.java:213-234 */
+function unescapeDoubleQuoted(s: string): string {
+  if (!s.includes('\\')) return s;
+  let result = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charAt(i);
+    if (c !== '\\' || i + 1 === s.length) {
+      result += c;
+      continue;
+    }
+    result += unescaped(s.charAt(++i));
+  }
+  return result;
 }
 
 // Parse a comma-separated flow sequence value (content between '[' and ']').
@@ -130,8 +162,54 @@ function toList(rawValue: string): string[] {
   return result;
 }
 
+/** The fields of a `YamlLine` that only some types carry. */
+interface YamlLineFields {
+  readonly key?: string;
+  readonly value?: string;
+  readonly values?: readonly string[];
+}
+
+/** The private `YamlLine` constructor (`YamlLine.java:184-191`); absent fields are null. */
+function yamlLine(type: YamlLineType, indent: number, listItem: boolean, fields: YamlLineFields = {}): YamlLine {
+  return {
+    type,
+    indent,
+    key: fields.key ?? null,
+    value: fields.value ?? null,
+    values: fields.values ?? null,
+    listItem,
+  };
+}
+
+/**
+ * The type of a `key: value` line, from its raw value; a flow mapping is
+ * refused. `KEY_AND_FLOW_SEQUENCE` is decided by the caller.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/yaml/parser/YamlLine.java:86-95
+ */
+function keyedType(rawValue: string): YamlLineType {
+  if (rawValue === '') return YamlLineType.KEY_ONLY;
+  if (rawValue === '|') return YamlLineType.KEY_AND_BLOCK_STYLE;
+  if (rawValue === '>') return YamlLineType.KEY_AND_FOLDED_STYLE;
+  if (rawValue.startsWith('{')) throw new YamlSyntaxException(FLOW_MAPPING_NOT_SUPPORTED);
+  return YamlLineType.KEY_AND_VALUE;
+}
+
+/** The part of `build` after the colon was found (`YamlLine.java:83-101`). */
+function buildKeyed(trimmedLine: string, colonIndex: number, count: number, listItem: boolean): YamlLine {
+  const key = unquote(trimmedLine.substring(0, colonIndex).trim());
+  const rawValue = trimmedLine.substring(colonIndex + 1).trim();
+  const type = keyedType(rawValue);
+  if (type === YamlLineType.KEY_AND_VALUE && rawValue.startsWith('[') && rawValue.endsWith(']')) {
+    const values = toList(rawValue.substring(1, rawValue.length - 1));
+    return yamlLine(YamlLineType.KEY_AND_FLOW_SEQUENCE, count, listItem, { key, values });
+  }
+  // Only KEY_AND_VALUE exposes its value (`YamlLine#getValue`, YamlLine.java:262-267).
+  if (type !== YamlLineType.KEY_AND_VALUE) return yamlLine(type, count, listItem, { key });
+  return yamlLine(type, count, listItem, { key, value: unquote(rawValue) });
+}
+
 // Build a YamlLine from a raw input line.
-// Port of YamlLine.build().
+// Port of YamlLine.build() (`YamlLine.java:51-101`).
 export function build(line: string): YamlLine {
   // Expand tabs to 4 spaces
   line = line.replaceAll('\t', '    ');
@@ -143,28 +221,10 @@ export function build(line: string): YamlLine {
   // Extract content after leading whitespace and strip comments
   let trimmedLine = removeYamlComment(line.substring(count).trim());
 
-  if (trimmedLine === '') {
-    return {
-      type: YamlLineType.EMPTY_LINE,
-      indent: 0,
-      key: null,
-      value: null,
-      values: null,
-      listItem: false,
-    };
-  }
+  if (trimmedLine === '') return yamlLine(YamlLineType.EMPTY_LINE, 0, false);
 
   // A bare "-" is a plain dash list entry
-  if (trimmedLine === '-') {
-    return {
-      type: YamlLineType.PLAIN_DASH,
-      indent: count + 1,
-      key: null,
-      value: null,
-      values: null,
-      listItem: true,
-    };
-  }
+  if (trimmedLine === '-') return yamlLine(YamlLineType.PLAIN_DASH, count + 1, true);
 
   const listItem = trimmedLine.startsWith('- ');
 
@@ -173,82 +233,11 @@ export function build(line: string): YamlLine {
     trimmedLine = trimmedLine.substring(2);
   }
 
+  if (trimmedLine.startsWith('{')) throw new YamlSyntaxException(FLOW_MAPPING_NOT_SUPPORTED);
+
   const colonIndex = findColonSeparator(trimmedLine);
-
-  if (colonIndex === -1) {
-    if (listItem) {
-      return {
-        type: YamlLineType.PLAIN_ELEMENT_LIST,
-        indent: count,
-        key: null,
-        value: unquote(trimmedLine),
-        values: null,
-        listItem: true,
-      };
-    }
-    return {
-      type: YamlLineType.NO_KEY_ONLY_TEXT,
-      indent: count,
-      key: null,
-      value: unquote(trimmedLine),
-      values: null,
-      listItem: false,
-    };
-  }
-
-  const rawKey = trimmedLine.substring(0, colonIndex).trim();
-  const rawValue = trimmedLine.substring(colonIndex + 1).trim();
-
-  if (rawValue === '') {
-    return {
-      type: YamlLineType.KEY_ONLY,
-      indent: count,
-      key: unquote(rawKey),
-      value: null,
-      values: null,
-      listItem,
-    };
-  }
-
-  if (rawValue === '|') {
-    return {
-      type: YamlLineType.KEY_AND_BLOCK_STYLE,
-      indent: count,
-      key: unquote(rawKey),
-      value: null,
-      values: null,
-      listItem,
-    };
-  }
-
-  if (rawValue === '>') {
-    return {
-      type: YamlLineType.KEY_AND_FOLDED_STYLE,
-      indent: count,
-      key: unquote(rawKey),
-      value: null,
-      values: null,
-      listItem,
-    };
-  }
-
-  if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
-    return {
-      type: YamlLineType.KEY_AND_FLOW_SEQUENCE,
-      indent: count,
-      key: unquote(rawKey),
-      value: null,
-      values: toList(rawValue.substring(1, rawValue.length - 1)),
-      listItem,
-    };
-  }
-
-  return {
-    type: YamlLineType.KEY_AND_VALUE,
-    indent: count,
-    key: unquote(rawKey),
-    value: unquote(rawValue),
-    values: null,
-    listItem,
-  };
+  if (colonIndex !== -1) return buildKeyed(trimmedLine, colonIndex, count, listItem);
+  const value = unquote(trimmedLine);
+  if (listItem) return yamlLine(YamlLineType.PLAIN_ELEMENT_LIST, count, true, { value });
+  return yamlLine(YamlLineType.NO_KEY_ONLY_TEXT, count, false, { value });
 }

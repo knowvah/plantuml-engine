@@ -1,0 +1,5 @@
+@startuml
+while (more?) <<#palegreen>>
+  :A;
+endwhile
+@enduml

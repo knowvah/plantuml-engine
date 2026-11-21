@@ -22,7 +22,7 @@ import { withWarningBanner } from '../../../src/core/skinparam-warnings.js';
 import { Warning } from '../../../src/core/warning/Warning.js';
 
 const BODY = '<line x1="1" y1="2" x2="3" y2="4"/>';
-const WARNING = "Please use '!option handwritten true' to enable handwritten ";
+const WARNING = "'skinparam handwritten' is deprecated: write '!option handwritten true' instead";
 
 /** kaluna-08-rubu301: exportedDimension 295.7875 x 340 (journal row 34 / `drawn-extent.md`), so the seed is
  *  trunc(295.7875 + 1) = 296 and the sprite arc's `ensureVisible(252.894 + 110)` makes the canvas 363

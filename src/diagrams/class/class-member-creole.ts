@@ -378,7 +378,7 @@ export function resolveOneAtom(
   // 'latex': `AtomMath`, a measured+drawn image at altitude 0 -- see
   // `resolveLatexAtom`'s own doc comment. Anything else contributes nothing.
   // #lizard forgives -- pre-existing 5 PARAM/35 NLOC (unchanged by A2s F-B).
-  return atom.kind === 'latex' ? resolveLatexAtom(atom) : undefined;
+  return atom.kind === 'latex' ? resolveLatexAtom(atom, new MeasurerStringBounder(measurer)) : undefined;
 }
 
 /** One-stop build for a member row: classify + build + resolve + measure --

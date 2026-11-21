@@ -16,28 +16,12 @@ import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import { javaDoubleToString } from '../decoration/LinkStyle.js';
 import { MergeStrategy } from './MergeStrategy.js';
 import { PNAMES, type PName } from './PName.js';
+import { Specificity } from './Specificity.js';
 import type { StyleSignatureBasic } from './StyleSignatureBasic.js';
 import type { HColor, HColorSet, Value } from './Value.js';
 import { ValueColor } from './ValueColor.js';
 import { ValueImpl } from './ValueImpl.js';
 import { ValueNull } from './ValueNull.js';
-
-/**
- * `StyleLoader.DELTA_PRIORITY_FOR_STEREOTYPE`: the priority lift a
- * stereotype style gets on load (StyleLoader.java:183), and the threshold
- * `mergeWith(KEEP_EXISTING_VALUE_OF_STEREOTYPE)` protects. `StyleLoader`
- * is T3a's port; it imports this rather than redeclaring it.
- *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java:178
- */
-export const DELTA_PRIORITY_FOR_STEREOTYPE = 1000;
-
-/**
- * `ValueImpl.regular(value, Integer.MAX_VALUE)` priority of an overridden value (Style.java:191);
- * `Integer.MAX_VALUE` = 2^31 - 1.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/Style.java:191
- */
-const INTEGER_MAX_VALUE = 2147483647;
 
 /** `getShadowing`'s `asDoubleDefaultTo` argument (Style.java:114). */
 const SHADOWING_DEFAULT = 1.5;
@@ -140,12 +124,16 @@ export class Style {
     private readonly map: ReadonlyMap<PName, Value>,
   ) {}
 
-  /** Every value lifted by `delta`; only a starred style may be lifted. @see Style.java:72-82 */
-  deltaPriority(delta: number): Style {
+  /**
+   * Every value applied through the ancestor cascade at `rank` (0 = own
+   * level, more negative = farther up); only a starred style may be.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/Style.java:79-88
+   */
+  withAncestorRank(rank: number): Style {
     if (!this.signature.isStarred()) throw new Error('UnsupportedOperationException');
 
     const copy = new Map<PName, Value>();
-    for (const [key, value] of this.map) copy.set(key, asValueImpl(value).addPriority(delta));
+    for (const [key, value] of this.map) copy.set(key, asValueImpl(value).withAncestorRank(rank));
     return new Style(this.signature, copy);
   }
 
@@ -173,9 +161,9 @@ export class Style {
 
   /**
    * Each of `other`'s values merged over this one's (`ValueImpl#mergeWith`,
-   * higher priority wins); under `KEEP_EXISTING_VALUE_OF_STEREOTYPE` an
-   * existing value above `DELTA_PRIORITY_FOR_STEREOTYPE` is kept.
-   * @see Style.java:121-134
+   * bigger specificity wins); under `KEEP_EXISTING_VALUE_OF_STEREOTYPE` an
+   * existing value whose declaration requires a stereotype is kept.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/Style.java:138-152
    */
   mergeWith(other: Style | undefined, strategy: MergeStrategy): Style {
     if (other === undefined) return this;
@@ -185,7 +173,7 @@ export class Style {
       const previous = this.map.get(key);
       if (
         previous !== undefined &&
-        previous.getPriority() > DELTA_PRIORITY_FOR_STEREOTYPE &&
+        previous.getSpecificity().hasStereotype() &&
         strategy === MergeStrategy.KEEP_EXISTING_VALUE_OF_STEREOTYPE
       )
         continue;
@@ -222,11 +210,11 @@ export class Style {
    * `(Colors)`: BACK/LINE/TEXT onto BackGroundColor/LineColor/FontColor
    * (Style.java:195-212). `(Fashion)`: its back colour onto
    * BackGroundColor (Style.java:214-223). `(PName, HColor)`: a
-   * `ValueColor` at the old value's priority — an absent old value is
+   * `ValueColor` at the old value's specificity — an absent old value is
    * upstream's NullPointerException (Style.java:175-183). A null
    * `Colors`/`Fashion`/`HColor` returns this. `(PName, number)` is
    * `"" + value` (Java `Double.toString`) and `(PName, string)` stores
-   * `ValueImpl.regular(value, Integer.MAX_VALUE)` (Style.java:185-193).
+   * `ValueImpl.regular(value, Specificity.forcedOverride())` (Style.java:202-210).
    * `(UStroke)` overrides `LineThickness` and `LineStyle`
    * (`visible-space`), a null stroke returns this (Style.java:288-296).
    */
@@ -249,10 +237,10 @@ export class Style {
       .eventuallyOverrideColor('FontColor', colorsGet(arg, ColorType.TEXT));
   }
 
-  /** `ValueImpl.regular(value, Integer.MAX_VALUE)`; no old value needed. @see Style.java:189-193 */
+  /** `ValueImpl.regular(value, Specificity.forcedOverride())`; no old value needed. @see Style.java:206-210 */
   private eventuallyOverrideString(param: PName, value: string): Style {
     const result = new Map<PName, Value>(this.map);
-    result.set(param, ValueImpl.regular(value, INTEGER_MAX_VALUE));
+    result.set(param, ValueImpl.regular(value, Specificity.forcedOverride()));
     return new Style(this.signature, result);
   }
 
@@ -271,7 +259,7 @@ export class Style {
     const result = new Map<PName, Value>(this.map);
     const old = result.get(param);
     if (old === undefined) throw new Error('NullPointerException');
-    result.set(param, new ValueColor(color, old.getPriority()));
+    result.set(param, new ValueColor(color, old.getSpecificity()));
     return new Style(this.signature, result);
   }
 

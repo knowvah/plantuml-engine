@@ -336,7 +336,7 @@ function tryMeasureNonGenericClassifier(
       classifier.display,
       resolveVisibleStereotypeLabels(classifier),
       // cdd6-T3d (bijufi): the group legend is the stereo block (java:121-124).
-      classifier.legend,
+      { legend: classifier.legend, wrapWidth: classifier.emptyLeafTitleWrapWidth },
     );
     // `rows[0].text` carries the label for `renderer.ts#renderEmptyPackageLeaf`
     // (mirrors `tryRenderUSymbol`'s identical `rows[0]?.text ?? id` convention)
@@ -432,7 +432,7 @@ export function measureClassifier(
     theme.colors.graph.circledCharacterFontSize ?? theme.defaultFontSize,
     theme.colors.graph.circledCharacterRadius,
   );
-  const stereoFont = resolveStereoFont(theme, headerFont);
+  const stereoFont = resolveStereoFont(theme, headerFont, classifier.stereotypeFont);
   // G2 N65 item 35: headerMaxWidth/memberMaxWidth resolved ONCE here (theme
   // is only available at this level), matching `badgeRadius`/`stereoFont`'s
   // own "resolve once, pass down" precedent above -- see

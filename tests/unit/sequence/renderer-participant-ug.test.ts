@@ -42,6 +42,7 @@ const label = (text: string, x: number, y: number): TextRun => ({
 function geo(type: ParticipantType, over: Partial<ParticipantGeo> = {}): ParticipantGeo {
   return {
     id: 'A',
+    uid: 'part1',
     display: 'Al',
     type,
     x: 10,
@@ -236,10 +237,12 @@ describe('no private document in the glyph module (renderer-participant-symbol.t
 describe('the markup a head leaves on the page graphic', () => {
   it('writes the box, the label and the link as the jar does', () => {
     const svg = drawMarkup((ug) => drawParticipantBox(ug, geo('participant', { url: URL }), THEME), THEME);
-    expect(svg.startsWith('<a ')).toBe(true);
+    // `LivingSpace#drawHeadOrTail` opens the head group around the url (`LivingSpace.java:214-223`).
+    expect(svg.startsWith('<g class="participant participant-head" data-qualified-name="A"')).toBe(true);
+    expect(svg).toMatch(/^<g [^>]*><a /);
     expect(attrsOf(/<a [^>]*>/.exec(svg)![0])).toMatchObject({ target: '_top', href: URL.url });
     expect(tagsOf(svg, 'rect')[0]).toMatchObject({ x: '10', y: '10', width: '60', height: '40', fill: '#E2E2F0' });
     expect(tagsOf(svg, 'text')[0]).toMatchObject({ x: '25', y: '35', fill: '#000', 'font-size': '14' });
-    expect(svg.endsWith('</a>')).toBe(true);
+    expect(svg.endsWith('</a></g>')).toBe(true);
   });
 });

@@ -37,7 +37,7 @@ import { COMMANDS } from './class-commands.js';
 import { advanceBodyEmbed, mergeStandaloneBraces } from './class-line-merge.js';
 import { filterPendingBodyBlanks } from './class-body-blank-filter.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
-import { refuse } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf } from '../../core/parse-refusal.js';
 
 // ---------------------------------------------------------------------------
 // Mutable parse state (local to each parseClass call)
@@ -222,7 +222,10 @@ function handlePendingBodyLine(state: ParseState, line: string): boolean {
         // Object bodies (`object Foo { ... }`) collect raw field lines under
         // different semantics than class member lines — route by kind. See
         // class-object-commands.ts#parseObjectField's doc for why.
-        const member = classifier.kind === 'object' ? parseObjectField(line) : parseMemberLine(line);
+        // A member is built from the raw body line (`addFieldOrMethod(s.getString())`,
+        // CommandCreateClassMultilines.java:311-316): `line` lost a U+00A0 indent to JS `trim`.
+        const member =
+          classifier.kind === 'object' ? parseObjectField(line) : parseMemberLine(state.currentRawLine ?? line);
         if (member !== null) {
           classifier.members.push(member);
         } else if (line === '' && classifier.kind !== 'object') {
@@ -314,9 +317,9 @@ function annotationLines(lines: readonly string[], i: number): readonly string[]
  * `ParseState` fixture that bypasses position tracking.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/command/PSystemCommandFactory.java:169-175
  */
-function buildSyntaxRefusal(state: ParseState, loopIndex: number): ParseRefusal {
+function buildSyntaxRefusal(state: ParseState, loopIndex: number, text: string): ParseRefusal {
   const line = state.currentLine ?? loopIndex;
-  return refuse('syntax', line, line, 'Syntax Error?');
+  return refuse('syntax', line, line, syntaxErrorMessageOf(text));
 }
 
 export function parseClass(block: UmlSource, options?: ParseOptions): ClassDiagramAST | ParseRefusal {
@@ -435,7 +438,7 @@ export function parseClass(block: UmlSource, options?: ParseOptions): ClassDiagr
     // upstream fall-through refusal (see buildSyntaxRefusal's doc). Mirrors
     // `createSystem`'s abort-on-first-failure: return immediately rather
     // than continuing to later lines.
-    return buildSyntaxRefusal(state, i);
+    return buildSyntaxRefusal(state, i, line);
   }
 
   return finalizeParse(state);

@@ -747,7 +747,13 @@ describe('refusal coverage — baseline shape', () => {
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
     // 162 -> 170 at dogr/T1b (2026-11-14): +8 svg-dot jar-error golden clone(s) (the 8 #109 @startdot jar error pages, 2026-10-10 rule, #141).
     // Derivation: 162 + 8 = 170.
-    expect(pinnedJarErrors.length).toBe(170);
+    // 170 -> 172 at the a720bdd re-pin (2026-11-20): class/buveco-86-tibo673 in both walks -- an unclosed
+    // `!ifdef` is now an error (CodeIteratorIf.java:73-80, 0537b558644). Derivation: 170 + 2 = 172.
+    // 172 -> 169 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 stop being jar errors --
+    // the jar draws TIMING at a720bdd (`analog CODE`, `analog "N" as C between a and b`, 3cdc46b2092) and so do we after its port (CommandNumericPlayer.java:83-158). Derivation: 172 - 3 = 169.
+    // 169 -> 168 at the a720bdd port (2026-11-20): unknown/petiku-70-fogu777 renders in the jar and here, a
+    // struct declared after first use (Entity.java:208-213 CLASS_LIKE_TYPES, 592901f0c42). Derivation: 169 - 1 = 168.
+    expect(pinnedJarErrors.length).toBe(168);
     //
     // 242 -> 241 / 4242 -> 4243 at unknown-bucket-routing-repair/T11
     // (2026-09-20): `sequence/recani-60-licu962` renders now that the
@@ -827,7 +833,12 @@ describe('refusal coverage — baseline shape', () => {
     // 157 -> 156 at vb/close-b1 (2026-11-16): c4/kipive-74-lele070 renders here now -- `%version()` prints
     // `0.2.0` (#155), a line the jar accepts too; its dev-build oracle (`$version$`) still errors (jar-error).
     // Re-pinned `weErrored: false`, engine class, from a fresh measurement. Derivation: 157 - 1 = 156.
-    expect(pinnedErroring.length).toBe(156);
+    // 156 -> 160 at the a720bdd re-pin (2026-11-20): buveco-86-tibo673 (unclosed `!ifdef`, both walks) and
+    // kicizi-84-lexu138 (the `charlie` easter egg is gone, dadad87bba3; both walks) error here, as the jar does.
+    // Derivation: 156 + 2 + 2 = 160.
+    // 160 -> 157 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 render here (see pinnedJarErrors).
+    // Derivation: 160 - 3 = 157.
+    expect(pinnedErroring.length).toBe(157);
     // 5285 -> 5292 at class-divergence-drive-2/close-b1 (7 svg-class clones).
     // 5292 -> 5315 at class-divergence-drive-2/close-b2 (23 svg-class clones).
     // 5315 -> 5322 at class-divergence-drive-2/close-b3 (7 svg-class clones).
@@ -1143,7 +1154,11 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11394 + 1 = 11395.
     // 11395 -> 11400 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11395 + 5 = 11400.
-    expect(pinnedRendering.length).toBe(11400);
+    // 11400 -> 11396 at the a720bdd re-pin (2026-11-20): the 4 rows of pinnedErroring's derivation.
+    // Derivation: 11400 - 4 = 11396.
+    // 11396 -> 11399 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 (see pinnedErroring).
+    // Derivation: 11396 + 3 = 11399.
+    expect(pinnedRendering.length).toBe(11399);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1243,7 +1258,9 @@ describe('refusal coverage — baseline shape', () => {
     // DescriptionDiagramFactory.java:129-137 command description lacks until #147 ports it. Derivation: 51 + 16 = 67.
     // 67 -> 48 at dei/T4c (2026-11-16): the 16 dei-* rows and gacoxo-93-guti295, liripi-72-kefa167, rukitu-26-seme622 flip to ok (#147 ports
     // json, map, domain and requirement into description). Derivation: 67 - 16 - 3 = 48.
-    expect(gaps.length).toBe(48);
+    // 48 -> 50 at the a720bdd re-pin (2026-11-20): kicizi-84-lexu138 in both walks, a jar error page whose
+    // signature sits past the head window (PSystemError.java:261-262). Derivation: 48 + 2 = 50.
+    expect(gaps.length).toBe(50);
     for (const g of gaps) {
       // The bar is a specific upstream ORIGIN, cited as `File.java:line`.
       //

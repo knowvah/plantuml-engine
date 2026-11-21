@@ -1,11 +1,11 @@
-From 6ed63b8969bef06b9362d93b0827e4b61921e843 Mon Sep 17 00:00:00 2001
+From 4a66e6b21bc0ddf34ad5e6fca6391177d8afe39c Mon Sep 17 00:00:00 2001
 From: Scott Seely <scott@scottseely.com>
 Date: Thu, 25 Jun 2026 20:03:01 -0500
-Subject: [PATCH] feat(oracle): dump svek DOT to PLANTUML_DUMP_DOT for parity
- harness
+Subject: [PATCH 1/5] feat(oracle): dump svek DOT to PLANTUML_DUMP_DOT for
+ parity harness
 
 plantuml-ts verifies its DOT-generation port by diffing the DOT it feeds
-dot-engine against the DOT PlantUML feeds graphviz. This taps the exact
+graphviz-ts against the DOT PlantUML feeds graphviz. This taps the exact
 string at the DotStringFactory.getSvg chokepoint. Gated on the system
 property; the jar is byte-identical to stock when unset.
 
@@ -15,7 +15,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
  1 file changed, 18 insertions(+)
 
 diff --git a/src/main/java/net/sourceforge/plantuml/svek/DotStringFactory.java b/src/main/java/net/sourceforge/plantuml/svek/DotStringFactory.java
-index 61d44249ac0..c4f876013ba 100644
+index d24081ccd8a..771121d9bbc 100644
 --- a/src/main/java/net/sourceforge/plantuml/svek/DotStringFactory.java
 +++ b/src/main/java/net/sourceforge/plantuml/svek/DotStringFactory.java
 @@ -69,6 +69,10 @@ import net.sourceforge.plantuml.vizjs.GraphvizJsRuntimeException;
@@ -29,9 +29,9 @@ index 61d44249ac0..c4f876013ba 100644
  	private final DiagramType diagramType;
  	private final ISkinParam skinParam;
  	private final Bibliotekon bibliotekon;
-@@ -283,6 +287,20 @@ public final class DotStringFactory implements Moveable {
- 			throws IOException {
- 		String dotString = createDotString(stringBounder, dotMode, dotOptions);
+@@ -286,6 +290,20 @@ public final class DotStringFactory implements Moveable {
+ 		if (TeaVM.isC())
+ 			throw new IOException("Graphviz is not available in the TeaVM C build");
  
 +		// [plantuml-ts oracle seam] dev-only: when -DPLANTUML_DUMP_DOT=<dir> is set,
 +		// tee the exact DOT handed to graphviz to <dir>/svek-N.dot. Inert otherwise,
@@ -48,8 +48,8 @@ index 61d44249ac0..c4f876013ba 100644
 +		}
 +
  		if (TeaVM.isTeaVM()) {
- 			// ::revert when JAVA8
- 			return net.sourceforge.plantuml.teavm.GraphVizjsTeaVMEngine.renderDotToSvg(dotString);
+ 			// Surface layout-engine failures (e.g. viz-global.js not loaded) as an
+ 			// IOException so GraphvizImageBuilder turns them into a crash report
 -- 
-2.50.1 (Apple Git-155)
+2.54.0 (Apple Git-157)
 

@@ -15,7 +15,7 @@ const JAR_OPTIONS = withJarCompatibleStyleInput(OPTIONS);
 const BODY = '/Alpha/\n/Alpha/Bravo.txt\n<note>\nhello\n</note>\n@endfiles';
 const PLAIN = `@startfiles\n${BODY}`;
 const withDirective = (directive: string): string => `@startfiles\nskinparam ${directive}\n${BODY}`;
-const NOTE_PATH = '<path d="M31,59.5 L31,82.5 L79.544,82.5 L79.544,69.5 L69.544,59.5 L31,59.5"';
+const NOTE_PATH = '<path d="M31,56 L31,79 L79.544,79 L79.544,66 L69.544,56 L31,56"';
 
 describe('files extensions: style directives', () => {
   it('defaultFontName sets font-family on every text (root FontName, FromSkinparamToStyle.java:156)', () => {
@@ -27,8 +27,8 @@ describe('files extensions: style directives', () => {
   it('defaultFontSize sets the font size of entries and note and the canvas (element FontSize, java:91)', () => {
     const svg = renderSync(withDirective('defaultFontSize 20'), OPTIONS);
     expect(svg.match(/font-size="20"/g)).toHaveLength(3);
-    expect(svg).toContain('width="150px" height="122px"');
-    expect(renderSync(PLAIN, OPTIONS)).toContain('width="118px" height="95px"');
+    expect(svg).toContain('width="158px" height="117px"');
+    expect(renderSync(PLAIN, OPTIONS)).toContain('width="126px" height="92px"');
   });
 
   it('defaultFontColor fills every text (root FontColor, java:157)', () => {
@@ -69,8 +69,8 @@ describe('files extensions: style directives', () => {
 describe('files extensions: handwritten', () => {
   it('skinparam handwritten true jiggles the note outline into polylines (UGraphicHandwritten)', () => {
     const svg = renderSync(withDirective('handwritten true'), OPTIONS);
-    expect(svg).toContain('<path d="M31,59.5 L31.187,59.5 L30.632,64.1');
-    expect(svg).toContain('width="118px" height="95px"');
+    expect(svg).toContain('<path d="M31,56 L31.187,56 L30.632,60.6');
+    expect(svg).toContain('width="126px" height="92px"');
     expect(renderSync(PLAIN, OPTIONS)).toContain(NOTE_PATH);
   });
 

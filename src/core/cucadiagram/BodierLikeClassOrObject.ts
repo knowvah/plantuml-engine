@@ -18,6 +18,7 @@ import { requireBodyEnhanced1SkinParam, requireBodyEnhanced1Style } from './Body
 import { BodyFactory } from './BodyFactory.js';
 import { Member } from './Member.js';
 import { MethodsOrFieldsArea } from './MethodsOrFieldsArea.js';
+import { trin } from '../string-utils-trim.js';
 
 /**
  * BodierLikeClassOrObject — the `Bodier` carrying the class/object
@@ -241,8 +242,8 @@ export class BodierLikeClassOrObject extends BodierAbstract {
     return Display.create(this.fieldsToDisplay);
   }
 
-  /** `StringUtils.trin(...).length() == 0` — `Member.ts` hosts the same
-   *  local `trin`; a `' '` blank-fallback display trims to empty here.
+  /** `StringUtils.trin(...).length() == 0` (the shared `string-utils-trim.ts`);
+   *  a `' '` blank-fallback display trims to empty here.
    *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/cucadiagram/BodierLikeClassOrObject.java:166-170 */
   private removeFinalEmptyMembers(result: Member[]): void {
     while (result.length > 0 && trin((result[result.length - 1] as Member).getDisplay(false)).length === 0)
@@ -340,14 +341,4 @@ export class BodierLikeClassOrObject extends BodierAbstract {
     // (BodierLikeClassOrObject.java:208-250).
     return TextBlockUtils.mergeTB(bb1, bb2, HorizontalAlignment.LEFT);
   }
-}
-
-/** `StringUtils.trin` — same local copy as `Member.ts` (no shared
- *  `StringUtils.ts` owner exists in this port; established precedent). */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
 }

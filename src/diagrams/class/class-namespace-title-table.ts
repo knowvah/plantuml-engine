@@ -149,7 +149,7 @@ export function namespaceTitleTableDims(
   usymbol?: string,
   stereo?: { readonly width: number; readonly height: number },
 ): { width: number; height: number } {
-  return titleTableDims(display, { theme, measurer }, { usymbol, stereo, visibility: undefined });
+  return titleTableDims(display, { theme, measurer }, { usymbol, stereo, visibility: undefined, wrapWidth: 0 });
 }
 
 /**
@@ -162,13 +162,14 @@ export function namespaceTitleTableDims(
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/ClusterHeader.java:78-90
  */
 export function namespaceTitleTableDimsFor(
-  ns: Pick<Namespace, 'display' | 'usymbol' | 'visibilityModifier'>,
+  ns: Pick<Namespace, 'display' | 'usymbol' | 'visibilityModifier' | 'titleWrapWidth'>,
   theme: Theme,
   measurer: StringMeasurer,
   stereo?: { readonly width: number; readonly height: number },
 ): { width: number; height: number } {
   const visibility = namespaceVisibilityBlock(ns, theme);
-  return titleTableDims(ns.display, { theme, measurer }, { usymbol: ns.usymbol, stereo, visibility });
+  const wrapWidth = ns.titleWrapWidth ?? 0;
+  return titleTableDims(ns.display, { theme, measurer }, { usymbol: ns.usymbol, stereo, visibility, wrapWidth });
 }
 
 /** cdd6-T3d: the title term of `mergeTB(stereo, title)` -- per-line heights,
@@ -191,13 +192,15 @@ function titleTableDims(
     usymbol: string | undefined;
     stereo: { readonly width: number; readonly height: number } | undefined;
     visibility: NamespaceVisibilityBlock | undefined;
+    /** `style.wrapWidth()` (`ClusterHeader.java:129`, 927f7531ddf). */
+    wrapWidth: number;
   },
 ): { width: number; height: number } {
   const { theme, measurer } = ctx;
-  const { stereo, visibility } = opts;
+  const { stereo, visibility, wrapWidth } = opts;
   const font = namespaceTitleFont(theme);
-  const lines = namespaceTitleLines(measurer, theme, display);
-  const width = namespaceTitleWidth(measurer, theme, display) + (visibility?.width ?? 0);
+  const lines = namespaceTitleLines(measurer, theme, display, { wrapWidth });
+  const width = namespaceTitleWidth(measurer, theme, display, wrapWidth) + (visibility?.width ?? 0);
   // `nominalFontSize` (declared), never `fontSize` (measured) --
   // `ClusterHeader.java:78`'s formula is `fontSize`-based, not a measured
   // pixel height; see `NamespaceTitleLine`'s own doc comment.
@@ -234,7 +237,7 @@ function titleTableDims(
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/decoration/symbol/USymbolFolder.java
  */
 export function namespaceFolderTitle(
-  ns: Pick<Namespace, 'display' | 'visibilityModifier'>,
+  ns: Pick<Namespace, 'display' | 'visibilityModifier' | 'titleWrapWidth'>,
   theme: Theme,
   measurer: StringMeasurer,
 ): {
@@ -244,12 +247,13 @@ export function namespaceFolderTitle(
   visibilityBlock?: NamespaceVisibilityBlock;
   visibilityIconDy?: number;
 } {
-  const wtitle = getWTitle(measurer, theme, ns.display, 0);
-  const htitle = getHTitle(measurer, theme, ns.display);
+  const wrapWidth = ns.titleWrapWidth ?? 0;
+  const wtitle = getWTitle(measurer, theme, ns.display, 0, wrapWidth);
+  const htitle = getHTitle(measurer, theme, ns.display, wrapWidth);
   const baselineOffset = getTitleBaselineOffset(measurer, theme, ns.display);
   const visibility = namespaceVisibilityBlock(ns, theme);
   if (visibility === undefined) return { wtitle, htitle, baselineOffset };
-  const textH = namespaceTitleHeight(measurer, theme, ns.display);
+  const textH = namespaceTitleHeight(measurer, theme, ns.display, wrapWidth);
   const merged = Math.max(textH, visibility.height);
   return {
     wtitle: wtitle + visibility.width,

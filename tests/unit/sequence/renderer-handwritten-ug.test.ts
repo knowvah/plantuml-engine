@@ -76,8 +76,9 @@ describe('openSequenceGraphic wraps only a handwritten page (TextBlockExporter.j
 describe('the four handwritten targets through the page graphic', () => {
   it('pafene-01-tedi758: the banner is wrapped (golden `rect[1]` is a jiggled polygon) and the lifeline path matches', () => {
     const svg = renderFixture('pafene-01-tedi758');
-    // golden: the first element after <g font-family=...> is the banner polygon
-    expect(svg).toContain('<polygon points="10.5,8,10.5,8.21,20.373,7.586,30.245,8.193,40.118,8.4,');
+    // golden: the first element after <g font-family=...> is the banner polygon, as wide as
+    // 443598c29ce's reworded handwritten warning
+    expect(svg).toContain('<polygon points="10.5,8,10.5,8.21,20.642,7.586,30.783,8.193,40.925,8.4,');
     expect(svg).toContain('fill="#FFC"');
     expect(svg).toContain('M34.106,59 L34.386,59 L33.554,68.4 L34.364,77.8 L34.639,87.2 L33.155,96.6 L34.106,106');
   });

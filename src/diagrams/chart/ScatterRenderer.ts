@@ -1,7 +1,8 @@
 /**
  * ScatterRenderer. `getScatterStyle` here does NOT merge `forStereotypeItself`.
- * `MarkerColor` unset answers `ValueNull`'s black, which is not null, so the marker
- * is black whatever `color` was: `fosoma-37`'s `#9b59b6` draws `#000`.
+ * The marker colour is the inline colour, else a `MarkerColor` the style sets
+ * (`Style.hasValue`), else the series colour `ChartRenderer` computed (#2965); an
+ * unset `MarkerColor` answers `ValueNull`'s black, so it is never read unguarded.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ScatterRenderer.java
  */
 import { UEllipse } from '../../core/klimt/shape/UEllipse.js';
@@ -64,32 +65,44 @@ export class ScatterRenderer {
 
   /** @see ScatterRenderer.java:92-183 */
   draw(ug: UGraphic, series: ChartSeries, color: HColor): void {
-    const { categoryCount, skinParam, axis, plotHeight, plotWidth } = this.p;
+    const { categoryCount, skinParam } = this.p;
     if (categoryCount === 0 && !series.hasExplicitXValues()) return;
 
     const scatterStyle = this.getScatterStyle(series);
     const set = skinParam.getIHtmlColorSet();
-    const styleMarkerColor = asNullable(scatterStyle.value('MarkerColor').asColor(set));
-    // The `else` arm reads `LineColor` only when `color` is null too: neither fires.
-    const markerColor = styleMarkerColor ?? color;
+    // Marker colour: inline > MarkerColor > the series colour. @see ScatterRenderer.java:102-105 (c7e65a2d642)
+    const markerColor =
+      series.getColor() === undefined && scatterStyle.hasValue('MarkerColor')
+        ? (asNullable(scatterStyle.value('MarkerColor').asColor(set)) ?? color)
+        : color;
+    // Label colour: inline > FontColor. @see ScatterRenderer.java:107-109 (f4c38043a26)
+    const labelColor = series.getColor() ?? asNullable(scatterStyle.value('FontColor').asColor(set)) ?? color;
     const markerSize = markerSizeOf(scatterStyle);
     const markerShape = markerShapeOf(scatterStyle, series);
 
+    const marker = { color: markerColor, size: markerSize, shape: markerShape };
+    this.drawPoints(ug, series, marker, labelColor);
+  }
+
+  /** The markers, a missing value leaving its place empty (f44b054d131, 9cfe7a05d1b). @see ScatterRenderer.java:140-187 */
+  private drawPoints(ug: UGraphic, series: ChartSeries, marker: Omit<MarkerArgs, 'x' | 'y'>, labelColor: HColor): void {
+    const { categoryCount, skinParam, axis, plotHeight, plotWidth } = this.p;
     const values = series.getValues();
     const xValues = series.getXValues();
     const count = xValues !== undefined ? values.length : Math.min(values.length, categoryCount);
     const categoryWidth = plotWidth / categoryCount;
 
     for (let i = 0; i < count; i++) {
-      const value = values[i]!;
+      const value = values[i];
+      if (value === undefined) continue;
       const x =
         xValues !== undefined
           ? this.p.xAxis!.valueToPixel(xValues[i]!, 0, plotWidth)
           : (i + CATEGORY_CENTER) * categoryWidth;
       const y = plotY(axis, value, plotHeight);
 
-      drawMarker(ug, { color: markerColor, x, y, size: markerSize, shape: markerShape });
-      if (series.isShowLabels()) drawLabel(ug, skinParam, value, x, y - markerSize / 2 - LABEL_OFFSET);
+      drawMarker(ug, { ...marker, x, y });
+      if (series.isShowLabels()) drawLabel(ug, skinParam, value, x, y - marker.size / 2 - LABEL_OFFSET, labelColor);
     }
   }
 }

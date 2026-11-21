@@ -1,0 +1,6 @@
+@startuml
+state S : <math>glb x</math>
+state "<math>glb</math>" as T
+note right of S : <math>glb x</math>
+S --> T : <math>glb</math>
+@enduml

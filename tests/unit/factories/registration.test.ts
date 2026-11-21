@@ -37,10 +37,11 @@ describe('cmf factories through renderSync', () => {
     expect(compareSvg(render(corpus(slug, 'in.puml')), corpus(slug, 'in.svg'), 'deterministic').diffs).toEqual([]);
   });
 
-  it('@startmath and @startlatex write the Batik document: no plantuml-src, no data-diagram-type', () => {
+  // aa79d2d80ee: a TextBlockExporter document, still with no plantuml-src and no data-diagram-type (jar: caruta-83).
+  it('@startmath and @startlatex write a TextBlockExporter document: no plantuml-src, no data-diagram-type', () => {
     for (const text of ['@startmath\nx^2\n@endmath', '@startlatex\nx^2\n@endlatex']) {
       const svg = render(text);
-      expect(svg.startsWith('<?xml version="1.0"?>\n<!DOCTYPE svg')).toBe(true);
+      expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
       expect(svg).not.toContain('plantuml-src');
       expect(svg).not.toContain('data-diagram-type');
     }

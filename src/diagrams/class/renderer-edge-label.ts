@@ -7,6 +7,7 @@
 import { spriteTintHref } from '../../core/klimt/sprite/sprite-tint.js';
 import type { EdgeLabelRun } from './class-edge-label-sprite-runs.js';
 import { text, attrs, image, linkWrap } from '../../core/svg.js';
+import { rollbackSvgText } from '../../core/math/latex-atom.js';
 import { formatDecimal, DEFAULT_SVG_DECIMALS } from '../../core/svg-format.js';
 import { resolveArrowLabelFont } from '../../core/arrow-label-font.js';
 import type { ScaledTheme } from './class-scale-geo.js';
@@ -280,7 +281,9 @@ function renderSpriteLabelRuns(
   const parts: string[] = [];
   let x = label.x;
   for (const run of runs) {
-    if (run.kind === 'image') {
+    if (run.kind === 'image' && run.rollback !== undefined) {
+      parts.push(rollbackSvgText(run.rollback, x, label.y + run.dy));
+    } else if (run.kind === 'image') {
       parts.push(image(x, label.y + run.dy, Math.round(run.width), Math.round(run.height), runHref(run, labelColor)));
     } else if (run.text.trim() !== '') {
       const raw = { text: run.text, x, width: run.width };

@@ -11,9 +11,10 @@ import {
 } from '../../../src/diagrams/activity/activity-warnings.js';
 import { renderSync } from '../../../src/index.js';
 
+/** Any one-line warning: the banner geometry below does not depend on which. */
 const PADDING = 'Please use CSS style instead of skinparam padding';
-const HANDWRITTEN = "Please use '!option handwritten true' to enable handwritten ";
-const BRACKET = "You should use a bracket ({) when defining your container 'group' G";
+const HANDWRITTEN = "'skinparam handwritten' is deprecated: write '!option handwritten true' instead";
+const BRACKET = "Missing '{': write 'group G {' and close it with '}'";
 const MARGIN = { top: 10, right: 10, bottom: 10, left: 10 };
 /** Drawn text: monospace spaces become U+00A0, as in the jar's own SVG. */
 const PADDING_DRAWN = PADDING.replaceAll(' ', '\u00a0');
@@ -26,15 +27,15 @@ function messages(ws: readonly Warning[]): string[] {
   return ws.map((w) => w.asSingleLine());
 }
 
-describe('withSkinParamWarnings (CommandSkinParam.java:92-99)', () => {
-  it('warns for padding/handwritten, case-insensitively, in map order', () => {
+describe('withSkinParamWarnings (CommandSkinParam.java:94-107)', () => {
+  it('warns for handwritten, case-insensitively; padding no longer warns', () => {
     const map = new Map([
       ['Padding', '15'],
       ['ArrowColor', 'red'],
       ['HANDWRITTEN', 'true'],
     ]);
     const ast = withSkinParamWarnings(emptyAst(), map);
-    expect(messages(ast.warnings ?? [])).toEqual([PADDING, HANDWRITTEN]);
+    expect(messages(ast.warnings ?? [])).toEqual([HANDWRITTEN]);
   });
 
   it('returns the same AST when no skinparam warns', () => {
@@ -46,10 +47,10 @@ describe('withSkinParamWarnings (CommandSkinParam.java:92-99)', () => {
 
 describe('activityWarnings (TitledDiagram.java:326-334)', () => {
   it('joins skinparam warnings before pragma warnings, de-duplicated', () => {
-    const base = withSkinParamWarnings(emptyAst(), new Map([['padding', '1']]));
+    const base = withSkinParamWarnings(emptyAst(), new Map([['handwritten', 'true']]));
     base.pragma!.addWarning(new Warning(BRACKET));
-    base.pragma!.addWarning(new Warning(PADDING));
-    expect(messages(activityWarnings(base))).toEqual([PADDING, BRACKET]);
+    base.pragma!.addWarning(new Warning(HANDWRITTEN));
+    expect(messages(activityWarnings(base))).toEqual([HANDWRITTEN, BRACKET]);
   });
 });
 
@@ -89,12 +90,16 @@ describe('withWarningBanner (DiagramChromeFactory.java:176-266)', () => {
 });
 
 describe('activity warning banner end to end', () => {
-  it('draws the skinparam padding banner and moves the diagram down', () => {
+  it('draws the skinparam handwritten banner and moves the diagram down', () => {
     const measurer = new DeterministicMeasurer();
+    const drawn = "'skinparam handwritten' is deprecated: write '!option handwritten false' instead".replaceAll(
+      ' ',
+      '\u00a0',
+    );
     const plain = renderSync('@startuml\nstart\n@enduml', { measurer });
-    const warned = renderSync('@startuml\nskinparam padding 15\nstart\n@enduml', { measurer });
-    expect(plain).not.toContain(PADDING_DRAWN);
-    expect(warned).toContain(`>${PADDING_DRAWN}</text>`);
+    const warned = renderSync('@startuml\nskinparam handwritten false\nstart\n@enduml', { measurer });
+    expect(plain).not.toContain(drawn);
+    expect(warned).toContain(`>${drawn}</text>`);
     const cy = (svg: string): number => Number(/<ellipse cx="[^"]*" cy="([^"]*)"/.exec(svg)![1]);
     expect(cy(warned)).toBeGreaterThan(cy(plain));
   });

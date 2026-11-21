@@ -80,7 +80,7 @@ describe('CommandPrintBetween', () => {
 
   it('executeArg without a UMatcher is the NullPointerException of java:91-92', () => {
     const d = newGantt();
-    const bare = RegexResult.fromMap(new Map());
+    const bare = RegexResult.create();
     const exec = (
       command as unknown as {
         executeArg(d: GanttDiagram, l: undefined, a: RegexResult, p: ParserPass): unknown;

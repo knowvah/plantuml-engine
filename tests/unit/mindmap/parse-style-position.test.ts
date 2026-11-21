@@ -7,8 +7,10 @@
  * earlier style.
  *
  * Expected values: `DumpProbe ideas <puml>` (plans/mindmap-engine-port/
- * tools/probe/) against the 1.2026.8beta1 jar — `[value1, value2,
- * priority]` of each idea's `Idea.getStyle()` property.
+ * tools/probe/) against the 1.2026.8beta1 jar, re-dumped with
+ * `tests/unit/core/style/fixtures/probe/run.sh new <puml> ideas` (old engine,
+ * 1.2026.11beta1 skin) — `[value1, value2, priority]` of each idea's
+ * `Idea.getStyle()` property.
  */
 import { describe, expect, it } from 'vitest';
 import { preprocess } from '../../../src/core/preprocessor.js';
@@ -124,21 +126,21 @@ function column(diagram: MindMapDiagram, name: PName): [string, unknown][] {
 describe('style blocks apply by source position (MindMap.java:124-125, SkinParam.java:164-167)', () => {
   it('somife-42-levu771: the root keeps the FIRST block, the children take the second (DumpProbe ideas)', () => {
     expect(column(parsePositioned(SOMIFE), 'BackGroundColor')).toEqual([
-      ['Hi', ['white', null, 326]],
-      ['some', ['yellow', null, 327]],
-      ['short', ['yellow', null, 327]],
-      ['ideas', ['yellow', null, 327]],
-      ['Hi', ['white', null, 326]],
+      ['Hi', ['white', null, 344]],
+      ['some', ['yellow', null, 345]],
+      ['short', ['yellow', null, 345]],
+      ['ideas', ['yellow', null, 345]],
+      ['Hi', ['white', null, 344]],
     ]);
   });
 
   it('petoda-11-duza898: America and its leaves precede the lightBlue block, Europe and its leaves follow it (DumpProbe ideas)', () => {
-    const green = ['green', null, 331];
-    const yellow = ['yellow', null, 333];
-    const lightBlue = ['lightBlue', null, 336];
+    const green = ['green', null, 349];
+    const yellow = ['yellow', null, 351];
+    const lightBlue = ['lightBlue', null, 354];
     expect(column(parsePositioned(PETODA), 'BackGroundColor')).toEqual([
       ['World', green],
-      ['America', ['white', null, 328]],
+      ['America', ['white', null, 346]],
       ['Canada', yellow],
       ['Mexico', yellow],
       ['USA', yellow],
@@ -154,12 +156,12 @@ describe('style blocks apply by source position (MindMap.java:124-125, SkinParam
     const diagram = parsePositioned(SKINPARAM_AFTER_ROOT);
     expect(column(diagram, 'BackGroundColor')).toEqual([
       ['r', ['#f1f1f1', '#313139', 12]],
-      ['a', ['pink', null, 326]],
+      ['a', ['pink', null, 344]],
       ['r', ['#f1f1f1', '#313139', 12]],
     ]);
     expect(column(diagram, 'FontColor')).toEqual([
       ['r', ['black', 'white', 4]],
-      ['a', ['red', null, 327]],
+      ['a', ['red', null, 345]],
       ['r', ['black', 'white', 4]],
     ]);
   });

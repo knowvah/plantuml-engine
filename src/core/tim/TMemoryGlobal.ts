@@ -10,6 +10,7 @@ import { TrieImpl } from './TrieImpl.js';
 import type { Trie } from './Trie.js';
 import { ExecutionContexts, type TMemory } from './TMemory.js';
 import { TMemoryLocal } from './TMemoryLocal.js';
+import { getAliased, resolveKey } from './VariableAlias.js';
 
 /**
  * The single top-level `TMemory`: global (`!global $x = ...`) and
@@ -23,8 +24,9 @@ export class TMemoryGlobal extends ExecutionContexts implements TMemory {
   private readonly globalVariables = new Map<string, TValue>();
   private readonly variables = new TrieImpl();
 
+  /** @see TMemoryGlobal.java:54-56 (`VariableAlias.get`, upstream 9d5e0d8d0cc) */
   getVariable(varname: string): TValue | undefined {
-    return this.globalVariables.get(varname);
+    return getAliased(this.globalVariables, varname);
   }
 
   dumpDebug(message: string): void {
@@ -53,13 +55,15 @@ export class TMemoryGlobal extends ExecutionContexts implements TMemory {
   putVariable(varname: string, value: TValue, scope: TVariableScope | undefined, location: StringLocated): void {
     if (scope === TVariableScope.LOCAL) throw new EaterException('Cannot use local variable here', location);
 
-    this.globalVariables.set(varname, value);
-    this.variables.add(varname);
+    const key = resolveKey(this.globalVariables, varname);
+    this.globalVariables.set(key, value);
+    this.variables.add(key);
   }
 
   removeVariable(varname: string): void {
-    this.globalVariables.delete(varname);
-    this.variables.remove(varname);
+    const key = resolveKey(this.globalVariables, varname);
+    this.globalVariables.delete(key);
+    this.variables.remove(key);
   }
 
   isEmpty(): boolean {

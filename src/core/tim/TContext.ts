@@ -68,6 +68,7 @@ import { TValue } from './expression/TValue.js';
 import { buildCodeIterator } from './iterator/buildCodeIterator.js';
 import type { CodeIterator } from './iterator/CodeIterator.js';
 import type { Sub } from './iterator/Sub.js';
+import { alias } from './VariableAlias.js';
 
 export type { TContextOptions } from './TContextOptions.js';
 
@@ -107,7 +108,8 @@ export class TContext implements TContextInterface {
   asKnowledge(memory: TMemory, location: LineLocation | undefined): Knowledge {
     return {
       getVariable: (name: string): TValue => {
-        if (name.includes('.') || name.includes('[')) return this.fromJson(memory, name, location);
+        if (name.includes('.') || name.includes('['))
+          return this.fromJson(memory, withStoredSpelling(memory, name), location);
 
         // Upstream returns `memory.getVariable(name)` directly -- null for an
         // unknown name, which `ReversePolishInterpretor` relies on to decide
@@ -448,4 +450,23 @@ export class TContext implements TContextInterface {
   getPreprocessingArtifact(): TPreprocessingArtifact {
     return this.preprocessingArtifact;
   }
+}
+
+/**
+ * `foo.field` or `foo[1]` may refer to the variable `$foo` (or the opposite):
+ * the text replacement only knows the spelling the variable was created with.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TContext.java#withStoredSpelling (upstream 9d5e0d8d0cc)
+ */
+function withStoredSpelling(memory: TMemory, name: string): string {
+  let end = 0;
+  while (end < name.length && name.charAt(end) !== '.' && name.charAt(end) !== '[') end++;
+  const root = name.substring(0, end);
+  if (memory.getVariable(root) === undefined || memory.variablesNames3().getLonguestMatchStartingIn(root, 0) === root)
+    return name;
+
+  const other = alias(root);
+  if (other !== undefined && memory.variablesNames3().getLonguestMatchStartingIn(other, 0) === other)
+    return other + name.substring(end);
+
+  return name;
 }

@@ -179,7 +179,9 @@ describe('applyWbsItemMultilineNew / Old', () => {
     const { d, add } = withRoot();
     const block = collectWbsMultilineBlock(['++(c)[#blue]>:l1', 'l2;'], 0)!;
     expect(applyWbsItemMultilineOld(d, block).isOk()).toBe(true);
-    expect(d.getWarnings().map((w) => w.getMessage())).toEqual([['Please define Direction/Shape before Color/Id.']]);
+    expect(d.getWarnings().map((w) => w.getMessage())).toEqual([
+      ["Shape (_) and direction (< >) must come before color and id: start the line with '++>[#blue](c)'"],
+    ]);
     const [code, , content] = add.mock.calls[0]!;
     expect(code).toBe('c');
     expect(texts(content.label)).toEqual(['l1', 'l2']);

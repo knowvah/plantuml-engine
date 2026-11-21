@@ -21,10 +21,12 @@ import {
   buildManifest,
   filterTargets,
   isSvekDot,
+  securityProfileOfTarget,
   targetId,
   type Target,
 } from '../../../scripts/lib/recapture-manifest.js';
-import { classpath, javaArgs, runPool, type Renderer } from '../../../scripts/lib/recapture-render.js';
+import { classpath, javaArgs, javaEnv, runPool, type Renderer } from '../../../scripts/lib/recapture-render.js';
+import { securityProfileOf } from '../../oracle/svg-conformance/corpus-gate-part.js';
 import { formatCounts, processTarget, recapture, type Context } from '../../../scripts/recapture-oracles.js';
 
 const buf = (s: string): Buffer => Buffer.from(s);
@@ -357,6 +359,40 @@ describe('javaArgs / classpath', () => {
   });
 });
 
+describe('security profile of a capture (oracle/goldens/svg-dot README)', () => {
+  const SVG_CLASS: Target = {
+    ...GOLDEN,
+    dir: 'oracle/goldens/svg-class/bar',
+    puml: 'oracle/goldens/svg-class/bar/in.puml',
+  };
+  const DOT_CACHE: Target = {
+    ...CACHE,
+    dir: 'test-results/dot-cache/dot/foo',
+    puml: 'test-results/dot-cache/dot/foo/in.puml',
+  };
+
+  it('captures goldens/svg-dot under INSECURE and every other target under the default', () => {
+    expect(securityProfileOfTarget(GOLDEN)).toBe('INSECURE');
+    expect(securityProfileOfTarget(SVG_CLASS)).toBeUndefined();
+    expect(securityProfileOfTarget(DOT_CACHE)).toBeUndefined();
+    expect(securityProfileOfTarget(CACHE)).toBeUndefined();
+    expect(securityProfileOfTarget(DOTS)).toBeUndefined();
+    expect(securityProfileOfTarget(FIXTURE)).toBeUndefined();
+  });
+
+  it('agrees with the profile the routing and refusal gates render with', () => {
+    expect(securityProfileOf({ tree: 'goldens', type: 'svg-dot' })).toBe(securityProfileOfTarget(GOLDEN));
+    expect(securityProfileOf({ tree: 'dot-cache', type: 'dot' })).toBe(securityProfileOfTarget(DOT_CACHE));
+  });
+
+  it('sets PLANTUML_SECURITY_PROFILE for a profile and strips an ambient one otherwise', () => {
+    const base = { PATH: '/bin', PLANTUML_SECURITY_PROFILE: 'INSECURE' };
+    expect(javaEnv('INSECURE', { PATH: '/bin' })).toEqual({ PATH: '/bin', PLANTUML_SECURITY_PROFILE: 'INSECURE' });
+    expect(javaEnv(undefined, base)).toEqual({ PATH: '/bin' });
+    expect(base.PLANTUML_SECURITY_PROFILE).toBe('INSECURE');
+  });
+});
+
 describe('processTarget / recapture (injected renderer, temp repo)', () => {
   let repo: string;
   const read = (rel: string): string => readFileSync(join(repo, rel), 'utf8');
@@ -418,6 +454,13 @@ describe('processTarget / recapture (injected renderer, temp repo)', () => {
     expect(render.mock.calls[0]![0]).toBe(join(repo, FIXTURE.puml));
     expect(row.status).toBe('CHANGED');
     expect(read(`${FIXTURE.dir}/a.svg`)).toBe('new-bytes');
+  });
+
+  it('hands the svg-dot golden its INSECURE profile and a cache dir none', async () => {
+    const render = vi.fn<Renderer>(() => Promise.resolve(rendered({ 'golden.svg': 'g' })));
+    await processTarget(GOLDEN, ctx(render, false));
+    await processTarget(CACHE, ctx(render, false));
+    expect(render.mock.calls.map((c) => c[1].securityProfile)).toEqual(['INSECURE', undefined]);
   });
 
   it('recapture renders one call per target and keeps target order', async () => {

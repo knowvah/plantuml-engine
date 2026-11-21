@@ -34,6 +34,19 @@ export interface LabelPadderGeo {
   readonly roundCorner: number;
 }
 
+/**
+ * What `AbstractMessage#groupTypeMessage` reads (`AbstractMessage.java:
+ * 319-326`): the message's uid and source line, and the uids of
+ * `getParticipant1()`/`getParticipant2()` -- for a `MessageExo` both are its
+ * one participant (`MessageExo.java:72-80`).
+ */
+export interface MessageGroupGeo {
+  readonly uid: string;
+  readonly participant1: string;
+  readonly participant2: string;
+  readonly sourceLine?: number;
+}
+
 export interface MessageGeo {
   /**
    * The element's resolved style paint (sdd1 D1/D5). Optional until its family
@@ -42,6 +55,9 @@ export interface MessageGeo {
    */
   readonly paint?: SequencePaint;
   kind: 'message';
+  /** The `<g class="message">` the arrow component is drawn in
+   *  (`CommunicationTile.java:369-371`). */
+  group: MessageGroupGeo;
   /** The padder's box behind the label (`AbstractComponentRoseArrow.java:72-75`). */
   labelPadder?: LabelPadderGeo;
   /** A create message's head (`CommunicationTile#drawU:347-371`): the

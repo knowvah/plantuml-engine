@@ -73,6 +73,7 @@ import {
   emit,
   ensureParticipant,
   setLastEventWithNoteSpan,
+  sourceLineOf,
   type ArrowSpec,
   type Command,
   type ParseState,
@@ -407,6 +408,7 @@ function executeArrow(state: ParseState, match: RegExpExecArray): void {
     label: g['MESSAGE'] ?? '',
     arrow,
     styleBuilder: currentStyleBuilder(state.style), // `CommandArrow.java:401`
+    ...sourceLineOf(state), // `new Message(..., location)`, `CommandArrow.java:412-413`
     ...optionalFields(state, g),
     // `manageActivations` and the `autoactivate` branch are the two arms of
     // one `if`/`else` (`CommandArrow.java:432-441`); `autoActivationFlags`

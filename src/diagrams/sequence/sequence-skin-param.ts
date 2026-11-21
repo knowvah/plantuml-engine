@@ -36,7 +36,8 @@ import {
   type SkinParam as StyleSkinParam,
 } from '../../core/style/mindmap-style-builder.js';
 import { MergeStrategy } from '../../core/style/MergeStrategy.js';
-import { StyleParsingException, trin } from '../../core/style/parser/StyleParser.js';
+import { StyleParsingException } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { SName } from '../../core/style/SName.js';
 import type { Style } from '../../core/style/Style.js';
 import type { StyleBuilder } from '../../core/style/StyleBuilder.js';

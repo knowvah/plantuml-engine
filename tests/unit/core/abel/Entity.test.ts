@@ -103,6 +103,23 @@ describe('Entity (base half)', () => {
     expect(unknown.getLeafType()).toBe(LeafType.USECASE);
   });
 
+  it('muteToType (2-arg) mutes across CLASS_LIKE_TYPES (592901f0c42, Entity.java:208-213)', () => {
+    const world = makeWorld();
+    const cls = makeLeaf(world, 'A', LeafType.CLASS);
+    expect(cls.muteToType(LeafType.METACLASS, undefined)).toBe(true);
+    expect(cls.getLeafType()).toBe(LeafType.METACLASS);
+    expect(cls.muteToType(LeafType.STRUCT, undefined)).toBe(true);
+    expect(cls.muteToType(LeafType.OBJECT, undefined)).toBe(true);
+    expect(cls.getLeafType()).toBe(LeafType.OBJECT);
+    // OBJECT is a target only (Entity.java:226), never a source.
+    expect(cls.muteToType(LeafType.CLASS, undefined)).toBe(false);
+
+    const group = makeLeaf(world, 'G', LeafType.CLASS);
+    group.muteToGroupType(GroupType.PACKAGE);
+    // EnumSet#contains(null) is false: a group never mutes to a leaf type here.
+    expect(group.muteToType(LeafType.CLASS, undefined)).toBe(false);
+  });
+
   it('muteToGroupType turns a leaf into a group', () => {
     const world = makeWorld();
     const leaf = makeLeaf(world, 'A', LeafType.STATE);

@@ -21,7 +21,6 @@ import { upstreamTypeOf, type DiagramType, type UmlSource } from './core/block-e
 import { humanReadableName } from './core/diagram-type-set.js';
 import { prepareIncludeStore } from './core/include-resolver.js';
 import { surfaceSpriteWarnings, type SpriteRegistry } from './core/sprite-commands.js';
-import { surfaceParseWarnings } from './diagrams/json/ast.js';
 import type { PreprocessorResult } from './core/preprocessor.js';
 import { inheritingRenderFn, takePendingPrevious, withPrevious } from './core/nested-previous.js';
 import { DiagramRefusal, emptySvg, errorSvg, preprocessorErrorSvg, welcomeSvg } from './core/error/error-diagrams.js';
@@ -311,7 +310,6 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   const measurer = resolveMeasurer(plugin.type, options);
   const ast = astOf(resolution, options);
   surfaceSpriteWarnings(ast, options?.onWarning);
-  surfaceParseWarnings(ast, options?.onWarning);
   // CDD T27FU/B7FU-R2: (re-)registers the class-body AND chrome `{{ }}`-
   // embed renderers with THIS call's own `options` -- a nested diagram
   // measures text through the SAME bounder as its enclosing one (upstream's

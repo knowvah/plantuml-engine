@@ -90,11 +90,11 @@ const texts = (svg: string): string[] => [...svg.matchAll(/<text[^>]*>([^<]*)/g)
 const NBSP = '\u00a0';
 
 describe('renderSync on an empty body -- each engine as its jar factory does', () => {
-  it('@startfiles: FilesDiagram over an empty listing, byte-equal to the jar (21x21)', () => {
+  it('@startfiles: FilesDiagram over an empty listing, byte-equal to the jar (23x21)', () => {
     const jar = readFileSync('tests/fixtures/files/empty-diagram.svg', 'utf8');
     const ours = renderSync('@startfiles\n@endfiles\n', withJarCompatibleStyleInput({ measurer: measurer() }));
     expect(compareSvg(ours, jar, 'deterministic').diffs).toEqual([]);
-    expect(rootSize(ours)).toBe('21x21');
+    expect(rootSize(ours)).toBe('23x21');
   });
 
   it.each([

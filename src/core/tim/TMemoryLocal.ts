@@ -9,6 +9,7 @@ import { TrieImpl } from './TrieImpl.js';
 import type { Trie } from './Trie.js';
 import { ExecutionContexts, type TMemory } from './TMemory.js';
 import type { TMemoryGlobal } from './TMemoryGlobal.js';
+import { getAliased, resolveKey } from './VariableAlias.js';
 
 /**
  * A function/procedure call frame: parameters + locally-declared variables,
@@ -55,37 +56,44 @@ export class TMemoryLocal extends ExecutionContexts implements TMemory {
       this.memoryGlobal.putVariable(varname, value, scope, location);
       return;
     }
-    if (scope === TVariableScope.LOCAL || this.overridenVariables01.has(varname)) {
-      this.overridenVariables01.set(varname, value);
-      this.overridenVariables00?.add(varname);
+    // `$foo` and `foo` are one variable (TMemoryLocal.java:87-104, upstream 9d5e0d8d0cc).
+    const overridenKey = resolveKey(this.overridenVariables01, varname);
+    if (scope === TVariableScope.LOCAL || this.overridenVariables01.has(overridenKey)) {
+      this.overridenVariables01.set(overridenKey, value);
+      this.overridenVariables00?.add(overridenKey);
     } else if (this.memoryGlobal.getVariable(varname) !== undefined) {
       this.memoryGlobal.putVariable(varname, value, scope, location);
     } else {
-      this.localVariables01.set(varname, value);
-      this.localVariables00.add(varname);
+      const localKey = resolveKey(this.localVariables01, varname);
+      this.localVariables01.set(localKey, value);
+      this.localVariables00.add(localKey);
     }
   }
 
+  /** @see TMemoryLocal.java:107-119 */
   removeVariable(varname: string): void {
-    if (this.overridenVariables01.has(varname)) {
-      this.overridenVariables01.delete(varname);
-      this.overridenVariables00?.remove(varname);
+    const overridenKey = resolveKey(this.overridenVariables01, varname);
+    if (this.overridenVariables01.has(overridenKey)) {
+      this.overridenVariables01.delete(overridenKey);
+      this.overridenVariables00?.remove(overridenKey);
     } else if (this.memoryGlobal.getVariable(varname) !== undefined) {
       this.memoryGlobal.removeVariable(varname);
     } else {
-      this.localVariables01.delete(varname);
-      this.localVariables00.remove(varname);
+      const localKey = resolveKey(this.localVariables01, varname);
+      this.localVariables01.delete(localKey);
+      this.localVariables00.remove(localKey);
     }
   }
 
+  /** @see TMemoryLocal.java:122-133 */
   getVariable(varname: string): TValue | undefined {
-    const overridden = this.overridenVariables01.get(varname);
+    const overridden = getAliased(this.overridenVariables01, varname);
     if (overridden !== undefined) return overridden;
 
     const global = this.memoryGlobal.getVariable(varname);
     if (global !== undefined) return global;
 
-    return this.localVariables01.get(varname);
+    return getAliased(this.localVariables01, varname);
   }
 
   variablesNames3(): Trie {

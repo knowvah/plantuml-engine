@@ -81,7 +81,9 @@ function executeElementFull(state: ParseState, match: RegExpExecArray): void {
       finalizeDisplay(shown),
       symbol,
       stereotype?.stereotypes,
-      g['COLOR'] ?? g['COLOR2'],
+      // `getLazzy("COLOR", 0)` (ColorParser.java:62): the first group in match order, the leading COLOR2
+      // (RegexResult.java:128-149, e2659a157bf).
+      g['COLOR2'] ?? g['COLOR'],
       tags.length > 0 ? tags : undefined,
       stereotype?.sprite,
       { url: g['URL'] },

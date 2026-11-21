@@ -18,6 +18,10 @@ import { join } from 'node:path';
 import { ORACLE_JAR_TIMEOUT_MS } from './oracle-jar-timeout.js';
 import { runInPlainMinute, type GuardClock, type GuardSleep } from './oracle-minute-guard.js';
 import type { Rendered } from './recapture-classify.js';
+import type { SecurityProfile } from '../../src/core/security/SecurityProfile.js';
+
+/** The variable the jar reads its profile from (`SecurityProfile.java:118`). */
+const SECURITY_PROFILE_ENV = 'PLANTUML_SECURITY_PROFILE';
 
 export interface RenderOptions {
   /** Oracle jar to render with. */
@@ -27,6 +31,8 @@ export interface RenderOptions {
   /** Parent of the per-render scratch directories. */
   readonly scratchRoot: string;
   readonly timeoutMs?: number;
+  /** The profile to capture under (`securityProfileOfTarget`); absent = the jar's default, LEGACY. */
+  readonly securityProfile?: SecurityProfile;
   readonly now?: GuardClock;
   readonly sleep?: GuardSleep;
 }
@@ -56,17 +62,36 @@ export function javaArgs(jar: string, repo: string, out: string, pumlAbs: string
   ];
 }
 
+/**
+ * The jar's environment: `base` with `PLANTUML_SECURITY_PROFILE` set to
+ * `profile`, or REMOVED when there is none -- so an ambient value in the
+ * caller's shell can never turn a LEGACY capture into an INSECURE one, and
+ * the `oracle/goldens/svg-dot` INSECURE captures are never overwritten with
+ * the LEGACY suppression page (`PSystemDot.java:77-84`).
+ */
+export function javaEnv(profile: SecurityProfile | undefined, base: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const env = { ...base };
+  if (profile === undefined) delete env[SECURITY_PROFILE_ENV];
+  else env[SECURITY_PROFILE_ENV] = profile;
+  return env;
+}
+
 interface ExecOutcome {
   exitCode: number | null;
   timedOut: boolean;
 }
 
-function runJava(args: readonly string[], cwd: string, timeoutMs: number): Promise<ExecOutcome> {
+function runJava(
+  args: readonly string[],
+  cwd: string,
+  timeoutMs: number,
+  env: NodeJS.ProcessEnv,
+): Promise<ExecOutcome> {
   return new Promise((resolve) => {
     execFile(
       'java',
       [...args],
-      { cwd, timeout: timeoutMs, killSignal: 'SIGKILL', maxBuffer: 64 * 1024 * 1024 },
+      { cwd, env, timeout: timeoutMs, killSignal: 'SIGKILL', maxBuffer: 64 * 1024 * 1024 },
       (err) => {
         if (!err) return resolve({ exitCode: 0, timedOut: false });
         const e = err as NodeJS.ErrnoException & { killed?: boolean; code?: number | string };
@@ -99,6 +124,7 @@ export const renderPuml: Renderer = (pumlAbs, opts) =>
           javaArgs(opts.jar, opts.repo, out, pumlAbs),
           opts.repo,
           opts.timeoutMs ?? ORACLE_JAR_TIMEOUT_MS,
+          javaEnv(opts.securityProfile, process.env),
         );
         return { files: collect(out), ...outcome };
       } finally {

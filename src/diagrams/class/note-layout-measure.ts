@@ -60,6 +60,8 @@ import { NOTE_FONT_SIZE } from '../../core/klimt/font/FontParam.js';
 import { OPALE_MARGIN_X1 as NOTE_MARGIN_X1 } from '../../core/svek/image/Opale.js';
 import { OPALE_MARGIN_X2 as NOTE_MARGIN_X2 } from '../../core/svek/image/Opale.js';
 import { OPALE_MARGIN_Y as NOTE_MARGIN_Y } from '../../core/svek/image/Opale.js';
+import { trin } from '../../core/string-utils-trim.js';
+
 /** `Bullet.java:73-75` — order 0 is an ellipse cell 12 wide; order n>=1 a
  *  rectangle cell `8 + 8*order` wide. */
 const BULLET_ORDER0_WIDTH = 12;
@@ -208,12 +210,6 @@ function isNoteBlockSeparator(s: string): boolean {
   if (s.startsWith('..') && s.endsWith('..') && s !== '...') return true;
   if (s.startsWith('__') && s.endsWith('__')) return true;
   return false;
-}
-
-/** `StringUtils.trin` (java:502-530) — strips chars `<= ' '` from both
- *  ends (narrower than JS `trim()`, which also eats NBSP etc.). */
-function trin(s: string): string {
-  return s.replace(/^[\u0000-\u0020]+/, '').replace(/[\u0000-\u0020]+$/, '');
 }
 
 /** `BodyEnhancedAbstract#getTitle` (java:94-100): `undefined` (no title)

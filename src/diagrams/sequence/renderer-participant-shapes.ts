@@ -29,7 +29,8 @@ import { UFontFactory } from '../../core/klimt/font/UFontFactory.js';
 import { CircledCharacter } from '../../core/klimt/shape/CircledCharacter.js';
 import { UImage } from '../../core/klimt/shape/UImage.js';
 import { PAINT_NONE } from '../../core/svg.js';
-import type { PageTheme } from './renderer-ug.js';
+import { closeGroup, startGroup, type PageTheme } from './renderer-ug.js';
+import { groupTypeHead, groupTypeTail } from './sequence-groups.js';
 import type { ParticipantGeo } from './ast.js';
 import { drawRun, withUrl, type RunAmbient } from './renderer-text.js';
 import {
@@ -267,6 +268,28 @@ function drawParticipantBlock(
   for (const part of glyphFirst ? [shape, label] : [label, shape]) part();
 }
 
+/**
+ * The body `drawHead` and `drawTail` share, `LivingSpace#drawHeadOrTail`
+ * (`teoz/LivingSpace.java:198-224`), from the group on:
+ *
+ * ```java
+ * final boolean isHead = type == headType;
+ * ug.startGroup(isHead ? p.groupTypeHead(skinParam.getPragma()) : p.groupTypeTail(skinParam.getPragma()));
+ * if (url != null) ug.startUrl(url);
+ * comp.drawU(ug, area, context);
+ * if (url != null) ug.closeUrl();
+ * ug.closeGroup();
+ * ```
+ *
+ * `head` is `type == headType`: the top row and a create message's head, never
+ * the footer row (`LivingSpaces#drawHeads` draws the tail there, `:139-141`).
+ */
+function drawHeadOrTail(ug: UGraphic, p: ParticipantGeo, blockTopY: number, head: boolean, theme: PageTheme): void {
+  startGroup(ug, head ? groupTypeHead(p) : groupTypeTail(p));
+  withUrl(ug, p.url, () => drawParticipantBlock(ug, p, blockTopY, head, theme));
+  closeGroup(ug);
+}
+
 /** The head a create message draws at its tile top
  *  (`LivingSpace#drawHead(ug, context, TOP, LEFT|RIGHT)`). */
 export function drawCreatedHead(
@@ -274,7 +297,7 @@ export function drawCreatedHead(
   head: { participant: ParticipantGeo; y: number },
   theme: PageTheme,
 ): void {
-  withUrl(ug, head.participant.url, () => drawParticipantBlock(ug, head.participant, head.y, true, theme));
+  drawHeadOrTail(ug, head.participant, head.y, true, theme);
 }
 
 /**
@@ -301,12 +324,12 @@ export function drawCreatedHead(
  * for `A -> B [[url]] : label`.
  */
 export function drawParticipantBox(ug: UGraphic, p: ParticipantGeo, theme: PageTheme): void {
-  withUrl(ug, p.url, () => drawParticipantBlock(ug, p, p.y, true, theme));
+  drawHeadOrTail(ug, p, p.y, true, theme);
 }
 
 /** The footer row (`isShowFootbox`), drawn from `footerShapeY` down --
  *  `dy(pageHeight + headHeight)`, `PlayingSpaceWithParticipants.java:225-226`.
  *  Every kind derives its own glyph offset from the block. */
 export function drawFooterBox(ug: UGraphic, p: ParticipantGeo, footerShapeY: number, theme: PageTheme): void {
-  withUrl(ug, p.url, () => drawParticipantBlock(ug, p, footerShapeY, false, theme));
+  drawHeadOrTail(ug, p, footerShapeY, false, theme);
 }

@@ -9,7 +9,7 @@ import type { UmlSource } from '../../core/block-extractor.js';
 import { singleLinePlugin } from '../../core/command/PSystemSingleLineFactory.js';
 import type { SingleLineGeometry } from '../../core/command/PSystemSingleLineFactory.js';
 import type { SyncPlugin } from '../../core/dispatcher.js';
-import { trin } from '../../core/style/parser/StyleParser.js';
+import { trin } from '../../core/string-utils-trim.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
 import { PSystemListFonts } from './PSystemListFonts.js';
 

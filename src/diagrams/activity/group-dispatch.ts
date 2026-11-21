@@ -42,6 +42,18 @@ function isGroupType(s: string): s is ActivityGroup['groupType'] {
   return (GROUP_TYPES as readonly string[]).includes(s);
 }
 
+/**
+ * `rebuildWithBracket`: the opener as the warning suggests writing it -- TYPE,
+ * BACK1, NAME (as written, quotes kept), BACK2, STEREO, each space-separated,
+ * then ` {`. Groups as in {@link RE_GROUP_OPEN}.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/activitydiagram3/command/CommandPartition3.java:171-181
+ */
+function rebuildWithBracket(m: RegExpExecArray): string {
+  const [, type, back1, name, back2, stereo] = m;
+  const optional = (v: string | undefined): string => (v === undefined ? '' : ` ${v}`);
+  return `${type!}${optional(back1)} ${name ?? ''}${optional(back2)}${optional(stereo)} {`;
+}
+
 interface LeadingGroupNoteSplit {
   readonly body: ActivityNode[];
   readonly note?: ActivityNote;
@@ -83,9 +95,9 @@ export function tryOpenGroup(ctx: ParseContext, idx: number, line: string): Disp
   const stereotype = m[5];
   const hasBracket = m[6]!.length > 0;
   const openerSwimlane = swimlaneSpread(ctx);
-  // `CommandPartition3.java:154-157`: TYPE as written, NAME unquoted (:143).
+  // `CommandPartition3.java:160-162`: the opener rebuilt with its bracket.
   if (!hasBracket) {
-    ctx.pragma.addWarning(new Warning(`You should use a bracket ({) when defining your container '${m[1]!}' ${name}`));
+    ctx.pragma.addWarning(new Warning(`Missing '{': write '${rebuildWithBracket(m)}' and close it with '}'`));
   }
 
   const bodyResult = parseNodes(ctx, idx + 1, GROUP_STOPS);
@@ -95,8 +107,8 @@ export function tryOpenGroup(ctx: ParseContext, idx: number, line: string): Disp
     const closer = ctx.lines[cursor]!.trim();
     if (RE_CLOSE_GROUP.test(closer)) cursor++;
     else if (RE_CLOSE_GROUP_LEGACY.test(closer)) {
-      // `CommandCloseGroupLegacy3.java:75`: CMD is the whole anchored match (:57).
-      ctx.pragma.addWarning(new Warning(`You should use a bracket (}) instead of '${closer}'`));
+      // `CommandCloseGroupLegacy3.java:81`: CMD is the whole anchored match (:57).
+      ctx.pragma.addWarning(new Warning(`'${closer}' is deprecated: close the group with '}' instead`));
       cursor++;
     }
   }

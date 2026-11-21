@@ -17,6 +17,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { ValueColor } from '../../../../src/core/style/ValueColor.js';
 import { ValueNull } from '../../../../src/core/style/ValueNull.js';
 import { HorizontalAlignment } from '../../../../src/core/klimt/geom/HorizontalAlignment.js';
@@ -24,16 +25,16 @@ import { TestHColor, TestHColorSet, WHITE, counterFrom } from './helpers/hcolor-
 
 describe('ValueImpl', () => {
   describe('factories (ValueImpl.java:50-60)', () => {
-    it('regular(value, counter) takes the next counter int as priority', () => {
+    it('regular(value, counter) takes the next counter int as its order', () => {
       const counter = counterFrom(41);
       const a = ValueImpl.regular('red', counter);
       const b = ValueImpl.regular('blue', counter);
-      expect([a.getPriority(), b.getPriority()]).toEqual([41, 42]);
+      expect([a.getSpecificity().toString(), b.getSpecificity().toString()]).toEqual(['41', '42']);
       expect(a.toString()).toBe('red/null (41)');
     });
 
-    it('regular(value, int) takes the priority verbatim', () => {
-      expect(ValueImpl.regular('7', 1000).toString()).toBe('7/null (1000)');
+    it('regular(value, Specificity) takes the specificity verbatim', () => {
+      expect(ValueImpl.regular('7', Specificity.atOrder(1000)).toString()).toBe('7/null (1000)');
     });
 
     it('dark(value, counter) stores the value as value2', () => {
@@ -52,52 +53,64 @@ describe('ValueImpl', () => {
       expect(red.mergeWith(blue).asString()).toBe('blue');
     });
 
-    it('probe: regular red + later dark blue -> value1 red, value2 blue, regular priority kept', () => {
+    it('probe: regular red + later dark blue -> value1 red, value2 blue, regular specificity kept', () => {
       const counter = counterFrom(1);
       const red = ValueImpl.regular('red', counter);
       const blue = ValueImpl.dark('blue', counter);
       const merged = blue.mergeWith(red);
       expect(merged.asString()).toBe('red');
-      expect(merged.getPriority()).toBe(1);
+      expect(merged.getSpecificity().toString()).toBe('1');
     });
 
     it('returns this for an undefined other (java:63-64)', () => {
-      const v = ValueImpl.regular('red', 1);
+      const v = ValueImpl.regular('red', Specificity.atOrder(1));
       expect(v.mergeWith(undefined)).toBe(v);
     });
 
-    it('against a ValueColor: the strictly higher priority wins (java:67-71)', () => {
-      const v = ValueImpl.regular('red', 5);
-      const higher = new ValueColor(new TestHColor(WHITE), 6);
-      const equal = new ValueColor(new TestHColor(WHITE), 5);
+    it('against a ValueColor: the strictly bigger specificity wins (java:81-85)', () => {
+      const v = ValueImpl.regular('red', Specificity.atOrder(5));
+      const higher = new ValueColor(new TestHColor(WHITE), Specificity.atOrder(6));
+      const equal = new ValueColor(new TestHColor(WHITE), Specificity.atOrder(5));
       expect(v.mergeWith(higher)).toBe(higher);
       expect(v.mergeWith(equal)).toBe(v);
     });
 
     it('throws for any other Value kind (java:72)', () => {
-      expect(() => ValueImpl.regular('red', 5).mergeWith(ValueNull.NULL)).toThrow('UnsupportedOperationException');
+      expect(() => ValueImpl.regular('red', Specificity.atOrder(5)).mergeWith(ValueNull.NULL)).toThrow(
+        'UnsupportedOperationException',
+      );
     });
   });
 
-  it('addPriority shifts the priority by delta (java:79-81)', () => {
-    expect(ValueImpl.regular('red', 7).addPriority(1000).getPriority()).toBe(1007);
+  it('withStereotypeCount / withAncestorRank re-tier the specificity (java:93-99)', () => {
+    const v = ValueImpl.regular('red', Specificity.atOrder(7));
+    expect(v.withStereotypeCount(1).toString()).toBe('red/null (7,stereo=1)');
+    expect(v.withAncestorRank(-1).toString()).toBe('red/null (7,stereo=0,ancestor=-1)');
   });
 
   describe('asColor (ValueImpl.java:92-108) through the colour set', () => {
     it('"none"/"transparent" (any case) -> HColors.transparent(), i.e. XColor(0,0,0,0)', () => {
       const set = new TestHColorSet();
-      expect(ValueImpl.regular('None', 1).asColor(set)).toEqual(new TestHColor({ r: 0, g: 0, b: 0, a: 0 }));
-      expect(ValueImpl.regular('TRANSPARENT', 1).asColor(set)).toEqual(new TestHColor({ r: 0, g: 0, b: 0, a: 0 }));
+      expect(ValueImpl.regular('None', Specificity.atOrder(1)).asColor(set)).toEqual(
+        new TestHColor({ r: 0, g: 0, b: 0, a: 0 }),
+      );
+      expect(ValueImpl.regular('TRANSPARENT', Specificity.atOrder(1)).asColor(set)).toEqual(
+        new TestHColor({ r: 0, g: 0, b: 0, a: 0 }),
+      );
     });
 
     it('resolves value1 through getColorOrWhite', () => {
       const set = new TestHColorSet();
-      expect(ValueImpl.regular('red', 1).asColor(set)).toEqual(new TestHColor({ r: 255, g: 0, b: 0, a: 255 }));
+      expect(ValueImpl.regular('red', Specificity.atOrder(1)).asColor(set)).toEqual(
+        new TestHColor({ r: 255, g: 0, b: 0, a: 255 }),
+      );
       expect(set.requested).toEqual(['red']);
     });
 
     it('an unknown colour falls back to white (HColorSet.java:58-63)', () => {
-      expect(ValueImpl.regular('banana', 1).asColor(new TestHColorSet())).toEqual(new TestHColor(WHITE));
+      expect(ValueImpl.regular('banana', Specificity.atOrder(1)).asColor(new TestHColorSet())).toEqual(
+        new TestHColor(WHITE),
+      );
     });
 
     it('a merged regular/dark pair resolves both halves and pairs them with withDark (java:103-106)', () => {
@@ -119,7 +132,7 @@ describe('ValueImpl', () => {
       ['yes', false],
       ['1', false],
     ])('%s -> %s', (s, expected) => {
-      expect(ValueImpl.regular(s, 1).asBoolean()).toBe(expected);
+      expect(ValueImpl.regular(s, Specificity.atOrder(1)).asBoolean()).toBe(expected);
     });
 
     it('a dark-only value (null value1) is false', () => {
@@ -136,14 +149,14 @@ describe('ValueImpl', () => {
       ['none', 0, -1],
       ['', 0, -1],
     ])('%s -> asInt %d, asIntButMinusOneIfError %d', (s, asInt, minusOne) => {
-      const v = ValueImpl.regular(s, 1);
+      const v = ValueImpl.regular(s, Specificity.atOrder(1));
       expect(v.asInt()).toBe(asInt);
       expect(v.asIntButMinusOneIfError()).toBe(minusOne);
     });
 
     it('digits beyond Integer.MAX_VALUE throw NumberFormatException', () => {
-      expect(() => ValueImpl.regular('2147483648', 1).asInt()).toThrow('NumberFormatException');
-      expect(ValueImpl.regular('2147483647', 1).asInt()).toBe(2147483647);
+      expect(() => ValueImpl.regular('2147483648', Specificity.atOrder(1)).asInt()).toThrow('NumberFormatException');
+      expect(ValueImpl.regular('2147483647', Specificity.atOrder(1)).asInt()).toBe(2147483647);
     });
   });
 
@@ -155,20 +168,20 @@ describe('ValueImpl', () => {
       ['3.', 3],
       ['-2', 2],
     ])('%s -> %d', (s, expected) => {
-      expect(ValueImpl.regular(s, 1).asDouble()).toBe(expected);
+      expect(ValueImpl.regular(s, Specificity.atOrder(1)).asDouble()).toBe(expected);
     });
 
     it('no digit or dot -> NaN', () => {
-      expect(ValueImpl.regular('none', 1).asDouble()).toBeNaN();
+      expect(ValueImpl.regular('none', Specificity.atOrder(1)).asDouble()).toBeNaN();
     });
 
     it('two dots is not a Java double literal -> NumberFormatException', () => {
-      expect(() => ValueImpl.regular('1.2.3', 1).asDouble()).toThrow('NumberFormatException');
+      expect(() => ValueImpl.regular('1.2.3', Specificity.atOrder(1)).asDouble()).toThrow('NumberFormatException');
     });
 
     it('asDoubleDefaultTo never substitutes: `s == Double.NaN` is always false (java:174-179)', () => {
-      expect(ValueImpl.regular('none', 1).asDoubleDefaultTo(4)).toBeNaN();
-      expect(ValueImpl.regular('2.5', 1).asDoubleDefaultTo(4)).toBe(2.5);
+      expect(ValueImpl.regular('none', Specificity.atOrder(1)).asDoubleDefaultTo(4)).toBeNaN();
+      expect(ValueImpl.regular('2.5', Specificity.atOrder(1)).asDoubleDefaultTo(4)).toBe(2.5);
     });
   });
 
@@ -188,7 +201,7 @@ describe('ValueImpl', () => {
       ['underline', { cssWeight: 400, italic: false }],
       ['', { cssWeight: 400, italic: false }],
     ])('%j -> %j', (s, expected) => {
-      expect(ValueImpl.regular(s, 1).asFontFace()).toEqual(expected);
+      expect(ValueImpl.regular(s, Specificity.atOrder(1)).asFontFace()).toEqual(expected);
     });
 
     it('a dark-only value (null raw) is normal', () => {
@@ -198,12 +211,16 @@ describe('ValueImpl', () => {
 
   describe('asHorizontalAlignment (java:202-204): HorizontalAlignment.fromString(asString())', () => {
     it('matches the constant name case-insensitively', () => {
-      expect(ValueImpl.regular('center', 1).asHorizontalAlignment()).toBe(HorizontalAlignment.CENTER);
-      expect(ValueImpl.regular('Right', 1).asHorizontalAlignment()).toBe(HorizontalAlignment.RIGHT);
+      expect(ValueImpl.regular('center', Specificity.atOrder(1)).asHorizontalAlignment()).toBe(
+        HorizontalAlignment.CENTER,
+      );
+      expect(ValueImpl.regular('Right', Specificity.atOrder(1)).asHorizontalAlignment()).toBe(
+        HorizontalAlignment.RIGHT,
+      );
     });
 
     it('returns undefined for anything else (Java null)', () => {
-      expect(ValueImpl.regular('middle', 1).asHorizontalAlignment()).toBeUndefined();
+      expect(ValueImpl.regular('middle', Specificity.atOrder(1)).asHorizontalAlignment()).toBeUndefined();
       expect(ValueImpl.dark('left', counterFrom(1)).asHorizontalAlignment()).toBeUndefined();
     });
   });

@@ -67,7 +67,7 @@ import {
   DEFAULT_SEPARATOR,
 } from './state-parse-state.js';
 import { buildPhantomGroups } from './state-parse-phantom.js';
-import { refuse, type ParseRefusal } from '../../core/parse-refusal.js';
+import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { checkFinalError } from './state-check-final.js';
 
 /**
@@ -253,14 +253,15 @@ function fallbackOrRefuse(
   if (spriteMatch !== null) return spriteMatch.consumed - 1;
   // No command, annotation, or sprite matcher recognised this line --
   // upstream's `getCandidate` returns `null` and `executeFewLines` builds a
-  // SYNTAX_ERROR "Syntax Error?" immediately. `consumed` is `origIndex[i] +
+  // SYNTAX_ERROR immediately, worded by `getSyntaxErrorMessage` ("Syntax
+  // Error?", or the unclosed-`<style>` message; PSystemCommandFactory.java:206). `consumed` is `origIndex[i] +
   // 1`: upstream's `it.next()` (called AFTER building the error, BEFORE
   // `it.getTrace()` is read) advances the trace past the offending line
   // itself, so `trace.size()` includes it, not just the lines before it.
   // @see ~/git/plantuml/.../command/PSystemCommandFactory.java:169-175
   // stdd T5b: `line` is the document position (the block starts after `@startuml`), `consumed` block-relative.
   const offending = origIndex[i]!;
-  return refuse('syntax', position, offending + 1, 'Syntax Error?');
+  return refuse('syntax', position, offending + 1, syntaxErrorMessageOf(lines[i]!));
 }
 
 /** `runPass`'s walk-position reset: `pendingNote`/`pendingJson` never leak from one pass's walk into the next's, and

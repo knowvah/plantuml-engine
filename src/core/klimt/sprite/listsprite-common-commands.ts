@@ -17,7 +17,7 @@ import { CommandExecutionResult } from '../../command/CommandExecutionResult.js'
 import { matchScaleCommand } from '../../scale-command.js';
 import { matchSpriteBase64Command } from '../../sprite-command-base64.js';
 import { matchSpriteCommand } from '../../sprite-commands.js';
-import { trin } from '../../style/parser/StyleParser.js';
+import { trin } from '../../string-utils-trim.js';
 import type { ListSpriteDiagram } from './ListSpriteDiagram.js';
 
 /** What a command that claimed line `i` leaves: its result and the index of the next line. */

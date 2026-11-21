@@ -2,7 +2,8 @@
  * sdd2 T7h -- notes owned by a group's `GroupingLeaf` (`GroupingLeaf.java:
  * 122-128`): an `else` leaf stores its notes and nothing draws them
  * (`GroupingTile.java:1023-1041` reads the `end` leaf only); a `top`/`bottom`
- * note on any leaf adds the warning "This position is ignored: <POSITION>".
+ * note on any leaf adds the warning "'note <position>' is not supported after 'end': …"
+ * (reworded upstream in 443598c29ce).
  * Expected canvases are the jar's, rendered with `scripts/oracle-render.sh`
  * (2026-10-21).
  */
@@ -20,11 +21,11 @@ describe('note after else', () => {
     expect(svg).not.toContain('#FEFFDD');
   });
 
-  it('warns for top and bottom on the else and the end leaf: jar 181x225', () => {
+  it('warns for top and bottom on the else and the end leaf: jar 331x225', () => {
     const svg = render('@startuml\nalt a\nA -> B\nelse b\nnote top : n\nB -> A\nend\nnote bottom : m\n@enduml');
-    expect(svg).toContain('width="181px" height="225px"');
-    expect(svg).toContain(`This${NBSP}position${NBSP}is${NBSP}ignored:${NBSP}TOP`);
-    expect(svg).toContain(`This${NBSP}position${NBSP}is${NBSP}ignored:${NBSP}BOTTOM`);
+    expect(svg).toContain('width="331px" height="225px"');
+    for (const position of ['top', 'bottom'])
+      expect(svg).toContain(`'note ${position}' is not supported after 'end'`.replaceAll(' ', NBSP));
   });
 });
 

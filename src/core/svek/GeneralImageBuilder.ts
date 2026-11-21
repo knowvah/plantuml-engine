@@ -62,7 +62,9 @@ export function createEntityImageBlockInternal(
 
   if (leafType === LeafType.ACTIVITY) return new EntityImageActivity(leaf, skinParam, bibliotekon);
 
-  if (leafType === LeafType.CIRCLE_START) return new EntityImageCircleStart(leaf, skinParam);
+  // A junction draws like the initial pseudostate but stays its own LeafType (GeneralImageBuilder.java:145-151).
+  if (leafType === LeafType.CIRCLE_START || leafType === LeafType.JUNCTION)
+    return new EntityImageCircleStart(leaf, skinParam);
 
   if (leafType === LeafType.CIRCLE_END) return new EntityImageCircleEnd(leaf, skinParam);
 

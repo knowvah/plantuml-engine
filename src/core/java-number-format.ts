@@ -100,7 +100,12 @@ export function isLongValued(value: number): boolean {
 
 /**
  * `Double.toString`: at least one fraction digit, computerized scientific
- * notation outside `[1e-3, 1e7)`. The digits are the shortest round trip, as JS's are.
+ * notation outside `[1e-3, 1e7)`. The digits are the shortest round trip, as JS's
+ * are, except that a one-digit shortest gives way to the closest two-digit decimal
+ * (JDK 19+ `Double.toString` spec): `Double.MIN_VALUE` is "4.9E-324", not "5.0E-324".
+ * Only subnormals move; a normal double's closest two digits are `d.0`, which the
+ * plain range drops and the scientific one already printed.
+ * @see https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html#toString(double)
  */
 export function javaDoubleToString(value: number): string {
   const nonFinite = nonFiniteText(value);
@@ -112,7 +117,9 @@ export function javaDoubleToString(value: number): string {
     const plain = magnitude.toString();
     return `${sign}${plain}${plain.includes('.') ? '' : '.0'}`;
   }
-  const [mantissa, exponent] = magnitude.toExponential().split('e') as [string, string];
+  const shortest = magnitude.toExponential();
+  const twoDigits = shortest.startsWith(`${shortest.charAt(0)}e`) ? magnitude.toExponential(1) : shortest;
+  const [mantissa, exponent] = twoDigits.split('e') as [string, string];
   return `${sign}${mantissa}${mantissa.includes('.') ? '' : '.0'}E${exponent.replace('+', '')}`;
 }
 

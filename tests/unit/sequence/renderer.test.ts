@@ -101,7 +101,7 @@ function decodeRgba(png: Buffer): Array<[number, number, number, number]> {
  * Measured rather than hard-coded: a literal width here would silently stop
  * matching the measurer and the assertions below check emitted `textLength`.
  */
-function labelRunsFor(p: Omit<ParticipantGeo, 'labelRuns'>): TextRun[] {
+function labelRunsFor(p: Omit<ParticipantGeo, 'labelRuns' | 'uid'>): TextRun[] {
   const measurer = new DeterministicMeasurer();
   const spec = fontSpecOf(defaultTheme);
   const lineHeight = measurer.measure('M', spec).height;
@@ -121,8 +121,8 @@ function labelRunsFor(p: Omit<ParticipantGeo, 'labelRuns'>): TextRun[] {
 }
 
 /** A `ParticipantGeo` with its `labelRuns` derived from the rest of it. */
-function participantGeo(base: Omit<ParticipantGeo, 'labelRuns'>): ParticipantGeo {
-  return { ...base, labelRuns: labelRunsFor(base) };
+function participantGeo(base: Omit<ParticipantGeo, 'labelRuns' | 'uid'> & { uid?: string }): ParticipantGeo {
+  return { uid: `part-${base.id}`, ...base, labelRuns: labelRunsFor(base) };
 }
 
 /** `groupHeader { FontSize 13 }` (`plantuml.skin:127`). */
@@ -247,6 +247,7 @@ type RenderStyle = 'sync' | 'async' | 'reply' | 'replyAsync' | 'lost' | 'found';
 function makeSyncMessage(overrides?: Partial<MessageGeo>): MessageGeo {
   const base = {
     kind: 'message' as const,
+    group: { uid: 'msg1', participant1: 'part-Alice', participant2: 'part-Bob' },
     fromX: 80,
     toX: 220,
     y: 80,
@@ -760,12 +761,12 @@ describe('renderSequence -- fragment shape (T3 AC4)', () => {
     expect(fragment.diagramType).toBe('SEQUENCE');
     // `assembleSvg` owns the ROOT content group; the fragment must not carry
     // one of its own. Asserted against `ROOT_GROUP_OPEN` itself rather than a
-    // bare `<g` prefix -- since T1 the body legitimately STARTS with a group,
-    // the participant lifeline's `<g><title>` wrapper
-    // (`skin/rose/ComponentRoseLine.java:82`), and a `<g`-prefix check reads
-    // that as a root wrap.
+    // bare `<g` prefix -- the body legitimately STARTS with a group, the
+    // participant's lifeline group (`LivingSpace.java:151-157`) around the
+    // line's `<g><title>` wrapper (`skin/rose/ComponentRoseLine.java:82`), and
+    // a `<g`-prefix check reads that as a root wrap.
     expect(fragment.body.startsWith(ROOT_GROUP_OPEN)).toBe(false);
-    expect(fragment.body.startsWith('<g><title>')).toBe(true);
+    expect(fragment.body).toMatch(/^<g class="participant-lifeline" [^>]*><g><title>/);
     expect(fragment.bodyWrapped).toBeUndefined();
   });
 

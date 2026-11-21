@@ -1,15 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { RegexPartialMatch } from '../../../../src/core/regex/RegexPartialMatch.js';
 
-describe('RegexPartialMatch', () => {
-  it('starts empty (RegexPartialMatch.java:46)', () => {
-    const m = new RegexPartialMatch('NAME');
+describe('RegexPartialMatch (fixed capacity since e2659a157bf)', () => {
+  it('starts empty, every slot null (RegexPartialMatch.java:47-49,66-69)', () => {
+    const m = new RegexPartialMatch(2);
     expect(m.size()).toBe(0);
-    expect(m.toString()).toBe('{[]}');
+    expect(m.toString()).toBe('{[null, null]}');
+    expect(new RegexPartialMatch(0).toString()).toBe('{[]}');
   });
 
-  it('add/size/get keep insertion order (RegexPartialMatch.java:52-62)', () => {
-    const m = new RegexPartialMatch('NAME');
+  it('add/size/get keep insertion order (RegexPartialMatch.java:51-64)', () => {
+    const m = new RegexPartialMatch(3);
     m.add('a');
     m.add(undefined);
     m.add('c');
@@ -19,22 +20,15 @@ describe('RegexPartialMatch', () => {
     expect(m.get(2)).toBe('c');
   });
 
-  it('get out of range is IndexOutOfBounds -> RangeError (ArrayList#get)', () => {
-    const m = new RegexPartialMatch('NAME');
+  it('get past the filled size is IndexOutOfBounds -> RangeError (RegexPartialMatch.java:60-61)', () => {
+    const m = new RegexPartialMatch(2);
     m.add('a');
-    expect(() => m.get(1)).toThrow(new RangeError('Index 1 out of bounds for length 1'));
+    expect(() => m.get(1)).toThrow(new RangeError('Index: 1, Size: 1'));
     expect(() => m.get(-1)).toThrow(RangeError);
   });
 
-  it('iterates the entries (RegexPartialMatch.java:64-66)', () => {
-    const m = new RegexPartialMatch('NAME');
-    m.add('a');
-    m.add(undefined);
-    expect([...m]).toEqual(['a', undefined]);
-  });
-
-  it('toString is "{" + List#toString + "}" with null (RegexPartialMatch.java:68-70)', () => {
-    const m = new RegexPartialMatch('NAME');
+  it('toString is "{" + Arrays.asList(data) + "}" with null (RegexPartialMatch.java:66-69)', () => {
+    const m = new RegexPartialMatch(2);
     m.add('a');
     m.add(undefined);
     expect(m.toString()).toBe('{[a, null]}');

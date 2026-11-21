@@ -20,12 +20,12 @@ import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact
 import type { Clocks } from './Clocks.js';
 import { Highlight } from './Highlight.js';
 import type { Panels } from './graphic/Panels.js';
-import { TimeArrow } from './graphic/TimeArrow.js';
 import type { Player, PlayerBaseArgs } from './Player.js';
 import { PlayerAnalog } from './PlayerAnalog.js';
 import { PlayerBinary } from './PlayerBinary.js';
-import { PlayerClock } from './PlayerClock.js';
+import { PlayerClock, type CreatePlayerClockArgs } from './PlayerClock.js';
 import { PlayerConcise } from './PlayerConcise.js';
+import { PlayerDigital } from './PlayerDigital.js';
 import { PlayerRectangle } from './PlayerRectangle.js';
 import { PlayerRobust } from './PlayerRobust.js';
 import { TickInPlayer } from './TickInPlayer.js';
@@ -42,20 +42,9 @@ import type { SkinParam } from './timing-skin-param.js';
 /** `withMargin(result, 10, 10)`, java:113 */
 const DIAGRAM_MARGIN = 10;
 
-/** `createPlayerClock`'s arguments (D16: more than five parameters). @see TimingDiagram.java:317-318 */
-export interface CreatePlayerClockArgs {
-  readonly code: string;
-  readonly full: string;
-  readonly period: BigDecimal;
-  readonly pulse: BigDecimal;
-  readonly offset: BigDecimal;
-  readonly compact: boolean;
-  readonly stereotype: Stereotype | undefined;
-}
-
 /**
  * One `@startuml` timing diagram, drawn as one `TextBlock` with a 10 px margin (`undefined` is Java's `null`).
- * D7 quirks: clock, analog and binary players ignore the command's `compact` and leave `lastPlayer` alone; the ruler
+ * D7 quirks: clock, analog, binary and digital players ignore the command's `compact` and leave `lastPlayer` alone; the ruler
  * is built from the skin param at construction.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/timingdiagram/TimingDiagram.java:74-430
@@ -182,6 +171,11 @@ export class TimingDiagram extends TimingChrome implements Clocks {
       const panels: Panels = player.panels();
       panels.drawLeftPanel(ugPlayer, part1MaxWidth);
       panels.drawRightPanel(ugPlayer.apply(widthPart1));
+      this.ruler.drawBreaks(
+        ugPlayer.apply(widthPart1),
+        panels.getFullHeight(stringBounder),
+        layout.getBreakBackColor(player, this.skinParam),
+      );
     }
   }
 
@@ -249,32 +243,9 @@ export class TimingDiagram extends TimingChrome implements Clocks {
     return layout.getPart1MaxWidth(this.players.values(), stringBounder);
   }
 
-  /**
-   * Returns silently when either projection is `null` (java:246-247, D7).
-   * @see TimingDiagram.java:231-253
-   */
+  /** @see TimingDiagram.java:246-266 (`timing-diagram-layout.ts`) */
   private drawMessages(ug: UGraphic, message: TimeMessage): void {
-    const player1 = message.getPlayer1();
-    const player2 = message.getPlayer2();
-
-    const stringBounder = ug.getStringBounder();
-
-    const translate1 = this.getUTranslateForPlayer(player1, stringBounder);
-    const translate2 = this.getUTranslateForPlayer(player2, stringBounder);
-
-    const pt1 = player1.panels().getTimeProjection(stringBounder, message.getTick1());
-    const pt2 = player2.panels().getTimeProjection(stringBounder, message.getTick2());
-
-    if (pt1 === undefined || pt2 === undefined) return;
-
-    const timeArrow = TimeArrow.create(
-      pt1.translated(translate1),
-      pt2.translated(translate2),
-      message.getLabel(),
-      this.skinParam,
-      message,
-    );
-    timeArrow.drawU(ug);
+    layout.drawMessages([...this.players.values()], ug, message, this.skinParam);
   }
 
   /** @see TimingDiagram.java:255-272 */
@@ -287,11 +258,7 @@ export class TimingDiagram extends TimingChrome implements Clocks {
     return layout.getUTranslateForPlayerFrame(this.players.values(), candidate, stringBounder);
   }
 
-  /**
-   * The constructor arguments every player shares. Clock, analog and binary pass `compact = false`, so the
-   * `compactByDefault || compact` is `compactByDefault`, as upstream passes (java:320,330,336); their background is
-   * `null` (those constructors take none).
-   */
+  /** Shared player args. Clock/analog/binary/digital pass `compactByDefault` (java:331,342,348,354), no background. */
   private stateArgs(
     title: string,
     compact: boolean,
@@ -369,7 +336,7 @@ export class TimingDiagram extends TimingChrome implements Clocks {
     return player;
   }
 
-  /** Passes `compactByDefault`, not `compact`, and does not set `lastPlayer` (java:330). @see java:330-335 */
+  /** Passes `compactByDefault`, not `compact`, and does not set `lastPlayer` (java:342). @see java:341-345 */
   public createPlayerAnalog(
     code: string,
     full: string,
@@ -381,9 +348,21 @@ export class TimingDiagram extends TimingChrome implements Clocks {
     return player;
   }
 
-  /** Passes `compactByDefault`, not `compact`, and does not set `lastPlayer` (java:336). @see java:336-341 */
+  /** Passes `compactByDefault`, not `compact`, and does not set `lastPlayer` (java:348). @see java:347-351 */
   public createPlayerBinary(code: string, full: string, _compact: boolean, stereotype: Stereotype | undefined): Player {
     const player = new PlayerBinary(this.stateArgs(full, false, stereotype, undefined));
+    this.players.set(code, player);
+    return player;
+  }
+
+  /** Passes `compactByDefault`, not `compact`, and does not set `lastPlayer` (java:354). @see java:353-357 */
+  public createPlayerDigital(
+    code: string,
+    full: string,
+    _compact: boolean,
+    stereotype: Stereotype | undefined,
+  ): PlayerDigital {
+    const player = new PlayerDigital(this.stateArgs(full, false, stereotype, undefined));
     this.players.set(code, player);
     return player;
   }
@@ -465,6 +444,20 @@ export class TimingDiagram extends TimingChrome implements Clocks {
   /** @see TimingDiagram.java:400-404 */
   public highlight(tickFrom: TimeTick, tickTo: TimeTick, caption: Display, colors: Colors): CommandExecutionResult {
     this.highlights.push(new Highlight(this.skinParam, tickFrom, tickTo, caption, colors));
+    return CommandExecutionResult.ok();
+  }
+
+  /** @see TimingDiagram.java:415-418 (upstream a720bdd) */
+  public setTimeAxisUnit(unit: string): CommandExecutionResult {
+    this.ruler.setUnit(unit);
+    return CommandExecutionResult.ok();
+  }
+
+  /** `null` (an unknown time) is `undefined`. @see TimingDiagram.java:426-434 (upstream a720bdd) */
+  public addBreak(from: TimeTick | undefined, to: TimeTick | undefined): CommandExecutionResult {
+    if (from === undefined || to === undefined) return CommandExecutionResult.error('Unknown time');
+    if (from.compareTo(to) >= 0) return CommandExecutionResult.error('A break must end after it starts');
+    if (!this.ruler.addBreak(from, to)) return CommandExecutionResult.error('Breaks cannot overlap');
     return CommandExecutionResult.ok();
   }
 

@@ -9,7 +9,7 @@ import type { ClassifierGeo } from './layout.js';
 import { ROW_TEXT_LEFT_MARGIN } from './layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { ScaledTheme } from './class-scale-geo.js';
-import { text, image, decorationLines } from '../../core/svg.js';
+import { text, decorationLines } from '../../core/svg.js';
 import { textRenderDecorations } from '../../core/klimt/drawing/svg/driver-text-svg-decorations.js';
 import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import {} from '../../core/color-override.js';
@@ -23,7 +23,7 @@ import { renderListNumberAtom } from './renderer-list-number-atom.js';
 import { getFont } from '../../core/klimt/shape/UText.js';
 import type { MemberRenderAtom } from './class-member-creole.js';
 import { renderRowOpenIconicAtom } from './renderer-openiconic.js';
-import { renderMemberRowDrawable } from './class-member-sprite-render.js';
+import { imageAtomMarkup, renderMemberRowDrawable } from './class-member-sprite-render.js';
 import {} from './renderer-body-enhanced.js';
 import {} from './class-shadow.js';
 import { classifierCascadeFontColor, isStereotypeLabelRow } from './renderer-classifier-row-font-color.js';
@@ -449,7 +449,7 @@ export function renderRowAtoms(
     // the port, not specific to atoms.
     const lineBottomY = y + theme.fontSize / 4.5;
     const round = atom.exactSize === true ? (v: number) => v : Math.round;
-    out += image(x, lineBottomY - atom.height, round(atom.width), round(atom.height), atom.href);
+    out += imageAtomMarkup(atom, x, lineBottomY - atom.height, round);
     x += atom.width;
   }
   return out;

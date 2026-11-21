@@ -202,7 +202,7 @@ describe('PanelsAnalog#ticks (java:98-102)', () => {
   });
 });
 
-describe('PanelsAnalog built directly (java:62-70, 177-179)', () => {
+describe('PanelsAnalog built directly (PanelsNumeric.java:67-74)', () => {
   const build = (timeSeries: TimeSeries, ticksEvery?: number): PanelsAnalog => {
     const skinParam = timingSkinParam();
     return new PanelsAnalog({
@@ -216,12 +216,6 @@ describe('PanelsAnalog built directly (java:62-70, 177-179)', () => {
       ticksEvery,
     });
   };
-
-  it('passes setBounds to its series, which then answers the scale (`-2` and `3` as the left labels)', () => {
-    const series = new TimeSeries();
-    build(series).setBounds('-2', '3');
-    expect([series.getMin(), series.getMax()]).toEqual([-2, 3]);
-  });
 
   it('reads a NaN bound as the int 0 for the tick range ((int) NaN is 0)', () => {
     class NanSeries extends TimeSeries {

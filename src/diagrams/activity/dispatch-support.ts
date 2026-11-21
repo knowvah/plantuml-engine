@@ -129,7 +129,7 @@ export const RE_IF = /^if\s*\((.*?)\)\s*(?:then\s*(?:\((.*?)\))?)?\s*(<<[^<>]+>>
  * call. Both groups lazy, same reason as {@link RE_IF}'s own doc.
  * @see net/sourceforge/plantuml/activitydiagram3/command/CommandIf4.java:60-81
  */
-export const RE_IF4 = /^if\s*\((.*?)\)\s*(?:is|equals?)\s*\((.*?)\)\s*then\s*(?:<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
+export const RE_IF4 = /^if\s*\((.*?)\)\s*(?:is|equals?)\s*\((.*?)\)\s*then\s*(<<[^<>]+>>(?:\s*<<[^<>]+>>)*)?\s*$/i;
 
 /**
  * Legacy `if (test) then when LABEL` spelling -- no parens around the

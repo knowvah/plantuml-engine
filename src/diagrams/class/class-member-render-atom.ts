@@ -9,6 +9,7 @@ import type { FontConfiguration } from '../../core/klimt/shape/UText.js';
 import type { CreoleAtomUrl } from '../../core/klimt/creole/atom/Atom.js';
 import type { DrawablePrimitive } from '../../core/creole-atoms.js';
 import type { SpriteTint } from '../../core/klimt/sprite/sprite-tint.js';
+import type { RollbackLayout } from '../../core/math/latex-atom.js';
 
 /**
  * One RESOLVED, render-ready run of a member row -- unlike `CreoleAtom`
@@ -98,6 +99,9 @@ export type MemberRenderAtom =
       readonly tint?: SpriteTint;
       /** odd T3d: an `EmbeddedDiagram`'s `UImageSvg` keeps its scaled fractional size; a raster's box rounds. */
       readonly exactSize?: true;
+      /** A `<math>`/`<latex>` formula JLaTeXMath rejects: laid out as this image atom (altitude 0, its own block),
+       *  but drawn as its monospace source (ScientificEquationSafe.java:110-128, aa79d2d80ee). `href` is empty. */
+      readonly rollback?: RollbackLayout;
     }
   /** C-4 (cdd3-T23): an SVG-backed `<$sprite>` atom -- `SvgNanoParser`'s
    *  draw-time `UPath`/`UEllipse`/`UText` decomposition

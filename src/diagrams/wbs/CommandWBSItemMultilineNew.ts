@@ -117,7 +117,7 @@ export function applyMultilineItem(
   diagram: WbsItemTarget,
   block: WbsMultilineBlock,
   startRe: RegExp,
-  warning: Warning | undefined,
+  warning: ((groups: Readonly<Record<string, string | undefined>>) => Warning) | undefined,
 ): CommandExecutionResult {
   const g = startRe.exec(block.startLine)?.groups;
   if (g === undefined) return CommandExecutionResult.error('Syntax Error?');
@@ -134,7 +134,7 @@ export function applyMultilineItem(
   const code = g['CODE_1'] ?? g['CODE_2'];
   const dir = getWBSDirection(type, g['WBS_DIRECTION_1'], g['WBS_DIRECTION_2']);
   const label = Display.createFoo(block.displayLines.map((line) => new StringLocated(line, undefined)));
-  if (warning !== undefined) diagram.addWarning(warning);
+  if (warning !== undefined) diagram.addWarning(warning(g));
   return diagram.addIdeaDisplay(
     code,
     diagram.getSmartLevel(type),

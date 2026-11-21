@@ -218,7 +218,14 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
   const label = renderNamespaceTitleAuto(
     // unwind2-S11: `symbolContext.apply(ug)` precedes the title draw
     // (`USymbolFolder.java:224,228-229`) -- a sprite's tint back.
-    { label: geo.label, theme, measurer, blockTopY: geo.y + TITLE_LOCAL_TOP_OFFSET * theme.scaleK, back: fill },
+    {
+      label: geo.label,
+      theme,
+      measurer,
+      blockTopY: geo.y + TITLE_LOCAL_TOP_OFFSET * theme.scaleK,
+      back: fill,
+      wrapWidth: geo.titleWrapWidth,
+    },
     {
       x: titleX,
       y: geo.y + geo.baselineOffset,
@@ -227,7 +234,9 @@ export function renderNamespaceFolder(geo: NamespaceGeo, theme: ScaledTheme, mea
       fontColor: groupTitleColor(geo, packageTitleFontColor(theme, tags)),
       textLength: titleTextLength,
     },
-    () => titleX,
+    // The title block draws at `(4, 2)` (`USymbolFolder.java:228`); inside it each stripe is centred on the block
+    // width (`SheetBlock1`, the title style's CENTER, `plantuml.skin` `composite,package { title {...} }`).
+    (line) => titleX + ((titleTextLength ?? line.width) - line.width) / 2,
   );
   // cdd2-T19b: `stereotype.drawU(ug.apply(new UTranslate(4 + posStereo, 2 +
   // getHTitle(dimTitle))))`, `posStereo = (width - dimStereo.w) / 2`
@@ -306,6 +315,7 @@ export function renderNamespaceRect(geo: NamespaceGeo, theme: ScaledTheme, measu
       measurer,
       blockTopY: geo.y + stereo.height + TITLE_LOCAL_TOP_OFFSET * theme.scaleK,
       back: fill, // `USymbolRectangle#asBig`, the same `symbolContext.apply(ug)`
+      wrapWidth: geo.titleWrapWidth,
     },
     {
       x: geo.x + posTitle + vis.dx,

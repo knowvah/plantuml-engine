@@ -28,12 +28,22 @@ describe('ChartDiagram#addSeries', () => {
     expect(d.getSeries()).toHaveLength(0);
   });
 
-  it('refuses coordinate pairs with h-axis unset', () => {
-    expect(
-      emptyChartDiagram()
-        .addSeries(lineOfPairs([1], [1]))
-        .getError(),
-    ).toBe('Coordinate pair notation requires explicit h-axis range (e.g., h-axis "x" -5 --> 5)');
+  it('accepts coordinate pairs with h-axis unset, spanning their x (dddab579e13)', () => {
+    const d = emptyChartDiagram();
+    expect(d.addSeries(lineOfPairs([1, 2], [1, 4])).isOk()).toBe(true);
+    const axis = d.resolveCartesian().getNumericAxis()!;
+    expect([axis.getMin(), axis.getMax()]).toEqual([1, 4]);
+    expect(d.setXAxis(undefined, 0, 5).getError()).toBe('h-axis range must be given before coordinate pair data');
+    expect(d.setXAxisLabels(['A']).getError()).toBe(
+      'Coordinate pair notation requires numeric h-axis (e.g., h-axis "x" -5 --> 5), not categorical labels',
+    );
+  });
+
+  it('spans x - 1 to x + 1 when every x is equal', () => {
+    const d = emptyChartDiagram();
+    d.addSeries(lineOfPairs([1], [3]));
+    const axis = d.resolveCartesian().getNumericAxis()!;
+    expect([axis.getMin(), axis.getMax()]).toEqual([2, 4]);
   });
 
   it('refuses coordinate pairs on a zero range', () => {
@@ -69,25 +79,28 @@ describe('ChartDiagram#addSeries', () => {
     );
   });
 
-  it('autoscales the primary axis', () => {
+  it('fits the primary value axis when the chart is resolved (2117ccb43cd)', () => {
     const d = emptyChartDiagram();
     d.addSeries(barOf(150));
-    expect(d.getYAxis().getMax()).toBe(150);
+    expect(d.getYAxis().getMax()).toBe(100);
+    expect(d.resolveCartesian().getValueAxis().getMax()).toBe(150);
+    d.addSeries(barOf(-20));
+    const fitted = d.resolveCartesian().getValueAxis();
+    expect([fitted.getMin(), fitted.getMax()]).toEqual([-40, 160]);
   });
 
-  it('autoscales y2 only when the series asks and the axis exists', () => {
+  it('fits y2 only to the series it draws, even with a v2-axis written after them', () => {
     const d = emptyChartDiagram();
-    const before = new ChartSeries('l', SeriesType.LINE, [300]);
-    before.setUseSecondaryAxis(true);
-    d.addSeries(before);
-    expect(d.getYAxis().getMax()).toBe(300);
+    const secondary = new ChartSeries('l', SeriesType.LINE, [300]);
+    secondary.setUseSecondaryAxis(true);
+    d.addSeries(secondary);
+    d.addSeries(new ChartSeries('b', SeriesType.LINE, [12]));
+    expect(d.resolveCartesian().getValueAxis().getMax()).toBe(300);
 
     d.setY2Axis(undefined, undefined, undefined);
-    const after = new ChartSeries('l', SeriesType.LINE, [500]);
-    after.setUseSecondaryAxis(true);
-    d.addSeries(after);
-    expect(d.getY2Axis()?.getMax()).toBe(500);
-    expect(d.getYAxis().getMax()).toBe(300);
+    const chart = d.resolveCartesian();
+    expect([chart.getValueAxis().getMax(), chart.getValueAxis2()?.getMax()]).toEqual([15, 300]);
+    expect(chart.getValueAxisOf(secondary)).toBe(chart.getValueAxis2());
   });
 
   it('accepts in-range coordinate pairs', () => {

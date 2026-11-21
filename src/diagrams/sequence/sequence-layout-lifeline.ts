@@ -81,11 +81,16 @@ function firstLineOf(participant: Pick<Participant, 'display' | 'underlined'>): 
  * `Display.java:462-469`), so the first line reads `<u>Alice` -> `.u.Alice`.
  */
 export function lifelineTitle(
-  participant: Pick<Participant, 'display' | 'stereotype' | 'stereotypeHidden' | 'stereotypeBottom' | 'underlined'>,
+  participant: Pick<
+    Participant,
+    'display' | 'stereotype' | 'stereotypeHidden' | 'stereotypeText' | 'stereotypeBottom' | 'underlined'
+  >,
 ): string {
   const hidden = participant.stereotypeHidden === true || participant.stereotypeBottom === true;
   const shown = hidden ? undefined : participant.stereotype;
-  const first = patchBase64Line(participantStereotype(shown)?.toString() ?? firstLineOf(participant));
+  // A kept-labels line added first is the display's first element (`Participant.java:129-133`).
+  const kept = participant.stereotypeBottom === true ? undefined : participant.stereotypeText;
+  const first = patchBase64Line(kept ?? participantStereotype(shown)?.toString() ?? firstLineOf(participant));
   return UGroup.singletonMap(UGroupType.TITLE, first).asMap().get(UGroupType.TITLE) ?? '';
 }
 

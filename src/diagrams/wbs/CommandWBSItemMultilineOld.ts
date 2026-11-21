@@ -1,5 +1,5 @@
 import type { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
-import { Warning } from '../../core/warning/Warning.js';
+import { orderWarning } from './CommandWBSItemOld.js';
 import {
   applyMultilineItem,
   WBS_CODE_CHARS,
@@ -30,10 +30,19 @@ export const WBS_MULTILINE_OLD_START_RE = new RegExp(
   'iu',
 );
 
-/** @see CommandWBSItemMultilineOld.java:112 */
-const OLD_ORDER_WARNING = 'Please define Direction/Shape before Color/Id.';
-
-/** @see CommandWBSItemMultilineOld.java:87-118 */
+/** @see CommandWBSItemMultilineOld.java:101-128 */
 export function applyWbsItemMultilineOld(diagram: WbsItemTarget, block: WbsMultilineBlock): CommandExecutionResult {
-  return applyMultilineItem(diagram, block, WBS_MULTILINE_OLD_START_RE, new Warning(OLD_ORDER_WARNING));
+  // `CommandWBSItemOld.orderWarning(line0, true)` (java:124).
+  return applyMultilineItem(diagram, block, WBS_MULTILINE_OLD_START_RE, (g) =>
+    orderWarning(
+      {
+        type: g['TYPE']!,
+        shape: g['SHAPE_1'] ?? g['SHAPE_2'],
+        direction: g['WBS_DIRECTION_1'] ?? g['WBS_DIRECTION_2'],
+        backColor: g['BACKCOLOR_1'] ?? g['BACKCOLOR_2'],
+        code: g['CODE_1'] ?? g['CODE_2'],
+      },
+      true,
+    ),
+  );
 }

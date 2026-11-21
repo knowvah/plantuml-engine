@@ -7,7 +7,6 @@ import { checkSimpleDateFormatPattern } from '../../../src/core/tim/builtin/date
 import { TimeAxisStategy } from '../../../src/diagrams/timing/TimeAxisStategy.js';
 import { TimeTick } from '../../../src/diagrams/timing/TimeTick.js';
 import { TimingFormat } from '../../../src/diagrams/timing/TimingFormat.js';
-import { TimingStyle } from '../../../src/diagrams/timing/TimingStyle.js';
 import { IntricatedPoint } from '../../../src/diagrams/timing/graphic/IntricatedPoint.js';
 
 const CHICAGO = 'America/Chicago';
@@ -100,9 +99,8 @@ describe('TimeTick', () => {
 });
 
 describe('simple types', () => {
-  it('TimeAxisStategy and TimingStyle carry the Java constants in Java order', () => {
+  it('TimeAxisStategy carries the Java constants in Java order', () => {
     expect(Object.values(TimeAxisStategy)).toEqual(['AUTOMATIC', 'HIDDEN', 'MANUAL']);
-    expect(Object.values(TimingStyle)).toEqual(['ROBUST', 'CONCISE', 'RECTANGLE']);
   });
 
   it('IntricatedPoint translates both points', () => {

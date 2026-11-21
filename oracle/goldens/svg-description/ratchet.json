@@ -229,12 +229,6 @@
       "source": "dot-cache"
     },
     {
-      "slug": "zoriso-46-vata931",
-      "type": "usecase",
-      "addedAt": "2026-07-15",
-      "source": "dot-cache"
-    },
-    {
       "slug": "komivo-22-toki497",
       "type": "usecase",
       "addedAt": "2026-07-15",
@@ -944,12 +938,6 @@
     },
     {
       "slug": "pafoxe-99-xulo156",
-      "type": "component",
-      "addedAt": "2026-10-15",
-      "source": "dot-cache"
-    },
-    {
-      "slug": "pegali-65-rotu416",
       "type": "component",
       "addedAt": "2026-10-15",
       "source": "dot-cache"
@@ -2060,12 +2048,6 @@
     },
     {
       "slug": "zakaca-67-paxe321",
-      "type": "unknown",
-      "addedAt": "2026-10-15",
-      "source": "dot-cache"
-    },
-    {
-      "slug": "zarelu-57-xika172",
       "type": "unknown",
       "addedAt": "2026-10-15",
       "source": "dot-cache"
@@ -4081,18 +4063,6 @@
       "source": "dot-cache"
     },
     {
-      "slug": "gevozu-46-sasu860",
-      "type": "component",
-      "addedAt": "2026-11-05",
-      "source": "dot-cache"
-    },
-    {
-      "slug": "kezodo-14-pume985",
-      "type": "component",
-      "addedAt": "2026-11-05",
-      "source": "dot-cache"
-    },
-    {
       "slug": "perapa-23-mobu798",
       "type": "component",
       "addedAt": "2026-11-05",
@@ -4105,12 +4075,6 @@
       "source": "dot-cache"
     },
     {
-      "slug": "sunuju-01-pote718",
-      "type": "component",
-      "addedAt": "2026-11-05",
-      "source": "dot-cache"
-    },
-    {
       "slug": "titona-45-jile471",
       "type": "component",
       "addedAt": "2026-11-05",
@@ -4118,12 +4082,6 @@
     },
     {
       "slug": "vajaxu-62-poto986",
-      "type": "component",
-      "addedAt": "2026-11-05",
-      "source": "dot-cache"
-    },
-    {
-      "slug": "vimulo-11-buni641",
       "type": "component",
       "addedAt": "2026-11-05",
       "source": "dot-cache"
@@ -4172,12 +4130,6 @@
     },
     {
       "slug": "barobi-40-zusa254",
-      "type": "unknown",
-      "addedAt": "2026-11-05",
-      "source": "dot-cache"
-    },
-    {
-      "slug": "barufu-21-bedo723",
       "type": "unknown",
       "addedAt": "2026-11-05",
       "source": "dot-cache"

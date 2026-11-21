@@ -104,7 +104,7 @@
       "cohort": "jar-charlie-easter-egg",
       "disposition": "known-gap",
       "task": "T6",
-      "reason": "PSystemCharlieFactory (PSystemBuilder.java:181) is a single-line easter egg (eggs/PSystemCharlieFactory.java) rendering a bundled PNG when the line is exactly 'charlie'; unported."
+      "reason": "Upstream dadad87bba3 removed PSystemCharlieFactory with the other easter eggs: since the 1.2026.11beta1 pin the line 'charlie' is the sequence syntax-error page (Welcome block), which the port draws once the egg plugins are gone."
     },
     {
       "slug": "kokote-73-revo347",

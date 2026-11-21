@@ -11,6 +11,7 @@ import { layoutClass, classPageAst, classPageCount } from './layout.js';
 import { renderClass, renderClassPage } from './renderer.js';
 import { annotateClassStyles, annotateLinkStyles } from './class-cluster-corner.js';
 import { annotateObjectStyles } from './class-object-style.js';
+import { annotateStereotypeFonts } from './class-stereotype-style.js';
 import { annotateStateLeafStyles } from './class-state-leaf.js';
 import { layoutClassElk } from './class-elk-layout.js';
 import { ELK_RENDER_SYNC_UNSUPPORTED } from '../../core/elk/layout-services.js';
@@ -88,6 +89,7 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
       annotateClassStyles(ast, builder);
       if (services?.styleBuilderAt !== undefined) annotateLinkStyles(ast, services.styleBuilderAt);
       annotateObjectStyles(ast.classifiers, builder, theme);
+      annotateStereotypeFonts(ast.classifiers, builder);
       annotateStateLeafStyles(ast.classifiers, builder);
     }
     const geo =

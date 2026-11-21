@@ -43,7 +43,7 @@ import type { EventCursor, EventProcessingContext } from './sequence-layout-even
 import { activationLevel } from './sequence-layout-events.js';
 import { ARROW_PADDING_X, LIVE_DELTA_SIZE } from './sequence-layout-shared.js';
 import type { SequencePaint } from './sequence-skin-param.js';
-import { messageTileAdvance, type PlacedTile } from './sequence-layout-message.js';
+import { messageGroupOf, messageTileAdvance, type PlacedTile } from './sequence-layout-message.js';
 import { messageTileGaugeOf, type TileMetrics } from './sequence-y-gauge.js';
 import {
   labelDrawOf,
@@ -279,6 +279,7 @@ function buildExoGeo(
   return {
     paint,
     kind: 'message',
+    group: messageGroupOf(event, event.participant, event.participant, ctx),
     fromX: rightwards ? span.x1 : span.x2,
     toX: rightwards ? span.x2 : span.x1,
     y,

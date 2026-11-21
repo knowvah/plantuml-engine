@@ -191,6 +191,10 @@ await render(source, { securityProfile: 'ALLOWLIST',
 await render(source, { securityProfile: 'SANDBOX' });           // no url includes
 ```
 
+The profile also gates `@startdot`: as in the jar, graphviz's SVG is written
+only under `INSECURE` or `INTERNET_WITH_DOTSVG`, and every other profile,
+`LEGACY` included, renders the jar's "This feature has been suppressed" page.
+
 The gate covers url targets only; what a local target (`!include a.puml`)
 reads is decided by your `fetcher` (`makeNodeFsFetcher` confines reads to its
 base directory, symlinks included). `[[javascript:…]]` link targets are

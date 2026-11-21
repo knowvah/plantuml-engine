@@ -1,6 +1,7 @@
 import type { HorizontalAlignment } from '../klimt/geom/HorizontalAlignment.js';
 import type { FontFace } from '../klimt/shape/UText.js';
 
+import type { Specificity } from './Specificity.js';
 /**
  * HColor — the consumed slice of `klimt/color/HColor.java` the style value
  * layer calls: `withDark` (`ValueImpl.java:103-106`; `HColorSimple.java:
@@ -68,6 +69,6 @@ export interface Value {
   asFontFace(): FontFace;
   /** @see Value.java:64 */
   asHorizontalAlignment(): HorizontalAlignment | undefined;
-  /** @see Value.java:66 */
-  getPriority(): number;
+  /** @see value/Value.java:66 */
+  getSpecificity(): Specificity;
 }

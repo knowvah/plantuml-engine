@@ -21,6 +21,7 @@ import { Member } from './Member.js';
 import { MethodsOrFieldsArea } from './MethodsOrFieldsArea.js';
 import type { MethodsOrFieldsAreaSkinParam } from './MethodsOrFieldsAreaConfig.js';
 import type { BodyEnhanced1Config, BodyEnhanced1StyleValues } from './BodyEnhanced1Config.js';
+import { trim2, trin } from '../string-utils-trim.js';
 
 /**
  * BodyEnhanced1 — the `BodyEnhancedAbstract` concrete for the class/
@@ -335,24 +336,4 @@ function purge(s: string, start: string): string {
   if (s.startsWith(start)) return s.slice(start.length);
 
   return s;
-}
-
-/** `StringUtils.trin(String)` — same local copy as `BodyEnhanced2.ts`
- *  (established precedent; no shared `StringUtils.ts` owner exists). */
-function trin(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
-}
-
-/** `StringUtils.trim2(CharSequence)` — same local copy as
- *  `BodyEnhanced2.ts` (established precedent; no shared owner). */
-function trim2(text: string): string {
-  let start = 0;
-  let end = text.length - 1;
-  while (start <= end && text.charCodeAt(start) <= 0x20) start++;
-  while (end >= start && text.charCodeAt(end) <= 0x20) end--;
-  return text.slice(start, end + 1);
 }

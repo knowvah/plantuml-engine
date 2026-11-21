@@ -203,23 +203,46 @@ function splitRawBlocks(lines: readonly StringLocated[]): RawBlock[] {
   return blocks;
 }
 
-/** `---`, exactly (no trim). @see ReadLineWithYamlHeader.java:92-94 */
+/** `---`, exactly (no trim). @see ReadLineWithYamlHeader.java:90-92 */
 const YAML_SEPARATOR = '---';
+
+/**
+ * The index of the closing `---` of the header that follows the first line, or -1.
+ * @see ~/git/plantuml/.../preproc/ReadLineWithYamlHeader.java:119-126
+ */
+function yamlHeaderEnd(input: readonly StringLocated[]): number {
+  if (input.length > 1 && input[1]!.getString() === YAML_SEPARATOR)
+    for (let i = 2; i < input.length; i++) if (input[i]!.getString() === YAML_SEPARATOR) return i;
+  return -1;
+}
+
+/**
+ * The lines of the YAML header of a diagram (between the two `---` lines that
+ * follow the `@start` line, separators excluded), or an empty list.
+ *
+ * Upstream's `BlockUml` constructor hands it to `TimLoader#setYamlHeader`
+ * (`BlockUml.java:145-155`), whose one reader is the Python preprocessor
+ * (`TContext#parseYamlHeader`, TContext.java:420-440) -- not in this port
+ * (issue #214), so nothing here calls it yet.
+ * @see ~/git/plantuml/.../preproc/ReadLineWithYamlHeader.java:98-107
+ */
+export function getYamlHeader(input: readonly StringLocated[]): StringLocated[] {
+  const end = yamlHeaderEnd(input);
+  if (end === -1) return [];
+  return input.slice(2, end);
+}
 
 /**
  * A `---` ... `---` header on the lines right after `@start` is dropped; the
  * first line is kept. No closing separator (or no `---` at index 1) leaves the
  * block untouched. `BlockUml`'s constructor applies this to its `rawSource`
- * (`BlockUml.java:142`), i.e. before TIM sees the block.
- * @see ~/git/plantuml/.../preproc/ReadLineWithYamlHeader.java:98-109
+ * (`BlockUml.java:144`), i.e. before TIM sees the block.
+ * @see ~/git/plantuml/.../preproc/ReadLineWithYamlHeader.java:109-117
  */
 function removeYamlHeader(input: StringLocated[]): StringLocated[] {
-  if (input.length > 1 && input[1]!.getString() === YAML_SEPARATOR) {
-    for (let i = 2; i < input.length; i++) {
-      if (input[i]!.getString() === YAML_SEPARATOR) return [input[0]!, ...input.slice(i + 1)];
-    }
-  }
-  return input;
+  const end = yamlHeaderEnd(input);
+  if (end === -1) return input;
+  return [input[0]!, ...input.slice(end + 1)];
 }
 
 /**

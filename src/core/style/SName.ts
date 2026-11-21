@@ -4,7 +4,9 @@
  * `class_`, `goto_`, `interface_`, `package_`, `private_`, `protected_`,
  * `public_` -- Java keywords upstream escapes). Ported as a readonly
  * declaration-order array plus the string-literal union it induces (no
- * `const enum`, project convention). 157 constants, SName.java:42-202.
+ * `const enum`, project convention). 157 constants, SName.java:42-202, plus
+ * `digital` (upstream 3cdc46b2092, SName.java:88 at a720bdd), and `pie`,
+ * `radar` (upstream e8ef39dd55c, SName.java:199-200 at a720bdd).
  *
  * Widened out of the 8-member consumed slice `StyleSignatureBasic.ts`
  * used to declare; that module now re-exports this type.
@@ -58,6 +60,7 @@ export const SNAMES = [
   'description',
   'destroy',
   'diamond',
+  'digital',
   'document',
   'ebnf',
   'element',
@@ -164,6 +167,8 @@ export const SNAMES = [
   'line',
   'area',
   'scatter',
+  'pie',
+  'radar',
   'axis',
   'hAxis',
   'vAxis',

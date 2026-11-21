@@ -19,6 +19,7 @@ import { describe, expect, it } from 'vitest';
 import { Style } from '../../../../src/core/style/Style.js';
 import { StyleSignatureBasic } from '../../../../src/core/style/StyleSignatureBasic.js';
 import { MergeStrategy } from '../../../../src/core/style/MergeStrategy.js';
+import { Specificity } from '../../../../src/core/style/Specificity.js';
 import { ValueImpl } from '../../../../src/core/style/ValueImpl.js';
 import { ValueColor } from '../../../../src/core/style/ValueColor.js';
 import { ValueNull } from '../../../../src/core/style/ValueNull.js';
@@ -42,9 +43,11 @@ import { ideaScenarioDump, styleFromDump } from './helpers/style-fixture.js';
 const SIG = StyleSignatureBasic.of('root', 'element');
 const SET = HColorSet.instance();
 
-function style(values: Record<string, [string, number]>, sig: StyleSignatureBasic = SIG): Style {
+/** `[value, order]`, or `[value, order, stereotypeCount]` for a stereotype selector's value. */
+function style(values: Record<string, [string, number, number?]>, sig: StyleSignatureBasic = SIG): Style {
   const map = new Map<PName, Value>();
-  for (const [k, [v, p]] of Object.entries(values)) map.set(k as PName, ValueImpl.regular(v, p));
+  for (const [k, [v, order, count = 0]] of Object.entries(values))
+    map.set(k as PName, ValueImpl.regular(v, Specificity.atOrder(order).withStereotypeCount(count)));
   return new Style(sig, map);
 }
 
@@ -93,21 +96,26 @@ describe('Style — mergeWith', () => {
     expect(a.value('FontSize').asString()).toBe('14');
   });
 
-  it('KEEP_EXISTING_VALUE_OF_STEREOTYPE keeps an existing value above priority 1000 (StyleLoader.java:178)', () => {
-    const a = style({ FontColor: ['red', 1001], FontSize: ['9', 1000] });
+  it('KEEP_EXISTING_VALUE_OF_STEREOTYPE keeps an existing stereotype value (Style.java:145-147)', () => {
+    // c9d62097ff5: `previous.getSpecificity().hasStereotype()`, no longer `getPriority() > 1000`
+    const a = style({ FontColor: ['red', 1, 1], FontSize: ['9', 4000] });
     const b = style({ FontColor: ['blue', 5000], FontSize: ['12', 5000] });
     const keep = a.mergeWith(b, MergeStrategy.KEEP_EXISTING_VALUE_OF_STEREOTYPE);
     expect(keep.value('FontColor').asString()).toBe('red');
     expect(keep.value('FontSize').asString()).toBe('12');
     const overwrite = a.mergeWith(b, MergeStrategy.OVERWRITE_EXISTING_VALUE);
-    expect(overwrite.value('FontColor').asString()).toBe('blue');
+    // OVERWRITE still merges by specificity: the stereotype tier outranks the later plain value
+    expect(overwrite.value('FontColor').asString()).toBe('red');
+    expect(overwrite.value('FontSize').asString()).toBe('12');
   });
 
   it("a non-ValueImpl value on the other side is Java's ClassCastException", () => {
     const a = style({});
     const b = new Style(
       SIG,
-      new Map<PName, Value>([['BackGroundColor', new ValueColor(SET.getColorOrWhite('black'), 1)]]),
+      new Map<PName, Value>([
+        ['BackGroundColor', new ValueColor(SET.getColorOrWhite('black'), Specificity.atOrder(1))],
+      ]),
     );
     expect(() => a.mergeWith(b, MergeStrategy.OVERWRITE_EXISTING_VALUE)).toThrow('ClassCastException');
   });
@@ -165,23 +173,23 @@ describe('Style — mergeNestedChildOver (Style.java:137-173)', () => {
   });
 
   it('the strategy is passed to mergeWith', () => {
-    const own = style({ FontSize: ['13', 1001] });
+    const own = style({ FontSize: ['13', 1, 1] });
     const nested = style({ FontSize: ['20', 5000] }, NESTED_SIG);
     const keep = own.mergeNestedChildOver(nested, undefined, MergeStrategy.KEEP_EXISTING_VALUE_OF_STEREOTYPE);
     expect(keep.value('FontSize').asString()).toBe('13');
   });
 });
 
-describe('Style — deltaPriority', () => {
-  it('adds the delta to every value of a starred style', () => {
-    const s = style({ FontColor: ['red', 326] }, SIG.addStar()).deltaPriority(1411065408);
-    expect(s.value('FontColor').getPriority()).toBe(1411065734);
+describe('Style — withAncestorRank', () => {
+  it('applies every value of a starred style through the ancestor cascade (Style.java:79-88)', () => {
+    const s = style({ FontColor: ['red', 326, 1] }, SIG.addStar()).withAncestorRank(-2);
+    expect(s.value('FontColor').getSpecificity().toString()).toBe('326,stereo=1,ancestor=-2');
     expect(s.value('FontColor').asString()).toBe('red');
     expect(s.getSignature().isStarred()).toBe(true);
   });
 
   it('throws UnsupportedOperationException on an unstarred style', () => {
-    expect(() => style({ FontColor: ['red', 1] }).deltaPriority(10)).toThrow('UnsupportedOperationException');
+    expect(() => style({ FontColor: ['red', 1] }).withAncestorRank(0)).toThrow('UnsupportedOperationException');
   });
 });
 
@@ -191,14 +199,14 @@ describe('Style — eventuallyOverride', () => {
   const green = SET.getColorOrWhite('#00ff00');
   const blue = SET.getColorOrWhite('blue');
 
-  it('PName + HColor: a ValueColor carrying the old priority; undefined colour is identity', () => {
+  it('PName + HColor: a ValueColor carrying the old specificity; undefined colour is identity', () => {
     const s = base.eventuallyOverride('BackGroundColor', red);
     expect(s.value('BackGroundColor').asColor(SET)).toBe(red);
-    expect(s.value('BackGroundColor').getPriority()).toBe(7);
+    expect(s.value('BackGroundColor').getSpecificity().toString()).toBe('7');
     expect(base.eventuallyOverride('BackGroundColor', undefined)).toBe(base);
   });
 
-  it('PName + HColor on an absent key is the NullPointerException of `old.getPriority()`', () => {
+  it('PName + HColor on an absent key is the NullPointerException of `old.getSpecificity()`', () => {
     expect(() => base.eventuallyOverride('Padding', red)).toThrow('NullPointerException');
   });
 
@@ -232,12 +240,11 @@ describe('Style — eventuallyOverride', () => {
 
 describe('Style — eventuallyOverride (PName, double | String) and (UStroke)', () => {
   const base = style({ LineThickness: ['1', 7], LineStyle: ['', 8] });
-  const INTEGER_MAX_VALUE = 2147483647; // Style.java:191 `Integer.MAX_VALUE`
 
-  it('(PName, String) stores the string at Integer.MAX_VALUE priority (Style.java:189-193)', () => {
+  it('(PName, String) stores the string as a forced override (Style.java:206-210)', () => {
     const s = base.eventuallyOverride('LineStyle', '4.0-2.0');
     expect(s.value('LineStyle').asString()).toBe('4.0-2.0');
-    expect(s.value('LineStyle').getPriority()).toBe(INTEGER_MAX_VALUE);
+    expect(s.value('LineStyle').getSpecificity().toString()).toBe('override');
     expect(s.value('LineThickness').asString()).toBe('1');
   });
 
@@ -265,10 +272,10 @@ describe('Style — eventuallyOverride (PName, double | String) and (UStroke)', 
     expect(s.value('LineThickness').asString()).toBe('1.0');
   });
 
-  it('existing dispatch is unchanged: a PName + HColor still keeps the old priority', () => {
+  it('existing dispatch is unchanged: a PName + HColor still keeps the old specificity', () => {
     const red = SET.getColorOrWhite('red');
     const colored = style({ LineColor: ['black', 8] }).eventuallyOverride('LineColor', red);
-    expect(colored.value('LineColor').getPriority()).toBe(8);
+    expect(colored.value('LineColor').getSpecificity().toString()).toBe('8');
   });
 });
 
@@ -427,7 +434,9 @@ describe('Style — applyStrokeAndLineColor (Style.java:372-381)', () => {
   });
 
   it('a null colour (`ValueColor(null, …)` upstream) applies HColors.none()', () => {
-    const map = new Map<PName, Value>([['LineColor', new ValueColor(undefined as unknown as ValueHColor, 1)]]);
+    const map = new Map<PName, Value>([
+      ['LineColor', new ValueColor(undefined as unknown as ValueHColor, Specificity.atOrder(1))],
+    ]);
     const { ug, applied } = recorder();
     new Style(SIG, map).applyStrokeAndLineColor(ug, SET);
     expect(applied).toHaveLength(2);
@@ -437,7 +446,7 @@ describe('Style — applyStrokeAndLineColor (Style.java:372-381)', () => {
 
   it("a colour outside HColorSimple/HColorGradient is Java's ClassCastException", () => {
     const odd: ValueHColor = { withDark: () => odd };
-    const map = new Map<PName, Value>([['LineColor', new ValueColor(odd, 1)]]);
+    const map = new Map<PName, Value>([['LineColor', new ValueColor(odd, Specificity.atOrder(1))]]);
     expect(() => new Style(SIG, map).applyStrokeAndLineColor(recorder().ug, SET)).toThrow(/ClassCastException/);
   });
 });

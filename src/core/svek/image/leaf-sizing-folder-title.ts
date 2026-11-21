@@ -73,7 +73,7 @@ import { SPACE_ATOM_HEIGHT } from '../../klimt/creole/atom/AtomSpace.js';
 import { verticalTextsDimension, verticalTextsStartingAltitude } from '../../klimt/creole/atom/AtomVerticalTexts.js';
 import type { Atom } from '../../klimt/creole/SheetBlock1.js';
 import { emojiBoxDim } from '../../klimt/creole/atom/AtomEmoji.js';
-import { renderLatexAsImage } from '../../latex.js';
+import { latexAtomDimension } from '../../math/latex-atom.js';
 import { measureLine } from './EntityImageDescriptionSupport.js';
 import { sizingAtomImageResolverFor } from './leaf-sizing-entity.js';
 import { buildCreate2Name } from './EntityImageDescriptionName.js';
@@ -115,7 +115,7 @@ function measuringFont(fc: FontConfiguration): FontConfiguration {
 function titleAtomOps(resolveAtomImage: AtomImageResolver | undefined): AtomOps {
   function dimensionOf(atom: CreoleAtom, stringBounder: StringBounder): { width: number; height: number } {
     if (atom.kind === 'text') return measureLine(stringBounder, atom.text, measuringFont(atom.font));
-    if (atom.kind === 'latex') return renderLatexAsImage(atom.expr, atom.color ?? '#000000');
+    if (atom.kind === 'latex') return latexAtomDimension(atom, stringBounder);
     if (atom.kind === 'emoji') return emojiBoxDim(atom.factor);
     if (atom.kind === 'space') return { width: atom.width, height: SPACE_ATOM_HEIGHT };
     if (atom.kind === 'bullet') return bulletDimension(atom.order);

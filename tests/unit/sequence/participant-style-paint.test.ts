@@ -248,6 +248,7 @@ describe('participantPaintsOf / paintOfGeo', () => {
 describe('participantBoxOf / participantLabelCy', () => {
   const geo = {
     id: 'a',
+    uid: 'part1',
     display: 'a',
     type: 'participant',
     x: 0,

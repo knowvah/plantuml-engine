@@ -1,7 +1,7 @@
 {
   "$comment": "Text census (fill, anchor, inset) of OUR activity SVGs vs the jar's. RE-PINNED by activity-klimt-compress T6 (2026-09-10): insets move where a label's box shifted with the compressed geometry; no fill/anchor change is expected.",
-  "measuredAt": "2026-11-06",
-  "measuredAgainstCommit": "1450db03",
+  "measuredAt": "2026-11-20",
+  "measuredAgainstCommit": "525b1d7f",
   "fixtures": [
     {
       "type": "activity",
@@ -728,8 +728,8 @@
       "type": "activity",
       "slug": "bineki-51-zedo397",
       "status": "baseline",
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "4346d637",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 12
@@ -744,15 +744,15 @@
       },
       "jar": {
         "fill": {
-          "#000": 12
+          "#000": 6
         },
         "anchor": {
-          "(absent)": 12
+          "(absent)": 6
         },
         "inset": {
           "10": 3
         },
-        "textCount": 12
+        "textCount": 6
       }
     },
     {
@@ -1488,8 +1488,8 @@
       "type": "activity",
       "slug": "bucoru-71-gapi371",
       "status": "baseline",
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "47d2a6e1",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 11,
@@ -1505,16 +1505,16 @@
       },
       "jar": {
         "fill": {
-          "#000": 11,
+          "#000": 5,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 13
+          "(absent)": 7
         },
         "inset": {
           "10": 2
         },
-        "textCount": 13
+        "textCount": 7
       }
     },
     {
@@ -5881,8 +5881,8 @@
       "type": "activity",
       "slug": "fuficu-36-caga441",
       "status": "baseline",
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "783fba76",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 4
@@ -5892,7 +5892,7 @@
         },
         "inset": {
           "7": 1,
-          "10": 1
+          "10": 2
         },
         "textCount": 4
       },
@@ -5905,7 +5905,7 @@
         },
         "inset": {
           "7": 1,
-          "10": 1
+          "10": 2
         },
         "textCount": 4
       }
@@ -5976,35 +5976,33 @@
       "type": "activity",
       "slug": "fukika-81-gite897",
       "status": "baseline",
-      "measuredAt": "2026-10-09",
-      "measuredAgainstCommit": "3d8988d8",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
-          "#000": 10
+          "#000": 9
         },
         "anchor": {
-          "(absent)": 10
+          "(absent)": 9
         },
         "inset": {
-          "7": 1,
           "25": 4,
           "28.3": 1
         },
-        "textCount": 10
+        "textCount": 9
       },
       "jar": {
         "fill": {
-          "#000": 10
+          "#000": 9
         },
         "anchor": {
-          "(absent)": 10
+          "(absent)": 9
         },
         "inset": {
-          "7": 1,
           "25": 4,
           "28.3": 1
         },
-        "textCount": 10
+        "textCount": 9
       }
     },
     {
@@ -10977,8 +10975,8 @@
       "type": "activity",
       "slug": "lidumi-54-moza355",
       "status": "baseline",
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "47d2a6e1",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 62,
@@ -10994,16 +10992,16 @@
       },
       "jar": {
         "fill": {
-          "#000": 62,
+          "#000": 26,
           "#00F": 2
         },
         "anchor": {
-          "(absent)": 64
+          "(absent)": 28
         },
         "inset": {
           "10": 11
         },
-        "textCount": 64
+        "textCount": 28
       }
     },
     {
@@ -11227,8 +11225,8 @@
       "type": "activity",
       "slug": "liteta-29-zufa478",
       "status": "baseline",
-      "measuredAt": "2026-11-06",
-      "measuredAgainstCommit": "4346d637",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 8
@@ -11243,15 +11241,15 @@
       },
       "jar": {
         "fill": {
-          "#000": 8
+          "#000": 5
         },
         "anchor": {
-          "(absent)": 8
+          "(absent)": 5
         },
         "inset": {
           "10": 3
         },
-        "textCount": 8
+        "textCount": 5
       }
     },
     {
@@ -14385,8 +14383,8 @@
       "type": "activity",
       "slug": "nisigo-68-ledo444",
       "status": "baseline",
-      "measuredAt": "2026-11-03",
-      "measuredAgainstCommit": "85d5ca8e",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 6
@@ -14401,15 +14399,15 @@
       },
       "jar": {
         "fill": {
-          "#000": 6
+          "#000": 3
         },
         "anchor": {
-          "(absent)": 6
+          "(absent)": 3
         },
         "inset": {
           "10": 2
         },
-        "textCount": 6
+        "textCount": 3
       }
     },
     {
@@ -14993,8 +14991,8 @@
       "type": "activity",
       "slug": "nupiko-03-cezu269",
       "status": "baseline",
-      "measuredAt": "2026-10-09",
-      "measuredAgainstCommit": "3d8988d8",
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f",
       "ours": {
         "fill": {
           "#000": 7
@@ -15009,15 +15007,15 @@
       },
       "jar": {
         "fill": {
-          "#000": 7
+          "#000": 4
         },
         "anchor": {
-          "(absent)": 7
+          "(absent)": 4
         },
         "inset": {
           "10": 2
         },
-        "textCount": 7
+        "textCount": 4
       }
     },
     {
@@ -23648,32 +23646,30 @@
       "status": "baseline",
       "ours": {
         "fill": {
-          "#000": 9
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 9
+          "(absent)": 8
         },
         "inset": {
-          "7": 1,
           "20": 6
         },
-        "textCount": 9
+        "textCount": 8
       },
       "jar": {
         "fill": {
-          "#000": 9
+          "#000": 8
         },
         "anchor": {
-          "(absent)": 9
+          "(absent)": 8
         },
         "inset": {
-          "7": 1,
           "20": 6
         },
-        "textCount": 9
+        "textCount": 8
       },
-      "measuredAt": "2026-10-07",
-      "measuredAgainstCommit": "76efedca"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "525b1d7f"
     },
     {
       "type": "activity",

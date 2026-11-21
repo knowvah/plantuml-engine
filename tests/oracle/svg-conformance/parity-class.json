@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T04:54:04.943Z",
+  "generatedAt": "2026-11-21T16:28:20.361Z",
   "fixtures": [
     {
       "slug": "bajotu-30-soku184",
@@ -349,7 +349,8 @@
       "type": "class",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "conformant",
+      "errorPage": true
     },
     {
       "slug": "buxuso-47-tara486",
@@ -876,7 +877,9 @@
       "type": "class",
       "dotEqual": true,
       "layoutEqual": "n/a",
-      "verdict": "conformant"
+      "verdict": "structural-match",
+      "maxDelta": 1.0769999999999982,
+      "maxDeltaPath": "svg/g[1]/g[1]/text[2]/@x"
     },
     {
       "slug": "delano-03-xino845",
@@ -3241,14 +3244,8 @@
       "slug": "nacave-78-dijo807",
       "type": "class",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,559.000008,441.00002400000005 vs ours 0,0,193.999968,292.999992"
-      },
-      "verdict": "structural-match",
-      "maxDelta": 365,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "nacuzu-17-bepi660",
@@ -4706,14 +4703,8 @@
       "slug": "subdiagram-theme-1",
       "type": "class",
       "dotEqual": true,
-      "layoutEqual": false,
-      "layoutFirstDiff": {
-        "component": "bb",
-        "detail": "page 1: jar 0,0,559.000008,441.00002400000005 vs ours 0,0,193.999968,292.999992"
-      },
-      "verdict": "structural-match",
-      "maxDelta": 365,
-      "maxDeltaPath": "svg/@viewBox[2]"
+      "layoutEqual": true,
+      "verdict": "conformant"
     },
     {
       "slug": "sufide-66-sanu583",
@@ -5716,9 +5707,16 @@
     {
       "slug": "xonoru-58-noxe307",
       "type": "class",
-      "dotEqual": true,
-      "layoutEqual": true,
-      "verdict": "conformant"
+      "dotEqual": false,
+      "layoutEqual": false,
+      "layoutFirstDiff": {
+        "component": "bb",
+        "detail": "page 1: jar 0,0,480.968748,171.00004800000002 vs ours 0,0,90.57499200000001,162.99998399999998"
+      },
+      "verdict": "diverged",
+      "maxDelta": 397.25,
+      "firstDiff": "svg/g[1]/g[1]/@id",
+      "maxDeltaPath": "svg/g[1]/g[1]/text[1]/@x"
     },
     {
       "slug": "xopuku-46-nefa571",

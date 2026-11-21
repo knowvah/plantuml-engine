@@ -3,7 +3,7 @@ import type { StringBounder } from '../../../core/klimt/font/StringBounder.js';
 import type { UFont } from '../../../core/klimt/font/UFont.js';
 import { XDimension2D } from '../../../core/klimt/geom/XDimension2D.js';
 import type { UGraphic } from '../../../core/klimt/UGraphic.js';
-import { trin } from '../../../core/style/parser/StyleParser.js';
+import { trin } from '../../../core/string-utils-trim.js';
 import type { ISkinSimple } from '../../../core/style/ISkinSimple.js';
 import { AbstractElement } from './AbstractElement.js';
 import type { Element } from './Element.js';

@@ -1,0 +1,9 @@
+@startuml
+class A
+note right of A
+== Heading 
+* bullet 
+# numbered 
+plain 
+end note
+@enduml

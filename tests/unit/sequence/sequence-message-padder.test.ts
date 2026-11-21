@@ -81,6 +81,7 @@ describe('layoutPadder (Padder.java:107-131)', () => {
 
 const base: MessageGeo = {
   kind: 'message',
+  group: { uid: 'msg1', participant1: 'part1', participant2: 'part2' },
   fromX: 10,
   toX: 100,
   y: 50,

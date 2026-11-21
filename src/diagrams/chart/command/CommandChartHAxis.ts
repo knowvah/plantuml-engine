@@ -2,10 +2,10 @@
  * `CommandChartHAxis`: `h-axis` or `x-axis`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartHAxis.java
  */
+import { parseFiniteDouble } from './ChartDataItems.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
-import { parseDouble } from '../../../core/java-number-format.js';
 import { LabelPosition } from '../ChartAxis.js';
-import { GridMode, type ChartDiagram } from '../ChartDiagram.js';
+import { GridMode, Kind, type ChartDiagram } from '../ChartDiagram.js';
 import { bracketGroup, parseLabels, RANGE_PART, SP0, SP1, TITLE_PART } from './chart-command-text.js';
 
 /** `Integer.MAX_VALUE`, past which `Integer.parseInt` throws. */
@@ -18,27 +18,36 @@ export const CHART_H_AXIS_RE = new RegExp(
   'i',
 );
 
+/** `spacing N`: an int above 0. @see CommandChartHAxis.java:107-117 */
+function applySpacing(diagram: ChartDiagram, spacingStr: string | undefined): CommandExecutionResult | undefined {
+  if (spacingStr === undefined) return undefined;
+  const spacing = Number(spacingStr);
+  if (spacing > INT_MAX) return CommandExecutionResult.error('Invalid number format in spacing value');
+  if (spacing <= 0) return CommandExecutionResult.error('X-axis spacing must be greater than 0');
+  diagram.setXAxisTickSpacing(spacing);
+  return undefined;
+}
+
 /**
  * Spacing, `label-right` and `grid` apply before any return. A numeric range
  * returns without reading `DATA`; otherwise a missing title overwrites an earlier one.
  * @see CommandChartHAxis.java:91-140
  */
 export function applyChartHAxis(diagram: ChartDiagram, match: RegExpExecArray): CommandExecutionResult {
+  // @see CommandChartHAxis.java:97-99 (e8ef39dd55c)
+  const kindError = diagram.checkKind('h-axis', Kind.CARTESIAN);
+  if (kindError !== undefined) return kindError;
   const g = match.groups!;
   const title = g['TITLE'];
 
-  if (g['SPACING'] !== undefined) {
-    const spacing = Number(g['SPACING']);
-    if (spacing > INT_MAX) return CommandExecutionResult.error('Invalid number format in spacing value');
-    if (spacing <= 0) return CommandExecutionResult.error('X-axis spacing must be greater than 0');
-    diagram.setXAxisTickSpacing(spacing);
-  }
+  const spacingError = applySpacing(diagram, g['SPACING']);
+  if (spacingError !== undefined) return spacingError;
   if (g['LABELRIGHT'] !== undefined) diagram.setXAxisLabelPosition(LabelPosition.RIGHT);
   if (g['GRID'] !== undefined) diagram.setXGridMode(GridMode.MAJOR);
 
   if (g['RANGE_0'] !== undefined && g['RANGE_1'] !== undefined) {
-    const min = parseDouble(g['RANGE_0']);
-    const max = parseDouble(g['RANGE_1']);
+    const min = parseFiniteDouble(g['RANGE_0']);
+    const max = parseFiniteDouble(g['RANGE_1']);
     if (min === undefined || max === undefined)
       return CommandExecutionResult.error('Invalid number format in axis range');
     return diagram.setXAxis(title, min, max);

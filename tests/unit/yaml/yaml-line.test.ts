@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { build, YamlLineType } from '../../../src/diagrams/yaml/yaml-line.js';
+import { YamlSyntaxException } from '../../../src/diagrams/yaml/yaml-syntax-exception.js';
 
 describe('build (YamlLine)', () => {
   // 1. Simple key-value pair
@@ -162,5 +163,47 @@ describe('build (YamlLine)', () => {
     expect(line.type).toBe(YamlLineType.KEY_AND_FLOW_SEQUENCE);
     // \, outside quotes → literal "," in the token, not a separator
     expect(line.values).toEqual(['a,b', 'c']);
+  });
+});
+
+describe('build (YamlLine) — 0537b558644', () => {
+  it.each([['m: {a: 1}'], ['{a: 1}'], ['- {a: 1}'], ['- m: {}']])('refuses the flow mapping in %s', (line) => {
+    expect(() => build(line)).toThrow(new YamlSyntaxException('flow mappings {...} are not supported'));
+  });
+
+  it('a flow-mapping error carries no line of its own', () => {
+    expect.assertions(2);
+    try {
+      build('m: {}');
+    } catch (e) {
+      expect(e).toBeInstanceOf(YamlSyntaxException);
+      expect((e as YamlSyntaxException).getLine()).toBe(0);
+    }
+  });
+
+  it("unquotes '' in a single-quoted scalar", () => {
+    expect(build("a: 'it''s'").value).toBe("it's");
+  });
+
+  it.each([
+    ['"x\\ty"', 'x\ty'],
+    ['"a\\/b"', 'a/b'],
+    ['"a\\\\b"', 'a\\b'],
+    ['"a\\qb"', 'a\\qb'],
+    ['"tail\\"', 'tail\\'],
+  ])('unescapes the double-quoted %s', (raw, expected) => {
+    expect(build(`k: ${raw}`).value).toBe(expected);
+  });
+
+  it('skips an escaped quote when looking for the colon', () => {
+    const line = build('"a\\": b": c');
+    expect(line.key).toBe('a": b');
+    expect(line.value).toBe('c');
+  });
+
+  it('a block, folded or key-only line carries no value', () => {
+    expect(build('k: |').value).toBeNull();
+    expect(build('k: >').value).toBeNull();
+    expect(build('k:').value).toBeNull();
   });
 });

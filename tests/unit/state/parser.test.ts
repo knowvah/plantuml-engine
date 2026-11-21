@@ -289,14 +289,12 @@ describe('stereotype kinds', () => {
     });
   }
 
-  // Mission A4 Phase L iter 15 (livuni-63-fira764): `Stereogroup.java` has
-  // NO `junction` case -- `<<junction>>` is an unrecognized stereotype
-  // string upstream, so it keeps kind='normal' (rect/rounded), never the
-  // invented diamond-shaped 'junction' StateKind this port used to produce.
-  it('<<junction>> is NOT a recognized upstream pseudostate -- kind stays normal', () => {
+  // Upstream a0a410773aa (#2905): `Stereogroup.java:127-128` maps
+  // `<<junction>>` to its own `LeafType.JUNCTION` (livuni-63-fira764).
+  it('<<junction>> is the junction pseudostate (Stereogroup.java:127-128)', () => {
     const ast = parse('state j <<junction>>');
     const s = findState(ast, 'j');
-    expect(s?.kind).toBe('normal');
+    expect(s?.kind).toBe('junction');
     expect(s?.stereotype).toBe('junction');
   });
 

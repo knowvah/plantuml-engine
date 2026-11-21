@@ -8,7 +8,7 @@
  * the same private fields.
  */
 import { readFileSync } from 'node:fs';
-import { trin } from '../../../../src/core/style/parser/StyleParser.js';
+import { trin } from '../../../../src/core/string-utils-trim.js';
 import { UFontFactory } from '../../../../src/core/klimt/font/UFontFactory.js';
 import type { DataSource } from '../../../../src/diagrams/salt/DataSource.js';
 import { DataSourceImpl } from '../../../../src/diagrams/salt/DataSourceImpl.js';

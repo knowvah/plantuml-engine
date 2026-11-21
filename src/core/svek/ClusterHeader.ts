@@ -50,7 +50,8 @@ function getStyle(styleName: SName, g: Entity, skinParam: LeafImageSkinParam): S
   return style;
 }
 
-/** `getTitleBlock`. @see ClusterHeader.java:85-111 */
+/** `getTitleBlock`: `label.create9(fontConfiguration, alignment, g.getSkinParam(), style.wrapWidth())` -- upstream
+ *  927f7531ddf wraps the title at the title style's `MaximumWidth`. @see ClusterHeader.java:117-145 */
 function getTitleBlock(styleName: SName, g: Entity, skinParam: LeafImageSkinParam): TextBlock {
   const label = g.getDisplay();
   const style = getStyle(styleName, g, skinParam);
@@ -60,7 +61,11 @@ function getTitleBlock(styleName: SName, g: Entity, skinParam: LeafImageSkinPara
   const alignment = style.getHorizontalAlignment() ?? HorizontalAlignment.LEFT;
   if (g.getVisibilityModifier() !== undefined) throw new Error('unported: ClusterHeader visibility modifier');
 
-  return label.create({ fontConfiguration, spriteContainer: skinParam, atomOps: skinParam.atomOps }, alignment);
+  return label.create9(
+    { fontConfiguration, spriteContainer: skinParam, atomOps: skinParam.atomOps },
+    alignment,
+    style.wrapWidth(),
+  );
 }
 
 /** The labels `getStereoBlockWithoutLegend` draws, none when the block is empty. @see ClusterHeader.java:160-176 */

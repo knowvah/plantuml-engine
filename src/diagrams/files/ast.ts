@@ -1,5 +1,6 @@
 import type { DiagramAnnotations } from '../../core/annotations/index.js';
 import type { SpriteRegistry } from '../../core/sprite-commands.js';
+import type { FLabel } from './flabel.js';
 import type { FilesDiagram } from './parser.js';
 
 /**
@@ -14,55 +15,60 @@ export const FilesType = {
 } as const;
 export type FilesType = (typeof FilesType)[keyof typeof FilesType];
 
-/** The `/` that separates the path segments of one `/...` line. @see FEntry.java:83 */
+/** The `/` that separates the path segments of one entry. @see FEntry.java:81 */
 const PATH_SEPARATOR = '/';
-/** The name `addNote` gives a note entry. @see FEntry.java:97 */
+/** The name `addNote` gives a note entry. @see FEntry.java:121 */
 const NOTE_NAME = 'NONE';
-/** `getEmoticon` for a folder. @see FEntry.java:126 */
-const FOLDER_EMOTICON = '<:1f4c2:>';
-/** `getEmoticon` for anything else (a data file or, never drawn, a note). @see FEntry.java:128 */
-const DATA_EMOTICON = '<:1f4c4:>';
+/** The prefix of a relative path. @see FEntry.java:77 */
+const CURRENT_DIR_PREFIX = './';
 
 /**
  * `FEntry` -- one node of the files tree: the root (an unnamed folder), a
- * folder, a data file or a note. Drawing and measuring it are
- * `layout.ts`/`renderer.ts` (`FEntry#calculateDimension` and
- * `#drawAndMove`).
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/filesdiagram/FEntry.java:63-185
+ * folder, a data file or a note, with the annotations of its label.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/filesdiagram/FEntry.java:50-197
  */
 export class FEntry implements Iterable<FEntry> {
-  /** @see FEntry.java:65 */
   private readonly parent: FEntry | null;
-  /** The note's lines; `null` for a folder and a data file. @see FEntry.java:66 */
+  /** The note's lines; `null` for a folder and a data file. */
   readonly note: readonly string[] | null;
-  /** @see FEntry.java:67 */
   readonly name: string;
-  /** @see FEntry.java:68 */
-  readonly type: FilesType;
-  /** @see FEntry.java:69 */
+  private kind: FilesType;
   private readonly entries: FEntry[] = [];
+  private description: string | null = null;
+  private stereotypes: readonly string[] = [];
+  private color: string | null = null;
+  private icon: string | null = null;
 
-  /** @see FEntry.java:71-73 */
+  /** @see FEntry.java:63-65 */
   static createRoot(): FEntry {
     return new FEntry(null, FilesType.FOLDER, '', null);
   }
 
-  /** @see FEntry.java:75-80 */
+  /** @see FEntry.java:67-72 */
   private constructor(parent: FEntry | null, type: FilesType, name: string, note: readonly string[] | null) {
     this.parent = parent;
     this.note = note;
     this.name = name;
-    this.type = type;
+    this.kind = type;
+  }
+
+  /** @see FEntry.java:56 */
+  get type(): FilesType {
+    return this.kind;
   }
 
   /**
-   * The path `raw` (without its leading `/`) below this entry: the segment
-   * before the first `/` is a folder (found or created), the rest goes into
-   * it; no `/` left makes a data file. Answers the data file created, or
-   * `null` when `raw` ends with a `/` (a folder with nothing below it).
-   * @see FEntry.java:82-94
+   * Adds a path relative to this entry: `a/b/c.txt` creates (or reuses) the folders `a` and `b`, then a file
+   * `c.txt`. A trailing `/` makes the last element a folder. Answers the entry for the last element.
+   * @see FEntry.java:74-100
    */
-  addRawEntry(raw: string): FEntry | null {
+  addRawEntry(input: string): FEntry {
+    let raw = input;
+    // A file that gets children is a folder after all
+    this.kind = FilesType.FOLDER;
+    while (raw.startsWith(CURRENT_DIR_PREFIX)) raw = raw.substring(CURRENT_DIR_PREFIX.length);
+    while (raw.startsWith(PATH_SEPARATOR)) raw = raw.substring(PATH_SEPARATOR.length);
+    if (raw.length === 0) return this;
     const x = raw.indexOf(PATH_SEPARATOR);
     if (x === -1) {
       const result = new FEntry(this, FilesType.DATA, raw, null);
@@ -72,25 +78,56 @@ export class FEntry implements Iterable<FEntry> {
     const folder = this.getOrCreateFolder(raw.substring(0, x));
     const remain = raw.substring(x + 1);
     if (remain.length !== 0) return folder.addRawEntry(remain);
-    return null;
+    return folder;
   }
 
-  /** @see FEntry.java:96-99 */
+  /** @see FEntry.java:102-104 */
+  isFolder(): boolean {
+    return this.kind === FilesType.FOLDER;
+  }
+
+  /** @see FEntry.java:106-108 */
+  isNote(): boolean {
+    return this.kind === FilesType.NOTE;
+  }
+
+  /** @see FEntry.java:110-112 */
+  isRoot(): boolean {
+    return this.parent === null;
+  }
+
+  /** @see FEntry.java:114-117 */
+  forceFolder(): void {
+    if (this.kind === FilesType.DATA) this.kind = FilesType.FOLDER;
+  }
+
+  /** @see FEntry.java:119-122 */
   addNote(note: readonly string[]): void {
     this.entries.push(new FEntry(this, FilesType.NOTE, NOTE_NAME, note));
   }
 
-  /** @see FEntry.java:101-109 */
+  /** @see FEntry.java:124-134 */
   private getOrCreateFolder(folderName: string): FEntry {
     for (const child of this.entries) {
-      if (child.type === FilesType.FOLDER && child.getName() === folderName) return child;
+      if (child.kind !== FilesType.NOTE && child.getName() === folderName) {
+        child.kind = FilesType.FOLDER;
+        return child;
+      }
     }
     const result = new FEntry(this, FilesType.FOLDER, folderName, null);
     this.entries.push(result);
     return result;
   }
 
-  /** The children in insertion order (`iterator()`, FEntry.java:111-114). */
+  /** Takes over what `label` says about this entry. @see FEntry.java:136-147 */
+  applyLabel(label: FLabel): void {
+    if (label.getDescription() !== null) this.description = label.getDescription();
+    if (label.getStereotypes().length > 0) this.stereotypes = [...this.stereotypes, ...label.getStereotypes()];
+    if (label.getColor() !== null) this.color = label.getColor();
+    if (label.getIcon() !== null) this.icon = label.getIcon();
+  }
+
+  /** The children in insertion order (`iterator()`, FEntry.java:149-152). */
   get children(): readonly FEntry[] {
     return this.entries;
   }
@@ -99,19 +136,40 @@ export class FEntry implements Iterable<FEntry> {
     return this.entries[Symbol.iterator]();
   }
 
-  /** @see FEntry.java:116-118 */
+  /** The last child that is not a note: the one where the vertical connector line stops. @see FEntry.java:158-163 */
+  getLastEntryChild(): FEntry | null {
+    for (let i = this.entries.length - 1; i >= 0; i--) if (!this.entries[i]!.isNote()) return this.entries[i]!;
+    return null;
+  }
+
+  /** @see FEntry.java:165-167 */
   getParent(): FEntry | null {
     return this.parent;
   }
 
-  /** @see FEntry.java:120-122 */
+  /** @see FEntry.java:169-171 */
   getName(): string {
     return this.name;
   }
 
-  /** @see FEntry.java:124-129 */
-  getEmoticon(): string {
-    return this.type === FilesType.FOLDER ? FOLDER_EMOTICON : DATA_EMOTICON;
+  /** @see FEntry.java:177-179 */
+  getDescription(): string | null {
+    return this.description;
+  }
+
+  /** @see FEntry.java:181-183 */
+  getStereotypes(): readonly string[] {
+    return this.stereotypes;
+  }
+
+  /** @see FEntry.java:185-187 */
+  getColor(): string | null {
+    return this.color;
+  }
+
+  /** @see FEntry.java:189-191 */
+  getIcon(): string | null {
+    return this.icon;
   }
 }
 

@@ -136,6 +136,7 @@ describe('TimingDiagramFactory common commands', () => {
           skinparam: new Map([
             ['Handwritten', 'true'],
             ['padding', '2'],
+            ['participantPadding', '4'],
             ['other', '1'],
           ]),
           styles: [],
@@ -144,8 +145,8 @@ describe('TimingDiagramFactory common commands', () => {
       new PreprocessingArtifact(),
     ) as TimingDiagram;
     expect(d.getWarnings().map((w) => w.getMessage()[0])).toEqual([
-      "Please use '!option handwritten true' to enable handwritten ",
-      'Please use CSS style instead of skinparam padding',
+      "'skinparam handwritten' is deprecated: write '!option handwritten true' instead",
+      "'skinparam ParticipantPadding' is ignored: use a style instead",
     ]);
   });
 });

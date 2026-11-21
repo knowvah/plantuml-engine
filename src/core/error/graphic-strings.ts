@@ -90,9 +90,10 @@ export function blackOnWhite(
   const lines = strings.map((s) => layLine(s, measurer));
   const textWidth = Math.max(0, ...lines.map((l) => l.width));
   const textHeight = lines.reduce((h, l) => h + l.height, 0);
+  // Both positions here are corners: tall enough for the text and the image (443598c29ce, GraphicStrings.java:184-189).
   const inner = {
     width: textWidth + (image === undefined ? 0 : IMAGE_PADDING + image.img.width),
-    height: textHeight,
+    height: image === undefined ? textHeight : Math.max(textHeight, image.img.height),
   };
   return {
     width: inner.width + 2 * ERROR_PAGE_MARGIN,

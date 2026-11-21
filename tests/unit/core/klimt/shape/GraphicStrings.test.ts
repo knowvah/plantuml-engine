@@ -103,7 +103,7 @@ describe('GraphicStrings.createBlackOnWhite(strings, image, position) (java:113-
   it('BACKGROUND_CORNER_BOTTOM_RIGHT: wider by imagePadding 30 + image, image in the bottom-right corner', () => {
     const block = GraphicStrings.createBlackOnWhite(['Hello'], IMG, GraphicPosition.BACKGROUND_CORNER_BOTTOM_RIGHT);
     const [w, h] = dims(block);
-    expect([w, h]).toEqual([tw + 30 + 40, th]);
+    expect([w, h]).toEqual([tw + 30 + 40, Math.max(th - 10, 20) + 10]);
     // size = dim - 2*margin; origin = margin + (size.w - img.w, size.h - img.h)
     expect(imageBox(svgOf(block))).toEqual([printed(5 + (w - 10 - 40)), 5 + (h - 10 - 20), 40, 20]);
   });
@@ -111,16 +111,19 @@ describe('GraphicStrings.createBlackOnWhite(strings, image, position) (java:113-
   it('BACKGROUND_CORNER_TOP_RIGHT: same width, image one pixel in from the top-right', () => {
     const block = GraphicStrings.createBlackOnWhite(['Hello'], IMG, GraphicPosition.BACKGROUND_CORNER_TOP_RIGHT);
     const [w, h] = dims(block);
-    expect([w, h]).toEqual([tw + 30 + 40, th]);
+    expect([w, h]).toEqual([tw + 30 + 40, Math.max(th - 10, 20) + 10]);
     expect(imageBox(svgOf(block))).toEqual([printed(5 + (w - 10 - 40 - 1)), 5 + 1, 40, 20]);
   });
 
-  it('BOTTOM: taller by the image, image centred under the text', () => {
-    const block = GraphicStrings.createBlackOnWhite(['Hello'], IMG, GraphicPosition.BOTTOM);
-    const [w, h] = dims(block);
-    expect([w, h]).toEqual([tw, th + 20]);
-    expect(imageBox(svgOf(block))).toEqual([printed(5 + (w - 10 - 40) / 2), 5 + (h - 10 - 20), 40, 20]);
-  });
+  // 443598c29ce: the block is tall enough for both the text and a taller corner image (java:184-189).
+  it.each([GraphicPosition.BACKGROUND_CORNER_BOTTOM_RIGHT, GraphicPosition.BACKGROUND_CORNER_TOP_RIGHT])(
+    '%s: a corner image taller than the text sets the height',
+    (position) => {
+      const tall: RasterImage = { ...IMG, height: 100 };
+      const [w, h] = dims(GraphicStrings.createBlackOnWhite(['Hello'], tall, position));
+      expect([w, h]).toEqual([tw + 30 + 40, 100 + 10]);
+    },
+  );
 
   it('an image without a position is neither sized nor drawn (java:157-170, :181-188)', () => {
     const block = GraphicStrings.createBlackOnWhite(['Hello'], IMG, undefined);
@@ -180,11 +183,11 @@ describe('GraphicStrings.createBlackOnWhite(strings, classpath) — port-only AD
 });
 
 describe('the monospaced factories', () => {
-  it('createBlackOnWhiteMonospaced: monospace 14 black on white (java:109-111, :126-128)', () => {
+  // aa79d2d80ee: NO_CREOLE, a TextBlockRaw whose baseline is the font size (SingleLine#maxDeltaY), so 5 + 14
+  // (jar: cov-math-unknown `glb x` at y=19).
+  it('createBlackOnWhiteMonospaced: raw monospace 14 black on white (java:113-116, :131-133)', () => {
     const svg = svgOf(GraphicStrings.createBlackOnWhiteMonospaced(['x y']));
-    expect(svg).toContain(
-      '<text x="5" y="15.889" fill="#000" font-size="14" textLength="17.85" font-family="monospace">',
-    );
+    expect(svg).toContain('<text x="5" y="19" fill="#000" font-size="14" textLength="17.85" font-family="monospace">');
     expect(svg).toContain('background:#FFFFFF;');
   });
 
@@ -204,10 +207,9 @@ describe('GraphicStrings.createForError (java:81-98)', () => {
     expect(green.getBackcolor().asString()).toBe('#000000');
   });
 
-  it('needs TextBlockRaw (CreoleMode.NO_CREOLE), unported: measuring it throws', () => {
-    expect(() => GraphicStrings.createForError(['boom'], true).calculateDimension(stringBounder)).toThrow(
-      'TextBlockRaw (CreoleMode.NO_CREOLE) is not ported',
-    );
+  it('draws its lines raw (CreoleMode.NO_CREOLE, TextBlockRaw): 24 high per line, margins included', () => {
+    expect(GraphicStrings.createForError(['boom'], true).calculateDimension(stringBounder).getHeight()).toBe(24);
+    expect(GraphicStrings.createForError(['a', 'b'], true).calculateDimension(stringBounder).getHeight()).toBe(38);
   });
 });
 

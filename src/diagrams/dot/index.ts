@@ -1,4 +1,5 @@
-import type { SyncPlugin, AssembledSvg } from '../../core/dispatcher.js';
+import type { SyncPlugin, AssembledSvg, ParseOptions } from '../../core/dispatcher.js';
+import { DEFAULT_SECURITY_PROFILE } from '../../core/security/SecurityProfile.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import type { ParseRefusal } from '../../core/parse-refusal.js';
 import type { DotDiagramAST, DotGeometry } from './ast.js';
@@ -22,8 +23,10 @@ export const dotPlugin: SyncPlugin<DotDiagramAST, DotGeometry> = {
    *  (`PSystemBasicFactory.java:89-90`) is `parseDot`'s own. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/directdot/PSystemDotFactory.java:45-60 */
   factoryBase: 'PSystemBasicFactory',
 
-  parse(source: UmlSource): DotDiagramAST | ParseRefusal {
-    return parseDot(source);
+  /** The profile is read where `PSystemDot#exportDiagramNow` reads it
+   *  (`PSystemDot.java:77`); it travels on the AST so layout can skip graphviz. */
+  parse(source: UmlSource, options?: ParseOptions): DotDiagramAST | ParseRefusal {
+    return parseDot(source, options?.securityProfile ?? DEFAULT_SECURITY_PROFILE);
   },
 
   layoutSync(ast: DotDiagramAST): DotGeometry {

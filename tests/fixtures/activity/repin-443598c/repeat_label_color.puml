@@ -1,0 +1,5 @@
+@startuml
+#red:repeat :R;
+  :A;
+repeat while (more?)
+@enduml

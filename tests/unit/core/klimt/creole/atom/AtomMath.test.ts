@@ -12,6 +12,7 @@ import { AtomMath } from '../../../../../../src/core/klimt/creole/atom/AtomMath.
 import { ScientificEquationSafe } from '../../../../../../src/core/math/ScientificEquationSafe.js';
 import { measureLatex, renderLatexAsImage } from '../../../../../../src/core/latex.js';
 import { UImage } from '../../../../../../src/core/klimt/shape/UImage.js';
+import { URectangle } from '../../../../../../src/core/klimt/shape/URectangle.js';
 import { XDimension2D } from '../../../../../../src/core/klimt/geom/XDimension2D.js';
 import { UTranslate } from '../../../../../../src/core/klimt/UTranslate.js';
 import type { UShape } from '../../../../../../src/core/klimt/UShape.js';
@@ -132,7 +133,7 @@ describe('AtomMath.drawU (java:77-98) — bound to renderLatexAsImage', () => {
     expect((ug.getDrawn()[0]!.shape as UImage).getHref()).toBe(expected.href);
   });
 
-  it('a non-null background does not change the drawn output (no background operation in this port -- see module doc comment)', () => {
+  it("a background paints the formula's box first, then the same image (ScientificEquationSafe.java:129-133)", () => {
     const math = ScientificEquationSafe.fromLatex('w');
     const withBg = new AtomMath(math, '#00ff00', '#ffffff');
     const withoutBg = new AtomMath(math, '#00ff00', null);
@@ -140,22 +141,29 @@ describe('AtomMath.drawU (java:77-98) — bound to renderLatexAsImage', () => {
     const ug2 = new RecordingUGraphic();
     withBg.drawU(ug1);
     withoutBg.drawU(ug2);
-    expect((ug1.getDrawn()[0]!.shape as UImage).getHref()).toBe((ug2.getDrawn()[0]!.shape as UImage).getHref());
+    const [box, image] = ug1.getDrawn();
+    expect(box!.shape).toBeInstanceOf(URectangle);
+    expect([(box!.shape as URectangle).getWidth(), (box!.shape as URectangle).getHeight()]).toEqual([
+      measureLatex('w').width,
+      measureLatex('w').height,
+    ]);
+    expect((image!.shape as UImage).getHref()).toBe((ug2.getDrawn()[0]!.shape as UImage).getHref());
+    expect(ug2.getDrawn()).toHaveLength(1);
   });
 });
 
-describe('AtomMath.calculateDimensionSlow on a rollback (java:63-70, pbs D5)', () => {
+describe('AtomMath.calculateDimensionSlow on a rollback (ScientificEquationSafe.java:110-115, aa79d2d80ee)', () => {
   const rollback = (): AtomMath => new AtomMath(ScientificEquationSafe.fromLatex('\\glb{x}'), null, null);
 
-  it("is the PNG export's whole-pixel size under the deterministic measurer (cov-rollback-latex: 48 x 24)", () => {
+  it('is the rollback block measured by the host bounder (cov-rollback-latex: 48.85 x 24)', () => {
     const dim = rollback().calculateDimension(new MeasurerStringBounder(new DeterministicMeasurer()));
-    expect([dim.getWidth(), dim.getHeight()]).toEqual([48, 24]);
+    expect([dim.getWidth(), dim.getHeight()]).toEqual([Math.fround(38.85) + 10, 24]);
   });
 
-  it('truncates the AWT measure of the monospaced block in production', () => {
+  it('is exactly the monospaced block, untruncated, under any bounder', () => {
     const awt = new MeasurerStringBounder(jarMeasurer);
     const block = GraphicStrings.createBlackOnWhiteMonospaced(['\\glb{x}']).calculateDimension(awt);
     const dim = rollback().calculateDimension(awt);
-    expect([dim.getWidth(), dim.getHeight()]).toEqual([Math.trunc(block.getWidth()), Math.trunc(block.getHeight())]);
+    expect([dim.getWidth(), dim.getHeight()]).toEqual([block.getWidth(), block.getHeight()]);
   });
 });

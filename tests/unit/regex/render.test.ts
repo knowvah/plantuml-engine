@@ -55,10 +55,10 @@ describe('the regex plugin (PSystemBuilder.java:197)', () => {
     expect(svg).toContain('NullPointerException');
   });
 
-  it('vokasi-57-zupa746 draws the preprocessor warning "No such !option foo"', () => {
+  it('vokasi-57-zupa746 draws the preprocessor warning "Unknown \'!option foo\'" (EaterOption.java:66-70)', () => {
     const svg = renderFixtureRegex(readFileSync(`${REGEX_CACHE}/vokasi-57-zupa746/in.puml`, 'utf8'));
     // The jar's warning text separates words with U+00A0 (the cached in.svg).
-    expect(svg).toContain('>No\u00a0such\u00a0!option\u00a0foo</text>');
+    expect(svg).toContain(`>${"Unknown '!option foo': this line is ignored".replaceAll(' ', '\u00a0')}</text>`);
     expect(
       compareSvg(svg, readFileSync(`${REGEX_CACHE}/vokasi-57-zupa746/in.svg`, 'utf8'), 'deterministic').diffs,
     ).toEqual([]);

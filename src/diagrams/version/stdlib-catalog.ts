@@ -29,7 +29,7 @@ export const STDLIB_CATALOG: readonly StdlibCatalogEntry[] = [
   { name: 'bootstrap', version: '1.13.1', source: 'https://github.com/twbs/icons' },
   { name: 'bootstrap1.12.1', version: '1.12.1', source: 'https://github.com/twbs/icons' },
   { name: 'bootstrap1.13.1', version: '1.13.1', source: 'https://github.com/twbs/icons' },
-  { name: 'c4', version: '2.13.0', source: 'https://github.com/plantuml-stdlib/C4-PlantUML' },
+  { name: 'c4', version: '2.14.0', source: 'https://github.com/plantuml-stdlib/C4-PlantUML' },
   { name: 'classy', version: '1.0.2', source: 'https://github.com/james-gadrow-kr/classy-plantuml' },
   { name: 'classy-c4', version: '1.0.3', source: 'https://github.com/james-gadrow-kr/classy-c4' },
   { name: 'cloudinsight', version: '1.0.0', source: 'https://github.com/plantuml-stdlib/cicon-plantuml-sprites' },

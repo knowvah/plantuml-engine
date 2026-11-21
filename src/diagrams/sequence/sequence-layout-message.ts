@@ -15,14 +15,14 @@
  * @see .../sequencediagram/graphic/MessageExoArrow.java
  */
 
-import type { ActivationEvent, MessageEvent, MessageGeo, ParticipantGeo } from './ast.js';
+import type { AbstractMessageEvent, ActivationEvent, MessageEvent, MessageGeo, ParticipantGeo } from './ast.js';
 import type { EventCursor, EventProcessingContext } from './sequence-layout-events.js';
 import { activationLevel } from './sequence-layout-events.js';
 import { popActivation, pushActivation, recordMessageStep, type ArrowEnds } from './sequence-layout-activation.js';
 import { LIVE_DELTA_SIZE } from './sequence-layout-shared.js';
 import { isBelowForResponse, belowLabelAnchorY } from './sequence-response-below.js';
 import { liveOffsetSelf, type MessageEndpoints } from './sequence-layout-message-self.js';
-import type { MulticastGeo } from './geo-message.js';
+import type { MessageGroupGeo, MulticastGeo } from './geo-message.js';
 import type { SequencePaint } from './sequence-skin-param.js';
 import { inclination1Of, inclination2Of } from './sequence-arrowhead.js';
 import { reverseArrowConfiguration } from './renderer-arrowhead.js';
@@ -286,6 +286,34 @@ function multicastGeosOf(
   return geos.length === 0 ? {} : { multicast: geos };
 }
 
+/**
+ * The inputs of `AbstractMessage#groupTypeMessage` (`AbstractMessage.java:
+ * 319-326`): `getUid()`, `location`, and `getParticipant1().getUid()` /
+ * `getParticipant2().getUid()`. `participant1`/`participant2` are the
+ * message's two participant ids (`from`/`to`; a `MessageExo`'s one
+ * participant twice, `MessageExo.java:72-80`).
+ */
+export function messageGroupOf(
+  event: AbstractMessageEvent,
+  participant1: string,
+  participant2: string,
+  ctx: EventProcessingContext,
+): MessageGroupGeo {
+  const uidOf = (id: string): string => {
+    const geo = ctx.participantMap.get(id);
+    if (geo === undefined) throw new Error(`message endpoint ${id} has no participant`);
+    return geo.uid;
+  };
+  // `SequenceDiagram#addMessage` set it (`:206`) before the message reached layout.
+  if (event.uid === undefined) throw new Error('message reached layout without a uid');
+  return {
+    uid: event.uid,
+    participant1: uidOf(participant1),
+    participant2: uidOf(participant2),
+    ...(event.sourceLine !== undefined ? { sourceLine: event.sourceLine } : {}),
+  };
+}
+
 /** Build the MessageGeo for a resolved set of endpoints at the given y. The
  *  label is a text block in the arrow style's font
  *  (`AbstractTextualComponent.java:80-92`). */
@@ -312,6 +340,7 @@ function buildMessageGeo(
     ...(block.number !== undefined ? { labelNumber: block.number } : {}),
     ...(block.padder !== undefined ? { labelPadder: block.padder } : {}),
     kind: 'message',
+    group: messageGroupOf(event, event.from, event.to, ctx),
     fromX: endpoints.fromX,
     toX: endpoints.toX,
     ...(endpoints.selfReturnX !== undefined ? { selfReturnX: endpoints.selfReturnX } : {}),

@@ -168,6 +168,22 @@ const SPECS: Record<string, RowSpec> = {
     parityGap: 'ListSpriteDiagramFactory (PSystemBuilder.java:170) is unported',
   },
 };
+// The easter eggs upstream removed (dadad87bba3) are the sequence Syntax Error? page at the a720bdd pin.
+const EGG_GONE =
+  ' Upstream dadad87bba3 removed PSystemEgg, PSystemAppleTwo, PSystemRIP and PSystemCharlie from ' +
+  'PSystemBuilder, so at the a720bdd pin this one-line source is the sequence Syntax Error? page ' +
+  '(oracle re-captured 2026-11-20); the port dropped the same plugins (655bc9f68).';
+for (const s of [
+  'apple',
+  'apple-steve-wozniak',
+  'cov-apple-kelvin-sign',
+  'cov-charlie-dotless-i',
+  'cov-egg-synthetic',
+  'cov-jesuischarlie',
+  'cov-steve-jobs',
+  'rip',
+])
+  SPECS[s] = { ...SPECS[s]!, reason: `${ERR5}${EGG_GONE}` };
 // The license spellings share one mechanism.
 for (const s of ['cov-licence', 'cov-license-upper']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-license']!.reason };
 for (const s of ['cov-authors']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-about']!.reason };

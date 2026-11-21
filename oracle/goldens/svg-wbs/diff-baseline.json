@@ -194,21 +194,21 @@
       "type": "wbs",
       "slug": "ledama-83-xoko366",
       "status": "baseline",
-      "weightedScore": 375,
+      "weightedScore": 382,
       "diffCount": 133,
       "reason": "jar-crash: the stock jar renders its crash page (java.lang.IllegalArgumentException: character to be escaped is missing; oracle/goldens/stock-error-pages.json wbs/ledama-83-xoko366, empty message) -- conformant under the 2026-10-10 error-page rule once the port errors too.",
-      "measuredAt": "2026-10-13",
-      "measuredAgainstCommit": "c3e65bd29"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c01e917dd"
     },
     {
       "type": "wbs",
       "slug": "link-URL-tooltip-0",
       "status": "baseline",
-      "weightedScore": 375,
+      "weightedScore": 382,
       "diffCount": 133,
       "reason": "jar-crash: the stock jar renders its crash page (java.lang.IllegalArgumentException: character to be escaped is missing; oracle/goldens/stock-error-pages.json wbs/link-URL-tooltip-0, empty message) -- conformant under the 2026-10-10 error-page rule once the port errors too.",
-      "measuredAt": "2026-10-13",
-      "measuredAgainstCommit": "c3e65bd29"
+      "measuredAt": "2026-11-20",
+      "measuredAgainstCommit": "c01e917dd"
     },
     {
       "type": "wbs",

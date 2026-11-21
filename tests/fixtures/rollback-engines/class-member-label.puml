@@ -1,0 +1,8 @@
+@startuml
+class A {
+<math>glb x</math>
+}
+class "<math>glb</math>" as B
+note top of A : before <math>glb x</math> after
+A --> B : <math>glb</math>
+@enduml

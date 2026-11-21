@@ -118,10 +118,10 @@ describe('ParticipantType.getStyleSignature (ParticipantType.java:54-82)', () =>
 });
 
 describe('the other event signatures', () => {
-  it('a message is arrow, fanned out per stereotype (AbstractMessage.java:75-78)', () => {
+  it('a message is arrow, every stereotype label folded into one query (AbstractMessage.java:79-81)', () => {
     expect(messageStyleSignature().toString()).toBe(of('arrow').toString());
     expect(messageStyleSignature(Stereotype.build('<<a>><<b>>')).toString()).toBe(
-      `[${of('arrow').addStereotype('a').toString()}, ${of('arrow').addStereotype('b').toString()}]`,
+      of('arrow').addStereotype('a').addStereotype('b').toString(),
     );
   });
 

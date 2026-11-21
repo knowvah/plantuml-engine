@@ -314,6 +314,9 @@ export interface PortLabelContext {
    *  in `class-edge-geo.ts#EdgeGeoTextContext` stays open until T7
    *  switches the renderer onto `quantifierLines`. */
   readonly cardinalityFont?: FontSpec | undefined;
+  /** a5731db447f: `SkinParam#classAttributeIconSize()` -- a role's leading
+   *  visibility character becomes an icon of this size (`RoleLabels#create`). */
+  readonly classAttributeIconSize?: number | undefined;
 }
 
 /** Text metrics for one physical-line-split quantifier/role block: lines,

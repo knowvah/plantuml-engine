@@ -18,9 +18,15 @@ import { CommandChangeStateByPlayerCode } from '../../../src/diagrams/timing/com
 import { CommandClock } from '../../../src/diagrams/timing/command/CommandClock.js';
 import { CommandDefineStateLong } from '../../../src/diagrams/timing/command/CommandDefineStateLong.js';
 import { CommandDefineStateShort } from '../../../src/diagrams/timing/command/CommandDefineStateShort.js';
-import { CommandRobustConcise } from '../../../src/diagrams/timing/command/CommandRobustConcise.js';
+import { CommandDigital } from '../../../src/diagrams/timing/command/CommandDigital.js';
+import type { CommandNumericPlayer } from '../../../src/diagrams/timing/command/CommandNumericPlayer.js';
+import { CommandConcise } from '../../../src/diagrams/timing/command/CommandConcise.js';
+import { CommandRectangle } from '../../../src/diagrams/timing/command/CommandRectangle.js';
+import { CommandRobust } from '../../../src/diagrams/timing/command/CommandRobust.js';
+import type { CommandStatePlayer } from '../../../src/diagrams/timing/command/CommandStatePlayer.js';
 import { PLAYER_CODE } from '../../../src/diagrams/timing/command/player-code.js';
-import { PlayerAnalog } from '../../../src/diagrams/timing/PlayerAnalog.js';
+import { AbstractNumericPlayer } from '../../../src/diagrams/timing/AbstractNumericPlayer.js';
+import { PlayerDigital } from '../../../src/diagrams/timing/PlayerDigital.js';
 import { PROBE_BODIES } from './helpers/probe-bodies.js';
 import { drawBody, newDiagram, runLine, runLines, runSource, singleLineCommands } from './helpers/commands.js';
 import { paint } from './helpers/timing.js';
@@ -45,10 +51,12 @@ describe('PLAYER_CODE (CommandTimeMessage.java:56)', () => {
 
 describe('command order claims a line (TimingDiagramFactory.java:83-109)', () => {
   it.each([
-    ['robust "Web Browser" as WB', 'CommandRobustConcise'],
-    ['compact concise WU', 'CommandRobustConcise'],
+    ['robust "Web Browser" as WB', 'CommandRobust'],
+    ['compact concise WU', 'CommandConcise'],
+    ['rectangle R #pink', 'CommandRectangle'],
     ['clock clk with period 50', 'CommandClock'],
     ['analog "Vcc" between -4.5 and 6.5 as VCC', 'CommandAnalog'],
+    ['digital D between 0 and 3', 'CommandDigital'],
     ['binary "Enable" as EN', 'CommandBinary'],
     ['R has Idle,Busy', 'CommandDefineStateShort'],
     ['R has "Long Label" as LL', 'CommandDefineStateLong'],
@@ -66,23 +74,41 @@ describe('command order claims a line (TimingDiagramFactory.java:83-109)', () =>
   });
 });
 
-describe('CommandRobustConcise (CommandRobustConcise.java:58-148)', () => {
-  const command = new CommandRobustConcise();
-
-  it('accepts the three types, an optional compact, full and code', () => {
+describe('CommandStatePlayer: CommandRobust, CommandConcise, CommandRectangle (CommandStatePlayer.java:59-146)', () => {
+  it('each accepts its own keyword, an optional compact, full and code', () => {
+    const concise = new CommandConcise();
     for (const line of [
-      'robust "Web Browser" as WB',
+      'concise "Web Browser" as WB',
       'concise WU',
-      'rectangle R',
-      'compact robust X',
+      'compact concise X',
       'concise "A" <<s>> as A',
       'concise A <<s>>',
       'concise A #pink',
       '  concise A  ',
     ])
-      expect([line, accepts(command, line)]).toEqual([line, true]);
-    for (const line of ['robustx A', 'clock A', 'concise', 'concise "A" A', 'concise "" as A'])
-      expect([line, accepts(command, line)]).toEqual([line, false]);
+      expect([line, accepts(concise, line)]).toEqual([line, true]);
+    for (const line of ['concisex A', 'robust A', 'rectangle A', 'concise', 'concise "A" A', 'concise "" as A'])
+      expect([line, accepts(concise, line)]).toEqual([line, false]);
+    expect([accepts(new CommandRobust(), 'compact robust X'), accepts(new CommandRobust(), 'concise X')]).toEqual([
+      true,
+      false,
+    ]);
+    expect([accepts(new CommandRectangle(), 'rectangle R'), accepts(new CommandRectangle(), 'robust R')]).toEqual([
+      true,
+      false,
+    ]);
+  });
+
+  it('explains the line as Java does (CommandStatePlayer.java:107-126)', () => {
+    const explain = (command: CommandStatePlayer, line: string): string | undefined =>
+      command.explain(new StringLocated(line, undefined));
+    expect(explain(new CommandRobust(), 'robust "Web Browser" as WB')).toBe(
+      'Creating a robust timing player \'WB\' displayed as "Web Browser"',
+    );
+    expect(explain(new CommandConcise(), 'compact concise A <<s>> #pink')).toBe(
+      "Creating a compact concise timing player 'A' stereotyped <<s>> with background color #pink",
+    );
+    expect(explain(new CommandRectangle(), 'robust A')).toBeUndefined();
   });
 
   it('calls createPlayerRobust(code, full, compact, stereotype, back) as Java does', () => {
@@ -181,10 +207,10 @@ describe('CommandClock (CommandClock.java:54-151)', () => {
   });
 });
 
-describe('CommandAnalog (CommandAnalog.java:54-136)', () => {
+describe('CommandNumericPlayer: CommandAnalog, CommandDigital (CommandNumericPlayer.java:57-207)', () => {
   const command = new CommandAnalog();
 
-  it('needs a full name and "as code"; bounds are between/from ... and/to', () => {
+  it('takes "Display" as CODE [bounds], "Display" bounds as CODE, or CODE [bounds]', () => {
     for (const line of [
       'analog "Vcore" as VDD',
       'analog "Vcc" between -4.5 and 6.5 as VCC',
@@ -192,16 +218,32 @@ describe('CommandAnalog (CommandAnalog.java:54-136)', () => {
       'analog "V" between .5 and 2 as V',
       'compact analog "V" <<s>> as V',
       'analog "V" as V <<t>>',
+      'analog "V" as V between 1 and 2',
+      'analog "V" as V <<t>> from 1 to 2 <<u>>',
+      'analog V',
+      'analog V between 350 and 450',
+      'compact analog V <<s>> from 0 to 1',
     ])
       expect([line, accepts(command, line)]).toEqual([line, true]);
-    for (const line of ['analog V', 'analog "V"', 'analog "V" between 1 as V', 'analog "V" between 1 or 2 as V'])
+    for (const line of [
+      'analog "V"',
+      'analog',
+      'analog "V" between 1 as V',
+      'analog "V" between 1 or 2 as V',
+      'analog V between 1 and 2 as V',
+      'digital V',
+    ])
       expect([line, accepts(command, line)]).toEqual([line, false]);
+    expect([
+      accepts(new CommandDigital(), 'compact digital "D" as D'),
+      accepts(new CommandDigital(), 'analog D'),
+    ]).toEqual([true, false]);
   });
 
   it('calls createPlayerAnalog and setBounds only when both bounds are present', () => {
     const d = newDiagram();
     const create = vi.spyOn(d, 'createPlayerAnalog');
-    const bounds = vi.spyOn(PlayerAnalog.prototype, 'setBounds');
+    const bounds = vi.spyOn(AbstractNumericPlayer.prototype, 'setBounds');
     try {
       runLine(d, 'analog "Vcore" as VDD');
       expect(create).toHaveBeenLastCalledWith('VDD', 'Vcore', false, undefined);
@@ -209,10 +251,43 @@ describe('CommandAnalog (CommandAnalog.java:54-136)', () => {
       runLine(d, 'compact analog "Vcc" <<s>> between -4.5 and 6.5 as VCC');
       expect(create.mock.calls[1]!.slice(0, 3)).toEqual(['VCC', 'Vcc', true]);
       expect(String(create.mock.calls[1]![3])).toBe('<<s>>');
-      expect(bounds).toHaveBeenCalledWith('-4.5', '6.5');
+      expect(bounds).toHaveBeenLastCalledWith('-4.5', '6.5');
+      runLine(d, 'analog "A" as A from 1 to 2');
+      expect(bounds).toHaveBeenLastCalledWith('1', '2');
+      runLine(d, 'analog A between 350 and 450');
+      expect(create).toHaveBeenLastCalledWith('A', '', false, undefined);
+      expect(bounds).toHaveBeenLastCalledWith('350', '450');
     } finally {
       bounds.mockRestore();
     }
+  });
+
+  it('digital builds a PlayerDigital, which takes ticks', () => {
+    const d = newDiagram();
+    const create = vi.spyOn(d, 'createPlayerDigital');
+    runLine(d, 'digital D <<s>> between 0 and 3');
+    expect(create.mock.calls[0]!.slice(0, 3)).toEqual(['D', '', false]);
+    expect(String(create.mock.calls[0]![3])).toBe('<<s>>');
+    expect(d.getPlayer('D')).toBeInstanceOf(PlayerDigital);
+    const ticks = vi.spyOn(AbstractNumericPlayer.prototype, 'setTicks');
+    try {
+      expect(runLine(d, 'D ticks every 2').isOk()).toBe(true);
+      expect(ticks).toHaveBeenCalledWith(2);
+    } finally {
+      ticks.mockRestore();
+    }
+  });
+
+  it('explains the line as Java does (CommandNumericPlayer.java:160-182)', () => {
+    const explain = (c: CommandNumericPlayer, line: string): string | undefined =>
+      c.explain(new StringLocated(line, undefined));
+    expect(explain(command, 'analog "Vcc" between -4.5 and 6.5 as VCC')).toBe(
+      'Creating an analog timing player \'VCC\' displayed as "Vcc" with bounds from -4.5 to 6.5',
+    );
+    expect(explain(new CommandDigital(), 'compact digital D <<s>>')).toBe(
+      "Creating a compact digital timing player 'D' stereotyped <<s>>",
+    );
+    expect(explain(command, 'digital D')).toBeUndefined();
   });
 });
 

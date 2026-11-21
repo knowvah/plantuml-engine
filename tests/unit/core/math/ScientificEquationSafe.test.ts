@@ -6,7 +6,15 @@
  * to an equation-less instance when the converter raises (java:71-79).
  */
 import { describe, expect, it } from 'vitest';
-import { ScientificEquationSafe } from '../../../../src/core/math/ScientificEquationSafe.js';
+import {
+  DEFAULT_BACKGROUND,
+  DEFAULT_FOREGROUND,
+  ScientificEquationSafe,
+} from '../../../../src/core/math/ScientificEquationSafe.js';
+import type { HColorOrPaint } from '../../../../src/core/klimt/color/ColorMapper.js';
+import { HColorSet } from '../../../../src/core/klimt/color/HColorSet.js';
+import { DeterministicMeasurer } from '../../../../src/core/measurer-deterministic.js';
+import { stringBounderFor } from '../../../../src/core/UgDiagram.js';
 
 describe('ScientificEquationSafe.fromLatex / getFormula / getSource (java:81-89, 163-169)', () => {
   it('getFormula returns the raw constructor argument unchanged', () => {
@@ -60,5 +68,32 @@ describe('ScientificEquationSafe.fromAsciiMath (java:71-79)', () => {
     const eq = ScientificEquationSafe.fromAsciiMath('text');
     expect(eq.getFormula()).toBe('text');
     expect(() => eq.getSource()).toThrow(/NullPointerException/);
+  });
+});
+
+describe('ScientificEquationSafe drawing on the UGraphic (aa79d2d80ee, java:110-172)', () => {
+  const measurer = new DeterministicMeasurer();
+  const sb = stringBounderFor(measurer);
+  const page = (fg: HColorOrPaint, bg: HColorOrPaint, formula = 'x^2'): string =>
+    ScientificEquationSafe.fromLatex(formula).exportSvg(1, fg, bg, sb, measurer);
+
+  it("measures the TeXIcon's box, else the rollback's", () => {
+    const x2 = ScientificEquationSafe.fromLatex('x^2').getDimension(sb);
+    expect([x2.getWidth(), x2.getHeight()]).toEqual([27, 26]);
+    const rollback = ScientificEquationSafe.fromAsciiMath('glb x').getDimension(sb);
+    expect(rollback.getHeight()).toBe(24);
+  });
+
+  it('a transparent background paints nothing behind the formula; an opaque one its box', () => {
+    expect(page(DEFAULT_FOREGROUND, DEFAULT_BACKGROUND)).not.toContain('<rect');
+    expect(page(DEFAULT_FOREGROUND, HColorSet.instance().getColorOrWhite('#ABC') as HColorOrPaint)).toContain(
+      '<rect x="0" y="0" width="27" height="26" fill="#ABC" style="stroke:none;"/>',
+    );
+  });
+
+  it('a gradient foreground colours the glyphs with its first stop; a blank formula draws no glyph', () => {
+    const gradient = HColorSet.instance().getColorOrWhite('red|blue') as HColorOrPaint;
+    expect(page(gradient, DEFAULT_BACKGROUND)).toContain('<image');
+    expect(page(DEFAULT_FOREGROUND, DEFAULT_BACKGROUND, '')).not.toContain('<image');
   });
 });

@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2621 modules · 8610 exported names.
+2661 modules · 8810 exported names.
 
 ## `src/`
 
@@ -33,7 +33,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `arrow-label-font.ts` | `ARROW_LABEL_DEFAULT_COLOR`, `ArrowLabelFont`, `resolveArrowLabelFont`, `resolveCardinalityFontColor`, `resolveCardinalityFont` | D3: the arrow-label font resolver -- `GraphvizImageBuilder.java:234-235` (`getDefaultStyleDefinitionArrow(stereotype).getMergedStyle(...) .getFontConfiguration(...)`), upstream's `labelFont` argument to `SvekEdge`'s constructor. |
 | `arrow-message-alignment.ts` | `ArrowMessageAlignment`, `DEFAULT_ARROW_MESSAGE_ALIGNMENT`, `arrowMessageAlignmentOf`, `withArrowMessageAlignment`, `arrowMessageAlignmentOfTheme` | `skinparam arrowMessageAlignment`, the alignment of every activity arrow label: `AbstractFtile#arrowHorizontalAlignment` reads `getHorizontalAlignment(AlignmentParam.arrowMessageAlignment, null, false, null)` off the flat parameter map. |
 | `assemble-svg-activity.ts` | `finalizeActivityFragment` | Activity's per-diagram body finalization — split out of `assemble-svg.ts` (T2d-a pass 2, 500-line hook) to make room for the DOCGRAD gradient background branch. |
-| `assemble-svg-backcolor.ts` | `backcolorMarkup` | assemble-svg-backcolor.ts -- the body markup of `SvgGraphics`' constructor paint for the four finalizers that share `svg-backcolor.ts#backcolorPaint` (decisions.md D2: json/yaml/hcl, state, class, description). |
+| `assemble-svg-backcolor.ts` | `backcolorMarkup`, `URL_PAINT_PREFIX`, `splitLeadingBackgroundRect` | assemble-svg-backcolor.ts -- the body markup of `SvgGraphics`' constructor paint for the four finalizers that share `svg-backcolor.ts#backcolorPaint` (decisions.md D2: json/yaml/hcl, state, class, description). |
 | `assemble-svg-json.ts` | `finalizeJsonFragment` | assemble-svg-json.ts -- json/yaml/hcl's per-diagram body finalization (formerly `json/renderer-shell.ts#assembleJsonShell`), dispatched from `assemble-svg.ts#finalizeShellFragment`. |
 | `assemble-svg-sequence.ts` | `finalizeSequenceBody`, `finalizeSequenceFragment` | assemble-svg-sequence.ts -- sequence's per-diagram body finalization, dispatched from `assemble-svg.ts#finalizeShellFragment`. |
 | `assemble-svg-splice.ts` | `CONTENT_G_OPEN_RE`, `spliceAsFirstChild`, `spliceIntoContentGroup` | assemble-svg-splice.ts -- the two content-`<g>` splices the per-engine finalize functions of `assemble-svg.ts` share. |
@@ -43,7 +43,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `available-font-family-names.ts` | `availableFontFamilyNames` | `GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()`: the JVM host's font families. |
 | `backed-include-store.ts` | `BackedIncludeStore` | The store the async include prefetch fills and `render()` hands to the interpreter (`include-resolver.ts`, `startPrefetchWalk`). |
 | `block-extractor.ts` | `DiagramType`, `UmlSource`, `finalizeBlock`, `upstreamTypeOf`, `extractBlocks` | Block extractor: types a block's PREPROCESSED content, from the @start<type> keyword suffix or -- for plain @startuml -- by probing the first 20 non-empty content lines. |
-| `BlockUmlBuilder.ts` | `RawBlock`, `BlockUmlOk`, `BlockUmlErr`, `BlockUml`, `buildBlockUmls`, `rawBlocksOf`, `buildBlockUml`, `isBlockEmpty` | `BlockUmlBuilder` -- the document -> blocks stage, and the reason it runs BEFORE the preprocessor. |
+| `BlockUmlBuilder.ts` | `RawBlock`, `BlockUmlOk`, `BlockUmlErr`, `BlockUml`, `buildBlockUmls`, `rawBlocksOf`, `getYamlHeader`, `buildBlockUml`, `isBlockEmpty` | `BlockUmlBuilder` -- the document -> blocks stage, and the reason it runs BEFORE the preprocessor. |
 | `build-theme.ts` | `ResolvedThemeAndStyles`, `buildTheme` | Theme resolution -- extracted out of `src/index.ts` (this repo's `check-complexity.py` 500-line file cap; a MECHANICAL move, no behavior change). |
 | `class-style-facts.ts` | `withClassShadowing`, `classShadowingOf` | The merged class style's `Shadowing` (smc T4c). |
 | `clock.ts` | `Clock`, `DEFAULT_CLOCK`, `renderClock`, `zoneOffsetSeconds`, `localEpochDay` | The one injected clock (gantt-engine-port D3a): TIM `%now` / `%date` and gantt's `today` read it, never the ambient wall clock. |
@@ -117,10 +117,11 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `openiconic-glyphs.ts` | `OPENICONIC_NATURAL_SIZE`, `isKnownOpenIconicGlyph`, `OpenIconicOp`, `parsedOpsFor`, `openIconicFactor`, `openIconicDims`, `openIconicStartingAltitude`, `openIconicOriginY`, `buildOpenIconicPathD` | OpenIconic `<&glyph>` inline icons (G2 N41, extended to the full upstream set F1-c). |
 | `packaged-theme-residue.ts` | `resolveBaseTheme` | Stage 1 of `buildTheme`: the named base theme, with the residual summary of a theme that ships in a registered package (#180). |
 | `paint.ts` | `Gradient`, `LinearGradientStopPaint`, `LinearGradientPaint`, `isLinearGradientPaint`, `Paint`, `parseColor`, `isTransparentColor`, `hashString`, `paintToSvg`, `noGradient` | Paint — the color/gradient value model for the rendering layer. |
-| `parse-refusal.ts` | `ParseRefusalKind`, `ParseRefusal`, `refuse`, `NULL_SYSTEM`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
+| `parse-refusal.ts` | `SYNTAX_ERROR_MESSAGE`, `UNCLOSED_STYLE_MESSAGE`, `getSyntaxErrorMessage`, `syntaxErrorMessageOf`, `ParseRefusalKind`, `ParseRefusal`, `refuse`, `NULL_SYSTEM`, `refusalScore`, `mergeRefusals`, `parseRefusalOf` | The refusal outcome a plugin returns instead of an AST, and the upstream tie-break for picking a winner when every candidate refuses. |
 | `PlainStringsDiagram.ts` | `PlainStringsDiagram` | `PlainStringsDiagram` — a {@link UgDiagram} whose page is its `strings` drawn black on white, optionally with an `image` at `imagePosition` (`version`, the eggs). |
 | `png-string-bounder.ts` | `BOLD_START`, `BOLD_END`, `pngDefaultStringBounder`, `pngStringBounderOf` | `FileFormat.PNG.getDefaultStringBounder()`: the bounder an SVG render reaches when the Java measures through a PNG export or asks for PNG's bounder by name (wire `print`, `WireDiagram.java:133`; a creole math rollback, `AtomMath.java:63-70` |
-| `preprocessor-collector.ts` | `StyleAndSkinparamCollector` | preprocessor-collector.ts -- the `<style>` / `skinparam` / `skin` line collector `preprocessor.ts#resultOf` runs over the interpreter's finished result list. |
+| `preprocessor-collector.ts` | `StyleAndSkinparamCollector`, `collectStylesAndSkinparams` | preprocessor-collector.ts -- the `<style>` / `skinparam` / `skin` line collector `preprocessor.ts#resultOf` runs over the interpreter's finished result list. |
+| `preprocessor-failure.ts` | `mutateExpands1`, `failureDataOf`, `markLastLine`, `messageOf` | The located-line helpers `preprocessor.ts` builds a `PreprocessorFailure` and its `BlockUml#data` with -- split out of `preprocessor.ts` (500-line cap). |
 | `preprocessor-first-page.ts` | `firstPageAssignments`, `firstPageOf` | `CommandNewpage` starts a brand-new diagram (`CommandNewpage.java:68-73`, `NewpagedDiagram.java:60-73`), so a `skinparam` or `<style>` after it belongs to a later page. |
 | `preprocessor.ts` | `SkinDirective`, `PreprocessorResult`, `SkinparamAssignment`, `SkinparamForm`, `DeclarationOrder`, `PreprocessOptions`, `preprocess`, `PreprocessorFailure`, `PreprocessOutcome`, `preprocessOrError`, `preprocessLinesOrError` | Preprocessor -- a thin wrapper over the TIM interpreter (`src/core/tim/`). |
 | `printed-diagram-type.ts` | `withPrintedDiagramType`, `printedDiagramTypeOf` | The `data-diagram-type` a fragment prints when it differs from its routing key (`RenderFragment.diagramType`). |
@@ -146,7 +147,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `skinparam-supersedes-cascade.ts` | `supersededCascadeFields`, `withoutSupersededCascades`, `withoutSupersededByStyle` | A skinparam that executes after a `<style>` block wins its property by storage order. |
 | `skinparam-theme-builder.ts` | `buildThemePartial` | Builds a `Partial<Theme>` from a populated {@link SkinparamAccumulator} — only the keys that were actually seen during key processing are set. |
 | `skinparam-types.ts` | `SkinparamResult`, `StyleMap` | Shared public types for the skinparam resolution pipeline. |
-| `skinparam-warnings.ts` | `addUniqueWarning`, `SkinparamWarningSource`, `skinParamWarnings`, `uniqueWarnings`, `withWarningBanner` | The shared warning channel and banner of the engines that draw one (activity, sequence), lifted out of `diagrams/activity/activity-warnings.ts` (sdd2-T7e) so a second engine does not copy it. |
+| `skinparam-warnings.ts` | `skinParamWarning`, `addUniqueWarning`, `SkinparamWarningSource`, `skinParamWarnings`, `uniqueWarnings`, `withWarningBanner` | The shared warning channel and banner of the engines that draw one (activity, sequence), lifted out of `diagrams/activity/activity-warnings.ts` (sdd2-T7e) so a second engine does not copy it. |
 | `skinparam.ts` | `SkinparamResult`, `StyleMap`, `resolveColor`, `ELEMENT_BUCKET_SNAMES`, `parseStyleBlock`, `resolveSkinparam` | Skinparam resolution pipeline for plantuml-engine. |
 | `skins-builtin-rose-1.ts` | `ROSE_SKIN_PART1` | `rose` built-in `<style>`-grammar skin, part 1 of 2 -- skin-file-loading mission Batch 4 split, purely to keep every module under this project's 500-line-per-file limit (`rose.skin` alone is ~550 lines verbatim, by far the largest of the fi |
 | `skins-builtin-rose-2.ts` | `ROSE_SKIN_PART2` | `rose` built-in `<style>`-grammar skin, part 2 of 2 -- see {@link ROSE_SKIN_PART1}'s doc comment for why this split exists and how the two halves recombine. |
@@ -164,6 +165,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `stdlib-content.ts` | `stdlibContentFor` | Resolving a `<bundle/thing>` include target to its CONTENT, for the prefetch walk's third channel (`include-resolver.ts#prefetchInner`). |
 | `stereotype-decoration.ts` | `GuillemetPair`, `DEFAULT_GUILLEMET`, `wrapGuillemet`, `hasMultipleLabel`, `splitStereotypeLabels`, `splitStereotypeStyleTags`, `CircledCharDecoration`, `parseCircledCharDecoration`, `CircledSpriteDecoration`, `parseCircledSpriteDecoration`, `DEFAULT_CIRCLED_CHARACTER_FONT_SIZE`, `resolveBadgeRadius` | stereotype-decoration.ts — the port of `StereotypeDecoration#buildComplex` (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/stereo/ StereotypeDecoration.java:143-182`): how a `<<...>>` run splits into the label(s) a diagram DISPLAYS |
 | `string-utils-arrow.ts` | `manageArrowForCuca`, `getArrowDirection`, `getQueueDirection` | The arrow helpers of `StringUtils` that the cuca link commands share: `manageArrowForCuca`, `getArrowDirection`, `getQueueDirection`. |
+| `string-utils-trim.ts` | `isTrimmable`, `trin`, `trim2` | The trims of `StringUtils`: `isTrimmable`, `trin`, `trim2`. |
 | `style-cascade-class-arrow-font.ts` | `computeCardinalityFontOverride`, `computeArrowFontOverride` | D3/T11 (cdd3, Q-5): the arrow-label and cardinality font cascades -- split out of `style-cascade-class.ts` (500-line cap), mirrors `style-cascade- visibility-icon.ts`'s own split-for-size precedent (same import shape: `cascadeHex`/`cascadeF |
 | `style-cascade-class-font.ts` | `applyFontCascadeOverrides` | cdd-B7FU-R3 (`ropera-76-jico895`): the class-diagram FontSize/FontStyle `<style>` cascade — split out of `style-cascade-class.ts` (500-line cap), a pure addition, not a move. |
 | `style-cascade-class-generic.ts` | `applyGenericCascadeOverrides` | T11 (cdd3, Q-4): the generic type-parameter tag's own ancestor cascade -- split out of `style-cascade-class.ts` (500-line cap), mirrors `style-cascade-visibility-icon.ts`'s own split-for-size precedent (a pure addition, same import shape: ` |
@@ -660,7 +662,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AtomEmoji.ts` | `EMOJI_MAGIC`, `EMOJI_BOX_FACTOR`, `EMOJI_ALTITUDE_FACTOR`, `EMOJI_LINE_HEIGHT_FACTOR`, `emojiLineHeightFactor`, `emojiFactor`, `emojiBoxDim`, `emojiSquareDim`, `emojiStartingAltitude`, `emojiRenderRun` | AtomEmoji — sizing constants for one `<:name:>` creole emoji atom. |
 | `AtomImg.ts` | `createQrcode` | `AtomImg.createQrcode` — the image atom a creole `<qrcode:...>` adds (`StripeSimple#addQrcode`, java:216-218). |
 | `AtomImgPortableImage.ts` | `TYPE_INT_RGB`, `buildPortableImage`, `scalePortableImage` | The `PortableImage` pieces `AtomImg.createQrcode` reaches (AtomImg.java:95, :98): `PortableImageFactory.build(w, h, TYPE_INT_RGB)` and the `UImage(PixelImage(im, TYPE_NEAREST_NEIGHBOR)).scale(scale).getImage(1)` chain, which ends in `Portab |
-| `AtomMath.ts` | `AtomMath` | AtomMath — upstream: klimt/creole/atom/AtomMath.java (`extends AbstractAtom implements Atom`, 107 lines). |
+| `AtomMath.ts` | `AtomMath` | AtomMath — upstream: klimt/creole/atom/AtomMath.java (`extends AbstractAtom implements Atom`). |
 | `AtomOpenIconic.ts` | `AtomOpenIconic`, `asAtomOpenIconic` | `AtomOpenIconic` — an OpenIconic `<&name>` glyph inside a creole line (`StripeSimple#addOpenIcon`, StripeSimple.java:239-243), as the polymorphic `Atom` `Sea`/`SheetBlock1` lay out: `calculateDimensionSlow` (`openIconic.asTextBlock` padded |
 | `AtomSpace.ts` | `SPACE_ATOM_HEIGHT`, `SPACE_ATOM_STARTING_ALTITUDE`, `spaceAtomDim` | AtomSpace — the creole `<space:N>` atom: N pixels of horizontal advance, nothing drawn. |
 | `AtomTable.ts` | `AtomTable` | AtomTable — the drawable/measurable creole table `StripeTable` builds: a grid of `Atom` cells (each itself a `SheetBlock1` wrapping one cell's own nested `Sheet`), laid out column-width/row-height-first (every cell in a column shares that c |
@@ -792,6 +794,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `MinMax.ts` | `MinMax` |  |
 | `MinMaxMutable.ts` | `MinMaxMutable` |  |
 | `Moveable.ts` | `Moveable` | Moveable — anything that can be shifted by a relative (dx, dy) delta, in place. |
+| `NaturalSpline.ts` | `naturalSplineThrough` | NaturalSpline — a natural cubic spline through points (second derivative 0 at both ends), each interval written exactly as one cubic Bézier. |
 | `PlacementStrategy.ts` | `PlacementStrategy` |  |
 | `PlacementStrategyVisibility.ts` | `PlacementStrategyVisibility` |  |
 | `PlacementStrategyX1X2.ts` | `PlacementStrategyX1X2` |  |
@@ -818,7 +821,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `big-frame.ts` | `Dim`, `Sides`, `BigFrameStyle`, `BigFrameLayout`, `buildBigFrame` | big-frame.ts — cdd-T34 (E14 `mainframe`): `klimt/shape/BigFrame.java`, the box `core/DiagramChromeFactory.java#decorateWithFrame` wraps the WHOLE diagram body in for `mainframe TEXT` — a rounded rect with a folder-tab title cutout in its to |
 | `CircledCharacter.ts` | `CircledCharacter` |  |
 | `DotPath.ts` | `Bezier`, `PointAndAngle`, `DotPath` |  |
-| `GraphicStrings.ts` | `GraphicStringsClasspath`, `GraphicStrings` | `GraphicStrings` — a list of lines drawn as one creole block (sans-serif 12 black on white by default) inside a 5px margin, optionally with an image in a corner or under the text. |
+| `GraphicStrings.ts` | `MARGIN`, `SIZE_14`, `GraphicStringsClasspath`, `GraphicStrings` | `GraphicStrings` — a list of lines drawn as one creole block (sans-serif 12 black on white by default) inside a 5px margin, optionally with an image in a corner or under the text. |
+| `SingleLine.ts` | `SingleLine` | `SingleLine` — one line of {@link TileText}s laid side by side. |
 | `TextBlock.ts` | `TextBlock`, `textBlockMagneticBorder` |  |
 | `TextBlockArrow2.ts` | `TextBlockArrow2` | TextBlockArrow2: the magic-arrow glyph of a link label, a triangle pointing along the link. |
 | `TextBlockHorizontal.ts` | `TextBlockHorizontal` |  |
@@ -827,10 +831,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `TextBlockMarged.ts` | `TextBlockMarged` |  |
 | `TextBlockMemoized.ts` | `TextBlockMemoized` |  |
 | `TextBlockMinWidth.ts` | `TextBlockMinWidth` |  |
+| `TextBlockRaw.ts` | `TextBlockRaw` | `TextBlockRaw` — strings drawn as they are, one {@link SingleLine.rawText} per string stacked downwards, no creole. |
 | `TextBlockSprited.ts` | `TextBlockSprited` |  |
 | `TextBlockUtils.ts` | `TextBlockUtils` |  |
 | `TextBlockVertical.ts` | `TextBlockVertical` |  |
 | `TextBlockWithUrl.ts` | `Url`, `TextBlockWithUrl` |  |
+| `TileText.ts` | `TileText` | `TileText` — one run of raw text (no creole) in a {@link SingleLine}: its height is the font's, at least 10, plus `\|getSpace()\|`; each token is drawn at `y = getSpace()`, the baseline being placed by the line (`maxDeltaY`). |
 | `UCenteredCharacter.ts` | `UCenteredCharacter` |  |
 | `UComment.ts` | `UComment` |  |
 | `UDrawable.ts` | `UDrawable` |  |
@@ -930,8 +936,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AsciiMath.ts` | `AsciiMath` | AsciiMath — upstream: `math/AsciiMath.java` (79 lines). |
 | `ASCIIMathTeXImg.ts` | `ASCIIMathTeXImg` | ASCIIMathTeXImg — a faithful transcription of upstream's `math/ASCIIMathTeXImg.java` (1032 lines): the ASCIIMath-notation to LaTeX converter reached from `AsciiMath`'s constructor, and through it from `ScientificEquationSafe.fromAsciiMath` |
 | `ASCIIMathTeXImgSymbols.ts` | `Ttype`, `Flag`, `Tuple`, `aAMsqrt`, `aAMroot`, `aAMfrac`, `aAMdiv`, `aAMover`, `aAMsub`, `aAMsup`, `aAMtext`, `aAMmbox`, `aAMquote`, `aAMsymbols` | ASCIIMathTeXImgSymbols — the data half of upstream's `math/ASCIIMathTeXImg.java`: the `Ttype` (java:96-99) and `Flag` (java:101-104) enums, the `Tuple` record (java:106-141), the ten named tuples (java:142-151) and the `aAMsymbols` table (j |
-| `math-document.ts` | `AwtColor`, `batikColorName`, `mathDocumentSize`, `mathDocument` | The document `@startmath` and `@startlatex` write: Batik's `SVGGraphics2D` stream of a JLaTeXMath `TeXIcon`, which `ScientificEquationSafe#export` copies straight to the output (`getSvg(1, fg, bg).getSvg(true)`, `ScientificEquationSafe.java |
-| `ScientificEquationSafe.ts` | `ScientificEquationSafe`, `rollbackImageDimension`, `rollbackSvg` | ScientificEquationSafe — upstream: math/ScientificEquationSafe.java (171 lines). |
+| `latex-atom.ts` | `LatexAtomLike`, `RollbackLayout`, `rollbackLayout`, `rollbackSvgText`, `drawLatexAtom`, `latexAtomDimension` | The size of a creole `<math>`/`<latex>` atom for the engines that read the data-oriented `CreoleAtom` instead of building an `AtomMath`: upstream reaches `ScientificEquationSafe#getDimension` from every engine through the same `StripeLatex` |
+| `ScientificEquationSafe.ts` | `DEFAULT_FOREGROUND`, `DEFAULT_BACKGROUND`, `rollbackDimension`, `drawRollback`, `ScientificEquationSafe` | ScientificEquationSafe — upstream: math/ScientificEquationSafe.java. |
 
 ## `src/core/plasma/`
 
@@ -972,14 +978,14 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `RegexLeaf.ts` | `RegexLeaf` | `RegexLeaf` -- a named piece of regex source with a declared capture-group count. |
 | `RegexOptional.ts` | `RegexOptional` | `RegexOptional` -- `(?:child)?`. |
 | `RegexOr.ts` | `RegexOr` | `RegexOr` -- the alternation of its children, one capture group when it is named (`arg.get(name, 0)` is then the whole alternative, or `undefined` when the `or` did not take part). |
-| `RegexPartialMatch.ts` | `RegexPartialMatch` | `RegexPartialMatch` -- the ordered captured strings of one named regex leaf. |
-| `RegexResult.ts` | `RegexResult` | `RegexResult` -- result of a command pattern match, backed either by a `Map<String, RegexPartialMatch>` (the regex/`RegexConcat` world) or by a ubrex {@link UMatcher}. |
+| `RegexPartialMatch.ts` | `RegexPartialMatch` | `RegexPartialMatch` -- the captured strings of one named regex node. |
+| `RegexResult.ts` | `RegexResult` | `RegexResult` -- result of a command pattern match, backed either by the named groups `RegexComposed#matcher` fills in (the regex/`RegexConcat` world) or by a ubrex {@link UMatcher}. |
 
 ## `src/core/security/`
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `SecurityProfile.ts` | `SecurityProfile`, `DEFAULT_SECURITY_PROFILE`, `getTimeout` | Upstream's `SecurityProfile` -- the parts that govern network access. |
+| `SecurityProfile.ts` | `SecurityProfile`, `DEFAULT_SECURITY_PROFILE`, `allowDotSvg`, `getTimeout` | Upstream's `SecurityProfile` -- the parts that govern network access. |
 | `SecurityUtils.ts` | `ignoreThisLink`, `withAllowJavascriptInLink` | The link-filtering half of upstream's `SecurityUtils`. |
 | `SURL.ts` | `isUrlOk` | The access decision of upstream's `SURL` -- which URL a diagram may open. |
 | `URLCheck.ts` | `isURLforbidden` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/security/URLCheck.java |
@@ -1027,21 +1033,21 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `AutomaticCounter.ts` | `AutomaticCounter` | AutomaticCounter — the source of style-value priorities: each parsed value takes the next int (`ValueImpl.regular/dark`, ValueImpl.java:50-60). |
 | `AutomaticCounterBasic.ts` | `AutomaticCounterBasic` |  |
-| `DarkString.ts` | `DarkString` | DarkString — a style value's regular (`value1`) and `@media dark` (`value2`) strings plus its priority. |
+| `DarkString.ts` | `DarkString` |  |
 | `FromSkinparamToStyle.ts` | `convertSkinparam` | FromSkinparamToStyle — the `skinparam key value` -> `Style[]` converter: one flat static table (`key -> [{propertyName, styleNames}]`, built once at module load exactly as upstream's `static {}` block builds `knowledge`) plus `convertNow`'s |
 | `ISkinSimple.ts` | `ISkinSimple` | ISkinSimple — the skin-parameter capability interface `Display`/ `CreoleParser` (and, once ported, `StripeTable`/`StripeTree`/ `EmbeddedDiagram`) consume to reach fonts, sprites, guillemets, and a `SheetBuilder`. |
 | `MergeStrategy.ts` | `MergeStrategy` | MergeStrategy — how `Style#mergeWith` treats an existing value whose priority is above `StyleLoader.DELTA_PRIORITY_FOR_STEREOTYPE` (Style.java:121-135). |
 | `mindmap-style-builder.ts` | `DEFAULT_SKIN`, `ConvertSkinparam`, `MindmapStyleSource`, `PositionedDeclaration`, `positionedDeclarationsOf`, `cleanForKeySlow`, `removeStartingQuote`, `SkinParam`, `buildMindmapStyleBuilder`, `createMindmapSkinParam`, `executeDeclaration` | The mindmap's `StyleBuilder`: the style half of upstream's `SkinParam` (java:155-265) replayed over a preprocessed source (decision D2). |
 | `PName.ts` | `PNAMES`, `PName`, `getFromName` | PName — every style property name of `style/PName.java` (1.2026.8beta1), constant names verbatim, as a readonly declaration-order array plus the string-literal union it induces (no `const enum`, project convention). |
 | `SName.ts` | `SNAMES`, `SName`, `retrieve` | SName — every style-element name of `style/SName.java` (1.2026.8beta1), the enum constant names verbatim (trailing underscores included: `class_`, `goto_`, `interface_`, `package_`, `private_`, `protected_`, `public_` -- Java keywords upstr |
+| `Specificity.ts` | `Specificity` | Specificity — how specific a style declaration is: an ordered tuple compared one component at a time, most significant first, never one number that several tiers are summed or multiplied into. |
 | `style-reads.ts` | `stylePaint`, `styleFont`, `linkStylesOf` | Style reads shared by every engine that draws through `SvekEdge` and the description-family entity images: a `Style` value as this renderer's `Paint`, its `FontConfiguration`, and the arrow / cardinality styles of one link's builder. |
-| `Style.ts` | `DELTA_PRIORITY_FOR_STEREOTYPE`, `Style`, `darkSchemeStyle` |  |
+| `Style.ts` | `Style`, `darkSchemeStyle` |  |
 | `StyleBuilder.ts` | `StyleBuilder`, `setDarkScheme` |  |
 | `StyleKey.ts` | `enumSetOrder`, `StyleKey` | StyleKey — the sname set, depth level and star flag of a style signature; the key `StyleStorage` files stereotype-free styles under (`StyleStorage.java:69-70,81-82`). |
-| `StyleLoader.ts` | `DELTA_PRIORITY_FOR_STEREOTYPE`, `NoStyleAvailableException`, `loadSkin`, `getInputStreamForStyle`, `getMissingRootProperties`, `addPriorityForStereotype` |  |
-| `StyleSignature.ts` | `STAR`, `StyleSignature` | StyleSignature — the common interface of a single signature ({@link StyleSignatureBasic}) and a fan-out list of them ({@link StyleSignatures}). |
+| `StyleLoader.ts` | `NoStyleAvailableException`, `loadSkin`, `getInputStreamForStyle`, `getMissingRootProperties`, `addStereotypeCount` |  |
+| `StyleSignature.ts` | `STAR`, `StyleSignature` | StyleSignature — the interface of a signature ({@link StyleSignatureBasic}). |
 | `StyleSignatureBasic.ts` | `SName`, `StyleSignatureBasic` | StyleSignatureBasic — a {@link StyleKey} plus a set of cleaned stereotype names: both the selector a `<style>` rule is stored under (built by `style/parser/Context.java:70-99`) and the query an element resolves its style with (e.g. |
-| `StyleSignatures.ts` | `StyleSignatures` | StyleSignatures — an ordered list of {@link StyleSignature}, the fan-out `StyleSignatureBasic#withTOBECHANGED`/`forStereotypeItself` build (one member per stereotype label). |
 | `StyleStorage.ts` | `StyleStorage` |  |
 | `Value.ts` | `HColor`, `HColorSet`, `Value` |  |
 | `ValueAbstract.ts` | `ValueAbstract` |  |
@@ -1055,7 +1061,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `Context.ts` | `Context` |  |
 | `CssVariables.ts` | `CssVariables` | CssVariables — the `--name value` declarations of one style text, and the `var(--name)` lookup a value goes through (StyleParser.java:123,126). |
-| `StyleParser.ts` | `StyleParsingException`, `trin`, `StyleParser`, `readLines`, `parseStyles` |  |
+| `StyleParser.ts` | `StyleParsingException`, `StyleParser`, `readLines`, `parseStyles` |  |
 | `StyleScheme.ts` | `StyleScheme` | StyleScheme — which half of a `DarkString` a parsed value fills: `REGULAR` before an `@media` block, `DARK` from it on (StyleParser.java:128-129, 150-152). |
 
 ## `src/core/style/skins/`
@@ -1089,6 +1095,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `Ports.ts` | `Ports` | Ports — the id-keyed collection of `PortGeometry` a `WithPorts` implementor reports (`SheetBlock2#getPorts`, `MethodsOrFieldsArea`'s member-row port lookups, SI1 scope, not this task) so an edge targeting `entity::portName` can resolve a pr |
 | `quantifier-block.ts` | `QuantifierBlockBox`, `measureQuantifierBlock` | `Display.getWithNewlines(pragma, quantifier).create(cardinalityFont, CENTER, skinParam)` (`SvekEdge.java:329-340`): a quantifier is a creole block, so `<size:12>` sizes it and takes no width of its own. |
 | `quantifier-collision.ts` | `manageCollision` | `SvekEdge#manageCollision` (`svek/SvekEdge.java:1205-1218`): a quantifier that overlaps a node, plus a margin of 8, is moved away from it. |
+| `RoleLabels.ts` | `Pt`, `Dim`, `RoleLabelBoxes`, `RoleLabelLine`, `RoleBlock`, `createRoleBlock`, `getPosition` | Role labels of an association (`A "1"/"owner" --> B`): where the block is drawn. |
 | `ShapeType.ts` | `ShapeType` | `ShapeType` — the geometric family svek and the DOT emitter branch on. |
 | `svek-edge-extremity.ts` | `PlacedExtremity`, `place`, `placeTailExtremity`, `placeHeadExtremity` |  |
 | `svek-edge-geometry.ts` | `buildDotPathFromSplinePoints`, `edgeMidpoint` |  |
@@ -1138,12 +1145,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AbstractEntityImage.ts` | `LeafImageSkinParam`, `AbstractEntityImage` | `AbstractEntityImage` — the base of every svek leaf image built from an `Entity` (the legacy activity images of laep T2a). |
 | `Circle.ts` | `Circle` |  |
 | `CircleEnd.ts` | `CircleEnd` | `CircleEnd` — the end circle of a legacy activity diagram: an empty ring and a filled 12×12 core. |
-| `CircleStart.ts` | `CircleStart` | `CircleStart` — the filled start circle of a legacy activity diagram. |
+| `CircleStart.ts` | `JUNCTION_SIZE`, `CircleStart` | `CircleStart` — the filled start circle of a legacy activity diagram. |
 | `ContainingEllipse.ts` | `ContainingEllipse` |  |
 | `creole-run-sprite.ts` | `CreoleRunSpriteImage`, `creoleRunSpriteImage`, `creoleRunImageHref` | creole-run-sprite — the drawable image of a creole `<$sprite>` atom for the `creole-text-lines.ts` seam (unwind2-S11). |
 | `creole-sea-line.ts` | `ATOM_TEXT_MIN_HEIGHT`, `SeaLineOps`, `SeaLineLayout`, `bulletDimension`, `creoleAtomStartingAltitude`, `verticalAtomBox`, `layoutLineThroughSea`, `measurerSeaLineOps` | creole-sea-line — the vertical half of one physical (post-word-wrap) creole line: `Sea` placement, the line's own height, and the per-run baseline offset a `<sup>`/`<sub>` run needs (SI30 `decisions.md#D2`). |
 | `creole-text-lines.ts` | `CreoleRunImage`, `CreoleTextLine`, `CreoleTextRun`, `FontStyleFlags`, `CreoleHyperlinkStyle`, `creoleTextLines` | creole-text-lines — the ONE core creole-text seam shared by the state sizer (T6) and the state renderer (T7), per `plans/state-declared-size-fix/ decisions.md#D1`. |
-| `creole-text-run-types.ts` | `FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleRunBullet`, `CreoleTextLine` | creole-text-run-types — the public run/line shape `creole-text-lines.ts` reports (`FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleTextLine`). |
+| `creole-text-run-types.ts` | `FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleRunRollback`, `CreoleRunBullet`, `CreoleTextLine` | creole-text-run-types — the public run/line shape `creole-text-lines.ts` reports (`FontStyleFlags`, `CreoleRunImage`, `CreoleTextRun`, `CreoleTextLine`). |
 | `EntityImageActivity.ts` | `OctagonPolygon`, `NodePolygons`, `CORNER`, `EntityImageActivity` | `EntityImageActivity` — an activity box of a legacy activity diagram: a rounded rect (`CORNER` 25 → `rx` 12.5) with its text, drawn with no `<g>` around either (the jar's own quirk, D9). |
 | `EntityImageBranch.ts` | `EntityImageBranch` | `EntityImageBranch` — the `if` diamond of a legacy activity diagram, in an `entity` group with no `data-source-line` (upstream builds `new UGroup()`). |
 | `EntityImageChenAttribute.ts` | `EntityImageChenAttribute` | `EntityImageChenAttribute` — the ellipse of a Chen EER attribute, sized by `TextBlockInEllipse`. |
@@ -1154,7 +1161,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `EntityImageCircleEnd.ts` | `EntityImageCircleEnd` | `EntityImageCircleEnd` — the end leaf of a legacy activity diagram, in an `end_entity` group. |
 | `EntityImageCircleStart.ts` | `EntityImageCircleStart` | `EntityImageCircleStart` — the start leaf of a legacy activity diagram, in a `start_entity` group. |
 | `EntityImageDescription.ts` | `ShapeType`, `Margins`, `resolveDescriptionUSymbol`, `HexagonPolygon`, `EntityUrl`, `EntityImageDescriptionEntity`, `EntityImageDescriptionSymbol`, `EntityImageDescriptionLabels`, `EntityImageDescriptionStereotypeSprite`, `EntityImageDescriptionPaint`, `EntityImageDescriptionLinkInfo`, `EntityImageDescriptionParams`, `EntityImageDescription` | EntityImageDescription — draws a descriptive/deployment leaf entity (`component`, `usecase`, `database`, `interface`, `rectangle`, ...): the `<!--entity NAME--><g class="entity" ...>` wrapper, the resolved `USymbol`'s `asSmall` chrome, an o |
-| `EntityImageDescriptionClusterTitle.ts` | `ClusterTitleOptions`, `buildClusterTitle` | A group's title block: `ClusterHeader#getTitleBlock` builds it with `label.create(fontConfiguration, alignment, g.getSkinParam())` (`ClusterHeader.java:128`) -- `Display#create` -> `DisplayCreole` -> the creole `Sheet` (`SheetBlock1`/`Sheet |
+| `EntityImageDescriptionClusterTitle.ts` | `ClusterTitleOptions`, `buildClusterTitle` | A group's title block: `ClusterHeader#getTitleBlock` builds it with `label.create9(fontConfiguration, alignment, g.getSkinParam(), style.wrapWidth())` (`ClusterHeader.java:129`, upstream 927f7531ddf: the title wraps at the style's `MaximumW |
 | `EntityImageDescriptionDelegates.ts` | `hasSomeHorizontalLinkVisible`, `isThereADoubleLink`, `hasSomeHorizontalLinkDoubleDecorated`, `computeShieldMargins`, `hideTextOffsets`, `requireGroups`, `descAtomOps`, `buildLocalSkinSimple`, `buildDesc`, `resolveStereotypeSprite`, `labelsForGuillemet`, `buildStereo` | EntityImageDescriptionDelegates — every private-instance-method body `EntityImageDescription` delegates to (`buildDesc`, `buildStereo`, the three link-scanning helpers, `computeShieldMargins`, `hideTextOffsets`, `requireGroups`). |
 | `EntityImageDescriptionEmbed.ts` | `descEmbeddedRenderer` | EntityImageDescriptionEmbed — the `{{ ... |
 | `EntityImageDescriptionEmoji.ts` | `EmojiAtomLike`, `EmojiArtworkResolver`, `drawEmojiAtom` | The `<:name:>` emoji draw branch of `descAtomOps`, split out of `EntityImageDescriptionDelegates.ts` at the 500-line cap. |
@@ -1201,6 +1208,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `BackSlash.ts` | `BackSlash` | BackSlash — line-separator/escape constants and the `\n` hide/reveal-via-private-use-block round trip `preproc/Define.java` uses to protect a literal `\n` inside a `!define` macro body from the preprocessor's own line splitting. |
 | `Guillemet.ts` | `GuillemetPair`, `GUILLEMET_DEFAULT`, `manageGuillemet` | `Guillemet` — the `<<x>>` -> `«x»` display-text substitution. |
+| `PythonLine.ts` | `isLegacyAffectation` | The part of upstream's `PythonLine` the legacy preprocessor's routing needs so far: which `!name = value` lines stay legacy affectations (`TLineType.java:179`). |
 
 ## `src/core/tim/`
 
@@ -1271,6 +1279,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `Trie.ts` | `Trie` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/Trie.java |
 | `TrieImpl.ts` | `TrieImpl` | A character trie used to find the longest declared variable/function name starting at a given position in a source line (`$` sigils and all) -- the "longest match" lookup that lets `!$foo` and `!$foobar` coexist without one shadowing the ot |
 | `TVariableScope.ts` | `TVariableScope`, `lazzyParse` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/tim/TVariableScope.java |
+| `VariableAlias.ts` | `alias`, `resolveKey`, `getAliased` | A variable written with or without its leading dollar is the same variable: `!foo = 1` and `!$foo = 2` set one variable, which keeps the spelling it was created with. |
 | `VariableManager.ts` | `VariableManager` | Resolves `$varname` references inline within a source line, including JSON field/index-access suffixes (`$obj.field`, `$arr[0]`). |
 
 ## `src/core/tim/builtin/`
@@ -1508,6 +1517,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `action-dispatch.ts` | `tryAction`, `tryPrefixedAction` | action-dispatch -- `CommandActivity3`, the single-line `:label;` activity, split out of `node-dispatch.ts` (500-line cap): the plain form ({@link tryAction}) and the form with the two prefixes it parses and ignores ({@link tryPrefixedAction |
 | `activity-box-emoji.ts` | `isIconStereotype`, `EmojiBoxBlocks`, `emojiBoxBlocks`, `EmojiBoxGeometry`, `emojiBoxGeometry`, `emojiBoxBounder`, `EmojiBoxBlock`, `drawEmojiBox` | `FtileBoxEmoji`: the box `:<:emoji:> text; <<icon>>` draws instead of `FtileBox` -- no outline, the emoji block and the name block side by side, `MARGIN` apart. |
 | `activity-box-theme.ts` | `activityBucketOf`, `withActivityBox`, `boxFontConfiguration`, `boxPadding`, `boxShadowing`, `boxDash`, `boxPaintExtras` | The one merged `Style` of a stereotyped box (`FtileBox.create`, `FtileBox.java:138-146`), as the theme its sizer and its renderer both read (mission ubt, T1b, D3). |
 | `activity-composite-theme.ts` | `compositeStyleOf`, `withCompositeStyle` | A group frame's ONE merged style (`CommandPartition3.executeArg`, `CommandPartition3.java:160-161`), as the theme its sizer and its renderer both read. |
@@ -1550,12 +1560,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `dispatch-newline-sentinels.ts` | `displayWithNewlines` | The activity label line splitter (`Display#getWithNewlines`), split into its own file purely to keep `dispatch-support.ts`/`node-dispatch.ts` under the project's 500-line cap. |
 | `dispatch-note-patterns.ts` | `RE_NOTE_SINGLE`, `RE_NOTE_MULTI`, `defaultLeftPosition`, `RE_NOTE_END` | The note commands' line shapes and their position default, split out of `dispatch-support.ts` (500-line cap, dss T4a). |
 | `dispatch-paren-arrow.ts` | `parenArrowText`, `parenArrowStyle` | The `( )` link decorations of `backward`, `elseif` and `else`: `\(`, an optional `->` \| `STYLE_COLORS_MULTIPLES` arrow leaf, then the text `(.*?)`, `\)` -- the arrow is no part of the label (aar-T2a/T3a). |
-| `dispatch-stereogroup.ts` | `deprecatedColorWarning`, `stereogroupStereotype`, `stereogroupLabels`, `stereotypesSpread`, `stereogroupBackColor`, `stereogroupLineColor`, `stereogroupTextColor`, `innerColorsSpread`, `backColorSpread`, `RE_TERMINAL`, `RE_REPEAT_STEREOGROUP` | dispatch-stereogroup -- the single `stereotype` an activity keeps from its trailing stereogroup (`<<a>> <<b>>`), split out of `dispatch-support.ts` (500-line cap). |
+| `dispatch-stereogroup.ts` | `deprecatedColorWarning`, `deprecatedRepeatColorWarning`, `splitExp4`, `ignoredLeadingColorWarning`, `stereogroupStereotype`, `stereogroupLabels`, `stereotypesSpread`, `stereogroupBackColor`, `stereogroupLineColor`, `stereogroupTextColor`, `innerColorsSpread`, `backColorSpread`, `RE_TERMINAL`, `RE_REPEAT_STEREOGROUP` | dispatch-stereogroup -- the single `stereotype` an activity keeps from its trailing stereogroup (`<<a>> <<b>>`), split out of `dispatch-support.ts` (500-line cap). |
 | `dispatch-support.ts` | `RE_SWIMLANE`, `RE_ACTION`, `RE_ACTION_CLOSE`, `RE_ACTIVITY_LIST`, `RE_BACKWARD`, `RE_BACKWARD_HEAD`, `RE_IF`, `RE_IF4`, `RE_IF_LEGACY`, `RE_ELSEIF`, `RE_ELSE`, `RE_ELSE_LEGACY`, `RE_ENDIF`, `RE_SWITCH`, `RE_CASE`, `RE_ENDSWITCH`, `RE_GROUP_OPEN`, `RE_CLOSE_GROUP`, `RE_CLOSE_GROUP_LEGACY`, `RE_WHILE`, `RE_ENDWHILE`, `RE_ARROW_LABEL`, `RE_REPEATWHILE`, `RE_ARROW_LONG`, `RE_ARROW_LONG_END`, `RE_REPEAT_HEAD`, `RE_REPEAT_INLINE_TERMINATOR`, `RE_PRAGMA`, `StopKeywords`, `matchesStopKeyword`, `ParseContext`, `setCurrentSwimlane`, `positionSpread`, `swimlaneSpread`, `ParseResult`, `ParseOutcome`, `isRefusal`, `DispatchResult`, `LineHandler`, `tryAssumeTransparent` | Shared regex constants, stop-keyword matching, and the mutable parse context/result shapes for the activity diagram recursive-descent parser. |
 | `group-dispatch.ts` | `tryOpenGroup` | `partition\|package\|rectangle\|card\|group NAME { ... |
-| `if-dispatch.ts` | `stripTrailingSemi`, `unescapeLabelNewlines`, `unescapeLabel`, `tryIf` | `if / elseif / else / endif` dispatch for the activity diagram parser. |
+| `if-dispatch.ts` | `stripTrailingSemi`, `unescapeLabel`, `unescapeLabelNewlines`, `tryIf` | `if / elseif / else / endif` dispatch for the activity diagram parser. |
+| `if-header.ts` | `IfHeader`, `matchIfHeader` | if-header -- the `if` opener line, split out of `if-dispatch.ts` (500-line cap): `CommandIf4`, `CommandIf2`, `CommandIfLegacy1`, each with the exp4 colour upstream parses and only warns about (443598c29ce). |
 | `index.ts` | `ActivityPluginGeometry`, `hasActivityChrome`, `activityPlugin` | Activity diagram plugin — wires together parser, layout, and renderer for use with the DiagramRegistry dispatcher. |
-| `label-newlines.ts` | `unescapeLabelNewlines` | The `\n` / `\t` / `\\` escapes of a captured activity label, the slice of `Display.getWithNewlines` (`Display.java:262-345`) the activity commands' labels reach. |
+| `label-newlines.ts` | `unescapeLabelNewlines`, `unescapeLabel` | The `\n` / `\t` / `\\` escapes of a captured activity label, the slice of `Display.getWithNewlines` (`Display.java:262-345`) the activity commands' labels reach. |
 | `list-backward-dispatch.ts` | `nodeListContainsBreak`, `pushParsedNode`, `tryActivityList`, `tryBackward`, `tryCircleSpot`, `tryLabel`, `tryGoto` | `* label` / `- label` list-item activities (M1) and `backward:LABEL;` (M3) dispatch. |
 | `node-dispatch.ts` | `swimlaneDisplaysOf`, `readMultilineActionBody`, `MultilineActionBody`, `parseNodes` | Core recursive-descent line dispatch (mission G0b/T6: split out of parser.ts to stay under the 500-line file cap; behavior change limited to the annotation-matcher wiring in `tryAnnotation` below). |
 | `note-dispatch.ts` | `tryNoteSingle`, `tryNoteMulti`, `redirectNoteOntoSwitch`, `redirectNoteOntoGroup`, `redirectNoteOntoWhile` | The two note line-shapes of `node-dispatch.ts`'s dispatch chain (`CommandNote3`/`CommandNoteLong3`), moved verbatim into a sibling module when add4-T1c's colour capture would have taken that file past the 500-line cap (mission convention: a |
@@ -1837,37 +1848,56 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `AreaRenderer.ts` | `AreaRendererParams`, `AreaRenderer` | AreaRenderer — a polygon, top then bottom, drawn with no stroke set, so it inherits the outer 1.0; then its top line at 2.0; then labels at `y - 8`. |
-| `BarRenderer.ts` | `BarRendererParams`, `BarRenderer` | BarRenderer — single, grouped and stacked bars. |
+| `AreaRenderer.ts` | `AreaRendererParams`, `AreaRenderer` | AreaRenderer — each run of present values is a polygon, top then bottom, drawn with no stroke set, so it inherits the outer 1.0; then its top line at 2.0; then labels at `y - 8`. |
+| `BarRenderer.ts` | `BarRendererParams`, `BarSlice`, `BarRenderer` | BarRenderer — single, grouped and stacked bars, vertical or horizontal. |
+| `CartesianChart.ts` | `CartesianChartFields`, `CartesianChart` | CartesianChart — a bar, line, area or scatter chart once every line is parsed and every implicit value resolved: the categories (1, 2, ..., n when none is given), the value axes fitted to the data, the series as plotted. |
+| `chart-checks.ts` | `ERROR_PAIRS_NEED_NUMERIC`, `ERROR_SAME_FORMAT`, `ERROR_KEYS_NEED_CATEGORIES`, `CartesianCheckState`, `checkCartesianKey`, `checkCartesianKeys`, `checkCoordinatePairs`, `checkSameFormat` | `ChartDiagram`'s checks on cartesian data as it is written: keys against the category axis, coordinate pairs against the h-axis, one data format for every series. |
 | `chart-modes.ts` | `LegendPosition`, `GridMode`, `StackMode`, `Orientation` | `ChartDiagram`'s nested enums, apart from the diagram so the renderers can read them without an import cycle. |
+| `chart-polar.ts` | `Kind`, `ChartKind`, `kindOf`, `keywordOf`, `isPolar`, `checkKeys`, `ERROR_ONE_PIE`, `RadialAxisSettings`, `PolarAxes`, `checkFinalPie` | `ChartDiagram`'s pie and radar side (e8ef39dd55c): the kind a keyword belongs to and the check that keeps the kinds apart, the radar's categories, values and radial scale, and the checks on pie values and radar keys. |
+| `chart-resolve.ts` | `ValueAxisContext`, `getValueAxis`, `keyCategories`, `getCategories`, `alignKeys`, `getHAxis`, `getPlottedSeries`, `hasCoordinatePairs`, `CartesianSource`, `resolveCartesian` | `ChartDiagram`'s resolution of a cartesian chart once every line is parsed: the fitted value axes, the categories, the keyed values aligned on them, the numeric h-axis of coordinate pairs and the values spread over an h-axis range. |
 | `chart-skin-param.ts` | `SkinParamSource`, `SkinParam` | The chart engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `ChartDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine' |
 | `ChartAnnotation.ts` | `ChartAnnotation` | ChartAnnotation — text at a data coordinate, with an optional arrow. |
 | `ChartAxis.ts` | `LabelPosition`, `ChartTick`, `ChartAxis` | ChartAxis — one numeric axis: title, range, autoscale, custom ticks, tick spacing and label position. |
-| `ChartDiagram.ts` | `GridMode`, `LegendPosition`, `Orientation`, `StackMode`, `ChartDiagram` | ChartDiagram — one `@startchart` block: the axes, the series and the plot annotations the commands fill. |
+| `ChartDiagram.ts` | `GridMode`, `LegendPosition`, `Orientation`, `StackMode`, `Kind`, `RadialAxisSettings`, `ChartDiagram` | ChartDiagram — one `@startchart` block: the axes, the series and the plot annotations the commands fill. |
 | `ChartDiagramFactory.ts` | `parseChart` | `ChartDiagramFactory`: the chart commands first, the common commands last ("so they don't override chart-specific ones"). |
+| `ChartLegendBlock.ts` | `ChartLegendBlock` | ChartLegendBlock — the legend of a pie (one entry per slice) or a radar (one per series): a coloured square and a name per entry, one under the other on the left or right of the chart, side by side above or below it. |
 | `ChartRenderer.ts` | `ChartRenderer` | ChartRenderer — the frame: `calculateDimension`, `drawU`, `drawSeries`. |
 | `ChartRendererAnnotations.ts` | `drawAnnotations` | `drawAnnotations`. |
-| `ChartRendererAxes.ts` | `YAxisArgs`, `drawYAxis`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally`, `drawGridLines` | `ChartRenderer`'s axes and grid: `drawYAxis`, `drawVerticalText`, `drawHorizontalAxisTitle`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally` and `drawGridLines`, split out under the hooks (D5). |
+| `ChartRendererAxes.ts` | `YAxisArgs`, `getYAxisSpace`, `drawYAxis`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally`, `drawGridLines` | `ChartRenderer`'s axes and grid: `drawYAxis`, `drawVerticalText`, `drawHorizontalAxisTitle`, `drawXAxis`, `drawCategoriesVerticallyOnLeft`, `drawYAxisHorizontally` and `drawGridLines`, split out under the hooks (D5). |
 | `ChartRendererLegend.ts` | `calculateLegendDimension`, `LegendFrame`, `drawLegend` | `calculateLegendDimension`, `drawLegend` and `drawLegendScatterMarker`. |
-| `ChartSeries.ts` | `SeriesType`, `MarkerShape`, `ChartSeries` | ChartSeries — one `bar`, `line`, `area` or `scatter`, index-based or by coordinate pairs. |
-| `ChartStyles.ts` | `StyleFontConfiguration`, `ChartRendererState`, `MARGIN`, `AXIS_LABEL_SPACE`, `TITLE_SPACE`, `TICK_SIZE`, `LEGEND_MARGIN`, `LEGEND_SYMBOL_SIZE`, `LEGEND_TEXT_SPACING`, `LEGEND_ITEM_SPACING`, `SMALL_FONT_SIZE`, `fore`, `back`, `asNullable`, `mergedStyle`, `lineColorOf`, `getStyleSignature`, `getBarStyleSignature`, `getLineStyleSignature`, `getAreaStyleSignature`, `getScatterStyleSignature`, `getAxisStyleSignature`, `getGridStyleSignature`, `getLegendStyleSignature`, `getAnnotationStyleSignature`, `getBarStyle`, `getLineStyle`, `getAreaStyle`, `getScatterStyle`, `formatValue`, `formatAxisValue`, `getDefaultColor`, `displayBlock`, `plainFontConfiguration`, `valueLabelFontConfiguration`, `drawLabel`, `plotY` | The merged styles and small drawing helpers `ChartRenderer` and its series renderers share (D5). |
+| `ChartSeries.ts` | `SeriesType`, `MarkerShape`, `ChartValue`, `ChartSeries` | ChartSeries — one `bar`, `line`, `area` or `scatter`, index-based or by coordinate pairs, or a `pie` or `radar` (e8ef39dd55c). |
+| `ChartStyles.ts` | `StyleFontConfiguration`, `ChartRendererState`, `MARGIN`, `AXIS_LABEL_SPACE`, `TITLE_SPACE`, `TICK_SIZE`, `LEGEND_MARGIN`, `LEGEND_SYMBOL_SIZE`, `LEGEND_TEXT_SPACING`, `LEGEND_ITEM_SPACING`, `SMALL_FONT_SIZE`, `fore`, `back`, `asNullable`, `mergedStyle`, `lineColorOf`, `lineThicknessOf`, `getStyleSignature`, `getBarStyleSignature`, `getLineStyleSignature`, `getAreaStyleSignature`, `getScatterStyleSignature`, `getPieStyleSignature`, `getRadarStyleSignature`, `getPolarAxisStyleSignature`, `getAxisStyleSignature`, `getGridStyleSignature`, `getLegendStyleSignature`, `getAnnotationStyleSignature`, `stereotypedStyle`, `getBarStyle`, `getLineStyle`, `getAreaStyle`, `getScatterStyle`, `formatValue`, `getDefaultColor`, `displayBlock`, `plainFontConfiguration`, `valueLabelFontConfiguration`, `drawLabel`, `plotY` | The merged styles and small drawing helpers `ChartRenderer` and its series renderers share (D5). |
+| `ChartTicks.ts` | `Tick`, `valueTicks`, `horizontalValueTicks`, `numericTicks`, `formatValue` | ChartTicks — the ticks of a chart's axes and how their values are written. |
 | `index.ts` | `ChartGeometry`, `calculateBackColor`, `muteColorMapper`, `calculateMargin`, `renderChart`, `chartPlugin` | Chart diagram plugin — `ChartDiagramFactory` (parse), then `TextBlockExporter`'s export of `ChartDiagram#getTextBlock` on the klimt substrate: canvas = the renderer's `calculateDimension` (ChartRenderer.java:135-153) plus `calculateMargin`, |
-| `LineRenderer.ts` | `LINE_THICKNESS`, `LineRendererParams`, `LineRenderer`, `drawSegment` | LineRenderer — one `ULine` per segment at stroke 2.0. |
+| `LineRenderer.ts` | `LINE_THICKNESS`, `LineRendererParams`, `LineRenderer`, `drawThickSegment` | LineRenderer — one `ULine` per segment at the style's `LineThickness` (a0b2949242b), a natural spline for `interpolate` (b42fd8313ee), one segment across each missing value for `connect` (52426da82b1), else a gap at a missing value (f44b054 |
+| `PieChart.ts` | `Slice`, `PieChart`, `formatPercent` | PieChart — a pie (or a donut) once resolved: one slice per value above 0, named by its key or by the a-axis label at its index, with its share of the total. |
+| `PieRenderer.ts` | `POLAR_RADIUS`, `POLAR_MARGIN`, `POLAR_LEGEND_MARGIN`, `polar`, `outside`, `Bounds`, `include`, `polarDimension`, `drawPolarFrame`, `PieRenderer` | PieRenderer — a pie (or a donut). |
+| `RadarChart.ts` | `RadarChart` | RadarChart — a radar once resolved: its categories around the circle, each series' value per category (`undefined` when missing), and its radial scale fitted to the data. |
+| `RadarRenderer.ts` | `RadarRenderer` | RadarRenderer — one spoke per category (a-axis), clockwise from 12 o'clock, rings at the ticks of the radial scale (r-axis), and one filled polygon per series (e8ef39dd55c). |
 | `ScatterRenderer.ts` | `ScatterRendererParams`, `markerShapeOf`, `ScatterRenderer`, `MarkerArgs`, `drawMarker` | ScatterRenderer. |
+| `StackLayout.ts` | `StackLayout` | StackLayout — where each value of stacked series lies, in values: for the i-th value of the s-th series, the segment from its base to its top. |
 
 ## `src/diagrams/chart/command/`
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `chart-command-text.ts` | `SP0`, `SP1`, `TITLE_PART`, `RANGE_PART`, `bracketGroup`, `LABELS_PART`, `V2_PART`, `seriesHead`, `javaSplitComma`, `parseLabels`, `parseValues`, `CoordinatePairs`, `parseCoordinatePairs`, `decorateSeries`, `withBadColor` | The regex fragments and Java text helpers the chart commands share. |
+| `chart-command-text.ts` | `SP0`, `SP1`, `TITLE_PART`, `RANGE_PART`, `bracketGroup`, `LABELS_PART`, `V2_PART`, `seriesHead`, `seriesOf`, `addOrOpen`, `javaSplitComma`, `parseLabels`, `decorateSeries`, `withBadColor` | The regex fragments and Java text helpers the chart commands share. |
+| `ChartCartesianData.ts` | `ChartCartesianData`, `parseCartesianData` | ChartCartesianData — the data of a bar, line, area or scatter between brackets (22ed6b6b822): values, optionally keyed (`[Jan: 10, Feb: 20]`), or coordinate pairs for a line or a scatter (`[(1, 2), (3, 4)]`). |
+| `ChartDataItems.ts` | `BRACKETED`, `ChartDataItem`, `ChartDataItemResult`, `ChartDataItems`, `parseDataItems`, `applyTo`, `parseLabels`, `parseSingle`, `parseFiniteDouble`, `checkDelimiters`, `stripDelimiters`, `isOpening`, `unquote` | ChartDataItems — the bracket, quote and item helpers the chart data parsers share, and the single list item `CommandChartItem` reads (5ee1a051948). |
+| `ChartSeriesName.ts` | `seriesNameRegex`, `seriesNameOf` | ChartSeriesName — a series' optional name, shown in the legend: quoted, and then may hold spaces (`"Revenue 2024"`), or one word of letters, digits, `_`, `.` and `-` (`Revenue_2024`), separated from the keyword by a blank (31d6742f27f, #263 |
+| `CommandChartAAxis.ts` | `CHART_A_AXIS_RE`, `applyChartAAxis` | `CommandChartAAxis` — the categories around a pie or a radar (e8ef39dd55c): `a-axis [Dev, "Ops, Run", QA]`. |
 | `CommandChartAnnotation.ts` | `CHART_ANNOTATION_RE`, `applyChartAnnotation` | `CommandChartAnnotation`: `annotation "text" at (x, y) [<<arrow>>]`. |
-| `CommandChartArea.ts` | `CHART_AREA_RE`, `applyChartArea` | `CommandChartArea`: values only, so `area [(1,2)]` fails `parseValues`. |
-| `CommandChartBar.ts` | `CHART_BAR_RE`, `applyChartBar` | `CommandChartBar`: no `V2` group, so `bar [1,2] v2` is a syntax error, and values only, so `bar [(1,2)]` fails `parseValues`. |
+| `CommandChartArea.ts` | `CHART_AREA_RE`, `applyChartArea` | `CommandChartArea`: values only, no coordinate pairs (22ed6b6b822). |
+| `CommandChartBar.ts` | `CHART_BAR_RE`, `applyChartBar` | `CommandChartBar`: no `V2` group, so `bar [1,2] v2` is a syntax error, and no coordinate pairs (22ed6b6b822). |
 | `CommandChartGrid.ts` | `CHART_GRID_RE`, `applyChartGrid` | `CommandChartGrid`. |
 | `CommandChartHAxis.ts` | `CHART_H_AXIS_RE`, `applyChartHAxis` | `CommandChartHAxis`: `h-axis` or `x-axis`. |
+| `CommandChartItem.ts` | `CHART_ITEM_RE`, `applyChartItem` | `CommandChartItem` — a value of a series written without data, on a line of its own, as a Markdown list item or as in Mermaid (5ee1a051948): `* Jan : 10`, `- Feb : 20`, `"Mar": 30`. |
 | `CommandChartLegend.ts` | `CHART_LEGEND_RE`, `applyChartLegend` | `CommandChartLegend`: `legend left\|right\|top\|bottom`. |
-| `CommandChartLine.ts` | `CHART_LINE_RE`, `applyChartLine` | `CommandChartLine`: coordinate pairs when the data contains a `(`. |
+| `CommandChartLine.ts` | `CHART_LINE_RE`, `applyChartLine` | `CommandChartLine`: values or coordinate pairs (22ed6b6b822), and the trailing `v2`, `labels`, `interpolate` (b42fd8313ee) and `connect` (52426da82b1) keywords. |
 | `CommandChartOrientation.ts` | `CHART_ORIENTATION_RE`, `applyChartOrientation` | `CommandChartOrientation`: `orientation vertical\|horizontal`. |
+| `CommandChartPie.ts` | `CHART_PIE_RE`, `applyChartPie` | `CommandChartPie` — a pie, its data between brackets or as the list items that follow (e8ef39dd55c, 5ee1a051948). |
+| `CommandChartRadar.ts` | `CHART_RADAR_RE`, `applyChartRadar` | `CommandChartRadar` — one series of a radar, its data between brackets or as the list items that follow (e8ef39dd55c, 5ee1a051948). |
+| `CommandChartRAxis.ts` | `CHART_R_AXIS_RE`, `applyChartRAxis` | `CommandChartRAxis` — the radial scale of a radar (e8ef39dd55c): `r-axis 0 --> 5 spacing 1 grid circle`, `r-axis 0 --> 100 ticks [50: "Mid"]`. |
 | `CommandChartScatter.ts` | `CHART_SCATTER_RE`, `applyChartScatter` | `CommandChartScatter`: only the trailing `MARKER` group sets the shape, so `scatter <<triangle>> [1]` is a stereotype named triangle and draws a circle. |
 | `CommandChartStackMode.ts` | `CHART_STACK_MODE_RE`, `applyChartStackMode` | `CommandChartStackMode`: `stackMode grouped\|stacked`. |
 | `CommandChartVAxis.ts` | `CHART_V_AXIS_RE`, `parseCustomTicks`, `applyChartVAxis` | `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`. |
@@ -1952,6 +1982,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-command-declarations.ts` | `DECLARATION_COMMANDS` | Classifier declaration commands for the class diagram dispatch table (rules 7-7c of the original class-commands.ts COMMANDS array): the `class`/`interface`/`enum`/`annotation`/`entity`/`circle` declaration, plus the already-split `object`/` |
 | `class-command-directives.ts` | `DIRECTIVE_COMMANDS` | Directive-style commands for the class diagram dispatch table (rules 1-3b of the original class-commands.ts COMMANDS array): comment/no-op lines, rankdir, skinparam/allowmixing no-ops, `scale` (cdd-T29: captured into `ClassDiagramAST.scale` |
 | `class-command-notes.ts` | `NOTE_COMMANDS` | Note-declaration commands for the class diagram dispatch table (rules 6b-6e of the original class-commands.ts COMMANDS array): the attached multi-line note opener, the attached single-line note, and both freestanding-note forms. |
+| `class-command-package.ts` | `COMMAND_PACKAGE_RE`, `CommandPackageRaw`, `commandPackageRaw`, `CommandPackageArgs`, `commandPackageArgs` | `CommandPackage`'s line regex and its CODE/DISPLAY reads -- the `package Name {` opening form of the class diagram (registered by `ClassDiagramFactory` only; the description family opens `package` groups through `CommandPackageWithUSymbol`) |
 | `class-command-relationships.ts` | `RELATIONSHIP_COMMANDS` | Member and relationship commands for the class diagram dispatch table (rules 6-pre, 6, 6a of the original class-commands.ts COMMANDS array): the standalone-member shorthand, the general relationship dispatch, and the interface-lollipop rela |
 | `class-command-types.ts` | `Command` | Shared `Command` shape for the class diagram dispatch table. |
 | `class-commands.ts` | `COMMANDS` | Command dispatch table for the class diagram parser. |
@@ -1984,14 +2015,14 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-edge-label-measure.ts` | `resolveLoneSpriteLabel`, `resolveMagicArrowText`, `stripCreoleShorthand`, `MeasuredLabelOptions`, `computeMeasuredLabelAttrs`, `spriteLabelAnchor` | The plain (non-note, non-constraint-spot) MEASURED label arm of `class-layout-edge-labels.ts#computeRelLabelAttrs` -- split out purely to keep that file under the project's 500-line hook cap (cdd-T17, pushed over by the role-label reservati |
 | `class-edge-label-sprite-runs.ts` | `EdgeLabelRun`, `EdgeLabelRuns`, `resolveSpriteLabelRuns`, `spriteRunsLabelAnchor` | class-edge-label-sprite-runs — a single-line relationship label that mixes text with creole `<$sprite>` atoms (unwind2-S11, `c-edge`: `A --> B : e <$foo>`). |
 | `class-edge-note-box.ts` | `labelOperandCenter`, `computeEdgeNoteBox` | cdd-T6 (A2a/M5): the `note on link` operand of a class link's merged label block. |
-| `class-edge-role-label-anchor.ts` | `roleLabelAnchors`, `attachPortLabels` | cdd-T17 (M8): the ADDITIVE role-label mirror geometry, plus `attachPortLabels` itself -- split out of `class-edge-label-anchor.ts` (500-line hook cap; the role mirror pushed that file over) purely to keep both files under the cap. |
+| `class-edge-role-label-anchor.ts` | `RoleLine`, `RolePlacement`, `RoleLabelInput`, `placeRoleLabel`, `roleLabelAnchors`, `attachPortLabels` | cdd-T17 (M8): the ADDITIVE role-label mirror geometry, plus `attachPortLabels` itself -- split out of `class-edge-label-anchor.ts` (500-line hook cap; the role mirror pushed that file over) purely to keep both files under the cap. |
 | `class-edge-visibility.ts` | `VisibilityIconGeo`, `EdgeLabelVisibility`, `stripEdgeLabelVisibility`, `VisibilityBlockAnchor`, `visibilityBlockAnchor` | cdd-T6 (A2a/M2): the visibility-modifier block a link LABEL carries when its first line starts with `-`/`#`/`+`/`~`/`*`. |
 | `class-elk-adapter.ts` | `CLASS_ELK_ROOT_GROUP`, `ClassElkModel`, `ClassElkLeafDrawer`, `createClassElkAdapter`, `withClassElkLeafDrawer` | The class engine's {@link ElkDiagramAdapter} (cdd8 T3a, D13): upstream's `CucaDiagram` + `Entity` + `Link` + `printEntityInternal`, as `CucaDiagramFileMakerElk`/`MyElkDrawing`/`MyElkCluster`/`MyElkEdge` read them, over the class engine's ow |
 | `class-elk-layout.ts` | `layoutClassElk` | The class layout under `!pragma layout elk` (cdd8 T3a, D3/D13): `CucaDiagram.java:478-479` picks `CucaDiagramFileMakerElk` for such a diagram, and its `getTextBlock` (`CucaDiagramFileMakerElk.java:477-499`) lays the entities out with ELK an |
-| `class-elk-text.ts` | `classElkLinkLabel`, `classElkEndLabel`, `classElkClusterTitle` | The klimt text blocks the class ELK path hands `MyElkDrawing`/`MyElkEdge`/ `MyElkCluster` (cdd8 T3a): the link label, the quantifier and role labels, and the cluster title. |
+| `class-elk-text.ts` | `classElkLinkLabel`, `classElkEndLabel`, `classElkRoleLabel`, `classElkClusterTitle` | The klimt text blocks the class ELK path hands `MyElkDrawing`/`MyElkEdge`/ `MyElkCluster` (cdd8 T3a): the link label, the quantifier and role labels, and the cluster title. |
 | `class-elk-usymbol-cluster.ts` | `classElkGroupUSymbol`, `classElkUSymbolClusterStyle`, `classElkGroupBackColor` | A class group that carries a USymbol (`component c1 { ... |
 | `class-embedded-block.ts` | `EmbeddedElementBlock`, `scanEmbeddedElementBlock` | `PSystemCommandFactory#addOneSingleLineManageEmbedded2` (`:288-307`) for `CommandCreateElementMultilines`' TYPE0/TYPE1 body (`class-multiline- element.ts`'s `continueMultilineElement`): while an open multi-line element block is accumulating |
-| `class-empty-package.ts` | `EmptyPackageStereoLine`, `EmptyPackageLeafDim`, `measureEmptyPackageLeafDim`, `EmptyPackageLeafExtras`, `renderEmptyPackageIcon` | class-empty-package.ts — `EntityImageEmptyPackage`: a collapsed-empty `package`/`namespace` leaf (G2 N33, `class-magma.ts#isCollapsedGroup`). |
+| `class-empty-package.ts` | `EmptyPackageStereoLine`, `EmptyPackageLeafDim`, `EmptyPackageLeafInputs`, `measureEmptyPackageLeafDim`, `EmptyPackageLeafExtras`, `renderEmptyPackageIcon` | class-empty-package.ts — `EntityImageEmptyPackage`: a collapsed-empty `package`/`namespace` leaf (G2 N33, `class-magma.ts#isCollapsedGroup`). |
 | `class-ensure-classifier.ts` | `ClassifierRef`, `resolveClassifierRef`, `registerPendingLeaf`, `materializeClassifier`, `ensureClassifier` | `ensureClassifier` — the class parser's single classifier-creation chokepoint — split out of `parser.ts` (which sat exactly at the 500-line module cap) and re-exported from it, so every existing `import { ensureClassifier } from './parser.j |
 | `class-entity-port.ts` | `ClassPortRank`, `entityPortRank`, `clusterPortRanks`, `applyEntityPortShapes`, `mergePortAnchorNodes` | cdd6-T3d (bonaco-71-xefu608): the DOT-input half of the class engine's PORTIN/PORTOUT leaves. |
 | `class-existing-entity.ts` | `resolveExistingId` | Whether a name resolves to a declared entity, without creating anything: `quarkInContext(true, name).getData()`. |
@@ -2058,7 +2089,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-member-portion.ts` | `lastGlobalSeq`, `memberPortionSuppressed` | `CucaDiagram#showPortion`'s fold for a member portion (`net/atmp/CucaDiagram.java:576-586`): the LAST matching command wins, across every form of the command. |
 | `class-member-render-atom.ts` | `MemberRenderAtom`, `MemberRowBuild` | class-member-render-atom.ts — `MemberRenderAtom`/`MemberRowBuild`, the render-ready shapes `class-member-creole.ts#resolveMemberAtoms` produces. |
 | `class-member-rows.ts` | `ROW_TEXT_LEFT_MARGIN`, `rowIconZoneWidth`, `sectionHeight`, `isMethodMember`, `SectionRowContext`, `buildSectionRows`, `sectionWidth`, `FlatMemberRows`, `buildWrappedSectionRowBuilds`, `annotateWrappedMembers` | Member-row/compartment sizing helpers for the generic class/interface/ enum/annotation classifier box (`class-layout-helpers.ts# measureGenericClassifier`). |
-| `class-member-sprite-render.ts` | `renderMemberRowDrawable` | class-member-sprite-render.ts — draws a member row's `'drawable'` atom (C-4, cdd3-T23): the `DrawablePrimitive[]` decomposition `class-member-atom-resolve.ts#resolveSpriteAtom` already resolved at LAYOUT time, placed at the row's own RENDER |
+| `class-member-sprite-render.ts` | `renderMemberRowDrawable`, `imageAtomMarkup` | class-member-sprite-render.ts — draws a member row's `'drawable'` atom (C-4, cdd3-T23): the `DrawablePrimitive[]` decomposition `class-member-atom-resolve.ts#resolveSpriteAtom` already resolved at LAYOUT time, placed at the row's own RENDER |
 | `class-multiline-element.ts` | `continueMultilineElement`, `tryOpenMultilineElement` | Mechanism A (unknown-bucket-routing-repair, T7): `CommandCreateElementMultilines` ported into the class engine — a multi-line descriptive-leaf declaration, UNGATED by `allowmixing` (unlike the single-line `CommandCreateElementFull2` this po |
 | `class-namespace-colors.ts` | `groupBorderColor`, `groupTitleColor`, `GroupSpecificStroke`, `groupSpecificStroke` | The per-group `Colors` a cluster reads at draw time: `LINE` for the border, `TEXT` for the title, and `getSpecificLineStroke()` for the stroke. |
 | `class-namespace-decorations.ts` | `setNamespaceUrl`, `setNamespaceColor` | `Namespace.url` / `Namespace.color` setters, split out of `class-container.ts` to keep that file under the project's 500-line cap (T11) -- re-exported there so `import { setNamespaceUrl } from './class-container.js'` call sites are unaffect |
@@ -2071,6 +2102,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-namespace-title-ink.ts` | `TitleInkPlacement`, `namespaceTitleInk`, `folderTitlePlacement`, `rectTitlePlacement`, `namespaceDrawnInk` | cdd3-T31 (E1-2 = E2-8): the `LimitFinder` ink of a class group title drawn through the plain-string paths (`class-namespace-shape.ts #renderNamespaceFolder`/`#renderNamespaceRect`, `class-empty-package.ts #renderEmptyPackageIcon`). |
 | `class-namespace-title-runs.ts` | `TitleRunsDraw`, `TITLE_LOCAL_TOP_OFFSET`, `TITLE_LOCAL_LEFT_OFFSET`, `packageTitleFaces`, `packageTitleFontFamily`, `packageTitleFontSize`, `packageTitleFontSpec`, `NamespaceTitleRun`, `namespaceTitleRuns`, `NamespaceTitleLine`, `namespaceTitleLines`, `namespaceTitleWidth`, `namespaceTitleHeight`, `namespaceTitleLineBaselines`, `renderNamespaceTitleBlock`, `renderNamespaceTitleRuns`, `NamespaceTitleRenderInput`, `NamespaceTitleFallback`, `renderNamespaceTitleAuto` | class-namespace-title-runs.ts — cdd-T26: resolves a namespace/package folder-tab or rect title's `<img:>`/`<$sprite>` markup, split out of `class-namespace-shape.ts` purely to keep that file under the repo's 500-line cap (same precedent as |
 | `class-namespace-title-table.ts` | `NamespaceVisibilityBlock`, `namespaceVisibilityBlock`, `namespaceTitleTableDims`, `namespaceTitleTableDimsFor`, `namespaceFolderTitle` | `ClusterHeader`'s title-table sizing for a class/object package cluster -- split out of ./class-dot-graph.ts (T4, namespace-cluster-box mission, 500-line file-cap compliance; pure move, no behavior change from the split itself, mirroring st |
+| `class-namespace-title-wrap.ts` | `TitleRunAssets`, `NamespaceTitleLineOptions`, `atomRuns`, `wrappedTitleRuns` | A class group title's creole atoms -> drawn runs, wrapped at the title style's `MaximumWidth`: upstream 927f7531ddf builds a cluster title with `label.create9(fontConfiguration, alignment, g.getSkinParam(), style.wrapWidth())` (`ClusterHead |
 | `class-namespace-usymbol-shape.ts` | `GROUP_STROKE_WIDTH`, `NamespaceUSymbolPaint`, `resolveKeywordUSymbol`, `namespaceUSymbolInk`, `renderNamespaceUSymbol` | class-namespace-usymbol-shape.ts — cdd-T12 (diagnosis A2b E3): a NON-EMPTY `package X <<Node>>` / `<<Database>>` / `<<cloud>>` / `<<Rectangle>>` container draws its USymbol's own `asBig` chrome, not the default folder-tab outline. |
 | `class-namespace.ts` | `registerInNamespace`, `makeClassifier`, `quarkNameOf`, `collapseEmptyNamespace`, `collapseEmptyNamespacesFinal`, `splitTopLevelCommas`, `splitOnSeparator`, `ensureNamespaceChain`, `qualifiedId`, `countByName`, `firstWithName`, `resolveReference`, `normalizeSameConnectionLengths`, `GENERIC_BODY_PATTERN`, `GENERIC_CLAUSE_RE`, `ResolveInput`, `ResolvedRef`, `packedGroupRanksField` | Namespace-splitting helpers for class diagrams. |
 | `class-nested-diagram-renderer.ts` | `EmbeddedDiagramDepthError`, `MAX_NESTED_DIAGRAM_DEPTH`, `RenderNestedDiagramFn`, `RenderedEmbeddedImage`, `EmbeddedRenderer`, `createNestedDiagramRenderer`, `registerClassNestedDiagramRenderer`, `getClassNestedDiagramRenderer`, `registerNestedDiagramRenderers` | class-nested-diagram-renderer.ts — CDD T27: a real `NestedDiagramRenderer` (`core/EmbeddedDiagram.ts`'s injected seam, `EmbeddedDiagram.ts:195-197`) built in the class engine's own code, per that file's own doc comment ("never inside `Embed |
@@ -2102,6 +2134,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-relationship-id-grammar.ts` | `CLASS_ID`, `stripQuotes`, `splitEndpointPort` | Relationship-endpoint identifier grammar (`CLASS_ID`) plus the two small endpoint-string helpers built on it (`stripQuotes`, `splitEndpointPort`), split out of class-relationship-parser.ts to keep that file under the repo's 500-line-per-fil |
 | `class-relationship-label-decompose.ts` | `decomposeLabel` | `decomposeLabel` — split out of class-relationship-parser.ts (pure move, no behavior change) to keep that file under the repo's 500-line-per-file cap. |
 | `class-relationship-parser.ts` | `CLASS_ID`, `stripQuotes`, `splitEndpointPort`, `REL_DISPATCH_RE`, `pickDirectional`, `OptionalRelFields`, `sidedRelFields`, `decomposeLabel`, `idLeaf`, `parseRelationshipLine` | Relationship (arrow) line parsing for PlantUML class diagrams. |
+| `class-role-label-box.ts` | `reservedLabelBox` | The DOT box reserved for one end's quantifier-or-role, split out of `class-layout-edge-labels.ts` (500-line cap). |
+| `class-role-margins.ts` | `mergeMarginMaps`, `mergeMargins`, `roleMarginsByEntity`, `entityMarginsByEntity` | Node margins reserving room for association role labels. |
 | `class-scale-geo-body.ts` | `scaleEmbeddedBlock`, `scaleEnhancedBody`, `scaleJsonBody` | class-scale-geo-body.ts — enhanced-body/json-body scaling helpers for `class-scale-geo.ts` (cdd-T29, D4). |
 | `class-scale-geo-edge.ts` | `scaleEdgeGeo` | class-scale-geo-edge.ts — `EdgeGeo` scaling helpers for `class-scale- geo.ts` (cdd-T29, D4). |
 | `class-scale-geo-note.ts` | `scaleLineTable`, `scaleNoteGeo` | class-scale-geo-note.ts — `NoteGeo` scaling for `class-scale-geo.ts` (cdd-T29, D4). |
@@ -2113,7 +2147,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-state-leaf.ts` | `measureStateLeaf`, `stateLeafDrawsNoGroup`, `renderStateLeaf`, `annotateStateLeafStyles` | A `state` leaf in a class document (`allow_mixing`). |
 | `class-stereotype-command.ts` | `STEREOTYPE_STATEMENT_RE`, `applyStereotypeStatement` | The standalone `<Name> <<stereotype>>` statement — sets the stereotype of an ALREADY-DECLARED classifier (upstream `CommandStereotype`, G2 N24). |
 | `class-stereotype-layout.ts` | `atomTextLineHeight`, `HeaderInfo`, `computeHeaderInfo`, `buildHeaderRows`, `GenericTagDim`, `measureGenericTagDim`, `GenericTagGeo`, `buildGenericTagGeo` | Class header-row + generic type-parameter-tag layout. |
-| `class-stereotype.ts` | `CLASS_STEREOTYPE_FONT_SIZE`, `DEFAULT_GUILLEMET`, `wrapGuillemet`, `splitStereotypeLabels`, `splitStereotypeStyleTags`, `parseCircledCharDecoration`, `parseCircledSpriteDecoration`, `GuillemetPair`, `CircledCharDecoration`, `CircledSpriteDecoration`, `measureStereoLabelWidths`, `stereoBlockDim`, `StereoRowsInput`, `buildStereoRows`, `computeHeaderInfo`, `buildHeaderRows`, `measureGenericTagDim`, `buildGenericTagGeo`, `HeaderInfo`, `GenericTagDim`, `GenericTagGeo`, `parseHideStereotypeDirective`, `rawStereotypeLabels`, `isStereotypeLabelHidden`, `applyStereotypeHideShow`, `resolveVisibleStereotypeLabels`, `resolveStyleStereotypeTags`, `stereotypeLabelFields`, `StereotypeLabelFields` | Classifier header stereotype row(s) — `HeaderLayout#getDimension`/`#drawU`'s `stereoDim`/`xStereo`/`yStereo` terms (G2 N24; the mechanism N21/N22/N23 repeatedly named and deferred as an explicit DOT-gate/width-formula risk — N23's own Mecha |
+| `class-stereotype-style.ts` | `StereotypeFontValues`, `STEREOTYPE_FONT_DEFAULTS`, `annotateStereotypeFonts`, `mergedStyleFields`, `styledStereoFace` | The font of a classifier's `<<stereotype>>` label (and, for classes, of the generic box that shares it): the `stereotype` style of the leaf's own query, `forStereotypeItself(stereotype)` (upstream 53fba993513 for classes, e7e3d8063b5 / #301 |
+| `class-stereotype.ts` | `CLASS_STEREOTYPE_FONT_SIZE`, `DEFAULT_GUILLEMET`, `wrapGuillemet`, `splitStereotypeLabels`, `splitStereotypeStyleTags`, `parseCircledCharDecoration`, `parseCircledSpriteDecoration`, `GuillemetPair`, `CircledCharDecoration`, `CircledSpriteDecoration`, `measureStereoLabelWidths`, `stereoLineHeight`, `stereoBlockDim`, `StereoRowsInput`, `buildStereoRows`, `computeHeaderInfo`, `buildHeaderRows`, `measureGenericTagDim`, `buildGenericTagGeo`, `HeaderInfo`, `GenericTagDim`, `GenericTagGeo`, `parseHideStereotypeDirective`, `rawStereotypeLabels`, `isStereotypeLabelHidden`, `applyStereotypeHideShow`, `resolveVisibleStereotypeLabels`, `resolveStyleStereotypeTags`, `stereotypeLabelFields`, `StereotypeLabelFields` | Classifier header stereotype row(s) — `HeaderLayout#getDimension`/`#drawU`'s `stereoDim`/`xStereo`/`yStereo` terms (G2 N24; the mechanism N21/N22/N23 repeatedly named and deferred as an explicit DOT-gate/width-formula risk — N23's own Mecha |
 | `class-svek-pass0.ts` | `ConstraintLink`, `ConstraintLabelFont`, `SvekDrawState`, `svekPass0`, `runSvekPass1` | cdd4-T10 — the draw state `SvekResult#drawU` carries from its first pass into its second. |
 | `class-together.ts` | `TogetherFrame`, `TogetherEvent`, `currentTogether`, `openTogetherBlock`, `closeBraceScope`, `recordTogetherEvent`, `togetherAt`, `joinGroupTogether`, `resolveTogetherMembers` | `together { }` for the class parser (cdd3-T18): which entities a together block holds. |
 | `class-url-command.ts` | `URL_STATEMENT_RE`, `applyUrlStatement` | The standalone `url [of\|for] <Code> [is] [[url]]` statement — attaches a url to an already-declared classifier (`classdiagram/command/ CommandUrl.java`). |
@@ -2153,7 +2188,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `renderer-classifier-header-icon.ts` | `renderHeaderVisibilityIcon` | renderer-classifier-header-icon.ts -- the header's visibility icon, split out of `renderer-classifier-box.ts` (500-line cap) when the member rows' icons took their own entry point (`renderMemberVisibilityIcon`, T3g). |
 | `renderer-classifier-header-split.ts` | `CLASS_HEADER_SPLIT_KINDS`, `resolveClassHeaderFill`, `ClassHeaderSplitInput`, `classHeaderSplitRects` | renderer-classifier-header-split.ts — CDD T20 (E1): the `class`/`enum`/ `interface`/`abstract` header-background split (`EntityImageClass #drawInternal`'s four-element form). |
 | `renderer-classifier-map-dividers.ts` | `mapColumnDividerEntries` | renderer-classifier-map-dividers.ts — `mapColumnDividerEntries`, split out of `renderer-classifier-box.ts` when cdd-T29 round 2's `scaleK` threading pushed that file back over the 500-line hook cap (pre- authorised split, same precedent as |
-| `renderer-classifier-row-font-color.ts` | `isStereotypeLabelRow`, `classifierCascadeFontColor` | `classifierCascadeFontColor` and its own cascade/tier helpers -- split out of `renderer-classifier-rows.ts` purely to keep that file under this project's 500-line cap (T26; mirrors that file's own pre-existing `renderer-classifier-header-sp |
+| `renderer-classifier-row-font-color.ts` | `isStereotypeLabelRow`, `stereotypeLabelFontColor`, `classifierCascadeFontColor` | `classifierCascadeFontColor` and its own cascade/tier helpers -- split out of `renderer-classifier-rows.ts` purely to keep that file under this project's 500-line cap (T26; mirrors that file's own pre-existing `renderer-classifier-header-sp |
 | `renderer-classifier-rows.ts` | `attributeFontSize`, `wrappedVisibilityIconOriginY`, `renderRow`, `renderRowText`, `renderRowAtoms` | Classifier-box row rendering: attribute font sizing, row + row-text emitters, member atom decoration, and row-atom layout. |
 | `renderer-classifier-scoped-colors.ts` | `objectDefaultBackground`, `CLASS_BUCKET`, `CLASS_HEADER_BUCKET`, `scopedPaint`, `classScopedColor`, `classHeaderScopedBackground` | The class and object colour tiers that read the style engine's merged values (dss T3b, D2): the buckets `style-element-scope.ts` writes into `theme.colors.elements`. |
 | `renderer-document.ts` | `ClassDocument`, `ClassDocumentBody`, `beginClassDocument`, `finishClassDocument` | The class document's composition around its body: the scaled theme, the colour mapper, the document background and `<defs>` preamble, and the returned `RenderFragment`'s fields. |
@@ -2306,7 +2341,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `ast.ts` | `DotDiagramAST`, `DotGeometry` | `@startdot` is a PASSTHROUGH, not a diagram model. |
 | `index.ts` | `dotPlugin` |  |
-| `layout.ts` | `layoutDot` |  |
+| `layout.ts` | `DOT_SVG_SUPPRESSED`, `layoutDot` |  |
 | `parser.ts` | `parseDot` |  |
 | `renderer.ts` | `renderDot` |  |
 
@@ -2357,26 +2392,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
-| `apple2-image.ts` | `EggImage`, `EggImageUnavailableError`, `eggRasterImage`, `APPLE2_PNG` | `APPLE2_PNG` -- the image `apple //e` draws under its text (`PSystemAppleTwo.java:55`, `PSystemVersion.getApple2Image`, java:124-126: `version/apple2.png`, a header-stripped WebP read by `SFile.getImageFromWebpButHeader`), as the pinned jar |
-| `charlie-image.ts` | `CharliePng`, `CHARLIE_PNG` | `CHARLIE_PNG` -- the image `charlie` draws (`PSystemCharlie.java`, `PSystemVersion.getCharlieImage`, java:104-106), as the pinned jar embeds it in SVG (D4). |
-| `EggUtils.ts` | `EggUtils` | `EggUtils` — hex, xor and the base-26 key the easter-egg sentences are encrypted with. |
-| `equals-ignore-case.ts` | `equalsIgnoreCase` | `java.lang.String#equalsIgnoreCase`, which every egg factory's literal test calls (`PSystemCharlieFactory.java:48`, `PSystemAppleTwoFactory.java:52-53`, `PSystemRIPFactory.java:52`): equal lengths, and per UTF-16 unit the units are equal, o |
 | `GraphicsPath.ts` | `GraphicsPath` | `GraphicsPath` — the `path` egg's drawing: a `UMotif` drawn once, in black, from (20, 20), on a fixed 50×50 white canvas. |
-| `PSystemAppleTwo.ts` | `PSystemAppleTwo` | `PSystemAppleTwo` — "Apple //e for ever !" over the Apple //e picture. |
-| `PSystemAppleTwoFactory.ts` | `PSystemAppleTwoFactory`, `appleTwoPlugin` | `PSystemAppleTwoFactory` — five literals, compared to the raw line with `equalsIgnoreCase`. |
-| `PSystemCharlie.ts` | `PSystemCharlie` | `PSystemCharlie` — the "Je suis Charlie" picture, alone on the page. |
-| `PSystemCharlieFactory.ts` | `PSystemCharlieFactory`, `charliePlugin` | `PSystemCharlieFactory` — two literals, compared to the raw line with `equalsIgnoreCase`. |
 | `PSystemColors.ts` | `PSystemColors` | `PSystemColors` — the `colors` page: every named colour as a 175x28 swatch in 21-row columns, or, given a colour, a 19-hexagon palette of the names closest to it (http://www.redblobgames.com/grids/hexagons/). |
 | `PSystemColorsFactory.ts` | `PSystemColorsFactory`, `colorsPlugin` | `PSystemColorsFactory` — `colors`, `color`, optionally followed by a colour name or hex value: the `@startuml` single-line factory for {@link PSystemColors}. |
-| `PSystemEgg.ts` | `PSystemEgg` | `PSystemEgg` — a decoded easter-egg sentence, one line per `\|`-separated token, drawn by `PlainStringsDiagram`. |
-| `PSystemEggFactory.ts` | `PSystemEggFactory`, `eggPlugin` | `PSystemEggFactory` — a line that decrypts one of two stored payloads to printable text is an easter egg (`SentenceDecoder`). |
 | `PSystemPath.ts` | `PSystemPath` | `PSystemPath` — the `path` egg: a `DirectOsDiagram` whose export is `GraphicsPath#writeImage` (an SVG page in the port, ipe D2). |
 | `PSystemPathFactory.ts` | `PSystemPathFactory`, `pathPlugin` | `PSystemPathFactory` — `path <motif>`, registered only under `SecurityProfile.INSECURE` (`PSystemBuilder.java:178-179`; ipe D1). |
-| `PSystemRIP.ts` | `PSystemRIP` | `PSystemRIP` — a dedication to the author's grandfather over his picture. |
-| `PSystemRIPFactory.ts` | `PSystemRIPFactory`, `ripPlugin` | `PSystemRIPFactory` — one literal, compared to the raw line with `equalsIgnoreCase`. |
 | `PSystemWelcomeFactory.ts` | `createSystem`, `welcomePlugin` | `PSystemWelcomeFactory` — the FIRST factory `PSystemBuilder` tries (`PSystemBuilder.java:133`). |
-| `rip-image.ts` | `RIP_PNG` | `RIP_PNG` -- the image `jean canouet` draws under its text (`PSystemRIP.java:63`, `SImageIO.read(imm)`: the inline JPEG `imm`, java:71-435), as the pinned jar re-encodes it in SVG (the D4 approach). |
-| `SentenceDecoder.ts` | `SentenceDecoder` | `SentenceDecoder` — xor an encrypted easter-egg payload with the key a sentence spells (`EggUtils.fromSecretSentence`) and judge whether the result reads as text. |
 
 ## `src/diagrams/emoji/`
 
@@ -2391,12 +2412,16 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `ast.ts` | `FilesType`, `FEntry`, `FilesDiagramAST` |  |
 | `files-extensions.ts` | `markJarCompatible`, `isExtended`, `styleDirectivesOf`, `hasStyleDirective`, `isHandwrittenRequested` | The files engine's documented skinparam extensions (DIVERGENCES.md "Extensions", ddc D8, user ruling 2026-10-23): styling the jar's `StyleExtractor` path discards, honoured in the default (extended) mode and left out of the jar-compatible o |
+| `files-icons.ts` | `DEFAULT_FOLDER`, `DEFAULT_FILE`, `toCreole`, `FilesIcons` |  |
+| `files-parser.ts` | `normalize`, `FilesParser` |  |
+| `files-row.ts` | `INDENT`, `ROW_SPACING`, `CONNECTOR_GAP`, `BOX_MARGIN`, `FilesRow` |  |
 | `files-skin-param.ts` | `SkinParamSource`, `SkinParam` | The files engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `FilesDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine' |
 | `files-style-input.ts` | `filesStyleInput` |  |
+| `flabel.ts` | `isColor`, `FLabel` |  |
 | `index.ts` | `FilesGeometry`, `calculateBackColor`, `calculateMargin`, `renderFiles`, `filesPlugin` | Files diagram plugin -- `FilesDiagramFactory` (parse), then `TextBlockExporter`'s export of `FilesDiagram#getTextBlock` (the `FilesListing`, FilesDiagram.java:107-110) on the klimt substrate: canvas = the listing's `calculateDimension` plus |
-| `layout.ts` | `ROW_GAP`, `CHILD_INDENT`, `getTextBlock`, `calculateDimension` |  |
 | `parser.ts` | `FilesDiagram`, `parseFiles` |  |
-| `renderer.ts` | `drawAndMove`, `FilesListing` |  |
+| `renderer.ts` | `FilesListing` |  |
+| `tree-prefix.ts` | `TreePrefix` |  |
 
 ## `src/diagrams/flow/`
 
@@ -2696,7 +2721,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `Arrow.ts` | `Arrow` |  |
-| `ast.ts` | `HighlightDirective`, `JsonDiagramAST`, `surfaceParseWarnings` | AST types for PlantUML JSON diagrams (@startjson / @endjson). |
+| `ast.ts` | `HighlightDirective`, `JsonDiagramAST` | AST types for PlantUML JSON diagrams (@startjson / @endjson). |
 | `color-form.ts` | `canonicalColor`, `canonicalColorOpt` | The FORM a color takes in the emitted SVG, as distinct from which color it is. |
 | `document-dimensions.ts` | `DocumentDimensions`, `documentDimensions` | The json block's own width/height -- `JsonDiagram#calculateDimension`. |
 | `Fission.ts` | `NeutronType`, `Neutron`, `getNeutrons`, `splitStripe` | Line wrapping, as upstream does it — by splitting a line into ATOMS and breaking between them, not by re-joining words into strings. |
@@ -2731,7 +2756,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `PSystemLatex.ts` | `PSystemLatex` | `@startlatex`: as `@startmath`, with the formula passed to JLaTeXMath as LaTeX (`ScientificEquationSafe.fromLatex`). |
 | `PSystemLatexFactory.ts` | `PSystemLatexFactory`, `parseLatexDiagram`, `latexPlugin` | `PSystemLatexFactory`: a `PSystemBasicFactory` (decisions.md D3) whose every body line is `doCommandLine`. |
-| `PSystemMath.ts` | `XCOLOR_BLACK`, `XCOLOR_WHITE`, `COLOR_PARAM`, `BACK_PARAM`, `SCALE_PARAM`, `DPI_PARAM`, `parseJavaFloat`, `getColor`, `MathSettings`, `doMathCommandLine`, `PSystemMath` | `@startmath`: the last non-directive line is an AsciiMath formula, drawn as the Batik document of `core/math/math-document.ts` (decisions.md D4). |
+| `PSystemMath.ts` | `COLOR_PARAM`, `BACK_PARAM`, `SCALE_PARAM`, `DPI_PARAM`, `parseJavaFloat`, `getColor`, `MathSettings`, `defaultMathSettings`, `doMathCommandLine`, `PSystemMath` | `@startmath`: the last non-directive line is an AsciiMath formula, exported through `TextBlockExporter` with its scale (`ScientificEquationSafe#export`, upstream `aa79d2d80ee`). |
 | `PSystemMathFactory.ts` | `PSystemMathFactory`, `parseMathDiagram`, `mathPlugin` | `PSystemMathFactory`: a `PSystemBasicFactory` (decisions.md D3) whose every body line is `doCommandLine`. |
 
 ## `src/diagrams/mindmap/`
@@ -2746,7 +2771,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandMindMapRoot.ts` | `ROOT_RE`, `applyMindMapRoot` |  |
 | `Finger.ts` | `Finger` |  |
 | `FingerImpl.ts` | `FingerImpl` |  |
-| `Idea.ts` | `STEP_BY_PARENT`, `IdeaContent`, `IdeaDecoration`, `Idea` |  |
+| `Idea.ts` | `IdeaContent`, `IdeaDecoration`, `Idea` |  |
 | `IdeaShape.ts` | `IdeaShape`, `fromDesc` | IdeaShape — whether a mindmap node draws a box around its label, no box at all ("boxless"), or a pseudo shape. |
 | `index.ts` | `MindMapGeometry`, `calculateMargin`, `renderMindMap`, `mindmapPlugin` | Mindmap diagram plugin — `MindMapDiagramFactory` (parse, with the style engine built from the block's own skin/skinparam/`<style>` sources, D2), then `TextBlockExporter`'s export of `MindMapDiagram#getTextBlock` on the klimt substrate (D3): |
 | `mindmap-skin-param.ts` | `SkinParamSource`, `SkinParam` | The mindmap engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `MindMapDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, the real style engine' |
@@ -2880,7 +2905,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `AbstractElement.ts` | `AbstractElement` |  |
 | `AbstractElementText.ts` | `AbstractElementText` |  |
-| `Element.ts` | `Element` |  |
+| `Element.ts` | `Element`, `mayDrawBeyondPreferredDimension` |  |
 | `ElementBorder.ts` | `ElementBorder` |  |
 | `ElementButton.ts` | `ElementButton` |  |
 | `ElementDroplist.ts` | `ElementDroplist` |  |
@@ -2941,7 +2966,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `ast-frame.ts` | `FrameEvent` | Frame (grouping / `ref`) event of the sequence AST. |
 | `ast-message.ts` | `MessageExoType`, `AbstractMessageEvent`, `MessageEvent`, `MessageExoEvent` | Message events of the sequence AST: the shared `AbstractMessage` fields and its two subclasses. |
 | `ast-note.ts` | `NoteShape`, `NoteEvent` | Note event of the sequence AST. |
-| `ast.ts` | `ParticipantUrl`, `MessageExoType`, `AbstractMessageEvent`, `MessageEvent`, `MessageExoEvent`, `NoteShape`, `NoteEvent`, `FrameEvent`, `ParticipantType`, `Participant`, `ActivationEvent`, `DividerEvent`, `DelayEvent`, `SpaceEvent`, `NewpageEvent`, `SequenceEvent`, `BoxGroup`, `LinkAnchor`, `SequenceDiagramAST`, `* from ./geo.js` | AST type definitions for PlantUML sequence diagrams — the output of the parse stage. |
+| `ast.ts` | `ParticipantUrl`, `MessageExoType`, `AbstractMessageEvent`, `MessageEvent`, `MessageExoEvent`, `NoteShape`, `NoteEvent`, `FrameEvent`, `ParticipantType`, `StereotypeRule`, `Participant`, `ActivationEvent`, `DividerEvent`, `DelayEvent`, `SpaceEvent`, `NewpageEvent`, `SequenceEvent`, `BoxGroup`, `LinkAnchor`, `SequenceDiagramAST`, `* from ./geo.js` | AST type definitions for PlantUML sequence diagrams — the output of the parse stage. |
 | `command-arrow-endpoints.ts` | `Groups`, `Endpoint`, `endpointOf`, `getMulticasts` | `CommandArrow`'s endpoint helpers (`getOrCreateParticipant` per PART, `getMulticasts`), split out of `command-arrow.ts` to keep it under the 500-line file cap (sdd1 T1b). |
 | `command-arrow.ts` | `returnCommand`, `ARROW_SOURCE`, `UNDRESSED_ARROW_SOURCE`, `DRESSED_ARROW_SOURCE`, `UNDRESSED_ARROW_RE`, `DRESSED_ARROW_RE`, `getInclination`, `applyStyle`, `withPart`, `arrowCommand`, `decoratedArrowCommand` | `CommandArrow` (`SequenceDiagramFactory.java:111`) — ONE upstream command, rebuilt here from the composed named groups of `sequence-arrow-regex.ts` rather than from an enumerated token table (`->`, `-->>`, `->>`, `-->`). |
 | `command-autonumber.ts` | `autonumberCommand`, `autonumberStopCommand`, `autonumberResumeCommand`, `autonumberIncrementCommand` | The autonumber block: `CommandAutonumber` (`SequenceDiagramFactory .java:146`), `CommandAutonumberStop` (`:147`), `CommandAutonumberResume` (`:148`) and `CommandAutonumberIncrement` (`:149`), registered as four consecutive entries. |
@@ -2961,7 +2986,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `frame-style.ts` | `HEADER_PADDING`, `CORNER_SIZE`, `groupingHeaderDisplay` | The grouping frame's header-tab constants that are NOT style: the padding and corner size `ComponentRoseGroupingHeader` hard-codes, and the tab's `Display` split `GroupingTile` makes. |
 | `geo-annotation.ts` | `NoteConnector`, `NoteGeo`, `DividerGeo`, `SpaceGeo`, `NewpageGeo`, `BoxGeo`, `DelayGeo`, `LifelineSegment`, `LinkAnchorGeo` | The geometry `renderer.ts` draws ITSELF — notes, dividers, the `newpage` separator, explicit vertical space, and the `box` group background. |
 | `geo-frame.ts` | `FrameGeo`, `ElseGeo` | FRAME geometry — `alt`/`opt`/`loop`/`group`/`ref` boxes, their header tab and their `else` branch bands. |
-| `geo-message.ts` | `LabelPadderGeo`, `MessageGeo`, `MulticastGeo`, `ActivationGeo`, `DestroyCross`, `DestroyGeo` | MESSAGE geometry — an arrow, its label runs, and the activation bars a message opens and closes. |
+| `geo-message.ts` | `LabelPadderGeo`, `MessageGroupGeo`, `MessageGeo`, `MulticastGeo`, `ActivationGeo`, `DestroyCross`, `DestroyGeo` | MESSAGE geometry — an arrow, its label runs, and the activation bars a message opens and closes. |
 | `geo-participant.ts` | `ParticipantBadge`, `ParticipantGeo` | PARTICIPANT geometry — the head/foot boxes and their stereotype badges. |
 | `geo.ts` | `TextRun`, `* from ./geo-participant.js`, `* from ./geo-message.js`, `* from ./geo-frame.js`, `* from ./geo-annotation.js`, `EventGeo`, `SequenceGeometry` | GEOMETRY for PlantUML sequence diagrams — the output of the layout stage and the sole input of the renderer. |
 | `index.ts` | `sequencePlugin` | Sequence diagram plugin — wires together parser, layout, and renderer for use with the DiagramRegistry dispatcher. |
@@ -3006,6 +3031,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `sequence-dolls.ts` | `boxPaddingOf`, `BakedMargins`, `LivingSpaceMargins`, `ParticipantRow`, `DollFrame`, `Doll`, `DollsEnv`, `Dolls`, `EngloberLayout`, `createEngloberLayout` | The teoz englober layout: `Doll` (one `box`) and `Dolls` (all of them), ported with upstream's names. |
 | `sequence-frame-component.ts` | `PARTITION_TITLE_VPAD`, `HeaderComponent`, `createHeaderComponent`, `groupHeaderWidth` | A grouping frame's header component, the seam `PartitionTile` overrides (`getComponent`, `teoz/PartitionTile.java:93-148`) over `GroupingTile`'s `ComponentRoseGroupingHeader` (`teoz/GroupingTile.java:251-255`). |
 | `sequence-frame-metrics.ts` | `FRAME_MARGIN_X`, `FRAME_EXTERNAL_MARGIN_X1`, `FRAME_EXTERNAL_MARGIN_X2`, `TextEnv`, `FramePaints`, `groupingColor`, `groupingPaints`, `groupingTypeOf`, `HeaderTab`, `computeHeaderTab`, `buildTabRuns`, `headerWidth`, `headerHeight`, `elsePaint`, `ELSE_PADDING_X1`, `conditionLines`, `ELSE_PADDING_X2`, `elseComponentWidth` | A group frame's measurements that need no layout (sdd2 T3c2), split out of `sequence-layout-frame.ts` so the participant row's frame clearance (`sequence-layout-group-clearance.ts`) can read them without importing the event walk: `GroupingT |
+| `sequence-groups.ts` | `groupTypeTail`, `groupTypeHead`, `groupTypeLifeline`, `groupTypeMessage` | The SVG groups teoz draws a participant's head, tail and lifeline, and a message's arrow, in (plantuml#2935, upstream `0862a60af19`). |
 | `sequence-hide-passes.ts` | `linkedParticipantIds`, `applyHideStereotype`, `displayedStereotypeLines`, `displayedBadgeOf`, `applyHideUnlinked` | The post-parse `hide unlinked` / `hide stereotype` passes, split out of `sequence-parse-helpers.ts` (which re-exports them) to keep that file under the 500-line cap (sdd1 T1b). |
 | `sequence-label-primitives.ts` | `SequenceTextPrimitive`, `SequencePrimitiveKind`, `primitiveKind`, `atomFontSpec`, `offsetRun`, `sequenceStringBounder`, `SequenceRunShape`, `RecordingEnv`, `recordDrawing`, `NO_TEXT_BOUNDER`, `plainDimension` | sequence-label-primitives.ts — what a sequence label's core `TextBlock` DRAWS, recorded as geometry: the primitive half of `sequence-creole-sheet.ts` (split off for the 500-line cap). |
 | `sequence-layout-activation.ts` | `ACTIVATION_HALF_WIDTH`, `ActivationStack`, `newActivationStack`, `activationLevel`, `pushActivation`, `popActivation`, `openActivation`, `emitActivation`, `StepContext`, `ArrowEnds`, `recordMessageStep`, `setOwnTileMax`, `recordLifeStep`, `flushOpenActivations` | Sequence diagram layout — activation (livebox) bars: each participant's `LiveBoxes` (`sequence-live-boxes.ts`), the steps the event walk records into them as its tiles land, and the {@link ActivationGeo} every bar `LiveBoxes#drawBoxes` draw |
@@ -3016,13 +3042,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `sequence-layout-exo.ts` | `exoTileMetrics`, `handleMessageExoEvent`, `exoRightExtent`, `anchorExoBorders` | Sequence diagram layout — EXO message geometry (`[-> Bob`, `Bob ->]`, …). |
 | `sequence-layout-frame-extent.ts` | `XSpan`, `FrameSpanInput`, `resolveFrameSpan`, `EndNotesWidth`, `registerGroupTile`, `frameXOrigin`, `childTileSpans`, `selfDrawnWidth`, `selfDrawnSpan` | A group frame's horizontal extent (sdd2 T3c), split out of `sequence-layout-frame.ts` (500-line cap). |
 | `sequence-layout-frame.ts` | `TileRecord`, `computeBodyHeight`, `handleFrameEvent` | A grouping frame's geometry and paint (sdd1 T3a): `GroupingTile` drawing `ComponentRoseGroupingHeader`, and each `ElseTile` drawing `ComponentRoseGroupingElse`. |
-| `sequence-layout-group-clearance.ts` | `Reach`, `GroupTiles`, `tilesOf`, `indexOf`, `touchedOf`, `wrapperOf`, `lifeReach`, `messageLifeReaches`, `groupClearance` | The participant row's group-frame clearance (sdd2 T3c2) -- `GroupingTile#addConstraints` (`teoz/GroupingTile.java:367-373`): the participants either side of a group are pushed clear of its frame, which a child tile alone does not reserve (i |
+| `sequence-layout-group-clearance.ts` | `Reach`, `GroupTiles`, `tilesOf`, `indexOf`, `touchedOf`, `wrapperOf`, `lifeReach`, `messageLifeReaches`, `wrapperSide`, `wrapperAnchor`, `wrapperLevel`, `groupClearance` | The participant row's group-frame clearance (sdd2 T3c2) -- `GroupingTile#addConstraints` (`teoz/GroupingTile.java:367-373`): the participants either side of a group are pushed clear of its frame, which a child tile alone does not reserve (i |
 | `sequence-layout-life-event.ts` | `DESTROY_CROSS_SIZE`, `handleActivateEvent`, `handleDeactivateEvent`, `destroyPaint`, `handleDestroy`, `stepIndent`, `messageDestroyCrosses`, `clampDestroySteps` | Sequence diagram layout — the `activate` / `deactivate` / `destroy` life events (`teoz/LifeEventTile.java`), and the destroy cross (`skin/rose/ComponentRoseDestroy.java`) each destroy leaves. |
 | `sequence-layout-lifeline.ts` | `endOfParseStyleBuilder`, `mutingLinePaint`, `lifelineTitle`, `LifelineBody`, `lifelinesOf` | Sequence diagram layout — the lifelines: `LivingSpace#drawLineAndLiveboxes` (`teoz/LivingSpace.java:151-167`) handing each alive span to `MutingLine` (`teoz/MutingLine.java`), which cuts it at the delays (`sequence-delay.ts#lifelineSegments |
 | `sequence-layout-link-anchor.ts` | `layoutLinkAnchors` | Layout of the `{a1} <-> {a2} : label` duration links. |
 | `sequence-layout-message-label.ts` | `labelLeftOf` | A message's label block: where `ComponentRoseArrow#drawInternalU` puts it (`textPos`, alignment per `Rose#createComponentArrow`), split out of `sequence-layout-message.ts` to keep that file under the size cap. |
 | `sequence-layout-message-self.ts` | `MessageEndpoints`, `SELF_ARROW_X_RIGHT`, `selfLabelLeft`, `liveOffsetSelf`, `leftSideInsets` | Sequence diagram layout -- the self-message half of message geometry, split out of sequence-layout-message.ts the way upstream splits `CommunicationTile` from `CommunicationTileSelf`. |
-| `sequence-layout-message.ts` | `PlacedTile`, `messageTileMetrics`, `selfArrowYPoint`, `handleMessageEvent`, `messageTileAdvance` | Sequence diagram layout — message-arrow geometry, split out of sequence-layout-events.ts to keep both files under the size cap. |
+| `sequence-layout-message.ts` | `PlacedTile`, `messageTileMetrics`, `selfArrowYPoint`, `handleMessageEvent`, `messageTileAdvance`, `messageGroupOf` | Sequence diagram layout — message-arrow geometry, split out of sequence-layout-events.ts to keep both files under the size cap. |
 | `sequence-layout-note.ts` | `notePaint`, `ResolvedNote`, `resolveNote`, `noteTileExtent`, `noteTileMetrics`, `emitNote`, `handleNoteEvent`, `notesGroupMetrics`, `handleNotesGroup`, `WrappedTile`, `shiftDrawn`, `layoutNotesOnMessage` | The `note` event handler: measure the body, resolve the tile (`sequence-note-tile.ts`), push the `NoteGeo`. |
 | `sequence-layout-parallel-disjoint.ts` | `parallelDisjoint` | `PlayingSpace#addParallelSiblingDisjointConstraints` (sdd2 T3c2, `teoz/PlayingSpace.java:162-292`): a top-level `&` tile and every tile of its cluster are pushed apart in x -- whichever starts further right clears the other's whole footprin |
 | `sequence-layout-participant-constraints.ts` | `SpanConstraint`, `Anchor`, `DisjointConstraint`, `NotePoint`, `NotePointConstraint`, `RowConstraint`, `MessageLevels`, `Scan`, `scanMessageLabels` | Sequence diagram layout — the participant-row spacing-constraint scan. |
@@ -3034,19 +3060,20 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `sequence-layout-shared.ts` | `fontSpecOf`, `LIVE_DELTA_SIZE`, `ARROW_PADDING_X`, `TOP_MARGIN`, `PLAYING_SPACE_STARTING_Y`, `PLAYING_SPACE_TAIL_Y`, `BOTTOM_MARGIN` | Small shared leaf utilities for sequence diagram layout. |
 | `sequence-layout-simple-tiles.ts` | `handleDelayEvent`, `handleNewpageEvent`, `handleSpaceEvent` | The three tiles of `sequence-layout-events.ts#dispatchEvent` that need no participant geometry beyond the running cursor: `DelayTile`, `NewpageTile` and `HSpaceTile`. |
 | `sequence-layout-width.ts` | `RIGHT_MARGIN`, `WidthEnv`, `computeTotalWidth`, `messageGeosOf` | Sequence diagram document width (the right edge of the drawing space). |
-| `sequence-life-state.ts` | `AbstractMessageEvent`, `LifeEventType`, `LastEventWithDeactivate`, `LifeState`, `AFTER_DELAY_ERROR`, `newLifeState`, `addMessage`, `activate`, `getActivatingMessage`, `manageActivations`, `autoActivate`, `exoLifeEvents` | The life-event bookkeeping `SequenceDiagram` keeps while it parses: the pending `create`, the last delay, the event a bare life event binds to, and the stack of activating messages `return` and a bare `deactivate` read. |
+| `sequence-life-state.ts` | `AbstractMessageEvent`, `LifeEventType`, `LastEventWithDeactivate`, `LifeState`, `AFTER_DELAY_ERROR`, `newLifeState`, `createUid`, `addMessage`, `activate`, `getActivatingMessage`, `manageActivations`, `autoActivate`, `exoLifeEvents` | The life-event bookkeeping `SequenceDiagram` keeps while it parses: the pending `create`, the last delay, the event a bare life event binds to, and the stack of activating messages `return` and a bare `deactivate` read, and the two uid coun |
 | `sequence-live-boxes.ts` | `flattenLiveEvents`, `isParallelWith`, `LiveEvent`, `LiveEvents`, `LiveLifeEvent`, `LiveMessage`, `LifeEventType`, `ACTIVATION_HALF_WIDTH`, `EventsHistoryMode`, `Step`, `Stairs`, `LiveBox`, `LiveBoxes` | `teoz/LiveBoxes.java`: one participant's activation history, the `Step`s its tiles record as their gauges resolve, and the `Stairs` the lifeline pass draws the activation bars from. |
 | `sequence-live-events.ts` | `LifeEventType`, `LiveMessage`, `LiveLifeEvent`, `LiveNote`, `LiveOther`, `LiveEvent`, `LiveEvents`, `isParallelWith`, `flattenLiveEvents` | The diagram's event list as `SequenceDiagram#events` holds it, rebuilt from this port's AST for `sequence-live-boxes.ts` -- every event `LiveBoxes` walks, in source order, each life event bound the way `SequenceDiagram#activate` binds it. |
 | `sequence-message-padder.ts` | `MessagePadder`, `PadderLayout`, `sequenceDiagramPadder`, `layoutPadder`, `PaddedLabelBlock`, `applyPadder`, `padderGeoAt` | The sequence message padder: the box `skinparam SequenceMessage{Padding, Margin,BorderColor,BackGroundColor}` draws behind each message label, and the room it reserves around it. |
 | `sequence-note-anchor.ts` | `SELF_ARROW_MIN_WIDTH`, `NoteAnchor`, `selfCompWidth`, `selfMaxX`, `selfMinX`, `noteAnchor`, `messageExtent` | Which lifeline a note on a message hangs from, and where a `right` note on a `create` or self message starts -- the inputs `TileBuilder.buildOne` (`teoz/TileBuilder.java:102-121`) and the `CommunicationTile*Note*` wrappers give a note that |
-| `sequence-note-folding.ts` | `NoteOwner`, `RefOwner`, `notesOnMessages`, `elseLeafNotes`, `ignoredNoteWarnings` | Which notes `TileBuilder` folds into a message's wrapper tiles (sdd2 T3c2), split out of `sequence-layout-events.ts` so the participant row's frame clearance can read the wrapper a message builds without importing the event walk. |
+| `sequence-note-folding.ts` | `NoteOwner`, `RefOwner`, `notesOnMessages`, `elseLeafNotes`, `ignoredNoteWarnings`, `exoNoteSide` | Which notes `TileBuilder` folds into a message's wrapper tiles (sdd2 T3c2), split out of `sequence-layout-events.ts` so the participant row's frame clearance can read the wrapper a message builds without importing the event walk. |
 | `sequence-note-placement.ts` | `manageVariable`, `manageMessageLabel`, `emitOnArrowNote` | What the note commands read from the diagram built so far: the text a note's display is rewritten to (`SequenceDiagram#manageVariable`) and the event list an arrow note lands in (`SequenceDiagram#getLastEventWithNote`). |
+| `sequence-note-stacking.ts` | `noteFootprint`, `stacksInRun`, `grownAnchors`, `noteTileGauge`, `anchorsAfter` | Same-footprint `&` notes stack (plantuml#2883, upstream `2c679666164`): `NoteTile`'s constructor (`teoz/NoteTile.java:100-133`) aligns a `& note` on the run's contact line unless an earlier note in the same `&` run already claimed its footp |
 | `sequence-note-text-alignment.ts` | `legacyNoteTextAlignment`, `applyNoteTextAlignment` | The post-parse `skinparam noteTextAlignment` pass: upstream's `Rose.createComponentNote` reads the legacy params map ONLY (`param.getHorizontalAlignment(AlignmentParam.noteTextAlignment, null, false, null)`, `Rose.java:110`), when the tile |
 | `sequence-note-tile.ts` | `NOTE_COMPONENT_PADDING_X`, `NOTE_COMPONENT_PADDING_Y`, `NotePadding`, `notePadding`, `NoteTileInput`, `NoteTile`, `noteTile`, `legacyOverTile` | A sequence note's tile: `NoteTile` (teoz) over the three `ComponentRoseNote*` components -- the component's padding, the tile's x, and the extent the note contributes to the document. |
-| `sequence-note-width.ts` | `NoteWidthEnv`, `NoteComponent`, `notePaint`, `noteBodyBlock`, `noteComponentWidth`, `noteTiles`, `noteLiveEntries`, `noteLevel`, `notesGroupConstraints` | Note widths and `NotesTile#addConstraints` for the participant row (sdd2 T5d). |
+| `sequence-note-width.ts` | `NoteWidthEnv`, `NoteComponent`, `notePaint`, `noteBodyBlock`, `noteComponentWidth`, `noteTiles`, `noteLiveEntries`, `noteLevel`, `noteTileFootprint`, `notesGroupConstraints` | Note widths and `NotesTile#addConstraints` for the participant row (sdd2 T5d). |
 | `sequence-page.ts` | `newpageTilesOf`, `sequencePageCount`, `paginateSequence`, `sequencePageAst` | `newpage` PAGINATION: one `SequenceGeometry` in, one page's `SequenceGeometry` out. |
 | `sequence-paint.ts` | `SequencePaint`, `paintOf` | {@link paintOf}: the reads the `skin/rose/ComponentRose*` classes make off a resolved sequence `Style`. |
-| `sequence-parse-helpers.ts` | `ParseState`, `Command`, `SequenceCommandRefusal`, `makeDefaultAST`, `currentEvents`, `ensureParticipant`, `putParticipantInLast`, `emit`, `setLastEventWithNoteSpan`, `DEFAULT_AUTONUMBER_FORMAT`, `applyAutonumber`, `formatAutonumber`, `parseDottedStart`, `DottedStart`, `ArrowSpec`, `arrowConfigurationOf`, `ParticipantDeclaration`, `ParticipantUrl`, `parseParticipantDeclaration`, `participantUrlOf`, `urlOf`, `autoActivationFlags`, `activationFlags`, `applyHideStereotype`, `applyHideUnlinked`, `linkedParticipantIds` | Mutable parse state and shared helpers for the sequence diagram parser. |
+| `sequence-parse-helpers.ts` | `ParseState`, `Command`, `SequenceCommandRefusal`, `makeDefaultAST`, `currentEvents`, `ensureParticipant`, `putParticipantInLast`, `emit`, `setLastEventWithNoteSpan`, `DEFAULT_AUTONUMBER_FORMAT`, `applyAutonumber`, `formatAutonumber`, `parseDottedStart`, `DottedStart`, `ArrowSpec`, `arrowConfigurationOf`, `ParticipantDeclaration`, `ParticipantUrl`, `parseParticipantDeclaration`, `participantUrlOf`, `urlOf`, `autoActivationFlags`, `activationFlags`, `applyHideStereotype`, `applyHideUnlinked`, `linkedParticipantIds`, `sourceLineOf`, `blockBodyLocation`, `NOTE_END_RE` | Mutable parse state and shared helpers for the sequence diagram parser. |
 | `sequence-participant-declaration.ts` | `ParticipantDeclaration`, `ParticipantUrl`, `parseParticipantDeclaration`, `participantUrlOf` | The `participant`-family declaration grammar shared by `CommandParticipantA`/`A2`/`A3`/`A4` (`SequenceDiagramFactory.java:106`) -- split out of `sequence-parse-helpers.ts` purely to stay under the 500-line file cap (the same reason that fil |
 | `sequence-participant-paints.ts` | `ParticipantPaints`, `participantStereotype`, `withTextColorFor`, `participantPaintsOf`, `paintOfGeo` | sequence-participant-paints.ts — a participant's merged styles, read the way `Rose#createComponentParticipant` and the `ComponentRose*` it builds read them (sdd1 T2a, D1/D2/D5). |
 | `sequence-real-force.ts` | `RowForcesEnv`, `DollFloor`, `solveParticipantRow` | The participant row's `Real` graph and its forces, registered in the order `SequenceDiagramFileMakerTeoz#createMainTile` registers them (`teoz/SequenceDiagramFileMakerTeoz.java:88-123`), then settled by {@link RealLine.compile} (`:116`). |
@@ -3057,7 +3084,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `sequence-text.ts` | `SequenceRunImage`, `creoleAmbientOf`, `drawCreoleRuns` | sequence-text.ts — the carried creole label runs a sequence component draws at the ENGINE's ambient font (mission `sequence-text-and-y-convergence`, D3; sdd3 T8e). |
 | `sequence-tile-margins.ts` | `TileScanEnv`, `addTileMargins` | The margins a TILE grows on its own participant's box (sdd2 T5i, M1d). |
 | `sequence-warnings.ts` | `SequencePluginGeometry`, `withSkinParamWarnings`, `sequenceWarnings`, `withGeometryWarnings`, `withSequenceWarningBanner` | The sequence diagram's warning channel and banner (sdd2-T7e). |
-| `sequence-y-gauge.ts` | `YGauge`, `TileMetrics`, `createGauge`, `createWithContact`, `createParallel`, `createPropagating`, `wrapGauge`, `MessageTileGauge`, `messageTileGaugeOf`, `MessageTileGaugeSource`, `messageTileGauge` | A teoz tile's vertical extent: `sequencediagram/teoz/YGauge.java`, resolved to numbers. |
+| `sequence-y-gauge.ts` | `YGauge`, `withNoteAnchorsInRun`, `TileMetrics`, `createGauge`, `createWithContact`, `createParallel`, `createPropagating`, `wrapGauge`, `MessageTileGauge`, `messageTileGaugeOf`, `MessageTileGaugeSource`, `messageTileGauge` | A teoz tile's vertical extent: `sequencediagram/teoz/YGauge.java`, resolved to numbers. |
 | `text-block-geo.ts` | `displayLines`, `displayLinesAligned`, `AlignedDisplayLines`, `TextRun`, `refBodyLines`, `refBodyHeight`, `numberTextOf`, `ARROW_LABEL_PADDING_X1`, `ARROW_LABEL_HEAD_CLEARANCE`, `MessageLabelBlock`, `MessageLabelEnv`, `messageLabelLayout`, `MessageLabelMeasureEnv`, `arrowMaxWidth`, `messageLabelBlock`, `MessageLabelSpec`, `labelDrawOf`, `placeMessageLabel`, `TRANSPARENT_SVG`, `messageLabelHeight`, `messageLabelWidth` | text-block-geo.ts — how a sequence-diagram `Display` becomes POSITIONED text runs. |
 
 ## `src/diagrams/state/`
@@ -3153,6 +3180,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 
 | Module | Exports | Purpose |
 |---|---|---|
+| `AbstractNumericPlayer.ts` | `NumericPlayerArgs`, `AbstractNumericPlayer` |  |
 | `AbstractStatePlayer.ts` | `AbstractStatePlayerArgs`, `AbstractStatePlayer` |  |
 | `ChangeState.ts` | `ChangeState` |  |
 | `Clocks.ts` | `Clocks` |  |
@@ -3163,8 +3191,9 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `Player.ts` | `PlayerBaseArgs`, `PlayerArgs`, `Player` |  |
 | `PlayerAnalog.ts` | `PlayerAnalogArgs`, `PlayerAnalog` |  |
 | `PlayerBinary.ts` | `PlayerBinaryArgs`, `PlayerBinary` |  |
-| `PlayerClock.ts` | `PlayerClockArgs`, `PlayerClock` |  |
+| `PlayerClock.ts` | `PlayerClockArgs`, `CreatePlayerClockArgs`, `PlayerClock` |  |
 | `PlayerConcise.ts` | `PlayerConciseArgs`, `PlayerConcise` |  |
+| `PlayerDigital.ts` | `PlayerDigitalArgs`, `PlayerDigital` |  |
 | `PlayerRectangle.ts` | `PlayerRectangleArgs`, `PlayerRectangle` |  |
 | `PlayerRobust.ts` | `PlayerRobustArgs`, `PlayerRobust` |  |
 | `TickInPlayer.ts` | `TickInPlayer` |  |
@@ -3175,18 +3204,19 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `TimeSeries.ts` | `TimeSeriesEntry`, `TimeSeries` |  |
 | `TimeTick.ts` | `TimeTick` |  |
 | `timing-common-commands.ts` | `DispatchOutcome`, `addCommonCommands1` | `CommonCommands.addCommonCommands1` as `TimingDiagramFactory#initCommandsList` registers it (first): the title commands, `addCommonCommands2`, the scale commands and the hides. |
-| `timing-diagram-layout.ts` | `getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth` | PORT-ONLY -- the player-stacking arithmetic of `TimingDiagram` (`getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth`) as functions over the players in declaration order, so `TimingDiagram.ts` stays under the file cap |
+| `timing-diagram-layout.ts` | `getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth`, `getBreakBackColor`, `drawMessages` | PORT-ONLY -- the player-stacking arithmetic of `TimingDiagram` (`getUTranslateForPlayer`, `getUTranslateForPlayerFrame`, `getPart1MaxWidth`), `drawMessages` and `getBreakBackColor` as functions over the players in declaration order, so `Tim |
 | `timing-font-param.ts` | `FONT_PARAM_TIMING`, `timingFont`, `timingFontHtmlColor` | `SkinParam#getFont` / `#getFontHtmlColor` for the one legacy `FontParam` timing reaches, `FontParam.TIMING` (`Highlight#getCaption`, Highlight.java:99-100), with no stereotype. |
 | `timing-klimt.ts` | `TimingSkinParam`, `timingStyle`, `timingStyleFrom`, `timingStyleStereotyped`, `drawable`, `fore`, `timingFontParamConfiguration`, `specificColorOf`, `back`, `fontConfigurationOf`, `createDisplayWith`, `createDisplay` | PORT-ONLY -- the klimt seams a timing class crosses, in one place so each ported method reads as its Java line does (as `nwdiag-klimt.ts` does for nwdiag; copied, not imported, per timing-engine-port D2): - `StyleSignatureBasic.of(root, ele |
 | `timing-skin-param.ts` | `SkinParamSource`, `SkinParam` | The timing engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `TimingDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engin |
 | `timing-style-dispatch.ts` | `StyleDispatch`, `createStyleDispatch`, `executeDeclarationsBefore`, `positionOf` | The `skinparam`/`<style>` commands the preprocessor pulled out of the source, executed where they occur. |
 | `TimingChrome.ts` | `UmlSource`, `TimingChrome` | PORT-ONLY. |
-| `TimingDiagram.ts` | `CreatePlayerClockArgs`, `TimingDiagram` |  |
+| `TimingDiagram.ts` | `TimingDiagram` |  |
 | `TimingDiagramFactory.ts` | `initCommandsList`, `parseTiming` | `TimingDiagramFactory`: `CommonCommands.addCommonCommands1` first, then the timing commands in `initCommandsList` order (which decides the command that claims a line), and `PSystemCommandFactory#createSystem`'s per-line loop over them. |
 | `TimingFormat.ts` | `SimpleDateFormatSpec`, `TimingFormat` |  |
 | `TimingNote.ts` | `TimingNoteArgs`, `TimingNote` |  |
 | `TimingRuler.ts` | `TimeCodes`, `TimingRuler` |  |
-| `TimingStyle.ts` | `TimingStyle` | @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/timingdiagram/TimingStyle.java |
+| `TimingRulerBreak.ts` | `BREAK_IN_TICKS`, `Break`, `getPosInTicks`, `getBreaksDuration`, `getBreakContaining`, `RegularTimesRuler`, `getRegularTimes`, `getLabelX`, `isTooCloseToBreak`, `drawAxisLine`, `getZigzag`, `getBreakMask`, `toPath` | The t-axis breaks of `TimingRuler` (upstream baf98040f42, #2981): the private nested `Break` class and the pieces of break arithmetic that read no ruler field, kept beside `TimingRuler.ts` so that file stays under the size limit. |
+| `TimingRulerLabel.ts` | `TimeLabel`, `withUnit` | The time-axis labels of `TimingRuler`: its nested `TimeLabel` class and the time-axis unit placement of `getTimeLabels` (upstream db06d70e18e, #2982), kept beside `TimingRuler.ts` so that file stays under the size limit. |
 | `tree-set.ts` | `Comparable`, `treeSetAdd`, `TreeMapEntry`, `treeMapPut` | An element that orders itself, as `java.lang.Comparable` does. |
 
 ## `src/diagrams/timing/command/`
@@ -3197,22 +3227,29 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandAtPlayer.ts` | `CommandAtPlayer` |  |
 | `CommandAtTime.ts` | `CommandAtTime` |  |
 | `CommandBinary.ts` | `CommandBinary` |  |
+| `CommandBreak.ts` | `CommandBreak` |  |
 | `CommandChangeState.ts` | `CommandChangeState` |  |
 | `CommandChangeStateByPlayerCode.ts` | `CommandChangeStateByPlayerCode` |  |
 | `CommandChangeStateByTime.ts` | `CommandChangeStateByTime` |  |
 | `CommandClock.ts` | `CommandClock` |  |
+| `CommandConcise.ts` | `CommandConcise` |  |
 | `CommandConstraint.ts` | `CommandConstraint` |  |
 | `CommandDefineStateLong.ts` | `CommandDefineStateLong` |  |
 | `CommandDefineStateShort.ts` | `CommandDefineStateShort` |  |
+| `CommandDigital.ts` | `CommandDigital` |  |
 | `CommandHideTimeAxis.ts` | `CommandHideTimeAxis` |  |
 | `CommandHighlight.ts` | `CommandHighlight` |  |
 | `CommandModeCompact.ts` | `CommandModeCompact` |  |
 | `CommandNote.ts` | `CommandNote` |  |
 | `CommandNoteLong.ts` | `CommandNoteLong` |  |
+| `CommandNumericPlayer.ts` | `CommandNumericPlayer` |  |
 | `CommandPixelHeight.ts` | `CommandPixelHeight` |  |
-| `CommandRobustConcise.ts` | `CommandRobustConcise` |  |
+| `CommandRectangle.ts` | `CommandRectangle` |  |
+| `CommandRobust.ts` | `CommandRobust` |  |
 | `CommandScalePixel.ts` | `CommandScalePixel` |  |
+| `CommandStatePlayer.ts` | `CommandStatePlayer` |  |
 | `CommandTicks.ts` | `CommandTicks` |  |
+| `CommandTimeAxisUnit.ts` | `CommandTimeAxisUnit` |  |
 | `CommandTimeMessage.ts` | `PLAYER_CODE`, `CommandTimeMessage` |  |
 | `CommandUseDateFormat.ts` | `CommandUseDateFormat` |  |
 | `parse-int32.ts` | `parseInt32` | PORT-ONLY. |
@@ -3226,11 +3263,13 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `HexaShape.ts` | `HexaShape` |  |
 | `IntricatedPoint.ts` | `IntricatedPoint` |  |
 | `Panels.ts` | `PanelsArgs`, `Panels` |  |
-| `PanelsAnalog.ts` | `PanelsAnalogArgs`, `PanelsAnalog` |  |
+| `PanelsAnalog.ts` | `PanelsAnalog` |  |
 | `PanelsBinary.ts` | `PanelsBinaryArgs`, `PanelsBinary` |  |
 | `PanelsClock.ts` | `PanelsClockArgs`, `PanelsClock` |  |
 | `PanelsConcise.ts` | `PanelsConciseArgs`, `PanelsConcise` |  |
+| `PanelsDigital.ts` | `PanelsDigital` |  |
 | `PanelsNoLeft.ts` | `PanelsNoLeft` |  |
+| `PanelsNumeric.ts` | `PanelsNumericArgs`, `PanelsNumeric` |  |
 | `PanelsRectangle.ts` | `PanelsRectangleArgs`, `PanelsRectangle` |  |
 | `PanelsRobust.ts` | `PanelsRobustArgs`, `PanelsRobust` |  |
 | `PanelsState.ts` | `PanelsState` |  |
@@ -3261,7 +3300,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `CommandWBSItemMultilineNew.ts` | `WBS_MULTILINE_END_RE`, `WBS_CODE_CHARS`, `WBS_MULTILINE_NEW_START_RE`, `WbsMultilineBlock`, `WbsItemTarget`, `collectWbsMultilineBlock`, `applyWbsItemMultilineNew`, `applyMultilineItem` |  |
 | `CommandWBSItemMultilineOld.ts` | `WBS_MULTILINE_OLD_START_RE`, `applyWbsItemMultilineOld` |  |
 | `CommandWBSItemNew.ts` | `WBS_ITEM_NEW_RE_0`, `WBS_ITEM_NEW_RE_1`, `applyWbsItemNew` |  |
-| `CommandWBSItemOld.ts` | `WBS_ITEM_OLD_RE_0`, `WBS_ITEM_OLD_RE_1`, `applyWbsItemOld` |  |
+| `CommandWBSItemOld.ts` | `WBS_ITEM_OLD_RE_0`, `WBS_ITEM_OLD_RE_1`, `applyWbsItemOld`, `WbsOrderPrefix`, `orderWarning` |  |
 | `CommandWBSLink.ts` | `WBS_LINK_RE`, `WbsLinkTarget`, `applyWbsLink` |  |
 | `Fork.ts` | `Fork` |  |
 | `index.ts` | `WbsGeometry`, `calculateBackColor`, `muteColorMapper`, `isHandwritten`, `calculateMargin`, `renderWbs`, `wbsPlugin` | WBS diagram plugin — `WBSDiagramFactory` (parse), then `TextBlockExporter`'s export of `WBSDiagram#getTextBlock` (the diagram itself, WBSDiagram.java:94-97) on the klimt substrate: canvas = the diagram's `calculateDimension` (fork + 20, WBS |
@@ -3273,7 +3312,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `WBSDiagramFactory.ts` | `parseWbs` |  |
 | `WBSLink.ts` | `WElementGeometry`, `WBSLink` |  |
 | `WBSTextBlock.ts` | `WElementSlice`, `WBSTextBlock` |  |
-| `WElement.ts` | `STEP_BY_PARENT`, `WElementDecoration`, `WElement` | WElement — one node of a WBS tree: label, level, LEFT/RIGHT children, style resolution and recorded geometry. |
+| `WElement.ts` | `WElementDecoration`, `WElement` | WElement — one node of a WBS tree: label, level, LEFT/RIGHT children, style resolution and recorded geometry. |
 
 ## `src/diagrams/wire/`
 
@@ -3307,11 +3346,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | Module | Exports | Purpose |
 |---|---|---|
 | `index.ts` | `yamlPlugin` | YAML diagram plugin — wires together parser, layout, and renderer for use with the DiagramRegistry dispatcher. |
-| `monomorph.ts` | `MonomorphType`, `Monomorph`, `monomorphToJson` | Monomorph — a single YAML node that can be a scalar, list, or map. |
+| `monomorph.ts` | `MonomorphType`, `Monomorph`, `monomorphToJson`, `PlainValue`, `monomorphToPlain` | Monomorph — a single YAML node that can be a scalar, list, or map. |
 | `parser.ts` | `parseYaml` |  |
 | `yaml-builder.ts` | `YamlBuilder` | YamlBuilder — builds a Monomorph tree from a sequence of YAML parse events. |
 | `yaml-line.ts` | `YamlLineType`, `YamlLine`, `build` |  |
-| `yaml-parser.ts` | `YamlSyntaxError`, `parseYamlLines` |  |
+| `yaml-parser.ts` | `YamlParser` | Port of `net.sourceforge.plantuml.yaml.parser.YamlParser` (0537b558644). |
+| `yaml-syntax-exception.ts` | `YamlSyntaxException` | The one error `YamlParser` throws: every failure of the YAML subset, with the line it was found on (counted from 1, 0 while unknown). |
 
 ## `src/image-providers/`
 

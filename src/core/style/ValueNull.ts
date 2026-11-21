@@ -8,7 +8,7 @@ const BLACK_CODE = '#000000';
 
 /**
  * ValueNull — the absent-value singleton `NULL`: zero, false, empty,
- * normal face, `LEFT`, black. `getPriority` stays `ValueAbstract`'s throw.
+ * normal face, `LEFT`, black. `getSpecificity` stays `ValueAbstract`'s throw.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/ValueNull.java:44-95
  */

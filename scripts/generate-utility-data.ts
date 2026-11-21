@@ -16,7 +16,7 @@
  *  5. The bare `stdlib` page (`Stdlib.addInfoVersion`, `Stdlib.java:320-331`, reads the stdlib at
  *     runtime): from the vendored `assets/stdlib.manifest.json`, checked against the jar `stdlib`
  *     render -> `src/diagrams/version/stdlib-catalog.ts`.
- *  6. The PNGs the jar embeds for `charlie` (inline, `src/diagrams/eggs/charlie-image.ts`) and the
+ *  6. The PNGs the jar embeds for the
  *     10 `DedicationSimple` sentences (`Dedications.java:55-65`; bytes in
  *     `assets/dedication/<resource>.png`, outside the core bundle per stop 12, indexed by
  *     `src/diagrams/dedication/dedication-images.ts`).
@@ -42,7 +42,6 @@ import { AsciiEncoder } from '../src/core/klimt/sprite/AsciiEncoder.js';
 import type { ArchimateSpriteName } from '../src/core/klimt/sprite/archimate-sprite-names.js';
 import { RAW_GLYPHS } from '../src/core/openiconic-glyphs-data.js';
 import type { DedicationImage } from '../src/diagrams/dedication/dedication-images.js';
-import type { CharliePng as EmbeddedPng } from '../src/diagrams/eggs/charlie-image.js';
 import type { StdlibCatalogEntry } from '../src/diagrams/version/stdlib-catalog.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,7 +62,6 @@ export const OUTPUT = {
   skinparameterNames: 'src/diagrams/donors/skinparameter-names.ts',
   donors: 'src/diagrams/donors/donors-list.ts',
   stdlibCatalog: 'src/diagrams/version/stdlib-catalog.ts',
-  charlie: 'src/diagrams/eggs/charlie-image.ts',
   dedication: 'src/diagrams/dedication/dedication-images.ts',
   dedicationAssets: 'assets/dedication',
 } as const;
@@ -154,6 +152,13 @@ export function svgTexts(svg: string): string[] {
 }
 
 /** The one `<image ... xlink:href="data:image/png;base64,...">` of an oracle SVG. */
+/** Base64 PNG bytes plus the size the jar draws them at. */
+interface EmbeddedPng {
+  readonly png: string;
+  readonly width: number;
+  readonly height: number;
+}
+
 export function svgImage(svg: string): EmbeddedPng {
   const match = SVG_PNG_IMAGE.exec(svg);
   if (match === null) throw new Error('oracle SVG has no embedded PNG');
@@ -320,27 +325,6 @@ export async function emitModules(data: GeneratedData): Promise<Map<string, stri
   return result;
 }
 
-export async function emitCharlieModule(charlie: EmbeddedPng): Promise<[string, string]> {
-  const source = `${doc([
-    '`CHARLIE_PNG` -- the image `charlie` draws (`PSystemCharlie.java`, `PSystemVersion.getCharlieImage`,',
-    'java:104-106), as the pinned jar embeds it in SVG (D4). Inline: it is small enough for the',
-    'core bundle (stop 12).',
-    '',
-    GENERATED_BY,
-    `@see ${JAVA}/eggs/PSystemCharlie.java`,
-  ])}
-/** Base64 PNG bytes plus the size the jar draws them at. */
-export interface CharliePng {
-  readonly png: string;
-  readonly width: number;
-  readonly height: number;
-}
-
-export const CHARLIE_PNG: CharliePng = ${JSON.stringify(charlie)};
-`;
-  return [OUTPUT.charlie, await prettify(OUTPUT.charlie, source)];
-}
-
 export async function emitDedicationModule(
   images: Readonly<Record<string, DedicationImage>>,
 ): Promise<[string, string]> {
@@ -391,7 +375,6 @@ function oraclePumls(): Map<string, string> {
     ['skinparameters', 'skinparameters'],
     ['listsprite', 'listsprite'],
     ['stdlib', 'stdlib'],
-    ['charlie', 'charlie'],
   ]);
   for (const [resource, sentence] of DEDICATION_SENTENCES)
     pumls.set(`dedication-${resource}`, dedicationInputLine(sentence));
@@ -479,13 +462,7 @@ async function main(argv: readonly string[]): Promise<void> {
   const plantuml = flag === -1 ? join(homedir(), 'git/plantuml') : argv[flag + 1]!;
   const svgs = renderOracles(oraclePumls());
   const modules = await emitModules(readData(plantuml, svgs));
-  const charlie = svgImage(svgs.get('charlie')!);
-  check(
-    JSON.stringify(pngSize(Buffer.from(charlie.png, 'base64'))) ===
-      JSON.stringify({ width: charlie.width, height: charlie.height }),
-    'charlie',
-  );
-  const extra = [await emitCharlieModule(charlie), await emitDedicationModule(writeDedicationAssets(svgs))];
+  const extra = [await emitDedicationModule(writeDedicationAssets(svgs))];
   for (const [path, text] of [...modules, ...extra]) {
     mkdirSync(dirname(join(REPO, path)), { recursive: true });
     writeFileSync(join(REPO, path), text);

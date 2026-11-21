@@ -90,6 +90,11 @@ const BODY_MARGIN_X = 6;
  * `lineTop = startY - ascent` recovers the top once, since `ascent` is a
  * caller-supplied CONSTANT (not itself `Sea`-derived).
  */
+/** The height `renderStateTextLines` advances through `lines`: each line's own, a font size when unmeasured. */
+function nameBlockHeight(lines: readonly StateTextLine[], fontSize: number): number {
+  return styledLines(lines, fontSize).reduce((sum, ln) => sum + (ln.height === 0 ? fontSize : ln.height), 0);
+}
+
 export function renderStateTextLines(
   lines: readonly StateTextLine[],
   xForLine: (ln: StateTextLine) => number,
@@ -322,7 +327,9 @@ export function renderNormal(node: StateNodeGeo, theme: Theme): string {
     textOpts,
   );
 
-  const dividerY = node.y + MARGIN + node.headerLines.length * fontSize + MARGIN_LINE;
+  // `yLine = MARGIN + dimName.getHeight() + MARGIN_LINE` (EntityImageState.java:136): the name block's own height,
+  // each line's as `renderStateTextLines` advances it (a rolled-back formula is 24 high, not one font size).
+  const dividerY = node.y + MARGIN + nameBlockHeight(node.headerLines, fontSize) + MARGIN_LINE;
   const divider = line(node.x, dividerY, node.x + node.width, dividerY, {
     stroke: border,
     ...stateBorderStrokeAttrs(node, theme),

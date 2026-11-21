@@ -7,12 +7,15 @@ import { SNAMES, retrieve } from '../../../../src/core/style/SName.js';
 import type { SName } from '../../../../src/core/style/StyleSignatureBasic.js';
 
 describe('SName', () => {
-  it('carries every SName.java constant: 157 members, SName.java:42-202', () => {
-    // `grep -cE '^\s+[A-Za-z_][A-Za-z0-9_]*\s*[,;]' style/SName.java` = 157
-    expect(SNAMES).toHaveLength(157);
-    expect(new Set(SNAMES).size).toBe(157);
+  it('carries every SName.java constant: 160 members at a720bdd, SName.java:42-205', () => {
+    // `grep -cE '^\s+[A-Za-z_][A-Za-z0-9_]*\s*[,;]' style/SName.java` = 157 at 1.2026.8beta1, plus `digital`
+    // (upstream 3cdc46b2092, SName.java:88 at a720bdd), `pie` and `radar` (e8ef39dd55c, SName.java:199-200).
+    expect(SNAMES).toHaveLength(160);
+    expect(new Set(SNAMES).size).toBe(160);
     expect(SNAMES[0]).toBe('action'); // SName.java:42
-    expect(SNAMES[156]).toBe('annotation'); // SName.java:202
+    expect(SNAMES.indexOf('digital')).toBe(SNAMES.indexOf('diamond') + 1); // SName.java:87-88
+    expect(SNAMES.slice(SNAMES.indexOf('scatter'), SNAMES.indexOf('axis'))).toEqual(['scatter', 'pie', 'radar']);
+    expect(SNAMES[159]).toBe('annotation'); // SName.java:205
   });
 
   it('keeps the trailing-underscore constant names verbatim', () => {

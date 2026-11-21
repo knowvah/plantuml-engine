@@ -2,11 +2,10 @@
  * `RegexComposed` -- the base of the composite nodes: it concatenates its children's sources, counts their groups
  * and, as a root, compiles and runs the whole pattern.
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexComposed.java:49-123
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/regex/RegexComposed.java:46-120
  */
 import type { IRegex } from './IRegex.js';
 import { compileInternal } from './Pattern2.js';
-import type { RegexPartialMatch } from './RegexPartialMatch.js';
 import { RegexResult } from './RegexResult.js';
 
 export abstract class RegexComposed implements IRegex {
@@ -31,15 +30,12 @@ export abstract class RegexComposed implements IRegex {
     return this.compiled;
   }
 
-  /** @see RegexComposed.java:81-88 */
-  createPartialMatch(it: Iterator<string | undefined>): Map<string, RegexPartialMatch> {
-    const result = new Map<string, RegexPartialMatch>();
-    for (const r of this.parts) for (const [key, value] of r.createPartialMatch(it)) result.set(key, value);
-
-    return result;
+  /** @see RegexComposed.java:80-84 */
+  fillPartialMatch(it: Iterator<string | undefined>, result: RegexResult): void {
+    for (const r of this.parts) r.fillPartialMatch(it, result);
   }
 
-  /** @see RegexComposed.java:90-96 */
+  /** @see RegexComposed.java:86-92 */
   count(): number {
     let cpt = this.getStartCount();
     for (const r of this.parts) cpt += r.count();
@@ -47,20 +43,22 @@ export abstract class RegexComposed implements IRegex {
     return cpt;
   }
 
-  /** @see RegexComposed.java:98-100 */
+  /** @see RegexComposed.java:94-96 */
   protected getStartCount(): number {
     return 0;
   }
 
-  /** `Matcher#find`, then the groups through `createPartialMatch`. @see RegexComposed.java:102-109 */
+  /** `Matcher#find`, then the one result every node fills through `fillPartialMatch`. @see RegexComposed.java:98-108 */
   matcher(s: string): RegexResult | undefined {
     const m = this.getPattern().exec(s);
     if (m === null) return undefined;
 
-    return RegexResult.fromMap(this.createPartialMatch(m.slice(1).values()));
+    const result = RegexResult.create();
+    this.fillPartialMatch(m.slice(1).values(), result);
+    return result;
   }
 
-  /** `Matcher#find`. @see RegexComposed.java:111-118 */
+  /** `Pattern2#find`. @see RegexComposed.java:110-112 */
   match(s: string): boolean {
     return this.getPattern().test(s);
   }

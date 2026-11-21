@@ -12,6 +12,19 @@ import { withEngineMessagesCollected } from '../../core/dot-engine-messages.js';
 import type { DotDiagramAST, DotGeometry } from './ast.js';
 
 /**
+ * The page `PSystemDot#exportDiagramNow` writes in place of graphviz's SVG
+ * when the security profile does not allow it, byte for byte.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/directdot/PSystemDot.java:77-84
+ */
+export const DOT_SVG_SUPPRESSED =
+  '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
+  '<a xlink:href="https://github.com/plantuml/plantuml/issues/2495">\n' +
+  '<text x="10" y="30" font-family="sans-serif" font-size="14" fill="blue" text-decoration="underline">This feature has been suppressed</text>\n' +
+  '</a>\n' +
+  '</svg>';
+
+/**
  * Run graphviz over the DOT body and keep its SVG.
  *
  * This is the whole of `@startdot` layout AND rendering — `renderSvg` does
@@ -30,6 +43,7 @@ import type { DotDiagramAST, DotGeometry } from './ast.js';
  * graphviz WARNING on a diagram that renders is mirrored: it precedes the SVG.
  */
 export function layoutDot(ast: DotDiagramAST): DotGeometry {
+  if (!ast.allowDotSvg) return { svg: DOT_SVG_SUPPRESSED };
   let svg: string;
   try {
     // The jar's image is dot's merged stdout and stderr (`ProcessRunner.java:69`,

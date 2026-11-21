@@ -23,7 +23,6 @@ import type { SName } from './SName.js';
 import { StyleKey } from './StyleKey.js';
 import { STAR } from './StyleSignature.js';
 import type { StyleSignature } from './StyleSignature.js';
-import { StyleSignatures } from './StyleSignatures.js';
 import type { Stereotype } from '../stereo/Stereotype.js';
 import { GUILLEMET_NONE } from '../stereo/StereotypeDecoration.js';
 import type { Stereostyles } from '../abel/Stereostyles.js';
@@ -120,29 +119,37 @@ export class StyleSignatureBasic implements StyleSignature {
     return new StyleSignatureBasic(this.key, result);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleSignatureBasic.java:118-132 */
-  withTOBECHANGED(stereo: Stereotype | undefined): StyleSignature {
+  /**
+   * ONE signature requiring every label at once, as a CSS selector requiring
+   * several classes is one selector (c9d62097ff5). It used to fan out one
+   * signature per label into a `StyleSignatures`, merged under
+   * `KEEP_EXISTING_VALUE_OF_STEREOTYPE` so the first label won; now every
+   * matching label rule competes on `Specificity`: more stereotypes,
+   * then the later declaration (StyleSignatureStereotypeFanOutTest.java:49-74).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleQuery.java:93-105
+   */
+  withTOBECHANGED(stereo: Stereotype | undefined): StyleSignatureBasic {
     if (stereo === undefined || stereo.getStyleNames().length === 0) return this;
 
     const labels = stereo.getLabels(GUILLEMET_NONE);
     if (labels.length === 0) return this;
 
-    const result = new StyleSignatures();
-    for (const name of labels) result.add(this.addStereotype(name));
-
-    return result;
+    return labels.reduce<StyleSignatureBasic>((result, name) => result.addStereotype(name), this);
   }
 
-  /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleSignatureBasic.java:134-148 */
-  forStereotypeItself(stereo: Stereotype | undefined): StyleSignature {
+  /**
+   * As {@link withTOBECHANGED} -- every label folded into one signature --
+   * plus the special `stereotype` SName.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleQuery.java:116-128
+   */
+  forStereotypeItself(stereo: Stereotype | undefined): StyleSignatureBasic {
     if (stereo === undefined || stereo.getStyleNames().length === 0) return this;
 
     const labels = stereo.getLabels(GUILLEMET_NONE);
     if (labels.length === 0) return this;
 
-    const result = new StyleSignatures();
-    for (const name of labels) result.add(this.addStereotype(name).addSName('stereotype'));
-
+    let result = this.addSName('stereotype');
+    for (const name of labels) result = result.addStereotype(name);
     return result;
   }
 

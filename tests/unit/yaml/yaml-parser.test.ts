@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { parseYamlLines, YamlSyntaxError } from '../../../src/diagrams/yaml/yaml-parser.js';
+import { YamlParser } from '../../../src/diagrams/yaml/yaml-parser.js';
+import { YamlSyntaxException } from '../../../src/diagrams/yaml/yaml-syntax-exception.js';
 import { monomorphToJson as monomorphToJsonObject } from '../../../src/diagrams/yaml/monomorph.js';
 import { plainOf } from '../../helpers/json-object.js';
 import type { Monomorph as MonomorphT } from '../../../src/diagrams/yaml/monomorph.js';
@@ -8,10 +9,10 @@ import type { Monomorph as MonomorphT } from '../../../src/diagrams/yaml/monomor
 const monomorphToJson = (m: MonomorphT): unknown => plainOf(monomorphToJsonObject(m));
 
 function parse(lines: string[]) {
-  return monomorphToJson(parseYamlLines(lines));
+  return monomorphToJson(new YamlParser().parse(lines));
 }
 
-describe('parseYamlLines', () => {
+describe('YamlParser.parse', () => {
   // 1. Simple flat key-value pairs
   it('parses flat key-value pairs at root level', () => {
     expect(parse(['fruit: Apple', 'size: Large'])).toEqual({
@@ -65,28 +66,21 @@ describe('parseYamlLines', () => {
     });
   });
 
-  // 9. KEY_AND_FOLDED_STYLE (>) degrades to empty string without throwing
-  it('degrades KEY_AND_FOLDED_STYLE to an empty string value', () => {
+  // 9. KEY_AND_FOLDED_STYLE (>) with no block is empty (`YamlParser.java:276-277`)
+  it('folds an empty KEY_AND_FOLDED_STYLE block to an empty string value', () => {
     expect(parse(['key: >'])).toEqual({ key: '' });
   });
 
-  // 9b. code-review item 5 — the degradation is reported, not console.warn'd
-  it('collects a warning naming the dropped key when a warnings array is passed', () => {
-    const warnings: string[] = [];
-    parseYamlLines(['key: >'], warnings);
-    expect(warnings).toEqual(['YAML key "key": folded-style (>) block value is not supported and was dropped']);
+  // 9b. folded blocks in list items (`YamlParser.java:143-144`)
+  it('folds a KEY_AND_FOLDED_STYLE block in a list item', () => {
+    expect(parse(['- first: >', '    a', '    b', '  second: >', '    c'])).toEqual([
+      { first: 'a b\n', second: 'c\n' },
+    ]);
   });
 
-  it('collects one warning per KEY_AND_FOLDED_STYLE occurrence, list items included', () => {
-    const warnings: string[] = [];
-    parseYamlLines(['- first: >', '  second: >'], warnings);
-    expect(warnings).toHaveLength(2);
-    expect(warnings[0]).toContain('"first"');
-    expect(warnings[1]).toContain('"second"');
-  });
-
-  it('degrades silently when no warnings array is passed', () => {
-    expect(() => parseYamlLines(['key: >'])).not.toThrow();
+  // 9c. a deeper line is folded too, and two empty lines are two breaks
+  it('folds deeper lines and keeps one break per empty line', () => {
+    expect(parse(['t: >', '  a', '    b', '', '', '  c'])).toEqual({ t: 'a   b\n\nc\n' });
   });
 
   // 10. Plain list items (PLAIN_ELEMENT_LIST)
@@ -109,7 +103,7 @@ describe('parseYamlLines', () => {
 
   // 13. PLAIN_DASH ("- " with no content) sets root type to LIST
   it('sets root to LIST type on a bare dash line', () => {
-    const result = parseYamlLines(['- ']);
+    const result = new YamlParser().parse(['- ']);
     expect(result.type).toBe('LIST');
   });
 
@@ -123,8 +117,21 @@ describe('parseYamlLines', () => {
     expect(parse(['key: |', '  block1', '  block2', 'next: val'])).toEqual({ key: 'block1\nblock2\n', next: 'val' });
   });
 
-  // Bonus: bare text at root level throws YamlSyntaxError
-  it('throws YamlSyntaxError for bare text at root level', () => {
-    expect(() => parse(['unexpected text'])).toThrow(YamlSyntaxError);
+  // Bonus: bare text at root level throws YamlSyntaxException
+  it('throws YamlSyntaxException for bare text at root level', () => {
+    expect(() => parse(['unexpected text'])).toThrow(YamlSyntaxException);
+  });
+
+  // 16. A list item with a key and no value opens a deeper level (`YamlParser.java:136-139`)
+  it('nests the map under a "- key:" list item', () => {
+    expect(parse(['- a:', '    b: 1', '- c: 2'])).toEqual([{ a: { b: '1' } }, { c: '2' }]);
+  });
+
+  // 17. A flow-mapping line further on fails on the line whose look-ahead reads it
+  // (`YamlParser.java:92,119-122`: the line number is taken before the look-ahead).
+  it('reports a flow mapping read by a look-ahead on the line being read', () => {
+    expect(() => parse(['k:', '  {a: 1}'])).toThrow(
+      new YamlSyntaxException('flow mappings {...} are not supported', 1),
+    );
   });
 });
