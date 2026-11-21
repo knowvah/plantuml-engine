@@ -2,17 +2,12 @@ import { readFileSync } from 'node:fs';
 
 import { test, expect, type Page } from '@playwright/test';
 
-import { DOCS_SITE_URL } from '../helpers/docs-site.js';
+import { openWith, TEST_TIMEOUT_MS } from '../helpers/playground.js';
 
-const PLAYGROUND_URL = `${DOCS_SITE_URL}/playground`;
 const EXPORT_SVG = 'Export SVG';
 const EXPORT_PNG = 'Export PNG';
 const PNG_SCALE = 2;
 const DARK_CHANNEL = 128;
-// The docs dev server compiles the whole library, unbundled, on first load, and
-// that wait counts against the test's own timeout.
-const FIRST_LOAD_TIMEOUT_MS = 60_000;
-const TEST_TIMEOUT_MS = 90_000;
 
 const CLASS_DIAGRAM = '@startuml\nclass A\nA --> B\n@enduml';
 const TRANSPARENT_DIAGRAM = '@startuml\nskinparam backgroundColor transparent\nA -> B\n@enduml';
@@ -25,14 +20,6 @@ interface Box {
   y: number;
   width: number;
   height: number;
-}
-
-async function openWith(page: Page, source: string): Promise<void> {
-  await page.goto(PLAYGROUND_URL);
-  await page.waitForSelector('.pu-svg svg', { timeout: FIRST_LOAD_TIMEOUT_MS });
-  const before = await page.$eval('.pu-svg', (host) => host.innerHTML);
-  await page.fill('.pu-input', source);
-  await page.waitForFunction((previous) => document.querySelector('.pu-svg')?.innerHTML !== previous, before);
 }
 
 async function download(page: Page, button: string): Promise<{ name: string; bytes: Buffer }> {

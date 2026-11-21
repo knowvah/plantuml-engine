@@ -33,5 +33,6 @@
       "@knowvah/plantuml-engine": ["./src/index.ts"]
     }
   },
-  "include": ["src", "tests", "demo"]
+  // The playground's stdlib subpath typings: see the file's own comment.
+  "include": ["src", "tests", "demo", "docs-site/.vitepress/theme/stdlib-packages.d.ts"]
 }

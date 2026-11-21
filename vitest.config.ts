@@ -15,6 +15,17 @@ import {
 const REPO_ROOT = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      // The library's PUBLIC name maps to source, as tsconfig.json's `paths`,
+      // demo/vite.config.ts and docs-site/.vitepress/config.ts already do.
+      // Without it the name resolves through the workspace self-link to
+      // dist/, a second copy of every class: docs-site/.vitepress/theme/
+      // playground-render.ts imports it, and its `instanceof
+      // StdlibChunkLoadError` failed against the src/ class a test threw.
+      '@knowvah/plantuml-engine': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+    },
+  },
   test: {
     // src/ is DOM-free by rule, so jsdom is opt-in per file with a
     // `// @vitest-environment jsdom` pragma (only measurer.test.ts needs it).

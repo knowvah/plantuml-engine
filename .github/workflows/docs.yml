@@ -33,9 +33,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # Hard backstop for a hang, not a performance budget. Observed 41-46s
-    # across runs 35602146976 and 35601599130 (`gh run view --json jobs`); 5
-    # min is comfortably over an order of magnitude above that.
-    timeout-minutes: 5
+    # across runs 35602146976 and 35601599130, and 77s in run 44951487553
+    # (`gh run view --json jobs`). The playground's stdlib (#172) adds the
+    # vendored-stdlib restore, 3-25s across the last 200 ci.yml runs (max 25s,
+    # run 41661799559; no uncached restore among them), `build:stdlib`, 27s
+    # locally (plans/playground-stdlib journal row 2), and a ~36 MB larger
+    # Pages artifact. About 3 min in all; 10 keeps ~3x.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -51,6 +55,15 @@ jobs:
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # The playground imports the workspace stdlib packages, whose
+      # `generated/` is gitignored and built from the vendored stdlib tree; the
+      # docs build fails to resolve them otherwise (#172, plans/playground-stdlib
+      # D4). The action's cache is keyed `stdlib-<pin sha>`, and caches ci.yml
+      # writes on `main` are readable here, since this workflow also runs on
+      # `main`. `docs:build` then runs `docs:stdlib`, which copies the remote
+      # bundles' assets into the site.
+      - uses: ./.github/actions/vendored-stdlib
+      - run: npm run build:stdlib
       - run: npm run docs:build
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5

@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## playground-stdlib (ps) — DONE 2026-11-21 (one commit on `feature/parity-queue`, #172; per-task history on the local tag `playground-stdlib/pre-squash`)
+
+`!include <bundle/…>` works in the docs playground for every bundle the workspace stdlib packages ship (`C4`, `archimate`, `cloudinsight`, `cloudogu`, `bootstrap`, `bootstrap1.13.1`, `awslib14`, `awslib`, `tupadr3`). `docs-site/.vitepress/theme/playground-render.ts` builds a `stdlibRegistry` of static `import()` thunks, and a sequencer awaits `prepareIncludeStore` then calls `renderSync`, dropping superseded results; `StdlibChunkLoadError` goes to the error pane. `npm run docs:stdlib` copies the remote bundles' assets, with their licence files, to `/stdlib/<bundle>/`. `docs.yml` and the `e2e` job restore the vendored stdlib and run `build:stdlib` (unverified until CI runs). No `src/` change; `dist/*.d.ts` identical. Each stdlib bundle is its own lazy chunk (entry chunk +22.8 KB); the site grows by 37 MB of `/stdlib/` assets.
+
+Follow-ons:
+
+1. **Legacy `aws` v1** (the issue's own repro) is in no package: ruling #226 (package it as a remote manifest, or keep it deferred). e2e `test.fixme`.
+2. **Jar-internal sprites and emoji** draw without artwork in the browser: `assetStore` is synchronous and nothing prefetches those assets (#227, D5 verdict "needed", measured 9/9/1 diffs → 0).
+3. **`archimate` via `render()`/`prepareIncludeStore`** errors: the prefetch walk fetches the relative include in `Archimate.puml`'s dead `!if ($ARCH_LOCAL)` branch and treats the failure as fatal (`src/core/include-resolver.ts:313`, `:364`). Ruling #228 on the walk's error contract. e2e `test.fixme`.
+
 ## state-note-embed (sne) — DONE 2026-11-17 (one commit on `feature/parity-queue`, #168; per-task history on the local tag `state-note-embed/pre-squash`)
 
 A `{{ … }}` block in a state note now draws as the one `<image>` the jar's `EmbeddedDiagram` atom draws, at `(marginX1, marginY)` (`Opale.java:127`). `src/diagrams/state/state-note-stripes.ts` builds a note body's stripes the way `BodyEnhanced2#getArea` builds its blocks (separators decorated, an embed's lines kept whole), each block through the shared label stripe walk (`state-label-style.ts#segmentStripes`/`placeStripes`); the note's box stays on `buildNoteBody`. `src/diagrams/state/state-embed-draw.ts` draws an atom for labels and notes alike (D3) and a separator as the `UHorizontalLine` inside the note's `UGraphicStencil`. A `note on link` is sized and drawn the same way (`ComponentRoseNote` is `enhanced`: `BodyFactory.create3`), through one `measureStateLinkNoteDim` that all four callers share. The state note reader now takes an embedded block as one step (`state-note-multiline.ts`, calling `multiline-candidate.ts`'s port of `PSystemCommandFactory#addOneSingleLineManageEmbedded2`), so an `end note` inside `{{ }}` is body, and an unterminated `{{` or a note never closed is `Syntax Error?` at the note line, as in the jar. `timing/cov-embedded-state` and `wire/cov-embedded-state-note` are at 0 and leave both gates' `OPEN_ROWS`; 20 authored rows in `tests/fixtures/state-note-embed/` (16 at 0 with the jar's `<image>`s, 4 error pairs), held by `state-note-embed.authored.test.ts`. Nothing was lost in any engine, and no divergence was added.
