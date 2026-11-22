@@ -23,6 +23,15 @@ export interface InternalRenderOptions extends RenderOptions {
    * jar's recorded capture clock (`oracle/capture-clock.json`).
    */
   readonly clock?: Clock;
+  /**
+   * The description the source's lines carry (`LineLocationImpl#desc`), printed by
+   * the error page as `[From <description> (line N) ]` (`PSystemError.java:282`).
+   * Unset: `"string"`, as `SourceStringReader` reads a top-level source
+   * (`SOURCE_STRING_DESCRIPTION`). The nested render of a `{{ }}` embed sets
+   * `"block"`, as `BlockUml.convert` labels it (`BlockUml.java:119-127`). Separate
+   * from `filename`, which feeds `%filename()` (`Defines.java:89-94`).
+   */
+  readonly sourceDescription?: string;
 }
 
 /** True when `options` asks for the jar-compatible style-input normalisation. */
@@ -38,6 +47,16 @@ export function withJarCompatibleStyleInput(options: RenderOptions = {}): Intern
 /** The explicitly injected clock, or `undefined` when the render was given none. */
 export function clockOfOptions(options: RenderOptions | undefined): Clock | undefined {
   return (options as InternalRenderOptions | undefined)?.clock;
+}
+
+/** The description the source's lines carry, or `undefined` for the `"string"` default. */
+export function sourceDescriptionOf(options: RenderOptions | undefined): string | undefined {
+  return (options as InternalRenderOptions | undefined)?.sourceDescription;
+}
+
+/** `options` with the source `description` (the nested render of a `{{ }}` embed). */
+export function withSourceDescription(options: RenderOptions | undefined, description: string): InternalRenderOptions {
+  return { ...options, sourceDescription: description };
 }
 
 /** `options` with the injected `clock` (conformance renders of clock-dependent sources). */

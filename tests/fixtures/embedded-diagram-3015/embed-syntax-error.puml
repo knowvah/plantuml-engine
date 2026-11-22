@@ -1,0 +1,3 @@
+@startuml
+Alice -> Bob : {{\nfoo bar baz qux\n}}
+@enduml

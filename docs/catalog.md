@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2665 modules · 8830 exported names.
+2665 modules · 8833 exported names.
 
 ## `src/`
 
@@ -92,7 +92,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `include-resolver-timeout.ts` | `withIncludeTimeout` | Bounding one include fetch by time -- the port of upstream's `Future#get(SecurityUtils.getSecurityProfile().getTimeout(), MILLISECONDS)` around every URL read (`security/SURL.java:357-358`, :402, :438). |
 | `include-resolver.ts` | `MapIncludeStore`, `IncludeNotFoundError`, `StdlibNotBundledError`, `EMPTY_INCLUDE_STORE`, `IncludeStore`, `IncludeFetcher`, `CspIncludeError`, `CorsIncludeError`, `IncludeResolveError`, `CircularIncludeError`, `fetchInclude`, `prefetchIncludes`, `IncludeWarmupOptions`, `prepareIncludeStore` | The ASYNC half of the include seam. |
 | `internal-emoji-store.ts` | `INTERNAL_EMOJI_ASSET_PREFIX`, `internalEmojiAssetKey`, `InternalEmojiStore`, `EmojiArtworkResolver`, `emojiArtworkResolverFor`, `internalEmojiStoreFrom` | The Twemoji artwork half of `<:name:>` emoji rendering. |
-| `internal-render-options.ts` | `InternalRenderOptions`, `isJarCompatibleStyleInput`, `withJarCompatibleStyleInput`, `clockOfOptions`, `withClock` |  |
+| `internal-render-options.ts` | `InternalRenderOptions`, `isJarCompatibleStyleInput`, `withJarCompatibleStyleInput`, `clockOfOptions`, `sourceDescriptionOf`, `withSourceDescription`, `withClock` |  |
 | `internal-sprite-store.ts` | `INTERNAL_SPRITE_ASSET_PREFIX`, `internalSpriteAssetKey`, `InternalSpriteStore`, `readPng`, `internalSpriteStoreFrom`, `matchJarSpriteLine` | `SpriteImage.fromInternal` (java `klimt/sprite/SpriteImage.java:100-128`) — the jar-internal `/sprites/**` bundle, ported onto ADR-2's synchronous asset channel (`plans/s1l-tail-fix/decisions.md`). |
 | `java-hash-set.ts` | `javaDoubleHashCode`, `javaHashSetOrder` | java-hash-set.ts — the iteration order of a `java.util.HashSet` built by successive `add` calls, for code upstream iterates straight out of a `HashSet` (e.g. |
 | `java-number-format.ts` | `javaTrim`, `javaFormatF`, `javaFormatE`, `javaFormatLong`, `isLongValued`, `javaDoubleToString`, `parseDouble` | Java's number text: `String.format("%.Nf" \| "%.Ne" \| "%d")` (Locale.US) and `Double.parseDouble`'s grammar. |
@@ -1252,7 +1252,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `PreprocessingArtifact.ts` | `PreprocessingArtifact` | `PreprocessingArtifact` + `ConfigurationStore<OptionKey>` -- the two `net.sourceforge.plantuml.preproc` types `EaterOption` (`!option`) needs. |
 | `PythonChunks.ts` | `PythonSources`, `typeWithPython`, `collapse` | Groups the Python lines of a body into chunks, as upstream does before the legacy preprocessor looks at them. |
 | `ReadFilterMergeLines.ts` | `endsWithBackslash`, `mergeEndingBackslashLines` | Trailing-`\` line continuation: a source line ending in a bare `\` merges with the NEXT physical line, before `@start`/`@end` block splitting or command dispatch sees the document. |
-| `ReadLineReader.ts` | `SOURCE_STRING_DESCRIPTION`, `readLines` | Raw text -> the `StringLocated` list the interpreter executes. |
+| `ReadLineReader.ts` | `SOURCE_STRING_DESCRIPTION`, `SOURCE_BLOCK_DESCRIPTION`, `readLines` | Raw text -> the `StringLocated` list the interpreter executes. |
 | `StartUtils.ts` | `isStartDirective`, `isEndDirective`, `isPauseDirective`, `isUnpauseDirective`, `isExit`, `possibleAppend` | The two directive probes `DiagramExtractor` needs: is this line a `@start...` / `@end...` (or the backslash spelling, `\startuml`)? |
 | `stdlib-folders.ts` | `JAR_STDLIB_FOLDERS` | The stdlib folder names the jar ships -- one `stdlib/<name>/info.spm` resource per folder, the file `Stdlib`'s constructor opens first (`Stdlib.java:84-95` -> `SpmChannel#getInternalInputStream`, `SpmChannel.java:69-72`). |
 | `stdlib-path.ts` | `StdlibPathParts`, `splitStdlibPath` | `Stdlib.java`'s stdlib-path key transform, in one place. |

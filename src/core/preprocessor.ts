@@ -194,6 +194,12 @@ export interface PreprocessOptions {
    * environment (instant 0, host zone for a zone-less `%date`).
    */
   readonly clock?: Clock | undefined;
+  /**
+   * The description every source line carries (`readLines`), printed by the
+   * error page as `[From <description> (line N) ]`. Omitted -> `"string"`;
+   * an embed's nested render passes `"block"` (`BlockUml.java:119-127`).
+   */
+  readonly sourceDescription?: string | undefined;
 }
 
 /**

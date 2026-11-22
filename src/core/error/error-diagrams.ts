@@ -22,6 +22,7 @@ import { loadInternal } from '../uml-source-lines.js';
 import { readLines } from '../tim/ReadLineReader.js';
 import { getDefaultMeasurer } from '../render-options.js';
 import type { RenderOptions } from '../render-options.js';
+import { sourceDescriptionOf } from '../internal-render-options.js';
 import { ErrorUml } from './ErrorUml.js';
 import { PSystemErrorEmpty } from './PSystemErrorEmpty.js';
 import { PSystemErrorPreprocessor } from './PSystemErrorPreprocessor.js';
@@ -120,7 +121,10 @@ export function errorSvg(source: string, err: unknown, options?: RenderOptions):
   // (`renderAll(null)`, pinned by tests/integration/index.test.ts). A throw
   // from HERE escapes render(), which is the one thing this path exists to
   // prevent, so it does not trust its own argument.
-  const input: readonly StringLocated[] = readLines(typeof source === 'string' ? source : '');
+  const input: readonly StringLocated[] = readLines(
+    typeof source === 'string' ? source : '',
+    sourceDescriptionOf(options),
+  );
   const trace = umlSourceOf(input);
   // A refusal names its own line; anything else lands on the last one. The
   // LISTING is cut at the same point, because upstream prints the executed

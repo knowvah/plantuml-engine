@@ -1,0 +1,4 @@
+@startuml
+!$who = "Carol"
+Alice -> Bob : {{\nAlice -> $who\n}}
+@enduml

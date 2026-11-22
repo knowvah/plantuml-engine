@@ -742,7 +742,9 @@ describe('refusal coverage — baseline shape', () => {
     // by #147). Derivation: 11548 + 3 = 11551.
     // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
-    expect(manifest.fixtures.length).toBe(11556);
+    // 11556 -> 11558 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11556 + 2 = 11558.
+    expect(manifest.fixtures.length).toBe(11558);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1159,7 +1161,9 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11400 - 4 = 11396.
     // 11396 -> 11399 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 (see pinnedErroring).
     // Derivation: 11396 + 3 = 11399.
-    expect(pinnedRendering.length).toBe(11399);
+    // 11399 -> 11401 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11399 + 2 = 11401.
+    expect(pinnedRendering.length).toBe(11401);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

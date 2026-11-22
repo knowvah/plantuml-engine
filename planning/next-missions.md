@@ -35,6 +35,16 @@ post-D7 measurements.
 
 ---
 
+## embedded-diagram-preprocess (edp) — DONE 2026-11-21 (one commit on `feature/parity-queue`, #185; per-task history on the local tag `embedded-diagram-preprocess/pre-squash`)
+
+The #185 ruling (option C) said to re-measure once upstream shipped the fix. Upstream `58b9b3d53ee` (#3016) preprocesses a one-line embed's body (`EmbeddedDiagram.java:89-103`, a non-null `DefinitionsContainer` → `BlockUml.java:149-160` runs `TimLoader`) and is in the pin `a720bdd`, so `nacave-78-dijo807` and `subdiagram-theme-1` are conformant. Both are pinned in the svg-class ratchet (1152 entries) through `plans/embedded-diagram-preprocess/tools/pin-goldens.mts`; no `oracle/accepted-divergences.json` or `DIVERGENCES.md` entry (D1). Upstream's five `vega/nonreg/group3015` cases plus an outer-variable probe are in `tests/fixtures/embedded-diagram-3015/`, compared against jar oracles on the page and inside the decoded `data:image/svg+xml` payloads (`compareSvg` skips them). An embed's lines are now labelled `block`, as `BlockUml.convert` labels them (`BlockUml.java:119-127`), so a broken embed's error page prints `[From block (line N) ]` (internal `InternalRenderOptions.sourceDescription`; d.ts unchanged). `census-class.json` refreshed (0-diff 1114 → 1151). 0 verdict movers in every engine against `ed104a1f6`. No issue filed.
+
+Follow-ons:
+
+1. **D5, open on #185**: an embedded error page draws our banner (`plantuml-engine version …`) where the jar draws `PlantUML version $version$ …`. The 2026-10-10 ruling covers top-level error pages only. No corpus row has a broken embed; the edp test sets that one text element aside.
+2. **41 files cite `EmbeddedDiagram.java:N` from older pins** (`.agent-notes/edp-plan.md`); edp re-cited only the lines it touched. A separate re-citation PR.
+3. **`EmbeddedDiagram#getNeutrons` returns one neutron at a720bdd** (`EmbeddedDiagram.java:289-292`); the port still throws (ADR-9). An embed inside a wrapped line may differ; unmeasured (`.agent-notes/edp-T1b.md`).
+
 ## version-key-tools (vkt) — DONE 2026-11-21 (one commit on `feature/parity-queue`, #182; per-task history on the local tag `version-key-tools/pre-squash`)
 
 `testdot`, `keydistributor`, `keygen`, `keyimport [key]` and both `keycheck` forms (the one-argument one of upstream 3a4d1675141 among them) now draw a plantuml-engine page where they drew `Syntax Error?`: `PSystemVersionFactory.ts` claims all six of upstream's regexes (`PSystemVersionFactory.java:62-87`), in upstream's classes (`PSystemVersion.createTestDot`/`createKeyDistributor`, new `PSystemKeygen`, `PSystemKeycheck`), by maintainer ruling on #182 (2026-11-13, "inspired by, not conformant"). `testdot` prints `fullDescription()` and `<b>@knowvah/dot-engine</b> ""2.12.3""` (`DOT_ENGINE_VERSION` in `core/version.ts`, drift-pinned to the installed package and `package.json`); the key pages print the `about` header and lines that say this port has no Professional Edition and decodes no key. `PLSSignature` decoding and every branch it gates are cited, not ported (D3). Ten authored rows in `tests/fixtures/utility/`: `cov-keydistributor` is conformant at 0; seven are signed in `oracle/accepted-divergences.json` as `authored-utility/<slug>` (testdot 29, keygen family 28, keycheck 9); two refused near misses score the error-page residual 5. `DIVERGENCES.md` gained "Key tools and `testdot` describe plantuml-engine". The test harness's "our error page" detectors now share `tests/helpers/our-error-banner.ts` (it also requires the banner's `MY_GREEN` fill), because the testdot page prints `fullDescription()` too. 0 verdict movers in every engine against `e490366c6`; d.ts byte-identical. No issue filed.
@@ -171,7 +181,7 @@ The 151 class rows #109 captured were in no ratchet. 148 are now conformant and 
 
 **What remains (follow-ons, none blocks #140):**
 
-1. **#185 (`needs-ruling`)**: `nacave-78-dijo807` and `subdiagram-theme-1` put `!theme` inside a `{{ }}` note embed. The jar never preprocesses an embed (`EmbeddedDiagram.java:87-90`, `BlockUml.java:146-148`), so it embeds its version-banner error page.
+1. **#185, closed out by embedded-diagram-preprocess (edp)**: `nacave-78-dijo807` and `subdiagram-theme-1` put `!theme` inside a one-line `{{ }}` note embed. Upstream's #3016 fix (`58b9b3d53ee`, `EmbeddedDiagram.java:89-103` → `BlockUml.java:149-160`) preprocesses the embed, and it is in the oracle pin `a720bdd`, so both rows conform since that re-pin. edp pinned them in the class ratchet; no divergence is recorded.
 2. **`vanadi-41-geru001`** is accepted under the Smetana ruling (nested yaml image 1 px, `oracle/accepted-divergences.json`, cogr D4). A yaml-engine fix that closes it retires the entry.
 3. **Three unpinned, non-#109 conformant class rows** (D1): `luzive-62-zote562`, `sadamo-18-siva346`, `zuduxu-90-kosi876`. Pin them with `plans/class-oracle-gap-rows/tools/pin-goldens.mts`.
 4. **No class `diff-baseline`** (D2): open class rows are not held shrink-only. The mission did not need one; the measurer was the record.
