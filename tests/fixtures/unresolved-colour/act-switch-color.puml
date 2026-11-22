@@ -1,0 +1,6 @@
+@startuml
+#zzblue:switch (x?)
+case (a)
+:a;
+endswitch
+@enduml

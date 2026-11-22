@@ -13,6 +13,7 @@
  * raw with its own `#`, the same shape `ActivityAction.color` does.
  */
 
+import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import { removeEmptyColumns } from './dispatch-multiline-body.js';
 import type { ActivityNode, ActivityNote } from './ast.js';
 import { RE_NOTE_END, RE_NOTE_MULTI, RE_NOTE_SINGLE, defaultLeftPosition } from './dispatch-note-patterns.js';
@@ -20,10 +21,16 @@ import { swimlaneSpread, type DispatchResult, type ParseContext } from './dispat
 import { stereogroupStereotype } from './dispatch-stereogroup.js';
 import { unescapeLabelNewlines } from './if-dispatch.js';
 
-/** The note's own `#color` group, spread only when present (an absent
- *  colour omits the field, never `color: undefined`). */
+/**
+ * The note's own `#color` group, spread only when present (an absent colour omits the field, never
+ * `color: undefined`). `new Colors(...)` reads a bare part with the throwing `set.getColor(s)` (`Colors.java:101-103`):
+ * where the jar draws a `No such color` page the note carries the #143 neutral (`colorOrNeutral`, auc D1). Only that
+ * branch is reachable: the capture (`#\w+[-\\|/]?\w+`, `dispatch-note-patterns.ts:26,38`) holds no `;`, `:` or `.`, so
+ * neither the `name:value` part (`:105-113`) nor the `.` skip (`:102`) can arise.
+ * @see net/sourceforge/plantuml/klimt/color/Colors.java:103
+ */
 function noteColorSpread(color: string | undefined): { color?: string } {
-  return color === undefined ? {} : { color };
+  return color === undefined ? {} : { color: colorOrNeutral(color) };
 }
 
 /** `Stereotype.build(arg.get("STEREO", 0))` (`CommandNote3.java:76-79`, `CommandNoteLong3.java:125-128`): the label that

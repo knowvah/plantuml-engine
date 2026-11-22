@@ -1,0 +1,5 @@
+@startuml
+:a;
+-[#red;#zzblue]->
+:b;
+@enduml

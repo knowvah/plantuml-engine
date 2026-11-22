@@ -1,0 +1,5 @@
+@startuml
+:a;
+-[thickness=3]->
+:b;
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+#zzblue:repeat
+:a;
+repeat while (x?)
+@enduml

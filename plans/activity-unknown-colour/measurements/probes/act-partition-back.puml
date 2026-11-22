@@ -1,0 +1,5 @@
+@startuml
+partition P #zzblue {
+:a;
+}
+@enduml

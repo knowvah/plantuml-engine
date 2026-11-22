@@ -59,6 +59,7 @@ import {
   tryScale,
 } from './dispatch-common-commands.js';
 import { COLORS_REGEXP } from '../../core/klimt/color/ColorParser.js';
+import { colorOrNeutral } from '../../core/klimt/color/HColorSet.js';
 import {
   RE_TERMINAL,
   backColorSpread,
@@ -73,6 +74,7 @@ import {
 // ---------------------------------------------------------------------------
 // Swimlane header: |name| or |[#color]name|
 // ---------------------------------------------------------------------------
+/** `CommandSwimlane#executeArg`. @see net/sourceforge/plantuml/activitydiagram3/command/CommandSwimlane.java:94-101 */
 function trySwimlane(ctx: ParseContext, idx: number, line: string): DispatchResult | ParseRefusal | null {
   const m = RE_SWIMLANE.exec(line);
   if (m === null) return null;
@@ -83,7 +85,9 @@ function trySwimlane(ctx: ParseContext, idx: number, line: string): DispatchResu
   // (`Swimlanes.java:168-176`) matches it by exact `equals`, and
   // `Swimlane.java:60` displays it verbatim.
   const name = m[2]!;
-  setCurrentSwimlane(ctx, name, m[1]);
+  // `CommandSwimlane.java:96-98`: `COLOR` goes through the throwing `getColor`; where the jar draws a `No such color`
+  // page, the lane stores the #143 neutral (`colorOrNeutral`, auc D1), never the raw token.
+  setCurrentSwimlane(ctx, name, m[1] === undefined ? undefined : colorOrNeutral(m[1]));
   recordSwimlaneDisplay(ctx, name, line);
   return { idx: idx + 1 };
 }

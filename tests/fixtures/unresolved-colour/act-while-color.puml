@@ -1,0 +1,5 @@
+@startuml
+#zzblue:while (x?)
+:a;
+endwhile
+@enduml

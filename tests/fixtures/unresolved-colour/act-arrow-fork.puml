@@ -1,0 +1,9 @@
+@startuml
+fork
+:a;
+-[#zzblue]->
+:b;
+fork again
+:c;
+end fork
+@enduml
