@@ -1,0 +1,13 @@
+@startuml
+!pragma useVerticalIf on
+start
+if (c1?) then (y)
+:a;
+-> {{\nclass X\n}};
+elseif (c2?) then (y)
+:b;
+else (n)
+:d;
+endif
+stop
+@enduml

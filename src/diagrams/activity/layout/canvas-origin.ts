@@ -341,7 +341,10 @@ export function inkBoundsOf(src: InkSource, theme: Theme): MutableInkBounds {
   const acc: MutableInkBounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   for (const n of src.nodes) extendForNode(acc, n, theme);
   for (const e of src.edges) extendForEdge(acc, e, theme);
-  for (const r of src.reservations) extendForReservation(acc, r);
+  // aae T4: an arrow label's walk-time box (`skipCompression`) sizes its lane only; the label's own draw is its ink
+  // (`extendForEdgeLabelText`), each part where compression put it (`CompressionXorYBuilder.java:87-89`). The box
+  // keeps its raw height, so two stacked embeds that compression lands on one point would ink twice as tall.
+  for (const r of src.reservations) if (r.skipCompression !== true) extendForReservation(acc, r);
   return acc;
 }
 

@@ -1,0 +1,11 @@
+@startuml
+start
+switch (t?)
+case (a)
+-> hello;
+:x;
+case (b)
+:y;
+endswitch
+stop
+@enduml

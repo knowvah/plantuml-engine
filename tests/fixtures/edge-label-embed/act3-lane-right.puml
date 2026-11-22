@@ -1,0 +1,10 @@
+@startuml
+skinparam arrowMessageAlignment right
+|A|
+start
+:a;
+-> {{\nclass X\n}};
+|B|
+:b;
+stop
+@enduml

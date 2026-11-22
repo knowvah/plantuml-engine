@@ -1,0 +1,10 @@
+@startuml
+|A|
+|B|
+start
+:a;
+-> {{\nclass X\n}};
+|A|
+:b;
+stop
+@enduml

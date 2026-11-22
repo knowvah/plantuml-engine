@@ -20,6 +20,7 @@ import { activityArrowHeadColor } from './activity-scoped-colors.js';
 import { type LineStroke } from './activity-edge-look.js';
 import { planEdgeDraw, withSeparationSpace, type WormCopy } from './activity-rainbow.js';
 import { edgeLabelBlock, edgeLabelLayout } from './layout/compress/edge-label-anchor.js';
+import { withTitleShapeDeltas } from './activity-title-compress-ug.js';
 import { arrowDirection, arrowHeadPointsFor, type ArrowDir } from './arrows-regular.js';
 import type { Paint } from '../../core/paint.js';
 import {
@@ -123,7 +124,8 @@ function renderEdgeLabel(edge: ActivityEdgeGeo, theme: Theme, labelDx = 0): stri
   const { lines, size, x, baselineY } = layout;
   const label = lines.join('\n');
   const fc = activityTextFontConfiguration(theme, size, 'arrow');
-  const tb = edgeLabelBlock(label, theme, edge.labelWrapped === true);
+  // aae T4: each draw at its own compressed point (`UGraphicCompressOnXorY.java:107-116`).
+  const tb = withTitleShapeDeltas(edgeLabelBlock(label, theme, edge.labelWrapped === true), edge.labelShapeDeltas);
   return drawActivityTextBlock(tb, { x: x + labelDx, y: baselineY - size * ASCENT_FRACTION }, theme, fc);
 }
 

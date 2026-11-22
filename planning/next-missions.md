@@ -35,6 +35,15 @@ post-D7 measurements.
 
 ---
 
+## activity-arrow-embed (aae) — DONE 2026-11-22 (one commit on `feature/parity-queue`, #188; per-task history on the local tag `activity-arrow-embed/pre-squash`)
+
+An activity-3 arrow label holding `{{ … }}` now draws where the jar does. The jar's block is the full embed (`Snake.java:247` sees 61x68). `CompressionXorYBuilder` removes the gap the image does not occupy (`SlotFinder.java:84-109`, no `UImageSvg` branch), and `UGraphicCompressOnXorY` maps each draw call's own point through `ct()` (`:107-116`). So a label now rides compression on its first draw, and every later draw takes its own offset (`ActivityEdgeGeo.labelShapeDeltas`, the frame-title rule). The canvas inks the drawn label where it is drawn (`edgeLabelInk`/`edgeLabelDrawnTopLeft`), and the walk-time label box sizes lanes only. A switch case's leading `-> label;` replaces the case text (`Branch.java:231-238`); in a branch with no instruction the label stays the branch's special (`InstructionIf.java:165-167,183,196`, `InstructionSwitch.java:165-166`), for `if` and `switch`. The authored gate holds 50 rows at zero and none open. That includes act3 3 → 0, act3-open 30 → 0, and one probe per `Snake.withLabel` site (`gtile/*` is unreachable, `Gtile.java:47`). No verdict moved in any engine against `229a5a836`, and the d.ts files are byte-identical.
+
+Follow-ons:
+
+1. **`gh issue create` is denied in headless queue sessions** (`.agent-notes/aae-T4.md`); `gh issue comment` works. A brief that routes residuals to new issues should plan for that.
+2. **Per-draw compression for other blocks.** Edge labels and frame titles now map each draw through `ct()`; `if-label`/`if-own-label` still move as one anchor (`shapes-of.ts#ifLabelTextAnchor`). A diamond label holding an embed after a text line would show it; no fixture yet.
+
 ## empty-block-ink (ebi) — DONE 2026-11-21 (one commit on `feature/parity-queue`, #187; per-task history on the local tag `empty-block-ink/pre-squash`)
 
 The #187 ruling (2026-11-16) is carried out. An empty json/yaml/hcl block's ink now ends at `x + w - 1` / `y + h - 1`, as `LimitFinder#drawRectangle` records the only shape it draws (`LimitFinder.java:184-188`, `document-dimensions.ts`). A block with lines still reaches `x + w` through its cells' `UEmpty` (`TextBlockMarged.java:83`). `residue.mts --all` moved exactly 11 rows: `hcl/function-call` and `hcl/for-expression-empty-array` dw 1 → 0, six json rows dh 1 → 0, `json/jidata` 3 / 5 → 2 / 4, `authored:json/nested-arrays` dh 1 → 0, and `authored:json/empty-nested` dw 0 → 1 (U-REC, per the ruling). The 9 corpus ceilings are tightened, and both authored rows are now pinned in `json-family-positional.json`. In DIVERGENCES.md, the empty-container label sentence now states the measured mechanism (graphviz's single-space field plus PAD, 19.75 × 25.5, against Smetana's 15 × 17), and both hcl rows are in the row table. No verdict or survey field moved in any engine against `177d1d9e8`, and the d.ts files are byte-identical.

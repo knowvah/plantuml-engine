@@ -13,8 +13,14 @@ export function instructionsOf(nodes: readonly ActivityNode[]): readonly Activit
   return nodes.filter((n) => n.kind !== 'arrow-label');
 }
 
-/** The last `-> label;` before a branch's first instruction: its pending link rendering's display. */
-function leadingArrowLabel(body: readonly ActivityNode[]): string | undefined {
+/**
+ * The last `-> label;` before a branch's first instruction: its pending link rendering's display, which that
+ * instruction takes as its in-link (`ActivityDiagram3.java:105-115`, `nextLinkRenderer()`). A branch with no
+ * instruction has none: the label is still pending at the next `else`/`elseif`/`case`/`end…`, which makes it the
+ * branch's special (`InstructionIf.java:165-167,183,196`; `InstructionSwitch.java:165-166`), not its display.
+ */
+export function leadingArrowLabel(body: readonly ActivityNode[]): string | undefined {
+  if (instructionsOf(body).length === 0) return undefined;
   let label: string | undefined;
   for (const n of body) {
     if (n.kind !== 'arrow-label') break;

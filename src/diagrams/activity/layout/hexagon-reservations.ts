@@ -35,8 +35,9 @@ export interface Reservation {
   height: number;
   ignoreX?: boolean;
   ignoreY?: boolean;
-  /** aar-T6b: the box measures the lane width / canvas only and never enters the compress slot finder. An arrow
-   *  label's own ink is its `UText` (`edgeLabelShape`); upstream's label block draws no `UEmpty`.
+  /** aar-T6b: the box measures the lane width only and never enters the compress slot finder. An arrow label's own
+   *  ink is its drawn block (`edgeLabelShape`, and `extendForEdgeLabelText` for the canvas since aae T4); upstream's
+   *  label block draws no `UEmpty`.
    *  @see net/sourceforge/plantuml/klimt/compress/SlotFinder.java:70-100 */
   skipCompression?: boolean;
 }

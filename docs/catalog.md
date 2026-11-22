@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2665 modules · 8833 exported names.
+2665 modules · 8838 exported names.
 
 ## `src/`
 
@@ -1658,7 +1658,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `canvas-origin-shift.ts` | `ShiftableGeometry`, `shiftAll` | The canvas-origin translate `canvas-origin.ts#finalizeGeometry` applies once it has the shift -- split out of `canvas-origin.ts` (add4-T2e) only to keep that file under the 500-line hook. |
 | `canvas-origin-text-ink.ts` | `SPLIT_LINE_KINDS`, `extendForIfLabelText`, `extendForIfOwnLabelText`, `extendForLaneDivider`, `extendForEdgeLabelText`, `extendForEmojiBox` | b3/T3a (`activity-divergence-drive-2` batch 3): three `canvas-origin.ts` ink-scan corrections (families A/P/Q) split into their own sibling module purely to keep `canvas-origin.ts` under the 500-line hook (mission convention, "a sibling mod |
 | `canvas-origin.ts` | `MutableInkBounds`, `edgeInkX`, `InkSource`, `inkBoundsOf`, `FinalizeInput`, `FinalizedGeometry`, `finalizeGeometry` | Canvas origin (D2, mission `activity-divergence-drive` T1a): ports `Recentred` + the document margin + `LimitFinder` -- replaces the flat `LAYOUT_MARGIN` `assign-coordinates-full.ts#computeBounds` used to add on top of its own maxX/maxY. |
-| `conditional-builder-arrows.ts` | `instructionsOf`, `withBranchArrowLabels` | How a branch's leading and trailing arrows read as instructions and labels, split out of `conditional-builder.ts` (500-line cap, dss T4a). |
+| `conditional-builder-arrows.ts` | `instructionsOf`, `leadingArrowLabel`, `withBranchArrowLabels` | How a branch's leading and trailing arrows read as instructions and labels, split out of `conditional-builder.ts` (500-line cap, dss T4a). |
 | `conditional-builder-long.ts` | `buildIfLongHorizontal`, `buildIfLongVertical` | The `elseif`-chain if-builders, split out of `conditional-builder.ts` (hook-enforced 500-line cap; add2 T3i needed the room for ELSEIFIN) -- `FtileIfLongHorizontal.create`'s per-branch hexagon row and `FtileIfLongVertical.create`'s downward |
 | `conditional-builder.ts` | `IfBuilder`, `IfLayoutCtx`, `IfBuilderResult`, `ifBuilderOf`, `isMainLaneSmallerThanAllOthers`, `buildIf` | `ConditionalBuilder#create`'s dispatch (`ifBuilderOf`, T1's Q0 note) and all three builders (`buildIf`). |
 | `diamond-colors.ts` | `withDiamondColors`, `colorSpread`, `ifDiamondColors`, `whileDiamondColors`, `own`, `repeatDiamondColors`, `diamondStereoBack`, `switchDiamondColors` | The `<<#color>>` fills of a compound's own diamonds, resolved once per tile the way each upstream builder falls back (`Branch#getColor`, `Colors#mergeWith`, `Stereogroup#getHColor`), so the walkers copy a value and never decide. |
@@ -1722,7 +1722,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `compress-geometry.ts` | `CompressInput`, `CompressResult`, `compressGeometry` | `compressGeometry` -- `klimt/compress/CompressionXorYBuilder.java:52-69` and `UGraphicCompressOnXorY.java:86-135`, ported over `ActivityGeometry` instead of a live `UGraphic` redraw (D1). |
 | `compression-transform.ts` | `PiecewiseAffineTransform`, `CompressionTransform` | compression-transform.ts — `klimt/compress/PiecewiseAffineTransform.java`, `CompressionTransform.java` (mission `activity-klimt-compress` T2, `decisions.md` D6). |
-| `edge-label-anchor.ts` | `EdgeLabelLayout`, `LabelAnchor`, `edgeLabelBlock`, `edgeLabelBlockSize`, `edgeLabelLayout`, `labelAnchors`, `transformAnchors`, `withLabelDeltas` | Edge-label placement through compression (add4-T3a, R2). |
+| `edge-label-anchor.ts` | `EdgeLabelLayout`, `LabelAnchor`, `edgeLabelBlock`, `edgeLabelBlockSize`, `edgeLabelInk`, `edgeLabelDrawnTopLeft`, `edgeLabelLayout`, `labelAnchors`, `labelDrawPoints`, `withLabelShapeDeltas`, `transformAnchors`, `withLabelDeltas` | Edge-label placement through compression (add4-T3a, R2). |
 | `frame-title-deltas.ts` | `FrameTitleMove`, `withFrameTitleDeltas` | The per-shape move `UGraphicCompressOnXorY` gives a `USymbolFrame` title drawn as a plain block (`USymbolFrame .java:153-154`): every non-line shape the title draws goes to `ct()` of its own draw point, not rigidly with the frame (`UGraphic |
 | `shapes-of-boxes.ts` | `hexagonBox`, `diamondBox`, `conditionBox`, `noteBox`, `boxStyleBox` | `shapes-of.ts`'s pure node-box geometry helpers -- split into their own sibling file (mission `activity-divergence-drive-3` T3i) purely to keep `shapes-of.ts` under the 500-line hook cap; no behavior change, a mechanical extraction of four |
 | `shapes-of-emoji.ts` | `emojiBoxShapes` | The compression slots an `<<icon>>` box leaves: every shape `FtileBoxEmoji#drawU` draws under the `SlotFinder` (`klimt/compress/SlotFinder.java:84-160`) -- the emoji's SVG ellipses and paths and the name's `UText`s -- not the node's box. |

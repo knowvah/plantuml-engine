@@ -1,0 +1,10 @@
+@startuml
+start
+split
+-> {{\nclass X\n}};
+:a;
+split again
+:b;
+end split
+stop
+@enduml

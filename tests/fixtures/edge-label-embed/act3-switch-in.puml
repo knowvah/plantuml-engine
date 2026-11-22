@@ -1,0 +1,11 @@
+@startuml
+start
+switch (t?)
+case (a)
+-> {{\nclass X\n}};
+:x;
+case (b)
+:y;
+endswitch
+stop
+@enduml
