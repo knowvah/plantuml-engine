@@ -66,7 +66,10 @@ equals real `dot -Tdot` 16.1.0 on that input. hcl-yaml-oracle-gap-rows (2026-11-
 added three more hcl rows by the same proof (table rows `hcl/array-values`,
 `hcl/multiple-top-level-blocks`, `hcl/nested-object-value`); the two hcl rows
 with an empty container (`hcl/function-call`, `hcl/for-expression-empty-array`)
-await a ruling on #187. The upstream placement arithmetic
+were ruled on in #187 (2026-11-16): their canvas dw 1 was a port defect, fixed by
+porting `LimitFinder#drawRectangle`, which ends an empty block's ink at
+`x + w - 1` / `y + h - 1` (`LimitFinder.java:184-188`; empty-block-ink), and
+their node delta is the empty-container label item below. The upstream placement arithmetic
 (`SmetanaForJson#getPosition` + `Mirror`, `:97-102,158-215`) is now ported
 literally (`src/diagrams/json/json-node-position.ts`) — it changed no byte,
 because the root is alone in rank 0 so graphviz's bounding box already IS the
@@ -86,23 +89,28 @@ graphviz 2.38 (Smetana) vs modern graphviz arithmetic, four named sources:
 | U-NS in-rank position | network-simplex result (tie-sensitive) | same algorithm, different ties | — (D3 only) |
 
 Plus two smaller items, measured and left by ruling: the empty-container
-**label** half (the jar sets no label, `SmetanaForJson.java:253-254`; Smetana
-sizes the default `\N` as (0,16) with no PAD, `labels__c.java:119-122`, while
-graphviz sizes it as the node name + PAD — omitting the label here also needs a
-`src/core/` change and measured worse; closed without code, json-family-followons
-D2: the explicit `''` label already reproduces Smetana's outcome, no text extent,
-where the labelless call would import a node-name width Smetana never computes), and 6-dp inch strings in core's
+**label** half (the jar sets no label on an empty node, `SmetanaForJson.java:253-254`,
+and Smetana sizes the default label as (0,16) with no PAD, `labels__c.java:119-122`,
+so the node solves at 15 in-rank × 17; we pass an explicit `''`, and graphviz
+gives an empty record field a single space as its text and then PADs it
+(`~/git/graphviz/lib/common/shapes.c:3436-3438`), so it solves at 19.75 × 25.5,
+as real `dot` 16.1.0 does; the labelless call is worse, the node name plus PAD at
+29.5 wide (jfp T4b), and needs a `src/core/` change; only a Smetana-sized
+sentinel would close it, which the 2026-08-09 ruling forbids, so it stays closed
+without code, #187 ruling 2026-11-16), and 6-dp inch strings in core's
 `inches()` (`svek-dot-emit-clusters.ts:33` vs the jar's full-precision
 `"" + dim/72`, `SmetanaForJson.java:235-236`; json/kusule + 10 rows by ≤ 1 pt).
 Magnitudes (positional ceiling `oracle/goldens/json-family-positional.json`,
-max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligned rows; in-rank
+max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 49 of 72 aligned rows; in-rank
 (U-NS) up to 127 px (json/nofuvo-36-muxe040); the gate is shrink-only.
 
-<details><summary>Row-level table (73 rows)</summary>
+<details><summary>Row-level table (75 rows)</summary>
 
 | row | residue (node / path / dw / dh) | mechanisms | ledger |
 |---|---|---|---|
 | hcl/array-values | 0.150 / 1.555 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
+| hcl/for-expression-empty-array | 1.500 / 1.401 / 0 / 0 | empty-label, U-REC, U-ARROW, U-CLIP | `empty-block-ink/decision-journal.md` row 5 |
+| hcl/function-call | 2.375 / 1.025 / 0 / 0 | empty-label, U-REC, U-ARROW, U-CLIP | `empty-block-ink/decision-journal.md` row 5 |
 | hcl/jubete-32-sutu417 | 0.800 / 1.923 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | hcl/multiple-top-level-blocks | 0.619 / 1.068 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
 | hcl/nested-object-value | 0.425 / 1.834 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
@@ -112,22 +120,22 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligne
 | json/cilemo-38-fafi313 | 17.058 / 17.058 / 3 / 0 | U-REC, U-NS | `json-large.md` |
 | json/civofu-04-loku952 | 47.102 / 47.102 / 0 / 34 | U-REC, U-NS | `json-large.md` |
 | json/conigu-03-cuzu022 | 0.025 / 1.308 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/derele-19-poni229 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/devime-19-toze896 | 1.190 / 4.300 / 1 / 0 | U-REC, U-NS | `json-large.md` |
-| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/gagebi-92-vere937 | 0.720 / 1.980 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/gavomi-49-koco364 | 0.287 / 1.512 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/gejena-99-veme626 | 12.000 / 12.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
 | json/gibego-39-pelu609 | 12.000 / 16.586 / 1 / 0 | U-REC, U-NS | `json-large.md` |
 | json/jaramo-16-doxa994 | 0.450 / 1.860 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/jekaju-28-gulo479 | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/jidata-48-kire666 | 4.375 / 6.308 / 3 / 5 | M4, U-REC, U-NS | `json-large.md` |
+| json/jidata-48-kire666 | 4.375 / 6.308 / 2 / 4 | M4, U-REC, U-NS | `json-large.md` |
 | json/json-escaped | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/kidoki-70-fala224 | 78.000 / 80.711 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/kusule-69-jada088 | 1.000 / 1.021 / 1 / 1 | M4, U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/moseba-10-naza079 | 0.675 / 1.875 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/mudumo-73-foli040 | 0.725 / 2.369 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/najixi-88-javo178 | 0.513 / 1.462 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
@@ -137,22 +145,22 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligne
 | json/nopoku-31-cisi925 | 94.000 / 94.000 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/nuviro-48-sice969 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/pijume-87-gufu868 | 0.287 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/timafu-94-bixe774 | unaligned (structural ceiling) | U-REC, U-NS | `json-large.md` |
 | json/tivuru-65-vezu313 | 0.187 / 3.438 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/zasitu-09-lise302 | 4.375 / 6.145 / 3 / 0 | U-REC, U-NS | `json-large.md` |
 | json/zevaka-35-zova441 | 0.838 / 2.156 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | yaml/YAML-attribute-hierarchy | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/YAML-list-key-value-pair | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/YAML-space-indent | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/bafemu-96-luji978 | unaligned (structural ceiling) | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/bafemu-96-luji978 | 0.000 / 0.000 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gabalo-23-tefe408 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gatuva-87-futo104 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gobavi-45-guna544 | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/jozapu-14-datu953 | 5.000 / 6.350 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jozapu-14-datu953 | 0.000 / 0.000 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/jukejo-54-pope427 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/ketunu-15-poli031 | 0.151 / 1.283 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/ketunu-15-poli031 | 0.151 / 1.274 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/kotize-70-nuze855 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/lelofi-17-cafo004 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/lipoka-75-rigo326 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
