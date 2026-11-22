@@ -24,7 +24,7 @@ Oracle coverage: 5855 of 5855 manifest rows have a jar oracle under some bucket 
 | class § | class | 768 | 874 | 712/712 (100%) | 872 / 2 / 0 (4 error) | 663/664 | 1151 | 1150 | n/a (no diff-baseline yet) | 870/874 | 874/874 |
 | component § | description | 384 | 276 | 260/263 (99%) | 272 / 0 / 4 | 258/260 | 265 | 272 | 19 · 218 | 276/276 | 276/276 |
 | ditaa ‡ | n/a (no engine (dropped by ruling 2026-11-04)) | 2 | 2 | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) | n/a (no engine (dropped by ruling 2026-11-04)) |
-| dot | dot | 62 | 62 | n/a (no DOT stage (non-svek)) | 62 / 0 / 0 (8 error) | n/a (no DOT stage (non-svek)) | 52 | 60 | n/a (no diff-baseline yet) | 54/62 | 62/62 |
+| dot | dot | 62 | 62 | n/a (no DOT stage (non-svek)) | 62 / 0 / 0 (8 error) | n/a (no DOT stage (non-svek)) | 52 | 62 | n/a (no diff-baseline yet) | 54/62 | 62/62 |
 | ebnf | ebnf | 44 | 44 | n/a (no DOT stage (non-svek)) | 44 / 0 / 0 (1 error) | n/a (no DOT stage (non-svek)) | 43 | 43 | 1 · 6 | 43/44 | 43/44 |
 | files | files | 8 | 9 | n/a (no DOT stage (non-svek)) | 9 / 0 / 0 | n/a (no DOT stage (non-svek)) | 9 | 9 | n/a (no diff-baseline yet) | 9/9 | 9/9 |
 | gantt | gantt | 265 | 265 | n/a (no DOT stage (non-svek)) | 265 / 0 / 0 (11 error) | n/a (no DOT stage (non-svek)) | 254 | 254 | 11 · 154 | 257/265 | 255/265 |
@@ -88,7 +88,7 @@ A suffix such as `(3 error)` is not a shortfall. PlantUML draws an error page fo
 | class | 2026-11-03T21:26:41.370Z | 2026-11-21T19:26:38.762Z | 2026-11-22T01:34:31.764Z | 2026-11-21 | — | 2026-11-20 | 2026-11-20 |
 | component | 2026-11-03T21:26:41.370Z | 2026-11-21T19:27:39.044Z | 2026-11-05T03:53:37.174Z | 2026-11-16 | 2026-11-20 | 2026-11-21 | 2026-11-16 |
 | ditaa | — | — | — | — | — | — | — |
-| dot | — | 2026-11-21T16:30:30.244Z | 2026-11-04T03:56:32.392Z | 2026-11-14 | — | 2026-11-03 | 2026-11-03 |
+| dot | — | 2026-11-21T16:30:30.244Z | 2026-11-04T03:56:32.392Z | 2026-11-21 | — | 2026-11-03 | 2026-11-03 |
 | ebnf | — | 2026-11-21T16:58:48.661Z | 2026-11-10T19:57:20.934Z | 2026-11-10 | 2026-11-10 | 2026-11-10 | 2026-11-10 |
 | files | — | 2026-11-21T16:38:07.334Z | 2026-11-04T01:05:42.034Z | 2026-10-28 | — | 2026-10-28 | 2026-10-28 |
 | gantt | — | 2026-11-21T16:39:21.813Z | 2026-11-04T01:05:45.931Z | 2026-10-28 | 2026-10-28 | 2026-10-28 | 2026-10-28 |

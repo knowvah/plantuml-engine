@@ -347,6 +347,22 @@
       },
       "weightedScore": 9,
       "diffCount": 9
+    },
+    {
+      "slug": "quoted-labels",
+      "addedAt": "2026-11-21",
+      "source": "dhk-T1",
+      "accepted": "svg-dot/quoted-labels",
+      "weightedScore": 18,
+      "diffCount": 18
+    },
+    {
+      "slug": "skinparam-font-color",
+      "addedAt": "2026-11-21",
+      "source": "dhk-T1",
+      "accepted": "svg-dot/skinparam-font-color",
+      "weightedScore": 17,
+      "diffCount": 17
     }
   ]
 }

@@ -744,7 +744,9 @@ describe('refusal coverage — baseline shape', () => {
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
     // 11556 -> 11558 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
     // Derivation: 11556 + 2 = 11558.
-    expect(manifest.fixtures.length).toBe(11558);
+    // 11558 -> 11560 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11558 + 2 = 11560.
+    expect(manifest.fixtures.length).toBe(11560);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1163,7 +1165,9 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11396 + 3 = 11399.
     // 11399 -> 11401 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
     // Derivation: 11399 + 2 = 11401.
-    expect(pinnedRendering.length).toBe(11401);
+    // 11401 -> 11403 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11401 + 2 = 11403.
+    expect(pinnedRendering.length).toBe(11403);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {

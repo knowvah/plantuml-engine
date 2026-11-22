@@ -1,0 +1,7 @@
+@startdot
+digraph G {
+  a [label="Node A"]
+  b [label="Node B"]
+  a -> b [label="edge label"]
+}
+@enddot
