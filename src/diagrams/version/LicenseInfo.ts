@@ -11,9 +11,11 @@
  * resource and finds no key, so every retrieval resolves to {@link LicenseInfo.NONE}
  * as the oracle's does.
  *
- * Not ported, each because it only serves those host sources or the key tools
- * (`keygen`/`keyimport`/`keycheck`/`keydistributor`, out by decisions.md D8):
- * `persistMe` (java:97-100, a `Preferences` write), `retrieveNamed` and
+ * The key tools (`keygen`/`keyimport`/`keycheck`/`keydistributor`) are ported
+ * (#182) on the path this build reaches, where every licence is
+ * {@link LicenseInfo.NONE}. Not ported, each because it only serves those host
+ * sources or `PLSSignature` key decoding, which no reachable path in this build
+ * calls (vkt D3): `persistMe` (java:97-100, a `Preferences` write), `retrieveNamed` and
  * `retrieve` (java:138-149, :244-259, `PLSSignature` decryption of a key read
  * from those sources), `retrieveDistributorOrNamed` (java:155-166, upstream
  * 3a4d1675141: `PLSSignature` decryption for the one-argument `keycheck`),

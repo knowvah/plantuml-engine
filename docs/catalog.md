@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2663 modules · 8824 exported names.
+2665 modules · 8830 exported names.
 
 ## `src/`
 
@@ -232,7 +232,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `UgSimpleDiagram.ts` | `UgSimpleDiagram` | `UgSimpleDiagram` — a {@link UgDiagram} that is its own `TextBlock`: the subclass implements `calculateDimension`/`drawU`, and `getTextBlock` hands back `this` (`final` upstream). |
 | `uml-source-lines.ts` | `mutateExpandsBreakline`, `loadInternal`, `patchBase64Line`, `umlSourceSeedLines` | The line list upstream's `UmlSource#seed()` walks -- `BlockUml#data` as `PSystemBuilder#createPSystem` turns it into a `UmlSource`. |
 | `usymbol-shapes.ts` | `IconGeo`, `renderDatabaseIcon`, `renderComponentIcon`, `renderActorIcon`, `renderUseCaseIcon`, `renderUSymbolIcon` | Shared per-USymbol leaf-shape renderers — the SVG for a descriptive element's icon (component notch, database cylinder, actor stick-figure, usecase ellipse). |
-| `version.ts` | `VERSION`, `COMMIT`, `COMPILE_TIME_STRING`, `versionString`, `fullDescription` | The version banner the error diagram prints above the source listing. |
+| `version.ts` | `VERSION`, `COMMIT`, `COMPILE_TIME_STRING`, `versionString`, `fullDescription`, `DOT_ENGINE_VERSION` | The version banner the error diagram prints above the source listing. |
 
 ## `src/core/abel/`
 
@@ -1506,7 +1506,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `i18n-bundles.ts` | `I18N_BUNDLES` | The eight `i18n*.properties` bundles `I18n.getLocalizedValue` reads through `ResourceBundle.getBundle("i18n", …)`, keyed by bundle suffix (`''` is the root bundle `i18n.properties`). |
 | `I18n.ts` | `forLanguageTag`, `getCandidateLocales`, `getLocalizedValue`, `I18n` | `I18n`: a localized value from the `i18n*.properties` bundles (`i18n-bundles.ts`). |
 | `I18nTimeData.ts` | `Locale`, `newLocale`, `dayOfWeekLong`, `dayOfWeekShort`, `monthShort`, `monthLong` | I18nTimeData — generated day/month name tables per language. |
-| `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, and (license/keygen, out of this port's roadmap) `version/PLSSignature`, `version/Lice |
+| `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, `version/PLSSignature` and `version/LicenseInfo`. |
 
 ## `src/core/warning/`
 
@@ -3289,10 +3289,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `License.ts` | `LicenseBuild`, `ORACLE_BUILD`, `formatDateInstance`, `License` | `License` — the text the `license` page prints (`PSystemLicense`) and the licence name `about`/`version` quote. |
 | `LicenseInfo.ts` | `LicenseInfoFields`, `LicenseInfo`, `retrieveQuick`, `retrieveNamedOrDistributorQuickIsValid`, `retrieveNamedSlow`, `retrieveDistributorImage`, `retrieveDistributor` | `LicenseInfo` — the PlantUML licence the running build carries, as `License` and `PSystemLicense` read it. |
 | `LicenseType.ts` | `LicenseType`, `fromInt` | `LicenseType` — the kind of licence a {@link LicenseInfo} records. |
+| `PSystemKeycheck.ts` | `getTextBlock`, `PSystemKeycheck` | `PSystemKeycheck` — the `keycheck <sig> <key>` and `keycheck <key>` page: a black-on-white `GraphicStrings` block under the header the key tools share. |
+| `PSystemKeygen.ts` | `getTextBlock`, `PSystemKeygen` | `PSystemKeygen` — the `keygen` and `keyimport [key]` page: a black-on-white `GraphicStrings` block under the header the key tools share. |
 | `PSystemLicense.ts` | `getTextBlock`, `PSystemLicense` | `PSystemLicense` — the `license` page: `License#getText1` + `#getText2` as one black-on-white `GraphicStrings`, or, when the licence carries a distributor logo, the two halves around that logo. |
 | `PSystemLicenseFactory.ts` | `PSystemLicenseFactory`, `licensePlugin` | `PSystemLicenseFactory` — `license` (and its misspellings) as a single-line `@startuml` page, through the ported `PSystemSingleLineFactory` gate (`singleLinePlugin`, decisions.md D2/D3). |
-| `PSystemVersion.ts` | `getPlantumlImage`, `getAuthorsStrings`, `addInfoVersion`, `PSystemVersion` | `PSystemVersion` — the `about`/`authors`, `version` and bare `stdlib` pages: lines of creole drawn black on white with the PlantUML logo in the bottom-right corner (`PlainStringsDiagram`). |
-| `PSystemVersionFactory.ts` | `PSystemVersionFactory`, `versionPlugin` | `PSystemVersionFactory` — `about`/`authors`/`author`, `version` and bare `stdlib` as single-line `@startuml` pages, through the ported `PSystemSingleLineFactory` gate (`singleLinePlugin`, decisions.md D2/D3). |
+| `PSystemVersion.ts` | `getPlantumlImage`, `getAuthorsStrings`, `addInfoVersion`, `PSystemVersion` | `PSystemVersion` — the `about`/`authors`, `version`, bare `stdlib`, `testdot` and `keydistributor` pages: lines of creole drawn black on white, the first three with the PlantUML logo in the bottom-right corner (`PlainStringsDiagram`). |
+| `PSystemVersionFactory.ts` | `VersionFamilyDiagram`, `PSystemVersionFactory`, `versionPlugin` | `PSystemVersionFactory` — `about`/`authors`/`author`, `version`, bare `stdlib`, `testdot`, `keydistributor`, `keygen`, `keyimport [key]` and both `keycheck` forms (the one-argument one of upstream 3a4d1675141 among them) as single-line `@st |
 | `stdlib-catalog.ts` | `StdlibCatalogEntry`, `STDLIB_CATALOG` | `STDLIB_CATALOG` -- the folders the bare `stdlib` page lists (`PSystemVersion.java:205-210` -> `Stdlib.addInfoVersion`, `Stdlib.java:320-331`). |
 
 ## `src/diagrams/wbs/`

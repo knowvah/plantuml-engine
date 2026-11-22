@@ -22,7 +22,7 @@ import { join } from 'node:path';
 import { renderSync } from '../src/index.js';
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
 import { fixtureIncludeStore } from '../tests/helpers/fixture-include-store.js';
-import { fullDescription } from '../src/core/version.js';
+import { hasOurErrorBanner } from '../tests/helpers/our-error-banner.js';
 import { assertJsonArrayShape, assertJsonObjectShape } from './lib/assert-json-shape.js';
 
 const DIR = 'test-results/dot-cache/sequence';
@@ -57,13 +57,12 @@ const routed = new Map<string, string>();
 // close; found by T19.
 const dispatchErrored = new Map<string, boolean>();
 
-/** `weErroredIn` from `refusal-coverage-gate.ts`, duplicated rather than
- *  imported: that module imports vitest, which throws outside a worker. Built from `fullDescription()`
- *  itself, never spelled out, so a version bump cannot silently blind it.
- *  Scans the WHOLE document deliberately -- the banner's offset moves with
- *  source length. */
+/** `weErroredIn` from `refusal-coverage-gate.ts`, through the shared
+ *  vitest-free `tests/helpers/our-error-banner.ts` (that gate module imports
+ *  vitest, which throws outside a worker). Scans the WHOLE document
+ *  deliberately -- the banner's offset moves with source length. */
 function weErroredIn(ours: string): boolean {
-  return ours.includes(`>${fullDescription()}</text>`);
+  return hasOurErrorBanner(ours);
 }
 for (const slug of readdirSync(DIR)) {
   const p = join(DIR, slug, 'in.puml');

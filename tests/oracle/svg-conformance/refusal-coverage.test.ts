@@ -113,6 +113,7 @@ import {
   type BaselineFixture,
   type LiveRefusal,
 } from './refusal-coverage-gate.js';
+import { MY_GREEN } from '../../../src/core/error/error-text.js';
 import { fullDescription } from '../../../src/core/version.js';
 import { checkNoInvalidColour, INVALID_COLOUR_ALLOWLIST } from './colour-validity-check.js';
 
@@ -1405,8 +1406,10 @@ describe('refusal coverage — branch discrimination', () => {
     expect(checkJarClassification(SAMPLE, undefined).ok).toBe(true);
   });
 
-  it('recognises OUR error banner as a whole text element, and nothing else', () => {
-    expect(weErroredIn(`<svg><text x="5">${fullDescription()}</text></svg>`)).toBe(true);
+  it('recognises OUR error banner as a whole text element in the banner fill, and nothing else', () => {
+    expect(weErroredIn(`<svg><text x="5" fill="${MY_GREEN}">${fullDescription()}</text></svg>`)).toBe(true);
+    // `testdot` draws the same text black on white (vkt, #182): not an error page.
+    expect(weErroredIn(`<svg><text x="5" fill="#000">${fullDescription()}</text></svg>`)).toBe(false);
     // The Welcome screen shares the error page's opening block but carries no
     // banner -- which is why the banner is the needle.
     expect(weErroredIn('<svg><text x="5">Welcome to PlantUML!</text></svg>')).toBe(false);

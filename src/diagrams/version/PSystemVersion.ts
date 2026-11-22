@@ -1,7 +1,7 @@
 /**
- * `PSystemVersion` — the `about`/`authors`, `version` and bare `stdlib` pages:
- * lines of creole drawn black on white with the PlantUML logo in the
- * bottom-right corner (`PlainStringsDiagram`).
+ * `PSystemVersion` — the `about`/`authors`, `version`, bare `stdlib`, `testdot`
+ * and `keydistributor` pages: lines of creole drawn black on white, the first
+ * three with the PlantUML logo in the bottom-right corner (`PlainStringsDiagram`).
  *
  * This port prints its own name and version string (`plantuml-engine version
  * <v>`, matching the error banner's `fullDescription()`) where the jar prints
@@ -15,9 +15,17 @@
  * layout engine through `GraphvizUtils.addDotStatus`'s library arm, and none
  * of the JVM/OS/environment lines a browser library does not have.
  *
+ * `testdot` (`createTestDot`, java:234-240) prints the executable arm's
+ * version line with this port's engine and none of the checks it has no
+ * counterpart for (#182 rulings 2-4, 2026-11-13; DIVERGENCES.md "Key tools
+ * and `testdot` describe plantuml-engine"). `keydistributor`
+ * (`createKeyDistributor`, java:242-258) prints the jar's `No license found`:
+ * no distributor licence exists here.
+ *
  * Not ported:
- * - `createTestDot`, `createKeyDistributor` and the private image constructor
- *   (java:83-89, :234-258): `testdot` and the key tools are out (decisions.md D8).
+ * - The private image constructor (java:83-89): only `createKeyDistributor`
+ *   calls it, with `im = null` in this build, which draws what the public
+ *   constructor draws with `withImage = false`.
  * - The other image getters (`getTime01`, `getTime15`,
  *   `getPlantumlSmallIcon(2)`, `getArecibo`, `getDotc`, `getDotd`): resources
  *   of other pages, owned where they are drawn (`core/error/`). `getCharlieImage`
@@ -36,7 +44,7 @@ import type { RasterImage } from '../../core/error/raster-image.js';
 import { GraphicPosition } from '../../core/klimt/geom/GraphicPosition.js';
 import { PlainStringsDiagram } from '../../core/PlainStringsDiagram.js';
 import type { PreprocessingArtifact } from '../../core/tim/PreprocessingArtifact.js';
-import { COMMIT, COMPILE_TIME_STRING, versionString } from '../../core/version.js';
+import { COMMIT, COMPILE_TIME_STRING, DOT_ENGINE_VERSION, fullDescription, versionString } from '../../core/version.js';
 import { License } from './License.js';
 import { STDLIB_CATALOG } from './stdlib-catalog.js';
 
@@ -161,9 +169,11 @@ function getTestCreateSimpleFile(): string | undefined {
  * lays out with a linked JavaScript library, never a `dot` executable, so the
  * executable arms (java:110-155 — `GRAPHVIZ_DOT`, `Dot executable is`,
  * `ExeState`, `<b>GraphViz</b> ""<dot -V>""` and the version checks) have no
- * counterpart. `Logme.error(e)` (java:104) is not mirrored: `src/` logs
- * nothing, and the page prints the error. The error code it returns is read
- * only by the CLI's `-testdot` (`OptionPrint.printCheckGraphviz`), not ported.
+ * counterpart on this page; `testdot` prints the version line alone
+ * ({@link addDotVersionStatus}). `Logme.error(e)` (java:104) is not mirrored:
+ * `src/` logs nothing, and the page prints the error. The error code it
+ * returns is read only by the CLI's `-testdot`
+ * (`OptionPrint.printCheckGraphviz`), which this library has no CLI for.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:83-108
  */
 function addDotStatus(strings: string[]): void {
@@ -178,6 +188,28 @@ function addDotStatus(strings: string[]): void {
     strings.push(RED + String(e));
   }
 }
+
+/**
+ * `addDotStatus(strings, true)` for `testdot`, its executable arm's version
+ * line (java:122-127): `<b>GraphViz</b>` → `@knowvah/dot-engine` and the
+ * `dot -V` answer → {@link DOT_ENGINE_VERSION} (#182 ruling 2). The rest of
+ * the arm is not printed:
+ * - java:111-119 (`GRAPHVIZ_DOT`, `Dot executable is`): INSECURE profile only,
+ *   and the port has no executable or environment variable;
+ * - java:128-136 (`cannot determine dot version`, `seems old`): ruling 3;
+ * - java:137-145 (`Installation seems OK. File generation OK`): ruling 4;
+ * - java:146-154 (the exception and `ExeState` errors): the engine is a
+ *   linked library, so there is no file to check and nothing to fail.
+ * The `useVizJs` arm (java:93-108) is the `version` page's ({@link addDotStatus}, vkt D7).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:110-155
+ */
+function addDotVersionStatus(strings: string[]): void {
+  strings.push(`<b>${LAYOUT_ENGINE}</b> ""${DOT_ENGINE_VERSION}""`);
+}
+
+/** `strings.add("No license found")` (java:247): `retrieveDistributor()` is
+ *  null in this build. @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:247 */
+const NO_LICENSE_FOUND = 'No license found';
 
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:67 */
 export class PSystemVersion extends PlainStringsDiagram {
@@ -244,6 +276,30 @@ export class PSystemVersion extends PlainStringsDiagram {
   /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:214-217 */
   static createShowAuthors(source: UmlSource, preprocessing: PreprocessingArtifact): PSystemVersion {
     return new PSystemVersion(source, true, getAuthorsStrings(true), preprocessing);
+  }
+
+  /**
+   * `fullDescription()` and the dot status, with no logo (`withImage =
+   * false`). `ReportLog` is a list of strings (`crash/ReportLog.java:50-71`).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:234-240
+   */
+  static createTestDot(source: UmlSource, preprocessing: PreprocessingArtifact): PSystemVersion {
+    const strings: string[] = [fullDescription()];
+    addDotVersionStatus(strings);
+    return new PSystemVersion(source, false, strings, preprocessing);
+  }
+
+  /**
+   * `retrieveDistributor()` answers null in this build
+   * (`LicenseInfo.ts#retrieveDistributor`, java:197-199), so the page is
+   * `No license found` and `im` stays null. The licence branch (java:249-256:
+   * owner, context, dates, key start and the distributor image) cannot run in
+   * this build and is not ported (vkt D3). With `im = null` the private image
+   * constructor (java:83-89) draws what `withImage = false` draws.
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:242-258
+   */
+  static createKeyDistributor(source: UmlSource, preprocessing: PreprocessingArtifact): PSystemVersion {
+    return new PSystemVersion(source, false, [NO_LICENSE_FOUND], preprocessing);
   }
 
   /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/PSystemVersion.java:293-295 */

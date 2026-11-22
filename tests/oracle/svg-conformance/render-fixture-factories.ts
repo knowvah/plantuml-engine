@@ -28,7 +28,7 @@ import type { Clock } from '../../../src/core/clock.js';
 import { withClock, withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
 import type { StringMeasurer } from '../../../src/core/measurer.js';
 import type { IncludeStore } from '../../../src/core/tim/IncludeStore.js';
-import { fullDescription } from '../../../src/core/version.js';
+import { hasOurErrorBanner } from '../../helpers/our-error-banner.js';
 import { renderSync } from '../../../src/index.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
@@ -179,7 +179,7 @@ export function measureFactoriesMarkup(markup: string, golden: string, clock?: C
       clock,
     });
     if (ours.includes(ERROR_SENTINEL_MARKER)) return { errored: true, reason: SENTINEL_REASON };
-    if (ours.includes(`>${fullDescription()}</text>`)) return { errored: true, reason: ERROR_PAGE_REASON };
+    if (hasOurErrorBanner(ours)) return { errored: true, reason: ERROR_PAGE_REASON };
     const { diffs } = compareSvg(ours, golden, 'deterministic');
     return { errored: false, weightedScore: weightedScore(diffs), diffCount: diffs.length };
   } catch (err) {
@@ -239,7 +239,7 @@ export function renderAuthoredFactories(markup: string, slug?: string): string {
 
 /** True when `ours` is this port's error banner page or the dispatcher sentinel. */
 export function isOurErrorPage(ours: string): boolean {
-  return ours.includes(ERROR_SENTINEL_MARKER) || ours.includes(`>${fullDescription()}</text>`);
+  return ours.includes(ERROR_SENTINEL_MARKER) || hasOurErrorBanner(ours);
 }
 
 export type AuthoredFactoriesMeasure =

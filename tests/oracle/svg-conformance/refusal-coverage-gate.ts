@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
 import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
-import { fullDescription } from '../../../src/core/version.js';
+import { hasOurErrorBanner } from '../../helpers/our-error-banner.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { invalidColours } from '../../helpers/svg-colour-validity.js';
 import { corpusGatePartOf, isJarErrorPage, securityProfileOf } from './corpus-gate-part.js';
@@ -77,23 +77,16 @@ export const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8')) as Basel
 const HEAD_BYTES = 4096;
 
 /**
- * OUR error banner, as one whole `<text>` element. Built from
- * `fullDescription()` itself, never spelled out, so this gate cannot be
- * silently blinded by a version bump.
- * @see ~/git/plantuml/.../version/Version.java#fullDescription
- */
-const OUR_ERROR_BANNER = `>${fullDescription()}</text>`;
-
-/**
  * Deliberately scans the WHOLE document, not a head window. The banner's
  * offset is not fixed: `PSystemError#getGraphicalFormatted` prepends the
  * welcome block only for a short source, measured at byte 4544 for a
  * two-line source and byte 2459 for a 200-line one — a 4 KB window would
  * miss the first and see the second, which is the worst possible failure for
- * a gate whose subject is "did we error at all".
+ * a gate whose subject is "did we error at all". OUR error banner is one
+ * whole `<text>` in the banner fill (`tests/helpers/our-error-banner.ts`).
  */
 export function weErroredIn(ours: string): boolean {
-  return ours.includes(OUR_ERROR_BANNER);
+  return hasOurErrorBanner(ours);
 }
 
 /** `ErrorUml#getError`'s suffix, printed only once a parser has committed to a
