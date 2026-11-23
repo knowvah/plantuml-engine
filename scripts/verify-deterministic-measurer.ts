@@ -25,9 +25,9 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
-const JAR_PATH =
-  process.env['PLANTUML_JAR'] ?? join(process.env['HOME'] ?? '', 'git/plantuml/build/libs/plantuml-1.2026.7beta3.jar');
+const JAR_PATH = process.env['PLANTUML_JAR'] ?? join(PLANTUML_CHECKOUT, 'build/libs/plantuml-1.2026.7beta3.jar');
 
 /** One row: a string, its font size, and the component name PlantUML will
  *  wrap it in (kept distinct so every fixture round-trips independently). */

@@ -25,24 +25,18 @@
  *
  * Node-only dev tooling -- never imported by `src/`.
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Upstream's theme resource folder (`ThemeUtils.java` `THEME_PATH = "themes"`), in the checkout
- *  `PLANTUML_FORK` names (as `rebaseline-svg-goldens.ts` reads it), else `~/git/plantuml`. */
-export const UPSTREAM_THEMES_DIR = join(
-  process.env.PLANTUML_FORK ?? join(homedir(), 'git', 'plantuml'),
-  'src',
-  'main',
-  'resources',
-  'themes',
-);
+ *  `PLANTUML_FORK` names (as `rebaseline-svg-goldens.ts` reads it), else `~/git/knowvah/plantuml`. */
+export const UPSTREAM_THEMES_DIR = join(PLANTUML_CHECKOUT, 'src', 'main', 'resources', 'themes');
 
 export const THEME_SOURCES_PATH = join(REPO, 'src', 'core', 'themes-source.ts');
 
@@ -162,8 +156,8 @@ const HEADER = `/**
  * (from \`src/core/licenses/\`). The rest are in \`@knowvah/plantuml-themes-unlicensed\`
  * and \`@knowvah/plantuml-themes-gpl\`, which a host registers with \`withThemes\`.
  *
- * @see ~/git/plantuml/src/main/resources/themes/
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
+ * @see ~/git/knowvah/plantuml/src/main/resources/themes/
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
  */
 `;
 
@@ -199,7 +193,7 @@ const PACKAGE_HEADER = `/**
  * name, for the themes \`scripts/theme-packages.json\` places in this package
  * (#180). \`index.js\` wraps them as a \`ThemePackage\`.
  *
- * @see ~/git/plantuml/src/main/resources/themes/
+ * @see ~/git/knowvah/plantuml/src/main/resources/themes/
  */
 `;
 

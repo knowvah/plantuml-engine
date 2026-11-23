@@ -37,13 +37,14 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
-import { tmpdir, homedir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import type { GuardClock, GuardSleep } from './lib/oracle-minute-guard.js';
 import { selectOutputs } from './lib/recapture-classify.js';
 import { TARGET_KIND } from './lib/recapture-manifest.js';
 import { renderPuml, type Renderer } from './lib/recapture-render.js';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDENS_ROOT = join(REPO, 'oracle', 'goldens');
@@ -168,7 +169,7 @@ function gitTree(fork: string, rev: string): string | undefined {
  *  both tree hashes via read-only `git rev-parse`, and defers the actual
  *  judgment to the pure function above. */
 export function checkDriftGuard(): DriftResult {
-  const fork = process.env.PLANTUML_FORK ?? join(homedir(), 'git', 'plantuml');
+  const fork = PLANTUML_CHECKOUT;
   if (!existsSync(join(fork, '.git'))) {
     return { ok: false, reason: `fork not found at ${fork} (set PLANTUML_FORK)` };
   }

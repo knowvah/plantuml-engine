@@ -28,6 +28,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { walkFiles } from './vendor-stdlib/walk.js';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -135,8 +136,7 @@ function main(argv: readonly string[]): number {
     return drift.length === 0 ? 0 : 1;
   }
   const sourceIdx = argv.indexOf('--source');
-  const source =
-    sourceIdx === -1 ? join(process.env.HOME ?? '', 'git', 'plantuml', UPSTREAM_PATH) : argv[sourceIdx + 1]!;
+  const source = sourceIdx === -1 ? join(PLANTUML_CHECKOUT, UPSTREAM_PATH) : argv[sourceIdx + 1]!;
   copyTree(source);
   const manifest = buildManifest(hashTree(SPRITES_DIR));
   writeFileSync(SPRITES_MANIFEST, JSON.stringify(manifest, null, 2) + '\n');

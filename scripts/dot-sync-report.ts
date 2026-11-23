@@ -21,7 +21,6 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { homedir } from 'node:os';
 
 import { renderSync } from '../src/index.js';
 import { setLayoutInputObserver } from '../src/core/graph-layout.js';
@@ -53,6 +52,7 @@ import {
 import { EXPECTED_TAG, dotParityRows, dotParityMarkdown, writeDotParityJson } from './dot-parity-rows.js';
 import { runProbeJsonDot } from './dot-sync-probe.js';
 import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Lizard-safe (no regex literals): matches svek-<N>.dot dump files. */
@@ -71,7 +71,7 @@ function resolveJar(): string {
     console.error(`[dot-sync] oracle jar: ${distJar}`);
     return distJar;
   }
-  const libs = join(homedir(), 'git', 'plantuml', 'build', 'libs');
+  const libs = join(PLANTUML_CHECKOUT, 'build', 'libs');
   const jar = existsSync(libs) ? readdirSync(libs).find((f) => /^plantuml-.*\.jar$/.test(f)) : undefined;
   if (jar === undefined) throw new Error('No PlantUML jar; set PLANTUML_JAR.');
   const resolved = join(libs, jar);

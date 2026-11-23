@@ -5,7 +5,7 @@
  * name, for the themes `scripts/theme-packages.json` places in this package
  * (#180). `index.js` wraps them as a `ThemePackage`.
  *
- * @see ~/git/plantuml/src/main/resources/themes/
+ * @see ~/git/knowvah/plantuml/src/main/resources/themes/
  */
 
 export const THEMES = {

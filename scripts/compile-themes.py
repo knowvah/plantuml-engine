@@ -32,7 +32,7 @@ import re
 import os
 import sys
 
-THEMES_DIR = os.path.expanduser('~/git/plantuml/src/main/resources/themes/')
+THEMES_DIR = os.path.join(os.environ.get('PLANTUML_FORK') or os.path.expanduser('~/git/knowvah/plantuml'), 'src/main/resources/themes/')
 CORE_DIR = os.path.join(os.path.dirname(__file__), '..', 'src', 'core')
 OUT_FILE = os.path.join(CORE_DIR, 'themes-builtin.ts')
 # The theme data is split across two sibling modules so no single generated

@@ -20,7 +20,7 @@ TypeScript table — no JVM dependency at runtime or in CI.
 - PlantUML's default text family is the Java **logical font `"SansSerif"`**
   — see `net.sourceforge.plantuml.klimt.font.FontStack.SANS_SERIF` and
   `FontParam.FAMILY = "SansSerif"` in the jar's source
-  (`~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/font/`).
+  (`~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/klimt/font/`).
   `FontStack.getFonts()` resolves it via `Font.decode(name)` — exactly
   what `ExtractJarFontMetrics.java` calls.
 - Default font size is **14pt** when no explicit size is set

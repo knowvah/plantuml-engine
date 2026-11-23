@@ -18,7 +18,7 @@
  * ADR: `plans/themes-opt-in-packages/decisions.md` D1 (seam), D2 (lookup
  * order), D3 (`help themes`), D4 (residue).
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java#loadBundledOrLocalTheme
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java#loadBundledOrLocalTheme
  * @see StdlibStore.ts#withStdlib
  */
 import type { ThemeOverride } from '../theme.js';

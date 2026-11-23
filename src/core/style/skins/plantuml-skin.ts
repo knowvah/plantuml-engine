@@ -9,8 +9,8 @@
  *   skin/plantuml.skin   sha256:1e83d43f57dacf7776f180bcd73154b289ceda7aaab67028b9d290a11901167a
  *   skin/strictuml.skin  sha256:fed77dbc4bdbfcf8c03ef8f72c1a4d077c36cd2620bcc8082ecdea653062f730
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
  */
 
 export const SKIN_JAR_VERSION = '1.2026.11beta1';

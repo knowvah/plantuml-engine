@@ -31,7 +31,7 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-FORK="${PLANTUML_FORK:-$HOME/git/plantuml}"
+FORK="${PLANTUML_FORK:-$HOME/git/knowvah/plantuml}"
 PIN="$REPO/oracle/pin.json"
 CACHE="$REPO/test-results/dot-cache"
 OUT_JSON="$REPO/oracle/goldens/stock-error-pages.json"

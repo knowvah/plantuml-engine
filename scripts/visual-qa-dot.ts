@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync } from 'nod
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { homedir, tmpdir } from 'node:os';
+import { tmpdir } from 'node:os';
 
 import { renderSync } from '../src/index.js';
 import { setLayoutInputObserver } from '../src/core/graph-layout.js';
@@ -29,6 +29,7 @@ import { FormulaMeasurer } from '../src/core/measurer.js';
 import type { DotInputGraph } from '../src/core/graph-layout.js';
 import { parseSvekDot, dotInputToStructural, compareStructural } from '../tests/oracle/svek-dot.js';
 import { themedIncludeStore } from '../tests/helpers/theme-packages-store.js';
+import { PLANTUML_CHECKOUT } from './lib/plantuml-checkout.js';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DATA_DIR = join(REPO, 'tests', 'visual', 'data');
@@ -42,7 +43,7 @@ type Bucket = 'match' | 'diverge' | 'count' | 'no-candidate';
 
 function resolveJar(): string {
   if (process.env.PLANTUML_JAR !== undefined) return process.env.PLANTUML_JAR;
-  const libs = join(homedir(), 'git', 'plantuml', 'build', 'libs');
+  const libs = join(PLANTUML_CHECKOUT, 'build', 'libs');
   const jar = readdirSync(libs).find((f) => /^plantuml-.*\.jar$/.test(f));
   if (jar === undefined) throw new Error('No PlantUML jar; set PLANTUML_JAR.');
   return join(libs, jar);

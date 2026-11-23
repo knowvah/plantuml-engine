@@ -1,6 +1,6 @@
 # plantuml-engine — Claude Code Instructions
 
-A faithful TypeScript port of PlantUML. The Java at `~/git/plantuml` is the
+A faithful TypeScript port of PlantUML. The Java at `~/git/knowvah/plantuml` is the
 **canonical specification**. Ships as a browser-safe library.
 
 ## READ THE JAVA FIRST — the method, not the package list
@@ -100,7 +100,7 @@ geometry delta. Settled; not re-argued per case.
 ## Writing and write-sets (user ruling 2026-11-03)
 
 - Write only inside this repository, apart from `/tmp` and tool caches. Never
-  `~/.claude`, `~/git/plantuml`, `~/git/graphviz` or dot-engine; work that needs
+  `~/.claude`, `~/git/knowvah/plantuml`, `~/git/graphviz` or dot-engine; work that needs
   a write elsewhere is a question for the user.
 - A task's write-set is a plan, not a limit. Change any other file in this
   repository when the work needs it and note why in the decision journal. This

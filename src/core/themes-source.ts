@@ -14,8 +14,8 @@
  * (from `src/core/licenses/`). The rest are in `@knowvah/plantuml-themes-unlicensed`
  * and `@knowvah/plantuml-themes-gpl`, which a host registers with `withThemes`.
  *
- * @see ~/git/plantuml/src/main/resources/themes/
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
+ * @see ~/git/knowvah/plantuml/src/main/resources/themes/
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/theme/ThemeUtils.java
  */
 
 export const THEME_SOURCES: Readonly<Record<string, string>> = {

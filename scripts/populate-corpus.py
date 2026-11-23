@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Populate tests/corpus/ from ~/git/pdiff and ~/git/plantuml nonreg suite.
+Populate tests/corpus/ from ~/git/pdiff and ~/git/knowvah/plantuml nonreg suite.
 
 Usage: python3 scripts/populate-corpus.py
 
@@ -12,7 +12,7 @@ import re
 
 PDIFF_DBHUM = os.path.expanduser("~/git/pdiff/dbhum")
 PDIFF_INPUT = os.path.expanduser("~/git/pdiff/input")
-NONREG_ROOT = os.path.expanduser("~/git/plantuml/src/test/java/nonreg")
+NONREG_ROOT = os.path.join(os.environ.get('PLANTUML_FORK') or os.path.expanduser('~/git/knowvah/plantuml'), 'src/test/java/nonreg')
 OUT_ROOT = os.path.join(os.path.dirname(__file__), "..", "tests", "corpus")
 
 TYPE_PATTERNS = [
@@ -121,7 +121,7 @@ def scan_pdiff_input(counts: dict, skipped: list) -> None:
 
 
 def scan_nonreg(counts: dict, skipped: list) -> None:
-    """Corpus tree: ~/git/plantuml nonreg Java test files (embedded blocks)."""
+    """Corpus tree: ~/git/knowvah/plantuml nonreg Java test files (embedded blocks)."""
     for root, _, files in os.walk(NONREG_ROOT):
         for fname in files:
             if not fname.endswith("_Test.java"):
