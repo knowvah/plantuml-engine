@@ -1,5 +1,4 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
@@ -9,10 +8,11 @@ import {
   monthShort,
   newLocale,
 } from '../../../../src/core/utils/I18nTimeData.js';
+import { PLANTUML_CHECKOUT } from '../../../../scripts/lib/plantuml-checkout.js';
 
 type Tables = Record<string, Record<string, string[]>>;
 
-const UPSTREAM = join(homedir(), 'git/plantuml/src/main/java/net/sourceforge/plantuml/utils/I18nTimeData.java');
+const UPSTREAM = join(PLANTUML_CHECKOUT, 'src/main/java/net/sourceforge/plantuml/utils/I18nTimeData.java');
 const FALLBACK_LANG = '';
 const UNKNOWN_LANG = 'toto';
 const FNS = {

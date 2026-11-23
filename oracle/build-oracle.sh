@@ -4,7 +4,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-FORK="${PLANTUML_FORK:-$HOME/git/plantuml}"
+FORK="${PLANTUML_FORK:-$HOME/git/knowvah/plantuml}"
 
 # Read the pin from pin.json rather than duplicating it here. The hardcoded
 # copy this replaced went stale: the checkout drifted 59 commits ahead and the

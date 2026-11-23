@@ -4,7 +4,7 @@
  * graphviz pass. The draw ends with an invisible `UEmpty(delta, delta)` at the far corner, which the ink measure
  * sees.
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/EntityImageDegenerated.java:46-111
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/svek/EntityImageDegenerated.java:46-111
  */
 import type { StringBounder } from '../klimt/font/StringBounder.js';
 import { XDimension2D } from '../klimt/geom/XDimension2D.js';

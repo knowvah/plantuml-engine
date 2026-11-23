@@ -37,8 +37,8 @@
  *
  * Node-only dev tooling -- never imported by `src/`.
  *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
  */
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -105,8 +105,8 @@ const HEADER_INTRO = `/**
  *`;
 
 const HEADER_OUTRO = ` *
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/style/StyleLoader.java
+ * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java
  */
 `;
 

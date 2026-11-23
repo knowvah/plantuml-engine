@@ -383,7 +383,7 @@ function printCallSiteAudit(): void {
   console.log(
     'This table cannot be derived from oracle SVGs (see file header) -- it is a static\n' +
       'source-code audit against upstream FontParam.ARROW(13, normal)\n' +
-      '(~/git/plantuml/.../klimt/font/FontParam.java:54).\n',
+      '(~/git/knowvah/plantuml/.../klimt/font/FontParam.java:54).\n',
   );
   for (const row of CALL_SITE_AUDIT) {
     const status =

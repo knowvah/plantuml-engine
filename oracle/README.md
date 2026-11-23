@@ -56,7 +56,7 @@ Seam #5 (`patches/0005-oracle-png-bounder.patch`, pbs, #170 option 3) makes
 `FileFormat.PNG`'s bounder deterministic under `PLANTUML_DETERMINISTIC_TEXT`, so a
 creole math rollback and wire `print` are measured from the width table. It was
 committed in a `/tmp` clone (`d878ea98104`); the user applies it to the fork's
-`dot-output`, and until then `build-oracle.sh` against `~/git/plantuml` fails its
+`dot-output`, and until then `build-oracle.sh` against `~/git/knowvah/plantuml` fails its
 drift guard (`dot-output~5` is not the pinned tree).
 
 ## Rebuild
@@ -108,7 +108,7 @@ Grow it by re-running the selection pass over the warm
 `oracle/goldens/description/<slug>/` directory. No jar run, no network —
 purely a data-driven extension of an already-warm offline cache.
 
-`build-oracle.sh` reads the fork from `$PLANTUML_FORK` (default `~/git/plantuml`)
+`build-oracle.sh` reads the fork from `$PLANTUML_FORK` (default `~/git/knowvah/plantuml`)
 and builds the `dot-output` branch. On a machine without the fork, clone
 `forkRepo`, `git checkout dot-output` (or apply the patch onto `upstreamSha`),
 then run gradle.
