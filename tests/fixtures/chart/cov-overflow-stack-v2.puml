@@ -1,0 +1,6 @@
+@startchart
+h-axis [A, B]
+v2-axis 0 --> 10
+area [1e308] v2
+area [1e308] v2
+@endchart

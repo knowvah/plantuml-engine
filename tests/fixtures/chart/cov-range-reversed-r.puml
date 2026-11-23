@@ -1,0 +1,4 @@
+@startchart
+radar [1, 2, 3]
+r-axis 5 --> 1
+@endchart

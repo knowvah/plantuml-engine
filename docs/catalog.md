@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2665 modules · 8838 exported names.
+2667 modules · 8845 exported names.
 
 ## `src/`
 
@@ -1853,13 +1853,14 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `AreaRenderer.ts` | `AreaRendererParams`, `AreaRenderer` | AreaRenderer — each run of present values is a polygon, top then bottom, drawn with no stroke set, so it inherits the outer 1.0; then its top line at 2.0; then labels at `y - 8`. |
 | `BarRenderer.ts` | `BarRendererParams`, `BarSlice`, `BarRenderer` | BarRenderer — single, grouped and stacked bars, vertical or horizontal. |
 | `CartesianChart.ts` | `CartesianChartFields`, `CartesianChart` | CartesianChart — a bar, line, area or scatter chart once every line is parsed and every implicit value resolved: the categories (1, 2, ..., n when none is given), the value axes fitted to the data, the series as plotted. |
-| `chart-checks.ts` | `ERROR_PAIRS_NEED_NUMERIC`, `ERROR_SAME_FORMAT`, `ERROR_KEYS_NEED_CATEGORIES`, `CartesianCheckState`, `checkCartesianKey`, `checkCartesianKeys`, `checkCoordinatePairs`, `checkSameFormat` | `ChartDiagram`'s checks on cartesian data as it is written: keys against the category axis, coordinate pairs against the h-axis, one data format for every series. |
+| `chart-checks.ts` | `ERROR_PAIRS_NEED_NUMERIC`, `ERROR_SAME_FORMAT`, `ERROR_KEYS_NEED_CATEGORIES`, `checkRange`, `CartesianCheckState`, `checkCartesianKey`, `checkCartesianKeys`, `checkCoordinatePairs`, `checkSameFormat` | `ChartDiagram`'s checks on cartesian data as it is written: keys against the category axis, coordinate pairs against the h-axis, one data format for every series. |
 | `chart-modes.ts` | `LegendPosition`, `GridMode`, `StackMode`, `Orientation` | `ChartDiagram`'s nested enums, apart from the diagram so the renderers can read them without an import cycle. |
 | `chart-polar.ts` | `Kind`, `ChartKind`, `kindOf`, `keywordOf`, `isPolar`, `checkKeys`, `ERROR_ONE_PIE`, `RadialAxisSettings`, `PolarAxes`, `checkFinalPie` | `ChartDiagram`'s pie and radar side (e8ef39dd55c): the kind a keyword belongs to and the check that keeps the kinds apart, the radar's categories, values and radial scale, and the checks on pie values and radar keys. |
+| `chart-ranges.ts` | `TOO_LARGE`, `AutomaticRangeState`, `checkAutomaticRanges` | `ChartDiagram.checkFinalError`'s range checks (3a4d96cb3, plantuml/plantuml#3030): an automatic range is fitted to the values (`ChartAxis#withNiceRange`), and values near the limits of a double can make it infinite (a stack of 1e308 + 1e308 |
 | `chart-resolve.ts` | `ValueAxisContext`, `getValueAxis`, `keyCategories`, `getCategories`, `alignKeys`, `getHAxis`, `getPlottedSeries`, `hasCoordinatePairs`, `CartesianSource`, `resolveCartesian` | `ChartDiagram`'s resolution of a cartesian chart once every line is parsed: the fitted value axes, the categories, the keyed values aligned on them, the numeric h-axis of coordinate pairs and the values spread over an h-axis range. |
 | `chart-skin-param.ts` | `SkinParamSource`, `SkinParam` | The chart engine's `SkinParam` — the slice of upstream's `skin/SkinParam.java` a `ChartDiagram` reaches through `TitledDiagram#getSkinParam()`: the `ISkinSimple` members the creole sheets read, `getIHtmlColorSet`, and the real style engine' |
 | `ChartAnnotation.ts` | `ChartAnnotation` | ChartAnnotation — text at a data coordinate, with an optional arrow. |
-| `ChartAxis.ts` | `LabelPosition`, `ChartTick`, `ChartAxis` | ChartAxis — one numeric axis: title, range, autoscale, custom ticks, tick spacing and label position. |
+| `ChartAxis.ts` | `LabelPosition`, `ChartTick`, `isInfinite`, `ChartAxis` | ChartAxis — one numeric axis: title, range, autoscale, custom ticks, tick spacing and label position. |
 | `ChartDiagram.ts` | `GridMode`, `LegendPosition`, `Orientation`, `StackMode`, `Kind`, `RadialAxisSettings`, `ChartDiagram` | ChartDiagram — one `@startchart` block: the axes, the series and the plot annotations the commands fill. |
 | `ChartDiagramFactory.ts` | `parseChart` | `ChartDiagramFactory`: the chart commands first, the common commands last ("so they don't override chart-specific ones"). |
 | `ChartLegendBlock.ts` | `ChartLegendBlock` | ChartLegendBlock — the legend of a pie (one entry per slice) or a radar (one per series): a coloured square and a name per entry, one under the other on the left or right of the chart, side by side above or below it. |
@@ -1885,7 +1886,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `chart-command-text.ts` | `SP0`, `SP1`, `TITLE_PART`, `RANGE_PART`, `bracketGroup`, `LABELS_PART`, `V2_PART`, `seriesHead`, `seriesOf`, `addOrOpen`, `javaSplitComma`, `parseLabels`, `decorateSeries`, `withBadColor` | The regex fragments and Java text helpers the chart commands share. |
 | `ChartCartesianData.ts` | `ChartCartesianData`, `parseCartesianData` | ChartCartesianData — the data of a bar, line, area or scatter between brackets (22ed6b6b822): values, optionally keyed (`[Jan: 10, Feb: 20]`), or coordinate pairs for a line or a scatter (`[(1, 2), (3, 4)]`). |
-| `ChartDataItems.ts` | `BRACKETED`, `ChartDataItem`, `ChartDataItemResult`, `ChartDataItems`, `parseDataItems`, `applyTo`, `parseLabels`, `parseSingle`, `parseFiniteDouble`, `checkDelimiters`, `stripDelimiters`, `isOpening`, `unquote` | ChartDataItems — the bracket, quote and item helpers the chart data parsers share, and the single list item `CommandChartItem` reads (5ee1a051948). |
+| `ChartDataItems.ts` | `BRACKETED`, `ChartDataItem`, `ChartDataItemResult`, `ChartDataItems`, `parseDataItems`, `applyTo`, `parseLabels`, `parseSingle`, `checkDelimiters`, `stripDelimiters`, `isOpening`, `unquote` | ChartDataItems — the bracket, quote and item helpers the chart data parsers share, and the single list item `CommandChartItem` reads (5ee1a051948). |
+| `ChartNumber.ts` | `parse` | ChartNumber — reads the numbers written in a chart. |
 | `ChartSeriesName.ts` | `seriesNameRegex`, `seriesNameOf` | ChartSeriesName — a series' optional name, shown in the legend: quoted, and then may hold spaces (`"Revenue 2024"`), or one word of letters, digits, `_`, `.` and `-` (`Revenue_2024`), separated from the keyword by a blank (31d6742f27f, #263 |
 | `CommandChartAAxis.ts` | `CHART_A_AXIS_RE`, `applyChartAAxis` | `CommandChartAAxis` — the categories around a pie or a radar (e8ef39dd55c): `a-axis [Dev, "Ops, Run", QA]`. |
 | `CommandChartAnnotation.ts` | `CHART_ANNOTATION_RE`, `applyChartAnnotation` | `CommandChartAnnotation`: `annotation "text" at (x, y) [<<arrow>>]`. |
@@ -3217,8 +3219,8 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `TimingFormat.ts` | `SimpleDateFormatSpec`, `TimingFormat` |  |
 | `TimingNote.ts` | `TimingNoteArgs`, `TimingNote` |  |
 | `TimingRuler.ts` | `TimeCodes`, `TimingRuler` |  |
-| `TimingRulerBreak.ts` | `BREAK_IN_TICKS`, `Break`, `getPosInTicks`, `getBreaksDuration`, `getBreakContaining`, `RegularTimesRuler`, `getRegularTimes`, `getLabelX`, `isTooCloseToBreak`, `drawAxisLine`, `getZigzag`, `getBreakMask`, `toPath` | The t-axis breaks of `TimingRuler` (upstream baf98040f42, #2981): the private nested `Break` class and the pieces of break arithmetic that read no ruler field, kept beside `TimingRuler.ts` so that file stays under the size limit. |
-| `TimingRulerLabel.ts` | `TimeLabel`, `withUnit` | The time-axis labels of `TimingRuler`: its nested `TimeLabel` class and the time-axis unit placement of `getTimeLabels` (upstream db06d70e18e, #2982), kept beside `TimingRuler.ts` so that file stays under the size limit. |
+| `TimingRulerBreak.ts` | `BREAK_IN_TICKS`, `Break`, `isBreakEdge`, `getPosInTicks`, `getBreaksDuration`, `getBreakContaining`, `RegularTimesRuler`, `getRegularTimes`, `getLabelX`, `isTooCloseToBreak`, `drawAxisLine`, `getZigzag`, `getBreakMask`, `toPath` | The t-axis breaks of `TimingRuler` (upstream baf98040f42, #2981): the private nested `Break` class and the pieces of break arithmetic that read no ruler field, kept beside `TimingRuler.ts` so that file stays under the size limit. |
+| `TimingRulerLabel.ts` | `TimeLabel`, `withoutOverlaps`, `withUnit` | The time-axis labels of `TimingRuler`: its nested `TimeLabel` class and the time-axis unit placement and the collision filter of `getTimeLabels` (upstream db06d70e18e, #2982; b066ee08c, #3028), kept beside `TimingRuler.ts` so that file stay |
 | `tree-set.ts` | `Comparable`, `treeSetAdd`, `TreeMapEntry`, `treeMapPut` | An element that orders itself, as `java.lang.Comparable` does. |
 
 ## `src/diagrams/timing/command/`

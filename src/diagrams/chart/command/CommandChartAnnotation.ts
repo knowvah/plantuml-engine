@@ -2,7 +2,7 @@
  * `CommandChartAnnotation`: `annotation "text" at (x, y) [<<arrow>>]`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartAnnotation.java
  */
-import { parseFiniteDouble } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
 import { javaTrim } from '../../../core/java-number-format.js';
 import { ChartAnnotation } from '../ChartAnnotation.js';
@@ -25,10 +25,10 @@ export function applyChartAnnotation(diagram: ChartDiagram, match: RegExpExecArr
   const xPosStr = javaTrim(g['XPOS']!);
   const yPosStr = javaTrim(g['YPOS']!);
 
-  const yPosition = parseFiniteDouble(yPosStr);
+  const yPosition = ChartNumber.parse(yPosStr);
   if (yPosition === undefined) return CommandExecutionResult.error(`Y position must be a numeric value: ${yPosStr}`);
 
   // Not a number: a categorical label.
-  const xPosition = parseFiniteDouble(xPosStr) ?? xPosStr;
+  const xPosition = ChartNumber.parse(xPosStr) ?? xPosStr;
   return diagram.addAnnotation(new ChartAnnotation(g['TEXT']!, xPosition, yPosition, g['ARROW'] !== undefined));
 }

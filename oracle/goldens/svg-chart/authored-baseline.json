@@ -652,6 +652,26 @@
     },
     {
       "type": "chart",
+      "slug": "cov-extreme-hz",
+      "topic": "T4c geometry: extreme-hz",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-extreme-v2",
+      "topic": "T4c geometry: extreme-v2",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
       "slug": "cov-h-grid-labels",
       "topic": "T4c geometry: h-grid-labels",
       "status": "baseline",
@@ -699,11 +719,11 @@
       "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
-        "line": 4,
-        "message": "X-coordinate 5.0 is outside h-axis range [10.0, 0.0] (Assumed diagram type: chart)"
+        "line": 2,
+        "message": "h-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
@@ -832,13 +852,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 3,
         "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -847,13 +867,13 @@
       "status": "baseline",
       "weightedScore": 7,
       "diffCount": 7,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -972,9 +992,8 @@
       "status": "baseline",
       "weightedScore": 0,
       "diffCount": 0,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -983,13 +1002,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Y position must be a numeric value: NaN (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -998,13 +1017,13 @@
       "status": "baseline",
       "weightedScore": 7,
       "diffCount": 7,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -1013,13 +1032,13 @@
       "status": "baseline",
       "weightedScore": 7,
       "diffCount": 7,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -1028,13 +1047,13 @@
       "status": "baseline",
       "weightedScore": 7,
       "diffCount": 7,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -1075,6 +1094,36 @@
       "diffCount": 0,
       "measuredAt": "2026-11-05",
       "measuredAgainstCommit": "d2eaf323e"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-overflow-radar-spread",
+      "topic": "T4c geometry: overflow-radar-spread",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-overflow-stack-v2",
+      "topic": "T4c geometry: overflow-stack-v2",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 2,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -1138,23 +1187,123 @@
     },
     {
       "type": "chart",
+      "slug": "cov-range-overflow-h",
+      "topic": "T4c geometry: range-overflow-h",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "h-axis range is too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-overflow-r",
+      "topic": "T4c geometry: range-overflow-r",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "r-axis range is too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-overflow-v",
+      "topic": "T4c geometry: range-overflow-v",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range is too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-overflow-v2",
+      "topic": "T4c geometry: range-overflow-v2",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v2-axis range is too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
       "slug": "cov-range-reversed",
       "topic": "T4c geometry: range-reversed",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-reversed-r",
+      "topic": "T4c geometry: range-reversed-r",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "r-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "cov-range-reversed-v2",
+      "topic": "T4c geometry: range-reversed-v2",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v2-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-range-zero-span",
       "topic": "T4c geometry: range-zero-span",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
@@ -1341,95 +1490,120 @@
       "slug": "cov-span-annotation",
       "topic": "T4e/T4c error or crash: span-annotation",
       "status": "baseline",
-      "weightedScore": 393,
-      "diffCount": 68,
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "db4c389f2"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-bar",
       "topic": "T4e/T4c error or crash: span-bar",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-bar-at-min",
       "topic": "T4e/T4c error or crash: span-bar-at-min",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-grid",
       "topic": "T4e/T4c error or crash: span-grid",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-hz",
       "topic": "T4e/T4c error or crash: span-hz",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-05",
-      "measuredAgainstCommit": "d2eaf323e"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 4,
+        "message": "h-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-line",
       "topic": "T4e/T4c error or crash: span-line",
       "status": "baseline",
-      "weightedScore": 386,
-      "diffCount": 68,
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "db4c389f2"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-spacing",
       "topic": "T4e/T4c error or crash: span-spacing",
       "status": "baseline",
-      "weightedScore": 340,
-      "diffCount": 133,
+      "weightedScore": 5,
+      "diffCount": 5,
       "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
-        "line": null,
-        "message": "java.lang.IllegalArgumentException"
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "db4c389f2"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
       "slug": "cov-span-ticks",
       "topic": "T4e/T4c error or crash: span-ticks",
       "status": "baseline",
-      "weightedScore": 0,
-      "diffCount": 0,
-      "measuredAt": "2026-11-20",
-      "measuredAgainstCommit": "c4b0b86e0"
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 3,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     },
     {
       "type": "chart",
@@ -1738,13 +1912,13 @@
       "status": "baseline",
       "weightedScore": 7,
       "diffCount": 7,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 4,
         "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "d8e3d3e71"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2173,13 +2347,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 7,
         "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2188,13 +2362,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 7,
         "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2203,13 +2377,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 7,
         "message": "Invalid number \"1e999\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2218,13 +2392,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 7,
         "message": "Invalid coordinate pair \"(3, -Infinity)\" (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2233,13 +2407,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 8,
         "message": "Y position must be a numeric value: Infinity (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -2248,13 +2422,13 @@
       "status": "baseline",
       "weightedScore": 5,
       "diffCount": 5,
-      "reason": "the pinned a720bdd jar hangs on this source (ChartAxis.withNiceRange never returns); the oracle comes from the a720bdd oracle jar with efe6d85e5f3 applied, the fix proposed in plantuml/plantuml#3030, which the port mirrors ahead of a release (user ruling 2026-11-21); re-pin when a release carries it",
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
       "jarError": {
         "line": 7,
         "message": "Invalid number format in axis range (Assumed diagram type: chart)"
       },
-      "measuredAt": "2026-11-21",
-      "measuredAgainstCommit": "531a94fff"
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
     },
     {
       "type": "chart",
@@ -4425,6 +4599,386 @@
       },
       "measuredAt": "2026-11-20",
       "measuredAgainstCommit": "98696e766"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-annotation_y_infinity",
+      "topic": "upstream vega/nonreg/group3030: annotation_y_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 11,
+        "message": "Y position must be a numeric value: Infinity (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-area_stack_overflow",
+      "topic": "upstream vega/nonreg/group3030: area_stack_overflow",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-bar_infinity",
+      "topic": "upstream vega/nonreg/group3030: bar_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-bar_minus_infinity",
+      "topic": "upstream vega/nonreg/group3030: bar_minus_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number \"-Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-bar_nan",
+      "topic": "upstream vega/nonreg/group3030: bar_nan",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-bar_overflow",
+      "topic": "upstream vega/nonreg/group3030: bar_overflow",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number \"1e999\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-extreme_negative_value",
+      "topic": "upstream vega/nonreg/group3030: extreme_negative_value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-fixed_v_axis_nan",
+      "topic": "upstream vega/nonreg/group3030: fixed_v_axis_nan",
+      "status": "baseline",
+      "weightedScore": 7,
+      "diffCount": 7,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 11,
+        "message": "Invalid number \"NaN\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-line_infinity",
+      "topic": "upstream vega/nonreg/group3030: line_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-pie_infinity",
+      "topic": "upstream vega/nonreg/group3030: pie_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-radar_infinity",
+      "topic": "upstream vega/nonreg/group3030: radar_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "Invalid number \"Infinity\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-scatter_pair_infinity",
+      "topic": "upstream vega/nonreg/group3030: scatter_pair_infinity",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid coordinate pair \"(3, -Infinity)\" (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-smallest_value",
+      "topic": "upstream vega/nonreg/group3030: smallest_value",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-spread_overflow",
+      "topic": "upstream vega/nonreg/group3030: spread_overflow",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-stacked_overflow",
+      "topic": "upstream vega/nonreg/group3030: stacked_overflow",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-stacked_overflow_fixed_axis",
+      "topic": "upstream vega/nonreg/group3030: stacked_overflow_fixed_axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "The values are too large to be drawn (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-v_axis_overflow",
+      "topic": "upstream vega/nonreg/group3030: v_axis_overflow",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "Invalid number format in axis range (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3030-valid_bar",
+      "topic": "upstream vega/nonreg/group3030: valid_bar",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "f90b3aa30"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-empty_h_axis_horizontal",
+      "topic": "upstream vega/nonreg/group3031: empty_h_axis_horizontal",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 11,
+        "message": "h-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-empty_v2_axis",
+      "topic": "upstream vega/nonreg/group3031: empty_v2_axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 11,
+        "message": "v2-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-empty_v_axis_line",
+      "topic": "upstream vega/nonreg/group3031: empty_v_axis_line",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-empty_v_axis_spacing",
+      "topic": "upstream vega/nonreg/group3031: empty_v_axis_spacing",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-reversed_h_axis_horizontal",
+      "topic": "upstream vega/nonreg/group3031: reversed_h_axis_horizontal",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 11,
+        "message": "h-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-reversed_h_axis_pairs",
+      "topic": "upstream vega/nonreg/group3031: reversed_h_axis_pairs",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 9,
+        "message": "h-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-reversed_v_axis",
+      "topic": "upstream vega/nonreg/group3031: reversed_v_axis",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target",
+      "jarError": {
+        "line": 10,
+        "message": "v-axis range must go from a lower to a higher value (Assumed diagram type: chart)"
+      },
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-valid_h_axis_horizontal",
+      "topic": "upstream vega/nonreg/group3031: valid_h_axis_horizontal",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
+    },
+    {
+      "type": "chart",
+      "slug": "vega-group3031-valid_v_axis",
+      "topic": "upstream vega/nonreg/group3031: valid_v_axis",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "ec1a9727d"
     }
   ]
 }

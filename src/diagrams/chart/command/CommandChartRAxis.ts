@@ -5,7 +5,7 @@
  * their shape, compared case-sensitively after a case-insensitive regex.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartRAxis.java
  */
-import { parseFiniteDouble } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
 import type { ChartTick } from '../ChartAxis.js';
 import type { ChartDiagram } from '../ChartDiagram.js';
@@ -25,8 +25,8 @@ export function applyChartRAxis(diagram: ChartDiagram, match: RegExpExecArray): 
   let min: number | undefined = undefined;
   let max: number | undefined = undefined;
   if (g['RANGE_0'] !== undefined && g['RANGE_1'] !== undefined) {
-    min = parseFiniteDouble(g['RANGE_0']);
-    max = parseFiniteDouble(g['RANGE_1']);
+    min = ChartNumber.parse(g['RANGE_0']);
+    max = ChartNumber.parse(g['RANGE_1']);
     if (min === undefined || max === undefined)
       return CommandExecutionResult.error('Invalid number format in axis range');
   }
@@ -47,7 +47,7 @@ function ticksOf(ticksStr: string | undefined): readonly ChartTick[] | undefined
 /** @see CommandChartRAxis.java:122-131 */
 function spacingOf(spacingStr: string | undefined): number | undefined | string {
   if (spacingStr === undefined) return undefined;
-  const spacing = parseFiniteDouble(spacingStr);
+  const spacing = ChartNumber.parse(spacingStr);
   if (spacing === undefined) return 'Invalid number format in spacing value';
   if (spacing <= 0) return 'Tick spacing must be greater than 0';
   return spacing;

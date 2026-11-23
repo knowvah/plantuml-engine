@@ -425,22 +425,22 @@ interface DisjointContext {
 }
 
 /**
- * `cannotPushApart` (`PlayingSpace.java:291-306`): when the left tile is a
- * lone note on one participant and the right one starts at that participant
- * or left of it, pushing the right tile moves the note too, and the jar skips
- * the pair rather than loop. Positions compare by declaration order, as
- * `posB.getCurrentValue()` does before the solve.
+ * `cannotPushApart` (`PlayingSpace.java:294-311`, upstream `cf9e4d42a`): the
+ * left tile is a lone note and the right one starts at or left of the note's
+ * participant -- over several, its rightmost one once the first is found
+ * (`:302-306`) -- so pushing the right tile moves the note too and the jar
+ * skips the pair. Positions compare by declaration order, as `posB` pre-solve.
  */
 function cannotPushApart(left: SequenceEvent, right: SequenceEvent, ctx: DisjointContext): boolean {
   if (!isStandaloneNote(left) || ctx.notes.has(left)) return false;
-  if (left.position === 'over' && left.participants.length > 1) return false;
-  const noteIndex = indexOrUndefined(ctx.sorted, left.participants[0] ?? '');
-  const rightStart = leftmostIndex(right, ctx);
-  return noteIndex !== undefined && rightStart !== undefined && rightStart <= noteIndex;
+  // `getParticipant()`, then `getParticipant2()` only `OVER_SEVERAL` (`:302-306`).
+  const found = left.participants.slice(0, left.position === 'over' ? 2 : 1).map((id) => indexOf(ctx.sorted, id));
+  const noteEnd = found.length === 0 || found[0]! < 0 ? undefined : Math.max(...found);
+  return noteEnd !== undefined && (leftmostIndex(right, ctx) ?? Infinity) <= noteEnd;
 }
 
 /**
- * `leftmostPosB` (`PlayingSpace.java:312-337`): the leftmost participant
+ * `leftmostPosB` (`PlayingSpace.java:317-342`): the leftmost participant
  * pushing this tile moves -- a group's children, a message's two ends, a
  * note's one or two, a `Notes` group's members not `OVER_SEVERAL`.
  */

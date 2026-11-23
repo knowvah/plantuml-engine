@@ -1,0 +1,5 @@
+@startchart
+orientation horizontal
+v-axis [A, B]
+bar [1, -1.7e308]
+@endchart

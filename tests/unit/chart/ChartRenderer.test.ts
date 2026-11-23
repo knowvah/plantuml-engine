@@ -152,8 +152,8 @@ describe('ChartRenderer frame (T3a)', () => {
     expect(svg).toContain('>C</text>');
   });
 
-  it('a zero y range draws its ticks at the one label', () => {
-    expect(draw('v-axis 5 --> 5').match(/>5<\/text>/g)).toHaveLength(6);
+  it('a zero y range is refused on its line, so six labels at 5 are never drawn (93ebfacc5)', () => {
+    expect(() => draw('v-axis 5 --> 5')).toThrow('refused line 0: v-axis range must go from a lower to a higher value');
   });
 
   it('style reaches the axis', () => {

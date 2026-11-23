@@ -117,6 +117,18 @@ describe('ChartTicks', () => {
     expect(valueTicks(axis)).toEqual([{ value: 0.5, ratio: 0.5, label: 'half' }]);
   });
 
+  it('falls back to range / 5 * i only when range * i overflows (3a4d96cb3)', () => {
+    const extreme = new ChartAxis('', -1.7e308, 1);
+    const range = 1 - -1.7e308;
+    const expected = [0, 1, 2, 3, 4, 5].map((i) =>
+      Number.isFinite(range * i) ? -1.7e308 + (range * i) / 5 : -1.7e308 + (range / 5) * i,
+    );
+    expect(valueTicks(extreme).map((t) => t.value)).toEqual(expected);
+    expect(horizontalValueTicks(extreme).map((t) => t.value)).toEqual(expected);
+    expect(expected.every(Number.isFinite)).toBe(true);
+    expect(valueTicks(new ChartAxis('', 0, 0.3)).map((t) => t.value)[3]).toBe((0.3 * 3) / 5);
+  });
+
   it('writes horizontal value ticks with %.0f and numeric ticks with one decimal', () => {
     expect(horizontalValueTicks(new ChartAxis('', 0, 1)).map((t) => t.label)).toEqual(['0', '0', '0', '1', '1', '1']);
     expect(numericTicks(undefined, undefined)).toEqual([]);

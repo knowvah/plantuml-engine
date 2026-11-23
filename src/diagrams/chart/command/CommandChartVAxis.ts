@@ -2,7 +2,7 @@
  * `CommandChartVAxis`: `v-axis`, `y-axis`, `v2-axis` or `y2-axis`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartVAxis.java
  */
-import { parseFiniteDouble } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
 import { javaTrim } from '../../../core/java-number-format.js';
 import { LabelPosition, type ChartAxis, type ChartTick } from '../ChartAxis.js';
@@ -44,7 +44,7 @@ export function parseCustomTicks(ticksStr: string): ChartTick[] | undefined {
     if (colonIndex < 0) return undefined;
     const label = javaTrim(pair.slice(colonIndex + 1));
     if (!label.startsWith('"') || !label.endsWith('"') || label.length <= 1) return undefined;
-    const value = parseFiniteDouble(javaTrim(pair.slice(0, colonIndex)));
+    const value = ChartNumber.parse(javaTrim(pair.slice(0, colonIndex)));
     if (value === undefined) return undefined;
     putTick(ticks, { value, label: label.slice(1, -1) });
   }
@@ -64,8 +64,8 @@ function parseVAxisFields(g: Readonly<Record<string, string | undefined>>): Pars
   let min: number | undefined = undefined;
   let max: number | undefined = undefined;
   if (g['RANGE_0'] !== undefined && g['RANGE_1'] !== undefined) {
-    min = parseFiniteDouble(g['RANGE_0']);
-    max = parseFiniteDouble(g['RANGE_1']);
+    min = ChartNumber.parse(g['RANGE_0']);
+    max = ChartNumber.parse(g['RANGE_1']);
     if (min === undefined || max === undefined) return 'Invalid number format in axis range';
   }
 
@@ -77,7 +77,7 @@ function parseVAxisFields(g: Readonly<Record<string, string | undefined>>): Pars
 
   let tickSpacing: number | undefined = undefined;
   if (g['SPACING'] !== undefined) {
-    tickSpacing = parseFiniteDouble(g['SPACING']);
+    tickSpacing = ChartNumber.parse(g['SPACING']);
     if (tickSpacing === undefined) return 'Invalid number format in spacing value';
     if (tickSpacing <= 0) return 'Tick spacing must be greater than 0';
   }

@@ -46,9 +46,13 @@ describe('ChartDiagram#addSeries', () => {
     expect([axis.getMin(), axis.getMax()]).toEqual([2, 4]);
   });
 
-  it('refuses coordinate pairs on a zero range', () => {
+  it('refuses an empty h-axis range on its line (93ebfacc5), and coordinate pairs on one', () => {
     const d = emptyChartDiagram();
-    d.setXAxis(undefined, 5, 5);
+    expect(d.setXAxis(undefined, 5, 5).getError()).toBe('h-axis range must go from a lower to a higher value');
+    expect(d.getXAxis().isAutoScale()).toBe(true);
+    // Unreachable from a command since 93ebfacc5, kept as upstream keeps it
+    d.getXAxis().setMin(5);
+    d.getXAxis().setMax(5);
     expect(d.addSeries(lineOfPairs([1], [5])).getError()).toBe(
       'Coordinate pair notation requires explicit h-axis range (e.g., h-axis "x" -5 --> 5)',
     );

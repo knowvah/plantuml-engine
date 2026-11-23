@@ -12,6 +12,7 @@ import { PieChart } from './PieChart.js';
 import type { RadarChart } from './RadarChart.js';
 import { SeriesType, type ChartSeries, type ChartValue } from './ChartSeries.js';
 import { keyCategories } from './chart-resolve.js';
+import { checkRange } from './chart-checks.js';
 
 /**
  * The family of a keyword: cartesian axes, a pie, or a radar. `POLAR` is a keyword
@@ -143,8 +144,6 @@ function getRadialAxis(radialAxis: ChartAxis, series: readonly ChartSeries[]): C
 
 /** @see ChartDiagram.java:553, 594 */
 export const ERROR_ONE_PIE = 'Only one pie is allowed in a chart';
-/** @see ChartDiagram.java:536 */
-const ERROR_RADIAL_RANGE = 'r-axis range must go from a lower to a higher value';
 
 /** `setRadialAxis`'s arguments, each set only when given. @see ChartDiagram.java:530-531 */
 export interface RadialAxisSettings {
@@ -177,9 +176,10 @@ export class PolarAxes {
     return undefined;
   }
 
-  /** After the kind check. @see ChartDiagram.java:535-547 */
+  /** After the kind check, the shared range check (93ebfacc5). @see ChartDiagram.java:548-560 */
   setRadialAxis(r: RadialAxisSettings): string | undefined {
-    if (r.min !== undefined && r.max !== undefined && r.min >= r.max) return ERROR_RADIAL_RANGE;
+    const range = checkRange('r-axis', r.min, r.max);
+    if (range !== undefined) return range;
     if (r.min !== undefined) this.radialAxis.setMin(r.min);
     if (r.max !== undefined) this.radialAxis.setMax(r.max);
     if (r.customTicks !== undefined) this.radialAxis.setCustomTicks(r.customTicks);

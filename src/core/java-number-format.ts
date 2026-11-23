@@ -61,12 +61,26 @@ export function javaFormatF(value: number, decimals: number): string {
   return javaFixedN(value, decimals);
 }
 
-/** `String.format("%.<decimals>e", value)`: HALF_UP on the shortest decimal, exponent of at least two digits. */
+/**
+ * The shortest round-trip digits of a non-negative finite double, in exponential
+ * form, a one-digit shortest giving way to the closest two-digit decimal (JDK 19+
+ * `Double.toString`): only subnormals move, `Double.MIN_VALUE` reads 4.9e-324.
+ */
+function javaShortestExponential(magnitude: number): string {
+  const shortest = magnitude.toExponential();
+  return shortest.startsWith(`${shortest.charAt(0)}e`) ? magnitude.toExponential(1) : shortest;
+}
+
+/**
+ * `String.format("%.<decimals>e", value)`: HALF_UP on the `Double.toString` digits
+ * (the jar prints `Double.MIN_VALUE` as 4.90e-324, 3a4d96cb3's smallest_value.svg),
+ * exponent of at least two digits.
+ */
 export function javaFormatE(value: number, decimals: number): string {
   const nonFinite = nonFiniteText(value);
   if (nonFinite !== undefined) return nonFinite;
   const sign = value < 0 || Object.is(value, -0) ? '-' : '';
-  const [mantissa, exponentText] = Math.abs(value).toExponential().split('e') as [string, string];
+  const [mantissa, exponentText] = javaShortestExponential(Math.abs(value)).split('e') as [string, string];
   const padded = mantissa.replace('.', '') + '0'.repeat(decimals + 1);
   let kept = padded.slice(0, decimals + 1);
   let exponent = Number(exponentText);
@@ -117,9 +131,7 @@ export function javaDoubleToString(value: number): string {
     const plain = magnitude.toString();
     return `${sign}${plain}${plain.includes('.') ? '' : '.0'}`;
   }
-  const shortest = magnitude.toExponential();
-  const twoDigits = shortest.startsWith(`${shortest.charAt(0)}e`) ? magnitude.toExponential(1) : shortest;
-  const [mantissa, exponent] = twoDigits.split('e') as [string, string];
+  const [mantissa, exponent] = javaShortestExponential(magnitude).split('e') as [string, string];
   return `${sign}${mantissa}${mantissa.includes('.') ? '' : '.0'}E${exponent.replace('+', '')}`;
 }
 
