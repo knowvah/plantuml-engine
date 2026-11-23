@@ -22,7 +22,7 @@ import type { UmlSource } from '../../../src/core/block-extractor.js';
 import { PLANTUML_LOGO } from '../../../src/core/error/plantuml-logo.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
-import { COMMIT, VERSION } from '../../../src/core/version.js';
+import { COMMIT, DOT_ENGINE_VERSION, fullDescription, VERSION } from '../../../src/core/version.js';
 import { License } from '../../../src/diagrams/version/License.js';
 import {
   addInfoVersion,
@@ -413,5 +413,47 @@ describe('PSystemVersion.createShowVersion — geometry against the jar probe', 
   it('renders the same document three times', () => {
     const page = versionPage();
     expect(new Set([0, 1, 2].map(() => page.exportDiagram(0, measurer))).size).toBe(1);
+  });
+});
+
+/**
+ * `createTestDot` (java:234-240): `fullDescription()` and the executable arm's
+ * version line, with `@knowvah/dot-engine` for `GraphViz` (#182 ruling 2) and
+ * neither the version checks (ruling 3) nor the file-generation probe
+ * (ruling 4). Jar probe (2026-11-21): the description, `<b>GraphViz</b>
+ * ""dot - graphviz version ...""` and `<b>Installation seems OK. File
+ * generation OK`.
+ */
+describe('PSystemVersion.createTestDot (java:234-240, #182 rulings 2-4)', () => {
+  const page = (): PSystemVersion => PSystemVersion.createTestDot(SOURCE, new PreprocessingArtifact());
+
+  it('prints the full description, then the engine and its version', () => {
+    expect(page().getLines()).toEqual([fullDescription(), `<b>@knowvah/dot-engine</b> ""${DOT_ENGINE_VERSION}""`]);
+  });
+
+  it('runs no file-generation probe (ruling 4)', () => {
+    engine.calls.length = 0;
+    page();
+    expect(engine.calls).toEqual([]);
+  });
+
+  it('draws no image (withImage = false, java:239)', () => {
+    const svg = page().exportDiagram(0, measurer);
+    expect(svg).not.toContain('<image');
+    expect(svg).toContain('font-family="monospace">' + DOT_ENGINE_VERSION + '</text>');
+  });
+});
+
+describe('PSystemVersion.createKeyDistributor (java:242-258)', () => {
+  const page = (): PSystemVersion => PSystemVersion.createKeyDistributor(SOURCE, new PreprocessingArtifact());
+
+  it('prints "No license found": retrieveDistributor() is null here (java:246-247)', () => {
+    expect(page().getLines()).toEqual(['No license found']);
+  });
+
+  it('draws no image (im = null, java:245)', () => {
+    const svg = page().exportDiagram(0, measurer);
+    expect(svg).not.toContain('<image');
+    expect(svg).toContain('>No license found</text>');
   });
 });

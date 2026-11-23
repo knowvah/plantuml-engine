@@ -1,8 +1,9 @@
 /**
  * SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across
  * `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/
- * FutureVersion`, and (license/keygen, out of this port's roadmap)
- * `version/PLSSignature`, `version/LicenseInfo`. Ported here (T8b) out of
+ * FutureVersion`, `version/PLSSignature` and `version/LicenseInfo`. The key
+ * tools are ported (#182), but `PLSSignature` and `LicenseInfo`'s key
+ * decoding are not (vkt D3), so this port has no caller for those two. Ported here (T8b) out of
  * `svek/Ports.ts`, which had inlined a scoped MD5-only copy (T8) —
  * consolidated so the next caller (`UImageSvg`, `UmlSource`) reuses this
  * module instead of writing a second hash implementation.
@@ -12,14 +13,14 @@
  * `getSHA512Hex`, `getSHA512raw(String)`, `getSignatureWithoutImgSrc`,
  * `purge`.
  *
- * NOT ported — `md5Native` (SignatureUtils.java:210-272): a `@JSBody`
+ * NOT ported — `md5Native` (SignatureUtils.java:219-276): a `@JSBody`
  * inline-JS MD5 used ONLY on the TeaVM (Java-to-JS transpile) runtime
  * path (`TeaVM.isTeaVM()`). This port has no TeaVM branch at all — its
  * single `getMD5Hex` implementation below is already pure TypeScript,
  * running identically in Node and the browser, so there is no second
  * runtime path to port.
  *
- * NOT PORTED — `getSignatureSha512(SFile)` (SignatureUtils.java:152-156).
+ * NOT PORTED — `getSignatureSha512(SFile)` (SignatureUtils.java:156-160).
  * BLOCKED ON THE FILE SEAM: reads bytes via `SFile#openFile()`, a
  * filesystem handle. `src/` is browser-only (CLAUDE.md's architecture
  * notes: no Node built-ins, no filesystem) and has no file-reading seam
@@ -31,23 +32,22 @@
  * silent drop.
  *
  * NOT PORTED — `getSignatureSha512(InputStream)` (SignatureUtils.java:
- * 158-174). BLOCKED ON THE FILE SEAM for the same reason: streams bytes
+ * 162-178). BLOCKED ON THE FILE SEAM for the same reason: streams bytes
  * from an open file handle one at a time. Same gap as above.
  *
- * NOT PORTED — `getSignature(SFile)` (SignatureUtils.java:189-208).
+ * NOT PORTED — `getSignature(SFile)` (SignatureUtils.java:193-212).
  * BLOCKED ON THE FILE SEAM for the same reason (MD5 of a file's bytes,
  * not a string).
  *
- * NOT PORTED — `salting(String, byte[])` (SignatureUtils.java:98-107).
+ * NOT PORTED — `salting(String, byte[])` (SignatureUtils.java:102-111).
  * NOT a file-seam block — it takes a password string and salt bytes, no
- * filesystem access. It needs PBKDF2WithHmacSHA1, a keyed-derivation
- * primitive this port has never built. Its only upstream caller is
- * `version/PLSSignature.java` (license-key generation/verification),
- * which is outside this port's tracked roadmap (CLAUDE.md has no
- * license-verification feature). Implementing PBKDF2/HMAC-SHA1 from
- * scratch to relocate a method with zero in-scope callers would silently
- * widen this task's write-set well past "move the existing MD5". Add it,
- * with its own NIST/RFC test vectors, if a real caller emerges.
+ * filesystem access. It needs PBKDF2WithHmacSHA1 (500 iterations, a
+ * 512-bit key), a keyed-derivation primitive this port has never built.
+ * Its only upstream callers are in `version/PLSSignature.java`
+ * (`retrieveNamed`, java:181, and `signature`, java:238): licence-key
+ * decoding, which the ported key tools deliberately do not perform
+ * (#182, vkt D3), so it has no caller here. Add it, with its own
+ * NIST/RFC test vectors, if a real caller emerges.
  */
 
 /** RFC 1321 / FIPS 180-4 hex encoding — each byte becomes two lowercase hex

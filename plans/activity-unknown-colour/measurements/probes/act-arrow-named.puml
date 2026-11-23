@@ -1,0 +1,5 @@
+@startuml
+:a;
+-[#Navy;#DarkGreen,dashed]->
+:b;
+@enduml

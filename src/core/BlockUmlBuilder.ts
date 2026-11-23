@@ -131,7 +131,7 @@ function appendWhilePaused(current: StringLocated[], s: StringLocated): void {
  * synthesizes the missing `@end`), not in the library.
  */
 export function buildBlockUmls(source: string, options?: PreprocessOptions): BlockUml[] {
-  return rawBlocksOf(source).map((raw) => buildBlockUml(raw, options));
+  return rawBlocksOf(source, options?.sourceDescription).map((raw) => buildBlockUml(raw, options));
 }
 
 /**
@@ -140,10 +140,11 @@ export function buildBlockUmls(source: string, options?: PreprocessOptions): Blo
  * caller can prefetch each block's own `!include`s before preprocessing it
  * (`renderAll`'s per-block include isolation; without this, preprocessing a
  * block whose includes are not yet in the store fails with an unresolved-path
- * error rather than the one the fetch itself produced).
+ * error rather than the one the fetch itself produced). `description` labels
+ * every line (`readLines`; omitted -> `"string"`).
  */
-export function rawBlocksOf(source: string): RawBlock[] {
-  return splitRawBlocks(mergeEndingBackslashLines(readLines(source)));
+export function rawBlocksOf(source: string, description?: string): RawBlock[] {
+  return splitRawBlocks(mergeEndingBackslashLines(readLines(source, description)));
 }
 
 /**

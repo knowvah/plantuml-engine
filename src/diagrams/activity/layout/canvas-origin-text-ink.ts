@@ -11,7 +11,7 @@
 import type { ActivityEdgeGeo, ActivityNodeGeo, SwimlaneGeo } from '../activity-geometry.types.js';
 import type { Theme } from '../../../core/theme.js';
 import { activityFontSize } from '../activity-style-defaults.js';
-import { edgeLabelBlock, edgeLabelBlockSize } from './compress/edge-label-anchor.js';
+import { edgeLabelDrawnTopLeft, edgeLabelInk } from './compress/edge-label-anchor.js';
 import { floorActionLineHeight } from '../tiles/gtile-action.js';
 import { diamondTestBlock, ifLabelBlock } from '../activity-text-sheet-diamond.js';
 import { activityTextFontConfiguration } from '../activity-text-sheet.js';
@@ -22,7 +22,6 @@ import { activityMeasurer } from '../activity-string-bounder.js';
 import { withActivityBox } from '../activity-box-theme.js';
 import { EmojiBoxBlock, emojiBoxBlocks, emojiBoxBounder } from '../activity-box-emoji.js';
 import { TITLE_ASCENT_FRACTION } from './swimlane-placement.js';
-import { arrowHorizontalAlignment, getTextBlockPosition } from './snake-text-position.js';
 import type { MutableInkBounds } from './canvas-origin.js';
 
 /**
@@ -143,13 +142,10 @@ export function extendForEdgeLabelText(acc: MutableInkBounds, edge: ActivityEdge
   // padding (`SheetBlock1.java:209-210`) -- so a label wrapped by
   // `style.wrapWidth()` (`Branch.java:248-258`) reaches its last wrapped
   // line, not its last `\n` line.
-  const wrapped = edge.labelWrapped === true;
-  const fc = activityTextFontConfiguration(theme, activityFontSize(theme, 'arrow'), 'arrow');
-  const sb = klimtStringBounder(activityMeasurer(theme), { family: fc.family, size: fc.size });
-  const tb = edgeLabelBlock(edge.label, theme, wrapped);
-  const dim = edgeLabelBlockSize(edge.label, theme, undefined, wrapped);
-  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? arrowHorizontalAlignment(theme));
-  const mm = TextBlockUtils.getMinMax(tb, sb, false);
+  // aae T3: placed where it is drawn, the compression `labelDelta` included (`CompressionXorYBuilder.java:87-89` inks
+  // the compressed drawing), so an embed label that compression moved inks at its image, not 31.5 above it.
+  const mm = edgeLabelInk(edge.label, theme, edge.labelWrapped === true, edge.labelShapeDeltas);
+  const position = edgeLabelDrawnTopLeft(edge, theme);
   // `Snake#drawRainbow` draws the label through `ug.apply(textTranslate)` (`Snake.java:222-223`).
   acc.minX = Math.min(acc.minX, position.x + labelDx + mm.getMinX());
   acc.maxX = Math.max(acc.maxX, position.x + labelDx + mm.getMaxX());

@@ -39,6 +39,18 @@
  * (the board/chart/bpm/wbs pattern,
  * `board.diff-baseline.ratchet.test.ts:10-13, 88-131`), and error parity is
  * asserted: the jar drew no graphviz document, and we drew an error page.
+ *
+ * Accepted divergences (dhk/T1, #186 ruling 2026-11-16): an entry with
+ * `accepted` is a row where we draw graphviz's document but differ from the jar
+ * by design, here because the oracle host's graphviz kerns labels with pango and
+ * Times New Roman and dot-engine's LUT measurer does not (DIVERGENCES.md,
+ * "@startdot labels are measured without the host font's kerning"). Its
+ * `weightedScore` is held like a jar error page's, it must still diverge (a
+ * zero-diff result fails as GOOD NEWS, the ledger's own retire message,
+ * `emitter.golden.test.ts`), it must name an in-force
+ * `oracle/accepted-divergences.json` entry, and its passthrough is still
+ * byte-exact. The dot survey cannot see these rows (it compares LEGACY
+ * captures, cfb9ecd55), so this block is the only gate on their geometry.
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -56,7 +68,12 @@ interface RatchetFixture {
   source: string;
   /** `stock-error-pages.json`'s `dot/<slug>` record; present only on jar error-page rows. */
   jarError?: { line: number | null; message: string };
-  /** Pinned with `jarError`: the score that never rises. */
+  /**
+   * `oracle/accepted-divergences.json`'s `match.id` (`svg-dot/<slug>`); present
+   * only on accepted-divergence rows (dhk D2, #186 ruling 2026-11-16).
+   */
+  accepted?: string;
+  /** Pinned with `jarError` or `accepted`: the score that never rises. */
   weightedScore?: number;
   diffCount?: number;
 }
@@ -66,6 +83,7 @@ interface RatchetManifest {
 }
 
 const GOLDENS_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../../oracle/goldens/svg-dot');
+const LEDGER_PATH = join(dirname(fileURLToPath(import.meta.url)), '../../../oracle/accepted-divergences.json');
 
 const manifest = JSON.parse(readFileSync(join(GOLDENS_ROOT, 'ratchet.json'), 'utf8')) as RatchetManifest;
 
@@ -97,8 +115,31 @@ function firstDiffPath(diffs: readonly { path: string }[]): string {
 /** graphviz's root group id: present in every document graphviz writes. */
 const GRAPHVIZ_DOCUMENT_MARK = 'id="graph0"';
 
-const drawn = manifest.fixtures.filter((f) => f.jarError === undefined);
+const drawn = manifest.fixtures.filter((f) => f.jarError === undefined && f.accepted === undefined);
 const jarErrors = manifest.fixtures.filter((f) => f.jarError !== undefined);
+const accepted = manifest.fixtures.filter((f) => f.accepted !== undefined);
+
+/** The in-force ledger ids (`entries`, never `retired`). */
+function inForceLedgerIds(): Set<string> {
+  const ledger = JSON.parse(readFileSync(LEDGER_PATH, 'utf8')) as { entries: { match: { id?: string } }[] };
+  return new Set(ledger.entries.map((e) => e.match.id).filter((id): id is string => id !== undefined));
+}
+
+/** Why an accepted row's `accepted` id is not usable, or undefined when it is. */
+function acceptedIdBreak(f: RatchetFixture, inForce: ReadonlySet<string>): string | undefined {
+  if (f.accepted !== `svg-dot/${f.slug}`) return `accepted must be svg-dot/${f.slug}, got ${String(f.accepted)}`;
+  if (!inForce.has(f.accepted)) return `${f.accepted} is not an in-force oracle/accepted-divergences.json entry`;
+  return undefined;
+}
+
+/** The ledger's retire message (`emitter.golden.test.ts`), for a row that stopped diverging. */
+function goodNews(f: RatchetFixture): string {
+  return (
+    `GOOD NEWS: dot/${f.slug} now renders zero-diff -- a fix closed the accepted divergence. ` +
+    `Retire ${String(f.accepted)} in oracle/accepted-divergences.json (move it to \`retired\`) ` +
+    'and re-pin this row as a zero-diff row (drop accepted, weightedScore and diffCount).'
+  );
+}
 
 /** `renderSync`, reporting whether it drew a `PSystemError` page (the survey's
  *  seam, `scripts/lib/survey-error-verdict.ts:16`). */
@@ -153,16 +194,20 @@ describe('svg-dot conformance ratchet (AC1)', () => {
     // Derivation: 5 + 47 = 52.
     // 52 -> 60 at dogr/T1b (2026-11-14): +8 #109 jar error-page rows (2026-10-10 rule, #141).
     // Derivation: 52 + 8 = 60.
-    expect(manifest.fixtures.length).toBe(60);
+    // 62 at dhk/T1 (2026-11-21): +2 #186 accepted rows. Derivation: 60 + 2 = 62.
+    expect(manifest.fixtures.length).toBe(62);
   });
 
-  it('only a jar error-page row carries a score, and every one carries both halves', () => {
+  it('only jar error-page and accepted rows carry a score, and every one carries both halves', () => {
     expect(drawn.filter((f) => f.weightedScore !== undefined || f.diffCount !== undefined).map((f) => f.slug)).toEqual(
       [],
     );
     expect(
-      jarErrors.filter((f) => f.weightedScore === undefined || f.diffCount === undefined).map((f) => f.slug),
+      [...jarErrors, ...accepted]
+        .filter((f) => f.weightedScore === undefined || f.diffCount === undefined)
+        .map((f) => f.slug),
     ).toEqual([]);
+    expect(jarErrors.filter((f) => f.accepted !== undefined).map((f) => f.slug)).toEqual([]);
   });
 });
 
@@ -207,6 +252,56 @@ describe('svg-dot jar error-page rows', () => {
     const graphvizGolden = readGolden(drawn[0]!);
     expect(errorParityBreak(graphvizGolden, renderObserved(readSource(target)))).toBe(
       'the golden is a graphviz document, not a jar error page',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Accepted divergences (dhk D2): score held, still diverging, ledger-signed.
+// ---------------------------------------------------------------------------
+
+describe('svg-dot accepted divergences (#186 ruling, 2026-11-16)', () => {
+  it('every accepted row names an in-force ledger entry for its own slug', () => {
+    expect(accepted.length).toBeGreaterThan(0);
+    const inForce = inForceLedgerIds();
+    for (const f of accepted) expect(acceptedIdBreak(f, inForce), f.slug).toBeUndefined();
+  });
+
+  for (const f of accepted) {
+    it(`dot/${f.slug}: weighted score never rises above its pin (${String(f.weightedScore)})`, () => {
+      const { diffs } = compareSvg(render(readSource(f)), readGolden(f), 'deterministic');
+      expect(
+        weightedScore(diffs),
+        `dot/${f.slug}: score rose. Re-pin only from a fresh measurement.`,
+      ).toBeLessThanOrEqual(f.weightedScore!);
+    });
+
+    it(`dot/${f.slug}: still diverges from the jar`, () => {
+      const { diffs } = compareSvg(render(readSource(f)), readGolden(f), 'deterministic');
+      expect(diffs.length, goodNews(f)).toBeGreaterThan(0);
+    });
+
+    it(`dot/${f.slug}: renderSync emits graphviz's document, not this port's markup`, () => {
+      const ours = render(readSource(f));
+      expect(ours).toContain(GRAPHVIZ_DOCUMENT_MARK);
+      expect(ours).not.toContain('<marker');
+      expect(readGolden(f)).toContain(GRAPHVIZ_DOCUMENT_MARK);
+    });
+  }
+
+  it('the still-diverges and ledger checks fail on a closed or unsigned row (in-memory edit only)', () => {
+    const target = accepted[0]!;
+    const ours = render(readSource(target));
+    // A golden equal to our render: the row would be zero-diff, so (b) must fail.
+    expect(compareSvg(ours, ours, 'deterministic').diffs.length).toBe(0);
+    expect(goodNews(target)).toContain('GOOD NEWS');
+    expect(goodNews(target)).toContain(target.accepted!);
+    // An id with no in-force entry, and an id for another slug, are both refused.
+    const inForce = inForceLedgerIds();
+    expect(acceptedIdBreak({ ...target, accepted: 'svg-dot/no-such-row' }, inForce)).toContain('svg-dot/');
+    const unsigned = new Set([...inForce].filter((id) => id !== target.accepted));
+    expect(acceptedIdBreak(target, unsigned)).toBe(
+      `${target.accepted!} is not an in-force oracle/accepted-divergences.json entry`,
     );
   });
 });

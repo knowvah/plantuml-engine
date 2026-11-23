@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2663 modules · 8824 exported names.
+2665 modules · 8838 exported names.
 
 ## `src/`
 
@@ -92,7 +92,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `include-resolver-timeout.ts` | `withIncludeTimeout` | Bounding one include fetch by time -- the port of upstream's `Future#get(SecurityUtils.getSecurityProfile().getTimeout(), MILLISECONDS)` around every URL read (`security/SURL.java:357-358`, :402, :438). |
 | `include-resolver.ts` | `MapIncludeStore`, `IncludeNotFoundError`, `StdlibNotBundledError`, `EMPTY_INCLUDE_STORE`, `IncludeStore`, `IncludeFetcher`, `CspIncludeError`, `CorsIncludeError`, `IncludeResolveError`, `CircularIncludeError`, `fetchInclude`, `prefetchIncludes`, `IncludeWarmupOptions`, `prepareIncludeStore` | The ASYNC half of the include seam. |
 | `internal-emoji-store.ts` | `INTERNAL_EMOJI_ASSET_PREFIX`, `internalEmojiAssetKey`, `InternalEmojiStore`, `EmojiArtworkResolver`, `emojiArtworkResolverFor`, `internalEmojiStoreFrom` | The Twemoji artwork half of `<:name:>` emoji rendering. |
-| `internal-render-options.ts` | `InternalRenderOptions`, `isJarCompatibleStyleInput`, `withJarCompatibleStyleInput`, `clockOfOptions`, `withClock` |  |
+| `internal-render-options.ts` | `InternalRenderOptions`, `isJarCompatibleStyleInput`, `withJarCompatibleStyleInput`, `clockOfOptions`, `sourceDescriptionOf`, `withSourceDescription`, `withClock` |  |
 | `internal-sprite-store.ts` | `INTERNAL_SPRITE_ASSET_PREFIX`, `internalSpriteAssetKey`, `InternalSpriteStore`, `readPng`, `internalSpriteStoreFrom`, `matchJarSpriteLine` | `SpriteImage.fromInternal` (java `klimt/sprite/SpriteImage.java:100-128`) — the jar-internal `/sprites/**` bundle, ported onto ADR-2's synchronous asset channel (`plans/s1l-tail-fix/decisions.md`). |
 | `java-hash-set.ts` | `javaDoubleHashCode`, `javaHashSetOrder` | java-hash-set.ts — the iteration order of a `java.util.HashSet` built by successive `add` calls, for code upstream iterates straight out of a `HashSet` (e.g. |
 | `java-number-format.ts` | `javaTrim`, `javaFormatF`, `javaFormatE`, `javaFormatLong`, `isLongValued`, `javaDoubleToString`, `parseDouble` | Java's number text: `String.format("%.Nf" \| "%.Ne" \| "%d")` (Locale.US) and `Double.parseDouble`'s grammar. |
@@ -232,7 +232,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `UgSimpleDiagram.ts` | `UgSimpleDiagram` | `UgSimpleDiagram` — a {@link UgDiagram} that is its own `TextBlock`: the subclass implements `calculateDimension`/`drawU`, and `getTextBlock` hands back `this` (`final` upstream). |
 | `uml-source-lines.ts` | `mutateExpandsBreakline`, `loadInternal`, `patchBase64Line`, `umlSourceSeedLines` | The line list upstream's `UmlSource#seed()` walks -- `BlockUml#data` as `PSystemBuilder#createPSystem` turns it into a `UmlSource`. |
 | `usymbol-shapes.ts` | `IconGeo`, `renderDatabaseIcon`, `renderComponentIcon`, `renderActorIcon`, `renderUseCaseIcon`, `renderUSymbolIcon` | Shared per-USymbol leaf-shape renderers — the SVG for a descriptive element's icon (component notch, database cylinder, actor stick-figure, usecase ellipse). |
-| `version.ts` | `VERSION`, `COMMIT`, `COMPILE_TIME_STRING`, `versionString`, `fullDescription` | The version banner the error diagram prints above the source listing. |
+| `version.ts` | `VERSION`, `COMMIT`, `COMPILE_TIME_STRING`, `versionString`, `fullDescription`, `DOT_ENGINE_VERSION` | The version banner the error diagram prints above the source listing. |
 
 ## `src/core/abel/`
 
@@ -1252,7 +1252,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `PreprocessingArtifact.ts` | `PreprocessingArtifact` | `PreprocessingArtifact` + `ConfigurationStore<OptionKey>` -- the two `net.sourceforge.plantuml.preproc` types `EaterOption` (`!option`) needs. |
 | `PythonChunks.ts` | `PythonSources`, `typeWithPython`, `collapse` | Groups the Python lines of a body into chunks, as upstream does before the legacy preprocessor looks at them. |
 | `ReadFilterMergeLines.ts` | `endsWithBackslash`, `mergeEndingBackslashLines` | Trailing-`\` line continuation: a source line ending in a bare `\` merges with the NEXT physical line, before `@start`/`@end` block splitting or command dispatch sees the document. |
-| `ReadLineReader.ts` | `SOURCE_STRING_DESCRIPTION`, `readLines` | Raw text -> the `StringLocated` list the interpreter executes. |
+| `ReadLineReader.ts` | `SOURCE_STRING_DESCRIPTION`, `SOURCE_BLOCK_DESCRIPTION`, `readLines` | Raw text -> the `StringLocated` list the interpreter executes. |
 | `StartUtils.ts` | `isStartDirective`, `isEndDirective`, `isPauseDirective`, `isUnpauseDirective`, `isExit`, `possibleAppend` | The two directive probes `DiagramExtractor` needs: is this line a `@start...` / `@end...` (or the backslash spelling, `\startuml`)? |
 | `stdlib-folders.ts` | `JAR_STDLIB_FOLDERS` | The stdlib folder names the jar ships -- one `stdlib/<name>/info.spm` resource per folder, the file `Stdlib`'s constructor opens first (`Stdlib.java:84-95` -> `SpmChannel#getInternalInputStream`, `SpmChannel.java:69-72`). |
 | `stdlib-path.ts` | `StdlibPathParts`, `splitStdlibPath` | `Stdlib.java`'s stdlib-path key transform, in one place. |
@@ -1506,7 +1506,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `i18n-bundles.ts` | `I18N_BUNDLES` | The eight `i18n*.properties` bundles `I18n.getLocalizedValue` reads through `ResourceBundle.getBundle("i18n", …)`, keyed by bundle suffix (`''` is the root bundle `i18n.properties`). |
 | `I18n.ts` | `forLanguageTag`, `getCandidateLocales`, `getLocalizedValue`, `I18n` | `I18n`: a localized value from the `i18n*.properties` bundles (`i18n-bundles.ts`). |
 | `I18nTimeData.ts` | `Locale`, `newLocale`, `dayOfWeekLong`, `dayOfWeekShort`, `monthShort`, `monthLong` | I18nTimeData — generated day/month name tables per language. |
-| `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, and (license/keygen, out of this port's roadmap) `version/PLSSignature`, `version/Lice |
+| `SignatureUtils.ts` | `SignatureUtils` | SignatureUtils — hex/MD5/SHA-512 digest helpers upstream shares across `UmlSource`, `klimt/shape/UImageSvg`, `version/Version`, `version/ FutureVersion`, `version/PLSSignature` and `version/LicenseInfo`. |
 
 ## `src/core/warning/`
 
@@ -1658,7 +1658,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `canvas-origin-shift.ts` | `ShiftableGeometry`, `shiftAll` | The canvas-origin translate `canvas-origin.ts#finalizeGeometry` applies once it has the shift -- split out of `canvas-origin.ts` (add4-T2e) only to keep that file under the 500-line hook. |
 | `canvas-origin-text-ink.ts` | `SPLIT_LINE_KINDS`, `extendForIfLabelText`, `extendForIfOwnLabelText`, `extendForLaneDivider`, `extendForEdgeLabelText`, `extendForEmojiBox` | b3/T3a (`activity-divergence-drive-2` batch 3): three `canvas-origin.ts` ink-scan corrections (families A/P/Q) split into their own sibling module purely to keep `canvas-origin.ts` under the 500-line hook (mission convention, "a sibling mod |
 | `canvas-origin.ts` | `MutableInkBounds`, `edgeInkX`, `InkSource`, `inkBoundsOf`, `FinalizeInput`, `FinalizedGeometry`, `finalizeGeometry` | Canvas origin (D2, mission `activity-divergence-drive` T1a): ports `Recentred` + the document margin + `LimitFinder` -- replaces the flat `LAYOUT_MARGIN` `assign-coordinates-full.ts#computeBounds` used to add on top of its own maxX/maxY. |
-| `conditional-builder-arrows.ts` | `instructionsOf`, `withBranchArrowLabels` | How a branch's leading and trailing arrows read as instructions and labels, split out of `conditional-builder.ts` (500-line cap, dss T4a). |
+| `conditional-builder-arrows.ts` | `instructionsOf`, `leadingArrowLabel`, `withBranchArrowLabels` | How a branch's leading and trailing arrows read as instructions and labels, split out of `conditional-builder.ts` (500-line cap, dss T4a). |
 | `conditional-builder-long.ts` | `buildIfLongHorizontal`, `buildIfLongVertical` | The `elseif`-chain if-builders, split out of `conditional-builder.ts` (hook-enforced 500-line cap; add2 T3i needed the room for ELSEIFIN) -- `FtileIfLongHorizontal.create`'s per-branch hexagon row and `FtileIfLongVertical.create`'s downward |
 | `conditional-builder.ts` | `IfBuilder`, `IfLayoutCtx`, `IfBuilderResult`, `ifBuilderOf`, `isMainLaneSmallerThanAllOthers`, `buildIf` | `ConditionalBuilder#create`'s dispatch (`ifBuilderOf`, T1's Q0 note) and all three builders (`buildIf`). |
 | `diamond-colors.ts` | `withDiamondColors`, `colorSpread`, `ifDiamondColors`, `whileDiamondColors`, `own`, `repeatDiamondColors`, `diamondStereoBack`, `switchDiamondColors` | The `<<#color>>` fills of a compound's own diamonds, resolved once per tile the way each upstream builder falls back (`Branch#getColor`, `Colors#mergeWith`, `Stereogroup#getHColor`), so the walkers copy a value and never decide. |
@@ -1722,7 +1722,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 |---|---|---|
 | `compress-geometry.ts` | `CompressInput`, `CompressResult`, `compressGeometry` | `compressGeometry` -- `klimt/compress/CompressionXorYBuilder.java:52-69` and `UGraphicCompressOnXorY.java:86-135`, ported over `ActivityGeometry` instead of a live `UGraphic` redraw (D1). |
 | `compression-transform.ts` | `PiecewiseAffineTransform`, `CompressionTransform` | compression-transform.ts — `klimt/compress/PiecewiseAffineTransform.java`, `CompressionTransform.java` (mission `activity-klimt-compress` T2, `decisions.md` D6). |
-| `edge-label-anchor.ts` | `EdgeLabelLayout`, `LabelAnchor`, `edgeLabelBlock`, `edgeLabelBlockSize`, `edgeLabelLayout`, `labelAnchors`, `transformAnchors`, `withLabelDeltas` | Edge-label placement through compression (add4-T3a, R2). |
+| `edge-label-anchor.ts` | `EdgeLabelLayout`, `LabelAnchor`, `edgeLabelBlock`, `edgeLabelBlockSize`, `edgeLabelInk`, `edgeLabelDrawnTopLeft`, `edgeLabelLayout`, `labelAnchors`, `labelDrawPoints`, `withLabelShapeDeltas`, `transformAnchors`, `withLabelDeltas` | Edge-label placement through compression (add4-T3a, R2). |
 | `frame-title-deltas.ts` | `FrameTitleMove`, `withFrameTitleDeltas` | The per-shape move `UGraphicCompressOnXorY` gives a `USymbolFrame` title drawn as a plain block (`USymbolFrame .java:153-154`): every non-line shape the title draws goes to `ct()` of its own draw point, not rigidly with the frame (`UGraphic |
 | `shapes-of-boxes.ts` | `hexagonBox`, `diamondBox`, `conditionBox`, `noteBox`, `boxStyleBox` | `shapes-of.ts`'s pure node-box geometry helpers -- split into their own sibling file (mission `activity-divergence-drive-3` T3i) purely to keep `shapes-of.ts` under the 500-line hook cap; no behavior change, a mechanical extraction of four |
 | `shapes-of-emoji.ts` | `emojiBoxShapes` | The compression slots an `<<icon>>` box leaves: every shape `FtileBoxEmoji#drawU` draws under the `SlotFinder` (`klimt/compress/SlotFinder.java:84-160`) -- the emoji's SVG ellipses and paths and the name's `UText`s -- not the node's box. |
@@ -3289,10 +3289,12 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `License.ts` | `LicenseBuild`, `ORACLE_BUILD`, `formatDateInstance`, `License` | `License` — the text the `license` page prints (`PSystemLicense`) and the licence name `about`/`version` quote. |
 | `LicenseInfo.ts` | `LicenseInfoFields`, `LicenseInfo`, `retrieveQuick`, `retrieveNamedOrDistributorQuickIsValid`, `retrieveNamedSlow`, `retrieveDistributorImage`, `retrieveDistributor` | `LicenseInfo` — the PlantUML licence the running build carries, as `License` and `PSystemLicense` read it. |
 | `LicenseType.ts` | `LicenseType`, `fromInt` | `LicenseType` — the kind of licence a {@link LicenseInfo} records. |
+| `PSystemKeycheck.ts` | `getTextBlock`, `PSystemKeycheck` | `PSystemKeycheck` — the `keycheck <sig> <key>` and `keycheck <key>` page: a black-on-white `GraphicStrings` block under the header the key tools share. |
+| `PSystemKeygen.ts` | `getTextBlock`, `PSystemKeygen` | `PSystemKeygen` — the `keygen` and `keyimport [key]` page: a black-on-white `GraphicStrings` block under the header the key tools share. |
 | `PSystemLicense.ts` | `getTextBlock`, `PSystemLicense` | `PSystemLicense` — the `license` page: `License#getText1` + `#getText2` as one black-on-white `GraphicStrings`, or, when the licence carries a distributor logo, the two halves around that logo. |
 | `PSystemLicenseFactory.ts` | `PSystemLicenseFactory`, `licensePlugin` | `PSystemLicenseFactory` — `license` (and its misspellings) as a single-line `@startuml` page, through the ported `PSystemSingleLineFactory` gate (`singleLinePlugin`, decisions.md D2/D3). |
-| `PSystemVersion.ts` | `getPlantumlImage`, `getAuthorsStrings`, `addInfoVersion`, `PSystemVersion` | `PSystemVersion` — the `about`/`authors`, `version` and bare `stdlib` pages: lines of creole drawn black on white with the PlantUML logo in the bottom-right corner (`PlainStringsDiagram`). |
-| `PSystemVersionFactory.ts` | `PSystemVersionFactory`, `versionPlugin` | `PSystemVersionFactory` — `about`/`authors`/`author`, `version` and bare `stdlib` as single-line `@startuml` pages, through the ported `PSystemSingleLineFactory` gate (`singleLinePlugin`, decisions.md D2/D3). |
+| `PSystemVersion.ts` | `getPlantumlImage`, `getAuthorsStrings`, `addInfoVersion`, `PSystemVersion` | `PSystemVersion` — the `about`/`authors`, `version`, bare `stdlib`, `testdot` and `keydistributor` pages: lines of creole drawn black on white, the first three with the PlantUML logo in the bottom-right corner (`PlainStringsDiagram`). |
+| `PSystemVersionFactory.ts` | `VersionFamilyDiagram`, `PSystemVersionFactory`, `versionPlugin` | `PSystemVersionFactory` — `about`/`authors`/`author`, `version`, bare `stdlib`, `testdot`, `keydistributor`, `keygen`, `keyimport [key]` and both `keycheck` forms (the one-argument one of upstream 3a4d1675141 among them) as single-line `@st |
 | `stdlib-catalog.ts` | `StdlibCatalogEntry`, `STDLIB_CATALOG` | `STDLIB_CATALOG` -- the folders the bare `stdlib` page lists (`PSystemVersion.java:205-210` -> `Stdlib.addInfoVersion`, `Stdlib.java:320-331`). |
 
 ## `src/diagrams/wbs/`

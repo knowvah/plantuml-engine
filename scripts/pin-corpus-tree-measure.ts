@@ -17,8 +17,8 @@ import { join } from 'node:path';
 import { renderSync, type ElkBackend } from '../src/index.js';
 import { withJarCompatibleStyleInput } from '../src/core/internal-render-options.js';
 import { DeterministicMeasurer } from '../src/core/measurer-deterministic.js';
-import { fullDescription } from '../src/core/version.js';
 import { fixtureIncludeStore } from '../tests/helpers/fixture-include-store.js';
+import { hasOurErrorBanner } from '../tests/helpers/our-error-banner.js';
 
 /** `TextBlockExporter.java:292-294`'s root attribute, read from either a
  *  golden or our own rendered document. */
@@ -47,15 +47,11 @@ export function isJarErrorPage(head: string): boolean {
   return JAR_ERROR_PAGE_RE.test(head);
 }
 
-/** OUR error banner, built from `fullDescription()` itself -- never spelled
- *  out -- so a version bump cannot silently blind this classifier
- *  (`refusal-coverage-gate.ts#OUR_ERROR_BANNER`). */
-const OUR_ERROR_BANNER = `>${fullDescription()}</text>`;
-
-/** Deliberately scans the WHOLE document, not a head window: the banner's
- *  offset moves with source length (`refusal-coverage-gate.ts#weErroredIn`). */
+/** OUR error banner (`tests/helpers/our-error-banner.ts`). Deliberately scans
+ *  the WHOLE document, not a head window: the banner's offset moves with
+ *  source length (`refusal-coverage-gate.ts#weErroredIn`). */
 export function weErroredIn(ours: string): boolean {
-  return ours.includes(OUR_ERROR_BANNER);
+  return hasOurErrorBanner(ours);
 }
 
 /** `ErrorUml#getError`'s suffix, printed only once a parser has committed to

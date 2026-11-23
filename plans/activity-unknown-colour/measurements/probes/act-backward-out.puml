@@ -1,0 +1,6 @@
+@startuml
+repeat
+:a;
+backward :b; (-[#zzblue]-> out)
+repeat while (more?)
+@enduml

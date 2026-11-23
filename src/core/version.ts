@@ -37,3 +37,14 @@ export function versionString(): string {
 export function fullDescription(): string {
   return `plantuml-engine version ${versionString()} / ${COMMIT} [${COMPILE_TIME_STRING}]`;
 }
+
+/**
+ * The `@knowvah/dot-engine` release this port lays out with. `testdot` prints
+ * it where the jar prints the `dot -V` answer, `<b>GraphViz</b> ""<version>""`
+ * (#182 ruling 2, 2026-11-13). The package exports no version string and its
+ * `exports` map has no `./package.json`, so it is a constant here, pinned to
+ * the installed package and to `package.json`'s tarball by
+ * `tests/unit/core/version.test.ts` (vkt D4).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/dot/GraphvizUtils.java:122-126
+ */
+export const DOT_ENGINE_VERSION = '2.12.3';

@@ -20,9 +20,7 @@ import type { SnakeTextAlign } from './snake-text-position.js';
 import { getTextBlockPosition } from './snake-text-position.js';
 import type { Out } from './tile-coordinates.js';
 import type { Theme } from '../../../core/theme.js';
-import { activityFontSize } from '../activity-style-defaults.js';
-import { edgeLabelBlockSize } from './compress/edge-label-anchor.js';
-import { TITLE_ASCENT_FRACTION } from './swimlane-placement.js';
+import { edgeLabelBlockSize, edgeLabelInk } from './compress/edge-label-anchor.js';
 import type { Reservation } from './hexagon-reservations.js';
 import { pushLaneReservation } from './swimlane-reservation-lane.js';
 
@@ -102,19 +100,18 @@ function inLabelReservation(
   theme: Theme,
 ): Reservation {
   // add4-T3j: the drawn block (`edgeLabelBlockSize`, `Snake.java:247`) at
-  // the theme's arrow font places the label; each `UText` sits inside
-  // `SheetBlock1`'s padding (`SheetBlock1.java:209-210`), stacked one font
-  // size apart (`SheetBlock1.java:146-148`) -- the same box as
-  // `canvas-origin-text-ink.ts#extendForEdgeLabelText`.
-  const lines = inLabel.label.split('\n');
-  const fontSize = activityFontSize(theme, 'arrow');
-  const pad = theme.padding ?? 0;
-  const dim = edgeLabelBlockSize(inLabel.label, theme, undefined, inLabel.wrapped === true);
+  // the theme's arrow font places the label. aae T3: its box is the block's
+  // own `LimitFinder` ink (`edgeLabelInk`, the one
+  // `canvas-origin-text-ink.ts#extendForEdgeLabelText` reads): each `UText`
+  // by `drawText` (`LimitFinder.java:216-224`), an embed's image by
+  // `drawImageSvg`, `x + w - 1` (`LimitFinder.java:199-202`).
+  const wrapped = inLabel.wrapped === true;
+  const dim = edgeLabelBlockSize(inLabel.label, theme, undefined, wrapped);
   const position = getTextBlockPosition(points, dim, align);
-  const baselineY = position.y + pad + fontSize * TITLE_ASCENT_FRACTION;
-  const top = baselineY - (fontSize - 1.5);
-  const bottom = baselineY + fontSize * (lines.length - 1) + 1.5;
-  return { x: position.x + pad, y: top, width: dim.width - 2 * pad, height: bottom - top, skipCompression: true };
+  const mm = edgeLabelInk(inLabel.label, theme, wrapped);
+  const x = position.x + mm.getMinX();
+  const y = position.y + mm.getMinY();
+  return { x, y, width: mm.getMaxX() - mm.getMinX(), height: mm.getMaxY() - mm.getMinY(), skipCompression: true };
 }
 
 /**

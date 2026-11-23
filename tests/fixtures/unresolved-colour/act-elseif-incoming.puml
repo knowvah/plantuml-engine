@@ -1,0 +1,7 @@
+@startuml
+if (x?) then (yes)
+:a;
+(-[#zzblue]-> in) elseif (y?) then (yes)
+:b;
+endif
+@enduml

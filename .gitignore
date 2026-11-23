@@ -81,3 +81,7 @@ packages/*/generated/
 # Brand assets copied out of @knowvah/theme by `npm run docs:brand`. The
 # package is the source; see docs-site/copy-brand-assets.mjs.
 docs-site/public/knowvah_logo.svg
+# Remote stdlib bundles the playground serves at /stdlib/<bundle>/, copied out
+# of packages/stdlib-{aws,tupadr3} by `npm run docs:stdlib`; see
+# docs-site/copy-stdlib-assets.mjs.
+docs-site/public/stdlib/

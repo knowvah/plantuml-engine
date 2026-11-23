@@ -26,7 +26,13 @@ import { CompressionTransform, type PiecewiseAffineTransform } from './compressi
 import { arrowDirection } from '../../arrows-regular.js';
 import { planEdgeDraw } from '../../activity-rainbow.js';
 import { withFrameTitleDeltas } from './frame-title-deltas.js';
-import { labelAnchors, transformAnchors, withLabelDeltas } from './edge-label-anchor.js';
+import {
+  labelAnchors,
+  labelDrawPoints,
+  transformAnchors,
+  withLabelDeltas,
+  withLabelShapeDeltas,
+} from './edge-label-anchor.js';
 
 export interface CompressInput {
   nodes: ActivityNodeGeo[];
@@ -375,13 +381,15 @@ function withRainbowCopies(
 export function compressGeometry(input: CompressInput): CompressResult {
   const withAnchors = { ...input, edges: withEmphasizeAnchor(input.edges) };
   const rawLabels = labelAnchors(input.edges, input.theme);
+  const raw = { points: labelDrawPoints(input.edges, input.theme), anchors: rawLabels };
   const x = compressAxis(withAnchors, 'x');
   const xLabels = transformAnchors(rawLabels, x.ct, 'x');
-  const xNext = { ...x.next, edges: withLabelDeltas(x.next.edges, xLabels, input.theme) };
+  const xEdges = withLabelShapeDeltas(withLabelDeltas(x.next.edges, xLabels, input.theme), raw, x.ct, 'x');
+  const xNext = { ...x.next, edges: xEdges };
   const y = compressAxis(xNext, 'y');
   const yLabels = transformAnchors(xLabels, y.ct, 'y');
   const edges = withRainbowCopies(
-    withLabelDeltas(y.next.edges, yLabels, input.theme),
+    withLabelShapeDeltas(withLabelDeltas(y.next.edges, yLabels, input.theme), raw, y.ct, 'y'),
     input.edges,
     { x: x.ct, y: y.ct },
     input.theme,

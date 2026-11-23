@@ -244,4 +244,11 @@ npm run typecheck # tsc --noEmit
 npm run lint      # eslint src tests demo
 npm run build     # vite library build
 npm run dev       # demo app (Vite dev server)
+npm run docs:dev  # docs site and playground (VitePress dev server)
 ```
+
+The docs site's playground imports the workspace stdlib packages, whose
+`generated/` is gitignored. Build them before `docs:dev` or `docs:build`:
+`npm run build:stdlib`, which needs the vendored `assets/stdlib/` tree
+(`scripts/vendor-stdlib.ts`; CI restores it with
+`.github/actions/vendored-stdlib`).

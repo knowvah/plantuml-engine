@@ -1,0 +1,6 @@
+@startuml
+|L1|
+:a;
+|#zzblue|L2|
+:b;
+@enduml

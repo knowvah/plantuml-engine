@@ -244,6 +244,13 @@ export interface ActivityEdgeGeo {
    * point so rigid translates of `points` carry it. Absent = zero.
    */
   labelDelta?: { x: number; y: number };
+  /**
+   * aae T4: each draw call of the label block moved off the rigid `labelDelta` by compression, in draw order
+   * (`UGraphicCompressOnXorY.java:107-116` maps every draw point through `ct()` on its own). Set by
+   * `compress/edge-label-anchor.ts#withLabelShapeDeltas`; drawn through `activity-title-compress-ug.ts`. Absent =
+   * every draw moves rigidly.
+   */
+  labelShapeDeltas?: Array<{ dx: number; dy: number }>;
 }
 
 export interface SwimlaneGeo {

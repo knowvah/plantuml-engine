@@ -66,7 +66,10 @@ equals real `dot -Tdot` 16.1.0 on that input. hcl-yaml-oracle-gap-rows (2026-11-
 added three more hcl rows by the same proof (table rows `hcl/array-values`,
 `hcl/multiple-top-level-blocks`, `hcl/nested-object-value`); the two hcl rows
 with an empty container (`hcl/function-call`, `hcl/for-expression-empty-array`)
-await a ruling on #187. The upstream placement arithmetic
+were ruled on in #187 (2026-11-16): their canvas dw 1 was a port defect, fixed by
+porting `LimitFinder#drawRectangle`, which ends an empty block's ink at
+`x + w - 1` / `y + h - 1` (`LimitFinder.java:184-188`; empty-block-ink), and
+their node delta is the empty-container label item below. The upstream placement arithmetic
 (`SmetanaForJson#getPosition` + `Mirror`, `:97-102,158-215`) is now ported
 literally (`src/diagrams/json/json-node-position.ts`) — it changed no byte,
 because the root is alone in rank 0 so graphviz's bounding box already IS the
@@ -86,23 +89,28 @@ graphviz 2.38 (Smetana) vs modern graphviz arithmetic, four named sources:
 | U-NS in-rank position | network-simplex result (tie-sensitive) | same algorithm, different ties | — (D3 only) |
 
 Plus two smaller items, measured and left by ruling: the empty-container
-**label** half (the jar sets no label, `SmetanaForJson.java:253-254`; Smetana
-sizes the default `\N` as (0,16) with no PAD, `labels__c.java:119-122`, while
-graphviz sizes it as the node name + PAD — omitting the label here also needs a
-`src/core/` change and measured worse; closed without code, json-family-followons
-D2: the explicit `''` label already reproduces Smetana's outcome, no text extent,
-where the labelless call would import a node-name width Smetana never computes), and 6-dp inch strings in core's
+**label** half (the jar sets no label on an empty node, `SmetanaForJson.java:253-254`,
+and Smetana sizes the default label as (0,16) with no PAD, `labels__c.java:119-122`,
+so the node solves at 15 in-rank × 17; we pass an explicit `''`, and graphviz
+gives an empty record field a single space as its text and then PADs it
+(`~/git/graphviz/lib/common/shapes.c:3436-3438`), so it solves at 19.75 × 25.5,
+as real `dot` 16.1.0 does; the labelless call is worse, the node name plus PAD at
+29.5 wide (jfp T4b), and needs a `src/core/` change; only a Smetana-sized
+sentinel would close it, which the 2026-08-09 ruling forbids, so it stays closed
+without code, #187 ruling 2026-11-16), and 6-dp inch strings in core's
 `inches()` (`svek-dot-emit-clusters.ts:33` vs the jar's full-precision
 `"" + dim/72`, `SmetanaForJson.java:235-236`; json/kusule + 10 rows by ≤ 1 pt).
 Magnitudes (positional ceiling `oracle/goldens/json-family-positional.json`,
-max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligned rows; in-rank
+max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 49 of 72 aligned rows; in-rank
 (U-NS) up to 127 px (json/nofuvo-36-muxe040); the gate is shrink-only.
 
-<details><summary>Row-level table (73 rows)</summary>
+<details><summary>Row-level table (75 rows)</summary>
 
 | row | residue (node / path / dw / dh) | mechanisms | ledger |
 |---|---|---|---|
 | hcl/array-values | 0.150 / 1.555 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
+| hcl/for-expression-empty-array | 1.500 / 1.401 / 0 / 0 | empty-label, U-REC, U-ARROW, U-CLIP | `empty-block-ink/decision-journal.md` row 5 |
+| hcl/function-call | 2.375 / 1.025 / 0 / 0 | empty-label, U-REC, U-ARROW, U-CLIP | `empty-block-ink/decision-journal.md` row 5 |
 | hcl/jubete-32-sutu417 | 0.800 / 1.923 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | hcl/multiple-top-level-blocks | 0.619 / 1.068 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
 | hcl/nested-object-value | 0.425 / 1.834 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `hcl-yaml-oracle-gap-rows/decision-journal.md` row 7 |
@@ -112,22 +120,22 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligne
 | json/cilemo-38-fafi313 | 17.058 / 17.058 / 3 / 0 | U-REC, U-NS | `json-large.md` |
 | json/civofu-04-loku952 | 47.102 / 47.102 / 0 / 34 | U-REC, U-NS | `json-large.md` |
 | json/conigu-03-cuzu022 | 0.025 / 1.308 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/debako-68-sice023 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/derele-19-poni229 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/devime-19-toze896 | 1.190 / 4.300 / 1 / 0 | U-REC, U-NS | `json-large.md` |
-| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/dometa-86-jepe218 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/gagebi-92-vere937 | 0.720 / 1.980 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/gavomi-49-koco364 | 0.287 / 1.512 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/gejena-99-veme626 | 12.000 / 12.000 / 1 / 0 | U-REC, U-NS | `json-large.md` |
 | json/gibego-39-pelu609 | 12.000 / 16.586 / 1 / 0 | U-REC, U-NS | `json-large.md` |
 | json/jaramo-16-doxa994 | 0.450 / 1.860 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/jekaju-28-gulo479 | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/jidata-48-kire666 | 4.375 / 6.308 / 3 / 5 | M4, U-REC, U-NS | `json-large.md` |
+| json/jidata-48-kire666 | 4.375 / 6.308 / 2 / 4 | M4, U-REC, U-NS | `json-large.md` |
 | json/json-escaped | 0.556 / 2.032 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/kicati-76-guvi771 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/kidoki-70-fala224 | 78.000 / 80.711 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/kusule-69-jada088 | 1.000 / 1.021 / 1 / 1 | M4, U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/letada-23-sisi815 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/moseba-10-naza079 | 0.675 / 1.875 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/mudumo-73-foli040 | 0.725 / 2.369 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/najixi-88-javo178 | 0.513 / 1.462 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
@@ -137,22 +145,22 @@ max |Δ| node / path / canvas w / canvas h): node |Δ| < 1 px on 47 of 69 aligne
 | json/nopoku-31-cisi925 | 94.000 / 94.000 / 1 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/nuviro-48-sice969 | 0.112 / 1.826 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | json/pijume-87-gufu868 | 0.287 / 1.705 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/sevaji-38-xita618 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/timafu-94-bixe774 | unaligned (structural ceiling) | U-REC, U-NS | `json-large.md` |
 | json/tivuru-65-vezu313 | 0.187 / 3.438 / 0 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
-| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 1 | M4, U-REC, U-NS | `json-large.md` |
+| json/vogeku-38-soxe333 | 4.444 / 6.302 / 0 / 0 | M4, U-REC, U-NS | `json-large.md` |
 | json/zasitu-09-lise302 | 4.375 / 6.145 / 3 / 0 | U-REC, U-NS | `json-large.md` |
 | json/zevaka-35-zova441 | 0.838 / 2.156 / 1 / 0 | U-REC, U-CLIP, U-ARROW | `json-subpixel.md` |
 | yaml/YAML-attribute-hierarchy | 0.654 / 1.742 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/YAML-list-key-value-pair | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/YAML-space-indent | 0.750 / 2.146 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/bafemu-96-luji978 | unaligned (structural ceiling) | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/bafemu-96-luji978 | 0.000 / 0.000 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gabalo-23-tefe408 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gatuva-87-futo104 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/gobavi-45-guna544 | 0.451 / 1.011 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/jozapu-14-datu953 | 5.000 / 6.350 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/jozapu-14-datu953 | 0.000 / 0.000 / 0 / 0 | U-REC, U-NS, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/jukejo-54-pope427 | 0.413 / 2.152 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
-| yaml/ketunu-15-poli031 | 0.151 / 1.283 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
+| yaml/ketunu-15-poli031 | 0.151 / 1.274 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/kotize-70-nuze855 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/lelofi-17-cafo004 | 0.207 / 1.930 / 0 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
 | yaml/lipoka-75-rigo326 | 0.494 / 1.986 / 1 / 0 | U-REC, U-ARROW, U-CLIP | `yaml-hcl.md` |
@@ -926,7 +934,21 @@ Mirrored: `HclDiagramFactory.java:86-92` never calls `applyStyles`, so `<style>`
 
 `parseDot` ports PSystemDotFactory/PSystemBasicFactory/`UmlSource#removeInitialNoise`: a directive before the graphviz header is the jar's `Syntax Error?` page, after it every line is DOT (`PSystemDotFactory.java:48-81`; `PSystemBasicFactory.java:50-64`; `UmlSource.java:79-106`). Jar fixtures: `tests/fixtures/unwind-U2/`.
 
-**Library-forced remainder (dot-engine):** dot-engine accepts `node { … }`, which graphviz rejects (`docs/graphviz-issues/27-parser-accepts-node-brace-block.md`), and on a parse failure it throws a peggy error where the jar emits graphviz's stderr text (`ProcessRunner.java:69`); node widths differ by up to 1 pt.
+**Library-forced remainder (dot-engine):** dot-engine accepts `node { … }`, which graphviz rejects (`docs/graphviz-issues/27-parser-accepts-node-brace-block.md`), and on a parse failure it throws a peggy error where the jar emits graphviz's stderr text (`ProcessRunner.java:69`); node widths differ by up to 1 pt (see "@startdot labels are measured without the host font's kerning" below).
+
+### @startdot labels are measured without the host font's kerning
+
+**Category:** library-forced (host fonts), by maintainer ruling (2026-11-16, #186). Same family as #169 (the host font list) and #170 (host AWT fonts): a browser-safe library cannot load the oracle host's fonts.
+
+**Mechanism.** The jar hands graphviz the user's DOT unchanged: `PSystemDotFactory#executeLine` keeps every line from the `digraph` header on (`PSystemDotFactory.java:69-82` at a720bdd), and `PSystemDot#exportDiagramNow` passes that text to `createForSystemDot(null, data, …)` (`PSystemDot.java:87-88`), behind the `allowDotSvg` gate (`PSystemDot.java:77-84`). Native graphviz then sizes each label through `gvtextlayout` first and falls back to `estimate_textspan_size` only when no layout plugin answers (`~/git/graphviz/lib/common/textspan.c:73-92`). On the oracle host `dot -v` (16.1.1, re-run 2026-11-21) prints `fontname: "Times-Roman" resolved to: (ps:pango  Times New Roman,  REGULAR) (PangoCairoCoreTextFont)`, so pango shapes the string and applies the font's kern pairs. `@knowvah/dot-engine`'s `LutTextMeasurer` stores per-glyph advances only: "Width from LUT quantised to FreeType's 96 dpi pixel grid" (2.12.3, `src/common/textmeasure.ts:292-296`). graphviz's own estimate table makes the same choice: "We could also store kerning metrics and line heights for each font if we want to be more thorough" (`lib/common/textspan_lut.c:19-21`). Option 2 of the ruling (a kern table in dot-engine) was not taken.
+
+**Evidence** (#186; Times 14 pt, native pango `-Txdot` vs the LUT). Equal where Times New Roman has no kern pair: `A` 9.75, `X` 9.75, ` X` 13.5, ` B` 12.75, `Node B` 42, `Node X` 42.75. Narrower natively exactly where it has one: ` A` 12.75 vs 13.5 and ` V` 12.75 vs 13.5 (space + A/V), `AV` 18 vs 19.5, `Node V` and `Node A` 42 vs 42.75. Control: the `quoted-labels` source with `Node A` replaced by `Node X` renders identically in ours and native graphviz on every number. Native `dot -Tsvg` on each row's DOT body equals the jar's SVG apart from the `Generated by` comment, on graphviz 16.1.0 (#186) and again on 16.1.1 (dhk, 2026-11-21). In both rows node `a` (`Node A`) has `rx` 40.09 in ours and 39.58 in the jar, node `b` (`Node B`) 39.58 in both; every other diff (canvas width, both `cx`, the edge path) follows from the wider node.
+
+**Ruled out** (#186): *our DOT differs* — native graphviz on our DOT text reproduces the oracle byte for byte; *the skinparam line reaches graphviz* — it does not, in the jar (`UmlSource#removeInitialNoise` drops a leading `skinparam ` line, `core/UmlSource.java:78-105` at a720bdd) or in ours (`src/diagrams/dot/parser.ts`), and `quoted-labels` has no skinparam yet shows the same delta; *dot-engine should use graphviz's `estimate_textspan_size`* — that path gives `Node A` 43.93 and `Node B` 43.16, further from the oracle, and would break the rows the LUT matches exactly.
+
+**Rows** (measured 2026-11-21, dhk/T1, graphviz 16.1.1, single-file INSECURE oracles): `svg-dot/quoted-labels` (18 diffs, weightedScore 18) and `svg-dot/skinparam-font-color` (17 diffs, weightedScore 17). Both are held by the `accepted` block of `tests/oracle/svg-conformance/dot.golden.ratchet.test.ts` (the score never rises, and the row must keep diverging) and signed in `oracle/accepted-divergences.json`. The dot survey cannot see them: `parity-dot.json` compares the LEGACY `dot-cache` capture, where both sides are `PSystemDot`'s suppression page (cfb9ecd55), so both entries carry `surveyBlind`.
+
+**Retire when** dot-engine measures with real font shaping, or the oracle host's graphviz stops kerning. Case (b) of the ratchet's `accepted` block then fails with GOOD NEWS: retire the ledger entries and the `accepted` pins.
 
 ## JSON diagrams
 
@@ -1416,6 +1438,29 @@ matches since T6f (`refusalLineOf`, `MindMapDiagramFactory.ts`).
 
 **Category:** kept by user ruling (2026-10-14). No library forces it; the maintainer credits the port's author on the pages that credit PlantUML's contributors. One line is appended after everything the jar prints, in the jar's own forms (`src/diagrams/version/PSystemVersion.ts`, `PORT_AUTHOR_ROLE` / `PORT_AUTHOR`): `about`/`authors` (`createShowAuthors`, `PSystemVersion.java:219-245`) end with `<u>TypeScript port</u>: Scott Seely (sseely)` after the closing blank, and `version` (`createShowVersion`, java:172-202) ends with `<b>TypeScript port</b> ""Scott Seely (sseely)""`. The GitHub login follows the jar's own handle-as-name entry (`Stdlib Icons: tupadr3`). Appending keeps every jar line at the jar's x/y; only the page height (+12) and the logo's y (+12) move. `compareSvg` re-aligns a page whose element count changes, so the authored utility diff-baseline charges `cov-about`/`cov-authors` 138 (8 without the line) and `cov-version` 120 (134 before); `tests/unit/version/PSystemVersion.test.ts` still compares the jar-line part of `about` with the jar probe diff-for-diff.
 
+### Key tools and `testdot` describe plantuml-engine
+
+**Category:** kept by user ruling (2026-11-13, #182). No library forces it. The maintainer ruled: (1) "Inspired by, not conformant": mirror the regexes, the page kind, the header and the line order, make every line true for plantuml-engine, and sign every row as an accepted divergence; (2) on `testdot`, GraphViz maps to `@knowvah/dot-engine`, printed `<b>@knowvah/dot-engine</b> ""<version>""`; (3) no "dot too old" branch, not ported as dead code; (4) no file-generation probe, so "Installation seems OK. File generation OK" goes too.
+
+**What is claimed.** All six regexes upstream's factory matches (`PSystemVersionFactory.java:62-87`, inside the JVM arm): `testdot`, `keydistributor`, `keygen`, `keyimport(\s+[0-9a-z]+)?`, `keycheck <sig> <key>` and the one-argument `keycheck <key>` of upstream 3a4d1675141, each `(?i)^...\s*$` (`src/diagrams/version/PSystemVersionFactory.ts`). Each draws upstream's page kind, a black-on-white `GraphicStrings` text list, in upstream's classes (`PSystemVersion.createTestDot` / `createKeyDistributor`, `PSystemKeygen`, `PSystemKeycheck`). The key pages print the header `about` prints: `plantuml-engine version <v>` (ruling 2026-10-08) and `(MIT source distribution)`.
+
+**Line by line** (`plans/version-key-tools/decisions.md` D5):
+
+| Page | Kept | Replaced or dropped |
+|---|---|---|
+| `testdot` | line order; no logo | line 1 is this port's `fullDescription()`; line 2 `<b>@knowvah/dot-engine</b> ""2.12.3""` for `<b>GraphViz</b> ""<dot -V>""` (`GraphvizUtils.java:126`); "Installation seems OK. File generation OK" dropped (ruling 4); the INSECURE-only `GRAPHVIZ_DOT` / `Dot executable is` lines and the `ExeState` errors have no counterpart (no executable) |
+| `keydistributor` | `No license found` (true here: no distributor licence) | nothing: jar-identical |
+| `keygen`, `keyimport [key]` | header, blank line | lines 4-5 say `plantuml-engine has no <i>Professional Edition License</i>:` / `it is <b>MIT</b> software and needs no license key.` instead of asking for a QR code mailed to PlantUML; no QR image (the MIT edition's `FlashCodeUtilsNone`) |
+| `keycheck` (both forms) | header, `<u>Provided license information</u>:`, closing blank | line 5 `No license key was checked: plantuml-engine reads none.` instead of "No valid license found. A named license is bound to the machine it was issued for." |
+
+**Not ported, because no path in this build reaches it** (cited in each class's JSDoc): `PLSSignature` key decoding, so every key is NONE and `keygen`'s valid-key branch (`PSystemKeygen.java:87-110`), its installed-licence footer (:131-138) and `PSystemKeycheck.addDetails` (:118-125) cannot run; `createKeyDistributor`'s licence branch (`PSystemVersion.java:249-256`); `PSystemKeycheck.drawFlash`, which upstream never calls either. The issue's words: "Don't invent a license store or a key check that doesn't exist."
+
+**The engine's version.** `@knowvah/dot-engine` exports no version at runtime, so `testdot` prints `DOT_ENGINE_VERSION` (`src/core/version.ts`), pinned by `tests/unit/core/version.test.ts` to the installed package and to the tarball in `package.json`; a bump that forgets the constant fails `npm test`.
+
+**`version` is unchanged.** Upstream's `version` and `testdot` both call `GraphvizUtils.addDotStatus` (`PSystemVersion.java:175`, `:238`), so the jar prints one Graphviz block on both. Rulings 2-4 are scoped to `testdot`, so `version` keeps its library arm and file-generation test ("`version` page prints the port's own environment", above) and the two pages now differ; the asymmetry is a question for the maintainer on #182.
+
+**Rows.** No corpus row uses these commands. The authored rows under `tests/fixtures/utility/` are measured in `oracle/goldens/svg-utility/authored-baseline.json`, and the seven that diverge are signed in `oracle/accepted-divergences.json` as `authored-utility/<slug>`: `cov-testdot`, `cov-testdot-upper-trailing` (23 diffs, weighted 29), `cov-keygen`, `cov-keyimport`, `cov-keyimport-key` (23 diffs, weighted 28), `cov-keycheck`, `cov-keycheck-one-arg` (9 diffs, weighted 9). `cov-keydistributor` measures 0 diffs and is conformant. `cov-keycheck-refuse-dash` and `cov-keyimport-refuse-dash` (`a-b` is outside `[0-9a-z]`) are refused on both sides and score the error-page residual 5 of every authored error row.
+
 ### We draw where the jar errors
 
 **Category:** kept by user ruling (2026-10-10). No library forces it. The diagram parses fine for us, and the maintainer accepts drawing it over mirroring the jar's error. The row stands only once the **primary PlantUML release** also errors on it: the official `plantuml.jar` from the latest GitHub release, run as the stock record runs it (no `-D` flags, `-stdrpt:1`, exit 200 = `ExitStatus.ERROR_200_SOME_DIAGRAMS_HAVE_ERROR`).
@@ -1435,7 +1480,7 @@ Two cases with no corpus row, accepted by the maintainer on 2026-11-03 (#110). B
 
 On 2026-11-04 the maintainer accepted 26 more rows #109 captured, after reviewing each drawing beside the jar's error page (#143). All 26 exit 200 under v1.2026.8, and 24 remain signed in the ledger. The ruling on #152 (2026-11-05) retired `dulone-62` and `losote-76`: a duplicate `map` or `object` now errors as the jar does (`CommandCreateMap.java:165-166`, `CommandCreateEntityObject.java:121-122`).
 
-An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
+An unknown bare colour (`#zzblue`, `<<(F, zzgrey)>>`) is one such case: the jar raises `NoSuchColorException` (`Colors.java:103`, `StereotypeDecoration.java:163`). We paint it neutral grey, LightGray `#D3D3D3` (`HColorSet.ts`, `colorOrNeutral`), by maintainer ruling on 2026-11-04. Activity diagrams do the same at every such site (#189): arrow colours (`HtmlColorAndStyle.java:100`, which also reads `thickness=N`, `plain` and `norank` as colours), `link #c` (`CommandLink3.java:84`), swimlanes (`CommandSwimlane.java:98`; `CommandSwimlane2.java:105` once that command is ported, #231) and notes (`Colors.java:103` via `CommandNote3.java:127` and `CommandNoteLong3.java:129`). A `name:value` part such as `#line:zzblue` is different: `Colors.java:112` reads it with `getColorOrNull`, the jar draws, and we mirror the jar.
 
 ### Ditaa is not included
 

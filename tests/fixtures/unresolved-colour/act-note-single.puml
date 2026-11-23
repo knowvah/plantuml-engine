@@ -1,0 +1,4 @@
+@startuml
+:a;
+note left #zzblue: n
+@enduml

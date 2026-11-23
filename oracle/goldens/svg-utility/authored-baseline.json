@@ -229,6 +229,101 @@
     },
     {
       "type": "utility",
+      "slug": "cov-keycheck",
+      "topic": "`keycheck abc123 def456` (PSystemKeycheck, `(?i)^keycheck\\s+([0-9a-z]+)\\s+([0-9a-z]+)\\s*$`)",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header as cov-keygen (src/diagrams/version/PSystemKeycheck.ts:52-53 vs PSystemKeycheck.java:129-130), and line 5 \"No license key was checked: plantuml-engine reads none.\" (PSystemKeycheck.ts:73) vs \"No valid license found. A named license is bound to the machine it was issued for.\" (java:107): no key is decoded (vkt D3), and the machine binding is PlantUML's. 3 texts + their widths: 9 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keycheck-one-arg",
+      "topic": "`keycheck abc123` (the one-argument form, upstream 3a4d1675141, java:84-87)",
+      "status": "baseline",
+      "weightedScore": 9,
+      "diffCount": 9,
+      "reason": "#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header as cov-keygen (src/diagrams/version/PSystemKeycheck.ts:52-53 vs PSystemKeycheck.java:129-130), and line 5 \"No license key was checked: plantuml-engine reads none.\" (PSystemKeycheck.ts:73) vs \"No valid license found. A named license is bound to the machine it was issued for.\" (java:107): no key is decoded (vkt D3), and the machine binding is PlantUML's. 3 texts + their widths: 9 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keycheck-refuse-dash",
+      "topic": "`keycheck a-b` -- refused near miss: `-` is outside [0-9a-z], so neither keycheck regex matches",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keydistributor",
+      "topic": "`keydistributor` (PSystemVersion#createKeyDistributor; retrieveDistributor() is null on both sides)",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keygen",
+      "topic": "`keygen` (PSystemKeygen, getFlashTextBlock)",
+      "status": "baseline",
+      "weightedScore": 28,
+      "diffCount": 23,
+      "reason": "#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" vs \"PlantUML version $version$\" and \"(GPL source distribution)\" (src/diagrams/version/PSystemKeygen.ts:55-56 vs PSystemKeygen.java:180-181; the 2026-10-08 own-version ruling, ufp D13 MIT edition, License.java:63-68); lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" / \"it is <b>MIT</b> software and needs no license key.\" (PSystemKeygen.ts:71-72) vs the jar's request to mail a QR code to plantuml@gmail.com (java:115-116); and no QR image (the MIT edition's FlashCodeUtilsNone, java:119-129; the GPL oracle draws zxing's at x4), so the page is 300x71 vs 293x282: 23 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keyimport",
+      "topic": "`keyimport` with no key (`(?i)^keyimport(\\s+[0-9a-z]+)?\\s*$`, empty key)",
+      "status": "baseline",
+      "weightedScore": 28,
+      "diffCount": 23,
+      "reason": "#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" vs \"PlantUML version $version$\" and \"(GPL source distribution)\" (src/diagrams/version/PSystemKeygen.ts:55-56 vs PSystemKeygen.java:180-181; the 2026-10-08 own-version ruling, ufp D13 MIT edition, License.java:63-68); lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" / \"it is <b>MIT</b> software and needs no license key.\" (PSystemKeygen.ts:71-72) vs the jar's request to mail a QR code to plantuml@gmail.com (java:115-116); and no QR image (the MIT edition's FlashCodeUtilsNone, java:119-129; the GPL oracle draws zxing's at x4), so the page is 300x71 vs 293x282: 23 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keyimport-key",
+      "topic": "`keyimport abc123` (the key group; any key reaches getFlashTextBlock, vkt D3)",
+      "status": "baseline",
+      "weightedScore": 28,
+      "diffCount": 23,
+      "reason": "#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" vs \"PlantUML version $version$\" and \"(GPL source distribution)\" (src/diagrams/version/PSystemKeygen.ts:55-56 vs PSystemKeygen.java:180-181; the 2026-10-08 own-version ruling, ufp D13 MIT edition, License.java:63-68); lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" / \"it is <b>MIT</b> software and needs no license key.\" (PSystemKeygen.ts:71-72) vs the jar's request to mail a QR code to plantuml@gmail.com (java:115-116); and no QR image (the MIT edition's FlashCodeUtilsNone, java:119-129; the GPL oracle draws zxing's at x4), so the page is 300x71 vs 293x282: 23 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-keyimport-refuse-dash",
+      "topic": "`keyimport a-b` -- refused near miss: the key group `\\s+[0-9a-z]+` misses `a-b`",
+      "status": "baseline",
+      "weightedScore": 5,
+      "diffCount": 5,
+      "reason": "error-page: jar errors and we error, same message, same line (2026-10-10 rule: conformant). Residual 5 = our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs PSystemError.java:151 Version.fullDescription(); 2 diffs) + the source label \"[From string\" vs the jar's \"[From <file>.puml\" (PSystemError.java:239 lineLocation.getDescription(): oracle-render.sh hands the jar a file, renderSync reads a string, src/core/tim/ReadLineReader.ts:37; 3 diffs). Controlled experiment (measurements/T3-cov/experiment-error-step1-version.json, -step2-label.json): the jar's version string -> 3, plus the file name as the label -> 0 (cov-strasse).",
+      "jarError": {
+        "line": 2,
+        "message": "Syntax Error? (Assumed diagram type: sequence)"
+      },
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
       "slug": "cov-licence",
       "topic": "`licence` (the c/s spelling arm)",
       "status": "baseline",
@@ -605,6 +700,28 @@
       },
       "measuredAt": "2026-10-14",
       "measuredAgainstCommit": "650f08bcc"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-testdot",
+      "topic": "`testdot` (PSystemVersionFactory `(?i)^testdot\\s*$`, PSystemVersion#createTestDot)",
+      "status": "baseline",
+      "weightedScore": 29,
+      "diffCount": 23,
+      "reason": "#182 ruling 1, inspired by, not conformant (rulings 2-4, 2026-11-13): line 1 is our fullDescription() \"plantuml-engine version 0.2.0 / unknown [Unknown compile time]\" vs the jar's \"PlantUML version $version$ / $git.commit.id$\" (src/diagrams/version/PSystemVersion.ts:286 vs PSystemVersion.java:236, the 2026-10-08 own-version ruling); line 2 <b>@knowvah/dot-engine</b> \"\"2.12.3\"\" vs <b>GraphViz</b> \"\"dot - graphviz version 16.1.1 ...\"\" (PSystemVersion.ts:206 addDotVersionStatus vs GraphvizUtils.java:126, ruling 2, DOT_ENGINE_VERSION); the jar's line 3 \"Installation seems OK. File generation OK\" (GraphvizUtils.java:137-141) is dropped by ruling 4, so the page is one line shorter (47 -> 35 px) and the runs after line 1 re-align: 23 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
+    },
+    {
+      "type": "utility",
+      "slug": "cov-testdot-upper-trailing",
+      "topic": "`TESTDOT  ` ((?i) + trailing \\s* of `^testdot\\s*$`)",
+      "status": "baseline",
+      "weightedScore": 29,
+      "diffCount": 23,
+      "reason": "#182 ruling 1, inspired by, not conformant (rulings 2-4, 2026-11-13): line 1 is our fullDescription() \"plantuml-engine version 0.2.0 / unknown [Unknown compile time]\" vs the jar's \"PlantUML version $version$ / $git.commit.id$\" (src/diagrams/version/PSystemVersion.ts:286 vs PSystemVersion.java:236, the 2026-10-08 own-version ruling); line 2 <b>@knowvah/dot-engine</b> \"\"2.12.3\"\" vs <b>GraphViz</b> \"\"dot - graphviz version 16.1.1 ...\"\" (PSystemVersion.ts:206 addDotVersionStatus vs GraphvizUtils.java:126, ruling 2, DOT_ENGINE_VERSION); the jar's line 3 \"Installation seems OK. File generation OK\" (GraphvizUtils.java:137-141) is dropped by ruling 4, so the page is one line shorter (47 -> 35 px) and the runs after line 1 re-align: 23 diffs.",
+      "measuredAt": "2026-11-21",
+      "measuredAgainstCommit": "01738d37a"
     },
     {
       "type": "utility",

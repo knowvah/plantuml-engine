@@ -1,0 +1,9 @@
+@startuml
+start
+while (c?)
+:a;
+endwhile
+-> {{\nclass X\n}};
+:b;
+stop
+@enduml

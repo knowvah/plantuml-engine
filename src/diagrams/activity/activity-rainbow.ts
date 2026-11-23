@@ -10,7 +10,7 @@ import type { ActivityEdgeGeo } from './activity-geometry.types.js';
 import { defaultEdgeLook, type EdgeLook, type LineStroke } from './activity-edge-look.js';
 import { tokensLinkStyle } from './layout/edge-link-style.js';
 import { LinkStyle } from '../../core/decoration/LinkStyle.js';
-import { parseColor, toSvgHex } from '../../core/klimt/color/HColorSet.js';
+import { colorOrNeutral, parseColor, toSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { createWormMutation, moveFirstPoint, moveLastPoint } from './worm-mutation.js';
 
 /** `Snake#drawInternal`'s single-colour stroke value (`Snake.java:193`) and the rainbow's separated one (`:215`). */
@@ -33,9 +33,15 @@ export interface EdgeDrawPlan {
   readonly labelDx: number;
 }
 
-/** `HColorSet#getColor` as SVG hex; `undefined` for a non-colour (upstream throws). */
+/**
+ * `HColorSet#getColor` as SVG hex. Where upstream throws (`HColorSet.java:69-76`) and the jar draws a `No such color`
+ * page, the token is the #143 neutral (`colorOrNeutral`, auc D1). `undefined` only for a token `getColor` accepts that
+ * is no simple colour (a gradient, `automatic`, a `?light:dark` scheme, `HColorSet.java:86-117`): the caller keeps
+ * the style's `LineColor` there, as before (`act-arrow-gradient` is at 0 diffs).
+ * @see net/sourceforge/plantuml/decoration/HtmlColorAndStyle.java:100
+ */
 function colorTokenHex(token: string): string | undefined {
-  const parsed = parseColor(token);
+  const parsed = parseColor(colorOrNeutral(token));
   if (parsed === undefined) return undefined;
   const hex = toSvgHex(parsed);
   // A transparent arrow colour is written `none` by the SVG driver (`SvgGraphics`, aar-T6a `nevavo-98-cenu680`).

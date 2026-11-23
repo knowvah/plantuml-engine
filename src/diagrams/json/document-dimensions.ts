@@ -31,6 +31,20 @@ import type { JsonNodeGeo, JsonEdgeGeo } from './layout.js';
  */
 const INK_MIN_CORNER = -1;
 
+/**
+ * ebi-T1 (#187 ruling, 2026-11-16): the same `LimitFinder#drawRectangle`
+ * records the rectangle's far corner at `x + w - 1, y + h - 1`
+ * (`LimitFinder.java:184-188`; `getDeltaShadow()` is 0, the json node
+ * rectangle is a plain `URectangle.build(...).rounded(...)`,
+ * `TextBlockJson.java:279`). A block WITH lines also draws each cell, whose
+ * `TextBlockMarged#drawU` puts a `UEmpty` of the cell size
+ * (`TextBlockMarged.java:83`) that `LimitFinder#drawEmpty` records at
+ * `x + w, y + h` (`:159-162`) -- so only an empty block, which has no lines
+ * (`TextBlockJson.java:117-135`) and so draws nothing in its row loop
+ * (`:288-316`), ends its ink one short of its box.
+ */
+const INK_MAX_CORNER_RECT_ONLY = -1;
+
 /** `JsonCurve#drawSpot` — `new UEllipse(6, 6)` drawn at `-3, -3`. */
 const SPOT_RADIUS = 3;
 
@@ -81,8 +95,11 @@ export function documentDimensions(nodes: readonly JsonNodeGeo[], edges: readonl
   const inkX: number[] = [];
   const inkY: number[] = [];
   for (const n of nodes) {
-    inkX.push(n.x + INK_MIN_CORNER, n.x + n.width);
-    inkY.push(n.y + INK_MIN_CORNER, n.y + n.height);
+    // `rows` is empty exactly when upstream's `lines` is: one row per
+    // member/element (`TextBlockJson.ts#measureRows`, `TextBlockJson.java:117-135`).
+    const maxCorner = n.rows.length === 0 ? INK_MAX_CORNER_RECT_ONLY : 0;
+    inkX.push(n.x + INK_MIN_CORNER, n.x + n.width + maxCorner);
+    inkY.push(n.y + INK_MIN_CORNER, n.y + n.height + maxCorner);
   }
   for (const e of edges) {
     for (const p of edgeInkPoints(e)) {

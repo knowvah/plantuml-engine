@@ -35,13 +35,19 @@ import { stripDiagramName, stripLayoutPragma } from '../../../scripts/dot-sync-d
  *  manifest and gained an `svg-description/usecase/` golden when codd T11
  *  pinned it, so the enumerator now appends it like an authored golden. */
 /** The class ratchet rows class-oracle-gap-rows pinned (`source: "cogr-…"`). */
-const COGR_PINNED_CLASS_SLUGS = (
+const RATCHET_FIXTURES = (
   JSON.parse(readFileSync(join(CLASS_GOLDEN_DIR, 'ratchet.json'), 'utf-8')) as {
     fixtures: { slug: string; source?: string }[];
   }
-).fixtures
-  .filter((f) => f.source?.startsWith('cogr-') === true)
-  .map((f) => f.slug);
+).fixtures;
+
+/** The ratchet rows a mission pinned under `sourcePrefix` (e.g. `cogr-`). */
+function pinnedClassSlugs(sourcePrefix: string): string[] {
+  return RATCHET_FIXTURES.filter((f) => f.source?.startsWith(sourcePrefix) === true).map((f) => f.slug);
+}
+
+const COGR_PINNED_CLASS_SLUGS = pinnedClassSlugs('cogr-');
+const EDP_PINNED_CLASS_SLUGS = pinnedClassSlugs('edp-');
 
 const AUTHORED_USECASE_SLUGS = [
   'exposant-02-usecase',
@@ -375,6 +381,10 @@ describe('enumerateFixtures over the committed corpus', () => {
         // their `cogr-` source tag rather than listed, and merged into the
         // enumerator's own order (`authoredFixtures` sorts the golden root).
         ...COGR_PINNED_CLASS_SLUGS,
+        // Since embedded-diagram-preprocess T1a (2026-11-21): the two #185 rows
+        // (nacave-78-dijo807, subdiagram-theme-1), cache fixtures with no
+        // class.json row, pinned the same way under the `edp-` source tag.
+        ...EDP_PINNED_CLASS_SLUGS,
         // The a720bdd re-pin (2026-11-20) unpinned two cogr rows but kept
         // their golden dirs as evidence (svg-class/README.md "Removed
         // fixtures"), so the enumerator still lists them. It unpinned

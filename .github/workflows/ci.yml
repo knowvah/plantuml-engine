@@ -308,11 +308,12 @@ jobs:
       contents: read
       # `@knowvah/theme` installs from GitHub Packages; see .npmrc.
       packages: read
-    # Hard backstop for a hang, not a performance budget (code-review-tasks.md
-    # item 7 — this job's first landing, so there is no `gh run list` history
-    # yet to size it off, unlike `gates` above). `npm ci` + a cold Playwright
-    # Chromium download dominate; the suite itself ran in 7.3s locally
-    # (17 specs, `npx playwright test`). Revisit once a few real runs exist.
+    # Hard backstop for a hang, not a performance budget. Observed 2.3-2.6 min
+    # in runs 44951487515, 44946661951 and 44577155667 (`gh run view --json
+    # jobs`). The playground stdlib spec (#172) adds the vendored-stdlib
+    # restore (3-25s across the last 200 runs, max in run 41661799559) and
+    # `build:stdlib` (27s locally, plans/playground-stdlib journal row 2):
+    # about 3.5 min, so 15 still leaves ~4x.
     timeout-minutes: 15
 
     steps:
@@ -333,6 +334,14 @@ jobs:
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The docs playground imports the workspace stdlib packages (#172), whose
+      # `generated/` is built from the vendored tree; `docs:dev` (the e2e web
+      # server) also copies the remote bundles' assets out of them.
+      - uses: ./.github/actions/vendored-stdlib
+
+      - name: build stdlib packages
+        run: npm run build:stdlib
 
       # Playwright's own browser binaries, not an npm package — cached
       # separately from node_modules and installed with their OS-level

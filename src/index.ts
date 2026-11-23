@@ -25,7 +25,13 @@ import type { PreprocessorResult } from './core/preprocessor.js';
 import { inheritingRenderFn, takePendingPrevious, withPrevious } from './core/nested-previous.js';
 import { DiagramRefusal, emptySvg, errorSvg, preprocessorErrorSvg, welcomeSvg } from './core/error/error-diagrams.js';
 import { parseOptionsOf, resolveMeasurer, type RenderOptions } from './core/render-options.js';
-import { clockOfOptions, isJarCompatibleStyleInput } from './core/internal-render-options.js';
+import {
+  clockOfOptions,
+  isJarCompatibleStyleInput,
+  sourceDescriptionOf,
+  withSourceDescription,
+} from './core/internal-render-options.js';
+import { SOURCE_BLOCK_DESCRIPTION } from './core/tim/ReadLineReader.js';
 import { layoutServices, layoutServicesSync } from './core/elk/layout-services.js';
 import { assembleSvg, seedOfUmlSource } from './core/assemble-svg.js';
 import { withAllowJavascriptInLink } from './core/security/SecurityUtils.js';
@@ -317,8 +323,13 @@ function prepareBlock(block: BlockUmlOk, source: UmlSource, options: RenderOptio
   // not a fixed default. See `class-nested-diagram-renderer.ts`'s doc
   // comment for why this cannot be a plain import instead.
   // sdd3-T8h: and hands THIS diagram's skinparams (inherited ones included, as `skinParam.values()` holds them,
-  // `EmbeddedDiagram.java:88-90`) to the diagram each `{{ }}` renders.
-  registerNestedDiagramRenderers(inheritingRenderFn(preprocessed.skinparam, (nested) => renderSync(nested, options)));
+  // `EmbeddedDiagram.java:91`) to the diagram each `{{ }}` renders. The nested source is preprocessed, as the
+  // constructor's `BlockUml` runs `TimLoader` (`EmbeddedDiagram.java:89-103`, `BlockUml.java:149-160`), and its
+  // lines are labelled "block", as `EmbeddedDiagram.from` -> `BlockUml.convert` labels them (`BlockUml.java:119-127`).
+  const nestedOptions = withSourceDescription(options, SOURCE_BLOCK_DESCRIPTION);
+  registerNestedDiagramRenderers(
+    inheritingRenderFn(preprocessed.skinparam, (nested) => renderSync(nested, nestedOptions)),
+  );
   return {
     ctx: { plugin, theme, styleMap, preprocessed, measurer, seed: seedOfUmlSource(umlSource) },
     ast,
@@ -352,6 +363,7 @@ export function renderPagesSync(source: string, options?: RenderOptions): string
       includeStore: options?.includeStore,
       filename: options?.filename,
       clock: clockOfOptions(options),
+      sourceDescription: sourceDescriptionOf(options),
     });
     if (blocks.length === 0) return [welcomeSvg(options)];
 

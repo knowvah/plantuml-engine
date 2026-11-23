@@ -49,13 +49,44 @@ const ZERO: Readonly<Record<string, number>> = {
   'seq-open': 1,
   timing: 1,
   'timing-open': 1,
+  // 2026-11-22 aae T3: activity-3 arrow labels (`FtileFactoryDelegator.java:103-112`); the image rides compression on
+  // its own draw point, and the canvas inks it where it is drawn, `x + w - 1` wide.
+  act3: 1,
+  'act3-open': 1,
+  'act3-mixed': 1,
+  // 2026-11-22 aae T4: every activity-3 `Snake.withLabel` site with an embed label (journal row 11). Each draw of the
+  // block rides compression on its own point; `-> label;` opening a switch case replaces the case text. The jar draws
+  // no image for the vertical-if elseif out label nor the `end merge` branch label, and neither do we.
+  'act3-elseif': 1,
+  'act3-endif': 1,
+  'act3-fork-in': 1,
+  'act3-fork-out': 1,
+  'act3-if-in': 1,
+  'act3-if-out': 1,
+  'act3-lane-center': 1,
+  'act3-lane-left': 1,
+  'act3-lane-right': 1,
+  'act3-lane': 1,
+  'act3-merge-out': 0,
+  'act3-open-endif': 1,
+  'act3-repeat-back': 1,
+  'act3-repeat-backward': 1,
+  'act3-repeat-in': 1,
+  'act3-repeat-out': 1,
+  'act3-split-in': 1,
+  'act3-split-out': 1,
+  'act3-switch-in': 1,
+  'act3-switch-out': 1,
+  'act3-text-after': 1,
+  'act3-two-embeds': 2,
+  'act3-vif': 0,
+  'act3-while-after': 1,
+  'act3-while-back': 1,
 };
 
 /** Row -> the diff count it may not exceed, and the issue that holds its residual. */
 const OPEN: Readonly<Record<string, { readonly maxDiffs: number; readonly reason: string }>> = {
-  // 2026-11-15 ele T4: activity-3 arrow labels build outside `SvekEdge` (`FtileFactoryDelegator.java:103-112`).
-  act3: { maxDiffs: 3, reason: '#188: the embed image is drawn 8.556 above the jar' },
-  'act3-open': { maxDiffs: 30, reason: '#188: the open embed reserves more height; every node sits 31.5 lower' },
+  // 2026-11-22 aae T3: act3 and act3-open moved to ZERO (#188); aae T4 left no open row.
 };
 
 const IMAGE = /<image\b/g;

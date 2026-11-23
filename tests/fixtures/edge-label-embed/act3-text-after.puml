@@ -1,0 +1,7 @@
+@startuml
+start
+:a;
+-> {{\nclass X\n}}\nhi;
+:b;
+stop
+@enduml

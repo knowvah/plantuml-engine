@@ -1,0 +1,8 @@
+@startuml
+start
+repeat
+:a;
+backward:b;
+repeat while (c?) -> {{\nclass X\n}};
+stop
+@enduml

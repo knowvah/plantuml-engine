@@ -37,6 +37,15 @@ import { StringLocated } from './StringLocated.js';
 export const SOURCE_STRING_DESCRIPTION = 'string';
 
 /**
+ * The description `BlockUml.convert` gives every line of an embedded `{{ }}`
+ * diagram: `new LineLocationImpl("block", null)` (`BlockUml.java:121`), reached
+ * from `EmbeddedDiagram.from` (`EmbeddedDiagram.java:146-148`). A broken
+ * embed's error page prints `[From block (line N) ]`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/BlockUml.java:119-127
+ */
+export const SOURCE_BLOCK_DESCRIPTION = 'block';
+
+/**
  * `BufferedReader#readLine`'s line terminators: "a line feed ('\n'), a
  * carriage return ('\r'), or a carriage return followed immediately by a
  * linefeed" -- none is part of the line. Splitting on '\n' alone left the

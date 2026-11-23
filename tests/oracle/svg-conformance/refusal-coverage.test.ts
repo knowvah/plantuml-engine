@@ -113,6 +113,7 @@ import {
   type BaselineFixture,
   type LiveRefusal,
 } from './refusal-coverage-gate.js';
+import { MY_GREEN } from '../../../src/core/error/error-text.js';
 import { fullDescription } from '../../../src/core/version.js';
 import { checkNoInvalidColour, INVALID_COLOUR_ALLOWLIST } from './colour-validity-check.js';
 
@@ -741,7 +742,11 @@ describe('refusal coverage — baseline shape', () => {
     // by #147). Derivation: 11548 + 3 = 11551.
     // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
-    expect(manifest.fixtures.length).toBe(11556);
+    // 11556 -> 11558 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11556 + 2 = 11558.
+    // 11558 -> 11560 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11558 + 2 = 11560.
+    expect(manifest.fixtures.length).toBe(11560);
     // 86 -> 162 at ogc/T5: +76 jar error pages in the head window (dot 8, unknown 68); 24 more
     // unknown error pages sit past the window behind the Welcome preamble (PSystemError.java:217-218)
     // and are pinned known-gap or known-misroute from the ledger (ogc-T4c) instead.
@@ -1158,7 +1163,11 @@ describe('refusal coverage — baseline shape', () => {
     // Derivation: 11400 - 4 = 11396.
     // 11396 -> 11399 at the a720bdd timing port (2026-11-20): unknown/Timing-short-alias-7..9 (see pinnedErroring).
     // Derivation: 11396 + 3 = 11399.
-    expect(pinnedRendering.length).toBe(11399);
+    // 11399 -> 11401 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11399 + 2 = 11401.
+    // 11401 -> 11403 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11401 + 2 = 11403.
+    expect(pinnedRendering.length).toBe(11403);
   });
 
   it('every known-gap pin names the unported Command that explains it', () => {
@@ -1405,8 +1414,10 @@ describe('refusal coverage — branch discrimination', () => {
     expect(checkJarClassification(SAMPLE, undefined).ok).toBe(true);
   });
 
-  it('recognises OUR error banner as a whole text element, and nothing else', () => {
-    expect(weErroredIn(`<svg><text x="5">${fullDescription()}</text></svg>`)).toBe(true);
+  it('recognises OUR error banner as a whole text element in the banner fill, and nothing else', () => {
+    expect(weErroredIn(`<svg><text x="5" fill="${MY_GREEN}">${fullDescription()}</text></svg>`)).toBe(true);
+    // `testdot` draws the same text black on white (vkt, #182): not an error page.
+    expect(weErroredIn(`<svg><text x="5" fill="#000">${fullDescription()}</text></svg>`)).toBe(false);
     // The Welcome screen shares the error page's opening block but carries no
     // banner -- which is why the banner is the needle.
     expect(weErroredIn('<svg><text x="5">Welcome to PlantUML!</text></svg>')).toBe(false);

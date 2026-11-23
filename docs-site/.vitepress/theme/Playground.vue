@@ -3,7 +3,8 @@
 import { ref, onMounted, watch } from 'vue';
 // Aliased in .vitepress/config.ts to the real library source (src/index.ts,
 // D2), so the playground always runs exactly what ships.
-import { renderSync } from '@knowvah/plantuml-engine';
+import { prepareIncludeStore, render, renderSync } from '@knowvah/plantuml-engine';
+import { createRenderSequencer, playgroundRegistry } from './playground-render';
 // Client-side PlantUML syntax highlighting, reusing the SAME grammar the docs
 // code blocks use (single source of truth). Shiki runs in the browser here
 // over a transparent-textarea overlay with its pure-JS regex engine (no
@@ -53,6 +54,9 @@ const source = ref(props.initial ?? DEFAULT_SOURCE);
 const svg = ref('');
 const error = ref('');
 const exportError = ref('');
+// True while a render waits on a stdlib chunk or a remote include; the previous
+// SVG stays visible meanwhile.
+const pending = ref(false);
 const svgHost = ref<HTMLElement | null>(null);
 
 // Zoom-to-fit. The jar-faithful root carries preserveAspectRatio="none",
@@ -88,19 +92,40 @@ function syncScroll(e: Event): void {
   }
 }
 
-function renderNow(): void {
+// `!include <bundle/…>` resolves against the workspace stdlib packages (issue
+// #172). Each bundle's chunk loads on first use; remote bundles fetch from
+// `/stdlib/<bundle>/`, filled by docs-site/copy-stdlib-assets.mjs.
+const stdlibRegistry = playgroundRegistry(import.meta.env.BASE_URL);
+const renderLatest = createRenderSequencer({
+  prepare: (src) => prepareIncludeStore(src, { stdlibRegistry }),
+  renderSync: (src, includeStore) => renderSync(src, { includeStore }),
+  renderAsync: (src) => render(src, { stdlibRegistry }),
+});
+let renderId = 0;
+
+async function renderNow(): Promise<void> {
   // Render is client-only — CanvasMeasurer needs the DOM <canvas> API, which
   // is unavailable during VitePress's Node-side SSR pass.
   if (typeof window === 'undefined') return;
+  const id = ++renderId;
+  pending.value = true;
   try {
-    svg.value = renderSync(source.value);
-    error.value = '';
+    const result = await renderLatest(source.value);
+    // undefined: a newer render started while this one awaited, so drop it.
+    if (result !== undefined) {
+      svg.value = result.svg;
+      error.value = result.error;
+    }
   } catch (e) {
-    // renderSync() catches its own parse/layout errors and returns an error
-    // SVG rather than throwing, but this guards against any other
+    // renderSync() and render() catch their own parse/layout errors and return
+    // an error SVG rather than throwing, but this guards against any other
     // unexpected failure so the pane never goes blank or silent.
-    svg.value = '';
-    error.value = e instanceof Error ? e.message : String(e);
+    if (id === renderId) {
+      svg.value = '';
+      error.value = e instanceof Error ? e.message : String(e);
+    }
+  } finally {
+    if (id === renderId) pending.value = false;
   }
 }
 
@@ -108,11 +133,11 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 
 function scheduleRender(): void {
   if (timer) clearTimeout(timer);
-  timer = setTimeout(renderNow, 250);
+  timer = setTimeout(() => void renderNow(), 250);
 }
 
 onMounted(async () => {
-  renderNow();
+  void renderNow();
   try {
     highlighter = await createHighlighterCore({
       themes: [githubLight, githubDark],
@@ -202,6 +227,7 @@ watch(source, () => {
 <template>
   <div class="pu-playground">
     <div class="pu-toolbar">
+      <span v-if="pending" class="pu-pending" role="status">Loading stdlib…</span>
       <span v-if="exportError" class="pu-export-error" role="alert">{{ exportError }}</span>
       <div class="pu-export">
         <button type="button" :disabled="!svg || !!error" @click="exportSvg">Export SVG</button>
@@ -270,6 +296,9 @@ watch(source, () => {
 }
 .pu-export-error {
   color: var(--vp-c-danger-1);
+}
+.pu-pending {
+  color: var(--vp-c-text-2);
 }
 .pu-panes {
   display: grid;

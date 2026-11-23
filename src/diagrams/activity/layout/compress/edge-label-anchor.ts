@@ -22,8 +22,9 @@
  * when a removed slot sits inside the span it averages, recomputing on the
  * compressed points lands elsewhere than `ct(position)`.
  *
- * The port keeps the raw anchor (the first line's `UText` draw point:
- * block left x, first baseline) through both passes, and stores on the edge
+ * The port keeps the raw anchor (the block's first draw point: block left
+ * x and first baseline for a text-first block, the image's top-left for an
+ * embed-first one, aae T2) through both passes, and stores on the edge
  * the {@link ActivityEdgeGeo.labelDelta} between that anchor and the
  * position recomputed on the edge's own points. A delta, not an absolute
  * point, so every later rigid translate of `edge.points` (the canvas-origin
@@ -56,6 +57,10 @@ import { activityMeasurer } from '../../activity-string-bounder.js';
 import { activityWrapWidth } from '../../activity-text-style.js';
 import type { TextBlock } from '../../../../core/klimt/shape/TextBlock.js';
 import { arrowHorizontalAlignment, getTextBlockPosition } from '../snake-text-position.js';
+import { titleDrawnShapes, type TitleDrawnShapes } from './shapes-of-frame-title.js';
+import { withTitleShapeDeltas } from '../../activity-title-compress-ug.js';
+import { TextBlockUtils } from '../../../../core/klimt/shape/TextBlockUtils.js';
+import type { MinMax } from '../../../../core/klimt/geom/MinMax.js';
 
 /** A label's draw inputs: its lines, the arrow font size, the block width
  *  ({@link edgeLabelBlockSize}) and the block's anchor: its left `x` and
@@ -116,6 +121,38 @@ export function edgeLabelBlockSize(
 }
 
 /**
+ * The drawn block's own ink, relative to its top-left: `LimitFinder` over `text.textBlock.drawU`
+ * (`Snake.java:226-232`), each `UText` boxed by `LimitFinder#drawText` (`LimitFinder.java:216-224`) and an embed's
+ * image by `drawImageSvg`, `x + w - 1` (`LimitFinder.java:199-202`). The one ink every consumer reads (aae T3, D3):
+ * the canvas origin and the walk-time in-label reservation. `shapeDeltas` moves each draw as compression did
+ * ({@link withLabelShapeDeltas}).
+ * @see net/sourceforge/plantuml/klimt/drawing/LimitFinder.java:199-202,216-224
+ */
+export function edgeLabelInk(
+  label: string,
+  theme: Theme,
+  wrapped = false,
+  shapeDeltas?: ActivityEdgeGeo['labelShapeDeltas'],
+): MinMax {
+  const fc = activityTextFontConfiguration(theme, activityFontSize(theme, 'arrow'), 'arrow');
+  const sb = klimtStringBounder(activityMeasurer(theme), { family: fc.family, size: fc.size });
+  return TextBlockUtils.getMinMax(withTitleShapeDeltas(edgeLabelBlock(label, theme, wrapped), shapeDeltas), sb, false);
+}
+
+/**
+ * The block's top-left where it is drawn: `Snake#getTextBlockPosition` on `edge.points` (`Snake.java:244-270`),
+ * moved by the compression `labelDelta` the renderer applies ({@link edgeLabelLayout}), so an ink read here sits
+ * where `UGraphicCompressOnXorY` drew the block (`CompressionXorYBuilder.java:87-89`).
+ */
+export function edgeLabelDrawnTopLeft(edge: ActivityEdgeGeo, theme: Theme): { x: number; y: number } {
+  const wrapped = edge.labelWrapped === true;
+  const dim = edgeLabelBlockSize(edge.label!, theme, undefined, wrapped);
+  const position = getTextBlockPosition(edge.points, dim, edge.labelAlign ?? arrowHorizontalAlignment(theme));
+  const delta = edge.labelDelta;
+  return delta === undefined ? position : { x: position.x + delta.x, y: position.y + delta.y };
+}
+
+/**
  * The label placed on `points` alone: `Snake#getTextBlockPosition` for the
  * block's top-left (`Snake.java:244-270`) over the drawn block's own
  * dimension ({@link edgeLabelBlockSize}).
@@ -146,7 +183,76 @@ export function edgeLabelLayout(edge: ActivityEdgeGeo, theme: Theme): EdgeLabelL
 export function labelAnchors(edges: readonly ActivityEdgeGeo[], theme: Theme): (LabelAnchor | undefined)[] {
   return edges.map((edge) => {
     const layout = edgeLabelLayout(edge, theme);
-    return layout === undefined ? undefined : { x: layout.x, y: layout.baselineY };
+    return layout === undefined ? undefined : firstDrawAnchor(edge, layout, theme);
+  });
+}
+
+/**
+ * The point `UGraphicCompressOnXorY` maps for `layout`'s block: its first draw call's own translate
+ * (`UGraphicCompressOnXorY.java:107-116`). A text-first block keeps the first baseline. An embed-first block's first
+ * draw is the nested diagram's image (`EmbeddedDiagram#drawU`, `EmbeddedDiagram.java:169-174`), drawn at the block's
+ * top-left; a baseline anchor below it is not compression-invariant once both fall inside a removed slot, because
+ * `CompressionTransform#transform` maps every such point to the slot's start (`CompressionTransform.java:47-64`;
+ * aae T1, `.agent-notes/aae-T1.md`). Same rule as `shapes-of.ts#ifLabelTextAnchor` (aar-T6b).
+ * @see net/sourceforge/plantuml/klimt/compress/UGraphicCompressOnXorY.java:107-116
+ */
+function firstDrawAnchor(edge: ActivityEdgeGeo, layout: EdgeLabelLayout, theme: Theme): LabelAnchor {
+  const first = drawnShapesOf(edge, layout, theme).first;
+  return first === undefined || first.isText ? { x: layout.x, y: layout.baselineY } : { x: first.x, y: first.y };
+}
+
+/** Every draw call `layout`'s block makes, in draw order, at its drawn translate (`titleDrawnShapes`). */
+function drawnShapesOf(edge: ActivityEdgeGeo, layout: EdgeLabelLayout, theme: Theme): TitleDrawnShapes {
+  const fc = activityTextFontConfiguration(theme, layout.size, 'arrow');
+  const sb = klimtStringBounder(activityMeasurer(theme), { family: fc.family, size: layout.size });
+  const tb = edgeLabelBlock(edge.label!, theme, edge.labelWrapped === true);
+  const top = layout.baselineY - layout.size * ASCENT_FRACTION;
+  return titleDrawnShapes(tb, { x: layout.x, y: top }, sb);
+}
+
+/** Each labelled edge's raw draw points ({@link drawnShapesOf}), `undefined` for an unlabelled edge. Read once on
+ *  the raw geometry, beside {@link labelAnchors}. */
+export function labelDrawPoints(
+  edges: readonly ActivityEdgeGeo[],
+  theme: Theme,
+): (readonly LabelAnchor[] | undefined)[] {
+  return edges.map((edge) => {
+    const layout = edgeLabelLayout(edge, theme);
+    return layout === undefined ? undefined : drawnShapesOf(edge, layout, theme).points;
+  });
+}
+
+/**
+ * aae T4: `UGraphicCompressOnXorY#draw` maps EACH draw call's own point through `ct()`
+ * (`UGraphicCompressOnXorY.java:107-116`), so one block's parts move apart when a removed slot lies between them (an
+ * embed image occupies none, `SlotFinder.java:84-109`). Draw `j` ends at `ct(p_j)` and the anchor at `ct(a)`, so its
+ * offset from the rigid {@link withLabelDeltas} move is `ct(p_j) - ct(a) - (p_j - a)` on the pass's axis, accumulated
+ * over both passes in `labelShapeDeltas` -- the per-shape rule `frame-title-deltas.ts` ports for frame titles. Raw
+ * points and anchors serve both passes: the ON_X pass moves no `y`. All-zero (every text-only label: its line slots
+ * touch) leaves the field unset.
+ * @see net/sourceforge/plantuml/klimt/compress/UGraphicCompressOnXorY.java:107-122
+ */
+export function withLabelShapeDeltas(
+  edges: readonly ActivityEdgeGeo[],
+  raw: {
+    readonly points: readonly (readonly LabelAnchor[] | undefined)[];
+    readonly anchors: readonly (LabelAnchor | undefined)[];
+  },
+  ct: PiecewiseAffineTransform,
+  mode: CompressionMode,
+): ActivityEdgeGeo[] {
+  return edges.map((edge, i) => {
+    const points = raw.points[i];
+    const anchor = raw.anchors[i];
+    if (points === undefined || anchor === undefined) return edge;
+    const { labelShapeDeltas: prior, ...rest } = edge;
+    const a = anchor[mode];
+    const deltas = points.map((p, j) => {
+      const was = prior?.[j] ?? { dx: 0, dy: 0 };
+      const shift = ct.transform(p[mode]) - ct.transform(a) - (p[mode] - a);
+      return mode === 'x' ? { dx: was.dx + shift, dy: was.dy } : { dx: was.dx, dy: was.dy + shift };
+    });
+    return deltas.every((d) => d.dx === 0 && d.dy === 0) ? rest : { ...rest, labelShapeDeltas: deltas };
   });
 }
 
@@ -165,7 +271,7 @@ export function transformAnchors(
 
 /**
  * Re-bases every labelled edge's `labelDelta` on its (transformed) points:
- * `anchor - placeOnPoints(points)`. A zero delta is left unset, so an edge
+ * `anchor - firstDrawAnchor(placeOnPoints(points))`. A zero delta is left unset, so an edge
  * whose label compression did not displace keeps its prior shape.
  */
 export function withLabelDeltas(
@@ -177,8 +283,8 @@ export function withLabelDeltas(
     const anchor = anchors[i];
     const { labelDelta: _stale, ...rest } = edge;
     if (anchor === undefined || edge.label === undefined) return edge;
-    const placed = placeOnPoints(edge, edge.label, theme);
-    const delta = { x: anchor.x - placed.x, y: anchor.y - placed.baselineY };
+    const placed = firstDrawAnchor(edge, placeOnPoints(edge, edge.label, theme), theme);
+    const delta = { x: anchor.x - placed.x, y: anchor.y - placed.y };
     return delta.x === 0 && delta.y === 0 ? rest : { ...rest, labelDelta: delta };
   });
 }

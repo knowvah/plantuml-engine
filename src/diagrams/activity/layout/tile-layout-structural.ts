@@ -37,6 +37,7 @@ import { withInLabel, withOutLabel } from './tile-layout-inlabel.js';
 import { groupInnerInkMaxX } from './canvas-origin-group-ink.js';
 import { nonWhiteTest } from './display-white.js';
 import { stereogroupStereotype } from '../dispatch-stereogroup.js';
+import { leadingArrowLabel } from './conditional-builder-arrows.js';
 
 /**
  * `FtileFactoryDelegatorAddNote#addNote` (`vcompact/FtileFactoryDelegator
@@ -303,7 +304,10 @@ function tileSwitchCase(
 ): { tile: GtileTopDown; label?: string } {
   const { tiles, trailing } = tileNodes(kase.body, bounder, theme, laneOrder, pragma);
   const tile = withOutLabel(new GtileTopDown(tiles, bounder, theme), trailing);
-  return kase.label !== undefined ? { tile, label: kase.label } : { tile };
+  // aae T4: `Branch#getDisplayPositive` (`Branch.java:231-238`) -- the case's leading `-> label;` (its first tile's
+  // in-link display) replaces the `case (text)`, as `withBranchArrowLabels` does for an `if`.
+  const label = leadingArrowLabel(kase.body) ?? kase.label;
+  return label !== undefined ? { tile, label } : { tile };
 }
 
 /**

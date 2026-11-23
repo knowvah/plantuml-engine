@@ -54,6 +54,11 @@ export default defineConfig({
   description: 'PlantUML in pure TypeScript — no Java, no server, browser-native. ' + 'PlantUML source in, SVG out.',
   lang: 'en-US',
   cleanUrls: true,
+  // public/ is served verbatim, never as pages. Without this VitePress also
+  // builds every `.md` under it, and the licence files copied beside the
+  // playground's stdlib assets (docs-site/copy-stdlib-assets.mjs) fail the
+  // dead-link check on their package-relative links.
+  srcExclude: ['public/**'],
   markdown: {
     // Shiki bundles no PlantUML grammar, so without this it warns and falls
     // back to plain text. Registered here and reused by the playground's

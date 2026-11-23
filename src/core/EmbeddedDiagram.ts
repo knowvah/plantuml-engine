@@ -3,7 +3,7 @@
  * (or other `@start`/`@end`) diagram embedded inline inside a description
  * text, e.g. `{{salt\n...\n}}` or a bare `{{\n@startuml...@enduml\n}}`.
  *
- * Upstream: net/sourceforge/plantuml/EmbeddedDiagram.java (368 lines,
+ * Upstream: net/sourceforge/plantuml/EmbeddedDiagram.java (405 lines at a720bdd,
  * `class EmbeddedDiagram extends TextBlockMemoized implements Line,
  * Atom`) — the ROOT `net.sourceforge.plantuml` package, NOT
  * `klimt/creole/legacy/` (the batch overview's placement was wrong;
@@ -17,15 +17,15 @@
  *
  * ## Ported in full
  *
- *  - `EMBEDDED_START`/`EMBEDDED_END` constants (java:77-78).
- *  - `getEmbeddedType(CharSequence)` (java:257-366) — a pure, self-
+ *  - `EMBEDDED_START`/`EMBEDDED_END` constants (java:79-80).
+ *  - `getEmbeddedType(CharSequence)` (java:294-393) — a pure, self-
  *    contained text scan with no other class dependency. Ported FRESH
  *    here rather than imported from `klimt/creole/legacy/CreoleParser.ts`
  *    (T9a), even though T9a already carries an algorithmically identical
  *    copy — see "On `getEmbeddedType` and T9a" below for why reuse
  *    (import) was not possible within this task's boundaries.
  *  - `createAndSkip(String, Iterator<CharSequence>, ISkinSimple)`
- *    (java:97-115) — the line-collection algorithm: consumes lines from
+ *    (java:126-144) — the line-collection algorithm: consumes lines from
  *    an iterator, tracking nesting depth via recursive `getEmbeddedType`
  *    hits and bare `"}}"` closes, until the OUTER `"}}"` is found (which
  *    is consumed but NOT appended to the collected block), wrapping the
@@ -33,13 +33,23 @@
  *    verbatim, including the easy-to-miss detail that a NESTED closing
  *    `"}}"` (one that only decrements `nested` without reaching 0) IS
  *    still appended to the result — only the outermost one is swallowed.
- *  - `from(ISkinSimple, List<String>)` (java:117-119) — construction
- *    entry point.
+ *  - `from(ISkinSimple, List<String>)` (java:146-148) — construction
+ *    entry point. `BlockUml.convert(strings)` labels every line
+ *    `LineLocationImpl("block", null)` (`BlockUml.java:119-127`).
+ *  - the constructor's preprocessing of the body (java:89-103, plantuml#3015,
+ *    `58b9b3d53ee`): `new BlockUml(noDefinitions(pathSystem), pathSystem,
+ *    strings, Defines.createEmpty(), previous, UTF_8)`, and a non-null
+ *    `DefinitionsContainer` makes `BlockUml` run `TimLoader`
+ *    (`BlockUml.java:149-160`). `noDefinitions` (java:105-122) has no
+ *    `@startdef` block, so `!includedef` finds nothing. The port gets the
+ *    same effect because the nested `renderSync` (`src/index.ts`,
+ *    `prepareBlock`'s nested renderer) preprocesses its source; held by
+ *    `tests/unit/core/embedded-diagram-preprocess-3015.test.ts`.
  *  - the `Line`/`Atom` surface (java:75, `TextBlockMemoized`/`Line`/
- *    `Atom`): `getHorizontalAlignment()` (always LEFT, java:248-250),
- *    `getStartingAltitude` (always 0, java:121-123), `calculateDimensionSlow`
+ *    `Atom`): `getHorizontalAlignment()` (always LEFT, java:285-287),
+ *    `getStartingAltitude` (always 0, java:150-152), `calculateDimensionSlow`
  *    and `drawU` — both ADAPTED, see below.
- *  - `getNeutrons()` (java:252-255) — throws, ADR-9 (see below).
+ *  - `getNeutrons()` (java:289-292) — throws, ADR-9 (see below).
  *
  * ## `calculateDimensionSlow`/`drawU`: bound to an injected
  * `NestedDiagramRenderer` seam, not upstream's raster/TeaVM branch split

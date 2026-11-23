@@ -23,6 +23,7 @@ import { boxStyleBox, conditionBox, noteBox } from './shapes-of-boxes.js';
 import { edgeDecorationVector } from './shapes-of-terminal.js';
 import { frameShapes } from './shapes-of-frame.js';
 import { edgeLabelBlock, edgeLabelLayout } from './edge-label-anchor.js';
+import { withTitleShapeDeltas } from '../../activity-title-compress-ug.js';
 import { measurerAdapterOf } from '../../tiles/gtile-action.js';
 import { ifLabelBlock, ifLabelFontSize, type IfLabelNode } from '../../activity-text-sheet-diamond.js';
 import { klimtStringBounder } from '../../activity-creole-sheet.js';
@@ -407,7 +408,11 @@ function edgeLabelShapes(edge: ActivityEdgeGeo, bounder: StringBounder, theme: T
   // wrapped by `style.wrapWidth()` (`Branch.java:248-258`) occupies every
   // line it draws, not only its `\n` lines; `SheetBlock1`'s padding
   // (`SheetBlock1.java:209-210`) is inside the block.
-  const tb = edgeLabelBlock(edge.label!, theme, edge.labelWrapped === true);
+  // aae T4: on the ON_Y pass each draw sits at its ON_X-compressed point (`labelShapeDeltas`).
+  const tb = withTitleShapeDeltas(
+    edgeLabelBlock(edge.label!, theme, edge.labelWrapped === true),
+    edge.labelShapeDeltas,
+  );
   const fc = activityTextFontConfiguration(theme, layout.size, 'arrow');
   const sheetBounder = klimtStringBounder(measurerAdapterOf(bounder), { family: fc.family, size: layout.size });
   const top = layout.baselineY - layout.size * ASCENT_FRACTION;

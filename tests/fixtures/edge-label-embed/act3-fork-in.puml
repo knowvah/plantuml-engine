@@ -1,0 +1,10 @@
+@startuml
+start
+fork
+-> {{\nclass X\n}};
+:a;
+fork again
+:b;
+end fork
+stop
+@enduml

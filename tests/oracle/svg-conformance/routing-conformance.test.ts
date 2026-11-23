@@ -909,7 +909,11 @@ describe('routing conformance — jar-error classification', () => {
     // known-misroute -> agree -- their oracles come from the fix proposed in plantuml/plantuml#3032 (908fb9df265),
     // which runs the `!name = value` line as the legacy assignment again (TContext.java:473-490), so the jar draws
     // the diagram. Derivation: 11364 + 6 = 11370.
-    expect(pinnedAgree.length).toBe(11370);
+    // 11370 -> 11372 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11370 + 2 = 11372.
+    // 11372 -> 11374 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11372 + 2 = 11374.
+    expect(pinnedAgree.length).toBe(11374);
     // 629 -> 375 at gep/close-b7: the same 254 gantt rows.
     // 375 -> 374 at ddc/close-b0 (2026-10-28): the files authored row above.
     // 374 -> 546 at ogc/T5: +172 known-misroute, every one with a ledger reason (ogc-T4a/b/c):
@@ -1142,7 +1146,11 @@ describe('routing conformance — jar-error classification', () => {
     // by #147). Derivation: 11548 + 3 = 11551.
     // 11551 -> 11556 at pbs/close-b2 (2026-11-17): +5 svg-factories golden clones (cunotu-47-bute165, marese-34-xaro137, pecafo-64-rili177, vocalo-20-dixu237,
     // xanuke-94-tope429, pinned by png-bounder-seam, #170). Derivation: 11551 + 5 = 11556.
-    expect(manifest.fixtures.length).toBe(11556);
+    // 11556 -> 11558 at edp/T1a (2026-11-21): +2 svg-class golden clone(s) (nacave-78-dijo807, subdiagram-theme-1, #185).
+    // Derivation: 11556 + 2 = 11558.
+    // 11558 -> 11560 at dhk/T1 (2026-11-21): +2 svg-dot golden clone(s) (quoted-labels, skinparam-font-color, the #186 accepted host-font rows).
+    // Derivation: 11558 + 2 = 11560.
+    expect(manifest.fixtures.length).toBe(11560);
   });
 
   it('every jar-error entry carries jarErrored: true, and no other entry does', () => {

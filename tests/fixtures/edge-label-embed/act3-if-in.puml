@@ -1,0 +1,10 @@
+@startuml
+start
+if (c?) then (y)
+-> {{\nclass X\n}};
+:a;
+else (n)
+:b;
+endif
+stop
+@enduml

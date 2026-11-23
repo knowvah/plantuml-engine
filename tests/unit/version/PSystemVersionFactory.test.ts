@@ -1,8 +1,9 @@
 /**
  * `PSystemVersionFactory` (version/PSystemVersionFactory.java): `about` /
  * `author` / `authors` (java:52), `version` (java:55, the port's own values —
- * decisions.md D14) and bare `stdlib` (java:59) through the single-line gate.
- * `testdot` and the key tools (java:62-83, D8) are not accepted.
+ * decisions.md D14), bare `stdlib` (java:59), `testdot` (java:62),
+ * `keydistributor` (java:65), `keygen` (java:68), `keyimport [key]` (java:72)
+ * and both `keycheck` forms (java:77, :84) through the single-line gate.
  */
 import { describe, expect, it } from 'vitest';
 import { buildBlockUmls } from '../../../src/core/BlockUmlBuilder.js';
@@ -12,7 +13,11 @@ import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.
 import { parseRefusalOf, refuse } from '../../../src/core/parse-refusal.js';
 import { defaultTheme } from '../../../src/core/theme.js';
 import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifact.js';
-import type { PSystemVersion } from '../../../src/diagrams/version/PSystemVersion.js';
+import { DOT_ENGINE_VERSION } from '../../../src/core/version.js';
+import { PSystemKeycheck } from '../../../src/diagrams/version/PSystemKeycheck.js';
+import { PSystemKeygen } from '../../../src/diagrams/version/PSystemKeygen.js';
+import { PSystemVersion } from '../../../src/diagrams/version/PSystemVersion.js';
+import type { VersionFamilyDiagram } from '../../../src/diagrams/version/PSystemVersionFactory.js';
 import { PSystemVersionFactory, versionPlugin } from '../../../src/diagrams/version/PSystemVersionFactory.js';
 
 const measurer = new DeterministicMeasurer();
@@ -23,19 +28,28 @@ function sourceOf(text: string): UmlSource {
   return { ...block.source, seedSourceLines: block.seedSource };
 }
 
-function linesOf(line: string): readonly string[] | undefined {
-  const diagram = new PSystemVersionFactory().executeLine(
+function diagramOf(line: string): VersionFamilyDiagram | undefined {
+  return new PSystemVersionFactory().executeLine(
     sourceOf(`@startuml\n${line}\n@enduml`),
     line,
     new PreprocessingArtifact(),
   );
-  return diagram?.getLines();
+}
+
+function linesOf(line: string): readonly string[] | undefined {
+  const diagram = diagramOf(line);
+  return diagram instanceof PSystemVersion ? diagram.getLines() : undefined;
+}
+
+/** The SVG of the page the factory builds for `line`. */
+function pageOf(line: string): string | undefined {
+  return diagramOf(line)?.exportDiagram(0, measurer);
 }
 
 function renderOf(line: string): string {
   const diagram = versionPlugin.parse(sourceOf(`@startuml\n${line}\n@enduml`));
   if (parseRefusalOf(diagram) !== undefined) throw new Error('refused');
-  const geometry = versionPlugin.layoutSync(diagram as PSystemVersion, defaultTheme, measurer);
+  const geometry = versionPlugin.layoutSync(diagram as VersionFamilyDiagram, defaultTheme, measurer);
   return (versionPlugin.render(geometry, defaultTheme) as CompleteSvg).completeSvg;
 }
 
@@ -54,19 +68,59 @@ describe('PSystemVersionFactory#executeLine (java:49-90)', () => {
       expect(linesOf(line)?.[2], JSON.stringify(line)).toBe('<b>Build Time</b> ""Unknown compile time""');
   });
 
-  it('refuses testdot and the key tools (D8), and anything else', () => {
+  it('testdot builds the testdot page, any case, trailing whitespace allowed (java:62-63)', () => {
+    for (const line of ['testdot', 'TESTDOT  ', 'TestDot\t'])
+      expect(linesOf(line)?.[1], JSON.stringify(line)).toBe(`<b>@knowvah/dot-engine</b> ""${DOT_ENGINE_VERSION}""`);
+  });
+
+  it('keydistributor builds the keydistributor page, any case, trailing whitespace allowed (java:65-66)', () => {
+    for (const line of ['keydistributor', 'KEYDISTRIBUTOR', 'KeyDistributor \t'])
+      expect(linesOf(line), JSON.stringify(line)).toEqual(['No license found']);
+  });
+
+  it('keygen and keyimport build the keygen page, any case, any key, trailing whitespace allowed (java:68-76)', () => {
+    const keygen = pageOf('keygen');
+    expect(keygen).toContain('>(Unknown compile time)</text>');
+    for (const line of ['KEYGEN', 'keygen \t', 'keyimport', 'keyimport abc123', 'KEYIMPORT ABC123', 'keyimport\tz9 ']) {
+      expect(diagramOf(line), JSON.stringify(line)).toBeInstanceOf(PSystemKeygen);
+      expect(pageOf(line), JSON.stringify(line)).toBe(keygen);
+    }
+  });
+
+  it('keycheck <sig> <key> and keycheck <key> build the keycheck page, any case (java:77-87)', () => {
+    const keycheck = pageOf('keycheck abc123 def456');
+    expect(keycheck).toContain('>No license key was checked: plantuml-engine reads none.</text>');
+    for (const line of ['keycheck abc123', 'KEYCHECK ABC123', 'keycheck\tabc123  def456\t', 'KeyCheck z9 ']) {
+      expect(diagramOf(line), JSON.stringify(line)).toBeInstanceOf(PSystemKeycheck);
+      expect(pageOf(line), JSON.stringify(line)).toBe(keycheck);
+    }
+  });
+
+  it('refuses near misses, and anything else', () => {
     for (const line of [
       'versions',
       ' version',
-      'testdot',
-      'keygen',
-      'keydistributor',
-      'keyimport abc',
-      'keycheck a b',
+      ' testdot',
+      'testdots',
+      'test dot',
+      'keydistributors',
+      'keygens',
+      'keygen abc',
+      'keyimportabc',
+      'keyimport a-b',
+      'keyimport abc def',
+      'keyimport abc_1',
+      'keycheck',
+      'keycheck ',
+      'keycheckabc',
+      'keycheck a-b',
+      'keycheck a b c',
+      'keycheck a_b',
+      ' keycheck a',
       'abouts',
       ' about',
     ])
-      expect(linesOf(line), JSON.stringify(line)).toBeUndefined();
+      expect(diagramOf(line), JSON.stringify(line)).toBeUndefined();
   });
 });
 
@@ -98,8 +152,14 @@ describe('versionPlugin', () => {
       expect(new Set([0, 1, 2].map(() => renderOf(line))).size).toBe(1);
   });
 
-  it("refuses testdot with the gate's Syntax Error?", () => {
-    expect(versionPlugin.parse(sourceOf('@startuml\ntestdot\n@enduml'))).toEqual(
+  it('renders the testdot and keydistributor pages with no image', () => {
+    expect(renderOf('testdot')).toContain(`font-family="monospace">${DOT_ENGINE_VERSION}</text>`);
+    expect(renderOf('keydistributor')).toContain('>No license found</text>');
+    for (const line of ['testdot', 'keydistributor']) expect(renderOf(line)).not.toContain('<image');
+  });
+
+  it("refuses testdots with the gate's Syntax Error?", () => {
+    expect(versionPlugin.parse(sourceOf('@startuml\ntestdots\n@enduml'))).toEqual(
       refuse('syntax', 1, 1, 'Syntax Error?'),
     );
   });

@@ -1,0 +1,6 @@
+@startuml
+|#red|L1|
+:a;
+|L2|
+:b;
+@enduml

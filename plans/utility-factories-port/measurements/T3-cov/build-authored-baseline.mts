@@ -18,7 +18,6 @@ import {
 const [commit, flag] = process.argv.slice(2);
 if (commit === undefined) throw new Error('usage: build-authored-baseline.mts <commit> [--write]');
 const OUT = join(AUTHORED_UTILITY_ROOT, '../../../oracle/goldens/svg-utility/authored-baseline.json');
-const MEASURED_AT = '2026-10-14';
 
 const LABEL =
   'our own version string, kept by ruling (src/core/error/PSystemError.ts:151 fullDescription() vs ' +
@@ -167,6 +166,54 @@ const SPECS: Record<string, RowSpec> = {
       '5 diffs / weighted 192 (g childCount 27 vs 0 = 188).',
     parityGap: 'ListSpriteDiagramFactory (PSystemBuilder.java:170) is unported',
   },
+  'cov-testdot': {
+    topic: '`testdot` (PSystemVersionFactory `(?i)^testdot\\s*$`, PSystemVersion#createTestDot)',
+    reason:
+      '#182 ruling 1, inspired by, not conformant (rulings 2-4, 2026-11-13): line 1 is our ' +
+      'fullDescription() "plantuml-engine version 0.2.0 / unknown [Unknown compile time]" vs the jar\'s ' +
+      '"PlantUML version $version$ / $git.commit.id$" (src/diagrams/version/PSystemVersion.ts:286 vs ' +
+      'PSystemVersion.java:236, the 2026-10-08 own-version ruling); line 2 <b>@knowvah/dot-engine</b> ' +
+      '""2.12.3"" vs <b>GraphViz</b> ""dot - graphviz version 16.1.1 ..."" (PSystemVersion.ts:206 ' +
+      'addDotVersionStatus vs GraphvizUtils.java:126, ruling 2, DOT_ENGINE_VERSION); the jar\'s line 3 ' +
+      '"Installation seems OK. File generation OK" (GraphvizUtils.java:137-141) is dropped by ruling 4, ' +
+      'so the page is one line shorter (47 -> 35 px) and the runs after line 1 re-align: 23 diffs.',
+  },
+  'cov-testdot-upper-trailing': { topic: '`TESTDOT  ` ((?i) + trailing \\s* of `^testdot\\s*$`)' },
+  'cov-keydistributor': {
+    topic: '`keydistributor` (PSystemVersion#createKeyDistributor; retrieveDistributor() is null on both sides)',
+  },
+  'cov-keygen': {
+    topic: '`keygen` (PSystemKeygen, getFlashTextBlock)',
+    reason:
+      '#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header prints ' +
+      '"plantuml-engine version 0.2.0" and "(MIT source distribution)" vs "PlantUML version $version$" and ' +
+      '"(GPL source distribution)" (src/diagrams/version/PSystemKeygen.ts:55-56 vs PSystemKeygen.java:180-181; ' +
+      'the 2026-10-08 own-version ruling, ufp D13 MIT edition, License.java:63-68); lines 4-5 say ' +
+      '"plantuml-engine has no <i>Professional Edition License</i>:" / "it is <b>MIT</b> software and needs ' +
+      'no license key." (PSystemKeygen.ts:71-72) vs the jar\'s request to mail a QR code to plantuml@gmail.com ' +
+      '(java:115-116); and no QR image (the MIT edition\'s FlashCodeUtilsNone, java:119-129; the GPL oracle ' +
+      'draws zxing\'s at x4), so the page is 300x71 vs 293x282: 23 diffs.',
+  },
+  'cov-keyimport': { topic: '`keyimport` with no key (`(?i)^keyimport(\\s+[0-9a-z]+)?\\s*$`, empty key)' },
+  'cov-keyimport-key': { topic: '`keyimport abc123` (the key group; any key reaches getFlashTextBlock, vkt D3)' },
+  'cov-keycheck': {
+    topic: '`keycheck abc123 def456` (PSystemKeycheck, `(?i)^keycheck\\s+([0-9a-z]+)\\s+([0-9a-z]+)\\s*$`)',
+    reason:
+      '#182 ruling 1, inspired by, not conformant (2026-11-13, vkt D5): the header as cov-keygen ' +
+      '(src/diagrams/version/PSystemKeycheck.ts:52-53 vs PSystemKeycheck.java:129-130), and line 5 "No ' +
+      'license key was checked: plantuml-engine reads none." (PSystemKeycheck.ts:73) vs "No valid license ' +
+      'found. A named license is bound to the machine it was issued for." (java:107): no key is decoded ' +
+      '(vkt D3), and the machine binding is PlantUML\'s. 3 texts + their widths: 9 diffs.',
+  },
+  'cov-keycheck-one-arg': { topic: '`keycheck abc123` (the one-argument form, upstream 3a4d1675141, java:84-87)' },
+  'cov-keycheck-refuse-dash': {
+    topic: '`keycheck a-b` -- refused near miss: `-` is outside [0-9a-z], so neither keycheck regex matches',
+    reason: ERR5,
+  },
+  'cov-keyimport-refuse-dash': {
+    topic: '`keyimport a-b` -- refused near miss: the key group `\\s+[0-9a-z]+` misses `a-b`',
+    reason: ERR5,
+  },
 };
 // The easter eggs upstream removed (dadad87bba3) are the sequence Syntax Error? page at the a720bdd pin.
 const EGG_GONE =
@@ -187,6 +234,10 @@ for (const s of [
 // The license spellings share one mechanism.
 for (const s of ['cov-licence', 'cov-license-upper']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-license']!.reason };
 for (const s of ['cov-authors']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-about']!.reason };
+// The version-family key pages share one mechanism per page (vkt T2a).
+for (const s of ['cov-testdot-upper-trailing']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-testdot']!.reason };
+for (const s of ['cov-keyimport', 'cov-keyimport-key']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-keygen']!.reason };
+for (const s of ['cov-keycheck-one-arg']) SPECS[s] = { ...SPECS[s]!, reason: SPECS['cov-keycheck']!.reason };
 
 /** The jar's error page names its line `[From <desc> (line N) ]` and draws the message in #F00. */
 function jarErrorOf(golden: string): { line: number | null; message: string } | undefined {
@@ -196,6 +247,33 @@ function jarErrorOf(golden: string): { line: number | null; message: string } | 
   return { line: Number(from[1]), message: msg[1]!.replaceAll('&lt;', '<').replaceAll('&gt;', '>').trim() };
 }
 
+interface BaselineRow {
+  readonly slug: string;
+  readonly measuredAt: string;
+  readonly measuredAgainstCommit: string;
+  readonly [field: string]: unknown;
+}
+
+/** The manifest on disk, by slug: a row whose measurement is unchanged keeps its stamp (vkt T2a). */
+const previous = new Map<string, BaselineRow>(
+  ((JSON.parse(safeRead(OUT) ?? '{"fixtures":[]}') as { fixtures: BaselineRow[] }).fixtures ?? []).map((f) => [
+    f.slug,
+    f,
+  ]),
+);
+/** Today's date stamps a new or changed row. */
+const TODAY = new Date().toISOString().slice(0, 10);
+
+/** The prior stamp when every measured field is unchanged, else today's and `commit`. */
+function stampOf(row: Record<string, unknown>): { measuredAt: string; measuredAgainstCommit: string } {
+  const prior = previous.get(row['slug'] as string);
+  if (prior !== undefined) {
+    const { measuredAt, measuredAgainstCommit, ...measured } = prior;
+    if (JSON.stringify(measured) === JSON.stringify(row)) return { measuredAt, measuredAgainstCommit };
+  }
+  return { measuredAt: TODAY, measuredAgainstCommit: commit! };
+}
+
 const fixtures = listAuthoredUtilitySlugs().map((slug) => {
   const spec = SPECS[slug];
   if (spec === undefined) throw new Error(`${slug}: no topic in SPECS`);
@@ -203,7 +281,7 @@ const fixtures = listAuthoredUtilitySlugs().map((slug) => {
   if (m.errored) throw new Error(`${slug}: ${m.reason}`);
   if (m.weightedScore !== 0 && spec.reason === undefined) throw new Error(`${slug}: score ${m.weightedScore} with no reason`);
   const jarError = jarErrorOf(readAuthoredUtilityFixture(slug).golden ?? '');
-  return {
+  const row = {
     type: 'utility',
     slug,
     topic: spec.topic,
@@ -213,9 +291,8 @@ const fixtures = listAuthoredUtilitySlugs().map((slug) => {
     ...(m.weightedScore === 0 ? {} : { reason: spec.reason }),
     ...(jarError === undefined ? {} : { jarError }),
     ...(spec.parityGap === undefined ? {} : { parityGap: spec.parityGap }),
-    measuredAt: MEASURED_AT,
-    measuredAgainstCommit: commit,
   };
+  return { ...row, ...stampOf(row) };
 });
 const text = JSON.stringify({ fixtures }, null, 2) + '\n';
 for (const f of fixtures) console.log(`${f.slug}\t${f.weightedScore}\t${f.diffCount}\t${f.jarError === undefined ? '' : 'jarError'}`);

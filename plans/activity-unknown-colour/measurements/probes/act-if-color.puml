@@ -1,0 +1,5 @@
+@startuml
+#zzblue:if (x?) then (yes)
+:a;
+endif
+@enduml

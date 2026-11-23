@@ -1,0 +1,39 @@
+--- a/src/main/java/net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorAssembly.java
++++ b/src/main/java/net/sourceforge/plantuml/activitydiagram3/ftile/vcompact/FtileFactoryDelegatorAssembly.java
+@@ -61,6 +61,7 @@
+ 		if (textBlock != null) {
+ 			height += textBlock.calculateDimension(stringBounder).getHeight();
+ 		}
++		System.err.println("AAE assembly height=" + height + " sb=" + stringBounder.getClass().getName() + " tb=" + (textBlock==null?null:textBlock.getClass().getName()));
+ 		// final Ftile space = new FtileEmpty(getFactory().shadowing(), 1, height);
+ 		final Ftile tile1andSpace = FtileUtils.addBottom(tile1, height);
+ 		Ftile result = super.assembly(tile1andSpace, tile2);
+--- a/src/main/java/net/sourceforge/plantuml/activitydiagram3/ftile/Snake.java
++++ b/src/main/java/net/sourceforge/plantuml/activitydiagram3/ftile/Snake.java
+@@ -245,6 +245,7 @@
+ 		final XPoint2D pt1 = worm.getPoint(0);
+ 		final XPoint2D pt2 = worm.getPoint(1);
+ 		final XDimension2D dim = text.textBlock.calculateDimension(stringBounder);
++		System.err.println("AAE Snake.getTextBlockPosition sb=" + stringBounder.getClass().getName() + " block=" + text.textBlock.getClass().getName() + " dim=" + dim + " pt1=" + pt1 + " pt2=" + pt2);
+ 		double x = Math.max(pt1.getX(), pt2.getX()) + 4;
+ 		final boolean zigzag = worm.getDirectionsCode().startsWith("DLD") || worm.getDirectionsCode().startsWith("DRD");
+ 		double y = (pt1.getY() + pt2.getY()) / 2 - dim.getHeight() / 2;
+--- a/src/main/java/net/sourceforge/plantuml/klimt/creole/SheetBlock1.java
++++ b/src/main/java/net/sourceforge/plantuml/klimt/creole/SheetBlock1.java
+@@ -150,6 +150,8 @@
+ 				sea.doAlignTikzBaseline();
+ 			}
+ 			sea.exportAllPositions(positions);
++			System.err.println("AAE SheetBlock1 stripe sb=" + stringBounder.getClass().getName() + " atoms=" + stripe.getAtoms() + " width=" + width + " height=" + height);
++			for (Atom a : stripe.getAtoms()) System.err.println("AAE   atom " + a.getClass().getName() + " dim=" + a.calculateDimension(stringBounder) + " pos=" + positions.get(a));
+ 		}
+ 
+ 		double maxWidth = 0;
+@@ -195,6 +197,7 @@
+ 	@Override
+ 	public XDimension2D calculateDimensionSlow(StringBounder stringBounder) {
+ 		initMap(stringBounder);
++		System.err.println("AAE SheetBlock1.calculateDimensionSlow sb=" + stringBounder.getClass().getName() + " minMax=" + minMax + " padding=" + padding + " stripes=" + stripes.size());
+ 		return minMax.getDimension().delta(padding.getBottom() + padding.getTop());
+ 	}
+ 

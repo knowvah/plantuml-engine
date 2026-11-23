@@ -380,6 +380,89 @@
       "acceptedAt": "2026-11-04",
       "acceptedBy": "maintainer",
       "reason": "Maintainer ruling 2026-11-04 (#111): ditaa is dropped. Upstream comments out PSystemDitaaFactory for MIT (PSystemBuilder.java:165-167), and the library it calls, org.stathissideris.ascii2image, is LGPL-3.0-or-later in 26 of its 28 files. The oracle is the GPL build, which writes a PNG even when asked for SVG, so the survey prints oracle-error. We draw the unknown-diagram sentinel."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-testdot"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `testdot`, 23 diffs, weightedScore 29. vkt D5 testdot lines: line 1 is this port's fullDescription() where the jar prints its own (PSystemVersion.java:236); line 2 is <b>@knowvah/dot-engine</b> \"\"2.12.3\"\" (DOT_ENGINE_VERSION) where the jar prints <b>GraphViz</b> and its dot -V answer (GraphvizUtils.java:126, ruling 2); the jar's line 3 \"Installation seems OK. File generation OK\" (GraphvizUtils.java:137-141) is dropped by ruling 4, so the page is one line shorter (35 vs 47 px). No \"dot too old\" branch (ruling 3) on either side here."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-testdot-upper-trailing"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `TESTDOT  `, the same page, 23 diffs, weightedScore 29. vkt D5 testdot lines: line 1 is this port's fullDescription() where the jar prints its own (PSystemVersion.java:236); line 2 is <b>@knowvah/dot-engine</b> \"\"2.12.3\"\" (DOT_ENGINE_VERSION) where the jar prints <b>GraphViz</b> and its dot -V answer (GraphvizUtils.java:126, ruling 2); the jar's line 3 \"Installation seems OK. File generation OK\" (GraphvizUtils.java:137-141) is dropped by ruling 4, so the page is one line shorter (35 vs 47 px). No \"dot too old\" branch (ruling 3) on either side here."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-keygen"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `keygen`, 23 diffs, weightedScore 28. vkt D5 keygen lines: The header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" where the jar prints \"PlantUML version $version$\" and \"(GPL source distribution)\" (the 2026-10-08 own-version ruling; the MIT edition, License.java:63-68). Lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" and \"it is <b>MIT</b> software and needs no license key.\" where the jar asks for a QR code mailed to plantuml@gmail.com (PSystemKeygen.java:115-116), and no QR image is drawn: the MIT edition's FlashCodeUtilsNone draws none, the GPL oracle draws zxing's at x4 (java:119-129). Page 300x71 vs 293x282."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-keyimport"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `keyimport` with no key, the keygen page, 23 diffs, weightedScore 28. vkt D5 keygen lines: The header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" where the jar prints \"PlantUML version $version$\" and \"(GPL source distribution)\" (the 2026-10-08 own-version ruling; the MIT edition, License.java:63-68). Lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" and \"it is <b>MIT</b> software and needs no license key.\" where the jar asks for a QR code mailed to plantuml@gmail.com (PSystemKeygen.java:115-116), and no QR image is drawn: the MIT edition's FlashCodeUtilsNone draws none, the GPL oracle draws zxing's at x4 (java:119-129). Page 300x71 vs 293x282."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-keyimport-key"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `keyimport abc123`, the keygen page (any key, vkt D3), 23 diffs, weightedScore 28. vkt D5 keygen lines: The header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" where the jar prints \"PlantUML version $version$\" and \"(GPL source distribution)\" (the 2026-10-08 own-version ruling; the MIT edition, License.java:63-68). Lines 4-5 say \"plantuml-engine has no <i>Professional Edition License</i>:\" and \"it is <b>MIT</b> software and needs no license key.\" where the jar asks for a QR code mailed to plantuml@gmail.com (PSystemKeygen.java:115-116), and no QR image is drawn: the MIT edition's FlashCodeUtilsNone draws none, the GPL oracle draws zxing's at x4 (java:119-129). Page 300x71 vs 293x282."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-keycheck"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `keycheck abc123 def456`, 9 diffs, weightedScore 9. vkt D5 keycheck lines: The header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" where the jar prints \"PlantUML version $version$\" and \"(GPL source distribution)\" (the 2026-10-08 own-version ruling; the MIT edition, License.java:63-68). Line 5 says \"No license key was checked: plantuml-engine reads none.\" where the jar says \"No valid license found. A named license is bound to the machine it was issued for.\" (PSystemKeycheck.java:107): this port decodes no key (vkt D3). Lines 4 and 6 and the page geometry match."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-keycheck-one-arg"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- version-family pages adapted to plantuml-engine (ruling 2026-11-13, #182)",
+      "acceptedAt": "2026-11-13",
+      "acceptedBy": "maintainer (ruling 2026-11-13, #182)",
+      "reason": "Maintainer ruling 2026-11-13 on #182, ruling 1: \"Inspired by, not conformant. [...] Every row is an accepted divergence, signed against this ruling.\" Measured 2026-11-21 (vkt T2a, measureAuthoredUtility): `keycheck abc123` (upstream 3a4d1675141), the same page, 9 diffs, weightedScore 9. vkt D5 keycheck lines: The header prints \"plantuml-engine version 0.2.0\" and \"(MIT source distribution)\" where the jar prints \"PlantUML version $version$\" and \"(GPL source distribution)\" (the 2026-10-08 own-version ruling; the MIT edition, License.java:63-68). Line 5 says \"No license key was checked: plantuml-engine reads none.\" where the jar says \"No valid license found. A named license is bound to the machine it was issued for.\" (PSystemKeycheck.java:107): this port decodes no key (vkt D3). Lines 4 and 6 and the page geometry match."
+    },
+    {
+      "match": {
+        "id": "svg-dot/quoted-labels"
+      },
+      "scope": "svg-dot ratchet `accepted` rows (oracle/goldens/svg-dot/ratchet.json) -- host-font kerning (ruling 2026-11-16, #186)",
+      "acceptedAt": "2026-11-16",
+      "acceptedBy": "maintainer (ruling 2026-11-16, #186)",
+      "reason": "Maintainer ruling 2026-11-16 on #186, option 1: \"a host-font divergence. The oracle host's graphviz measures labels with pango/CoreText and the machine's Times New Roman, kern pairs included; a browser-safe engine cannot load the host's fonts. [...] No kern table in dot-engine (option 2 not taken).\" graphviz sizes a label through gvtextlayout (pango, kern pairs applied) and falls back to estimate_textspan_size only when no layout plugin answers (lib/common/textspan.c:73-92); that LUT stores per-glyph advances only (textspan_lut.c:19-21), and @knowvah/dot-engine 2.12.3 ports the LUT (LutTextMeasurer, src/common/textmeasure.ts:292-296). Times New Roman kerns space+A, so \"Node A\" is narrower on the oracle host than in the LUT sum. Measured 2026-11-21 (dhk T1, graphviz 16.1.1, single-file INSECURE oracle, measure-accepted.mts): 18 diffs, weightedScore 18; node a (\"Node A\") rx 40.09 in ours vs 39.58 in the jar, node b (\"Node B\") 39.58 in both; first diff svg/@viewBox[2]. Native `dot -Tsvg` on the DOT body equals the jar's SVG. DIVERGENCES.md: \"@startdot labels are measured without the host font's kerning\".",
+      "surveyBlind": "parity-dot.json surveys the dot-cache tree, which the a720bdd re-pin (cfb9ecd55) recaptured under the default LEGACY profile, where both sides are PSystemDot's \"This feature has been suppressed\" page (PSystemDot.java:77-84 at a720bdd), so the survey reads this row conformant while the graphviz geometry divergence stands. The accepted block of tests/oracle/svg-conformance/dot.golden.ratchet.test.ts holds the row instead: its score never rises and it must keep diverging."
+    },
+    {
+      "match": {
+        "id": "svg-dot/skinparam-font-color"
+      },
+      "scope": "svg-dot ratchet `accepted` rows (oracle/goldens/svg-dot/ratchet.json) -- host-font kerning (ruling 2026-11-16, #186)",
+      "acceptedAt": "2026-11-16",
+      "acceptedBy": "maintainer (ruling 2026-11-16, #186)",
+      "reason": "Maintainer ruling 2026-11-16 on #186, option 1: \"a host-font divergence. The oracle host's graphviz measures labels with pango/CoreText and the machine's Times New Roman, kern pairs included; a browser-safe engine cannot load the host's fonts. [...] No kern table in dot-engine (option 2 not taken).\" graphviz sizes a label through gvtextlayout (pango, kern pairs applied) and falls back to estimate_textspan_size only when no layout plugin answers (lib/common/textspan.c:73-92); that LUT stores per-glyph advances only (textspan_lut.c:19-21), and @knowvah/dot-engine 2.12.3 ports the LUT (LutTextMeasurer, src/common/textmeasure.ts:292-296). Times New Roman kerns space+A, so \"Node A\" is narrower on the oracle host than in the LUT sum. Measured 2026-11-21 (dhk T1, graphviz 16.1.1, single-file INSECURE oracle, measure-accepted.mts): 17 diffs, weightedScore 17; node a (\"Node A\") rx 40.09 in ours vs 39.58 in the jar, node b (\"Node B\") 39.58 in both; first diff svg/@viewBox[2]. Native `dot -Tsvg` on the DOT body equals the jar's SVG. DIVERGENCES.md: \"@startdot labels are measured without the host font's kerning\".",
+      "surveyBlind": "parity-dot.json surveys the dot-cache tree, which the a720bdd re-pin (cfb9ecd55) recaptured under the default LEGACY profile, where both sides are PSystemDot's \"This feature has been suppressed\" page (PSystemDot.java:77-84 at a720bdd), so the survey reads this row conformant while the graphviz geometry divergence stands. The accepted block of tests/oracle/svg-conformance/dot.golden.ratchet.test.ts holds the row instead: its score never rises and it must keep diverging."
     }
   ],
   "retired": [
