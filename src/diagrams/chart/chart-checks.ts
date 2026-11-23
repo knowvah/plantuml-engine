@@ -3,10 +3,10 @@
  * category axis, coordinate pairs against the h-axis, one data format for every
  * series. Split out of `ChartDiagram.ts` under the 500-line hook; each Java
  * method keeps its name and takes the diagram fields it reads.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartDiagram.java:400-431, 742-807
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartDiagram.java:400-431, 742-807 (pre-#3031 numbering), 530-541
  */
 import { javaDoubleToString } from '../../core/java-number-format.js';
-import type { ChartAxis } from './ChartAxis.js';
+import { isInfinite, type ChartAxis } from './ChartAxis.js';
 import { SeriesType, type ChartSeries } from './ChartSeries.js';
 import { Orientation } from './chart-modes.js';
 
@@ -22,6 +22,21 @@ export const ERROR_SAME_FORMAT =
   'All series must use the same data format (either all coordinate pairs or all index-based)';
 /** @see ChartDiagram.java:402-403, 423-424, 692-693 */
 export const ERROR_KEYS_NEED_CATEGORIES = 'Keyed values (key: value) need h-axis categories, not an h-axis range';
+
+/**
+ * The range written on an axis line (h-axis, v-axis, v2-axis, r-axis): every
+ * renderer places a value at `(value - min) / (max - min)`, so an empty or reversed
+ * range is refused on that line (93ebfacc5, #3031), as is one whose width
+ * overflows, `-1.7e308 --> 1.7e308` (3a4d96cb3, #3030).
+ * @see ChartDiagram.java:530-541
+ */
+export function checkRange(axis: string, min: number | undefined, max: number | undefined): string | undefined {
+  if (min !== undefined && max !== undefined && min >= max)
+    return `${axis} range must go from a lower to a higher value`;
+  // -1.7e308 --> 1.7e308: each bound is a double, the distance between them is not
+  if (min !== undefined && max !== undefined && isInfinite(max - min)) return `${axis} range is too large to be drawn`;
+  return undefined;
+}
 
 /** What the cartesian checks read of the diagram. */
 export interface CartesianCheckState {

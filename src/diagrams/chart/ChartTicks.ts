@@ -5,21 +5,21 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartTicks.java
  */
 import { isLongValued, javaFormatE, javaFormatF, javaFormatLong } from '../../core/java-number-format.js';
-import type { ChartAxis } from './ChartAxis.js';
+import { isInfinite, type ChartAxis } from './ChartAxis.js';
 
 /** The intervals the automatic ticks of a value axis draw. @see ChartTicks.java:51 */
 const TICK_INTERVALS = 5;
-/** About ten numeric h-axis ticks without a spacing. @see ChartTicks.java:142 */
+/** About ten numeric h-axis ticks without a spacing. @see ChartTicks.java:153 */
 const NUMERIC_DIVISIONS = 10.0;
-/** `spacing * 0.01`, the loops' floating-point tolerance. @see ChartTicks.java:105, 146 */
+/** `spacing * 0.01`, the loops' floating-point tolerance. @see ChartTicks.java:105, 157 */
 const TOLERANCE = 0.01;
-/** Below this magnitude a non-zero value prints with an exponent. @see ChartTicks.java:160 */
+/** Below this magnitude a non-zero value prints with an exponent. @see ChartTicks.java:171 */
 const EXPONENT_BELOW = 0.01;
-/** `%.2e`. @see ChartTicks.java:161 */
+/** `%.2e`. @see ChartTicks.java:172 */
 const EXPONENT_DECIMALS = 2;
-/** `%.2f` in `formatValue`. @see ChartTicks.java:164 */
+/** `%.2f` in `formatValue`. @see ChartTicks.java:175 */
 const VALUE_DECIMALS = 2;
-/** `%.1f` in `formatNumericValue`. @see ChartTicks.java:173 */
+/** `%.1f` in `formatNumericValue`. @see ChartTicks.java:184 */
 const NUMERIC_DECIMALS = 1;
 
 /** A tick: its value, its position from 0 (min) to 1 (max), and its label. @see ChartTicks.java:60-84 */
@@ -32,7 +32,7 @@ export interface Tick {
 /**
  * A vertical value axis: custom ticks if defined, else every spacing, else five
  * automatic intervals.
- * @see ChartTicks.java:89-116
+ * @see ChartTicks.java:89-117
  */
 export function valueTicks(axis: ChartAxis): Tick[] {
   const range = axis.getMax() - axis.getMin();
@@ -46,9 +46,21 @@ export function valueTicks(axis: ChartAxis): Tick[] {
   }
   if (axis.hasTickSpacing()) return spacedTicks(axis, range);
   return Array.from({ length: TICK_INTERVALS + 1 }, (_, i) => {
-    const value = axis.getMin() + (range * i) / TICK_INTERVALS;
+    const value = tickValue(axis, range, i);
     return { value, ratio: i / TICK_INTERVALS, label: formatValue(value) };
   });
+}
+
+/**
+ * The i-th automatic tick. `range * i` overflows above `Double.MAX_VALUE / 5` (an
+ * axis fitted to -1.7e308 and 1): `range / 5 * i` is used in that case only, so
+ * ordinary ticks keep their exact values (3a4d96cb3).
+ * @see ChartTicks.java:126-131
+ */
+function tickValue(axis: ChartAxis, range: number, i: number): number {
+  const scaled = range * i;
+  if (isInfinite(scaled)) return axis.getMin() + (range / TICK_INTERVALS) * i;
+  return axis.getMin() + scaled / TICK_INTERVALS;
 }
 
 /** The spacing arm. @see ChartTicks.java:99-108 */
@@ -64,11 +76,11 @@ function spacedTicks(axis: ChartAxis, range: number): Tick[] {
   return result;
 }
 
-/** A horizontal chart's value axis: five automatic intervals, written `%.0f`. @see ChartTicks.java:122-130 */
+/** A horizontal chart's value axis: five automatic intervals, written `%.0f`. @see ChartTicks.java:133-141 */
 export function horizontalValueTicks(axis: ChartAxis): Tick[] {
   const range = axis.getMax() - axis.getMin();
   return Array.from({ length: TICK_INTERVALS + 1 }, (_, i) => {
-    const value = axis.getMin() + (i * range) / TICK_INTERVALS;
+    const value = tickValue(axis, range, i);
     return { value, ratio: i / TICK_INTERVALS, label: javaFormatF(value, 0) };
   });
 }
@@ -76,7 +88,7 @@ export function horizontalValueTicks(axis: ChartAxis): Tick[] {
 /**
  * A numeric h-axis (coordinate pairs, or an h-axis range): one every spacing when
  * given, else about ten, from a multiple of the interval.
- * @see ChartTicks.java:137-152
+ * @see ChartTicks.java:148-163
  */
 export function numericTicks(axis: ChartAxis | undefined, spacing: number | undefined): Tick[] {
   if (axis === undefined) return [];
@@ -95,7 +107,7 @@ export function numericTicks(axis: ChartAxis | undefined, spacing: number | unde
 /**
  * A value on a value axis: trailing zeros dropped, 0.80 written 0.8 (2117ccb43cd).
  * `replaceAll("0+$", "")` keeps a trailing dot (99.999 gives "100.").
- * @see ChartTicks.java:159-165
+ * @see ChartTicks.java:170-176
  */
 export function formatValue(value: number): string {
   if (Math.abs(value) < EXPONENT_BELOW && value !== 0) return javaFormatE(value, EXPONENT_DECIMALS);
@@ -103,7 +115,7 @@ export function formatValue(value: number): string {
   return javaFormatF(value, VALUE_DECIMALS).replace(/0+$/, '');
 }
 
-/** A value on a numeric h-axis: one decimal at most. @see ChartTicks.java:168-174 */
+/** A value on a numeric h-axis: one decimal at most. @see ChartTicks.java:179-185 */
 function formatNumericValue(value: number): string {
   if (Math.abs(value) < EXPONENT_BELOW && value !== 0) return javaFormatE(value, EXPONENT_DECIMALS);
   if (isLongValued(value)) return javaFormatLong(value);

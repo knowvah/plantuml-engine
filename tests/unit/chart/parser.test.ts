@@ -26,10 +26,8 @@ describe('parseChart', () => {
     expect(d.getSeries()[0]!.getValues()).toEqual([45, 62]);
   });
 
-  it('coordinate pairs need a range that is not empty, and x inside it', () => {
-    expect(errorOf('h-axis 1 --> 1', 'line [(1,2)]')).toBe(
-      'Coordinate pair notation requires explicit h-axis range (e.g., h-axis "x" -5 --> 5)',
-    );
+  it('coordinate pairs need a range that is not empty (refused on its line, 93ebfacc5), and x inside it', () => {
+    expect(errorOf('h-axis 1 --> 1', 'line [(1,2)]')).toBe('h-axis range must go from a lower to a higher value');
     expect(errorOf('h-axis 0 --> 1', 'line [(2,2)]')).toBe('X-coordinate 2.0 is outside h-axis range [0.0, 1.0]');
   });
 

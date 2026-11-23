@@ -127,11 +127,11 @@ README.md`'s identical rule; the same rationale applies verbatim.
 
 `xonoru-58-noxe307` and `unknown/febuli-89-dusi249` left the ratchet at the
 a720bdd re-pin (its jar runs their `!name = value` lines as Python) and were
-restored on 2026-11-21 at their original positions: their oracles now come from
-the fix proposed in plantuml/plantuml#3032 (upstream 908fb9df265), which runs
+restored on 2026-11-21 at their original positions: their oracles come from the
+pinned b066ee08c jar, which carries the fix upstream merged for
+plantuml/plantuml#3032 (fe547cc6f), which runs
 the lines as legacy assignments again, with the missing-`$` warning banner.
-Re-pin when a release carries the fix (DIVERGENCES.md, "Rows pinned to
-unreleased upstream fixes").
+They are ordinary conformant rows now.
 
 ## How an AUTHORED fixture reaches the parity corpus (SI13, 2026-08-04)
 

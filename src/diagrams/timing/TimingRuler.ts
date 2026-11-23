@@ -16,7 +16,7 @@ import { back as backOf, createDisplay, fore, timingStyle, type TimingSkinParam 
 import type { HColor } from '../../core/style/Value.js';
 import * as breaks from './TimingRulerBreak.js';
 import { Break } from './TimingRulerBreak.js';
-import { withUnit, type TimeLabel } from './TimingRulerLabel.js';
+import { withoutOverlaps, withUnit, type TimeLabel } from './TimingRulerLabel.js';
 
 /** `getOptimalTickUnit`'s width cap (`maxDiagramWidth`, TimingRuler.java:99). */
 const MAX_DIAGRAM_WIDTH = 4000;
@@ -311,8 +311,9 @@ export class TimingRuler {
   }
 
   /**
-   * Each label at `getLabelX`; a unit is right-aligned on the axis end, dropping the values it would overlap.
-   * @see TimingRuler.java:405-445 (upstream a720bdd)
+   * Each label at `getLabelX`, skipping those that collide (#3028); a unit is right-aligned on the axis end, dropping
+   * the values it would overlap.
+   * @see TimingRuler.java:425-485 (upstream b066ee08c)
    */
   #getTimeLabels(stringBounder: StringBounder, timeAxisStategy: TimeAxisStategy, codes: TimeCodes): TimeLabel[] {
     const moments: number[] = [];
@@ -331,10 +332,15 @@ export class TimingRuler {
         texts.push(this.#getTimeTextBlock(label));
       }
     }
-    const result = texts.map((text, i): TimeLabel => {
+    const all: TimeLabel[] = [];
+    const breakEdges: TimeLabel[] = [];
+    texts.forEach((text, i) => {
       const width = text.calculateDimension(stringBounder).getWidth();
-      return { text, x: this.#getLabelX(moments[i] as number, width), width };
+      const label: TimeLabel = { text, x: this.#getLabelX(moments[i] as number, width), width };
+      all.push(label);
+      if (breaks.isBreakEdge(this.#breaks, moments[i] as number)) breakEdges.push(label);
     });
+    const result = withoutOverlaps(all, breakEdges);
     if (this.#unit === undefined) return result;
 
     const unitText = this.#getTimeTextBlock(this.#unit);

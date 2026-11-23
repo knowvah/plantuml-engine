@@ -42,6 +42,12 @@ export class Break {
   }
 }
 
+/** Whether a time is the `from` or the `to` of a break. @see TimingRuler.java:418-423 (upstream b066ee08c) */
+export function isBreakEdge(breaks: readonly Break[], time: number): boolean {
+  for (const b of breaks) if (time === b.from || time === b.to) return true;
+  return false;
+}
+
 /** Position of a time on the axis, in tick intervals from `min` (the smallest time). @see TimingRuler.java:174-190 */
 export function getPosInTicks(breaks: readonly Break[], min: number, time: number, tickUnitary: number): number {
   let shift = 0;

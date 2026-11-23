@@ -30,23 +30,25 @@ describe('ChartAxis', () => {
     expect(axis.withNiceRange(0, 38).isAutoScale()).toBe(false);
   });
 
-  it('withNiceRange stops on an unusable magnitude and throws (plantuml/plantuml#3030, efe6d85e5f3)', () => {
-    const messageOf = (lo: number, hi: number): string => {
-      try {
-        new ChartAxis().withNiceRange(lo, hi);
-        return 'no throw';
-      } catch (e) {
-        return (e as Error).message;
-      }
+  it('withNiceRange always ends, and goes from lo to hi when no round range is finite (3a4d96cb3)', () => {
+    const range = (lo: number, hi: number): number[] => {
+      const fitted = new ChartAxis().withNiceRange(lo, hi);
+      return [fitted.getMin(), fitted.getMax()];
     };
-    const prefix = 'IllegalArgumentException: No axis range for values from';
-    expect(messageOf(0, Number.POSITIVE_INFINITY)).toBe(`${prefix} 0.0 to Infinity`);
-    expect(messageOf(Number.NaN, 1)).toBe(`${prefix} NaN to 1.0`);
-    expect(messageOf(-1.7e308, 1)).toBe(`${prefix} -1.7E308 to 1.0`);
-    expect(messageOf(-1.7e308, 1.7e308)).toBe(`${prefix} -1.7E308 to 1.7E308`);
-    expect(messageOf(4.9e-324, 4.9e-324)).toBe(`${prefix} 4.9E-324 to 4.9E-324`);
-    const max = new ChartAxis().withNiceRange(0, Number.MAX_VALUE);
-    expect(max.getMax()).toBeGreaterThanOrEqual(Number.MAX_VALUE);
+    expect(range(0, Number.POSITIVE_INFINITY)).toEqual([0, Number.POSITIVE_INFINITY]);
+    expect(range(Number.NaN, 1)).toEqual([Number.NaN, 1]);
+    expect(range(-1.7e308, 1)).toEqual([-1.7e308, 1]);
+    expect(range(-1.7e308, 1.7e308)).toEqual([-1.7e308, 1.7e308]);
+    expect(range(0, Number.MAX_VALUE)).toEqual([0, Number.MAX_VALUE]);
+    // A magnitude of 0 starts at Double.MIN_VALUE: 0 -> 5 * MIN_VALUE
+    expect(range(4.9e-324, 4.9e-324)).toEqual([0, 5 * Number.MIN_VALUE]);
+  });
+
+  it('isDrawable: both bounds and the distance between them are finite (3a4d96cb3)', () => {
+    const drawable = (lo: number, hi: number): boolean => new ChartAxis('', lo, hi).isDrawable();
+    expect([drawable(0, 10), drawable(5, 5), drawable(-1.7e308, 1)]).toEqual([true, true, true]);
+    expect([drawable(-1.7e308, 1.7e308), drawable(0, Number.POSITIVE_INFINITY)]).toEqual([false, false]);
+    expect([drawable(Number.NaN, 1), drawable(10, 0)]).toEqual([false, false]);
   });
 
   it('withRange keeps the title, ticks, spacing and label position', () => {

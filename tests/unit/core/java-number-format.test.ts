@@ -44,6 +44,13 @@ describe('javaFormatE', () => {
     [0, 2, '0.00e+00'],
     [Number.NaN, 2, 'NaN'],
     [Number.NEGATIVE_INFINITY, 2, '-Infinity'],
+    // Subnormals round the closest two-digit decimal, as Double.toString does: the
+    // jar's tick labels in vega/nonreg/group3030/smallest_value.svg (3a4d96cb3)
+    [Number.MIN_VALUE, 2, '4.90e-324'],
+    [2 * Number.MIN_VALUE, 2, '9.90e-324'],
+    [3 * Number.MIN_VALUE, 2, '1.50e-323'],
+    [4 * Number.MIN_VALUE, 2, '2.00e-323'],
+    [5 * Number.MIN_VALUE, 2, '2.50e-323'],
   ])('(%s, %i) prints %s', (value, decimals, expected) => {
     expect(javaFormatE(value, decimals)).toBe(expected);
   });

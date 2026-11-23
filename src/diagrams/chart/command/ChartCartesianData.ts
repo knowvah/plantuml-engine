@@ -8,7 +8,8 @@
  */
 import { javaTrim } from '../../../core/java-number-format.js';
 import type { ChartValue } from '../ChartSeries.js';
-import { checkDelimiters, isOpening, parseFiniteDouble, stripDelimiters, unquote } from './ChartDataItems.js';
+import { checkDelimiters, isOpening, stripDelimiters, unquote } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 
 /** The parsed data, or the first error. @see ChartCartesianData.java:61-66 */
 export interface ChartCartesianData {
@@ -94,7 +95,7 @@ function addValue(result: Builder, item: string): string | undefined {
     result.values.push(undefined);
     return undefined;
   }
-  const value = parseFiniteDouble(text);
+  const value = ChartNumber.parse(text);
   if (value === undefined) return `Invalid number "${text}"`;
   result.values.push(value);
   return undefined;
@@ -106,8 +107,8 @@ function addPair(result: Builder, item: string): string | undefined {
   if (mismatch !== undefined) return mismatch.replace('around data', 'around a coordinate pair');
   const coords = split(stripDelimiters(item)!, ',');
   if (coords === undefined || coords.length !== 2) return `Invalid coordinate pair "${item}"`;
-  const x = parseFiniteDouble(javaTrim(unquote(javaTrim(coords[0]!))));
-  const y = parseFiniteDouble(javaTrim(unquote(javaTrim(coords[1]!))));
+  const x = ChartNumber.parse(javaTrim(unquote(javaTrim(coords[0]!))));
+  const y = ChartNumber.parse(javaTrim(unquote(javaTrim(coords[1]!))));
   if (x === undefined || y === undefined) return `Invalid coordinate pair "${item}"`;
   result.xValues.push(x);
   result.values.push(y);

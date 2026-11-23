@@ -27,6 +27,7 @@ import {
   ERROR_KEYS_NEED_CATEGORIES,
   ERROR_PAIRS_NEED_NUMERIC,
   ERROR_SAME_FORMAT,
+  checkRange,
   type CartesianCheckState,
 } from './chart-checks.js';
 import {
@@ -48,6 +49,7 @@ import { SeriesType, type ChartSeries, type ChartValue } from './ChartSeries.js'
 import type { HColor } from '../../core/style/Value.js';
 import type { CartesianChart } from './CartesianChart.js';
 import { hasCoordinatePairs, resolveCartesian } from './chart-resolve.js';
+import { checkAutomaticRanges } from './chart-ranges.js';
 import { GridMode, LegendPosition, Orientation, StackMode } from './chart-modes.js';
 import { ChartRenderer } from './ChartRenderer.js';
 import type { SkinParam } from './chart-skin-param.js';
@@ -182,9 +184,13 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return CommandExecutionResult.ok();
   }
 
-  /** A pie written as a list is checked once all its items are read. @see ChartDiagram.java:636-645 */
+  /**
+   * A pie written as a list is checked once all its items are read, then the
+   * automatic ranges (3a4d96cb3); `super.checkFinalError()` is null.
+   * @see ChartDiagram.java:649-662
+   */
   checkFinalError(): string | undefined {
-    return checkFinalPie(this.series);
+    return checkFinalPie(this.series) ?? checkAutomaticRanges(this);
   }
 
   /** What the cartesian checks read. */
@@ -313,11 +319,13 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
   }
 
   /**
-   * Coordinate pairs given without a range were never checked against one; keyed
-   * values need categories, not a range.
-   * @see ChartDiagram.java:684-702
+   * The range is checked first (93ebfacc5); coordinate pairs given without a range
+   * were never checked against one; keyed values need categories, not a range.
+   * @see ChartDiagram.java:748-769
    */
   setXAxis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
+    const range = errorOf(checkRange('h-axis', min, max));
+    if (range !== undefined) return range;
     const ranged = min !== undefined || max !== undefined;
     if (ranged && this.xAxis.isAutoScale() && hasCoordinatePairs(this.series))
       return CommandExecutionResult.error(ERROR_RANGE_AFTER_PAIRS);
@@ -331,8 +339,10 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this.xAxis;
   }
 
-  /** @see ChartDiagram.java:708-716 */
+  /** @see ChartDiagram.java:775-786 */
   setYAxis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
+    const range = errorOf(checkRange('v-axis', min, max));
+    if (range !== undefined) return range;
     applyToAxis(this.yAxis, title, min, max);
     return CommandExecutionResult.ok();
   }
@@ -352,8 +362,10 @@ export class ChartDiagram extends TitledDiagram implements TextBlock {
     return this.yAxisLabels;
   }
 
-  /** Creates the axis even with all three absent. @see ChartDiagram.java:730-740 */
+  /** Creates the axis even with all three absent, once the range is checked. @see ChartDiagram.java:800-813 */
   setY2Axis(title: string | undefined, min: number | undefined, max: number | undefined): CommandExecutionResult {
+    const range = errorOf(checkRange('v2-axis', min, max));
+    if (range !== undefined) return range;
     this.y2Axis ??= new ChartAxis();
     applyToAxis(this.y2Axis, title, min, max);
     return CommandExecutionResult.ok();

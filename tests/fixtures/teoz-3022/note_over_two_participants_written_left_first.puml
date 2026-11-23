@@ -1,0 +1,7 @@
+@startuml
+participant A
+participant B
+participant C
+note over B : x
+& note over A, C : y
+@enduml

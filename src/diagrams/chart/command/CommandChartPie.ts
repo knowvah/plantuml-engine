@@ -10,7 +10,8 @@ import { CommandExecutionResult } from '../../../core/command/CommandExecutionRe
 import { Stereotype } from '../../../core/stereo/Stereotype.js';
 import type { ChartDiagram } from '../ChartDiagram.js';
 import { ChartSeries, SeriesType } from '../ChartSeries.js';
-import { applyTo, BRACKETED, parseDataItems, parseFiniteDouble } from './ChartDataItems.js';
+import { applyTo, BRACKETED, parseDataItems } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 import { seriesNameOf, seriesNameRegex } from './ChartSeriesName.js';
 import { addOrOpen, SP0 } from './chart-command-text.js';
 
@@ -67,7 +68,7 @@ function applyOptions(series: ChartSeries, options: string): string | undefined 
 function applyDonut(series: ChartSeries, word: string | undefined): string | undefined {
   let hole = DEFAULT_HOLE;
   if (word !== undefined) {
-    const parsed = parseFiniteDouble(word.substring(0, word.length - 1));
+    const parsed = ChartNumber.parse(word.substring(0, word.length - 1));
     if (parsed === undefined) return `Invalid donut size ${word}`;
     hole = parsed;
   }

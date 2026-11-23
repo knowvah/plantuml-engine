@@ -33,6 +33,8 @@ function refusal(...lines: string[]): ParseRefusal {
 
 /** Digits only, as the range and spacing regexes allow, too large for a double: Infinity. */
 const HUGE = `1${'0'.repeat(400)}`;
+/** Digits only, 1.7e308: each bound is a double, the distance between them is not. */
+const WIDE = `17${'0'.repeat(307)}`;
 
 describe('parseChart', () => {
   it('grid v-axis is a syntax refusal at that line, as the planning probe', () => {
@@ -124,14 +126,64 @@ describe('parseChart', () => {
     [['v-axis ticks [1e999:"x"]'], 'Invalid tick format. Expected: [value:"label", ...]'],
     [['radar [1]', `r-axis 0 --> ${HUGE}`], 'Invalid number format in axis range'],
     [['radar [1]', `r-axis spacing ${HUGE}`], 'Invalid number format in spacing value'],
-  ])('refuses the non-finite number in %j (efe6d85e5f3)', (lines, message) => {
+  ])('refuses the non-finite number in %j (3a4d96cb3)', (lines, message) => {
     expect(refusal(...lines).message).toBe(message);
   });
 
-  it('reads a non-finite annotation x as a category, as parseFiniteDouble refuses it', () => {
+  it('reads a non-finite annotation x as a category, as ChartNumber.parse refuses it', () => {
     expect(diagram('h-axis [A]', 'annotation "a" at (Infinity, 1)').getAnnotations()[0]!.getXPosition()).toBe(
       'Infinity',
     );
+  });
+
+  it.each([
+    [['h-axis [A, B, C, D]', 'v-axis 5 --> 5', 'line [5, 6]'], 1, 'v-axis'],
+    [['h-axis [A, B, C, D]', 'v-axis 5 --> 5 spacing 5 grid', 'bar [1, 2]'], 1, 'v-axis'],
+    [['h-axis [A, B, C, D]', 'v-axis 10 --> 0', 'bar [2, 4, 6, 8]'], 1, 'v-axis'],
+    [['h-axis [A, B, C, D]', 'v-axis 0 --> 10', 'v2-axis 5 --> 5', 'line [5, 6] v2'], 2, 'v2-axis'],
+    [['orientation horizontal', 'v-axis [A, B]', 'h-axis 5 --> 5', 'bar [2, 4]'], 2, 'h-axis'],
+    [['orientation horizontal', 'v-axis [A, B]', 'h-axis 10 --> 0', 'bar [2, 4]'], 2, 'h-axis'],
+    [['h-axis 10 --> 0', 'v-axis 0 --> 10', 'line [5:5, 6:6]'], 0, 'h-axis'],
+  ])('refuses the empty or reversed range on the axis line of %j (93ebfacc5, #3031)', (lines, line, axis) => {
+    const r = refusal(...lines);
+    expect([r.kind, r.line, r.message]).toEqual([
+      'execution',
+      line,
+      `${axis} range must go from a lower to a higher value`,
+    ]);
+  });
+
+  it.each([
+    [[`v-axis -${WIDE} --> ${WIDE}`], 'v-axis'],
+    [[`v2-axis -${WIDE} --> ${WIDE}`], 'v2-axis'],
+    [[`h-axis -${WIDE} --> ${WIDE}`], 'h-axis'],
+    [['radar [1]', `r-axis -${WIDE} --> ${WIDE}`], 'r-axis'],
+  ])('refuses a range whose width overflows on its line, %j (3a4d96cb3)', (lines, axis) => {
+    const r = refusal(...lines);
+    expect([r.line, r.message]).toEqual([lines.length - 1, `${axis} range is too large to be drawn`]);
+  });
+
+  it.each([
+    [['h-axis [A, B]', 'area [1, 1e308]', 'area [1, 1e308]']],
+    [['h-axis [A, B]', 'bar [-1.7e308, 1.7e308]']],
+    [['h-axis [A, B]', 'stackMode stacked', 'bar [1e308, 1]', 'bar [1e308, 1]']],
+    [['h-axis [A, B]', 'v-axis 0 --> 10', 'stackMode stacked', 'bar [1e308, 1]', 'bar [1e308, 1]']],
+    [['radar [-1.7e308, 1.7e308]']],
+    // The jar gives the same message on these three (its error page carries a banner image)
+    [['h-axis [A, B]', 'v2-axis "y2"', 'line [-1.7e308, 1.7e308] v2']],
+    [['line [(-1.7e308, 1), (1.7e308, 2)]']],
+    [['h-axis [A, B]', 'v2-axis "y2"', 'area [1e308] v2', 'area [1e308] v2']],
+  ])('refuses values with no drawable range at the first line, %j (3a4d96cb3)', (lines) => {
+    const r = refusal(...lines);
+    expect([r.kind, r.line, r.message]).toEqual(['final', 0, 'The values are too large to be drawn']);
+  });
+
+  it('draws values near the limits of a double that still have a finite range (3a4d96cb3)', () => {
+    const extreme = diagram('h-axis [A, B]', 'bar [-1.7e308, 1]').resolveCartesian().getValueAxis();
+    expect([extreme.getMin(), extreme.getMax(), extreme.isDrawable()]).toEqual([-1.7e308, 1, true]);
+    const smallest = diagram('h-axis [A]', 'bar [4.9e-324]').resolveCartesian().getValueAxis();
+    expect([smallest.getMin(), smallest.isDrawable()]).toEqual([0, true]);
+    expect(smallest.getMax()).toBeGreaterThan(0);
   });
 
   it('words an unclosed <style> as PSystemCommandFactory does', () => {

@@ -1,37 +1,45 @@
 {
   "upstreamRepo": "https://github.com/plantuml/plantuml",
   "upstreamRef": "master",
-  "upstreamSha": "a720bdd164ac137c0c3d0ad4463d34997c74478c",
-  "forkRepo": "https://github.com/sseely/plantuml",
-  "forkMasterSha": "a720bdd164ac137c0c3d0ad4463d34997c74478c",
+  "upstreamSha": "b066ee08c3136fbc5f0dd1d0c0c1c9b2b01d07bc",
+  "forkRepo": "https://github.com/knowvah/plantuml",
+  "forkMasterSha": "b066ee08c3136fbc5f0dd1d0c0c1c9b2b01d07bc",
   "forkTreeIdenticalToUpstream": true,
   "plantumlVersion": "1.2026.11beta1",
   "seamBranch": "dot-output",
-  "seamCommit": "8fec366a90716faa4a77698c28b7e6b805492469",
+  "seamCommit": "022c544533e4ea630d785473c8c9ce6f1b1cd011",
   "seamCommitCount": 5,
   "patch": "patches/0001-oracle-dot-dump.patch",
   "dumpProperty": "PLANTUML_DUMP_DOT",
   "note": "Re-baseline DOT/SVG goldens whenever upstreamSha changes (sync master, rebase dot-output, rebuild jar). seamCommitCount is the number of oracle-only commits stacked on the pristine base -- build-oracle.sh derives the base as dot-output~seamCommitCount, so ADD TO IT when adding a seam commit or the drift guard silently stops working.",
   "previousPin": {
-    "upstreamSha": "97a5992201a7b1bc5d4063a81da609fe7387fede",
-    "plantumlVersion": "1.2026.8beta1",
-    "forkMasterSha": "97a5992201a7b1bc5d4063a81da609fe7387fede",
-    "seamCommit": "d878ea981043f74aceabc9048c4f3e33a3a6a519",
-    "retiredOn": "2026-11-19",
-    "why": "Upstream merged plantuml/plantuml#3016 (58b9b3d: a one-line {{ }} embed is now preprocessed; #185 ruling 2026-11-16 says re-measure nacave-78-dijo807 and subdiagram-theme-1 when it ships) and 0a6720c (embedded diagram overflowing its note in deterministic SVG). Re-pinned to upstream master a720bdd (303 commits, 1.2026.11beta1); the five seam commits rebased with two textual conflicts (a TeaVM C guard beside the DOT dump, and an import line) and add the same 107 lines.",
+    "upstreamSha": "a720bdd164ac137c0c3d0ad4463d34997c74478c",
+    "plantumlVersion": "1.2026.11beta1",
+    "forkMasterSha": "a720bdd164ac137c0c3d0ad4463d34997c74478c",
+    "seamCommit": "8fec366a90716faa4a77698c28b7e6b805492469",
+    "retiredOn": "2026-11-23",
+    "why": "Re-pinned to upstream master b066ee08c: the fixes we had mirrored from patched jars (#3030, #3031, #3032) merged upstream, plus #3028 (timing label collisions) and #3022 (teoz `&` note width). The five seam commits were rebased onto it unchanged (seamCommitCount stays 5; `dot-output~5` has the same tree as master).",
     "previousPin": {
-      "upstreamSha": "11ed6720bd65b61f88d682ca3cb4e4ba3f4e90ee",
-      "plantumlVersion": "1.2026.7beta11",
-      "forkMasterSha": "ebbacfefebe19930e90f00475faef7610223ff42",
-      "seamCommit": "de1f986f09253edb9bf6351808e1cdba99ec9e74",
-      "retiredOn": "2026-09-27",
-      "why": "cdd4 decision-journal rows 6-7 (besepi): the port matched 1.2026.8beta1 byte-for-byte while the oracle cache was captured with 7beta11, and the Java the port is read against is 97a5992 (8beta1). Re-pinned by class-divergence-drive-5 T0a so the oracle is homogeneous again.",
+      "upstreamSha": "97a5992201a7b1bc5d4063a81da609fe7387fede",
+      "plantumlVersion": "1.2026.8beta1",
+      "forkMasterSha": "97a5992201a7b1bc5d4063a81da609fe7387fede",
+      "seamCommit": "d878ea981043f74aceabc9048c4f3e33a3a6a519",
+      "retiredOn": "2026-11-19",
+      "why": "Upstream merged plantuml/plantuml#3016 (58b9b3d: a one-line {{ }} embed is now preprocessed; #185 ruling 2026-11-16 says re-measure nacave-78-dijo807 and subdiagram-theme-1 when it ships) and 0a6720c (embedded diagram overflowing its note in deterministic SVG). Re-pinned to upstream master a720bdd (303 commits, 1.2026.11beta1); the five seam commits rebased with two textual conflicts (a TeaVM C guard beside the DOT dump, and an import line) and add the same 107 lines.",
       "previousPin": {
-        "upstreamSha": "59ddb5313f4680acea6198f1db7120c8d5258631",
-        "plantumlVersion": "1.2026.7beta3",
-        "retiredOn": "2026-08-07",
-        "why": "The checkout had drifted 59 commits ahead of this pin and a port task (S1L-f part 2b, SpriteSvg Math.ceil) implemented post-pin behaviour against a pre-pin oracle. Advancing the pin changed exactly 5 of 1194 DOT goldens; see plans/s1l-tail-fix/findings/svg-sprite-ceil-vs-floor.md.",
-        "svgSuitesNotRebaselined": "The svg-* suites (402 byte-compared goldens) were NOT re-baselined with this bump -- two 'reduce SVG output size' commits are in range. Tracked as its own follow-up."
+        "upstreamSha": "11ed6720bd65b61f88d682ca3cb4e4ba3f4e90ee",
+        "plantumlVersion": "1.2026.7beta11",
+        "forkMasterSha": "ebbacfefebe19930e90f00475faef7610223ff42",
+        "seamCommit": "de1f986f09253edb9bf6351808e1cdba99ec9e74",
+        "retiredOn": "2026-09-27",
+        "why": "cdd4 decision-journal rows 6-7 (besepi): the port matched 1.2026.8beta1 byte-for-byte while the oracle cache was captured with 7beta11, and the Java the port is read against is 97a5992 (8beta1). Re-pinned by class-divergence-drive-5 T0a so the oracle is homogeneous again.",
+        "previousPin": {
+          "upstreamSha": "59ddb5313f4680acea6198f1db7120c8d5258631",
+          "plantumlVersion": "1.2026.7beta3",
+          "retiredOn": "2026-08-07",
+          "why": "The checkout had drifted 59 commits ahead of this pin and a port task (S1L-f part 2b, SpriteSvg Math.ceil) implemented post-pin behaviour against a pre-pin oracle. Advancing the pin changed exactly 5 of 1194 DOT goldens; see plans/s1l-tail-fix/findings/svg-sprite-ceil-vs-floor.md.",
+          "svgSuitesNotRebaselined": "The svg-* suites (402 byte-compared goldens) were NOT re-baselined with this bump -- two 'reduce SVG output size' commits are in range. Tracked as its own follow-up."
+        }
       }
     }
   },
@@ -72,6 +80,12 @@
       "seamCommitCount": 5,
       "retiredOn": "2026-11-19",
       "why": "re-pin to upstream a720bdd (#3016); the seam was rebased, not changed"
+    },
+    {
+      "seamCommit": "8fec366a90716faa4a77698c28b7e6b805492469",
+      "seamCommitCount": 5,
+      "retiredOn": "2026-11-23",
+      "why": "re-pin to upstream master b066ee08c; the seam was rebased, not changed"
     }
   ]
 }

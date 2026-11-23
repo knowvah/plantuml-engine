@@ -2333,7 +2333,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 3 `!ijk<TAB>= \"foo\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 3 `!ijk<TAB>= \"foo\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -3198,7 +3198,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 3 `!ijk = \"foo\" + \"bar\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 3 `!ijk = \"foo\" + \"bar\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -3235,7 +3235,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 3 `!ijk = \"foo\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 3 `!ijk = \"foo\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -3731,7 +3731,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!TEST=something` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 2 `!TEST=something` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -3768,7 +3768,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 5 `!ij = \"foo5\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 5 `!ij = \"foo5\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -8523,7 +8523,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 2 `!Response = \"FOO\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 2 `!Response = \"FOO\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",
@@ -9757,7 +9757,7 @@
       "diffCount": 0,
       "measuredAt": "2026-11-21",
       "measuredAgainstCommit": "ae8ba15c",
-      "reason": "#3032 row: the pinned a720bdd jar runs line 3 `!ijk = \"foo\"` as Python (TLineType.java:266, 0537b558644); this row mirrors the fix proposed in plantuml/plantuml#3032 (908fb9df265), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). Re-pin when a release carries it."
+      "reason": "#3032 row: the a720bdd jar ran line 3 `!ijk = \"foo\"` as Python (TLineType.java:266, 0537b558644); upstream fixed it in plantuml/plantuml#3032 (fe547cc6f), which keeps it the legacy assignment, with the missing-'$' warning, in a diagram without other Python whose text uses the name (TContext.java:473-490). The pinned b066ee08c jar carries the fix."
     },
     {
       "type": "sequence",

@@ -3,7 +3,6 @@
  * spacing and label position.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/ChartAxis.java
  */
-import { javaDoubleToString } from '../../core/java-number-format.js';
 
 /** @see ChartAxis.java:41-45 */
 export const LabelPosition = {
@@ -32,9 +31,24 @@ const NICE_STEPS: readonly number[] = [1, 2, 3, 4, 5, 6, 8];
 /** The intervals the automatic value ticks draw. @see ChartAxis.java:134 */
 const TICK_INTERVALS = 5;
 
-/** A magnitude the nice-range loop can grow from. @see ChartAxis.java:167-169 (efe6d85e5f3) */
-function isUsableMagnitude(magnitude: number): boolean {
-  return magnitude > 0 && Number.isFinite(magnitude);
+/**
+ * The first `NICE_STEPS` multiple of `magnitude` whose range `start -> start + 5 * step`
+ * reaches `hi` with both bounds finite: the body of `withNiceRange`'s inner loop.
+ * @see ChartAxis.java:166-172
+ */
+function niceRangeAt(lo: number, hi: number, magnitude: number): readonly [number, number] | undefined {
+  for (const nice of NICE_STEPS) {
+    const step = nice * magnitude;
+    const start = Math.floor(lo / step) * step;
+    const end = start + TICK_INTERVALS * step;
+    if (end >= hi && !isInfinite(start) && !isInfinite(end)) return [start, end];
+  }
+  return undefined;
+}
+
+/** Java's `Double.isInfinite`: false for NaN. */
+export function isInfinite(value: number): boolean {
+  return value === Number.POSITIVE_INFINITY || value === Number.NEGATIVE_INFINITY;
 }
 
 export class ChartAxis {
@@ -114,30 +128,39 @@ export class ChartAxis {
    * and 0: `start + 5 * step`, step being `NICE_STEPS` times a power of ten and
    * start a multiple of step (2117ccb43cd, #2956).
    *
-   * The loop needs finite numbers: NaN, Infinity, or a start that overflows near
-   * `-Double.MAX_VALUE` never pass the test, and a magnitude of 0 never grows, so
-   * it stops once the magnitude is no longer finite and positive, and throws
-   * (plantuml/plantuml#3030, efe6d85e5f3, mirrored ahead of a release).
-   * @see ChartAxis.java:145-169 (efe6d85e5f3)
+   * Values near the limits of a double may have no round range that is itself a
+   * finite double (a stack of 1e308 + 1e308, or -1.7e308 and 1): the axis then goes
+   * from lo to hi as they are, which may be infinite, and
+   * `ChartDiagram.checkFinalError` reports it (3a4d96cb3, plantuml/plantuml#3030).
+   * @see ChartAxis.java:150-176
    */
   withNiceRange(dataMin: number, dataMax: number): ChartAxis {
     const lo = Math.min(0, dataMin);
     const hi = Math.max(0, dataMax);
+    if (Number.isNaN(lo) || Number.isNaN(hi)) return this.withRange(lo, hi);
     if (lo === hi) return this.withRange(this.min, this.max);
 
     let magnitude = Math.pow(10, Math.floor(Math.log10((hi - lo) / TICK_INTERVALS)) - 1);
+    // Below the smallest normal double, (hi - lo) / 5 can round to 0 (4.9e-324 / 5)
+    if (magnitude === 0) magnitude = Number.MIN_VALUE;
     // Termination: once step >= hi - lo, any multiple start <= lo gives start + 5 * step > hi.
-    while (isUsableMagnitude(magnitude)) {
-      for (const nice of NICE_STEPS) {
-        const step = nice * magnitude;
-        const start = Math.floor(lo / step) * step;
-        if (start + TICK_INTERVALS * step >= hi) return this.withRange(start, start + TICK_INTERVALS * step);
-      }
+    // When that multiple overflows, magnitude keeps growing until it is infinite.
+    while (!isInfinite(magnitude)) {
+      const range = niceRangeAt(lo, hi, magnitude);
+      if (range !== undefined) return this.withRange(range[0], range[1]);
       magnitude *= 10;
     }
-    throw new Error(
-      `IllegalArgumentException: No axis range for values from ${javaDoubleToString(dataMin)} to ${javaDoubleToString(dataMax)}`,
-    );
+    return this.withRange(lo, hi);
+  }
+
+  /**
+   * Whether this range can be drawn: both bounds and the distance between them are
+   * finite (a distance of 0 is drawn at the start of the axis, see `valueToPixel`).
+   * @see ChartAxis.java:182-185
+   */
+  isDrawable(): boolean {
+    const span = this.max - this.min;
+    return span >= 0 && !isInfinite(span);
   }
 
   getCustomTicks(): readonly ChartTick[] | undefined {

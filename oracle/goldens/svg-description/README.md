@@ -105,11 +105,10 @@ as the evidence.
   out smaller.
 
 `component/pegali-65` left with them and was restored on 2026-11-21 at its
-original position: its oracle (and `svek-1.dot`) now comes from the fix
-proposed in plantuml/plantuml#3032 (upstream 908fb9df265), which runs
+original position: its oracle (and `svek-1.dot`) comes from the pinned b066ee08c jar, which
+carries the fix upstream merged for plantuml/plantuml#3032 (fe547cc6f), which runs
 `!global = "changed value"` as the legacy assignment again, with the
-missing-`$` warning banner. Re-pin when a release carries the fix
-(DIVERGENCES.md, "Rows pinned to unreleased upstream fixes").
+missing-`$` warning banner.
 
 ## Known gap (T18 finding, still open after T19)
 

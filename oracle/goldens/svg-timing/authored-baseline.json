@@ -1294,6 +1294,60 @@
     },
     {
       "type": "timing",
+      "slug": "vega-3028-break-close-events",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-3028-close-events",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-3028-manual-axis-codes",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-3028-neighbours-fit",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-3028-overflow-without-neighbour",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
+      "slug": "vega-3028-rectangle-close-events",
+      "status": "baseline",
+      "weightedScore": 0,
+      "diffCount": 0,
+      "measuredAt": "2026-11-23",
+      "measuredAgainstCommit": "e421cd275"
+    },
+    {
+      "type": "timing",
       "slug": "vega-clock-decimal-period-offset",
       "status": "baseline",
       "weightedScore": 0,

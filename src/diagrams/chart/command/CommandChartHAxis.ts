@@ -2,7 +2,7 @@
  * `CommandChartHAxis`: `h-axis` or `x-axis`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/CommandChartHAxis.java
  */
-import { parseFiniteDouble } from './ChartDataItems.js';
+import * as ChartNumber from './ChartNumber.js';
 import { CommandExecutionResult } from '../../../core/command/CommandExecutionResult.js';
 import { LabelPosition } from '../ChartAxis.js';
 import { GridMode, Kind, type ChartDiagram } from '../ChartDiagram.js';
@@ -46,8 +46,8 @@ export function applyChartHAxis(diagram: ChartDiagram, match: RegExpExecArray): 
   if (g['GRID'] !== undefined) diagram.setXGridMode(GridMode.MAJOR);
 
   if (g['RANGE_0'] !== undefined && g['RANGE_1'] !== undefined) {
-    const min = parseFiniteDouble(g['RANGE_0']);
-    const max = parseFiniteDouble(g['RANGE_1']);
+    const min = ChartNumber.parse(g['RANGE_0']);
+    const max = ChartNumber.parse(g['RANGE_1']);
     if (min === undefined || max === undefined)
       return CommandExecutionResult.error('Invalid number format in axis range');
     return diagram.setXAxis(title, min, max);

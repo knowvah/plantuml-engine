@@ -6,7 +6,7 @@
  * a pie or a radar: `[Nitrogen: 78, Oxygen: 21 #DC3912, "Rare gases, others": 1]`.
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/chart/command/ChartDataItems.java
  */
-import { parseDouble } from '../../../core/java-number-format.js';
+import * as ChartNumber from './ChartNumber.js';
 import { javaTrim } from '../../../core/java-number-format.js';
 import type { HColorSet } from '../../../core/klimt/color/HColorSet.js';
 import { NoSuchColorException } from '../../../core/klimt/color/NoSuchColorException.js';
@@ -135,25 +135,12 @@ function add(itemIn: string, colorSet: HColorSet): ChartDataItemResult {
   return valueOf(key, javaTrim(unquote(item)), color);
 }
 
-/** `parseFiniteDouble` on a non-empty text (efe6d85e5f3); an empty one is a missing value. @see ChartDataItems.java:153-159 */
+/** `ChartNumber.parse` on a non-empty text (3a4d96cb3); an empty one is a missing value. @see ChartDataItems.java:153-159 */
 function valueOf(key: string | undefined, text: string, color: HColor | undefined): ChartDataItemResult {
   if (text === '') return { item: { key, value: undefined, color } };
-  const value = parseFiniteDouble(text);
+  const value = ChartNumber.parse(text);
   if (value === undefined) return { error: `Invalid number "${text}"` };
   return { item: { key, value, color } };
-}
-
-/**
- * `Double.parseDouble` that also refuses `NaN`, `Infinity` and numbers too large
- * for a double (`1e999`): none can be drawn, and an axis fitted to them never
- * ends. `undefined` for Java's `NumberFormatException` (plantuml/plantuml#3030,
- * efe6d85e5f3, mirrored ahead of a release by user ruling).
- * @see ChartDataItems.java:167-175 (efe6d85e5f3)
- */
-export function parseFiniteDouble(text: string): number | undefined {
-  const value = parseDouble(text);
-  if (value === undefined || !Number.isFinite(value)) return undefined;
-  return value;
 }
 
 /** The error when the brackets, braces or parentheses around data do not match. @see ChartDataItems.java:168-175 */
