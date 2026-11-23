@@ -112,7 +112,7 @@ Type every command literally. Run producers **alone**, and never `cd` below the 
 
 - Compiling a throwaway Java probe in `/tmp` against `oracle/dist/plantuml-oracle.jar` (`javac -cp`, `java -cp`)
   that prints `display.create7(…).calculateDimension(sb)` for the label, when reading alone cannot settle T1.
-  Copy its source to `measurements/java/` so the evidence is reproducible.
+  Copy its source to `measurements/aae-probe.patch` so the evidence is reproducible.
 - Authoring extra probes (text after the embed, two embeds, `{{salt`, labels in swimlanes, if/repeat/while sites)
   and their oracles; each joins the authored gate.
 - Rerunning a timed-out vitest or survey at lower load before calling the timeout a finding.
@@ -128,7 +128,7 @@ Expected files (T1 confirms or replaces this list; write-sets are plans):
 
 | File | Action | Task |
 |---|---|---|
-| `.agent-notes/aae-T1.md`, `plans/activity-arrow-embed/measurements/java/*` | Create | T1 |
+| `.agent-notes/aae-T1.md`, `plans/activity-arrow-embed/measurements/aae-probe.patch` | Create | T1 |
 | `src/diagrams/activity/layout/compress/edge-label-anchor.ts` (`edgeLabelBlock`, `edgeLabelBlockSize`) | Modify | T2 |
 | `src/diagrams/activity/activity-creole-sheet.ts`, `activity-text-sheet.ts` (the embed stripe) | Modify | T2 |
 | `src/diagrams/activity/layout/tile-layout-inlabel.ts` (the `35 + height` reserve) | Modify | T3 |

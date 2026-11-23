@@ -1,6 +1,6 @@
 # aae T1 — the activity-3 arrow-label embed, diagnosed (issue #188, 2026-11-22)
 
-Evidence: the instrumented jar probe in `plans/activity-arrow-embed/measurements/java/` (upstream classes at the
+Evidence: the instrumented jar probe in `plans/activity-arrow-embed/measurements/aae-probe.patch` (upstream classes at the
 oracle seam commit `8fec366a9`, `System.err` lines only), and temporary `AAE_TRACE` logging in our
 `compress-geometry.ts`, `canvas-origin.ts`, `canvas-origin-text-ink.ts` and `assemble-svg-activity.ts` (removed).
 

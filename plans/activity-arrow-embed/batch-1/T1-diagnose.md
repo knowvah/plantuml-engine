@@ -1,6 +1,6 @@
 # T1 — diagnose the activity-3 arrow-label embed block
 
-**Writes:** `.agent-notes/aae-T1.md`, `plans/activity-arrow-embed/measurements/java/*` (optional probe source),
+**Writes:** `.agent-notes/aae-T1.md`, `plans/activity-arrow-embed/measurements/aae-probe.patch` (optional probe source),
 `plans/activity-arrow-embed/decision-journal.md`, and `decisions.md` only to amend a contradicted decision (then stop).
 **Reads:** the task-contract spine; `src/diagrams/activity/layout/compress/edge-label-anchor.ts:84-142`,
 `src/diagrams/activity/activity-creole-sheet.ts`, `activity-text-sheet.ts`, `layout/tile-layout-inlabel.ts:100-130`,
@@ -33,7 +33,7 @@ Produce, for each of the three residuals, the artifact from `~/.claude/rules/dia
 
 When reading cannot settle step 1, compile a throwaway probe in `/tmp` against `oracle/dist/plantuml-oracle.jar` that
 calls the same API with the same `StringBounder` and prints the dimensions (README push-forward). Copy its source to
-`measurements/java/` and the printed output into the note.
+`measurements/aae-probe.patch` and the printed output into the note.
 
 ## Acceptance
 - Given `.agent-notes/aae-T1.md`, when read, then each of the five steps has mechanism, origin `file:line`, causal chain

@@ -2,7 +2,7 @@
 
 | ID | Description | Agent | Writes | Depends On | Done |
 |---|---|---|---|---|---|
-| [T1](T1-diagnose.md) | State why the jar's embed-only arrow-label block is 10 tall and ours 27.111 | orchestrator | `.agent-notes/aae-T1.md`, `measurements/java/` | T0 | [x] |
+| [T1](T1-diagnose.md) | State why the jar's embed-only arrow-label block is 10 tall and ours 27.111 | orchestrator | `.agent-notes/aae-T1.md`, `measurements/aae-probe.patch` | T0 | [x] |
 
 No `src/` change in this batch. It closes when the diagnosis artifact exists and the journal names the origin
 `file:line` of each residual (the block height, the 31.5 origin shift, the 1-px width). Close gates: `npm run lint`
