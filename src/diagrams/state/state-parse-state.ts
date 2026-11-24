@@ -194,6 +194,8 @@ export interface ParseState {
    * it into a `ParseRefusal`; never left set past that point.
    */
   executionError: string | undefined;
+  /** The failed result's `getScore()` beside {@link executionError} (`PSystemCommandFactory.java:183`); 0 if unset. */
+  executionErrorScore?: number;
   /**
    * Diagram-wide registry of every State ever created, keyed by id, in
    * creation order — mirrors upstream `Plasma#stats`/`PEntry` (the by-name

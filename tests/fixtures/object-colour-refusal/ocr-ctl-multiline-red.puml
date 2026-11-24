@@ -1,0 +1,5 @@
+@startuml
+object O #red {
+  x = 1
+}
+@enduml

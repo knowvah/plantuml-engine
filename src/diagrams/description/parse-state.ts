@@ -106,6 +106,15 @@ export interface ParseState {
    * `undefined` (the default) means the command that just ran succeeded.
    */
   executionError: string | undefined;
+  /** The failed result's `getScore()` beside {@link executionError} (`PSystemCommandFactory.java:183`); 0 if unset. */
+  executionErrorScore?: number;
+  /**
+   * How many lines the failed command read, when it is a block: its refusal lands on the block's last line
+   * (`PSystemCommandFactory.java:218-225`, ocr D4). 1 if unset. Only the `json` block sets it (#286 for `map`).
+   */
+  executionErrorSpan?: number;
+  /** `UmlSource.linePositions`: the document position of each line the parser walks, for a block's last line. */
+  linePositions?: readonly (number | undefined)[] | undefined;
 }
 
 /**

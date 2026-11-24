@@ -42,9 +42,9 @@ import { refuse } from '../../core/parse-refusal.js';
  *  `rawId` (CODE / NAME group 1 respectively), so one message suffices. */
 const JSON_ALREADY_EXISTS = 'JSON already exists: ';
 
-function refuseNow(state: ParseState, message: string): void {
+function refuseNow(state: ParseState, message: string, score?: number): void {
   const at = state.currentLine ?? 0;
-  state.executionRefusal = refuse('execution', at, at, message);
+  state.executionRefusal = refuse('execution', at, at, message, score);
 }
 
 /**
@@ -77,7 +77,7 @@ function adapt(state: ParseState): JsonCommandHost<Classifier> {
         // whole parse (parser.ts:398's `state.executionRefusal` check), not
         // a silent no-op that keeps the first declaration.
         // The block is one trace, so its refusal lands on the closing line (`pendingBodyRefusal`).
-        if (reuseExisting) state.pendingBodyRefusal = { message: JSON_ALREADY_EXISTS + rawId };
+        if (reuseExisting) state.pendingBodyRefusal = { message: JSON_ALREADY_EXISTS + rawId, jsonLines: [] };
         else refuseNow(state, JSON_ALREADY_EXISTS + rawId);
         return undefined;
       }
@@ -95,6 +95,11 @@ function adapt(state: ParseState): JsonCommandHost<Classifier> {
     },
     setJsonValue(entity, value) {
       entity.jsonValue = value;
+    },
+    refuseExecution(message, score, block) {
+      // As the duplicate above: a block's refusal waits for its closing line, a single line's is immediate.
+      if (block) state.pendingBodyRefusal = { message, score, jsonLines: [] };
+      else refuseNow(state, message, score);
     },
   };
 }

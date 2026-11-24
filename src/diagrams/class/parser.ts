@@ -32,6 +32,7 @@ import { parseObjectField } from './class-object-commands.js';
 import { applyMapBodyLine } from './class-map-commands.js';
 import { finalizeJsonBody } from '../../core/command/CommandCreateJson.js';
 import { isPendingJsonBodyComplete } from './class-json-commands.js';
+import { consumeRefusedBodyLine } from './class-body-refusal.js';
 import { dedentRawLines } from './class-body-enhanced.js';
 import { COMMANDS } from './class-commands.js';
 import { advanceBodyEmbed, mergeStandaloneBraces } from './class-line-merge.js';
@@ -188,11 +189,7 @@ function dedentPendingRawBodyLines(state: ParseState): void {
 function handlePendingBodyLine(state: ParseState, line: string): boolean {
   // cdd5-T5e: refused body, discarded until `}` (PSystemError.java:102-104).
   if (state.pendingBodyRefusal !== undefined) {
-    if (/^\}\s*$/.test(line)) {
-      const at = state.currentLine ?? 0;
-      state.executionRefusal = refuse('execution', at, at, state.pendingBodyRefusal.message, 0);
-      state.pendingBodyRefusal = undefined;
-    }
+    consumeRefusedBodyLine(state, line);
     return true;
   }
   if (state.pendingBodyId === null) return false;

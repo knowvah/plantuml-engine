@@ -36,11 +36,16 @@ import { resolveReference } from './class-namespace.js';
 import { ensureClassifier, type ParseState } from './parser.js';
 import { quarkName } from './class-map-commands.js';
 import { refuse } from '../../core/parse-refusal.js';
+import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
+import { refusesAsBareColor } from '../../core/klimt/color/HColorSet.js';
 // The canonical `' = '` spelling is shared with `class-object-sizing.ts
 // #formatObjectMemberText`, the other half of the round-trip; it lives in the
 // leaf `class-object-display.ts` because this module is in an import cycle
 // with `parser.ts`. See that constant's own doc comment.
 import { CANONICAL_OBJECT_SEPARATOR } from './class-object-display.js';
+
+/** `CommandExecutionResult.badColor()` (`command/CommandExecutionResult.java:85-86`): a colour `getColor` refuses. */
+const BAD_COLOR = CommandExecutionResult.badColor();
 
 // ---------------------------------------------------------------------------
 // Grammar fragments (NameAndCodeParser.nameAndCode() + ColorParser.exp1())
@@ -238,6 +243,13 @@ function applyObjectDecl(state: ParseState, match: RegExpExecArray): void {
   const classifier = ensureClassifier(state, rawId, 'object', rawDisplay, true);
   if (stereotype !== undefined) classifier.stereotype = stereotype;
   applyObjectUrl(classifier, url);
+  // `CommandCreateEntityObject.java:145-147`: the whole capture goes to the throwing `getColor`, which
+  // `SingleLineCommand2.java:176-179` turns into `badColor()`.
+  if (color !== undefined && refusesAsBareColor(color)) {
+    const at = state.currentLine ?? 0;
+    state.executionRefusal = refuse('execution', at, at, BAD_COLOR.getError(), BAD_COLOR.getScore());
+    return;
+  }
   if (color !== undefined) classifier.color = color;
 }
 
@@ -257,6 +269,12 @@ function applyObjectMultilineOpen(state: ParseState, match: RegExpExecArray): vo
   const classifier = ensureClassifier(state, rawId, 'object', rawDisplay, true);
   if (stereotype !== undefined) classifier.stereotype = stereotype;
   applyObjectUrl(classifier, url);
+  // `CommandCreateEntityObjectMultilines.java:178-180`: `getColor` throws, `CommandMultilines2.java:119-122` turns it
+  // into `badColor()`, and the block's error lands on its last line (`PSystemCommandFactory.java:218-225`).
+  if (color !== undefined && refusesAsBareColor(color)) {
+    state.pendingBodyRefusal = { message: BAD_COLOR.getError(), score: BAD_COLOR.getScore() };
+    return;
+  }
   if (color !== undefined) classifier.color = color;
   state.pendingBodyId = classifier.id;
 }

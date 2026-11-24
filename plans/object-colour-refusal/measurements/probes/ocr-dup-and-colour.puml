@@ -1,0 +1,4 @@
+@startuml
+object O
+object O #line:red
+@enduml

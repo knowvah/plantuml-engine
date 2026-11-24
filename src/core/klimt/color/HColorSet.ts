@@ -22,6 +22,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/awt/XColor.java
  */
 
+import { COLOR_REGEXP } from './ColorParser.js';
 import { getColor, NAMES } from './ColorTrieNode.js';
 import type { RgbTriple } from './ColorTrieNode.js';
 import type { GradientPolicy, HColorGradient } from './HColorGradient.js';
@@ -374,6 +375,22 @@ export const UNKNOWN_COLOR_NEUTRAL = '#D3D3D3';
  */
 export function colorOrNeutral(token: string): string {
   return HColorSet.instance().getColorOrNull(token) === undefined ? UNKNOWN_COLOR_NEUTRAL : token;
+}
+
+/** `COLOR_REGEXP` anchored: a capture that is one bare colour (`ColorParser.java:43`). */
+const BARE_COLOR = new RegExp(`^(?:${COLOR_REGEXP})$`);
+
+/**
+ * Whether `HColorSet#getColor` would throw on a whole `ColorParser.exp1()` capture that cannot be a bare colour
+ * (decisions D2, issue #190): `getColorOrNull` finds no colour (`HColorSet.java:69-76`) AND `s` is not
+ * `COLOR_REGEXP` anchored (`ColorParser.java:43`). An unresolvable capture that IS bare (`#zzblue`) answers `false`:
+ * the 2026-11-04 neutral ruling draws it ({@link colorOrNeutral}). What answers `true` are the `PART2` shapes
+ * (`#line:red`, `#pink;line:blue`, `#line.dashed`), which `CommandCreateEntityObject.java:145-147` and
+ * `CommandCreateJson.java:223-225` hand to `getColor` whole, so the jar refuses them with `No such color`.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/color/HColorSet.java:69-76
+ */
+export function refusesAsBareColor(s: string): boolean {
+  return HColorSet.instance().getColorOrNull(s) === undefined && !BARE_COLOR.test(s);
 }
 
 /** `HColors.WHITE` (`HColors.java:85`, `getColorOrWhite("#FFFFFF")`), as the stored colour token it resolves from. */

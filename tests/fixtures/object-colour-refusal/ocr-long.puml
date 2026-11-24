@@ -1,0 +1,8 @@
+@startuml
+object A
+object B
+object C
+A --> B
+B --> C
+object O #line:red
+@enduml

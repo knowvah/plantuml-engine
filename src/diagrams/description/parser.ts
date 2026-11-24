@@ -347,7 +347,11 @@ function dispatchCommand(
   }
   const leafTypeResult = tryLeafTypeCommands(state, lines, i, line);
   if (leafTypeResult !== null) {
-    if (state.executionError !== undefined) return refuse('execution', rawLine, i + 1, state.executionError);
+    const { executionError, executionErrorScore, executionErrorSpan = 1 } = state;
+    // A block's refusal lands on its last line (`PSystemCommandFactory.java:218-225`); a line's, on itself.
+    const last = i + executionErrorSpan - 1;
+    const at = state.linePositions?.[last] ?? last;
+    if (executionError !== undefined) return refuse('execution', at, last + 1, executionError, executionErrorScore);
     return leafTypeResult;
   }
   return refuse('syntax', rawLine, i + 1, syntaxErrorMessageOf(line));
@@ -440,6 +444,7 @@ export function parseDescription(
   internalEmoji?: InternalEmojiStore,
 ): DescriptionDiagramAST | ParseRefusal {
   const state = makeInitialState(internalSprites, internalEmoji);
+  state.linePositions = block.linePositions;
   const lines = block.lines;
 
   for (let i = 0; i < lines.length;) {

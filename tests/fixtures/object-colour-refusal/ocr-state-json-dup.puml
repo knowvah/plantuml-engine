@@ -1,0 +1,6 @@
+@startuml
+state J
+json J {
+  "a": 1
+}
+@enduml

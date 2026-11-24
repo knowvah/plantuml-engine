@@ -1,0 +1,7 @@
+@startuml
+state S
+json K {
+  "b": 2
+}
+json J #back:red {"a": 1}
+@enduml

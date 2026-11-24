@@ -1,0 +1,5 @@
+@startuml
+json J #red {
+  "a": 1
+}
+@enduml

@@ -5,6 +5,7 @@ import {
   parseColor,
   toSvgHex,
   resolveColorToSvgHex,
+  refusesAsBareColor,
 } from '../../../../../src/core/klimt/color/HColorSet.js';
 import { HColorSimple } from '../../../../../src/core/klimt/color/HColorSimple.js';
 import { HColors } from '../../../../../src/core/klimt/color/HColors.js';
@@ -185,5 +186,21 @@ describe('HColorSet.names (HColorSet.java:51-53, TreeSet ColorTrieNode.java:50)'
     expect(names[names.length - 1]).toBe('YellowGreen');
     expect(names).toEqual([...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
     expect(new Set(names).size).toBe(154);
+  });
+});
+
+describe('refusesAsBareColor (D2, issue #190)', () => {
+  // `HColorSet.java:69-76`: `getColor` throws on these, and none of them matches `COLOR_REGEXP` anchored
+  // (`ColorParser.java:43`), so `object`/`json` refuse them as the jar does.
+  it.each(['#line:zzblue', '#line:red', '#back:red', '#text:red', '#pink;line:blue', '#line.dashed'])(
+    'refuses %s',
+    (s) => {
+      expect(refusesAsBareColor(s)).toBe(true);
+    },
+  );
+
+  // Resolved colours, and unknown bare colours the 2026-11-04 neutral ruling paints (`colorOrNeutral`).
+  it.each(['#red', '#red/blue', '#transparent', '#zzblue', '#back', '#line'])('accepts %s', (s) => {
+    expect(refusesAsBareColor(s)).toBe(false);
   });
 });

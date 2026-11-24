@@ -1,0 +1,3 @@
+@startuml
+object O <<S>> [[http://example.com]] #line:red
+@enduml

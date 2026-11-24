@@ -1,0 +1,39 @@
+# measured 2026-11-24: -stdrpt:1, no -D flags
+# stock = oracle/dist/stock/plantuml-stock-b066ee08c….jar (pin); release = oracle/dist/release/plantuml-1.2026.8.jar
+ocr-issue            stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-line-red         stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-back-red         stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-text-red         stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-semi             stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-dashed           stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-line3            stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+ocr-long             stock: status=ERROR lineNumber=7 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=7 
+ocr-multiline        stock: status=ERROR lineNumber=4 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=4 
+ocr-multiline-back   stock: status=ERROR lineNumber=4 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=4 
+ocr-json-multi       stock: status=ERROR lineNumber=4 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=4 
+ocr-json-single      stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-state-json       stock: status=ERROR lineNumber=5 label=No such color (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=5 
+ocr-desc-json        stock: status=ERROR lineNumber=5 label=No such color (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=5 
+ocr-unknown-bare     stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-multiline-short  stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+ocr-json-short       stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+ocr-state-json-single stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=3 
+ocr-desc-json-single stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=3 
+ocr-state-json-dup   stock: status=ERROR lineNumber=5 label=JSON already exists: J (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=5 
+ocr-desc-json-dup    stock: status=ERROR lineNumber=5 label=JSON already exists: J (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=5 
+ocr-json-nested      stock: status=ERROR lineNumber=6 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=6 
+ocr-dup-and-colour   stock: status=ERROR lineNumber=3 label=Object already exists: O (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+# 2026-11-24 ocr T2 push-forward probes (tests/fixtures/object-colour-refusal/ocr-pf-*)
+ocr-pf-elk             stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+ocr-pf-json-array      stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-pf-json-bad-data   stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-pf-package         stock: status=ERROR lineNumber=3 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=3 
+ocr-pf-quoted          stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+ocr-pf-state-mixed     stock: status=ERROR lineNumber=6 label=No such color (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=6 
+ocr-pf-stereo-url      stock: status=ERROR lineNumber=2 label=No such color (Assumed diagram type: class) | release(exit 200): status=ERROR lineNumber=2 
+# 2026-11-24 ocr T3/T3b push-forward probes
+ocr-desc-json-comment  stock: status=ERROR lineNumber=6 label=No such color (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=6 
+ocr-state-json-comment stock: status=ERROR lineNumber=6 label=No such color (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=6 
+ocr-desc-json-nested   stock: status=ERROR lineNumber=7 label=No such color (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=7 
+ocr-desc-map-dup       stock: status=ERROR lineNumber=5 label=Map already exists: M (Assumed diagram type: component) | release(exit 200): status=ERROR lineNumber=5 
+ocr-state-json-nested  stock: status=ERROR lineNumber=7 label=No such color (Assumed diagram type: state) | release(exit 200): status=ERROR lineNumber=7 

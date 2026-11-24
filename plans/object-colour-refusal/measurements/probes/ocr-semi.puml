@@ -1,0 +1,3 @@
+@startuml
+object O #pink;line:blue
+@enduml

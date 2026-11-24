@@ -1,0 +1,3 @@
+@startuml
+object "D" as O #back:red
+@enduml

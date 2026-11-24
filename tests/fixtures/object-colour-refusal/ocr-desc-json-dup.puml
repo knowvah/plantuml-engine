@@ -1,0 +1,6 @@
+@startuml
+component J
+json J {
+  "a": 1
+}
+@enduml
