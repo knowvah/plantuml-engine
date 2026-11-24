@@ -1,0 +1,7 @@
+@startuml
+state A
+state B
+A --> B
+note "alone" as N
+hide N
+@enduml

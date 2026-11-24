@@ -47,16 +47,28 @@ export interface NoteDrawResult {
 }
 
 /**
+ * hnh T2a (#204): a hidden `NOTE` draws through `UHidden` (`svek/SvekResult.java:84-86`) and `EntityImageNote` writes
+ * no comment, so its entity is empty. An opale connector is part of the note's image (`EntityImageNote.java:232-258`)
+ * and goes with it; a plain connector is a `Link`, which still writes its comment (`renderer-note-connector.ts`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/SvekResult.java#drawU
+ */
+function hiddenNoteResult(note: NoteGeo): NoteDrawResult {
+  return note.opale === undefined && note.connector.length > 0 ? { entity: [], connector: { note } } : { entity: [] };
+}
+
+/**
  * G2 N52 / mission leaf-draw-order T4: one note's own draw output -- called
  * once per `'note'`/`'tips'` leaf from `renderClass`'s single ordered
  * `geo.leaves` loop, the same dispatch site every `ClassifierGeo` leaf goes
  * through (jar's `SvekResult#drawU` draws every `bibliotekon.allNodes()`
  * entry through ONE loop, notes and classifiers alike --
- * `svek/SvekResult.java:82-90`). D5: drawn regardless of its host's
- * `hidden` -- nothing in the leaf loop below skips a note/tips leaf for its
- * host's sake, matching jar (`UHidden` wraps only the host NODE's own
- * image, `:84-87`). `NoteGeo`'s own doc comments (`note-layout.ts`) cover
- * the tip/opale/plain shape choice this mirrors unchanged.
+ * `svek/SvekResult.java:82-90`). D5 (hnh T2a, #204): `UHidden` wraps a node
+ * when its OWN flag is set (`:84`). A `NOTE` takes that flag from its
+ * single-link host (`CucaDiagram#isHidden`, `net/atmp/CucaDiagram.java:778-794`)
+ * or folds `hide`/`show` itself, so a hidden note draws nothing
+ * (`NoteGeo.hidden`); a `TIPS` leaf is never delegated (`:836-837`) and draws
+ * whatever its host's flag. `NoteGeo`'s own doc comments (`note-layout.ts`)
+ * cover the tip/opale/plain shape choice this mirrors unchanged.
  *
  * cdd-T9 (E6 mechanism a): a PLAIN note's dashed connector is upstream's own
  * ordinary edge (`<g class="link">`), drawn by `SvekEdge#drawU` in the
@@ -81,6 +93,7 @@ export function renderOneNote(note: NoteGeo, ctx: NoteRenderContext, theme: Scal
     const tip = tips.get(note.id);
     return { entity: tip === undefined || tip === 'dropped' ? [] : [renderTipNote(note, tip, theme)] };
   }
+  if (note.hidden === true) return hiddenNoteResult(note);
   const uid = uidPlan.noteUid.get(note.id) ?? '';
   let raw: string;
   let connector: NoteConnector | undefined;

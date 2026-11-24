@@ -535,7 +535,7 @@ export function buildDescriptionElkContext(
   const removed = effectiveRemovedIds(ast.nodes, ast.links, ast.removeUnlinked === true);
   classifyAst(buildNamespaceGroups(ast.nodes, ast.namespaceSeparator), ctx, removed);
   const dims = sizeLeaves(ast, theme, measurer, ctx);
-  const hidden = effectiveHiddenIds(ast.nodes, ast.hideShowRules ?? []);
+  const hidden = effectiveHiddenIds(ast.nodes, ast.hideShowRules ?? [], ast.links);
   const tree = structuralGeoTree(ast, ctx, dims, removed, hidden);
   return {
     ast,

@@ -1,0 +1,9 @@
+@startuml
+component A
+component B
+A --> B
+note right of B : first
+note left of B : second
+note top of A : on A
+hide B
+@enduml

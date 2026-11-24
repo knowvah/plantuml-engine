@@ -1,0 +1,8 @@
+@startuml
+class A
+class B
+A --> B
+note right of B : a note
+skinparam strictUmlStyle true
+hide B
+@enduml

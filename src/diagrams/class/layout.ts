@@ -38,6 +38,7 @@ import { filterRemovedEntities, computeHiddenIds, computeRemovedRanks } from './
 import { foldEffectiveActions } from './class-directives-removal.js';
 import { collapseEmptyNamespacesFinal, packedGroupRanksField } from './class-namespace.js';
 import { mapNoteGeos, type NoteGeo } from './note-layout.js';
+import { markHiddenNotes } from './note-hidden.js';
 import { findFreestandingNoteConnectors } from './note-freestanding.js';
 import { measureClassifier, isMethodMember, type MeasuredClassifier } from './class-layout-helpers.js';
 import { measureCircleInterface } from './class-layout-leaf-shapes.js';
@@ -399,15 +400,10 @@ export function layoutSinglePage(ast: ClassDiagramAST, theme: Theme, measurer: S
   // extra wiring here: their connector is `edges[]` itself
   // (`findFreestandingNoteConnectors`, above), already clipped by
   // `buildEdgeGeos`.
-  const notes: NoteGeo[] = mapNoteGeos(
-    effAst.notes,
-    result,
-    noteParts,
-    { theme, measurer },
-    {
-      freestandingConnectors,
-      clusterRects,
-    },
+  // hnh T2a (#204): a note's hidden flag, from the SAME `hiddenIds` the classifiers read (`note-hidden.ts`).
+  const notes: NoteGeo[] = markHiddenNotes(
+    mapNoteGeos(effAst.notes, result, noteParts, { theme, measurer }, { freestandingConnectors, clusterRects }),
+    hiddenIds,
   );
   const opaleNoteIds = new Set(notes.filter((n) => n.opale !== undefined).map((n) => n.id));
   const consumedEdgeIds = new Set(

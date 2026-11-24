@@ -1,0 +1,7 @@
+@startuml
+component A
+component B
+A --> B
+note right of B : a note
+remove B
+@enduml

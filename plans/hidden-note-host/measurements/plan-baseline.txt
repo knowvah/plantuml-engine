@@ -1,0 +1,51 @@
+hnh-desc-actor-host                  diffs    8 score   41 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0002","tolerance":0.01}
+hnh-desc-elk-hide-host               diffs    0 score    0 cmt 0 | 
+hnh-desc-elk-hide-note-name          diffs    1 score    8 cmt 0 | {"path":"svg/g[1][childCount]","actual":"7","expected":"8","tolerance":0.01,"weight":8}
+hnh-desc-floating-note               diffs    8 score   93 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0004","expected":"ent0001","tolerance":0.01}
+hnh-desc-hidden-link-remove          diffs   12 score   97 cmt 1 | {"path":"svg/@height","actual":"65","expected":"147","delta":82,"tolerance":0.01}
+hnh-desc-hidden-link-to-note         diffs    0 score    0 cmt 1 | 
+hnh-desc-hide-by-stereotype          diffs    8 score   93 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-desc-hide-host                   diffs    8 score   93 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-desc-hide-lone-note              diffs    0 score    0 cmt 0 | 
+hnh-desc-hide-note-name              diffs   20 score  105 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0001","expected":"ent0002","tolerance":0.01}
+hnh-desc-hide-unlinked-note          diffs   15 score  100 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0002","expected":"ent0001","tolerance":0.01}
+hnh-desc-host-in-hidden-package      diffs    0 score    0 cmt 1 | 
+hnh-desc-remove-host                 diffs    0 score    0 cmt 0 | 
+hnh-desc-two-notes                   diffs    8 score  113 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0008","expected":"ent0001","tolerance":0.01}
+hnh-elk-hide-host                    diffs    6 score  217 cmt 2 | {"path":"svg/@background","actual":"#000000","expected":"#FFFFFF","tolerance":0.01}
+hnh-floating-note                    diffs   12 score   91 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0004","expected":"ent0001","tolerance":0.01}
+hnh-hidden-link-remove               diffs    2 score    2 cmt 1 | {"path":"svg/g[1]/g[2]/path[1]/@d","actual":"M6,6 L6,29 A0,0 0 0 0 6,29 L43.62,29 L47.62,88.58 L51.62,29 L89.237,29 A0,0 0 0 0 89.237,29 L89.237,16 L79.237,6 L6
+hnh-hidden-link-to-note              diffs    0 score    0 cmt 0 | 
+hnh-hide-by-stereotype               diffs   12 score   91 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-hide-by-tag                      diffs   12 score   91 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-hide-host                        diffs   12 score   91 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-hide-lone-note                   diffs   55 score  134 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0002","expected":"ent0001","tolerance":0.01}
+hnh-hide-note-name                   diffs    0 score    0 cmt 0 | 
+hnh-hide-note-two-links              diffs   21 score  202 cmt 0 | {"path":"svg/g[1]/g[1]/@class","actual":"link","expected":"entity","tolerance":0.01}
+hnh-hide-show-host                   diffs    0 score    0 cmt 0 | 
+hnh-hide-unlinked-note               diffs   55 score  134 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0002","expected":"ent0001","tolerance":0.01}
+hnh-hide-unlinked                    diffs    0 score    0 cmt 0 | 
+hnh-host-in-hidden-package           diffs    0 score    0 cmt 0 | 
+hnh-lap-hide-host                    diffs    4 score    4 cmt 0 | {"path":"svg/@height","actual":"112","expected":"184","delta":72,"tolerance":0.01}
+hnh-lap-visible                      diffs    0 score    0 cmt 0 | 
+hnh-multiline-note                   diffs   12 score   98 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-note-on-link                     diffs    0 score    0 cmt 0 | 
+hnh-note-to-note-visible             diffs   95 score  198 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0001","expected":"ent0002","tolerance":0.01}
+hnh-note-to-note                     diffs    2 score    2 cmt 1 | {"path":"svg/g[1]/g[2]/path[1]/@d","actual":"M82.95,19.5 L82.95,42.5 A0,0 0 0 0 82.95,42.5 L89.14,42.5 L43.76,114.65 L97.14,42.5 L118.412,42.5 A0,0 0 0 0 118.41
+hnh-note-two-links                   diffs    0 score    0 cmt 0 | 
+hnh-object-host                      diffs    5 score   67 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-remove-floating                  diffs    0 score    0 cmt 0 | 
+hnh-remove-host                      diffs    0 score    0 cmt 0 | 
+hnh-remove-lone-note                 diffs    0 score    0 cmt 0 | 
+hnh-smetana-hide-host                diffs   16 score   95 cmt 0 | {"path":"svg/@height","actual":"178","expected":"160","delta":18,"tolerance":0.01}
+hnh-state-hide-host                  diffs    9 score   59 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-state-hide-lone-note             diffs    0 score    0 cmt 0 | 
+hnh-state-host-in-hidden-composite   diffs   25 score   25 cmt 0 | {"path":"svg/@height","actual":"197","expected":"181","delta":16,"tolerance":0.01}
+hnh-state-multiline-note             diffs    8 score   66 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+hnh-state-remove-host                diffs    0 score    0 cmt 0 | 
+hnh-state-two-notes                  diffs    9 score   79 cmt 2 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0008","expected":"ent0001","tolerance":0.01}
+hnh-tips-on-member                   diffs    0 score    0 cmt 0 | 
+hnh-tips-visible                     diffs    0 score    0 cmt 0 | 
+hnh-two-notes                        diffs   20 score  150 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0011","expected":"ent0001","tolerance":0.01}
+hnh-uc-hide-host                     diffs    8 score   41 cmt 1 | {"path":"svg/g[1]/g[1]/@id","actual":"ent0005","expected":"ent0001","tolerance":0.01}
+rows 50 zero 18 open 32 throw 0

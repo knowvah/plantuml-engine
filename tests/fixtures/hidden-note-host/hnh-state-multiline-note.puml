@@ -1,0 +1,10 @@
+@startuml
+state A
+state B
+A --> B
+note bottom of B
+  line one
+  line two
+end note
+hide B
+@enduml

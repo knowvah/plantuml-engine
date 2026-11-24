@@ -1,0 +1,7 @@
+@startuml
+state A
+state B
+A --> B
+note right of B : a note
+hide B
+@enduml

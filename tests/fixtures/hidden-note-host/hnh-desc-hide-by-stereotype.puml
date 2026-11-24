@@ -1,0 +1,7 @@
+@startuml
+component A
+component B <<s>>
+A --> B
+note left of B : stereo host
+hide <<s>>
+@enduml

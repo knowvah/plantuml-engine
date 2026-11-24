@@ -217,20 +217,21 @@ export function removeMatchingLinks(what: string, links: readonly DescriptiveLin
 /**
  * `CucaDiagram.isRemoved` (net/atmp/CucaDiagram.java:762-775) +
  * `isNoteWithSingleLinkAttachedTo` (:777-797): a NOTE entity with exactly one
- * non-hidden link is *itself* considered removed once the entity at the
+ * link (hnh T2b: a `-[hidden]-` one counts) is *itself* considered removed once the entity at the
  * other end of that link is removed — "remove should remove notes too"
  * (kokebo-27-vafi688's originating forum thread). Evaluated lazily at
  * layout time, mirroring upstream's print-time isRemoved: returns the
  * effective removed-id set (explicit markers + fixed-point note cascade).
  */
-/** Entity.isAloneAndUnlinked:457-476 — every link touching the leaf is
- *  invisible (hidden) or its other endpoint is removed; a group qualifies
- *  when all its children do. */
+/** Entity.isAloneAndUnlinked:462-482 — every link touching the leaf is
+ *  invisible or its other endpoint is removed; a group qualifies when all
+ *  its children do. hnh T2b: upstream skips only `link.getType()
+ *  .isInvisible()` (`abel/Entity.java:477`); a `-[hidden]-` link is
+ *  `Link.hidden` (`WithLinkType.java:100-101`), never an invisible type, so
+ *  it links (see {@link isNoteWithSingleLinkAttachedTo}). */
 function markUnlinked(all: readonly DescriptiveNode[], links: readonly DescriptiveLink[], removed: Set<string>): void {
   const aloneLeaf = (id: string): boolean =>
-    links.every(
-      (l) => (l.from !== id && l.to !== id) || l.hidden === true || removed.has(l.from === id ? l.to : l.from),
-    );
+    links.every((l) => (l.from !== id && l.to !== id) || removed.has(l.from === id ? l.to : l.from));
   const alone = (n: DescriptiveNode): boolean => (n.children.length > 0 ? n.children.every(alone) : aloneLeaf(n.id));
   for (const n of all) if (alone(n)) removed.add(n.id);
 }
@@ -242,34 +243,78 @@ export function effectiveRemovedIds(
 ): Set<string> {
   const all: DescriptiveNode[] = [];
   const removed = new Set<string>();
+  // hnh T2b: `CucaDiagram#isRemoved` (`:796-812`) returns `isRemoved(other)` for a single-link note BEFORE its own
+  // `removed` fold, so a delegated note's own `remove N` marker is never read (jar: `hnh-desc-remove-note-name`).
+  const host = new Map<string, string>();
   // Hierarchical: removing a group removes its whole subtree (upstream
   // isRemoved checks the parent chain — gogosu-37: `remove a` where a is a
   // container also removes a_sub).
   const walk = (list: readonly DescriptiveNode[], ancestorRemoved: boolean): void => {
     for (const n of list) {
       all.push(n);
-      const isRemoved = ancestorRemoved || n.removed === true;
+      const other = n.symbol === 'note' ? isNoteWithSingleLinkAttachedTo(n.id, nodes, links) : undefined;
+      if (other !== undefined) host.set(n.id, other);
+      const isRemoved = ancestorRemoved || (other === undefined && n.removed === true);
       if (isRemoved) removed.add(n.id);
       walk(n.children, isRemoved);
     }
   };
   walk(nodes, false);
   if (removeUnlinked) markUnlinked(all, links, removed);
+  cascadeNoteRemoval(host, removed);
+  return removed;
+}
+
+/** `isRemoved(other)` recurses (`CucaDiagram.java:800-802`): a fixed point over the single-link notes, with no
+ *  `other != leaf` guard (upstream `isRemoved` has none). */
+function cascadeNoteRemoval(host: ReadonlyMap<string, string>, removed: Set<string>): void {
   let changed = true;
   while (changed) {
     changed = false;
-    for (const n of all) {
-      if (n.symbol !== 'note' || removed.has(n.id)) continue;
-      const attached = links.filter((l) => l.hidden !== true && (l.from === n.id || l.to === n.id));
-      if (attached.length !== 1) continue;
-      const other = attached[0]!.from === n.id ? attached[0]!.to : attached[0]!.from;
-      if (removed.has(other)) {
-        removed.add(n.id);
+    for (const [note, other] of host) {
+      if (!removed.has(note) && removed.has(other)) {
+        removed.add(note);
         changed = true;
       }
     }
   }
-  return removed;
+}
+
+/**
+ * `CucaDiagram#isNoteWithSingleLinkAttachedTo` (`net/atmp/CucaDiagram.java:835-853`): for a `NOTE` with exactly one
+ * link whose other end is not a `NOTE`, that other end's id; otherwise `undefined` (not a note, no link, several
+ * links, or a note at the other end).
+ *
+ * Upstream skips a link only when `link.getType().isInvisible()`. No description link carries an invisible
+ * `LinkType`: the `hidden` arrow keyword is `WithLinkType#goHidden` (`decoration/WithLinkType.java:100-101`,
+ * `:149-150`), a separate `Link.hidden` flag (`DescriptiveLink.hidden`, `link-edge-attrs.ts:510-521`), so every link
+ * counts, a `-[hidden]-` one included (jar: `hnh-desc-hidden-link-remove`).
+ * @see ~/git/plantuml/src/main/java/net/atmp/CucaDiagram.java#isNoteWithSingleLinkAttachedTo
+ */
+export function isNoteWithSingleLinkAttachedTo(
+  noteId: string,
+  nodes: readonly DescriptiveNode[],
+  links: readonly DescriptiveLink[],
+): string | undefined {
+  if (findNode(nodes, noteId)?.symbol !== 'note') return undefined;
+  let other: string | undefined;
+  for (const link of links) {
+    if (link.from !== noteId && link.to !== noteId) continue;
+    if (other !== undefined) return undefined;
+    other = link.from === noteId ? link.to : link.from;
+    if (findNode(nodes, other)?.symbol === 'note') return undefined;
+  }
+  return other;
+}
+
+/** The node with `id` anywhere in the tree, or `undefined`. */
+function findNode(nodes: readonly DescriptiveNode[], id: string): DescriptiveNode | undefined {
+  for (const n of nodes) {
+    if (n.id === id) return n;
+    const inner = findNode(n.children, id);
+    if (inner !== undefined) return inner;
+  }
+  return undefined;
 }
 // ---------------------------------------------------------------------------
 // `hide <id|$tag|*|<<stereotype>>>` / `show ...` -- entity-visibility rules
@@ -321,22 +366,45 @@ function isApplyableEntity(node: DescriptiveNode, what: string): boolean {
 export function effectiveHiddenIds(
   nodes: readonly DescriptiveNode[],
   rules: ReadonlyArray<{ what: string; show: boolean }>,
+  links: readonly DescriptiveLink[] = [],
 ): Set<string> {
   const hidden = new Set<string>();
+  if (rules.length === 0) return hidden; // nothing folds to hidden
+  const fold = (n: DescriptiveNode): boolean => {
+    let own = false;
+    for (const rule of rules) {
+      if (isApplyableEntity(n, rule.what)) own = !rule.show;
+    }
+    return own;
+  };
   const walk = (list: readonly DescriptiveNode[], ancestorHidden: boolean): void => {
     for (const n of list) {
-      let own = ancestorHidden;
-      if (!ancestorHidden) {
-        for (const rule of rules) {
-          if (isApplyableEntity(n, rule.what)) own = !rule.show;
-        }
-      }
+      const own = ancestorHidden || ownHidden(n, nodes, links, fold);
       if (own) hidden.add(n.id);
       walk(n.children, own);
     }
   };
   walk(nodes, false);
   return hidden;
+}
+
+/**
+ * hnh T2b (#204): `CucaDiagram#isHidden(leaf)` (`net/atmp/CucaDiagram.java:778-794`), after `Entity#isHidden`'s
+ * parent walk: a single-link note returns `isHidden(other)`, the host's OWN fold (the diagram method, so the host's
+ * parents do not count: `hnh-desc-host-in-hidden-package`), and its own rules are never read; any other node folds
+ * the rules itself.
+ * @see ~/git/plantuml/src/main/java/net/atmp/CucaDiagram.java#isHidden
+ */
+function ownHidden(
+  n: DescriptiveNode,
+  nodes: readonly DescriptiveNode[],
+  links: readonly DescriptiveLink[],
+  fold: (n: DescriptiveNode) => boolean,
+): boolean {
+  const other = n.symbol === 'note' ? isNoteWithSingleLinkAttachedTo(n.id, nodes, links) : undefined;
+  if (other === undefined || other === n.id) return fold(n);
+  const host = findNode(nodes, other);
+  return host !== undefined && fold(host);
 }
 
 // ---------------------------------------------------------------------------

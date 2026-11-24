@@ -1,0 +1,7 @@
+@startuml
+component A
+component B
+A --> B
+note "alone" as N
+hide N
+@enduml

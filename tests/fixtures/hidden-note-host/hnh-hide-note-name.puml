@@ -1,0 +1,8 @@
+@startuml
+class A
+class B
+A --> B
+note "named" as N
+N .. B
+hide N
+@enduml

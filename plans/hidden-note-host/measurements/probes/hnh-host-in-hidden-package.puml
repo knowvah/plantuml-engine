@@ -1,0 +1,9 @@
+@startuml
+class A
+package P {
+  class B
+}
+A --> B
+note right of B : host in P
+hide P
+@enduml

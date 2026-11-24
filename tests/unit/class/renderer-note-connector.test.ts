@@ -124,4 +124,15 @@ describe('renderNoteConnectorLink (cdd-T9b, fogexa-30-zupo141 exact group shape)
     const link = renderNoteConnectorLink(connector, theme, fakeUidPlan(), ids);
     expect(link).toContain('id="GMN2-dummy-1"');
   });
+
+  // hnh T2a (#204): `Link#isHidden` ORs both ends (`abel/Link.java:458-459`); a hidden link writes its comment, takes
+  // its id, and draws nothing (`svek/SvekResult.java:97-101`).
+  it('a hidden host or a hidden note: the comment only, and the id is still taken', () => {
+    for (const hidden of [fogexaNote.target!, fogexaNote.id]) {
+      const ids = new Set<string>();
+      const link = renderNoteConnectorLink({ note: fogexaNote }, theme, fakeUidPlan(), ids, new Set([hidden]));
+      expect(link).toBe('<!--link GMN2 to dummy-->');
+      expect([...ids]).toEqual(['GMN2-dummy']);
+    }
+  });
 });

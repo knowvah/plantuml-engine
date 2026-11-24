@@ -1,0 +1,9 @@
+@startuml
+component A
+component B
+A --> B
+note "hidden link" as N
+N -[hidden]- B
+N .. A
+remove A
+@enduml

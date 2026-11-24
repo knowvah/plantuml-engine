@@ -1,0 +1,9 @@
+@startuml
+state A
+state C {
+  state B
+}
+A --> B
+note right of B : host in C
+hide C
+@enduml

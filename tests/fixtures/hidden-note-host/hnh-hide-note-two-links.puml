@@ -1,0 +1,8 @@
+@startuml
+class A
+class B
+note "two links" as N
+N .. A
+N .. B
+hide N
+@enduml

@@ -174,31 +174,63 @@ function markRemoved(
  * transition set).
  */
 export function computeRemovedIds(ast: StateDiagramAST): Set<string> {
-  return applyingIds(ast, ast.removeDirectives ?? []);
+  return applyingIds(ast, ast.removeDirectives ?? [], false);
 }
 
 /** stdd T5a: `CucaDiagram#isHidden` (`CucaDiagram.java:769-781`) over the `hide`/`show` directives
  *  (`hides2`), the same `HideOrShow#apply` fold as {@link computeRemovedIds}; a hidden composite hides
  *  its descendants (`Entity.java:433-438`), which `markHidden` (layout) applies on the geometry. */
 export function computeHiddenIds(ast: StateDiagramAST): Set<string> {
-  return applyingIds(ast, ast.hideDirectives ?? []);
+  return applyingIds(ast, ast.hideDirectives ?? [], true);
 }
 
-function applyingIds(ast: StateDiagramAST, dirs: readonly RemoveRestoreDirective[]): Set<string> {
+/**
+ * `CucaDiagram#isNoteWithSingleLinkAttachedTo` (`net/atmp/CucaDiagram.java:835-853`): for a note with exactly one
+ * link whose other end is not a note, that other end's id; otherwise `undefined`. Upstream skips only a link whose
+ * `getType().isInvisible()`; no state link carries an invisible `LinkType` (`-[hidden]->` is `Link.hidden`,
+ * `decoration/WithLinkType.java:100-101`), so every link in {@link collectVisibleLinks} counts.
+ * @see ~/git/plantuml/src/main/java/net/atmp/CucaDiagram.java#isNoteWithSingleLinkAttachedTo
+ */
+function isNoteWithSingleLinkAttachedTo(
+  noteId: string,
+  links: readonly VisibleLink[],
+  noteIds: ReadonlySet<string>,
+): string | undefined {
+  let other: string | undefined;
+  for (const l of links) {
+    const o = l.a === noteId ? l.b : l.b === noteId ? l.a : undefined;
+    if (o === undefined) continue;
+    if (other !== undefined) return undefined;
+    if (noteIds.has(o)) return undefined;
+    other = o;
+  }
+  return other;
+}
+
+/**
+ * hnh T2c (#204): `CucaDiagram#isHidden`/`#isRemoved` (`CucaDiagram.java:778-812`) over the `hide`/`remove`
+ * directives. States fold the rules; a note with a single link takes its host's OWN fold (the diagram method, before
+ * any parent cascade, which `markHidden` applies later) and never reads its own rules. `isHidden` keeps the
+ * `other != leaf` guard (`:783`); `isRemoved` has none (`:801`), so `guardSelf` is false there.
+ */
+function applyingIds(ast: StateDiagramAST, dirs: readonly RemoveRestoreDirective[], guardSelf: boolean): Set<string> {
   const removed = new Set<string>();
   if (dirs.length === 0) return removed;
 
   const allStates = flattenStates(ast.states);
   const notes = ast.notes ?? [];
-  const unlinked = buildUnlinkedPredicate(buildEntityIndex(allStates, notes), dirs, collectVisibleLinks(ast));
+  const links = collectVisibleLinks(ast);
+  const unlinked = buildUnlinkedPredicate(buildEntityIndex(allStates, notes), dirs, links);
+  const noteIds = new Set(notes.map((n) => n.id));
 
   markRemoved(allStates, dirs, unlinked, removed);
-  markRemoved(
-    notes.map((n): RemovableEntity => ({ id: n.id })),
-    dirs,
-    unlinked,
-    removed,
-  );
+  const own: RemovableEntity[] = [];
+  for (const n of notes) {
+    const other = isNoteWithSingleLinkAttachedTo(n.id, links, noteIds);
+    if (other === undefined || (guardSelf && other === n.id)) own.push({ id: n.id });
+    else if (removed.has(other)) removed.add(n.id);
+  }
+  markRemoved(own, dirs, unlinked, removed);
   return removed;
 }
 

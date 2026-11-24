@@ -54,8 +54,8 @@ const ZERO: readonly string[] = [
   // 2026-11-16 ccb push-forward: authored after T1e on the same reading, each with its jar oracle. A hidden lollipop
   // (`EntityImageLollipopInterface`), association point and group-USymbol rectangle write nothing; a hidden component
   // writes `entity C` (`EntityImageDescription.java:295`); `hide <<s>>` and `-[hidden,dashed]-` hide as `hide A` and
-  // `-[hidden]-` do; `escapeComment` defangs `--` as `XmlWriter.comment` does. `hidden-class-with-note` holds only its
-  // comments here; its note is drawn where the jar hides it, #204.
+  // `-[hidden]-` do; `escapeComment` defangs `--` as `XmlWriter.comment` does. `hidden-class-with-note`: its note
+  // takes its hidden host's flag and writes nothing (`CucaDiagram.java:778-794`; 2026-11-23 hnh T2a, #204).
   'escape-comment-dashes',
   'hidden-assoc-class',
   'hidden-by-stereotype',
