@@ -131,8 +131,10 @@ describe('classifier declarations', () => {
 // ---------------------------------------------------------------------------
 
 describe('class body members', () => {
-  it('parses a method with return type from inline body', () => {
-    const c = firstClassifier('class Foo { +bar(): String }');
+  // ocb T2 (#223): the jar refuses a one-line `{ … }` body (`CommandCreateClass.java:117-119` takes only an empty
+  // pair), so the member grammar is exercised through the multi-line body (`CommandCreateClassMultilines.java:140`).
+  it('parses a method with return type from a class body', () => {
+    const c = firstClassifier('class Foo {\n+bar(): String\n}');
     expect(c.members).toHaveLength(1);
     const m = c.members[0] as Member;
     expect(m.visibility).toBe('+');

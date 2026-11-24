@@ -1,0 +1,21 @@
+# measured 2026-11-24 on b1ccb1d19:
+# npx tsx plans/hidden-note-host/measurements/measure.mts plans/class-oneline-body/measurements/probes
+ocb-abstract                         diffs    5 score  253 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-circle                           diffs    5 score  209 cmt 1 | {"path":"svg/@height","actual":"44","expected":"284","delta":240,"tolerance":0.01}
+ocb-ctl-empty-decorated              diffs    0 score    0 cmt 0 | 
+ocb-ctl-empty-nbsp                   diffs    0 score    0 cmt 0 | 
+ocb-ctl-empty-tight                  diffs    0 score    0 cmt 0 | 
+ocb-ctl-empty                        diffs    0 score    0 cmt 0 | 
+ocb-ctl-multiline-decorated          diffs    0 score    0 cmt 0 | 
+ocb-ctl-multiline                    diffs    0 score    0 cmt 0 | 
+ocb-entity                           diffs    5 score  243 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-enum                             diffs    5 score  250 cmt 1 | {"path":"svg/@height","actual":"96","expected":"284","delta":188,"tolerance":0.01}
+ocb-interface                        diffs    5 score  244 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-issue-nbsp-both                  diffs    5 score  243 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-issue-nbsp-lead                  diffs    5 score  243 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-issue                            diffs    5 score  243 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-line3                            diffs    5 score  295 cmt 2 | {"path":"svg/@height","actual":"84","expected":"298","delta":214,"tolerance":0.01}
+ocb-long                             diffs    6 score  305 cmt 6 | {"path":"svg/@background","actual":"#FFFFFF","expected":"#000000","tolerance":0.01}
+ocb-struct                           diffs    5 score  242 cmt 1 | {"path":"svg/@height","actual":"82","expected":"284","delta":202,"tolerance":0.01}
+ocb-unclosed                         diffs    5 score  237 cmt 1 | {"path":"svg/@height","actual":"68","expected":"284","delta":216,"tolerance":0.01}
+rows 18 zero 6 open 12 throw 0

@@ -353,10 +353,10 @@ export interface Classifier {
    * G2 N42: the classifier's raw, UNPARSED multi-line body source, one
    * entry per physical source line INSIDE the `{ ... }` body, in
    * declaration order -- populated alongside (not instead of) {@link
-   * members} at the same 3 member-body call sites (`parser.ts
+   * members} at the member-body call sites (`parser.ts
    * #handlePendingBodyLine`, `class-commands.ts`'s post-hoc `X : text`
-   * rule, `class-declaration-parser.ts#applyClassifierDecl`'s inline-member
-   * loop). Mirrors upstream `BodierAbstract#rawBody` (`List<CharSequence>`,
+   * rule; ocb T2 removed the one-line `{ … }` body, which the jar refuses).
+   * Mirrors upstream `BodierAbstract#rawBody` (`List<CharSequence>`,
    * `BodierLikeClassOrObject#addFieldOrMethod`'s unconditional `rawBody.add
    * (s)`) -- upstream defers the fields/methods-vs-"enhanced body" decision
    * to RENDER time by re-scanning this raw list

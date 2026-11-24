@@ -1,0 +1,5 @@
+@startuml
+allowmixing
+class A
+database D { x }
+@enduml

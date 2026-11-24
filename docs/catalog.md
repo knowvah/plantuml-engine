@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2672 modules · 8862 exported names.
+2672 modules · 8864 exported names.
 
 ## `src/`
 
@@ -1996,7 +1996,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `class-commands.ts` | `COMMANDS` | Command dispatch table for the class diagram parser. |
 | `class-container.ts` | `setNamespaceUrl`, `setNamespaceColor`, `EmptyBlockForm`, `openNamespaceBlock`, `closeContainer`, `HEADER_STEREO_CAPTURE`, `setNamespaceStereotype`, `setNamespaceTags`, `NAMESPACE_COMMANDS` | Descriptive-container helpers for the class parser. |
 | `class-creation-order.ts` | `applyClassLinkOrder`, `creationOrderedDotParts`, `printGroupsOrderOf` | cdd3-T14 (E1-1, E1-4, C-14 = E3-7): the class DOT graph's node and edge lists in upstream's creation order. |
-| `class-declaration-extractors.ts` | `extractBody`, `DeclarationColors`, `parseDeclarationColors`, `extractDecorations`, `extractInheritance`, `parseIdDisplay` | Classifier-declaration field extractors (body / decorations / inheritance / generic / id-display) for the class parser. |
+| `class-declaration-extractors.ts` | `EMPTY_BODY_TAIL`, `CLASS_BODY_TAIL_GUARD`, `extractBody`, `DeclarationColors`, `parseDeclarationColors`, `extractDecorations`, `extractInheritance`, `parseIdDisplay` | Classifier-declaration field extractors (body / decorations / inheritance / generic / id-display) for the class parser. |
 | `class-declaration-parser.ts` | `ClassifierDecl`, `parseClassifierDecl`, `InheritanceParent`, `resolveInheritance`, `parseTagTokens`, `applyClassifierDecl` | Classifier declaration line parsing for PlantUML class diagrams. |
 | `class-descriptive-leaf-command.ts` | `ALLOW_MIXING_ERROR`, `adjudicateAllowMixing`, `ELEMENT_FULL2_BEFORE_LINKS_COMMAND`, `DESCRIPTIVE_LEAF_COMMANDS` | Descriptive-element leaf declaration command (`database X`, `mix_actor Y`). |
 | `class-descriptive-leaf-keywords.ts` | `DESCRIPTIVE_LEAF_KEYWORDS`, `USECASE_LEAF_KEYWORDS`, `STATE_LEAF_KEYWORD`, `ALL_DESCRIPTIVE_LEAF` | Class-engine descriptive-leaf keyword tables — upstream `CommandCreateElementFull2`'s full leaf set (`(state\|` + descdiagram's shared `CommandCreateElementFull.ALL_TYPES` + `)`). |

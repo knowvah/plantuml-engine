@@ -1,0 +1,6 @@
+@startuml
+class A <<S>> {
+  x : int
+}
+A --> B
+@enduml

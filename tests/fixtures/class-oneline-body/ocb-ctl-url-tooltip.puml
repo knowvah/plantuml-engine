@@ -1,0 +1,3 @@
+@startuml
+class A [[http://x.org{tip}]]
+@enduml
