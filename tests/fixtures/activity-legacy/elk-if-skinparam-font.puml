@@ -1,0 +1,12 @@
+@startuml
+!pragma layout elk
+skinparam arrowFontSize 14
+skinparam arrowFontColor blue
+skinparam arrowColor red
+(*) --> A
+if "big?" then
+-->[yes] B
+else
+-->[no] C
+endif
+@enduml

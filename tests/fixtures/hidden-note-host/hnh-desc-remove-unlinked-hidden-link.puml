@@ -1,0 +1,7 @@
+@startuml
+component A
+component B
+component C
+A -[hidden]- B
+remove @unlinked
+@enduml

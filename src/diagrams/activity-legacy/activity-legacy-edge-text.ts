@@ -67,7 +67,7 @@ export interface EdgeTextContext {
 }
 
 /** `getDefaultStyleDefinitionArrow`. @see GraphvizImageBuilder.java:112-118 */
-function arrowSignature(link: Link): StyleSignature {
+export function arrowSignature(link: Link): StyleSignature {
   return StyleSignatureBasic.of('root', 'element', STYLE_NAME, 'arrow').withTOBECHANGED(link.getStereotype());
 }
 
@@ -79,7 +79,7 @@ function cardinalitySignature(link: Link): StyleSignature {
 }
 
 /** `link.getStyleBuilder()`: the builder current when the link was made (typed `object` on the `abel` stub). */
-function styleBuilderOf(link: Link): StyleBuilder {
+export function styleBuilderOf(link: Link): StyleBuilder {
   const builder = link.getStyleBuilder();
   if (!(builder instanceof StyleBuilder)) throw new Error('ClassCastException: the link has no StyleBuilder');
   return builder;

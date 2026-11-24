@@ -225,7 +225,7 @@ function buildGeoAndEdges(
   // membership filter, contrast `removed` above) -- computed here, once,
   // from the SAME final `ast.nodes` this function already threads through
   // `buildGeoTree`/`buildEdgeGeos`.
-  const hidden = effectiveHiddenIds(ast.nodes, ast.hideShowRules ?? []);
+  const hidden = effectiveHiddenIds(ast.nodes, ast.hideShowRules ?? [], ast.links);
   const stereotypeRules = ast.stereotypeVisibilityRules ?? [];
   const leafPosMap = new Map(result.nodes.map((n) => [n.id, n]));
   // The tree the layout classified (`layoutDescription`'s `groupedNodes`): `CucaDiagram#eventuallyBuildPhantomGroups`

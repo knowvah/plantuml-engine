@@ -1,0 +1,6 @@
+@startuml
+!pragma layout elk
+(*) --> "red" #red
+"red" --> "blue" #LightBlue
+"blue" --> (*)
+@enduml

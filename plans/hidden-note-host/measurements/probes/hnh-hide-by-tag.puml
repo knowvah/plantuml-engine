@@ -1,0 +1,7 @@
+@startuml
+class A
+class B $t
+A --> B
+note right of B : tagged host
+hide $t
+@enduml

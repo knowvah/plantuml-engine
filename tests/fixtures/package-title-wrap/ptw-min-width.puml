@@ -1,0 +1,10 @@
+@startuml
+<style>
+package {
+  MinimumWidth 300
+}
+</style>
+package "Short" as P {
+}
+node n
+@enduml

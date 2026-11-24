@@ -1,0 +1,10 @@
+@startuml
+<style>
+cloud {
+  MaximumWidth 100
+}
+</style>
+cloud "A rather long empty cloud title" {
+}
+node n
+@enduml

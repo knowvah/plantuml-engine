@@ -1,0 +1,7 @@
+@startuml
+!pragma layout elk
+left to right direction
+(*) --> A
+A --> B
+B --> (*)
+@enduml

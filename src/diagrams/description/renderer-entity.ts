@@ -249,6 +249,12 @@ export function buildEntityParams(
         : theme.wrapWidth !== undefined
           ? { wrapWidth: theme.wrapWidth }
           : {}),
+      // `styleTitle.wrapWidth()` for `name` (`MethodsOrFieldsArea.java:255`), the same read the sizer makes.
+      ...(node.entitySizing?.wrapWidthTitle !== undefined
+        ? { wrapWidthTitle: node.entitySizing.wrapWidthTitle }
+        : theme.wrapWidth !== undefined
+          ? { wrapWidthTitle: theme.wrapWidth }
+          : {}),
       guillemet: {
         start: theme.colors.graph.guillemetStart ?? GUILLEMET_DEFAULT.start,
         end: theme.colors.graph.guillemetEnd ?? GUILLEMET_DEFAULT.end,

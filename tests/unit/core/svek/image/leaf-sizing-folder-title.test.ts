@@ -82,4 +82,95 @@ describe('SI1 T12 — folder/package title via create2/BodyEnhanced1 (jar-pinned
     expect(w).toBeCloseTo(expectedTextWidth + 12, 6);
     expect(h).toBeCloseTo(17, 6);
   });
+
+  // ptw T2a (#219, M1): the title is a `create2` block whose `MethodsOrFieldsArea` lines are built with
+  // `style.wrapWidth()` (`MethodsOrFieldsArea.java:255`, `:264`), `style` being `styleTitle`
+  // (`EntityImageDescription.java:201-202`). Jar (`ptw-issue`, `package { MaximumWidth 100 }`): svek node
+  // `1.900694in = 136.85px` wide, `0.902778in = 65px` high; the widest stripe is `empty package` (38.0625 + 3.85 +
+  // 52.9375 = 94.85, the jar's text runs), so the block is 94.85 + 12 and three lines high.
+  it('title wraps at the title wrap width: three 14px lines, the widest stripe + getMarginX()=6 both sides', () => {
+    const code = 'A rather long empty package title';
+    const [w, h] = measureShownFolderTitle(code, fontSpec, measurer, { wrapWidth: 100 }, undefined);
+    const stripe = ['empty', ' ', 'package'].reduce((sum, atom) => sum + measurer.measure(atom, fontSpec).width, 0);
+    expect(w).toBeCloseTo(stripe + 12, 6);
+    expect(w).toBeCloseTo(106.85, 3);
+    expect(h).toBeCloseTo(42, 6);
+  });
+
+  it('title wrap width 0 keeps one line', () => {
+    const code = 'A rather long empty package title';
+    const [w, h] = measureShownFolderTitle(code, fontSpec, measurer, { wrapWidth: 0 }, undefined);
+    expect(w).toBeCloseTo(measurer.measure(code, fontSpec).width + 12, 6);
+    expect(h).toBeCloseTo(14, 6);
+  });
+
+  it('package leaf: entitySizing.wrapWidthTitle sizes the DOT node as the jar (1.900694 x 0.902778 in)', () => {
+    const code = 'A rather long empty package title';
+    const d = measureLeafNode(
+      { ...node(code, code, 'package'), entitySizing: { wrapWidthTitle: 100 } },
+      fontSpec,
+      measurer,
+    );
+    expect(d.width).toBeCloseTo(136.85, 3);
+    expect(d.height).toBeCloseTo(65, 3);
+  });
+
+  // ptw T2b (#219, M2): `desc` is `create3(display, …, style.wrapWidth(), …)` (`EntityImageDescription.java:184-188`),
+  // the BODY style's wrap, which a style-only `package { MaximumWidth 100 }` sets with no `skinparam wrapWidth`.
+  // Jar `ptw-as-label` svek node: `1.734028 x 1.097222in` = 124.85 x 79px (title `P` 14 + three label lines 42 + 23).
+  it('package label: entitySizing.wrapWidth wraps the label with no opts.wrapWidth (jar 1.734028 x 1.097222 in)', () => {
+    const display = 'A rather long empty package title';
+    const d = measureLeafNode(
+      { ...node('P', display, 'package'), entitySizing: { wrapWidth: 100 } },
+      fontSpec,
+      measurer,
+    );
+    expect(d.width).toBeCloseTo(124.85, 3);
+    expect(d.height).toBeCloseTo(79, 3);
+  });
+
+  // Jar `ptw-folder` (`folder { MaximumWidth 100 }`): `1.528646 x 1.111111in` = 110.0625 x 80px (tab 15 + 42 + 23).
+  it('folder label: entitySizing.wrapWidth wraps the label (jar 1.528646 x 1.111111 in)', () => {
+    const display = 'A rather long empty folder title';
+    const d = measureLeafNode(
+      { ...node(display, display, 'folder'), entitySizing: { wrapWidth: 100 } },
+      fontSpec,
+      measurer,
+    );
+    expect(d.width).toBeCloseTo(110.0625, 3);
+    expect(d.height).toBeCloseTo(80, 3);
+  });
+
+  // ptw T2b push-forward (#219): `BodyEnhanced1#getArea` floors the `create2` block at `styleTitle`'s `MinimumWidth`
+  // (`BodyEnhanced1.java:182-184`). Jar `ptw-min-width-title` (`package { title { MinimumWidth 200 } }`, `"Short P"`):
+  // svek node `3.194444 x 0.513889in` = 230 x 37px (200 + 30, one line 14 + 23).
+  it("title MinimumWidth floors the title block; the package node is the jar's 3.194444 x 0.513889 in", () => {
+    const [w, h] = measureShownFolderTitle('Short P', fontSpec, measurer, { minimumWidth: 200 }, undefined);
+    expect([w, h]).toEqual([200, 14]);
+    const d = measureLeafNode(
+      { ...node('Short P', 'Short P', 'package'), entitySizing: { minimumWidthTitle: 200 } },
+      fontSpec,
+      measurer,
+    );
+    expect(d.width).toBeCloseTo(230, 3);
+    expect(d.height).toBeCloseTo(37, 3);
+  });
+});
+
+// ptw T2c (#219, M3): the folder sizer's label is empty when the display `equalsLike` `getWithNewlines(code)`
+// (`EntityImageDescription.java:180-183`). Jar `ptw-ctl-newline` (`package "First line\nSecond line" {}`): svek node
+// `1.600521 x 0.708333in` = 115.2375 x 51px, the two-line title alone (+ 30, + 23).
+describe('ptw T2c — a `\\n` in the code draws the name once', () => {
+  it('package with an escaped `\\n` code and its split display: title only, no label', () => {
+    const d = measureLeafNode(
+      node('First line\\nSecond line', 'First line\nSecond line', 'package'),
+      fontSpec,
+      measurer,
+    );
+    const title = measureShownFolderTitle('First line\\nSecond line', fontSpec, measurer, undefined, undefined);
+    expect(d.height).toBeCloseTo(title[1] + 23, 6);
+    expect(d.height).toBeCloseTo(51, 6);
+    expect(d.width).toBeCloseTo(title[0] + 30, 6);
+    expect(d.width).toBeCloseTo(115.2375, 3);
+  });
 });

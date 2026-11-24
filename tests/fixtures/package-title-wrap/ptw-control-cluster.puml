@@ -1,0 +1,10 @@
+@startuml
+<style>
+package {
+  MaximumWidth 100
+}
+</style>
+package "Another rather long titled package" {
+  node m
+}
+@enduml

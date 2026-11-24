@@ -1,7 +1,7 @@
 /**
  * codd-T2 M2 -- the `package` keyword's symbol is the skin's package style
  * (`CommandPackageWithUSymbol.java:194` -> `USymbols.fromString(..., packageStyle())`, `USymbols.java:103-104`),
- * so a non-empty `package` takes that style's keyword before layout sizes and styles it by symbol.
+ * so a `package` group, empty or not, takes that style's keyword before layout sizes and styles it by symbol.
  */
 import { describe, it, expect } from 'vitest';
 import { resolveSkinparam } from '../../../src/core/skinparam.js';
@@ -42,8 +42,19 @@ describe('applyPackageStyle', () => {
     expect(out[0]!.children[0]!.children[0]!.symbol).toBe('component');
   });
 
-  it('leaves an empty package (an EMPTY_PACKAGE leaf, not a cluster) alone', () => {
+  it('leaves a childless `package` node that was not declared as a group alone', () => {
     expect(applyPackageStyle(TREE(), themeFor('node'))[1]!.symbol).toBe('package');
+  });
+
+  // ptw (#219 push-forward): an empty `package {}` is an `EMPTY_PACKAGE` leaf (`GraphvizImageBuilder.java:425-427`)
+  // whose symbol was set at parse time, so `GeneralImageBuilder.java:205-207` draws it with `EntityImageDescription`
+  // in that symbol. Jar `ptw-psr-nowrap` (`packageStyle rectangle`): a 224.4 x 34 `<rect>`, not a folder.
+  it.each([
+    ['rect', 'rectangle'],
+    ['node', 'node'],
+  ] as const)('packagestyle %s turns an empty package group into %s', (style, keyword) => {
+    const empty: DescriptiveNode = { ...node('empty', 'package'), declaredAsGroup: true };
+    expect(applyPackageStyle([empty], themeFor(style))[0]!.symbol).toBe(keyword);
   });
 
   it('keeps `package` where the style has no symbol of its own (null USymbol, resolved at draw time)', () => {

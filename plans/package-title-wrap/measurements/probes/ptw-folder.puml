@@ -1,0 +1,10 @@
+@startuml
+<style>
+folder {
+  MaximumWidth 100
+}
+</style>
+folder "A rather long empty folder title" {
+}
+node n
+@enduml

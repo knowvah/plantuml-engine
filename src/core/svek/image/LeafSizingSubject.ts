@@ -75,6 +75,8 @@ export interface EntitySizing {
   readonly minimumWidth?: number;
   /** `styleTitle.value(PName.MinimumWidth)`, the `package` name's floor. */
   readonly minimumWidthTitle?: number;
+  /** `styleTitle.wrapWidth()`, the `package` name's wrap (`MethodsOrFieldsArea.java:255`, `:264`). */
+  readonly wrapWidthTitle?: number;
 }
 
 /** The sprite half of a `<<...>>` stereotype run — mirrors

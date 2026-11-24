@@ -1,0 +1,8 @@
+@startuml
+component A
+component B
+A --> B
+note "named" as N
+N .. B
+remove N
+@enduml

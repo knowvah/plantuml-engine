@@ -1,0 +1,8 @@
+@startuml
+component A
+component B
+A --> B
+note "floating" as N
+N .. B
+hide B
+@enduml

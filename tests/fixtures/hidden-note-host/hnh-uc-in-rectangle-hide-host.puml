@@ -1,0 +1,9 @@
+@startuml
+rectangle R {
+  usecase U
+}
+actor X
+X --> U
+note right of U : on U
+hide U
+@enduml

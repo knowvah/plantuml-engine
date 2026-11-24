@@ -39,6 +39,8 @@ import { USymbols, componentStyleToUSymbol } from '../../decoration/symbol/USymb
 import type { ComponentStyle } from '../../decoration/symbol/USymbols.js';
 import type { ActorStyle } from '../../skin/ActorStyle.js';
 import type { EntityImageDescriptionSymbol } from './EntityImageDescription.js';
+import { Display } from '../../klimt/creole/Display.js';
+import { Pragma } from '../../skin/Pragma.js';
 
 export { measureLine, buildTextBlock } from './EntityImageDescriptionTextBlock.js';
 
@@ -147,4 +149,15 @@ export function resolveShapeType(symbol: USymbol, fixCircleLabelOverlapping: boo
     return fixCircleLabelOverlapping ? ShapeType.RECTANGLE_WITH_CIRCLE_INSIDE : ShapeType.RECTANGLE;
   }
   return ShapeType.RECTANGLE;
+}
+
+/**
+ * `entity.getDisplay().equalsLike(Display.getWithNewlines(pragma, entity.getName()))`
+ * (`EntityImageDescription.java:180-181`): `displayText` is the display already split one line per real newline (the
+ * port's `entity.getDisplay()` seam), `code` the entity name with its two-character `\n` escapes, so the comparison
+ * is line by line, through the real `Display#equalsLike` (`Display.java:118-122`).
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageDescription.java:180-181
+ */
+export function displayEqualsLikeCode(displayText: string, code: string): boolean {
+  return Display.create(displayText.split('\n')).equalsLike(Display.getWithNewlines(Pragma.createEmpty(), code));
 }

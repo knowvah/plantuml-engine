@@ -1,0 +1,10 @@
+@startuml
+class A
+class B {
+  x : int
+}
+A --> B
+note right of B::x
+  a tip
+end note
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+!pragma layout elk
+class A
+class B
+A --> B
+note right of B : a note
+hide B
+@enduml

@@ -164,10 +164,10 @@ function renderClassifierLeaf(classifier: ClassifierGeo, ctx: ClassLeafRenderCon
 
 /**
  * Draws one leaf (classifier OR note/tips) into `sink`, as `renderClass`'s
- * leaf loop does for each `geo.leaves` entry. D5: a note/tips leaf draws
- * regardless of its host's `hidden` -- `UHidden` wraps only the HOST node's
- * own image, never a separate note/tips node (see `renderOneNote`'s own doc
- * comment).
+ * leaf loop does for each `geo.leaves` entry. D5 (hnh T2a, #204): a `NOTE`
+ * draws under its own hidden flag, which it takes from its single-link host
+ * (`net/atmp/CucaDiagram.java:778-794`); a `TIPS` leaf draws whatever its
+ * host's flag (`:836-837`). See `renderOneNote`'s own doc comment.
  */
 export function renderClassLeaf(leaf: ClassLeafGeo, ctx: ClassLeafRenderContext, sink: ClassLeafSink): void {
   if (isNoteGeo(leaf)) {

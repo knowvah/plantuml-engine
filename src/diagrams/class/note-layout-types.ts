@@ -53,6 +53,14 @@ export interface NoteGeo {
    * jar-verified 2026-08-15 that upstream draws no tip there).
    */
   kind: NoteLeafType;
+  /**
+   * hnh T2a (#204): the `NOTE` leaf's own hidden flag, `CucaDiagram#isHidden`
+   * (`net/atmp/CucaDiagram.java:778-794`): its single-link host's flag, or its
+   * own `hide`/`show` fold. Set by `note-hidden.ts#markHiddenNotes`, never on a
+   * `'tips'` geo. A hidden note keeps its node, layout and uid, and draws
+   * through `UHidden` (`svek/SvekResult.java:82-90`): nothing.
+   */
+  hidden?: true;
   x: number;
   y: number;
   width: number;

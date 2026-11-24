@@ -1,0 +1,10 @@
+@startuml
+<style>
+node {
+  MaximumWidth 100
+}
+</style>
+node "A rather long empty node group title" {
+}
+component c
+@enduml

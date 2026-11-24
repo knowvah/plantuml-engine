@@ -1,0 +1,7 @@
+@startuml
+actor A
+usecase B
+A --> B
+note right of A : actor note
+hide A
+@enduml

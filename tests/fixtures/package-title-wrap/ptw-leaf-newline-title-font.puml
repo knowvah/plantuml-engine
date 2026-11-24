@@ -1,0 +1,12 @@
+@startuml
+skinparam componentStyle rectangle
+<style>
+component {
+  title {
+    FontStyle italic
+  }
+}
+</style>
+component "First\nSecond"
+node n
+@enduml

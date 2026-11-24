@@ -191,6 +191,8 @@ function emptyBlock(): TextBlock {
 /** The text block `getTextBlock` returns for `input`. */
 function textBlockOf(input: ActivityLegacyRenderInput, stringBounder: StringBounder): TextBlock {
   const { geometry, diagram, measurer } = input;
+  // `CucaDiagramFileMakerElk#getTextBlock` returns the drawing itself (lae D2). @see CucaDiagramFileMakerElk.java:477-500
+  if (geometry.elk !== undefined) return geometry.elk;
   if (geometry.nodes.length === 0) return emptyBlock();
   return new ActivityLegacySvekResult({
     geometry,

@@ -112,13 +112,9 @@ export class EntityImageRequirement {
     // `BodyFactory.create2(...)` is `new BodyEnhanced1(...)` (`BodyFactory.java:74-77`), whose body margins the ellipse
     // is fitted around; `buildCreate2Name` is description's `create2` for a display (`EntityImageDescriptionName.ts`).
     const minimumWidth = p.style.value('MinimumWidth').asDouble();
-    const tmp = buildCreate2Name(
-      p.display,
-      styleFontOf(p.style),
-      descAtomOps(undefined, undefined),
-      p.guillemet,
+    const tmp = buildCreate2Name(p.display, styleFontOf(p.style), descAtomOps(undefined, undefined), p.guillemet, {
       minimumWidth,
-    );
+    });
     if (p.stereoLabel === undefined) {
       this.desc = tmp;
     } else {

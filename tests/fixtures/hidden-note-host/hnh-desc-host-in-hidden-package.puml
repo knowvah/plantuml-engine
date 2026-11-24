@@ -1,0 +1,9 @@
+@startuml
+component A
+package P {
+  component B
+}
+A --> B
+note right of B : host in P
+hide P
+@enduml

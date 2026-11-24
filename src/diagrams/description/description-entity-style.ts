@@ -193,7 +193,12 @@ function entitySizing(style: DescriptionEntityStyle): EntitySizing {
     ...(style.body === undefined
       ? {}
       : { wrapWidth: style.body.wrapWidth().getMaxWidth(), minimumWidth: style.body.value('MinimumWidth').asDouble() }),
-    ...(style.title === undefined ? {} : { minimumWidthTitle: style.title.value('MinimumWidth').asDouble() }),
+    ...(style.title === undefined
+      ? {}
+      : {
+          minimumWidthTitle: style.title.value('MinimumWidth').asDouble(),
+          wrapWidthTitle: style.title.wrapWidth().getMaxWidth(),
+        }),
   };
 }
 

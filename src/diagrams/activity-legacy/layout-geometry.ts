@@ -8,6 +8,7 @@
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/GraphvizImageBuilder.java:145-256
  */
+import type { MyElkDrawing } from '../../core/elk/MyElkDrawing.js';
 import type { DotInputGraph, DotLayoutResult } from '../../core/graph-layout.js';
 import { layoutGraph } from '../../core/graph-layout.js';
 import { UPolygon } from '../../core/klimt/shape/UPolygon.js';
@@ -71,6 +72,11 @@ export interface ActivityLegacyGeometry {
   readonly originShift?: { readonly x: number; readonly y: number };
   /** The octagon polygons `SvekNode#getPolygon` answers: the renderer fills them from the solved layout. */
   readonly polygons: NodePolygonStore;
+  /**
+   * Under `!pragma layout elk` (lae D2): the `MyElkDrawing` `CucaDiagramFileMakerElk#getTextBlock` returns, drawn as
+   * the text block; the svek fields are then empty. @see CucaDiagramFileMakerElk.java:477-500
+   */
+  readonly elk?: MyElkDrawing;
 }
 
 function nodesOf(dot: ActivityLegacyDot, result: DotLayoutResult): ActivityLegacyNodeGeo[] {

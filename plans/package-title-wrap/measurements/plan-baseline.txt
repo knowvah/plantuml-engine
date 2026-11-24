@@ -1,0 +1,18 @@
+ptw-as-label-skinparam               diffs    0 score    0 cmt 0 | 
+ptw-as-label                         diffs   30 score   30 cmt 0 | {"path":"svg/@viewBox[2]","actual":"348","expected":"238","delta":110,"tolerance":0.01}
+ptw-control-cluster                  diffs    0 score    0 cmt 0 | 
+ptw-control-nowrap                   diffs    0 score    0 cmt 0 | 
+ptw-ctl-newline                      diffs   25 score   40 cmt 0 | {"path":"svg/@height","actual":"100","expected":"78","delta":22,"tolerance":0.01}
+ptw-element-style                    diffs   59 score  115 cmt 0 | {"path":"svg/@height","actual":"75","expected":"86","delta":11,"tolerance":0.01}
+ptw-fits                             diffs    4 score   17 cmt 0 | {"path":"svg/g[1]/g[1]/text[1]/@textLength","actual":"46.638","expected":"","tolerance":0.01}
+ptw-folder                           diffs   30 score   30 cmt 0 | {"path":"svg/@viewBox[2]","actual":"330","expected":"223","delta":107,"tolerance":0.01}
+ptw-issue                            diffs   59 score  115 cmt 0 | {"path":"svg/@height","actual":"75","expected":"86","delta":11,"tolerance":0.01}
+ptw-linked                           diffs  107 score  150 cmt 0 | {"path":"svg/@height","actual":"204","expected":"225","delta":21,"tolerance":0.01}
+ptw-nested                           diffs   73 score  143 cmt 0 | {"path":"svg/@height","actual":"128","expected":"149","delta":21,"tolerance":0.01}
+ptw-newline                          diffs   60 score   75 cmt 0 | {"path":"svg/@height","actual":"128","expected":"100","delta":28,"tolerance":0.01}
+ptw-node-group                       diffs    0 score    0 cmt 0 | 
+ptw-skinparam                        diffs   59 score  115 cmt 0 | {"path":"svg/@height","actual":"75","expected":"86","delta":11,"tolerance":0.01}
+ptw-stereo                           diffs   55 score  111 cmt 0 | {"path":"svg/@height","actual":"78","expected":"100","delta":22,"tolerance":0.01}
+ptw-title-only                       diffs   49 score   98 cmt 0 | {"path":"svg/@viewBox[2]","actual":"613","expected":"519","delta":94,"tolerance":0.01}
+ptw-upstream-3018                    diffs    0 score    0 cmt 0 | 
+rows 17 zero 5 open 12 throw 0

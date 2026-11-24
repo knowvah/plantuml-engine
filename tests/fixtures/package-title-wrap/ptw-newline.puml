@@ -1,0 +1,10 @@
+@startuml
+<style>
+package {
+  MaximumWidth 100
+}
+</style>
+package "First line\nA rather long second line here" {
+}
+node n
+@enduml

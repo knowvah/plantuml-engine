@@ -382,8 +382,9 @@ identical to the base.
 1. ~~**A link to a partition** (`partition-link`, 21 diffs): the `zaent` special point, `ltail`/`lhead` and
    `DotPath#simulateCompound` (`ClusterDotString.java:149`, `SvekEdge.java:252-258, 671-672`). Filed as #157.~~ —
    **done by lpl (2026-11-17, `legacy-partition-link/pre-squash`, #157)**
-2. **`!pragma layout elk` on the legacy model** (`pragma-elk` 15, `pragma-elk-if` 33): `CucaDiagramFileMakerElk` over
-   an adapter for the legacy diagram. Filed as #158.
+2. ~~**`!pragma layout elk` on the legacy model** (`pragma-elk` 15, `pragma-elk-if` 33): `CucaDiagramFileMakerElk` over
+   an adapter for the legacy diagram. Filed as #158.~~ — **done by lae (2026-11-23, `legacy-activity-elk/pre-squash`,
+   #158)**: `ActivityLegacyElkAdapter`, 29 ELK rows, 28 at 0 and 1 error-page pair
 3. **State keeps its own start, end, choice and bar drawings** where `src/core/svek/image/` now has the shared
    `EntityImageCircleStart`/`CircleEnd`/`Branch`/`SynchroBar` (D2): switching state is a refactor, not a port fix.
 4. **No shared `GraphvizImageBuilder`**: description, state and legacy activity each compose the svek pieces (D2).

@@ -1,0 +1,9 @@
+@startuml
+!pragma layout elk
+component A
+component B
+A --> B
+note "named" as N
+N .. B
+hide N
+@enduml

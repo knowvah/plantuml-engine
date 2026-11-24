@@ -1,0 +1,5 @@
+@startuml
+node "a\nb"
+component "First\nSecond"
+rectangle "x\ny"
+@enduml

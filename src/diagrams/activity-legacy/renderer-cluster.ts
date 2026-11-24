@@ -24,7 +24,7 @@ import type { ActivityLegacySkinParam } from './activity-legacy-skin-param.js';
 const STYLE_NAME: SName = 'activityDiagram';
 
 /** `skinParam.packageStyle()`: `packageStyle`, else FOLDER. @see SkinParam.java:819-826 */
-function packageStyleOf(skinParam: ActivityLegacySkinParam): PackageStyleName {
+export function packageStyleOf(skinParam: ActivityLegacySkinParam): PackageStyleName {
   const value = skinParam.getValue('packagestyle')?.trim().toUpperCase();
   const known = Object.values(PackageStyle).find((name) => name === value);
   return known ?? PackageStyle.FOLDER;

@@ -1,0 +1,11 @@
+@startuml
+skinparam packageStyle rectangle
+<style>
+package {
+  MaximumWidth 100
+}
+</style>
+package "A rather long empty package title" {
+}
+node n
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+!pragma layout elk
+partition Red #pink {
+(*) --> A
+}
+partition Blue #LightBlue {
+A --> B
+}
+B --> (*)
+@enduml

@@ -194,6 +194,9 @@ export function buildUSymbolEntityParams(
       // .ts#buildDescriptionLeafOpts`); without it the draw re-measured the
       // unwrapped line and drew a wider rect than the layout reserved.
       wrapWidth: theme.wrapWidth ?? 0,
+      // ptw T2a (#219): `styleTitle.wrapWidth()` -> `name` (`MethodsOrFieldsArea.java:255`); `skinparam wrapWidth` is on
+      // `element`, so it reaches `styleTitle` too. The sizer reads the same (`leaf-sizing-folder.ts#shownTitleOpts`).
+      wrapWidthTitle: theme.wrapWidth ?? 0,
     },
     links: [],
     fixCircleLabelOverlapping: theme.fixCircleLabelOverlapping === true,

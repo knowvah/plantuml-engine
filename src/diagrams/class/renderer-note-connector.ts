@@ -27,6 +27,20 @@ import { path } from '../../core/svg.js';
 import { moveTo, lineTo, cubicTo } from '../../core/svg-path-builder.js';
 import { leafPortion, wrapLink } from './renderer-group.js';
 import { uniqLinkId } from './renderer-edge.js';
+import { escapeComment } from '../../core/svg-format.js';
+
+/** No hidden node: the default for {@link renderNoteConnectorLink}'s `hiddenIds`. */
+const NO_HIDDEN_IDS: ReadonlySet<string> = new Set();
+
+/**
+ * hnh T2a (#204): `Link#isHidden` is `hidden || cl1.isHidden() || cl2.isHidden()` (`abel/Link.java:458-459`). A note's
+ * connector is hidden when the note or its host is; it then draws under `UHidden` (`svek/SvekResult.java:97-101`):
+ * its comment and its id, nothing else.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/abel/Link.java#isHidden
+ */
+function noteLinkIsHidden(note: NoteGeo, hiddenIds: ReadonlySet<string>): boolean {
+  return hiddenIds.has(note.id) || (note.target !== undefined && hiddenIds.has(note.target));
+}
 
 /**
  * Bezier-spline or polyline path data for a routed connector — the SAME
@@ -180,10 +194,12 @@ export function renderNoteConnectorLink(
   theme: ScaledTheme,
   uidPlan: ClassUidPlan,
   ids: Set<string>,
+  hiddenIds: ReadonlySet<string> = NO_HIDDEN_IDS,
 ): string {
   const { note } = connector;
   const { entity1Name, entity2Name, noteIsEntity1 } = resolveNoteConnectorEndpoints(note);
   const pathId = uniqLinkId(ids, `${entity1Name}-${entity2Name}`);
+  if (noteLinkIsHidden(note, hiddenIds)) return '<!--' + escapeComment(`link ${entity1Name} to ${entity2Name}`) + '-->';
   const body = renderNoteConnectorPath(note, theme, pathId);
   if (body === undefined) return '';
   const noteUid = uidPlan.noteUid.get(note.id) ?? '';

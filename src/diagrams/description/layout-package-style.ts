@@ -29,18 +29,25 @@ const KEYWORD_BY_PACKAGE_STYLE: Readonly<Partial<Record<PackageStyle, USymbol>>>
   [PackageStyle.RECTANGLE]: 'rectangle',
 };
 
+/** An empty `package` group: upstream gave it the package-style `USymbol` at parse time like any other. */
+function isEmptyPackageGroup(n: DescriptiveNode): boolean {
+  return n.symbol === 'package' && n.declaredAsGroup === true;
+}
+
 function restyle(nodes: readonly DescriptiveNode[], keyword: USymbol): DescriptiveNode[] {
   return nodes.map((n) => {
-    if (n.children.length === 0) return n;
+    if (n.children.length === 0) return isEmptyPackageGroup(n) ? { ...n, symbol: keyword } : n;
     const children = restyle(n.children, keyword);
     return n.symbol === 'package' ? { ...n, symbol: keyword, children } : { ...n, children };
   });
 }
 
 /**
- * Rewrites every non-empty `package` group to the skin's package-style keyword. An empty `package` is an
- * `EMPTY_PACKAGE` leaf (`GraphvizImageBuilder.java:415-418`), drawn by `EntityImageEmptyPackage`, not a cluster, so
- * it is left as written. Returns `nodes` itself when the style rewrites nothing.
+ * Rewrites every `package` group to the skin's package-style keyword. An empty one is an `EMPTY_PACKAGE` leaf
+ * (`GraphvizImageBuilder.java:425-427`), but the symbol was set at parse time, so `GeneralImageBuilder.java:205-207`
+ * draws it with `EntityImageDescription` in that symbol (a `rectangle`, a `node`, ...), not `EntityImageEmptyPackage`
+ * (ptw, #219 push-forward: `skinparam packageStyle rectangle` on an empty package). Returns `nodes` itself when the
+ * style rewrites nothing.
  */
 export function applyPackageStyle(nodes: DescriptiveNode[], theme: Theme): DescriptiveNode[] {
   const keyword = KEYWORD_BY_PACKAGE_STYLE[resolvePackageStyle(theme)];

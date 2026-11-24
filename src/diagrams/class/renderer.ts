@@ -192,14 +192,16 @@ export function renderClass(geo: ClassGeometry, rawTheme: Theme): RenderFragment
   // -> `SvekResult`'s `UHidden` wrap). Layout/uid numbering already ran as if
   // it were visible, so skipping the push in the loop below is enough -- no
   // renumbering needed. Also feeds the edge-suppression check (step 3).
-  const hiddenClassifierIds = new Set(classifiers.filter((c) => c.hidden === true).map((c) => c.id));
+  // hnh T2a (#204): a hidden note is a hidden node too (`NoteGeo.hidden`), so a link touching it is hidden
+  // (`abel/Link.java:458-459`).
+  const hiddenClassifierIds = new Set([...classifiers, ...notes].filter((c) => c.hidden === true).map((c) => c.id));
 
   // 2. Every leaf (classifier OR note/tips), ONE loop, in jar's own node
   // order (D3, `svek/SvekResult.java:82-90`) -- `bibliotekon.allNodes()`
   // draws EVERY node, hidden ones through `UHidden` (nothing), strictly
-  // before any edge. D5: a note/tips leaf draws regardless of its host's
-  // `hidden` -- `UHidden` wraps only the HOST node's own image, never a
-  // separate note/tips node (see `renderOneNote`'s own doc comment).
+  // before any edge. D5 (hnh T2a, #204): a `NOTE` draws under its own hidden
+  // flag, which it takes from its single-link host (`CucaDiagram.java:778-794`);
+  // a `TIPS` leaf draws whatever its host's flag (see `renderOneNote`).
   const leafCtx: ClassLeafRenderContext = {
     theme,
     uidPlan,
@@ -287,7 +289,7 @@ export function renderClass(geo: ClassGeometry, rawTheme: Theme): RenderFragment
     (connector) => connector.note.linkSlot,
   )) {
     if ('rel' in item) drawEdge(item.rel.edge, item.rel.i);
-    else children.push(renderNoteConnectorLink(item.note, theme, uidPlan, linkIds));
+    else children.push(renderNoteConnectorLink(item.note, theme, uidPlan, linkIds, hiddenClassifierIds));
   }
 
   // SI14 T4 (ADR-2): de-dup usecase/actor fragment defs (e.g. gradients)

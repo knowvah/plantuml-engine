@@ -24,11 +24,12 @@
 import type { FontConfiguration } from '../../klimt/shape/UText.js';
 import { sizingAtomImageResolverFor } from './leaf-sizing-entity.js';
 import { buildTextBlock } from './EntityImageDescriptionTextBlock.js';
+import { displayEqualsLikeCode } from './EntityImageDescriptionSupport.js';
 import type { LeafSizingSubject } from './LeafSizingSubject.js';
 import type { StringMeasurer, FontSpec } from '../../measurer.js';
 import type { SpriteDimsLookup } from '../../creole-atoms.js';
 import { textBlockHeight, maxLineWidth, atomHeightBonus } from './leaf-sizing-text.js';
-import { measureShownFolderTitle } from './leaf-sizing-folder-title.js';
+import { measureShownFolderTitle, type ShownFolderTitleOpts } from './leaf-sizing-folder-title.js';
 import {
   type BoxSizingOpts,
   BOX_MIN_WIDTH_DEFAULT,
@@ -132,12 +133,33 @@ function folderBlockDims(
   const lineH = fontSpec.size * LINE_HEIGHT_FACTOR;
   const showTitle = FOLDER_FAMILY_SHOW_TITLE[symbol] === true;
   const title = showTitle
-    ? measureShownFolderTitle(node.id, fontSpec, measurer, opts, sprites)
+    ? measureShownFolderTitle(node.id, fontSpec, measurer, shownTitleOpts(node, opts), sprites)
     : ([FOLDER_TAB_WIDTH, FOLDER_TAB_HEIGHT] as const);
-  const labelText = showTitle && node.display === node.id ? '' : node.display;
-  const label = folderTextBlock(labelText, fontSpec, measurer, sprites, opts?.wrapWidth ?? 0);
+  // The empty-`desc` branch: `equalsLike(getWithNewlines(name))` (`EntityImageDescription.java:180-183`).
+  const labelText = showTitle && displayEqualsLikeCode(node.display, node.id) ? '' : node.display;
+  // `desc` wraps at the body style's `style.wrapWidth()` (`EntityImageDescription.java:184-188`), read off the entity's
+  // styles first, as the renderer and `leaf-sizing-entity.ts#sizedFromStyle` do.
+  const label = folderTextBlock(
+    labelText,
+    fontSpec,
+    measurer,
+    sprites,
+    node.entitySizing?.wrapWidth ?? opts?.wrapWidth ?? 0,
+  );
   const stereo = folderStereoBlock(node, fontSpec, measurer, lineH);
   return { showTitle, title, label, stereo };
+}
+
+/** The title's floor is `styleTitle`'s `MinimumWidth`; its wrap is `styleTitle.wrapWidth()` (`MethodsOrFieldsArea
+ *  .java:255`, `:264`), read off the entity's styles where a builder answered, else `skinparam wrapWidth` (which
+ *  upstream converts onto `element`, `FromSkinparamToStyle.java:260`, so it reaches `styleTitle` too). */
+function shownTitleOpts(node: LeafSizingSubject, opts: BoxSizingOpts | undefined): ShownFolderTitleOpts {
+  return {
+    guillemet: opts?.guillemet,
+    wrapWidth: node.entitySizing?.wrapWidthTitle ?? opts?.wrapWidth,
+    // `styleTitle.value(PName.MinimumWidth)` (`BodyEnhanced1.java:182-184`), as `buildEntityName` draws it.
+    minimumWidth: node.entitySizing?.minimumWidthTitle,
+  };
 }
 
 export function measureFolderLeaf(

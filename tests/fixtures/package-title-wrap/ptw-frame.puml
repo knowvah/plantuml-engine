@@ -1,0 +1,10 @@
+@startuml
+<style>
+frame {
+  MaximumWidth 100
+}
+</style>
+frame "A rather long empty frame title" {
+}
+node n
+@enduml

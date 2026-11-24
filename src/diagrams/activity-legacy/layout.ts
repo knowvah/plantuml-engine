@@ -8,12 +8,15 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/CucaDiagramFileMakerSvek.java:59-87
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/GraphvizImageBuilder.java:145-150, 238-256
  */
+import type { ElkBackend } from '../../core/elk/elk-backend.js';
+import { ELK_RENDER_SYNC_UNSUPPORTED } from '../../core/elk/layout-services.js';
 import { MeasurerStringBounder } from '../../core/measurer-bounder.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { ActivityDiagram } from './ActivityDiagram.js';
 import { CucaDiagramSimplifierActivity } from './CucaDiagramSimplifierActivity.js';
 import { solveActivityLegacy, type ActivityLegacyGeometry } from './layout-geometry.js';
 import { NodePolygonStore } from './activity-legacy-dot.js';
+import { layoutActivityLegacyElk } from './layout-elk.js';
 
 export type {
   ActivityLegacyClusterGeo,
@@ -43,11 +46,25 @@ function emptyGeometry(): ActivityLegacyGeometry {
   };
 }
 
+/** A diagram that asks for ELK must never fall back to dot-engine (`CucaDiagram.java:478-479`, `:950-952`). */
+function requireElk(elk: ElkBackend | undefined): ElkBackend {
+  if (elk === undefined) throw new Error(ELK_RENDER_SYNC_UNSUPPORTED);
+  return elk;
+}
+
 /**
- * The geometry of `diagram`: the DOT, the layout, and the leaves, links and partitions placed.
+ * The geometry of `diagram`: the DOT, the layout, and the leaves, links and partitions placed. Under
+ * `!pragma layout elk` the ELK maker lays it out instead, BEFORE the simplifier, which is the svek maker's alone
+ * (lae D2, `CucaDiagram.java:478-479`, `CucaDiagramFileMakerSvek.java:67`).
  * @see CucaDiagramFileMakerSvek.java:59-87, GraphvizImageBuilder.java:145-256
  */
-export function layoutActivityLegacy(diagram: ActivityDiagram, measurer: StringMeasurer): ActivityLegacyGeometry {
+export function layoutActivityLegacy(
+  diagram: ActivityDiagram,
+  measurer: StringMeasurer,
+  elk?: ElkBackend,
+): ActivityLegacyGeometry {
+  if (diagram.isUseElk()) return layoutActivityLegacyElk(diagram, measurer, requireElk(elk));
+
   const stringBounder = new MeasurerStringBounder(measurer);
   // `new CucaDiagramSimplifierActivity().simplify(diagram, stringBounder, DotMode.NORMAL)`. @see CucaDiagramFileMakerSvek.java:67-68
   new CucaDiagramSimplifierActivity().simplify(diagram, stringBounder, measurer);

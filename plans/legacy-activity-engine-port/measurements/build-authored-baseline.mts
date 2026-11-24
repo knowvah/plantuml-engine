@@ -8,18 +8,16 @@ import { writeFileSync } from 'node:fs';
 import { compareSvg, weightedScore } from '../../../tests/oracle/svg-conformance/compare.js';
 import {
   listAuthoredActivityLegacySlugs,
+  prepareElkOnce,
   readAuthoredActivityLegacyFixture,
   renderFixtureActivityLegacy,
 } from '../../../tests/oracle/svg-conformance/render-fixture-activity-legacy.js';
 
 const OUT = 'oracle/goldens/svg-activity-legacy/authored-baseline.json';
 const ERROR_REASON = 'jar error page and we error: conformant by the 2026-10-10 ruling, the page itself is not a target';
-const ELK_REASON =
-  '#158: `!pragma layout elk` draws through CucaDiagramFileMakerElk over the legacy model, not ported yet';
-/** D8 ends of the authored rows the jar draws and we do not match (decision-journal rows 19, 20). */
+/** D8 ends of the authored rows the jar draws and we do not match (decision-journal rows 19, 20). lae T3a took the
+ * `pragma-elk*` and `elk-*` rows to 0 (#158). */
 const OPEN_ROWS: Readonly<Record<string, string>> = {
-  'pragma-elk': ELK_REASON,
-  'pragma-elk-if': ELK_REASON,
   'pragma-smetana':
     'library-forced: dot-engine instead of Smetana (CLAUDE.md ruling 2026-08-09, DIVERGENCES.md "!pragma layout smetana")',
 };
@@ -39,6 +37,8 @@ function jarErrorOf(golden: string): { line: number | null; message: string } {
   return { line: from === null ? null : Number(from[1]), message: message.replaceAll('&lt;', '<') };
 }
 
+// D5: render the ELK rows with the survey's backend, never through the no-backend path.
+await prepareElkOnce();
 const fixtures = listAuthoredActivityLegacySlugs().map((slug) => {
   const { markup, golden } = readAuthoredActivityLegacyFixture(slug);
   const { diffs } = compareSvg(renderFixtureActivityLegacy(markup), golden!, 'deterministic');

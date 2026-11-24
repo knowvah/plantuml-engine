@@ -1,0 +1,12 @@
+@startuml
+class A {
+  m()
+}
+class B
+A --> B
+note right of A::m()
+  a tip
+end note
+hide *
+show A
+@enduml

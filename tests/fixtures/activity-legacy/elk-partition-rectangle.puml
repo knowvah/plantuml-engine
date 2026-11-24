@@ -1,0 +1,8 @@
+@startuml
+!pragma layout elk
+skinparam packageStyle rectangle
+partition P {
+(*) --> A
+}
+A --> (*)
+@enduml

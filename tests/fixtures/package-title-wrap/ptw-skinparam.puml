@@ -1,0 +1,6 @@
+@startuml
+skinparam wrapWidth 100
+package "A rather long empty package title" {
+}
+node n
+@enduml

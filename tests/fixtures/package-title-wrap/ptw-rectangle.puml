@@ -1,0 +1,10 @@
+@startuml
+<style>
+rectangle {
+  MaximumWidth 100
+}
+</style>
+rectangle "A rather long empty rectangle title" {
+}
+node n
+@enduml

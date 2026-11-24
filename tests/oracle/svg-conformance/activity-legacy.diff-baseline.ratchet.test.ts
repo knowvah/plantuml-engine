@@ -14,7 +14,7 @@
  *
  * Re-measure: `npx jiti plans/legacy-activity-engine-port/measurements/build-authored-baseline.mts <commit> [--write]`.
  */
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { compareSvg, weightedScore } from './compare.js';
 import {
   listAuthoredActivityLegacySlugs,
+  prepareElkOnce,
   readAuthoredActivityLegacyFixture,
   renderFixtureActivityLegacy,
 } from './render-fixture-activity-legacy.js';
@@ -44,7 +45,7 @@ const CACHE_DIR = join(HERE, '../../../test-results/dot-cache');
 /** The legacy rows at laep's start (`measurements/planning-rows.json`): 118 activity, 4 unknown, 2 network. */
 const LEGACY_ROW_COUNT = 124;
 /** Authored rows the jar draws and we do not match, each ended by its `reason` (laep D8, journal 19-20). */
-const OPEN_ROWS = ['pragma-elk', 'pragma-elk-if', 'pragma-smetana'];
+const OPEN_ROWS = ['pragma-smetana'];
 
 const authored = JSON.parse(readFileSync(join(GOLDENS_DIR, 'authored-baseline.json'), 'utf8')) as {
   readonly fixtures: readonly AuthoredFixture[];
@@ -115,6 +116,8 @@ describe('svg-activity-legacy authored fixtures — manifest shape', () => {
 });
 
 describe('svg-activity-legacy authored fixtures — weighted score never rises', () => {
+  // lae T1: the `elk-*` and `pragma-elk*` rows render with the survey's ELK backend (D5).
+  beforeAll(() => prepareElkOnce());
   for (const f of authored.fixtures) {
     it(`authored/${f.slug}: weighted score never rises above its baseline (${String(f.weightedScore)})`, () => {
       const { markup, golden } = readAuthoredActivityLegacyFixture(f.slug);
@@ -127,6 +130,7 @@ describe('svg-activity-legacy authored fixtures — weighted score never rises',
 });
 
 describe('svg-activity-legacy authored fixtures — error parity (2026-10-10 error-page rule)', () => {
+  beforeAll(() => prepareElkOnce());
   for (const f of authored.fixtures.filter((row) => !OPEN_ROWS.includes(row.slug))) {
     const name = f.jarError === undefined ? 'jar draws and we draw the same type' : 'jar errors and we error';
     it(`authored/${f.slug}: ${name}`, () => {

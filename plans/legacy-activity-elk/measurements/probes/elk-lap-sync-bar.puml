@@ -1,0 +1,9 @@
+@startuml
+!pragma layout elk
+(*) --> ===B1===
+--> A
+--> ===B2===
+===B1=== --> B
+--> ===B2===
+--> (*)
+@enduml

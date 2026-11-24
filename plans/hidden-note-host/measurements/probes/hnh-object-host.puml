@@ -1,0 +1,7 @@
+@startuml
+object a
+object b
+a --> b
+note right of b : object note
+hide b
+@enduml

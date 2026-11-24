@@ -122,17 +122,29 @@ function titleEntity(): Entity {
   return shape as unknown as Entity;
 }
 
+/** The two `styleTitle` widths `create2` reads off its style argument (java:201-202). */
+export interface Create2NameWidths {
+  /** `styleTitle.value(PName.MinimumWidth)`: `BodyEnhanced1.java:182-184`. */
+  readonly minimumWidth?: number | undefined;
+  /** `styleTitle.wrapWidth().getMaxWidth()`: every `MethodsOrFieldsArea` line is `create8(…, SIMPLE_LINE,
+   *  style.wrapWidth())` (`MethodsOrFieldsArea.java:254-255`, `:263-264`). Absent or 0 = no wrap. */
+  readonly wrapWidth?: number | undefined;
+}
+
 /** The resolved `styleTitle` reads `create2` consumes: all three font slots
- *  are the ONE title font (java:198's single `styleTitle` argument). */
-function titleStyle(font: FontConfiguration, atomOps: AtomOps, minimumWidth: number): BodyEnhanced1Style {
+ *  are the ONE title font (java:198's single `styleTitle` argument). A
+ *  positive wrap width becomes a `LineBreakStrategy`, as `buildDesc` builds
+ *  `desc`'s (`EntityImageDescriptionDelegates.ts`). */
+function titleStyle(font: FontConfiguration, atomOps: AtomOps, widths: Create2NameWidths): BodyEnhanced1Style {
+  const wrapWidth = widths.wrapWidth ?? 0;
   return {
     getHorizontalAlignment: () => HorizontalAlignment.CENTER,
     lineThickness: ROOT_LINE_THICKNESS,
-    minimumWidth,
+    minimumWidth: widths.minimumWidth ?? 0,
     titleConfig: font,
     treeTableFontConfig: font,
     memberFontConfig: font,
-    wrapWidth: LineBreakStrategy.NONE,
+    wrapWidth: wrapWidth > 0 ? new LineBreakStrategy(String(wrapWidth)) : LineBreakStrategy.NONE,
     atomOps,
   };
 }
@@ -149,7 +161,7 @@ export function buildCreate2Name(
   font: FontConfiguration,
   atomOps: AtomOps,
   guillemet: GuillemetPair | undefined,
-  minimumWidth = 0,
+  widths: Create2NameWidths = {},
 ): TextBlock {
   const skinParam = buildTitleSkinParam(guillemet, atomOps);
   const display = Display.getWithNewlines(Pragma.createEmpty(), code);
@@ -159,7 +171,7 @@ export function buildCreate2Name(
     skinParam,
     undefined,
     titleEntity(),
-    titleStyle(font, atomOps, minimumWidth),
+    titleStyle(font, atomOps, widths),
   );
 }
 
@@ -170,6 +182,8 @@ export interface EntityNamePaint {
   readonly guillemet?: GuillemetPair | undefined;
   /** `styleTitle.value(PName.MinimumWidth)`: `BodyEnhanced1.java:182-184` under `create2` (java:198-199). */
   readonly minimumWidthTitle?: number | undefined;
+  /** `styleTitle.wrapWidth()`: the name's `MethodsOrFieldsArea` lines wrap at it (`MethodsOrFieldsArea.java:255`). */
+  readonly wrapWidthTitle?: number | undefined;
 }
 
 /**
@@ -193,11 +207,8 @@ export function buildEntityName(
   if (symbol.getSNames()[0] !== 'package_') {
     return buildTextBlock(codeName, paint.fontTitle, paint.titleAlignment, resolveAtomImage);
   }
-  return buildCreate2Name(
-    codeName,
-    paint.fontTitle,
-    descAtomOps(resolveAtomImage, emojiArtwork),
-    paint.guillemet,
-    paint.minimumWidthTitle,
-  );
+  return buildCreate2Name(codeName, paint.fontTitle, descAtomOps(resolveAtomImage, emojiArtwork), paint.guillemet, {
+    minimumWidth: paint.minimumWidthTitle,
+    wrapWidth: paint.wrapWidthTitle,
+  });
 }
