@@ -446,6 +446,33 @@
     },
     {
       "match": {
+        "id": "authored-utility/cov-license"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- the license page describes plantuml-engine (ruling 2026-11-12, #179)",
+      "acceptedAt": "2026-11-12",
+      "acceptedBy": "user (ruling 2026-11-12, #179)",
+      "reason": "User ruling 2026-11-12 on #179: \"The `license` page must describe this distribution, plantuml-engine, not the jar's. The user allows a divergence for it.\" Measured 2026-11-24 (lic T2a, build-authored-baseline.mts at 50bf68248): `license`, 159 diffs, weightedScore 188 (was 87 / 145 before the ruling). Changed blocks, each replacing upstream's License.java lines: header and copyright (item 1, :117, :133, :135), donation lines and QR row dropped (item 2, :139-151; the GPL oracle draws three 99x99 zxing QR codes), addMit's first line (item 3, :243), advertising paragraph dropped (item 4, :191-196), images paragraph SVG only (item 5, :199, :205-206), GraphViz lines (item 6, :218-225), third-party credits (item 7, :233-234 out; KaTeX, pako, xmldom in; the elk-engine line held back under the ruling's own condition, #282). The MIT edition's name and addMit (D13, :66-68, :243-263) still stand for the oracle's GPL name and paragraph (:63-65, :157-168). DIVERGENCES.md \"`license` page describes plantuml-engine\"."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-licence"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- the license page describes plantuml-engine (ruling 2026-11-12, #179)",
+      "acceptedAt": "2026-11-12",
+      "acceptedBy": "user (ruling 2026-11-12, #179)",
+      "reason": "User ruling 2026-11-12 on #179: \"The `license` page must describe this distribution, plantuml-engine, not the jar's. The user allows a divergence for it.\" Measured 2026-11-24 (lic T2a, build-authored-baseline.mts at 50bf68248): `licence` (the c/s spelling arm), 159 diffs, weightedScore 188 (was 87 / 145 before the ruling). Changed blocks, each replacing upstream's License.java lines: header and copyright (item 1, :117, :133, :135), donation lines and QR row dropped (item 2, :139-151; the GPL oracle draws three 99x99 zxing QR codes), addMit's first line (item 3, :243), advertising paragraph dropped (item 4, :191-196), images paragraph SVG only (item 5, :199, :205-206), GraphViz lines (item 6, :218-225), third-party credits (item 7, :233-234 out; KaTeX, pako, xmldom in; the elk-engine line held back under the ruling's own condition, #282). The MIT edition's name and addMit (D13, :66-68, :243-263) still stand for the oracle's GPL name and paragraph (:63-65, :157-168). DIVERGENCES.md \"`license` page describes plantuml-engine\"."
+    },
+    {
+      "match": {
+        "id": "authored-utility/cov-license-upper"
+      },
+      "scope": "authored utility rows (tests/fixtures/utility/, oracle/goldens/svg-utility/authored-baseline.json) -- the license page describes plantuml-engine (ruling 2026-11-12, #179)",
+      "acceptedAt": "2026-11-12",
+      "acceptedBy": "user (ruling 2026-11-12, #179)",
+      "reason": "User ruling 2026-11-12 on #179: \"The `license` page must describe this distribution, plantuml-engine, not the jar's. The user allows a divergence for it.\" Measured 2026-11-24 (lic T2a, build-authored-baseline.mts at 50bf68248): `LICENSE` (the (?i) case arm), 159 diffs, weightedScore 188 (was 87 / 145 before the ruling). Changed blocks, each replacing upstream's License.java lines: header and copyright (item 1, :117, :133, :135), donation lines and QR row dropped (item 2, :139-151; the GPL oracle draws three 99x99 zxing QR codes), addMit's first line (item 3, :243), advertising paragraph dropped (item 4, :191-196), images paragraph SVG only (item 5, :199, :205-206), GraphViz lines (item 6, :218-225), third-party credits (item 7, :233-234 out; KaTeX, pako, xmldom in; the elk-engine line held back under the ruling's own condition, #282). The MIT edition's name and addMit (D13, :66-68, :243-263) still stand for the oracle's GPL name and paragraph (:63-65, :157-168). DIVERGENCES.md \"`license` page describes plantuml-engine\"."
+    },
+    {
+      "match": {
         "id": "svg-dot/quoted-labels"
       },
       "scope": "svg-dot ratchet `accepted` rows (oracle/goldens/svg-dot/ratchet.json) -- host-font kerning (ruling 2026-11-16, #186)",

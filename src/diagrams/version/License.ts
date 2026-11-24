@@ -12,6 +12,13 @@
  * `addApache`, `addLgpl`, `addGplv2`, java:267-372) stay commented out in the
  * MIT edition and are not ported.
  *
+ * The page text describes this distribution, plantuml-engine, not the jar's
+ * (user ruling 2026-11-12, #179; `DIVERGENCES.md`): seven blocks of upstream's
+ * `header1`/`header2`/`end3`/`addMit` print the ruling's lines, each table
+ * cited to the ruling item and the upstream lines it replaces. Upstream's
+ * structure stays: the four methods, the order of their additions, the
+ * Professional Edition branch and the statistics branch.
+ *
  * Long runs of `text.add(...)` are module-level line tables, each cited to its
  * java lines (the complexity hook's 30-NLOC cap); the order of additions is
  * upstream's.
@@ -37,26 +44,31 @@ const BLANK = ' ';
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:380 */
 const BAR_WIDE = '|  ';
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:133 */
-const COPYRIGHT = '(C) Copyright 2009-2027, Arnaud Roques';
+/** The free header's name line. Ruling 2026-11-12 item 1; replaces
+ *  `"| PlantUML : a free UML diagram generator"`.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:117 */
+const FREE_NAME = '|      plantuml-engine : a TypeScript port of PlantUML';
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:140-144 */
-const SUPPORT_US = [
-  'If you like this project or if you find it useful, you can support us at:',
+/** The copyright and project-info lines, blanks included. Ruling 2026-11-12
+ *  item 1; replaces `(C) Copyright 2009-2027, Arnaud Roques` and
+ *  `Project Info:  https://plantuml.com`.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:132-136 */
+const COPYRIGHT_AND_PROJECT = [
   BLANK,
-  'https://plantuml.com/patreon (only 1$ per month!)',
-  'https://plantuml.com/liberapay (only 1€ per month!)',
-  'https://plantuml.com/paypal',
+  '(C) Copyright 2026, Scott Seely',
+  'Ported from PlantUML, (C) Copyright 2009-2024, Arnaud Roques',
+  BLANK,
+  'Project Info:  https://github.com/knowvah/plantuml-engine',
+  'PlantUML:      https://plantuml.com',
+  BLANK,
 ] as const;
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:146-147 */
-const QRCODES =
-  '\t<qrcode:https://plantuml.com/patreon>\t\t<qrcode:https://plantuml.com/lp>\t\t<qrcode:https://plantuml.com/paypal>';
-
 /** `addMit`'s paragraph, the MIT edition's `end3` opening (java:171-173).
+ *  The first line names plantuml-engine (ruling 2026-11-12 item 3; replaces
+ *  java:243); the rest is upstream's and matches our `LICENSE`.
  *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:243-263 */
 const MIT_TEXT = [
-  'PlantUML is free software; you can redistribute it and/or modify it',
+  'plantuml-engine is free software; you can redistribute it and/or modify it',
   'under the terms of the MIT License.',
   BLANK,
   'See http://opensource.org/licenses/MIT',
@@ -79,15 +91,6 @@ const MIT_TEXT = [
   'IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.',
 ] as const;
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:192-196 */
-const SPONSORED = [
-  'PlantUML can occasionally display sponsored or advertising messages. Those',
-  'messages are usually generated on welcome or error images and never on',
-  'functional diagrams.',
-  'See https://plantuml.com/professional if you want to remove them',
-  BLANK,
-] as const;
-
 /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:208-210 */
 const EXCEPTION = [
   'There is an exception : if the textual description in PlantUML language is also covered',
@@ -102,21 +105,23 @@ const STATS = [
   '(more info on https://plantuml.com/statistics-report)',
 ] as const;
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:219-220 */
-const ARCHIVE = [
-  'This distribution bundles a minimal set of GraphViz files and may install them',
-  ' if needed in the local temporary directory.',
+/** Ruling 2026-11-12 item 6: neither upstream arm is true (we bundle and
+ *  install no GraphViz). Replaces both `isThereArchive` arms and the
+ *  `(see https://plantuml.com/graphviz-dot )` line; the second line keeps
+ *  upstream's leading space (java:220).
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:218-225 */
+const GRAPHVIZ = [
+  'This distribution does not bundle or install GraphViz: layout uses',
+  ' @knowvah/dot-engine, a TypeScript port of GraphViz dot (EPL-2.0).',
+  '(see https://dot-engine.knowvah.com/ )',
 ] as const;
 
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:222-223 */
-const IGY = [
-  'This is the IGY distribution (Install GraphViz by Yourself).',
-  'You have to install GraphViz and to setup the GRAPHVIZ_DOT environment variable',
-] as const;
-
-/** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:225-237 */
+/** Ruling 2026-11-12 item 7: upstream's credits in its order, minus
+ *  CafeUndZopfli and Brotli (java:233-234, not shipped), plus KaTeX, pako and
+ *  xmldom after Twemoji. The ruling's elk-engine line is omitted until
+ *  `@knowvah/elk-engine` replaces `elkjs` (the ruling's own condition; #282).
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:226-237 */
 const CREDITS = [
-  '(see https://plantuml.com/graphviz-dot )',
   BLANK,
   'Icons provided by OpenIconic :  https://useiconic.com/open',
   'Archimate sprites provided by Archi :  http://www.archimatetool.com',
@@ -124,35 +129,34 @@ const CREDITS = [
   'Stdlib Icons provided https://github.com/tupadr3/plantuml-icon-font-sprites',
   'ASCIIMathML (c) Peter Jipsen http://www.chapman.edu/~jipsen',
   'ASCIIMathML (c) David Lippman http://www.pierce.ctc.edu/dlippman',
-  'CafeUndZopfli ported by Eugene Klyuchnikov https://github.com/eustas/CafeUndZopfli',
-  'Brotli (c) by the Brotli Authors https://github.com/google/brotli',
   'Themes (c) by Brett Schwarz https://github.com/bschwarz/puml-themes',
   'Twemoji (c) by Twitter at https://twemoji.twitter.com/',
+  'KaTeX (c) by Khan Academy and other contributors https://katex.org/',
+  'pako (c) by Vitaly Puzrin and Andrei Tuputcyn https://github.com/nodeca/pako',
+  'xmldom (c) by Christopher J. Brody and other contributors https://github.com/xmldom/xmldom',
   BLANK,
 ] as const;
 
 /**
- * The two build/host switches `end3` reads (java:212, :218). Upstream reads
- * them from process state; the port injects them, defaulting to what the
- * oracle jar answers ({@link ORACLE_BUILD}).
+ * The build/host switch `end3` reads (java:212). Upstream reads it from
+ * process state; the port injects it, defaulting to what the oracle jar
+ * answers ({@link ORACLE_BUILD}). Upstream's second switch,
+ * `WindowsDotArchive.getInstance().isThereArchive()` (java:218), chose
+ * between two GraphViz notices the ruling replaces with fixed lines
+ * (ruling 2026-11-12 item 6), so nothing reads it.
  */
 export interface LicenseBuild {
   /** `GlobalConfig.getInstance().boolValue(GlobalConfigKey.ENABLE_STATS)`. */
   readonly enableStats: boolean;
-  /** `WindowsDotArchive.getInstance().isThereArchive()`. */
-  readonly isThereArchive: boolean;
 }
 
 /**
- * The oracle jar's answers. `ENABLE_STATS` is `defaultForStats()`, the
+ * The oracle jar's answer. `ENABLE_STATS` is `defaultForStats()`, the
  * `PLANTUML_STATS` system property / env var (GlobalConfigKey.java:68-70),
  * false when unset; `src/` reads no environment and this port records no
- * statistics (`UgDiagram.ts`). `isThereArchive` is whether the jar carries the
- * `graphviz.dat` resource (WindowsDotArchive.java:110-118); the oracle jar
- * does — every jar `license` probe prints the "bundles a minimal set of
- * GraphViz files" lines.
+ * statistics (`UgDiagram.ts`).
  */
-export const ORACLE_BUILD: LicenseBuild = { enableStats: false, isThereArchive: true };
+export const ORACLE_BUILD: LicenseBuild = { enableStats: false };
 
 /** CLDR `en_US` MEDIUM date (`MMM d, y`), in UTC. */
 const MEDIUM_DATE_EN_US = new Intl.DateTimeFormat('en-US', {
@@ -218,7 +222,7 @@ export class License {
   /** @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:112-129 */
   private header1(text: string[], licenseInfo: LicenseInfo): void {
     if (licenseInfo.isNone()) {
-      text.push(RULE, BAR, '|      PlantUML : a free UML diagram generator', BAR, RULE);
+      text.push(RULE, BAR, FREE_NAME, BAR, RULE);
     } else {
       text.push(RULE, BAR, '|      PlantUML Professional Edition', BAR, RULE);
       License.addLicenseInfo(text, licenseInfo);
@@ -226,39 +230,40 @@ export class License {
     }
   }
 
-  /** No support links nor QR codes for a Professional Edition, even an
-   *  expired one (java:138, upstream 3a4d1675141): the gate is `isNone`.
+  /** Upstream's signature is kept; its body no longer reads `licenseInfo`
+   *  or `withQrcode`, because the support links, the QR-code line and the
+   *  `""`/`" "` pair they gated (java:138-152) are dropped (ruling 2026-11-12
+   *  item 2: those links fund upstream, not this port).
    *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:131-153 */
-  private header2(text: string[], licenseInfo: LicenseInfo, withQrcode: boolean): void {
-    text.push(BLANK, COPYRIGHT, BLANK, 'Project Info:  https://plantuml.com', BLANK);
-    if (licenseInfo.isNone()) {
-      text.push(...SUPPORT_US);
-      if (withQrcode) text.push(QRCODES);
-      else text.push('', BLANK);
-    }
+  private header2(text: string[], _licenseInfo: LicenseInfo, _withQrcode: boolean): void {
+    text.push(...COPYRIGHT_AND_PROJECT);
   }
 
   /** `addMit(licenseInfo, text)` (java:171-173) in place of the GPL lines.
+   *  Ruling 2026-11-12: the advertising paragraph and its blank (java:191-197,
+   *  the `isValid() == false` arm) are dropped (item 4: we draw no sponsored
+   *  messages); the images paragraph names SVG and plantuml-engine (item 5,
+   *  replaces java:199, :205-206); the GraphViz and credit lines are
+   *  {@link GRAPHVIZ} and {@link CREDITS} (items 6 and 7).
    *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/version/License.java:155-238 */
   private end3(licenseInfo: LicenseInfo, text: string[]): void {
     this.addMit(licenseInfo, text);
     text.push(BLANK);
-    if (!licenseInfo.isValid()) text.push(...SPONSORED);
     text.push(
-      'Images (whatever their format : PNG, SVG, EPS...) generated by running PlantUML',
+      'Images (SVG) generated by running plantuml-engine',
       'are owned by the author of their corresponding sources code (that is, their',
       'textual description in PlantUML language). Those images are not covered by',
       `this ${this.toString()} license.`,
       BLANK,
       `The generated images can then be used without any reference to the ${this.toString()} license.`,
-      'It is not even necessary to stipulate that they have been generated with PlantUML,',
-      'although this will be appreciated by the PlantUML team.',
+      'It is not even necessary to stipulate that they have been generated with plantuml-engine,',
+      'although this will be appreciated.',
       BLANK,
       ...EXCEPTION,
     );
     if (this.build.enableStats) text.push(...STATS);
     text.push(BLANK);
-    text.push(...(this.build.isThereArchive ? ARCHIVE : IGY));
+    text.push(...GRAPHVIZ);
     text.push(...CREDITS);
   }
 

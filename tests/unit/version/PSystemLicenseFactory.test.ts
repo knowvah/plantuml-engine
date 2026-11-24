@@ -73,11 +73,11 @@ describe('licensePlugin', () => {
     expect(licensePlugin.type).toBe('sequence');
   });
 
-  it('renders the page as a complete document (581 x 881: the MIT edition, D13)', () => {
+  it('renders the page as a complete document (581 x 767: the ruling page, #179, PSystemLicense.test.ts)', () => {
     const svg = renderOf('@startuml\nlicense\n@enduml');
     expect(svg.startsWith('<svg')).toBe(true);
-    expect(svg).toContain('width="581px" height="881px"');
-    expect(svg).toContain('>(C) Copyright 2009-2027, Arnaud Roques</text>');
+    expect(svg).toContain('width="581px" height="767px"');
+    expect(svg).toContain('>(C) Copyright 2026, Scott Seely</text>');
   });
 
   it('renders the same document three times', () => {
