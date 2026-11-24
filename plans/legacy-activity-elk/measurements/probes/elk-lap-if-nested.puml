@@ -1,0 +1,15 @@
+@startuml
+!pragma layout elk
+(*) --> A
+if "x" then
+  --> B
+  if "y" then
+    --> C
+  else
+    --> D
+  endif
+else
+  --> E
+endif
+--> (*)
+@enduml

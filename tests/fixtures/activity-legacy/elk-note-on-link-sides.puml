@@ -1,0 +1,10 @@
+@startuml
+!pragma layout elk
+(*) --> [label] A
+note left on link: left
+A --> [label] B
+note right on link: right
+B --> [label] C
+note top on link: top
+C --> (*)
+@enduml

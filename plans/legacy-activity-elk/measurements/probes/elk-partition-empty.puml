@@ -1,0 +1,7 @@
+@startuml
+!pragma layout elk
+partition P {
+}
+(*) --> A
+A --> (*)
+@enduml

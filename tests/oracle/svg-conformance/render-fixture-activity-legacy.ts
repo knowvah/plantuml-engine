@@ -25,7 +25,7 @@ import type { AssetStore } from '../../../src/core/asset-store.js';
 import { withJarCompatibleStyleInput } from '../../../src/core/internal-render-options.js';
 import { DeterministicMeasurer } from '../../../src/core/measurer-deterministic.js';
 import type { IncludeStore } from '../../../src/core/tim/IncludeStore.js';
-import { combineAssetStores, renderSync } from '../../../src/index.js';
+import { combineAssetStores, loadElk, renderSync, type ElkBackend } from '../../../src/index.js';
 import { buildEmojiAssetsStore } from '../../helpers/emoji-assets-store.js';
 import { fixtureIncludeStore } from '../../helpers/fixture-include-store.js';
 import { buildSpriteAssetsStore } from '../../helpers/sprite-assets-store.js';
@@ -55,8 +55,25 @@ export function renderFixtureActivityLegacy(markup: string, includeStore?: Inclu
       assetStore: ACTIVITY_LEGACY_ASSET_STORE,
       includeStore: includeStore ?? fixtureIncludeStore(),
       filename: SURVEY_FILENAME,
+      ...(preparedElk === undefined ? {} : { elk: preparedElk }),
     }),
   );
+}
+
+let elkLoad: Promise<ElkBackend> | undefined;
+let preparedElk: ElkBackend | undefined;
+
+/**
+ * lae T1 (#158): loads elkjs ONCE per module instance and remembers the
+ * backend, so {@link renderFixtureActivityLegacy} passes `{ elk }` as the
+ * survey does (`scripts/svg-parity-survey.ts`); `renderSync` refuses
+ * `!pragma layout elk` without it. The `render-fixture-cheneer.ts:60-72`
+ * precedent: callers `await prepareElkOnce()` (a ratchet in `beforeAll`)
+ * before rendering.
+ */
+export function prepareElkOnce(): Promise<ElkBackend> {
+  elkLoad ??= loadElk().then((backend) => (preparedElk = backend));
+  return elkLoad;
 }
 
 /** The committed, flat authored-fixture root (`<slug>.puml` + `<slug>.svg`). */

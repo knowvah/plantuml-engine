@@ -1,0 +1,8 @@
+@startuml
+!pragma layout elk
+(*) --> A
+note on link #LightGreen: colored
+A --> B
+note on link: nl
+B --> (*)
+@enduml

@@ -1,0 +1,4 @@
+@startuml
+!pragma layout elk
+(*) --> A
+@enduml

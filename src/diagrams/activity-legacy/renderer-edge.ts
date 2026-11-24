@@ -87,7 +87,7 @@ function paintOf(color: object): HColorOrPaint {
 }
 
 /** `SvekEdgeInput#backgroundColor` is a `Paint`: the light colour only (no legacy decor reads it under a mapper). */
-function lightPaintOf(color: object): Paint {
+export function lightPaintOf(color: object): Paint {
   const painted = paintOf(color);
   if (painted instanceof HColorSimple || painted instanceof HColorGradient) return painted.asPaint();
   return painted;

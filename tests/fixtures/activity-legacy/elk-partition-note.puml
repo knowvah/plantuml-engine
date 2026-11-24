@@ -1,0 +1,9 @@
+@startuml
+!pragma layout elk
+partition P {
+(*) --> A
+note right: on a partitioned activity
+A --> B
+}
+B --> (*)
+@enduml

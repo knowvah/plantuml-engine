@@ -1,0 +1,12 @@
+@startuml
+!pragma layout elk
+<style>
+activityDiagram {
+  arrow { LineColor #AA0000
+    LineThickness 3
+    FontColor #00AA00 }
+}
+</style>
+(*) --> [lbl] A
+A --> (*)
+@enduml

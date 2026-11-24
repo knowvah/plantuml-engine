@@ -1,0 +1,6 @@
+@startuml
+!pragma layout elk
+(*) --> [start here] First
+First -->[go on] Second
+Second --> (*)
+@enduml

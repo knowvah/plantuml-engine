@@ -1,0 +1,8 @@
+@startuml
+!pragma layout elk
+(*) --> "A" <<foo>>
+"A" --> (*)
+skinparam activity {
+  BackgroundColor<<foo>> Yellow
+}
+@enduml

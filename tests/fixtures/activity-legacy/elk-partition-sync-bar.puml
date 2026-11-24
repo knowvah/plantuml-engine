@@ -1,0 +1,11 @@
+@startuml
+!pragma layout elk
+partition Work {
+(*) --> ===B1===
+--> A
+--> ===B2===
+===B1=== --> B
+--> ===B2===
+}
+===B2=== --> (*)
+@enduml

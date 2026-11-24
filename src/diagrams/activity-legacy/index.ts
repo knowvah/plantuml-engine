@@ -1,7 +1,8 @@
 /**
  * Legacy activity diagram plugin (`(*) --> "act"`): `ActivityDiagramFactory` (parse) and the svek DOT and layout
- * (`layout.ts`, T2b); and the render (`renderer.ts`, T2c). Not registered (`registered-plugins.ts`): that is T3a. The AST is the
- * populated {@link ActivityDiagram}, which carries everything the DOT build and the renderer read.
+ * (`layout.ts`; `layout-elk.ts` under `!pragma layout elk`); and the render (`renderer.ts`), registered in
+ * `registered-plugins.ts`. The AST is the populated {@link ActivityDiagram}, which carries everything the DOT build and
+ * the renderer read.
  *
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/activitydiagram/ActivityDiagramFactory.java
  */
@@ -32,8 +33,14 @@ export const activityLegacyPlugin: SyncPlugin<ActivityDiagram, ActivityLegacyLay
     return parseActivityLegacy(source, preprocessingArtifactOf(source), emoji);
   },
 
-  layoutSync(ast, _theme, measurer) {
-    return { geometry: layoutActivityLegacy(ast, measurer), diagram: ast, measurer };
+  // `!pragma layout elk` (`CommandPragma.java:128-129`, `CucaDiagram.java:478-479`, `:950-952`): the ELK maker lays the
+  // diagram out through `services.elk`, and a diagram that requires it must not fall back to dot-engine.
+  requiresElk(ast) {
+    return ast.isUseElk();
+  },
+
+  layoutSync(ast, _theme, measurer, services) {
+    return { geometry: layoutActivityLegacy(ast, measurer, services?.elk), diagram: ast, measurer };
   },
 
   render(layout) {
