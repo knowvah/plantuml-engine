@@ -39,7 +39,7 @@ import type { AtomImageResolver, SpriteDimsLookup } from '../../creole-atoms.js'
 import type { ResolvedColor } from '../../klimt/color/HColorSet.js';
 import { SvgParserSelector, createSvgSpriteParser } from '../../klimt/sprite/sax/svg-sprite-parser-factory.js';
 import type { USymbol } from '../../decoration/symbol/USymbol.js';
-import { buildTextBlock, measureLine } from './EntityImageDescriptionSupport.js';
+import { buildTextBlock, displayEqualsLikeCode, measureLine } from './EntityImageDescriptionSupport.js';
 import { drawWithAtomUrl } from './EntityImageDescriptionTextBlock.js';
 import { measuringFont } from './EntityImageDescriptionTextMeasure.js';
 import { asAtomOpenIconic, type AtomOpenIconic } from '../../klimt/creole/atom/AtomOpenIconic.js';
@@ -349,7 +349,7 @@ export function buildDesc(
   emojiArtwork?: EmojiArtworkResolver,
 ): TextBlock {
   const isPackageLeaf = symbol.getSNames()[0] === 'package_';
-  const displayEqualsCode = labels.displayText === labels.codeName;
+  const displayEqualsCode = displayEqualsLikeCode(labels.displayText, labels.codeName);
   const isWhite = labels.displayText.trim().length === 0;
   if ((displayEqualsCode && isPackageLeaf) || isWhite) {
     return TextBlockUtils.empty(paint.minimumWidth ?? 0, 0);

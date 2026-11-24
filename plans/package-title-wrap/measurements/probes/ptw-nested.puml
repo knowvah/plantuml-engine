@@ -1,0 +1,12 @@
+@startuml
+<style>
+package {
+  MaximumWidth 100
+}
+</style>
+package "Outer package with a long title" {
+  package "Inner empty package with a long title" {
+  }
+  node n
+}
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+skinparam packageStyle node
+package "Empty P" {
+}
+node n
+@enduml

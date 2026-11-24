@@ -153,6 +153,19 @@ function titleAtomOps(resolveAtomImage: AtomImageResolver | undefined): AtomOps 
 }
 
 /**
+ * What {@link measureShownFolderTitle} reads: `skinparam guillemet`, and the
+ * TITLE style's wrap width (`styleTitle.wrapWidth()`, `MethodsOrFieldsArea
+ * .java:255`, `:264`) and minimum width, which the caller resolves (`EntitySizing.wrapWidthTitle`,
+ * else `skinparam wrapWidth`) -- not the body style's `BoxSizingOpts.wrapWidth`.
+ */
+export interface ShownFolderTitleOpts {
+  readonly guillemet?: BoxSizingOpts['guillemet'];
+  readonly wrapWidth?: number | undefined;
+  /** `styleTitle.value(PName.MinimumWidth)`, the block's floor (`BodyEnhanced1.java:182-184`). */
+  readonly minimumWidth?: number | undefined;
+}
+
+/**
  * Measures the shown folder-family title (`package`'s `dimName`) through
  * the faithful `BodyFactory.create2` → `BodyEnhanced1` route — upstream
  * `EntityImageDescription.java:198-199`'s exact construction, dimensioned
@@ -163,7 +176,7 @@ export function measureShownFolderTitle(
   code: string,
   fontSpec: FontSpec,
   measurer: StringMeasurer,
-  opts: BoxSizingOpts | undefined,
+  opts: ShownFolderTitleOpts | undefined,
   sprites: SpriteDimsLookup | undefined,
 ): readonly [number, number] {
   const font: FontConfiguration = {
@@ -175,7 +188,10 @@ export function measureShownFolderTitle(
   const atomOps = titleAtomOps(sizingAtomImageResolverFor(sprites)(font));
   // cdd3-T28: the create2 construction moved to `EntityImageDescriptionName
   // .ts#buildCreate2Name`, shared with the drawing path.
-  const block = buildCreate2Name(code, font, atomOps, opts?.guillemet);
+  const block = buildCreate2Name(code, font, atomOps, opts?.guillemet, {
+    minimumWidth: opts?.minimumWidth,
+    wrapWidth: opts?.wrapWidth,
+  });
   const dim = block.calculateDimension(new MeasurerStringBounder(measurer));
   return [dim.getWidth(), dim.getHeight()];
 }

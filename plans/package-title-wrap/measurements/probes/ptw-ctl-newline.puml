@@ -1,0 +1,5 @@
+@startuml
+package "First line\nSecond line" {
+}
+node n
+@enduml

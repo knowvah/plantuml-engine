@@ -188,3 +188,28 @@ describe('descAtomOps — tab-indented text draws at tab stops (cdd5-T4d)', () =
     ]);
   });
 });
+
+// ptw T2c (#219, M3): upstream empties a package's `desc` when `entity.getDisplay().equalsLike(Display
+// .getWithNewlines(pragma, entity.getName()))` (`EntityImageDescription.java:180-183`; `Display.java:118-122`, list
+// equality). The display is split on real newlines; the code keeps the two-character `\n` escape.
+describe('buildDesc (ptw T2c) — equalsLike over getWithNewlines(code)', () => {
+  const packageSymbol = { getSNames: () => ['package_'] } as unknown as USymbol;
+  const bounder = new MeasurerStringBounder(measurer);
+  const newlineLabels: EntityImageDescriptionLabels = {
+    codeName: 'First line\\nSecond line',
+    displayText: 'First line\nSecond line',
+    stereotypeLabels: [],
+  };
+
+  test('a package whose display is its code split at `\\n` has an empty desc of width minimumWidth', () => {
+    const dim = buildDesc(packageSymbol, newlineLabels, paint({ minimumWidth: 7 })).calculateDimension(bounder);
+    expect([dim.getWidth(), dim.getHeight()]).toEqual([7, 0]);
+  });
+
+  test('a package whose display differs from its code (`as P`) keeps its desc', () => {
+    const asLabels: EntityImageDescriptionLabels = { codeName: 'P', displayText: 'Short', stereotypeLabels: [] };
+    const dim = buildDesc(packageSymbol, asLabels, paint()).calculateDimension(bounder);
+    expect(dim.getHeight()).toBe(14);
+    expect(dim.getWidth()).toBeCloseTo(measurer.measure('Short', FONT).width, 6);
+  });
+});

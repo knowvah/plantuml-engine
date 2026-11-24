@@ -81,9 +81,10 @@
  * documents for `getStyle`); `useRankSame` field (grep-verified: assigned
  * once, never read again anywhere in `EntityImageDescription.java` —
  * dead upstream, not a divergence); `stereotype.getSprite(...)` (no
- * sprite registry exists, catalog: "Planned"); `Display#equalsLike` is
- * approximated as plain string equality (both plain strings here, not
- * creole-aware `Display` objects) — documented, not guessed.
+ * sprite registry exists, catalog: "Planned"). `Display#equalsLike`
+ * (java:180-181) is the real one, over the already-split display and
+ * `Display.getWithNewlines(code)` (`EntityImageDescriptionSupport.ts
+ * #displayEqualsLikeCode`, ptw T2c).
  */
 import type { UGraphic } from '../../klimt/UGraphic.js';
 import type { StringBounder } from '../../klimt/font/StringBounder.js';
@@ -240,6 +241,9 @@ export interface EntityImageDescriptionPaint {
   readonly minimumWidth?: number;
   /** See `EntityNamePaint.minimumWidthTitle`. */
   readonly minimumWidthTitle?: number;
+  /** `styleTitle.wrapWidth()`, applied ONLY to `name` (`BodyFactory.create2`, java:201-202, whose
+   *  `MethodsOrFieldsArea` lines wrap at it, `MethodsOrFieldsArea.java:255`). See `EntityNamePaint.wrapWidthTitle`. */
+  readonly wrapWidthTitle?: number;
   /** T4: `style.value(PName.LineThickness).asDouble()`, forwarded to
    *  `BodyFactory.create3`'s `BodyEnhanced2StyleValues.defaultThickness`
    *  (`BodyEnhancedAbstract#getDefaultThickness`, java, via `super()`) --
