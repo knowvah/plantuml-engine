@@ -1,0 +1,14 @@
+@startuml
+allowmixing
+class K
+usecase U
+actor A
+K --> U
+A --> U
+<style>
+title {
+  LineColor blue
+  LineThickness 3
+}
+</style>
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+allowmixing
+skinparam titleBackgroundColor yellow
+skinparam titleBorderColor red
+class K
+usecase U #pink
+actor A #pink
+K --> U
+A --> U
+@enduml

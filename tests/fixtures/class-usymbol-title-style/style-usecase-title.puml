@@ -1,0 +1,16 @@
+@startuml
+allowmixing
+<style>
+usecase {
+  title {
+    LineColor green
+    LineThickness 1.5
+  }
+}
+</style>
+class K
+usecase U
+actor A
+K --> U
+A --> U
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+allowmixing
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+class K
+hexagon H
+queue Q
+stack S
+K --> H
+K --> Q
+K --> S
+@enduml

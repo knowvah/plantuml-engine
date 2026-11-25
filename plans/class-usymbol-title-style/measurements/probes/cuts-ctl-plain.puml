@@ -1,0 +1,10 @@
+@startuml
+allowmixing
+class K
+usecase U
+actor A
+component C
+K --> U
+A --> U
+K --> C
+@enduml

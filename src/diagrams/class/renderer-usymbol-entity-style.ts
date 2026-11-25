@@ -22,6 +22,7 @@ import { resolveColorToSvgHex } from '../../core/klimt/color/HColorSet.js';
 import { FontStyle, type FontConfiguration } from '../../core/klimt/shape/UText.js';
 import { parseDeclarationColors } from './class-declaration-extractors.js';
 import { strokeForStyle } from '../../core/svek/svek-edge-stroke.js';
+import { stylePaint } from '../../core/style/style-reads.js';
 import { byStereo, elementLineStyle, elementStereoFontColor, elementTitleFontColor } from './class-package-style.js';
 
 /** Jar default line thickness for an `EntityImageDescription`-family shape
@@ -138,8 +139,13 @@ export function resolveBackcolor(classifier: ClassifierGeo, theme: ScaledTheme, 
   // plain tier -- jar probe `rectangle<<person>> { BackgroundColor #08427B }`.
   const own = theme.colors.elements?.[symbolKeyword];
   const byLabel = byStereo(own?.backgroundColorByStereo, leafTags(classifier));
-  const override = resolveBareOrBackColor(classifier.color) ?? byLabel;
-  if (override !== undefined) return resolvedPaint(override);
+  const inline = resolveBareOrBackColor(classifier.color);
+  if (inline !== undefined) return resolvedPaint(inline);
+  // cuts T2: `styleTitle.value(PName.BackGroundColor)` (`EntityImageDescription.java:161-163`), merged on the
+  // entity's builder; the flat tiers below answer only a leaf with no stamped style (no builder).
+  const styled = stylePaint(classifier.usymbolTitleStyle, 'BackGroundColor');
+  if (styled !== undefined) return styled;
+  if (byLabel !== undefined) return resolvedPaint(byLabel);
   if (own?.background !== undefined || symbolKeyword !== 'package') {
     return resolveElementPaint(theme, symbolKeyword, 'background');
   }
@@ -172,6 +178,9 @@ export function resolveForecolor(classifier: ClassifierGeo, theme: ScaledTheme, 
   // (`EntityImageDescription.java:151-153,162`, `Style.java:202-204`).
   const inlineLine = parseDeclarationColors(classifier.color).line;
   if (inlineLine !== undefined) return resolvedPaint(inlineLine);
+  // cuts T2: `styleTitle.value(PName.LineColor)` (`EntityImageDescription.java:159`), merged on the entity's builder.
+  const styled = stylePaint(classifier.usymbolTitleStyle, 'LineColor');
+  if (styled !== undefined) return styled;
   const own = theme.colors.elements?.[symbolKeyword];
   const byLabel = byStereo(own?.borderByStereo, leafTags(classifier));
   if (byLabel !== undefined) return byLabel;
@@ -194,6 +203,10 @@ export function resolveStroke(classifier: ClassifierGeo, theme: ScaledTheme, sym
   // cogr T2c: `Style#getStroke(colors)` returns `colors.getSpecificLineStroke()` outright (`Style.java:322-328`).
   const inlineStyle = parseDeclarationColors(classifier.color).lineStyle;
   if (inlineStyle !== undefined) return scaledStroke(strokeForStyle(inlineStyle), theme.scaleK);
+  // cuts T2: `styleTitle.getStroke()` (`EntityImageDescription.java:168`, `Style.java:316-337`), merged on the
+  // entity's builder; the flat tiers below answer only a leaf with no stamped style (no builder).
+  const styled = classifier.usymbolTitleStyle?.getStroke();
+  if (styled !== undefined) return scaledStroke(styled, theme.scaleK);
   const tags = leafTags(classifier);
   const byLabel = byStereo(theme.colors.elements?.[symbolKeyword]?.lineThicknessByStereo, tags);
   const thickness =

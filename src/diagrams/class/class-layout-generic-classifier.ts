@@ -21,7 +21,7 @@ import type { StringMeasurer } from '../../core/measurer.js';
 import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-commands.js';
 import type { ClassifierGeo } from './layout.js';
 import type { MeasuredClassifier, MemberSuppression } from './class-layout-helpers.js';
-import { resolveVisibleStereotypeLabels } from './class-stereotype.js';
+import { leafStereotypeSizing } from './class-stereotype.js';
 import { measureLeafNode } from '../../core/svek/image/leaf-sizing.js';
 import { leafRoundCorner } from './class-leaf-round-corner.js';
 import { descriptionLeafSymbolInk } from './class-layout-description-leaf-ink.js';
@@ -43,6 +43,7 @@ import type { ClassFontSpecs } from './class-layout-generic-classifier-types.js'
 // change (see that file's own doc comment).
 import { computeMemberSectionsGeo, computeEnhancedBodyGeo } from './class-layout-generic-classifier-sections.js';
 import { genericClassifierInkFields } from './class-classifier-ink-reservation.js';
+import { titleStrokeSizing } from './class-usymbol-title-style.js';
 // cdd2-T17: the ink-reservation model is split out of this file (500-line
 // cap) and re-exported from it.
 export { genericClassifierInkFields };
@@ -89,7 +90,8 @@ export function tryMeasureDescriptionLeaf(
   if (classifier.members.some((m) => m.hidden !== true)) return undefined;
   const node = {
     ...leafSizingSubjectOf(classifier, symbol),
-    entitySizing: { roundCorner: leafRoundCorner(classifier, theme, symbol) },
+    // cuts T3: the box is sized for `styleTitle`'s stroke (`EntityImageDescription.java:168,177`).
+    entitySizing: { roundCorner: leafRoundCorner(classifier, theme, symbol), ...titleStrokeSizing(classifier) },
   };
   const baseFont = { family: theme.fontFamily, size: theme.fontSize };
   const opts = buildDescriptionLeafOpts(theme, symbol);
@@ -113,15 +115,7 @@ export function tryMeasureDescriptionLeaf(
  *  the labels -- without it the box was one sprite height short (jar 96 vs
  *  76). Same fields `description/layout-dot-tree.ts` hands `measureLeafNode`. */
 function leafSizingSubjectOf(classifier: Classifier, symbol: LeafSizingSubject['symbol']): LeafSizingSubject {
-  const stereotype = resolveVisibleStereotypeLabels(classifier);
-  const sprite = classifier.stereotypeSprite;
-  return {
-    id: classifier.id,
-    display: classifier.display,
-    symbol,
-    ...(stereotype.length > 0 ? { stereotype } : {}),
-    ...(sprite === undefined ? {} : { stereotypeSprite: sprite }),
-  };
+  return { id: classifier.id, display: classifier.display, symbol, ...leafStereotypeSizing(classifier) };
 }
 
 /** The SAME per-element `BoxSizingOpts` resolution the description engine's

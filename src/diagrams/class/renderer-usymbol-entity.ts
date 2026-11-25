@@ -18,9 +18,8 @@
  *
  * Deliberately NOT threaded (same scope as the pre-T4 icon renderers,
  * zero behavior change): stereotype labels (class-diagram usecase/actor
- * carries none) and `deltaShadow` (class-geo-types.ts's own `ClassifierGeo
- * .shadowing` doc comment: jar draws no shadow for an
- * `EntityImageDescription`-family shape here). Entity hyperlinks ARE
+ * carries none). `deltaShadow` IS threaded (cuts T2): `styleTitle
+ * .getShadowing()`, 0 under the default skin. Entity hyperlinks ARE
  * threaded (cdd3-T10, S-11: `classifier.url`); `classifier.color` IS
  * threaded (cdd5-T3b, see {@link resolveBackcolor}); `hexagonPolygon` is
  * the geo's stored node polygon (cdd8 T1e, see {@link buildUSymbolEntityParams}).
@@ -47,7 +46,8 @@ import { resolveStereotypeSprite } from '../../core/svek/image/EntityImageDescri
 import { upstreamKeyword, mapComponentStyle, resolveActorStyle } from '../../core/decoration/symbol/usymbol-resolve.js';
 import { makeAtomImageResolverFor } from '../../core/creole-atoms-image-resolver.js';
 import { entityCommentName } from './renderer-group.js';
-import { KEYWORD_TO_SYMBOL, type USymbol } from '../../core/descriptive-keywords.js';
+import type { USymbol } from '../../core/descriptive-keywords.js';
+import { classUSymbolKeyword, isClassUSymbolEntity } from './class-usymbol-title-style.js';
 // cdd7 T2b: the style-resolution helpers moved to a sibling (500-line cap).
 import {
   resolveCorners,
@@ -83,13 +83,10 @@ import {
  */
 function resolveSymbolKeyword(classifier: ClassifierGeo): USymbol {
   // cdd5-T4b: a `usecase/` leaf carries its raw keyword and falls through to
-  // the `KEYWORD_TO_SYMBOL` normalizer below (`usecase/` -> `usecase-business`,
-  // `abel/Entity.java:412-413`).
-  if (classifier.kind === 'usecase' && classifier.usymbol === undefined) return 'usecase';
-  if (classifier.kind === 'circle') return 'circle';
-  const raw = classifier.usymbol;
-  if (raw === undefined) return 'actor';
-  return KEYWORD_TO_SYMBOL.get(raw) ?? (raw as USymbol);
+  // the `KEYWORD_TO_SYMBOL` normalizer (`usecase/` -> `usecase-business`,
+  // `abel/Entity.java:412-413`). cuts T2: one copy, shared with the
+  // `styleTitle` annotator (`class-usymbol-title-style.ts`).
+  return classUSymbolKeyword(classifier);
 }
 
 /**
@@ -173,7 +170,8 @@ export function buildUSymbolEntityParams(
       backcolor: resolveBackcolor(classifier, theme, symbolKeyword),
       roundCorner,
       diagonalCorner,
-      deltaShadow: 0,
+      // cuts T2: `styleTitle.getShadowing()` (`EntityImageDescription.java:167`); 0 on a leaf with no stamped style.
+      deltaShadow: (classifier.usymbolTitleStyle?.getShadowing() ?? 0) * theme.scaleK,
       stroke,
       // cdd6 b2 (journal row 46): `BodyEnhancedAbstract.java:121-123`
       // `getDefaultThickness()` = the entity's own `LineThickness` -- the
@@ -295,9 +293,8 @@ export function buildUSymbolEntityParams(
  *  is threaded by cdd8 T1e (see {@link buildUSymbolEntityParams}).
  */
 export function usesClassUSymbolEntity(classifier: ClassifierGeo): boolean {
-  if (classifier.kind === 'usecase' || classifier.kind === 'circle') return true;
-  if (classifier.kind !== 'descriptive' || classifier.usymbol === undefined) return false;
-  return KEYWORD_TO_SYMBOL.get(classifier.usymbol) !== 'port';
+  // cuts T2: one copy, shared with the `styleTitle` annotator, which stamps exactly these leaves.
+  return isClassUSymbolEntity(classifier);
 }
 
 /**

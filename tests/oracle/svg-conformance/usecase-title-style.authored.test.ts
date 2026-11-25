@@ -40,14 +40,13 @@ const ZERO: readonly string[] = [
   'skin-title-round',
   'skin-title-in-rectangle',
   'style-before-and-after',
+  // 2026-11-25 cuts T2/T3 (#195): the class engine strokes and sizes a mixed-in usecase and actor from `styleTitle`
+  // on the entity's builder (`class-usymbol-title-style.ts`; `EntityImageDescription.java:148-177`).
+  'skin-title-allowmixing',
 ];
 
 /** Row -> the diff count it may not exceed, and the issue that holds its residual. */
-const OPEN: Readonly<Record<string, { readonly maxDiffs: number; readonly reason: string }>> = {
-  // 2026-11-16 uts T1b: 61 before and after T1b. The class engine strokes a mixed-in usecase and actor from flat theme
-  // tiers (`renderer-usymbol-entity-style.ts#resolveForecolor`/`#resolveStroke`), never the merged `styleTitle`.
-  'skin-title-allowmixing': { maxDiffs: 61, reason: '#195: class allowmixing reads no `title` style' },
-};
+const OPEN: Readonly<Record<string, { readonly maxDiffs: number; readonly reason: string }>> = {};
 
 function rowsOnDisk(): string[] {
   return readdirSync(FIXTURES)

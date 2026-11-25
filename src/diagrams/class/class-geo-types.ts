@@ -9,6 +9,7 @@ import type { ClassifierKind, UrlInfo } from './ast.js';
 import type { GenericTagGeo } from './class-stereotype.js';
 import type { ObjectStyleScope } from './class-object-style.js';
 import type { StereotypeFontValues } from './class-stereotype-style.js';
+import type { Style } from '../../core/style/Style.js';
 import type { StateGeoTextFields } from '../state/state-sizing.js';
 import type { EmptyPackageLeafDim } from './class-namespace-shape.js';
 import type { EnhancedBodyGeo } from './class-body-enhanced-layout.js';
@@ -174,6 +175,8 @@ export interface ClassifierGeo {
   objectStyle?: ObjectStyleScope;
   /** Copied from `Classifier.stereotypeFont`: the stereotype label's `stereotype` style. */
   stereotypeFont?: StereotypeFontValues;
+  /** cuts T2 (#195): copied from `Classifier.usymbolTitleStyle`; the description leaf's `styleTitle`. */
+  usymbolTitleStyle?: Style;
   /** G2 N37: EVERY stereotype label (2-or-3-bracket, `class-stereotype.ts
    *  #resolveStyleStereotypeTags`) this classifier carries -- feeds
    *  `renderer-classifier-box.ts`'s `.tagname` `<style>` cascade lookup

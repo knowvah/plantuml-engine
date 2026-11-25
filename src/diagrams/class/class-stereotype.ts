@@ -35,6 +35,7 @@
  *     within their shared `widthStereoAndName` column — exactly
  *     `HeaderLayout#drawU`'s nested-centering read.
  */
+import type { LeafSizingSubject } from '../../core/svek/image/LeafSizingSubject.js';
 import type { Classifier, ClassDiagramAST, HideStereotypeDirective } from './ast.js';
 import { Stereotype } from '../../core/stereo/Stereotype.js';
 import { GUILLEMET_DOUBLE_COMPARATOR } from '../../core/stereo/StereotypeDecoration.js';
@@ -321,6 +322,21 @@ export function resolveVisibleStereotypeLabels(classifier: Classifier): string[]
     classifier.visibleStereotypeLabels ??
     (classifier.stereotype !== undefined ? splitStereotypeLabels(classifier.stereotype) : [])
   );
+}
+
+/**
+ * The stereotype half of a description leaf's `LeafSizingSubject`: the visible labels and the `<<$name>>` sprite ref
+ * `EntityImageDescription.java:192-202` draws as its `stereo` block, which `calculateDimension` measures with the rest.
+ */
+export function leafStereotypeSizing(
+  classifier: Classifier,
+): Pick<LeafSizingSubject, 'stereotype' | 'stereotypeSprite'> {
+  const stereotype = resolveVisibleStereotypeLabels(classifier);
+  const sprite = classifier.stereotypeSprite;
+  return {
+    ...(stereotype.length > 0 ? { stereotype } : {}),
+    ...(sprite === undefined ? {} : { stereotypeSprite: sprite }),
+  };
 }
 
 /**

@@ -11,19 +11,21 @@
 
 import type { Classifier } from './ast.js';
 import type { StringMeasurer } from '../../core/measurer.js';
-import {
-  measureUsecaseOrActorLeaf,
-  measureUsecaseOrActorLeafInk,
-  measureLeafNode,
-  type LeafSymbolInk,
-} from '../../core/svek/image/leaf-sizing.js';
+import { measureLeafNode, type LeafSymbolInk } from '../../core/svek/image/leaf-sizing.js';
 import type { MeasuredClassifier } from './class-layout-helpers.js';
 import { LOLLIPOP_SIZE } from './class-lollipop.js';
 import { spriteDimsLookupFor, type SpriteRegistry } from '../../core/sprite-commands.js';
 import type { Theme } from '../../core/theme.js';
 import { resolveElementFontSize } from '../../core/theme-element-resolve.js';
 import { resolveActorStyle, mapComponentStyle } from '../../core/decoration/symbol/usymbol-resolve.js';
-import { sizingAtomImageResolverFor, measureEntityLeaf } from '../../core/svek/image/leaf-sizing-entity.js';
+import {
+  sizingAtomImageResolverFor,
+  measureEntityLeaf,
+  measureEntityLeafInk,
+} from '../../core/svek/image/leaf-sizing-entity.js';
+import type { LeafSizingSubject } from '../../core/svek/image/LeafSizingSubject.js';
+import { titleStrokeSizing } from './class-usymbol-title-style.js';
+import { leafStereotypeSizing } from './class-stereotype.js';
 import { KEYWORD_TO_SYMBOL } from '../../core/descriptive-keywords.js';
 import { DEFAULT_SIZING_STROKE_THICKNESS } from '../../core/svek/image/leaf-sizing-consts.js';
 import {
@@ -44,34 +46,27 @@ import type { SpriteDimsLookup } from '../../core/creole-atoms.js';
  * is `USECASE_BUSINESS` (`abel/Entity.java:412-413`: "if (getLeafType() ==
  * LeafType.USECASE_BUSINESS) return USymbols.USECASE_BUSINESS;"), sized by
  * the same `EntityImageDescription` as a plain usecase
- * (`svek/GeneralImageBuilder.java:173-174`). `measureUsecaseOrActorLeaf`
- * only takes the two plain symbols, so this calls the shared
- * `measureEntityLeaf` it wraps, with the same `opts: undefined` / no
- * min-width floor. Every other usecase/actor keeps the plain entry point.
+ * (`svek/GeneralImageBuilder.java:173-174`). cuts T3: every usecase/actor
+ * is now the one `LeafSizingSubject` both `measureEntityLeaf` (the box, no
+ * min-width floor) and `measureEntityLeafInk` (an actor's ink) read, with
+ * `opts: undefined` as `measureUsecaseOrActorLeaf` passes.
  */
-function measureUsecaseOrActorDim(
+function usecaseOrActorSubject(
   classifier: Classifier,
   symbol: 'usecase' | 'actor',
-  fontSpec: { family: string; size: number },
-  ctx: {
-    measurer: StringMeasurer;
-    sprites: SpriteDimsLookup | undefined;
-    titleAlignment: HorizontalAlignment | undefined;
-  },
-): { width: number; height: number } {
-  const { measurer, sprites, titleAlignment } = ctx;
+  titleAlignment: HorizontalAlignment | undefined,
+): LeafSizingSubject {
   // cogr-T4a: `defaultAlign = styleTitle.getHorizontalAlignment()` (`EntityImageDescription.java:175`) feeds `desc`
-  // (`:188-191`), so the ellipse fit measures the aligned block, not the default one.
-  const entitySizing = titleAlignment === undefined ? {} : { entitySizing: { titleAlignment } };
-  if (classifier.kind !== 'usecase' || classifier.usymbol === undefined) {
-    if (titleAlignment === undefined)
-      return measureUsecaseOrActorLeaf(classifier.display, symbol, fontSpec, measurer, sprites);
-    const plain = { id: '', display: classifier.display, symbol, ...entitySizing };
-    return measureEntityLeaf(plain, fontSpec, { opts: undefined, sprites, measurer }, false);
-  }
-  const business = KEYWORD_TO_SYMBOL.get(classifier.usymbol) ?? 'usecase-business';
-  const subject = { id: '', display: classifier.display, symbol: business, ...entitySizing };
-  return measureEntityLeaf(subject, fontSpec, { opts: undefined, sprites, measurer }, false);
+  // (`:188-191`), so the ellipse fit measures the aligned block, not the default one. cuts T3: and the `Fashion`'s
+  // stroke is `styleTitle.getStroke(colors)` (`:168,177`), which sizes the leaf.
+  const sizing = { ...(titleAlignment === undefined ? {} : { titleAlignment }), ...titleStrokeSizing(classifier) };
+  const entitySizing = Object.keys(sizing).length === 0 ? {} : { entitySizing: sizing };
+  const sized =
+    classifier.kind !== 'usecase' || classifier.usymbol === undefined
+      ? symbol
+      : (KEYWORD_TO_SYMBOL.get(classifier.usymbol) ?? 'usecase-business');
+  // cuts T4 push-forward: plus the `stereo` block the draw adds (`EntityImageDescription.java:192-202`).
+  return { id: '', display: classifier.display, symbol: sized, ...leafStereotypeSizing(classifier), ...entitySizing };
 }
 
 /**
@@ -101,7 +96,9 @@ export function measureUsecaseOrActor(
 ): MeasuredClassifier {
   const symbol = classifier.kind === 'usecase' ? 'usecase' : 'actor';
   const spriteDims = sprites !== undefined ? spriteDimsLookupFor(sprites) : undefined;
-  const dim = measureUsecaseOrActorDim(classifier, symbol, fontSpec, { measurer, sprites: spriteDims, titleAlignment });
+  const subject = usecaseOrActorSubject(classifier, symbol, titleAlignment);
+  const leafCtx = { opts: undefined, sprites: spriteDims, measurer };
+  const dim = measureEntityLeaf(subject, fontSpec, leafCtx, false);
   // The DRAWN ink extent, carried through to `class-ink-box.ts
   // #addClassifierInk` so an actor's ink is its own head/body/label union
   // rather than `addRectInk`'s `(x - 1, y - 1)` box corner — which sits 1.5
@@ -114,10 +111,8 @@ export function measureUsecaseOrActor(
   // byte-identical (decision D2), so measuring ink no consumer reads would
   // be dead work. Routing usecase through the same walk is a separate,
   // measurable question — see this mission's journal.
-  const symbolInk =
-    symbol === 'actor'
-      ? measureUsecaseOrActorLeafInk(classifier.display, symbol, fontSpec, measurer, spriteDims)
-      : undefined;
+  // cuts T3: the walk draws the SAME subject the box is sized from, so a wider `styleTitle` stroke reaches the ink.
+  const symbolInk = symbol === 'actor' ? measureEntityLeafInk(subject, fontSpec, leafCtx) : undefined;
 
   // SI14 T5: no longer pre-resolves the label's creole atoms here. That
   // existed only because `renderClass(geo, theme)` received no sprite

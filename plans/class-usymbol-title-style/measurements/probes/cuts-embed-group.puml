@@ -1,0 +1,10 @@
+@startuml
+component a {
+}
+note bottom of a
+{{
+skinparam componentBorderColor teal
+class X
+}}
+end note
+@enduml
