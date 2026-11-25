@@ -1,0 +1,11 @@
+@startuml
+<style>
+.transition {
+  FontColor blue
+}
+</style>
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A --> B : go
+@enduml

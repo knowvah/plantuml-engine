@@ -14,6 +14,7 @@
 import type { State, StateKind, StateDiagramAST, Transition } from './ast.js';
 import type { PendingNote } from './state-notes.js';
 import type { PendingJson } from './state-json-commands.js';
+import type { TransitionLabelState } from './state-node-style.js';
 
 // ---------------------------------------------------------------------------
 // Parser passes
@@ -298,16 +299,15 @@ export interface ParseState {
   /**
    * mission G4 S14: maps this port's own internal, owner-local
    * `concurrentRegionScopeId` key (e.g. `"State2::CONC1"`) to the GLOBAL
-   * region number jar's real `cpt2` counter assigned that SAME region
-   * (e.g. `2`, when it is the SECOND `--` encountered anywhere in the
-   * document). The internal `concurrentRegionScopeId` dedup key itself is
+   * region number jar's real `cpt2` counter assigned that SAME region. The internal `concurrentRegionScopeId` dedup key itself is
    * UNCHANGED (still owner-local -- see that function's own doc comment
    * for why every other internal lookup keeps using it as-is); this map is
    * a SEPARATE, additive translation table consumed only by
-   * `renderer.ts#localScopeName` to produce jar's real global `CONC<n>` in
-   * a rendered `*start*CONC<n>-to-X` path id. Populated on pass ONE only.
+   * `renderer.ts#localScopeName` (jar's global `CONC<n>`). Pass ONE only.
    */
   concurrentGlobalIds: Map<string, number>;
+  /** snl D1: the node-style branch's skinparam value, clock and leaf count (`state-node-style.ts`). */
+  transitionLabels: TransitionLabelState;
 }
 
 /**

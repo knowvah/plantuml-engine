@@ -49,18 +49,19 @@ import type { Theme } from '../../core/theme.js';
 import type { FontSpec, StringMeasurer } from '../../core/measurer.js';
 import type { DotInputNodeShape } from '../../core/graph-layout.js';
 import type { StateTextLine, StateUrl } from './state-geo-types.js';
-import { layoutJsonLeaf, type JsonLeafLayout } from './state-json-layout.js';
+import type { JsonLeafLayout } from './state-json-layout.js';
 import { UrlBuilder } from '../../core/url/UrlBuilder.js';
 import { UrlMode } from '../../core/url/UrlMode.js';
 import { measureJsonState } from './state-json-sizing.js';
 import { resolveStateFontSize, stateFontFamily } from './state-render-colors.js';
 import { leafSouthZoneDrawn } from './renderer-box-zones.js';
 import { isBorderPoint } from './state-entity-position.js';
-// G1/G23 (mission state-declared-size-fix, D1): the ONE creole seam. Every
-// `measurer.measure` this file used to run on display/description/field
-// text is now a `stateCreoleBlock` call -- see that module's doc comment.
-import type { StateCreoleOpts, StateStyledTextLine } from './state-sizing-creole.js';
+// G1/G23 (mission state-declared-size-fix, D1): the ONE creole seam. Every `measurer.measure` this file used to run
+// on display/description/field text is now a `stateCreoleBlock` call -- see that module's doc comment.
+import type { StateCreoleBlock, StateCreoleOpts, StateStyledTextLine } from './state-sizing-creole.js';
 import { stateCreoleBlock, stateCreoleOpts } from './state-sizing-creole.js';
+import { measureTransitionLabelState } from './state-transition-label-node.js';
+import { leafContentFields } from './state-leaf-content.js';
 // CircleStart.java:57 (`JUNCTION_SIZE`), the `<<junction>>` circle (a0a410773aa, #2905).
 import { JUNCTION_SIZE } from '../../core/svek/image/CircleStart.js';
 
@@ -310,18 +311,15 @@ export function measureState(
   measurer: StringMeasurer,
   rankdir: 'TB' | 'LR',
 ): MeasuredState {
-  if (state.kind === 'json') {
-    return { ...measureJsonState(state, theme, measurer), shape: 'plaintext' };
-  }
+  if (state.kind === 'json') return { ...measureJsonState(state, theme, measurer), shape: 'plaintext' };
+  if (state.kind === 'transitionLabel') return measureTransitionLabelState(state, theme, measurer); // snl T4
   const fixedDim = fixedPseudostateDim(state.kind, rankdir);
   if (fixedDim !== undefined) {
     return { ...fixedDim, shape: FIXED_PSEUDOSTATE_SHAPE[state.kind]! };
   }
-  // mission G4 S16: `skinparam stateFontSize<<X>> N` -- see
-  // `resolveStateFontSize`'s own doc comment (state-render-colors.ts) for
-  // why this is a LAYOUT-time concern (feeds the DOT node's own
-  // width/height), unlike its `stateBackgroundColor<<X>>`/`stateFontColor
-  // <<X>>` siblings, which are render-time-only.
+  // mission G4 S16: `skinparam stateFontSize<<X>> N` -- see `resolveStateFontSize`'s doc comment
+  // (state-render-colors.ts) for why this is a LAYOUT-time concern (feeds the DOT node's width/height),
+  // unlike its `stateBackgroundColor<<X>>`/`stateFontColor<<X>>` siblings, which are render-time-only.
   const fontSize = resolveStateFontSize(state, theme, stateNameFontSizeOf(theme));
   const font: FontSpec = { family: stateFontFamily(theme), size: fontSize };
   const ctx: TextCtx = { font, measurer, opts: stateCreoleOpts(theme, true) };
@@ -416,6 +414,7 @@ export interface StateGeoTextFields {
   url?: StateUrl;
   /** stdd T5a: a `kind:'json'` leaf's parsed value, for `renderer-json.ts` (`EntityImageJson#drawU`): its measured grid. */
   jsonLayout?: JsonLeafLayout;
+  transitionLabel?: StateCreoleBlock; // snl T4: `StateNodeGeo.transitionLabel`
   /** stdd T3a: the state's `Colors` reads (`state-colors.ts`). */
   stateColors?: StateColors;
   /** mission G4 S5 -- see `StateNodeGeo.emptyDescription`'s own doc comment. */
@@ -477,11 +476,7 @@ export function buildStateGeoTextFields(
     fields.headerLines = measureTextLines(historyLabelText(state.kind), font, measurer, opts);
   }
   if (state.color !== undefined) fields.color = state.color;
-  if (state.kind === 'json') {
-    // `EntityImageJson#drawU` lays the grid out over the box's own width (`setTotalWidth(dimTotal.getWidth())`).
-    const dim = measureJsonState(state, theme, measurer);
-    fields.jsonLayout = layoutJsonLeaf(state.display, state.jsonValue, dim.width, font, measurer);
-  }
+  Object.assign(fields, leafContentFields(state, theme, measurer, font));
   const url = stateUrlOf(state, theme);
   if (url !== undefined) fields.url = url;
   const stateColors = stateColorsOf(state);

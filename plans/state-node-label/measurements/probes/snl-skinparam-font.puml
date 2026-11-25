@@ -1,0 +1,8 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+skinparam ArrowFontColor red
+skinparam ArrowFontSize 18
+state A
+state B
+A --> B : go
+@enduml

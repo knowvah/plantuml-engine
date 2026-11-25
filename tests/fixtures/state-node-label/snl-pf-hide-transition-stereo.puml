@@ -1,0 +1,9 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+state C
+A --> B : go
+B --> C : on
+hide <<transition>>
+@enduml

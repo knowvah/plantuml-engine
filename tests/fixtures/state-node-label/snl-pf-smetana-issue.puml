@@ -1,0 +1,7 @@
+@startuml
+!pragma layout smetana
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A --> B : go
+@enduml

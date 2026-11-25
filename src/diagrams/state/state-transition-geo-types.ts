@@ -159,4 +159,6 @@ export interface TransitionGeo {
    */
   crossStart?: boolean;
   circleEnd?: boolean;
+  /** snl T4: `Transition.decorsNone` threaded through (`LinkType(NONE, NONE)`, no arrowhead). */
+  decorsNone?: true;
 }

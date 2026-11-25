@@ -59,6 +59,7 @@ import {
 } from './renderer-pseudostate.js';
 import { renderNormal, renderSdlReceive } from './renderer-box.js';
 import { renderJsonLeaf } from './renderer-json.js';
+import { renderTransitionLabel } from './state-transition-label-node.js';
 import { renderBorderPoint } from './renderer-border-point.js';
 import {} from './state-render-colors.js';
 import { renderComposite } from './renderer-composite-box.js';
@@ -131,6 +132,8 @@ function renderShape(node: StateNodeGeo, theme: Theme, measurer?: StringMeasurer
         : renderNormal(node, theme);
     case 'json':
       return renderJson(node, theme);
+    case 'transitionLabel':
+      return renderTransitionLabel(node, theme);
     case 'note':
       return renderStateNote(node, theme);
     // #lizard forgives -- faithful one-branch-per-StateKind dispatch; each
@@ -177,6 +180,8 @@ function wrapClassFor(node: StateNodeGeo): 'entity' | 'start_entity' | 'end_enti
     case 'syncBar':
     case 'history':
     case 'deepHistory':
+    // snl T4: `EntityImageTransitionLabel#drawU` opens no group (`EntityImageTransitionLabel.java:117-133`).
+    case 'transitionLabel':
       return undefined;
     case 'choice':
     case 'normal':

@@ -21,6 +21,7 @@
 import type { StateKind, Transition } from './ast.js';
 import type { StateColors } from './state-colors.js';
 import type { JsonLeafLayout } from './state-json-layout.js';
+import type { StateCreoleBlock } from './state-sizing-creole.js';
 import type { StateUrl } from './state-geo-types.js';
 import type { LabelStyle } from './state-transition-label.js';
 import type { Theme } from '../../core/theme.js';
@@ -195,6 +196,8 @@ export type GeoSpec =
       url?: StateUrl;
       /** stdd T5a -- see `StateNodeGeo.jsonLayout`. */
       jsonLayout?: JsonLeafLayout;
+      /** snl T4 -- see `StateNodeGeo.transitionLabel`. */
+      transitionLabel?: StateCreoleBlock;
       /** mission G4 S9 -- see `StateNodeGeo.stereotype`'s own doc comment. */
       stereotype?: string;
       /** mission G4 S7 -- see `StateNodeGeo.creationIndex`'s own doc comment. */

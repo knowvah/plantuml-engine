@@ -170,8 +170,16 @@ function buildTransitionGeo(acc: PassAccumulator, p: PreparedTransition, clipped
     ...(t.arrowStyle !== undefined ? { arrowStyle: t.arrowStyle } : {}),
     ...(t.stereotype !== undefined ? { stereotype: t.stereotype } : {}),
     ...(p.inverted ? { inverted: true as const } : {}),
+    ...transitionDecorFields(t),
+  };
+}
+
+/** The transition's decor flags, threaded unchanged from the AST to its geometry (both pipelines). */
+export function transitionDecorFields(t: Transition): Pick<TransitionGeo, 'crossStart' | 'circleEnd' | 'decorsNone'> {
+  return {
     ...(t.crossStart !== undefined ? { crossStart: t.crossStart } : {}),
     ...(t.circleEnd !== undefined ? { circleEnd: t.circleEnd } : {}),
+    ...(t.decorsNone === true ? { decorsNone: true as const } : {}),
   };
 }
 

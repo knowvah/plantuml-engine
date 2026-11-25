@@ -1,0 +1,6 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A -up-> B : go
+@enduml

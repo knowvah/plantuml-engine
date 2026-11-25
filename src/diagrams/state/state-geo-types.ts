@@ -14,6 +14,7 @@ import type { DocumentMargin } from '../../core/document-margin.js';
 import type { SpriteRegistry } from '../../core/sprite-registry.js';
 import type { InkBox } from '../../core/annotations/body-ink.js';
 import type { StateNoteStripes } from './state-note-stripes.js';
+import type { StateCreoleBlock } from './state-sizing-creole.js';
 
 /** One measured text line (`state-sizing.ts#measureTextLines`/
  *  `measureBodyTextLines`) — `width` is the line's own measured advance
@@ -38,6 +39,8 @@ export interface StateNodeGeo {
   url?: StateUrl;
   /** stdd T5a: a `kind:'json'` leaf's parsed value (`State.jsonValue`), drawn by `renderer-json.ts`: its measured grid (`state-json-layout.ts`). */
   jsonLayout?: JsonLeafLayout;
+  /** snl T4: a `kind:'transitionLabel'` leaf's measured text block (`state-transition-label-node.ts`). */
+  transitionLabel?: StateCreoleBlock;
   /** stdd T5a: `Entity#isHidden` (`Entity.java:429-441`): laid out and uid-numbered, drawn through
    *  `UHidden` (`SvekResult.java:85`), which emits nothing. */
   hidden?: true;

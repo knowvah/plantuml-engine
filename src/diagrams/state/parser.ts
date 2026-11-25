@@ -68,6 +68,7 @@ import {
 import { buildPhantomGroups } from './state-parse-phantom.js';
 import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { checkFinalError } from './state-check-final.js';
+import { initTransitionLabels } from './state-node-style.js';
 
 /**
  * Which pass may FINALIZE (push into `ast.notes`) a given pending note
@@ -377,7 +378,12 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
  *  point `class/parser.ts#parseClass`/`description/index.ts`'s own plugin
  *  resolve their pair -- see `ParseOptions.assetStore`'s doc
  *  (`core/dispatcher.ts`). */
-function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: ParseState } {
+/** The block's skinparam assignments: the top-level copy, else the preprocessed style source's. */
+function skinparamAssignmentsOf(block: UmlSource): UmlSource['skinparamAssignments'] {
+  return block.skinparamAssignments ?? block.styleSource?.skinparamAssignments;
+}
+
+function initParseState(block: UmlSource, options?: ParseOptions): { ast: StateDiagramAST; ps: ParseState } {
   const internalSprites = options?.assetStore === undefined ? undefined : internalSpriteStoreFrom(options.assetStore);
   const internalEmoji = options?.assetStore === undefined ? undefined : internalEmojiStoreFrom(options.assetStore);
   const ast: StateDiagramAST = {
@@ -387,9 +393,8 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
     annotations: createAnnotations(),
     sprites: createSpriteRegistry(internalSprites, internalEmoji),
   };
-  const topScope = makeScope(null);
   const ps: ParseState = {
-    scopeStack: [topScope],
+    scopeStack: [makeScope(null)],
     ast,
     pendingNote: null,
     pendingJson: null,
@@ -404,6 +409,8 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
     pseudoCreationIndex: new Map(),
     concurrentGlobalCounter: 0,
     concurrentGlobalIds: new Map(),
+    // snl D1: `SkinParam#getValue` over the block's skinparams, and the injected clock for the leaf ids.
+    transitionLabels: initTransitionLabels(skinparamAssignmentsOf(block), options?.clock),
   };
   return { ast, ps };
 }
@@ -419,7 +426,7 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
  * `parseDescription` thread it, mirroring `class/parser.ts:317-318`.
  */
 export function parseState(block: UmlSource, options?: ParseOptions): StateDiagramAST | ParseRefusal {
-  const { ast, ps } = initParseState(options);
+  const { ast, ps } = initParseState(block, options);
   const topScope = ps.scopeStack[0];
 
   // PASS ONE: declaration-family commands only — builds the complete tree.

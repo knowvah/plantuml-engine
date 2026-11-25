@@ -1,0 +1,6 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state "Long name" as L
+state B
+L --> B : go
+@enduml

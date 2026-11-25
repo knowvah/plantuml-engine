@@ -140,7 +140,7 @@ export abstract class WithLinkType {
    * `Double.parseDouble` → `Number.parseFloat` (lenient where Java
    * throws `NumberFormatException` on trailing garbage — documented
    * adaptation, input already matched the `thickness=` prefix).
-   * @see decoration/WithLinkType.java:139-166 */
+   * @see decoration/WithLinkType.java:139-172 */
   private applyOneStyle(arrowStyle: string, i: number): void {
     for (const s of arrowStyle.split(',').filter((t) => t.length > 0)) {
       if (s.toLowerCase() === 'dashed') {
@@ -157,6 +157,10 @@ export abstract class WithLinkType {
         // Do nothing
       } else if (s.toLowerCase() === 'node') {
         this.goNodeStyle();
+      } else if (s.toLowerCase() === 'nonode') {
+        // Explicit opt-out of node style, already resolved by the caller
+        // (CommandLinkStateCommon#shouldUseNodeStyle); it must not fall
+        // through to the colour lookup. @see decoration/WithLinkType.java:157-161
       } else if (s.toLowerCase() === 'norank') {
         this.goNorank();
       } else if (s.startsWith('thickness=')) {
@@ -166,8 +170,8 @@ export abstract class WithLinkType {
         this.setSpecificColor(tmp, i);
       }
     }
-    // #lizard forgives -- the 10-branch keyword chain mirrors upstream's
-    // applyOneStyle verbatim (WithLinkType.java:139-166);
+    // #lizard forgives -- the 11-branch keyword chain mirrors upstream's
+    // applyOneStyle verbatim (WithLinkType.java:139-172);
     // do-not-refactor-while-porting.
   }
 

@@ -1,0 +1,13 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state C {
+  state X
+  state Y
+  X --> Y : a
+  --
+  state P
+  state Q
+  P --> Q : b
+  [*] --> P : c
+}
+@enduml

@@ -30,12 +30,16 @@ const ROOT_LINE_THICKNESS = 1;
  * applies the bracket style.
  */
 export class TransitionLink extends WithLinkType {
-  constructor(transition: Pick<TransitionGeo, 'arrowStyle' | 'crossStart' | 'circleEnd' | 'inverted'>) {
+  constructor(transition: Pick<TransitionGeo, 'arrowStyle' | 'crossStart' | 'circleEnd' | 'inverted' | 'decorsNone'>) {
     super();
-    const type = new LinkType(
-      transition.circleEnd === true ? LinkDecor.ARROW_AND_CIRCLE : LinkDecor.ARROW,
-      transition.crossStart === true ? LinkDecor.CIRCLE_CROSS : LinkDecor.NONE,
-    );
+    // snl T4: a node-style transition's first link is `LinkType(NONE, NONE)` (`CommandLinkStateCommon.java:341`).
+    const type =
+      transition.decorsNone === true
+        ? new LinkType(LinkDecor.NONE, LinkDecor.NONE)
+        : new LinkType(
+            transition.circleEnd === true ? LinkDecor.ARROW_AND_CIRCLE : LinkDecor.ARROW,
+            transition.crossStart === true ? LinkDecor.CIRCLE_CROSS : LinkDecor.NONE,
+          );
     // stdd T2b: `Link#getInv` (`Link.java:145-146`) swaps the decors (`LinkType.java:131-133`).
     this.type = transition.inverted === true ? type.getInversed() : type;
     this.applyStyle(transition.arrowStyle);

@@ -23,6 +23,8 @@
 import { DOMParser } from '@xmldom/xmldom';
 import type { Node as XmlNode } from '@xmldom/xmldom';
 
+import { normaliseTransitionNodeId } from './transition-node-id.js';
+
 // xmldom's Node interface does not export nodeType constants in all versions,
 // so define them locally rather than referencing Node.ELEMENT_NODE etc.
 const ELEMENT_NODE = 1;
@@ -90,7 +92,8 @@ function normalizeAttrValue(name: string, value: string): string {
   if (name === 'points') return normalizePoints(value);
   if (name === 'viewBox') return normalizePoints(value);
   if (name === 'transform') return normalizeTransform(value);
-  return value;
+  // snl D2: the clock digits of a transition-label leaf id (`transition-node-id.ts`).
+  return normaliseTransitionNodeId(value);
 }
 
 /**

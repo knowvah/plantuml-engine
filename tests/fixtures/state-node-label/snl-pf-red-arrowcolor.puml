@@ -1,0 +1,7 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+skinparam ArrowColor blue
+state A
+state B
+A -[#red,node]-> B : go
+@enduml

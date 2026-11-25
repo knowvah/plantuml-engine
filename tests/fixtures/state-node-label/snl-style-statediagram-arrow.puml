@@ -1,0 +1,14 @@
+@startuml
+<style>
+stateDiagram {
+  arrow {
+    FontColor red
+    FontStyle bold
+  }
+}
+</style>
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A --> B : go
+@enduml

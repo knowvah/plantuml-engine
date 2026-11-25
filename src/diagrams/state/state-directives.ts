@@ -20,6 +20,7 @@
  */
 
 import type { State, StateDiagramAST, StateNote, RemoveRestoreDirective, Transition } from './ast.js';
+import { orphanedTransitionLabels } from './state-orphan-label.js';
 
 /** What an entity exposes to directive matching (state or note). */
 interface RemovableEntity {
@@ -174,14 +175,26 @@ function markRemoved(
  * transition set).
  */
 export function computeRemovedIds(ast: StateDiagramAST): Set<string> {
-  return applyingIds(ast, ast.removeDirectives ?? [], false);
+  return withOrphanedTransitionLabels(ast, applyingIds(ast, ast.removeDirectives ?? [], false));
+}
+
+/**
+ * snl D5: `isHidden(leaf)` and `isRemoved(leaf)` both end with `isOrphanedTransitionLabel(leaf)`
+ * (`CucaDiagram.java:790-791`, `:808-809`), which reads the other end's hidden AND removed state; `own` is one of the
+ * two folds, and the other is computed here.
+ */
+function withOrphanedTransitionLabels(ast: StateDiagramAST, own: Set<string>): Set<string> {
+  const hidden = applyingIds(ast, ast.hideDirectives ?? [], true);
+  const removed = applyingIds(ast, ast.removeDirectives ?? [], false);
+  for (const id of orphanedTransitionLabels(ast, hidden, removed)) own.add(id);
+  return own;
 }
 
 /** stdd T5a: `CucaDiagram#isHidden` (`CucaDiagram.java:769-781`) over the `hide`/`show` directives
  *  (`hides2`), the same `HideOrShow#apply` fold as {@link computeRemovedIds}; a hidden composite hides
  *  its descendants (`Entity.java:433-438`), which `markHidden` (layout) applies on the geometry. */
 export function computeHiddenIds(ast: StateDiagramAST): Set<string> {
-  return applyingIds(ast, ast.hideDirectives ?? [], true);
+  return withOrphanedTransitionLabels(ast, applyingIds(ast, ast.hideDirectives ?? [], true));
 }
 
 /**
