@@ -16,6 +16,7 @@ import type { SequenceGeometry } from './ast.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { isExportScaled } from '../../core/scale-command.js';
 import { withDeferredFormat } from '../../core/svg-format.js';
 import { drawLinkAnchors } from './renderer-link-anchor.js';
@@ -61,7 +62,7 @@ export function renderSequencePage(
   theme: Theme,
   pageIndex: number,
   measurer: StringMeasurer,
-): RenderFragment {
+): RenderFragment & SvgDimensionStyleFlag {
   return renderPaginated(paginateSequence(geo, pageIndex), theme, measurer);
 }
 
@@ -73,7 +74,11 @@ export function renderSequencePage(
  * page and {@link renderSequencePage} reaches the rest. See
  * `plans/sequence-newpage-pagination/decisions.md` D5.
  */
-export function renderSequence(geo: SequenceGeometry, theme: Theme, measurer: StringMeasurer): RenderFragment {
+export function renderSequence(
+  geo: SequenceGeometry,
+  theme: Theme,
+  measurer: StringMeasurer,
+): RenderFragment & SvgDimensionStyleFlag {
   return renderSequencePage(geo, theme, 0, measurer);
 }
 
@@ -167,7 +172,11 @@ function drawPaginated(
   return { children: extraDefs + body, fontDefs, maxX, maxY };
 }
 
-function renderPaginated(geo: SequenceGeometry, theme: Theme, measurer: StringMeasurer): RenderFragment {
+function renderPaginated(
+  geo: SequenceGeometry,
+  theme: Theme,
+  measurer: StringMeasurer,
+): RenderFragment & SvgDimensionStyleFlag {
   // sdd3-T3b: drawn at scale 1; when the document is export-scaled (a `scale`
   // directive or `skinparam dpi` != 96, `scale-command.ts#isExportScaled`) the
   // numbers stay lossless and the exporter's single `SvgGraphics#format` pass
@@ -206,6 +215,10 @@ function renderPaginated(geo: SequenceGeometry, theme: Theme, measurer: StringMe
     // sdd3-T2c: `TextBlockExporter.java:307` -- `skinparam lengthAdjust` is the
     // document's `SvgOption`, read by `SvgGraphics.java:155-158,703-705`.
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
+    // sds T2: `TextBlockExporter.java:418-421` -- `skinParam.svgDimensionStyle()` on every page's `SvgOption`
+    // (`NewpagedDiagram.java:142-145` styles each page); `false` drops the root `style`/`width`/`height`
+    // (`SvgGraphics.java:795-799`). The shell's `{ ...fragment }` spread carries it (D1).
+    ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
     // T2's `finalizeSequenceBody` (`core/assemble-svg.ts`) owns the content
     // `<g>` wrap and the background rect, so the body is handed over bare.
     diagramType: DIAGRAM_TYPE_SEQUENCE,

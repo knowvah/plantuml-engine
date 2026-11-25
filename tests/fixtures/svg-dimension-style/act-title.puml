@@ -1,0 +1,11 @@
+@startuml
+skinparam svgDimensionStyle false
+title T
+caption C
+|L1|
+start
+:a;
+|L2|
+:b;
+stop
+@enduml

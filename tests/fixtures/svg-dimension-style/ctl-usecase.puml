@@ -1,0 +1,5 @@
+@startuml
+skinparam svgDimensionStyle false
+actor A
+(u)
+@enduml

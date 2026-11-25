@@ -29,6 +29,7 @@ import type { StateUrl } from './state-geo-types.js';
 import type { Theme } from '../../core/theme.js';
 import type { StringMeasurer } from '../../core/measurer.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { isExportScaled } from '../../core/scale-command.js';
 import { withDeferredFormat } from '../../core/svg-format.js';
 import { line, linkWrap } from '../../core/svg.js';
@@ -330,7 +331,7 @@ function hasNote(nodes: readonly StateNodeGeo[]): boolean {
 /**
  * Render a state diagram geometry into an SVG string.
  */
-export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragment {
+export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragment & SvgDimensionStyleFlag {
   // unwind2-S11: the layout's `sprite` map (`layoutState`).
   const theme = geo.sprites === undefined ? skinTheme : { ...skinTheme, sprites: geo.sprites };
   const uidPlan = buildStateUidPlan(geo);
@@ -398,5 +399,8 @@ export function renderState(geo: StateGeometry, skinTheme: Theme): RenderFragmen
     // lad-T1c: `TextBlockExporter.java:306-307` -- `skinparam lengthAdjust` is the document's
     // `SvgOption`, read by `SvgGraphics.java:155-158,699-705`. Unset stays unset (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
+    // sds T2: `TextBlockExporter.java:418-421` -- `skinParam.svgDimensionStyle()` on the `SvgOption`; `false` drops
+    // the root `style`/`width`/`height` (`SvgGraphics.java:795-799`). The shell's spread carries it (D1).
+    ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
   };
 }

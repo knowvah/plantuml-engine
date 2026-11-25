@@ -1,0 +1,8 @@
+@startnwdiag
+skinparam svgDimensionStyle false
+nwdiag {
+ network n {
+  a;
+ }
+}
+@endnwdiag

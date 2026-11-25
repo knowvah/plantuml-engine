@@ -1,0 +1,5 @@
+@startuml
+!pragma svginteractive true
+skinparam svgDimensionStyle false
+Alice -> Bob : hi
+@enduml

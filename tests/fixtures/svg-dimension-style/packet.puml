@@ -1,0 +1,6 @@
+@startpacketdiag
+skinparam svgDimensionStyle false
+packetdiag {
+ 0-7: a
+}
+@endpacketdiag

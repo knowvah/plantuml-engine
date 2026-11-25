@@ -16,6 +16,7 @@ import { isDisplayPositionedNull, isEmpty } from '../../core/annotations/index.j
 import type { InkBox } from '../../core/annotations/body-ink.js';
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { toSvgPaint } from '../../core/klimt/color/ColorMapper.js';
 import { extractFlatContent, extractViewBoxDims, VERSION_PLACEHOLDER } from '../../core/klimt/document-shell.js';
 import { UGraphicHandwritten } from '../../core/klimt/drawing/hand/UGraphicHandwritten.js';
@@ -76,6 +77,8 @@ function stringBounderFor(measurer: StringMeasurer): StringBounder {
 function svgGraphic(diagram: ChenEerDiagram, measurer: StringMeasurer, pass: DrawPass): UGraphicSvg {
   const option = basicSvgOption({
     ...lengthAdjustOverride(diagram.getSkinParam().getlengthAdjust()),
+    // sds T4: `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (TextBlockExporter.java:420).
+    svgDimensionStyle: diagram.getSkinParam().svgDimensionStyle(),
     minDim: { width: pass.minDim.getWidth(), height: pass.minDim.getHeight() },
     backcolor: calculateBackColor(diagram),
     colorMapper: muteColorMapper(diagram),
@@ -95,18 +98,25 @@ function drawSvg(diagram: ChenEerDiagram, measurer: StringMeasurer, pass: DrawPa
 }
 
 /** Draws per `pass` and unwraps the document to a fragment whose body is the flat drawing. @see TextBlockExporter.java:159-176 */
-function drawFragment(diagram: ChenEerDiagram, measurer: StringMeasurer, pass: DrawPass): RenderFragment {
+function drawFragment(
+  diagram: ChenEerDiagram,
+  measurer: StringMeasurer,
+  pass: DrawPass,
+): RenderFragment & SvgDimensionStyleFlag {
   const backcolor = toSvgPaint(calculateBackColor(diagram), muteColorMapper(diagram));
   const svg = drawSvg(diagram, measurer, pass);
   const { width, height } = extractViewBoxDims(svg);
   const { body, extraDefs } = extractFlatContent(svg);
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
-  const fragment: RenderFragment = {
+  const fragment: RenderFragment & SvgDimensionStyleFlag = {
     body,
     width,
     height,
     diagramType: CHEN_EER_ROUTE,
     ...(lengthAdjust === undefined ? {} : { lengthAdjust }),
+    // sds T4: the shell re-roots the fragment, so it carries the option too: `false` drops the root
+    // `style`/`width`/`height` (SvgGraphics.java:795-799, decisions.md D1).
+    ...(diagram.getSkinParam().svgDimensionStyle() ? {} : { svgDimensionStyle: false as const }),
   };
   // A gradient backcolor leaves `backcolorString` null (SvgGraphics.java:178-183): no root `background:`.
   const withBackground =

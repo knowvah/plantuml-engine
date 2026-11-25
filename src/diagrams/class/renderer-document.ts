@@ -180,7 +180,7 @@ export function finishClassDocument(
     // document's `SvgOption` (`SkinParam.java:1258-1269`), read by
     // `SvgGraphics.java:155-158,699-705`. Spread only when defined (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
-    // cogr T2e: `TextBlockExporter.java:308`, `SvgGraphics.java:808-811`; the description engine's own spelling is
+    // cogr T2e: `TextBlockExporter.java:420`, `SvgGraphics.java:795-799`; the description engine's own spelling is
     // `renderer.ts` (`svgDimensionStyle: theme.svgDimensionStyle !== false`).
     ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
     diagramType: DIAGRAM_TYPE_CLASS,

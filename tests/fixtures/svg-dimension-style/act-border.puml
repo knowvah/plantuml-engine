@@ -1,0 +1,7 @@
+@startuml
+skinparam svgDimensionStyle false
+skinparam diagramBorderColor red
+start
+:a;
+stop
+@enduml

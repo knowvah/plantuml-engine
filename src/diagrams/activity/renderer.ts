@@ -10,6 +10,7 @@ import { activityShadowFilterDef, anyShadowed } from './activity-shadow.js';
 import type { ActivityGeometry, ActivityEdgeGeo } from './layout/tile-layout.js';
 import type { Theme } from '../../core/theme.js';
 import type { RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { polygon } from '../../core/svg.js';
 import {} from '../../core/latex.js';
 import { orderedLine, renderNodesDispatchingGotos } from './activity-renderer-terminals.js';
@@ -398,7 +399,7 @@ function preChromeDims(geo: ActivityGeometry, theme: Theme): { width: number; he
  * (`Swimlanes.java:275`) and the output is the plain node-then-edge order,
  * byte-identical to a diagram with no swimlanes.
  */
-export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderFragment {
+export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderFragment & SvgDimensionStyleFlag {
   // unwind2-S11: the layout's `sprite` map (`layoutActivity`), so the draw
   // resolves a label's `<$sprite>` exactly as the sizer did.
   const spriteTheme = geo.sprites === undefined ? skinTheme : { ...skinTheme, sprites: geo.sprites };
@@ -434,6 +435,9 @@ export function renderActivity(geo: ActivityGeometry, skinTheme: Theme): RenderF
     // lad-T2a: `TextBlockExporter.java:306-307` -- `skinparam lengthAdjust`; spread
     // only when set so unset output stays byte-identical (D4).
     ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
+    // sds T2: `TextBlockExporter.java:418-421` -- `skinParam.svgDimensionStyle()` on the `SvgOption`; `false` drops
+    // the root `style`/`width`/`height` (`SvgGraphics.java:795-799`). The shell's spread carries it (D1).
+    ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
     // T3j: `index.ts#applyAnnotationChrome`'s activity branch undoes the
     // document-margin shift baked into `body` above, composes chrome around
     // the result at these RAW dims, then re-applies the margin to the

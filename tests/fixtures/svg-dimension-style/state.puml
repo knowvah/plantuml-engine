@@ -1,0 +1,4 @@
+@startuml
+skinparam svgDimensionStyle false
+[*] --> S1
+@enduml

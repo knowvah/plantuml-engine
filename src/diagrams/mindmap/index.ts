@@ -18,6 +18,7 @@
 import { isDisplayPositionedNull, isEmpty } from '../../core/annotations/index.js';
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import type { RenderFragment, SyncPlugin } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { extractFlatContent, extractViewBoxDims, VERSION_PLACEHOLDER } from '../../core/klimt/document-shell.js';
 import type { StringBounder as DriverStringBounder } from '../../core/klimt/drawing/svg/driver-text-svg.js';
 import { UGraphicHandwritten } from '../../core/klimt/drawing/hand/UGraphicHandwritten.js';
@@ -135,11 +136,17 @@ interface DrawPass {
  *  (`backcolor.toSvg(option.getColorMapper())`, SvgGraphics.java:176-188).
  *  After the translate, `if (isHandwritten) ug = new UGraphicHandwritten(ug)`
  *  (TextBlockExporter.java:173-175), so the warnings banner jiggles too. */
-function drawFragment(diagram: MindMapDiagram, measurer: StringMeasurer, pass: DrawPass): RenderFragment {
+function drawFragment(
+  diagram: MindMapDiagram,
+  measurer: StringMeasurer,
+  pass: DrawPass,
+): RenderFragment & SvgDimensionStyleFlag {
   const backcolor = mapPaint(diagram.calculateBackColor(), muteColorMapper(diagram));
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
   const option = basicSvgOption({
     ...lengthAdjustOverride(lengthAdjust),
+    // sds T3: `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (TextBlockExporter.java:420).
+    svgDimensionStyle: diagram.getSkinParam().svgDimensionStyle(),
     minDim: { width: pass.minDim.getWidth(), height: pass.minDim.getHeight() },
     backcolor,
     scale: pass.scale,
@@ -153,12 +160,15 @@ function drawFragment(diagram: MindMapDiagram, measurer: StringMeasurer, pass: D
   const svg = ug.getSvgString();
   const { width, height } = extractViewBoxDims(svg);
   const { body, extraDefs } = extractFlatContent(svg);
-  const fragment: RenderFragment = {
+  const fragment: RenderFragment & SvgDimensionStyleFlag = {
     body,
     width,
     height,
     diagramType: DIAGRAM_TYPE_MINDMAP,
     ...(lengthAdjust === undefined ? {} : { lengthAdjust }),
+    // sds T3: the shell re-roots the fragment, so it carries the option too: `false` drops the root
+    // `style`/`width`/`height` (SvgGraphics.java:795-799, decisions.md D1).
+    ...(diagram.getSkinParam().svgDimensionStyle() ? {} : { svgDimensionStyle: false as const }),
   };
   // A gradient backcolor leaves `backcolorString` null (SvgGraphics.java:178-183):
   // no root `background:`, which `RenderFragment.backgroundGradient` carries.

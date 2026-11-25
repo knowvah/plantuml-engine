@@ -147,6 +147,15 @@ export class SaltSkinParam implements ISkinParam {
     return value === null ? undefined : lengthAdjustOfName(value);
   }
 
+  /**
+   * `!valueIs("svgdimensionstyle", "false")`: `valueIs` is `equalsIgnoreCase` (SkinParam.java:367-369). Read by
+   * the exporter beside `getlengthAdjust()` (TextBlockExporter.java:420).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:1216-1218
+   */
+  svgDimensionStyle(): boolean {
+    return this.getValue('svgDimensionStyle')?.toLowerCase() !== 'false';
+  }
+
   /** @see SkinParam.java:650-656,1166-1172 */
   getDpi(): number {
     const value = this.getValue('dpi');

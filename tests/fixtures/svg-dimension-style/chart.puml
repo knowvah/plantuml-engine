@@ -1,0 +1,4 @@
+@startchart
+skinparam svgDimensionStyle false
+bar "s" [1,2]
+@endchart

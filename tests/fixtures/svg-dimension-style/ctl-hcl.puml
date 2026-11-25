@@ -1,0 +1,6 @@
+@starthcl
+skinparam svgDimensionStyle false
+resource "x" "y" {
+  a = 1
+}
+@endhcl

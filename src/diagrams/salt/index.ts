@@ -27,6 +27,7 @@ import { isDisplayPositionedNull, isEmpty } from '../../core/annotations/index.j
 import type { InkBox } from '../../core/annotations/body-ink.js';
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import type { RenderFragment, SyncPlugin } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { ColorMapper, toSvgPaint } from '../../core/klimt/color/ColorMapper.js';
 import { fromString as colorOrderFromString } from '../../core/klimt/color/ColorOrder.js';
 import { extractFlatContent, extractViewBoxDims, VERSION_PLACEHOLDER } from '../../core/klimt/document-shell.js';
@@ -135,6 +136,8 @@ function svgGraphic(diagram: PSystemSalt, measurer: StringMeasurer, pass: DrawPa
     rootAttributes: new Map([['data-diagram-type', DIAGRAM_TYPE_SALT]]),
     // lad-T2e: `TextBlockExporter.java:306-307`.
     ...lengthAdjustOverride(diagram.getSkinParam().getlengthAdjust()),
+    // sds T3: `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (TextBlockExporter.java:420).
+    svgDimensionStyle: diagram.getSkinParam().svgDimensionStyle(),
   });
   return UGraphicSvg.build(0, option, VERSION_PLACEHOLDER, driverBounderFor(measurer), measurer);
 }
@@ -156,7 +159,11 @@ function drawSvg(diagram: PSystemSalt, measurer: StringMeasurer, pass: DrawPass)
  * fragment's `background` is that same `backcolor.toSvg(mapper)`.
  * @see TextBlockExporter.java:159-176
  */
-function drawFragment(diagram: PSystemSalt, measurer: StringMeasurer, pass: DrawPass): RenderFragment {
+function drawFragment(
+  diagram: PSystemSalt,
+  measurer: StringMeasurer,
+  pass: DrawPass,
+): RenderFragment & SvgDimensionStyleFlag {
   const backcolor = toSvgPaint(diagram.calculateBackColor(), muteColorMapper(diagram));
   const svg = drawSvg(diagram, measurer, pass);
   const { width, height } = extractViewBoxDims(svg);
@@ -170,7 +177,12 @@ function drawFragment(diagram: PSystemSalt, measurer: StringMeasurer, pass: Draw
       : { ...fragment, backgroundGradient: backcolor };
   const withDefs = extraDefs.length > 0 ? { ...withBackground, extraDefs } : withBackground;
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
-  return lengthAdjust === undefined ? withDefs : { ...withDefs, lengthAdjust };
+  const withLengthAdjust = lengthAdjust === undefined ? withDefs : { ...withDefs, lengthAdjust };
+  // sds T3: the shell re-roots the fragment, so it carries the option too: `false` drops the root
+  // `style`/`width`/`height` (SvgGraphics.java:795-799, decisions.md D1).
+  return diagram.getSkinParam().svgDimensionStyle()
+    ? withLengthAdjust
+    : { ...withLengthAdjust, svgDimensionStyle: false as const };
 }
 
 /** `TextBlockUtils.getMinMax(block, sb, false)`: the ink a mainframe

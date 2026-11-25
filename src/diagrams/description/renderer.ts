@@ -311,7 +311,7 @@ export function renderDescription(
     scale,
     colorMapper: muteColorMapper(theme),
     interactiveBaseFilename: geo.svgInteractive === true ? INTERACTIVE_BASE_FILENAME : null,
-    // `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (`TextBlockExporter.java:308`).
+    // `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (`TextBlockExporter.java:420`).
     svgDimensionStyle: theme.svgDimensionStyle !== false,
     rootAttributes: new Map([['data-diagram-type', DIAGRAM_TYPE_DESCRIPTION]]),
     // lad-T2b: `TextBlockExporter.java:306-307` (`option.withLengthAdjust(skinParam.getlengthAdjust())`);

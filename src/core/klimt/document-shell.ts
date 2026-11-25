@@ -93,9 +93,9 @@ export interface ShellFragment {
    *  `LengthAdjust.defaultValue()` = `spacing` (`style/LengthAdjust.java:41`). */
   readonly lengthAdjust?: RootLengthAdjust;
   /**
-   * `skinparam svgDimensionStyle false` (`SkinParam.java:1196`, `TextBlockExporter.java:308`): `false` omits the root
-   * `style`, `width` and `height` (`SvgGraphics.java:808-811`); unset = true. Deliberately NOT a `RenderFragment`
-   * field, which is reachable from the public `.d.ts` (cogr D5): a producer returns
+   * `skinparam svgDimensionStyle false` (`SkinParam.java:1216-1218`, `TextBlockExporter.java:420`): `false` omits
+   * the root `style`, `width` and `height` (`SvgGraphics.java:795-799`); unset = true. Deliberately NOT a
+   * `RenderFragment` field, which is reachable from the public `.d.ts` (cogr D5): a producer returns
    * {@link SvgDimensionStyleFlag} on top of its fragment, and the shell finalizers' `{ ...fragment }` spreads carry it
    * here.
    */
@@ -242,9 +242,9 @@ function rootSizeAttributes(
 
 /**
  * The root's `style`, `width` and `height`: written only when `SvgOption.svgDimensionStyle` is true
- * (`SvgGraphics.java:808-811`; `skinparam svgDimensionStyle false` -> `TextBlockExporter.java:308`,
- * `SkinParam.java:1196`). The `viewBox` after them is unconditional.
- * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/SvgGraphics.java:808-811
+ * (`SvgGraphics.java:795-799`; `skinparam svgDimensionStyle false` -> `TextBlockExporter.java:420`,
+ * `SkinParam.java:1216-1218`). The `viewBox` after them is unconditional.
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/klimt/drawing/svg/SvgGraphics.java:795-799
  */
 function dimensionAttributes(fragment: ShellFragment, style: string, widthAttr: string, heightAttr: string): string {
   if (fragment.svgDimensionStyle === false) return '';

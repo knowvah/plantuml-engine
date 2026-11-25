@@ -1,0 +1,7 @@
+@startuml
+skinparam svgDimensionStyle false
+title T
+state A {
+ state B
+}
+@enduml

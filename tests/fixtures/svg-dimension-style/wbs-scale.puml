@@ -1,0 +1,6 @@
+@startwbs
+skinparam svgDimensionStyle false
+scale 1.5
+* A
+** B
+@endwbs

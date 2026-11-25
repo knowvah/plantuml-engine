@@ -1,0 +1,8 @@
+@startuml
+skinparam svgDimensionStyle false
+title T
+legend
+L
+endlegend
+Alice -> Bob : hi
+@enduml
