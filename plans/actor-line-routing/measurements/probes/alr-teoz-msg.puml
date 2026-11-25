@@ -1,0 +1,5 @@
+@startuml
+!pragma teoz true
+actor X #line:red
+X -> Y : hi
+@enduml

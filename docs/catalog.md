@@ -9,7 +9,7 @@ module for X already exist?* — one row per module, its exported surface
 named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 `ast-grep`, which are better at it than any document.
 
-2678 modules · 8894 exported names.
+2678 modules · 8895 exported names.
 
 ## `src/`
 
@@ -2985,7 +2985,7 @@ named. For *where is symbol Y defined*, use Serena's `find_symbol` or
 | `command-exo-arrow-activation.ts` | `activationEventOf`, `autoActivationEventOf` | `CommandExoArrowAny`'s two life-event arms (`:148-166` explicit, `:174-180` `autoactivate`), split out of `command-exo-arrow.ts` to keep it under the 500-line file cap (sdd1 T1b). |
 | `command-exo-arrow.ts` | `EXO_ARROW_LEFT_SOURCE`, `EXO_ARROW_RIGHT_SOURCE`, `exoArrowLeftCommand`, `exoArrowRightCommand` | `CommandExoArrowLeft` (`SequenceDiagramFactory.java:113`) and `CommandExoArrowRight` (`:114`) over the shared `CommandExoArrowAny` base — an **exogenous** message, one endpoint on a participant and the other on the diagram border: `[-> Bob` |
 | `command-grouping.ts` | `boxStartCommand`, `boxEndCommand`, `groupingCommand`, `elseCommand`, `endCommand`, `drainOpenFrames` | The box/grouping block: `CommandBoxStart` (`:124`), `CommandBoxEnd` (`:125`) and `CommandGrouping` (`:126`), registered consecutively as one group between the single-line note factories and the `CommandActivate2`/`CommandReturn` pair. |
-| `command-lifeline.ts` | `activateCommand`, `deactivateCommand`, `destroyCommand`, `deactivateShortCommand`, `activate2Command` | The life-line block: `CommandActivate` (`SequenceDiagramFactory.java:103`) and `CommandDeactivateShort` (`:104`), registered as their own group immediately after `addCommonCommands1`/`CommandHideUnlinked` and before the participant declarat |
+| `command-lifeline.ts` | `activateCommand`, `deactivateCommand`, `destroyCommand`, `createLifelineCommand`, `deactivateShortCommand`, `activate2Command` | The life-line block: `CommandActivate` (`SequenceDiagramFactory.java:103`) and `CommandDeactivateShort` (`:104`), registered as their own group immediately after `addCommonCommands1`/`CommandHideUnlinked` and before the participant declarat |
 | `command-link-anchor.ts` | `linkAnchorCommand` | `CommandLinkAnchor` -- `{a1} <-> {a2} : label`, the duration link between two anchored messages. |
 | `command-misc.ts` | `hideFootboxCommand`, `hideEmptyDescriptionCommand`, `dividerCommand`, `delayWithTextCommand`, `bareDelayCommand`, `spaceCommand`, `autoactivateCommand`, `setSeparatorCommand`, `refOverCommand`, `refOverMultilineCommand`, `urlCommand` | The individually-registered commands of `initCommandsList`'s trailing run that are neither pagination nor autonumber: `CommandDivider` (`:142`), `CommandHSpace` (`:143`), `CommandReferenceOverSeveral` (`:144`), `CommandReferenceMultilinesOv |
 | `command-note-factory.ts` | `NO_SUCH_COLOR`, `noteCommand`, `endNoteCommand`, `noteOnArrowCommand`, `styledNoteCommand`, `noteAcrossCommand` | The note-command factories. |

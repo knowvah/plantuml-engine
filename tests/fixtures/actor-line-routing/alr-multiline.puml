@@ -1,0 +1,6 @@
+@startuml
+participant X #line:red [
+Long
+Name
+]
+@enduml

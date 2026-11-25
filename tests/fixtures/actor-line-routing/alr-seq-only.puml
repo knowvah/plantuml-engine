@@ -1,0 +1,5 @@
+@startuml
+actor X #line:red
+X -> Y : hi
+activate Y
+@enduml

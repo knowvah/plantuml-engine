@@ -1,0 +1,5 @@
+@startuml
+actor Y
+create X #red
+Y -> X : new
+@enduml

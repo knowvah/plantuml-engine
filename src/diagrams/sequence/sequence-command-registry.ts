@@ -63,6 +63,7 @@ import { boxEndCommand, boxStartCommand, elseCommand, endCommand, groupingComman
 import {
   activate2Command,
   activateCommand,
+  createLifelineCommand,
   deactivateCommand,
   deactivateShortCommand,
   destroyCommand,
@@ -115,6 +116,7 @@ export const SEQUENCE_COMMANDS: readonly SequenceCommand[] = [
   activateCommand, //              :103 CommandActivate (TYPE=activate)
   deactivateCommand, //            :103 CommandActivate (TYPE=deactivate)
   destroyCommand, //               :103 CommandActivate (TYPE=destroy)
+  createLifelineCommand, //        :103 CommandActivate (TYPE=create)
   deactivateShortCommand, //       :104 CommandDeactivateShort
   noteCommand, //                  :117 FactorySequenceNoteCommand.createSingleLine
   endNoteCommand, //               :134 FactorySequenceNoteCommand.createMultiLine

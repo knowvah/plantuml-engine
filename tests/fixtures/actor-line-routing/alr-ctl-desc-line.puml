@@ -1,0 +1,5 @@
+@startuml
+actor X #line:red
+usecase U
+X --> U
+@enduml

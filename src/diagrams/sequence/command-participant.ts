@@ -13,6 +13,8 @@
  * @see ~/git/plantuml/.../sequencediagram/SequenceDiagramFactory.java:106-110
  */
 
+import { CommandExecutionResult } from '../../core/command/CommandExecutionResult.js';
+import { refusesAsBareColor } from '../../core/klimt/color/HColorSet.js';
 import { activate } from './sequence-life-state.js';
 import type { ParticipantType } from './ast.js';
 import {
@@ -39,18 +41,36 @@ function declareParticipant(
   state: ParseState,
   type: ParticipantType,
   rest: string,
-  moveExisting = true,
-): { id: string; existing: boolean } {
+): { id: string; existing: boolean } | undefined {
   const { id, display, color, stereotype, url, order } = parseParticipantDeclaration(rest, () =>
     state.style.params.getValue('topurl'),
   );
-  // `CommandParticipant.java:146-148`: an existing CODE only moves last.
-  if (moveExisting && state.participantIndex.has(id)) {
+  // `CommandParticipant.java:146-148`: an existing CODE only moves last, so
+  // only a NEW CODE reaches `getColor` (`:183-185`).
+  if (state.participantIndex.has(id)) {
     putParticipantInLast(state, id);
     return { id, existing: true };
   }
+  if (refusesColor(state, color)) return undefined;
   ensureParticipant(state, id, type, { display, color, stereotype, url, order });
   return { id, existing: false };
+}
+
+/** `CommandExecutionResult.badColor()` (`command/CommandExecutionResult.java:85-86`): a colour `getColor` refuses. */
+const BAD_COLOR = CommandExecutionResult.badColor();
+
+/**
+ * `participant.setSpecificColorTOBEREMOVED(BACK, getColor(s))` on the whole COLOR capture of a NEW participant
+ * (`CommandParticipant.java:183-185`): `getColor` throws on a capture that cannot be a bare colour
+ * (`HColorSet.java:69-76`) and `SingleLineCommand2.java:176-179` turns it into `badColor()`, so the factory fails
+ * (alr D2/D3, {@link refusesAsBareColor}). An unknown BARE colour keeps the 2026-11-04 neutral ruling. True after
+ * setting the refusal on `state`.
+ */
+function refusesColor(state: ParseState, color: string | undefined): boolean {
+  if (color === undefined || !refusesAsBareColor(color)) return false;
+  state.executionError = BAD_COLOR.getError();
+  state.executionErrorScore = BAD_COLOR.getScore();
+  return true;
 }
 
 // 4. Participant declarations with optional quoted name, alias, and color.
@@ -68,7 +88,12 @@ export const participantCommand: Command = {
 };
 
 /** `create [participant|actor|...] X` — `CommandParticipant`'s CREATE
- *  branch: declares the participant (defaulting to type `participant`) and
+ *  group and its TYPE `create`. A bare `create` that fits `CommandActivate`'s
+ *  grammar never reaches here (`createLifelineCommand`, registered earlier,
+ *  `SequenceDiagramFactory.java:103,106`), so every line this sees is
+ *  `CommandParticipantA`'s, which moves an existing CODE last
+ *  (`CommandParticipant.java:146-148`, alr D5). It
+ *  declares the participant (defaulting to type `participant`) and
  *  files a CREATE life event on it (`CommandParticipant.java:194-199`), which
  *  `SequenceDiagram#activate` holds as `pendingCreate` until the next message
  *  takes it (`:374-377`, `:207-214`) -- see `sequence-life-state.ts`. The
@@ -78,12 +103,12 @@ export const createCommand: Command = {
   pattern: /^create\s+(?:(participant|actor|boundary|control|entity|queue|database|collections)\s+)?(.+)$/i,
   execute(state, match) {
     const type = (match[1]?.toLowerCase() ?? 'participant') as ParticipantType;
-    const { id, existing } = declareParticipant(state, type, match[2]!.trim(), match[1] !== undefined);
-    // `create participant X` on an existing CODE returns before the CREATE
-    // life event (`CommandParticipant.java:146-148`). The bare `create X` is
-    // `CommandActivate` (`:63`, registered earlier), which never moves it.
-    if (existing) return;
-    const error = activate(state.life, id, 'CREATE');
+    const declared = declareParticipant(state, type, match[2]!.trim());
+    // An existing CODE returns before the CREATE life event
+    // (`CommandParticipant.java:146-148`), and a refused colour fails before
+    // it (`:183-185`).
+    if (declared === undefined || declared.existing) return;
+    const error = activate(state.life, declared.id, 'CREATE');
     if (error !== undefined) state.executionError = error;
   },
 };

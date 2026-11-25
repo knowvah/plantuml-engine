@@ -1,0 +1,4 @@
+@startuml
+actor X
+create actor X #line:red
+@enduml

@@ -1,0 +1,4 @@
+@startuml
+X -> Y : hi
+actor X #back:red
+@enduml

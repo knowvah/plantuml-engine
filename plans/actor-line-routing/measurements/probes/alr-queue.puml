@@ -1,0 +1,3 @@
+@startuml
+queue X #line:red
+@enduml

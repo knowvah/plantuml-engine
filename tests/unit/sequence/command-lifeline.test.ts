@@ -137,3 +137,51 @@ describe('bare `deactivate` (CommandDeactivateShort)', () => {
     expect(state.executionError).toBe('Nothing to deactivate.');
   });
 });
+
+describe('createLifelineCommand -- `CommandActivate` TYPE create (alr T3, #191)', () => {
+  // `create WHO [#\w+] [#\w+]` is `CommandActivate` (`CommandActivate.java:72-83`, registered at
+  // `SequenceDiagramFactory.java:103` before `CommandParticipantA` at `:106`). It never colours the participant: its
+  // colours go to the CREATE life event (`:116-131`, `SequenceDiagram.java:370-380`).
+  it('`create X #red` leaves X uncoloured and files a CREATE the next message must take', () => {
+    const ast = parse(['actor Y', 'create X #red', 'Y -> X : new']);
+    expect(ast.participants.map((p) => [p.id, p.color])).toEqual([
+      ['Y', undefined],
+      ['X', undefined],
+    ]);
+    expect(parseSequence(sequenceSource(['create X #red #blue', 'A -> B : x']))).toMatchObject({
+      refused: true,
+      line: 1,
+      message: 'After create command, you have to send a message to "X"',
+    });
+  });
+
+  it('`create X` on an existing X does not move it', () => {
+    const ast = parse(['actor X', 'actor Y', 'create X', 'Y -> X : x']);
+    expect(ast.participants.map((p) => p.id)).toEqual(['X', 'Y']);
+  });
+
+  it('`create X #zzblue`, an unknown bare colour, is not refused (the 2026-11-04 neutral ruling, D5)', () => {
+    const ast = parse(['create X #zzblue', 'A -> X : x']);
+    expect(ast.participants.map((p) => [p.id, p.color])).toEqual([
+      ['X', undefined],
+      ['A', undefined],
+    ]);
+  });
+});
+
+describe('a bare `create` outside the `CommandActivate` grammar is `CommandParticipantA` (alr T3, #191)', () => {
+  it('`create X #line:red` on an existing X moves it last (`CommandParticipant.java:146-148`)', () => {
+    const ast = parse(['actor X', 'actor Y', 'create X #line:red']);
+    expect(ast.participants.map((p) => p.id)).toEqual(['Y', 'X']);
+  });
+
+  it('`create X #line:red` on a new X refuses with badColor() (`CommandParticipant.java:183-185`)', () => {
+    expect(parseSequence(sequenceSource(['create X #line:red']))).toMatchObject({
+      refused: true,
+      kind: 'execution',
+      line: 0,
+      message: 'No such color',
+      commandScore: 10,
+    });
+  });
+});
