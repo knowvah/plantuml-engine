@@ -167,8 +167,7 @@ function rendersDivider(node: StateNodeGeo): boolean {
   return node.headerLines !== undefined && node.emptyDescription !== true;
 }
 
-/** `fork`/`join`/`syncBar` bar — `LimitFinder#drawRectangle`'s real rule,
- *  no additional divider-line/UEmpty ink contribution. */
+/** `fork`/`join`/`syncBar` bar — `LimitFinder#drawRectangle`'s real rule, no divider-line/UEmpty ink. */
 function addBarInk(box: InkBox, x: number, y: number, w: number, h: number): void {
   addPoint(box, x - 1, y - 1);
   addPoint(box, x + w - 1, y + h - 1);
@@ -342,6 +341,7 @@ function addNodeInk(box: InkBox, node: StateNodeGeo, labelInk: boolean): void {
     case 'fork':
     case 'join':
     case 'syncBar':
+    case 'transitionLabel': // snl T4: its `URectangle` (`EntityImageTransitionLabel.java:120-121`), text inside
       addBarInk(box, node.x, node.y, node.width, node.height);
       return;
     case 'choice': {

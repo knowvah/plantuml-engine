@@ -5,9 +5,14 @@
  * `plans/class-comment-bytes/measurements/measure-ccb.mts`: the multiset difference, both sides.
  */
 
-/** Every comment body in document order, exactly as written (no trimming, no unescaping). */
+import { normaliseTransitionNodeId } from './transition-node-id.js';
+
+/**
+ * Every comment body in document order, exactly as written (no trimming, no unescaping), except that a
+ * transition-label leaf id's clock digits are rewritten to one token (snl D2, `transition-node-id.ts`).
+ */
 export function svgComments(svg: string): string[] {
-  return [...svg.matchAll(/<!--([\s\S]*?)-->/g)].map((m) => m[1]!);
+  return [...svg.matchAll(/<!--([\s\S]*?)-->/g)].map((m) => normaliseTransitionNodeId(m[1]!));
 }
 
 /**

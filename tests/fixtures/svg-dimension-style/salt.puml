@@ -1,0 +1,6 @@
+@startsalt
+skinparam svgDimensionStyle false
+{
+ Login | "x"
+}
+@endsalt

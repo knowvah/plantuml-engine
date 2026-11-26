@@ -73,7 +73,8 @@ describe('note creation-index / phantom-slot threading (G2 N15)', () => {
       'host+position merge is not modeled at parse time (pre-existing ' +
       'fallback numbering, unchanged since N13)',
     () => {
-      const ast = parse('class a { int i }\nnote right of a::i\ntip\nend note');
+      // ocb T2 (#223): the multi-line body; the jar refuses `class a { int i }` (`CommandCreateClass.java:117-119`).
+      const ast = parse('class a {\nint i\n}\nnote right of a::i\ntip\nend note');
       expect(ast.notes[0]!.targetPort).toBe('i');
       expect(ast.notes[0]!.creationIndex).toBeUndefined();
       expect(ast.notes[0]!.phantomSlot).toBeUndefined();

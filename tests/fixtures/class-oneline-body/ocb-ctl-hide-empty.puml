@@ -1,0 +1,5 @@
+@startuml
+hide empty members
+class A { }
+class B
+@enduml

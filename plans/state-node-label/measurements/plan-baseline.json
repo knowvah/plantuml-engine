@@ -1,0 +1,219 @@
+[
+  {
+    "slug": "snl-arrow-node-upper",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-arrow-node",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-composite",
+    "diffs": 32,
+    "score": 296,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"315\",\"expected\":\"423\",\"delta\":108,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-duplicate",
+    "diffs": 36,
+    "score": 201,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-elk",
+    "diffs": 21,
+    "score": 80,
+    "comments": 1,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"227\",\"delta\":31,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-hide-label-host",
+    "diffs": 4,
+    "score": 4,
+    "comments": 1,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"71\",\"delta\":125,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-issue-nonode",
+    "diffs": 6,
+    "score": 152,
+    "comments": 1,
+    "firstDiff": "{\"path\":\"svg/@background\",\"actual\":\"#000000\",\"expected\":\"#FFFFFF\",\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-issue",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-left",
+    "diffs": 35,
+    "score": 110,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"71\",\"expected\":\"262\",\"delta\":191,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-multiline",
+    "diffs": 24,
+    "score": 113,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"209\",\"expected\":\"275\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-nonode-desc",
+    "diffs": 6,
+    "score": 186,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@background\",\"actual\":\"#000000\",\"expected\":\"#FFFFFF\",\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-nonode-plain-state",
+    "diffs": 6,
+    "score": 161,
+    "comments": 1,
+    "firstDiff": "{\"path\":\"svg/@background\",\"actual\":\"#000000\",\"expected\":\"#FFFFFF\",\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-self",
+    "diffs": 22,
+    "score": 97,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"71\",\"expected\":\"152\",\"delta\":81,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-skinparam-font",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"201\",\"expected\":\"267\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-skinparam-lower",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-start-end",
+    "diffs": 37,
+    "score": 186,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"262\",\"expected\":\"394\",\"delta\":132,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-stereotype",
+    "diffs": 27,
+    "score": 102,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-style-node-first",
+    "diffs": 24,
+    "score": 100,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-style-red-dashed-node",
+    "diffs": 24,
+    "score": 100,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-style-statediagram-arrow",
+    "diffs": 24,
+    "score": 100,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-unlabelled",
+    "diffs": 32,
+    "score": 120,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-up",
+    "diffs": 24,
+    "score": 99,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-nonode-override",
+    "diffs": 21,
+    "score": 232,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@background\",\"actual\":\"#000000\",\"expected\":\"#FFFFFF\",\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-smetana-hide",
+    "diffs": 31,
+    "score": 121,
+    "comments": 2,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"321\",\"expected\":\"224\",\"delta\":97,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-transition-label-arrow-style",
+    "diffs": 53,
+    "score": 222,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"327\",\"expected\":\"459\",\"delta\":132,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-transition-label-orphaned-by-hide",
+    "diffs": 32,
+    "score": 109,
+    "comments": 4,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"321\",\"expected\":\"262\",\"delta\":59,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-transition-label-orphaned-by-remove-both-sides",
+    "diffs": 0,
+    "score": 0,
+    "comments": 0,
+    "firstDiff": null
+  },
+  {
+    "slug": "snl-vega-transition-label-orphaned-by-remove-source",
+    "diffs": 0,
+    "score": 0,
+    "comments": 0,
+    "firstDiff": null
+  },
+  {
+    "slug": "snl-vega-transition-label-orphaned-by-remove",
+    "diffs": 30,
+    "score": 107,
+    "comments": 3,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"196\",\"expected\":\"262\",\"delta\":66,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-transition-label-remove-then-restore",
+    "diffs": 40,
+    "score": 209,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"321\",\"expected\":\"453\",\"delta\":132,\"tolerance\":0.01}"
+  },
+  {
+    "slug": "snl-vega-transition-label",
+    "diffs": 55,
+    "score": 224,
+    "comments": 6,
+    "firstDiff": "{\"path\":\"svg/@height\",\"actual\":\"71\",\"expected\":\"453\",\"delta\":382,\"tolerance\":0.01}"
+  }
+]

@@ -1,0 +1,5 @@
+@startuml
+map M #line:red {
+  k => v
+}
+@enduml

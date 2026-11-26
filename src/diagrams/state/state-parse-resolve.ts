@@ -101,7 +101,7 @@ function registerStateInto(ps: ParseState, scope: Scope, state: State): void {
  * is already present in its owning scope's arrays from the visit that
  * first created it.
  */
-function registerNewState(ps: ParseState, state: State): void {
+export function registerNewState(ps: ParseState, state: State): void {
   registerStateInto(ps, currentScope(ps), state);
 }
 

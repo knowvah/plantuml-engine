@@ -60,16 +60,15 @@ export interface ParseState {
   /** Monotonically incrementing counter used to generate unique box ids. */
   boxCounter: number;
   /**
-   * T11 (ubrr): a command whose regex MATCHED but whose upstream execution
-   * semantics reject the line sets this before returning, mirroring
-   * `CommandExecutionResult.error(...)` (`PSystemCommandFactory.java:180-
-   * 186`). `dispatchOrdinaryLine` (parser.ts) checks it immediately after
-   * every `dispatchCommand` call and turns it into a `kind: 'execution'`
-   * `ParseRefusal` -- same precedent as `description`'s own
-   * `ParseState.executionError` (`description/parse-state.ts`). `undefined`
-   * (the default) means the command that just ran succeeded.
+   * T11 (ubrr): a command whose regex MATCHED but whose upstream execution semantics reject the line sets this
+   * before returning, mirroring `CommandExecutionResult.error(...)` (`PSystemCommandFactory.java:217-226`).
+   * `dispatchOrdinaryLine` (parser.ts) checks it immediately after every `dispatchCommand` call and turns it into a
+   * `kind: 'execution'` `ParseRefusal` -- same precedent as `description`'s own `ParseState.executionError`
+   * (`description/parse-state.ts`). `undefined` (the default) means the command that just ran succeeded.
    */
   executionError: string | undefined;
+  /** The failed result's `getScore()` beside {@link executionError} (`PSystemCommandFactory.java:222`); 0 if unset. */
+  executionErrorScore?: number;
   /** `SequenceDiagram`'s life-event bookkeeping -- `sequence-life-state.ts`. */
   life: LifeState;
   /**

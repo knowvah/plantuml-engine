@@ -1,0 +1,9 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A --> B : go
+note on link
+  a note
+end note
+@enduml

@@ -60,13 +60,17 @@ const SPECS: Record<string, RowSpec> = {
   'cov-license': {
     topic: '`license` (PSystemLicenseFactory `(?i)^li[sc][ea]n[sc]e\\s*$`)',
     reason:
-      'D13: the MIT edition (License.java:63-68 name, :170-172/:240-264 addMit; MIT <qrcode:> = ' +
-      'FlashCodeUtilsNone, blank 10x10 at x3, AtomImg.java:90-103) vs the GPL oracle (GPL paragraph ' +
-      ':155-168, zxing 33-module QR at x3 = 99x99). Controlled experiment (experiment-license-gpl.json): ' +
-      'GPL name + paragraph restored in src/diagrams/version/License.ts and the blank forced to 33x33 ' +
-      '(src/core/klimt/creole/atom/AtomImg.ts:35) -> 0 diffs on all three spellings. Oracle: one file per ' +
-      'jar run -- FlashCodeUtilsZxing.java:60 lock.tryLock() fails under concurrent renders and :76 returns ' +
-      'null, so a multi-file run draws 773/834/842 px at random; single-file runs 842 in 9/9.',
+      'User ruling 2026-11-12 (#179; DIVERGENCES.md "`license` page describes plantuml-engine"): the page ' +
+      'describes plantuml-engine through upstream\'s header1/header2/end3/addMit (src/diagrams/version/' +
+      'License.ts). Against the GPL oracle: item 1 header + copyright + project info (License.java:117, ' +
+      ':133, :135), item 2 no support lines and no QR row (:139-151; the oracle draws three 99x99 zxing QR ' +
+      'codes), item 3 addMit\'s first line, item 4 no advertising paragraph (:191-196), item 5 images ' +
+      'paragraph (:199, :205-206), item 6 GraphViz lines (:218-225), item 7 credits (CafeUndZopfli/Brotli ' +
+      ':233-234 out; KaTeX, pako, xmldom in; the elk-engine line held back, #282). Plus D13: the MIT ' +
+      'edition\'s name and addMit (:66-68, :243-263) for the oracle\'s GPL name and paragraph (:63-65, ' +
+      ':157-168). Oracle: one file per jar run -- FlashCodeUtilsZxing.java:60 lock.tryLock() fails under ' +
+      'concurrent renders and :76 returns null, so a multi-file run draws 773/834/842 px at random; ' +
+      'single-file runs 842 in 9/9.',
   },
   'cov-licence': { topic: '`licence` (the c/s spelling arm)' },
   'cov-license-upper': { topic: '`LICENSE` ((?i) case arm)' },

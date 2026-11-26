@@ -22,6 +22,7 @@ import type { InkBox } from '../../core/annotations/body-ink.js';
 import { addWarnings } from '../../core/annotations/WarningBannerBlock.js';
 import { DEFAULT_CLOCK } from '../../core/clock.js';
 import type { RenderFragment, SyncPlugin } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import type { ParseOptions } from '../../core/dispatcher-types.js';
 import { ColorMapper, toSvgPaint } from '../../core/klimt/color/ColorMapper.js';
 import { fromString as colorOrderFromString } from '../../core/klimt/color/ColorOrder.js';
@@ -156,6 +157,8 @@ function svgGraphic(diagram: TimingDiagram, measurer: StringMeasurer, pass: Draw
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
   const option = basicSvgOption({
     ...lengthAdjustOverride(lengthAdjust),
+    // sds T3: `option.withSvgDimensionStyle(skinParam.svgDimensionStyle())` (TextBlockExporter.java:420).
+    svgDimensionStyle: diagram.getSkinParam().svgDimensionStyle(),
     minDim: { width: pass.minDim.getWidth(), height: pass.minDim.getHeight() },
     backcolor: calculateBackColor(diagram),
     colorMapper: muteColorMapper(diagram),
@@ -182,18 +185,25 @@ function drawSvg(diagram: TimingDiagram, measurer: StringMeasurer, pass: DrawPas
  * `backcolor.toSvg(mapper)` the klimt graphic paints (SvgGraphics.java:176-188).
  * @see TextBlockExporter.java:159-176
  */
-function drawFragment(diagram: TimingDiagram, measurer: StringMeasurer, pass: DrawPass): RenderFragment {
+function drawFragment(
+  diagram: TimingDiagram,
+  measurer: StringMeasurer,
+  pass: DrawPass,
+): RenderFragment & SvgDimensionStyleFlag {
   const backcolor = toSvgPaint(calculateBackColor(diagram), muteColorMapper(diagram));
   const svg = drawSvg(diagram, measurer, pass);
   const { width, height } = extractViewBoxDims(svg);
   const { body, extraDefs } = extractFlatContent(svg);
   const lengthAdjust = diagram.getSkinParam().getlengthAdjust();
-  const fragment: RenderFragment = {
+  const fragment: RenderFragment & SvgDimensionStyleFlag = {
     body,
     width,
     height,
     diagramType: DIAGRAM_TYPE_TIMING,
     ...(lengthAdjust === undefined ? {} : { lengthAdjust }),
+    // sds T3: the shell re-roots the fragment, so it carries the option too: `false` drops the root
+    // `style`/`width`/`height` (SvgGraphics.java:795-799, decisions.md D1).
+    ...(diagram.getSkinParam().svgDimensionStyle() ? {} : { svgDimensionStyle: false as const }),
   };
   // A gradient backcolor leaves `backcolorString` null (SvgGraphics.java:178-183):
   // no root `background:`, which `RenderFragment.backgroundGradient` carries.

@@ -1,0 +1,3 @@
+@startuml
+actor X [[http://a.b]] #line:red
+@enduml

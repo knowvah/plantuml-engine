@@ -178,6 +178,15 @@ export class SkinParam implements MindMapSkinParam {
     return value === null ? undefined : lengthAdjustOfName(value);
   }
 
+  /**
+   * `!valueIs("svgdimensionstyle", "false")`: `valueIs` is `equalsIgnoreCase` (SkinParam.java:367-369). Read by
+   * the exporter beside `getlengthAdjust()` (TextBlockExporter.java:420).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:1216-1218
+   */
+  svgDimensionStyle(): boolean {
+    return this.getValue('svgDimensionStyle')?.toLowerCase() !== 'false';
+  }
+
   /** @see SkinParam.java:1096-1098 */
   getTabSize(): number {
     return this.getAsInt('tabsize', DEFAULT_TAB_SIZE);

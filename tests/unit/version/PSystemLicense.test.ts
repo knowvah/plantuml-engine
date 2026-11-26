@@ -5,18 +5,19 @@
  *
  * Jar pin (`scripts/oracle-render.sh`, 1.2026.8beta1, `@startuml\nlicense\n@enduml`):
  * a 518 x 842 page of 61 `<text>` rows and three 99x99 qrcode `<image>`s for
- * line 16 (`License.java:145-146`). The jar is the GPL edition; the port is the
- * MIT one (D13), which moves the page in exactly two ways:
- * - the qrcode line: `FlashCodeUtilsNone` exports nothing, so each
- *   `<qrcode:...>` is `AtomImg.createQrcode`'s blank 10x10 image at the default
- *   scale 3 — 30x30, not the GPL edition's 33-module QR code at 99x99 — and the
- *   row is 30 high, not 99 (69px less);
- * - `addMit`'s 22 lines replace the GPL paragraph's 13 (`License.java:155-172`,
- *   108px more), and `toString` prints `MIT` in two lines. Its widest line
- *   (570.9) widens the page to 581.
- * Controlled experiment (ufp-T3b): with the GPL `License` restored and the
- * blank image sized 33x33 the port's page has zero `compareSvg` diffs against
- * the jar; every diff below is one of these two.
+ * line 16 (`License.java:145-146`). The port's page is the one the user ruled
+ * on 2026-11-12 (#179; `License.test.ts` pins its 63 lines): no qrcode row, no
+ * support or advertising lines, the MIT edition's `addMit` (D13), and the
+ * ruling's header, images, GraphViz and credit lines.
+ *
+ * Every row sits on `GraphicStrings`' 12px line pitch from the 5px margin
+ * (baseline 14.333). A line whose text the jar page also prints keeps the jar
+ * row's x and textLength; an `addMit` line keeps the MIT edition's pin
+ * (ufp-T3b, measured before the ruling). A line the ruling changed is
+ * measured: `textLength` is the width of the trimmed text and each leading
+ * space moves x by one space (DriverTextSvg.java:108-123), and a one-character
+ * run carries no `textLength` (SvgGraphics.java `text.length() > 1`). The
+ * derivation is checked against the jar pin for every unchanged line.
  */
 import { describe, expect, it } from 'vitest';
 import type { UmlSource } from '../../../src/core/block-extractor.js';
@@ -26,10 +27,12 @@ import { PreprocessingArtifact } from '../../../src/core/tim/PreprocessingArtifa
 import { exportTo, stringBounderFor } from '../../../src/core/UgDiagram.js';
 import { ColorMapper } from '../../../src/core/klimt/color/ColorMapper.js';
 import { HColors } from '../../../src/core/klimt/color/HColors.js';
+import { UFontFactory } from '../../../src/core/klimt/font/UFontFactory.js';
 import { ClockwiseTopRightBottomLeft } from '../../../src/core/klimt/geom/ClockwiseTopRightBottomLeft.js';
+import { DEFAULT_SVG_DECIMALS, formatDecimal } from '../../../src/core/svg-format.js';
 import { getTextBlock, PSystemLicense } from '../../../src/diagrams/version/PSystemLicense.js';
+import { License } from '../../../src/diagrams/version/License.js';
 import { LicenseInfo } from '../../../src/diagrams/version/LicenseInfo.js';
-import { createQrcode } from '../../../src/core/klimt/creole/atom/AtomImg.js';
 
 const measurer = new DeterministicMeasurer();
 const SOURCE: UmlSource = { lines: ['license'], type: 'sequence' };
@@ -102,10 +105,7 @@ const JAR_LICENSE_ROWS = [
   '5 833.333 -',
 ];
 
-/** The MIT qrcode row: three 30x30 images, two tabs (52.8px) apart, at the jar's first tab stop and row top. */
-const PORT_QRCODE_ROWS = ['image 31.4 185 30x30', 'image 114.2 185 30x30', 'image 197 185 30x30'];
-
-/** `addMit` (License.java:241-263) + the blank of :189, as this port draws them. */
+/** The MIT edition's `addMit` rows (License.java:243-263) + the blank of :190, as pinned before the ruling (y at 224.333 there). */
 const PORT_MIT_ROWS = [
   '5 224.333 342.975',
   '5 236.333 189',
@@ -131,14 +131,121 @@ const PORT_MIT_ROWS = [
   '5 476.333 -',
 ];
 
-/** The jar rows after the GPL paragraph (13 rows from index 18). */
-const JAR_AFTER_EDITION_TEXT = 31;
+/** `GraphicStrings`' first baseline (5px margin + 9.333) and its 12px line pitch. */
+const FIRST_BASELINE = 14.333;
+const LINE_PITCH = 12;
 
-/** The MIT page's rows after `addMit`: 22 rows for the GPL's 13 (+108), a 30px qrcode row for 99 (-69). */
-const EDITION_SHIFT = 39;
+/** The MIT pin's first-row baseline, before the ruling removed the support and qrcode rows. */
+const PORT_MIT_FIRST_BASELINE = 224.333;
 
-/** `this MIT license.` / `...without any reference to the MIT license.` (License.java:201, :203), row index after `addMit`. */
-const MIT_NAME_ROWS: Readonly<Record<number, string>> = { 8: '86.625', 10: '434.325' };
+/**
+ * Where each line of the ruling page comes from: a jar row index (`jar`), an
+ * `addMit` pin row (`mit`, with `this MIT license.` / `... the MIT license.`
+ * pinned by the MIT edition too), or `measured` for a line the ruling changed.
+ */
+type RowSource = { readonly jar: number } | { readonly mit: number } | { readonly port: string } | 'measured';
+
+/** `this MIT license.` / `...without any reference to the MIT license.` (License.java:202, :204), MIT-edition pins. */
+const MIT_NAME_ROWS = { thisMit: '5 0 86.625', referenceMit: '5 0 434.325' } as const;
+
+const ROW_SOURCES: readonly RowSource[] = [
+  { jar: 0 },
+  { jar: 1 },
+  'measured', // ruling item 1: name line
+  { jar: 3 },
+  { jar: 4 },
+  { jar: 5 },
+  'measured', // item 1: copyright
+  'measured', // item 1: ported from
+  { jar: 7 },
+  'measured', // item 1: project info
+  'measured', // item 1: PlantUML
+  { jar: 9 },
+  'measured', // item 3: addMit's first line
+  ...Array.from({ length: 21 }, (_, i): RowSource => ({ mit: i + 1 })),
+  'measured', // item 5: Images (SVG)
+  { jar: 37 },
+  { jar: 38 },
+  { port: MIT_NAME_ROWS.thisMit },
+  { jar: 40 },
+  { port: MIT_NAME_ROWS.referenceMit },
+  'measured', // item 5: plantuml-engine
+  'measured', // item 5: appreciated
+  { jar: 44 },
+  { jar: 45 },
+  { jar: 46 },
+  { jar: 47 },
+  { jar: 48 },
+  'measured', // item 6
+  'measured', // item 6 (leading space)
+  'measured', // item 6
+  { jar: 52 },
+  { jar: 53 },
+  { jar: 54 },
+  { jar: 55 },
+  { jar: 56 },
+  { jar: 57 },
+  { jar: 58 },
+  { jar: 61 }, // Themes
+  { jar: 62 }, // Twemoji
+  'measured', // item 7: KaTeX
+  'measured', // item 7: pako
+  'measured', // item 7: xmldom
+  { jar: 63 },
+];
+
+const PAGE_LINES = [
+  ...License.getCurrent().getText1(LicenseInfo.NONE),
+  ...License.getCurrent().getText2(LicenseInfo.NONE),
+];
+
+const sb = stringBounderFor(measurer);
+/** `GraphicStrings`' `sansSerif(12)` in the bounder's `{family, size}` shape (`FontConfigurationBridge.ts`). */
+const SANS_12 = UFontFactory.sansSerif(12);
+const FONT = { family: SANS_12.getFontStack().getFullDefinition(), size: SANS_12.getSize() };
+const SPACE = sb.calculateDimension(FONT, ' ').getWidth();
+
+function fmt(value: number): string {
+  return formatDecimal(value, DEFAULT_SVG_DECIMALS);
+}
+
+/**
+ * `x textLength` of a line as DriverTextSvg draws it (java:108-123, SvgGraphics
+ * `length() > 1`). A blank-only line is first turned into non-breaking spaces,
+ * so it keeps x and carries one character (`driverTextPlacement`'s `nbspIfBlank`).
+ */
+function measuredRow(line: string): [string, string] {
+  if (line.trim() === '') return [fmt(5), '-'];
+  const leading = line.length - line.trimStart().length;
+  const text = line.trim();
+  const width = text.length > 1 ? fmt(sb.calculateDimension(FONT, text).getWidth()) : '-';
+  return [fmt(5 + leading * SPACE), width];
+}
+
+function xAndLength(source: RowSource, line: string): [string, string] {
+  if (source === 'measured') return measuredRow(line);
+  const row =
+    'jar' in source ? JAR_LICENSE_ROWS[source.jar] : 'mit' in source ? PORT_MIT_ROWS[source.mit] : source.port;
+  const [x, , length] = (row ?? '').split(' ');
+  return [x ?? '', length ?? ''];
+}
+
+const EXPECTED_ROWS = ROW_SOURCES.map((source, i) => {
+  const [x, length] = xAndLength(source, PAGE_LINES[i] ?? '');
+  return `${x} ${fmt(FIRST_BASELINE + LINE_PITCH * i)} ${length}`;
+});
+
+/**
+ * `(int)` of the content plus the 2 x 5px margin plus 1, as both jar-era pins
+ * show: the jar page 507.6 wide (its rule line) and 61 x 12 + 99 high is
+ * 518 x 842; the pre-ruling MIT page 570.9 wide and 70 x 12 + 30 high was
+ * 581 x 881. The ruling page is 63 x 12 = 756 high; its widest line is still
+ * `addMit`'s 570.9 (no measured line is wider; checked below).
+ */
+const PAGE_SIZE = ['581px', '767px'];
+
+/** `addMit`'s widest line, `AUTHORS OR COPYRIGHT HOLDERS ...` (License.java:261). */
+const WIDEST = 570.9;
 
 function rows(svg: string): string[] {
   return [...svg.matchAll(/<(text|image)([^>]*)>/g)].map((m) => {
@@ -153,41 +260,49 @@ function rootAttr(svg: string, name: string): string | undefined {
   return new RegExp(` ${name}="([^"]*)"`).exec(/^<svg[^>]*>/.exec(svg)?.[0] ?? '')?.[1];
 }
 
-function shifted(row: string, index: number): string {
-  const [x, y, textLength] = row.split(' ');
-  const length = MIT_NAME_ROWS[index] ?? textLength ?? '';
-  return `${x ?? ''} ${String(Number((Number(y) + EDITION_SHIFT).toFixed(3)))} ${length}`;
-}
+describe('the row derivation', () => {
+  it('maps every one of the 63 ruling-page lines', () => {
+    expect(ROW_SOURCES).toHaveLength(63);
+    expect(PAGE_LINES).toHaveLength(63);
+  });
 
-describe('PSystemLicense — the jar license page', () => {
+  it('reproduces the jar pin and the MIT pin for every line it does not measure', () => {
+    ROW_SOURCES.forEach((source, i) => {
+      if (source === 'measured') return;
+      expect(measuredRow(PAGE_LINES[i] ?? ''), `line ${String(i)}`).toEqual(xAndLength(source, PAGE_LINES[i] ?? ''));
+    });
+  });
+
+  it("measures no ruling line wider than addMit's widest, so the page keeps its width", () => {
+    const widths = ROW_SOURCES.flatMap((source, i) =>
+      source === 'measured' ? [Number(measuredRow(PAGE_LINES[i] ?? '')[1])] : [],
+    );
+    expect(Math.max(...widths)).toBeLessThan(WIDEST);
+    expect(Math.max(...EXPECTED_ROWS.map((row) => Number(row.split(' ')[2])).filter(Number.isFinite))).toBe(WIDEST);
+  });
+
+  it('places the MIT pin on the same pitch it was measured on', () => {
+    expect(PORT_MIT_ROWS.map((row) => row.split(' ')[1])).toEqual(
+      PORT_MIT_ROWS.map((_, i) => fmt(PORT_MIT_FIRST_BASELINE + LINE_PITCH * i)),
+    );
+  });
+});
+
+describe('PSystemLicense — the ruling license page (2026-11-12, #179)', () => {
   const svg = PSystemLicense.create(SOURCE, new PreprocessingArtifact()).exportDiagram(0, measurer);
   const ours = rows(svg);
 
-  it('draws lines 1-15 at the jar x / y / textLength', () => {
-    expect(ours.slice(0, 15)).toEqual(JAR_LICENSE_ROWS.slice(0, 15));
+  it('draws the 63 lines, each at its derived x / y / textLength', () => {
+    expect(ours).toEqual(EXPECTED_ROWS);
   });
 
-  it('draws the MIT qrcode row: three 30x30 blank images where the GPL jar draws 99x99 QR codes (D13)', () => {
-    expect(ours.slice(15, 18)).toEqual(PORT_QRCODE_ROWS);
-    expect(JAR_LICENSE_ROWS.slice(15, 18)).toEqual([
-      'image 31.4 185 99x99',
-      'image 183.2 185 99x99',
-      'image 335 185 99x99',
-    ]);
+  it('draws the leading-space GraphViz line one space in, as the jar draws its archive line', () => {
+    expect(ours[48]?.split(' ')[0]).toBe(JAR_LICENSE_ROWS[50]?.split(' ')[0]);
   });
 
-  it('draws addMit where the jar draws the GPL paragraph (D13)', () => {
-    expect(ours.slice(18, 40)).toEqual(PORT_MIT_ROWS);
-  });
-
-  it('draws the 31 lines after the edition text at the jar x / textLength, 39px lower, MIT in two of them', () => {
-    expect(ours.slice(40)).toEqual(JAR_LICENSE_ROWS.slice(JAR_AFTER_EDITION_TEXT).map(shifted));
-  });
-
-  it('is 581 x 881 (the jar GPL page is 518 x 842) and embeds the blank qrcode PNG', () => {
-    expect([rootAttr(svg, 'width'), rootAttr(svg, 'height')]).toEqual(['581px', '881px']);
-    expect(svg.match(/<image /g)).toHaveLength(3);
-    expect(svg).toContain(`xlink:href="${createQrcode('https://plantuml.com/patreon', 3).dataUri}"`);
+  it('is PAGE_SIZE and embeds no qrcode image', () => {
+    expect([rootAttr(svg, 'width'), rootAttr(svg, 'height')]).toEqual(PAGE_SIZE);
+    expect(svg).not.toContain('<image ');
   });
 
   it('renders the same document three times', () => {

@@ -172,10 +172,10 @@ interface StyleFlags {
 /** `WithLinkType.applyOneStyle`'s recognized keywords (`decoration/
  *  WithLinkType.java:143-164`), case-insensitive -- everything else is a
  *  color token (grammar-guaranteed to carry a leading `#`, see
- *  `DescriptiveLink.colorOverride`'s doc comment). `plain`/`node` are
- *  matched (so they are never misclassified as a color) but otherwise
+ *  `DescriptiveLink.colorOverride`'s doc comment). `plain`/`node`/`nonode`
+ *  (`WithLinkType.java:155-161`) are matched (so they are never misclassified as a color) but otherwise
  *  produce no effect, mirroring upstream's own no-op branches. */
-const STYLE_KEYWORDS = new Set(['dashed', 'dotted', 'bold', 'plain', 'hidden', 'norank', 'single', 'node']);
+const STYLE_KEYWORDS = new Set(['dashed', 'dotted', 'bold', 'plain', 'hidden', 'norank', 'single', 'node', 'nonode']);
 const THICKNESS_TOKEN_RE = /^thickness=(\d+)$/i;
 
 /**
@@ -216,7 +216,7 @@ function parseArrowStyle(style1: string | undefined, style2: string | undefined)
       } else if (lower === 'single') {
         result.single = true;
       } else if (STYLE_KEYWORDS.has(lower)) {
-        /* plain/node: upstream no-op */
+        /* plain/node/nonode: upstream no-op */
       } else {
         const m = THICKNESS_TOKEN_RE.exec(lower);
         if (m !== null) {

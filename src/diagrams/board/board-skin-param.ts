@@ -145,6 +145,15 @@ export class SkinParam implements ISkinParamWithSimple {
     return value === null ? undefined : lengthAdjustOfName(value);
   }
 
+  /**
+   * `!valueIs("svgdimensionstyle", "false")`: `valueIs` is `equalsIgnoreCase` (SkinParam.java:367-369). Read by
+   * the exporter beside `getlengthAdjust()` (TextBlockExporter.java:420).
+   * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/skin/SkinParam.java:1216-1218
+   */
+  svgDimensionStyle(): boolean {
+    return this.getValue('svgDimensionStyle')?.toLowerCase() !== 'false';
+  }
+
   /** @see SkinParam.java:223-225 */
   values(): ReadonlyMap<string, string> {
     return this.params;

@@ -1,0 +1,4 @@
+@startyaml
+skinparam svgDimensionStyle false
+a: 1
+@endyaml

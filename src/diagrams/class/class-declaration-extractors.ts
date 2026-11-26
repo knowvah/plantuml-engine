@@ -11,30 +11,26 @@ import { HColorSet } from '../../core/klimt/color/HColorSet.js';
 
 const TAG_TOKEN_RE = /(?<=^|\s)\$[^\s{}"'<>$]+(?=\s|$)/g;
 
-/** Extract a same-line `{ … }` inline body or a trailing `{` opener. */
-export function extractBody(rest: string): {
-  rest: string;
-  inlineMembers: string[];
-  opensBody: boolean;
-} {
-  const inlineBodyMatch = /\{([^}]*)\}\s*$/.exec(rest);
-  if (inlineBodyMatch !== null) {
-    const bodyContent = inlineBodyMatch[1]!.trim();
-    const inlineMembers =
-      bodyContent.length > 0
-        ? bodyContent
-            .split(';')
-            .map((s) => s.trim())
-            .filter((s) => s !== '')
-        : [];
-    return {
-      rest: rest.slice(0, inlineBodyMatch.index).trimEnd(),
-      inlineMembers,
-      opensBody: false,
-    };
-  }
-  if (rest.endsWith('{')) return { rest: rest.slice(0, -1).trimEnd(), inlineMembers: [], opensBody: true };
-  return { rest, inlineMembers: [], opensBody: false };
+/** `[%s]` as the jar reads it: Java `\s` is `[ \t\n\x0B\f\r]`, plus U+00A0 (`regex/Pattern2.java:56`). Not
+ *  `transform`'s JS `\s`, which also takes U+2003, where the jar refuses `class A {U+2003}` (`ocb-empty-emspace`). */
+const JAVA_S = '[ \\t\\n\\x0B\\f\\r\\u00A0]';
+
+/** `CommandCreateClass`'s optional empty body, `[%s]*\{[%s]*\}`, the last leaf before the end of the line.
+ *  @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/classdiagram/command/CommandCreateClass.java:117-119 */
+export const EMPTY_BODY_TAIL = `${JAVA_S}*\\{${JAVA_S}*\\}`;
+const EMPTY_BODY_TAIL_RE = new RegExp(`${EMPTY_BODY_TAIL}$`);
+
+/** Rule 7's guard: the line ends in the empty pair, or in no `{…}` pair at all. A non-empty one-line body matches
+ *  neither class command, so the line falls through to `Syntax Error?` (`PSystemCommandFactory.java:206-208`). */
+export const CLASS_BODY_TAIL_GUARD = `(?:(?=.*${EMPTY_BODY_TAIL}\\s*$)|(?!.*\\{[^}]*\\}\\s*$))`;
+
+/** Upstream's two brace forms: the empty pair (no body), or a trailing `{` that opens one
+ *  (`CommandCreateClassMultilines.java:140-142`). Any other tail is left in `rest`. */
+export function extractBody(rest: string): { rest: string; opensBody: boolean } {
+  const empty = EMPTY_BODY_TAIL_RE.exec(rest);
+  if (empty !== null) return { rest: rest.slice(0, empty.index).trimEnd(), opensBody: false };
+  if (rest.endsWith('{')) return { rest: rest.slice(0, -1).trimEnd(), opensBody: true };
+  return { rest, opensBody: false };
 }
 
 /**

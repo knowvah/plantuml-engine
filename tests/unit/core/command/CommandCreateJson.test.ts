@@ -139,6 +139,7 @@ function makeMockHost() {
   const entities = new Map<string, MockEntity>();
   const beginBodyCalls: (string | undefined)[] = [];
   const resolveCalls: boolean[] = []; // records each call's `reuseExisting`
+  const refusals: { message: string; score: number; block: boolean }[] = [];
   const host: JsonCommandHost<MockEntity> = {
     resolve(rawId, _rawDisplay, stereotype, color, reuseExisting) {
       resolveCalls.push(reuseExisting);
@@ -157,8 +158,11 @@ function makeMockHost() {
     setJsonValue(entity, value) {
       entity.jsonValue = value;
     },
+    refuseExecution(message, score, block) {
+      refusals.push({ message, score, block });
+    },
   };
-  return { host, entities, beginBodyCalls, resolveCalls };
+  return { host, entities, beginBodyCalls, resolveCalls, refusals };
 }
 
 describe('jsonCommands — regex dispatch', () => {
@@ -245,5 +249,47 @@ describe('jsonCommands — single-line (CommandCreateJsonSingleLine#executeArg0,
     expect(match).not.toBeNull();
     singleLine!.execute(undefined, match);
     expect(entities.get('Foo')).toEqual({ id: 'Foo' }); // created, jsonValue unset
+  });
+});
+
+describe('jsonCommands — a colour getColor refuses (ocr D3, issue #190)', () => {
+  // `CommandCreateJson.java:223-225` / `CommandCreateJsonSingleLine.java:183-185`: `getColor(s)` on the whole capture
+  // throws, and `badColor()` is `No such color`, score 10 (`CommandExecutionResult.java:85-86`).
+  const BAD_COLOR = { message: 'No such color', score: 10 };
+
+  it('multiline: refuses as a block, after resolve, and discards the body', () => {
+    const { host, beginBodyCalls, refusals, resolveCalls } = makeMockHost();
+    const [multiline] = jsonCommands<unknown, MockEntity>(() => host);
+    multiline!.execute(undefined, JSON_MULTILINE_DECL_RE.exec('json Foo #line:red {')!);
+    expect({ resolveCalls, refusals, beginBodyCalls }).toEqual({
+      resolveCalls: [true],
+      refusals: [{ ...BAD_COLOR, block: true }],
+      beginBodyCalls: [undefined],
+    });
+  });
+
+  it('single line: refuses as one line, before the data is read', () => {
+    const { host, entities, refusals } = makeMockHost();
+    const [, singleLine] = jsonCommands<unknown, MockEntity>(() => host);
+    singleLine!.execute(undefined, JSON_SINGLE_LINE_RE.exec('json Foo #pink;line:blue {"a": 1}')!);
+    expect(refusals).toEqual([{ ...BAD_COLOR, block: false }]);
+    expect(entities.get('Foo')?.jsonValue).toBeUndefined();
+  });
+
+  it('a duplicate refuses through resolve, never as a colour', () => {
+    const { host, refusals } = makeMockHost();
+    const [, singleLine] = jsonCommands<unknown, MockEntity>(() => host);
+    singleLine!.execute(undefined, JSON_SINGLE_LINE_RE.exec('json Foo 1')!);
+    singleLine!.execute(undefined, JSON_SINGLE_LINE_RE.exec('json Foo #line:red 1')!);
+    expect(refusals).toEqual([]);
+  });
+
+  it('a bare colour, known or not, is stored and not refused', () => {
+    const { host, entities, refusals } = makeMockHost();
+    const [, singleLine] = jsonCommands<unknown, MockEntity>(() => host);
+    singleLine!.execute(undefined, JSON_SINGLE_LINE_RE.exec('json Foo #red 1')!);
+    singleLine!.execute(undefined, JSON_SINGLE_LINE_RE.exec('json Bar #zzblue 1')!);
+    expect(refusals).toEqual([]);
+    expect([entities.get('Foo')?.color, entities.get('Bar')?.color]).toEqual(['#red', '#zzblue']);
   });
 });

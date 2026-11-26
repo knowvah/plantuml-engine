@@ -58,6 +58,10 @@ function host(state: ParseState, created: { node?: DescriptiveNode }): JsonComma
     setJsonValue(entity, value) {
       entity.jsonValue = value;
     },
+    refuseExecution(message, score) {
+      state.executionError = message;
+      state.executionErrorScore = score;
+    },
   };
 }
 
@@ -72,6 +76,8 @@ export function tryJsonBlock(state: ParseState, lines: readonly string[], i: num
   if (block === null) return null;
   const created: { node?: DescriptiveNode } = {};
   applyJsonMultilineOpen(host(state, created), header);
+  // The block's refusal lands on its last line (`PSystemCommandFactory.java:218-225`, ocr D4).
+  if (state.executionError !== undefined) state.executionErrorSpan = block.consumed;
   // `executeNow` creates the leaf before validating the data and keeps it on "Bad data" (`:139-150`).
   if (created.node !== undefined) finalizeJsonBody(created.node, block.body);
   return block.consumed;
@@ -84,6 +90,8 @@ export function tryJsonSingleLine(state: ParseState, line: string): number | nul
   const created: { node?: DescriptiveNode } = {};
   applyJsonSingleLine(host(state, created), match);
   // `executeArg`: a value that does not parse is `error("Bad data")` (`CommandCreateJsonSingleLine.java:150-151`).
+  // A refused colour already ended the command (`executeArg0` throws before `getJsonValue`, `:138-145`).
+  if (state.executionError !== undefined) return 1;
   if (created.node !== undefined && created.node.jsonValue === undefined) state.executionError = JSON_BAD_DATA;
   return 1;
 }

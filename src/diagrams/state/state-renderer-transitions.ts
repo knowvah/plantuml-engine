@@ -320,8 +320,8 @@ function buildLinkNoteMarkup(label: NonNullable<TransitionGeo['label']>, theme: 
 
 /** `LinkStyle.DASHED`'s `7,7` as the jar writes it on a note's line. */
 const NOTE_LINK_DASH = '7,7';
-/** `data-link-type` of a link with no decor at either end. */
-const NOTE_LINK_TYPE = 'association';
+/** `data-link-type` of a link with no decor at either end (`LinkType.java:301-302`): a note line, a node-style link 1. */
+const ASSOCIATION_LINK_TYPE = 'association';
 
 /** Path + inline arrowhead + optional label — the wrapped `<g class=
  *  "link">`'s inner content, split out of {@link renderTransitionWrapped}
@@ -468,7 +468,9 @@ export function renderTransitionWrapped(
       uid,
       fromUid: uidPlan.resolveNodeUid(transition.from),
       toUid: uidPlan.resolveNodeUid(transition.to),
-      ...(transition.noteLinkId !== undefined ? { linkType: NOTE_LINK_TYPE } : {}),
+      ...(transition.noteLinkId !== undefined ? { linkType: ASSOCIATION_LINK_TYPE } : {}),
+      // snl T4: `LinkType#getLinkTypeName` is `association` for both decors NONE (`LinkType.java:301-302`).
+      ...(transition.decorsNone === true ? { linkType: ASSOCIATION_LINK_TYPE } : {}),
       ...(reverse ? { reverse: true } : {}),
       ...(activeUrl !== undefined ? { activeUrl } : {}),
       ...(hidden ? { hidden: true } : {}),

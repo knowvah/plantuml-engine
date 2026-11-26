@@ -110,6 +110,18 @@ describe('WithLinkType', () => {
     expect(w.norankCalls).toBe(1);
   });
 
+  it('applyStyle "nonode" is a no-op: no colour, no node style (WithLinkType.java:157-161)', () => {
+    const w = new TestWithLinkType();
+    const before = w.getType();
+    w.applyStyle('nonode');
+    expect(w.getType()).toBe(before);
+    expect(w.getSpecificColor()).toBeUndefined();
+    expect(w.useNodeStyle()).toBe(false);
+    w.applyStyle('NONODE,dashed');
+    expect(w.getType().toString()).toBe(styled(LinkStyle.DASHED()));
+    expect(w.getSpecificColor()).toBeUndefined();
+  });
+
   it('applyStyle "plain" changes nothing', () => {
     const w = new TestWithLinkType();
     const before = w.getType();

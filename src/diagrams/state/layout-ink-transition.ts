@@ -73,7 +73,7 @@ export function addTransitionInk(box: InkBox, transition: TransitionGeo, labelIn
       addPoint(box, transition.label.x, transition.label.y);
     }
   }
-  if (transition.noteLinkId !== undefined) return; // no decor to ink
+  if (transition.noteLinkId !== undefined || transition.decorsNone === true) return; // no decor to ink
   const arrowInk = transitionArrowheadInk(transition);
   if (arrowInk !== undefined) {
     addPoint(box, arrowInk.minX, arrowInk.minY);

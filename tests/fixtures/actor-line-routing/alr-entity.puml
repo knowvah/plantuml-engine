@@ -1,0 +1,3 @@
+@startuml
+entity X #line:red
+@enduml

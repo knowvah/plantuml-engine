@@ -1,0 +1,7 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B $t
+A --> B : go
+hide $t
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+allowmixing
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+class K
+circle C
+() "I" as I
+K --> C
+K --> I
+@enduml

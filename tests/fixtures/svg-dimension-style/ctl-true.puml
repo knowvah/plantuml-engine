@@ -1,0 +1,4 @@
+@startuml
+skinparam svgDimensionStyle TRUE
+Alice -> Bob : hi
+@enduml

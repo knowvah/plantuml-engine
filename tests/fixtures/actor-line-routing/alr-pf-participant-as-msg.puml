@@ -1,0 +1,4 @@
+@startuml
+participant "D" as X #line:red
+X -> Y : hi
+@enduml

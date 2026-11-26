@@ -6,14 +6,7 @@
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/image/EntityImageDescription.java:142-160
  * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/svek/Cluster.java:286-296,384-390
  */
-import { fromString } from '../../core/decoration/symbol/USymbols.js';
-import {
-  mapComponentStyle,
-  resolveActorStyle,
-  resolvePackageStyle,
-  upstreamKeyword,
-} from '../../core/decoration/symbol/usymbol-resolve.js';
-import type { USymbol } from '../../core/descriptive-keywords.js';
+import { symbolSNames } from '../../core/decoration/symbol/usymbol-resolve.js';
 import type { Paint } from '../../core/paint.js';
 import { Stereotype } from '../../core/stereo/Stereotype.js';
 import type { SName } from '../../core/style/SName.js';
@@ -72,19 +65,6 @@ export function headPaint(style: Style): Paint | undefined {
 function stereotypeOf(node: DescriptiveNode): Stereotype | undefined {
   const labels = node.stereotype === undefined ? undefined : rawStereotypeLabels(node.stereotype);
   return labels === undefined || labels.length === 0 ? undefined : Stereotype.build(labels.join(''));
-}
-
-function symbolSNames(symbol: USymbol, theme: Theme): readonly SName[] | undefined {
-  if (symbol === 'usecase-business') return ['usecase', 'business'];
-  // `actor/` is `ACTOR_STICKMAN_BUSINESS` whatever the style (`USymbols.java`), whose name is `business` alone.
-  if (symbol === 'actor-business') return ['business'];
-  const usymbol = fromString(
-    upstreamKeyword(symbol),
-    resolveActorStyle(theme.actorStyle),
-    mapComponentStyle(theme.componentStyle),
-    resolvePackageStyle(theme),
-  );
-  return usymbol?.getSNames() as readonly SName[] | undefined;
 }
 
 /**

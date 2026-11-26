@@ -21,6 +21,21 @@ import {
   type TransitionArrowhead,
 } from './renderer-arrowhead.js';
 
+/** The head of a link with no decors: nothing drawn, no trim. */
+const NO_ARROWHEAD: TransitionArrowhead = { markup: '', extraDefs: '' };
+
+/** The head extremity. snl T4: a `LinkType(NONE, NONE)` link has none at either end (`SvekEdge.java:680-684` draws
+ *  nothing for `LinkDecor.NONE`), so no head and no move of the path. */
+function headArrowhead(
+  transition: TransitionGeo,
+  arrowOn: TransitionGeo,
+  paint: TransitionPaint,
+  headSide: DecorSide,
+): TransitionArrowhead {
+  if (transition.decorsNone === true) return NO_ARROWHEAD;
+  return buildTransitionArrowhead(arrowOn, paint, paint.stroke.getThickness(), headSide);
+}
+
 export interface TransitionDecors {
   readonly headSide: DecorSide;
   readonly tailSide: DecorSide;
@@ -54,7 +69,7 @@ export function buildTransitionDecors(
   const arrowOn = circleEnd
     ? { ...transition, points: pullTipBack(transition.points, headSide, CIRCLE_END_RADIUS) }
     : transition;
-  const arrowhead = buildTransitionArrowhead(arrowOn, paint, paint.stroke.getThickness(), headSide);
+  const arrowhead = headArrowhead(transition, arrowOn, paint, headSide);
   return {
     headSide,
     tailSide,

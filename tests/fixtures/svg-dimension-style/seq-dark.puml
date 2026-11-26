@@ -1,0 +1,5 @@
+@startuml
+skinparam svgDimensionStyle false
+skinparam mode dark
+Alice -> Bob : hi
+@enduml

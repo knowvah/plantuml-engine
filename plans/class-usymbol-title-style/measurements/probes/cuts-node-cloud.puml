@@ -1,0 +1,10 @@
+@startuml
+allowmixing
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+class K
+node N
+cloud Cl
+K --> N
+K --> Cl
+@enduml

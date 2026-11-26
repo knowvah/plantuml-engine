@@ -1,0 +1,6 @@
+@startuml
+skinparam svgDimensionStyle false
+robust "W" as W
+@0
+W is Idle
+@enduml

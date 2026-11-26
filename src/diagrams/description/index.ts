@@ -9,6 +9,7 @@
 import { annotateEntityStyles, annotateLinkStyles } from './description-entity-style.js';
 import type { UmlSource } from '../../core/block-extractor.js';
 import type { SyncPlugin, CompleteSvg, RenderFragment } from '../../core/dispatcher.js';
+import type { SvgDimensionStyleFlag } from '../../core/klimt/document-shell.js';
 import { internalSpriteStoreFrom } from '../../core/internal-sprite-store.js';
 import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import type { DescriptionDiagramAST } from './ast.js';
@@ -184,13 +185,16 @@ export const descriptionPlugin: SyncPlugin<DescriptionDiagramAST, DescriptionGeo
         : geo.preChromeWidth !== undefined && geo.preChromeHeight !== undefined
           ? { preChromeWidth: geo.preChromeWidth, preChromeHeight: geo.preChromeHeight }
           : {};
-    const fragment: RenderFragment = {
+    const fragment: RenderFragment & SvgDimensionStyleFlag = {
       // The root background passes the same mapper as the block (`SvgGraphics.java:178-183`).
       ...unwrapKlimtSvg(svg, toSvgSolid(resolveColorToSvgHex(theme.colors.background), muteColorMapper(theme))),
       ...(deferred ? { numbersDeferred: true as const } : {}),
       ...block,
       // lad-T2b: `TextBlockExporter.java:306-307` -- the shell re-roots the fragment, so it carries the option.
       ...(theme.lengthAdjust !== undefined ? { lengthAdjust: theme.lengthAdjust } : {}),
+      // sds T2: `TextBlockExporter.java:418-421` -- the unchromed document carries the flag on its klimt option
+      // (`renderer.ts`); the re-rooted fragment carries it to the shell (`SvgGraphics.java:795-799`, D1).
+      ...(theme.svgDimensionStyle === false ? { svgDimensionStyle: false as const } : {}),
       ...(geo.frameInk !== undefined ? { frameInk: geo.frameInk } : {}),
       // codd-T4: a style `Margin` (`TextBlockExporter.java:510-516`) is the margin the exporter applies AFTER chrome.
       ...(theme.diagramMargin !== undefined ? { documentMargin: theme.diagramMargin } : {}),

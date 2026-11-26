@@ -49,7 +49,14 @@ export type StateKind =
    * {@link State.jsonValue} for the parsed payload.
    * @see ~/git/plantuml/.../statediagram/StateDiagramFactory.java:115-116
    */
-  | 'json';
+  | 'json'
+  /**
+   * snl (#235): a transition's label drawn as its own node (upstream `LeafType.STATE_TRANSITION_LABEL`), synthesised
+   * by the transition command under `skinparam stateDiagramEdgeLabelStyle node` or a `node` arrow style; drawn by
+   * `core/svek/image/EntityImageTransitionLabel.ts`.
+   * @see ~/git/knowvah/plantuml/src/main/java/net/sourceforge/plantuml/statediagram/command/CommandLinkStateCommon.java:323-386
+   */
+  | 'transitionLabel';
 
 // ---------------------------------------------------------------------------
 // History pseudostate
@@ -263,12 +270,18 @@ export interface Transition {
   circleEnd?: boolean;
   /**
    * Raw contents of the `-[style]->` bracket, e.g. `'dotted'`, `'bold'`,
-   * `'#red'`, or `'node'` (the `node` keyword asks for the label to be
-   * drawn as an intermediate transition node — a layout decision, not a
-   * parser one; T3/T4 interprets this string).
+   * `'#red'`. `node` / `nonode` are decided in the command, as upstream's
+   * `shouldUseNodeStyle` does (`CommandLinkStateCommon.java:190-196`): a node-style
+   * transition is two links through a `'transitionLabel'` leaf, each carrying the
+   * style with `node` filtered out (`state-node-style.ts`).
    * @see ~/git/plantuml/.../descdiagram/command/CommandLinkElement.java#LINE_STYLE
    */
   arrowStyle?: string;
+  /**
+   * snl: `LinkType(LinkDecor.NONE, LinkDecor.NONE)`, the first link of a node-style transition (source to label
+   * leaf, `CommandLinkStateCommon.java:341`); every other transition is `ARROW`-headed.
+   */
+  decorsNone?: true;
   /** `<<stereotype>>` written on the transition itself. */
   stereotype?: string;
   /**

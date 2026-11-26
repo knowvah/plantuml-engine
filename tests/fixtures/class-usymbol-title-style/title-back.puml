@@ -1,0 +1,11 @@
+@startuml
+allowmixing
+skinparam titleBackgroundColor yellow
+class K
+usecase U
+actor A
+component C
+K --> U
+A --> U
+K --> C
+@enduml

@@ -1,0 +1,3 @@
+@startuml
+boundary X #line:red
+@enduml

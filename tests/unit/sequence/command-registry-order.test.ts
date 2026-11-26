@@ -43,6 +43,7 @@ import {
 import {
   activate2Command,
   activateCommand,
+  createLifelineCommand,
   deactivateCommand,
   deactivateShortCommand,
   destroyCommand,
@@ -96,6 +97,7 @@ const EXPECTED: readonly RegistryEntry[] = [
   { name: 'activateCommand', command: activateCommand, upstreamLine: 103 },
   { name: 'deactivateCommand', command: deactivateCommand, upstreamLine: 103 },
   { name: 'destroyCommand', command: destroyCommand, upstreamLine: 103 },
+  { name: 'createLifelineCommand', command: createLifelineCommand, upstreamLine: 103 },
   { name: 'deactivateShortCommand', command: deactivateShortCommand, upstreamLine: 104 },
   { name: 'noteCommand', command: noteCommand, upstreamLine: 117 },
   { name: 'endNoteCommand', command: endNoteCommand, upstreamLine: 134 },
@@ -191,14 +193,14 @@ describe('sequence command registry — frozen registration order', () => {
     );
   });
 
-  it('holds 47 commands — one array, not two tiers', () => {
-    expect(SEQUENCE_COMMANDS).toHaveLength(47);
-    expect(new Set(SEQUENCE_COMMANDS).size).toBe(47);
+  it('holds 48 commands — one array, not two tiers', () => {
+    expect(SEQUENCE_COMMANDS).toHaveLength(48);
+    expect(new Set(SEQUENCE_COMMANDS).size).toBe(48);
   });
 
   it('cites only lines inside initCommandsList (99-155) upstream', () => {
     const cited = EXPECTED.map((e) => e.upstreamLine).filter((l): l is number => l !== null);
-    expect(cited).toHaveLength(46);
+    expect(cited).toHaveLength(47);
     expect(cited.filter((l) => l < 99 || l > 155)).toEqual([]);
   });
 

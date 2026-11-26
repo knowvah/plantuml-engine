@@ -1,0 +1,7 @@
+@startuml
+skinparam svgDimensionStyle false
+skinparam dpi 150
+start
+:a;
+stop
+@enduml

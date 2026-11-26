@@ -1,0 +1,5 @@
+@startuml
+actor Y
+create "Long N" #red
+Y -> "Long N" : new
+@enduml

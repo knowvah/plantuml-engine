@@ -1,0 +1,6 @@
+@startmindmap
+skinparam svgDimensionStyle false
+title T
+* A
+** B
+@endmindmap

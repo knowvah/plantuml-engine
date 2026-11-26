@@ -1,0 +1,8 @@
+@startuml
+allowmixing
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+class K
+component C
+K --> C
+@enduml

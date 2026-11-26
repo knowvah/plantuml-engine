@@ -34,7 +34,7 @@ import { sortSpecsByCreationIndex } from './state-composite-pass.js';
 import { layoutComposite } from './state-composite-geo.js';
 import { attachTransitionLabel, labelStyleOf } from './state-transition-label.js';
 import { clusterAnchorRectsOf, clipTransitionSpline } from './state-transition-clip.js';
-import { undoGraphvizInversion, shiftGroupAutoLinks } from './state-composite-transition-geo.js';
+import { undoGraphvizInversion, shiftGroupAutoLinks, transitionDecorFields } from './state-composite-transition-geo.js';
 import type { ClipRect } from '../../core/spline-clip.js';
 import type { StateNodeGeo, TransitionGeo, StateGeometry, StateRegionGeo } from './state-geo-types.js';
 
@@ -233,8 +233,7 @@ function buildFlatTransitionGeos(
       ...(t.arrowStyle !== undefined ? { arrowStyle: t.arrowStyle } : {}),
       ...(t.stereotype !== undefined ? { stereotype: t.stereotype } : {}),
       ...(inverted ? { inverted: true as const } : {}),
-      ...(t.crossStart !== undefined ? { crossStart: t.crossStart } : {}),
-      ...(t.circleEnd !== undefined ? { circleEnd: t.circleEnd } : {}),
+      ...transitionDecorFields(t),
     });
   }
   return geos;

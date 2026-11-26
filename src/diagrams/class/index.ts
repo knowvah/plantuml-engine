@@ -13,6 +13,7 @@ import { annotateClassStyles, annotateLinkStyles } from './class-cluster-corner.
 import { annotateObjectStyles } from './class-object-style.js';
 import { annotateStereotypeFonts } from './class-stereotype-style.js';
 import { annotateStateLeafStyles } from './class-state-leaf.js';
+import { annotateUSymbolTitleStyles } from './class-usymbol-title-style.js';
 import { layoutClassElk } from './class-elk-layout.js';
 import { ELK_RENDER_SYNC_UNSUPPORTED } from '../../core/elk/layout-services.js';
 import { withClassWarningBanner, withSkinParamWarnings } from './class-warnings.js';
@@ -91,6 +92,9 @@ export const classPlugin: SyncPlugin<ClassDiagramAST, ClassGeometry> = {
       annotateObjectStyles(ast.classifiers, builder, theme);
       annotateStereotypeFonts(ast.classifiers, builder);
       annotateStateLeafStyles(ast.classifiers, builder);
+      // cuts T2: the generation-aware lookup, so each leaf reads its own builder (`Entity.java:760-772`).
+      if (services?.styleBuilder !== undefined)
+        annotateUSymbolTitleStyles(ast.classifiers, services.styleBuilder, theme);
     }
     const geo =
       ast.layoutEngine === 'elk' && services?.elk !== undefined

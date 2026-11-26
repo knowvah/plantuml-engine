@@ -17,6 +17,7 @@
 import type { RelationshipType } from './ast.js';
 import { parseArrowDecors, parseArrowDecorsRaw } from './class-arrow-decor-map.js';
 import { colorOrWhite } from '../../core/klimt/color/HColorSet.js';
+import { LINE_STYLE } from '../../core/link-style-regex.js';
 export { parseArrowDecors, parseArrowDecorsRaw };
 
 /**
@@ -73,11 +74,11 @@ export const ARROW_DIR = String.raw`(?:left|right|down|up|le|ri|do|[lrud])`;
 // then discarded rather than carried on Relationship; see
 // decoration/LinkType.java's `linkStyle` field for where upstream keeps it
 // for later SVG rendering.
-/** `KEY1` — one style keyword (`CommandLinkElement.java:71`). */
-const LINE_STYLE_KEY = String.raw`dotted|dashed|plain|bold|hidden|norank|single|node|thickness=\d+`;
 /**
  * `LINE_STYLE` — one `#color` or keyword, then zero or more COMMA-separated
- * more of the same (`CommandLinkElement.java:77-80`).
+ * more of the same (`CommandLinkElement.java:88-89`), imported from the shared
+ * core list as `CommandLinkClass.java:143,146` imports upstream's (snl T2: the
+ * local copy lacked `nonode`).
  *
  * Deliberately NOT `LINE_STYLE_MULTIPLES`, which appends `(?:;LINE_STYLE)*`
  * (`:82`). That semicolon form is DESCRIPTION-only: `CommandLinkElement`
@@ -90,7 +91,6 @@ const LINE_STYLE_KEY = String.raw`dotted|dashed|plain|bold|hidden|norank|single|
  * This was `\[[^[\]]+\]`, accepting any bracket content, which let the
  * class engine claim that fixture.
  */
-const LINE_STYLE = `(?:#\\w+|${LINE_STYLE_KEY})(?:,(?:#\\w+|${LINE_STYLE_KEY}))*`;
 export const ARROW_STYLE = `\\[(?:${LINE_STYLE})\\]`;
 
 const ARROW_DIR_RE = new RegExp(ARROW_DIR, 'i');
@@ -388,14 +388,14 @@ export interface ArrowStyleOverrides {
 const CLASS_THICKNESS_TOKEN_RE = /^thickness=(\d+)$/i;
 
 /**
- * Bracket keywords with no render effect via this function -- `plain`/`node`
- * are upstream no-ops (`WithLinkType.applyOneStyle`'s own "Do nothing"/no
+ * Bracket keywords with no render effect via this function -- `plain`/`node`/
+ * `nonode` (`WithLinkType.java:155-161`) are upstream no-ops (`WithLinkType.applyOneStyle`'s own "Do nothing"/no
  * reachable svek/abel consumer). Recognized here ONLY so neither is ever
  * misclassified as a color token. (`single` was in this set until SI1/T11;
  * `hidden` until T5/M12 -- each now has its own branch, see
  * `ArrowStyleOverrides.single`/`.hidden`.)
  */
-const NON_COLOR_KEYWORDS = new Set(['plain', 'node']);
+const NON_COLOR_KEYWORDS = new Set(['plain', 'node', 'nonode']);
 
 /**
  * `WithLinkType.applyStyle`/`applyOneStyle` (`decoration/WithLinkType.java:

@@ -1,0 +1,12 @@
+@startuml
+allowmixing
+skinparam titleFontColor red
+skinparam titleFontSize 18
+class K
+usecase U
+usecase "Long Name" as L
+component C
+K --> U
+K --> L
+K --> C
+@enduml

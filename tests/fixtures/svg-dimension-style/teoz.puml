@@ -1,0 +1,5 @@
+@startuml
+!pragma teoz true
+skinparam svgDimensionStyle false
+Alice -> Bob : hi
+@enduml

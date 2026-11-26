@@ -347,6 +347,14 @@ function materializeCluster(
  *  (`InnerStateAutonom.java:186-197`, `ConcurrentStates.java:133-141`).
  *  With `undefined` the lookup missed, `materializeCluster` fell back to
  *  `boundingBox(children)`, and precisely that ink was dropped. */
+/** A leaf spec's kind content (`state-leaf-content.ts`): the json grid or the transition-label block, when present. */
+function leafContentOf(spec: Pick<StateNodeGeo, 'jsonLayout' | 'transitionLabel'>): Partial<StateNodeGeo> {
+  return {
+    ...(spec.jsonLayout !== undefined ? { jsonLayout: spec.jsonLayout } : {}),
+    ...(spec.transitionLabel !== undefined ? { transitionLabel: spec.transitionLabel } : {}),
+  };
+}
+
 export function materializeSpecs(
   specs: readonly GeoSpec[],
   posMap: PosMap,
@@ -383,7 +391,7 @@ export function materializeSpecs(
         ...(spec.bodyLines !== undefined ? { bodyLines: spec.bodyLines } : {}),
         ...(spec.color !== undefined ? { color: spec.color } : {}),
         ...(spec.url !== undefined ? { url: spec.url } : {}),
-        ...(spec.jsonLayout !== undefined ? { jsonLayout: spec.jsonLayout } : {}),
+        ...leafContentOf(spec),
         ...(spec.stateColors !== undefined ? { stateColors: spec.stateColors } : {}),
         ...(spec.stereotype !== undefined ? { stereotype: spec.stereotype } : {}),
         // G9/T7: a border point's label height, for the ink band its label

@@ -51,9 +51,8 @@ import { internalEmojiStoreFrom } from '../../core/internal-emoji-store.js';
 import type { StateDiagramAST } from './ast.js';
 import { COMMANDS } from './state-commands.js';
 import { finalizePendingNote, isNoteCloser, type PendingNote } from './state-notes.js';
-import { isJsonCloser } from './state-json-commands.js';
+import { stepPendingJson } from './state-json-commands.js';
 import { noteOpenerAfter, pendingNoteRefusal, stepNoteLine, type NoteOpener } from './state-note-multiline.js';
-import { finalizeJsonBody } from '../../core/command/CommandCreateJson.js';
 import { createAnnotations, matchAnnotationCommand, type DiagramAnnotations } from '../../core/annotations/index.js';
 import { createSpriteRegistry, matchSpriteCommand, type SpriteRegistry } from '../../core/sprite-commands.js';
 import {
@@ -69,6 +68,7 @@ import {
 import { buildPhantomGroups } from './state-parse-phantom.js';
 import { refuse, syntaxErrorMessageOf, type ParseRefusal } from '../../core/parse-refusal.js';
 import { checkFinalError } from './state-check-final.js';
+import { initTransitionLabels } from './state-node-style.js';
 
 /**
  * Which pass may FINALIZE (push into `ast.notes`) a given pending note
@@ -111,24 +111,19 @@ function handlePendingNoteLine(ps: ParseState, line: string, raw: string, pass: 
 }
 
 /**
- * Consume a line while inside a `json Name { ... }` multi-line body,
- * accumulating raw lines until the closing brace. Returns true when the
- * line was consumed. Mirrors {@link handlePendingNoteLine} exactly: the
- * body must be swallowed regardless of pass (so its closing brace never
- * reaches `dispatchCommand`, and a mid-body line like a quoted-key/
- * quoted-value pair never falls through to the standalone CODE-colon-text
- * rule), but the actual `jsonValue` write only fires on pass ONE
- * (state-json-commands.ts's `finalizeJsonBody` doc).
+ * Consume a line while inside a `json Name { ... }` multi-line body (`stepPendingJson`): true when consumed, false
+ * when no body is open, and on the closing line of a refused block its refusal, at that line's position
+ * (`PSystemCommandFactory.java:218-225`, ocr D4).
  */
-function handlePendingJsonLine(ps: ParseState, line: string, pass: Pass): boolean {
-  if (ps.pendingJson === null) return false;
-  if (isJsonCloser(line)) {
-    if (pass === 'one') finalizeJsonBody(ps.pendingJson.target, ps.pendingJson.lines);
-    ps.pendingJson = null;
-  } else {
-    ps.pendingJson.lines.push(line);
-  }
-  return true;
+function handlePendingJsonLine(
+  ps: ParseState,
+  line: string,
+  pass: Pass,
+  at: { readonly position: number; readonly origLine: number },
+): boolean | ParseRefusal {
+  const step = stepPendingJson(ps, line, pass);
+  if (typeof step === 'boolean') return step;
+  return refuse('execution', at.position, at.origLine + 1, step.message, step.score);
 }
 
 /** Dispatch a line to the first matching command, then apply it only if
@@ -169,7 +164,7 @@ function dispatchCommand(
         const message = ps.executionError;
         ps.executionError = undefined;
         // stdd T5b: the document position for the page, the block index for `consumed`.
-        return refuse('execution', position, origLine + 1, message);
+        return refuse('execution', position, origLine + 1, message, ps.executionErrorScore);
       }
     }
     return true;
@@ -351,8 +346,10 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
       continue;
     }
     if (handlePendingNoteLine(ps, line, block.lines[origIndex[i]!]!, pass)) continue;
-    if (handlePendingJsonLine(ps, line, pass)) continue;
     const position = block.linePositions?.[origIndex[i]!] ?? origIndex[i]!;
+    const json = handlePendingJsonLine(ps, line, pass, { position, origLine: origIndex[i]! });
+    if (json === true) continue;
+    if (json !== false) return json;
     const dispatched = dispatchCommand(ps, line, pass, origIndex[i]!, position);
     opener = noteOpenerAfter(ps, opener, position, origIndex[i]!);
     if (dispatched === true) continue;
@@ -381,7 +378,12 @@ function runPass(ps: ParseState, block: UmlSource, pass: Pass): ParseRefusal | n
  *  point `class/parser.ts#parseClass`/`description/index.ts`'s own plugin
  *  resolve their pair -- see `ParseOptions.assetStore`'s doc
  *  (`core/dispatcher.ts`). */
-function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: ParseState } {
+/** The block's skinparam assignments: the top-level copy, else the preprocessed style source's. */
+function skinparamAssignmentsOf(block: UmlSource): UmlSource['skinparamAssignments'] {
+  return block.skinparamAssignments ?? block.styleSource?.skinparamAssignments;
+}
+
+function initParseState(block: UmlSource, options?: ParseOptions): { ast: StateDiagramAST; ps: ParseState } {
   const internalSprites = options?.assetStore === undefined ? undefined : internalSpriteStoreFrom(options.assetStore);
   const internalEmoji = options?.assetStore === undefined ? undefined : internalEmojiStoreFrom(options.assetStore);
   const ast: StateDiagramAST = {
@@ -391,9 +393,8 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
     annotations: createAnnotations(),
     sprites: createSpriteRegistry(internalSprites, internalEmoji),
   };
-  const topScope = makeScope(null);
   const ps: ParseState = {
-    scopeStack: [topScope],
+    scopeStack: [makeScope(null)],
     ast,
     pendingNote: null,
     pendingJson: null,
@@ -408,6 +409,8 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
     pseudoCreationIndex: new Map(),
     concurrentGlobalCounter: 0,
     concurrentGlobalIds: new Map(),
+    // snl D1: `SkinParam#getValue` over the block's skinparams, and the injected clock for the leaf ids.
+    transitionLabels: initTransitionLabels(skinparamAssignmentsOf(block), options?.clock),
   };
   return { ast, ps };
 }
@@ -423,7 +426,7 @@ function initParseState(options?: ParseOptions): { ast: StateDiagramAST; ps: Par
  * `parseDescription` thread it, mirroring `class/parser.ts:317-318`.
  */
 export function parseState(block: UmlSource, options?: ParseOptions): StateDiagramAST | ParseRefusal {
-  const { ast, ps } = initParseState(options);
+  const { ast, ps } = initParseState(block, options);
   const topScope = ps.scopeStack[0];
 
   // PASS ONE: declaration-family commands only — builds the complete tree.

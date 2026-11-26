@@ -1,0 +1,6 @@
+@startuml
+skinparam svgDimensionStyle false
+Alice -> Bob
+newpage
+Bob -> Alice
+@enduml

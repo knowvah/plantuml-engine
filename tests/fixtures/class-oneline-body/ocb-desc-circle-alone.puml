@@ -1,0 +1,4 @@
+@startuml
+[C1]
+circle Z { a }
+@enduml

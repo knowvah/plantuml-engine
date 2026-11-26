@@ -1,0 +1,9 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+state C {
+  state X
+  state Y
+  X --> Y : inner
+}
+[*] --> C : enter
+@enduml

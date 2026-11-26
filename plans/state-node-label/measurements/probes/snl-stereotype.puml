@@ -1,0 +1,12 @@
+@startuml
+<style>
+.hot {
+  FontColor red
+  LineColor red
+}
+</style>
+skinparam stateDiagramEdgeLabelStyle node
+state A
+state B
+A --> B <<hot>> : go
+@enduml

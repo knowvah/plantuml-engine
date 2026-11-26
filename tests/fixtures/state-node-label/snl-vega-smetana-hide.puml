@@ -1,0 +1,13 @@
+@startuml
+!pragma layout smetana
+skinparam stateDiagramEdgeLabelStyle node
+
+state Idle
+state Charging
+state Faulted $fault
+
+Idle --> Charging : start
+Charging --> Faulted : fault
+
+hide $fault
+@enduml

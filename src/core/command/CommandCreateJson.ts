@@ -26,6 +26,8 @@
 
 import type { Command } from './Command.js';
 import type { JsonNode } from './JsonNode.js';
+import { CommandExecutionResult } from './CommandExecutionResult.js';
+import { refusesAsBareColor } from '../klimt/color/HColorSet.js';
 
 // ---------------------------------------------------------------------------
 // Header grammar (NameAndCodeParser.nameAndCode() + ColorParser.exp1()) —
@@ -290,6 +292,17 @@ export function finalizeJsonBody<E extends { jsonValue?: JsonNode }>(entity: E, 
   if (value !== null) entity.jsonValue = value;
 }
 
+/**
+ * `CommandCreateJson#finalVerification` (`CommandCreateJson.java:155-162`): a block whose `END` line (`^\s*\}\s*$`)
+ * has been reached is complete only once the body read so far (`bodyLines`, the candidate `}` excluded) parses,
+ * with or without the outer braces (`getJsonValue`, `:164-185`); until then `OK_PARTIAL` keeps reading, so a `}`
+ * inside the data does not end the block.
+ */
+export function isJsonBodyComplete(bodyLines: readonly string[]): boolean {
+  const body = bodyLines.join('');
+  return parseJsonNode('{' + body + '}') !== null || parseJsonNode(body) !== null;
+}
+
 // ---------------------------------------------------------------------------
 // Header field extraction — shared by both apply functions below.
 // ---------------------------------------------------------------------------
@@ -355,6 +368,26 @@ export interface JsonCommandHost<E> {
   beginBody(entity: E | undefined): void;
   /** Store a parsed single-line JSON value on `entity`. */
   setJsonValue(entity: E, value: JsonNode): void;
+  /**
+   * Report an execution refusal raised after {@link resolve} returned an entity: `message` and `score` are the
+   * failed `CommandExecutionResult`'s (`PSystemCommandFactory.java:180-186`). `block` is true for the multi-line
+   * form, whose refusal upstream reports on the block's last line (`PSystemCommandFactory.java:218-225`).
+   */
+  refuseExecution(message: string, score: number, block: boolean): void;
+}
+
+/** `CommandExecutionResult.badColor()` (`command/CommandExecutionResult.java:85-86`): a colour `getColor` refuses. */
+const BAD_COLOR = CommandExecutionResult.badColor();
+
+/**
+ * `executeArg0`'s tail, `getColor(s)` on the whole `COLOR` capture (`CommandCreateJson.java:223-225`,
+ * `CommandCreateJsonSingleLine.java:183-185`): true, after reporting `badColor()` through the host, when the capture
+ * cannot be a bare colour (ocr D2, {@link refusesAsBareColor}).
+ */
+function refusesColor<E>(host: JsonCommandHost<E>, color: string | undefined, block: boolean): boolean {
+  if (color === undefined || !refusesAsBareColor(color)) return false;
+  host.refuseExecution(BAD_COLOR.getError(), BAD_COLOR.getScore(), block);
+  return true;
 }
 
 /**
@@ -370,7 +403,8 @@ export interface JsonCommandHost<E> {
 export function applyJsonMultilineOpen<E>(host: JsonCommandHost<E>, match: RegExpExecArray): void {
   const { rawId, rawDisplay, stereotype, color } = parseJsonMultilineMatch(match);
   const entity = host.resolve(rawId, rawDisplay, stereotype, color, true);
-  host.beginBody(entity);
+  // The colour throws inside `executeArg0`, before `executeNow` reads the data (`CommandCreateJson.java:141-150`).
+  host.beginBody(entity !== undefined && refusesColor(host, color, true) ? undefined : entity);
 }
 
 /**
@@ -392,6 +426,8 @@ export function applyJsonSingleLine<E>(host: JsonCommandHost<E>, match: RegExpEx
 
   const entity = host.resolve(rawId, rawDisplay, stereotype, color, false);
   if (entity === undefined) return; // "JSON already exists" — no-op
+  // The colour throws inside `executeArg0`, before the data is read (`CommandCreateJsonSingleLine.java:138-145`).
+  if (refusesColor(host, color, false)) return;
 
   const value = parseJsonNode(dataText);
   if (value !== null) host.setJsonValue(entity, value);

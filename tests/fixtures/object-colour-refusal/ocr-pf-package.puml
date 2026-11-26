@@ -1,0 +1,5 @@
+@startuml
+package P {
+  object O #line:red
+}
+@enduml

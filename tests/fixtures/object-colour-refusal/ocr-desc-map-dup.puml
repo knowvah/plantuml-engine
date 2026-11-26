@@ -1,0 +1,6 @@
+@startuml
+component M
+map M {
+  k => v
+}
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+allowmixing
+<style>
+actor {
+  business {
+    LineColor green
+  }
+}
+</style>
+class K
+actor/ AB
+K --> AB
+@enduml

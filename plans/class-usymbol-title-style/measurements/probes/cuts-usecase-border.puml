@@ -1,0 +1,12 @@
+@startuml
+allowmixing
+skinparam titleBorderColor red
+skinparam titleBorderThickness 2
+class K
+skinparam usecaseBorderColor green
+skinparam usecaseBorderThickness 1
+usecase U
+actor A
+K --> U
+A --> U
+@enduml

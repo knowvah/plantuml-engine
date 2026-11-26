@@ -6,7 +6,6 @@
  */
 
 import type { Classifier, ClassifierKind, RelationshipType, Visibility } from './ast.js';
-import { parseMemberLine } from './class-member-parser.js';
 import {
   DESCRIPTIVE_LEAF_KEYWORDS,
   USECASE_LEAF_KEYWORDS,
@@ -36,12 +35,10 @@ export interface ClassifierDecl {
   stereotype?: string;
   color?: string;
   /**
-   * True if the line ended with `{` with no inline closing `}`.
+   * True if the line ended with `{` (`CommandCreateClassMultilines.java:140-142`); an empty `{ }` never opens.
    * Indicates that subsequent lines until `}` are member definitions.
    */
   opensBody: boolean;
-  /** Members found on the same line as the brace: class Foo { +bar(): int } */
-  inlineMembers: string[];
   /** Source keyword for `kind: 'descriptive'` (database/node/…), else absent. */
   usymbol?: string;
   /** Parent ids from `extends A, B` (comma-separated; upstream CODES). */
@@ -71,7 +68,7 @@ export interface ClassifierDecl {
  *   class Foo << Stereotype >>
  *   class Foo #pink
  *   class Foo {
- *   class Foo { +bar(): String }    <- inline single-line body
+ *   class Foo { }                   <- empty pair (CommandCreateClass.java:117-119)
  */
 // Keyword tables live in class-descriptive-leaf-keywords.ts (500-line cap
 // split; shared with class-descriptive-leaf-command.ts, no circular import).
@@ -174,7 +171,7 @@ export function parseClassifierDecl(line: string): ClassifierDecl | null {
   const rawKind = kindMatch[2]!.replace(/\s+/, ' ').toLowerCase().replace(/^mix_/, '');
   const { kind, usymbol } = resolveDeclKind(rawKind);
 
-  const { inlineMembers, opensBody, rest: body } = extractBody(kindMatch[3]!.trim());
+  const { opensBody, rest: body } = extractBody(kindMatch[3]!.trim());
   // EXTENDS/IMPLEMENTS sit to the right of COLOR/LINECOLOR in the grammar
   // (CommandCreateClass.java:99-108), so they must be stripped first — color
   // extraction is anchored to the current end of the remainder.
@@ -189,7 +186,6 @@ export function parseClassifierDecl(line: string): ClassifierDecl | null {
     kind,
     typeParams,
     opensBody,
-    inlineMembers,
     extendsIds,
     implementsIds,
     tags,
@@ -347,10 +343,6 @@ export function applyClassifierDecl(state: ParseState, decl: ClassifierDecl, alw
   if (decl.tags.length > 0) {
     classifier.tags = [...new Set([...(classifier.tags ?? []), ...decl.tags])];
   }
-  for (const memberStr of decl.inlineMembers) {
-    const member = parseMemberLine(memberStr);
-    if (member !== null) classifier.members.push(member);
-  }
   applyInheritanceClauses(state, classifier.id, decl);
   if (decl.opensBody) state.pendingBodyId = classifier.id;
 }
@@ -406,8 +398,8 @@ const BAD_NAME = 'Bad name';
  * On failure both class commands return an execution error before touching
  * the entity -- the single-line one "Bad name" (`CommandCreateClass.java:
  * 195-197`), the multi-line one "Cannot create " + idShort + " because it
- * already exists" (`CommandCreateClassMultilines.java:245-246`). A `{ ... }`
- * body or inline members mean the multi-line command matched.
+ * already exists" (`CommandCreateClassMultilines.java:245-246`). A trailing
+ * `{` means the multi-line command matched.
  *
  * cdd5-T5e (redeclare-refusal-line): `PSystemError#getLineLocation`
  * (`error/PSystemError.java:102-104`) is `getLastLine().getLocation()` --
@@ -421,8 +413,7 @@ const BAD_NAME = 'Bad name';
 function refuseFailedMute(state: ParseState, decl: ClassifierDecl, oldKind: ClassifierKind): boolean {
   if (oldKind === decl.kind) return false;
   if (CLASS_LIKE_TYPES.has(oldKind) && (CLASS_LIKE_TYPES.has(decl.kind) || decl.kind === 'object')) return false;
-  const multiline = decl.opensBody || decl.inlineMembers.length > 0;
-  const message = multiline ? `Cannot create ${decl.id} because it already exists` : BAD_NAME;
+  const message = decl.opensBody ? `Cannot create ${decl.id} because it already exists` : BAD_NAME;
   if (decl.opensBody) {
     state.pendingBodyRefusal = { message };
     return true;

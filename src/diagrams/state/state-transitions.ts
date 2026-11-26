@@ -13,6 +13,9 @@
  * @see ~/git/plantuml/.../statediagram/command/CommandLinkStateCommon.java (shared grammar/semantics)
  */
 
+// snl T2: upstream state reads `CommandLinkElement.LINE_STYLE` itself (`CommandLinkState.java:65-67`,
+// `CommandLinkStateReverse.java:68-70`); one shared list, so `nonode` reaches state too.
+import { LINE_STYLE } from '../../core/link-style-regex.js';
 import type { Transition, TransitionDirection } from './ast.js';
 
 // ---------------------------------------------------------------------------
@@ -50,12 +53,6 @@ const ENT = `(={2,}${ID}={2,}|\\[H\\*\\]|\\[H\\]|\\[\\*\\]|${ID}\\[H\\*\\]|${ID}
 /** Abbreviated compass directions — upstream tries full words before the
  *  single/double-letter abbreviations in this exact order. */
 const ARROW_DIRECTION = String.raw`(left|right|up|down|le?|ri?|up?|do?)`;
-
-/** Simplified LINE_STYLE — a color (`#word`) or one of the named style
- *  keywords, comma-separated repeats.
- *  @see ~/git/plantuml/.../descdiagram/command/CommandLinkElement.java#LINE_STYLE */
-const STYLE_WORD = String.raw`(?:#\w+|dotted|dashed|plain|bold|hidden|norank|single|node|thickness=\d+)`;
-const LINE_STYLE = `${STYLE_WORD}(?:,${STYLE_WORD})*`;
 
 const STEREOTYPE_TAIL = String.raw`(?:\s*<<([^<>]+)>>)?`;
 const LABEL_TAIL = String.raw`(?:\s*:\s*(.*))?`;

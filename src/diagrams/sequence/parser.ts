@@ -290,9 +290,8 @@ function dispatchOrdinaryLine(state: ParseState, line: string, at: number): Pars
   if (!dispatchCommand(state, line)) {
     return refuse('syntax', at, at, syntaxErrorMessageOf(line));
   }
-  if (state.executionError !== undefined) {
-    return refuse('execution', at, at, state.executionError);
-  }
+  if (state.executionError !== undefined)
+    return refuse('execution', at, at, state.executionError, state.executionErrorScore);
   return null;
 }
 

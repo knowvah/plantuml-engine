@@ -7,6 +7,7 @@
  * (spread fourth in COMMANDS, right after the relationship group).
  */
 import { applyClassifierDecl, parseClassifierDecl } from './class-declaration-parser.js';
+import { CLASS_BODY_TAIL_GUARD } from './class-declaration-extractors.js';
 import { OBJECT_COMMANDS } from './class-object-commands.js';
 import { MAP_COMMANDS } from './class-map-commands.js';
 import { JSON_COMMANDS } from './class-json-commands.js';
@@ -28,9 +29,18 @@ export const DECLARATION_COMMANDS: readonly Command[] = [
   //    at all. See `DECL_KIND_RE`'s own doc comment for the upstream
   //    citations (VISIBILITY, `static class`, `struct`/`exception`/
   //    `metaclass`/`stereotype`/`dataclass`/`record`, `diamond`).
+  //    ocb T2 (#223): the brace tail is `extractBody`'s own, through
+  //    `CLASS_BODY_TAIL_GUARD`: a line ending in a non-empty `{…}` matches
+  //    neither `CommandCreateClass` (empty pair only, java:117-119) nor
+  //    `CommandCreateClassMultilines` (trailing `{`, java:140-142), so this
+  //    gate declines it and the line reaches `buildSyntaxRefusal`.
   {
-    pattern:
-      /^(?:[-#+~]\s*)?(?:abstract\s+class|static\s+class|abstract|class|interface|enum|annotation|entity|circle|diamond|protocol|struct|exception|metaclass|stereotype|dataclass|record)\s+/i,
+    pattern: new RegExp(
+      '^(?:[-#+~]\\s*)?(?:abstract\\s+class|static\\s+class|abstract|class|interface|enum|annotation|entity|circle|' +
+        'diamond|protocol|struct|exception|metaclass|stereotype|dataclass|record)\\s+' +
+        CLASS_BODY_TAIL_GUARD,
+      'i',
+    ),
     execute(state, match) {
       const decl = parseClassifierDecl(match.input);
       if (decl !== null) applyClassifierDecl(state, decl, true);

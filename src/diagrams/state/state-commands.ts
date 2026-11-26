@@ -29,6 +29,7 @@ import {
   concurrentRegionScopeId,
 } from './state-parse-state.js';
 import { emitTransition } from './state-link-add.js';
+import { createTransitionWithIntermediateNode, endpointName, shouldUseNodeStyle } from './state-node-style.js';
 import { ensureState, resolveDescriptionTarget } from './state-parse-resolve.js';
 import { parseLabel } from './state-parse-helpers.js';
 import { parseTransitionLine } from './state-transitions.js';
@@ -406,6 +407,18 @@ export const COMMANDS: readonly Command[] = [
         to: toState?.id ?? rest.to,
         ...labelParts,
       };
+      // snl D3: `executeArg`'s branch (`CommandLinkStateCommon.java:190-196`): node style and a label whose
+      // `Display#toString().trim()` is not empty build the label leaf and two links instead.
+      if (rawLabel.trim() !== '' && shouldUseNodeStyle(t.arrowStyle, ps.transitionLabels.edgeLabelStyle)) {
+        const sourceName = endpointName(ps, t.from, true);
+        createTransitionWithIntermediateNode(ps, {
+          sourceName,
+          targetName: endpointName(ps, t.to, false),
+          transition: t,
+          rawLabel,
+        });
+        return;
+      }
       emitTransition(ps, t);
     },
   },

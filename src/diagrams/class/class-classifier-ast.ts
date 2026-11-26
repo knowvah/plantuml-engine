@@ -10,6 +10,7 @@ import type { UrlInfo } from './class-url.js';
 import type { MapRow } from './ast.js';
 import type { ObjectStyleScope } from './class-object-style.js';
 import type { StereotypeFontValues } from './class-stereotype-style.js';
+import type { Style } from '../../core/style/Style.js';
 import type { DisplayPositioned } from '../../core/annotations/index.js';
 import type { LeafSizingStereotypeSprite } from '../../core/svek/image/LeafSizingSubject.js';
 
@@ -214,6 +215,9 @@ export interface Classifier {
   objectStyle?: ObjectStyleScope;
   /** The `<<stereotype>>` label's `stereotype` style (`class-stereotype-style.ts`, upstream 53fba993513/e7e3d8063b5). */
   stereotypeFont?: StereotypeFontValues;
+  /** cuts T2 (#195): a description leaf's merged `styleTitle` (`class-usymbol-title-style.ts`,
+   *  `EntityImageDescription.java:148-151`). */
+  usymbolTitleStyle?: Style;
   /** cdd-T3 (A1 SB3): standalone rank of the DOUBLE-couple `apoint` NAME tick, which upstream burns two ranks
    *  BEFORE the point entity (`objectdiagram/AbstractClassOrObjectDiagram.java:120-129`) -- so {@link phantomSlot}'s
    *  "rank at `creationIndex - 1`" encoding cannot express it. Single couples (`:226-231`) keep `phantomSlot`. */
@@ -353,10 +357,10 @@ export interface Classifier {
    * G2 N42: the classifier's raw, UNPARSED multi-line body source, one
    * entry per physical source line INSIDE the `{ ... }` body, in
    * declaration order -- populated alongside (not instead of) {@link
-   * members} at the same 3 member-body call sites (`parser.ts
+   * members} at the member-body call sites (`parser.ts
    * #handlePendingBodyLine`, `class-commands.ts`'s post-hoc `X : text`
-   * rule, `class-declaration-parser.ts#applyClassifierDecl`'s inline-member
-   * loop). Mirrors upstream `BodierAbstract#rawBody` (`List<CharSequence>`,
+   * rule; ocb T2 removed the one-line `{ … }` body, which the jar refuses).
+   * Mirrors upstream `BodierAbstract#rawBody` (`List<CharSequence>`,
    * `BodierLikeClassOrObject#addFieldOrMethod`'s unconditional `rawBody.add
    * (s)`) -- upstream defers the fields/methods-vs-"enhanced body" decision
    * to RENDER time by re-scanning this raw list

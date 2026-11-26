@@ -1,0 +1,23 @@
+# plan-baseline (cuts), measured 2026-11-25 on 15ed8340b
+# npx tsx plans/hidden-note-host/measurements/measure.mts plans/class-usymbol-title-style/measurements/probes
+cuts-business                        diffs   71 score   71 cmt 0 | {"path":"svg/@height","actual":"179","expected":"180","delta":1,"tolerance":0.01}
+cuts-component                       diffs    8 score    8 cmt 0 | {"path":"svg/g[1]/g[2]/rect[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-ctl-plain                       diffs    0 score    0 cmt 0 | 
+cuts-database                        diffs    4 score    4 cmt 0 | {"path":"svg/g[1]/g[2]/path[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-diagram-title                   diffs    2 score    2 cmt 0 | {"path":"svg/g[1]/g[3]/ellipse[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-embed-class                     diffs    0 score    0 cmt 0 | 
+cuts-embed-desc                      diffs    0 score    0 cmt 0 | 
+cuts-embed-group                     diffs    0 score    0 cmt 0 | 
+cuts-inline-back                     diffs    3 score    3 cmt 0 | {"path":"svg/g[1]/g[2]/ellipse[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-issue                           diffs   61 score   61 cmt 0 | {"path":"svg/@height","actual":"175","expected":"177","delta":2,"tolerance":0.01}
+cuts-node-cloud                      diffs   10 score   10 cmt 0 | {"path":"svg/g[1]/g[2]/polygon[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-rectangle                       diffs    2 score    2 cmt 0 | {"path":"svg/g[1]/g[2]/rect[1]/@stroke","actual":"#181818","expected":"#F00","tolerance":0.01}
+cuts-stereo                          diffs   88 score   88 cmt 0 | {"path":"svg/@height","actual":"154","expected":"167","delta":13,"tolerance":0.01}
+cuts-style-after                     diffs    3 score    3 cmt 0 | {"path":"svg/g[1]/g[2]/ellipse[1]/@stroke","actual":"#00F","expected":"#181818","tolerance":0.01}
+cuts-style-title                     diffs   57 score   57 cmt 0 | {"path":"svg/@height","actual":"175","expected":"178","delta":3,"tolerance":0.01}
+cuts-style-usecase-title             diffs    1 score    1 cmt 0 | {"path":"svg/g[1]/g[2]/ellipse[1]/@stroke-width","actual":"0.5","expected":"1.5","tolerance":0.01}
+cuts-title-back                      diffs    6 score    6 cmt 0 | {"path":"svg/g[1]/g[2]/ellipse[1]/@fill","actual":"#F1F1F1","expected":"#FF0","tolerance":0.01}
+cuts-title-font                      diffs    0 score    0 cmt 0 | 
+cuts-title-shadow                    diffs    6 score   28 cmt 0 | {"path":"svg/@height","actual":"173","expected":"181","delta":8,"tolerance":0.01}
+cuts-usecase-border                  diffs   59 score   59 cmt 0 | {"path":"svg/@height","actual":"175","expected":"177","delta":2,"tolerance":0.01}
+rows 20 zero 5 open 15 throw 0

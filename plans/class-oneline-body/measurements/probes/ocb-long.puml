@@ -1,0 +1,8 @@
+@startuml
+class A { x : int }
+class B
+A --> B
+class C
+class D
+class E
+@enduml

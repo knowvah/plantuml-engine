@@ -51,6 +51,15 @@ export function emitTransition(ps: ParseState, t: Transition): void {
   // is the whole fix -- no phantom rank is needed.
   if (t.direction === 'left' || t.direction === 'up') nextCreationIndex(ps);
   t.creationIndex = nextCreationIndex(ps);
+  addLink(ps, t);
+}
+
+/**
+ * `CucaDiagram#addLink` (`net/atmp/CucaDiagram.java:896-901`): the `-[single]->` dedup and the push, for a transition
+ * whose `creationIndex` its caller already ticked. {@link emitTransition} ticks one link; the node-style branch ticks
+ * two links in upstream's order before adding either (`state-node-style.ts`, `CommandLinkStateCommon.java:340-383`).
+ */
+export function addLink(ps: ParseState, t: Transition): void {
   const connection: readonly [string, string] = [
     transitionEndpointKey(ps, t.from, 'start'),
     transitionEndpointKey(ps, t.to, 'end'),

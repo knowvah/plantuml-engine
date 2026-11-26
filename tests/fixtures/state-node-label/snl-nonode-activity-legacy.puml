@@ -1,0 +1,4 @@
+@startuml
+(*) -[nonode]-> "First"
+"First" -[#red,nonode]-> (*)
+@enduml

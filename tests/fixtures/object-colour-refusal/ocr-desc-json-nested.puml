@@ -1,0 +1,8 @@
+@startuml
+component C
+json J #line:red {
+  "a": {
+    "b": 1
+  }
+}
+@enduml

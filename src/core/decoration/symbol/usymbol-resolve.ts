@@ -18,7 +18,8 @@ import { resolveElementFontSize } from '../../theme.js';
 import { isTransparentColor, type Paint } from '../../paint.js';
 import { FontStyle, type FontConfiguration } from '../../klimt/shape/UText.js';
 import { ActorStyle } from '../../skin/ActorStyle.js';
-import { ComponentStyle, PackageStyle, packageStyleToUSymbol } from './USymbols.js';
+import { ComponentStyle, PackageStyle, fromString, packageStyleToUSymbol } from './USymbols.js';
+import type { SName } from '../../style/SName.js';
 import { resolveDescriptionUSymbol } from '../../svek/image/EntityImageDescription.js';
 import type { USymbol as UpstreamUSymbol } from './USymbol.js';
 import type { USymbol } from '../../descriptive-keywords.js';
@@ -103,6 +104,26 @@ const PACKAGE_STYLE_BY_SETTING: Readonly<Record<PackageStyleSetting, PackageStyl
  *  (`SkinParam.java:820-826`): FOLDER when the skinparam is absent or unknown. */
 export function resolvePackageStyle(theme: Theme): PackageStyle {
   return PACKAGE_STYLE_BY_SETTING[theme.packageStyle ?? 'folder'];
+}
+
+/**
+ * `symbol.getSNames()` for an `EntityImageDescription` leaf's `USymbol` (`EntityImageDescription.java:111-113,142-147`),
+ * shared by the description and class engines (cuts D1): both build the same image whatever the diagram
+ * (`GeneralImageBuilder.java:162-180`). Undefined where `USymbols.fromString` has no symbol.
+ *
+ * @see ~/git/plantuml/src/main/java/net/sourceforge/plantuml/decoration/symbol/USymbols.java#fromString
+ */
+export function symbolSNames(symbol: USymbol, theme: Theme): readonly SName[] | undefined {
+  if (symbol === 'usecase-business') return ['usecase', 'business'];
+  // `actor/` is `ACTOR_STICKMAN_BUSINESS` whatever the style (`USymbols.java`), whose name is `business` alone.
+  if (symbol === 'actor-business') return ['business'];
+  const usymbol = fromString(
+    upstreamKeyword(symbol),
+    resolveActorStyle(theme.actorStyle),
+    mapComponentStyle(theme.componentStyle),
+    resolvePackageStyle(theme),
+  );
+  return usymbol?.getSNames() as readonly SName[] | undefined;
 }
 
 /** Resolves the `USymbol` for a description-diagram node/container symbol,

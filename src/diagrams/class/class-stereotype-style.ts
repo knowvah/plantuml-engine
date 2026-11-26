@@ -115,13 +115,15 @@ export function annotateStereotypeFonts(classifiers: readonly Classifier[], buil
   }
 }
 
-/** The classifier's merged-style answers the geo carries to the renderer: `objectStyle` and `stereotypeFont`. */
+/** The classifier's merged-style answers the geo carries to the renderer: `objectStyle`, `stereotypeFont`, and a
+ *  description leaf's `usymbolTitleStyle` (`class-usymbol-title-style.ts`). */
 export function mergedStyleFields(
-  classifier: Pick<Classifier, 'objectStyle' | 'stereotypeFont'>,
-): Pick<Classifier, 'objectStyle' | 'stereotypeFont'> {
+  classifier: Pick<Classifier, 'objectStyle' | 'stereotypeFont' | 'usymbolTitleStyle'>,
+): Pick<Classifier, 'objectStyle' | 'stereotypeFont' | 'usymbolTitleStyle'> {
   return {
     ...(classifier.objectStyle !== undefined ? { objectStyle: classifier.objectStyle } : {}),
     ...(classifier.stereotypeFont !== undefined ? { stereotypeFont: classifier.stereotypeFont } : {}),
+    ...(classifier.usymbolTitleStyle !== undefined ? { usymbolTitleStyle: classifier.usymbolTitleStyle } : {}),
   };
 }
 

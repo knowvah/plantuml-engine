@@ -57,7 +57,7 @@ import type { PendingMultilineElement } from './class-parse-state.js';
  * (present in BOTH rule 7's TYPE alternation AND description's shared
  * `ALL_TYPES`) -- rule 7's own grammar has no trailing-`[`-body form for
  * either (verified: `class-declaration-extractors.ts#extractBody` only
- * recognises a trailing `{`), so upstream's CommandCreateClass DECLINES an
+ * recognises an empty `{ }` or a trailing `{`), so upstream's CommandCreateClass DECLINES an
  * `entity ABC [`/`circle A [` line and CommandCreateElementMultilines is
  * the real owner (T4 Mechanism A's own diagnosis, `gogisu-39-bepa573`/
  * `felixe-38-dilu011`). `interface` is the one keyword this port discovered

@@ -18,6 +18,7 @@ import type { SequenceDiagramAST } from '../../../src/diagrams/sequence/ast.js';
 import { makeDefaultAST, type ParseState } from '../../../src/diagrams/sequence/sequence-parse-helpers.js';
 import { matchParticipantMultilineCommand } from '../../../src/diagrams/sequence/command-participant.js';
 import { newLifeState } from '../../../src/diagrams/sequence/sequence-life-state.js';
+import { CommandExecutionResult } from '../../../src/core/command/CommandExecutionResult.js';
 import {
   DEFAULT_SEQUENCE_STYLE_BUILDER,
   emptySequenceStyleDispatch,
@@ -279,5 +280,46 @@ describe('participantCommand refuses a misplaced stereotype (T11, ubrr)', () => 
   it('still accepts a quoted display with "as CODE" and no stereotype', () => {
     const ast = parse(['participant "DB 2" as Db2', 'Db2 -> Db2 : hi']);
     expect(ast.participants[0]).toMatchObject({ id: 'Db2', display: 'DB 2' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('participantCommand refuses a colour capture that cannot be a bare colour (alr T2, #191)', () => {
+  // `CommandParticipant#executeArg` hands the whole COLOR capture to the throwing `getColor`
+  // (`CommandParticipant.java:183-185`, `HColorSet.java:69-76`); `SingleLineCommand2.java:176-179` turns the throw
+  // into `badColor()` (`CommandExecutionResult.java:85-86`), so the sequence factory fails.
+  const BAD_COLOR = CommandExecutionResult.badColor();
+
+  it('refuses `actor X #line:red` with badColor()`s message and score', () => {
+    expect(parseSequence(sequenceSource(['actor X #line:red']))).toEqual({
+      refused: true,
+      kind: 'execution',
+      line: 0,
+      consumed: 0,
+      message: BAD_COLOR.getError(),
+      commandScore: BAD_COLOR.getScore(),
+    });
+  });
+
+  it('refuses a compound capture on every keyword of the family', () => {
+    for (const line of ['participant X #back:red', 'database X #pink;line:blue', 'create actor X #line.dashed']) {
+      expect(parseSequence(sequenceSource([line])), line).toMatchObject({ refused: true, commandScore: 10 });
+    }
+  });
+
+  it('keeps an existing CODE: the exists branch returns before the colour (`CommandParticipant.java:145-149`)', () => {
+    const ast = parse(['actor X', 'actor Y', 'actor X #line:red']);
+    expect(ast.participants.map((p) => p.id)).toEqual(['Y', 'X']);
+  });
+
+  it('keeps the multi-line form, which never reads COLOR (`CommandParticipantMultilines.java:136-176`)', () => {
+    const ast = parse(['participant X #line:red [', 'Long', ']']);
+    expect(ast.participants[0]).toMatchObject({ id: 'X', display: 'Long' });
+  });
+
+  it('keeps an unknown bare colour: the 2026-11-04 neutral ruling (D2)', () => {
+    const ast = parse(['actor X #zzblue']);
+    expect(ast.participants[0]).toMatchObject({ id: 'X', color: '#zzblue' });
   });
 });

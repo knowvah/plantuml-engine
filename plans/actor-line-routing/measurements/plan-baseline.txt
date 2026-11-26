@@ -1,0 +1,46 @@
+# npx tsx plans/hidden-note-host/measurements/measure.mts plans/actor-line-routing/measurements/probes  (d7f8c3db4, 2026-11-24)
+alr-as-full                          diffs   10 score   90 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-back-red                         diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-boundary                         diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"131","expected":"66","delta":65,"tolerance":0.01}
+alr-collections                      diffs   25 score   70 cmt 1 | {"path":"svg/@height","actual":"105","expected":"54","delta":51,"tolerance":0.01}
+alr-control                          diffs   10 score   93 cmt 1 | {"path":"svg/@height","actual":"131","expected":"66","delta":65,"tolerance":0.01}
+alr-create-actor-existing            diffs    0 score    0 cmt 0 | 
+alr-create-bare                      diffs    5 score  251 cmt 0 | {"path":"svg/@height","actual":"97","expected":"284","delta":187,"tolerance":0.01}
+alr-create-existing                  diffs    0 score    0 cmt 0 | 
+alr-create-move                      diffs   12 score   12 cmt 0 | {"path":"svg/g[1]/g[1]/@id","actual":"part1-lifeline","expected":"part2-lifeline","tolerance":0.01}
+alr-create-red-msg                   diffs    2 score    2 cmt 0 | {"path":"svg/g[1]/g[5]/rect[1]/@fill","actual":"#F00","expected":"#E2E2F0","tolerance":0.01}
+alr-create-red                       diffs    2 score    2 cmt 0 | {"path":"svg/g[1]/g[2]/rect[1]/@fill","actual":"#F00","expected":"#E2E2F0","tolerance":0.01}
+alr-create                           diffs    5 score  257 cmt 0 | {"path":"svg/@height","actual":"187","expected":"284","delta":97,"tolerance":0.01}
+alr-ctl-create-move                  diffs    0 score    0 cmt 0 | 
+alr-ctl-desc-colon                   diffs    0 score    0 cmt 0 | 
+alr-ctl-desc-line                    diffs    0 score    0 cmt 0 | 
+alr-ctl-gradient                     diffs    0 score    0 cmt 0 | 
+alr-ctl-participant-red              diffs    0 score    0 cmt 0 | 
+alr-ctl-plain                        diffs    0 score    0 cmt 0 | 
+alr-ctl-red                          diffs    0 score    0 cmt 0 | 
+alr-dashed                           diffs    8 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"95","delta":92,"tolerance":0.01}
+alr-database                         diffs   12 score   71 cmt 1 | {"path":"svg/@height","actual":"159","expected":"63","delta":96,"tolerance":0.01}
+alr-entity                           diffs   15 score   94 cmt 1 | {"path":"svg/@height","actual":"131","expected":"68","delta":63,"tolerance":0.01}
+alr-existing-msg                     diffs    0 score    0 cmt 0 | 
+alr-existing                         diffs    0 score    0 cmt 0 | 
+alr-full-as-code                     diffs   10 score   90 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-full-as                          diffs   10 score   90 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-issue                            diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-line-red                         diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-line3                            diffs   20 score  253 cmt 3 | {"path":"svg/@height","actual":"187","expected":"226","delta":39,"tolerance":0.01}
+alr-message                          diffs   21 score  185 cmt 3 | {"path":"svg/@height","actual":"214","expected":"92","delta":122,"tolerance":0.01}
+alr-multiline                        diffs    0 score    0 cmt 0 | 
+alr-order                            diffs    5 score  257 cmt 0 | {"path":"svg/@height","actual":"187","expected":"284","delta":97,"tolerance":0.01}
+alr-participant                      diffs    5 score  251 cmt 0 | {"path":"svg/@height","actual":"97","expected":"284","delta":187,"tolerance":0.01}
+alr-queue                            diffs   56 score   95 cmt 1 | {"path":"svg/@height","actual":"87","expected":"44","delta":43,"tolerance":0.01}
+alr-quoted-code                      diffs   10 score   90 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-second                           diffs   15 score  170 cmt 2 | {"path":"svg/@height","actual":"187","expected":"92","delta":95,"tolerance":0.01}
+alr-semi                             diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-seq-only                         diffs    6 score  235 cmt 0 | {"path":"svg/@background","actual":"#FFFFFF","expected":"#000000","tolerance":0.01}
+alr-stereo                           diffs   11 score  111 cmt 1 | {"path":"svg/@height","actual":"215","expected":"108","delta":107,"tolerance":0.01}
+alr-teoz-msg                         diffs   21 score  185 cmt 3 | {"path":"svg/@height","actual":"214","expected":"92","delta":122,"tolerance":0.01}
+alr-teoz                             diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-text-red                         diffs   10 score   87 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+alr-unknown-bare                     diffs    5 score  257 cmt 0 | {"path":"svg/@height","actual":"187","expected":"284","delta":97,"tolerance":0.01}
+alr-url                              diffs   10 score   96 cmt 1 | {"path":"svg/@height","actual":"187","expected":"94","delta":93,"tolerance":0.01}
+rows 44 zero 12 open 32 throw 0

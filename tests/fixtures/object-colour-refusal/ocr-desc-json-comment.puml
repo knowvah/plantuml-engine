@@ -1,0 +1,7 @@
+@startuml
+component C
+json J #line:red {
+' a comment
+  "a": 1
+}
+@enduml

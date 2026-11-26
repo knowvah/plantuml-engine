@@ -1,0 +1,5 @@
+@startuml
+box "B"
+actor X #line:red
+end box
+@enduml

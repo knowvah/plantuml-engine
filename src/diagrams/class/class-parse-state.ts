@@ -75,8 +75,12 @@ export interface ParseState {
    * body lines (no member is ever applied, matching upstream's own
    * before-execution abort) and turns this into `executionRefusal` at that
    * closing line. `undefined` in the overwhelming majority of parses.
+   * `score` is the result's `getScore()` (`PSystemCommandFactory.java:183`), 0 when absent: `badColor()`'s 10 for a
+   * colour refused in an `object`/`json` header (ocr D3). `jsonLines` is set for a refused `json` block: its body
+   * is gathered so the block ends where the JSON completes (`CommandCreateJson.java:155-162`, ocr T3b).
    */
-  pendingBodyRefusal?: { readonly message: string } | undefined;
+  pendingBodyRefusal?:
+    { readonly message: string; readonly score?: number; readonly jsonLines?: string[] | undefined } | undefined;
   /** odd T4a: the hide/show commands seen so far (`class-hideshow-dispatch.ts`). */
   hideShowSeq?: number;
   /**

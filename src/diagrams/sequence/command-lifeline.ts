@@ -4,10 +4,11 @@
  * immediately after `addCommonCommands1`/`CommandHideUnlinked` and before the
  * participant declarations.
  *
- * All four rules below port TWO upstream commands. `CommandActivate`'s TYPE
+ * The rules below port TWO upstream commands. `CommandActivate`'s TYPE
  * group is the alternation `(activate|deactivate|destroy|create)`
  * (`sequencediagram/command/CommandActivate.java:63`), so `activate X`,
- * `deactivate X` and `destroy X` are one regex upstream and three rules here;
+ * `deactivate X`, `destroy X` and `create X` are one regex upstream and four
+ * rules here;
  * its WHO group, `([%pLN_.@]+|[%g][^%g]+[%g])` (`:65`), is shared by all
  * three, which is why the quoted alternative and the `getOrCreateParticipant`
  * call (`:109`) apply uniformly below rather than only on `activate`.
@@ -18,6 +19,7 @@
  * @see ~/git/plantuml/.../sequencediagram/SequenceDiagramFactory.java:103-104
  */
 
+import { compileInternal } from '../../core/regex/Pattern2.js';
 import type { ActivationEvent } from './ast.js';
 import { emit, ensureParticipant, type Command, type ParseState } from './sequence-parse-helpers.js';
 import { activate, getActivatingMessage, type LifeEventType } from './sequence-life-state.js';
@@ -98,6 +100,27 @@ export const destroyCommand: Command = {
       styleBuilder: currentStyleBuilder(state.style),
     };
     emit(state, ev);
+  },
+};
+
+// 7b. create -- `CommandActivate` TYPE `create` (alr D5, #191). Upstream's
+//    whole grammar, compiled as `Pattern2` compiles it: WHO, an optional
+//    `#\w+` BACK, an optional spaced `#\w+` LINE, end (`:72-83`). Anything
+//    else after a bare `create` (`create X #line:red`) fails here and is
+//    `CommandParticipantA`'s (`createCommand`). `getOrCreateParticipant`
+//    never moves an existing X (`:116-117`), and the colours go to the
+//    CREATE `LifeEvent`'s `Fashion` (`:118-122`, `SequenceDiagram.java:374`),
+//    never to the participant. Only an ACTIVATE life event's colours are
+//    ever read (`teoz/LiveBoxes.java:236-258`), so they are dropped here, as
+//    `activateCommand` drops its second colour. An unknown bare colour
+//    (`create X #zzblue`) keeps the 2026-11-04 neutral ruling: not refused.
+// @see sequencediagram/command/CommandActivate.java:72-83,113-131
+export const createLifelineCommand: Command = {
+  pattern: compileInternal('^create[%s]+([%pLN_.@]+|[%g][^%g]+[%g])[%s]*(?:#\\w+)?(?:[%s]+#\\w+)?$'),
+  execute(state, match) {
+    const participantId = stripQuotes(match[1]!);
+    ensureParticipant(state, participantId);
+    refusedLifeEvent(state, participantId, 'CREATE');
   },
 };
 

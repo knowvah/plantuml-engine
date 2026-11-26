@@ -1,0 +1,137 @@
+== alr-participant
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-participant.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-participant.puml
+Some diagram description contains errors
+release exit 200
+== alr-order
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-order.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-order.puml
+Some diagram description contains errors
+release exit 200
+== alr-create
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-create.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-create.puml
+Some diagram description contains errors
+release exit 200
+== alr-create-bare
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-create-bare.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-create-bare.puml
+Some diagram description contains errors
+release exit 200
+== alr-seq-only
+protocolVersion=1
+status=ERROR
+lineNumber=4
+label=Syntax Error? (Assumed diagram type: component)
+Error line 4 in file: plans/actor-line-routing/measurements/probes/alr-seq-only.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=4
+label=Syntax Error? (Assumed diagram type: component)
+Error line 4 in file: plans/actor-line-routing/measurements/probes/alr-seq-only.puml
+Some diagram description contains errors
+release exit 200
+== alr-unknown-bare
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-unknown-bare.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: plans/actor-line-routing/measurements/probes/alr-unknown-bare.puml
+Some diagram description contains errors
+release exit 200
+
+# alr T3 push-forward (2026-11-24): stock at the pin and the 1.2026.8 release
+== alr-pf-box
+protocolVersion=1
+status=ERROR
+lineNumber=3
+label=No such color (Assumed diagram type: sequence)
+Error line 3 in file: tests/fixtures/actor-line-routing/alr-pf-box.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=3
+label=No such color (Assumed diagram type: sequence)
+Error line 3 in file: tests/fixtures/actor-line-routing/alr-pf-box.puml
+Some diagram description contains errors
+release exit 200
+== alr-pf-create-participant
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: tests/fixtures/actor-line-routing/alr-pf-create-participant.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: tests/fixtures/actor-line-routing/alr-pf-create-participant.puml
+Some diagram description contains errors
+release exit 200
+== alr-pf-participant-as-msg
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: tests/fixtures/actor-line-routing/alr-pf-participant-as-msg.puml
+Some diagram description contains errors
+stock exit 200
+protocolVersion=1
+status=ERROR
+lineNumber=2
+label=No such color (Assumed diagram type: sequence)
+Error line 2 in file: tests/fixtures/actor-line-routing/alr-pf-participant-as-msg.puml
+Some diagram description contains errors
+release exit 200

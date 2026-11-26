@@ -1,0 +1,13 @@
+@startuml
+allowmixing
+<style>
+title {
+  Shadowing 4
+}
+</style>
+class K
+usecase U
+component C
+K --> U
+K --> C
+@enduml

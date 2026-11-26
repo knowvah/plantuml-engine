@@ -1,0 +1,9 @@
+@startuml
+allowmixing
+skinparam titleBorderColor<<S>> blue
+class K
+usecase U <<S>>
+usecase V
+K --> U
+K --> V
+@enduml

@@ -178,7 +178,9 @@ export const ELEMENT_FULL2_BEFORE_LINKS_COMMAND: Command = {
 
 export const DESCRIPTIVE_LEAF_COMMANDS: readonly Command[] = [
   {
-    pattern: new RegExp('^(?:mix_)?(?:' + ALL_DESCRIPTIVE_LEAF + ')\\s+\\S', 'i'),
+    // ocb T2b (#223): no `{…}` tail. `CommandCreateElementFull2`'s regex ends at its colour leaf, then the end
+    // (`CommandCreateElementFull2.java:120-124`, `:143-147`), so `database D { }` is `Syntax Error?` in the jar.
+    pattern: new RegExp('^(?:mix_)?(?:' + ALL_DESCRIPTIVE_LEAF + ')\\s+\\S(?!.*\\{[^}]*\\}\\s*$)', 'i'),
     execute: executeDescriptiveLeaf,
   },
 ];

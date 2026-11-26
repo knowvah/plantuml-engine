@@ -45,6 +45,8 @@ import {
   JSON_SINGLE_LINE_RE,
   applyJsonMultilineOpen,
   applyJsonSingleLine,
+  finalizeJsonBody,
+  isJsonBodyComplete,
   type JsonCommandHost,
 } from '../../core/command/CommandCreateJson.js';
 
@@ -60,9 +62,34 @@ import {
  *  SAME declaration), so re-resolving by id at the closer would be
  *  redundant at best and a fresh lookup risk at worst; `declareState`'s
  *  return value IS the single source of truth. */
-export interface PendingJson {
-  target: State;
-  lines: string[];
+export type PendingJson =
+  | { target: State; lines: string[]; refusal?: undefined }
+  | { target?: undefined; lines: string[]; refusal: JsonBlockRefusal };
+
+/** A refused multi-line json block (ocr D4): the failed result, held until the block's closing line, where upstream
+ *  reports a multi-line command's EXECUTION_ERROR (`PSystemCommandFactory.java:218-225`). */
+export interface JsonBlockRefusal {
+  readonly message: string;
+  readonly score: number;
+}
+
+/**
+ * One line of an open multi-line json body (`ps.pendingJson`): `false` when no body is open, `true` when the line was
+ * consumed, and on the line that closes a refused block, its {@link JsonBlockRefusal}. The body is swallowed on every
+ * pass, so no body line reaches `dispatchCommand`; the `jsonValue` write fires on pass ONE only.
+ */
+export function stepPendingJson(ps: ParseState, line: string, pass: Pass): boolean | JsonBlockRefusal {
+  const pending = ps.pendingJson;
+  if (pending === null) return false;
+  // The block ends where its JSON completes, not on an inner `}` (`CommandCreateJson.java:155-162`, ocr T3b).
+  if (!isJsonCloser(line) || !isJsonBodyComplete(pending.lines)) {
+    pending.lines.push(line);
+    return true;
+  }
+  ps.pendingJson = null;
+  if (pending.refusal !== undefined) return pending.refusal;
+  if (pass === 'one') finalizeJsonBody(pending.target, pending.lines);
+  return true;
 }
 
 /** `CommandCreateJson#END` — one or more whitespace, closing brace, one or
@@ -127,8 +154,10 @@ function stateAlreadyExists(ps: ParseState, id: string): boolean {
 // ---------------------------------------------------------------------------
 
 function adapt(ps: ParseState, pass: Pass): JsonCommandHost<State> {
+  // A multi-line block's refusal, held for `beginBody` to park on `ps.pendingJson` until the closing line (D4).
+  let blockRefusal: JsonBlockRefusal | undefined;
   return {
-    resolve(rawId, rawDisplay, stereotype, color) {
+    resolve(rawId, rawDisplay, stereotype, color, reuseExisting) {
       if (pass === 'one' && stateAlreadyExists(ps, rawId)) {
         // CommandCreateJson.java:141-142 / CommandCreateJsonSingleLine.java
         // :134-135 -- entity1 is null (a duplicate quark,
@@ -136,7 +165,9 @@ function adapt(ps: ParseState, pass: Pass): JsonCommandHost<State> {
         // an EXECUTION error that aborts the whole parse
         // (parser.ts#dispatchCommand's `ps.executionError` check), not a
         // silent no-op that keeps the first declaration.
-        ps.executionError = JSON_ALREADY_EXISTS + rawId;
+        // `reuseExisting` is the multi-line opener (`quarkInContext(true, ...)`): its refusal waits for the closer.
+        if (reuseExisting) blockRefusal = { message: JSON_ALREADY_EXISTS + rawId, score: 0 };
+        else ps.executionError = JSON_ALREADY_EXISTS + rawId;
         return undefined;
       }
       const s = makeState(rawId, rawDisplay ?? rawId, 'json', {
@@ -146,18 +177,21 @@ function adapt(ps: ParseState, pass: Pass): JsonCommandHost<State> {
       return declareState(ps, s, pass);
     },
     beginBody(entity) {
-      // A duplicate still "opens" (and immediately discards) a multi-line
-      // body -- `ps.pendingJson` stays `null`, but that is harmless here:
-      // `resolve` already set `ps.executionError`, and
-      // `parser.ts#dispatchCommand` returns the refusal immediately after
-      // THIS command's `execute` call, before the body's own lines are ever
-      // reached (mirrors `class-json-commands.ts#adapt`'s own
-      // `beginBody`/`state.pendingBodyId = ''` comment, minus the sentinel
-      // this engine does not need for the same reason).
-      ps.pendingJson = entity !== undefined ? { target: entity, lines: [] } : null;
+      // A refused block still consumes its body (to its closing line), so no body line reaches the dispatcher;
+      // its refusal is raised there (`stepPendingJson`).
+      if (blockRefusal !== undefined) ps.pendingJson = { lines: [], refusal: blockRefusal };
+      else ps.pendingJson = entity !== undefined ? { target: entity, lines: [] } : null;
     },
     setJsonValue(entity, value) {
       if (pass === 'one') entity.jsonValue = value;
+    },
+    refuseExecution(message, score, block) {
+      if (block) {
+        blockRefusal = { message, score };
+        return;
+      }
+      ps.executionError = message;
+      ps.executionErrorScore = score;
     },
   };
 }

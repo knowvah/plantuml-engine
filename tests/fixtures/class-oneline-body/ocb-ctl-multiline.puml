@@ -1,0 +1,5 @@
+@startuml
+class A {
+  x : int
+}
+@enduml
